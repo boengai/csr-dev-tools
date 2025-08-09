@@ -10,7 +10,7 @@ export const ProgressBar = ({ value }: { value: number }) => {
           animate={{ width: `${v}%` }}
           className="bg-primary h-full rounded-full"
           initial={{ width: 0 }}
-          transition={{ duration: 1, ease: 'easeInOut' }}
+          transition={{ duration: 0.8, ease: 'easeInOut' }}
         />
       </div>
     </div>

@@ -78,6 +78,7 @@ export const ImageConvertorCard = () => {
         const fi: string = await convertImageFormat(img, format as ImageFormat)
         formattedImages[`${parseFileName(img.name)}.${FILE_EXTENSIONS[format as ImageFormat]}`] = fi
         setProcessing((prev: number) => prev + processTick)
+        await new Promise((resolve: (value: unknown) => void) => setTimeout(resolve, 800))
       }
 
       // save
