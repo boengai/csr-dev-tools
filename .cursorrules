@@ -1,0 +1,133 @@
+# Cursor AI Coding Rules for CSR Web Developer tools
+
+## Project Context
+A free Web developer tools that working only on client side
+
+## Code Style & Standards
+
+### TypeScript
+- **Always use TypeScript with strict mode**
+- Prefer type inference when possible, explicit types when clarity needed
+- Use proper interfaces for object shapes
+- **Avoid `any` type, use `unknown` or proper types**
+- Export types alongside implementation when creating reusable components
+
+### React/Frontend (apps/interface)
+- **Use functional components with hooks**
+- **Prefer composition over inheritance**
+- **Follow React 19 best practices (no more defaultProps, use built-in types)**
+- Use Zustand for state management with proper TypeScript types
+- Implement proper error boundaries
+- **Use Radix UI as the base component library for Tailwind CSS compatibility**
+- **Extend Radix UI components with Tailwind utility classes for styling**
+- **Leverage Radix UI's unstyled components for maximum Tailwind flexibility**
+
+### Tailwind CSS (v4)
+- **Use Tailwind CSS v4 with CSS-based configuration**
+- Configure themes and custom values using @theme directive in CSS files
+- **PREFER PURE TAILWIND CLASSES over separate CSS files for component styling**
+- **Use utility classes over custom CSS**
+- Use arbitrary values [bracket notation] for one-off customizations
+- **Implement responsive design with mobile-first approach**
+- Use semantic color names and design tokens
+- **Prefer Motion One for animations; use Tailwind `data-[state]` only for state styling, not for animations**
+- Use Tailwind's backdrop-blur and other modern utilities
+
+### File Naming & Structure
+- **Use kebab-case for file names (app-version.ts)**
+- **Use PascalCase for component files (HomePage.tsx)**
+- **Use camelCase for utilities and hooks (useAppVersion.ts)**
+- Group related files in feature directories
+- Use index.ts files for clean exports
+
+### Code Organization
+- **Keep components focused and single-responsibility**
+- **Extract custom hooks for reusable logic**
+- Use proper TypeScript namespaces for type organization
+- **Use consistent import ordering (external, internal, relative)**
+- **Avoid creating separate CSS files for component styling - use Tailwind classes directly**
+
+### Icon System
+- **Write SVG icon components in `@/components/icon` directory**
+- **Accept only size prop (number, default: '1em') for direct height/width control**
+- **Use stroke="currentColor" for theme compatibility**
+- **Keep icons simple and reusable**
+- **Export all icons from index.ts for easy importing**
+
+### Package Structure
+
+### Development Commands
+- `pnpm dev` - Start development servers
+- `pnpm build` - Build packages
+- `pnpm lint` - Run linting
+
+### Dependencies
+- Use pnpm for package management
+- Add dependencies to the appropriate workspace
+- Prefer exact versions for shared packages
+- Use devDependencies appropriately
+- **Use Radix UI components as the foundation for all interactive elements**
+- **Avoid external icon libraries - create simple SVG components instead**
+ - **Use Motion One (`motion` package) for animations and transitions in React components**
+
+## AI Assistant Guidelines
+
+### When Writing Code
+1. Implement proper TypeScript types
+2. Follow existing ESLint configuration
+3. Implement responsive design with Tailwind CSS v4
+4. Use @theme directive in CSS files for custom configurations
+5. **Use Radix UI components as the base, then style with Tailwind utility classes**
+6. **Use pure Tailwind classes for component styling instead of separate CSS files**
+7. **Prefer Motion One (`motion/react`) for animations, transitions, and presence; avoid Tailwind `animate-*`/`fade-*`/`slide-*` utilities**
+8. **Create simple SVG icon components instead of using external icon libraries**
+
+### Code Quality Checks
+- Add proper TypeScript types for all functions
+- Use semantic HTML and ARIA attributes
+- **Ensure all Tailwind classes are properly ordered according to linter rules**
+- **Use Motion One for animations; use Tailwind's `data-[state]` only to reflect state in styling**
+
+## Performance Guidelines
+- Use lazy loading for React components
+- Minimize bundle size with tree shaking
+- **Prefer Tailwind's utility classes over custom CSS for better performance**
+- **Avoid external dependencies when built-in solutions exist**
+
+## Security Considerations
+- Validate all user inputs
+- **Use built-in browser features over external libraries when possible**
+
+## Component Styling Best Practices
+- **Use Radix UI components as the foundation for all interactive elements**
+- **Extend Radix UI components with Tailwind utility classes for styling**
+- **Use Tailwind classes directly in components instead of separate CSS files**
+- **Leverage Motion One for smooth transitions and presence-based animations**
+- **Use semantic class names that match your theme system**
+- **Implement responsive design with mobile-first approach**
+- **Use backdrop-blur and modern CSS features for enhanced UX**
+- **Create reusable component variants using Tailwind's utility patterns**
+
+## Icon Development Guidelines
+- **Create icons as simple React components**
+- **Use consistent viewBox and stroke properties**
+- **Make icons theme-aware with currentColor**
+- **Accept only size prop (number, default: 16) for direct sizing**
+- **Apply size directly to height and width attributes**
+- **Keep icon paths simple and optimized**
+- **Export from centralized icon index for easy importing**
+
+## Zustand State Management
+
+- **Primary state library**: Use `zustand` for client-side state. Avoid Redux or heavy contexts for app state.
+- **Type safety**: Define clear interfaces for `State` and `Actions`; export a combined `StoreState` type.
+- **Store creation**: Use `create<StoreState>()` with functional `set` and `get`. Avoid `any`.
+- **Selectors by default**: Always select specific slices, e.g., `useUserStore((s) => s.user)`. Avoid subscribing to full state.
+- **Shallow comparison**: When selecting multiple fields, use `shallow` to minimize re-renders.
+- **File structure**: Place store files near their feature (e.g., `features/user/use-user-store.ts`). Export from a feature `index.ts` when helpful.
+- **Naming**: Name hooks `useXStore` (e.g., `useThemeStore`). Use kebab-case for filenames.
+- **Persistence**: If persisting, wrap with `persist` and include `version`, `name`, and `migrate` for safe upgrades. Prefer `localStorage`; fall back safely in SSR.
+- **No global side effects**: Do not touch `window` during store initialization. Lazy-read environment in actions only.
+- **Testing & reset**: Expose a `reset()` action for tests and storybook to return to initial state.
+- **No provider needed**: Do not wrap the app with custom providers for Zustand.
+- **Middleware**: Prefer built-in middleware (`persist`, `subscribeWithSelector`) over external helpers.

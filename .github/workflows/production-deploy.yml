@@ -1,0 +1,46 @@
+name: Production Deploy to Cloudflare Pages
+
+on:
+  workflow_dispatch:
+    branches: [main]
+
+permissions:
+  contents: read
+  deployments: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 10
+
+      - name: Install dependencies
+        run: pnpm install
+      
+      - name: Parse environment
+        env: 
+          ENV: ${{ vars.ENV_BASE64 }}
+        run: |
+          echo -n $ENV | base64 --decode > ./.env
+
+      - name: Build
+        run: pnpm run build
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/pages-action@v1
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          projectName: csr-dev-tools
+          directory: dist

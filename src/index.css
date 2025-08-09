@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@theme {
+  --color-*: initial;
+  --color-primary: oklch(0.3354 0.1363 353.56);
+  --color-secondary: oklch(0.6655 0.0797 18.38);
+
+  /* Neutral Colors */
+  --color-white: oklch(0.98 0.005 0);
+  --color-black: oklch(0.02 0.005 0);
+  --color-gray-50: oklch(0.95 0.005 0);
+  --color-gray-100: oklch(0.90 0.005 0);
+  --color-gray-200: oklch(0.85 0.005 0);
+  --color-gray-300: oklch(0.75 0.005 0);
+  --color-gray-400: oklch(0.65 0.005 0);
+  --color-gray-500: oklch(0.55 0.005 0);
+  --color-gray-600: oklch(0.45 0.005 0);
+  --color-gray-700: oklch(0.35 0.005 0);
+  --color-gray-800: oklch(0.25 0.005 0);
+  --color-gray-900: oklch(0.15 0.005 0);
+  --color-gray-950: oklch(0.08 0.005 0);
+
+  /* Semantic Colors */
+  --color-info: oklch(0.60 0.15 240);
+  --color-warning: oklch(0.75 0.18 60);
+  --color-success: oklch(0.65 0.15 140);
+  --color-error: oklch(0.65 0.18 20);
+
+  /* Typography */
+  --text-*: initial;
+  --text-heading-1: 2.25rem;
+  --text-heading-1--line-height: 2.5rem;
+  --text-heading-1--letter-spacing: 0.025em;
+  --text-heading-1--font-weight: 700;
+  --text-heading-2: 1.875rem;
+  --text-heading-2--line-height: 2.25rem;
+  --text-heading-2--letter-spacing: 0.025em;
+  --text-heading-2--font-weight: 600;
+  --text-heading-3: 1.5rem;
+  --text-heading-3--line-height: 2rem;
+  --text-heading-3--letter-spacing: 0.025em;
+  --text-heading-3--font-weight: 600;
+  --text-heading-4: 1.25rem;
+  --text-heading-4--line-height: 1.75rem;
+  --text-heading-4--letter-spacing: 0.025em;
+  --text-heading-4--font-weight: 500;
+  --text-heading-5: 1.125rem;
+  --text-heading-5--line-height: 1.75rem;
+  --text-heading-5--letter-spacing: 0.025em;
+  --text-heading-5--font-weight: 500;
+  --text-heading-6: 1rem;
+  --text-heading-6--line-height: 1.5rem;
+  --text-heading-6--letter-spacing: 0.025em;
+  --text-heading-6--font-weight: 500;
+  --text-body: 1rem;
+  --text-body--line-height: 1.5rem;
+  --text-body--letter-spacing: 0.025em;
+  --text-body--font-weight: 400;
+  --text-body-xl: 1.25rem;
+  --text-body-xl--line-height: 1.75rem;
+  --text-body-xl--letter-spacing: 0.025em;
+  --text-body-xl--font-weight: 400;
+  --text-body-lg: 1.125rem;
+  --text-body-lg--line-height: 1.75rem;
+  --text-body-lg--letter-spacing: 0.025em;
+  --text-body-lg--font-weight: 400;
+  --text-body-sm: 0.875rem;
+  --text-body-sm--line-height: 1.25rem;
+  --text-body-sm--letter-spacing: 0.025em;
+  --text-body-sm--font-weight: 400;
+  --text-body-xs: 0.75rem;
+  --text-body-xs--line-height: 1rem;
+  --text-body-xs--letter-spacing: 0.025em;
+  --text-body-xs--font-weight: 400;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px oklch(0.02 0.005 0 / 0.08);
+  --shadow-md: 0 4px 6px oklch(0.02 0.005 0 / 0.12);
+  --shadow-lg: 0 10px 15px oklch(0.02 0.005 0 / 0.15);
+  --shadow-xl: 0 20px 25px oklch(0.02 0.005 0 / 0.20);
+
+  /* Breakpoints */
+  --breakpoint-*: initial;
+  --breakpoint-tablet: 768px;
+  --breakpoint-laptop: 1024px;
+  --breakpoint-desktop: 1440px;
+
+  /* Safe area insets */
+  --safe-area-inset-top: env(safe-area-inset-top);
+  --safe-area-inset-bottom: env(safe-area-inset-bottom);
+}
+
+:root {
+  color-scheme: dark;
+
+  body {
+    @apply antialiased;
+    font-family: "Google Sans Code", monospace;
+    font-optical-sizing: auto;
+  }
+
+  #root {
+    @apply min-h-screen w-full flex flex-col text-body text-white bg-fixed;
+    background-image: linear-gradient(to bottom, oklch(0 0 0) 0%, oklch(0.1814 0.0208 8.4) 60%, oklch(0.251 0.0561 280.11) 80%, oklch(0.4153 0.0544 340.23) 90%, oklch(0.5366 0.0849 22.19) 95%, oklch(0.6623 0.1321 42.72) 100%);
+  }
+}
+
+@layer components {
+  .input {
+    @apply flex w-full cursor-pointer items-center justify-between gap-2 rounded-md border border-gray-800 px-4 bg-black text-white transition-colors disabled:cursor-not-allowed disabled:opacity-50 h-10 data-[state=open]:border-primary data-[placeholder]:text-gray-400 focus-within:border-primary;
+  }
+
+  .popover {
+    @apply rounded-md border-gray-800 bg-black/80 text-white backdrop-blur;
+  }
+}
