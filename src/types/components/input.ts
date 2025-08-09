@@ -1,3 +1,5 @@
+import type { InputHTMLAttributes } from 'react'
+
 import type { ButtonProps } from './button'
 
 export type SelectInputProps = BaseInputProps & {
@@ -6,6 +8,11 @@ export type SelectInputProps = BaseInputProps & {
     value: string
   }>
 }
+
+export type TextInputProps = BaseInputProps &
+  Pick<InputHTMLAttributes<HTMLInputElement>, 'autoCorrect' | 'inputMode'> & {
+    type: 'number' | 'password' | 'text'
+  }
 
 export type UploadInputProps = Omit<BaseInputProps, 'onChange' | 'placeholder' | 'value'> & {
   accept: string

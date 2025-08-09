@@ -1,16 +1,31 @@
 import { motion } from 'motion/react'
+import { type ComponentType, lazy, type LazyExoticComponent, Suspense } from 'react'
 
 import type { UsePersistAppLayout } from '@/types'
 
-import { ImageConvertorCard, PlusIcon } from '@/components'
+import { NotoEmoji, PlusIcon } from '@/components'
 import { APP_KEY } from '@/constants'
 import { usePersistAppLayout } from '@/hooks'
+
+// apps
+const ImageConvertorCard: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/image/card/ImageConvertorCard').then(
+    ({ ImageConvertorCard }: { ImageConvertorCard: ComponentType }) => ({
+      default: ImageConvertorCard,
+    }),
+  ),
+)
+const PxToRemCard: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/transform/card/PxToRemCard').then(({ PxToRemCard }: { PxToRemCard: ComponentType }) => ({
+    default: PxToRemCard,
+  })),
+)
 
 const AddButton = () => {
   return (
     <motion.button
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      className="border-3 [&>svg]:align-center flex size-full cursor-pointer items-center justify-center rounded-3xl border-dashed"
+      className="border-3 [&>svg]:align-center flex size-full cursor-pointer items-center justify-center rounded-xl border-dashed"
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
       initial={{
         borderColor: 'var(--color-gray-800)',
@@ -38,9 +53,19 @@ const AppContainer = ({ position }: { position: number }) => {
   switch (value[position]) {
     case APP_KEY.IMAGE_CONVERTOR:
       return <ImageConvertorCard />
+    case APP_KEY.PX_TO_REM:
+      return <PxToRemCard />
     default:
       return <AddButton />
   }
+}
+
+const AppLoading = () => {
+  return (
+    <div className="bg-primary/10 flex grow flex-col items-center justify-center rounded-xl">
+      <NotoEmoji emoji="robot" size={120} />
+    </div>
+  )
 }
 
 export default function HomePage() {
@@ -51,7 +76,9 @@ export default function HomePage() {
           className="laptop:h-[calc(100dvh/2-2.25rem)] laptop:w-[calc(100%/3-1rem)] aspect-2/3 tablet:w-[calc(100%/2-1rem)] laptop:aspect-auto flex w-full flex-col"
           key={`${idx}`}
         >
-          <AppContainer position={idx} />
+          <Suspense fallback={<AppLoading />}>
+            <AppContainer position={idx} />
+          </Suspense>
         </section>
       ))}
     </div>
