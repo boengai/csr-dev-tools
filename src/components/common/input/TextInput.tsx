@@ -2,7 +2,14 @@ import type { ChangeEvent } from 'react'
 
 import type { TextInputProps } from '@/types'
 
-export const TextInput = ({ disabled, onChange, placeholder = 'Type here...', type, ...props }: TextInputProps) => {
+export const TextInput = ({
+  disabled,
+  onChange,
+  placeholder = 'Type here...',
+  suffix,
+  type,
+  ...props
+}: TextInputProps) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const value: string = e.target.value
 
@@ -29,8 +36,9 @@ export const TextInput = ({ disabled, onChange, placeholder = 'Type here...', ty
         onChange={handleChange}
         placeholder={placeholder}
         spellCheck="false"
-        type={type === 'password' ? 'password' : 'text'}
+        type="text"
       />
+      {suffix}
     </div>
   )
 }

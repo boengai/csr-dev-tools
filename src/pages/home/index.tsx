@@ -8,6 +8,13 @@ import { APP_KEY } from '@/constants'
 import { usePersistAppLayout } from '@/hooks'
 
 // apps
+const ColorConverterCard: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/color/card/ColorConvertorCard').then(
+    ({ ColorConvertorCard }: { ColorConvertorCard: ComponentType }) => ({
+      default: ColorConvertorCard,
+    }),
+  ),
+)
 const ImageConvertorCard: LazyExoticComponent<ComponentType> = lazy(() =>
   import('@/components/feature/image/card/ImageConvertorCard').then(
     ({ ImageConvertorCard }: { ImageConvertorCard: ComponentType }) => ({
@@ -53,6 +60,8 @@ const AppContainer = ({ position }: { position: number }) => {
   const { value }: UsePersistAppLayout = usePersistAppLayout()
 
   switch (value[position]) {
+    case APP_KEY.COLOR_CONVERTER:
+      return <ColorConverterCard />
     case APP_KEY.IMAGE_CONVERTOR:
       return <ImageConvertorCard />
     case APP_KEY.PX_TO_REM:

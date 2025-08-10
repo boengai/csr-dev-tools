@@ -16,11 +16,19 @@ import type { SelectInputProps } from '@/types'
 
 import { CheckIcon, ChevronIcon } from '../icon'
 
-export const SelectInput = ({ disabled, name, onChange, options: items, placeholder, value }: SelectInputProps) => {
+export const SelectInput = ({
+  disabled,
+  name,
+  onBlur,
+  onChange,
+  options: items,
+  placeholder,
+  value,
+}: SelectInputProps) => {
   return (
     <Root disabled={disabled} name={name} onValueChange={onChange} open={true} value={value}>
       <Trigger className="input group">
-        <Value placeholder={placeholder} />
+        <Value onBlur={onBlur} placeholder={placeholder} />
         <Icon className="text-gray-400 transition-transform duration-500 group-data-[state=open]:rotate-180">
           <ChevronIcon size={20} />
         </Icon>

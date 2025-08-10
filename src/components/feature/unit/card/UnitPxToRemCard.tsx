@@ -1,6 +1,7 @@
 import { type Dispatch, type SetStateAction, useState } from 'react'
 
-import { Card, TextInput } from '@/components/common'
+import { Card } from '@/components/common'
+import { FieldForm } from '@/components/common/form/FieldForm'
 
 export const UnitPxToRemCard = () => {
   const [value, setValue]: [[string, string], Dispatch<SetStateAction<[string, string]>>] = useState<[string, string]>([
@@ -37,26 +38,22 @@ export const UnitPxToRemCard = () => {
     <Card title="PX to REM">
       <div className="flex w-full grow flex-col items-center justify-center gap-4">
         <div className="flex w-full items-center [&>*]:w-1/2">
-          <fieldset className="flex flex-col gap-1">
-            <label className="pl-4 text-gray-100">PX</label>
-            <TextInput
-              name="px"
-              onChange={(val: string) => handleChange(val, 0)}
-              placeholder="16"
-              type="number"
-              value={value[0]}
-            />
-          </fieldset>
-          <fieldset className="flex flex-col gap-1">
-            <label className="pl-4 text-gray-100">REM</label>
-            <TextInput
-              name="rem"
-              onChange={(val: string) => handleChange(val, 1)}
-              placeholder="1"
-              type="number"
-              value={value[1]}
-            />
-          </fieldset>
+          <FieldForm
+            label="PX"
+            name="px"
+            onChange={(val: string) => handleChange(val, 0)}
+            placeholder="16"
+            type="number"
+            value={value[0]}
+          />
+          <FieldForm
+            label="REM"
+            name="rem"
+            onChange={(val: string) => handleChange(val, 1)}
+            placeholder="1"
+            type="number"
+            value={value[1]}
+          />
         </div>
         <p className="text-center text-gray-400">Calculation based on a root font-size of 16 pixel.</p>
       </div>
