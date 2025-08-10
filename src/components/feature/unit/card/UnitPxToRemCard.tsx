@@ -2,7 +2,7 @@ import { type Dispatch, type SetStateAction, useState } from 'react'
 
 import { Card, TextInput } from '@/components/common'
 
-export const PxToRemCard = () => {
+export const UnitPxToRemCard = () => {
   const [value, setValue]: [[string, string], Dispatch<SetStateAction<[string, string]>>] = useState<[string, string]>([
     '',
     '',

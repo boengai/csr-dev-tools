@@ -3,7 +3,8 @@ import type { InputHTMLAttributes } from 'react'
 import type { ButtonProps } from './button'
 
 export type SelectInputProps = BaseInputProps & {
-  items: Array<{
+  options: Array<{
+    disabled?: boolean
     label: string
     value: string
   }>

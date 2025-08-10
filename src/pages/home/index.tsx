@@ -15,10 +15,12 @@ const ImageConvertorCard: LazyExoticComponent<ComponentType> = lazy(() =>
     }),
   ),
 )
-const PxToRemCard: LazyExoticComponent<ComponentType> = lazy(() =>
-  import('@/components/feature/transform/card/PxToRemCard').then(({ PxToRemCard }: { PxToRemCard: ComponentType }) => ({
-    default: PxToRemCard,
-  })),
+const UnitPxToRemCard: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/unit/card/UnitPxToRemCard').then(
+    ({ UnitPxToRemCard }: { UnitPxToRemCard: ComponentType }) => ({
+      default: UnitPxToRemCard,
+    }),
+  ),
 )
 
 const AddButton = () => {
@@ -54,7 +56,7 @@ const AppContainer = ({ position }: { position: number }) => {
     case APP_KEY.IMAGE_CONVERTOR:
       return <ImageConvertorCard />
     case APP_KEY.PX_TO_REM:
-      return <PxToRemCard />
+      return <UnitPxToRemCard />
     default:
       return <AddButton />
   }

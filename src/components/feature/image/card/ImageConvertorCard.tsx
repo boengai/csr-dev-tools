@@ -12,7 +12,7 @@ import {
   ImageIcon,
   NotoEmoji,
   RefreshIcon,
-  SelectionInput,
+  SelectInput,
   Tabs,
   TrashIcon,
   UploadInput,
@@ -161,14 +161,14 @@ export const ImageConvertorCard = () => {
                   ))}
                 </ul>
                 <div className="flex w-full shrink-0 gap-2 [&>*]:w-1/2">
-                  <SelectionInput
-                    items={[
+                  <SelectInput
+                    name="format"
+                    onChange={setFormat}
+                    options={[
                       { label: 'PNG', value: 'image/png' },
                       { label: 'JPEG', value: 'image/jpeg' },
                       { label: 'WebP', value: 'image/webp' },
                     ]}
-                    name="format"
-                    onChange={setFormat}
                     placeholder="Select image format"
                     value={format}
                   />
