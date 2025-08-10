@@ -111,6 +111,6 @@
   }
 
   .popover {
-    @apply rounded-md border-gray-800 bg-black/80 text-white backdrop-blur;
+    @apply rounded-md border-gray-800 bg-black/80 text-white backdrop-blur border;
   }
 }

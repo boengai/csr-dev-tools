@@ -1,13 +1,18 @@
 import { type ComponentType, lazy, type LazyExoticComponent, Suspense } from 'react'
 import { Outlet, Route, Routes } from 'react-router'
 
-import { NotoEmoji } from './components'
+import { NotoEmoji } from '@/components'
 
 // pages
 const HomePage: LazyExoticComponent<ComponentType> = lazy(() => import('@/pages/home'))
 const ShowcasePage: LazyExoticComponent<ComponentType> = lazy(() => import('@/pages/showcase'))
 
 // components
+const ToastProvider: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/common/toast/ToastProvider').then(({ ToastProvider }: { ToastProvider: ComponentType }) => ({
+    default: ToastProvider,
+  })),
+)
 const TwinkleStarsAnimate: LazyExoticComponent<ComponentType> = lazy(() =>
   import('@/components/common/animate/TwinkleStarsAnimate').then(
     ({ TwinkleStarsAnimate }: { TwinkleStarsAnimate: ComponentType }) => ({
@@ -39,11 +44,14 @@ const Wrapper = () => {
 
 export const App = () => {
   return (
-    <Routes>
-      <Route element={<Wrapper />} path="/">
-        <Route element={<ShowcasePage />} path="/showcase" />
-        <Route element={<HomePage />} path="/" />
-      </Route>
-    </Routes>
+    <>
+      <Routes>
+        <Route element={<Wrapper />} path="/">
+          <Route element={<ShowcasePage />} path="/showcase" />
+          <Route element={<HomePage />} path="/" />
+        </Route>
+      </Routes>
+      <ToastProvider />
+    </>
   )
 }

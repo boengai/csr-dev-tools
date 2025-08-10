@@ -26,7 +26,7 @@ export const SelectInput = ({
   value,
 }: SelectInputProps) => {
   return (
-    <Root disabled={disabled} name={name} onValueChange={onChange} open={true} value={value}>
+    <Root disabled={disabled} name={name} onValueChange={onChange} value={value}>
       <Trigger className="input group">
         <Value onBlur={onBlur} placeholder={placeholder} />
         <Icon className="text-gray-400 transition-transform duration-500 group-data-[state=open]:rotate-180">

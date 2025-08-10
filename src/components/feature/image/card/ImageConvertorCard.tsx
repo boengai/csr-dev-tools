@@ -2,7 +2,7 @@ import JSZip from 'jszip'
 import { motion } from 'motion/react'
 import { type Dispatch, type RefObject, type SetStateAction, useRef, useState } from 'react'
 
-import type { ImageFormat } from '@/types'
+import type { ImageFormat, UseToast } from '@/types'
 
 import {
   ArrowIcon,
@@ -18,6 +18,7 @@ import {
   UploadInput,
 } from '@/components/common'
 import { ProgressBar } from '@/components/common/progress-bar/ProgressBar'
+import { useToast } from '@/hooks'
 import { convertImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
 
 const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING' | 'SELECT_FORMAT', string> = {
@@ -36,6 +37,9 @@ const FILE_EXTENSIONS: Record<ImageFormat, string> = {
 export const ImageConvertorCard = () => {
   // ref
   const downloadAnchorRef: RefObject<HTMLAnchorElement | null> = useRef<HTMLAnchorElement>(null)
+
+  // hook
+  const toast: UseToast = useToast()
 
   // states
   const [tabValue, setTabValue]: [string, Dispatch<SetStateAction<string>>] = useState<string>(TABS_VALUES.IMPORT)
@@ -96,9 +100,12 @@ export const ImageConvertorCard = () => {
         })
       }
 
+      toast.toast({ action: 'add', item: { label: 'Image(s) converted successfully', type: 'success' } })
+
       // go to download tab
       setTabValue(TABS_VALUES.DOWNLOAD)
     } catch {
+      toast.toast({ action: 'add', item: { label: 'Failed to convert images', type: 'error' } })
       // back to import tab
       setTabValue(TABS_VALUES.IMPORT)
     }
