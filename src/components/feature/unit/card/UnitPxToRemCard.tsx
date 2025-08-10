@@ -1,7 +1,6 @@
 import { type Dispatch, type SetStateAction, useState } from 'react'
 
-import { Card } from '@/components/common'
-import { FieldForm } from '@/components/common/form/FieldForm'
+import { Card, FieldForm } from '@/components/common'
 
 export const UnitPxToRemCard = () => {
   const [value, setValue]: [[string, string], Dispatch<SetStateAction<[string, string]>>] = useState<[string, string]>([
@@ -55,7 +54,7 @@ export const UnitPxToRemCard = () => {
             value={value[1]}
           />
         </div>
-        <p className="text-center text-gray-400">Calculation based on a root font-size of 16 pixel.</p>
+        <p className="text-body-sm text-center text-gray-400">Calculation based on a root font-size of 16 pixel.</p>
       </div>
     </Card>
   )

@@ -99,6 +99,14 @@
     font-optical-sizing: auto;
   }
 
+  button {
+    @apply cursor-pointer;
+  }
+
+  hr {
+    @apply border-gray-800;
+  }
+
   #root {
     @apply min-h-screen w-full flex flex-col text-body text-white bg-fixed;
     background-image: linear-gradient(to bottom, oklch(0 0 0) 0%, oklch(0.1814 0.0208 8.4) 60%, oklch(0.251 0.0561 280.11) 80%, oklch(0.4153 0.0544 340.23) 90%, oklch(0.5366 0.0849 22.19) 95%, oklch(0.6623 0.1321 42.72) 100%);

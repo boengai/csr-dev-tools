@@ -27,14 +27,17 @@ export const SelectInput = ({
 }: SelectInputProps) => {
   return (
     <Root disabled={disabled} name={name} onValueChange={onChange} value={value}>
-      <Trigger className="input group">
-        <Value onBlur={onBlur} placeholder={placeholder} />
+      <Trigger className="input group" onBlur={onBlur}>
+        <Value placeholder={placeholder} />
         <Icon className="text-gray-400 transition-transform duration-500 group-data-[state=open]:rotate-180">
           <ChevronIcon size={20} />
         </Icon>
       </Trigger>
       <Portal>
-        <Content className="popover w-[var(--radix-select-trigger-width)]" position="popper">
+        <Content
+          className="popover max-h-[30dvh] w-[var(--radix-select-trigger-width)] overflow-y-auto"
+          position="popper"
+        >
           <Viewport>
             {items.map((itm: SelectInputProps['options'][number]) => (
               <Item

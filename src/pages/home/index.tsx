@@ -29,12 +29,19 @@ const UnitPxToRemCard: LazyExoticComponent<ComponentType> = lazy(() =>
     }),
   ),
 )
+const UnixTimestampCard: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/time/card/UnixTimestampCard').then(
+    ({ UnixTimestampCard }: { UnixTimestampCard: ComponentType }) => ({
+      default: UnixTimestampCard,
+    }),
+  ),
+)
 
 const AddButton = () => {
   return (
     <motion.button
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      className="border-3 [&>svg]:align-center flex size-full cursor-pointer items-center justify-center rounded-xl border-dashed"
+      className="border-3 [&>svg]:align-center flex size-full items-center justify-center rounded-xl border-dashed"
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
       initial={{
         borderColor: 'var(--color-gray-800)',
@@ -66,6 +73,8 @@ const AppContainer = ({ position }: { position: number }) => {
       return <ImageConvertorCard />
     case APP_KEY.PX_TO_REM:
       return <UnitPxToRemCard />
+    case APP_KEY.UNIX_TIMESTAMP:
+      return <UnixTimestampCard />
     default:
       return <AddButton />
   }

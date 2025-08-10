@@ -1,11 +1,14 @@
 import { motion } from 'motion/react'
 import { type Dispatch, type MouseEvent, type PropsWithChildren, type SetStateAction, useState } from 'react'
 
-import { Button, Card, CopyIcon, NotoEmoji } from '@/components/common'
-import { FieldForm } from '@/components/common/form/FieldForm'
+import { Button, Card, CopyIcon, FieldForm, NotoEmoji } from '@/components/common'
 import { useCopyToClipboard } from '@/hooks'
 import { type ColorFormat, type UseCopyToClipboard } from '@/types'
 import { convertColor } from '@/utils/color'
+
+const randomByte = (): number => {
+  return Math.floor(Math.random() * 256)
+}
 
 const CopyButton = ({ value }: { value: string }) => {
   const copyToClipboard: UseCopyToClipboard = useCopyToClipboard()
@@ -45,14 +48,7 @@ const InputWrapper = ({ children, color: color }: PropsWithChildren<{ color: str
 export const ColorConvertorCard = () => {
   // states
   const [color, setColor]: [Record<ColorFormat, string>, Dispatch<SetStateAction<Record<ColorFormat, string>>>] =
-    useState<Record<ColorFormat, string>>({
-      hex: '#c08081',
-      hsl: 'hsl(359.06 33.68% 62.75%)',
-      lab: 'lab(60.10 24.90 9.63)',
-      lch: 'lch(60.10 26.70 21.15)',
-      oklch: 'oklch(0.6655 0.0797 18.38)',
-      rgb: 'rgb(192, 128, 129)',
-    })
+    useState<Record<ColorFormat, string>>(convertColor(`rgb(${randomByte()}, ${randomByte()}, ${randomByte()})`, 'rgb'))
 
   // Handle color input changes and convert to all formats
   const handleColorBlur = (format: ColorFormat) => {

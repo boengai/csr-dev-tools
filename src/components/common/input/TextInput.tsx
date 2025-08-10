@@ -1,10 +1,11 @@
-import type { ChangeEvent } from 'react'
+import type { ChangeEvent, KeyboardEvent } from 'react'
 
 import type { TextInputProps } from '@/types'
 
 export const TextInput = ({
   disabled,
   onChange,
+  onEnter,
   placeholder = 'Type here...',
   suffix,
   type,
@@ -25,6 +26,12 @@ export const TextInput = ({
     onChange(value)
   }
 
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Enter') {
+      onEnter?.()
+    }
+  }
+
   return (
     <div className="input" data-disabled={disabled}>
       <input
@@ -34,6 +41,7 @@ export const TextInput = ({
         className="w-full grow focus:outline-none"
         disabled={disabled}
         onChange={handleChange}
+        onKeyDown={handleKeyDown}
         placeholder={placeholder}
         spellCheck="false"
         type="text"

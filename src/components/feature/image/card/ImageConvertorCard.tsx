@@ -122,7 +122,7 @@ export const ImageConvertorCard = () => {
           {
             content: (
               <div className="flex w-full grow flex-col items-center justify-center gap-4">
-                <p className="text-center text-gray-400">
+                <p className="text-body-sm text-center text-gray-400">
                   Upload one or more images and
                   <br />
                   download as a format you want
@@ -159,7 +159,7 @@ export const ImageConvertorCard = () => {
                       <img alt={img.name} className="size-15 shrink-0 rounded-sm" src={URL.createObjectURL(img)} />
                       <span className="grow truncate text-gray-400">{img.name}</span>
                       <button
-                        className="hover:bg-error mr-4 cursor-pointer rounded-full p-1 text-gray-400 transition-colors hover:text-white"
+                        className="hover:bg-error mr-4 rounded-full p-1 text-gray-400 transition-colors hover:text-white"
                         onClick={() => handleRemoveImage(idx)}
                       >
                         <TrashIcon />

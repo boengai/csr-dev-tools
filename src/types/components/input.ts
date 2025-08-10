@@ -2,7 +2,7 @@ import type { InputHTMLAttributes, ReactElement } from 'react'
 
 import type { ButtonProps } from './button'
 
-export type SelectInputProps = BaseInputProps & {
+export type SelectInputProps = Omit<BaseInputProps, 'onEnter'> & {
   options: Array<{
     disabled?: boolean
     label: string
@@ -16,7 +16,7 @@ export type TextInputProps = BaseInputProps &
     type: 'number' | 'text'
   }
 
-export type UploadInputProps = Omit<BaseInputProps, 'onChange' | 'placeholder' | 'value'> & {
+export type UploadInputProps = Omit<BaseInputProps, 'onChange' | 'onEnter' | 'placeholder' | 'value'> & {
   accept: string
   button?: Pick<ButtonProps, 'block' | 'children'>
   multiple?: boolean
@@ -28,6 +28,7 @@ type BaseInputProps = {
   name: string
   onBlur?: () => void
   onChange: (value: string) => void
+  onEnter?: () => void
   placeholder?: string
   value?: string
 }

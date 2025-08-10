@@ -1,18 +1,13 @@
 import { type ComponentType, lazy, type LazyExoticComponent, Suspense } from 'react'
 import { Outlet, Route, Routes } from 'react-router'
 
-import { NotoEmoji } from '@/components'
+import { NotoEmoji, ToastProvider } from '@/components'
 
 // pages
 const HomePage: LazyExoticComponent<ComponentType> = lazy(() => import('@/pages/home'))
 const ShowcasePage: LazyExoticComponent<ComponentType> = lazy(() => import('@/pages/showcase'))
 
 // components
-const ToastProvider: LazyExoticComponent<ComponentType> = lazy(() =>
-  import('@/components/common/toast/ToastProvider').then(({ ToastProvider }: { ToastProvider: ComponentType }) => ({
-    default: ToastProvider,
-  })),
-)
 const TwinkleStarsAnimate: LazyExoticComponent<ComponentType> = lazy(() =>
   import('@/components/common/animate/TwinkleStarsAnimate').then(
     ({ TwinkleStarsAnimate }: { TwinkleStarsAnimate: ComponentType }) => ({
