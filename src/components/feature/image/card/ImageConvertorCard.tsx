@@ -34,6 +34,9 @@ const FILE_EXTENSIONS: Record<ImageFormat, string> = {
   'image/webp': 'webp',
 }
 
+const fakeWait = (ms: number = 500): Promise<unknown> =>
+  new Promise((resolve: (value: unknown) => void) => setTimeout(resolve, ms))
+
 export const ImageConvertorCard = () => {
   // ref
   const downloadAnchorRef: RefObject<HTMLAnchorElement | null> = useRef<HTMLAnchorElement>(null)
@@ -82,13 +85,19 @@ export const ImageConvertorCard = () => {
       const formattedImages: Record<string, string> = {}
       const processTick: number = 100 / sources.length
       for (const img of sources) {
-        const fi: string = await convertImageFormat(img, target.format as ImageFormat, {
-          quality: Number(target.quality),
-        })
+        const [, fi]: [unknown, string] = await Promise.all([
+          await fakeWait(),
+          convertImageFormat(img, target.format as ImageFormat, {
+            quality: Number(target.quality),
+          }),
+        ])
+
         formattedImages[`${parseFileName(img.name)}.${FILE_EXTENSIONS[target.format as ImageFormat]}`] = fi
         setProcessing((prev: number) => prev + processTick)
-        await new Promise((resolve: (value: unknown) => void) => setTimeout(resolve, 800))
       }
+
+      // wait for animation to complete
+      await fakeWait(450)
 
       // save
       if (Object.keys(formattedImages).length > 1) {
