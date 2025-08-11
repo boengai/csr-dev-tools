@@ -7,6 +7,21 @@ import { Button, Card, CopyIcon, DataCellTable, FieldForm } from '@/components/c
 import { useCopyToClipboard } from '@/hooks'
 import { getDaysInMonth } from '@/utils'
 
+const MONTH_LABELS: Array<string> = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+]
+
 const UnixTimestampSection = () => {
   // states
   const [input, setInput]: [string, Dispatch<SetStateAction<string>>] = useState<string>('')
@@ -74,18 +89,16 @@ export const DateSection = () => {
       day: d.getDate().toString(),
       hour: d.getHours().toString(),
       minute: d.getMinutes().toString(),
-      month: d.getMonth().toString(),
+      month: MONTH_LABELS[d.getMonth()],
       second: d.getSeconds().toString(),
       year: d.getFullYear().toString(),
     }
   }, [])
 
-  const monthOptions: SelectInputProps['options'] = Array.from({ length: 12 }, (_: unknown, i: number) => {
-    return {
-      label: (i + 1).toString(),
-      value: i.toString(),
-    }
-  })
+  const monthOptions: SelectInputProps['options'] = MONTH_LABELS.map((label: string, i: number) => ({
+    label: label,
+    value: i.toString(),
+  }))
 
   const dayOptions: SelectInputProps['options'] = useMemo(() => {
     // calculate days in month
@@ -118,7 +131,7 @@ export const DateSection = () => {
 
   const handleChange = (key: keyof DateTime, value: string) => {
     const newInput: DateTime<string> = { ...input, [key]: value }
-    if (key === 'month') {
+    if (key === 'month' && newInput.day) {
       newInput.day = Math.min(
         Number(newInput.day),
         getDaysInMonth(Number(newInput.year), Number(newInput.month) + 1),
@@ -143,8 +156,8 @@ export const DateSection = () => {
 
   return (
     <section className="flex flex-col gap-2">
-      <div className="laptop:flex-col flex gap-1">
-        <div className="flex gap-1">
+      <div className="desktop:flex-row flex flex-col justify-between gap-1 [&>div>fieldset]:w-1/3">
+        <div className="desktop:w-1/2 flex w-full justify-between gap-1">
           <FieldForm
             label="Year"
             name="year"
@@ -174,7 +187,7 @@ export const DateSection = () => {
             value={input.day}
           />
         </div>
-        <div className="flex gap-1">
+        <div className="desktop:w-1/2 flex w-full justify-between gap-1">
           <FieldForm
             label="Hour"
             name="hour"

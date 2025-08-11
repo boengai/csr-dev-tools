@@ -7,7 +7,7 @@ export const TextAreaInput = ({
   onChange,
   onEnter,
   placeholder = 'Type here...',
-  rows = 3,
+  rows = 4,
   ...props
 }: TextAreaInputProps) => {
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {

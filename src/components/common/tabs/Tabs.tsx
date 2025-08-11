@@ -49,7 +49,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
       value={injected?.value}
     >
       <List
-        className="relative flex w-full flex-row gap-2 px-2 data-[hidden=true]:hidden"
+        className="relative mb-2 flex w-full flex-row gap-2 px-2 data-[hidden=true]:hidden"
         data-hidden={navTriggers.length === 0}
         ref={listRef}
       >
@@ -121,7 +121,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
           <Content asChild key={value} value={value}>
             <motion.div
               animate={{ opacity: 1, y: 0 }}
-              className="flex size-full grow flex-col"
+              className="flex size-full grow flex-col overflow-y-auto"
               exit={{ opacity: 0, y: -10 }}
               initial={{ opacity: 0, y: 10 }}
               layout

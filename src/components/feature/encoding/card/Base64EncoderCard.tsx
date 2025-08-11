@@ -22,15 +22,20 @@ const Form = ({ action, onSubmit }: { action: 'decode' | 'encode'; onSubmit: (so
   }
 
   return (
-    <div className="flex grow flex-col gap-4 pt-2 [&>fieldset]:grow">
+    <div className="[&>fieldset]:min-h-37 flex h-full shrink-0 grow flex-col gap-4">
       <FieldForm
         label="Source"
         name="source"
         onChange={(val: string) => setSource(val)}
+        placeholder={
+          action === 'encode'
+            ? 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.'
+            : 'TG9yZW0lMjBpcHN1bSUyMGlzJTIwcGxhY2Vob2xkZXIlMjB0ZXh0JTIwY29tbW9ubHklMjB1c2VkJTIwaW4lMjB0aGUlMjBncmFwaGljJTJDJTIwcHJpbnQlMkMlMjBhbmQlMjBwdWJsaXNoaW5nJTIwaW5kdXN0cmllcyUyMGZvciUyMHByZXZpZXdpbmclMjBsYXlvdXRzJTIwYW5kJTIwdmlzdWFsJTIwbW9ja3Vwcy4='
+        }
         type="textarea"
         value={source}
       />
-      <Button onClick={handleChange} variant="primary">
+      <Button disabled={!source} onClick={handleChange} variant="primary">
         {action === 'encode' ? 'Encode' : 'Decode'}
       </Button>
       <FieldForm
@@ -45,6 +50,11 @@ const Form = ({ action, onSubmit }: { action: 'decode' | 'encode'; onSubmit: (so
           </span>
         }
         name="result"
+        placeholder={
+          action === 'decode'
+            ? 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.'
+            : 'TG9yZW0lMjBpcHN1bSUyMGlzJTIwcGxhY2Vob2xkZXIlMjB0ZXh0JTIwY29tbW9ubHklMjB1c2VkJTIwaW4lMjB0aGUlMjBncmFwaGljJTJDJTIwcHJpbnQlMkMlMjBhbmQlMjBwdWJsaXNoaW5nJTIwaW5kdXN0cmllcyUyMGZvciUyMHByZXZpZXdpbmclMjBsYXlvdXRzJTIwYW5kJTIwdmlzdWFsJTIwbW9ja3Vwcy4='
+        }
         type="textarea"
         value={result}
       />

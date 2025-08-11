@@ -75,81 +75,79 @@ export const ColorConvertorCard = () => {
 
   return (
     <Card title="Color Convertor">
-      <div className="flex w-full grow flex-col items-center justify-center gap-4 overflow-y-auto">
-        <div className="flex w-full flex-col items-center gap-4">
-          <InputWrapper color={color.hex}>
-            <FieldForm
-              label="Hex"
-              name="hex"
-              onBlur={() => handleColorBlur('hex')}
-              onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, hex: val }))}
-              placeholder="#000 or #000000"
-              suffix={<CopyButton value={color.hex} />}
-              type="text"
-              value={color.hex}
-            />
-          </InputWrapper>
-          <InputWrapper color={color.rgb}>
-            <FieldForm
-              label="RGB"
-              name="rgb"
-              onBlur={() => handleColorBlur('rgb')}
-              onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, rgb: val }))}
-              placeholder="rgb(0, 0, 0)"
-              suffix={<CopyButton value={color.rgb} />}
-              type="text"
-              value={color.rgb}
-            />
-          </InputWrapper>
-          <InputWrapper color={color.oklch}>
-            <FieldForm
-              label="OKLCH"
-              name="oklch"
-              onBlur={() => handleColorBlur('oklch')}
-              onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, oklch: val }))}
-              placeholder="oklch(0 0 0)"
-              suffix={<CopyButton value={color.oklch} />}
-              type="text"
-              value={color.oklch}
-            />
-          </InputWrapper>
-          <InputWrapper color={color.hsl}>
-            <FieldForm
-              label="HSL"
-              name="hsl"
-              onBlur={() => handleColorBlur('hsl')}
-              onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, hsl: val }))}
-              placeholder="hsl(0 0% 0%)"
-              suffix={<CopyButton value={color.hsl} />}
-              type="text"
-              value={color.hsl}
-            />
-          </InputWrapper>
-          <InputWrapper color={color.lab}>
-            <FieldForm
-              label="LAB"
-              name="lab"
-              onBlur={() => handleColorBlur('lab')}
-              onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, lab: val }))}
-              placeholder="lab(0 0 0)"
-              suffix={<CopyButton value={color.lab} />}
-              type="text"
-              value={color.lab}
-            />
-          </InputWrapper>
-          <InputWrapper color={color.lch}>
-            <FieldForm
-              label="LCH"
-              name="lch"
-              onBlur={() => handleColorBlur('lch')}
-              onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, lch: val }))}
-              placeholder="lch(0 0 0)"
-              suffix={<CopyButton value={color.lch} />}
-              type="text"
-              value={color.lch}
-            />
-          </InputWrapper>
-        </div>
+      <div className="flex size-full max-h-full grow flex-col gap-4 overflow-y-auto">
+        <InputWrapper color={color.hex}>
+          <FieldForm
+            label="Hex"
+            name="hex"
+            onBlur={() => handleColorBlur('hex')}
+            onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, hex: val }))}
+            placeholder="#000 or #000000"
+            suffix={<CopyButton value={color.hex} />}
+            type="text"
+            value={color.hex}
+          />
+        </InputWrapper>
+        <InputWrapper color={color.rgb}>
+          <FieldForm
+            label="RGB"
+            name="rgb"
+            onBlur={() => handleColorBlur('rgb')}
+            onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, rgb: val }))}
+            placeholder="rgb(0, 0, 0)"
+            suffix={<CopyButton value={color.rgb} />}
+            type="text"
+            value={color.rgb}
+          />
+        </InputWrapper>
+        <InputWrapper color={color.oklch}>
+          <FieldForm
+            label="OKLCH"
+            name="oklch"
+            onBlur={() => handleColorBlur('oklch')}
+            onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, oklch: val }))}
+            placeholder="oklch(0 0 0)"
+            suffix={<CopyButton value={color.oklch} />}
+            type="text"
+            value={color.oklch}
+          />
+        </InputWrapper>
+        <InputWrapper color={color.hsl}>
+          <FieldForm
+            label="HSL"
+            name="hsl"
+            onBlur={() => handleColorBlur('hsl')}
+            onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, hsl: val }))}
+            placeholder="hsl(0 0% 0%)"
+            suffix={<CopyButton value={color.hsl} />}
+            type="text"
+            value={color.hsl}
+          />
+        </InputWrapper>
+        <InputWrapper color={color.lab}>
+          <FieldForm
+            label="LAB"
+            name="lab"
+            onBlur={() => handleColorBlur('lab')}
+            onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, lab: val }))}
+            placeholder="lab(0 0 0)"
+            suffix={<CopyButton value={color.lab} />}
+            type="text"
+            value={color.lab}
+          />
+        </InputWrapper>
+        <InputWrapper color={color.lch}>
+          <FieldForm
+            label="LCH"
+            name="lch"
+            onBlur={() => handleColorBlur('lch')}
+            onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, lch: val }))}
+            placeholder="lch(0 0 0)"
+            suffix={<CopyButton value={color.lch} />}
+            type="text"
+            value={color.lch}
+          />
+        </InputWrapper>
       </div>
     </Card>
   )

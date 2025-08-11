@@ -15,8 +15,8 @@ export const Card = ({ children, title }: CardProps) => {
         y: -4,
       }}
     >
-      <h3 className="text-heading-5 relative w-full shrink-0 rounded-t-xl bg-gray-800 px-5 py-2">{title}</h3>
-      <div className="relative flex size-full min-h-0 grow flex-col space-y-4 rounded-b-xl border border-gray-800 bg-white/5 p-6 backdrop-blur">
+      <h3 className="text-heading-5 w-full shrink-0 rounded-t-xl bg-gray-800 px-5 py-2">{title}</h3>
+      <div className="flex size-full grow flex-col overflow-hidden rounded-b-xl border border-gray-800 bg-white/5 p-6 backdrop-blur">
         {children}
       </div>
     </motion.article>

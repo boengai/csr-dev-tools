@@ -6,7 +6,7 @@ export const DataCellTable = ({ rows }: DataCellTableProps) => {
   return (
     <motion.div
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      className="table w-full border-spacing-x-1 border-spacing-y-2"
+      className="table w-full border-spacing-x-1 border-spacing-y-2 overflow-hidden"
       exit={{ opacity: 0, scale: 0.98, y: -10 }}
       initial={{ opacity: 0, scale: 0.95, y: -20 }}
       transition={{

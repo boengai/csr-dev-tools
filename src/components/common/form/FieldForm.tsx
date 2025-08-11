@@ -19,8 +19,8 @@ const InputController = (props: InputControllerProps) => {
 
 export const FieldForm = ({ label, ...props }: FieldFormProps) => {
   return (
-    <fieldset className="flex w-full flex-col gap-1">
-      <label className="pl-2 text-gray-100">{label}</label>
+    <fieldset className="flex w-full grow flex-col gap-1">
+      <label className="shrink-0 pl-2 text-gray-100">{label}</label>
       <InputController {...props} />
     </fieldset>
   )

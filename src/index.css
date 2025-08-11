@@ -81,9 +81,9 @@
 
   /* Breakpoints */
   --breakpoint-*: initial;
-  --breakpoint-tablet: 768px;
-  --breakpoint-laptop: 1024px;
-  --breakpoint-desktop: 1440px;
+  --breakpoint-tablet: 48rem;
+  --breakpoint-laptop: 80rem;
+  --breakpoint-desktop: 120rem;
 
   /* Safe area insets */
   --safe-area-inset-top: env(safe-area-inset-top);
