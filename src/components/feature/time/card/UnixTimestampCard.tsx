@@ -28,7 +28,17 @@ const UnixTimestampSection = () => {
   const [result, setResult]: [Array<string>, Dispatch<SetStateAction<Array<string>>>] = useState<Array<string>>([])
 
   const handleConvert = () => {
-    const d: Date = new Date(Number(input) * 1000)
+    const inputNumber: number = Number(input)
+
+    // Auto-detect if timestamp is in seconds or milliseconds
+    // Current time in seconds: ~1.7 billion (Jan 2024)
+    // Current time in milliseconds: ~1.7 trillion (Jan 2024)
+    // Year 2001 in milliseconds: ~978 billion
+    // If the number is > 100 billion, it's very likely milliseconds
+    // since that would represent year 5138 in seconds (unrealistic)
+    const isMilliseconds: boolean = inputNumber > 100_000_000_000
+
+    const d: Date = new Date(isMilliseconds ? inputNumber : inputNumber * 1_000)
 
     if (isNaN(d.getTime())) {
       return
@@ -45,7 +55,7 @@ const UnixTimestampSection = () => {
           name="unixTimestamp"
           onChange={(val: string) => setInput(val)}
           onEnter={handleConvert}
-          placeholder={Math.floor(Date.now() / 1000).toString()}
+          placeholder={Date.now().toString()}
           type="number"
           value={input}
         />
@@ -53,7 +63,9 @@ const UnixTimestampSection = () => {
           Convert
         </Button>
       </div>
-      <p className="text-body-sm text-center text-gray-500">Only Supports Unix timestamps in seconds.</p>
+      <p className="text-body-sm text-center text-gray-500">
+        Supports Unix timestamps in seconds or milliseconds (auto-detected).
+      </p>
       <AnimatePresence mode="wait">
         {result.length > 0 && (
           <DataCellTable
