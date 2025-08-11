@@ -43,12 +43,15 @@ export const ImageConvertorCard = () => {
 
   // states
   const [tabValue, setTabValue]: [string, Dispatch<SetStateAction<string>>] = useState<string>(TABS_VALUES.IMPORT)
-  const [images, setImages]: [Array<File>, Dispatch<SetStateAction<Array<File>>>] = useState<Array<File>>([])
-  const [format, setFormat]: [string, Dispatch<SetStateAction<string>>] = useState<string>('image/webp')
+  const [sources, setSources]: [Array<File>, Dispatch<SetStateAction<Array<File>>>] = useState<Array<File>>([])
+  const [target, setTarget]: [
+    { format: ImageFormat; quality: string },
+    Dispatch<SetStateAction<{ format: ImageFormat; quality: string }>>,
+  ] = useState<{ format: ImageFormat; quality: string }>({ format: 'image/webp', quality: '0.8' })
   const [processing, setProcessing]: [number, Dispatch<SetStateAction<number>>] = useState<number>(0)
 
   const handleInputChange = (values: Array<File>) => {
-    setImages(values)
+    setSources(values)
     if (values.length > 0) {
       setTabValue(TABS_VALUES.SELECT_FORMAT)
     }
@@ -56,12 +59,12 @@ export const ImageConvertorCard = () => {
 
   const handleReset = () => {
     setTabValue(TABS_VALUES.IMPORT)
-    setImages([])
+    setSources([])
   }
 
   const handleRemoveImage = (idx: number) => {
-    setImages((prev: Array<File>) => prev.filter((_: unknown, i: number) => i !== idx))
-    if (images.length === 1) {
+    setSources((prev: Array<File>) => prev.filter((_: unknown, i: number) => i !== idx))
+    if (sources.length === 1) {
       setTabValue(TABS_VALUES.IMPORT)
     }
   }
@@ -77,10 +80,12 @@ export const ImageConvertorCard = () => {
       downloadAnchorRef.current!.download = ''
 
       const formattedImages: Record<string, string> = {}
-      const processTick: number = 100 / images.length
-      for (const img of images) {
-        const fi: string = await convertImageFormat(img, format as ImageFormat)
-        formattedImages[`${parseFileName(img.name)}.${FILE_EXTENSIONS[format as ImageFormat]}`] = fi
+      const processTick: number = 100 / sources.length
+      for (const img of sources) {
+        const fi: string = await convertImageFormat(img, target.format as ImageFormat, {
+          quality: Number(target.quality),
+        })
+        formattedImages[`${parseFileName(img.name)}.${FILE_EXTENSIONS[target.format as ImageFormat]}`] = fi
         setProcessing((prev: number) => prev + processTick)
         await new Promise((resolve: (value: unknown) => void) => setTimeout(resolve, 800))
       }
@@ -147,7 +152,7 @@ export const ImageConvertorCard = () => {
                   Back
                 </Button>
                 <ul className="flex max-h-full w-full grow flex-col gap-2 overflow-y-auto">
-                  {images.map((img: File, idx: number) => (
+                  {sources.map((img: File, idx: number) => (
                     <motion.li
                       animate={{ opacity: 1, y: 0 }}
                       className="flex w-full items-center gap-2"
@@ -167,18 +172,40 @@ export const ImageConvertorCard = () => {
                     </motion.li>
                   ))}
                 </ul>
-                <div className="flex w-full shrink-0 gap-2 [&>*]:w-1/2">
-                  <SelectInput
-                    name="format"
-                    onChange={setFormat}
-                    options={[
-                      { label: 'PNG', value: 'image/png' },
-                      { label: 'JPEG', value: 'image/jpeg' },
-                      { label: 'WebP', value: 'image/webp' },
-                    ]}
-                    placeholder="Select image format"
-                    value={format}
-                  />
+                <div className="flex w-full shrink-0 gap-2 [&>button]:w-[calc(40%-8px)]">
+                  <div className="flex w-3/5 items-center gap-2 [&>*]:w-1/2">
+                    <SelectInput
+                      name="format"
+                      onChange={(value: string) =>
+                        setTarget((prev: { format: ImageFormat; quality: string }) => ({
+                          ...prev,
+                          format: value as ImageFormat,
+                        }))
+                      }
+                      options={[
+                        { label: 'PNG', value: 'image/png' },
+                        { label: 'JPEG', value: 'image/jpeg' },
+                        { label: 'WebP', value: 'image/webp' },
+                      ]}
+                      placeholder="Select image format"
+                      value={target.format}
+                    />
+                    <SelectInput
+                      name="quality"
+                      onChange={(value: string) =>
+                        setTarget((prev: { format: ImageFormat; quality: string }) => ({
+                          ...prev,
+                          quality: value,
+                        }))
+                      }
+                      options={Array.from({ length: 10 }, (_: unknown, i: number) => ({
+                        label: `${(i + 1) * 10}% Qual.`,
+                        value: ((i + 1) / 10).toString(),
+                      }))}
+                      placeholder="Select image quality"
+                      value={target.quality.toString()}
+                    />
+                  </div>
                   <Button block icon={<ImageIcon />} onClick={handleConvert} variant="primary">
                     Convert
                   </Button>
