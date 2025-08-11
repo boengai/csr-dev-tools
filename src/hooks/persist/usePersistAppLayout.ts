@@ -3,7 +3,7 @@ import { persist } from 'zustand/middleware'
 
 import type { UsePersistAppLayout } from '@/types'
 
-import { APP_KEY } from '@/constants'
+import { APP } from '@/constants'
 
 export const usePersistAppLayout: UseBoundStore<StoreApi<UsePersistAppLayout>> = create<UsePersistAppLayout>()(
   persist<UsePersistAppLayout>(
@@ -16,11 +16,11 @@ export const usePersistAppLayout: UseBoundStore<StoreApi<UsePersistAppLayout>> =
           value: { ...state.value, [position]: payload },
         })),
       value: {
-        0: APP_KEY.IMAGE_CONVERTOR,
-        1: APP_KEY.UNIX_TIMESTAMP,
-        2: APP_KEY.BASE64_ENCODER,
-        3: APP_KEY.COLOR_CONVERTER,
-        4: APP_KEY.PX_TO_REM,
+        0: APP.IMAGE_CONVERTOR,
+        1: APP.UNIX_TIMESTAMP,
+        2: APP.BASE64_ENCODER,
+        3: APP.COLOR_CONVERTER,
+        4: APP.PX_TO_REM,
         5: null,
         6: null,
       },

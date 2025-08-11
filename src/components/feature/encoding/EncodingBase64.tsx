@@ -2,7 +2,7 @@ import { type Dispatch, type SetStateAction, useState } from 'react'
 
 import type { UseCopyToClipboard } from '@/types'
 
-import { Button, Card, CopyIcon, FieldForm, Tabs } from '@/components/common'
+import { Button, CopyIcon, FieldForm, Tabs } from '@/components/common'
 import { useCopyToClipboard } from '@/hooks'
 
 const Form = ({ action, onSubmit }: { action: 'decode' | 'encode'; onSubmit: (source: string) => string }) => {
@@ -78,23 +78,21 @@ const Encoder = () => {
   return <Form action="encode" onSubmit={handleEncode} />
 }
 
-export const Base64EncoderCard = () => {
+export const EncodingBase64 = () => {
   return (
-    <Card title="Base64 Encoder/Decoder">
-      <Tabs
-        items={[
-          {
-            content: <Encoder />,
-            trigger: <button>Encoder</button>,
-            value: 'encoder',
-          },
-          {
-            content: <Decoder />,
-            trigger: <button>Decoder</button>,
-            value: 'decoder',
-          },
-        ]}
-      />
-    </Card>
+    <Tabs
+      items={[
+        {
+          content: <Encoder />,
+          trigger: <button>Encoder</button>,
+          value: 'encoder',
+        },
+        {
+          content: <Decoder />,
+          trigger: <button>Decoder</button>,
+          value: 'decoder',
+        },
+      ]}
+    />
   )
 }

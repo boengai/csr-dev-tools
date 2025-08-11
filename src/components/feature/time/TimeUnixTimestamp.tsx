@@ -3,7 +3,7 @@ import { type Dispatch, type SetStateAction, useMemo, useState } from 'react'
 
 import type { DateTime, SelectInputProps, UseCopyToClipboard } from '@/types'
 
-import { Button, Card, CopyIcon, DataCellTable, FieldForm } from '@/components/common'
+import { Button, CopyIcon, DataCellTable, FieldForm } from '@/components/common'
 import { useCopyToClipboard } from '@/hooks'
 import { getDaysInMonth } from '@/utils'
 
@@ -255,14 +255,12 @@ export const DateSection = () => {
   )
 }
 
-export const UnixTimestampCard = () => {
+export const TimeUnixTimestamp = () => {
   return (
-    <Card title="Unix Timestamp">
-      <div className="flex flex-col gap-4 overflow-y-auto">
-        <UnixTimestampSection />
-        <hr />
-        <DateSection />
-      </div>
-    </Card>
+    <div className="flex flex-col gap-4 overflow-y-auto">
+      <UnixTimestampSection />
+      <hr />
+      <DateSection />
+    </div>
   )
 }

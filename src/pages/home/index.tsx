@@ -3,43 +3,37 @@ import { type ComponentType, lazy, type LazyExoticComponent, Suspense } from 're
 
 import type { UsePersistAppLayout } from '@/types'
 
-import { NotoEmoji, PlusIcon } from '@/components'
-import { APP_KEY } from '@/constants'
+import { Card, NotoEmoji, PlusIcon } from '@/components'
+import { APP, APP_TITLE } from '@/constants'
 import { usePersistAppLayout } from '@/hooks'
 
 // apps
-const ColorConverterCard: LazyExoticComponent<ComponentType> = lazy(() =>
-  import('@/components/feature/color/card/ColorConvertorCard').then(
-    ({ ColorConvertorCard }: { ColorConvertorCard: ComponentType }) => ({
-      default: ColorConvertorCard,
+const ColorConvertor: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/color/ColorConvertor').then(({ ColorConvertor }: { ColorConvertor: ComponentType }) => ({
+    default: ColorConvertor,
+  })),
+)
+const ImageConvertor: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/image/ImageConvertor').then(({ ImageConvertor }: { ImageConvertor: ComponentType }) => ({
+    default: ImageConvertor,
+  })),
+)
+const UnitPxToRem: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/unit/UnitPxToRem').then(({ UnitPxToRem }: { UnitPxToRem: ComponentType }) => ({
+    default: UnitPxToRem,
+  })),
+)
+const TimeUnixTimestamp: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/time/TimeUnixTimestamp').then(
+    ({ TimeUnixTimestamp }: { TimeUnixTimestamp: ComponentType }) => ({
+      default: TimeUnixTimestamp,
     }),
   ),
 )
-const ImageConvertorCard: LazyExoticComponent<ComponentType> = lazy(() =>
-  import('@/components/feature/image/card/ImageConvertorCard').then(
-    ({ ImageConvertorCard }: { ImageConvertorCard: ComponentType }) => ({
-      default: ImageConvertorCard,
-    }),
-  ),
-)
-const UnitPxToRemCard: LazyExoticComponent<ComponentType> = lazy(() =>
-  import('@/components/feature/unit/card/UnitPxToRemCard').then(
-    ({ UnitPxToRemCard }: { UnitPxToRemCard: ComponentType }) => ({
-      default: UnitPxToRemCard,
-    }),
-  ),
-)
-const UnixTimestampCard: LazyExoticComponent<ComponentType> = lazy(() =>
-  import('@/components/feature/time/card/UnixTimestampCard').then(
-    ({ UnixTimestampCard }: { UnixTimestampCard: ComponentType }) => ({
-      default: UnixTimestampCard,
-    }),
-  ),
-)
-const Base64EncoderCard: LazyExoticComponent<ComponentType> = lazy(() =>
-  import('@/components/feature/encoding/card/Base64EncoderCard').then(
-    ({ Base64EncoderCard }: { Base64EncoderCard: ComponentType }) => ({
-      default: Base64EncoderCard,
+const EncodingBase64: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/encoding/EncodingBase64').then(
+    ({ EncodingBase64 }: { EncodingBase64: ComponentType }) => ({
+      default: EncodingBase64,
     }),
   ),
 )
@@ -74,16 +68,36 @@ const AppContainer = ({ position }: { position: number }) => {
   const { value }: UsePersistAppLayout = usePersistAppLayout()
 
   switch (value[position]) {
-    case APP_KEY.BASE64_ENCODER:
-      return <Base64EncoderCard />
-    case APP_KEY.COLOR_CONVERTER:
-      return <ColorConverterCard />
-    case APP_KEY.IMAGE_CONVERTOR:
-      return <ImageConvertorCard />
-    case APP_KEY.PX_TO_REM:
-      return <UnitPxToRemCard />
-    case APP_KEY.UNIX_TIMESTAMP:
-      return <UnixTimestampCard />
+    case APP.BASE64_ENCODER:
+      return (
+        <Card title={APP_TITLE.BASE64_ENCODER}>
+          <EncodingBase64 />
+        </Card>
+      )
+    case APP.COLOR_CONVERTER:
+      return (
+        <Card title={APP_TITLE.COLOR_CONVERTER}>
+          <ColorConvertor />
+        </Card>
+      )
+    case APP.IMAGE_CONVERTOR:
+      return (
+        <Card title={APP_TITLE.IMAGE_CONVERTOR}>
+          <ImageConvertor />
+        </Card>
+      )
+    case APP.PX_TO_REM:
+      return (
+        <Card title={APP_TITLE.PX_TO_REM}>
+          <UnitPxToRem />
+        </Card>
+      )
+    case APP.UNIX_TIMESTAMP:
+      return (
+        <Card title={APP_TITLE.UNIX_TIMESTAMP}>
+          <TimeUnixTimestamp />
+        </Card>
+      )
     default:
       return <AddButton />
   }

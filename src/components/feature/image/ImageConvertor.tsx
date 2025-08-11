@@ -7,7 +7,6 @@ import type { ImageFormat, UseToast } from '@/types'
 import {
   ArrowIcon,
   Button,
-  Card,
   DownloadIcon,
   ImageIcon,
   NotoEmoji,
@@ -37,7 +36,7 @@ const FILE_EXTENSIONS: Record<ImageFormat, string> = {
 const fakeWait = (ms: number = 500): Promise<unknown> =>
   new Promise((resolve: (value: unknown) => void) => setTimeout(resolve, ms))
 
-export const ImageConvertorCard = () => {
+export const ImageConvertor = () => {
   // ref
   const downloadAnchorRef: RefObject<HTMLAnchorElement | null> = useRef<HTMLAnchorElement>(null)
 
@@ -126,7 +125,7 @@ export const ImageConvertorCard = () => {
   }
 
   return (
-    <Card title="Image Converter">
+    <>
       <Tabs
         injected={{
           setValue: setTabValue,
@@ -258,6 +257,6 @@ export const ImageConvertorCard = () => {
         ]}
       />
       <a className="hidden" download="" href="" ref={downloadAnchorRef} />
-    </Card>
+    </>
   )
 }
