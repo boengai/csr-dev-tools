@@ -1,2 +1,5 @@
+export * from './color'
+export * from './encoding'
 export * from './image'
 export * from './time'
+export * from './unit'

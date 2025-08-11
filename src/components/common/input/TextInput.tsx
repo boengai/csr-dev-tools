@@ -19,11 +19,11 @@ export const TextInput = ({
       if (isNaN(numericValue)) {
         return
       }
-      onChange(value)
+      onChange?.(value)
       return
     }
 
-    onChange(value)
+    onChange?.(value)
   }
 
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
@@ -38,7 +38,7 @@ export const TextInput = ({
         {...props}
         autoComplete="off"
         autoCorrect="off"
-        className="w-full grow focus:outline-none"
+        className="w-full grow"
         disabled={disabled}
         onChange={handleChange}
         onKeyDown={handleKeyDown}

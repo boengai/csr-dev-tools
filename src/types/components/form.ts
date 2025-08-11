@@ -1,10 +1,17 @@
-import type { SelectInputProps, TextInputProps, UploadInputProps } from './input'
+import type { ReactNode } from 'react'
+
+import type { SelectInputProps, TextAreaInputProps, TextInputProps, UploadInputProps } from './input'
 
 export type FieldFormProps = InputControllerProps & {
-  label: string
+  label: ReactNode
 }
 
-export type InputControllerProps = NumberInputForm | SelectInputForm | TextInputForm | UploadInputForm
+export type InputControllerProps =
+  | NumberInputForm
+  | SelectInputForm
+  | TextAreaInputForm
+  | TextInputForm
+  | UploadInputForm
 
 type NumberInputForm = Omit<TextInputProps, 'type'> & {
   type: 'number'
@@ -12,6 +19,10 @@ type NumberInputForm = Omit<TextInputProps, 'type'> & {
 
 type SelectInputForm = SelectInputProps & {
   type: 'select'
+}
+
+type TextAreaInputForm = Omit<TextAreaInputProps, 'type'> & {
+  type: 'textarea'
 }
 
 type TextInputForm = Omit<TextInputProps, 'type'> & {

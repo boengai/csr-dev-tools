@@ -18,9 +18,9 @@ export const usePersistAppLayout: UseBoundStore<StoreApi<UsePersistAppLayout>> =
       value: {
         0: APP_KEY.IMAGE_CONVERTOR,
         1: APP_KEY.UNIX_TIMESTAMP,
-        2: APP_KEY.COLOR_CONVERTER,
-        3: APP_KEY.PX_TO_REM,
-        4: null,
+        2: APP_KEY.BASE64_ENCODER,
+        3: APP_KEY.COLOR_CONVERTER,
+        4: APP_KEY.PX_TO_REM,
         5: null,
         6: null,
       },

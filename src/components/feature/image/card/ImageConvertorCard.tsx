@@ -114,7 +114,7 @@ export const ImageConvertorCard = () => {
   return (
     <Card title="Image Converter">
       <Tabs
-        inject={{
+        injected={{
           setValue: setTabValue,
           value: tabValue,
         }}

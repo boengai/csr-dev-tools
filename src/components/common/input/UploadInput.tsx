@@ -11,7 +11,7 @@ export const UploadInput = ({ button, disabled, onBlur, onChange, ...props }: Up
   const handleChange = async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
     const files: FileList | null = event.target.files
     if (files?.length) {
-      onChange(Array.from(files))
+      onChange?.(Array.from(files))
     }
   }
 

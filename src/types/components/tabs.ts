@@ -2,7 +2,7 @@ import type { ReactElement, ReactNode } from 'react'
 
 export type TabsProps = {
   defaultValue?: string
-  inject?: {
+  injected?: {
     setValue: (open: string) => void
     value: string
   }

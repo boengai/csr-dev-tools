@@ -69,7 +69,7 @@ export const Dialog = ({ children, description, size = 'default', title, trigger
                 >
                   <Title className="hidden">{title}</Title>
                   <Description className="hidden">{description}</Description>
-                  <Close className="hover:bg-primary absolute right-4 top-4 cursor-pointer rounded-full p-1 text-gray-800 transition-colors hover:text-white focus:outline-none disabled:pointer-events-none">
+                  <Close className="hover:bg-primary absolute right-4 top-4 cursor-pointer rounded-full p-1 text-gray-800 transition-colors hover:text-white disabled:pointer-events-none">
                     <span className="sr-only">Close</span>
                     <XIcon size={20} />
                   </Close>

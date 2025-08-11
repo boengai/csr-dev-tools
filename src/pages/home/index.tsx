@@ -36,6 +36,13 @@ const UnixTimestampCard: LazyExoticComponent<ComponentType> = lazy(() =>
     }),
   ),
 )
+const Base64EncoderCard: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/encoding/card/Base64EncoderCard').then(
+    ({ Base64EncoderCard }: { Base64EncoderCard: ComponentType }) => ({
+      default: Base64EncoderCard,
+    }),
+  ),
+)
 
 const AddButton = () => {
   return (
@@ -67,6 +74,8 @@ const AppContainer = ({ position }: { position: number }) => {
   const { value }: UsePersistAppLayout = usePersistAppLayout()
 
   switch (value[position]) {
+    case APP_KEY.BASE64_ENCODER:
+      return <Base64EncoderCard />
     case APP_KEY.COLOR_CONVERTER:
       return <ColorConverterCard />
     case APP_KEY.IMAGE_CONVERTOR:

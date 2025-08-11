@@ -1,6 +1,6 @@
 import type { FieldFormProps, InputControllerProps } from '@/types'
 
-import { SelectInput, TextInput, UploadInput } from '../input'
+import { SelectInput, TextAreaInput, TextInput, UploadInput } from '../input'
 
 const InputController = (props: InputControllerProps) => {
   switch (props.type) {
@@ -8,6 +8,8 @@ const InputController = (props: InputControllerProps) => {
       return <TextInput {...props} type="number" />
     case 'select':
       return <SelectInput {...{ ...props, type: undefined }} />
+    case 'textarea':
+      return <TextAreaInput {...{ ...props, type: undefined }} />
     case 'upload':
       return <UploadInput {...{ ...props, type: undefined }} />
     default:
