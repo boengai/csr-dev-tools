@@ -26,8 +26,8 @@ const ImageConvertor: LazyExoticComponent<ComponentType> = lazy(() =>
   })),
 )
 const ImageResize: LazyExoticComponent<ComponentType> = lazy(() =>
-  import('@/components/feature/image/ImageResize').then(({ ImageResize }: { ImageResize: ComponentType }) => ({
-    default: ImageResize,
+  import('@/components/feature/image/ImageResizer').then(({ ImageResizer }: { ImageResizer: ComponentType }) => ({
+    default: ImageResizer,
   })),
 )
 const TimeUnixTimestamp: LazyExoticComponent<ComponentType> = lazy(() =>
@@ -91,9 +91,9 @@ const AppContainer = ({ position }: { position: number }) => {
           <ImageConvertor />
         </Card>
       )
-    case APP.IMAGE_RESIZE:
+    case APP.IMAGE_RESIZER:
       return (
-        <Card title={APP_TITLE.IMAGE_RESIZE}>
+        <Card title={APP_TITLE.IMAGE_RESIZER}>
           <ImageResize />
         </Card>
       )

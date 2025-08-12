@@ -2,6 +2,6 @@ export type AppKey =
   | 'BASE64_ENCODER'
   | 'COLOR_CONVERTER'
   | 'IMAGE_CONVERTOR'
-  | 'IMAGE_RESIZE'
+  | 'IMAGE_RESIZER'
   | 'PX_TO_REM'
   | 'UNIX_TIMESTAMP'

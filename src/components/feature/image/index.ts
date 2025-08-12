@@ -1,2 +1,2 @@
 export * from './ImageConvertor'
-export * from './ImageResize'
+export * from './ImageResizer'

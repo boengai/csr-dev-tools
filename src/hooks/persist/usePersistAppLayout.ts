@@ -20,7 +20,7 @@ export const usePersistAppLayout: UseBoundStore<StoreApi<UsePersistAppLayout>> =
         1: APP.UNIX_TIMESTAMP,
         2: APP.BASE64_ENCODER,
         3: APP.COLOR_CONVERTER,
-        4: APP.IMAGE_RESIZE,
+        4: APP.IMAGE_RESIZER,
         5: APP.PX_TO_REM,
       },
     }),

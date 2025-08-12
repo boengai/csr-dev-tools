@@ -14,7 +14,7 @@ const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING', string> = {
   PROCESSING: 'processing',
 }
 
-export const ImageResize = () => {
+export const ImageResizer = () => {
   // ref
   const downloadAnchorRef: RefObject<HTMLAnchorElement | null> = useRef<HTMLAnchorElement>(null)
   const touchedInputRef: RefObject<boolean> = useRef<boolean>(false)
@@ -203,7 +203,7 @@ export const ImageResize = () => {
         title="Adjust the size of your image"
       >
         <div className="flex min-h-0 grow flex-col gap-4">
-          <div className="bg-grid-texture flex min-h-0 grow flex-col items-center justify-center bg-black">
+          <div className="bg-grid-texture flex min-h-0 grow flex-col items-center justify-center bg-black p-4">
             {preview ? (
               <img alt="source" className="max-h-full w-full max-w-full object-contain" src={preview.dataUrl} />
             ) : (

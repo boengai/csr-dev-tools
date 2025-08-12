@@ -48,7 +48,7 @@ const UnixTimestampSection = () => {
   }
 
   return (
-    <section className="flex flex-col gap-2">
+    <section className="flex grow flex-col gap-2">
       <div className="flex items-end gap-2 [&>*:first-child]:w-2/3 [&>*:last-child]:w-1/3">
         <FieldForm
           label="Enter a Timestamp"
@@ -167,7 +167,7 @@ export const DateSection = () => {
   }
 
   return (
-    <section className="flex flex-col gap-2">
+    <section className="flex grow flex-col gap-2">
       <div className="desktop:flex-row flex flex-col justify-between gap-1 [&>div>fieldset]:w-1/3">
         <div className="desktop:w-1/2 flex w-full justify-between gap-1">
           <FieldForm
@@ -257,7 +257,7 @@ export const DateSection = () => {
 
 export const TimeUnixTimestamp = () => {
   return (
-    <div className="flex flex-col gap-4 overflow-y-auto">
+    <div className="flex grow flex-col gap-4 overflow-y-auto">
       <UnixTimestampSection />
       <hr />
       <DateSection />
