@@ -1,7 +1,15 @@
 # Cursor AI Coding Rules for CSR Web Developer tools
 
 ## Project Context
-A free Web developer tools that working only on client side
+A free collection of web developer tools that work entirely client-side, including:
+- **Color Converter**: Convert between different color formats (HEX, RGB, HSL, OKLCH)
+- **Base64 Encoder/Decoder**: Encode and decode Base64 strings
+- **Image Converter**: Convert between different image formats
+- **Image Resize**: Resize images while maintaining aspect ratio
+- **Unix Timestamp Converter**: Convert between Unix timestamps and human-readable dates
+- **PX to REM Converter**: Convert pixel values to REM units
+
+Built with React 19, TypeScript, Tailwind CSS v4, Radix UI, Motion One, and Zustand for a modern, performant developer experience.
 
 ## Code Style & Standards
 
@@ -23,15 +31,19 @@ A free Web developer tools that working only on client side
 - **Leverage Radix UI's unstyled components for maximum Tailwind flexibility**
 
 ### Tailwind CSS (v4)
-- **Use Tailwind CSS v4 with CSS-based configuration**
-- Configure themes and custom values using @theme directive in CSS files
-- **PREFER PURE TAILWIND CLASSES over separate CSS files for component styling**
-- **Use utility classes over custom CSS**
-- Use arbitrary values [bracket notation] for one-off customizations
-- **Implement responsive design with mobile-first approach**
-- Use semantic color names and design tokens
-- **Prefer Motion One for animations; use Tailwind `data-[state]` only for state styling, not for animations**
-- Use Tailwind's backdrop-blur and other modern utilities
+- **Use Tailwind CSS v4 with CSS-based configuration in `src/index.css`**
+- **Configure custom theme using @theme directive**: colors, typography, shadows, breakpoints
+- **OKLCH color system**: Use OKLCH for consistent, perceptual color values
+- **Custom design tokens**: Primary/secondary colors, semantic colors (info, warning, success, error)
+- **Typography system**: Predefined text styles (heading-1 through heading-6, body variants)
+- **PREFER PURE TAILWIND CLASSES**: Avoid separate CSS files for component styling
+- **Use utility classes over custom CSS** except for reusable component patterns
+- **Responsive breakpoints**: tablet (48rem), laptop (80rem), desktop (120rem)
+- **Mobile-first responsive design** with consistent breakpoint usage
+- **Custom utilities**: `.bg-pixel-texture`, `.bg-grid-texture` for visual effects
+- **Component classes**: `.input` and `.popover` for consistent form styling
+- **Prefer Motion One for animations**: Use Tailwind `data-[state]` only for state styling
+- **Dark mode by default**: Use `color-scheme: dark` with light text on dark backgrounds
 
 ### File Naming & Structure
 - **Use kebab-case for file names (app-version.ts)**
@@ -43,32 +55,49 @@ A free Web developer tools that working only on client side
 ### Code Organization
 - **Keep components focused and single-responsibility**
 - **Extract custom hooks for reusable logic**
-- Use proper TypeScript namespaces for type organization
-- **Use consistent import ordering (external, internal, relative)**
-- **Avoid creating separate CSS files for component styling - use Tailwind classes directly**
+- **Feature-based organization**: Each tool has its own directory in `src/components/feature/`
+- **Type organization**: Types organized in `src/types/` with feature-specific subdirectories
+- **Hook organization**: Custom hooks in `src/hooks/` with feature grouping
+- **Consistent import ordering**: External dependencies → internal modules → relative imports
+- **Index file exports**: Use `index.ts` files for clean re-exports and barrel patterns
+- **Lazy loading imports**: Use dynamic imports for tool components to optimize bundle splitting
+- **Avoid separate CSS files**: Use Tailwind classes directly in components
 
 ### Icon System
-- **Write SVG icon components in `@/components/icon` directory**
+- **Write SVG icon components in `src/components/common/icon/` directory**
 - **Accept only size prop (number, default: '1em') for direct height/width control**
-- **Use stroke="currentColor" for theme compatibility**
-- **Keep icons simple and reusable**
-- **Export all icons from index.ts for easy importing**
+- **Use stroke="currentColor" for theme compatibility and dark mode support**
+- **Keep icons simple and reusable with consistent 24x24 viewBox**
+- **Export all icons from index.ts for centralized imports**
+- **Icons follow naming pattern**: `{Name}Icon.tsx` (e.g., `PlusIcon.tsx`, `CopyIcon.tsx`)
 
-### Package Structure
+### Project Architecture
+- **Single Vite application** with TypeScript and React 19
+- **Feature-based component organization** in `src/components/feature/`
+- **Common reusable components** in `src/components/common/`
+- **Lazy loading** for tool components to optimize bundle size
+- **Client-side only** - no server dependencies or backend API calls
 
 ### Development Commands
-- `pnpm dev` - Start development servers
-- `pnpm build` - Build packages
-- `pnpm lint` - Run linting
+- `pnpm dev` - Start development server on port 5173
+- `pnpm build` - Build for production (TypeScript compilation + Vite build)
+- `pnpm lint` - Run ESLint with Perfectionist plugin for import sorting
+- `pnpm preview` - Preview production build locally
+- `pnpm test` - Run Vitest unit tests
 
-### Dependencies
-- Use pnpm for package management
-- Add dependencies to the appropriate workspace
-- Prefer exact versions for shared packages
-- Use devDependencies appropriately
-- **Use Radix UI components as the foundation for all interactive elements**
-- **Avoid external icon libraries - create simple SVG components instead**
- - **Use Motion One (`motion` package) for animations and transitions in React components**
+### Dependencies & Tech Stack
+- **Package Management**: pnpm (version 10.11.0+)
+- **Runtime**: Node.js 24.5.0+
+- **React**: 19.1.1 with functional components and hooks
+- **Routing**: React Router 7.7.1
+- **State Management**: Zustand 5.0.7 for client state
+- **Styling**: Tailwind CSS 4.1.11 with Tailwind Variants 2.1.0
+- **UI Components**: Radix UI (Dialog, Select, Tabs, Toast)
+- **Animations**: Motion One 12.23.12 for React animations
+- **File Processing**: JSZip 3.10.1 for archive operations
+- **Build Tool**: Vite 7.0.6 with React plugin
+- **Linting**: ESLint 9.32.0 with Perfectionist, Prettier, and React plugins
+- **Testing**: Vitest 3.2.4
 
 ## AI Assistant Guidelines
 
@@ -109,13 +138,15 @@ A free Web developer tools that working only on client side
 - **Create reusable component variants using Tailwind's utility patterns**
 
 ## Icon Development Guidelines
-- **Create icons as simple React components**
-- **Use consistent viewBox and stroke properties**
-- **Make icons theme-aware with currentColor**
-- **Accept only size prop (number, default: 16) for direct sizing**
-- **Apply size directly to height and width attributes**
-- **Keep icon paths simple and optimized**
-- **Export from centralized icon index for easy importing**
+- **Create icons as simple React components in `src/components/common/icon/`**
+- **Use consistent 24x24 viewBox and stroke properties**
+- **Make icons theme-aware with `stroke="currentColor"`**
+- **Accept only size prop (number, default: '1em') for flexible sizing**
+- **Apply size directly to height and width attributes with `size ?? '1em'`**
+- **Use standard stroke properties**: `strokeLinecap="round"`, `strokeLinejoin="round"`, `strokeWidth="2"`
+- **Keep icon paths simple and optimized for small bundle size**
+- **Follow naming convention**: `{Name}Icon.tsx` (PascalCase + Icon suffix)
+- **Export from centralized index.ts for clean imports**
 
 ## Zustand State Management
 
