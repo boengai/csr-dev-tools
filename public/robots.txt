@@ -1,0 +1,13 @@
+User-agent: *
+Allow: /
+
+# Important pages
+
+# Disallow any future admin or private routes
+Disallow: /.well-known/
+
+# Sitemap location
+Sitemap: https://csr-dev-tools.pages.dev/sitemap.xml
+
+# Crawl delay (optional, adjust as needed)
+Crawl-delay: 1
