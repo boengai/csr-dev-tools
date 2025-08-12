@@ -11,7 +11,6 @@ import {
   ImageIcon,
   NotoEmoji,
   RefreshIcon,
-  SelectInput,
   Tabs,
   TrashIcon,
   UploadInput,
@@ -20,17 +19,13 @@ import { ProgressBar } from '@/components/common/progress-bar/ProgressBar'
 import { useToast } from '@/hooks'
 import { convertImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
 
+import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
+
 const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING' | 'SELECT_FORMAT', string> = {
   DOWNLOAD: 'download',
   IMPORT: 'import',
   PROCESSING: 'processing',
   SELECT_FORMAT: 'select-format',
-}
-
-const FILE_EXTENSIONS: Record<ImageFormat, string> = {
-  'image/jpeg': 'jpg',
-  'image/png': 'png',
-  'image/webp': 'webp',
 }
 
 const fakeWait = (ms: number = 500): Promise<unknown> =>
@@ -41,7 +36,7 @@ export const ImageConvertor = () => {
   const downloadAnchorRef: RefObject<HTMLAnchorElement | null> = useRef<HTMLAnchorElement>(null)
 
   // hook
-  const toast: UseToast = useToast()
+  const { toast }: UseToast = useToast()
 
   // states
   const [tabValue, setTabValue]: [string, Dispatch<SetStateAction<string>>] = useState<string>(TABS_VALUES.IMPORT)
@@ -53,8 +48,8 @@ export const ImageConvertor = () => {
   const [processing, setProcessing]: [number, Dispatch<SetStateAction<number>>] = useState<number>(0)
 
   const handleInputChange = (values: Array<File>) => {
-    setSources(values)
     if (values.length > 0) {
+      setSources(values)
       setTabValue(TABS_VALUES.SELECT_FORMAT)
     }
   }
@@ -86,12 +81,12 @@ export const ImageConvertor = () => {
       for (const img of sources) {
         const [, fi]: [unknown, string] = await Promise.all([
           await fakeWait(),
-          convertImageFormat(img, target.format as ImageFormat, {
+          convertImageFormat(img, target.format, {
             quality: Number(target.quality),
           }),
         ])
 
-        formattedImages[`${parseFileName(img.name)}.${FILE_EXTENSIONS[target.format as ImageFormat]}`] = fi
+        formattedImages[`${parseFileName(img.name, target.format)}`] = fi
         setProcessing((prev: number) => prev + processTick)
       }
 
@@ -113,12 +108,12 @@ export const ImageConvertor = () => {
         })
       }
 
-      toast.toast({ action: 'add', item: { label: 'Image(s) converted successfully', type: 'success' } })
+      toast({ action: 'add', item: { label: 'Converted image(s) successfully', type: 'success' } })
 
       // go to download tab
       setTabValue(TABS_VALUES.DOWNLOAD)
     } catch {
-      toast.toast({ action: 'add', item: { label: 'Failed to convert images', type: 'error' } })
+      toast({ action: 'add', item: { label: 'Failed to convert image(s)', type: 'error' } })
       // back to import tab
       setTabValue(TABS_VALUES.IMPORT)
     }
@@ -182,35 +177,22 @@ export const ImageConvertor = () => {
                 </ul>
                 <div className="flex w-full shrink-0 gap-2 [&>button]:w-[calc(40%-8px)]">
                   <div className="flex w-3/5 items-center gap-2 [&>*]:w-1/2">
-                    <SelectInput
-                      name="format"
+                    <ImageFormatSelectInput
                       onChange={(value: string) =>
                         setTarget((prev: { format: ImageFormat; quality: string }) => ({
                           ...prev,
                           format: value as ImageFormat,
                         }))
                       }
-                      options={[
-                        { label: 'PNG', value: 'image/png' },
-                        { label: 'JPEG', value: 'image/jpeg' },
-                        { label: 'WebP', value: 'image/webp' },
-                      ]}
-                      placeholder="Select image format"
                       value={target.format}
                     />
-                    <SelectInput
-                      name="quality"
+                    <ImageQualitySelectInput
                       onChange={(value: string) =>
                         setTarget((prev: { format: ImageFormat; quality: string }) => ({
                           ...prev,
                           quality: value,
                         }))
                       }
-                      options={Array.from({ length: 10 }, (_: unknown, i: number) => ({
-                        label: `${(i + 1) * 10}% Qual.`,
-                        value: ((i + 1) / 10).toString(),
-                      }))}
-                      placeholder="Select image quality"
                       value={target.quality.toString()}
                     />
                   </div>

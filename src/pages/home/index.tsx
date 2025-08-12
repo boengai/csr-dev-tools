@@ -13,14 +13,21 @@ const ColorConvertor: LazyExoticComponent<ComponentType> = lazy(() =>
     default: ColorConvertor,
   })),
 )
+const EncodingBase64: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/encoding/EncodingBase64').then(
+    ({ EncodingBase64 }: { EncodingBase64: ComponentType }) => ({
+      default: EncodingBase64,
+    }),
+  ),
+)
 const ImageConvertor: LazyExoticComponent<ComponentType> = lazy(() =>
   import('@/components/feature/image/ImageConvertor').then(({ ImageConvertor }: { ImageConvertor: ComponentType }) => ({
     default: ImageConvertor,
   })),
 )
-const UnitPxToRem: LazyExoticComponent<ComponentType> = lazy(() =>
-  import('@/components/feature/unit/UnitPxToRem').then(({ UnitPxToRem }: { UnitPxToRem: ComponentType }) => ({
-    default: UnitPxToRem,
+const ImageResize: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/image/ImageResize').then(({ ImageResize }: { ImageResize: ComponentType }) => ({
+    default: ImageResize,
   })),
 )
 const TimeUnixTimestamp: LazyExoticComponent<ComponentType> = lazy(() =>
@@ -30,12 +37,10 @@ const TimeUnixTimestamp: LazyExoticComponent<ComponentType> = lazy(() =>
     }),
   ),
 )
-const EncodingBase64: LazyExoticComponent<ComponentType> = lazy(() =>
-  import('@/components/feature/encoding/EncodingBase64').then(
-    ({ EncodingBase64 }: { EncodingBase64: ComponentType }) => ({
-      default: EncodingBase64,
-    }),
-  ),
+const UnitPxToRem: LazyExoticComponent<ComponentType> = lazy(() =>
+  import('@/components/feature/unit/UnitPxToRem').then(({ UnitPxToRem }: { UnitPxToRem: ComponentType }) => ({
+    default: UnitPxToRem,
+  })),
 )
 
 const AddButton = () => {
@@ -84,6 +89,12 @@ const AppContainer = ({ position }: { position: number }) => {
       return (
         <Card title={APP_TITLE.IMAGE_CONVERTOR}>
           <ImageConvertor />
+        </Card>
+      )
+    case APP.IMAGE_RESIZE:
+      return (
+        <Card title={APP_TITLE.IMAGE_RESIZE}>
+          <ImageResize />
         </Card>
       )
     case APP.PX_TO_REM:

@@ -35,7 +35,7 @@ export const SelectInput = ({
       </Trigger>
       <Portal>
         <Content
-          className="popover max-h-[30dvh] w-[var(--radix-select-trigger-width)] overflow-y-auto"
+          className="popover z-50 max-h-[30dvh] w-[var(--radix-select-trigger-width)] overflow-y-auto"
           position="popper"
         >
           <Viewport>

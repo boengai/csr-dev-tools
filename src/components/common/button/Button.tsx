@@ -43,12 +43,12 @@ export const Button = ({
   variant = 'default',
   ...props
 }: ButtonProps) => {
-  const cn: string = buttonVariants({ block, size, variant })
+  const className: string = buttonVariants({ block, size, variant })
 
   return (
     <motion.button
       {...props}
-      className={cn}
+      className={className}
       initial={{ scale: 1, y: 0 }}
       style={{
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)',

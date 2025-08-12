@@ -1,6 +1,5 @@
 import { Close, Content, Description, Overlay, Portal, Root, Title, Trigger } from '@radix-ui/react-dialog'
-import { AnimatePresence, motion } from 'motion/react'
-import { useEffect, useState } from 'react'
+import { motion } from 'motion/react'
 
 import type { CompVariant, DialogProps, DialogVariants } from '@/types'
 
@@ -9,77 +8,83 @@ import { tv } from '@/utils'
 import { XIcon } from '../icon'
 
 const contentVariants: CompVariant<DialogVariants> = tv({
-  base: 'shadow-primary/30 popover fixed left-[50%] top-[50%] z-50 grid translate-x-[-50%] translate-y-[-50%] gap-4 p-4 shadow-[0_0_40px_12px]',
+  base: 'shadow-primary/30 -translate-1/2 fixed left-[50%] top-[50%] z-50 flex flex-col shadow-[0_0_40px_12px]',
   defaultVariants: {
     size: 'default',
   },
   variants: {
     size: {
-      default: 'max-h-[90dvh] w-auto max-w-[90dvw]',
-      screen: 'max-h-[90dvh] w-[90dvw]',
-      small: 'max-h-[90dvh] w-[350px] max-w-[90dvw]',
+      default: 'min-w-90 max-h-[90dvh] w-auto max-w-[90dvw]',
+      screen: 'h-[95dvh] w-[95dvw]',
+      small: 'w-90 max-h-[90dvh] max-w-[90dvw]',
     },
   },
 })
 
-export const Dialog = ({ children, description, size = 'default', title, trigger }: DialogProps) => {
-  const [open, setOpen]: [boolean, (value: boolean) => void] = useState<boolean>(false)
-  const [shouldRender, setShouldRender]: [boolean, (value: boolean) => void] = useState<boolean>(false)
-  const cn: string = contentVariants({ size })
+export const Dialog = ({
+  children,
+  description,
+  injected,
+  onAfterClose,
+  size = 'default',
+  title,
+  trigger,
+}: DialogProps) => {
+  const contentClassName: string = contentVariants({ size })
 
-  useEffect(() => {
-    if (open) {
-      setShouldRender(true)
-    }
-  }, [open])
-
-  const handleExitComplete = (): void => {
+  const handleOpenChange = (open: boolean) => {
+    injected?.setOpen(open)
     if (!open) {
-      setShouldRender(false)
+      onAfterClose?.()
     }
   }
 
   return (
-    <Root onOpenChange={setOpen} open={open}>
+    <Root onOpenChange={handleOpenChange} open={injected?.open}>
       {trigger && <Trigger asChild>{trigger}</Trigger>}
-      {shouldRender && (
-        <Portal>
-          <AnimatePresence onExitComplete={handleExitComplete}>
-            {open && (
-              <Overlay asChild forceMount>
-                <motion.div
-                  animate={{ opacity: 1 }}
-                  className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
-                  exit={{ opacity: 0 }}
-                  initial={{ opacity: 0 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
-                />
-              </Overlay>
-            )}
-          </AnimatePresence>
-          <AnimatePresence onExitComplete={handleExitComplete}>
-            {open && (
-              <Content asChild autoFocus={false} forceMount>
-                <motion.div
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  className={cn}
-                  exit={{ opacity: 0, scale: 0.95, y: -8 }}
-                  initial={{ opacity: 0, scale: 0.95, y: -8 }}
-                  transition={{ duration: 0.2, ease: 'easeOut' }}
+      <Portal>
+        <Overlay asChild forceMount>
+          <motion.div
+            animate={{ opacity: 1 }}
+            className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
+            exit={{ opacity: 0 }}
+            initial={{ opacity: 0 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+          />
+        </Overlay>
+        <Content asChild autoFocus={false} forceMount>
+          <motion.div
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            className={contentClassName}
+            exit={{ opacity: 0, scale: 0.95, y: -8 }}
+            initial={{ opacity: 0, scale: 0.95, y: -8 }}
+            transition={{ duration: 0.2, ease: 'easeOut' }}
+          >
+            <div className="relative w-full shrink-0 truncate rounded-t-xl bg-gray-800 px-5 py-2 pr-14">
+              <Title className="text-heading-5 grow">{title}</Title>
+              <Description className="hidden">{description}</Description>
+              <Close asChild>
+                <motion.button
+                  className="bg-error absolute right-4 top-1/2 flex size-4 -translate-y-1/2 items-center justify-center rounded-full"
+                  initial={{ color: 'var(--color-error)', scale: 1 }}
+                  transition={{ duration: 0.3, ease: 'easeOut' }}
+                  whileHover={{ color: 'var(--color-white)' }}
+                  whileTap={{
+                    scale: 0.98,
+                    transition: { duration: 0.1, ease: 'easeOut' },
+                  }}
                 >
-                  <Title className="hidden">{title}</Title>
-                  <Description className="hidden">{description}</Description>
-                  <Close className="hover:bg-primary absolute right-4 top-4 cursor-pointer rounded-full p-1 text-gray-800 transition-colors hover:text-white disabled:pointer-events-none">
-                    <span className="sr-only">Close</span>
-                    <XIcon size={20} />
-                  </Close>
-                  {children}
-                </motion.div>
-              </Content>
-            )}
-          </AnimatePresence>
-        </Portal>
-      )}
+                  <span className="sr-only">Close</span>
+                  <XIcon size={14} />
+                </motion.button>
+              </Close>
+            </div>
+            <div className="flex size-full grow flex-col overflow-hidden rounded-b-xl border border-gray-800 bg-white/5 p-6 backdrop-blur">
+              {children}
+            </div>
+          </motion.div>
+        </Content>
+      </Portal>
     </Root>
   )
 }

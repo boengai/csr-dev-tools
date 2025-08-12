@@ -26,7 +26,7 @@ const PageLoading = () => {
 
 const Wrapper = () => {
   return (
-    <main className="bg-size-[16px_16px] relative flex grow flex-col bg-[linear-gradient(45deg,transparent,oklch(1_0_0_/_0.03))] pb-[var(--safe-area-inset-bottom)] pt-[var(--safe-area-inset-top)] [&>*:not(:first-child)]:relative">
+    <main className="bg-pixel-texture relative flex grow flex-col pb-[var(--safe-area-inset-bottom)] pt-[var(--safe-area-inset-top)] [&>*:not(:first-child)]:relative">
       <Suspense fallback={<></>}>
         <TwinkleStarsAnimate />
       </Suspense>
