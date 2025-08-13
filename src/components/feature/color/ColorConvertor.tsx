@@ -2,7 +2,7 @@ import { motion } from 'motion/react'
 import { type Dispatch, type MouseEvent, type PropsWithChildren, type SetStateAction, useState } from 'react'
 
 import { Button, CopyIcon, FieldForm, NotoEmoji } from '@/components/common'
-import { useCopyToClipboard } from '@/hooks'
+import { useCopyToClipboard, useDebounceCallback } from '@/hooks'
 import { type ColorFormat, type UseCopyToClipboard } from '@/types'
 import { convertColor } from '@/utils/color'
 
@@ -50,27 +50,34 @@ export const ColorConvertor = () => {
   const [color, setColor]: [Record<ColorFormat, string>, Dispatch<SetStateAction<Record<ColorFormat, string>>>] =
     useState<Record<ColorFormat, string>>(convertColor(`rgb(${randomByte()}, ${randomByte()}, ${randomByte()})`, 'rgb'))
 
-  // Handle color input changes and convert to all formats
-  const handleColorBlur = (format: ColorFormat) => {
-    const value: string = color[format]
-    if (!value.trim()) return
+  // hooks
+  const dbConvertColor: (source: Record<ColorFormat, string>, format: ColorFormat) => void = useDebounceCallback(
+    (source: Record<ColorFormat, string>, format: ColorFormat) => {
+      const value: string = source[format]
+      if (!value.trim()) return
 
-    try {
-      const convertedColors: Record<ColorFormat, string> = convertColor(value, format)
-      setColor(convertedColors)
-    } catch {
-      setColor({
-        ...{
-          hex: '',
-          hsl: '',
-          lab: '',
-          lch: '',
-          oklch: '',
-          rgb: '',
-        },
-        [format]: value,
-      })
-    }
+      try {
+        const convertedColors: Record<ColorFormat, string> = convertColor(value, format)
+        setColor(convertedColors)
+      } catch {
+        setColor({
+          ...{
+            hex: '',
+            hsl: '',
+            lab: '',
+            lch: '',
+            oklch: '',
+            rgb: '',
+          },
+          [format]: value,
+        })
+      }
+    },
+  )
+
+  const handleColorChange = (format: ColorFormat, value: string) => {
+    setColor((prev: Record<ColorFormat, string>) => ({ ...prev, [format]: value }))
+    dbConvertColor({ ...color, [format]: value }, format)
   }
 
   return (
@@ -79,8 +86,7 @@ export const ColorConvertor = () => {
         <FieldForm
           label="Hex"
           name="hex"
-          onBlur={() => handleColorBlur('hex')}
-          onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, hex: val }))}
+          onChange={(val: string) => handleColorChange('hex', val)}
           placeholder="#000 or #000000"
           suffix={<CopyButton value={color.hex} />}
           type="text"
@@ -91,8 +97,7 @@ export const ColorConvertor = () => {
         <FieldForm
           label="RGB"
           name="rgb"
-          onBlur={() => handleColorBlur('rgb')}
-          onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, rgb: val }))}
+          onChange={(val: string) => handleColorChange('rgb', val)}
           placeholder="rgb(0, 0, 0)"
           suffix={<CopyButton value={color.rgb} />}
           type="text"
@@ -103,8 +108,7 @@ export const ColorConvertor = () => {
         <FieldForm
           label="OKLCH"
           name="oklch"
-          onBlur={() => handleColorBlur('oklch')}
-          onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, oklch: val }))}
+          onChange={(val: string) => handleColorChange('oklch', val)}
           placeholder="oklch(0 0 0)"
           suffix={<CopyButton value={color.oklch} />}
           type="text"
@@ -115,8 +119,7 @@ export const ColorConvertor = () => {
         <FieldForm
           label="HSL"
           name="hsl"
-          onBlur={() => handleColorBlur('hsl')}
-          onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, hsl: val }))}
+          onChange={(val: string) => handleColorChange('hsl', val)}
           placeholder="hsl(0 0% 0%)"
           suffix={<CopyButton value={color.hsl} />}
           type="text"
@@ -127,8 +130,7 @@ export const ColorConvertor = () => {
         <FieldForm
           label="LAB"
           name="lab"
-          onBlur={() => handleColorBlur('lab')}
-          onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, lab: val }))}
+          onChange={(val: string) => handleColorChange('lab', val)}
           placeholder="lab(0 0 0)"
           suffix={<CopyButton value={color.lab} />}
           type="text"
@@ -139,8 +141,7 @@ export const ColorConvertor = () => {
         <FieldForm
           label="LCH"
           name="lch"
-          onBlur={() => handleColorBlur('lch')}
-          onChange={(val: string) => setColor((prev: Record<ColorFormat, string>) => ({ ...prev, lch: val }))}
+          onChange={(val: string) => handleColorChange('lch', val)}
           placeholder="lch(0 0 0)"
           suffix={<CopyButton value={color.lch} />}
           type="text"

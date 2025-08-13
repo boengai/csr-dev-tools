@@ -1,9 +1,9 @@
-import { type Dispatch, type RefObject, type SetStateAction, useRef, useState } from 'react'
+import { type Dispatch, type RefObject, type SetStateAction, useEffect, useRef, useState } from 'react'
 
 import type { ImageFormat, ImageProcessingResult, UseToast } from '@/types'
 
 import { Button, Dialog, DownloadIcon, FieldForm, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
-import { useToast } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { parseFileName, processImage, resizeImage } from '@/utils'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
@@ -17,10 +17,6 @@ const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING', string> = {
 export const ImageResizer = () => {
   // ref
   const downloadAnchorRef: RefObject<HTMLAnchorElement | null> = useRef<HTMLAnchorElement>(null)
-  const touchedInputRef: RefObject<boolean> = useRef<boolean>(false)
-
-  // hook
-  const { toast }: UseToast = useToast()
 
   // state
   const [tabValue, setTabValue]: [string, Dispatch<SetStateAction<string>>] = useState<string>(TABS_VALUES.IMPORT)
@@ -28,6 +24,35 @@ export const ImageResizer = () => {
   const [source, setSource]: [File | null, Dispatch<SetStateAction<File | null>>] = useState<File | null>(null)
   const [preview, setPreview]: [ImageProcessingResult | null, Dispatch<SetStateAction<ImageProcessingResult | null>>] =
     useState<ImageProcessingResult | null>(null)
+
+  // hook
+  const { toast }: UseToast = useToast()
+  const dbSetPreview: (s: ImageProcessingResult) => Promise<void> = useDebounceCallback(
+    async (s: ImageProcessingResult) => {
+      try {
+        const newResult: ImageProcessingResult = await resizeImage(
+          source!,
+          {
+            height: s.height,
+            width: s.width,
+          },
+          {
+            format: s.format,
+            quality: s.quality,
+          },
+        )
+        setPreview(newResult)
+      } catch {
+        toast({
+          action: 'add',
+          item: {
+            label: 'Failed to process image',
+            type: 'error',
+          },
+        })
+      }
+    },
+  )
 
   const handleUploadChange = async (values: Array<File>) => {
     try {
@@ -55,61 +80,29 @@ export const ImageResizer = () => {
     }
   }
 
-  const handleInputChange = async (val: unknown, key: keyof ImageProcessingResult) => {
+  const handleInputChange = (key: keyof ImageProcessingResult, val: unknown) => {
     setPreview((prev: ImageProcessingResult | null) => {
       if (!prev) {
         return null
       }
 
       const newValue: number = Number(val)
+      const newState: ImageProcessingResult = {
+        ...prev,
+        dataUrl: '', // unset dataUrl for showing loading state
+        [key]: val,
+      }
 
       // For width/height changes, maintain aspect ratio
       if (key === 'width' && !isNaN(newValue) && newValue > 0) {
-        const newHeight: number = Math.round(newValue / prev.ratio)
-        return { ...prev, height: newHeight, width: newValue }
+        newState.height = Math.round(newValue / prev.ratio)
       } else if (key === 'height' && !isNaN(newValue) && newValue > 0) {
-        const newWidth: number = Math.round(newValue * prev.ratio)
-        return { ...prev, height: newValue, width: newWidth }
+        newState.width = Math.round(newValue * prev.ratio)
       }
 
       // For other properties (format, quality), just update normally
-      return { ...prev, [key]: val }
+      return newState
     })
-    touchedInputRef.current = true
-  }
-
-  const handlePreview = async () => {
-    try {
-      if (!preview) {
-        return
-      }
-
-      // unset result
-      // for showing loading state
-      setPreview(null)
-
-      const newResult: ImageProcessingResult = await resizeImage(
-        source!,
-        {
-          height: preview.height,
-          width: preview.width,
-        },
-        {
-          format: preview.format,
-          quality: preview.quality,
-        },
-      )
-      setPreview(newResult)
-      touchedInputRef.current = false
-    } catch {
-      toast({
-        action: 'add',
-        item: {
-          label: 'Failed to process image',
-          type: 'error',
-        },
-      })
-    }
   }
 
   const handleConvert = async () => {
@@ -138,6 +131,12 @@ export const ImageResizer = () => {
     setSource(null)
     setPreview(null)
   }
+
+  useEffect(() => {
+    if (!preview?.dataUrl && preview?.format) {
+      dbSetPreview(preview)
+    }
+  }, [preview, dbSetPreview])
 
   return (
     <>
@@ -203,9 +202,9 @@ export const ImageResizer = () => {
         title="Adjust the size of your image"
       >
         <div className="flex min-h-0 grow flex-col gap-4">
-          <div className="bg-grid-texture flex min-h-0 grow flex-col items-center justify-center bg-black p-4">
-            {preview ? (
-              <img alt="source" className="max-h-full w-full max-w-full object-contain" src={preview.dataUrl} />
+          <div className="bg-grid-texture flex min-h-0 grow items-center justify-center gap-4 bg-black p-4">
+            {preview?.dataUrl ? (
+              <img alt="preview" className="max-h-full w-full max-w-full object-contain" src={preview.dataUrl} />
             ) : (
               <NotoEmoji emoji="robot" size={120} />
             )}
@@ -215,29 +214,29 @@ export const ImageResizer = () => {
               <FieldForm
                 label="Width"
                 name="width"
-                onChange={(val: string) => handleInputChange(val, 'width')}
+                onChange={(val: string) => handleInputChange('width', val)}
                 type="number"
                 value={preview?.width?.toString() ?? ''}
               />
               <FieldForm
                 label="Height"
                 name="height"
-                onChange={(val: string) => handleInputChange(val, 'height')}
+                onChange={(val: string) => handleInputChange('height', val)}
                 type="number"
                 value={preview?.height?.toString() ?? ''}
               />
               <ImageFormatSelectInput
-                onChange={(val: string) => handleInputChange(val, 'format')}
+                onChange={(val: string) => handleInputChange('format', val)}
                 value={preview?.format}
               />
               <ImageQualitySelectInput
-                onChange={(val: string) => handleInputChange(val, 'quality')}
+                onChange={(val: string) => handleInputChange('quality', val)}
                 value={preview?.quality?.toString()}
               />
             </div>
-            <div className="flex w-2/5 items-end">
-              <Button block onClick={touchedInputRef.current ? handlePreview : handleConvert} variant="primary">
-                {touchedInputRef.current ? 'Preview' : 'Convert'}
+            <div className="desktop:w-2/5 flex w-full items-end">
+              <Button block onClick={handleConvert} variant="primary">
+                Convert
               </Button>
             </div>
           </div>

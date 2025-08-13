@@ -3,22 +3,26 @@ import { type Dispatch, type SetStateAction, useState } from 'react'
 import type { UseCopyToClipboard } from '@/types'
 
 import { Button, CopyIcon, FieldForm, Tabs } from '@/components/common'
-import { useCopyToClipboard } from '@/hooks'
+import { useCopyToClipboard, useDebounceCallback } from '@/hooks'
 
 const Form = ({ action, onSubmit }: { action: 'decode' | 'encode'; onSubmit: (source: string) => string }) => {
-  // hook
-  const copyToClipboard: UseCopyToClipboard = useCopyToClipboard()
-
   // states
   const [source, setSource]: [string, Dispatch<SetStateAction<string>>] = useState('')
-  const [result, setResult]: [string, Dispatch<SetStateAction<string>>] = useState('')
+  const [result, setResult]: [Error | string, Dispatch<SetStateAction<Error | string>>] = useState<Error | string>('')
 
-  const handleChange = () => {
+  // hook
+  const copyToClipboard: UseCopyToClipboard = useCopyToClipboard()
+  const dbSetResult: (s: string) => void = useDebounceCallback((s: string) => {
     try {
-      setResult(onSubmit(source))
+      setResult(onSubmit(s))
     } catch {
-      setResult('')
+      setResult(new Error('Unable to process input'))
     }
+  })
+
+  const handleSourceChange = (val: string) => {
+    setSource(val)
+    dbSetResult(val)
   }
 
   return (
@@ -26,7 +30,7 @@ const Form = ({ action, onSubmit }: { action: 'decode' | 'encode'; onSubmit: (so
       <FieldForm
         label="Source"
         name="source"
-        onChange={(val: string) => setSource(val)}
+        onChange={handleSourceChange}
         placeholder={
           action === 'encode'
             ? 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.'
@@ -35,14 +39,12 @@ const Form = ({ action, onSubmit }: { action: 'decode' | 'encode'; onSubmit: (so
         type="textarea"
         value={source}
       />
-      <Button disabled={!source} onClick={handleChange} variant="primary">
-        {action === 'encode' ? 'Encode' : 'Decode'}
-      </Button>
       <FieldForm
+        disabled={result instanceof Error}
         label={
           <span className="flex items-center gap-1">
             <span>Result</span>
-            {result && (
+            {typeof result === 'string' && result && (
               <Button onClick={() => copyToClipboard(result)} variant="text">
                 <CopyIcon />
               </Button>
@@ -51,12 +53,14 @@ const Form = ({ action, onSubmit }: { action: 'decode' | 'encode'; onSubmit: (so
         }
         name="result"
         placeholder={
-          action === 'decode'
-            ? 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.'
-            : 'TG9yZW0lMjBpcHN1bSUyMGlzJTIwcGxhY2Vob2xkZXIlMjB0ZXh0JTIwY29tbW9ubHklMjB1c2VkJTIwaW4lMjB0aGUlMjBncmFwaGljJTJDJTIwcHJpbnQlMkMlMjBhbmQlMjBwdWJsaXNoaW5nJTIwaW5kdXN0cmllcyUyMGZvciUyMHByZXZpZXdpbmclMjBsYXlvdXRzJTIwYW5kJTIwdmlzdWFsJTIwbW9ja3Vwcy4='
+          result instanceof Error
+            ? result.message
+            : action === 'decode'
+              ? 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.'
+              : 'TG9yZW0lMjBpcHN1bSUyMGlzJTIwcGxhY2Vob2xkZXIlMjB0ZXh0JTIwY29tbW9ubHklMjB1c2VkJTIwaW4lMjB0aGUlMjBncmFwaGljJTJDJTIwcHJpbnQlMkMlMjBhbmQlMjBwdWJsaXNoaW5nJTIwaW5kdXN0cmllcyUyMGZvciUyMHByZXZpZXdpbmclMjBsYXlvdXRzJTIwYW5kJTIwdmlzdWFsJTIwbW9ja3Vwcy4='
         }
         type="textarea"
-        value={result}
+        value={typeof result === 'string' ? result : ''}
       />
     </div>
   )

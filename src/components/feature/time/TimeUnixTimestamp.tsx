@@ -4,7 +4,7 @@ import { type Dispatch, type SetStateAction, useMemo, useState } from 'react'
 import type { DateTime, SelectInputProps, UseCopyToClipboard } from '@/types'
 
 import { Button, CopyIcon, DataCellTable, FieldForm } from '@/components/common'
-import { useCopyToClipboard } from '@/hooks'
+import { useCopyToClipboard, useDebounceCallback } from '@/hooks'
 import { getDaysInMonth } from '@/utils'
 
 const MONTH_LABELS: Array<string> = [
@@ -27,8 +27,9 @@ const UnixTimestampSection = () => {
   const [input, setInput]: [string, Dispatch<SetStateAction<string>>] = useState<string>('')
   const [result, setResult]: [Array<string>, Dispatch<SetStateAction<Array<string>>>] = useState<Array<string>>([])
 
-  const handleConvert = () => {
-    const inputNumber: number = Number(input)
+  // hooks
+  const dbSetResult: (source: string) => void = useDebounceCallback((source: string) => {
+    const inputNumber: number = Number(source)
 
     // Auto-detect if timestamp is in seconds or milliseconds
     // Current time in seconds: ~1.7 billion (Jan 2024)
@@ -44,7 +45,12 @@ const UnixTimestampSection = () => {
       return
     }
 
-    setResult([d.toUTCString(), d.toString()])
+    setResult([isMilliseconds ? 'Milliseconds' : 'Seconds', d.toUTCString(), d.toString()])
+  })
+
+  const handleInputChange = (val: string) => {
+    setInput(val)
+    dbSetResult(val)
   }
 
   return (
@@ -53,15 +59,11 @@ const UnixTimestampSection = () => {
         <FieldForm
           label="Enter a Timestamp"
           name="unixTimestamp"
-          onChange={(val: string) => setInput(val)}
-          onEnter={handleConvert}
+          onChange={handleInputChange}
           placeholder={Date.now().toString()}
           type="number"
           value={input}
         />
-        <Button disabled={!input} onClick={handleConvert} variant="primary">
-          Convert
-        </Button>
       </div>
       <p className="text-body-sm text-center text-gray-500">
         Supports Unix timestamps in seconds or milliseconds (auto-detected).
@@ -70,8 +72,9 @@ const UnixTimestampSection = () => {
         {result.length > 0 && (
           <DataCellTable
             rows={[
-              { label: 'GMT', value: result[0] },
-              { label: 'Local', value: result[1] },
+              { label: 'Format', value: result[0] },
+              { label: 'GMT', value: result[1] },
+              { label: 'Local', value: result[2] },
             ]}
           />
         )}
