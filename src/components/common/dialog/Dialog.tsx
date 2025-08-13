@@ -15,7 +15,7 @@ const contentVariants: CompVariant<DialogVariants> = tv({
   variants: {
     size: {
       default: 'min-w-90 max-h-[90dvh] w-auto max-w-[90dvw]',
-      screen: 'h-[95dvh] w-[95dvw]',
+      screen: 'tablet:h-[95dvh] tablet:w-[95dvw] h-screen w-screen',
       small: 'w-90 max-h-[90dvh] max-w-[90dvw]',
     },
   },
@@ -60,7 +60,7 @@ export const Dialog = ({
             initial={{ opacity: 0, scale: 0.95, y: -8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
-            <div className="relative w-full shrink-0 truncate rounded-t-xl bg-gray-800 px-5 py-2 pr-14">
+            <div className="tablet:rounded-t-xl relative w-full shrink-0 truncate rounded-none bg-gray-800 px-5 py-2 pr-14">
               <Title className="text-heading-5 grow">{title}</Title>
               <Description className="hidden">{description}</Description>
               <Close asChild>

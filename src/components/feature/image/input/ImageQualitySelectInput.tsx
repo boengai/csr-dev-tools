@@ -2,7 +2,7 @@ import type { SelectInputProps } from '@/types'
 
 import { SelectInput } from '@/components/common'
 
-export const ImageQualitySelectInput = (props: Pick<SelectInputProps, 'onChange' | 'value'>) => {
+export const ImageQualitySelectInput = (props: Pick<SelectInputProps, 'disabled' | 'onChange' | 'value'>) => {
   return (
     <SelectInput
       {...props}

@@ -294,6 +294,9 @@ export const processImage = async (
               height: sourceHeight,
               quality: options.quality ?? 1,
               ratio: sourceWidth / sourceHeight,
+              size:
+                Math.ceil((reader.result.length * 3) / 4) -
+                (reader.result.endsWith('==') ? 2 : reader.result.endsWith('=') ? 1 : 0),
               width: sourceWidth,
             })
           } else {
@@ -374,6 +377,7 @@ export const processImage = async (
       height: dimensions.canvas.height,
       quality: options.quality ?? 1,
       ratio: dimensions.canvas.width / dimensions.canvas.height,
+      size: Math.ceil((dataUrl.length * 3) / 4) - (dataUrl.endsWith('==') ? 2 : dataUrl.endsWith('=') ? 1 : 0),
       width: dimensions.canvas.width,
     }
   } finally {

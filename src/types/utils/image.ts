@@ -22,6 +22,7 @@ export type ImageProcessingResult = {
   height: number
   quality?: number
   ratio: number // width / height aspect ratio
+  size: number
   width: number
 }
 
