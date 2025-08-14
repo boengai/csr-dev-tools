@@ -277,7 +277,9 @@ export const ImageResizer = () => {
             <ImagePreview
               metadata={{
                 format: source?.[1].format,
+                height: source?.[1].height,
                 size: source?.[0].size,
+                width: source?.[1].width,
               }}
               src={source ? source[1].dataUrl : undefined}
             />
