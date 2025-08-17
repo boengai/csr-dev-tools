@@ -88,17 +88,29 @@ export const ImageResizer = () => {
   const { toast }: UseToast = useToast()
   const dbSetPreview: (s: ImageProcessingResult) => Promise<void> = useDebounceCallback(
     async (s: ImageProcessingResult) => {
+      let height: number = s.height
+      let width: number = s.width
+
+      // find possible minimum
+      if (height * source![1].ratio <= 1) {
+        height = 1 * 10
+        width = Math.round(1 * source![1].ratio * 10)
+      } else if (width / source![1].ratio <= 1) {
+        width = 1 * 10
+        height = Math.round((1 / source![1].ratio) * 10)
+      }
+
       try {
         setPreview(
           await resizeImage(
             source![0],
             {
-              height: s.height,
-              width: s.width,
+              height,
+              width,
             },
             {
               format: s.format,
-              quality: s.quality,
+              quality: s.quality || 0.05,
             },
           ),
         )
