@@ -278,7 +278,6 @@ export const ImageResizer = () => {
         ]}
       />
       <Dialog
-        description="Adjust the size of your image"
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
         onAfterClose={handleReset}
         size="screen"

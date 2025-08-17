@@ -2,7 +2,9 @@ import { motion } from 'motion/react'
 
 import type { CardProps } from '@/types'
 
-export const Card = ({ children, title }: CardProps) => {
+import { XIcon } from '../icon'
+
+export const Card = ({ children, onClose, title }: CardProps) => {
   return (
     <motion.article
       animate={{ opacity: 1, scale: 1, y: 0 }}
@@ -15,7 +17,25 @@ export const Card = ({ children, title }: CardProps) => {
         y: -4,
       }}
     >
-      <h3 className="text-heading-5 w-full shrink-0 rounded-t-xl bg-gray-800 px-5 py-2">{title}</h3>
+      <div className="tablet:rounded-t-xl relative w-full shrink-0 truncate rounded-none bg-gray-800 px-5 py-2 pr-14">
+        <h3 className="text-heading-5 grow">{title}</h3>
+        {onClose && (
+          <motion.button
+            className="bg-error absolute right-4 top-1/2 flex size-4 -translate-y-1/2 items-center justify-center rounded-full"
+            initial={{ color: 'var(--color-error)', scale: 1 }}
+            onClick={onClose}
+            transition={{ duration: 0.3, ease: 'easeOut' }}
+            whileHover={{ color: 'var(--color-white)' }}
+            whileTap={{
+              scale: 0.98,
+              transition: { duration: 0.1, ease: 'easeOut' },
+            }}
+          >
+            <span className="sr-only">Close</span>
+            <XIcon size={12} />
+          </motion.button>
+        )}
+      </div>
       <div className="flex size-full grow flex-col overflow-hidden rounded-b-xl border border-gray-800 bg-white/5 p-6 backdrop-blur">
         {children}
       </div>

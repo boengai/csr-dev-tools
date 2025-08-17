@@ -2,7 +2,7 @@ import type { ReactElement, ReactNode } from 'react'
 
 export type DialogProps = Partial<DialogVariants> & {
   children: ReactNode
-  description: string
+  description?: string
   injected?: {
     open: boolean
     setOpen: (value: boolean) => void
