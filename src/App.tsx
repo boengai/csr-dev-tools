@@ -1,11 +1,7 @@
+import { Outlet } from '@tanstack/react-router'
 import { type ComponentType, lazy, type LazyExoticComponent, Suspense } from 'react'
-import { Outlet, Route, Routes } from 'react-router'
 
 import { NotoEmoji, ToastProvider } from '@/components'
-
-// pages
-const HomePage: LazyExoticComponent<ComponentType> = lazy(() => import('@/pages/home'))
-const ShowcasePage: LazyExoticComponent<ComponentType> = lazy(() => import('@/pages/showcase'))
 
 // components
 const TwinkleStarsAnimate: LazyExoticComponent<ComponentType> = lazy(() =>
@@ -24,28 +20,17 @@ const PageLoading = () => {
   )
 }
 
-const Wrapper = () => {
-  return (
-    <main className="bg-pixel-texture relative flex grow flex-col pb-[var(--safe-area-inset-bottom)] pt-[var(--safe-area-inset-top)] [&>*:not(:first-child)]:relative">
-      <Suspense fallback={<></>}>
-        <TwinkleStarsAnimate />
-      </Suspense>
-      <Suspense fallback={<PageLoading />}>
-        <Outlet />
-      </Suspense>
-    </main>
-  )
-}
-
-export const App = () => {
+export default function App() {
   return (
     <>
-      <Routes>
-        <Route element={<Wrapper />} path="/">
-          <Route element={<ShowcasePage />} path="/showcase" />
-          <Route element={<HomePage />} path="/" />
-        </Route>
-      </Routes>
+      <main className="bg-pixel-texture relative flex grow flex-col pb-[var(--safe-area-inset-bottom)] pt-[var(--safe-area-inset-top)] [&>*:not(:first-child)]:relative">
+        <Suspense fallback={<></>}>
+          <TwinkleStarsAnimate />
+        </Suspense>
+        <Suspense fallback={<PageLoading />}>
+          <Outlet />
+        </Suspense>
+      </main>
       <ToastProvider />
     </>
   )

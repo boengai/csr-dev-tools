@@ -1,4 +1,5 @@
 export * from './app'
 export * from './color'
 export * from './image'
+export * from './route'
 export * from './time'

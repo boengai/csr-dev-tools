@@ -1,8 +1,9 @@
 import type { PropsWithChildren } from 'react'
 
-import { Navigate } from 'react-router'
+import { Navigate } from '@tanstack/react-router'
 
 import { Button, Card, Dialog } from '@/components'
+import { ROUTE_PATH } from '@/constants/route'
 
 const Group = ({ children, title }: PropsWithChildren<{ title: string }>) => {
   return (
@@ -15,7 +16,7 @@ const Group = ({ children, title }: PropsWithChildren<{ title: string }>) => {
 
 export default function ShowcasePage() {
   if (!import.meta.env.DEV) {
-    return <Navigate to="/" />
+    return <Navigate to={ROUTE_PATH.HOME} />
   }
 
   return (
