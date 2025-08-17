@@ -10,7 +10,7 @@
 [![Node.js](https://img.shields.io/badge/Node.js->=24.5.0-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-19.1.1-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-7.0.6-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Vite](https://img.shields.io/badge/Vite-7.1.2-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 
 [Live Demo](https://your-demo-url.com) • [Report Bug](https://github.com/boengai/csr-dev-tools/issues) • [Request Feature](https://github.com/boengai/csr-dev-tools/issues)
 
@@ -87,7 +87,10 @@ pnpm preview
 - **[React 19](https://react.dev/)** - Latest React with modern features
 - **[TypeScript](https://www.typescriptlang.org/)** - Type-safe development
 - **[Vite](https://vitejs.dev/)** - Fast build tool and dev server
-- **[React Router 7](https://reactrouter.com/)** - Client-side routing
+- **[TanStack Router](https://tanstack.com/router)** - Client-side routing
+
+### Data Management
+- **[TanStack Query](https://tanstack.com/query)** - Server state management and caching
 
 ### UI & Styling
 - **[Tailwind CSS v4](https://tailwindcss.com/)** - Utility-first CSS framework
@@ -98,6 +101,9 @@ pnpm preview
 ### State Management
 - **[Zustand](https://zustand-demo.pmnd.rs/)** - Lightweight state management
 
+### File Processing
+- **[JSZip](https://stuk.github.io/jszip/)** - Client-side ZIP file generation and processing
+
 ### Development Tools
 - **[ESLint](https://eslint.org/)** - Code linting with custom configuration
 - **[Prettier](https://prettier.io/)** - Code formatting
@@ -107,13 +113,16 @@ pnpm preview
 
 ```
 csr-dev-tools/
-├── public/                 # Static assets
+├── public/                # Static assets
 ├── src/
-│   ├── components/         # Reusable UI components
+│   ├── components/        # Reusable UI components
 │   │   ├── common/        # Common components (buttons, cards, etc.)
 │   │   ├── feature/       # Feature-specific components
 │   │   └── index.ts       # Component exports
-│   ├── constants/         # Application constants
+│   ├── constants/         # constants
+│   │   ├── feature.ts     # Feature constants
+│   │   ├── image.ts       # Image constants
+│   │   ├── route.ts       # Route constants
 │   ├── hooks/             # Custom React hooks
 │   ├── pages/             # Page components
 │   │   ├── home/          # Main dashboard
@@ -122,6 +131,7 @@ csr-dev-tools/
 │   ├── utils/             # Utility functions
 │   ├── App.tsx            # Root application component
 │   ├── main.tsx           # Application entry point
+│   ├── routes.tsx         # TanStack Router configuration
 │   └── index.css          # Global styles and Tailwind imports
 ├── package.json
 ├── vite.config.ts         # Vite configuration
@@ -145,8 +155,9 @@ This project follows a comprehensive design system built on:
 
 ### Component Architecture
 - **Radix UI** as the foundation for accessible, unstyled components
-- **Tailwind CSS** for styling with utility classes
+- **Tailwind CSS v4** for styling with utility classes and CSS-based configuration
 - **Motion One** for smooth animations and transitions
+- **TanStack Router** for routing and lazy component loading
 
 ### Code Standards
 - **TypeScript strict mode** for type safety
@@ -169,8 +180,10 @@ This project follows a comprehensive design system built on:
 ### Modern Development
 - **React 19** with latest features and optimizations
 - **TypeScript** for enhanced developer experience
+- **TanStack Router** for routing with automatic code splitting
+- **TanStack Query** for intelligent data fetching and caching
 - **Hot module replacement** for instant feedback during development
-- **Optimized build** with code splitting and tree shaking
+- **Optimized build** with tree shaking and lazy loading
 
 ### Responsive Design
 - **Mobile-first** approach with Tailwind CSS
