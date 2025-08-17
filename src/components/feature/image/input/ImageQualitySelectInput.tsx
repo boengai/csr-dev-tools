@@ -7,9 +7,9 @@ export const ImageQualitySelectInput = (props: Pick<SelectInputProps, 'disabled'
     <SelectInput
       {...props}
       name="quality"
-      options={Array.from({ length: 10 }, (_: unknown, i: number) => ({
-        label: `${(i + 1) * 10}% Qual.`,
-        value: ((i + 1) / 10).toString(),
+      options={Array.from({ length: 20 }, (_: unknown, i: number) => ({
+        label: `${(i + 1) * 5}% Qual.`,
+        value: ((i + 1) / 5).toString(),
       }))}
       placeholder="Select image quality"
     />
