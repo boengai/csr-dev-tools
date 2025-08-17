@@ -23,6 +23,8 @@ const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING', string> = {
   PROCESSING: 'processing',
 }
 
+const EMPTY_IMAGE: string = 'data:,'
+
 const formatBytes = (bytes: number): string => {
   if (bytes === 0) {
     return '0 B'
@@ -47,22 +49,26 @@ const ImagePreview = ({
   return (
     <div className="flex size-full max-h-full grow flex-col items-center justify-center gap-4 overflow-y-auto p-4">
       {src ? (
-        <>
-          <picture className="flex size-full max-h-full grow flex-col items-center justify-center gap-4 overflow-y-auto">
-            <img alt="preview" className="max-h-full w-full max-w-full object-contain" src={src} />
-          </picture>
-          {metadata && (
-            <ul className="text-body-sm flex gap-1 text-center italic text-gray-200">
-              {metadata.width && metadata.height && (
-                <li>
-                  {metadata.width}x{metadata.height};
-                </li>
-              )}
-              {metadata.format && <li>{metadata.format};</li>}
-              {metadata.size && <li>{formatBytes(metadata.size)};</li>}
-            </ul>
-          )}
-        </>
+        src === EMPTY_IMAGE ? (
+          <NotoEmoji emoji="bomb" size={120} />
+        ) : (
+          <>
+            <picture className="flex size-full max-h-full grow flex-col items-center justify-center gap-4 overflow-y-auto">
+              <img alt="preview" className="max-h-full w-full max-w-full object-contain" src={src} />
+            </picture>
+            {metadata && (
+              <ul className="text-body-sm flex gap-1 text-center italic text-gray-200">
+                {metadata.width && metadata.height && (
+                  <li>
+                    {metadata.width}x{metadata.height};
+                  </li>
+                )}
+                {metadata.format && <li>{metadata.format};</li>}
+                {metadata.size && <li>{formatBytes(metadata.size)};</li>}
+              </ul>
+            )}
+          </>
+        )
       ) : (
         <NotoEmoji emoji="robot" size={120} />
       )}
@@ -101,24 +107,22 @@ export const ImageResizer = () => {
       }
 
       try {
-        setPreview(
-          await resizeImage(
-            source![0],
-            {
-              height,
-              width,
-            },
-            {
-              format: s.format,
-              quality: s.quality || 0.05,
-            },
-          ),
-        )
-      } catch {
+        const result: ImageProcessingResult = await resizeImage(source![0], {
+          height,
+          width,
+        })
+
+        setPreview(result)
+
+        if (result.dataUrl === EMPTY_IMAGE) {
+          throw new Error('Could not process image. Because of memory limit.')
+        }
+      } catch (e: unknown) {
         toast({
           action: 'add',
           item: {
-            label: 'Failed to process image',
+            duration: 3_000,
+            label: e instanceof Error ? e.message : 'Failed to process image',
             type: 'error',
           },
         })
@@ -172,9 +176,9 @@ export const ImageResizer = () => {
 
         if (!isNaN(newValue) && newValue > 0) {
           if (key === 'width') {
-            newState.height = Math.round(newValue / prev.ratio)
+            newState.height = Math.round(newValue / source![1].ratio)
           } else if (key === 'height') {
-            newState.width = Math.round(newValue * prev.ratio)
+            newState.width = Math.round(newValue * source![1].ratio)
           }
         }
       }

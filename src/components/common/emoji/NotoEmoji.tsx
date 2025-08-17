@@ -1,4 +1,5 @@
-const EMOJI_MAP: Record<'check' | 'flying-saucer' | 'robot' | 'thinking-face', string> = {
+const EMOJI_MAP: Record<'bomb' | 'check' | 'flying-saucer' | 'robot' | 'thinking-face', string> = {
+  bomb: '1f4a3',
   check: '2705',
   'flying-saucer': '1f6f8',
   robot: '1f916',

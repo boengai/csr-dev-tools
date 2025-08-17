@@ -62,7 +62,7 @@ const ToastItem = ({ duration = 1500, label, type }: Omit<ToastItemProps, 'id'>)
           >
             <ToastTypeIcon type={type} />
           </motion.div>
-          <Title>{label}</Title>
+          <Title className="capitalize">{label}</Title>
         </motion.li>
       </Root>
     </AnimatePresence>
