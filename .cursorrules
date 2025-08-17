@@ -9,7 +9,7 @@ A free collection of web developer tools that work entirely client-side, includi
 - **Unix Timestamp Converter**: Convert between Unix timestamps and human-readable dates
 - **PX to REM Converter**: Convert pixel values to REM units
 
-Built with React 19, TypeScript, Tailwind CSS v4, Radix UI, Motion One, and Zustand for a modern, performant developer experience.
+Built with React 19, TypeScript, Tailwind CSS v4, Radix UI, Motion One, TanStack Router, TanStack Query, and Zustand for a modern, performant developer experience.
 
 ## Code Style & Standards
 
@@ -89,14 +89,15 @@ Built with React 19, TypeScript, Tailwind CSS v4, Radix UI, Motion One, and Zust
 - **Package Management**: pnpm (version 10.11.0+)
 - **Runtime**: Node.js 24.5.0+
 - **React**: 19.1.1 with functional components and hooks
-- **Routing**: React Router 7.7.1
+- **Routing**: TanStack Router 1.131.22 for type-safe routing
+- **Data Management**: TanStack Query 5.85.3 for server state and caching
 - **State Management**: Zustand 5.0.7 for client state
-- **Styling**: Tailwind CSS 4.1.11 with Tailwind Variants 2.1.0
+- **Styling**: Tailwind CSS 4.1.12 with Tailwind Variants 2.1.0
 - **UI Components**: Radix UI (Dialog, Select, Tabs, Toast)
 - **Animations**: Motion One 12.23.12 for React animations
 - **File Processing**: JSZip 3.10.1 for archive operations
-- **Build Tool**: Vite 7.0.6 with React plugin
-- **Linting**: ESLint 9.32.0 with Perfectionist, Prettier, and React plugins
+- **Build Tool**: Vite 7.1.2 with React plugin
+- **Linting**: ESLint 9.33.0 with Perfectionist, Prettier, and React plugins
 - **Testing**: Vitest 3.2.4
 
 ## AI Assistant Guidelines
@@ -110,6 +111,8 @@ Built with React 19, TypeScript, Tailwind CSS v4, Radix UI, Motion One, and Zust
 6. **Use pure Tailwind classes for component styling instead of separate CSS files**
 7. **Prefer Motion One (`motion/react`) for animations, transitions, and presence; avoid Tailwind `animate-*`/`fade-*`/`slide-*` utilities**
 8. **Create simple SVG icon components instead of using external icon libraries**
+9. **Use TanStack Router for type-safe routing with proper lazy loading**
+10. **Leverage TanStack Query for data fetching and state management when dealing with server data**
 
 ### Code Quality Checks
 - Add proper TypeScript types for all functions
@@ -162,3 +165,25 @@ Built with React 19, TypeScript, Tailwind CSS v4, Radix UI, Motion One, and Zust
 - **Testing & reset**: Expose a `reset()` action for tests and storybook to return to initial state.
 - **No provider needed**: Do not wrap the app with custom providers for Zustand.
 - **Middleware**: Prefer built-in middleware (`persist`, `subscribeWithSelector`) over external helpers.
+
+## TanStack Router
+
+- **Type-safe routing**: Use TanStack Router for full TypeScript integration and type-safe navigation.
+- **Route definition**: Define routes using `createRoute()` with proper parent-child relationships.
+- **Lazy loading**: Use `lazyRouteComponent()` for code splitting and performance optimization.
+- **Route organization**: Keep route definitions in `src/routes.tsx` with centralized route tree.
+- **Navigation**: Use router hooks for type-safe navigation and route parameters.
+- **Route constants**: Define route paths in `src/constants/route.ts` for consistency.
+- **404 handling**: Implement proper fallback with `notFoundComponent` redirecting to home.
+- **Performance**: Configure `defaultPreload: 'intent'` for smart preloading on hover.
+
+## TanStack Query
+
+- **Server state management**: Use TanStack Query for data fetching, caching, and synchronization.
+- **Query keys**: Use consistent, hierarchical query keys for proper cache invalidation.
+- **Error handling**: Implement proper error boundaries and retry strategies.
+- **Loading states**: Leverage built-in loading, error, and success states for UI feedback.
+- **Mutations**: Use `useMutation` for data modifications with optimistic updates when appropriate.
+- **Cache management**: Configure appropriate stale times and cache lifetimes for different data types.
+- **Offline support**: Leverage built-in offline capabilities for better user experience.
+- **DevTools**: Use TanStack Query DevTools in development for debugging cache state.
