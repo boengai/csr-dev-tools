@@ -17,7 +17,7 @@ export const Card = ({ children, onClose, title }: CardProps) => {
         y: -4,
       }}
     >
-      <div className="tablet:rounded-t-xl relative w-full shrink-0 truncate rounded-none bg-gray-800 px-5 py-2 pr-14">
+      <div className="relative w-full shrink-0 truncate rounded-none rounded-t-xl bg-gray-800 px-5 py-2 pr-14">
         <h3 className="text-heading-5 grow">{title}</h3>
         {onClose && (
           <motion.button

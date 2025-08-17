@@ -21,6 +21,34 @@ const contentVariants: CompVariant<DialogVariants> = tv({
   },
 })
 
+const contentHeaderVariants: CompVariant<DialogVariants> = tv({
+  base: 'text-heading-5 relative w-full shrink-0 truncate rounded-none bg-gray-800 px-5 py-2 pr-14',
+  defaultVariants: {
+    size: 'default',
+  },
+  variants: {
+    size: {
+      default: 'rounded-t-xl',
+      screen: 'tablet:rounded-t-xl',
+      small: 'rounded-t-xl',
+    },
+  },
+})
+
+const contentBodyVariants: CompVariant<DialogVariants> = tv({
+  base: 'flex size-full grow flex-col overflow-hidden border border-gray-800 bg-white/5 p-6 backdrop-blur',
+  defaultVariants: {
+    size: 'default',
+  },
+  variants: {
+    size: {
+      default: 'rounded-b-xl',
+      screen: 'tablet:rounded-b-xl',
+      small: 'rounded-b-xl',
+    },
+  },
+})
+
 export const Dialog = ({
   children,
   description,
@@ -31,6 +59,8 @@ export const Dialog = ({
   trigger,
 }: DialogProps) => {
   const contentClassName: string = contentVariants({ size })
+  const contentHeaderClassName: string = contentHeaderVariants({ size })
+  const contentBodyClassName: string = contentBodyVariants({ size })
 
   const handleOpenChange = (open: boolean) => {
     injected?.setOpen(open)
@@ -60,7 +90,7 @@ export const Dialog = ({
             initial={{ opacity: 0, scale: 0.95, y: -8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
-            <div className="tablet:rounded-t-xl text-heading-5 relative w-full shrink-0 truncate rounded-none bg-gray-800 px-5 py-2 pr-14">
+            <div className={contentHeaderClassName}>
               <Title className="text-heading-5 grow">{title}</Title>
               <Description className="hidden">{description && title}</Description>
               <Close asChild>
@@ -79,9 +109,7 @@ export const Dialog = ({
                 </motion.button>
               </Close>
             </div>
-            <div className="flex size-full grow flex-col overflow-hidden rounded-b-xl border border-gray-800 bg-white/5 p-6 backdrop-blur">
-              {children}
-            </div>
+            <div className={contentBodyClassName}>{children}</div>
           </motion.div>
         </Content>
       </Portal>
