@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/typedef */
 import { createRootRoute, createRoute, createRouter, lazyRouteComponent, Navigate } from '@tanstack/react-router'
 
-import { ROUTE_PATH } from './constants/route'
+import { ROUTE_PATH } from '@/constants'
 
 const rootRoute = createRootRoute({
   component: lazyRouteComponent(() => import('@/App')),

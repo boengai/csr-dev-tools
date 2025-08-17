@@ -10,11 +10,11 @@ import {
   useState,
 } from 'react'
 
-import type { AppKey, UsePersistAppLayout } from '@/types'
+import type { FeatureKey, UsePersistFeatureLayout } from '@/types'
 
 import { Card, Dialog, NotoEmoji, PlusIcon } from '@/components'
-import { APP, APP_TITLE } from '@/constants'
-import { usePersistAppLayout } from '@/hooks'
+import { FEATURE_TITLE } from '@/constants'
+import { usePersistFeatureLayout } from '@/hooks'
 
 // apps
 const ColorConvertor: LazyExoticComponent<ComponentType> = lazy(() =>
@@ -81,46 +81,46 @@ const AddButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'o
 
 const AppContainer = ({ onOpenDialog, position }: { onOpenDialog: (position: number) => void; position: number }) => {
   //hook
-  const { setter, value }: UsePersistAppLayout = usePersistAppLayout()
+  const { setter, value }: UsePersistFeatureLayout = usePersistFeatureLayout()
 
   const handleClose = () => {
     setter(position, null)
   }
 
   switch (value[position]) {
-    case APP.BASE64_ENCODER:
+    case 'BASE64_ENCODER':
       return (
-        <Card onClose={handleClose} title={APP_TITLE.BASE64_ENCODER}>
+        <Card onClose={handleClose} title={FEATURE_TITLE.BASE64_ENCODER}>
           <EncodingBase64 />
         </Card>
       )
-    case APP.COLOR_CONVERTER:
+    case 'COLOR_CONVERTER':
       return (
-        <Card onClose={handleClose} title={APP_TITLE.COLOR_CONVERTER}>
+        <Card onClose={handleClose} title={FEATURE_TITLE.COLOR_CONVERTER}>
           <ColorConvertor />
         </Card>
       )
-    case APP.IMAGE_CONVERTOR:
+    case 'IMAGE_CONVERTOR':
       return (
-        <Card onClose={handleClose} title={APP_TITLE.IMAGE_CONVERTOR}>
+        <Card onClose={handleClose} title={FEATURE_TITLE.IMAGE_CONVERTOR}>
           <ImageConvertor />
         </Card>
       )
-    case APP.IMAGE_RESIZER:
+    case 'IMAGE_RESIZER':
       return (
-        <Card onClose={handleClose} title={APP_TITLE.IMAGE_RESIZER}>
+        <Card onClose={handleClose} title={FEATURE_TITLE.IMAGE_RESIZER}>
           <ImageResize />
         </Card>
       )
-    case APP.PX_TO_REM:
+    case 'PX_TO_REM':
       return (
-        <Card onClose={handleClose} title={APP_TITLE.PX_TO_REM}>
+        <Card onClose={handleClose} title={FEATURE_TITLE.PX_TO_REM}>
           <UnitPxToRem />
         </Card>
       )
-    case APP.UNIX_TIMESTAMP:
+    case 'UNIX_TIMESTAMP':
       return (
-        <Card onClose={handleClose} title={APP_TITLE.UNIX_TIMESTAMP}>
+        <Card onClose={handleClose} title={FEATURE_TITLE.UNIX_TIMESTAMP}>
           <TimeUnixTimestamp />
         </Card>
       )
@@ -139,7 +139,7 @@ const AppLoading = () => {
 
 const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; position: null | number }) => {
   //hook
-  const { setter, value }: UsePersistAppLayout = usePersistAppLayout()
+  const { setter, value }: UsePersistFeatureLayout = usePersistFeatureLayout()
 
   const appPosition: Record<string, number> = Object.entries(value).reduce(
     (acc: Record<string, number>, cur: [string, null | string]) => {
@@ -151,14 +151,14 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
     {},
   )
 
-  const list: Array<{ at: null | number; value: string }> = Object.keys(APP).map((value: string) => ({
-    at: appPosition[APP[value as AppKey]] ?? null,
+  const list: Array<{ at: null | number; value: string }> = Object.keys(FEATURE_TITLE).map((value: string) => ({
+    at: appPosition[value] ?? null,
     value,
   }))
 
   const handleSelectApp = (value: string) => {
     if (position !== null) {
-      setter(position, APP[value as AppKey])
+      setter(position, value as FeatureKey)
       onDismiss()
     }
   }
@@ -176,7 +176,7 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
               disabled={at !== null}
               onClick={() => handleSelectApp(value)}
             >
-              <span>{APP_TITLE[value as AppKey]}</span>
+              <span>{FEATURE_TITLE[value as FeatureKey]}</span>
               {at !== null && <span className="bg-secondary rounded px-1 text-xs text-white">#{at + 1}</span>}
             </button>
           </li>

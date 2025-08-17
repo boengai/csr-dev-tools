@@ -1,4 +1,4 @@
-export type AppKey =
+export type FeatureKey =
   | 'BASE64_ENCODER'
   | 'COLOR_CONVERTER'
   | 'IMAGE_CONVERTOR'

@@ -1,1 +1,1 @@
-export * from './usePersistAppLayout'
+export * from './usePersistFeatureLayout'
