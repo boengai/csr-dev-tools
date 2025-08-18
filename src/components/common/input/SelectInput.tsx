@@ -11,6 +11,7 @@ import {
   Value,
   Viewport,
 } from '@radix-ui/react-select'
+import { AnimatePresence, motion } from 'motion/react'
 
 import type { SelectInputProps } from '@/types'
 
@@ -34,27 +35,42 @@ export const SelectInput = ({
         </Icon>
       </Trigger>
       <Portal>
-        <Content
-          className="popover z-50 max-h-[30dvh] w-[var(--radix-select-trigger-width)] overflow-y-auto"
-          position="popper"
-        >
-          <Viewport>
-            {items.map((itm: SelectInputProps['options'][number]) => (
-              <Item
-                className="hover:bg-primary/50 flex cursor-pointer items-center justify-between truncate px-4 py-2 transition-colors data-[state=checked]:pointer-events-none data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50"
-                disabled={itm.disabled}
-                key={itm.value}
-                value={itm.value}
-              >
-                <ItemText className="whitespace-nowrap">{itm.label}</ItemText>
-                <ItemIndicator className="text-success">
-                  <CheckIcon size={20} />
-                </ItemIndicator>
-              </Item>
-            ))}
-          </Viewport>
-          <Arrow />
-        </Content>
+        <AnimatePresence>
+          <Content
+            asChild
+            className="popover z-50 max-h-[30dvh] w-[var(--radix-select-trigger-width)] overflow-y-auto"
+            position="popper"
+          >
+            <motion.div
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 8 }}
+              initial={{ opacity: 0, scale: 0.9, y: 16 }}
+              transition={{
+                damping: 25,
+                opacity: { duration: 0.2 },
+                stiffness: 300,
+                type: 'spring',
+              }}
+            >
+              <Viewport>
+                {items.map((itm: SelectInputProps['options'][number]) => (
+                  <Item
+                    className="hover:bg-primary/50 flex cursor-pointer items-center justify-between truncate px-4 py-2 transition-colors data-[state=checked]:pointer-events-none data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50"
+                    disabled={itm.disabled}
+                    key={itm.value}
+                    value={itm.value}
+                  >
+                    <ItemText className="whitespace-nowrap">{itm.label}</ItemText>
+                    <ItemIndicator className="text-success">
+                      <CheckIcon size={20} />
+                    </ItemIndicator>
+                  </Item>
+                ))}
+              </Viewport>
+              <Arrow />
+            </motion.div>
+          </Content>
+        </AnimatePresence>
       </Portal>
     </Root>
   )

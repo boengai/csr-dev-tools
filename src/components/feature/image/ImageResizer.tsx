@@ -124,7 +124,7 @@ export const ImageResizer = () => {
         toast({
           action: 'add',
           item: {
-            duration: 3_000,
+            duration: 5_000,
             label: e instanceof Error ? e.message : 'Failed to process image',
             type: 'error',
           },
