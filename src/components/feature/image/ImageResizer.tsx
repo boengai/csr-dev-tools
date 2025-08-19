@@ -110,6 +110,9 @@ export const ImageResizer = () => {
         const result: ImageProcessingResult = await resizeImage(source![0], {
           height,
           width,
+        }, {
+          format: s.format,
+          quality: s.quality || 0.05,
         })
 
         setPreview(result)
