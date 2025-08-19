@@ -2,8 +2,6 @@
 
 <div align="center">
 
-![CSR Developer Tools](public/web-app-manifest-192x192.png)
-
 **Free online tools for web developers. Speed up your development workflow.**
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
