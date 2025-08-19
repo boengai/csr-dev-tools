@@ -38,7 +38,7 @@ export const SelectInput = ({
         <AnimatePresence>
           <Content
             asChild
-            className="popover z-50 max-h-[30dvh] w-[var(--radix-select-trigger-width)] overflow-y-auto"
+            className="popover z-50 max-h-[30dvh] w-[var(--radix-select-trigger-width)]"
             position="popper"
           >
             <motion.div

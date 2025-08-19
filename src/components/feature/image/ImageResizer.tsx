@@ -107,13 +107,17 @@ export const ImageResizer = () => {
       }
 
       try {
-        const result: ImageProcessingResult = await resizeImage(source![0], {
-          height,
-          width,
-        }, {
-          format: s.format,
-          quality: s.quality || 0.05,
-        })
+        const result: ImageProcessingResult = await resizeImage(
+          source![0],
+          {
+            height,
+            width,
+          },
+          {
+            format: s.format,
+            quality: s.quality || 0.05,
+          },
+        )
 
         setPreview(result)
 
@@ -142,6 +146,7 @@ export const ImageResizer = () => {
           quality: 1,
           strategy: 'stretch',
         })
+
         setSource([values[0], preview])
         setPreview(preview)
         setTabValue(TABS_VALUES.PROCESSING)
