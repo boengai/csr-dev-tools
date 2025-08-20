@@ -47,14 +47,14 @@ const ImagePreview = ({
   }
 }) => {
   return (
-    <div className="flex size-full max-h-full grow flex-col items-center justify-center gap-4 overflow-y-auto p-4">
+    <div className="tablet:max-h-full tablet:size-full flex w-full grow flex-col items-center justify-center gap-4 p-4">
       {src ? (
         src === EMPTY_IMAGE ? (
           <NotoEmoji emoji="bomb" size={120} />
         ) : (
           <>
-            <picture className="flex size-full max-h-full grow flex-col items-center justify-center gap-4 overflow-y-auto">
-              <img alt="preview" className="max-h-full max-w-full" src={src} />
+            <picture className="tablet:max-h-full tablet:overflow-y-auto flex size-full grow flex-col items-center justify-center gap-4">
+              <img alt="preview" className="tablet:w-auto tablet:max-h-full w-full max-w-full" src={src} />
             </picture>
             {metadata && (
               <ul className="text-body-sm flex gap-1 text-center italic text-gray-200">
@@ -295,8 +295,8 @@ export const ImageResizer = () => {
         size="screen"
         title="Adjust the size of your image"
       >
-        <div className="flex min-h-0 grow flex-col gap-4">
-          <div className="bg-grid-texture tablet:flex-row flex min-h-0 grow flex-col items-center justify-center gap-6 bg-black">
+        <div className="tablet:min-h-0 flex grow flex-col gap-4">
+          <div className="bg-grid-texture tablet:flex-row tablet:grow tablet:min-h-0 flex flex-col items-center justify-center gap-6 bg-black">
             <ImagePreview
               metadata={{
                 format: source?.[1].format,
