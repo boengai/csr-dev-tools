@@ -18,7 +18,7 @@ export const Card = ({ children, onClose, title }: CardProps) => {
       }}
     >
       <div className="relative w-full shrink-0 truncate rounded-none rounded-t-xl bg-gray-800 px-5 py-2 pr-14">
-        <h3 className="text-heading-5 grow">{title}</h3>
+        <h3 className="text-heading-5 grow truncate">{title}</h3>
         {onClose && (
           <motion.button
             className="bg-error absolute right-4 top-1/2 flex size-4 -translate-y-1/2 items-center justify-center rounded-full"

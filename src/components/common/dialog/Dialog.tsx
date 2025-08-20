@@ -22,7 +22,7 @@ const contentVariants: CompVariant<DialogVariants> = tv({
 })
 
 const contentHeaderVariants: CompVariant<DialogVariants> = tv({
-  base: 'text-heading-5 relative w-full shrink-0 truncate rounded-none bg-gray-800 px-5 py-2 pr-14',
+  base: 'text-heading-5 relative w-full shrink-0 rounded-none bg-gray-800 px-5 py-2 pr-14',
   defaultVariants: {
     size: 'default',
   },
@@ -36,7 +36,7 @@ const contentHeaderVariants: CompVariant<DialogVariants> = tv({
 })
 
 const contentBodyVariants: CompVariant<DialogVariants> = tv({
-  base: 'flex size-full grow flex-col overflow-hidden border border-gray-800 bg-white/5 p-6 backdrop-blur',
+  base: 'flex size-full grow flex-col overflow-y-auto border border-gray-800 bg-white/5 p-6 backdrop-blur',
   defaultVariants: {
     size: 'default',
   },
@@ -91,7 +91,7 @@ export const Dialog = ({
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
             <div className={contentHeaderClassName}>
-              <Title className="text-heading-5 grow">{title}</Title>
+              <Title className="text-heading-5 grow truncate">{title}</Title>
               <Description className="hidden">{description && title}</Description>
               <Close asChild>
                 <motion.button
