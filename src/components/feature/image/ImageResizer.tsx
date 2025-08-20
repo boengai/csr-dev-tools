@@ -54,7 +54,7 @@ const ImagePreview = ({
         ) : (
           <>
             <picture className="flex size-full max-h-full grow flex-col items-center justify-center gap-4 overflow-y-auto">
-              <img alt="preview" className="max-h-full w-full max-w-full object-contain" src={src} />
+              <img alt="preview" className="max-h-full max-w-full" src={src} />
             </picture>
             {metadata && (
               <ul className="text-body-sm flex gap-1 text-center italic text-gray-200">
