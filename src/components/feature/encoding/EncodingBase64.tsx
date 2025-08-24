@@ -68,7 +68,7 @@ const Form = ({ action, onSubmit }: { action: 'decode' | 'encode'; onSubmit: (so
 
 const Decoder = () => {
   const handleEncode = (value: string): string => {
-    return decodeURIComponent(atob(value))
+    return atob(value)
   }
 
   return <Form action="decode" onSubmit={handleEncode} />
@@ -76,7 +76,7 @@ const Decoder = () => {
 
 const Encoder = () => {
   const handleEncode = (value: string): string => {
-    return btoa(encodeURIComponent(value))
+    return btoa(value)
   }
 
   return <Form action="encode" onSubmit={handleEncode} />
