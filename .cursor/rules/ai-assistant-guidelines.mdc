@@ -1,0 +1,16 @@
+---
+alwaysApply: true
+---
+# AI Assistant Guidelines
+
+## When Writing Code
+1. Implement proper TypeScript types
+2. Follow existing ESLint configuration
+3. Implement responsive design with Tailwind CSS v4
+4. Use @theme directive in CSS files for custom configurations
+5. **Use Radix UI components as the base, then style with Tailwind utility classes**
+6. **Use pure Tailwind classes for component styling instead of separate CSS files**
+7. **Prefer Motion One (`motion/react`) for animations, transitions, and presence; avoid Tailwind `animate-*`/`fade-*`/`slide-*` utilities**
+8. **Create simple SVG icon components instead of using external icon libraries**
+9. **Use TanStack Router for type-safe routing with proper lazy loading**
+10. **Leverage TanStack Query for data fetching and state management when dealing with server data**

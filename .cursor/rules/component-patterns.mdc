@@ -1,0 +1,53 @@
+---
+alwaysApply: true
+---
+
+# Component Patterns
+
+## React Component Structure
+- **Functional components only**: Use React 19 functional components with hooks
+- **Arrow function syntax**: Prefer arrow functions over function declarations
+- **Single responsibility**: Each component should have one clear purpose
+- **Props typing**: Use explicit TypeScript interfaces for component props
+- **Default exports**: Avoid default exports, use named exports instead
+
+## Component Naming
+- **PascalCase**: All component files use PascalCase (e.g., `ColorConverter.tsx`)
+- **Feature directories**: Group related components in feature-specific directories
+- **Common components**: Shared components in `src/components/common/` directory
+- **Index exports**: Use `index.ts` files for clean component exports
+
+## State Management in Components
+- **Local state**: Use `useState` for component-specific state
+- **Derived state**: Compute values from existing state when possible
+- **Side effects**: Use `useEffect` sparingly and with proper dependencies
+- **Event handlers**: Prefix with `handle` (e.g., `handleClick`, `handleSubmit`)
+- **State variables**: Use descriptive names, prefix with `is` for booleans
+
+## Component Examples
+```typescript
+// ✅ Good component structure
+const EncodingBase64 = () => {
+  // States grouped together
+  const [source, setSource] = useState('')
+  const [result, setResult] = useState<Error | string>('')
+
+  // Handlers
+  const handleSourceChange = (val: string) => {
+    setSource(val)
+    // ... processing logic
+  }
+
+  return (
+    <div className="flex h-full shrink-0 grow flex-col gap-4">
+      {/* Component JSX */}
+    </div>
+  )
+}
+```
+
+## Form Components
+- **Controlled inputs**: Always use controlled components with value and onChange
+- **Type safety**: Use proper TypeScript types for form data
+- **Validation**: Implement proper error handling and user feedback
+- **Accessibility**: Include proper labels and ARIA attributes

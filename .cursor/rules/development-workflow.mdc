@@ -1,0 +1,58 @@
+---
+alwaysApply: true
+---
+
+# Development Workflow
+
+## Commands
+- `pnpm dev` - Start development server on port 5173
+- `pnpm build` - Build for production (TypeScript compilation + Vite build)
+- `pnpm lint` - Run ESLint with Perfectionist plugin for import sorting
+- `pnpm preview` - Preview production build locally
+- `pnpm test` - Run Vitest unit tests
+
+## ESLint Configuration
+- **Perfectionist plugin**: Use `recommended-natural` configuration for import sorting
+- **Prettier integration**: Configured with Tailwind plugin and specific formatting rules
+- **Import rules**: Enforce proper import ordering, no duplicates, and first import placement
+- **React rules**: JSX curly brace presence, refresh patterns
+- **TypeScript rules**:
+  - Array type: Use generic syntax (`Array<string>` over `string[]`)
+  - Type definitions: Use `type` over `interface` for consistency
+  - Typedef: Require explicit types for parameters, variables, and destructuring
+- **Prettier settings**:
+  - Print width: 120 characters
+  - No semicolons
+  - Single quotes
+  - Trailing commas: all
+  - Tailwind functions: `tv`
+  - Custom stylesheet path for Tailwind sorting
+
+## TypeScript Configuration
+- **Strict mode**: Full TypeScript strict mode enabled
+- **Module resolution**: Use bundler mode for Vite compatibility
+- **JSX**: Use React 19's automatic JSX runtime (`react-jsx`)
+- **Module syntax**: Enable verbatim module syntax for better tree shaking
+- **ES2022 target**: Modern JavaScript features and DOM APIs
+- **Path aliases**: Use `@/*` for `src/*` imports
+- **Unused detection**: Enable `noUnusedLocals` and `noUnusedParameters`
+- **Erasable syntax**: Ensure only erasable TypeScript syntax is used
+- **No fallthrough**: Require break statements in switch cases
+- **Side effect imports**: Check for unchecked side effect imports
+- **Project references**: Use separate tsconfig files for app and node configurations
+
+## Code Quality Checks
+- Add proper TypeScript types for all functions
+- Use semantic HTML and ARIA attributes
+- **Ensure all Tailwind classes are properly ordered** according to linter rules
+- **Use Motion One for animations; use Tailwind's `data-[state]` only to reflect state in styling**
+
+## Performance Guidelines
+- Use lazy loading for React components
+- Minimize bundle size with tree shaking
+- **Prefer Tailwind's utility classes over custom CSS** for better performance
+- **Avoid external dependencies when built-in solutions exist**
+
+## Security Considerations
+- Validate all user inputs
+- **Use built-in browser features over external libraries when possible**

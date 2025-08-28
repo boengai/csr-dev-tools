@@ -1,0 +1,31 @@
+---
+alwaysApply: true
+---
+
+# Import Patterns
+
+## Path Aliases
+- **Primary alias**: Use `@/*` for all internal imports (maps to `src/*`)
+- **Absolute imports**: Prefer absolute imports over relative imports
+- **No relative imports**: Avoid `../` and `./` imports within the src directory
+
+## Import Ordering (ESLint enforced)
+- **External dependencies first**: Node modules and third-party libraries
+- **Internal modules second**: Project modules using `@/*` alias
+- **Relative imports last**: Only when necessary (discouraged)
+- **Newline separation**: Empty line after import groups
+- **No duplicates**: ESLint prevents duplicate imports
+
+## Import Examples
+```typescript
+// ✅ Good
+import { type Dispatch, type SetStateAction, useState } from 'react'
+import type { UseCopyToClipboard } from '@/types'
+import { Button, CopyIcon } from '@/components/common'
+import { useCopyToClipboard } from '@/hooks'
+
+// ❌ Bad
+import { useState } from 'react'
+import { Button } from '../common'
+import type { UseCopyToClipboard } from '../../types'
+```

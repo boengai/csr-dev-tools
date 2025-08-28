@@ -1,0 +1,29 @@
+---
+alwaysApply: true
+---
+
+# Code Standards
+
+## TypeScript
+- **Always use TypeScript with strict mode**
+- Prefer type inference when possible, explicit types when clarity needed
+- Use proper interfaces for object shapes
+- **Avoid `any` type, use `unknown` or proper types**
+- Export types alongside implementation when creating reusable components
+
+## File Naming & Structure
+- **Use kebab-case for file names** (e.g., `app-version.ts`)
+- **Use PascalCase for component files** (e.g., `HomePage.tsx`)
+- **Use camelCase for utilities and hooks** (e.g., `useAppVersion.ts`)
+- Group related files in feature directories
+- Use index.ts files for clean exports
+
+## Code Organization
+- **Keep components focused and single-responsibility**
+- **Extract custom hooks for reusable logic**
+- **Feature-based organization**: Each tool has its own directory in `src/components/feature/`
+- **Type organization**: Types organized in `src/types/` with feature-specific subdirectories
+- **Hook organization**: Custom hooks in `src/hooks/` with feature grouping
+- **Consistent import ordering**: External dependencies → internal modules → relative imports
+- **Index file exports**: Use `index.ts` files for clean re-exports and barrel patterns
+- **Lazy loading imports**: Use dynamic imports for tool components to optimize bundle splitting
