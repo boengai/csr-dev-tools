@@ -18,6 +18,10 @@ classification:
 date: 2026-02-11
 author: csrteam
 project_name: csr-dev-tools
+lastEdited: 2026-02-11
+editHistory:
+  - date: 2026-02-11
+    changes: 'Post-validation fixes (13 items) + general improvements (6 items) — Out of Scope section added, FR/NFR measurability refined, implementation hints removed, Journey-FR traceability added'
 ---
 
 # Product Requirements Document - csr-dev-tools
@@ -57,7 +61,7 @@ CSR Dev Tools has no traditional business metrics. Success is measured by utilit
 
 - **Lighthouse scores**: 90+ across Performance, Accessibility, Best Practices, and SEO
 - **Zero server dependency**: No backend API calls for any tool. Static hosting only.
-- **Bundle efficiency**: Each tool lazy-loaded independently — adding tools doesn't bloat initial page load
+- **Bundle efficiency**: Adding tools does not increase initial page load size or time
 - **Regression coverage**: All existing tools documented with acceptance criteria and regression test stories
 
 ### Measurable Outcomes
@@ -133,6 +137,17 @@ Each tool is an independent, self-contained unit — can be built in parallel by
 - Plugin-like architecture for standardized tool addition
 - Per-tool SEO optimization for organic discovery
 - Become the one bookmark every developer has
+
+### Out of Scope (Permanent Boundaries)
+
+These are architectural decisions, not deferrals:
+
+- **No server-side processing** — If a tool requires a server, it doesn't get built
+- **No user accounts** — No registration, no login, no profiles
+- **No tool-to-tool pipelines** — Each tool is standalone; no chaining or workflow automation
+- **No browser extensions** — The product is a website, not an extension
+- **No ads or tracking** — No analytics, no cookies, no monetization of any kind
+- **No premium tiers** — Every tool is free for every user, forever
 
 ### Risk Mitigation
 
@@ -221,19 +236,19 @@ Each tool is an independent, self-contained unit — can be built in parallel by
 
 ### Journey Requirements Summary
 
-| Capability | Journeys |
-|-----------|----------|
-| SEO-optimized per-tool landing pages | First-Timer |
-| Instant usability / self-explanatory UI | First-Timer, Repeat, Mobile |
-| Copy-to-clipboard | First-Timer, Repeat |
-| Tool discovery & navigation | First-Timer, Repeat |
-| Persistent bookmarkable URLs per tool | First-Timer, Repeat |
-| Mobile-responsive layout | Mobile |
-| Touch-friendly file upload / download | Mobile |
-| On-device processing (no server) | All journeys |
-| Clear tool architecture for contributors | Contributor |
-| Contribution documentation | Contributor |
-| Consistent component patterns | Contributor |
+| Capability | Journeys | Supporting FRs |
+|-----------|----------|----------------|
+| SEO-optimized per-tool landing pages | First-Timer | FR27, NFR23-25 |
+| Instant usability / self-explanatory UI | First-Timer, Repeat, Mobile | FR38 |
+| Copy-to-clipboard | First-Timer, Repeat | FR3, FR7 |
+| Tool discovery & navigation | First-Timer, Repeat | FR26, FR28 |
+| Persistent bookmarkable URLs per tool | First-Timer, Repeat | FR27 |
+| Mobile-responsive layout | Mobile | FR29 |
+| Touch-friendly file upload / download | Mobile | FR2, FR3 |
+| On-device processing (no server) | All journeys | FR1, NFR9 |
+| Clear tool architecture for contributors | Contributor | FR33 |
+| Contribution documentation | Contributor | FR36, FR37 |
+| Consistent component patterns | Contributor | FR33, FR35 |
 
 ## Web App Specific Requirements
 
@@ -310,7 +325,7 @@ No support for: IE11, legacy browsers, or non-evergreen browsers.
 - FR1: Users can process any supported conversion/transformation entirely in the browser without server communication
 - FR2: Users can upload files (images, text) from their device for processing
 - FR3: Users can download or copy processed output to their clipboard or device
-- FR4: Users can see processing results immediately without page reload
+- FR4: Users can see processing results within 500ms without page reload
 
 ### Color Tools
 
@@ -326,10 +341,10 @@ No support for: IE11, legacy browsers, or non-evergreen browsers.
 
 ### Image Tools
 
-- FR11: Users can convert images between PNG, JPG, WebP, and other browser-supported formats
+- FR11: Users can convert images between PNG, JPG, WebP, GIF, BMP, and AVIF formats (where browser-supported)
 - FR12: Users can resize images with custom width and height dimensions
-- FR13: Users can compress images while controlling quality
-- FR14: Users can crop images with custom aspect ratios
+- FR13: Users can compress JPEG and WebP images using a quality slider (1-100) and see the resulting file size before downloading
+- FR14: Users can crop images using freeform selection or common aspect ratio presets (16:9, 4:3, 1:1, 3:2)
 
 ### Time & Unit Tools
 
@@ -350,7 +365,7 @@ No support for: IE11, legacy browsers, or non-evergreen browsers.
 ### Generator Tools
 
 - FR22: Users can generate UUIDs (single or bulk)
-- FR23: Users can generate strong random passwords with configurable options
+- FR23: Users can generate random passwords with configurable length (8-128 characters) and toggle inclusion of uppercase, lowercase, digits, and symbols
 - FR24: Users can generate hash values (MD5, SHA-1, SHA-256, SHA-512) from text input
 
 ### CSS Tools
@@ -362,7 +377,7 @@ No support for: IE11, legacy browsers, or non-evergreen browsers.
 - FR26: Users can browse all available tools from a central dashboard
 - FR27: Users can navigate directly to any tool via unique URL
 - FR28: Users can search or filter tools by name or category
-- FR29: Users can access any tool on mobile devices with a responsive layout
+- FR29: Users can access any tool on mobile devices down to 375px viewport width with touch-friendly layout
 
 ### Platform — Customization
 
@@ -372,35 +387,35 @@ No support for: IE11, legacy browsers, or non-evergreen browsers.
 
 ### Platform — Contributor Experience
 
-- FR33: Contributors can add new tools following documented patterns and conventions
+- FR33: Contributors can add a new tool by following the CONTRIBUTING guide, which documents the required file structure (component, route, constants, tests) and a PR checklist
 - FR34: Contributors can run the development environment locally with standard tooling
 - FR35: Contributors can run tests to validate their changes against existing tool regression stories
 
 ### Documentation & Quality
 
-- FR36: Each existing tool has a documented feature spec with inputs, outputs, and edge cases
-- FR37: Each existing tool has regression test stories covering happy paths, edge cases, and error states
-- FR38: Users can see tool descriptions and usage hints within each tool interface
+- FR36: Developers can reference a documented feature spec for each existing tool covering inputs, outputs, supported formats, and edge cases
+- FR37: Developers can run regression test stories for each existing tool covering happy paths, edge cases, and error states
+- FR38: Users can see a one-line tool description and placeholder text or tooltips on each input field explaining accepted formats and values
 
 ## Non-Functional Requirements
 
 ### Performance
 
-- NFR1: Tool processing operations (color conversion, encoding, unit conversion) complete in under 100ms
-- NFR2: Image processing operations (resize, convert, compress) complete in under 3 seconds for files up to 10MB
-- NFR3: First Contentful Paint under 1.5 seconds on standard broadband
+- NFR1: Tool processing operations (color conversion, encoding, unit conversion) complete in under 100ms as measured by browser Performance API timing
+- NFR2: Image processing operations (resize, convert, compress) complete in under 3 seconds for files up to 10MB as measured by automated benchmark tests
+- NFR3: First Contentful Paint under 1.5 seconds on a 10 Mbps connection
 - NFR4: Largest Contentful Paint under 2.5 seconds
 - NFR5: Total Blocking Time under 200ms
 - NFR6: Cumulative Layout Shift under 0.1
 - NFR7: Lighthouse Performance score of 90+
-- NFR8: Adding new tools does not increase initial page load time (lazy loading enforced)
+- NFR8: Adding new tools does not increase initial page load time
 
 ### Privacy & Security
 
 - NFR9: Zero network requests for tool processing — all operations execute in the browser
 - NFR10: No cookies, localStorage tracking, or analytics scripts
 - NFR11: No third-party scripts that transmit user data
-- NFR12: File uploads are processed in-memory and never persisted beyond the browser session
+- NFR12: File uploads are never persisted beyond the browser session and no upload data is transmitted externally
 - NFR13: All dependencies audited for known vulnerabilities via automated tooling
 
 ### Accessibility
@@ -415,7 +430,7 @@ No support for: IE11, legacy browsers, or non-evergreen browsers.
 
 - NFR19: Tool output correctness verified by automated regression tests
 - NFR20: All existing tools maintain 100% regression test pass rate before any release
-- NFR21: Application functions offline after initial load (static assets cached)
+- NFR21: Application functions offline after initial load
 - NFR22: No runtime errors on supported browsers (Chrome, Firefox, Safari, Edge latest 2)
 
 ### SEO
