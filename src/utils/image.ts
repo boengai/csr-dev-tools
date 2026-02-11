@@ -30,7 +30,7 @@ const cleanupImage = (img: HTMLImageElement): void => {
  * Cleanup canvas to prevent memory leaks
  */
 const cleanupCanvas = (canvas: HTMLCanvasElement): void => {
-  const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d')
+  const ctx = canvas.getContext('2d')
   if (ctx) {
     ctx.clearRect(0, 0, canvas.width, canvas.height)
   }
@@ -42,8 +42,8 @@ const cleanupCanvas = (canvas: HTMLCanvasElement): void => {
  * Load image from File and return HTMLImageElement
  */
 const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
-  return new Promise((resolve: (img: HTMLImageElement) => void, reject: (error: Error) => void) => {
-    const img: HTMLImageElement = new Image()
+  return new Promise((resolve, reject) => {
+    const img = new Image()
     img.crossOrigin = 'anonymous'
 
     const cleanup = () => {
@@ -56,15 +56,15 @@ const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
       resolve(img)
     }
 
-    img.onerror = (event: Event | string) => {
+    img.onerror = (event) => {
       cleanup()
-      const errorMsg: string = event instanceof ErrorEvent ? event.message : 'Failed to load image'
+      const errorMsg = event instanceof ErrorEvent ? event.message : 'Failed to load image'
       reject(new Error(`Image loading failed: ${errorMsg}`))
     }
 
-    const reader: FileReader = new FileReader()
+    const reader = new FileReader()
 
-    reader.onerror = (e: ProgressEvent<FileReader>) => {
+    reader.onerror = (e) => {
       cleanup()
       reject(new Error(`File reading failed: ${e.target?.error?.message ?? 'Unknown error'}`))
     }
@@ -89,11 +89,11 @@ const createCanvasContext = (
   width: number,
   height: number,
 ): { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D } => {
-  const canvas: HTMLCanvasElement = document.createElement('canvas')
+  const canvas = document.createElement('canvas')
   canvas.width = width
   canvas.height = height
 
-  const ctx: CanvasRenderingContext2D | null = canvas.getContext('2d')
+  const ctx = canvas.getContext('2d')
   if (!ctx) {
     throw new Error('Failed to acquire 2D canvas context')
   }
@@ -112,10 +112,10 @@ const validateCoordinates = (
   maxWidth: number,
   maxHeight: number,
 ): { height: number; width: number; x: number; y: number } => {
-  const clampedX: number = Math.max(0, Math.min(x, maxWidth - width))
-  const clampedY: number = Math.max(0, Math.min(y, maxHeight - height))
-  const clampedWidth: number = Math.max(1, Math.min(width, maxWidth - clampedX))
-  const clampedHeight: number = Math.max(1, Math.min(height, maxHeight - clampedY))
+  const clampedX = Math.max(0, Math.min(x, maxWidth - width))
+  const clampedY = Math.max(0, Math.min(y, maxHeight - height))
+  const clampedWidth = Math.max(1, Math.min(width, maxWidth - clampedX))
+  const clampedHeight = Math.max(1, Math.min(height, maxHeight - clampedY))
 
   return {
     height: clampedHeight,
@@ -144,7 +144,7 @@ const calculateDimensions = (
   switch (strategy) {
     case 'contain': {
       // Scale down preserving aspect ratio
-      const scale: number = Math.min(target.width / source.width, target.height / source.height)
+      const scale = Math.min(target.width / source.width, target.height / source.height)
 
       // If scale is exactly 1 or greater, use target dimensions directly to avoid rounding issues
       if (scale >= 1) {
@@ -154,8 +154,8 @@ const calculateDimensions = (
         }
       }
 
-      const finalWidth: number = Math.max(1, Math.round(source.width * scale))
-      const finalHeight: number = Math.max(1, Math.round(source.height * scale))
+      const finalWidth = Math.max(1, Math.round(source.width * scale))
+      const finalHeight = Math.max(1, Math.round(source.height * scale))
 
       return {
         canvas: { height: finalHeight, width: finalWidth },
@@ -170,14 +170,14 @@ const calculateDimensions = (
       }
 
       // Crop while maintaining minimum of source width or height
-      const minSourceDimension: number = Math.min(source.width, source.height)
-      const sourceAspectRatio: number = source.width / source.height
-      const targetAspectRatio: number = target.width / target.height
+      const minSourceDimension = Math.min(source.width, source.height)
+      const sourceAspectRatio = source.width / source.height
+      const targetAspectRatio = target.width / target.height
 
-      let sourceX: number = 0
-      let sourceY: number = 0
-      let cropSourceWidth: number = source.width
-      let cropSourceHeight: number = source.height
+      let sourceX = 0
+      let sourceY = 0
+      let cropSourceWidth = source.width
+      let cropSourceHeight = source.height
 
       if (Math.abs(targetAspectRatio) < Number.EPSILON) {
         throw new Error('Invalid target aspect ratio: width cannot be zero')
@@ -205,7 +205,7 @@ const calculateDimensions = (
 
       // Validate and clamp user-provided coordinates
       if (typeof source.x === 'number' || typeof source.y === 'number') {
-        const validated: { height: number; width: number; x: number; y: number } = validateCoordinates(
+        const validated = validateCoordinates(
           source.x ?? sourceX,
           source.y ?? sourceY,
           cropSourceWidth,
@@ -239,7 +239,7 @@ const calculateDimensions = (
  * Generate canvas data URL with format and quality options
  */
 const canvasToDataUrl = (canvas: HTMLCanvasElement, format: ImageFormat, quality?: number): string => {
-  const normalizedQuality: number = typeof quality === 'number' ? Math.min(1, Math.max(0, quality)) : 1
+  const normalizedQuality = typeof quality === 'number' ? Math.min(1, Math.max(0, quality)) : 1
 
   switch (format) {
     case 'image/png':
@@ -264,8 +264,8 @@ export const processImage = async (
 
   try {
     img = await loadImageFromFile(file)
-    const sourceWidth: number = img.naturalWidth || img.width
-    const sourceHeight: number = img.naturalHeight || img.height
+    const sourceWidth = img.naturalWidth || img.width
+    const sourceHeight = img.naturalHeight || img.height
 
     // Validate source dimensions
     if (sourceWidth <= 0 || sourceHeight <= 0) {
@@ -273,19 +273,19 @@ export const processImage = async (
     }
 
     // Determine target format safely
-    const targetFormat: ImageFormat = getSafeImageFormat(options.format, getSafeImageFormat(file.type))
+    const targetFormat = getSafeImageFormat(options.format, getSafeImageFormat(file.type))
 
     // Check if we need any processing
-    const needsResize: boolean = Boolean(options.maxWidth || options.maxHeight || options.width || options.height)
-    const needsFormatChange: boolean = file.type !== targetFormat
-    const needsQualityChange: boolean =
+    const needsResize = Boolean(options.maxWidth || options.maxHeight || options.width || options.height)
+    const needsFormatChange = file.type !== targetFormat
+    const needsQualityChange =
       (targetFormat === 'image/webp' || targetFormat === 'image/jpeg') && typeof options.quality === 'number'
 
     // If no processing needed, return original as data URL
     if (!needsResize && !needsFormatChange && !needsQualityChange) {
-      const reader: FileReader = new FileReader()
+      const reader = new FileReader()
 
-      return new Promise((resolve: (result: ImageProcessingResult) => void, reject: (error: Error) => void) => {
+      return new Promise((resolve, reject) => {
         reader.onload = () => {
           if (reader.result && typeof reader.result === 'string') {
             resolve({
@@ -309,22 +309,22 @@ export const processImage = async (
     }
 
     // Calculate target dimensions
-    let targetWidth: number = options.width || sourceWidth
-    let targetHeight: number = options.height || sourceHeight
+    let targetWidth = options.width || sourceWidth
+    let targetHeight = options.height || sourceHeight
 
     // Apply max constraints if specified
     if (options.maxWidth || options.maxHeight) {
-      const maxW: number = options.maxWidth ?? Number.POSITIVE_INFINITY
-      const maxH: number = options.maxHeight ?? Number.POSITIVE_INFINITY
+      const maxW = options.maxWidth ?? Number.POSITIVE_INFINITY
+      const maxH = options.maxHeight ?? Number.POSITIVE_INFINITY
 
       // Prevent division by zero
       if (sourceWidth <= 0 || sourceHeight <= 0) {
         throw new Error('Invalid source dimensions for scaling')
       }
 
-      const widthScale: number = maxW / sourceWidth
-      const heightScale: number = maxH / sourceHeight
-      const scale: number = Math.min(widthScale, heightScale)
+      const widthScale = maxW / sourceWidth
+      const heightScale = maxH / sourceHeight
+      const scale = Math.min(widthScale, heightScale)
 
       if (Number.isFinite(scale) && scale < 1) {
         targetWidth = Math.max(1, Math.round(sourceWidth * scale))
@@ -332,10 +332,7 @@ export const processImage = async (
       }
     }
 
-    const dimensions: {
-      canvas: { height: number; width: number }
-      source: { height: number; width: number; x: number; y: number }
-    } = calculateDimensions(
+    const dimensions = calculateDimensions(
       {
         height: sourceHeight,
         width: sourceWidth,
@@ -346,8 +343,7 @@ export const processImage = async (
       options.strategy,
     )
 
-    const { canvas: canvasElement, ctx }: { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D } =
-      createCanvasContext(dimensions.canvas.width, dimensions.canvas.height)
+    const { canvas: canvasElement, ctx } = createCanvasContext(dimensions.canvas.width, dimensions.canvas.height)
     canvas = canvasElement
 
     // Fill background for JPEG to avoid transparency issues
@@ -369,7 +365,7 @@ export const processImage = async (
       dimensions.canvas.height,
     )
 
-    const dataUrl: string = canvasToDataUrl(canvas, targetFormat, options.quality)
+    const dataUrl = canvasToDataUrl(canvas, targetFormat, options.quality)
 
     return {
       dataUrl,
@@ -407,7 +403,7 @@ export const convertImageFormat = async (
     throw new Error(`Invalid target format: ${targetFormat}`)
   }
 
-  const result: ImageProcessingResult = await processImage(file, {
+  const result = await processImage(file, {
     backgroundColor: options?.backgroundColor,
     format: targetFormat,
     maxHeight: options?.maxHeight,

@@ -1,8 +1,7 @@
-import JSZip from 'jszip'
 import { motion } from 'motion/react'
-import { type Dispatch, type RefObject, type SetStateAction, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
-import type { ImageFormat, UseToast } from '@/types'
+import type { ImageFormat } from '@/types'
 
 import {
   ArrowIcon,
@@ -28,24 +27,23 @@ const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING' | 'SELECT_FORMAT'
   SELECT_FORMAT: 'select-format',
 }
 
-const fakeWait = (ms: number = 500): Promise<unknown> =>
-  new Promise((resolve: (value: unknown) => void) => setTimeout(resolve, ms))
+const fakeWait = (ms: number = 500) => new Promise((resolve) => setTimeout(resolve, ms))
 
 export const ImageConvertor = () => {
   // ref
-  const downloadAnchorRef: RefObject<HTMLAnchorElement | null> = useRef<HTMLAnchorElement>(null)
+  const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
 
   // hook
-  const { toast }: UseToast = useToast()
+  const { toast } = useToast()
 
   // states
-  const [tabValue, setTabValue]: [string, Dispatch<SetStateAction<string>>] = useState<string>(TABS_VALUES.IMPORT)
-  const [sources, setSources]: [Array<File>, Dispatch<SetStateAction<Array<File>>>] = useState<Array<File>>([])
-  const [target, setTarget]: [
-    { format: ImageFormat; quality: string },
-    Dispatch<SetStateAction<{ format: ImageFormat; quality: string }>>,
-  ] = useState<{ format: ImageFormat; quality: string }>({ format: 'image/webp', quality: '0.8' })
-  const [processing, setProcessing]: [number, Dispatch<SetStateAction<number>>] = useState<number>(0)
+  const [tabValue, setTabValue] = useState(TABS_VALUES.IMPORT)
+  const [sources, setSources] = useState<Array<File>>([])
+  const [target, setTarget] = useState<{ format: ImageFormat; quality: string }>({
+    format: 'image/webp',
+    quality: '0.8',
+  })
+  const [processing, setProcessing] = useState(0)
 
   const handleInputChange = (values: Array<File>) => {
     if (values.length > 0) {
@@ -60,7 +58,7 @@ export const ImageConvertor = () => {
   }
 
   const handleRemoveImage = (idx: number) => {
-    setSources((prev: Array<File>) => prev.filter((_: unknown, i: number) => i !== idx))
+    setSources((prev) => prev.filter((_, i) => i !== idx))
     if (sources.length === 1) {
       setTabValue(TABS_VALUES.IMPORT)
     }
@@ -77,9 +75,9 @@ export const ImageConvertor = () => {
       downloadAnchorRef.current!.download = ''
 
       const formattedImages: Record<string, string> = {}
-      const processTick: number = 100 / sources.length
+      const processTick = 100 / sources.length
       for (const img of sources) {
-        const [, fi]: [unknown, string] = await Promise.all([
+        const [, fi] = await Promise.all([
           await fakeWait(),
           convertImageFormat(img, target.format, {
             quality: Number(target.quality),
@@ -87,7 +85,7 @@ export const ImageConvertor = () => {
         ])
 
         formattedImages[`${parseFileName(img.name, target.format)}`] = fi
-        setProcessing((prev: number) => prev + processTick)
+        setProcessing((prev) => prev + processTick)
       }
 
       // wait for animation to complete
@@ -95,14 +93,15 @@ export const ImageConvertor = () => {
 
       // save
       if (Object.keys(formattedImages).length > 1) {
-        const zip: JSZip = new JSZip()
-        Object.entries(formattedImages).forEach(([key, value]: [string, string]) => {
+        const { default: JSZip } = await import('jszip')
+        const zip = new JSZip()
+        Object.entries(formattedImages).forEach(([key, value]) => {
           zip.file(key, parseDataUrlToBlob(value))
         })
         downloadAnchorRef.current!.href = URL.createObjectURL(await zip.generateAsync({ type: 'blob' }))
         downloadAnchorRef.current!.download = `crs-dev-tools_${Date.now()}.zip`
       } else {
-        Object.entries(formattedImages).forEach(([key, value]: [string, string]) => {
+        Object.entries(formattedImages).forEach(([key, value]) => {
           downloadAnchorRef.current!.href = value
           downloadAnchorRef.current!.download = key
         })
@@ -155,7 +154,7 @@ export const ImageConvertor = () => {
                   Back
                 </Button>
                 <ul className="flex max-h-full w-full grow flex-col gap-2 overflow-y-auto">
-                  {sources.map((img: File, idx: number) => (
+                  {sources.map((img, idx) => (
                     <motion.li
                       animate={{ opacity: 1, y: 0 }}
                       className="flex w-full items-center gap-2"
@@ -178,8 +177,8 @@ export const ImageConvertor = () => {
                 <div className="flex w-full shrink-0 gap-2 [&>button]:w-[calc(40%-8px)]">
                   <div className="flex w-3/5 items-center gap-2 [&>*]:w-1/2">
                     <ImageFormatSelectInput
-                      onChange={(value: string) =>
-                        setTarget((prev: { format: ImageFormat; quality: string }) => ({
+                      onChange={(value) =>
+                        setTarget((prev) => ({
                           ...prev,
                           format: value as ImageFormat,
                         }))
@@ -187,8 +186,8 @@ export const ImageConvertor = () => {
                       value={target.format}
                     />
                     <ImageQualitySelectInput
-                      onChange={(value: string) =>
-                        setTarget((prev: { format: ImageFormat; quality: string }) => ({
+                      onChange={(value) =>
+                        setTarget((prev) => ({
                           ...prev,
                           quality: value,
                         }))

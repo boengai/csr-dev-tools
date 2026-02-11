@@ -21,7 +21,7 @@ export const Card = ({ children, onClose, title }: CardProps) => {
         <h3 className="text-heading-5 grow truncate">{title}</h3>
         {onClose && (
           <motion.button
-            className="bg-error absolute right-4 top-1/2 flex size-4 -translate-y-1/2 items-center justify-center rounded-full"
+            className="bg-error absolute top-1/2 right-4 flex size-4 -translate-y-1/2 items-center justify-center rounded-full"
             initial={{ color: 'var(--color-error)', scale: 1 }}
             onClick={onClose}
             transition={{ duration: 0.3, ease: 'easeOut' }}

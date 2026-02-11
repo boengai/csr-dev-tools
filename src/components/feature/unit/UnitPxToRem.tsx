@@ -1,12 +1,9 @@
-import { type Dispatch, type SetStateAction, useState } from 'react'
+import { useState } from 'react'
 
 import { FieldForm } from '@/components/common'
 
 export const UnitPxToRem = () => {
-  const [value, setValue]: [[string, string], Dispatch<SetStateAction<[string, string]>>] = useState<[string, string]>([
-    '',
-    '',
-  ])
+  const [value, setValue] = useState<[string, string]>(['', ''])
 
   const handleChange = (val: string, idx: number) => {
     // reset both
@@ -17,12 +14,14 @@ export const UnitPxToRem = () => {
     }
 
     // calculate the other value
-    let floorVal: number = Number(val)
-    let anotherVal: number = 0
+    const numVal = Number(val)
+    let floorVal: number
+    let anotherVal: number
     if (idx === 0) {
-      floorVal = Math.floor(floorVal)
+      floorVal = Math.floor(numVal)
       anotherVal = floorVal / 16
     } else {
+      floorVal = numVal
       anotherVal = floorVal * 16
     }
 
@@ -39,7 +38,7 @@ export const UnitPxToRem = () => {
         <FieldForm
           label="PX"
           name="px"
-          onChange={(val: string) => handleChange(val, 0)}
+          onChange={(val) => handleChange(val, 0)}
           placeholder="16"
           type="number"
           value={value[0]}
@@ -47,7 +46,7 @@ export const UnitPxToRem = () => {
         <FieldForm
           label="REM"
           name="rem"
-          onChange={(val: string) => handleChange(val, 1)}
+          onChange={(val) => handleChange(val, 1)}
           placeholder="1"
           type="number"
           value={value[1]}

@@ -6,6 +6,9 @@ export type UseToast = {
     payload:
       | { action: 'add'; item: Omit<ToastItemProps, 'id'> }
       | { action: 'remove'; itemId?: string }
-      | { action: 'update'; item: Partial<Omit<ToastItemProps, 'id'>> & Pick<ToastItemProps, 'id'> },
+      | {
+          action: 'update'
+          item: Partial<Omit<ToastItemProps, 'id'>> & Pick<ToastItemProps, 'id'>
+        },
   ) => string
 }

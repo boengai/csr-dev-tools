@@ -1,12 +1,10 @@
 import { motion } from 'motion/react'
 import { useMemo } from 'react'
 
-import type { StarAnimate } from '@/types'
-
 export const TwinkleStarsAnimate = () => {
-  const stars: Array<StarAnimate> = useMemo(() => {
-    const starCount: number = Math.floor(Math.random() * 20) + 12 // random number 12 to 31
-    return Array.from({ length: starCount }, (_: unknown, i: number) => ({
+  const stars = useMemo(() => {
+    const starCount = Math.floor(Math.random() * 20) + 12 // random number 12 to 31
+    return Array.from({ length: starCount }, (_, i) => ({
       delay: Math.random() * 2, // Random delay (0-2s)
       duration: Math.random() * 2 + 1, // Random duration (1-3s)
       id: i,
@@ -17,8 +15,8 @@ export const TwinkleStarsAnimate = () => {
   }, [])
 
   return (
-    <section className="fixed left-0 top-0 z-0 h-[90dvh] w-full overflow-hidden">
-      {stars.map((star: StarAnimate) => (
+    <section className="fixed top-0 left-0 z-0 h-[90dvh] w-full overflow-hidden">
+      {stars.map((star) => (
         <motion.div
           animate={{
             opacity: [0, 1, 0],

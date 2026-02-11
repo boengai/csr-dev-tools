@@ -3,9 +3,9 @@
   "editor.insertSpaces": true,
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
+  "editor.defaultFormatter": "oxc.oxc-vscode",
   "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
+    "source.fixAll.oxlint": "explicit"
   },
-  "typescript.tsdk": "node_modules/typescript/lib",
-  "prettier.enable": false
+  "typescript.tsdk": "node_modules/typescript/lib"
 }

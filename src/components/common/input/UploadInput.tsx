@@ -1,4 +1,4 @@
-import { type ChangeEvent, type RefObject, useRef } from 'react'
+import { type ChangeEvent, useRef } from 'react'
 
 import type { UploadInputProps } from '@/types'
 
@@ -6,10 +6,10 @@ import { Button } from '../button'
 import { UploadIcon } from '../icon'
 
 export const UploadInput = ({ button, disabled, onBlur, onChange, ...props }: UploadInputProps) => {
-  const inputRef: RefObject<HTMLInputElement | null> = useRef<HTMLInputElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
-  const handleChange = async (event: ChangeEvent<HTMLInputElement>): Promise<void> => {
-    const files: FileList | null = event.target.files
+  const handleChange = async (event: ChangeEvent<HTMLInputElement>) => {
+    const files = event.target.files
     if (files?.length) {
       onChange?.(Array.from(files))
     }

@@ -16,37 +16,37 @@ describe('Color Utilities', () => {
 
   describe('convertColor', () => {
     it(`should convert hex color ${EXAMPLE_RESULT.hex} to all formats correctly`, () => {
-      const result: Record<ColorFormat, string> = convertColor(EXAMPLE_RESULT.hex, 'hex')
+      const result = convertColor(EXAMPLE_RESULT.hex, 'hex')
 
       expect(result).toEqual(EXAMPLE_RESULT)
     })
 
     it(`should convert RGB color ${EXAMPLE_RESULT.rgb} to all formats correctly`, () => {
-      const result: Record<ColorFormat, string> = convertColor(EXAMPLE_RESULT.rgb, 'rgb')
+      const result = convertColor(EXAMPLE_RESULT.rgb, 'rgb')
 
       expect(result).toEqual(EXAMPLE_RESULT)
     })
 
     it(`should convert HSL color ${EXAMPLE_RESULT.hsl} to all formats correctly`, () => {
-      const result: Record<ColorFormat, string> = convertColor(EXAMPLE_RESULT.hsl, 'hsl')
+      const result = convertColor(EXAMPLE_RESULT.hsl, 'hsl')
 
       expect(result).toEqual(EXAMPLE_RESULT)
     })
 
     it(`should convert LAB color ${EXAMPLE_RESULT.lab} to all formats correctly`, () => {
-      const result: Record<ColorFormat, string> = convertColor(EXAMPLE_RESULT.lab, 'lab')
+      const result = convertColor(EXAMPLE_RESULT.lab, 'lab')
 
       expect(result).toEqual(EXAMPLE_RESULT)
     })
 
     it(`should convert LCH color ${EXAMPLE_RESULT.lch} to all formats correctly`, () => {
-      const result: Record<ColorFormat, string> = convertColor(EXAMPLE_RESULT.lch, 'lch')
+      const result = convertColor(EXAMPLE_RESULT.lch, 'lch')
 
       expect(result).toEqual(EXAMPLE_RESULT)
     })
 
     it(`should convert OKLCH color ${EXAMPLE_RESULT.oklch} to all formats correctly`, () => {
-      const result: Record<ColorFormat, string> = convertColor(EXAMPLE_RESULT.oklch, 'oklch')
+      const result = convertColor(EXAMPLE_RESULT.oklch, 'oklch')
 
       expect(result).toEqual(EXAMPLE_RESULT)
     })
@@ -91,10 +91,10 @@ describe('Color Utilities', () => {
 
   describe('Color format consistency', () => {
     it('should maintain color consistency across multiple conversions', () => {
-      const originalHex: string = EXAMPLE_RESULT.hex
-      const firstConversion: Record<ColorFormat, string> = convertColor(originalHex, 'hex')
-      const secondConversion: Record<ColorFormat, string> = convertColor(firstConversion.rgb, 'rgb')
-      const thirdConversion: Record<ColorFormat, string> = convertColor(secondConversion.hsl, 'hsl')
+      const originalHex = EXAMPLE_RESULT.hex
+      const firstConversion = convertColor(originalHex, 'hex')
+      const secondConversion = convertColor(firstConversion.rgb, 'rgb')
+      const thirdConversion = convertColor(secondConversion.hsl, 'hsl')
 
       // All conversions should produce the same result
       expect(firstConversion.hex).toBe(secondConversion.hex)
@@ -104,7 +104,7 @@ describe('Color Utilities', () => {
     })
 
     it('should handle precision correctly', () => {
-      const result: Record<ColorFormat, string> = convertColor('#c08081', 'hex')
+      const result = convertColor('#c08081', 'hex')
 
       // Check that values are properly rounded/formatted
       expect(result.hsl).toMatch(/^hsl\([\d.]+ [\d.]+% [\d.]+%\)$/)

@@ -1,7 +1,21 @@
 {
   "permissions": {
     "allow": [
-      "WebFetch"
+      "WebFetch",
+      "Bash(pnpm config:*)",
+      "Bash(pnpm update:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm add:*)",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm install:*)",
+      "Bash(ls:*)",
+      "Bash(pnpm -C /Users/boe-100x/Documents/projects/labs/boengai/csr-dev-tools lint:*)",
+      "Bash(pnpm -C /Users/boe-100x/Documents/projects/labs/boengai/csr-dev-tools build:*)",
+      "Bash(pnpm:*)",
+      "Bash(npx oxlint:*)",
+      "Bash(node -e:*)",
+      "Bash(npx oxfmt:*)"
     ]
   }
 }

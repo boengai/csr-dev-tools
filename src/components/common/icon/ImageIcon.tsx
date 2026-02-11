@@ -5,7 +5,7 @@ const TYPE_LABEL: Record<'jpeg' | 'png' | 'webp', string> = {
 }
 
 export const ImageIcon = ({ size, type = 'default' }: { size?: number; type?: 'default' | string }) => {
-  const typeLabel: string | undefined = TYPE_LABEL[type as keyof typeof TYPE_LABEL]
+  const typeLabel = TYPE_LABEL[type as keyof typeof TYPE_LABEL]
   return (
     <svg
       fill="none"

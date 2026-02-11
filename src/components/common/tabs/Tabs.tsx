@@ -1,21 +1,18 @@
 import { Content, List, Root, Trigger } from '@radix-ui/react-tabs'
 import { AnimatePresence, motion } from 'motion/react'
-import { type Dispatch, type RefObject, type SetStateAction, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import type { TabsProps } from '@/types'
 
 export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
   // ref
-  const listRef: RefObject<HTMLDivElement | null> = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
 
   // state
-  const [indicator, setIndicator]: [
-    { translateX: number; width: number },
-    Dispatch<SetStateAction<{ translateX: number; width: number }>>,
-  ] = useState<{ translateX: number; width: number }>({ translateX: 0, width: 30 })
+  const [indicator, setIndicator] = useState({ translateX: 0, width: 30 })
 
-  const navTriggers: TabsProps['items'] = useMemo(() => {
-    return items.filter(({ trigger }: TabsProps['items'][number]) => trigger !== undefined)
+  const navTriggers = useMemo(() => {
+    return items.filter(({ trigger }) => trigger !== undefined)
   }, [items])
 
   const updateIndicator = () => {
@@ -23,7 +20,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
       return
     }
 
-    const activeTab: HTMLElement | null = listRef.current.querySelector('button[data-state="active"]')
+    const activeTab = listRef.current.querySelector<HTMLElement>('button[data-state="active"]')
     if (!activeTab) {
       return
     }
@@ -93,7 +90,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
             animate={{
               width: `calc(100% - ${indicator.width}px - ${indicator.translateX}px)`,
             }}
-            className="bg-primary absolute bottom-0 right-0 h-0.5"
+            className="bg-primary absolute right-0 bottom-0 h-0.5"
             initial={{
               width: `calc(100% - ${indicator.width}px - ${indicator.translateX}px)`,
             }}
@@ -105,7 +102,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
             }}
           />
         </div>
-        {navTriggers.map(({ trigger, value }: TabsProps['items'][number]) => (
+        {navTriggers.map(({ trigger, value }) => (
           <Trigger
             asChild
             className="hover:bg-primary/10 relative shrink-0 rounded-t-md px-4 py-2 text-gray-400 transition-colors delay-300 data-[state=active]:pointer-events-none data-[state=active]:text-white"
@@ -117,7 +114,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
         ))}
       </List>
       <AnimatePresence>
-        {items.map(({ content, value }: TabsProps['items'][number]) => (
+        {items.map(({ content, value }) => (
           <Content asChild key={value} value={value}>
             <motion.div
               animate={{ opacity: 1, y: 0 }}

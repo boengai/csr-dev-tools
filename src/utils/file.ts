@@ -12,8 +12,8 @@ const FILE_EXTENSIONS: Record<ImageFormat, string> = {
  * @returns A valid file name.
  */
 export const parseFileName = (source: string, format?: ImageFormat): string => {
-  const parts: Array<string> = source.split('.')
-  const cleaned: string = parts
+  const parts = source.split('.')
+  const cleaned = parts
     .slice(0, -1) // remove the last part
     .join('_') // join the parts with a dot
     .replace(/[^a-zA-Z0-9-_]/g, '_') // replace all non-alphanumeric, - or _ characters with an underscore
@@ -27,6 +27,6 @@ export const parseFileName = (source: string, format?: ImageFormat): string => {
  * @returns A blob.
  */
 export const parseDataUrlToBlob = async (source: string): Promise<Blob> => {
-  const res: Response = await fetch(source)
+  const res = await fetch(source)
   return res.blob()
 }

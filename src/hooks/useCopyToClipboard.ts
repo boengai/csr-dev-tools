@@ -1,9 +1,9 @@
-import { type UseCopyToClipboard, type UseToast } from '@/types'
+import type { UseCopyToClipboard } from '@/types'
 
 import { useToast } from './state'
 
 export const useCopyToClipboard = (): UseCopyToClipboard => {
-  const toast: UseToast = useToast()
+  const toast = useToast()
 
   return async (val: string) => {
     await navigator.clipboard.writeText(val)

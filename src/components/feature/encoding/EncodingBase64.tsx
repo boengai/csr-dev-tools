@@ -1,18 +1,16 @@
-import { type Dispatch, type SetStateAction, useState } from 'react'
-
-import type { UseCopyToClipboard } from '@/types'
+import { useState } from 'react'
 
 import { Button, CopyIcon, FieldForm, Tabs } from '@/components/common'
 import { useCopyToClipboard, useDebounceCallback } from '@/hooks'
 
 const Form = ({ action, onSubmit }: { action: 'decode' | 'encode'; onSubmit: (source: string) => string }) => {
   // states
-  const [source, setSource]: [string, Dispatch<SetStateAction<string>>] = useState('')
-  const [result, setResult]: [Error | string, Dispatch<SetStateAction<Error | string>>] = useState<Error | string>('')
+  const [source, setSource] = useState('')
+  const [result, setResult] = useState<Error | string>('')
 
   // hook
-  const copyToClipboard: UseCopyToClipboard = useCopyToClipboard()
-  const dbSetResult: (s: string) => void = useDebounceCallback((s: string) => {
+  const copyToClipboard = useCopyToClipboard()
+  const dbSetResult = useDebounceCallback((s: string) => {
     try {
       setResult(onSubmit(s))
     } catch {
@@ -26,7 +24,7 @@ const Form = ({ action, onSubmit }: { action: 'decode' | 'encode'; onSubmit: (so
   }
 
   return (
-    <div className="[&>fieldset]:min-h-37 flex h-full shrink-0 grow flex-col gap-4">
+    <div className="flex h-full shrink-0 grow flex-col gap-4 [&>fieldset]:min-h-37">
       <FieldForm
         label="Source"
         name="source"
@@ -67,7 +65,7 @@ const Form = ({ action, onSubmit }: { action: 'decode' | 'encode'; onSubmit: (so
 }
 
 const Decoder = () => {
-  const handleEncode = (value: string): string => {
+  const handleEncode = (value: string) => {
     return atob(value)
   }
 
@@ -75,7 +73,7 @@ const Decoder = () => {
 }
 
 const Encoder = () => {
-  const handleEncode = (value: string): string => {
+  const handleEncode = (value: string) => {
     return btoa(value)
   }
 

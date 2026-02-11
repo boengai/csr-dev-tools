@@ -1,14 +1,6 @@
-import {
-  type Dispatch,
-  type ImgHTMLAttributes,
-  type RefObject,
-  type SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import { type ImgHTMLAttributes, useEffect, useRef, useState } from 'react'
 
-import type { ImageFormat, ImageProcessingResult, UseToast } from '@/types'
+import type { ImageFormat, ImageProcessingResult } from '@/types'
 
 import { Button, Dialog, DownloadIcon, FieldForm, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
 import { IMAGE_VALUE } from '@/constants'
@@ -23,15 +15,15 @@ const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING', string> = {
   PROCESSING: 'processing',
 }
 
-const EMPTY_IMAGE: string = 'data:,'
+const EMPTY_IMAGE = 'data:,'
 
 const formatBytes = (bytes: number): string => {
   if (bytes === 0) {
     return '0 B'
   }
-  const k: number = 1024
-  const sizes: Array<string> = ['B', 'KB', 'MB', 'GB', 'TB']
-  const i: number = Math.floor(Math.log(bytes) / Math.log(k))
+  const k = 1024
+  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
+  const i = Math.floor(Math.log(bytes) / Math.log(k))
   return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))}${sizes[i]}`
 }
 
@@ -47,17 +39,17 @@ const ImagePreview = ({
   }
 }) => {
   return (
-    <div className="tablet:max-h-full tablet:size-full flex w-full grow flex-col items-center justify-center gap-4 p-4">
+    <div className="tablet:size-full tablet:max-h-full flex w-full grow flex-col items-center justify-center gap-4 p-4">
       {src ? (
         src === EMPTY_IMAGE ? (
           <NotoEmoji emoji="bomb" size={120} />
         ) : (
           <>
             <picture className="tablet:max-h-full tablet:overflow-y-auto flex size-full grow flex-col items-center justify-center gap-4">
-              <img alt="preview" className="tablet:w-auto tablet:max-h-full w-full max-w-full" src={src} />
+              <img alt="preview" className="tablet:max-h-full tablet:w-auto w-full max-w-full" src={src} />
             </picture>
             {metadata && (
-              <ul className="text-body-sm flex gap-1 text-center italic text-gray-200">
+              <ul className="text-body-sm flex gap-1 text-center text-gray-200 italic">
                 {metadata.width && metadata.height && (
                   <li>
                     {metadata.width}x{metadata.height};
@@ -78,70 +70,64 @@ const ImagePreview = ({
 
 export const ImageResizer = () => {
   // ref
-  const downloadAnchorRef: RefObject<HTMLAnchorElement | null> = useRef<HTMLAnchorElement>(null)
+  const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
 
   // state
-  const [tabValue, setTabValue]: [string, Dispatch<SetStateAction<string>>] = useState<string>(TABS_VALUES.IMPORT)
-  const [dialogOpen, setDialogOpen]: [boolean, Dispatch<SetStateAction<boolean>>] = useState<boolean>(false)
-  const [source, setSource]: [
-    [File, ImageProcessingResult] | null,
-    Dispatch<SetStateAction<[File, ImageProcessingResult] | null>>,
-  ] = useState<[File, ImageProcessingResult] | null>(null)
-  const [preview, setPreview]: [ImageProcessingResult | null, Dispatch<SetStateAction<ImageProcessingResult | null>>] =
-    useState<ImageProcessingResult | null>(null)
+  const [tabValue, setTabValue] = useState(TABS_VALUES.IMPORT)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [source, setSource] = useState<[File, ImageProcessingResult] | null>(null)
+  const [preview, setPreview] = useState<ImageProcessingResult | null>(null)
 
   // hook
-  const { toast }: UseToast = useToast()
-  const dbSetPreview: (s: ImageProcessingResult) => Promise<void> = useDebounceCallback(
-    async (s: ImageProcessingResult) => {
-      let height: number = s.height
-      let width: number = s.width
+  const { toast } = useToast()
+  const dbSetPreview = useDebounceCallback(async (s: ImageProcessingResult) => {
+    let height = s.height
+    let width = s.width
 
-      // find possible minimum
-      if (height * source![1].ratio <= 1) {
-        height = 1 * 10
-        width = Math.round(1 * source![1].ratio * 10)
-      } else if (width / source![1].ratio <= 1) {
-        width = 1 * 10
-        height = Math.round((1 / source![1].ratio) * 10)
+    // find possible minimum
+    if (height * source![1].ratio <= 1) {
+      height = 1 * 10
+      width = Math.round(1 * source![1].ratio * 10)
+    } else if (width / source![1].ratio <= 1) {
+      width = 1 * 10
+      height = Math.round((1 / source![1].ratio) * 10)
+    }
+
+    try {
+      const result = await resizeImage(
+        source![0],
+        {
+          height,
+          width,
+        },
+        {
+          format: s.format,
+          quality: s.quality || 0.05,
+        },
+      )
+
+      setPreview(result)
+
+      if (result.dataUrl === EMPTY_IMAGE) {
+        throw new Error('Could not process image. Because of memory limit.')
       }
-
-      try {
-        const result: ImageProcessingResult = await resizeImage(
-          source![0],
-          {
-            height,
-            width,
-          },
-          {
-            format: s.format,
-            quality: s.quality || 0.05,
-          },
-        )
-
-        setPreview(result)
-
-        if (result.dataUrl === EMPTY_IMAGE) {
-          throw new Error('Could not process image. Because of memory limit.')
-        }
-      } catch (e: unknown) {
-        toast({
-          action: 'add',
-          item: {
-            duration: 5_000,
-            label: e instanceof Error ? e.message : 'Failed to process image',
-            type: 'error',
-          },
-        })
-      }
-    },
-  )
+    } catch (e: unknown) {
+      toast({
+        action: 'add',
+        item: {
+          duration: 5_000,
+          label: e instanceof Error ? e.message : 'Failed to process image',
+          type: 'error',
+        },
+      })
+    }
+  })
 
   const handleUploadChange = async (values: Array<File>) => {
     try {
       if (values.length > 0) {
         setDialogOpen(true)
-        const preview: ImageProcessingResult = await processImage(values[0], {
+        const preview = await processImage(values[0], {
           format: values[0].type as ImageFormat,
           quality: 1,
           strategy: 'stretch',
@@ -164,12 +150,12 @@ export const ImageResizer = () => {
   }
 
   const handleInputChange = (key: keyof ImageProcessingResult, val: unknown) => {
-    setPreview((prev: ImageProcessingResult | null) => {
+    setPreview((prev) => {
       if (!prev) {
         return null
       }
 
-      const newState: ImageProcessingResult = {
+      const newState = {
         ...prev,
         dataUrl: '', // unset dataUrl for showing loading state
       }
@@ -179,7 +165,7 @@ export const ImageResizer = () => {
       } else {
         // NOTE: this might cause type errors
         // when the value is not a number
-        const newValue: number = Number(val)
+        const newValue = Number(val)
         newState[key] = newValue as never
 
         if (!isNaN(newValue) && newValue > 0) {
@@ -296,7 +282,7 @@ export const ImageResizer = () => {
         title="Adjust the size of your image"
       >
         <div className="tablet:min-h-0 flex grow flex-col gap-4">
-          <div className="bg-grid-texture tablet:flex-row tablet:grow tablet:min-h-0 flex flex-col items-center justify-center gap-6 bg-black">
+          <div className="bg-grid-texture tablet:min-h-0 tablet:grow tablet:flex-row flex flex-col items-center justify-center gap-6 bg-black">
             <ImagePreview
               metadata={{
                 format: source?.[1].format,
@@ -306,7 +292,7 @@ export const ImageResizer = () => {
               }}
               src={source ? source[1].dataUrl : undefined}
             />
-            <div className="tablet:h-full tablet:w-1 tablet:border-l-2 tablet:border-t-none h-1 w-full border-t-2 border-dashed border-gray-700" />
+            <div className="tablet:border-t-none tablet:h-full tablet:w-1 tablet:border-l-2 h-1 w-full border-t-2 border-dashed border-gray-700" />
             <ImagePreview
               metadata={{
                 format: preview?.format,
@@ -324,7 +310,7 @@ export const ImageResizer = () => {
                   disabled={!source}
                   label="Width"
                   name="width"
-                  onChange={(val: string) => handleInputChange('width', val)}
+                  onChange={(val) => handleInputChange('width', val)}
                   type="number"
                   value={preview?.width?.toString() ?? ''}
                 />
@@ -332,7 +318,7 @@ export const ImageResizer = () => {
                   disabled={!source}
                   label="Height"
                   name="height"
-                  onChange={(val: string) => handleInputChange('height', val)}
+                  onChange={(val) => handleInputChange('height', val)}
                   type="number"
                   value={preview?.height?.toString() ?? ''}
                 />
@@ -340,12 +326,12 @@ export const ImageResizer = () => {
               <div className="flex w-full gap-2 [&>*]:w-full">
                 <ImageFormatSelectInput
                   disabled={!source}
-                  onChange={(val: string) => handleInputChange('format', val)}
+                  onChange={(val) => handleInputChange('format', val)}
                   value={preview?.format}
                 />
                 <ImageQualitySelectInput
                   disabled={!source || preview?.format === IMAGE_VALUE['image/png']}
-                  onChange={(val: string) => handleInputChange('quality', val)}
+                  onChange={(val) => handleInputChange('quality', val)}
                   value={preview?.format === IMAGE_VALUE['image/png'] ? '1' : preview?.quality?.toString()}
                 />
               </div>

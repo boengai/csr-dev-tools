@@ -11,7 +11,7 @@ export const TextAreaInput = ({
   ...props
 }: TextAreaInputProps) => {
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const value: string = e.target.value
+    const value = e.target.value
 
     onChange?.(value)
   }

@@ -1,7 +1,7 @@
 import { motion } from 'motion/react'
 
 export const ProgressBar = ({ value }: { value: number }) => {
-  const normalizedValue: number = Math.min(Math.max(value, 0), 100)
+  const normalizedValue = Math.min(Math.max(value, 0), 100)
 
   return (
     <div className="flex w-full shrink-0 flex-col gap-2">

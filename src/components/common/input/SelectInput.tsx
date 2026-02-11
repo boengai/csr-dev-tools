@@ -53,9 +53,9 @@ export const SelectInput = ({
               }}
             >
               <Viewport>
-                {items.map((itm: SelectInputProps['options'][number]) => (
+                {items.map((itm) => (
                   <Item
-                    className="hover:bg-primary/50 flex cursor-pointer items-center justify-between truncate px-4 py-2 transition-colors data-[state=checked]:pointer-events-none data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50"
+                    className="hover:bg-primary/50 flex cursor-pointer items-center justify-between truncate px-4 py-2 transition-colors data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50 data-[state=checked]:pointer-events-none"
                     disabled={itm.disabled}
                     key={itm.value}
                     value={itm.value}

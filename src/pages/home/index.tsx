@@ -1,52 +1,43 @@
 import { motion } from 'motion/react'
-import {
-  type ButtonHTMLAttributes,
-  type ComponentType,
-  type Dispatch,
-  lazy,
-  type LazyExoticComponent,
-  type SetStateAction,
-  Suspense,
-  useState,
-} from 'react'
+import { type ButtonHTMLAttributes, type ComponentType, lazy, Suspense, useState } from 'react'
 
-import type { FeatureKey, UsePersistFeatureLayout } from '@/types'
+import type { FeatureKey } from '@/types'
 
 import { Card, Dialog, NotoEmoji, PlusIcon } from '@/components'
 import { FEATURE_TITLE } from '@/constants'
 import { usePersistFeatureLayout } from '@/hooks'
 
 // apps
-const ColorConvertor: LazyExoticComponent<ComponentType> = lazy(() =>
+const ColorConvertor = lazy(() =>
   import('@/components/feature/color/ColorConvertor').then(({ ColorConvertor }: { ColorConvertor: ComponentType }) => ({
     default: ColorConvertor,
   })),
 )
-const EncodingBase64: LazyExoticComponent<ComponentType> = lazy(() =>
+const EncodingBase64 = lazy(() =>
   import('@/components/feature/encoding/EncodingBase64').then(
     ({ EncodingBase64 }: { EncodingBase64: ComponentType }) => ({
       default: EncodingBase64,
     }),
   ),
 )
-const ImageConvertor: LazyExoticComponent<ComponentType> = lazy(() =>
+const ImageConvertor = lazy(() =>
   import('@/components/feature/image/ImageConvertor').then(({ ImageConvertor }: { ImageConvertor: ComponentType }) => ({
     default: ImageConvertor,
   })),
 )
-const ImageResize: LazyExoticComponent<ComponentType> = lazy(() =>
+const ImageResize = lazy(() =>
   import('@/components/feature/image/ImageResizer').then(({ ImageResizer }: { ImageResizer: ComponentType }) => ({
     default: ImageResizer,
   })),
 )
-const TimeUnixTimestamp: LazyExoticComponent<ComponentType> = lazy(() =>
+const TimeUnixTimestamp = lazy(() =>
   import('@/components/feature/time/TimeUnixTimestamp').then(
     ({ TimeUnixTimestamp }: { TimeUnixTimestamp: ComponentType }) => ({
       default: TimeUnixTimestamp,
     }),
   ),
 )
-const UnitPxToRem: LazyExoticComponent<ComponentType> = lazy(() =>
+const UnitPxToRem = lazy(() =>
   import('@/components/feature/unit/UnitPxToRem').then(({ UnitPxToRem }: { UnitPxToRem: ComponentType }) => ({
     default: UnitPxToRem,
   })),
@@ -56,7 +47,7 @@ const AddButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'o
   return (
     <motion.button
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      className="border-3 [&>svg]:align-center flex size-full items-center justify-center rounded-xl border-dashed"
+      className="[&>svg]:align-center flex size-full items-center justify-center rounded-xl border-3 border-dashed"
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
       initial={{
         borderColor: 'var(--color-gray-800)',
@@ -81,7 +72,7 @@ const AddButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'o
 
 const AppContainer = ({ onOpenDialog, position }: { onOpenDialog: (position: number) => void; position: number }) => {
   //hook
-  const { setter, value }: UsePersistFeatureLayout = usePersistFeatureLayout()
+  const { setter, value } = usePersistFeatureLayout()
 
   const handleClose = () => {
     setter(position, null)
@@ -139,19 +130,16 @@ const AppLoading = () => {
 
 const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; position: null | number }) => {
   //hook
-  const { setter, value }: UsePersistFeatureLayout = usePersistFeatureLayout()
+  const { setter, value } = usePersistFeatureLayout()
 
-  const appPosition: Record<string, number> = Object.entries(value).reduce(
-    (acc: Record<string, number>, cur: [string, null | string]) => {
-      if (cur[1] !== null) {
-        acc[cur[1]] = Number(cur[0])
-      }
-      return acc
-    },
-    {},
-  )
+  const appPosition = Object.entries(value).reduce((acc: Record<string, number>, cur) => {
+    if (cur[1] !== null) {
+      acc[cur[1]] = Number(cur[0])
+    }
+    return acc
+  }, {})
 
-  const list: Array<{ at: null | number; value: string }> = Object.keys(FEATURE_TITLE).map((value: string) => ({
+  const list = Object.keys(FEATURE_TITLE).map((value) => ({
     at: appPosition[value] ?? null,
     value,
   }))
@@ -169,7 +157,7 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
       title={`Select App for Widget#${position ? position + 1 : ''}`}
     >
       <ul className="flex flex-col gap-2">
-        {list.map(({ at, value }: { at: null | number; value: string }) => (
+        {list.map(({ at, value }) => (
           <li key={value}>
             <button
               className="hover:bg-primary/30 flex w-full cursor-pointer items-center justify-between rounded p-2 text-left disabled:pointer-events-none disabled:opacity-50"
@@ -187,9 +175,7 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
 }
 
 export default function HomePage() {
-  const [selectedWidget, setSelectedWidget]: [null | number, Dispatch<SetStateAction<null | number>>] = useState<
-    null | number
-  >(null)
+  const [selectedWidget, setSelectedWidget] = useState<null | number>(null)
 
   const handleCloseDialog = () => {
     setSelectedWidget(null)
@@ -198,9 +184,9 @@ export default function HomePage() {
   return (
     <>
       <div className="flex grow flex-wrap gap-6 p-6">
-        {Array.from({ length: 6 }).map((_: unknown, idx: number) => (
+        {Array.from({ length: 6 }).map((_, idx) => (
           <section
-            className="laptop:h-[calc(100dvh/2-2.25rem)] laptop:w-[calc(100%/3-1rem)] aspect-2/3 tablet:w-[calc(100%/2-1rem)] laptop:aspect-auto flex w-full flex-col"
+            className="tablet:w-[calc(100%/2-1rem)] laptop:aspect-auto laptop:h-[calc(100dvh/2-2.25rem)] laptop:w-[calc(100%/3-1rem)] flex aspect-2/3 w-full flex-col"
             key={`${idx}`}
           >
             <Suspense fallback={<AppLoading />}>

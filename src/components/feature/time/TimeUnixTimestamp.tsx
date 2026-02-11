@@ -1,13 +1,13 @@
 import { AnimatePresence } from 'motion/react'
-import { type Dispatch, type SetStateAction, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 
-import type { DateTime, SelectInputProps, UseCopyToClipboard } from '@/types'
+import type { DateTime } from '@/types'
 
 import { Button, CopyIcon, DataCellTable, FieldForm } from '@/components/common'
 import { useCopyToClipboard, useDebounceCallback } from '@/hooks'
 import { getDaysInMonth } from '@/utils'
 
-const MONTH_LABELS: Array<string> = [
+const MONTH_LABELS = [
   'January',
   'February',
   'March',
@@ -24,12 +24,12 @@ const MONTH_LABELS: Array<string> = [
 
 const UnixTimestampSection = () => {
   // states
-  const [input, setInput]: [string, Dispatch<SetStateAction<string>>] = useState<string>('')
-  const [result, setResult]: [Array<string>, Dispatch<SetStateAction<Array<string>>>] = useState<Array<string>>([])
+  const [input, setInput] = useState('')
+  const [result, setResult] = useState<Array<string>>([])
 
   // hooks
-  const dbSetResult: (source: string) => void = useDebounceCallback((source: string) => {
-    const inputNumber: number = Number(source)
+  const dbSetResult = useDebounceCallback((source: string) => {
+    const inputNumber = Number(source)
 
     // Auto-detect if timestamp is in seconds or milliseconds
     // Current time in seconds: ~1.7 billion (Jan 2024)
@@ -37,9 +37,9 @@ const UnixTimestampSection = () => {
     // Year 2001 in milliseconds: ~978 billion
     // If the number is > 100 billion, it's very likely milliseconds
     // since that would represent year 5138 in seconds (unrealistic)
-    const isMilliseconds: boolean = inputNumber > 100_000_000_000
+    const isMilliseconds = inputNumber > 100_000_000_000
 
-    const d: Date = new Date(isMilliseconds ? inputNumber : inputNumber * 1_000)
+    const d = new Date(isMilliseconds ? inputNumber : inputNumber * 1_000)
 
     if (isNaN(d.getTime())) {
       return
@@ -85,10 +85,10 @@ const UnixTimestampSection = () => {
 
 export const DateSection = () => {
   // hook
-  const copyToClipboard: UseCopyToClipboard = useCopyToClipboard()
+  const copyToClipboard = useCopyToClipboard()
 
   // states
-  const [input, setInput]: [DateTime<string>, Dispatch<SetStateAction<DateTime<string>>>] = useState<DateTime<string>>({
+  const [input, setInput] = useState<DateTime<string>>({
     day: '',
     hour: '0',
     minute: '0',
@@ -96,10 +96,10 @@ export const DateSection = () => {
     second: '0',
     year: '',
   })
-  const [result, setResult]: [Array<string>, Dispatch<SetStateAction<Array<string>>>] = useState<Array<string>>([])
+  const [result, setResult] = useState<Array<string>>([])
 
-  const placeholder: DateTime<string> = useMemo(() => {
-    const d: Date = new Date()
+  const placeholder = useMemo(() => {
+    const d = new Date()
     return {
       day: d.getDate().toString(),
       hour: d.getHours().toString(),
@@ -110,17 +110,17 @@ export const DateSection = () => {
     }
   }, [])
 
-  const monthOptions: SelectInputProps['options'] = MONTH_LABELS.map((label: string, i: number) => ({
+  const monthOptions = MONTH_LABELS.map((label, i) => ({
     label: label,
     value: i.toString(),
   }))
 
-  const dayOptions: SelectInputProps['options'] = useMemo(() => {
+  const dayOptions = useMemo(() => {
     // calculate days in month
-    const daysInMonth: number = getDaysInMonth(Number(input.year), Number(input.month) + 1)
+    const daysInMonth = getDaysInMonth(Number(input.year), Number(input.month) + 1)
 
-    return Array.from({ length: daysInMonth }, (_: unknown, i: number) => {
-      const val: string = (i + 1).toString()
+    return Array.from({ length: daysInMonth }, (_, i) => {
+      const val = (i + 1).toString()
       return {
         label: val,
         value: val,
@@ -128,16 +128,16 @@ export const DateSection = () => {
     })
   }, [input.year, input.month])
 
-  const hourOptions: SelectInputProps['options'] = Array.from({ length: 24 }, (_: unknown, i: number) => {
-    const val: string = i.toString()
+  const hourOptions = Array.from({ length: 24 }, (_, i) => {
+    const val = i.toString()
     return {
       label: val,
       value: val,
     }
   })
 
-  const minSecOptions: SelectInputProps['options'] = Array.from({ length: 60 }, (_: unknown, i: number) => {
-    const val: string = i.toString()
+  const minSecOptions = Array.from({ length: 60 }, (_, i) => {
+    const val = i.toString()
     return {
       label: val,
       value: val,
@@ -145,7 +145,7 @@ export const DateSection = () => {
   })
 
   const handleChange = (key: keyof DateTime, value: string) => {
-    const newInput: DateTime<string> = { ...input, [key]: value }
+    const newInput = { ...input, [key]: value }
     if (key === 'month' && newInput.day) {
       newInput.day = Math.min(
         Number(newInput.day),
@@ -158,7 +158,7 @@ export const DateSection = () => {
       return
     }
 
-    const d: Date = new Date(
+    const d = new Date(
       Number(newInput.year),
       Number(newInput.month),
       Number(newInput.day),
@@ -176,7 +176,7 @@ export const DateSection = () => {
           <FieldForm
             label="Year"
             name="year"
-            onChange={(val: string) => handleChange('year', val)}
+            onChange={(val) => handleChange('year', val)}
             placeholder={placeholder.year}
             type="number"
             value={input.year}
@@ -185,7 +185,7 @@ export const DateSection = () => {
             disabled={!input.year}
             label="Month"
             name="month"
-            onChange={(value: string) => handleChange('month', value)}
+            onChange={(value) => handleChange('month', value)}
             options={monthOptions}
             placeholder={placeholder.month}
             type="select"
@@ -195,7 +195,7 @@ export const DateSection = () => {
             disabled={!input.month}
             label="Day"
             name="day"
-            onChange={(value: string) => handleChange('day', value)}
+            onChange={(value) => handleChange('day', value)}
             options={dayOptions}
             placeholder={placeholder.day}
             type="select"
@@ -206,7 +206,7 @@ export const DateSection = () => {
           <FieldForm
             label="Hour"
             name="hour"
-            onChange={(value: string) => handleChange('hour', value)}
+            onChange={(value) => handleChange('hour', value)}
             options={hourOptions}
             placeholder={placeholder.hour}
             type="select"
@@ -215,7 +215,7 @@ export const DateSection = () => {
           <FieldForm
             label="Minute"
             name="minute"
-            onChange={(value: string) => handleChange('minute', value)}
+            onChange={(value) => handleChange('minute', value)}
             options={minSecOptions}
             placeholder={placeholder.minute}
             type="select"
@@ -224,7 +224,7 @@ export const DateSection = () => {
           <FieldForm
             label="Second"
             name="second"
-            onChange={(value: string) => handleChange('second', value)}
+            onChange={(value) => handleChange('second', value)}
             options={minSecOptions}
             placeholder={placeholder.second}
             type="select"
@@ -238,7 +238,7 @@ export const DateSection = () => {
             rows={[
               {
                 label: 'Unix Timestamp',
-                render: (val: string) => (
+                render: (val) => (
                   <span className="flex items-center gap-1">
                     <span>{val}</span>
                     <Button onClick={() => copyToClipboard(val)} variant="text">

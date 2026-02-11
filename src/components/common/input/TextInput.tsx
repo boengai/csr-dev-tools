@@ -12,10 +12,10 @@ export const TextInput = ({
   ...props
 }: TextInputProps) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const value: string = e.target.value
+    const value = e.target.value
 
     if (type === 'number') {
-      const numericValue: number = Number(value)
+      const numericValue = Number(value)
       if (isNaN(numericValue)) {
         return
       }

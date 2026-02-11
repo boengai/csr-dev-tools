@@ -5,7 +5,7 @@ import type { ButtonProps, ButtonVariants, CompVariant } from '@/types'
 import { tv } from '@/utils'
 
 const buttonVariants: CompVariant<ButtonVariants> = tv({
-  base: 'relative inline-flex shrink-0 items-center justify-center rounded-md font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50',
+  base: 'relative inline-flex shrink-0 items-center justify-center rounded-md font-medium transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50',
   defaultVariants: {
     block: false,
     size: 'default',
@@ -43,7 +43,7 @@ export const Button = ({
   variant = 'default',
   ...props
 }: ButtonProps) => {
-  const className: string = buttonVariants({ block, size, variant })
+  const className = buttonVariants({ block, size, variant })
 
   return (
     <motion.button

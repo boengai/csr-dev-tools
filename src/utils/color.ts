@@ -7,7 +7,7 @@ const clamp = (value: number, min: number, max: number): number => Math.min(Math
 const normalizeHue = (hue: number): number => ((hue % 360) + 360) % 360
 const srgbToLinear = (c: number): number => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4))
 const linearToSrgb = (c: number): number => {
-  const abs_c: number = Math.abs(c)
+  const abs_c = Math.abs(c)
   if (abs_c > 0.0031308) {
     return Math.sign(c) * (1.055 * Math.pow(abs_c, 1 / 2.4) - 0.055)
   }
@@ -31,26 +31,26 @@ const gammaCorrection = (c: number): number => {
 
 // From RGB Convert functions
 const rgbToHex = (source: RGBColor): string => {
-  const toHex = (c: number): string => {
-    const hex: string = Math.round(clamp(c, 0, 255)).toString(16)
+  const toHex = (c: number) => {
+    const hex = Math.round(clamp(c, 0, 255)).toString(16)
     return hex.length === 1 ? '0' + hex : hex
   }
   return `#${toHex(source.r)}${toHex(source.g)}${toHex(source.b)}`
 }
 
 const rgbToHsl = (source: RGBColor): HSLColor => {
-  const r: number = source.r / 255
-  const g: number = source.g / 255
-  const b: number = source.b / 255
+  const r = source.r / 255
+  const g = source.g / 255
+  const b = source.b / 255
 
-  const max: number = Math.max(r, g, b)
-  const min: number = Math.min(r, g, b)
-  let h: number = 0
-  let s: number = 0
-  const l: number = (max + min) / 2
+  const max = Math.max(r, g, b)
+  const min = Math.min(r, g, b)
+  let h = 0
+  let s = 0
+  const l = (max + min) / 2
 
   if (max !== min) {
-    const d: number = max - min
+    const d = max - min
     s = l > 0.5 ? d / (2 - max - min) : d / (max + min)
 
     switch (max) {
@@ -76,64 +76,64 @@ const rgbToHsl = (source: RGBColor): HSLColor => {
 
 const rgbToLab = (source: RGBColor): LABColor => {
   // 1. Convert sRGB to linear RGB
-  const lr: number = srgbToLinear(source.r / 255)
-  const lg: number = srgbToLinear(source.g / 255)
-  const lb: number = srgbToLinear(source.b / 255)
+  const lr = srgbToLinear(source.r / 255)
+  const lg = srgbToLinear(source.g / 255)
+  const lb = srgbToLinear(source.b / 255)
 
   // 2. Linear RGB to XYZ (D65)
-  const x: number = lr * 0.4124564 + lg * 0.3575761 + lb * 0.1804375
-  const y: number = lr * 0.2126729 + lg * 0.7151522 + lb * 0.072175
-  const z: number = lr * 0.0193339 + lg * 0.119192 + lb * 0.9503041
+  const x = lr * 0.4124564 + lg * 0.3575761 + lb * 0.1804375
+  const y = lr * 0.2126729 + lg * 0.7151522 + lb * 0.072175
+  const z = lr * 0.0193339 + lg * 0.119192 + lb * 0.9503041
 
   // Normalize for D65 white point
-  const xn: number = x / 0.95047
-  const yn: number = y / 1.0
-  const zn: number = z / 1.08883
+  const xn = x / 0.95047
+  const yn = y / 1.0
+  const zn = z / 1.08883
 
   // 3. XYZ to Lab
-  const f = (t: number): number => (t > 0.008856 ? Math.cbrt(t) : (t * 903.3 + 16) / 116)
+  const f = (t: number) => (t > 0.008856 ? Math.cbrt(t) : (t * 903.3 + 16) / 116)
 
-  const fx: number = f(xn)
-  const fy: number = f(yn)
-  const fz: number = f(zn)
+  const fx = f(xn)
+  const fy = f(yn)
+  const fz = f(zn)
 
-  const L: number = 116 * fy - 16
-  const a: number = 500 * (fx - fy)
-  const b: number = 200 * (fy - fz)
+  const L = 116 * fy - 16
+  const a = 500 * (fx - fy)
+  const b = 200 * (fy - fz)
 
   return { a, b, l: L }
 }
 
 const rgbToLch = (source: RGBColor): LCHColor => {
   // Step 1: sRGB → Linear RGB
-  const lr: number = srgbToLinear(source.r / 255)
-  const lg: number = srgbToLinear(source.g / 255)
-  const lb: number = srgbToLinear(source.b / 255)
+  const lr = srgbToLinear(source.r / 255)
+  const lg = srgbToLinear(source.g / 255)
+  const lb = srgbToLinear(source.b / 255)
 
   // Step 2: Linear RGB → XYZ (D65)
-  const x: number = lr * 0.4124564 + lg * 0.3575761 + lb * 0.1804375
-  const y: number = lr * 0.2126729 + lg * 0.7151522 + lb * 0.072175
-  const z: number = lr * 0.0193339 + lg * 0.119192 + lb * 0.9503041
+  const x = lr * 0.4124564 + lg * 0.3575761 + lb * 0.1804375
+  const y = lr * 0.2126729 + lg * 0.7151522 + lb * 0.072175
+  const z = lr * 0.0193339 + lg * 0.119192 + lb * 0.9503041
 
   // Normalize for D65
-  const xn: number = x / 0.95047
-  const yn: number = y / 1.0
-  const zn: number = z / 1.08883
+  const xn = x / 0.95047
+  const yn = y / 1.0
+  const zn = z / 1.08883
 
   // Step 3: XYZ → Lab
-  const f = (t: number): number => (t > 0.008856 ? Math.cbrt(t) : (t * 903.3 + 16) / 116)
+  const f = (t: number) => (t > 0.008856 ? Math.cbrt(t) : (t * 903.3 + 16) / 116)
 
-  const fx: number = f(xn)
-  const fy: number = f(yn)
-  const fz: number = f(zn)
+  const fx = f(xn)
+  const fy = f(yn)
+  const fz = f(zn)
 
-  const L: number = 116 * fy - 16
-  const a: number = 500 * (fx - fy)
-  const bVal: number = 200 * (fy - fz)
+  const L = 116 * fy - 16
+  const a = 500 * (fx - fy)
+  const bVal = 200 * (fy - fz)
 
   // Step 4: Lab → LCH
-  const C: number = Math.sqrt(a * a + bVal * bVal)
-  let H: number = Math.atan2(bVal, a) * (180 / Math.PI)
+  const C = Math.sqrt(a * a + bVal * bVal)
+  let H = Math.atan2(bVal, a) * (180 / Math.PI)
   if (H < 0) H += 360
 
   return { c: C, h: H, l: L }
@@ -141,27 +141,27 @@ const rgbToLch = (source: RGBColor): LCHColor => {
 
 const rgbToOklch = (source: RGBColor): OKLCHColor => {
   // 1. sRGB to linear
-  const lr: number = srgbToLinear(source.r / 255)
-  const lg: number = srgbToLinear(source.g / 255)
-  const lb: number = srgbToLinear(source.b / 255)
+  const lr = srgbToLinear(source.r / 255)
+  const lg = srgbToLinear(source.g / 255)
+  const lb = srgbToLinear(source.b / 255)
 
   // 2. Linear RGB to LMS (OKLab)
-  const l_: number = 0.4122214708 * lr + 0.5363325363 * lg + 0.0514459929 * lb
-  const m_: number = 0.2119034982 * lr + 0.6806995451 * lg + 0.1073969566 * lb
-  const s_: number = 0.0883024619 * lr + 0.2817188376 * lg + 0.6299787005 * lb
+  const l_ = 0.4122214708 * lr + 0.5363325363 * lg + 0.0514459929 * lb
+  const m_ = 0.2119034982 * lr + 0.6806995451 * lg + 0.1073969566 * lb
+  const s_ = 0.0883024619 * lr + 0.2817188376 * lg + 0.6299787005 * lb
 
-  const l: number = Math.cbrt(l_)
-  const m: number = Math.cbrt(m_)
-  const s: number = Math.cbrt(s_)
+  const l = Math.cbrt(l_)
+  const m = Math.cbrt(m_)
+  const s = Math.cbrt(s_)
 
   // 3. OKLab
-  const L: number = 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s
-  const a: number = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s
-  const b2: number = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s
+  const L = 0.2104542553 * l + 0.793617785 * m - 0.0040720468 * s
+  const a = 1.9779984951 * l - 2.428592205 * m + 0.4505937099 * s
+  const b2 = 0.0259040371 * l + 0.7827717662 * m - 0.808675766 * s
 
   // 4. OKLab → OKLCH
-  const C: number = Math.sqrt(a * a + b2 * b2)
-  let h: number = Math.atan2(b2, a) * (180 / Math.PI)
+  const C = Math.sqrt(a * a + b2 * b2)
+  let h = Math.atan2(b2, a) * (180 / Math.PI)
   if (h < 0) h += 360
 
   return { c: C, h, l: L }
@@ -169,21 +169,21 @@ const rgbToOklch = (source: RGBColor): OKLCHColor => {
 
 // To RGB Convert functions
 const hexToRgb = (hex: string): RGBColor => {
-  const cleanHex: string = hex.replace('#', '')
+  const cleanHex = hex.replace('#', '')
 
   // Handle both 3-digit and 6-digit hex
   if (cleanHex.length === 3) {
-    const r: number = parseInt(cleanHex[0] + cleanHex[0], 16)
-    const g: number = parseInt(cleanHex[1] + cleanHex[1], 16)
-    const b: number = parseInt(cleanHex[2] + cleanHex[2], 16)
+    const r = parseInt(cleanHex[0] + cleanHex[0], 16)
+    const g = parseInt(cleanHex[1] + cleanHex[1], 16)
+    const b = parseInt(cleanHex[2] + cleanHex[2], 16)
     return { b, g, r }
   }
 
   // Handle 6-digit hex
   if (cleanHex.length === 6) {
-    const r: number = parseInt(cleanHex.substring(0, 2), 16)
-    const g: number = parseInt(cleanHex.substring(2, 4), 16)
-    const b: number = parseInt(cleanHex.substring(4, 6), 16)
+    const r = parseInt(cleanHex.substring(0, 2), 16)
+    const g = parseInt(cleanHex.substring(2, 4), 16)
+    const b = parseInt(cleanHex.substring(4, 6), 16)
     return { b, g, r }
   }
 
@@ -192,18 +192,18 @@ const hexToRgb = (hex: string): RGBColor => {
 
 const hslToRgb = (source: HSLColor): RGBColor => {
   // Normalize input values
-  const h: number = source.h % 360 // Ensure hue is within 0-360
-  const s: number = source.s / 100 // Convert saturation to 0-1
-  const l: number = source.l / 100 // Convert lightness to 0-1
+  const h = source.h % 360 // Ensure hue is within 0-360
+  const s = source.s / 100 // Convert saturation to 0-1
+  const l = source.l / 100 // Convert lightness to 0-1
 
   // Calculate chroma
-  const c: number = (1 - Math.abs(2 * l - 1)) * s
+  const c = (1 - Math.abs(2 * l - 1)) * s
 
   // Calculate intermediate value
-  const x: number = c * (1 - Math.abs(((h / 60) % 2) - 1))
+  const x = c * (1 - Math.abs(((h / 60) % 2) - 1))
 
   // Calculate lightness match value
-  const m: number = l - c / 2
+  const m = l - c / 2
 
   let b: number, g: number, r: number
 
@@ -248,13 +248,13 @@ const hslToRgb = (source: HSLColor): RGBColor => {
 
 const labToRgb = (source: LABColor): RGBColor => {
   // Convert LAB to XYZ
-  let y: number = (source.l + 16) / 116
-  let x: number = source.a / 500 + y
-  let z: number = y - source.b / 200
+  let y = (source.l + 16) / 116
+  let x = source.a / 500 + y
+  let z = y - source.b / 200
 
   // Apply inverse f function
-  const delta: number = 6 / 29
-  const deltaSquared: number = delta * delta
+  const delta = 6 / 29
+  const deltaSquared = delta * delta
 
   x = fInverse(x, delta, deltaSquared)
   y = fInverse(y, delta, deltaSquared)
@@ -270,9 +270,9 @@ const labToRgb = (source: LABColor): RGBColor => {
   y = y / 100
   z = z / 100
 
-  let r: number = x * 3.2406 + y * -1.5372 + z * -0.4986
-  let g: number = x * -0.9689 + y * 1.8758 + z * 0.0415
-  let b: number = x * 0.0557 + y * -0.204 + z * 1.057
+  let r = x * 3.2406 + y * -1.5372 + z * -0.4986
+  let g = x * -0.9689 + y * 1.8758 + z * 0.0415
+  let b = x * 0.0557 + y * -0.204 + z * 1.057
 
   // Apply gamma correction (inverse companding)
   r = gammaCorrection(r)
@@ -293,18 +293,18 @@ const labToRgb = (source: LABColor): RGBColor => {
 
 const lchToRgb = (source: LCHColor): RGBColor => {
   // Convert LCH to LAB
-  const hRad: number = (source.h * Math.PI) / 180
-  const a: number = source.c * Math.cos(hRad)
-  const b_lab: number = source.c * Math.sin(hRad)
+  const hRad = (source.h * Math.PI) / 180
+  const a = source.c * Math.cos(hRad)
+  const b_lab = source.c * Math.sin(hRad)
 
   // Convert LAB to XYZ
-  let y: number = (source.l + 16) / 116
-  let x: number = a / 500 + y
-  let z: number = y - b_lab / 200
+  let y = (source.l + 16) / 116
+  let x = a / 500 + y
+  let z = y - b_lab / 200
 
   // Apply inverse f function
-  const delta: number = 6 / 29
-  const deltaSquared: number = delta * delta
+  const delta = 6 / 29
+  const deltaSquared = delta * delta
 
   x = fInverse(x, delta, deltaSquared)
   y = fInverse(y, delta, deltaSquared)
@@ -320,9 +320,9 @@ const lchToRgb = (source: LCHColor): RGBColor => {
   y = y / 100
   z = z / 100
 
-  let r: number = x * 3.2406 + y * -1.5372 + z * -0.4986
-  let g: number = x * -0.9689 + y * 1.8758 + z * 0.0415
-  let b: number = x * 0.0557 + y * -0.204 + z * 1.057
+  let r = x * 3.2406 + y * -1.5372 + z * -0.4986
+  let g = x * -0.9689 + y * 1.8758 + z * 0.0415
+  let b = x * 0.0557 + y * -0.204 + z * 1.057
 
   // Apply gamma correction (inverse companding)
   r = gammaCorrection(r)
@@ -343,28 +343,28 @@ const lchToRgb = (source: LCHColor): RGBColor => {
 
 const oklchToRgb = (source: OKLCHColor): RGBColor => {
   // Convert hue from degrees to radians
-  const hRad: number = (source.h * Math.PI) / 180
+  const hRad = (source.h * Math.PI) / 180
 
   // Convert OKLCH to OKLAB
-  const a: number = source.c * Math.cos(hRad)
-  const b_oklab: number = source.c * Math.sin(hRad)
+  const a = source.c * Math.cos(hRad)
+  const b_oklab = source.c * Math.sin(hRad)
 
   // Convert OKLAB to linear RGB
-  const l_: number = source.l + 0.3963377774 * a + 0.2158037573 * b_oklab
-  const m_: number = source.l - 0.1055613458 * a - 0.0638541728 * b_oklab
-  const s_: number = source.l - 0.0894841775 * a - 1.291485548 * b_oklab
+  const l_ = source.l + 0.3963377774 * a + 0.2158037573 * b_oklab
+  const m_ = source.l - 0.1055613458 * a - 0.0638541728 * b_oklab
+  const s_ = source.l - 0.0894841775 * a - 1.291485548 * b_oklab
 
-  const l3: number = l_ * l_ * l_
-  const m3: number = m_ * m_ * m_
-  const s3: number = s_ * s_ * s_
+  const l3 = l_ * l_ * l_
+  const m3 = m_ * m_ * m_
+  const s3 = s_ * s_ * s_
 
-  const r_lin: number = +4.0767416621 * l3 - 3.3077115913 * m3 + 0.2309699292 * s3
-  const g_lin: number = -1.2684380046 * l3 + 2.6097574011 * m3 - 0.3413193965 * s3
-  const b_lin: number = -0.0041960863 * l3 - 0.7034186147 * m3 + 1.707614701 * s3
+  const r_lin = +4.0767416621 * l3 - 3.3077115913 * m3 + 0.2309699292 * s3
+  const g_lin = -1.2684380046 * l3 + 2.6097574011 * m3 - 0.3413193965 * s3
+  const b_lin = -0.0041960863 * l3 - 0.7034186147 * m3 + 1.707614701 * s3
 
-  let r: number = linearToSrgb(r_lin)
-  let g: number = linearToSrgb(g_lin)
-  let b: number = linearToSrgb(b_lin)
+  let r = linearToSrgb(r_lin)
+  let g = linearToSrgb(g_lin)
+  let b = linearToSrgb(b_lin)
 
   // Clamp to valid range and convert to 0-255
   r = Math.max(0, Math.min(1, r)) * 255
@@ -381,8 +381,8 @@ const oklchToRgb = (source: OKLCHColor): RGBColor => {
 // ... rest of existing code ...
 
 // Parse functions
-const parseHex = (hex: string): string => {
-  const cleanHex: string = hex.replace('#', '').toLowerCase()
+const parseHex = (hex: string) => {
+  const cleanHex = hex.replace('#', '').toLowerCase()
   if (!/^[0-9a-f]{3}$|^[0-9a-f]{6}$/.test(cleanHex)) {
     throw new Error('Invalid hex color format. Use #111 or #111111')
   }
@@ -390,14 +390,14 @@ const parseHex = (hex: string): string => {
 }
 
 const parseRgb = (rgb: string): RGBColor => {
-  const match: null | RegExpMatchArray = rgb.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/)
+  const match = rgb.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/)
   if (!match) {
     throw new Error('Invalid RGB color format')
   }
 
-  const r: number = Number(match[1])
-  const g: number = Number(match[2])
-  const b: number = Number(match[3])
+  const r = Number(match[1])
+  const g = Number(match[2])
+  const b = Number(match[3])
 
   // Check for invalid numbers
   if (isNaN(r) || isNaN(g) || isNaN(b)) {
@@ -419,14 +419,14 @@ const parseRgb = (rgb: string): RGBColor => {
 }
 
 const parseHsl = (hsl: string): HSLColor => {
-  const match: null | RegExpMatchArray = hsl.match(/hsl\(([0-9.]+)\s+([0-9.]+%)\s+([0-9.]+%)\)/)
+  const match = hsl.match(/hsl\(([0-9.]+)\s+([0-9.]+%)\s+([0-9.]+%)\)/)
   if (!match) {
     throw new Error('Invalid HSL color format')
   }
 
-  const h: number = Number(match[1])
-  const s: number = Number(match[2].replace('%', ''))
-  const l: number = Number(match[3].replace('%', ''))
+  const h = Number(match[1])
+  const s = Number(match[2].replace('%', ''))
+  const l = Number(match[3].replace('%', ''))
 
   // Check for invalid numbers
   if (isNaN(h) || isNaN(s) || isNaN(l)) {
@@ -448,14 +448,14 @@ const parseHsl = (hsl: string): HSLColor => {
 }
 
 const parseLab = (lab: string): LABColor => {
-  const match: null | RegExpMatchArray = lab.match(/lab\(([+-]?[0-9.]+)\s+([+-]?[0-9.]+)\s+([+-]?[0-9.]+)\)/)
+  const match = lab.match(/lab\(([+-]?[0-9.]+)\s+([+-]?[0-9.]+)\s+([+-]?[0-9.]+)\)/)
   if (!match) {
     throw new Error('Invalid LAB color format')
   }
 
-  const l: number = Number(match[1])
-  const a: number = Number(match[2])
-  const b: number = Number(match[3])
+  const l = Number(match[1])
+  const a = Number(match[2])
+  const b = Number(match[3])
 
   // Check for invalid numbers
   if (isNaN(l) || isNaN(a) || isNaN(b)) {
@@ -477,14 +477,14 @@ const parseLab = (lab: string): LABColor => {
 }
 
 const parseLch = (lch: string): LCHColor => {
-  const match: null | RegExpMatchArray = lch.match(/lch\(([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)\)/)
+  const match = lch.match(/lch\(([0-9.]+)\s+([0-9.]+)\s+([0-9.]+)\)/)
   if (!match) {
     throw new Error('Invalid LCH color format')
   }
 
-  const l: number = Number(match[1])
-  const c: number = Number(match[2])
-  const h: number = Number(match[3])
+  const l = Number(match[1])
+  const c = Number(match[2])
+  const h = Number(match[3])
 
   // Check for invalid numbers
   if (isNaN(l) || isNaN(c) || isNaN(h)) {
@@ -507,14 +507,14 @@ const parseLch = (lch: string): LCHColor => {
 
 const parseOklch = (oklch: string): OKLCHColor => {
   // extract the numbers from the string for example: oklch(0.3309 0.0282 281.94)
-  const match: null | RegExpMatchArray = oklch.match(/oklch\(([0-9.]+)\s+([0-9.]+)(\s+[0-9.]+)\)/)
+  const match = oklch.match(/oklch\(([0-9.]+)\s+([0-9.]+)(\s+[0-9.]+)\)/)
   if (!match) {
     throw new Error('Invalid OKLCH color format')
   }
 
-  const l: number = Number(match[1])
-  const c: number = Number(match[2])
-  const h: number = Number(match[3])
+  const l = Number(match[1])
+  const c = Number(match[2])
+  const h = Number(match[3])
 
   // Check for invalid numbers
   if (isNaN(l) || isNaN(c) || isNaN(h)) {
@@ -602,6 +602,8 @@ export const convertColor = (source: string, sourceFormat: ColorFormat): Record<
       [sourceFormat]: source,
     }
   } catch (error) {
-    throw new Error(`Failed to convert color: ${error instanceof Error ? error.message : 'Unknown error'}`)
+    throw new Error(`Failed to convert color: ${error instanceof Error ? error.message : 'Unknown error'}`, {
+      cause: error,
+    })
   }
 }

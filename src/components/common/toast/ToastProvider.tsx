@@ -2,7 +2,7 @@ import { Provider, Root, Title, Viewport } from '@radix-ui/react-toast'
 import { AnimatePresence, motion } from 'motion/react'
 
 import { useToast } from '@/hooks'
-import { type CompVariant, type ToastItemProps, type ToastItemVariant, type UseToast } from '@/types'
+import { type CompVariant, type ToastItemProps, type ToastItemVariant } from '@/types'
 import { tv } from '@/utils'
 
 import { CheckIcon, XIcon } from '../icon'
@@ -32,7 +32,7 @@ const ToastTypeIcon = ({ type }: Pick<ToastItemProps, 'type'>) => {
 }
 
 const ToastItem = ({ duration = 1500, label, type }: Omit<ToastItemProps, 'id'>) => {
-  const iconClassname: string = iconVariants({ type })
+  const iconClassname = iconVariants({ type })
 
   return (
     <AnimatePresence>
@@ -70,14 +70,14 @@ const ToastItem = ({ duration = 1500, label, type }: Omit<ToastItemProps, 'id'>)
 }
 
 export const ToastProvider = () => {
-  const { items }: UseToast = useToast()
+  const { items } = useToast()
 
   return (
     <Provider>
-      {items.map((item: ToastItemProps) => (
+      {items.map((item) => (
         <ToastItem key={item.id} {...item} />
       ))}
-      <Viewport className="pointer-events-none fixed left-1/2 top-0 z-[999] mt-[var(--header-height)] flex w-full -translate-x-1/2 flex-col-reverse items-center gap-2 p-2 outline-none" />
+      <Viewport className="pointer-events-none fixed top-0 left-1/2 z-[999] mt-[var(--header-height)] flex w-full -translate-x-1/2 flex-col-reverse items-center gap-2 p-2 outline-none" />
     </Provider>
   )
 }

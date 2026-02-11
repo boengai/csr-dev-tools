@@ -8,7 +8,7 @@ import { createRoot } from 'react-dom/client'
 
 import { router } from './routes'
 
-const queryClient: QueryClient = new QueryClient({
+const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
       gcTime: 3_600_000, // 1 hour

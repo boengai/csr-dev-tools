@@ -1,9 +1,9 @@
-import { createTV, type CreateTV } from 'tailwind-variants'
+import { createTV } from 'tailwind-variants'
 
-export const tv: CreateTV = createTV({
+export const tv = createTV({
   twMerge: true,
   twMergeConfig: {
-    extends: {
+    extend: {
       classGroups: {
         'font-size': [
           {

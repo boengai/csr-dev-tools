@@ -6,12 +6,9 @@ import type { UsePersistFeatureLayout } from '@/types'
 export const usePersistFeatureLayout: UseBoundStore<StoreApi<UsePersistFeatureLayout>> =
   create<UsePersistFeatureLayout>()(
     persist<UsePersistFeatureLayout>(
-      (set: StoreApi<UsePersistFeatureLayout>['setState']) => ({
-        setter: (
-          position: Parameters<UsePersistFeatureLayout['setter']>[0],
-          payload: Parameters<UsePersistFeatureLayout['setter']>[1],
-        ) =>
-          set((state: UsePersistFeatureLayout) => ({
+      (set) => ({
+        setter: (position, payload) =>
+          set((state) => ({
             value: { ...state.value, [position]: payload },
           })),
         value: {
