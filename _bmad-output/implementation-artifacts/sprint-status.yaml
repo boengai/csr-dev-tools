@@ -1,0 +1,115 @@
+# generated: 2026-02-12
+# project: csr-dev-tools
+# project_key: NOKEY
+# tracking_system: file-system
+# story_location: _bmad-output/implementation-artifacts
+
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Epic Status Transitions:
+#   - backlog → in-progress: Automatically when first story is created (via create-story)
+#   - in-progress → done: Manually when all stories reach 'done' status
+#
+# Story Status:
+#   - backlog: Story only exists in epic file
+#   - ready-for-dev: Story file created in stories folder
+#   - in-progress: Developer actively working on implementation
+#   - review: Ready for code review (via Dev's code-review workflow)
+#   - done: Story completed
+#
+# Retrospective Status:
+#   - optional: Can be completed but not required
+#   - done: Retrospective has been completed
+#
+# WORKFLOW NOTES:
+# ===============
+# - Epic transitions to 'in-progress' automatically when first story is created
+# - Stories can be worked in parallel if team capacity allows
+# - SM typically creates next story after previous one is 'done' to incorporate learnings
+# - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
+
+generated: 2026-02-12
+project: csr-dev-tools
+project_key: NOKEY
+tracking_system: file-system
+story_location: _bmad-output/implementation-artifacts
+
+development_status:
+  # Epic 1: Platform Navigation & Tool Discovery
+  epic-1: backlog
+  1-1-centralized-tool-registry: backlog
+  1-2-dedicated-tool-routes-and-seo: backlog
+  1-3-sidebar-navigation-system: backlog
+  1-4-command-palette-search: backlog
+  1-5-theme-toggle: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: Standardized Tool Experience
+  epic-2: backlog
+  2-1-toollayout-component: backlog
+  2-2-copybutton-and-outputdisplay-components: backlog
+  2-3-error-handling-system: backlog
+  2-4-input-validation-utilities: backlog
+  2-5-tool-descriptions-placeholders-and-tooltips: backlog
+  epic-2-retrospective: optional
+
+  # Epic 3: Existing Tool Baseline & Enhancement
+  epic-3: backlog
+  3-1-color-converter-refactor-spec-and-tests: backlog
+  3-2-base64-encoder-refactor-spec-and-tests: backlog
+  3-3-image-converter-refactor-spec-and-tests: backlog
+  3-4-image-resizer-refactor-spec-and-tests: backlog
+  3-5-unix-timestamp-converter-refactor-spec-and-tests: backlog
+  3-6-px-to-rem-converter-refactor-spec-and-tests: backlog
+  3-7-dashboard-layout-persistence-baseline: backlog
+  epic-3-retrospective: optional
+
+  # Epic 4: Quality Infrastructure & Contributor Experience
+  epic-4: backlog
+  4-1-e2e-test-infrastructure: backlog
+  4-2-ci-cd-pipeline: backlog
+  4-3-lighthouse-ci-integration: backlog
+  4-4-contributing-guide-and-developer-documentation: backlog
+  epic-4-retrospective: optional
+
+  # Epic 5: Encoding & Decoding Tools
+  epic-5: backlog
+  5-1-url-encoder-decoder: backlog
+  5-2-jwt-decoder: backlog
+  epic-5-retrospective: optional
+
+  # Epic 6: Data & Format Tools
+  epic-6: backlog
+  6-1-json-formatter-validator: backlog
+  6-2-json-to-yaml-converter: backlog
+  6-3-json-to-csv-converter: backlog
+  epic-6-retrospective: optional
+
+  # Epic 7: Text Analysis Tools
+  epic-7: backlog
+  7-1-text-diff-checker: backlog
+  7-2-regex-tester: backlog
+  epic-7-retrospective: optional
+
+  # Epic 8: Generator Tools
+  epic-8: backlog
+  8-1-uuid-generator: backlog
+  8-2-password-generator: backlog
+  8-3-hash-generator: backlog
+  epic-8-retrospective: optional
+
+  # Epic 9: CSS Visual Tools
+  epic-9: backlog
+  9-1-css-box-shadow-generator: backlog
+  epic-9-retrospective: optional
+
+  # Epic 10: Advanced Image Tools
+  epic-10: backlog
+  10-1-image-compression: backlog
+  10-2-image-cropping: backlog
+  epic-10-retrospective: optional
