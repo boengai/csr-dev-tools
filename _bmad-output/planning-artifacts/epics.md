@@ -173,48 +173,60 @@ FR38: Epic 2 - Tool descriptions, placeholders, and format tooltips
 ### Epic 1: Platform Navigation & Tool Discovery
 Users can discover, search, and navigate to all tools via a categorized sidebar, command palette (Cmd+K), dedicated URLs, and theme toggle — on any device.
 **FRs covered:** FR26, FR27, FR28, FR29, FR32
+**Depends on:** None — builds on existing MVP foundation
 
 ### Epic 2: Standardized Tool Experience
 Users get a consistent, self-explanatory, accessible tool interface with instant feedback, clear error handling, and one-click output capture across every tool.
 **FRs covered:** FR1, FR2, FR3, FR4, FR38
+**Depends on:** Epic 1 (TOOL_REGISTRY for tool metadata and descriptions)
 
 ### Epic 3: Existing Tool Baseline & Enhancement
 Users get documented, regression-tested, and enhanced versions of all 6 existing tools — refactored to the standardized layout with improved UX.
 **FRs covered:** FR5, FR6, FR7, FR8, FR11, FR12, FR15, FR16, FR30, FR31, FR36, FR37
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
 
 ### Epic 4: Quality Infrastructure & Contributor Experience
 Contributors can add new tools following clear documented patterns, with automated CI/CD quality gates protecting the codebase.
 **FRs covered:** FR33, FR34, FR35
+**Depends on:** Epic 1 (TOOL_REGISTRY for contributor workflow documentation)
 
 ### Epic 5: Encoding & Decoding Tools
 Users can encode/decode URLs and decode JWT tokens to inspect headers and payloads.
 **FRs covered:** FR9, FR10
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
 
 ### Epic 6: Data & Format Tools
 Users can format/validate JSON and convert between JSON, YAML, and CSV formats.
 **FRs covered:** FR17, FR18, FR19
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
 
 ### Epic 7: Text Analysis Tools
 Users can compare text side-by-side to spot differences and test regex patterns with live match highlighting.
 **FRs covered:** FR20, FR21
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
 
-### Epic 8: Generator & Security Tools
+### Epic 8: Generator Tools
 Users can generate UUIDs, secure passwords, and cryptographic hash values.
 **FRs covered:** FR22, FR23, FR24
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
 
 ### Epic 9: CSS Visual Tools
 Users can visually create CSS box-shadow values with a live preview and copy the CSS output.
 **FRs covered:** FR25
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
 
 ### Epic 10: Advanced Image Tools
 Users can compress images with quality control and crop images using freeform or preset aspect ratios.
 **FRs covered:** FR13, FR14
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay). Recommended after Epic 3 Stories 3.3/3.4 (Image tool baseline)
 
 ---
 
 ## Epic 1: Platform Navigation & Tool Discovery
 
 Users can discover, search, and navigate to all tools via a categorized sidebar, command palette (Cmd+K), dedicated URLs, and theme toggle — on any device.
+
+**Depends on:** None — builds on existing MVP foundation
 
 ### Story 1.1: Centralized Tool Registry
 
@@ -383,6 +395,8 @@ So that **I can use the tools in my preferred visual mode**.
 
 Users get a consistent, self-explanatory, accessible tool interface with instant feedback, clear error handling, and one-click output capture across every tool.
 
+**Depends on:** Epic 1 (TOOL_REGISTRY for tool metadata and descriptions)
+
 ### Story 2.1: ToolLayout Component
 
 As a **user**,
@@ -545,6 +559,8 @@ So that **I can use any tool instantly without reading documentation**.
 ## Epic 3: Existing Tool Baseline & Enhancement
 
 Users get documented, regression-tested, and enhanced versions of all 6 existing tools — refactored to the standardized layout with improved UX.
+
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
 
 ### Story 3.1: Color Converter — Refactor, Spec & Tests
 
@@ -751,6 +767,8 @@ So that **my personalized layout is preserved across sessions after the registry
 
 Contributors can add new tools following clear documented patterns, with automated CI/CD quality gates protecting the codebase.
 
+**Depends on:** Epic 1 (TOOL_REGISTRY for contributor workflow documentation)
+
 ### Story 4.1: E2E Test Infrastructure
 
 As a **contributor**,
@@ -852,6 +870,8 @@ So that **I can contribute a tool without needing to ask the maintainer for help
 
 Users can encode/decode URLs and decode JWT tokens to inspect headers and payloads.
 
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+
 ### Story 5.1: URL Encoder/Decoder
 
 As a **user**,
@@ -918,6 +938,8 @@ So that **I can quickly inspect token contents for debugging without using an ex
 ## Epic 6: Data & Format Tools
 
 Users can format/validate JSON and convert between JSON, YAML, and CSV formats.
+
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
 
 ### Story 6.1: JSON Formatter/Validator
 
@@ -1015,6 +1037,8 @@ So that **I can quickly transform data between formats for spreadsheets and APIs
 
 Users can compare text side-by-side to spot differences and test regex patterns with live match highlighting.
 
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+
 ### Story 7.1: Text Diff Checker
 
 As a **user**,
@@ -1081,9 +1105,11 @@ So that **I can iterate on regex patterns quickly without switching to a termina
 
 ---
 
-## Epic 8: Generator & Security Tools
+## Epic 8: Generator Tools
 
 Users can generate UUIDs, secure passwords, and cryptographic hash values.
+
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
 
 ### Story 8.1: UUID Generator
 
@@ -1186,6 +1212,8 @@ So that **I can quickly compute checksums and hashes for verification and develo
 
 Users can visually create CSS box-shadow values with a live preview and copy the CSS output.
 
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+
 ### Story 9.1: CSS Box Shadow Generator
 
 As a **user**,
@@ -1226,6 +1254,8 @@ So that **I can design box shadows interactively and copy the CSS code directly 
 ## Epic 10: Advanced Image Tools
 
 Users can compress images with quality control and crop images using freeform or preset aspect ratios.
+
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay). Recommended after Epic 3 Stories 3.3/3.4 (Image tool baseline)
 
 ### Story 10.1: Image Compression
 
