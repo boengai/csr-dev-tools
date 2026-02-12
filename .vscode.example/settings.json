@@ -7,5 +7,7 @@
   "editor.codeActionsOnSave": {
     "source.fixAll.oxlint": "explicit"
   },
-  "typescript.tsdk": "node_modules/typescript/lib"
+  "prettier.enable": false,
+  "eslint.enable": false,
+  "typescript.tsdk": "node_modules/typescript/lib",
 }
