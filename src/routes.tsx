@@ -18,6 +18,11 @@ const routeTree = rootRoute.addChildren([
     getParentRoute: () => rootRoute,
     path: ROUTE_PATH.SHOWCASE,
   }),
+  createRoute({
+    component: lazyRouteComponent(() => import('@/pages/tool')),
+    getParentRoute: () => rootRoute,
+    path: `${ROUTE_PATH.TOOL}/$toolKey`,
+  }),
 ])
 
 export const router = createRouter({

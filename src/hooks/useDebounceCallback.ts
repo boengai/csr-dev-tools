@@ -15,7 +15,7 @@ export function useDebounceCallback<T extends (...args: Array<never>) => unknown
         clearTimeout(timeoutRef.current)
       }
 
-      timeoutRef.current = setTimeout(() => {
+      timeoutRef.current = window.setTimeout(() => {
         callback(...args)
       }, delay)
     },

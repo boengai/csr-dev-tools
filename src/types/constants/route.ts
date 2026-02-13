@@ -1,1 +1,1 @@
-export type RoutePath = 'HOME' | 'SHOWCASE'
+export type RoutePath = 'HOME' | 'SHOWCASE' | 'TOOL'
