@@ -3,7 +3,7 @@ import { Suspense } from 'react'
 
 import type { ToolRegistryEntry } from '@/types'
 
-import { Card } from '@/components'
+import { Card, NotoEmoji } from '@/components'
 import { ROUTE_PATH, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolSeo } from '@/hooks'
 
@@ -28,22 +28,14 @@ const ToolPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
   const ToolComponent = tool.component
 
   return (
-    <div className="flex grow flex-col items-center p-6 pb-[calc(1.5rem+var(--safe-area-inset-bottom))]">
-      <div className="flex w-full max-w-[768px] grow flex-col">
-        <Card title={tool.name}>
-          <Suspense fallback={<ToolPageLoading />}>
+    <div className="flex grow flex-col items-center justify-center p-6 pb-[calc(1.5rem+var(--safe-area-inset-bottom))]">
+      <div className="flex max-h-full w-full max-w-[768px] flex-col">
+        <Suspense fallback={<NotoEmoji emoji="flying-saucer" size={200} />}>
+          <Card title={tool.name}>
             <ToolComponent />
-          </Suspense>
-        </Card>
+          </Card>
+        </Suspense>
       </div>
-    </div>
-  )
-}
-
-const ToolPageLoading = () => {
-  return (
-    <div className="bg-primary/10 rounded-card flex grow flex-col items-center justify-center">
-      <span className="text-text-secondary">Loading...</span>
     </div>
   )
 }

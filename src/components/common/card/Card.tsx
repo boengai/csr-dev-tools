@@ -33,7 +33,7 @@ export const Card = ({ children, onClose, title }: CardProps) => {
         )}
         <h3 className="text-body-sm grow truncate text-gray-400">{title}</h3>
       </div>
-      <div className="flex size-full grow flex-col overflow-hidden p-4">{children}</div>
+      <div className="flex size-full grow flex-col overflow-y-auto p-4">{children}</div>
     </motion.article>
   )
 }

@@ -266,7 +266,7 @@ export const DateSection = () => {
 
 export const TimeUnixTimestamp = () => {
   return (
-    <div className="flex grow flex-col gap-4 overflow-y-auto">
+    <div className="flex grow flex-col gap-4">
       <UnixTimestampSection />
       <hr />
       <DateSection />

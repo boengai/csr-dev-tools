@@ -15,7 +15,7 @@ const TwinkleStarsAnimate = lazy(() =>
 
 const PageLoading = () => {
   return (
-    <div className="bg-primary/10 rounded-card flex grow flex-col items-center justify-center">
+    <div className="flex grow flex-col items-center justify-center">
       <NotoEmoji emoji="flying-saucer" size={200} />
     </div>
   )
