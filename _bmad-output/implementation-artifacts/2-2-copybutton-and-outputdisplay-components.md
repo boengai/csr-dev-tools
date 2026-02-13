@@ -1,6 +1,6 @@
 # Story 2.2: CopyButton & OutputDisplay Components
 
-Status: done
+Status: done <!-- OutputDisplay deprecated and removed in story 3-1 — each tool owns its output. CopyButton still active. -->
 
 <!-- Note: Validation is optional. Run validate-create-story for quality check before dev-story. -->
 

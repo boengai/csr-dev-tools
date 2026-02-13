@@ -7,6 +7,10 @@ inputDocuments:
   - ux-design-specification.md
 ---
 
+<!-- DEPRECATION NOTICE (story 3-1): ToolLayout and OutputDisplay were deprecated and removed.
+     Each tool owns its own layout. CopyButton remains active. References to ToolLayout/OutputDisplay
+     in epic dependencies and story ACs below are outdated — ignore them during implementation. -->
+
 # csr-dev-tools - Epic Breakdown
 
 ## Overview

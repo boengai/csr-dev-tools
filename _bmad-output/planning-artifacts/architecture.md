@@ -8,6 +8,9 @@ inputDocuments:
   - prd.md
   - prd-validation-report.md
   - ux-design-specification.md
+deprecationNotes:
+  - 'ToolLayout deprecated and removed (story 3-1) — each tool owns its own layout'
+  - 'OutputDisplay deprecated and removed (story 3-1) — not needed; CopyButton still active'
   - project-context.md
   - docs/index.md
   - docs/project-overview.md

@@ -62,7 +62,7 @@ development_status:
   # Epic 3: Existing Tool Baseline & Enhancement
   epic-3: in-progress
   3-1-color-converter-refactor-spec-and-tests: done
-  3-2-base64-encoder-refactor-spec-and-tests: backlog
+  3-2-base64-encoder-refactor-spec-and-tests: done
   3-3-image-converter-refactor-spec-and-tests: backlog
   3-4-image-resizer-refactor-spec-and-tests: backlog
   3-5-unix-timestamp-converter-refactor-spec-and-tests: backlog
