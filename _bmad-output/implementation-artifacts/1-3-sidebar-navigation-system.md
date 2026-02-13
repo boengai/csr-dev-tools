@@ -5,8 +5,8 @@ Status: done
 ## Story
 
 As a **user**,
-I want **a collapsible sidebar showing all tools grouped by category**,
-So that **I can quickly browse and navigate to any tool without scrolling the dashboard**.
+I want **a drawer-style sidebar showing all tools grouped by category**,
+So that **I can quickly browse and navigate to any tool's dedicated page**.
 
 **Epic:** 1 - Platform Navigation & Tool Discovery
 **FRs Covered:** FR26, FR28, FR29
@@ -14,12 +14,13 @@ So that **I can quickly browse and navigate to any tool without scrolling the da
 
 ## Acceptance Criteria
 
-**AC1: Sidebar Open/Close via Hamburger**
-**Given** the user is on the dashboard
+**AC1: Sidebar Open/Close via Hamburger (Drawer Overlay)**
+**Given** the user is on any page
 **When** they click the hamburger icon in the header
-**Then** the sidebar slides in from the left (300ms ease-out animation via Motion)
-**And** on desktop (>=768px), the sidebar takes ~240-280px and pushes the dashboard content to the right
-**And** on mobile (<768px), the sidebar opens as a full-screen overlay with dark backdrop
+**Then** the sidebar slides in from the left as a drawer overlay (300ms ease-out animation via Motion)
+**And** on all viewports, the sidebar floats on top of content with a dark backdrop (never pushes content)
+**And** on mobile (<768px), the sidebar takes full-screen width
+**And** on desktop (>=768px), the sidebar takes ~240-280px width
 
 **AC2: Category Grouping & Display**
 **Given** the sidebar is open
@@ -29,22 +30,28 @@ So that **I can quickly browse and navigate to any tool without scrolling the da
 **And** each category is expandable/collapsible with a chevron icon
 **And** all categories default to expanded on first load
 
-**AC3: Tool Navigation & Highlight Pulse**
+**AC3: Tool Navigation via Route**
 **Given** the sidebar is open
 **When** the user clicks a tool name (`SidebarToolItem`)
-**Then** the dashboard scrolls to that tool's card with a brief highlight pulse (500ms, `--color-primary` border)
-**And** on mobile, the sidebar closes automatically after selection
+**Then** the app navigates to `/tools/{tool-key}` (Story 1.2 route)
+**And** the sidebar auto-closes on both mobile and desktop after navigation
 
 **AC4: Sidebar Dismissal**
 **Given** the sidebar is open
 **When** the user presses `Escape` or clicks outside the sidebar (mobile) or clicks the X/hamburger toggle
 **Then** the sidebar closes with a slide-out animation
 
-**AC5: Mobile Focus Trapping & Accessibility**
-**Given** the sidebar is open on mobile
+**AC5: Focus Trapping & Accessibility**
+**Given** the sidebar drawer is open (any viewport)
 **When** focus is inside the sidebar
 **Then** focus is trapped within the sidebar (cannot tab to elements behind the overlay)
 **And** the sidebar has `nav` landmark with `aria-label="Tool navigation"`
+
+**AC7: Home Navigation from Tool Pages**
+**Given** the user is on a tool page (`/tools/*`)
+**When** they view the header
+**Then** a home icon/button is visible that navigates back to `/` (dashboard)
+**And** the home button is not shown when already on the home page
 
 **AC6: Zustand Store**
 **Given** a `useSidebarStore` Zustand store in `src/hooks/state/`
@@ -72,8 +79,8 @@ So that **I can quickly browse and navigate to any tool without scrolling the da
 
 ### Task 5: SidebarToolItem Component
 - [x] **5.1** Create `src/components/common/sidebar/SidebarToolItem.tsx`
-- [x] **5.2** Implement click handler that scrolls dashboard to tool card with highlight pulse
-- [x] **5.3** Implement mobile auto-close after selection
+- [x] **5.2** ~~Implement click handler that scrolls dashboard to tool card with highlight pulse~~ → Replaced with route navigation to `/tools/{tool-key}` using TanStack Router `useNavigate`
+- [x] **5.3** ~~Implement mobile auto-close after selection~~ → Auto-close drawer on both mobile AND desktop after navigation
 
 ### Task 6: SidebarCategory Component
 - [x] **6.1** Create `src/components/common/sidebar/SidebarCategory.tsx`
@@ -81,14 +88,14 @@ So that **I can quickly browse and navigate to any tool without scrolling the da
 - [x] **6.3** Wire CategoryBadge for tool count display
 - [x] **6.4** Default all categories to expanded state
 
-### Task 7: Sidebar Component (Main Container)
+### Task 7: Sidebar Component (Main Container — Drawer Overlay)
 - [x] **7.1** Create `src/components/common/sidebar/Sidebar.tsx`
-- [x] **7.2** Implement desktop mode: 240-280px panel that pushes content
-- [x] **7.3** Implement mobile mode: full-screen overlay with dark backdrop
+- [x] **7.2** ~~Implement desktop mode: 240-280px panel that pushes content~~ → Refactored to drawer overlay on desktop (fixed position, floats on top with backdrop, 260px width)
+- [x] **7.3** ~~Implement mobile mode: full-screen overlay with dark backdrop~~ → Unified mobile/desktop as single drawer overlay (mobile: full-screen, desktop: 260px, both with backdrop)
 - [x] **7.4** Implement 300ms ease-out slide animation via Motion
 - [x] **7.5** Implement Escape key handler to close sidebar
-- [x] **7.6** Implement backdrop click handler for mobile
-- [x] **7.7** Implement focus trapping for mobile overlay
+- [x] **7.6** ~~Implement backdrop click handler for mobile~~ → Backdrop click closes on ALL viewports
+- [x] **7.7** ~~Implement focus trapping for mobile overlay~~ → Focus trapping on ALL viewports (drawer is always overlay)
 - [x] **7.8** Add `nav` landmark with `aria-label="Tool navigation"`
 - [x] **7.9** Create barrel export `src/components/common/sidebar/index.ts`
 
@@ -100,13 +107,18 @@ So that **I can quickly browse and navigate to any tool without scrolling the da
 ### Task 9: App.tsx Layout Integration
 - [x] **9.1** Integrate Sidebar component into the App.tsx layout
 - [x] **9.2** Update barrel export in `src/components/common/index.ts`
-- [x] **9.3** Implement content push behavior on desktop (sidebar + main content flex layout)
+- [x] **9.3** ~~Implement content push behavior on desktop (sidebar + main content flex layout)~~ → Removed push layout; sidebar is drawer overlay, main content layout unchanged
 - [x] **9.4** Ensure existing TwinkleStarsAnimate, Outlet, and ToastProvider remain functional
 
-### Task 10: Scroll-to-Card & Highlight Pulse
-- [x] **10.1** Implement scroll-to-card utility function or hook
-- [x] **10.2** Assign data attributes or IDs to tool cards in the home page for scroll targeting
-- [x] **10.3** Implement 500ms highlight pulse animation (border `--color-primary`)
+### Task 10: ~~Scroll-to-Card & Highlight Pulse~~ → Route Navigation & Cleanup
+- [x] **10.1** ~~Implement scroll-to-card utility function or hook~~ → Removed scroll-to-card logic from SidebarToolItem
+- [x] **10.2** ~~Assign data attributes or IDs to tool cards in the home page for scroll targeting~~ → Removed `data-tool-key` attributes from home page sections
+- [x] **10.3** ~~Implement 500ms highlight pulse animation~~ → Removed `highlight-pulse` CSS animation from index.css
+
+### Task 11: Home Navigation Button (NEW)
+- [x] **11.1** Reused existing `ArrowIcon` + home emoji for navigating back to `/`
+- [x] **11.2** Added home button (`<Link>` with `ArrowIcon` + 🏠) to header in `App.tsx`, visible only on tool pages (`/tools/*`) via `useLocation`
+- [x] **11.3** Wired home button to navigate to `/` using TanStack Router `<Link>`
 
 ## Dev Notes
 
@@ -875,8 +887,12 @@ _This section is for the implementing agent to track progress, decisions, and de
 |---|---|---|
 | 2026-02-13 | Used manual focus trap instead of Radix Dialog for mobile overlay | Radix Dialog conflicts with AnimatePresence exit animations and is semantically incorrect for a nav panel. Manual focus trap via Tab key listener provides equivalent a11y while allowing smooth slide animations. |
 | 2026-02-13 | Used JS `window.matchMedia` for mobile detection instead of CSS-only | Focus trapping requires JS to determine when to activate. CSS-only approach insufficient for this behavioral difference. |
-| 2026-02-13 | Separate AnimatePresence blocks for mobile vs desktop sidebar | Prevents animation state conflicts when viewport changes while sidebar is open. Each mode has its own motion element with appropriate initial/animate/exit values. |
-| 2026-02-13 | Added `data-tool-key` to section elements in HomePage via `usePersistFeatureLayout` | Section elements are the scroll targets. Reading layout state in HomePage allows attributing tool keys to sections without modifying AppContainer or Card components. |
+| 2026-02-13 | ~~Separate AnimatePresence blocks for mobile vs desktop sidebar~~ → Unified into single AnimatePresence block | Drawer overlay uses the same markup on all viewports. `isMobile` state only toggles width class (`w-full` vs `w-[260px]`). |
+| 2026-02-13 | ~~Added `data-tool-key` to section elements~~ → Removed | No longer needed — sidebar navigates to route instead of scrolling to card. |
+| 2026-02-13 | Used `ArrowIcon` + 🏠 emoji for home button | Reused existing `ArrowIcon` component. Arrow conveys "go back", emoji conveys "home". Rendered inside `<Link to="/">` from TanStack Router. |
+| 2026-02-13 | Tool page wraps component in `Card` with `max-w-[768px]` | Matches homepage card pattern. Centered via `items-center` on parent flex. |
+| 2026-02-13 | Changed `#root` from `min-h-dvh` to `h-dvh overflow-hidden` | Fixes scroll overflow. With `h-dvh`, the flex column is exactly viewport height, so `main` with `grow overflow-y-auto` properly constrains and scrolls content. `min-h-dvh` allowed the container to grow beyond viewport. |
+| 2026-02-13 | Fixed home page card height calc: `50dvh-3.75rem` | Previous calc `100dvh/2-2.25rem` didn't account for header (3rem). Correct: `(100dvh - header 3rem - padding 3rem - gap 1.5rem) / 2 = 50dvh - 3.75rem`. |
 
 ### Implementation Notes
 
@@ -884,19 +900,24 @@ _This section is for the implementing agent to track progress, decisions, and de
 |---|---|
 | 2026-02-13 | Tasks 1-6 were completed in a prior session. This session completed Tasks 7-10. |
 | 2026-02-13 | CATEGORY_ORDER const defined in Sidebar.tsx to ensure deterministic category display order. Only includes currently existing categories (Color, Encoding, Image, Time, Unit). |
-| 2026-02-13 | The mobile sidebar uses `role="dialog"` and `aria-modal="true"` on the motion.nav element for proper accessibility semantics. Desktop sidebar uses only `nav` with `aria-label`. |
-| 2026-02-13 | Highlight pulse implemented via CSS animation class (`.highlight-pulse` in index.css) toggled by SidebarToolItem click handler with 500ms setTimeout cleanup. |
+| 2026-02-13 | ~~The mobile sidebar uses `role="dialog"` and `aria-modal="true"`~~ → Removed. `role="dialog"` overrides the `<nav>` landmark (violates AC5). Sidebar is a `<nav>` element with `aria-label="Tool navigation"` on all viewports. Focus trap via JS is sufficient. |
+| 2026-02-13 | ~~Highlight pulse implemented via CSS animation class~~ → Removed. Scroll-to-card replaced with route navigation. |
 | 2026-02-13 | No unit tests required per project-context: test env is node (not jsdom), tests are for pure logic/utilities only. |
+| 2026-02-13 | Revision: unified sidebar as drawer overlay on all viewports. SidebarToolItem now uses `useNavigate` to `/tools/{tool-key}`. Removed scroll-to-card, highlight-pulse, data-tool-key, push layout. Added home button (ArrowIcon + 🏠) in header on tool pages. Tool page wraps component in `Card` with `max-w-[768px]`. Fixed layout overflow: `#root` changed to `h-dvh overflow-hidden`, card height calc fixed to `50dvh-3.75rem`. |
 
 ### Completion Notes
 
-All 10 tasks (33 subtasks) implemented. The sidebar navigation system provides:
+All 11 tasks implemented. The sidebar navigation system provides:
 - Collapsible sidebar with category-grouped tools from TOOL_REGISTRY
-- Desktop: 260px inline panel pushing content via flex layout with slide animation
-- Mobile: full-screen overlay with backdrop, focus trapping, and auto-close on selection
-- Hamburger/X toggle in header with aria-expanded state
-- Smooth scroll-to-card with highlight pulse when clicking tools in sidebar
-- Escape key and backdrop click dismissal
+- Drawer overlay on all viewports: desktop 260px, mobile full-width, both with dark backdrop
+- Hamburger toggle in header with aria-expanded state
+- Tool click navigates to `/tools/{tool-key}` via TanStack Router and auto-closes drawer
+- Home button (ArrowIcon + 🏠) in header on tool pages, navigates back to `/`
+- Tool page wraps component in reusable `Card` with `max-w-[768px]` centered layout
+- Escape key and backdrop click dismissal on all viewports
+- Focus trap on all viewports (not just mobile)
+- Layout fix: `#root` uses `h-dvh overflow-hidden` for proper viewport fitting
+- Home page card height corrected to `50dvh-3.75rem` to account for header
 - Full WCAG 2.1 AA compliance: nav landmark, aria-labels, focus trap, keyboard navigation
 
 ## File List
@@ -906,7 +927,7 @@ All 10 tasks (33 subtasks) implemented. The sidebar navigation system provides:
 - `src/hooks/state/useSidebarStore.ts` — Zustand store for sidebar open/close state
 - `src/components/common/icon/HamburgerIcon.tsx` — Hamburger menu SVG icon
 - `src/components/common/sidebar/CategoryBadge.tsx` — Tool count pill badge
-- `src/components/common/sidebar/SidebarToolItem.tsx` — Individual tool link with scroll-to-card
+- `src/components/common/sidebar/SidebarToolItem.tsx` — Individual tool link with route navigation
 - `src/components/common/sidebar/SidebarCategory.tsx` — Expandable category group
 - `src/components/common/sidebar/Sidebar.tsx` — Main sidebar container (desktop + mobile)
 - `src/components/common/sidebar/index.ts` — Barrel export for sidebar components
@@ -917,9 +938,10 @@ All 10 tasks (33 subtasks) implemented. The sidebar navigation system provides:
 - `src/components/common/icon/index.ts` — Added HamburgerIcon barrel export
 - `src/components/common/index.ts` — Added sidebar barrel export
 - `src/hooks/state/index.ts` — Added useSidebarStore barrel export
-- `src/App.tsx` — Restructured layout: header with hamburger, flex container with Sidebar + main
-- `src/pages/home/index.tsx` — Added data-tool-key attributes to section elements
-- `src/index.css` — Added highlight-pulse keyframe animation and class
+- `src/App.tsx` — Restructured layout: header with hamburger + conditional home button (ArrowIcon + 🏠), Sidebar as overlay, main with full width
+- `src/pages/home/index.tsx` — Removed `data-tool-key` attributes from section elements; removed unused `layoutValue` destructuring; fixed card height calc to `50dvh-3.75rem`
+- `src/pages/tool/index.tsx` — Wrapped tool component in `Card` with `max-w-[768px]` centered layout
+- `src/index.css` — Removed highlight-pulse keyframe/class; changed `#root` from `min-h-dvh` to `h-dvh overflow-hidden`
 
 ## Change Log
 
@@ -927,3 +949,6 @@ All 10 tasks (33 subtasks) implemented. The sidebar navigation system provides:
 |---|---|
 | 2026-02-13 | Implemented sidebar navigation system (Story 1.3) — all 10 tasks, 33 subtasks complete. Created Zustand store, type definitions, HamburgerIcon, CategoryBadge, SidebarToolItem, SidebarCategory, and Sidebar components. Integrated sidebar into App.tsx with header hamburger toggle and flex layout. Added scroll-to-card with highlight pulse via data-tool-key attributes on home page sections. |
 | 2026-02-13 | **Code Review (AI):** Fixed 6 issues (4 HIGH, 2 MEDIUM). H1: Ran formatter on 4 failing files. H2: Added `aria-controls`/`id` to SidebarCategory for WCAG compliance. H3: Added `aria-label` to CategoryBadge for screen readers. H4: Changed highlight-pulse from border to outline to prevent layout shift, moved into `@layer utilities`. M1: Fixed HamburgerIcon alphabetical position in icon barrel export. M2: Removed unused SidebarProps type. All checks pass (build, lint, format). Status → done. |
+| 2026-02-13 | **Story Revised (PM):** Sidebar changed from push-layout to drawer overlay on all viewports. Tool click now navigates to `/tools/{tool-key}` route (Story 1.2) instead of scroll-to-card. Auto-close on both mobile and desktop. Added AC7: home button on tool pages. Removed scroll-to-card, highlight-pulse, data-tool-key attrs, and push layout. Added Task 11 for home navigation button. Status → in-progress. |
+| 2026-02-13 | **Revision Implemented:** Unified sidebar as drawer overlay (single AnimatePresence). SidebarToolItem uses `useNavigate` for route navigation. Removed push layout wrapper from App.tsx. Added home button (ArrowIcon + 🏠) conditionally shown on tool pages via `useLocation`. Removed `data-tool-key` from home page, removed `highlight-pulse` CSS. Tool page wraps component in `Card` with `max-w-[768px]`. Fixed viewport overflow: `#root` → `h-dvh overflow-hidden`, card height → `50dvh-3.75rem`. All tasks complete. Status → done. |
+| 2026-02-13 | **Code Review #2 (AI):** Fixed 6 issues (3 HIGH, 3 MEDIUM). H1: Removed `role="dialog"` and `aria-modal="true"` from `<motion.nav>` — was overriding `<nav>` landmark (AC5 violation). H2: Wired `isActive` prop on `SidebarToolItem` using `useLocation` pathname comparison — active tool now highlighted in sidebar. H3: Fixed `index.css` formatting (extra blank line). M1: Removed hamburger→X icon morph in header (invisible behind z-40 backdrop); always shows `HamburgerIcon`. M2: Changed `SidebarCategory` from `AnimatePresence` conditional render to always-mounted `motion.ul` so `aria-controls` references valid ID. M3: Fixed stale Implementation Notes. Also fixed L1: removed unnecessary `handleBackdropClick` wrapper. All checks pass (build, lint, format). Status → done. |

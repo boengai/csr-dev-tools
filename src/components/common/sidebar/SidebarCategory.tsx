@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react'
+import { motion } from 'motion/react'
 import { useCallback, useId, useState } from 'react'
 
 import type { SidebarCategoryProps } from '@/types'
@@ -40,20 +40,15 @@ export const SidebarCategory = ({
         <CategoryBadge count={toolCount} />
       </button>
 
-      <AnimatePresence initial={false}>
-        {isExpanded && (
-          <motion.ul
-            animate={{ height: 'auto', opacity: 1 }}
-            className="flex flex-col overflow-hidden pl-2"
-            exit={{ height: 0, opacity: 0 }}
-            id={listId}
-            initial={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-          >
-            {children}
-          </motion.ul>
-        )}
-      </AnimatePresence>
+      <motion.ul
+        animate={{ height: isExpanded ? 'auto' : 0, opacity: isExpanded ? 1 : 0 }}
+        className="flex flex-col overflow-hidden pl-2"
+        id={listId}
+        initial={false}
+        transition={{ duration: 0.2, ease: 'easeOut' }}
+      >
+        {children}
+      </motion.ul>
     </div>
   )
 }

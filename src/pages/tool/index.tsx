@@ -3,6 +3,7 @@ import { Suspense } from 'react'
 
 import type { ToolRegistryEntry } from '@/types'
 
+import { Card } from '@/components'
 import { ROUTE_PATH, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolSeo } from '@/hooks'
 
@@ -27,15 +28,13 @@ const ToolPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
   const ToolComponent = tool.component
 
   return (
-    <div className="flex grow flex-col p-6">
-      <header className="mb-6">
-        <h1 className="text-heading-3 text-white">{tool.name}</h1>
-        <p className="text-body text-text-secondary mt-1">{tool.description}</p>
-      </header>
-      <div className="flex grow flex-col">
-        <Suspense fallback={<ToolPageLoading />}>
-          <ToolComponent />
-        </Suspense>
+    <div className="flex grow flex-col items-center p-6 pb-[calc(1.5rem+var(--safe-area-inset-bottom))]">
+      <div className="flex w-full max-w-[768px] grow flex-col">
+        <Card title={tool.name}>
+          <Suspense fallback={<ToolPageLoading />}>
+            <ToolComponent />
+          </Suspense>
+        </Card>
       </div>
     </div>
   )

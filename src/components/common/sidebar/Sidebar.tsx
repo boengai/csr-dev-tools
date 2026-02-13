@@ -1,5 +1,6 @@
+import { useLocation } from '@tanstack/react-router'
 import { AnimatePresence, motion } from 'motion/react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 
 import type { ToolCategory, ToolRegistryEntry } from '@/types'
 
@@ -15,10 +16,11 @@ const CATEGORY_ORDER: Array<ToolCategory> = ['Color', 'Encoding', 'Image', 'Time
 export const Sidebar = () => {
   const close = useSidebarStore((state) => state.close)
   const isOpen = useSidebarStore((state) => state.isOpen)
+  const { pathname } = useLocation()
   const sidebarRef = useRef<HTMLElement>(null)
   const [isMobile, setIsMobile] = useState(false)
 
-  // Detect mobile viewport
+  // Detect mobile viewport (for width class toggle only)
   useEffect(() => {
     const mql = window.matchMedia('(max-width: 767px)')
     setIsMobile(mql.matches)
@@ -37,9 +39,9 @@ export const Sidebar = () => {
     return () => document.removeEventListener('keydown', handler)
   }, [close, isOpen])
 
-  // Focus trap for mobile overlay
+  // Focus trap for overlay (all viewports)
   useEffect(() => {
-    if (!isOpen || !isMobile) return
+    if (!isOpen) return
     const sidebar = sidebarRef.current
     if (!sidebar) return
 
@@ -66,7 +68,7 @@ export const Sidebar = () => {
 
     document.addEventListener('keydown', handleTab)
     return () => document.removeEventListener('keydown', handleTab)
-  }, [isMobile, isOpen])
+  }, [isOpen])
 
   // Group tools by category
   const groupedTools = useMemo(() => {
@@ -78,10 +80,6 @@ export const Sidebar = () => {
       return acc
     }, {})
   }, [])
-
-  const handleBackdropClick = useCallback(() => {
-    close()
-  }, [close])
 
   const navContent = (
     <>
@@ -101,7 +99,12 @@ export const Sidebar = () => {
           <SidebarCategory categoryName={category} key={category} toolCount={groupedTools[category].length}>
             {groupedTools[category].map((tool) => (
               <li key={tool.key}>
-                <SidebarToolItem emoji={tool.emoji} name={tool.name} toolKey={tool.key} />
+                <SidebarToolItem
+                  emoji={tool.emoji}
+                  isActive={pathname === tool.routePath}
+                  name={tool.name}
+                  toolKey={tool.key}
+                />
               </li>
             ))}
           </SidebarCategory>
@@ -112,52 +115,33 @@ export const Sidebar = () => {
 
   return (
     <>
-      {/* Mobile backdrop */}
+      {/* Backdrop */}
       <AnimatePresence>
-        {isOpen && isMobile && (
+        {isOpen && (
           <motion.div
             animate={{ opacity: 1 }}
             className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
             exit={{ opacity: 0 }}
             initial={{ opacity: 0 }}
-            onClick={handleBackdropClick}
+            onClick={close}
             transition={{ duration: 0.2, ease: 'easeOut' }}
           />
         )}
       </AnimatePresence>
 
-      {/* Mobile sidebar */}
+      {/* Drawer */}
       <AnimatePresence>
-        {isOpen && isMobile && (
+        {isOpen && (
           <motion.nav
             animate={{ x: 0 }}
             aria-label="Tool navigation"
-            aria-modal="true"
-            className="fixed inset-y-0 left-0 z-50 flex w-full flex-col bg-gray-950 pt-[var(--safe-area-inset-top)] pb-[var(--safe-area-inset-bottom)]"
+            className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-gray-950 pt-[var(--safe-area-inset-top)] pb-[var(--safe-area-inset-bottom)] ${isMobile ? 'w-full' : 'w-[260px]'}`}
             exit={{ x: '-100%' }}
             initial={{ x: '-100%' }}
             ref={sidebarRef}
-            role="dialog"
             transition={{ duration: 0.3, ease: 'easeOut' }}
           >
             {navContent}
-          </motion.nav>
-        )}
-      </AnimatePresence>
-
-      {/* Desktop sidebar */}
-      <AnimatePresence>
-        {isOpen && !isMobile && (
-          <motion.nav
-            animate={{ width: 260, x: 0 }}
-            aria-label="Tool navigation"
-            className="z-30 flex shrink-0 flex-col overflow-hidden border-r border-gray-800 bg-gray-950"
-            exit={{ width: 0, x: -260 }}
-            initial={{ width: 0, x: -260 }}
-            ref={sidebarRef}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-          >
-            <div className="flex h-full w-[260px] flex-col">{navContent}</div>
           </motion.nav>
         )}
       </AnimatePresence>

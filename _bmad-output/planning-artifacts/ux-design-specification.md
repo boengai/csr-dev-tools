@@ -537,16 +537,27 @@ This direction preserves what already works (personalized card grid) while addin
 - Tools expand/operate within their cards (current behavior)
 - Responsive grid: multi-column on desktop, single-column on mobile
 
-**Sidebar (collapsible):**
-- **Desktop**: collapsible panel on the left, toggled via hamburger icon in the header. Slides in/out. When collapsed, full width goes to the dashboard. When open, takes ~240-280px.
+**Sidebar (drawer overlay):**
+- **All viewports**: drawer overlay that slides in from the left, toggled via hamburger icon in the header. Floats on top of content with a dark backdrop. Never pushes content.
+- **Desktop**: drawer takes ~240-280px width with backdrop behind it.
+- **Mobile**: drawer takes full-screen width with backdrop behind it.
 - **Content**: tools grouped by category (Color, Encoding, Image, Time, Unit, Data, Generator, CSS, Security, Text). Each category is collapsible/expandable. Tool count badge per category.
-- **Behavior**: clicking a tool in the sidebar scrolls to / highlights that tool's card on the dashboard. If the tool isn't on the user's dashboard (future: when there are more tools than visible cards), it opens directly.
-- **Mobile**: hamburger menu in the header opens sidebar as a full-screen overlay or slide-in drawer. Same grouped category structure. Tap a tool to navigate to it and close the sidebar.
+- **Behavior**: clicking a tool in the sidebar navigates to its dedicated page at `/tools/{tool-key}` and auto-closes the drawer on all viewports.
 
 **Header (minimal):**
-- Left: hamburger toggle (sidebar) + logo/brand
+- Left: hamburger toggle (sidebar) + home button (ArrowIcon + 🏠 emoji, visible on tool pages `/tools/*` only, navigates back to `/` via TanStack Router `<Link>`)
 - Right: optional Command Palette trigger (`Cmd+K`)
-- Thin, stays out of the way — tool-first, platform-second principle
+- Thin (`h-12`), stays out of the way — tool-first, platform-second principle
+
+**Tool page layout:**
+- Tool component wrapped in existing `Card` component (same as homepage cards)
+- Card centered horizontally with `max-w-[768px]`
+- Card title shows tool name via `Card`'s title bar
+
+**Root layout:**
+- `#root` uses `h-dvh overflow-hidden` (not `min-h-dvh`) to constrain to exact viewport height
+- `main` uses `grow overflow-y-auto` to scroll within remaining space below header
+- Home page card height: `50dvh - 3.75rem` per row (accounts for header 3rem + padding 3rem + gap 1.5rem)
 
 ### Design Rationale
 
@@ -565,29 +576,30 @@ This direction preserves what already works (personalized card grid) while addin
 - `HamburgerButton` — toggle for sidebar open/close
 
 **State management:**
-- Sidebar open/close state in a Zustand store (or local state in layout component)
-- Sidebar category expand/collapse state (persisted or default-all-expanded)
-- Mobile sidebar uses same state but renders as overlay/drawer instead of inline panel
+- Sidebar open/close state in a Zustand store
+- Sidebar category expand/collapse state (default-all-expanded)
+- Same drawer overlay behavior on all viewports
 
 **Layout structure:**
 ```
-[Header: hamburger | logo .......................... Cmd+K]
-[Sidebar (collapsible)] [Dashboard Card Grid (main area)]
-```
-
-Mobile:
-```
-[Header: hamburger | logo ................. Cmd+K]
-[Dashboard Card Grid (full width, single column)]
-[Sidebar: slides in as overlay when hamburger tapped]
+#root (h-dvh overflow-hidden flex flex-col)
+├── header (h-12 shrink-0): hamburger | home (← 🏠, tool pages only) | ... Cmd+K
+├── Sidebar (fixed z-50 drawer overlay, slides from left when hamburger tapped)
+│   ├── Backdrop (fixed inset-0 z-40 bg-black/50 backdrop-blur-sm)
+│   └── Nav panel (fixed left, mobile: w-full, desktop: w-[260px])
+└── main (grow overflow-y-auto)
+    ├── TwinkleStarsAnimate (background)
+    └── Outlet
+        ├── HomePage: card grid (6 cards, 50dvh-3.75rem per row on laptop)
+        └── ToolPage: Card component centered at max-w-[768px]
 ```
 
 **Integration with existing code:**
-- Header component updated to include hamburger toggle
-- Dashboard layout wrapped with sidebar — sidebar pushes content (not overlays) on desktop
+- Header component updated to include hamburger toggle + conditional home button
+- Sidebar renders as drawer overlay on all viewports — never affects main content layout
 - Existing card grid, drag-and-drop, and `usePersistFeatureLayout` remain unchanged
-- Tool categories derived from existing `FEATURE_TITLE` constants + new category mapping
-- Route structure unchanged — tools still live on the home dashboard
+- Tool categories derived from `TOOL_REGISTRY`
+- Clicking a tool navigates to `/tools/{tool-key}` (Story 1.2 routes)
 
 ## User Journey Flows
 
@@ -635,27 +647,29 @@ flowchart TD
 flowchart TD
     A[Opens csr-dev-tools bookmark] --> B[Dashboard loads with personalized layout]
     B --> C{Needs JWT Decoder}
-    C -->|Visible on dashboard| D[Clicks card directly]
-    C -->|Not visible| E[Opens sidebar via hamburger]
+    C -->|Visible on dashboard| D[Clicks card — navigates to /tools/jwt-decoder]
+    C -->|Not visible| E[Opens sidebar drawer via hamburger]
     E --> F[Browses Encoding category]
     F --> G[Clicks JWT Decoder]
-    G --> D
-    D --> H[Pastes JWT token]
-    H --> I[Header + payload decoded instantly]
-    I --> J[Spots expiry timestamp in payload]
-    J --> K[Needs to verify — opens sidebar]
-    K --> L[Clicks Unix Timestamp under Time category]
-    L --> M[Pastes timestamp, sees human-readable date]
-    M --> N[Bug found — token expired 3 hours ago]
-    N --> O[Closes sidebar, continues work]
+    G --> H[Drawer closes, navigates to /tools/jwt-decoder]
+    H --> D
+    D --> I[Pastes JWT token]
+    I --> J[Header + payload decoded instantly]
+    J --> K[Spots expiry timestamp in payload]
+    K --> L[Opens sidebar drawer]
+    L --> M[Clicks Unix Timestamp under Time category]
+    M --> N[Drawer closes, navigates to /tools/unix-timestamp]
+    N --> O[Pastes timestamp, sees human-readable date]
+    O --> P[Bug found — token expired 3 hours ago]
+    P --> Q[Clicks home button to return to dashboard]
 ```
 
 **Key UX moments:**
 - Dashboard loads with user's personalized layout (persisted drag-and-drop order)
-- Sidebar enables cross-tool navigation without leaving the dashboard context
+- Sidebar drawer enables cross-tool navigation by routing to dedicated tool pages
 - Category grouping helps users find tools by domain, not by memorized name
-- Multi-tool workflow is seamless — sidebar stays available throughout
-- No context loss between tools — dashboard is always the anchor
+- Multi-tool workflow is seamless — sidebar drawer available from any page
+- Home button in header provides quick return to dashboard from any tool page
 
 ---
 
@@ -671,10 +685,10 @@ flowchart TD
     B --> C{Needs Image Resize}
     C -->|Scrolls to card| D[Taps Image Resize card]
     C -->|Too many cards| E[Taps hamburger menu]
-    E --> F[Sidebar overlay: categories listed]
+    E --> F[Sidebar drawer: categories listed]
     F --> G[Taps Image category]
     G --> H[Taps Image Resize]
-    H --> I[Sidebar closes, scrolls to tool]
+    H --> I[Drawer closes, navigates to /tools/image-resizer]
     I --> D
     D --> J[Taps upload zone]
     J --> K[Phone gallery opens, selects image]
@@ -689,7 +703,7 @@ flowchart TD
 **Key UX moments:**
 - Single-column layout on mobile — cards stack naturally
 - Hamburger menu provides full tool access without cluttering the mobile viewport
-- Sidebar opens as full-screen overlay — focused navigation, then closes
+- Sidebar opens as full-screen drawer overlay — focused navigation, then closes and navigates to tool page
 - File upload works via phone gallery (native file picker)
 - All processing is on-device — works on cellular, no upload to server
 - Download triggers native browser download behavior
@@ -705,29 +719,29 @@ flowchart TD
 
 ```mermaid
 flowchart TD
-    A[User on dashboard] --> B[Clicks hamburger to open sidebar]
-    B --> C[Sidebar slides in with categories]
+    A[User on any page] --> B[Clicks hamburger to open sidebar drawer]
+    B --> C[Drawer slides in with categories + backdrop]
     C --> D[Categories: Color, Encoding, Image, Time, Unit, Data, Generator, CSS, Security, Text]
     D --> E[Each category shows tool count badge]
     E --> F{User action}
     F -->|Expands category| G[Tool list appears under category]
     G --> H[Clicks tool name]
-    H --> I[Sidebar closes on mobile / stays open on desktop]
-    I --> J[Dashboard scrolls to tool card]
-    J --> K[Tool card highlighted briefly]
+    H --> I[Drawer closes, navigates to /tools/tool-key]
+    I --> J[Tool page loads]
+    J --> K[Home button visible in header to return to dashboard]
     F -->|Uses Cmd+K| L[Command palette opens]
     L --> M[Types tool name, fuzzy match]
     M --> N[Selects tool, palette closes]
-    N --> J
+    N --> I
 ```
 
 **Key UX moments:**
-- Sidebar categories give structure to a large tool library
+- Sidebar drawer categories give structure to a large tool library
 - Tool count badges show library depth at a glance
 - Expandable categories reduce visual overwhelm — users drill into what interests them
 - Command Palette (`Cmd+K`) provides instant keyboard-first access for power users
-- On desktop, sidebar stays open — user can browse while seeing the dashboard
-- On mobile, sidebar closes after selection — returns full viewport to the tool
+- Drawer auto-closes on all viewports after tool selection — clean transition to tool page
+- Home button in header provides quick return to dashboard from any tool page
 
 ---
 
@@ -749,7 +763,7 @@ flowchart TD
 - **Toast notifications**: brief, auto-dismissing confirmations for copy/download/success
 - **Inline errors**: non-blocking, below the input, never modal
 - **Progress indicators**: for file operations only (image resize, convert) — never for text operations
-- **Card highlight**: brief visual pulse when navigating to a tool via sidebar or Command Palette
+- **Route transition**: smooth navigation to tool page when selecting via sidebar or Command Palette
 
 ### Flow Optimization Principles
 
@@ -793,12 +807,12 @@ flowchart TD
 #### Sidebar System
 
 **`Sidebar`**
-- **Purpose:** Collapsible navigation panel showing all tools grouped by category
+- **Purpose:** Drawer overlay navigation panel showing all tools grouped by category
 - **Anatomy:** Header (close button) → Search filter (optional) → Category groups → Footer
 - **States:** collapsed (hidden), expanded (visible), transitioning (animating in/out)
-- **Variants:** desktop (inline panel, pushes content, ~240-280px) | mobile (full-screen overlay/drawer)
-- **Accessibility:** `nav` landmark, `aria-label="Tool navigation"`, focus trapped when open on mobile, `Escape` key closes
-- **Interaction:** hamburger toggle opens/closes; click outside closes on mobile; smooth slide animation via Motion
+- **Variants:** desktop (drawer overlay, ~240-280px with backdrop) | mobile (full-screen drawer overlay with backdrop)
+- **Accessibility:** `nav` landmark, `aria-label="Tool navigation"`, focus trapped when open on all viewports, `Escape` key closes
+- **Interaction:** hamburger toggle opens/closes; click backdrop closes on all viewports; smooth slide animation via Motion
 
 **`SidebarCategory`**
 - **Purpose:** Expandable group within sidebar showing tools in a category
@@ -813,7 +827,7 @@ flowchart TD
 - **Anatomy:** Tool emoji/icon + tool name
 - **States:** default, hover (highlight), active (currently selected tool)
 - **Accessibility:** `a` or `button` role, `aria-current="true"` when active
-- **Interaction:** click navigates to tool on dashboard; on mobile, closes sidebar after navigation
+- **Interaction:** click navigates to `/tools/{tool-key}` page; drawer auto-closes on all viewports after navigation
 
 **`HamburgerButton`**
 - **Purpose:** Toggle for sidebar open/close state
@@ -1026,11 +1040,13 @@ flowchart TD
 
 **Sidebar navigation:**
 - **Open:** hamburger click triggers Motion slide-in from left (300ms ease-out)
-- **Close:** hamburger click (now X), click outside (mobile), or `Escape` key triggers slide-out
-- **Desktop:** pushes dashboard content to the right (not overlay). Dashboard reflows smoothly.
-- **Mobile:** full-screen overlay with dark backdrop. Focus trapped inside sidebar.
+- **Close:** hamburger click (now X), click backdrop (all viewports), or `Escape` key triggers slide-out
+- **All viewports:** drawer overlay with dark backdrop. Focus trapped inside sidebar. Never pushes content.
+- **Desktop:** drawer takes ~240-280px width.
+- **Mobile:** drawer takes full-screen width.
 - **Category expand/collapse:** chevron rotates 90°, tool list slides down/up (200ms)
 - **Active tool:** highlighted with `--color-primary` left border accent in sidebar
+- **Tool selection:** navigates to `/tools/{tool-key}` and auto-closes drawer
 
 **Command Palette navigation:**
 - **Open:** `Cmd+K` / `Ctrl+K` — works from anywhere in the app
@@ -1038,14 +1054,13 @@ flowchart TD
 - **Filtering:** fuzzy match on tool names as user types, results update in real-time
 - **Keyboard:** `↑`/`↓` arrow keys navigate results, `Enter` selects, `Escape` closes
 - **Result display:** emoji + tool name + category badge per result
-- **Close on select:** palette closes, dashboard scrolls to selected tool
+- **Close on select:** palette closes, navigates to `/tools/{tool-key}`
 
 **Dashboard card navigation:**
-- **Click card:** scrolls to / expands the tool (current behavior)
+- **Click card:** navigates to the tool's dedicated page at `/tools/{tool-key}`
 - **Drag-and-drop:** reorder cards in the grid, layout persists via `usePersistFeatureLayout`
-- **Card highlight:** when navigated to via sidebar or Command Palette, card border briefly pulses `--color-primary` (500ms)
 
-**Back-to-top / scroll behavior:**
-- **Smooth scroll:** when navigating to a tool via sidebar or palette, page smooth-scrolls to the target card
-- **No back-to-top button:** the dashboard is the entire page — header is always accessible by scrolling up
+**Home navigation:**
+- **Home button:** `ArrowIcon` + 🏠 emoji in header, visible on tool pages (`/tools/*`) only, rendered as `<Link to="/">` via TanStack Router
+- **Detection:** `useLocation().pathname.startsWith('/tools/')` in `App.tsx`
 - **Scroll restoration:** TanStack Router handles scroll position on route changes

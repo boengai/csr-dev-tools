@@ -1,7 +1,9 @@
+import { useNavigate } from '@tanstack/react-router'
 import { useCallback } from 'react'
 
 import type { CompVariant, SidebarToolItemProps } from '@/types'
 
+import { ROUTE_PATH } from '@/constants'
 import { useSidebarStore } from '@/hooks'
 import { tv } from '@/utils'
 
@@ -24,22 +26,12 @@ const sidebarToolItemVariants: CompVariant<SidebarToolItemVariants> = tv({
 
 export const SidebarToolItem = ({ emoji, isActive = false, name, toolKey }: SidebarToolItemProps) => {
   const close = useSidebarStore((state) => state.close)
+  const navigate = useNavigate()
 
   const handleClick = useCallback(() => {
-    const element = document.querySelector(`[data-tool-key="${toolKey}"]`)
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'center' })
-      element.classList.add('highlight-pulse')
-      setTimeout(() => {
-        element.classList.remove('highlight-pulse')
-      }, 500)
-    }
-
-    // Auto-close on mobile
-    if (window.matchMedia('(max-width: 767px)').matches) {
-      close()
-    }
-  }, [close, toolKey])
+    navigate({ to: `${ROUTE_PATH.TOOL}/${toolKey}` })
+    close()
+  }, [close, navigate, toolKey])
 
   return (
     <button className={sidebarToolItemVariants({ active: isActive })} onClick={handleClick} type="button">

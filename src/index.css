@@ -112,7 +112,7 @@
   }
 
   #root {
-    @apply min-h-dvh w-full flex flex-col text-body text-white bg-fixed;
+    @apply h-dvh w-full flex flex-col overflow-hidden text-body text-white bg-fixed;
     background-image: linear-gradient(
       to bottom,
       oklch(0 0 0) 0%,
@@ -136,27 +136,6 @@
       linear-gradient(to right, oklch(1 0 0 / 0.05) 1px, transparent 1px),
       linear-gradient(to bottom, oklch(1 0 0 / 0.05) 1px, transparent 1px);
     background-size: 1rem 1rem;
-  }
-}
-
-@keyframes highlight-pulse {
-  0% {
-    outline-color: transparent;
-  }
-  50% {
-    outline-color: var(--color-primary);
-  }
-  100% {
-    outline-color: transparent;
-  }
-}
-
-@layer utilities {
-  .highlight-pulse {
-    animation: highlight-pulse 0.5s ease-out;
-    outline-width: 2px;
-    outline-style: solid;
-    outline-offset: -2px;
   }
 }
 
