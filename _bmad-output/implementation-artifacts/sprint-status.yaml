@@ -53,7 +53,7 @@ development_status:
   # Epic 2: Standardized Tool Experience
   epic-2: in-progress
   2-1-toollayout-component: done
-  2-2-copybutton-and-outputdisplay-components: backlog
+  2-2-copybutton-and-outputdisplay-components: done
   2-3-error-handling-system: backlog
   2-4-input-validation-utilities: backlog
   2-5-tool-descriptions-placeholders-and-tooltips: backlog

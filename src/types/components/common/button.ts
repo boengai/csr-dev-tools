@@ -11,3 +11,14 @@ export type ButtonVariants = {
   size: 'default' | 'large' | 'small'
   variant: 'default' | 'error' | 'info' | 'primary' | 'secondary' | 'success' | 'text' | 'warning'
 }
+
+export type CopyButtonProps = Partial<CopyButtonVariants> & {
+  label?: string
+  value: string
+}
+
+export type CopyButtonVariant = 'icon-only' | 'labeled'
+
+export type CopyButtonVariants = {
+  variant: CopyButtonVariant
+}
