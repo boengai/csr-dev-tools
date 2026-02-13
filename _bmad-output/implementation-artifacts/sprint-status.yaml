@@ -48,7 +48,7 @@ development_status:
   1-4-command-palette-search: done
   1-5-theme-toggle: not-planned # Dark-only theme - no light variant
   1-6-design-system-foundation-apply-ux-direction: done
-  epic-1-retrospective: optional
+  epic-1-retrospective: done
 
   # Epic 2: Standardized Tool Experience
   epic-2: backlog
