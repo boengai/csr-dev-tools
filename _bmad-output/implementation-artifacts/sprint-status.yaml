@@ -46,7 +46,7 @@ development_status:
   1-2-dedicated-tool-routes-and-seo: backlog
   1-3-sidebar-navigation-system: backlog
   1-4-command-palette-search: backlog
-  1-5-theme-toggle: backlog
+  1-5-theme-toggle: not-planned # Dark-only theme - no light variant
   1-6-design-system-foundation-apply-ux-direction: backlog
   epic-1-retrospective: optional
 

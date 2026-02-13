@@ -73,7 +73,7 @@ If the single-tool experience is fast, clear, and satisfying, the platform succe
 - **Desktop primary, mobile first-class** — most usage will be desktop (developers at work), but mobile must be genuinely usable, not a compromised layout.
 - **Input modes** — mouse/keyboard on desktop, touch on mobile. No device-specific APIs beyond standard browser capabilities (Canvas, Clipboard, File API).
 - **Static hosting** — deployable anywhere (Vercel, Netlify, GitHub Pages). No server runtime, no environment variables.
-- **Dark theme default** — developers expect it. Light theme available as an option.
+- **Dark theme only** — developers expect it. The space/universe visual identity is inherently dark. No light theme variant.
 - **Offline potential** — service worker for offline access is a future consideration, not a current requirement.
 
 ### Effortless Interactions
@@ -184,7 +184,7 @@ If the single-tool experience is fast, clear, and satisfying, the platform succe
 
 **Visual Patterns:**
 - **Neutral, muted chrome** (from Figma) — UI elements use subdued colors so user content (color values, code, images) stands out. The interface serves the content, not itself.
-- **Dark-first design** (from VS Code) — dark theme as default with careful contrast ratios. Light theme available but dark is the expected developer default.
+- **Dark-only design** — dark theme with careful contrast ratios. No light theme variant — the space/universe identity commits fully to dark.
 
 ### Anti-Patterns to Avoid
 
@@ -267,7 +267,7 @@ This is not an off-the-shelf design system (MUI, Chakra, Ant Design). It's a pur
    - OutputDisplay (formatted result with copy affordance)
 
 3. **Design tokens via Tailwind v4 `@theme`** — centralize in `src/index.css`:
-   - Color palette (dark-first, with light theme variant)
+   - Color palette (dark-only — no light theme variant)
    - Spacing scale (consistent padding/margins across tools)
    - Typography scale (monospace for code values, sans-serif for UI)
    - Border radius, shadow, and transition tokens
@@ -545,7 +545,7 @@ This direction preserves what already works (personalized card grid) while addin
 
 **Header (minimal):**
 - Left: hamburger toggle (sidebar) + logo/brand
-- Right: theme toggle (dark/light) + optional Command Palette trigger (`Cmd+K`)
+- Right: optional Command Palette trigger (`Cmd+K`)
 - Thin, stays out of the way — tool-first, platform-second principle
 
 ### Design Rationale
@@ -571,13 +571,13 @@ This direction preserves what already works (personalized card grid) while addin
 
 **Layout structure:**
 ```
-[Header: hamburger | logo .............. theme toggle | Cmd+K]
+[Header: hamburger | logo .......................... Cmd+K]
 [Sidebar (collapsible)] [Dashboard Card Grid (main area)]
 ```
 
 Mobile:
 ```
-[Header: hamburger | logo .......... theme toggle]
+[Header: hamburger | logo ................. Cmd+K]
 [Dashboard Card Grid (full width, single column)]
 [Sidebar: slides in as overlay when hamburger tapped]
 ```
@@ -1000,7 +1000,7 @@ flowchart TD
 - **Mobile:** full-width buttons stacked vertically in action bar
 
 **Icon buttons:**
-- **Use:** CopyButton (icon-only), theme toggle, hamburger, sidebar close
+- **Use:** CopyButton (icon-only), hamburger, sidebar close
 - **Size:** 40x40px minimum (44x44px on mobile for touch targets)
 - **Tooltip:** shown on hover (desktop only) via Radix Tooltip — describes the action
 

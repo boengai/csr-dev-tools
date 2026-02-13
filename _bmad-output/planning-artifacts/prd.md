@@ -383,7 +383,7 @@ No support for: IE11, legacy browsers, or non-evergreen browsers.
 
 - FR30: Users can customize their dashboard layout via drag-and-drop
 - FR31: Users can have their layout preferences persist across sessions
-- FR32: Users can switch between light and dark themes
+- ~~FR32: Users can switch between light and dark themes~~ — **NOT PLANNED:** Dark-only theme; space/universe identity is dark by design. No light theme variant.
 
 ### Platform — Contributor Experience
 

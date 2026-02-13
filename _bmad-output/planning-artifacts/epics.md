@@ -48,7 +48,7 @@ FR28: Users can search or filter tools by name or category
 FR29: Users can access any tool on mobile devices down to 375px viewport width with touch-friendly layout
 FR30: Users can customize their dashboard layout via drag-and-drop
 FR31: Users can have their layout preferences persist across sessions
-FR32: Users can switch between light and dark themes
+~~FR32: Users can switch between light and dark themes~~ — **NOT PLANNED:** Dark-only theme
 FR33: Contributors can add a new tool by following the CONTRIBUTING guide, which documents the required file structure (component, route, constants, tests) and a PR checklist
 FR34: Contributors can run the development environment locally with standard tooling
 FR35: Contributors can run tests to validate their changes against existing tool regression stories
@@ -160,7 +160,7 @@ FR28: Epic 1 - Search/filter tools by name or category (command palette + sideba
 FR29: Epic 1 - Mobile access at 375px with touch-friendly layout (responsive sidebar)
 FR30: Epic 3 - Dashboard drag-and-drop customization (existing feature baseline)
 FR31: Epic 3 - Persistent layout preferences (existing feature baseline)
-FR32: Epic 1 - Light/dark theme toggle (theme system)
+~~FR32: Epic 1 - Light/dark theme toggle (theme system)~~ — **NOT PLANNED**
 FR33: Epic 4 - CONTRIBUTING guide with file structure and PR checklist
 FR34: Epic 4 - Local development environment setup
 FR35: Epic 4 - Test validation for contributor changes
@@ -171,8 +171,8 @@ FR38: Epic 2 - Tool descriptions, placeholders, and format tooltips
 ## Epic List
 
 ### Epic 1: Platform Navigation & Tool Discovery
-Users can discover, search, and navigate to all tools via a categorized sidebar, command palette (Cmd+K), dedicated URLs, and theme toggle — on any device.
-**FRs covered:** FR26, FR27, FR28, FR29, FR32
+Users can discover, search, and navigate to all tools via a categorized sidebar, command palette (Cmd+K), and dedicated URLs — on any device.
+**FRs covered:** FR26, FR27, FR28, FR29
 **Depends on:** None — builds on existing MVP foundation
 
 ### Epic 2: Standardized Tool Experience
@@ -224,7 +224,7 @@ Users can compress images with quality control and crop images using freeform or
 
 ## Epic 1: Platform Navigation & Tool Discovery
 
-Users can discover, search, and navigate to all tools via a categorized sidebar, command palette (Cmd+K), dedicated URLs, and theme toggle — on any device.
+Users can discover, search, and navigate to all tools via a categorized sidebar, command palette (Cmd+K), and dedicated URLs — on any device.
 
 **Depends on:** None — builds on existing MVP foundation
 
@@ -360,34 +360,9 @@ So that **I can navigate to tools with keyboard speed without browsing the sideb
 **Then** it has `role="dialog"`, `aria-modal="true"`, `aria-label="Search tools"`
 **And** the search input has `role="combobox"` with `aria-autocomplete="list"`
 
-### Story 1.5: Theme Toggle
+### ~~Story 1.5: Theme Toggle~~ — NOT PLANNED
 
-As a **user**,
-I want **to switch between dark and light themes**,
-So that **I can use the tools in my preferred visual mode**.
-
-**Acceptance Criteria:**
-
-**Given** the user is on any page
-**When** they click the theme toggle button in the header
-**Then** the theme switches between dark and light modes
-**And** all components, tools, and platform UI update to reflect the selected theme
-
-**Given** the user selects a theme
-**When** they close and reopen the browser
-**Then** their theme preference persists (stored in localStorage)
-
-**Given** dark mode is the default
-**When** a first-time user loads the app with no stored preference
-**Then** the dark theme is applied
-
-**Given** the theme toggle button
-**When** a screen reader encounters it
-**Then** it has an appropriate `aria-label` ("Switch to light theme" / "Switch to dark theme")
-
-**Given** either theme is active
-**When** the user inspects text contrast ratios
-**Then** all text meets WCAG 2.1 AA minimums (4.5:1 for body text, 3:1 for large text)
+> **Decision:** Dark-only theme. The space/universe visual identity is inherently dark. No light theme variant will be implemented. FR32 is dropped.
 
 ### Story 1.6: Design System Foundation — Apply UX Direction
 
@@ -430,9 +405,9 @@ So that **every component and tool renders with the cohesive cosmic theme define
 **Then** there are no visual regressions in layout or functionality — only the color palette, typography, and shadows change
 **And** all text meets WCAG 2.1 AA contrast minimums (4.5:1 body text, 3:1 large text) against the updated backgrounds
 
-**Dependencies:** None — this is a foundational story. Stories 1.5 (Theme Toggle), 2.1 (ToolLayout), and 2.2 (CopyButton/OutputDisplay) depend on these tokens being in place.
+**Dependencies:** None — this is a foundational story. Stories 2.1 (ToolLayout) and 2.2 (CopyButton/OutputDisplay) depend on these tokens being in place.
 
-**Scope note:** This story covers design *tokens* only — the CSS custom properties and font. It does NOT include the light theme variant (that's Story 1.5) or component-level styling (that's Epic 2).
+**Scope note:** This story covers design *tokens* only — the CSS custom properties and font. Dark theme only (no light variant). Component-level styling is Epic 2.
 
 ---
 

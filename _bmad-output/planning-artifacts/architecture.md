@@ -31,7 +31,7 @@ _This document builds collaboratively through step-by-step discovery. Sections a
 
 **Functional Requirements:**
 
-38 FRs across 12 categories. The dominant pattern is tool-specific transformation capabilities (FR1-FR25) — each tool takes input in one format and produces output in another. Platform requirements (FR26-FR32) cover navigation, discovery, customization, and theming. Contributor/quality requirements (FR33-FR38) define the developer experience for adding tools and maintaining quality.
+38 FRs across 12 categories. The dominant pattern is tool-specific transformation capabilities (FR1-FR25) — each tool takes input in one format and produces output in another. Platform requirements (FR26-FR31) cover navigation, discovery, and customization (FR32 theme toggle dropped — dark-only). Contributor/quality requirements (FR33-FR38) define the developer experience for adding tools and maintaining quality.
 
 Architecturally, the tool FRs are highly independent — each tool is a self-contained unit with no dependencies on other tools. This is an explicit design choice (no tool-to-tool pipelines). Platform FRs are shared infrastructure that all tools depend on.
 
@@ -91,7 +91,7 @@ Architecturally, the tool FRs are highly independent — each tool is a self-con
 
 3. **Accessibility (WCAG 2.1 AA)** — Keyboard navigation, screen reader compatibility, contrast ratios, focus management. Affects: every interactive component, all new sidebar/command palette components, all tool inputs/outputs.
 
-4. **Theme System** — Dark-first with light theme option. OKLCH color space. Affects: all components, all tools, all new UI elements. Must be consistent across existing and new components.
+4. **Theme System** — Dark-only. OKLCH color space. No light theme variant — the space/universe identity commits fully to dark. Affects: all components, all tools, all new UI elements. Must be consistent across existing and new components.
 
 5. **Clipboard & Output Pattern** — Copy-to-clipboard with toast confirmation is used across nearly every tool. Needs standardized extraction into `CopyButton` + `OutputDisplay` components.
 
@@ -843,7 +843,7 @@ User Input → Tool Component → Pure Utility Function → Output Display
 | Generator Tools (FR22-FR24) | `components/feature/generator/` | `UuidGenerator.tsx`, `PasswordGenerator.tsx`, `HashGenerator.tsx` |
 | CSS Tools (FR25) | `components/feature/css/` | `BoxShadowGenerator.tsx` |
 | Navigation & Discovery (FR26-FR29) | `components/common/sidebar/`, `command-palette/` | `Sidebar.tsx`, `CommandPalette.tsx` |
-| Customization (FR30-FR32) | `hooks/persist/`, `App.tsx` | `usePersistFeatureLayout.ts`, theme toggle |
+| Customization (FR30-FR31) | `hooks/persist/`, `App.tsx` | `usePersistFeatureLayout.ts` |
 | Contributor Experience (FR33-FR35) | `CONTRIBUTING.md`, `constants/tool-registry.ts` | Registry pattern, docs |
 | Documentation & Quality (FR36-FR38) | `components/common/tool-layout/` | `ToolLayout.tsx` (description, tooltips) |
 
@@ -904,7 +904,7 @@ All technology choices are compatible:
 | FR22-FR24 | Generators | New `UuidGenerator`, `PasswordGenerator`, `HashGenerator` |
 | FR25 | CSS Tools | New `BoxShadowGenerator` |
 | FR26-FR29 | Navigation | `Sidebar`, `CommandPalette`, tool routes, responsive layout |
-| FR30-FR32 | Customization | `usePersistFeatureLayout`, theme toggle |
+| FR30-FR31 | Customization | `usePersistFeatureLayout` |
 | FR33-FR35 | Contributors | `CONTRIBUTING.md`, `TOOL_REGISTRY` pattern, tests |
 | FR36-FR38 | Documentation | `ToolLayout` (description, placeholders, tooltips) |
 
@@ -955,7 +955,7 @@ All technology choices are compatible:
 **Nice-to-Have Gaps:** 2
 
 1. **Web Worker pattern for image tools** — if image processing is slow on large files, Web Workers could offload computation. Pattern can be added when needed.
-2. **Light theme token definitions** — dark theme fully defined in UX spec, but light theme values not yet specified. Can be defined during theme implementation.
+2. ~~**Light theme token definitions**~~ — **NOT PLANNED:** Dark-only theme decision. No light theme tokens needed.
 
 ### Architecture Completeness Checklist
 
@@ -1000,7 +1000,7 @@ All technology choices are compatible:
 - Service worker for offline support (NFR21 — explicitly deferred)
 - Web Worker pattern for heavy image processing (if needed)
 - Plugin architecture for community tool submissions (Phase 3)
-- Light theme token definition (during theme implementation)
+- ~~Light theme token definition~~ — NOT PLANNED (dark-only theme)
 
 ### Implementation Handoff
 

@@ -78,7 +78,7 @@ documentsIncluded:
 - **FR29:** Users can access any tool on mobile devices down to 375px viewport width with touch-friendly layout
 - **FR30:** Users can customize their dashboard layout via drag-and-drop
 - **FR31:** Users can have their layout preferences persist across sessions
-- **FR32:** Users can switch between light and dark themes
+- ~~**FR32:** Users can switch between light and dark themes~~ — **NOT PLANNED:** Dark-only theme
 - **FR33:** Contributors can add a new tool by following the CONTRIBUTING guide, which documents the required file structure (component, route, constants, tests) and a PR checklist
 - **FR34:** Contributors can run the development environment locally with standard tooling
 - **FR35:** Contributors can run tests to validate their changes against existing tool regression stories
@@ -171,7 +171,7 @@ The PRD is thorough and well-structured. It contains 38 clearly numbered FRs and
 | FR29 | Mobile access at 375px | Epic 1 (responsive sidebar) | ✓ Covered |
 | FR30 | Dashboard drag-and-drop customization | Epic 3 (existing feature baseline) | ✓ Covered |
 | FR31 | Persistent layout preferences | Epic 3 (existing feature baseline) | ✓ Covered |
-| FR32 | Light/dark theme toggle | Epic 1 (theme system) | ✓ Covered |
+| ~~FR32~~ | ~~Light/dark theme toggle~~ | ~~Epic 1 (theme system)~~ | **NOT PLANNED** — Dark-only |
 | FR33 | CONTRIBUTING guide | Epic 4 (contributor docs) | ✓ Covered |
 | FR34 | Local development environment | Epic 4 (dev setup) | ✓ Covered |
 | FR35 | Test validation for contributor changes | Epic 4 (CI/CD) | ✓ Covered |
@@ -206,7 +206,7 @@ No phantom FRs detected in epics that don't exist in the PRD.
 | Performance targets | ✓ Aligned | UX specifies instant output for text tools, progress bars for file tools — matches NFR1/NFR2 |
 | Accessibility | ✓ Aligned | WCAG 2.1 AA, Radix UI, keyboard navigation, screen reader support — matches NFR14-NFR18 |
 | Responsive design | ✓ Aligned | 375px minimum, 44x44px touch targets, breakpoints match PRD exactly |
-| Theme system | ✓ Aligned | Dark-first with light option, OKLCH color space — matches FR32 |
+| Theme system | ✓ Aligned | Dark-only, OKLCH color space — FR32 dropped (dark-only decision) |
 | Navigation | ✓ Aligned | Sidebar + Command Palette + direct URLs — covers FR26-FR29 |
 | Copy/output patterns | ✓ Aligned | CopyButton + OutputDisplay + toast conventions — covers FR3, FR7 |
 | Error handling | ✓ Aligned | Inline errors, prevention-first, no modals — matches PRD approach |
@@ -233,7 +233,7 @@ No phantom FRs detected in epics that don't exist in the PRD.
 
 2. **ToolLayout variant terminology:** UX defines ToolLayout variants as `text | file | visual` (based on input type). Architecture defines modes as `card | page` (based on rendering context). These are complementary, not conflicting, but could confuse implementers — recommend documenting both dimensions clearly.
 
-3. **Light theme tokens undefined:** UX spec fully defines the dark theme color system but light theme values are not specified. Architecture's gap analysis also flags this. Will need definition during theme implementation.
+3. ~~**Light theme tokens undefined:**~~ **RESOLVED — NOT PLANNED.** Dark-only theme decision made. No light theme tokens needed. Theme toggle (Story 1.5) dropped.
 
 4. **NFR21 (Offline) status:** PRD lists "Application functions offline after initial load" as an NFR, but both UX and Architecture note this is a future consideration (deferred). The epics do not include a story for service worker implementation. This is intentionally deferred but should be tracked.
 
@@ -304,7 +304,7 @@ All stories use proper Given/When/Then BDD format. Analysis:
 
 | Epic | Dependencies | Assessment |
 |------|-------------|------------|
-| Epic 1 | Stories 1.2, 1.3, 1.4 depend on 1.1 (TOOL_REGISTRY). Story 1.5 independent. | ✓ Valid — all dependencies on prior stories |
+| Epic 1 | Stories 1.2, 1.3, 1.4 depend on 1.1 (TOOL_REGISTRY). Story 1.5 dropped (dark-only). | ✓ Valid — all dependencies on prior stories |
 | Epic 2 | Stories mostly independent. 2.5 uses TOOL_REGISTRY descriptions. | ✓ Valid |
 | Epic 3 | Stories 3.1-3.6 independent of each other. 3.7 independent. | ✓ Valid — parallel execution possible |
 | Epic 4 | Stories 4.1-4.4 mostly independent. | ✓ Valid |
@@ -397,7 +397,7 @@ The planning artifacts for csr-dev-tools are comprehensive, well-aligned, and re
 |----------|-------|---------|
 | Critical Violations | 0 | None |
 | Major Issues | 2 | Implicit critical-path dependency undocumented; Epic 4 infrastructure-heavy |
-| Minor Concerns (UX) | 4 | Category naming, ToolLayout terminology, light theme tokens, NFR21 deferral |
+| Minor Concerns (UX) | 3 | Category naming, ToolLayout terminology, NFR21 deferral (light theme tokens resolved — dark-only) |
 | Minor Concerns (Epics) | 4 | Developer-facing stories, NFR traceability, Epic 10 ordering, story count distribution |
 
 ### Critical Issues Requiring Immediate Action
@@ -410,7 +410,7 @@ The planning artifacts for csr-dev-tools are comprehensive, well-aligned, and re
 
 2. **Standardize tool category naming** — Choose one canonical set of category names across PRD, UX, Architecture, and Epics (currently "Generator" vs "Generator & Security" vs "Security" appears in different documents).
 
-3. **Define light theme color tokens** — The UX spec fully defines the dark theme but light theme values are unspecified. This can be deferred to implementation of Story 1.5 (Theme Toggle), but having tokens pre-defined reduces implementation ambiguity.
+3. ~~**Define light theme color tokens**~~ — **RESOLVED:** Dark-only theme decision. Story 1.5 (Theme Toggle) dropped. No light theme tokens needed.
 
 ### Recommended Implementation Sequence
 
