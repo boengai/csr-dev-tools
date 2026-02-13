@@ -59,7 +59,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
               width: indicator.width,
               x: indicator.translateX,
             }}
-            className="border-primary absolute left-0 h-10 rounded-t-md border-2 border-b-0"
+            className="border-primary/30 absolute left-0 h-10 rounded-t-md border border-b-0"
             initial={{
               width: indicator.width,
               x: indicator.translateX,
@@ -75,7 +75,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
             animate={{
               width: indicator.translateX,
             }}
-            className="bg-primary absolute bottom-0 left-0 h-0.5"
+            className="bg-primary/30 absolute bottom-0 left-0 h-0.5"
             initial={{
               width: indicator.translateX,
             }}
@@ -90,7 +90,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
             animate={{
               width: `calc(100% - ${indicator.width}px - ${indicator.translateX}px)`,
             }}
-            className="bg-primary absolute right-0 bottom-0 h-0.5"
+            className="bg-primary/30 absolute right-0 bottom-0 h-0.5"
             initial={{
               width: `calc(100% - ${indicator.width}px - ${indicator.translateX}px)`,
             }}
