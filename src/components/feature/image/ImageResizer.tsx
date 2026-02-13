@@ -311,6 +311,7 @@ export const ImageResizer = () => {
                   label="Width"
                   name="width"
                   onChange={(val) => handleInputChange('width', val)}
+                  placeholder="1920"
                   type="number"
                   value={preview?.width?.toString() ?? ''}
                 />
@@ -319,6 +320,7 @@ export const ImageResizer = () => {
                   label="Height"
                   name="height"
                   onChange={(val) => handleInputChange('height', val)}
+                  placeholder="1080"
                   type="number"
                   value={preview?.height?.toString() ?? ''}
                 />

@@ -17,6 +17,8 @@ export const ToolLayout = ({ actions, description, error, input, mode, output, t
 
   return (
     <section aria-description={description} aria-label={title} className={className}>
+      {mode === 'card' && description && <p className="text-body-xs text-gray-500">{description}</p>}
+
       {mode === 'page' && (
         <div className="shrink-0">
           <h2 className="text-heading-5">{title}</h2>

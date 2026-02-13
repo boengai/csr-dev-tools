@@ -29,11 +29,7 @@ const Form = ({ action, onSubmit }: { action: 'decode' | 'encode'; onSubmit: (so
         label="Source"
         name="source"
         onChange={handleSourceChange}
-        placeholder={
-          action === 'encode'
-            ? 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.'
-            : 'TG9yZW0lMjBpcHN1bSUyMGlzJTIwcGxhY2Vob2xkZXIlMjB0ZXh0JTIwY29tbW9ubHklMjB1c2VkJTIwaW4lMjB0aGUlMjBncmFwaGljJTJDJTIwcHJpbnQlMkMlMjBhbmQlMjBwdWJsaXNoaW5nJTIwaW5kdXN0cmllcyUyMGZvciUyMHByZXZpZXdpbmclMjBsYXlvdXRzJTIwYW5kJTIwdmlzdWFsJTIwbW9ja3Vwcy4='
-        }
+        placeholder={action === 'encode' ? 'Hello, World!' : 'SGVsbG8sIFdvcmxkIQ=='}
         type="textarea"
         value={source}
       />
@@ -51,11 +47,7 @@ const Form = ({ action, onSubmit }: { action: 'decode' | 'encode'; onSubmit: (so
         }
         name="result"
         placeholder={
-          result instanceof Error
-            ? result.message
-            : action === 'decode'
-              ? 'Lorem ipsum is placeholder text commonly used in the graphic, print, and publishing industries for previewing layouts and visual mockups.'
-              : 'TG9yZW0lMjBpcHN1bSUyMGlzJTIwcGxhY2Vob2xkZXIlMjB0ZXh0JTIwY29tbW9ubHklMjB1c2VkJTIwaW4lMjB0aGUlMjBncmFwaGljJTJDJTIwcHJpbnQlMkMlMjBhbmQlMjBwdWJsaXNoaW5nJTIwaW5kdXN0cmllcyUyMGZvciUyMHByZXZpZXdpbmclMjBsYXlvdXRzJTIwYW5kJTIwdmlzdWFsJTIwbW9ja3Vwcy4='
+          result instanceof Error ? result.message : action === 'decode' ? 'Hello, World!' : 'SGVsbG8sIFdvcmxkIQ=='
         }
         type="textarea"
         value={typeof result === 'string' ? result : ''}

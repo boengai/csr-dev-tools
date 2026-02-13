@@ -56,7 +56,7 @@ development_status:
   2-2-copybutton-and-outputdisplay-components: done
   2-3-error-handling-system: done
   2-4-input-validation-utilities: done
-  2-5-tool-descriptions-placeholders-and-tooltips: backlog
+  2-5-tool-descriptions-placeholders-and-tooltips: done
   epic-2-retrospective: optional
 
   # Epic 3: Existing Tool Baseline & Enhancement

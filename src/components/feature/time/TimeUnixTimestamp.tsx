@@ -88,15 +88,21 @@ export const DateSection = () => {
   const copyToClipboard = useCopyToClipboard()
 
   // states
-  const [input, setInput] = useState<DateTime<string>>({
-    day: '',
-    hour: '0',
-    minute: '0',
-    month: '',
-    second: '0',
-    year: '',
+  const [input, setInput] = useState<DateTime<string>>(() => {
+    const d = new Date()
+    return {
+      day: d.getDate().toString(),
+      hour: d.getHours().toString(),
+      minute: d.getMinutes().toString(),
+      month: d.getMonth().toString(),
+      second: d.getSeconds().toString(),
+      year: d.getFullYear().toString(),
+    }
   })
-  const [result, setResult] = useState<Array<string>>([])
+  const [result, setResult] = useState<Array<string>>(() => {
+    const d = new Date()
+    return [Math.floor(d.getTime() / 1000).toString(), d.toUTCString(), d.toString()]
+  })
 
   const placeholder = useMemo(() => {
     const d = new Date()
