@@ -1,47 +1,11 @@
 import { motion } from 'motion/react'
-import { type ButtonHTMLAttributes, type ComponentType, lazy, Suspense, useState } from 'react'
+import { type ButtonHTMLAttributes, Suspense, useState } from 'react'
 
-import type { FeatureKey } from '@/types'
+import type { ToolRegistryKey } from '@/types'
 
 import { Card, Dialog, NotoEmoji, PlusIcon } from '@/components'
-import { FEATURE_TITLE } from '@/constants'
+import { TOOL_REGISTRY, TOOL_REGISTRY_MAP } from '@/constants'
 import { usePersistFeatureLayout } from '@/hooks'
-
-// apps
-const ColorConvertor = lazy(() =>
-  import('@/components/feature/color/ColorConvertor').then(({ ColorConvertor }: { ColorConvertor: ComponentType }) => ({
-    default: ColorConvertor,
-  })),
-)
-const EncodingBase64 = lazy(() =>
-  import('@/components/feature/encoding/EncodingBase64').then(
-    ({ EncodingBase64 }: { EncodingBase64: ComponentType }) => ({
-      default: EncodingBase64,
-    }),
-  ),
-)
-const ImageConvertor = lazy(() =>
-  import('@/components/feature/image/ImageConvertor').then(({ ImageConvertor }: { ImageConvertor: ComponentType }) => ({
-    default: ImageConvertor,
-  })),
-)
-const ImageResize = lazy(() =>
-  import('@/components/feature/image/ImageResizer').then(({ ImageResizer }: { ImageResizer: ComponentType }) => ({
-    default: ImageResizer,
-  })),
-)
-const TimeUnixTimestamp = lazy(() =>
-  import('@/components/feature/time/TimeUnixTimestamp').then(
-    ({ TimeUnixTimestamp }: { TimeUnixTimestamp: ComponentType }) => ({
-      default: TimeUnixTimestamp,
-    }),
-  ),
-)
-const UnitPxToRem = lazy(() =>
-  import('@/components/feature/unit/UnitPxToRem').then(({ UnitPxToRem }: { UnitPxToRem: ComponentType }) => ({
-    default: UnitPxToRem,
-  })),
-)
 
 const AddButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>) => {
   return (
@@ -78,46 +42,19 @@ const AppContainer = ({ onOpenDialog, position }: { onOpenDialog: (position: num
     setter(position, null)
   }
 
-  switch (value[position]) {
-    case 'BASE64_ENCODER':
+  const registryKey = value[position]
+  if (registryKey) {
+    const entry = TOOL_REGISTRY_MAP[registryKey]
+    if (entry) {
+      const ToolComponent = entry.component
       return (
-        <Card onClose={handleClose} title={FEATURE_TITLE.BASE64_ENCODER}>
-          <EncodingBase64 />
+        <Card onClose={handleClose} title={entry.name}>
+          <ToolComponent />
         </Card>
       )
-    case 'COLOR_CONVERTER':
-      return (
-        <Card onClose={handleClose} title={FEATURE_TITLE.COLOR_CONVERTER}>
-          <ColorConvertor />
-        </Card>
-      )
-    case 'IMAGE_CONVERTOR':
-      return (
-        <Card onClose={handleClose} title={FEATURE_TITLE.IMAGE_CONVERTOR}>
-          <ImageConvertor />
-        </Card>
-      )
-    case 'IMAGE_RESIZER':
-      return (
-        <Card onClose={handleClose} title={FEATURE_TITLE.IMAGE_RESIZER}>
-          <ImageResize />
-        </Card>
-      )
-    case 'PX_TO_REM':
-      return (
-        <Card onClose={handleClose} title={FEATURE_TITLE.PX_TO_REM}>
-          <UnitPxToRem />
-        </Card>
-      )
-    case 'UNIX_TIMESTAMP':
-      return (
-        <Card onClose={handleClose} title={FEATURE_TITLE.UNIX_TIMESTAMP}>
-          <TimeUnixTimestamp />
-        </Card>
-      )
-    default:
-      return <AddButton onClick={() => onOpenDialog(position)} />
+    }
   }
+  return <AddButton onClick={() => onOpenDialog(position)} />
 }
 
 const AppLoading = () => {
@@ -139,14 +76,14 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
     return acc
   }, {})
 
-  const list = Object.keys(FEATURE_TITLE).map((value) => ({
-    at: appPosition[value] ?? null,
-    value,
+  const list = TOOL_REGISTRY.map((entry) => ({
+    at: appPosition[entry.key] ?? null,
+    entry,
   }))
 
-  const handleSelectApp = (value: string) => {
+  const handleSelectApp = (value: ToolRegistryKey) => {
     if (position !== null) {
-      setter(position, value as FeatureKey)
+      setter(position, value)
       onDismiss()
     }
   }
@@ -154,17 +91,20 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
   return (
     <Dialog
       injected={{ open: position !== null, setOpen: onDismiss }}
-      title={`Select App for Widget#${position ? position + 1 : ''}`}
+      title={`Select App for Widget#${position !== null ? position + 1 : ''}`}
     >
       <ul className="flex flex-col gap-2">
-        {list.map(({ at, value }) => (
-          <li key={value}>
+        {list.map(({ at, entry }) => (
+          <li key={entry.key}>
             <button
               className="hover:bg-primary/30 flex w-full cursor-pointer items-center justify-between rounded p-2 text-left disabled:pointer-events-none disabled:opacity-50"
               disabled={at !== null}
-              onClick={() => handleSelectApp(value)}
+              onClick={() => handleSelectApp(entry.key)}
             >
-              <span>{FEATURE_TITLE[value as FeatureKey]}</span>
+              <span>
+                <span className="mr-2">{entry.emoji}</span>
+                {entry.name}
+              </span>
               {at !== null && <span className="bg-secondary rounded px-1 text-xs text-white">#{at + 1}</span>}
             </button>
           </li>

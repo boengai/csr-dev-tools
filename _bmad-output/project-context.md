@@ -192,6 +192,7 @@ src/
 
 #### Anti-Patterns to Avoid
 
+- **NEVER use `npm`, `npx`, or `yarn`** — This project uses **pnpm exclusively**. All commands must use `pnpm` (e.g., `pnpm build`, `pnpm dev`, `pnpm test`). Never run `npx vite build`, `npm install`, or any non-pnpm command. Enforced via the `packageManager` field in `package.json`.
 - **NEVER add server-side processing** — All tools must run 100% in the browser. No API calls, no server dependencies. If it can't run client-side, it doesn't belong in this project.
 - **NEVER use default exports for components** — Only page-level route components use `export default`. Everything else is named exports.
 - **NEVER import from `framer-motion`** — The package is `motion`, import from `motion/react`.

@@ -41,13 +41,13 @@ story_location: _bmad-output/implementation-artifacts
 
 development_status:
   # Epic 1: Platform Navigation & Tool Discovery
-  epic-1: backlog
-  1-1-centralized-tool-registry: backlog
-  1-2-dedicated-tool-routes-and-seo: backlog
-  1-3-sidebar-navigation-system: backlog
-  1-4-command-palette-search: backlog
+  epic-1: in-progress
+  1-1-centralized-tool-registry: done
+  1-2-dedicated-tool-routes-and-seo: ready-for-dev
+  1-3-sidebar-navigation-system: ready-for-dev
+  1-4-command-palette-search: ready-for-dev
   1-5-theme-toggle: not-planned # Dark-only theme - no light variant
-  1-6-design-system-foundation-apply-ux-direction: backlog
+  1-6-design-system-foundation-apply-ux-direction: ready-for-dev
   epic-1-retrospective: optional
 
   # Epic 2: Standardized Tool Experience
