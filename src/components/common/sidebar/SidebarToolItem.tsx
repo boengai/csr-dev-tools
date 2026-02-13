@@ -12,14 +12,14 @@ type SidebarToolItemVariants = {
 }
 
 const sidebarToolItemVariants: CompVariant<SidebarToolItemVariants> = tv({
-  base: 'flex w-full cursor-pointer items-center gap-2 rounded px-3 py-2 text-gray-300 transition-colors',
+  base: 'flex w-full cursor-pointer items-center gap-2 rounded-l border-r-2 border-r-transparent py-2 pl-3 text-gray-300 transition-colors',
   defaultVariants: {
     active: false,
   },
   variants: {
     active: {
       false: 'hover:bg-primary/10 hover:text-white',
-      true: 'border-primary bg-primary/10 border-l-2 text-white',
+      true: 'border-r-primary bg-primary/[0.08] text-primary-light',
     },
   },
 })

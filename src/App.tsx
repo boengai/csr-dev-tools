@@ -15,7 +15,7 @@ const TwinkleStarsAnimate = lazy(() =>
 
 const PageLoading = () => {
   return (
-    <div className="bg-primary/10 flex grow flex-col items-center justify-center rounded-xl">
+    <div className="bg-primary/10 rounded-card flex grow flex-col items-center justify-center">
       <NotoEmoji emoji="flying-saucer" size={200} />
     </div>
   )
@@ -58,7 +58,7 @@ export default function App() {
           type="button"
         >
           <SearchIcon />
-          <kbd className="text-body-xs rounded border border-gray-800 bg-white/5 px-1.5 py-0.5">
+          <kbd className="text-body-xs rounded-sm border border-gray-800 bg-gray-950 px-1.5 py-0.5">
             {typeof navigator !== 'undefined' && /Mac/i.test(navigator.userAgent) ? '⌘K' : 'Ctrl+K'}
           </kbd>
         </button>

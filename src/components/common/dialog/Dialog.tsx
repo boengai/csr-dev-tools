@@ -5,46 +5,16 @@ import type { CompVariant, DialogProps, DialogVariants } from '@/types'
 
 import { tv } from '@/utils'
 
-import { XIcon } from '../icon'
-
 const contentVariants: CompVariant<DialogVariants> = tv({
-  base: 'shadow-primary/30 fixed top-[50%] left-[50%] z-50 flex -translate-1/2 flex-col shadow-[0_0_40px_12px]',
+  base: 'rounded-card shadow-primary/30 fixed top-[50%] left-[50%] z-50 flex -translate-1/2 flex-col overflow-hidden border border-gray-800 bg-gray-950 shadow-[0_0_40px_12px]',
   defaultVariants: {
     size: 'default',
   },
   variants: {
     size: {
       default: 'max-h-[90dvh] w-auto max-w-[90dvw] min-w-90',
-      screen: 'tablet:h-[95dvh] tablet:w-[95dvw] h-dvh w-dvw',
+      screen: 'tablet:h-[95dvh] tablet:w-[95dvw] tablet:rounded-card h-dvh w-dvw rounded-none',
       small: 'max-h-[90dvh] w-90 max-w-[90dvw]',
-    },
-  },
-})
-
-const contentHeaderVariants: CompVariant<DialogVariants> = tv({
-  base: 'text-heading-5 relative w-full shrink-0 rounded-none bg-gray-800 px-5 py-2 pt-[calc(var(--safe-area-inset-top)+0.5rem)] pr-14',
-  defaultVariants: {
-    size: 'default',
-  },
-  variants: {
-    size: {
-      default: 'rounded-t-xl',
-      screen: 'tablet:rounded-t-xl',
-      small: 'rounded-t-xl',
-    },
-  },
-})
-
-const contentBodyVariants: CompVariant<DialogVariants> = tv({
-  base: 'flex size-full grow flex-col overflow-y-auto border border-gray-800 bg-white/5 p-6 pb-[calc(var(--safe-area-inset-bottom)+1.5rem)] backdrop-blur',
-  defaultVariants: {
-    size: 'default',
-  },
-  variants: {
-    size: {
-      default: 'rounded-b-xl',
-      screen: 'tablet:rounded-b-xl',
-      small: 'rounded-b-xl',
     },
   },
 })
@@ -59,8 +29,6 @@ export const Dialog = ({
   trigger,
 }: DialogProps) => {
   const contentClassName = contentVariants({ size })
-  const contentHeaderClassName = contentHeaderVariants({ size })
-  const contentBodyClassName = contentBodyVariants({ size })
 
   const handleOpenChange = (open: boolean) => {
     injected?.setOpen(open)
@@ -90,26 +58,23 @@ export const Dialog = ({
             initial={{ opacity: 0, scale: 0.95, y: -8 }}
             transition={{ duration: 0.2, ease: 'easeOut' }}
           >
-            <div className={contentHeaderClassName}>
-              <Title className="text-heading-5 grow truncate">{title}</Title>
-              <Description className="hidden">{description && title}</Description>
+            <div className="flex w-full shrink-0 items-center gap-3 border-b border-gray-800 px-4 py-2 pt-[calc(var(--safe-area-inset-top)+0.5rem)]">
               <Close asChild>
                 <motion.button
-                  className="bg-error absolute top-1/2 right-4 flex size-4 -translate-y-1/2 items-center justify-center rounded-full"
-                  initial={{ color: 'var(--color-error)', scale: 1 }}
-                  transition={{ duration: 0.3, ease: 'easeOut' }}
-                  whileHover={{ color: 'var(--color-white)' }}
-                  whileTap={{
-                    scale: 0.98,
-                    transition: { duration: 0.1, ease: 'easeOut' },
-                  }}
+                  className="bg-error size-3 shrink-0 rounded-full"
+                  transition={{ duration: 0.15, ease: 'easeOut' }}
+                  whileHover={{ opacity: 0.8, scale: 1.15 }}
+                  whileTap={{ scale: 0.9 }}
                 >
                   <span className="sr-only">Close</span>
-                  <XIcon size={12} />
                 </motion.button>
               </Close>
+              <Title className="text-body-sm grow truncate text-gray-400">{title}</Title>
+              <Description className="hidden">{description ?? title}</Description>
             </div>
-            <div className={contentBodyClassName}>{children}</div>
+            <div className="flex size-full grow flex-col overflow-y-auto p-4 pb-[calc(var(--safe-area-inset-bottom)+1rem)]">
+              {children}
+            </div>
           </motion.div>
         </Content>
       </Portal>

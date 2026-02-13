@@ -42,7 +42,7 @@ const ToolPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
 
 const ToolPageLoading = () => {
   return (
-    <div className="bg-primary/10 flex grow flex-col items-center justify-center rounded-xl">
+    <div className="bg-primary/10 rounded-card flex grow flex-col items-center justify-center">
       <span className="text-text-secondary">Loading...</span>
     </div>
   )

@@ -11,7 +11,7 @@ const AddButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'o
   return (
     <motion.button
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      className="[&>svg]:align-center flex size-full items-center justify-center rounded-xl border-3 border-dashed"
+      className="[&>svg]:align-center rounded-card flex size-full items-center justify-center border-3 border-dashed"
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
       initial={{
         borderColor: 'var(--color-gray-800)',
@@ -59,7 +59,7 @@ const AppContainer = ({ onOpenDialog, position }: { onOpenDialog: (position: num
 
 const AppLoading = () => {
   return (
-    <div className="bg-primary/10 flex grow flex-col items-center justify-center rounded-xl">
+    <div className="bg-primary/10 rounded-card flex grow flex-col items-center justify-center">
       <NotoEmoji emoji="robot" size={120} />
     </div>
   )

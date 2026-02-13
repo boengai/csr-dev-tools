@@ -128,7 +128,7 @@ export const CommandPalette = () => {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 aria-label="Search tools"
                 aria-modal="true"
-                className="fixed top-[20%] left-1/2 z-50 flex w-full max-w-lg -translate-x-1/2 flex-col overflow-hidden rounded-xl border border-gray-800 bg-black/90 shadow-xl backdrop-blur"
+                className="rounded-card fixed top-[20%] left-1/2 z-50 flex w-full max-w-lg -translate-x-1/2 flex-col overflow-hidden border border-gray-800 bg-gray-950 shadow-xl"
                 exit={{ opacity: 0, scale: 0.95, y: -8 }}
                 initial={{ opacity: 0, scale: 0.95, y: -8 }}
                 onKeyDown={handleKeyDown}
@@ -148,7 +148,7 @@ export const CommandPalette = () => {
                     <li
                       aria-selected={index === highlightedIndex}
                       className={`flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 ${
-                        index === highlightedIndex ? 'bg-primary/20 text-white' : 'text-gray-300 hover:bg-white/5'
+                        index === highlightedIndex ? 'bg-primary/20 text-white' : 'text-gray-300 hover:bg-gray-900'
                       }`}
                       id={`command-palette-option-${tool.key}`}
                       key={tool.key}

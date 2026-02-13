@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import type { ToolCategory, ToolRegistryEntry } from '@/types'
 
-import { XIcon } from '@/components'
 import { TOOL_REGISTRY } from '@/constants'
 import { useSidebarStore } from '@/hooks'
 
@@ -82,35 +81,22 @@ export const Sidebar = () => {
   }, [])
 
   const navContent = (
-    <>
-      <div className="flex items-center justify-between px-4 py-3">
-        <span className="text-heading-6 text-white">Tools</span>
-        <button
-          aria-label="Close navigation"
-          className="flex size-8 items-center justify-center rounded text-gray-400 transition-colors hover:text-white"
-          onClick={close}
-          type="button"
-        >
-          <XIcon />
-        </button>
-      </div>
-      <div className="flex grow flex-col overflow-y-auto px-2 pb-4">
-        {CATEGORY_ORDER.filter((cat) => groupedTools[cat]).map((category) => (
-          <SidebarCategory categoryName={category} key={category} toolCount={groupedTools[category].length}>
-            {groupedTools[category].map((tool) => (
-              <li key={tool.key}>
-                <SidebarToolItem
-                  emoji={tool.emoji}
-                  isActive={pathname === tool.routePath}
-                  name={tool.name}
-                  toolKey={tool.key}
-                />
-              </li>
-            ))}
-          </SidebarCategory>
-        ))}
-      </div>
-    </>
+    <div className="flex grow flex-col overflow-y-auto pt-8 pb-4">
+      {CATEGORY_ORDER.filter((cat) => groupedTools[cat]).map((category) => (
+        <SidebarCategory categoryName={category} key={category}>
+          {groupedTools[category].map((tool) => (
+            <li key={tool.key}>
+              <SidebarToolItem
+                emoji={tool.emoji}
+                isActive={pathname === tool.routePath}
+                name={tool.name}
+                toolKey={tool.key}
+              />
+            </li>
+          ))}
+        </SidebarCategory>
+      ))}
+    </div>
   )
 
   return (
@@ -135,7 +121,7 @@ export const Sidebar = () => {
           <motion.nav
             animate={{ x: 0 }}
             aria-label="Tool navigation"
-            className={`fixed inset-y-0 left-0 z-50 flex flex-col bg-gray-950 pt-[var(--safe-area-inset-top)] pb-[var(--safe-area-inset-bottom)] ${isMobile ? 'w-full' : 'w-[260px]'}`}
+            className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-gray-800 bg-gray-950 pt-[var(--safe-area-inset-top)] pb-[var(--safe-area-inset-bottom)] ${isMobile ? 'w-full' : 'w-[260px]'}`}
             exit={{ x: '-100%' }}
             initial={{ x: '-100%' }}
             ref={sidebarRef}
