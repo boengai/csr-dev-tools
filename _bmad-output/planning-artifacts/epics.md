@@ -389,6 +389,51 @@ So that **I can use the tools in my preferred visual mode**.
 **When** the user inspects text contrast ratios
 **Then** all text meets WCAG 2.1 AA minimums (4.5:1 for body text, 3:1 for large text)
 
+### Story 1.6: Design System Foundation — Apply UX Direction
+
+As a **user**,
+I want **the application's visual identity to reflect the approved Space/Universe design direction**,
+So that **every component and tool renders with the cohesive cosmic theme defined in the UX Design Specification**.
+
+**Acceptance Criteria:**
+
+**Given** `src/index.css` with existing `@theme` design tokens
+**When** the tokens are updated
+**Then** the primary brand color is `oklch(0.55 0.22 310)` (cosmic magenta-purple)
+**And** the secondary brand color is `oklch(0.65 0.12 260)` (nebula blue-violet)
+**And** the full neutral scale uses cool space-blue tinted grays (hue 270, low chroma 0.008) matching the UX spec values exactly
+
+**Given** the semantic color tokens
+**When** they are updated
+**Then** info is `oklch(0.6 0.15 240)`, warning is `oklch(0.75 0.15 85)`, success is `oklch(0.65 0.18 165)`, error is `oklch(0.6 0.2 15)`
+
+**Given** the background gradient
+**When** it is updated
+**Then** it uses the 6-stop gradient from the UX spec: void black → midnight blue → deep space purple → nebula purple → distant nebula magenta → nebula edge glow
+
+**Given** `index.html` font loading
+**When** the font reference is updated
+**Then** Space Mono is loaded from Google Fonts (regular 400, bold 700, italic variants)
+**And** the `@theme` font-family token references `'Space Mono', monospace`
+**And** Google Sans Code references are removed
+
+**Given** the shadow scale tokens
+**When** they are updated
+**Then** the 4-step scale (`--shadow-sm` through `--shadow-xl`) matches the UX spec's crisper, tighter shadow values
+
+**Given** the border radius tokens
+**When** they are defined
+**Then** `--radius-sm` is `4px` (small elements) and `--radius-card` is `6px` (cards/containers) per the 32-bit subtle influence
+
+**Given** all token updates are applied
+**When** the existing 6 tools and dashboard render
+**Then** there are no visual regressions in layout or functionality — only the color palette, typography, and shadows change
+**And** all text meets WCAG 2.1 AA contrast minimums (4.5:1 body text, 3:1 large text) against the updated backgrounds
+
+**Dependencies:** None — this is a foundational story. Stories 1.5 (Theme Toggle), 2.1 (ToolLayout), and 2.2 (CopyButton/OutputDisplay) depend on these tokens being in place.
+
+**Scope note:** This story covers design *tokens* only — the CSS custom properties and font. It does NOT include the light theme variant (that's Story 1.5) or component-level styling (that's Epic 2).
+
 ---
 
 ## Epic 2: Standardized Tool Experience
