@@ -1,5 +1,12 @@
 import type { ToastItemProps } from '@/types/components'
 
+export type UseSidebarStore = {
+  close: () => void
+  isOpen: boolean
+  open: () => void
+  toggle: () => void
+}
+
 export type UseToast = {
   items: Array<ToastItemProps>
   toast: (

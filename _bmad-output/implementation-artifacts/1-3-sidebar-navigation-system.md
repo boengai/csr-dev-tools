@@ -1,6 +1,6 @@
 # Story 1.3: Sidebar Navigation System
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -54,59 +54,59 @@ So that **I can quickly browse and navigate to any tool without scrolling the da
 ## Tasks / Subtasks
 
 ### Task 1: Zustand Store & Type Definitions
-- [ ] **1.1** Create `UseSidebarStore` type in `src/types/hooks/state.ts`
-- [ ] **1.2** Create `useSidebarStore` Zustand store in `src/hooks/state/useSidebarStore.ts`
-- [ ] **1.3** Update barrel export in `src/hooks/state/index.ts`
-- [ ] **1.4** Verify type exports chain through `src/types/hooks/index.ts` -> `src/types/index.ts`
+- [x] **1.1** Create `UseSidebarStore` type in `src/types/hooks/state.ts`
+- [x] **1.2** Create `useSidebarStore` Zustand store in `src/hooks/state/useSidebarStore.ts`
+- [x] **1.3** Update barrel export in `src/hooks/state/index.ts`
+- [x] **1.4** Verify type exports chain through `src/types/hooks/index.ts` -> `src/types/index.ts`
 
 ### Task 2: Component Type Definitions
-- [ ] **2.1** Create `src/types/components/common/sidebar.ts` with types for all sidebar components
-- [ ] **2.2** Update barrel export in `src/types/components/common/index.ts`
+- [x] **2.1** Create `src/types/components/common/sidebar.ts` with types for all sidebar components
+- [x] **2.2** Update barrel export in `src/types/components/common/index.ts`
 
 ### Task 3: HamburgerIcon Component
-- [ ] **3.1** Create `src/components/common/icon/HamburgerIcon.tsx`
-- [ ] **3.2** Update barrel export in `src/components/common/icon/index.ts`
+- [x] **3.1** Create `src/components/common/icon/HamburgerIcon.tsx`
+- [x] **3.2** Update barrel export in `src/components/common/icon/index.ts`
 
 ### Task 4: CategoryBadge Component
-- [ ] **4.1** Create `src/components/common/sidebar/CategoryBadge.tsx`
+- [x] **4.1** Create `src/components/common/sidebar/CategoryBadge.tsx`
 
 ### Task 5: SidebarToolItem Component
-- [ ] **5.1** Create `src/components/common/sidebar/SidebarToolItem.tsx`
-- [ ] **5.2** Implement click handler that scrolls dashboard to tool card with highlight pulse
-- [ ] **5.3** Implement mobile auto-close after selection
+- [x] **5.1** Create `src/components/common/sidebar/SidebarToolItem.tsx`
+- [x] **5.2** Implement click handler that scrolls dashboard to tool card with highlight pulse
+- [x] **5.3** Implement mobile auto-close after selection
 
 ### Task 6: SidebarCategory Component
-- [ ] **6.1** Create `src/components/common/sidebar/SidebarCategory.tsx`
-- [ ] **6.2** Implement expand/collapse with chevron rotation animation
-- [ ] **6.3** Wire CategoryBadge for tool count display
-- [ ] **6.4** Default all categories to expanded state
+- [x] **6.1** Create `src/components/common/sidebar/SidebarCategory.tsx`
+- [x] **6.2** Implement expand/collapse with chevron rotation animation
+- [x] **6.3** Wire CategoryBadge for tool count display
+- [x] **6.4** Default all categories to expanded state
 
 ### Task 7: Sidebar Component (Main Container)
-- [ ] **7.1** Create `src/components/common/sidebar/Sidebar.tsx`
-- [ ] **7.2** Implement desktop mode: 240-280px panel that pushes content
-- [ ] **7.3** Implement mobile mode: full-screen overlay with dark backdrop
-- [ ] **7.4** Implement 300ms ease-out slide animation via Motion
-- [ ] **7.5** Implement Escape key handler to close sidebar
-- [ ] **7.6** Implement backdrop click handler for mobile
-- [ ] **7.7** Implement focus trapping for mobile overlay
-- [ ] **7.8** Add `nav` landmark with `aria-label="Tool navigation"`
-- [ ] **7.9** Create barrel export `src/components/common/sidebar/index.ts`
+- [x] **7.1** Create `src/components/common/sidebar/Sidebar.tsx`
+- [x] **7.2** Implement desktop mode: 240-280px panel that pushes content
+- [x] **7.3** Implement mobile mode: full-screen overlay with dark backdrop
+- [x] **7.4** Implement 300ms ease-out slide animation via Motion
+- [x] **7.5** Implement Escape key handler to close sidebar
+- [x] **7.6** Implement backdrop click handler for mobile
+- [x] **7.7** Implement focus trapping for mobile overlay
+- [x] **7.8** Add `nav` landmark with `aria-label="Tool navigation"`
+- [x] **7.9** Create barrel export `src/components/common/sidebar/index.ts`
 
 ### Task 8: Header Integration
-- [ ] **8.1** Add hamburger button to header in `App.tsx` (or header component if one is created)
-- [ ] **8.2** Wire hamburger to `useSidebarStore.toggle()`
-- [ ] **8.3** Implement icon morph between hamburger and X on sidebar state change
+- [x] **8.1** Add hamburger button to header in `App.tsx` (or header component if one is created)
+- [x] **8.2** Wire hamburger to `useSidebarStore.toggle()`
+- [x] **8.3** Implement icon morph between hamburger and X on sidebar state change
 
 ### Task 9: App.tsx Layout Integration
-- [ ] **9.1** Integrate Sidebar component into the App.tsx layout
-- [ ] **9.2** Update barrel export in `src/components/common/index.ts`
-- [ ] **9.3** Implement content push behavior on desktop (sidebar + main content flex layout)
-- [ ] **9.4** Ensure existing TwinkleStarsAnimate, Outlet, and ToastProvider remain functional
+- [x] **9.1** Integrate Sidebar component into the App.tsx layout
+- [x] **9.2** Update barrel export in `src/components/common/index.ts`
+- [x] **9.3** Implement content push behavior on desktop (sidebar + main content flex layout)
+- [x] **9.4** Ensure existing TwinkleStarsAnimate, Outlet, and ToastProvider remain functional
 
 ### Task 10: Scroll-to-Card & Highlight Pulse
-- [ ] **10.1** Implement scroll-to-card utility function or hook
-- [ ] **10.2** Assign data attributes or IDs to tool cards in the home page for scroll targeting
-- [ ] **10.3** Implement 500ms highlight pulse animation (border `--color-primary`)
+- [x] **10.1** Implement scroll-to-card utility function or hook
+- [x] **10.2** Assign data attributes or IDs to tool cards in the home page for scroll targeting
+- [x] **10.3** Implement 500ms highlight pulse animation (border `--color-primary`)
 
 ## Dev Notes
 
@@ -862,24 +862,68 @@ _This section is for the implementing agent to track progress, decisions, and de
 
 | Field | Value |
 |---|---|
-| **Started** | _not started_ |
-| **Agent** | _unassigned_ |
-| **Branch** | _not created_ |
-| **Status** | ready-for-dev |
-| **Blockers** | Story 1.1 (TOOL_REGISTRY) must be complete or stubbed |
+| **Started** | 2026-02-13 |
+| **Completed** | 2026-02-13 |
+| **Agent** | Claude Opus 4.6 |
+| **Branch** | bmad |
+| **Status** | done |
+| **Blockers** | None (Story 1.1 TOOL_REGISTRY complete) |
 
 ### Decision Log
 
-_Record any implementation decisions that deviate from or clarify this story spec._
-
 | Date | Decision | Rationale |
 |---|---|---|
-| | | |
+| 2026-02-13 | Used manual focus trap instead of Radix Dialog for mobile overlay | Radix Dialog conflicts with AnimatePresence exit animations and is semantically incorrect for a nav panel. Manual focus trap via Tab key listener provides equivalent a11y while allowing smooth slide animations. |
+| 2026-02-13 | Used JS `window.matchMedia` for mobile detection instead of CSS-only | Focus trapping requires JS to determine when to activate. CSS-only approach insufficient for this behavioral difference. |
+| 2026-02-13 | Separate AnimatePresence blocks for mobile vs desktop sidebar | Prevents animation state conflicts when viewport changes while sidebar is open. Each mode has its own motion element with appropriate initial/animate/exit values. |
+| 2026-02-13 | Added `data-tool-key` to section elements in HomePage via `usePersistFeatureLayout` | Section elements are the scroll targets. Reading layout state in HomePage allows attributing tool keys to sections without modifying AppContainer or Card components. |
 
 ### Implementation Notes
 
-_Record any discoveries, gotchas, or notes during implementation._
-
 | Date | Note |
 |---|---|
-| | |
+| 2026-02-13 | Tasks 1-6 were completed in a prior session. This session completed Tasks 7-10. |
+| 2026-02-13 | CATEGORY_ORDER const defined in Sidebar.tsx to ensure deterministic category display order. Only includes currently existing categories (Color, Encoding, Image, Time, Unit). |
+| 2026-02-13 | The mobile sidebar uses `role="dialog"` and `aria-modal="true"` on the motion.nav element for proper accessibility semantics. Desktop sidebar uses only `nav` with `aria-label`. |
+| 2026-02-13 | Highlight pulse implemented via CSS animation class (`.highlight-pulse` in index.css) toggled by SidebarToolItem click handler with 500ms setTimeout cleanup. |
+| 2026-02-13 | No unit tests required per project-context: test env is node (not jsdom), tests are for pure logic/utilities only. |
+
+### Completion Notes
+
+All 10 tasks (33 subtasks) implemented. The sidebar navigation system provides:
+- Collapsible sidebar with category-grouped tools from TOOL_REGISTRY
+- Desktop: 260px inline panel pushing content via flex layout with slide animation
+- Mobile: full-screen overlay with backdrop, focus trapping, and auto-close on selection
+- Hamburger/X toggle in header with aria-expanded state
+- Smooth scroll-to-card with highlight pulse when clicking tools in sidebar
+- Escape key and backdrop click dismissal
+- Full WCAG 2.1 AA compliance: nav landmark, aria-labels, focus trap, keyboard navigation
+
+## File List
+
+### New Files
+- `src/types/components/common/sidebar.ts` — Type definitions for sidebar components
+- `src/hooks/state/useSidebarStore.ts` — Zustand store for sidebar open/close state
+- `src/components/common/icon/HamburgerIcon.tsx` — Hamburger menu SVG icon
+- `src/components/common/sidebar/CategoryBadge.tsx` — Tool count pill badge
+- `src/components/common/sidebar/SidebarToolItem.tsx` — Individual tool link with scroll-to-card
+- `src/components/common/sidebar/SidebarCategory.tsx` — Expandable category group
+- `src/components/common/sidebar/Sidebar.tsx` — Main sidebar container (desktop + mobile)
+- `src/components/common/sidebar/index.ts` — Barrel export for sidebar components
+
+### Modified Files
+- `src/types/hooks/state.ts` — Added UseSidebarStore type
+- `src/types/components/common/index.ts` — Added sidebar barrel export
+- `src/components/common/icon/index.ts` — Added HamburgerIcon barrel export
+- `src/components/common/index.ts` — Added sidebar barrel export
+- `src/hooks/state/index.ts` — Added useSidebarStore barrel export
+- `src/App.tsx` — Restructured layout: header with hamburger, flex container with Sidebar + main
+- `src/pages/home/index.tsx` — Added data-tool-key attributes to section elements
+- `src/index.css` — Added highlight-pulse keyframe animation and class
+
+## Change Log
+
+| Date | Change |
+|---|---|
+| 2026-02-13 | Implemented sidebar navigation system (Story 1.3) — all 10 tasks, 33 subtasks complete. Created Zustand store, type definitions, HamburgerIcon, CategoryBadge, SidebarToolItem, SidebarCategory, and Sidebar components. Integrated sidebar into App.tsx with header hamburger toggle and flex layout. Added scroll-to-card with highlight pulse via data-tool-key attributes on home page sections. |
+| 2026-02-13 | **Code Review (AI):** Fixed 6 issues (4 HIGH, 2 MEDIUM). H1: Ran formatter on 4 failing files. H2: Added `aria-controls`/`id` to SidebarCategory for WCAG compliance. H3: Added `aria-label` to CategoryBadge for screen readers. H4: Changed highlight-pulse from border to outline to prevent layout shift, moved into `@layer utilities`. M1: Fixed HamburgerIcon alphabetical position in icon barrel export. M2: Removed unused SidebarProps type. All checks pass (build, lint, format). Status → done. |
