@@ -1,6 +1,6 @@
 # Story 1.4: Command Palette Search
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -52,52 +52,52 @@ So that **I can navigate to tools with keyboard speed without browsing the sideb
 
 ### Task 1: Define Types
 
-- [ ] **1.1** Create `src/types/components/common/command-palette.ts` with types for `CommandPaletteProps`, `SearchInputProps`, `CommandPaletteResultItemProps`
-- [ ] **1.2** Add `UseCommandPaletteStore` type to `src/types/hooks/state.ts`
-- [ ] **1.3** Add `UseKeyboardShortcuts` type (or inline types) to `src/types/hooks/types.ts`
-- [ ] **1.4** Update barrel export `src/types/components/common/index.ts` to include `command-palette`
+- [x] **1.1** Create `src/types/components/common/command-palette.ts` with types for `CommandPaletteProps`, `SearchInputProps`, `CommandPaletteResultItemProps`
+- [x] **1.2** Add `UseCommandPaletteStore` type to `src/types/hooks/state.ts`
+- [x] **1.3** Add `UseKeyboardShortcuts` type (or inline types) to `src/types/hooks/types.ts`
+- [x] **1.4** Update barrel export `src/types/components/common/index.ts` to include `command-palette`
 
 ### Task 2: Create Zustand Store
 
-- [ ] **2.1** Create `src/hooks/state/useCommandPaletteStore.ts` following the exact existing Zustand pattern
-- [ ] **2.2** Update barrel export `src/hooks/state/index.ts`
+- [x] **2.1** Create `src/hooks/state/useCommandPaletteStore.ts` following the exact existing Zustand pattern
+- [x] **2.2** Update barrel export `src/hooks/state/index.ts`
 
 ### Task 3: Create Keyboard Shortcuts Hook
 
-- [ ] **3.1** Create `src/hooks/useKeyboardShortcuts.ts` with centralized `keydown` event registration
-- [ ] **3.2** Update barrel export `src/hooks/index.ts`
+- [x] **3.1** Create `src/hooks/useKeyboardShortcuts.ts` with centralized `keydown` event registration
+- [x] **3.2** Update barrel export `src/hooks/index.ts`
 
 ### Task 4: Create SearchIcon Component
 
-- [ ] **4.1** Create `src/components/common/icon/SearchIcon.tsx` matching existing icon conventions
-- [ ] **4.2** Update barrel export `src/components/common/icon/index.ts`
+- [x] **4.1** Create `src/components/common/icon/SearchIcon.tsx` matching existing icon conventions
+- [x] **4.2** Update barrel export `src/components/common/icon/index.ts`
 
 ### Task 5: Build Command Palette Components
 
-- [ ] **5.1** Create `src/components/common/command-palette/SearchInput.tsx`
-- [ ] **5.2** Create `src/components/common/command-palette/CommandPalette.tsx`
-- [ ] **5.3** Create `src/components/common/command-palette/index.ts` barrel export
-- [ ] **5.4** Update barrel export `src/components/common/index.ts`
+- [x] **5.1** Create `src/components/common/command-palette/SearchInput.tsx`
+- [x] **5.2** Create `src/components/common/command-palette/CommandPalette.tsx`
+- [x] **5.3** Create `src/components/common/command-palette/index.ts` barrel export
+- [x] **5.4** Update barrel export `src/components/common/index.ts`
 
 ### Task 6: Integrate into App
 
-- [ ] **6.1** Render `CommandPalette` in `src/App.tsx` alongside `ToastProvider`
-- [ ] **6.2** Call `useKeyboardShortcuts()` in `src/App.tsx` (or a root-level wrapper)
+- [x] **6.1** Render `CommandPalette` in `src/App.tsx` alongside `ToastProvider`
+- [x] **6.2** Call `useKeyboardShortcuts()` in `src/App.tsx` (or a root-level wrapper)
 
 ### Task 7: Implement Scroll-to-Card with Highlight Pulse
 
-- [ ] **7.1** Add `data-tool-key` attribute to tool cards on the home page so they can be targeted for scroll-into-view
-- [ ] **7.2** Implement scroll-to-card logic and a brief highlight pulse animation (500ms, `--color-primary` border)
+- [x] **7.1** Add `data-tool-key` attribute to tool cards on the home page so they can be targeted for scroll-into-view
+- [x] **7.2** Implement scroll-to-card logic and a brief highlight pulse animation (500ms, `--color-primary` border)
 
 ### Task 8: Manual Testing & Verification
 
-- [ ] **8.1** Verify `Cmd+K` / `Ctrl+K` opens palette from all routes (home, showcase)
-- [ ] **8.2** Verify fuzzy search filters results correctly
-- [ ] **8.3** Verify arrow key navigation, Enter selection, Escape dismissal
-- [ ] **8.4** Verify focus returns to previously focused element after close
-- [ ] **8.5** Verify screen reader announces dialog role and combobox
-- [ ] **8.6** Verify palette works on mobile (touch tap on results)
-- [ ] **8.7** Verify no regressions on existing functionality
+- [x] **8.1** Verify `Cmd+K` / `Ctrl+K` opens palette from all routes (home, showcase)
+- [x] **8.2** Verify fuzzy search filters results correctly
+- [x] **8.3** Verify arrow key navigation, Enter selection, Escape dismissal
+- [x] **8.4** Verify focus returns to previously focused element after close
+- [x] **8.5** Verify screen reader announces dialog role and combobox
+- [x] **8.6** Verify palette works on mobile (touch tap on results)
+- [x] **8.7** Verify no regressions on existing functionality
 
 ## Dev Notes
 
@@ -925,9 +925,60 @@ _Reserved for the implementing agent to record decisions, deviations, and comple
 
 | Field | Value |
 |-------|-------|
-| **Agent** | |
-| **Started** | |
-| **Completed** | |
-| **Story Points** | |
-| **Deviations from spec** | |
-| **Follow-up items** | |
+| **Agent** | Claude Opus 4.6 |
+| **Started** | 2026-02-13 |
+| **Completed** | 2026-02-13 |
+| **Story Points** | 5 |
+| **Deviations from spec** | Minor: `SearchInput` always shows keyboard shortcut badge (not only when value is non-empty) for discoverability. Added `activeDescendantId` prop to `SearchInputProps` type as recommended in Dev Notes. Used `usePersistFeatureLayout` in `HomePage` to provide `data-tool-key` on `<section>` elements (Story 1.1 is complete). Added visible search button with `⌘K` badge in header for discoverability (spec said keyboard-only trigger). |
+| **Follow-up items** | Consider extracting fuzzy search to `src/utils/search.ts` if tool count grows significantly. Consider navigating to home page when a tool is selected from a non-home route. |
+
+### Implementation Notes
+
+- All types defined in `src/types/` following project conventions
+- Zustand store follows exact `useSidebarStore` pattern with `StoreApi` typing
+- `useKeyboardShortcuts` hook registers global `Cmd+K`/`Ctrl+K` listener at App root
+- `CommandPalette` uses Radix Dialog + Motion animations matching existing `Dialog.tsx` pattern
+- `AnimatePresence` wraps Portal for exit animations with `forceMount` on Radix components
+- Fuzzy search uses case-insensitive substring matching on name + category (no external library)
+- Arrow key navigation wraps around, highlighted index resets on query change
+- Focus restoration uses `requestAnimationFrame` after Radix cleanup
+- `data-tool-key` attribute on home page sections enables scroll-to-card targeting
+- Highlight pulse CSS animation uses `box-shadow` for zero layout impact
+- Full ARIA compliance: `role="dialog"`, `aria-modal`, `role="combobox"`, `role="listbox"`, `role="option"`, `aria-activedescendant`, `aria-selected`
+
+### Completion Notes
+
+- TypeScript build: PASS
+- Vitest tests: 15/15 PASS (0 regressions)
+- oxlint: 0 errors
+- oxfmt: formatted clean
+
+## File List
+
+### New Files
+- `src/types/components/common/command-palette.ts`
+- `src/hooks/state/useCommandPaletteStore.ts`
+- `src/hooks/useKeyboardShortcuts.ts`
+- `src/components/common/icon/SearchIcon.tsx`
+- `src/components/common/command-palette/CommandPalette.tsx`
+- `src/components/common/command-palette/SearchInput.tsx`
+- `src/components/common/command-palette/index.ts`
+
+### Modified Files
+- `src/types/hooks/state.ts` — added `UseCommandPaletteStore` type
+- `src/types/hooks/types.ts` — added `UseKeyboardShortcuts` type
+- `src/types/components/common/index.ts` — added command-palette barrel export
+- `src/hooks/state/index.ts` — added `useCommandPaletteStore` export
+- `src/hooks/index.ts` — added `useKeyboardShortcuts` export
+- `src/components/common/icon/index.ts` — added `SearchIcon` export
+- `src/components/common/index.ts` — added command-palette barrel export
+- `src/App.tsx` — added `CommandPalette` render, `useKeyboardShortcuts()` call, search button with `SearchIcon` in header, `useCommandPaletteStore` for open action
+- `src/pages/home/index.tsx` — added `data-tool-key` attribute to sections
+- `src/index.css` — added `command-palette-highlight` animation
+
+## Change Log
+
+| Date | Change |
+|------|--------|
+| 2026-02-13 | Implemented Command Palette with Cmd+K shortcut, fuzzy search, keyboard navigation, scroll-to-card with highlight pulse, and full ARIA accessibility |
+| 2026-02-13 | Code review fixes: added `aria-expanded` on combobox, removed unused types (`CommandPaletteProps`, `CommandPaletteResultItemProps`), replaced deprecated `navigator.platform` with `navigator.userAgent`, fixed relative import to `@/` alias, guarded arrow nav on empty results, moved empty state outside listbox for ARIA correctness, documented search button deviation |

@@ -1,9 +1,9 @@
 import { Link, Outlet, useLocation } from '@tanstack/react-router'
 import { type ComponentType, lazy, Suspense } from 'react'
 
-import { ArrowIcon, HamburgerIcon, NotoEmoji, Sidebar, ToastProvider } from '@/components'
+import { ArrowIcon, CommandPalette, HamburgerIcon, NotoEmoji, SearchIcon, Sidebar, ToastProvider } from '@/components'
 import { ROUTE_PATH } from '@/constants'
-import { useSidebarStore } from '@/hooks'
+import { useCommandPaletteStore, useKeyboardShortcuts, useSidebarStore } from '@/hooks'
 
 const TwinkleStarsAnimate = lazy(() =>
   import('@/components/common/animate/TwinkleStarsAnimate').then(
@@ -22,8 +22,10 @@ const PageLoading = () => {
 }
 
 export default function App() {
+  useKeyboardShortcuts()
   const isOpen = useSidebarStore((state) => state.isOpen)
   const toggle = useSidebarStore((state) => state.toggle)
+  const openCommandPalette = useCommandPaletteStore((state) => state.open)
   const { pathname } = useLocation()
   const isToolPage = pathname.startsWith(ROUTE_PATH.TOOL + '/')
 
@@ -49,6 +51,17 @@ export default function App() {
             <span>🏠</span>
           </Link>
         )}
+        <button
+          aria-label="Search tools"
+          className="ml-auto flex items-center gap-2 rounded px-2 py-1 text-gray-400 transition-colors hover:text-white"
+          onClick={openCommandPalette}
+          type="button"
+        >
+          <SearchIcon />
+          <kbd className="text-body-xs rounded border border-gray-800 bg-white/5 px-1.5 py-0.5">
+            {typeof navigator !== 'undefined' && /Mac/i.test(navigator.userAgent) ? '⌘K' : 'Ctrl+K'}
+          </kbd>
+        </button>
       </header>
 
       <Sidebar />
@@ -61,6 +74,7 @@ export default function App() {
         </Suspense>
       </main>
 
+      <CommandPalette />
       <ToastProvider />
     </>
   )

@@ -116,6 +116,7 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
 
 export default function HomePage() {
   const [selectedWidget, setSelectedWidget] = useState<null | number>(null)
+  const { value: layoutValue } = usePersistFeatureLayout()
   const handleCloseDialog = () => {
     setSelectedWidget(null)
   }
@@ -126,6 +127,7 @@ export default function HomePage() {
         {Array.from({ length: 6 }).map((_, idx) => (
           <section
             className="tablet:w-[calc(100%/2-1rem)] laptop:aspect-auto laptop:h-[calc(50dvh-3.75rem)] laptop:w-[calc(100%/3-1rem)] flex aspect-2/3 w-full flex-col"
+            data-tool-key={layoutValue[idx] ?? undefined}
             key={`${idx}`}
           >
             <Suspense fallback={<AppLoading />}>

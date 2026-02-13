@@ -1,5 +1,12 @@
 import type { ToastItemProps } from '@/types/components'
 
+export type UseCommandPaletteStore = {
+  close: () => void
+  isOpen: boolean
+  open: () => void
+  toggle: () => void
+}
+
 export type UseSidebarStore = {
   close: () => void
   isOpen: boolean

@@ -1,6 +1,7 @@
 export * from './animate'
 export * from './button'
 export * from './card'
+export * from './command-palette'
 export * from './dialog'
 export * from './form'
 export * from './input'
