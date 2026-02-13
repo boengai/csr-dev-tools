@@ -27,7 +27,7 @@ So that **I can navigate to tools with keyboard speed without browsing the sideb
 **When** the user presses `Up`/`Down` arrow keys
 **Then** the highlighted result changes accordingly
 **And** when the user presses `Enter`
-**Then** the palette closes and the dashboard scrolls to the selected tool with a highlight pulse
+**Then** the palette closes and navigates to the selected tool's dedicated page at `/tools/{tool-key}`
 
 **AC-4: Dismiss Behavior & Focus Restoration**
 **Given** the Command Palette is open
@@ -84,10 +84,12 @@ So that **I can navigate to tools with keyboard speed without browsing the sideb
 - [x] **6.1** Render `CommandPalette` in `src/App.tsx` alongside `ToastProvider`
 - [x] **6.2** Call `useKeyboardShortcuts()` in `src/App.tsx` (or a root-level wrapper)
 
-### Task 7: Implement Scroll-to-Card with Highlight Pulse
+### ~~Task 7: Implement Scroll-to-Card with Highlight Pulse~~ (Superseded)
 
-- [x] **7.1** Add `data-tool-key` attribute to tool cards on the home page so they can be targeted for scroll-into-view
-- [x] **7.2** Implement scroll-to-card logic and a brief highlight pulse animation (500ms, `--color-primary` border)
+> Superseded by `fix-command-palette-navigate-to-tool-page`. Selection now navigates to `/tools/{tool-key}` via router instead of scrolling to a dashboard card.
+
+- [x] ~~**7.1** Add `data-tool-key` attribute to tool cards on the home page so they can be targeted for scroll-into-view~~
+- [x] ~~**7.2** Implement scroll-to-card logic and a brief highlight pulse animation (500ms, `--color-primary` border)~~
 
 ### Task 8: Manual Testing & Verification
 
@@ -456,26 +458,17 @@ useEffect(() => {
 }, [query])
 ```
 
-**Tool selection handler (scroll-to-card):**
+**Tool selection handler (navigate to tool page):**
 
 ```typescript
+const navigate = useNavigate()
+
 const handleSelectTool = useCallback(
   (tool: ToolRegistryEntry) => {
     handleClose()
-    // Scroll to tool card on dashboard
-    requestAnimationFrame(() => {
-      const card = document.querySelector(`[data-tool-key="${tool.key}"]`)
-      if (card) {
-        card.scrollIntoView({ behavior: 'smooth', block: 'center' })
-        // Trigger highlight pulse
-        card.classList.add('command-palette-highlight')
-        setTimeout(() => {
-          card.classList.remove('command-palette-highlight')
-        }, 500)
-      }
-    })
+    navigate({ to: tool.routePath })
   },
-  [handleClose],
+  [handleClose, navigate],
 )
 ```
 
@@ -982,3 +975,4 @@ _Reserved for the implementing agent to record decisions, deviations, and comple
 |------|--------|
 | 2026-02-13 | Implemented Command Palette with Cmd+K shortcut, fuzzy search, keyboard navigation, scroll-to-card with highlight pulse, and full ARIA accessibility |
 | 2026-02-13 | Code review fixes: added `aria-expanded` on combobox, removed unused types (`CommandPaletteProps`, `CommandPaletteResultItemProps`), replaced deprecated `navigator.platform` with `navigator.userAgent`, fixed relative import to `@/` alias, guarded arrow nav on empty results, moved empty state outside listbox for ARIA correctness, documented search button deviation |
+| 2026-02-14 | **Behavior change:** Tool selection now navigates to `/tools/{tool-key}` via `useNavigate` instead of scrolling to dashboard card. Removed scroll-to-card logic, `command-palette-highlight` CSS animation, and `data-tool-key` attributes from home page. See `fix-command-palette-navigate-to-tool-page.md`. |

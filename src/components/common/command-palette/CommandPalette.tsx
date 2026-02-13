@@ -1,4 +1,5 @@
 import { Content, Overlay, Portal, Root } from '@radix-ui/react-dialog'
+import { useNavigate } from '@tanstack/react-router'
 import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
@@ -13,6 +14,7 @@ export const CommandPalette = () => {
   const isOpen = useCommandPaletteStore((state) => state.isOpen)
   const close = useCommandPaletteStore((state) => state.close)
 
+  const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const [highlightedIndex, setHighlightedIndex] = useState(0)
   const previouslyFocusedRef = useRef<HTMLElement | null>(null)
@@ -59,18 +61,9 @@ export const CommandPalette = () => {
   const handleSelectTool = useCallback(
     (tool: ToolRegistryEntry) => {
       handleClose()
-      requestAnimationFrame(() => {
-        const card = document.querySelector(`[data-tool-key="${tool.key}"]`)
-        if (card) {
-          card.scrollIntoView({ behavior: 'smooth', block: 'center' })
-          card.classList.add('command-palette-highlight')
-          setTimeout(() => {
-            card.classList.remove('command-palette-highlight')
-          }, 500)
-        }
-      })
+      navigate({ to: tool.routePath })
     },
-    [handleClose],
+    [handleClose, navigate],
   )
 
   const handleKeyDown = useCallback(
