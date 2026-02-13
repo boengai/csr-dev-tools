@@ -51,13 +51,13 @@ development_status:
   epic-1-retrospective: done
 
   # Epic 2: Standardized Tool Experience
-  epic-2: in-progress
+  epic-2: done
   2-1-toollayout-component: done
   2-2-copybutton-and-outputdisplay-components: done
   2-3-error-handling-system: done
   2-4-input-validation-utilities: done
   2-5-tool-descriptions-placeholders-and-tooltips: done
-  epic-2-retrospective: optional
+  epic-2-retrospective: done
 
   # Epic 3: Existing Tool Baseline & Enhancement
   epic-3: backlog
