@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import type { ToolComponentProps } from '@/types'
+
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToolError } from '@/hooks'
@@ -7,10 +9,10 @@ import { formatJson, getJsonParseError } from '@/utils/json'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-formatter']
 
-export const JsonFormatter = () => {
+export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
   const [result, setResult] = useState('')
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { clearError, error, setError } = useToolError()
 
   const process = (val: string) => {
@@ -51,6 +53,11 @@ export const JsonFormatter = () => {
     clearError()
   }
 
+  const handleAfterClose = () => {
+    handleReset()
+    onAfterDialogClose?.()
+  }
+
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
@@ -65,7 +72,7 @@ export const JsonFormatter = () => {
 
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleReset}
+        onAfterClose={handleAfterClose}
         size="screen"
         title="JSON Format"
       >

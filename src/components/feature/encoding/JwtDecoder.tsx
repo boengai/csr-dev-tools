@@ -1,5 +1,7 @@
 import { useState } from 'react'
 
+import type { ToolComponentProps } from '@/types'
+
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToolError } from '@/hooks'
@@ -8,13 +10,13 @@ import { isValidJwt } from '@/utils/validation'
 
 const toolEntry = TOOL_REGISTRY_MAP['jwt-decoder']
 
-export const JwtDecoder = () => {
+export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
   const [headerResult, setHeaderResult] = useState('')
   const [payloadResult, setPayloadResult] = useState('')
   const [payloadCopyValue, setPayloadCopyValue] = useState('')
   const [signatureResult, setSignatureResult] = useState('')
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { clearError, error, setError } = useToolError()
 
   const process = (val: string) => {
@@ -70,6 +72,11 @@ export const JwtDecoder = () => {
     clearError()
   }
 
+  const handleAfterClose = () => {
+    handleReset()
+    onAfterDialogClose?.()
+  }
+
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
@@ -83,7 +90,7 @@ export const JwtDecoder = () => {
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleReset}
+        onAfterClose={handleAfterClose}
         size="screen"
         title="JWT Decode"
       >

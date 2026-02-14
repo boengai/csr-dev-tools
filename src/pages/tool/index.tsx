@@ -28,6 +28,7 @@ const ToolPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
   })
 
   const ToolComponent = tool.component
+  const navigateHome = () => navigate({ to: ROUTE_PATH.HOME })
 
   return (
     <div className="flex grow flex-col items-center justify-center p-6 pb-[calc(1.5rem+var(--safe-area-inset-bottom))]">
@@ -39,8 +40,8 @@ const ToolPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
             </div>
           }
         >
-          <Card onClose={() => navigate({ to: ROUTE_PATH.HOME })} title={tool.name}>
-            <ToolComponent />
+          <Card onClose={navigateHome} title={tool.name}>
+            <ToolComponent autoOpen onAfterDialogClose={navigateHome} />
           </Card>
         </Suspense>
       </div>

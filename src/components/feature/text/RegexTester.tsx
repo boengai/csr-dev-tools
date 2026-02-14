@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import type { ToolComponentProps } from '@/types'
 import type { HighlightSegment, RegexMatch, RegexResult } from '@/utils'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
@@ -69,13 +70,13 @@ const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
   </div>
 )
 
-export const RegexTester = () => {
+export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [pattern, setPattern] = useState('')
   const [testString, setTestString] = useState('')
   const [flags, setFlags] = useState<Flags>(DEFAULT_FLAGS)
   const [result, setResult] = useState<RegexResult | null>(null)
   const [segments, setSegments] = useState<Array<HighlightSegment>>([])
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { clearError, error, setError } = useToolError()
 
   const process = (pat: string, text: string, fl: Flags) => {
@@ -129,6 +130,11 @@ export const RegexTester = () => {
     clearError()
   }
 
+  const handleAfterClose = () => {
+    handleReset()
+    onAfterDialogClose?.()
+  }
+
   const matchCount = result?.matches.length ?? 0
   const copyText = result ? formatMatchesForCopy(result.matches) : ''
 
@@ -145,7 +151,7 @@ export const RegexTester = () => {
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleReset}
+        onAfterClose={handleAfterClose}
         size="screen"
         title="Regex Tester"
       >

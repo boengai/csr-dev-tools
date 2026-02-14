@@ -7,9 +7,14 @@ export type ToolSeo = {
   title: string
 }
 
+export type ToolComponentProps = {
+  autoOpen?: boolean
+  onAfterDialogClose?: () => void
+}
+
 export type ToolRegistryEntry = {
   category: ToolCategory
-  component: LazyExoticComponent<ComponentType>
+  component: LazyExoticComponent<ComponentType<ToolComponentProps>>
   description: string
   emoji: string
   key: ToolRegistryKey

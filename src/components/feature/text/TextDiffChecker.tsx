@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 
+import type { ToolComponentProps } from '@/types'
 import type { InlineSpan, SideBySideRow } from '@/utils'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
@@ -49,12 +50,12 @@ const DiffCell = ({
   )
 }
 
-export const TextDiffChecker = () => {
+export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [original, setOriginal] = useState('')
   const [modified, setModified] = useState('')
   const [rows, setRows] = useState<Array<SideBySideRow>>([])
   const [unifiedDiff, setUnifiedDiff] = useState('')
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { clearError, error, setError } = useToolError()
   const sessionRef = useRef(0)
 
@@ -103,6 +104,11 @@ export const TextDiffChecker = () => {
     clearError()
   }
 
+  const handleAfterClose = () => {
+    handleReset()
+    onAfterDialogClose?.()
+  }
+
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
@@ -116,7 +122,7 @@ export const TextDiffChecker = () => {
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleReset}
+        onAfterClose={handleAfterClose}
         size="screen"
         title="Text Diff Checker"
       >
