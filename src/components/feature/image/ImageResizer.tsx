@@ -3,9 +3,9 @@ import { type ImgHTMLAttributes, useEffect, useRef, useState } from 'react'
 import type { ImageFormat, ImageProcessingResult } from '@/types'
 
 import { Button, Dialog, DownloadIcon, FieldForm, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
-import { IMAGE_VALUE } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
-import { parseFileName, processImage, resizeImage } from '@/utils'
+import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
+import { useDebounceCallback, useToolError, useToast } from '@/hooks'
+import { isValidImageFormat, parseFileName, processImage, resizeImage } from '@/utils'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
 
@@ -16,6 +16,8 @@ const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING', string> = {
 }
 
 const EMPTY_IMAGE = 'data:,'
+
+const toolEntry = TOOL_REGISTRY_MAP['image-resizer']
 
 const formatBytes = (bytes: number): string => {
   if (bytes === 0) {
@@ -78,24 +80,34 @@ export const ImageResizer = () => {
   const [source, setSource] = useState<[File, ImageProcessingResult] | null>(null)
   const [preview, setPreview] = useState<ImageProcessingResult | null>(null)
 
-  // hook
+  // hooks
   const { toast } = useToast()
+  const { clearError, error, setError } = useToolError()
+
   const dbSetPreview = useDebounceCallback(async (s: ImageProcessingResult) => {
+    if (!source) return
+
     let height = s.height
     let width = s.width
 
+    // Validate dimensions before processing
+    if (Number.isNaN(height) || Number.isNaN(width) || height <= 0 || width <= 0) {
+      setError('Enter valid dimensions (e.g., 800 x 600)')
+      return
+    }
+
     // find possible minimum
-    if (height * source![1].ratio <= 1) {
+    if (height * source[1].ratio <= 1) {
       height = 1 * 10
-      width = Math.round(1 * source![1].ratio * 10)
-    } else if (width / source![1].ratio <= 1) {
+      width = Math.round(1 * source[1].ratio * 10)
+    } else if (width / source[1].ratio <= 1) {
       width = 1 * 10
-      height = Math.round((1 / source![1].ratio) * 10)
+      height = Math.round((1 / source[1].ratio) * 10)
     }
 
     try {
       const result = await resizeImage(
-        source![0],
+        source[0],
         {
           height,
           width,
@@ -106,45 +118,42 @@ export const ImageResizer = () => {
         },
       )
 
-      setPreview(result)
-
       if (result.dataUrl === EMPTY_IMAGE) {
-        throw new Error('Could not process image. Because of memory limit.')
+        setError('Image resize failed — file may be too large for browser memory')
+        return
       }
-    } catch (e: unknown) {
-      toast({
-        action: 'add',
-        item: {
-          duration: 5_000,
-          label: e instanceof Error ? e.message : 'Failed to process image',
-          type: 'error',
-        },
-      })
+
+      clearError()
+      setPreview(result)
+    } catch {
+      setError('Image resize failed — try smaller dimensions or a different format')
     }
   })
 
   const handleUploadChange = async (values: Array<File>) => {
-    try {
-      if (values.length > 0) {
-        setDialogOpen(true)
-        const preview = await processImage(values[0], {
-          format: values[0].type as ImageFormat,
-          quality: 1,
-          strategy: 'stretch',
-        })
+    const file = values[0]
+    if (!file) return
 
-        setSource([values[0], preview])
-        setPreview(preview)
-        setTabValue(TABS_VALUES.PROCESSING)
-      }
-    } catch {
-      toast({
-        action: 'add',
-        item: {
-          label: 'Failed to process image',
-          type: 'error',
-        },
+    if (!isValidImageFormat(file.type)) {
+      setError('Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)')
+      return
+    }
+
+    clearError()
+
+    try {
+      setDialogOpen(true)
+      const result = await processImage(file, {
+        format: file.type as ImageFormat,
+        quality: 1,
+        strategy: 'stretch',
       })
+
+      setSource([file, result])
+      setPreview(result)
+      setTabValue(TABS_VALUES.PROCESSING)
+    } catch {
+      setError('Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)')
       handleReset()
     }
   }
@@ -163,28 +172,26 @@ export const ImageResizer = () => {
       if (key === 'format') {
         newState.format = val as ImageFormat
       } else {
-        // NOTE: this might cause type errors
-        // when the value is not a number
         const newValue = Number(val)
         newState[key] = newValue as never
 
-        if (!isNaN(newValue) && newValue > 0) {
+        if (!Number.isNaN(newValue) && newValue > 0) {
           if (key === 'width') {
-            newState.height = Math.round(newValue / source![1].ratio)
+            newState.height = Math.round(newValue / (source?.[1].ratio ?? 1))
           } else if (key === 'height') {
-            newState.width = Math.round(newValue * source![1].ratio)
+            newState.width = Math.round(newValue * (source?.[1].ratio ?? 1))
           }
         }
       }
 
-      // For other properties (format, quality), just update normally
       return newState
     })
   }
 
   const handleConvert = async () => {
     try {
-      if (!preview?.dataUrl) {
+      const anchor = downloadAnchorRef.current
+      if (!preview?.dataUrl || !anchor || !source) {
         return
       }
 
@@ -192,22 +199,20 @@ export const ImageResizer = () => {
       setTabValue(TABS_VALUES.PROCESSING)
 
       // set to download anchor
-      downloadAnchorRef.current!.href = preview!.dataUrl
-      downloadAnchorRef.current!.download = parseFileName(source![0].name, preview!.format)
-
-      toast({ action: 'add', item: { label: 'Resized image successfully', type: 'success' } })
+      anchor.href = preview.dataUrl
+      anchor.download = parseFileName(source[0].name, preview.format)
 
       // go to download tab
       setTabValue(TABS_VALUES.DOWNLOAD)
       setDialogOpen(false)
     } catch {
-      toast({ action: 'add', item: { label: 'Failed to resize image', type: 'error' } })
-      // back to import tab
+      setError('Image resize failed — try smaller dimensions or a different format')
       setDialogOpen(false)
     }
   }
 
   const handleReset = () => {
+    clearError()
     setTabValue(TABS_VALUES.IMPORT)
     setSource(null)
     setPreview(null)
@@ -219,8 +224,12 @@ export const ImageResizer = () => {
     }
   }, [preview, dbSetPreview])
 
+  const isLossy = preview?.format ? LOSSY_FORMATS.has(preview.format) : false
+
   return (
-    <>
+    <div className="flex size-full grow flex-col gap-4">
+      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+
       <Tabs
         injected={{
           setValue: setTabValue,
@@ -233,13 +242,18 @@ export const ImageResizer = () => {
                 <p className="text-body-sm text-center text-gray-400">Select an image to resize</p>
                 <div className="desktop:w-8/10 w-full">
                   <UploadInput
-                    accept="image/png, image/jpeg, image/webp"
+                    accept="image/*"
                     button={{ block: true, children: 'Select images from your device' }}
                     multiple={false}
                     name="images"
                     onChange={handleUploadChange}
                   />
                 </div>
+                {error != null && (
+                  <p className="text-error text-body-sm shrink-0" role="alert">
+                    {error}
+                  </p>
+                )}
               </div>
             ),
             value: TABS_VALUES.IMPORT,
@@ -260,7 +274,13 @@ export const ImageResizer = () => {
                   <Button
                     block
                     icon={<DownloadIcon />}
-                    onClick={() => downloadAnchorRef.current!.click()}
+                    onClick={() => {
+                      downloadAnchorRef.current?.click()
+                      const fileName = downloadAnchorRef.current?.download
+                      if (fileName) {
+                        toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
+                      }
+                    }}
                     variant="primary"
                   >
                     Download
@@ -332,9 +352,9 @@ export const ImageResizer = () => {
                   value={preview?.format}
                 />
                 <ImageQualitySelectInput
-                  disabled={!source || preview?.format === IMAGE_VALUE['image/png']}
+                  disabled={!source || !isLossy}
                   onChange={(val) => handleInputChange('quality', val)}
-                  value={preview?.format === IMAGE_VALUE['image/png'] ? '1' : preview?.quality?.toString()}
+                  value={!isLossy ? '1' : preview?.quality?.toString()}
                 />
               </div>
             </div>
@@ -344,9 +364,14 @@ export const ImageResizer = () => {
               </Button>
             </div>
           </div>
+          {error != null && (
+            <p className="text-error text-body-sm shrink-0" role="alert">
+              {error}
+            </p>
+          )}
         </div>
       </Dialog>
       <a className="hidden" download="" href="" ref={downloadAnchorRef} />
-    </>
+    </div>
   )
 }
