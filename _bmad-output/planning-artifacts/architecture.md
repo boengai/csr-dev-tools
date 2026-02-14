@@ -537,7 +537,7 @@ csr-dev-tools/
 ├── vite.config.ts                        # Vite config (React + paths + Tailwind + pre-render)
 ├── vitest.config.ts                      # Vitest config
 ├── playwright.config.ts                  # ← NEW: Playwright E2E config
-├── lighthouserc.js                       # ← NEW: Lighthouse CI config
+├── lighthouserc.cjs                      # ← NEW: Lighthouse CI config (.cjs for ESM compat)
 ├── LICENSE
 ├── README.md
 ├── CONTRIBUTING.md                       # ← NEW: Contributor guide (FR33)
