@@ -102,6 +102,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Data',
     component: lazy(() =>
+      import('@/components/feature/data/JsonToCsvConverter').then(
+        ({ JsonToCsvConverter }: { JsonToCsvConverter: ComponentType }) => ({
+          default: JsonToCsvConverter,
+        }),
+      ),
+    ),
+    description: 'Convert between JSON arrays and CSV spreadsheet format',
+    emoji: '📊',
+    key: 'json-to-csv-converter',
+    name: 'JSON ↔ CSV',
+    routePath: '/tools/json-to-csv-converter',
+    seo: {
+      description:
+        'Convert JSON to CSV and CSV to JSON online. Transform data between formats for spreadsheets and APIs instantly in your browser.',
+      title: 'JSON to CSV Converter - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Data',
+    component: lazy(() =>
       import('@/components/feature/data/JsonToYamlConverter').then(
         ({ JsonToYamlConverter }: { JsonToYamlConverter: ComponentType }) => ({
           default: JsonToYamlConverter,

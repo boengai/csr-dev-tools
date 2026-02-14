@@ -44,6 +44,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Convert JSON to CSV and CSV to JSON online. Transform data between formats for spreadsheets and APIs instantly in your browser.',
+    path: '/tools/json-to-csv-converter',
+    title: 'JSON to CSV Converter - CSR Dev Tools',
+    url: '/tools/json-to-csv-converter',
+  },
+  {
+    description:
       'Convert JSON to YAML and YAML to JSON online. Switch between configuration formats instantly in your browser.',
     path: '/tools/json-to-yaml-converter',
     title: 'JSON to YAML Converter - CSR Dev Tools',

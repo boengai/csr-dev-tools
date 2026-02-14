@@ -24,6 +24,7 @@ export type ToolRegistryKey =
   | 'image-converter'
   | 'image-resizer'
   | 'json-formatter'
+  | 'json-to-csv-converter'
   | 'json-to-yaml-converter'
   | 'jwt-decoder'
   | 'px-to-rem'
