@@ -28,6 +28,7 @@ export type ToolRegistryKey =
   | 'json-to-yaml-converter'
   | 'jwt-decoder'
   | 'px-to-rem'
+  | 'regex-tester'
   | 'text-diff-checker'
   | 'unix-timestamp'
   | 'url-encoder-decoder'

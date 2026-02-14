@@ -94,7 +94,7 @@ development_status:
   # Epic 7: Text Analysis Tools
   epic-7: in-progress
   7-1-text-diff-checker: done
-  7-2-regex-tester: backlog
+  7-2-regex-tester: done
   epic-7-retrospective: optional
 
   # Epic 8: Generator Tools

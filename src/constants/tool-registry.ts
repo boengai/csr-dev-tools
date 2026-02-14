@@ -178,6 +178,24 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Text',
     component: lazy(() =>
+      import('@/components/feature/text/RegexTester').then(({ RegexTester }: { RegexTester: ComponentType }) => ({
+        default: RegexTester,
+      })),
+    ),
+    description: 'Test regex patterns against sample text with live match highlighting',
+    emoji: '🔍',
+    key: 'regex-tester',
+    name: 'Regex Tester',
+    routePath: '/tools/regex-tester',
+    seo: {
+      description:
+        'Test regular expressions against sample text with live match highlighting and capture group details. Iterate on regex patterns instantly in your browser.',
+      title: 'Regex Tester - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Text',
+    component: lazy(() =>
       import('@/components/feature/text/TextDiffChecker').then(
         ({ TextDiffChecker }: { TextDiffChecker: ComponentType }) => ({
           default: TextDiffChecker,

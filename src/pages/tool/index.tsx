@@ -32,8 +32,9 @@ const ToolPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
   return (
     <div className="flex grow flex-col items-center justify-center p-6 pb-[calc(1.5rem+var(--safe-area-inset-bottom))]">
       <div className="flex max-h-full w-full max-w-[768px] flex-col">
-        <Suspense fallback={
-            <div className='flex justify-center items-center'>
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center">
               <NotoEmoji emoji="flying-saucer" size={200} />
             </div>
           }

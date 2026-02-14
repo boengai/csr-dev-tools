@@ -72,6 +72,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Test regular expressions against sample text with live match highlighting and capture group details. Iterate on regex patterns instantly in your browser.',
+    path: '/tools/regex-tester',
+    title: 'Regex Tester - CSR Dev Tools',
+    url: '/tools/regex-tester',
+  },
+  {
+    description:
       'Compare two text blocks and see line-by-line differences highlighted online. Spot changes between versions of code or text instantly in your browser.',
     path: '/tools/text-diff-checker',
     title: 'Text Diff Checker - CSR Dev Tools',
