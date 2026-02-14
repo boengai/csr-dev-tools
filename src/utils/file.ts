@@ -1,6 +1,9 @@
 import type { ImageFormat } from '@/types'
 
 const FILE_EXTENSIONS: Record<ImageFormat, string> = {
+  'image/avif': 'avif',
+  'image/bmp': 'bmp',
+  'image/gif': 'gif',
   'image/jpeg': 'jpg',
   'image/png': 'png',
   'image/webp': 'webp',

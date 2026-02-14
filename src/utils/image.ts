@@ -3,14 +3,23 @@ import type { ImageFormat, ImageProcessingOptions, ImageProcessingResult } from 
 /**
  * Validate if a string is a valid ImageFormat
  */
-const isValidImageFormat = (format: string): format is ImageFormat => {
-  return ['image/jpeg', 'image/png', 'image/webp'].includes(format)
+const VALID_IMAGE_FORMATS: ReadonlySet<string> = new Set([
+  'image/avif',
+  'image/bmp',
+  'image/gif',
+  'image/jpeg',
+  'image/png',
+  'image/webp',
+])
+
+export const isValidImageFormat = (format: string): format is ImageFormat => {
+  return VALID_IMAGE_FORMATS.has(format)
 }
 
 /**
  * Get safe ImageFormat with fallback
  */
-const getSafeImageFormat = (format: string | undefined, fallback: ImageFormat = 'image/jpeg'): ImageFormat => {
+export const getSafeImageFormat = (format: string | undefined, fallback: ImageFormat = 'image/jpeg'): ImageFormat => {
   if (format && isValidImageFormat(format)) {
     return format
   }
@@ -104,7 +113,7 @@ const createCanvasContext = (
 /**
  * Validate and clamp coordinates within bounds
  */
-const validateCoordinates = (
+export const validateCoordinates = (
   x: number,
   y: number,
   width: number,
@@ -128,7 +137,7 @@ const validateCoordinates = (
 /**
  * Calculate dimensions based on resize strategy
  */
-const calculateDimensions = (
+export const calculateDimensions = (
   source: { height: number; width: number; x?: number; y?: number },
   target: { height: number; width: number },
   strategy: ImageProcessingOptions['strategy'],
@@ -243,9 +252,12 @@ const canvasToDataUrl = (canvas: HTMLCanvasElement, format: ImageFormat, quality
 
   switch (format) {
     case 'image/png':
-      return canvas.toDataURL('image/png')
+    case 'image/gif':
+    case 'image/bmp':
+      return canvas.toDataURL(format)
+    case 'image/avif':
     case 'image/webp':
-      return canvas.toDataURL('image/webp', normalizedQuality)
+      return canvas.toDataURL(format, normalizedQuality)
     case 'image/jpeg':
     default:
       return canvas.toDataURL('image/jpeg', normalizedQuality)
@@ -279,7 +291,8 @@ export const processImage = async (
     const needsResize = Boolean(options.maxWidth || options.maxHeight || options.width || options.height)
     const needsFormatChange = file.type !== targetFormat
     const needsQualityChange =
-      (targetFormat === 'image/webp' || targetFormat === 'image/jpeg') && typeof options.quality === 'number'
+      (targetFormat === 'image/avif' || targetFormat === 'image/jpeg' || targetFormat === 'image/webp') &&
+      typeof options.quality === 'number'
 
     // If no processing needed, return original as data URL
     if (!needsResize && !needsFormatChange && !needsQualityChange) {
