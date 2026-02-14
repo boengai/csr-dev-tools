@@ -44,6 +44,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Convert JSON to YAML and YAML to JSON online. Switch between configuration formats instantly in your browser.',
+    path: '/tools/json-to-yaml-converter',
+    title: 'JSON to YAML Converter - CSR Dev Tools',
+    url: '/tools/json-to-yaml-converter',
+  },
+  {
+    description:
       'Decode JWT tokens online. Inspect header, payload, and signature instantly in your browser without external services.',
     path: '/tools/jwt-decoder',
     title: 'JWT Decoder - CSR Dev Tools',

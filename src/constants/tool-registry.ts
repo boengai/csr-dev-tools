@@ -100,6 +100,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Data',
+    component: lazy(() =>
+      import('@/components/feature/data/JsonToYamlConverter').then(
+        ({ JsonToYamlConverter }: { JsonToYamlConverter: ComponentType }) => ({
+          default: JsonToYamlConverter,
+        }),
+      ),
+    ),
+    description: 'Convert between JSON and YAML configuration formats',
+    emoji: '🔄',
+    key: 'json-to-yaml-converter',
+    name: 'JSON ↔ YAML',
+    routePath: '/tools/json-to-yaml-converter',
+    seo: {
+      description:
+        'Convert JSON to YAML and YAML to JSON online. Switch between configuration formats instantly in your browser.',
+      title: 'JSON to YAML Converter - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Encoding',
     component: lazy(() =>
       import('@/components/feature/encoding/JwtDecoder').then(({ JwtDecoder }: { JwtDecoder: ComponentType }) => ({

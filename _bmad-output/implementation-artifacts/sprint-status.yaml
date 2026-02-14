@@ -87,7 +87,7 @@ development_status:
   # Epic 6: Data & Format Tools
   epic-6: in-progress
   6-1-json-formatter-validator: done
-  6-2-json-to-yaml-converter: backlog
+  6-2-json-to-yaml-converter: done
   6-3-json-to-csv-converter: backlog
   epic-6-retrospective: optional
 
