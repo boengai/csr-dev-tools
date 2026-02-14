@@ -17,6 +17,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Generate CSS box-shadow values visually with a live preview. Adjust offset, blur, spread, color, and opacity — copy the CSS directly into your stylesheet.',
+    path: '/tools/box-shadow-generator',
+    title: 'Box Shadow Generator - CSR Dev Tools',
+    url: '/tools/box-shadow-generator',
+  },
+  {
+    description:
       'Convert colors between HEX, RGB, HSL, OKLCH, LAB, and LCH formats online. Free browser-based color converter.',
     path: '/tools/color-converter',
     title: 'Color Converter - CSR Dev Tools',

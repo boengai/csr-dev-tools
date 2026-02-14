@@ -25,6 +25,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'CSS',
+    component: lazy(() =>
+      import('@/components/feature/css/BoxShadowGenerator').then(
+        ({ BoxShadowGenerator }: { BoxShadowGenerator: ComponentType }) => ({
+          default: BoxShadowGenerator,
+        }),
+      ),
+    ),
+    description: 'Visually create CSS box-shadow values with a live preview',
+    emoji: '🔲',
+    key: 'box-shadow-generator',
+    name: 'Box Shadow Generator',
+    routePath: '/tools/box-shadow-generator',
+    seo: {
+      description:
+        'Generate CSS box-shadow values visually with a live preview. Adjust offset, blur, spread, color, and opacity — copy the CSS directly into your stylesheet.',
+      title: 'Box Shadow Generator - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Color',
     component: lazy(() =>
       import('@/components/feature/color/ColorConvertor').then(

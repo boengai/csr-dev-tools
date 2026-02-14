@@ -10,7 +10,17 @@ import { useSidebarStore } from '@/hooks'
 import { SidebarCategory } from './SidebarCategory'
 import { SidebarToolItem } from './SidebarToolItem'
 
-const CATEGORY_ORDER: Array<ToolCategory> = ['Color', 'Data', 'Encoding', 'Generator', 'Image', 'Text', 'Time', 'Unit']
+const CATEGORY_ORDER: Array<ToolCategory> = [
+  'Color',
+  'CSS',
+  'Data',
+  'Encoding',
+  'Generator',
+  'Image',
+  'Text',
+  'Time',
+  'Unit',
+]
 
 export const Sidebar = () => {
   const close = useSidebarStore((state) => state.close)

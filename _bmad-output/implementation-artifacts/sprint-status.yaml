@@ -105,8 +105,8 @@ development_status:
   epic-8-retrospective: done
 
   # Epic 9: CSS Visual Tools
-  epic-9: backlog
-  9-1-css-box-shadow-generator: backlog
+  epic-9: in-progress
+  9-1-css-box-shadow-generator: done
   epic-9-retrospective: optional
 
   # Epic 10: Advanced Image Tools

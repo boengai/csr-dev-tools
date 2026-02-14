@@ -1,4 +1,5 @@
 export * from './base64'
+export * from './box-shadow'
 export * from './color'
 export * from './csv'
 export * from './dashboard'

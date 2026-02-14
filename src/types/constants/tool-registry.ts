@@ -1,6 +1,6 @@
 import type { ComponentType, LazyExoticComponent } from 'react'
 
-export type ToolCategory = 'Color' | 'Data' | 'Encoding' | 'Generator' | 'Image' | 'Text' | 'Time' | 'Unit'
+export type ToolCategory = 'Color' | 'CSS' | 'Data' | 'Encoding' | 'Generator' | 'Image' | 'Text' | 'Time' | 'Unit'
 
 export type ToolSeo = {
   description: string
@@ -20,6 +20,7 @@ export type ToolRegistryEntry = {
 
 export type ToolRegistryKey =
   | 'base64-encoder'
+  | 'box-shadow-generator'
   | 'color-converter'
   | 'hash-generator'
   | 'image-converter'
