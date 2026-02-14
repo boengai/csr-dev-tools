@@ -14,6 +14,8 @@ export type InputControllerProps =
   | UploadInputForm
 
 type NumberInputForm = Omit<TextInputProps, 'type'> & {
+  max?: number
+  min?: number
   type: 'number'
 }
 

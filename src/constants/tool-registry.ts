@@ -251,6 +251,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       title: 'URL Encoder/Decoder - CSR Dev Tools',
     },
   },
+  {
+    category: 'Generator',
+    component: lazy(() =>
+      import('@/components/feature/generator/UuidGenerator').then(
+        ({ UuidGenerator }: { UuidGenerator: ComponentType }) => ({
+          default: UuidGenerator,
+        }),
+      ),
+    ),
+    description: 'Generate random UUID v4 identifiers, single or in bulk',
+    emoji: '🆔',
+    key: 'uuid-generator',
+    name: 'UUID Generator',
+    routePath: '/tools/uuid-generator',
+    seo: {
+      description:
+        'Generate random UUID v4 identifiers online. Create single or bulk unique IDs instantly in your browser with one click.',
+      title: 'UUID Generator - CSR Dev Tools',
+    },
+  },
 ]
 
 export const TOOL_REGISTRY_MAP = TOOL_REGISTRY.reduce<Partial<Record<string, ToolRegistryEntry>>>((acc, entry) => {

@@ -44,7 +44,7 @@ export const TextInput = ({
         onKeyDown={handleKeyDown}
         placeholder={placeholder}
         spellCheck="false"
-        type="text"
+        type={type}
       />
       {suffix}
     </div>

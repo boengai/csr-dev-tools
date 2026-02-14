@@ -1,6 +1,7 @@
 export * from './color'
 export * from './data'
 export * from './encoding'
+export * from './generator'
 export * from './image'
 export * from './text'
 export * from './time'

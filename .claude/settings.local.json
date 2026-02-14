@@ -15,7 +15,8 @@
       "Bash(pnpm:*)",
       "Bash(npx oxlint:*)",
       "Bash(node -e:*)",
-      "Bash(npx oxfmt:*)"
+      "Bash(npx oxfmt:*)",
+      "WebSearch"
     ]
   }
 }

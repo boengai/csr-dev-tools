@@ -98,6 +98,13 @@ const toolRoutes = [
     title: 'URL Encoder/Decoder - CSR Dev Tools',
     url: '/tools/url-encoder-decoder',
   },
+  {
+    description:
+      'Generate random UUID v4 identifiers online. Create single or bulk unique IDs instantly in your browser with one click.',
+    path: '/tools/uuid-generator',
+    title: 'UUID Generator - CSR Dev Tools',
+    url: '/tools/uuid-generator',
+  },
 ]
 
 // https://vite.dev/config/
