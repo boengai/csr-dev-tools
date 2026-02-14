@@ -73,7 +73,7 @@ development_status:
   # Epic 4: Quality Infrastructure & Contributor Experience
   epic-4: in-progress
   4-1-e2e-test-infrastructure: done
-  4-2-ci-cd-pipeline: backlog
+  4-2-ci-cd-pipeline: done
   4-3-lighthouse-ci-integration: backlog
   4-4-contributing-guide-and-developer-documentation: backlog
   epic-4-retrospective: optional
