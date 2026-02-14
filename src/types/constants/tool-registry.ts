@@ -1,6 +1,6 @@
 import type { ComponentType, LazyExoticComponent } from 'react'
 
-export type ToolCategory = 'Color' | 'Data' | 'Encoding' | 'Image' | 'Time' | 'Unit'
+export type ToolCategory = 'Color' | 'Data' | 'Encoding' | 'Image' | 'Text' | 'Time' | 'Unit'
 
 export type ToolSeo = {
   description: string
@@ -28,5 +28,6 @@ export type ToolRegistryKey =
   | 'json-to-yaml-converter'
   | 'jwt-decoder'
   | 'px-to-rem'
+  | 'text-diff-checker'
   | 'unix-timestamp'
   | 'url-encoder-decoder'

@@ -176,6 +176,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Text',
+    component: lazy(() =>
+      import('@/components/feature/text/TextDiffChecker').then(
+        ({ TextDiffChecker }: { TextDiffChecker: ComponentType }) => ({
+          default: TextDiffChecker,
+        }),
+      ),
+    ),
+    description: 'Compare two text blocks and see line-by-line differences highlighted',
+    emoji: '📝',
+    key: 'text-diff-checker',
+    name: 'Text Diff',
+    routePath: '/tools/text-diff-checker',
+    seo: {
+      description:
+        'Compare two text blocks and see line-by-line differences highlighted online. Spot changes between versions of code or text instantly in your browser.',
+      title: 'Text Diff Checker - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Time',
     component: lazy(() =>
       import('@/components/feature/time/TimeUnixTimestamp').then(

@@ -72,6 +72,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Compare two text blocks and see line-by-line differences highlighted online. Spot changes between versions of code or text instantly in your browser.',
+    path: '/tools/text-diff-checker',
+    title: 'Text Diff Checker - CSR Dev Tools',
+    url: '/tools/text-diff-checker',
+  },
+  {
+    description:
       'Convert between Unix timestamps and human-readable dates online. Free browser-based timestamp converter.',
     path: '/tools/unix-timestamp',
     title: 'Unix Timestamp - CSR Dev Tools',

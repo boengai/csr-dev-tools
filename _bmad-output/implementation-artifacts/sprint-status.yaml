@@ -92,8 +92,8 @@ development_status:
   epic-6-retrospective: done
 
   # Epic 7: Text Analysis Tools
-  epic-7: backlog
-  7-1-text-diff-checker: backlog
+  epic-7: in-progress
+  7-1-text-diff-checker: done
   7-2-regex-tester: backlog
   epic-7-retrospective: optional
 
