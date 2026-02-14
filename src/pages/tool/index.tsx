@@ -1,4 +1,4 @@
-import { Navigate, useParams } from '@tanstack/react-router'
+import { Navigate, useNavigate, useParams } from '@tanstack/react-router'
 import { Suspense } from 'react'
 
 import type { ToolRegistryEntry } from '@/types'
@@ -19,6 +19,8 @@ export default function ToolPage() {
 }
 
 const ToolPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
+  const navigate = useNavigate()
+
   useToolSeo({
     description: tool.seo.description,
     title: tool.seo.title,
@@ -31,7 +33,7 @@ const ToolPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
     <div className="flex grow flex-col items-center justify-center p-6 pb-[calc(1.5rem+var(--safe-area-inset-bottom))]">
       <div className="flex max-h-full w-full max-w-[768px] flex-col">
         <Suspense fallback={<NotoEmoji emoji="flying-saucer" size={200} />}>
-          <Card title={tool.name}>
+          <Card onClose={() => navigate({ to: ROUTE_PATH.HOME })} title={tool.name}>
             <ToolComponent />
           </Card>
         </Suspense>
