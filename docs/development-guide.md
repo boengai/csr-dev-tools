@@ -113,6 +113,18 @@ pnpm vitest
 5. Register lazy import and case in `src/pages/home/index.tsx`
 6. Add route if tool gets its own page
 
+## Responsive Breakpoints
+
+Custom breakpoints are defined in `src/index.css`. Default Tailwind breakpoints (`sm`, `md`, `lg`, `xl`, `2xl`) are removed.
+
+| Class prefix | Width | Use case |
+|-------------|-------|----------|
+| `tablet:` | 48rem (768px) | Side-by-side layouts |
+| `laptop:` | 80rem (1280px) | Multi-column grids |
+| `desktop:` | 120rem (1920px) | Full-width layouts |
+
+Never use `sm:`, `md:`, `lg:`, `xl:`, or `2xl:` — they have no effect.
+
 ## TypeScript Configuration
 
 - **Strict mode** enabled

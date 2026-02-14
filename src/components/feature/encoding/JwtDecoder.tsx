@@ -87,7 +87,7 @@ export const JwtDecoder = () => {
         title="JWT Decode"
       >
         <div className="flex size-full grow flex-col gap-4">
-          <div className="flex size-full grow flex-col gap-6 sm:flex-row">
+          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="JWT Token"
@@ -100,7 +100,7 @@ export const JwtDecoder = () => {
               />
             </div>
 
-            <div className="border-t-2 border-dashed border-gray-700 md:border-t-0 md:border-l-2" />
+            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
             <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
               <FieldForm

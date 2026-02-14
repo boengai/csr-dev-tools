@@ -323,8 +323,29 @@ These rules are enforced by oxlint and oxfmt. Your PR will fail CI if they are v
 | Named exports only | `export const Foo` not `export default` (exception: page components) |
 | `motion/react` for animations | Never `framer-motion` |
 | `tv()` from `@/utils` for Tailwind variants | Not directly from `tailwind-variants` |
+| Custom breakpoints only | `tablet:`, `laptop:`, `desktop:` — never `sm:`, `md:`, `lg:`, `xl:`, `2xl:` |
 | Alphabetical imports | External first, then type-only `@/types`, then internal `@/` |
 | 120 char line width | Enforced by oxfmt |
+
+## Responsive Breakpoints
+
+This project uses **custom breakpoints** defined in `src/index.css`. The default Tailwind breakpoints (`sm`, `md`, `lg`, `xl`, `2xl`) are removed via `--breakpoint-*: initial`.
+
+| Breakpoint | Class prefix | Width | Use case |
+|------------|-------------|-------|----------|
+| tablet | `tablet:` | 48rem (768px) | Side-by-side layouts, expanded nav |
+| laptop | `laptop:` | 80rem (1280px) | Multi-column grids, wider content |
+| desktop | `desktop:` | 120rem (1920px) | Full-width layouts, additional columns |
+
+**Never use** `sm:`, `md:`, `lg:`, `xl:`, or `2xl:` — they are not defined and will have no effect.
+
+```tsx
+// Correct
+<div className="flex flex-col tablet:flex-row" />
+
+// Wrong — these breakpoints do not exist
+<div className="flex flex-col md:flex-row" />
+```
 
 ## Available Scripts
 

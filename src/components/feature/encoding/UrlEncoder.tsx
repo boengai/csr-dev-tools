@@ -79,7 +79,7 @@ export const UrlEncoder = () => {
         title={action === 'encode' ? 'URL Encode' : 'URL Decode'}
       >
         <div className="flex size-full grow flex-col gap-4">
-          <div className="flex size-full grow flex-col gap-6 md:flex-row">
+          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="Source"
@@ -92,7 +92,7 @@ export const UrlEncoder = () => {
               />
             </div>
 
-            <div className="border-t-2 border-dashed border-gray-700 md:border-t-0 md:border-l-2" />
+            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
