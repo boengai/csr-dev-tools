@@ -92,10 +92,10 @@ development_status:
   epic-6-retrospective: done
 
   # Epic 7: Text Analysis Tools
-  epic-7: in-progress
+  epic-7: done
   7-1-text-diff-checker: done
   7-2-regex-tester: done
-  epic-7-retrospective: optional
+  epic-7-retrospective: done
 
   # Epic 8: Generator Tools
   epic-8: backlog
