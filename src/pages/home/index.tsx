@@ -1,10 +1,10 @@
 import { motion } from 'motion/react'
-import { type ButtonHTMLAttributes, Suspense, useState } from 'react'
+import { type ButtonHTMLAttributes, Suspense, useMemo, useState } from 'react'
 
 import type { ToolRegistryKey } from '@/types'
 
 import { Card, Dialog, NotoEmoji, PlusIcon } from '@/components'
-import { TOOL_REGISTRY, TOOL_REGISTRY_MAP } from '@/constants'
+import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY, TOOL_REGISTRY_MAP } from '@/constants'
 import { usePersistFeatureLayout } from '@/hooks'
 
 const AddButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>) => {
@@ -76,10 +76,7 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
     return acc
   }, {})
 
-  const list = TOOL_REGISTRY.map((entry) => ({
-    at: appPosition[entry.key] ?? null,
-    entry,
-  }))
+  const groupedTools = useMemo(() => groupToolsByCategory(TOOL_REGISTRY), [])
 
   const handleSelectApp = (value: ToolRegistryKey) => {
     if (position !== null) {
@@ -93,23 +90,35 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
       injected={{ open: position !== null, setOpen: onDismiss }}
       title={`Select App for Widget#${position !== null ? position + 1 : ''}`}
     >
-      <ul className="flex flex-col gap-2">
-        {list.map(({ at, entry }) => (
-          <li key={entry.key}>
-            <button
-              className="hover:bg-primary/30 flex w-full cursor-pointer items-center justify-between rounded p-2 text-left disabled:pointer-events-none disabled:opacity-50"
-              disabled={at !== null}
-              onClick={() => handleSelectApp(entry.key)}
-            >
-              <span>
-                <span className="mr-2">{entry.emoji}</span>
-                {entry.name}
-              </span>
-              {at !== null && <span className="bg-secondary rounded px-1 text-xs text-white">#{at + 1}</span>}
-            </button>
-          </li>
+      <div className="columns-1 gap-x-6 tablet:columns-2 laptop:columns-3">
+        {CATEGORY_ORDER.filter((cat) => groupedTools[cat]).map((category) => (
+          <div className="mb-4 break-inside-avoid" key={category}>
+            <span className="block px-2 pb-1 text-[0.6rem] tracking-[0.12em] text-gray-500 uppercase">
+              {category}
+            </span>
+            <ul className="flex flex-col gap-1">
+              {groupedTools[category].map((entry) => {
+                const at = appPosition[entry.key] ?? null
+                return (
+                  <li key={entry.key}>
+                    <button
+                      className="hover:bg-primary/30 flex w-full cursor-pointer items-center justify-between rounded p-2 text-left disabled:pointer-events-none disabled:opacity-50"
+                      disabled={at !== null}
+                      onClick={() => handleSelectApp(entry.key)}
+                    >
+                      <span>
+                        <span className="mr-2">{entry.emoji}</span>
+                        {entry.name}
+                      </span>
+                      {at !== null && <span className="bg-secondary rounded px-1 text-xs text-white">#{at + 1}</span>}
+                    </button>
+                  </li>
+                )
+              })}
+            </ul>
+          </div>
         ))}
-      </ul>
+      </div>
     </Dialog>
   )
 }

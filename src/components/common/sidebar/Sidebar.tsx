@@ -2,25 +2,11 @@ import { useLocation } from '@tanstack/react-router'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import type { ToolCategory, ToolRegistryEntry } from '@/types'
-
-import { TOOL_REGISTRY } from '@/constants'
+import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY } from '@/constants'
 import { useSidebarStore } from '@/hooks'
 
 import { SidebarCategory } from './SidebarCategory'
 import { SidebarToolItem } from './SidebarToolItem'
-
-const CATEGORY_ORDER: Array<ToolCategory> = [
-  'Color',
-  'CSS',
-  'Data',
-  'Encoding',
-  'Generator',
-  'Image',
-  'Text',
-  'Time',
-  'Unit',
-]
 
 export const Sidebar = () => {
   const close = useSidebarStore((state) => state.close)
@@ -80,15 +66,7 @@ export const Sidebar = () => {
   }, [isOpen])
 
   // Group tools by category
-  const groupedTools = useMemo(() => {
-    return TOOL_REGISTRY.reduce<Record<string, Array<ToolRegistryEntry>>>((acc, tool) => {
-      if (!acc[tool.category]) {
-        acc[tool.category] = []
-      }
-      acc[tool.category].push(tool)
-      return acc
-    }, {})
-  }, [])
+  const groupedTools = useMemo(() => groupToolsByCategory(TOOL_REGISTRY), [])
 
   const navContent = (
     <div className="flex grow flex-col overflow-y-auto pt-8 pb-4">

@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 
 import type { ComponentType } from 'react'
-import type { ToolRegistryEntry } from '@/types'
+import type { ToolCategory, ToolRegistryEntry } from '@/types'
 
 export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
@@ -370,6 +370,20 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
 ]
+
+export const CATEGORY_ORDER: Array<ToolCategory> = [
+  'Color', 'CSS', 'Data', 'Encoding', 'Generator', 'Image', 'Text', 'Time', 'Unit',
+]
+
+export const groupToolsByCategory = (tools: Array<ToolRegistryEntry>) => {
+  return tools.reduce<Record<string, Array<ToolRegistryEntry>>>((acc, tool) => {
+    if (!acc[tool.category]) {
+      acc[tool.category] = []
+    }
+    acc[tool.category].push(tool)
+    return acc
+  }, {})
+}
 
 export const TOOL_REGISTRY_MAP = TOOL_REGISTRY.reduce<Partial<Record<string, ToolRegistryEntry>>>((acc, entry) => {
   acc[entry.key] = entry
