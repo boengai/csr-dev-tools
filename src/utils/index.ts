@@ -1,5 +1,6 @@
 export * from './base64'
 export * from './color'
+export * from './dashboard'
 export * from './file'
 export * from './image'
 export * from './tailwind-variants'
