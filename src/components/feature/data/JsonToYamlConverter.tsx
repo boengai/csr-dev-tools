@@ -77,18 +77,19 @@ export const JsonToYamlConverter = () => {
   const dialogTitle = isJsonMode ? 'JSON → YAML' : 'YAML → JSON'
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+    <>
+      <div className="flex w-full grow flex-col gap-4">
+        {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
 
-      <div className="flex grow flex-col items-center justify-center gap-2">
-        <Button block onClick={() => openDialog('json-to-yaml')} variant="default">
-          JSON → YAML
-        </Button>
-        <Button block onClick={() => openDialog('yaml-to-json')} variant="default">
-          YAML → JSON
-        </Button>
+        <div className="flex grow flex-col items-center justify-center gap-2">
+          <Button block onClick={() => openDialog('json-to-yaml')} variant="default">
+            JSON → YAML
+          </Button>
+          <Button block onClick={() => openDialog('yaml-to-json')} variant="default">
+            YAML → JSON
+          </Button>
+        </div>
       </div>
-
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
         onAfterClose={handleReset}
@@ -136,6 +137,6 @@ export const JsonToYamlConverter = () => {
           )}
         </div>
       </Dialog>
-    </div>
+    </>
   )
 }

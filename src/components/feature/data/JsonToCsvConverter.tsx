@@ -79,18 +79,19 @@ export const JsonToCsvConverter = () => {
   const dialogTitle = isJsonMode ? 'JSON → CSV' : 'CSV → JSON'
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+    <>
+      <div className="flex w-full grow flex-col gap-4">
+        {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
 
-      <div className="flex grow flex-col items-center justify-center gap-2">
-        <Button block onClick={() => openDialog('json-to-csv')} variant="default">
-          JSON → CSV
-        </Button>
-        <Button block onClick={() => openDialog('csv-to-json')} variant="default">
-          CSV → JSON
-        </Button>
+        <div className="flex grow flex-col items-center justify-center gap-2">
+          <Button block onClick={() => openDialog('json-to-csv')} variant="default">
+            JSON → CSV
+          </Button>
+          <Button block onClick={() => openDialog('csv-to-json')} variant="default">
+            CSV → JSON
+          </Button>
+        </div>
       </div>
-
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
         onAfterClose={handleReset}
@@ -138,6 +139,6 @@ export const JsonToCsvConverter = () => {
           )}
         </div>
       </Dialog>
-    </div>
+    </>
   )
 }

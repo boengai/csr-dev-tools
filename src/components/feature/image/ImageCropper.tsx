@@ -153,66 +153,68 @@ export const ImageCropper = () => {
       : null
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+    <>
+      <div className="flex w-full grow flex-col gap-4">
+        {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
 
-      <Tabs
-        injected={{
-          setValue: setTabValue,
-          value: tabValue,
-        }}
-        items={[
-          {
-            content: (
-              <div className="flex w-full grow flex-col items-center justify-center gap-4">
-                <div className="desktop:w-8/10 w-full">
-                  <UploadInput
-                    accept="image/*"
-                    button={{ block: true, children: 'Select image to crop' }}
-                    multiple={false}
-                    name="image-cropper"
-                    onChange={handleInputChange}
-                  />
+        <Tabs
+          injected={{
+            setValue: setTabValue,
+            value: tabValue,
+          }}
+          items={[
+            {
+              content: (
+                <div className="flex w-full grow flex-col items-center justify-center gap-4">
+                  <div className="desktop:w-8/10 w-full">
+                    <UploadInput
+                      accept="image/*"
+                      button={{ block: true, children: 'Select image to crop' }}
+                      multiple={false}
+                      name="image-cropper"
+                      onChange={handleInputChange}
+                    />
+                  </div>
+                  {error != null && !dialogOpen && (
+                    <p className="text-error text-body-sm shrink-0" role="alert">
+                      {error}
+                    </p>
+                  )}
                 </div>
-                {error != null && !dialogOpen && (
-                  <p className="text-error text-body-sm shrink-0" role="alert">
-                    {error}
-                  </p>
-                )}
-              </div>
-            ),
-            value: TABS_VALUES.IMPORT,
-          },
-          {
-            content: (
-              <div className="flex w-full grow flex-col items-center justify-center gap-6">
-                <NotoEmoji emoji="check" size={120} />
-                <div className="desktop:w-8/10 flex w-full flex-col gap-4">
-                  <Button
-                    block
-                    icon={<DownloadIcon />}
-                    onClick={() => {
-                      downloadAnchorRef.current?.click()
-                      const fileName = downloadAnchorRef.current?.download
-                      if (fileName) {
-                        toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
-                      }
-                    }}
-                    variant="primary"
-                  >
-                    Download
-                  </Button>
-                  <Button block icon={<RefreshIcon />} onClick={handleReset}>
-                    Start Over
-                  </Button>
+              ),
+              value: TABS_VALUES.IMPORT,
+            },
+            {
+              content: (
+                <div className="flex w-full grow flex-col items-center justify-center gap-6">
+                  <NotoEmoji emoji="check" size={120} />
+                  <div className="desktop:w-8/10 flex w-full flex-col gap-4">
+                    <Button
+                      block
+                      icon={<DownloadIcon />}
+                      onClick={() => {
+                        downloadAnchorRef.current?.click()
+                        const fileName = downloadAnchorRef.current?.download
+                        if (fileName) {
+                          toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
+                        }
+                      }}
+                      variant="primary"
+                    >
+                      Download
+                    </Button>
+                    <Button block icon={<RefreshIcon />} onClick={handleReset}>
+                      Start Over
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            ),
-            value: TABS_VALUES.DOWNLOAD,
-          },
-        ]}
-      />
-
+              ),
+              value: TABS_VALUES.DOWNLOAD,
+            },
+          ]}
+        />
+        <a className="hidden" download="" href="" ref={downloadAnchorRef} />
+      </div>
       <Dialog
         description="Crop your image using the selection handles"
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
@@ -287,8 +289,6 @@ export const ImageCropper = () => {
           </div>
         </div>
       </Dialog>
-
-      <a className="hidden" download="" href="" ref={downloadAnchorRef} />
-    </div>
+    </>
   )
 }

@@ -64,18 +64,19 @@ export const EncodingBase64 = () => {
   const resultPlaceholder = action === 'encode' ? 'SGVsbG8sIFdvcmxkIQ==' : 'Hello, World!'
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+    <>
+      <div className="flex w-full grow flex-col gap-4">
+        {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
 
-      <div className="flex grow flex-col items-center justify-center gap-2">
-        <Button block onClick={() => openDialog('encode')} variant="default">
-          Encode
-        </Button>
-        <Button block onClick={() => openDialog('decode')} variant="default">
-          Decode
-        </Button>
+        <div className="flex grow flex-col items-center justify-center gap-2">
+          <Button block onClick={() => openDialog('encode')} variant="default">
+            Encode
+          </Button>
+          <Button block onClick={() => openDialog('decode')} variant="default">
+            Decode
+          </Button>
+        </div>
       </div>
-
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
         onAfterClose={handleReset}
@@ -123,6 +124,6 @@ export const EncodingBase64 = () => {
           )}
         </div>
       </Dialog>
-    </div>
+    </>
   )
 }

@@ -104,15 +104,16 @@ export const TextDiffChecker = () => {
   }
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+    <>
+      <div className="flex w-full grow flex-col gap-4">
+        {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
 
-      <div className="flex grow flex-col items-center justify-center gap-2">
-        <Button block onClick={() => setDialogOpen(true)} variant="default">
-          Compare
-        </Button>
+        <div className="flex grow flex-col items-center justify-center gap-2">
+          <Button block onClick={() => setDialogOpen(true)} variant="default">
+            Compare
+          </Button>
+        </div>
       </div>
-
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
         onAfterClose={handleReset}
@@ -202,6 +203,6 @@ export const TextDiffChecker = () => {
           )}
         </div>
       </Dialog>
-    </div>
+    </>
   )
 }

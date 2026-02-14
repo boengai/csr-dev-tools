@@ -219,73 +219,76 @@ export const ImageResizer = () => {
   const isLossy = preview?.format ? LOSSY_FORMATS.has(preview.format) : false
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+    <>
+      <div className="flex w-full grow flex-col gap-4">
+        {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
 
-      <Tabs
-        injected={{
-          setValue: setTabValue,
-          value: tabValue,
-        }}
-        items={[
-          {
-            content: (
-              <div className="flex w-full grow flex-col items-center justify-center gap-4">
-                <div className="desktop:w-8/10 w-full">
-                  <UploadInput
-                    accept="image/*"
-                    button={{ block: true, children: 'Select images from your device' }}
-                    multiple={false}
-                    name="images"
-                    onChange={handleUploadChange}
-                  />
+        <Tabs
+          injected={{
+            setValue: setTabValue,
+            value: tabValue,
+          }}
+          items={[
+            {
+              content: (
+                <div className="flex w-full grow flex-col items-center justify-center gap-4">
+                  <div className="desktop:w-8/10 w-full">
+                    <UploadInput
+                      accept="image/*"
+                      button={{ block: true, children: 'Select images from your device' }}
+                      multiple={false}
+                      name="images"
+                      onChange={handleUploadChange}
+                    />
+                  </div>
+                  {error != null && (
+                    <p className="text-error text-body-sm shrink-0" role="alert">
+                      {error}
+                    </p>
+                  )}
                 </div>
-                {error != null && (
-                  <p className="text-error text-body-sm shrink-0" role="alert">
-                    {error}
-                  </p>
-                )}
-              </div>
-            ),
-            value: TABS_VALUES.IMPORT,
-          },
-          {
-            content: (
-              <div className="flex w-full grow flex-col items-center justify-center gap-6">
-                <NotoEmoji emoji="robot" size={120} />
-              </div>
-            ),
-            value: TABS_VALUES.PROCESSING,
-          },
-          {
-            content: (
-              <div className="flex w-full grow flex-col items-center justify-center gap-6">
-                <NotoEmoji emoji="check" size={120} />
-                <div className="desktop:w-8/10 flex w-full flex-col gap-4">
-                  <Button
-                    block
-                    icon={<DownloadIcon />}
-                    onClick={() => {
-                      downloadAnchorRef.current?.click()
-                      const fileName = downloadAnchorRef.current?.download
-                      if (fileName) {
-                        toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
-                      }
-                    }}
-                    variant="primary"
-                  >
-                    Download
-                  </Button>
-                  <Button block icon={<RefreshIcon />} onClick={handleReset}>
-                    Start Over
-                  </Button>
+              ),
+              value: TABS_VALUES.IMPORT,
+            },
+            {
+              content: (
+                <div className="flex w-full grow flex-col items-center justify-center gap-6">
+                  <NotoEmoji emoji="robot" size={120} />
                 </div>
-              </div>
-            ),
-            value: TABS_VALUES.DOWNLOAD,
-          },
-        ]}
-      />
+              ),
+              value: TABS_VALUES.PROCESSING,
+            },
+            {
+              content: (
+                <div className="flex w-full grow flex-col items-center justify-center gap-6">
+                  <NotoEmoji emoji="check" size={120} />
+                  <div className="desktop:w-8/10 flex w-full flex-col gap-4">
+                    <Button
+                      block
+                      icon={<DownloadIcon />}
+                      onClick={() => {
+                        downloadAnchorRef.current?.click()
+                        const fileName = downloadAnchorRef.current?.download
+                        if (fileName) {
+                          toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
+                        }
+                      }}
+                      variant="primary"
+                    >
+                      Download
+                    </Button>
+                    <Button block icon={<RefreshIcon />} onClick={handleReset}>
+                      Start Over
+                    </Button>
+                  </div>
+                </div>
+              ),
+              value: TABS_VALUES.DOWNLOAD,
+            },
+          ]}
+        />
+        <a className="hidden" download="" href="" ref={downloadAnchorRef} />
+      </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
         onAfterClose={handleReset}
@@ -362,7 +365,6 @@ export const ImageResizer = () => {
           )}
         </div>
       </Dialog>
-      <a className="hidden" download="" href="" ref={downloadAnchorRef} />
-    </div>
+    </>
   )
 }
