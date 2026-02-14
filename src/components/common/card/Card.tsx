@@ -18,7 +18,7 @@ export const Card = ({ children, onClose, title }: CardProps) => {
       }}
     >
       <div className="flex w-full shrink-0 items-center gap-3 border-b border-gray-800 px-4 py-2">
-        {onClose ? (
+        {onClose && (
           <motion.button
             className="bg-error size-3 shrink-0 rounded-full"
             onClick={onClose}
@@ -28,8 +28,6 @@ export const Card = ({ children, onClose, title }: CardProps) => {
           >
             <span className="sr-only">Close</span>
           </motion.button>
-        ) : (
-          <span className="bg-error size-3 shrink-0 rounded-full" />
         )}
         <h3 className="text-body-sm grow truncate text-gray-400">{title}</h3>
       </div>
