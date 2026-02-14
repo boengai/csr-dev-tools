@@ -98,11 +98,11 @@ development_status:
   epic-7-retrospective: done
 
   # Epic 8: Generator Tools
-  epic-8: in-progress
+  epic-8: done
   8-1-uuid-generator: done
   8-2-password-generator: done
   8-3-hash-generator: done
-  epic-8-retrospective: optional
+  epic-8-retrospective: done
 
   # Epic 9: CSS Visual Tools
   epic-9: backlog
