@@ -71,12 +71,12 @@ development_status:
   epic-3-retrospective: done
 
   # Epic 4: Quality Infrastructure & Contributor Experience
-  epic-4: in-progress
+  epic-4: done
   4-1-e2e-test-infrastructure: done
   4-2-ci-cd-pipeline: done
   4-3-lighthouse-ci-integration: done
   4-4-contributing-guide-and-developer-documentation: done
-  epic-4-retrospective: optional
+  epic-4-retrospective: done
 
   # Epic 5: Encoding & Decoding Tools
   epic-5: backlog

@@ -90,19 +90,19 @@ Architecturally, the tool FRs are highly independent — each tool is a self-con
 
 1. **Code Splitting & Bundle Discipline** — Every tool is a lazy-loaded chunk. Adding tools must not bloat the initial bundle. Affects: route registration, component imports, dynamic imports for heavy libraries (e.g., JSZip pattern).
 
-2. **Standardized Tool Layout** — All tools must follow the same spatial pattern (header → input → output → actions). Affects: every feature component, mobile stacking, accessibility tab order.
+2. **Tool Component Ownership** — Each tool owns its own layout structure, following consistent patterns (useToolError for errors, CopyButton for output copying). No shared layout wrapper — tools are self-contained. Affects: every feature component, mobile stacking, accessibility tab order.
 
 3. **Accessibility (WCAG 2.1 AA)** — Keyboard navigation, screen reader compatibility, contrast ratios, focus management. Affects: every interactive component, all new sidebar/command palette components, all tool inputs/outputs.
 
 4. **Theme System** — Dark-only. OKLCH color space. No light theme variant — the space/universe identity commits fully to dark. Affects: all components, all tools, all new UI elements. Must be consistent across existing and new components.
 
-5. **Clipboard & Output Pattern** — Copy-to-clipboard with toast confirmation is used across nearly every tool. Needs standardized extraction into `CopyButton` + `OutputDisplay` components.
+5. **Clipboard & Output Pattern** — Copy-to-clipboard with toast confirmation is used across nearly every tool. Standardized via `CopyButton` component (OutputDisplay was deprecated — not needed).
 
 6. **Mobile Responsiveness** — 375px minimum viewport, 44x44px touch targets, single-column stacking. Affects: sidebar (overlay on mobile), command palette, all tool layouts, action buttons.
 
 7. **Per-Tool SEO** — Each tool needs unique title, meta description, Open Graph tags. Requires route-level meta tag management within the SPA architecture.
 
-8. **Contributor Onboarding** — Adding a new tool follows a documented 6-step pattern. Architecture must make this pattern clear and friction-free: create component, add types, barrel exports, constants, register in home page, optional route.
+8. **Contributor Onboarding** — Adding a new tool follows a documented 8-step pattern in CONTRIBUTING.md. Architecture must make this pattern clear and friction-free: create component, add types, barrel exports, registry entry, update types, validation, unit tests, E2E test.
 
 ## Starter Template Evaluation
 
@@ -220,7 +220,7 @@ src/
 - Decision: Tools live on both the dashboard (inline cards for quick use) AND have dedicated routes (`/tools/{tool-slug}`) for SEO and direct access
 - Rationale: Dashboard preserves the existing card grid UX; dedicated routes satisfy FR27 (unique URL per tool) and NFR23-25 (per-tool SEO)
 - Affects: Route registration, tool component rendering modes (card vs. page), navigation patterns
-- Implementation: Tools accept a `mode` variant; `ToolLayout` wrapper handles rendering differences
+- Implementation: Tools accept a `mode` variant and own their layout — no shared layout wrapper
 
 **Per-Tool SEO: Build-Time Pre-Rendering**
 - Decision: Use a Vite pre-rendering plugin to generate static HTML per tool route at build time
@@ -246,9 +246,9 @@ src/
 - Affects: All tool input handling, error state triggering
 
 **Error Handling: Standardized Hook + Error Boundary**
-- Decision: `useToolError` hook providing `setError`, `clearError`, `error` state. `ToolLayout` renders errors in consistent position. React Error Boundary per tool for unexpected crashes.
-- Rationale: Consistent error UX across 60+ tools without each tool implementing its own error rendering
-- Affects: Every tool component, `ToolLayout` component
+- Decision: `useToolError` hook providing `setError`, `clearError`, `error` state. Each tool renders errors inline in a consistent position. React Error Boundary per tool for unexpected crashes.
+- Rationale: Consistent error UX across all tools with a shared hook pattern
+- Affects: Every tool component
 
 ### Infrastructure & Deployment
 
@@ -272,16 +272,15 @@ src/
 **Implementation Sequence:**
 1. Centralized tool registry — foundation that everything else depends on
 2. Per-tool route registration — consumes registry, enables hybrid routing
-3. ToolLayout standardization — rendering wrapper for both card and page modes
-4. Sidebar + Command Palette — consume registry for navigation
-5. Pre-rendering setup — consumes registry routes for build-time SEO
-6. Shared validation utilities — consumed by new and refactored tools
-7. Error handling standardization — `useToolError` hook + Error Boundaries
-8. E2E test infrastructure + Lighthouse CI — quality gates
+3. Sidebar + Command Palette — consume registry for navigation
+4. Pre-rendering setup — consumes registry routes for build-time SEO
+5. Shared validation utilities — consumed by new and refactored tools
+6. Error handling standardization — `useToolError` hook + Error Boundaries
+7. E2E test infrastructure + Lighthouse CI — quality gates
 
 **Cross-Component Dependencies:**
 - Tool Registry → Routes, Dashboard, Sidebar, Command Palette, Pre-renderer, SEO
-- ToolLayout → Error handling (renders error state), tool mode (card vs. page)
+- useToolError → Tool components (each tool renders its own error state)
 - Zustand stores → Sidebar ↔ Header hamburger, Command Palette ↔ keyboard shortcuts
 - Pre-rendering → Tool Registry (routes), SEO metadata (tool entries)
 - CI pipeline → Unit tests, E2E tests, Lighthouse, build (with pre-rendering)
@@ -350,7 +349,7 @@ src/types/components/feature/{domain}/
 ```
 src/components/common/sidebar/       — Sidebar, SidebarCategory, SidebarToolItem
 src/components/common/command-palette/ — CommandPalette, SearchInput
-src/components/common/tool-layout/   — ToolLayout, CopyButton, OutputDisplay
+src/components/common/button/        — Button, CopyButton
 src/components/common/error-boundary/ — ToolErrorBoundary
 ```
 
@@ -444,7 +443,7 @@ export const useSidebarStore = create<UseSidebarStore>()(
 
 1. **Prevention first** — constrain inputs (disabled options, input masks, format hints)
 2. **Validation** — `isValid{Format}()` check on input change (debounced)
-3. **Error display** — `setError('message')` renders inline via `ToolLayout`
+3. **Error display** — `setError('message')` renders inline within the tool component
 4. **Error clear** — `clearError()` called automatically when input changes to valid
 5. **Crash recovery** — `ToolErrorBoundary` catches unexpected errors, shows "Something went wrong" with a Reset button
 
@@ -461,11 +460,11 @@ export const useSidebarStore = create<UseSidebarStore>()(
 
 1. Read `project-context.md` (53 rules) AND this architecture document before implementing any code
 2. Add tools via the centralized `TOOL_REGISTRY` — never register tools manually in page components
-3. Use `ToolLayout` wrapper for all tool components — never build custom layouts
-4. Use `useToolError` for error handling — never implement custom error state in tools
-5. Use shared validators from `src/utils/validation.ts` — never duplicate validation logic
-6. Follow the exact Zustand store pattern — never create stores with different conventions
-7. Ensure every tool works in both card and page mode — never build single-mode tools
+3. Use `useToolError` for error handling — never implement custom error state in tools
+4. Use shared validators from `src/utils/validation.ts` — never duplicate validation logic
+5. Follow the exact Zustand store pattern — never create stores with different conventions
+6. Ensure every tool works in both card and page mode — never build single-mode tools
+7. Each tool owns its own layout — no shared layout wrapper component
 
 **Pattern Verification:**
 
@@ -474,7 +473,7 @@ export const useSidebarStore = create<UseSidebarStore>()(
 - `pnpm test` catches logic regressions (Vitest)
 - E2E tests catch tool behavior regressions (Playwright)
 - Lighthouse CI catches performance/accessibility regressions
-- PR review checklist verifies registry entry, ToolLayout usage, and both rendering modes
+- PR review checklist verifies registry entry, useToolError usage, and both rendering modes
 
 ### Pattern Examples
 
@@ -483,15 +482,15 @@ export const useSidebarStore = create<UseSidebarStore>()(
 // 1. Registry entry in src/constants/tool-registry.ts
 { key: 'jwt-decoder', name: 'JWT Decoder', category: 'Encoding', emoji: '🔑', ... }
 
-// 2. Component uses ToolLayout
+// 2. Component owns its own layout, uses useToolError
 export const JwtDecoder = () => {
   const { error, setError, clearError } = useToolError()
   return (
-    <ToolLayout title="JWT Decoder" description="..." error={error}>
-      <ToolLayout.Input>...</ToolLayout.Input>
-      <ToolLayout.Output>...</ToolLayout.Output>
-      <ToolLayout.Actions>...</ToolLayout.Actions>
-    </ToolLayout>
+    <Card>
+      {/* Tool header, inputs, outputs, actions — tool owns its layout */}
+      {error && <ErrorMessage>{error}</ErrorMessage>}
+      <CopyButton value={output} />
+    </Card>
   )
 }
 
@@ -503,7 +502,6 @@ import { isValidJwt } from '@/utils/validation'
 ```typescript
 // ❌ Manual registration in home/index.tsx instead of registry
 // ❌ Custom error state: const [error, setError] = useState('')
-// ❌ Custom layout instead of ToolLayout wrapper
 // ❌ Inline validation: if (input.length < 3) setError('too short')
 // ❌ Default export for tool component
 // ❌ import from 'framer-motion' instead of 'motion/react'
@@ -632,9 +630,6 @@ csr-dev-tools/
     │   │   │   ├── TextInput.tsx
     │   │   │   ├── UploadInput.tsx
     │   │   │   └── index.ts
-    │   │   ├── output/                   # ← NEW
-    │   │   │   ├── OutputDisplay.tsx
-    │   │   │   └── index.ts
     │   │   ├── progress-bar/
     │   │   │   ├── ProgressBar.tsx
     │   │   │   └── index.ts
@@ -653,9 +648,6 @@ csr-dev-tools/
     │   │   ├── toast/
     │   │   │   ├── ToastProvider.tsx
     │   │   │   └── index.ts
-    │   │   └── tool-layout/              # ← NEW
-    │   │       ├── ToolLayout.tsx
-    │   │       └── index.ts
     │   │
     │   └── feature/
     │       ├── index.ts
@@ -743,12 +735,10 @@ csr-dev-tools/
     │   │   │   ├── error-boundary.ts     # ← NEW
     │   │   │   ├── form.ts
     │   │   │   ├── input.ts
-    │   │   │   ├── output.ts             # ← NEW
     │   │   │   ├── sidebar.ts            # ← NEW
     │   │   │   ├── table.ts
     │   │   │   ├── tabs.ts
     │   │   │   ├── toast.ts
-    │   │   │   ├── tool-layout.ts        # ← NEW
     │   │   │   └── index.ts
     │   │   └── index.ts
     │   ├── constants/
@@ -810,7 +800,7 @@ csr-dev-tools/
 | `usePersistFeatureLayout` | Global | Yes (localStorage) | Home page dashboard |
 | `useSidebarStore` | Global | No | Header, Sidebar, mobile overlay |
 | `useCommandPaletteStore` | Global | No | Header, CommandPalette, keyboard handler |
-| `useToolError` | Per-tool instance | No | Individual tool components via hook |
+| `useToolError` | Per-tool instance | No | Individual tool components (each tool renders its own errors) |
 
 **Data Flow:**
 
@@ -836,7 +826,7 @@ User Input → Tool Component → Pure Utility Function → Output Display
 
 | FR Category | Directory | Key Files |
 |------------|-----------|-----------|
-| Tool Processing (FR1-FR4) | `components/common/tool-layout/` | `ToolLayout.tsx` |
+| Tool Processing (FR1-FR4) | `components/feature/` | Each tool component owns its layout |
 | Color Tools (FR5-FR7) | `components/feature/color/` | `ColorConvertor.tsx` |
 | Encoding Tools (FR8-FR10) | `components/feature/encoding/` | `EncodingBase64.tsx`, `JwtDecoder.tsx`, `UrlEncoder.tsx` |
 | Image Tools (FR11-FR14) | `components/feature/image/` | `ImageConvertor.tsx`, `ImageResizer.tsx` |
@@ -848,7 +838,7 @@ User Input → Tool Component → Pure Utility Function → Output Display
 | Navigation & Discovery (FR26-FR29) | `components/common/sidebar/`, `command-palette/` | `Sidebar.tsx`, `CommandPalette.tsx` |
 | Customization (FR30-FR31) | `hooks/persist/`, `App.tsx` | `usePersistFeatureLayout.ts` |
 | Contributor Experience (FR33-FR35) | `CONTRIBUTING.md`, `constants/tool-registry.ts` | Registry pattern, docs |
-| Documentation & Quality (FR36-FR38) | `components/common/tool-layout/` | `ToolLayout.tsx` (description, tooltips) |
+| Documentation & Quality (FR36-FR38) | `components/feature/`, `CONTRIBUTING.md` | Tool components (descriptions, tooltips), contributor guide |
 
 **Cross-Cutting Concerns Mapping:**
 
@@ -857,10 +847,10 @@ User Input → Tool Component → Pure Utility Function → Output Display
 | Code Splitting | `routes.tsx`, `constants/tool-registry.ts` | Vite config, lazy imports |
 | Accessibility | `components/common/` (Radix primitives) | All tool components |
 | Theme System | `src/index.css` (`@theme`) | All components via Tailwind |
-| Error Handling | `hooks/useToolError.ts`, `common/error-boundary/` | `ToolLayout.tsx` |
+| Error Handling | `hooks/useToolError.ts`, `common/error-boundary/` | All tool components |
 | Validation | `utils/validation.ts` | Per-tool validation in feature dirs |
 | SEO | `constants/tool-registry.ts` (metadata) | Pre-render plugin, `pages/tool/` |
-| Mobile Responsiveness | `components/common/tool-layout/` | Sidebar (mobile overlay), all components |
+| Mobile Responsiveness | `components/feature/` | Sidebar (mobile overlay), all tool components |
 
 ## Architecture Validation Results
 
@@ -883,7 +873,7 @@ All technology choices are compatible:
 - Tool registry key naming (`kebab-case`) aligns with route path convention (`/tools/{key}`)
 - New Zustand stores follow exact same `create<T>()()` pattern as existing stores
 - New components follow same `tv()` variant pattern, barrel exports, and type separation
-- Error handling pattern (`useToolError` → `ToolLayout` rendering) is consistent with existing toast pattern (`useToast` → `ToastProvider` rendering)
+- Error handling pattern (`useToolError` → tool renders inline error) is consistent with existing toast pattern (`useToast` → `ToastProvider` rendering)
 
 **Structure Alignment:** PASS
 
@@ -897,8 +887,8 @@ All technology choices are compatible:
 
 | FR Range | Category | Architectural Support |
 |----------|----------|----------------------|
-| FR1-FR4 | Tool Processing | `ToolLayout` wrapper, client-side processing, `CopyButton`/`OutputDisplay` |
-| FR5-FR7 | Color Tools | Existing `ColorConvertor` + refactor to `ToolLayout` |
+| FR1-FR4 | Tool Processing | Tool component ownership, client-side processing, `CopyButton` |
+| FR5-FR7 | Color Tools | Existing `ColorConvertor` (refactored, owns its own layout) |
 | FR8-FR10 | Encoding Tools | Existing `EncodingBase64` + new `JwtDecoder`, `UrlEncoder` |
 | FR11-FR14 | Image Tools | Existing `ImageConvertor`/`ImageResizer` |
 | FR15-FR16 | Time & Unit | Existing `TimeUnixTimestamp`, `UnitPxToRem` |
@@ -909,7 +899,7 @@ All technology choices are compatible:
 | FR26-FR29 | Navigation | `Sidebar`, `CommandPalette`, tool routes, responsive layout |
 | FR30-FR31 | Customization | `usePersistFeatureLayout` |
 | FR33-FR35 | Contributors | `CONTRIBUTING.md`, `TOOL_REGISTRY` pattern, tests |
-| FR36-FR38 | Documentation | `ToolLayout` (description, placeholders, tooltips) |
+| FR36-FR38 | Documentation | Tool components (description, placeholders, tooltips) |
 
 **Non-Functional Requirements Coverage:** 25/25 COVERED
 
@@ -1018,8 +1008,7 @@ All technology choices are compatible:
 
 **First Implementation Priority:**
 1. Create `TOOL_REGISTRY` in `src/constants/tool-registry.ts` — migrate existing 6 tools into registry entries
-2. Create `ToolLayout` component — standardized wrapper for all tools
-3. Set up hybrid routing — per-tool routes generated from registry
-4. Refactor existing tools to use `ToolLayout` and `useToolError`
-5. Build sidebar system — consumes registry for category navigation
-6. Build Command Palette — consumes registry for search
+2. Set up hybrid routing — per-tool routes generated from registry
+3. Refactor existing tools to use `useToolError` and standardized patterns
+4. Build sidebar system — consumes registry for category navigation
+5. Build Command Palette — consumes registry for search
