@@ -23,6 +23,7 @@ export type ToolRegistryKey =
   | 'color-converter'
   | 'image-converter'
   | 'image-resizer'
+  | 'jwt-decoder'
   | 'px-to-rem'
   | 'unix-timestamp'
   | 'url-encoder-decoder'

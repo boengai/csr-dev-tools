@@ -37,6 +37,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Decode JWT tokens online. Inspect header, payload, and signature instantly in your browser without external services.',
+    path: '/tools/jwt-decoder',
+    title: 'JWT Decoder - CSR Dev Tools',
+    url: '/tools/jwt-decoder',
+  },
+  {
+    description:
       'Convert between PX and REM CSS units online. Configurable base font size. Free browser-based unit converter.',
     path: '/tools/px-to-rem',
     title: 'PX to REM - CSR Dev Tools',

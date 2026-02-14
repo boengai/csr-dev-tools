@@ -82,6 +82,24 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Encoding',
+    component: lazy(() =>
+      import('@/components/feature/encoding/JwtDecoder').then(({ JwtDecoder }: { JwtDecoder: ComponentType }) => ({
+        default: JwtDecoder,
+      })),
+    ),
+    description: 'Decode JWT tokens to inspect header and payload',
+    emoji: '🔐',
+    key: 'jwt-decoder',
+    name: 'JWT Decoder',
+    routePath: '/tools/jwt-decoder',
+    seo: {
+      description:
+        'Decode JWT tokens online. Inspect header, payload, and signature instantly in your browser without external services.',
+      title: 'JWT Decoder - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Unit',
     component: lazy(() =>
       import('@/components/feature/unit/UnitPxToRem').then(({ UnitPxToRem }: { UnitPxToRem: ComponentType }) => ({
