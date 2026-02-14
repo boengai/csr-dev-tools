@@ -65,7 +65,7 @@ development_status:
   3-2-base64-encoder-refactor-spec-and-tests: done
   3-3-image-converter-refactor-spec-and-tests: done
   3-4-image-resizer-refactor-spec-and-tests: done
-  3-5-unix-timestamp-converter-refactor-spec-and-tests: backlog
+  3-5-unix-timestamp-converter-refactor-spec-and-tests: done
   3-6-px-to-rem-converter-refactor-spec-and-tests: backlog
   3-7-dashboard-layout-persistence-baseline: backlog
   epic-3-retrospective: optional

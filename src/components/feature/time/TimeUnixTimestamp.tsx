@@ -3,9 +3,11 @@ import { useMemo, useState } from 'react'
 
 import type { DateTime } from '@/types'
 
-import { Button, CopyIcon, DataCellTable, FieldForm } from '@/components/common'
-import { useCopyToClipboard, useDebounceCallback } from '@/hooks'
+import { CopyButton, DataCellTable, FieldForm } from '@/components/common'
+import { TOOL_REGISTRY_MAP } from '@/constants'
+import { useDebounceCallback, useToolError } from '@/hooks'
 import { getDaysInMonth } from '@/utils'
+import { isValidTimestamp } from '@/utils/validation'
 
 const MONTH_LABELS = [
   'January',
@@ -22,31 +24,61 @@ const MONTH_LABELS = [
   'December',
 ]
 
-const UnixTimestampSection = () => {
-  // states
+const MONTH_OPTIONS = MONTH_LABELS.map((label, i) => ({
+  label: label,
+  value: i.toString(),
+}))
+
+const HOUR_OPTIONS = Array.from({ length: 24 }, (_, i) => {
+  const val = i.toString()
+  return { label: val, value: val }
+})
+
+const MIN_SEC_OPTIONS = Array.from({ length: 60 }, (_, i) => {
+  const val = i.toString()
+  return { label: val, value: val }
+})
+
+const renderWithCopy = (label: string) => (val: string) => (
+  <span className="flex items-center gap-1">
+    <span>{val}</span>
+    <CopyButton label={label} value={val} />
+  </span>
+)
+
+const UnixTimestampSection = ({
+  clearError,
+  setError,
+}: {
+  clearError: () => void
+  setError: (message: string) => void
+}) => {
   const [input, setInput] = useState('')
   const [result, setResult] = useState<Array<string>>([])
 
-  // hooks
   const dbSetResult = useDebounceCallback((source: string) => {
+    if (source.length === 0) {
+      setResult([])
+      clearError()
+      return
+    }
+    if (!isValidTimestamp(source)) {
+      setResult([])
+      setError('Enter a valid Unix timestamp (e.g., 1700000000)')
+      return
+    }
+    clearError()
     const inputNumber = Number(source)
 
     // Auto-detect if timestamp is in seconds or milliseconds
-    // Current time in seconds: ~1.7 billion (Jan 2024)
-    // Current time in milliseconds: ~1.7 trillion (Jan 2024)
-    // Year 2001 in milliseconds: ~978 billion
     // If the number is > 100 billion, it's very likely milliseconds
     // since that would represent year 5138 in seconds (unrealistic)
     const isMilliseconds = inputNumber > 100_000_000_000
 
     const d = new Date(isMilliseconds ? inputNumber : inputNumber * 1_000)
 
-    if (isNaN(d.getTime())) {
-      return
-    }
-
     setResult([isMilliseconds ? 'Milliseconds' : 'Seconds', d.toUTCString(), d.toString()])
-  })
+  }, 150)
 
   const handleInputChange = (val: string) => {
     setInput(val)
@@ -61,7 +93,7 @@ const UnixTimestampSection = () => {
           name="unixTimestamp"
           onChange={handleInputChange}
           placeholder={Date.now().toString()}
-          type="number"
+          type="text"
           value={input}
         />
       </div>
@@ -72,9 +104,9 @@ const UnixTimestampSection = () => {
         {result.length > 0 && (
           <DataCellTable
             rows={[
-              { label: 'Format', value: result[0] },
-              { label: 'GMT', value: result[1] },
-              { label: 'Local', value: result[2] },
+              { label: 'Format', render: renderWithCopy('Format'), value: result[0] },
+              { label: 'GMT', render: renderWithCopy('GMT'), value: result[1] },
+              { label: 'Local', render: renderWithCopy('Local'), value: result[2] },
             ]}
           />
         )}
@@ -83,11 +115,7 @@ const UnixTimestampSection = () => {
   )
 }
 
-export const DateSection = () => {
-  // hook
-  const copyToClipboard = useCopyToClipboard()
-
-  // states
+const DateSection = ({ clearError }: { clearError: () => void }) => {
   const [input, setInput] = useState<DateTime<string>>(() => {
     const d = new Date()
     return {
@@ -116,13 +144,7 @@ export const DateSection = () => {
     }
   }, [])
 
-  const monthOptions = MONTH_LABELS.map((label, i) => ({
-    label: label,
-    value: i.toString(),
-  }))
-
   const dayOptions = useMemo(() => {
-    // calculate days in month
     const daysInMonth = getDaysInMonth(Number(input.year), Number(input.month) + 1)
 
     return Array.from({ length: daysInMonth }, (_, i) => {
@@ -134,25 +156,10 @@ export const DateSection = () => {
     })
   }, [input.year, input.month])
 
-  const hourOptions = Array.from({ length: 24 }, (_, i) => {
-    const val = i.toString()
-    return {
-      label: val,
-      value: val,
-    }
-  })
-
-  const minSecOptions = Array.from({ length: 60 }, (_, i) => {
-    const val = i.toString()
-    return {
-      label: val,
-      value: val,
-    }
-  })
-
   const handleChange = (key: keyof DateTime, value: string) => {
+    clearError()
     const newInput = { ...input, [key]: value }
-    if (key === 'month' && newInput.day) {
+    if ((key === 'month' || key === 'year') && newInput.day) {
       newInput.day = Math.min(
         Number(newInput.day),
         getDaysInMonth(Number(newInput.year), Number(newInput.month) + 1),
@@ -192,7 +199,7 @@ export const DateSection = () => {
             label="Month"
             name="month"
             onChange={(value) => handleChange('month', value)}
-            options={monthOptions}
+            options={MONTH_OPTIONS}
             placeholder={placeholder.month}
             type="select"
             value={input.month}
@@ -213,7 +220,7 @@ export const DateSection = () => {
             label="Hour"
             name="hour"
             onChange={(value) => handleChange('hour', value)}
-            options={hourOptions}
+            options={HOUR_OPTIONS}
             placeholder={placeholder.hour}
             type="select"
             value={input.hour}
@@ -222,7 +229,7 @@ export const DateSection = () => {
             label="Minute"
             name="minute"
             onChange={(value) => handleChange('minute', value)}
-            options={minSecOptions}
+            options={MIN_SEC_OPTIONS}
             placeholder={placeholder.minute}
             type="select"
             value={input.minute}
@@ -231,7 +238,7 @@ export const DateSection = () => {
             label="Second"
             name="second"
             onChange={(value) => handleChange('second', value)}
-            options={minSecOptions}
+            options={MIN_SEC_OPTIONS}
             placeholder={placeholder.second}
             type="select"
             value={input.second}
@@ -244,18 +251,11 @@ export const DateSection = () => {
             rows={[
               {
                 label: 'Unix Timestamp',
-                render: (val) => (
-                  <span className="flex items-center gap-1">
-                    <span>{val}</span>
-                    <Button onClick={() => copyToClipboard(val)} variant="text">
-                      <CopyIcon size={14} />
-                    </Button>
-                  </span>
-                ),
+                render: renderWithCopy('Unix Timestamp'),
                 value: result[0],
               },
-              { label: 'GMT', value: result[1] },
-              { label: 'Local', value: result[2] },
+              { label: 'GMT', render: renderWithCopy('GMT'), value: result[1] },
+              { label: 'Local', render: renderWithCopy('Local'), value: result[2] },
             ]}
           />
         )}
@@ -264,12 +264,21 @@ export const DateSection = () => {
   )
 }
 
+const toolEntry = TOOL_REGISTRY_MAP['unix-timestamp']
+
 export const TimeUnixTimestamp = () => {
+  const { clearError, error, setError } = useToolError()
   return (
     <div className="flex grow flex-col gap-4">
-      <UnixTimestampSection />
+      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+      <UnixTimestampSection clearError={clearError} setError={setError} />
+      {error != null && (
+        <p className="text-error text-body-sm shrink-0" role="alert">
+          {error}
+        </p>
+      )}
       <hr />
-      <DateSection />
+      <DateSection clearError={clearError} />
     </div>
   )
 }
