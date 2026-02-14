@@ -103,8 +103,8 @@ pnpm preview
 - **[JSZip](https://stuk.github.io/jszip/)** - Client-side ZIP file generation and processing
 
 ### Development Tools
-- **[ESLint](https://eslint.org/)** - Code linting with custom configuration
-- **[Prettier](https://prettier.io/)** - Code formatting
+- **[oxlint](https://oxc.rs/docs/guide/usage/linter)** - Fast code linting
+- **[oxfmt](https://oxc.rs/docs/guide/usage/formatter)** - Fast code formatting
 - **[Vitest](https://vitest.dev/)** - Unit testing framework
 
 ## 📁 Project Structure
@@ -134,7 +134,8 @@ csr-dev-tools/
 ├── package.json
 ├── vite.config.ts         # Vite configuration
 ├── tsconfig.json          # TypeScript configuration
-└── eslint.config.mjs      # ESLint configuration
+├── .oxlintrc.json         # oxlint configuration
+└── .oxfmtrc.json          # oxfmt configuration
 ```
 
 ## 🧩 Available Scripts
@@ -144,7 +145,7 @@ csr-dev-tools/
 | `pnpm dev` | Start development server on port 5173 |
 | `pnpm build` | Build for production |
 | `pnpm preview` | Preview production build |
-| `pnpm lint` | Run ESLint |
+| `pnpm lint` | Run oxlint |
 | `pnpm test` | Run unit tests |
 
 ## 🎨 Design System
@@ -201,15 +202,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
-
-### Development Guidelines
-
-1. Follow the existing code style and conventions
-2. Use TypeScript with strict mode enabled
-3. Write unit tests for new features
-4. Ensure all linting passes before submitting
-5. Use semantic commit messages
+Contributions are welcome! See **[CONTRIBUTING.md](CONTRIBUTING.md)** for the complete guide — including how to add a new tool step-by-step, code conventions, testing instructions, and the PR checklist.
 
 ## 🐛 Bug Reports
 

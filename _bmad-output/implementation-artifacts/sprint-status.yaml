@@ -75,7 +75,7 @@ development_status:
   4-1-e2e-test-infrastructure: done
   4-2-ci-cd-pipeline: done
   4-3-lighthouse-ci-integration: done
-  4-4-contributing-guide-and-developer-documentation: backlog
+  4-4-contributing-guide-and-developer-documentation: done
   epic-4-retrospective: optional
 
   # Epic 5: Encoding & Decoding Tools
