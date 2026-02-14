@@ -79,8 +79,8 @@ development_status:
   epic-4-retrospective: done
 
   # Epic 5: Encoding & Decoding Tools
-  epic-5: backlog
-  5-1-url-encoder-decoder: backlog
+  epic-5: in-progress
+  5-1-url-encoder-decoder: done
   5-2-jwt-decoder: backlog
   epic-5-retrospective: optional
 

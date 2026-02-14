@@ -25,3 +25,4 @@ export type ToolRegistryKey =
   | 'image-resizer'
   | 'px-to-rem'
   | 'unix-timestamp'
+  | 'url-encoder-decoder'

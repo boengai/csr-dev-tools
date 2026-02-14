@@ -49,6 +49,13 @@ const toolRoutes = [
     title: 'Unix Timestamp - CSR Dev Tools',
     url: '/tools/unix-timestamp',
   },
+  {
+    description:
+      'Encode and decode URL strings online. Convert special characters to percent-encoded format instantly in your browser.',
+    path: '/tools/url-encoder-decoder',
+    title: 'URL Encoder/Decoder - CSR Dev Tools',
+    url: '/tools/url-encoder-decoder',
+  },
 ]
 
 // https://vite.dev/config/

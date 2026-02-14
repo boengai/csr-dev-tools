@@ -230,7 +230,8 @@ src/
 
 **Tool Registry: Centralized `TOOL_REGISTRY`**
 - Decision: Single registry object mapping each tool to all its metadata (name, category, emoji, description, SEO fields, route path, component lazy import)
-- Rationale: Single source of truth consumed by dashboard, sidebar, command palette, router, and pre-renderer. Simplifies "add a tool" workflow to one registry entry + component files
+- Rationale: Single source of truth consumed by sidebar, command palette, router, pre-renderer, and dashboard selection dialog. Simplifies "add a tool" workflow to one registry entry + component files
+- Note: The dashboard is a fixed 6-slot favorites grid. New tools do NOT auto-appear on the dashboard — they appear in the selection dialog, sidebar, command palette, and their dedicated route
 - Affects: Replaces current `FEATURE_TITLE` constants and manual lazy imports in `home/index.tsx`
 - Implementation: `src/constants/tool-registry.ts` with `ToolRegistryEntry` type
 
@@ -808,7 +809,7 @@ csr-dev-tools/
 TOOL_REGISTRY (single source of truth)
     │
     ├──→ routes.tsx         → generates tool routes
-    ├──→ Home page          → renders card grid
+    ├──→ Home page          → populates selection dialog (dashboard is fixed 6-slot favorites grid)
     ├──→ Sidebar            → renders category groups
     ├──→ CommandPalette     → fuzzy search results
     ├──→ Pre-renderer       → generates static HTML per route

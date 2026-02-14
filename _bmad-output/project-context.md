@@ -179,9 +179,11 @@ src/
 1. Create feature component in `src/components/feature/{domain}/`
 2. Add types in `src/types/` mirroring the component path
 3. Add barrel exports up the chain (`index.ts` files)
-4. Add feature key to constants and `FeatureKey` type
-5. Register lazy import and case in `src/pages/home/index.tsx`
-6. Add route if tool gets its own page
+4. Add registry entry in `src/constants/tool-registry.ts` with all required fields
+5. Update `ToolRegistryKey` (and `ToolCategory` if new) in `src/types/constants/tool-registry.ts`
+6. Write unit tests and E2E tests
+
+**Dashboard behavior:** The dashboard is a fixed 6-slot favorites grid. New tools do NOT auto-appear on the dashboard. They are accessible via sidebar, command palette, dedicated route (`/tools/{key}`), and the dashboard selection dialog (users can swap slots).
 
 #### Git Conventions
 

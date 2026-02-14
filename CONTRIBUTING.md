@@ -190,7 +190,7 @@ All fields are required:
 | `routePath` | URL path — must be `/tools/{key}` |
 | `seo` | SEO metadata with `title` and `description` |
 
-Routes are auto-generated from the registry. No manual route setup needed. Once registered, your tool automatically appears on the dashboard, in the sidebar navigation, and in the command palette — no additional wiring required.
+Routes are auto-generated from the registry. No manual route setup needed. Once registered, your tool automatically appears in the sidebar navigation, command palette, and gets a dedicated route (`/tools/{key}`). The dashboard is a fixed 6-slot favorites grid — new tools do NOT auto-appear there. Users can swap dashboard slots via the selection dialog.
 
 ### Step 5: Update Types (if needed)
 

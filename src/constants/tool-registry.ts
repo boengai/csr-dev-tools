@@ -119,6 +119,24 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       title: 'Unix Timestamp - CSR Dev Tools',
     },
   },
+  {
+    category: 'Encoding',
+    component: lazy(() =>
+      import('@/components/feature/encoding/UrlEncoder').then(({ UrlEncoder }: { UrlEncoder: ComponentType }) => ({
+        default: UrlEncoder,
+      })),
+    ),
+    description: 'Encode and decode URL strings in the browser',
+    emoji: '🔗',
+    key: 'url-encoder-decoder',
+    name: 'URL Encoder/Decoder',
+    routePath: '/tools/url-encoder-decoder',
+    seo: {
+      description:
+        'Encode and decode URL strings online. Convert special characters to percent-encoded format instantly in your browser.',
+      title: 'URL Encoder/Decoder - CSR Dev Tools',
+    },
+  },
 ]
 
 export const TOOL_REGISTRY_MAP = TOOL_REGISTRY.reduce<Partial<Record<string, ToolRegistryEntry>>>((acc, entry) => {

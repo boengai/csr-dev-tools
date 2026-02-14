@@ -882,7 +882,7 @@ So that **I can contribute a tool without needing to ask the maintainer for help
 
 **Given** the CONTRIBUTING guide
 **When** a contributor follows it end-to-end
-**Then** the new tool appears on the dashboard, has a dedicated route, shows in the sidebar and command palette, and passes all quality gates
+**Then** the new tool appears in the dashboard selection dialog, has a dedicated route, shows in the sidebar and command palette, and passes all quality gates
 
 **Given** the CONTRIBUTING guide
 **When** it references code patterns
