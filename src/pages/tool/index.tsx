@@ -32,7 +32,12 @@ const ToolPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
   return (
     <div className="flex grow flex-col items-center justify-center p-6 pb-[calc(1.5rem+var(--safe-area-inset-bottom))]">
       <div className="flex max-h-full w-full max-w-[768px] flex-col">
-        <Suspense fallback={<NotoEmoji emoji="flying-saucer" size={200} />}>
+        <Suspense fallback={
+            <div className='flex justify-center items-center'>
+              <NotoEmoji emoji="flying-saucer" size={200} />
+            </div>
+          }
+        >
           <Card onClose={() => navigate({ to: ROUTE_PATH.HOME })} title={tool.name}>
             <ToolComponent />
           </Card>

@@ -239,7 +239,6 @@ export const ImageResizer = () => {
           {
             content: (
               <div className="flex w-full grow flex-col items-center justify-center gap-4">
-                <p className="text-body-sm text-center text-gray-400">Select an image to resize</p>
                 <div className="desktop:w-8/10 w-full">
                   <UploadInput
                     accept="image/*"
