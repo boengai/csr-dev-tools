@@ -24,6 +24,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Generate MD5, SHA-1, SHA-256, and SHA-512 hash values from text online. Compute checksums instantly in your browser — no server processing.',
+    path: '/tools/hash-generator',
+    title: 'Hash Generator - CSR Dev Tools',
+    url: '/tools/hash-generator',
+  },
+  {
+    description:
       'Convert images between PNG, JPG, WebP, GIF, BMP, and AVIF formats online. Free browser-based image converter.',
     path: '/tools/image-converter',
     title: 'Image Converter - CSR Dev Tools',

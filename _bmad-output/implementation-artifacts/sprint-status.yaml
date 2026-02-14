@@ -101,7 +101,7 @@ development_status:
   epic-8: in-progress
   8-1-uuid-generator: done
   8-2-password-generator: done
-  8-3-hash-generator: backlog
+  8-3-hash-generator: done
   epic-8-retrospective: optional
 
   # Epic 9: CSS Visual Tools

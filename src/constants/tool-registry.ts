@@ -45,6 +45,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Generator',
+    component: lazy(() =>
+      import('@/components/feature/generator/HashGenerator').then(
+        ({ HashGenerator }: { HashGenerator: ComponentType }) => ({
+          default: HashGenerator,
+        }),
+      ),
+    ),
+    description: 'Compute hash values from text using MD5, SHA-1, SHA-256, and SHA-512',
+    emoji: '#️⃣',
+    key: 'hash-generator',
+    name: 'Hash Generator',
+    routePath: '/tools/hash-generator',
+    seo: {
+      description:
+        'Generate MD5, SHA-1, SHA-256, and SHA-512 hash values from text online. Compute checksums instantly in your browser — no server processing.',
+      title: 'Hash Generator - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Image',
     component: lazy(() =>
       import('@/components/feature/image/ImageConvertor').then(

@@ -21,6 +21,7 @@ export type ToolRegistryEntry = {
 export type ToolRegistryKey =
   | 'base64-encoder'
   | 'color-converter'
+  | 'hash-generator'
   | 'image-converter'
   | 'image-resizer'
   | 'json-formatter'
