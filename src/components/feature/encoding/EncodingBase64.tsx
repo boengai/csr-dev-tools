@@ -64,7 +64,7 @@ export const EncodingBase64 = () => {
   const resultPlaceholder = action === 'encode' ? 'SGVsbG8sIFdvcmxkIQ==' : 'Hello, World!'
 
   return (
-    <div className="flex size-full grow flex-col gap-4">
+    <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
 
       <div className="flex grow flex-col items-center justify-center gap-2">
@@ -82,7 +82,7 @@ export const EncodingBase64 = () => {
         size="screen"
         title={action === 'encode' ? 'Base64 Encode' : 'Base64 Decode'}
       >
-        <div className="flex size-full grow flex-col gap-4">
+        <div className="flex w-full grow flex-col gap-4">
           <div className="tablet:flex-row flex size-full grow flex-col gap-6">
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm

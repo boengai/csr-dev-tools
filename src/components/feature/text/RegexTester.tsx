@@ -133,7 +133,7 @@ export const RegexTester = () => {
   const copyText = result ? formatMatchesForCopy(result.matches) : ''
 
   return (
-    <div className="flex size-full grow flex-col gap-4">
+    <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
 
       <div className="flex grow flex-col items-center justify-center gap-2">
@@ -148,7 +148,7 @@ export const RegexTester = () => {
         size="screen"
         title="Regex Tester"
       >
-        <div className="flex size-full grow flex-col gap-4">
+        <div className="flex w-full grow flex-col gap-4">
           <div className="flex flex-col gap-4">
             <FieldForm
               label={

@@ -110,7 +110,7 @@ export const ImageCompressor = () => {
     originalInfo && compressed ? Math.round((1 - compressed.size / originalInfo.size) * 100) : null
 
   return (
-    <div className="flex size-full grow flex-col gap-4">
+    <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
 
       <div className="desktop:w-8/10 w-full">

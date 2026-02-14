@@ -23,7 +23,7 @@ export const UuidGenerator = () => {
   }
 
   return (
-    <div className="flex size-full grow flex-col gap-4">
+    <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
 
       <div className="flex flex-col gap-3">

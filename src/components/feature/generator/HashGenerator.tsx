@@ -68,7 +68,7 @@ export const HashGenerator = () => {
   }
 
   return (
-    <div className="flex size-full grow flex-col gap-4">
+    <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
 
       <TextAreaInput name="hash-input" onChange={handleTextChange} placeholder="Enter text to hash..." value={text} />
@@ -94,7 +94,7 @@ export const HashGenerator = () => {
 
       <div className="border-t-2 border-dashed border-gray-900" />
 
-      <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2">
+      <div aria-live="polite" className="flex min-h-0 flex-col gap-2">
         <div className="flex items-center gap-2">
           <span className="text-body-sm font-medium text-gray-400">{algorithm} Hash</span>
           {hash && <CopyButton label="hash value" value={hash} />}
