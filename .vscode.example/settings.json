@@ -1,13 +1,30 @@
 {
-  "editor.formatOnSave": true,
-  "editor.insertSpaces": true,
-  "editor.tabSize": 2,
-  "editor.detectIndentation": false,
   "editor.defaultFormatter": "oxc.oxc-vscode",
+  "editor.formatOnSave": true,
   "editor.codeActionsOnSave": {
-    "source.fixAll.oxlint": "explicit"
+    "source.fixAll.oxc": "explicit"
   },
-  "prettier.enable": false,
-  "eslint.enable": false,
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
   "typescript.tsdk": "node_modules/typescript/lib",
+  "eslint.enable": false,
+  "prettier.enable": false,
+  "tailwindCSS.classFunctions": ["tv"],
+  "tailwindCSS.experimental.configFile": null,
+  "tailwindCSS.includeLanguages": {
+    "typescript": "javascript",
+    "typescriptreact": "javascript"
+  },
+  "tailwindCSS.files.exclude": ["**/.git/**", "**/node_modules/**", "**/.hg/**", "**/.svn/**"],
+  "cSpell.words": []
 }
