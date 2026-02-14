@@ -51,6 +51,13 @@ const toolRoutes = [
     url: '/tools/image-compressor',
   },
   {
+    description:
+      'Crop images online using freeform selection or aspect ratio presets like 16:9, 4:3, 1:1, and 3:2. Free browser-based image cropper.',
+    path: '/tools/image-cropper',
+    title: 'Image Cropper - CSR Dev Tools',
+    url: '/tools/image-cropper',
+  },
+  {
     description: 'Resize images to custom width and height dimensions online. Free browser-based image resizer.',
     path: '/tools/image-resizer',
     title: 'Image Resizer - CSR Dev Tools',

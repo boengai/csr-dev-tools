@@ -127,6 +127,24 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Image',
     component: lazy(() =>
+      import('@/components/feature/image/ImageCropper').then(({ ImageCropper }: { ImageCropper: ComponentType }) => ({
+        default: ImageCropper,
+      })),
+    ),
+    description: 'Crop images using freeform selection or common aspect ratio presets',
+    emoji: '✂️',
+    key: 'image-cropper',
+    name: 'Image Cropper',
+    routePath: '/tools/image-cropper',
+    seo: {
+      description:
+        'Crop images online using freeform selection or aspect ratio presets like 16:9, 4:3, 1:1, and 3:2. Free browser-based image cropper.',
+      title: 'Image Cropper - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Image',
+    component: lazy(() =>
       import('@/components/feature/image/ImageResizer').then(({ ImageResizer }: { ImageResizer: ComponentType }) => ({
         default: ImageResizer,
       })),

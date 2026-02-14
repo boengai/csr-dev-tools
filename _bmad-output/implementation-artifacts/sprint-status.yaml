@@ -112,5 +112,5 @@ development_status:
   # Epic 10: Advanced Image Tools
   epic-10: in-progress
   10-1-image-compression: done
-  10-2-image-cropping: backlog
+  10-2-image-cropping: review
   epic-10-retrospective: optional

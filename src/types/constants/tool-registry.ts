@@ -25,6 +25,7 @@ export type ToolRegistryKey =
   | 'hash-generator'
   | 'image-compressor'
   | 'image-converter'
+  | 'image-cropper'
   | 'image-resizer'
   | 'json-formatter'
   | 'json-to-csv-converter'
