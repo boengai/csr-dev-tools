@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import type { SelectInputProps, TextAreaInputProps, TextInputProps, UploadInputProps } from './input'
+import type { RangeInputProps, SelectInputProps, TextAreaInputProps, TextInputProps, UploadInputProps } from './input'
 
 export type FieldFormProps = InputControllerProps & {
   label: ReactNode
@@ -8,10 +8,15 @@ export type FieldFormProps = InputControllerProps & {
 
 export type InputControllerProps =
   | NumberInputForm
+  | RangeInputForm
   | SelectInputForm
   | TextAreaInputForm
   | TextInputForm
   | UploadInputForm
+
+type RangeInputForm = RangeInputProps & {
+  type: 'range'
+}
 
 type NumberInputForm = Omit<TextInputProps, 'type'> & {
   max?: number

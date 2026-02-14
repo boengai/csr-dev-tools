@@ -506,6 +506,7 @@ Claude Opus 4.6
 - 2026-02-14: Implemented UUID Generator tool (Story 8.1) — new Generator category, uuid utility functions, UuidGenerator component with single-mode dialog pattern, 8 unit tests, full registry integration.
 - 2026-02-14: Code review — Fixed TextInput type pass-through (M1), added 3 edge case tests (M2). 478 tests pass. Approved.
 - 2026-02-14: Refactored to inline layout — removed Dialog pattern (button→dialog→content) in favor of inline rendering (like UnitPxToRem/TimeUnixTimestamp). Pre-generates UUID on mount via lazy useState initializer. Chunk size reduced from 2.16 kB to 1.78 kB.
+- 2026-02-14: Refactored Count input from `FieldForm type="number"` to `FieldForm type="range"` using new reusable `RangeInput` component (range slider + number input combo). Simplified `handleCountChange` — clamping now handled by `RangeInput` on blur. Layout changed from horizontal `items-end` row to vertical `flex-col` stack.
 
 ### File List
 

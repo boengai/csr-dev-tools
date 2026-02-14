@@ -158,6 +158,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Generator',
+    component: lazy(() =>
+      import('@/components/feature/generator/PasswordGenerator').then(
+        ({ PasswordGenerator }: { PasswordGenerator: ComponentType }) => ({
+          default: PasswordGenerator,
+        }),
+      ),
+    ),
+    description: 'Generate random passwords with configurable length and character types',
+    emoji: '🔑',
+    key: 'password-generator',
+    name: 'Password Generator',
+    routePath: '/tools/password-generator',
+    seo: {
+      description:
+        'Generate secure random passwords online. Configure length, uppercase, lowercase, digits, and symbols. Cryptographically secure — runs entirely in your browser.',
+      title: 'Password Generator - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Unit',
     component: lazy(() =>
       import('@/components/feature/unit/UnitPxToRem').then(({ UnitPxToRem }: { UnitPxToRem: ComponentType }) => ({

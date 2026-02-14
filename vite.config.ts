@@ -65,6 +65,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Generate secure random passwords online. Configure length, uppercase, lowercase, digits, and symbols. Cryptographically secure — runs entirely in your browser.',
+    path: '/tools/password-generator',
+    title: 'Password Generator - CSR Dev Tools',
+    url: '/tools/password-generator',
+  },
+  {
+    description:
       'Convert between PX and REM CSS units online. Configurable base font size. Free browser-based unit converter.',
     path: '/tools/px-to-rem',
     title: 'PX to REM - CSR Dev Tools',

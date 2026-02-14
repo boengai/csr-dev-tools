@@ -17,27 +17,23 @@ export const UuidGenerator = () => {
   }
 
   const handleCountChange = (val: string) => {
-    const parsed = Number.parseInt(val, 10)
-    if (Number.isNaN(parsed)) {
-      setCount(1)
-      return
-    }
-    setCount(Math.max(1, Math.min(100, parsed)))
+    const parsed = Number(val)
+    if (Number.isNaN(parsed)) return
+    setCount(parsed)
   }
 
   return (
     <div className="flex size-full grow flex-col gap-4">
       {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
 
-      <div className="flex items-end gap-4">
+      <div className="flex flex-col gap-3">
         <FieldForm
           label="Count"
           max={100}
           min={1}
           name="count"
           onChange={handleCountChange}
-          placeholder="1-100"
-          type="number"
+          type="range"
           value={String(count)}
         />
         <Button onClick={handleGenerate} variant="default">

@@ -2,6 +2,12 @@ import type { InputHTMLAttributes, ReactElement, TextareaHTMLAttributes } from '
 
 import type { ButtonProps } from './button'
 
+export type RangeInputProps = Omit<BaseInputProps, 'onEnter' | 'placeholder'> & {
+  max: number
+  min: number
+  step?: number
+}
+
 export type SelectInputProps = Omit<BaseInputProps, 'onEnter'> & {
   options: Array<{
     disabled?: boolean

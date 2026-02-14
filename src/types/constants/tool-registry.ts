@@ -27,6 +27,7 @@ export type ToolRegistryKey =
   | 'json-to-csv-converter'
   | 'json-to-yaml-converter'
   | 'jwt-decoder'
+  | 'password-generator'
   | 'px-to-rem'
   | 'regex-tester'
   | 'text-diff-checker'
