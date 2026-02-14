@@ -28,7 +28,7 @@ export const UploadInput = ({ button, disabled, onBlur, onChange, ...props }: Up
         icon={<UploadIcon />}
         onBlur={onBlur}
         onClick={handleClick}
-        variant="primary"
+        variant="default"
       >
         {button?.children ?? 'Upload File'}
       </Button>
