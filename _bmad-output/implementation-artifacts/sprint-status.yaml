@@ -60,7 +60,7 @@ development_status:
   epic-2-retrospective: done
 
   # Epic 3: Existing Tool Baseline & Enhancement
-  epic-3: in-progress
+  epic-3: done
   3-1-color-converter-refactor-spec-and-tests: done
   3-2-base64-encoder-refactor-spec-and-tests: done
   3-3-image-converter-refactor-spec-and-tests: done
@@ -68,11 +68,11 @@ development_status:
   3-5-unix-timestamp-converter-refactor-spec-and-tests: done
   3-6-px-to-rem-converter-refactor-spec-and-tests: done
   3-7-dashboard-layout-persistence-baseline: done
-  epic-3-retrospective: optional
+  epic-3-retrospective: done
 
   # Epic 4: Quality Infrastructure & Contributor Experience
-  epic-4: backlog
-  4-1-e2e-test-infrastructure: backlog
+  epic-4: in-progress
+  4-1-e2e-test-infrastructure: done
   4-2-ci-cd-pipeline: backlog
   4-3-lighthouse-ci-integration: backlog
   4-4-contributing-guide-and-developer-documentation: backlog

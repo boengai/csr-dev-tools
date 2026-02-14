@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     environment: 'node',
+    exclude: ['e2e/**', 'node_modules/**'],
     globals: true,
     setupFiles: [],
   },
