@@ -1,6 +1,6 @@
 import type { ComponentType, LazyExoticComponent } from 'react'
 
-export type ToolCategory = 'Color' | 'Encoding' | 'Image' | 'Time' | 'Unit'
+export type ToolCategory = 'Color' | 'Data' | 'Encoding' | 'Image' | 'Time' | 'Unit'
 
 export type ToolSeo = {
   description: string
@@ -23,6 +23,7 @@ export type ToolRegistryKey =
   | 'color-converter'
   | 'image-converter'
   | 'image-resizer'
+  | 'json-formatter'
   | 'jwt-decoder'
   | 'px-to-rem'
   | 'unix-timestamp'

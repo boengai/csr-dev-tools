@@ -1,4 +1,5 @@
 export * from './color'
+export * from './data'
 export * from './encoding'
 export * from './image'
 export * from './time'

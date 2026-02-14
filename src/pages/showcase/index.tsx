@@ -29,7 +29,7 @@ export default function ShowcasePage() {
       <Card title="Button">
         <div className="space-y-8">
           {/* Variants */}
-          <div className="grid grid-cols-1 gap-6 tablet:grid-cols-2 laptop:grid-cols-3">
+          <div className="tablet:grid-cols-2 laptop:grid-cols-3 grid grid-cols-1 gap-6">
             <Group title="Default Variant">
               <Button variant="default">Default</Button>
               <Button disabled variant="default">
@@ -80,7 +80,7 @@ export default function ShowcasePage() {
           </div>
 
           {/* Sizes */}
-          <div className="grid grid-cols-1 gap-6 tablet:grid-cols-3">
+          <div className="tablet:grid-cols-3 grid grid-cols-1 gap-6">
             <Group title="Small Size">
               <Button size="small" variant="default">
                 Small Default

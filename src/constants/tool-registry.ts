@@ -82,6 +82,24 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Data',
+    component: lazy(() =>
+      import('@/components/feature/data/JsonFormatter').then(({ JsonFormatter }: { JsonFormatter: ComponentType }) => ({
+        default: JsonFormatter,
+      })),
+    ),
+    description: 'Format and validate JSON with clean indentation',
+    emoji: '📋',
+    key: 'json-formatter',
+    name: 'JSON Formatter',
+    routePath: '/tools/json-formatter',
+    seo: {
+      description:
+        'Format, validate, and beautify JSON online. Paste minified JSON and get clean, indented output instantly in your browser.',
+      title: 'JSON Formatter - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Encoding',
     component: lazy(() =>
       import('@/components/feature/encoding/JwtDecoder').then(({ JwtDecoder }: { JwtDecoder: ComponentType }) => ({

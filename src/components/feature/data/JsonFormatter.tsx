@@ -3,55 +3,46 @@ import { useState } from 'react'
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToolError } from '@/hooks'
-import { decodeBase64, encodeBase64 } from '@/utils/base64'
-import { isValidBase64 } from '@/utils/validation'
+import { formatJson, getJsonParseError } from '@/utils/json'
 
-const toolEntry = TOOL_REGISTRY_MAP['base64-encoder']
+const toolEntry = TOOL_REGISTRY_MAP['json-formatter']
 
-export const EncodingBase64 = () => {
+export const JsonFormatter = () => {
   const [source, setSource] = useState('')
   const [result, setResult] = useState('')
-  const [action, setAction] = useState<'decode' | 'encode'>('encode')
   const [dialogOpen, setDialogOpen] = useState(false)
   const { clearError, error, setError } = useToolError()
 
-  const process = (val: string, act: 'decode' | 'encode') => {
+  const process = (val: string) => {
     if (val.length === 0) {
       setResult('')
       clearError()
       return
     }
+
+    const parseError = getJsonParseError(val)
+    if (parseError != null) {
+      setResult('')
+      setError(`Invalid JSON: ${parseError}`)
+      return
+    }
+
     try {
-      if (act === 'decode' && !isValidBase64(val)) {
-        throw new Error('invalid')
-      }
-      setResult(act === 'encode' ? encodeBase64(val) : decodeBase64(val))
+      setResult(formatJson(val))
       clearError()
     } catch {
       setResult('')
-      setError(
-        act === 'encode'
-          ? 'Unable to encode text — input contains invalid characters'
-          : 'Enter a valid Base64 string (e.g., SGVsbG8=)',
-      )
+      setError('Unable to format JSON')
     }
   }
 
   const processInput = useDebounceCallback((val: string) => {
-    process(val, action)
+    process(val)
   }, 150)
 
   const handleSourceChange = (val: string) => {
     setSource(val)
     processInput(val)
-  }
-
-  const openDialog = (act: 'decode' | 'encode') => {
-    setAction(act)
-    setSource('')
-    setResult('')
-    clearError()
-    setDialogOpen(true)
   }
 
   const handleReset = () => {
@@ -60,19 +51,13 @@ export const EncodingBase64 = () => {
     clearError()
   }
 
-  const placeholder = action === 'encode' ? 'Hello, World!' : 'SGVsbG8sIFdvcmxkIQ=='
-  const resultPlaceholder = action === 'encode' ? 'SGVsbG8sIFdvcmxkIQ==' : 'Hello, World!'
-
   return (
     <div className="flex size-full grow flex-col gap-4">
       {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
 
       <div className="flex grow flex-col items-center justify-center gap-2">
-        <Button block onClick={() => openDialog('encode')} variant="default">
-          Encode
-        </Button>
-        <Button block onClick={() => openDialog('decode')} variant="default">
-          Decode
+        <Button block onClick={() => setDialogOpen(true)} variant="default">
+          Format
         </Button>
       </div>
 
@@ -80,16 +65,16 @@ export const EncodingBase64 = () => {
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
         onAfterClose={handleReset}
         size="screen"
-        title={action === 'encode' ? 'Base64 Encode' : 'Base64 Decode'}
+        title="JSON Format"
       >
         <div className="flex size-full grow flex-col gap-4">
           <div className="tablet:flex-row flex size-full grow flex-col gap-6">
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
-                label="Source"
+                label="JSON Input"
                 name="dialog-source"
                 onChange={handleSourceChange}
-                placeholder={placeholder}
+                placeholder='{"name":"John","age":30,"tags":["dev","tools"]}'
                 rows={12}
                 type="textarea"
                 value={source}
@@ -103,12 +88,12 @@ export const EncodingBase64 = () => {
                 disabled={!result}
                 label={
                   <span className="flex items-center gap-1">
-                    <span>Result</span>
-                    <CopyButton label="result" value={result} />
+                    <span>Formatted JSON</span>
+                    <CopyButton label="formatted JSON" value={result} />
                   </span>
                 }
                 name="result"
-                placeholder={resultPlaceholder}
+                placeholder={'{\n  "name": "John",\n  "age": 30\n}'}
                 rows={12}
                 type="textarea"
                 value={result}

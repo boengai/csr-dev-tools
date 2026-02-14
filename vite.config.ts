@@ -37,6 +37,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Format, validate, and beautify JSON online. Paste minified JSON and get clean, indented output instantly in your browser.',
+    path: '/tools/json-formatter',
+    title: 'JSON Formatter - CSR Dev Tools',
+    url: '/tools/json-formatter',
+  },
+  {
+    description:
       'Decode JWT tokens online. Inspect header, payload, and signature instantly in your browser without external services.',
     path: '/tools/jwt-decoder',
     title: 'JWT Decoder - CSR Dev Tools',

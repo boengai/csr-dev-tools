@@ -82,11 +82,11 @@ development_status:
   epic-5: done
   5-1-url-encoder-decoder: done
   5-2-jwt-decoder: done
-  epic-5-retrospective: optional
+  epic-5-retrospective: done
 
   # Epic 6: Data & Format Tools
-  epic-6: backlog
-  6-1-json-formatter-validator: backlog
+  epic-6: in-progress
+  6-1-json-formatter-validator: done
   6-2-json-to-yaml-converter: backlog
   6-3-json-to-csv-converter: backlog
   epic-6-retrospective: optional
