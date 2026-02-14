@@ -107,6 +107,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Image',
     component: lazy(() =>
+      import('@/components/feature/image/ImageCompressor').then(
+        ({ ImageCompressor }: { ImageCompressor: ComponentType }) => ({
+          default: ImageCompressor,
+        }),
+      ),
+    ),
+    description: 'Compress JPEG and WebP images with a quality slider and live size preview',
+    emoji: '🗜️',
+    key: 'image-compressor',
+    name: 'Image Compressor',
+    routePath: '/tools/image-compressor',
+    seo: {
+      description:
+        'Compress JPEG and WebP images online. Adjust quality with a slider and see file size savings instantly in your browser.',
+      title: 'Image Compressor - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Image',
+    component: lazy(() =>
       import('@/components/feature/image/ImageResizer').then(({ ImageResizer }: { ImageResizer: ComponentType }) => ({
         default: ImageResizer,
       })),

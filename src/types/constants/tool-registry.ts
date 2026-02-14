@@ -23,6 +23,7 @@ export type ToolRegistryKey =
   | 'box-shadow-generator'
   | 'color-converter'
   | 'hash-generator'
+  | 'image-compressor'
   | 'image-converter'
   | 'image-resizer'
   | 'json-formatter'

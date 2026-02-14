@@ -5,7 +5,7 @@ import type { ImageFormat, ImageProcessingResult } from '@/types'
 import { Button, Dialog, DownloadIcon, FieldForm, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToolError, useToast } from '@/hooks'
-import { isValidImageFormat, parseFileName, processImage, resizeImage } from '@/utils'
+import { formatFileSize, isValidImageFormat, parseFileName, processImage, resizeImage } from '@/utils'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
 
@@ -19,15 +19,7 @@ const EMPTY_IMAGE = 'data:,'
 
 const toolEntry = TOOL_REGISTRY_MAP['image-resizer']
 
-const formatBytes = (bytes: number): string => {
-  if (bytes === 0) {
-    return '0 B'
-  }
-  const k = 1024
-  const sizes = ['B', 'KB', 'MB', 'GB', 'TB']
-  const i = Math.floor(Math.log(bytes) / Math.log(k))
-  return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))}${sizes[i]}`
-}
+const formatBytes = formatFileSize
 
 const ImagePreview = ({
   metadata,

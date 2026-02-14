@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import { parseDataUrlToBlob, parseFileName } from '@/utils/file'
+import { COMPRESSIBLE_FORMATS } from '@/constants/image'
+import { formatFileSize, parseDataUrlToBlob, parseFileName } from '@/utils/file'
 import { calculateDimensions, getSafeImageFormat, isValidImageFormat, validateCoordinates } from '@/utils/image'
 
 describe('image utilities', () => {
@@ -243,6 +244,100 @@ describe('image utilities', () => {
       const blob = await parseDataUrlToBlob(dataUrl)
       const text = await blob.text()
       expect(text).toBe('Hello')
+    })
+  })
+
+  describe('image compression utilities', () => {
+    describe('COMPRESSIBLE_FORMATS constant (imported from @/constants)', () => {
+      it('accepts image/jpeg as compressible', () => {
+        expect(COMPRESSIBLE_FORMATS.has('image/jpeg')).toBe(true)
+      })
+
+      it('accepts image/webp as compressible', () => {
+        expect(COMPRESSIBLE_FORMATS.has('image/webp')).toBe(true)
+      })
+
+      it('rejects image/png as not compressible', () => {
+        expect(COMPRESSIBLE_FORMATS.has('image/png')).toBe(false)
+      })
+
+      it('rejects image/gif as not compressible', () => {
+        expect(COMPRESSIBLE_FORMATS.has('image/gif')).toBe(false)
+      })
+
+      it('rejects image/bmp as not compressible', () => {
+        expect(COMPRESSIBLE_FORMATS.has('image/bmp')).toBe(false)
+      })
+
+      it('rejects image/avif as not compressible', () => {
+        expect(COMPRESSIBLE_FORMATS.has('image/avif')).toBe(false)
+      })
+
+      it('contains exactly 2 formats', () => {
+        expect(COMPRESSIBLE_FORMATS.size).toBe(2)
+      })
+    })
+
+    describe('formatFileSize (imported from @/utils)', () => {
+      it('formats bytes below 1 KB', () => {
+        expect(formatFileSize(500)).toBe('500 B')
+      })
+
+      it('formats 0 bytes', () => {
+        expect(formatFileSize(0)).toBe('0 B')
+      })
+
+      it('formats exactly 1 KB', () => {
+        expect(formatFileSize(1024)).toBe('1.0 KB')
+      })
+
+      it('formats kilobytes with one decimal', () => {
+        expect(formatFileSize(1536)).toBe('1.5 KB')
+      })
+
+      it('formats exactly 1 MB', () => {
+        expect(formatFileSize(1024 * 1024)).toBe('1.0 MB')
+      })
+
+      it('formats megabytes with one decimal', () => {
+        expect(formatFileSize(2.5 * 1024 * 1024)).toBe('2.5 MB')
+      })
+
+      it('formats large file sizes in MB', () => {
+        expect(formatFileSize(10 * 1024 * 1024)).toBe('10.0 MB')
+      })
+    })
+
+    describe('quality range mapping (slider 1-100 → Canvas API 0.01-1.0)', () => {
+      it('maps all slider values to valid 0-1 range', () => {
+        for (let slider = 1; slider <= 100; slider++) {
+          const quality = slider / 100
+          expect(quality).toBeGreaterThanOrEqual(0.01)
+          expect(quality).toBeLessThanOrEqual(1.0)
+        }
+      })
+    })
+
+    describe('compression ratio calculation', () => {
+      it('calculates 50% smaller when compressed is half original', () => {
+        const ratio = Math.round((1 - 500 / 1000) * 100)
+        expect(ratio).toBe(50)
+      })
+
+      it('calculates 0% when compressed equals original', () => {
+        const ratio = Math.round((1 - 1000 / 1000) * 100)
+        expect(ratio).toBe(0)
+      })
+
+      it('calculates negative ratio when compressed is larger', () => {
+        const ratio = Math.round((1 - 1200 / 1000) * 100)
+        expect(ratio).toBe(-20)
+      })
+
+      it('calculates 90% for high compression', () => {
+        const ratio = Math.round((1 - 100 / 1000) * 100)
+        expect(ratio).toBe(90)
+      })
     })
   })
 

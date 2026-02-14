@@ -19,3 +19,5 @@ export const IMAGE_VALUE: Record<ImageFormat, string> = {
 }
 
 export const LOSSY_FORMATS: ReadonlySet<ImageFormat> = new Set(['image/avif', 'image/jpeg', 'image/webp'])
+
+export const COMPRESSIBLE_FORMATS: ReadonlySet<string> = new Set(['image/jpeg', 'image/webp'])

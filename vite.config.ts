@@ -44,6 +44,13 @@ const toolRoutes = [
     url: '/tools/image-converter',
   },
   {
+    description:
+      'Compress JPEG and WebP images online. Adjust quality with a slider and see file size savings instantly in your browser.',
+    path: '/tools/image-compressor',
+    title: 'Image Compressor - CSR Dev Tools',
+    url: '/tools/image-compressor',
+  },
+  {
     description: 'Resize images to custom width and height dimensions online. Free browser-based image resizer.',
     path: '/tools/image-resizer',
     title: 'Image Resizer - CSR Dev Tools',
