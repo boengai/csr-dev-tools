@@ -396,8 +396,8 @@ a32fd58 ♻️: story 2-5
 **Pattern**: `♻️:` prefix for refactor stories. This story should use `♻️: story 3.3`.
 
 **Key files from stories 3.1/3.2 that inform patterns:**
-- `src/components/feature/color/ColorConvertor.tsx` — Reference pattern (134 lines, flat layout, useToolError, CopyButton, 150ms debounce, TOOL_REGISTRY_MAP description)
-- `src/components/feature/encoding/EncodingBase64.tsx` — Reference pattern (137 lines, Dialog UI, useToolError, CopyButton, 150ms debounce)
+- `src/components/feature/color/ColorConvertor.tsx` — Reference pattern (134 lines, flat layout, useToolError, CopyButton, 300ms debounce, TOOL_REGISTRY_MAP description)
+- `src/components/feature/encoding/EncodingBase64.tsx` — Reference pattern (137 lines, Dialog UI, useToolError, CopyButton, 300ms debounce)
 - ToolLayout deleted, OutputDisplay deleted
 
 ### Project Structure Notes

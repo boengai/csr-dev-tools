@@ -43,7 +43,7 @@ So that **I can iterate on regex patterns quickly without switching to a termina
 
 **Given** a user enters a valid regex pattern and test string
 **When** both fields have content
-**Then** all matches are highlighted in the output region in real-time (debounced 150ms)
+**Then** all matches are highlighted in the output region in real-time (debounced 300ms)
 **And** matched text segments are rendered with `bg-primary/20 text-primary` styling
 **And** non-matched text is rendered in default styling (`text-gray-400`)
 **And** a match count is displayed (e.g., "3 matches found")
@@ -144,7 +144,7 @@ So that **I can iterate on regex patterns quickly without switching to a termina
     - **Middle:** Test string `FieldForm` (type="textarea", 8 rows) with placeholder
     - **Divider:** `border-t-2 border-dashed border-gray-900`
     - **Bottom:** Output region with highlighted text rendering + match details list + `CopyButton`
-  - [x] 3.4 Use `useToolError` for error state, `useDebounceCallback` (150ms) for real-time processing
+  - [x] 3.4 Use `useToolError` for error state, `useDebounceCallback` (300ms) for real-time processing
   - [x] 3.5 Process function is **synchronous** — native RegExp, no dynamic import needed (unlike diff/yaml tools). No `sessionRef` needed.
   - [x] 3.6 State: `pattern` (string), `testString` (string), `flags` (object: `{ g: boolean, i: boolean, m: boolean }` — default `{ g: true, i: false, m: false }`), `result` (RegexResult | null), `segments` (Array<HighlightSegment>), `dialogOpen` (boolean)
   - [x] 3.7 Debounced process: call `executeRegex` and `buildHighlightSegments` when pattern, testString, or flags change
@@ -334,7 +334,7 @@ Flag toggle buttons use the same styling pattern as other interactive elements i
 - **No dynamic import for processing** — RegExp is native, unlike diff/yaml which need dynamic imports. This simplifies the component (no sessionRef, no async). [Source: native JavaScript API]
 - **100% client-side** — zero network requests for regex testing [Source: architecture.md#Hard Constraints]
 - **useToolError for errors** — never implement custom error state [Source: architecture.md#Error Handling]
-- **useDebounceCallback(150ms)** — live preview pattern per architecture process patterns [Source: architecture.md#Process Patterns]
+- **useDebounceCallback(300ms)** — live preview pattern per architecture process patterns [Source: architecture.md#Process Patterns]
 
 ### Library & Framework Requirements
 
@@ -621,7 +621,7 @@ bfb5153 🔄: epic 6 retrospective
 - [Source: _bmad-output/planning-artifacts/prd.md#Performance] — NFR1: Processing under 100ms (text tools)
 - [Source: _bmad-output/planning-artifacts/architecture.md#Tool Registry] — Registry entry pattern with all required fields
 - [Source: _bmad-output/planning-artifacts/architecture.md#Naming Patterns] — `regex-tester` key, `Text` category
-- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Live preview: on input change, 150ms debounce
+- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Live preview: on input change, 300ms debounce
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Message Format] — Concise, actionable, with example
 - [Source: _bmad-output/planning-artifacts/architecture.md#Structure Patterns] — Tool component file structure
 - [Source: _bmad-output/planning-artifacts/architecture.md#Hard Constraints] — Zero server-side processing
@@ -633,7 +633,7 @@ bfb5153 🔄: epic 6 retrospective
 - [Source: src/types/constants/tool-registry.ts] — ToolRegistryKey union to update (ToolCategory already has 'Text')
 - [Source: src/components/common/sidebar/Sidebar.tsx:13] — CATEGORY_ORDER already has 'Text'
 - [Source: src/hooks/useToolError.ts] — Error handling hook (clearError, error, setError)
-- [Source: src/hooks/useDebounceCallback.ts] — Debounce utility (default 800ms, override to 150ms)
+- [Source: src/hooks/useDebounceCallback.ts] — Debounce utility (default 800ms, override to 300ms)
 - [Source: vite.config.ts] — Pre-render routes pattern
 - [Source: _bmad-output/implementation-artifacts/7-1-text-diff-checker.md] — Previous story learnings, file patterns, test count
 - [Source: MDN — RegExp constructor] — Native regex compilation and SyntaxError handling

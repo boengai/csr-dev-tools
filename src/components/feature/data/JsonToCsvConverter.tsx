@@ -49,7 +49,7 @@ export const JsonToCsvConverter = () => {
 
   const processInput = useDebounceCallback((val: string) => {
     process(val, mode)
-  }, 150)
+  }, 300)
 
   const handleSourceChange = (val: string) => {
     setSource(val)

@@ -27,7 +27,7 @@ So that **I can rely on consistent, tested color conversion between HEX, RGB, an
 
 **Given** a user inputs a valid HEX value (e.g., `#3B82F6`)
 **When** the value is entered
-**Then** RGB and HSL conversions appear in real-time (debounced 150ms) in the output region
+**Then** RGB and HSL conversions appear in real-time (debounced 300ms) in the output region
 **And** each output value has an adjacent `CopyButton`
 
 ### AC3: Visual Color Picker
@@ -63,7 +63,7 @@ So that **I can rely on consistent, tested color conversion between HEX, RGB, an
   - [x] 1.4 Move color conversion outputs into `OutputDisplay` (table variant) in the `output` region
   - [x] 1.5 Accept a `mode` prop (`'card' | 'page'`, default `'card'`) and pass to ToolLayout
   - [x] 1.6 Pass tool `title` and `description` from TOOL_REGISTRY to ToolLayout
-  - [x] 1.7 Update debounce from 800ms default to 150ms (AC requirement)
+  - [x] 1.7 Update debounce from 800ms default to 300ms (AC requirement)
 
 - [x] Task 2: Integrate useToolError for error handling (AC: #4)
   - [x] 2.1 Import and use `useToolError` hook
@@ -201,7 +201,7 @@ return (
 
 ### CRITICAL: Debounce Timing
 
-The current `useDebounceCallback` hook defaults to **800ms**. The AC requires **150ms** debounce.
+The current `useDebounceCallback` hook defaults to **800ms**. The AC requires **300ms** debounce.
 
 ```tsx
 // CURRENT (too slow):
@@ -209,8 +209,8 @@ const dbConvertColor = useDebounceCallback((source, format) => { ... })
 // 800ms default
 
 // REQUIRED:
-const dbConvertColor = useDebounceCallback((source, format) => { ... }, 150)
-// Explicit 150ms
+const dbConvertColor = useDebounceCallback((source, format) => { ... }, 300)
+// Explicit 300ms
 ```
 
 ### CRITICAL: Error Handling Refactor
@@ -339,7 +339,7 @@ const colorConvertorVariants: CompVariant<ColorConvertorVariants> = tv({...})
 - **useToolError required** — Never implement custom error state in tools [Source: architecture.md#Enforcement Guidelines]
 - **Standardized CopyButton** — Use from `@/components/common/button/`, not custom [Source: architecture.md#Pattern Examples]
 - **OutputDisplay for outputs** — Table variant for multi-value outputs [Source: architecture.md#Structure Patterns]
-- **150ms debounce** — Text conversion tools use 150ms debounce on input change [Source: architecture.md#Tool Input Processing]
+- **300ms debounce** — Text conversion tools use 300ms debounce on input change [Source: architecture.md#Tool Input Processing]
 - **Error messages with examples** — Concise, actionable, include valid input example [Source: architecture.md#Error Message Format]
 - **Named exports** — `export const ColorConvertor` not `export default` [Source: project-context.md#Anti-Patterns]
 - **`import type` for types** — Required by `verbatimModuleSyntax` [Source: project-context.md#Language-Specific Rules]
@@ -385,7 +385,7 @@ d91904b 📝: epic1 retro
 ### Project Structure Notes
 
 **Files to MODIFY:**
-- `src/components/feature/color/ColorConvertor.tsx` — Major refactor: ToolLayout, useToolError, standardized CopyButton, color picker, 150ms debounce
+- `src/components/feature/color/ColorConvertor.tsx` — Major refactor: ToolLayout, useToolError, standardized CopyButton, color picker, 300ms debounce
 - `src/utils/color.spec.ts` — Expand from 15 to ~30+ test cases
 
 **Files to CREATE:**
@@ -422,7 +422,7 @@ d91904b 📝: epic1 retro
 **Output Formats:** All 6 formats above, displayed simultaneously.
 
 **Behavior:**
-- Type in ANY field → all other fields update in real-time (150ms debounce)
+- Type in ANY field → all other fields update in real-time (300ms debounce)
 - Color picker → all fields update immediately (no debounce)
 - Invalid input → inline error with format-specific example
 - Color swatch preview animates on color change
@@ -444,7 +444,7 @@ d91904b 📝: epic1 retro
 - [Source: _bmad-output/planning-artifacts/architecture.md#Tool Registry Architecture] — TOOL_REGISTRY entry pattern
 - [Source: _bmad-output/planning-artifacts/architecture.md#Frontend Architecture] — ToolLayout card/page modes
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Message Format] — Concise, actionable, with example
-- [Source: _bmad-output/planning-artifacts/architecture.md#Tool Input Processing] — 150ms debounce for text conversion
+- [Source: _bmad-output/planning-artifacts/architecture.md#Tool Input Processing] — 300ms debounce for text conversion
 - [Source: _bmad-output/planning-artifacts/architecture.md#Pattern Examples] — ToolLayout + useToolError pattern
 - [Source: _bmad-output/project-context.md] — 53 project rules (types, imports, naming, etc.)
 - [Source: _bmad-output/implementation-artifacts/2-5-tool-descriptions-placeholders-and-tooltips.md] — Previous story: 140 tests passing
@@ -462,7 +462,7 @@ d91904b 📝: epic1 retro
 
 ## Change Log
 
-- 2026-02-13: Refactored ColorConvertor — replaced custom CopyButton with standardized one, integrated useToolError with format-specific error messages, added native color picker, set 150ms debounce. Expanded test coverage from 15 to 57 tests.
+- 2026-02-13: Refactored ColorConvertor — replaced custom CopyButton with standardized one, integrated useToolError with format-specific error messages, added native color picker, set 300ms debounce. Expanded test coverage from 15 to 57 tests.
 - 2026-02-13: [Review] Adversarial review found 11 issues. Legitimate fixes applied: aria-label on color picker (WCAG), 4 additional round-trip test chains, round-trip test precision fixes. ToolLayout/OutputDisplay/mode-prop findings overridden by PO decision — ToolLayout deprecated and removed (story 2-1 → deprecated). Card.tsx overflow, App.tsx, TimeUnixTimestamp.tsx, and tool page changes accepted as related improvements.
 
 ## Dev Agent Record
@@ -506,7 +506,7 @@ Findings accepted as-is (PO override):
 - Error displayed inline via `role="alert"` paragraph below inputs
 - Added native `<input type="color">` picker with immediate (non-debounced) conversion and `aria-label="Color picker"`
 - Preserved `InputWrapper` animated color swatch with `motion.div` and NotoEmoji fallback
-- Updated debounce from 800ms default to explicit 150ms
+- Updated debounce from 800ms default to explicit 300ms
 - Description sourced from `TOOL_REGISTRY_MAP['color-converter']`
 - ToolLayout removed (deprecated) — component uses flat layout, each tool owns its own layout
 - Card.tsx content div changed from `overflow-hidden` to `overflow-y-auto` (scroll responsibility moved to Card)
@@ -515,7 +515,7 @@ Findings accepted as-is (PO override):
 
 ### File List
 
-- `src/components/feature/color/ColorConvertor.tsx` — Modified (refactor: useToolError, CopyButton, color picker, 150ms debounce, flat layout)
+- `src/components/feature/color/ColorConvertor.tsx` — Modified (refactor: useToolError, CopyButton, color picker, 300ms debounce, flat layout)
 - `src/utils/color.spec.ts` — Modified (expanded from 15 to 57 test cases)
 - `src/components/common/card/Card.tsx` — Modified (overflow-hidden → overflow-y-auto)
 - `src/components/common/tool-layout/ToolLayout.tsx` — Deleted (ToolLayout deprecated)

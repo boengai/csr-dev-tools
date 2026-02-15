@@ -28,7 +28,7 @@ So that **I can quickly clean up and validate JSON for my development work**.
 
 **Given** a user pastes valid JSON (e.g., `{"name":"John","age":30}`)
 **When** the value is entered
-**Then** formatted, indented JSON appears in real-time (debounced 150ms) in the output textarea
+**Then** formatted, indented JSON appears in real-time (debounced 300ms) in the output textarea
 **And** the output uses 2-space indentation with no trailing whitespace
 **And** a `CopyButton` copies the formatted JSON
 
@@ -100,7 +100,7 @@ So that **I can quickly clean up and validate JSON for my development work**.
   - [x] 3.2 Follow `UrlEncoder.tsx` dialog pattern: single "Format" button on card, full-screen dialog with source/result areas
   - [x] 3.3 Left side of dialog: raw JSON textarea input with `FieldForm` and placeholder showing a minified JSON example (e.g., `{"name":"John","age":30,"tags":["dev","tools"]}`)
   - [x] 3.4 Right side of dialog: formatted JSON output textarea with `CopyButton` in the label, disabled when no result
-  - [x] 3.5 Use `useToolError` for error state, `useDebounceCallback` (150ms) for processing, `CopyButton` on result section
+  - [x] 3.5 Use `useToolError` for error state, `useDebounceCallback` (300ms) for processing, `CopyButton` on result section
   - [x] 3.6 On valid JSON: call `formatJson()` and display result, clear error
   - [x] 3.7 On invalid JSON: call `getJsonParseError()` and `setError('Invalid JSON: {error message}')` — clears on valid input
   - [x] 3.8 On empty input: clear result and error
@@ -132,7 +132,7 @@ This tool is in a **new domain** (`data/`) but the implementation pattern MUST m
 
 1. **Dialog-based UI:** Single "Format" button on the card, clicking opens a full-screen `Dialog` with source textarea on left, result textarea on right (stacked on mobile)
 2. **State management:** `useState` for source (raw JSON string), result (formatted JSON), dialogOpen
-3. **Debounced processing:** `useDebounceCallback` with 150ms delay
+3. **Debounced processing:** `useDebounceCallback` with 300ms delay
 4. **Error display:** `{error != null && <p className="text-error text-body-sm" role="alert">{error}</p>}` at bottom of dialog content
 5. **Tool description:** `TOOL_REGISTRY_MAP['json-formatter']?.description` shown above button
 6. **Reset on close:** `handleReset` clears source, result, error via `onAfterClose`
@@ -404,7 +404,7 @@ f6e45be 🔄: epic 4 retrospective
 - [Source: _bmad-output/planning-artifacts/epics.md#Epic 6] — Epic objectives and FR coverage (FR17)
 - [Source: _bmad-output/planning-artifacts/architecture.md#Tool Registry] — Registry entry pattern with all required fields
 - [Source: _bmad-output/planning-artifacts/architecture.md#Naming Patterns] — `json-formatter` key, `Data` category
-- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change, 150ms debounce
+- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change, 300ms debounce
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Message Format] — Concise, actionable, with example of valid input
 - [Source: _bmad-output/planning-artifacts/architecture.md#Structure Patterns] — Tool component file structure, data/ directory
 - [Source: _bmad-output/planning-artifacts/architecture.md#Hard Constraints] — Zero server-side processing
@@ -418,7 +418,7 @@ f6e45be 🔄: epic 4 retrospective
 - [Source: src/constants/tool-registry.ts] — Current registry with 8 tools, alphabetical ordering
 - [Source: src/types/constants/tool-registry.ts] — ToolRegistryKey and ToolCategory unions to update
 - [Source: src/hooks/useToolError.ts] — Error handling hook
-- [Source: src/hooks/useDebounceCallback.ts] — Debounce utility (150ms)
+- [Source: src/hooks/useDebounceCallback.ts] — Debounce utility (300ms)
 - [Source: vite.config.ts] — Pre-render routes pattern (MUST add JSON Formatter route)
 - [Source: _bmad-output/implementation-artifacts/5-2-jwt-decoder.md] — Previous story learnings
 
@@ -436,7 +436,7 @@ No debug issues encountered. Clean implementation with all tests passing on firs
 
 - Created `formatJson()` and `getJsonParseError()` pure utility functions using native `JSON.parse`/`JSON.stringify` — zero dependencies
 - Wrote 15 unit tests covering: valid objects, arrays, nested structures, primitives, special characters, Unicode, empty input, invalid JSON, custom indent, large objects, idempotent formatting, and `getJsonParseError` edge cases
-- Built `JsonFormatter` component following the `UrlEncoder.tsx` dialog pattern: single "Format" button on card, full-screen dialog with source/result textareas, 150ms debounced processing, `useToolError` for inline error display, `CopyButton` on result, reset on dialog close
+- Built `JsonFormatter` component following the `UrlEncoder.tsx` dialog pattern: single "Format" button on card, full-screen dialog with source/result textareas, 300ms debounced processing, `useToolError` for inline error display, `CopyButton` on result, reset on dialog close
 - Registered tool in `TOOL_REGISTRY` with `'Data'` category (new), `'json-formatter'` key, lazy-loaded component, SEO metadata
 - Added `'Data'` to `ToolCategory` and `'json-formatter'` to `ToolRegistryKey` union types
 - Created `src/components/feature/data/` domain directory with barrel export

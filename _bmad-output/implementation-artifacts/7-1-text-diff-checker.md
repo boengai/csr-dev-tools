@@ -36,7 +36,7 @@ So that **I can quickly identify changes between two versions of code or text**.
 
 **Given** a user enters text in both input fields
 **When** both fields have content
-**Then** a side-by-side diff is computed in real-time (debounced 150ms) and displayed below the inputs in a two-column CSS grid
+**Then** a side-by-side diff is computed in real-time (debounced 300ms) and displayed below the inputs in a two-column CSS grid
 **And** original text is shown on the left, modified text on the right, with sticky "Original" / "Modified" headers
 **And** each row shows line numbers, a 2px colored indicator bar (`bg-error` for removed, `bg-success` for added), and content
 **And** paired modified lines show inline character-level highlighting via `diffWords` (`bg-error/25` for removed chars, `bg-success/25` for added chars)
@@ -126,7 +126,7 @@ So that **I can quickly identify changes between two versions of code or text**.
     - **Top:** Two `FieldForm` textareas side-by-side (`tablet:flex-row flex-col`): "Original" (left) and "Modified" (right) with appropriate labels and placeholders
     - **Divider:** `border-t-2 border-dashed border-gray-900` (horizontal divider)
     - **Bottom:** Diff output rendered as custom JSX (not a textarea) — scrollable container with monospace font, colored line rendering, and `CopyButton` for unified diff
-  - [x] 4.4 Use `useToolError` for error state, `useDebounceCallback` (150ms) for processing, `useRef(0)` sessionRef for async race condition protection (follows `JsonToYamlConverter.tsx` async pattern)
+  - [x] 4.4 Use `useToolError` for error state, `useDebounceCallback` (300ms) for processing, `useRef(0)` sessionRef for async race condition protection (follows `JsonToYamlConverter.tsx` async pattern)
   - [x] 4.5 Process function is **async** — dynamically imports `diff` package. Uses `sessionRef` to cancel stale results (identical to YAML pattern)
   - [x] 4.6 State: `original` (string), `modified` (string), `rows` (Array<SideBySideRow>), `unifiedDiff` (string), `dialogOpen` (boolean)
   - [x] 4.7 Debounced process: call `computeSideBySideDiff` and `createUnifiedDiff` when either input changes
@@ -563,7 +563,7 @@ dbbf974 ✨: story 6-1 JSON Formatter/Validator
 - [Source: _bmad-output/planning-artifacts/prd.md#Performance] — NFR1: Processing under 100ms (text tools), FR4: Results within 500ms
 - [Source: _bmad-output/planning-artifacts/architecture.md#Tool Registry] — Registry entry pattern with all required fields
 - [Source: _bmad-output/planning-artifacts/architecture.md#Naming Patterns] — `text-diff-checker` key, `Text` category
-- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change, 150ms debounce
+- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change, 300ms debounce
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Message Format] — Concise, actionable, with example
 - [Source: _bmad-output/planning-artifacts/architecture.md#Structure Patterns] — Tool component file structure
 - [Source: _bmad-output/planning-artifacts/architecture.md#Hard Constraints] — Zero server-side processing
@@ -576,7 +576,7 @@ dbbf974 ✨: story 6-1 JSON Formatter/Validator
 - [Source: src/types/constants/tool-registry.ts] — ToolRegistryKey and ToolCategory unions to update
 - [Source: src/components/common/sidebar/Sidebar.tsx:13] — CATEGORY_ORDER array to update
 - [Source: src/hooks/useToolError.ts] — Error handling hook
-- [Source: src/hooks/useDebounceCallback.ts] — Debounce utility (150ms)
+- [Source: src/hooks/useDebounceCallback.ts] — Debounce utility (300ms)
 - [Source: vite.config.ts] — Pre-render routes pattern
 - [Source: _bmad-output/implementation-artifacts/6-3-json-to-csv-converter.md] — Previous story learnings
 - [Source: https://www.npmjs.com/package/diff] — diff (jsdiff) npm package, v8.0.3

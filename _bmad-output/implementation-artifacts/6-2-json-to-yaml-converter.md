@@ -28,7 +28,7 @@ So that **I can quickly switch between configuration formats for different tools
 
 **Given** a user opens the "JSON → YAML" dialog and pastes valid JSON (e.g., `{"name":"John","age":30}`)
 **When** the value is entered
-**Then** the YAML equivalent appears in real-time (debounced 150ms) in the output textarea:
+**Then** the YAML equivalent appears in real-time (debounced 300ms) in the output textarea:
 ```yaml
 name: John
 age: 30
@@ -39,7 +39,7 @@ age: 30
 
 **Given** a user opens the "YAML → JSON" dialog and pastes valid YAML (e.g., `name: John\nage: 30`)
 **When** the value is entered
-**Then** the JSON equivalent appears in real-time (debounced 150ms), formatted with 2-space indentation:
+**Then** the JSON equivalent appears in real-time (debounced 300ms), formatted with 2-space indentation:
 ```json
 {
   "name": "John",
@@ -129,7 +129,7 @@ age: 30
   - [x] 4.5 Right side of dialog: result textarea with `CopyButton` in the label — label changes based on mode:
     - JSON→YAML: label "YAML Output", placeholder `name: John\nage: 30`
     - YAML→JSON: label "JSON Output", placeholder `{\n  "name": "John",\n  "age": 30\n}`
-  - [x] 4.6 Use `useToolError` for error state, `useDebounceCallback` (150ms) for processing, `CopyButton` on result section
+  - [x] 4.6 Use `useToolError` for error state, `useDebounceCallback` (300ms) for processing, `CopyButton` on result section
   - [x] 4.7 Process function is async — calls `jsonToYaml()` or `yamlToJson()` based on mode
   - [x] 4.8 On valid input: display converted result, clear error
   - [x] 4.9 On invalid input: use `getJsonParseError()` (JSON mode) or `getYamlParseError()` (YAML mode) for specific error messages, format as `'Invalid JSON: {msg}'` or `'Invalid YAML: {msg}'`
@@ -502,7 +502,7 @@ f8e8266 ✨: story 5-2 JWT Decoder
 - [Source: _bmad-output/planning-artifacts/epics.md#Epic 6] — Epic objectives and FR coverage (FR18)
 - [Source: _bmad-output/planning-artifacts/architecture.md#Tool Registry] — Registry entry pattern with all required fields
 - [Source: _bmad-output/planning-artifacts/architecture.md#Naming Patterns] — `json-to-yaml-converter` key, `Data` category
-- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change, 150ms debounce
+- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change, 300ms debounce
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Message Format] — Concise, actionable, with example of valid input
 - [Source: _bmad-output/planning-artifacts/architecture.md#Structure Patterns] — Tool component file structure, data/ directory
 - [Source: _bmad-output/planning-artifacts/architecture.md#Hard Constraints] — Zero server-side processing
@@ -514,7 +514,7 @@ f8e8266 ✨: story 5-2 JWT Decoder
 - [Source: src/constants/tool-registry.ts] — Current registry with 9 tools, alphabetical ordering
 - [Source: src/types/constants/tool-registry.ts] — ToolRegistryKey and ToolCategory unions to update
 - [Source: src/hooks/useToolError.ts] — Error handling hook
-- [Source: src/hooks/useDebounceCallback.ts] — Debounce utility (150ms)
+- [Source: src/hooks/useDebounceCallback.ts] — Debounce utility (300ms)
 - [Source: vite.config.ts] — Pre-render routes pattern (MUST add route)
 - [Source: _bmad-output/implementation-artifacts/6-1-json-formatter-validator.md] — Previous story learnings (same epic)
 - [Source: https://github.com/eemeli/yaml] — yaml library (YAML 1.2, TypeScript-first)

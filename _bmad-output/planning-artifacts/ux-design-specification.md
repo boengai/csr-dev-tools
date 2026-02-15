@@ -962,7 +962,7 @@ flowchart TD
 - **Label:** always visible above input via `FieldForm` wrapper — never placeholder-only labels
 - **Focus:** border transitions to `--color-primary` with smooth transition
 - **Clear:** no explicit clear button for text inputs — user selects all + deletes (standard behavior)
-- **Auto-processing:** for text tools, output updates as user types (debounced at 150ms)
+- **Auto-processing:** for text tools, output updates as user types (debounced at 300ms)
 
 **Select input conventions:**
 - **Default value:** always pre-selected with the most common option (e.g., "HEX" for color format, "PNG" for image format)

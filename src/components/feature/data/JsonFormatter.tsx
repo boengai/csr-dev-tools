@@ -38,7 +38,7 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
 
   const processInput = useDebounceCallback((val: string) => {
     process(val)
-  }, 150)
+  }, 300)
 
   const handleSourceChange = (val: string) => {
     setSource(val)

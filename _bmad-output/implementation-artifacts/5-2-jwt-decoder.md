@@ -30,7 +30,7 @@ So that **I can quickly inspect token contents for debugging without using an ex
 **When** the value is entered
 **Then** the decoded header and payload are displayed as formatted JSON (2-space indentation) in separate labeled result sections
 **And** each section (Header, Payload) has a `CopyButton`
-**And** processing is debounced at 150ms
+**And** processing is debounced at 300ms
 
 ### AC3: Signature Shown but Not Verified
 
@@ -103,7 +103,7 @@ So that **I can quickly inspect token contents for debugging without using an ex
   - [x] 3.2 Follow `EncodingBase64.tsx` dialog pattern: single "Decode" button on card, full-screen dialog with source/result areas
   - [x] 3.3 Left side of dialog: JWT token textarea input with `FieldForm` and placeholder showing a truncated example JWT
   - [x] 3.4 Right side of dialog: Three result sections — Header (formatted JSON), Payload (formatted JSON with timestamp annotations), Signature (raw string with "not verified" note)
-  - [x] 3.5 Use `useToolError` for error state, `useDebounceCallback` (150ms) for processing, `CopyButton` on each result section
+  - [x] 3.5 Use `useToolError` for error state, `useDebounceCallback` (300ms) for processing, `CopyButton` on each result section
   - [x] 3.6 Validate with `isValidJwt()` before decoding; catch decode errors for malformed segments
   - [x] 3.7 On validation failure: `setError('Enter a valid JWT token (e.g., eyJhbGciOiJIUzI1NiJ9...)')` — clears on valid input
   - [x] 3.8 On decode failure: `setError('JWT contains invalid header or payload — could not decode segments')` — clears on valid input
@@ -134,7 +134,7 @@ This tool is in the **same domain** (`encoding/`) as EncodingBase64 and UrlEncod
 
 1. **Dialog-based UI:** Single "Decode" button on the card (no encode/decode toggle — JWT is decode-only), clicking opens a full-screen `Dialog` with source textarea on left, result sections on right (stacked on mobile)
 2. **State management:** `useState` for source (raw JWT string), header result, payload result, signature result, dialogOpen
-3. **Debounced processing:** `useDebounceCallback` with 150ms delay
+3. **Debounced processing:** `useDebounceCallback` with 300ms delay
 4. **Error display:** `{error != null && <p className="text-error text-body-sm" role="alert">{error}</p>}` at bottom of dialog content
 5. **Tool description:** `TOOL_REGISTRY_MAP['jwt-decoder']?.description` shown above button
 6. **Reset on close:** `handleReset` clears source, all results, error via `onAfterClose`
@@ -385,7 +385,7 @@ ef7ad63 ✨: story 4-2
 - [Source: _bmad-output/planning-artifacts/epics.md#Story 5.2] — Full AC definitions and story requirements
 - [Source: _bmad-output/planning-artifacts/epics.md#Epic 5] — Epic objectives and FR coverage (FR10)
 - [Source: _bmad-output/planning-artifacts/architecture.md#Tool Registry] — Registry entry pattern with all required fields
-- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change, 150ms debounce
+- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change, 300ms debounce
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Message Format] — Concise, actionable, with example of valid input
 - [Source: _bmad-output/planning-artifacts/architecture.md#Structure Patterns] — Tool component file structure
 - [Source: _bmad-output/planning-artifacts/architecture.md#Hard Constraints] — Zero server-side processing
@@ -399,7 +399,7 @@ ef7ad63 ✨: story 4-2
 - [Source: src/constants/tool-registry.ts] — Current registry with 7 tools
 - [Source: src/types/constants/tool-registry.ts] — ToolRegistryKey union to update
 - [Source: src/hooks/useToolError.ts] — Error handling hook
-- [Source: src/hooks/useDebounceCallback.ts] — Debounce utility (150ms)
+- [Source: src/hooks/useDebounceCallback.ts] — Debounce utility (300ms)
 - [Source: vite.config.ts] — Pre-render routes pattern (MUST add JWT Decoder route)
 - [Source: CONTRIBUTING.md] — Add-a-tool workflow documentation
 - [Source: _bmad-output/implementation-artifacts/5-1-url-encoder-decoder.md] — Previous story learnings

@@ -78,7 +78,7 @@ export const ColorConvertor = () => {
       toast({ action: 'add', item: { label: ERROR_MESSAGES[format], type: 'error' } })
       setColor({ ...emptyColors, [format]: value })
     }
-  }, 150)
+  }, 300)
 
   const handleColorChange = (format: ColorFormat, value: string) => {
     setColor((prev) => ({ ...prev, [format]: value }))

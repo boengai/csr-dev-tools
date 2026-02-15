@@ -52,7 +52,7 @@ export const HashGenerator = () => {
 
   const debouncedCompute = useDebounceCallback((input: string) => {
     handleCompute(input, algorithmRef.current)
-  }, 150)
+  }, 300)
 
   const handleTextChange = (value: string) => {
     setText(value)

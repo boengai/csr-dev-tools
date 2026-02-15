@@ -35,7 +35,7 @@ So that **I can reliably encode and decode Base64 strings with a consistent inte
 
 **Given** the dialog is open
 **When** the user types in the source pane
-**Then** the result pane updates in real-time (debounced 150ms)
+**Then** the result pane updates in real-time (debounced 300ms)
 **And** the result pane has a `CopyButton` for one-click copy
 
 ### AC4: Error Handling
@@ -70,7 +70,7 @@ So that **I can reliably encode and decode Base64 strings with a consistent inte
   - [x] 2.3 Import and call `encodeBase64`/`decodeBase64` from `@/utils/base64` instead of raw `btoa`/`atob`
   - [x] 2.4 Add inline error display via `<p role="alert">` inside dialog (same pattern as ColorConvertor)
   - [x] 2.5 Add tool description from `TOOL_REGISTRY_MAP['base64-encoder']`
-  - [x] 2.6 Update debounce from 800ms default to explicit 150ms
+  - [x] 2.6 Update debounce from 800ms default to explicit 300ms
   - [x] 2.7 Clear error when input changes to valid value or when input is empty
   - [x] 2.8 Use `isValidBase64` from `@/utils/validation` for decode input validation before attempting decode
   - [x] 2.9 Add `Dialog` (size `"screen"`) — opens when user clicks Encode or Decode button
@@ -161,7 +161,7 @@ User clicks "Encode" or "Decode" button on card
 
 User types in dialog Source textarea (left pane)
   → setSource(val)
-  → processInput(val)    [debounced 150ms]
+  → processInput(val)    [debounced 300ms]
     → encodeBase64(val) or decodeBase64(val) based on action state
       → Success: setResult(string), clearError()
       → Failure: setResult(''), setError(message)
@@ -176,7 +176,7 @@ User closes dialog (X, Escape, overlay click)
 1. **`btoa`/`atob` break for Unicode** — `btoa('こんにちは')` throws `InvalidCharacterError`. The AC requires Unicode handling. Extract to utility with `TextEncoder`/`TextDecoder`.
 2. **Error handling uses Error object in state** — Current: `result instanceof Error` disables the result field and shows error in placeholder. Refactor: use `useToolError` for inline error display via `<p role="alert">`.
 3. **Manual copy button** — Current: `<Button variant="text"><CopyIcon /></Button>` in the result label. Replace with standardized `CopyButton` component.
-4. **Debounce is 800ms** — Must change to 150ms.
+4. **Debounce is 800ms** — Must change to 300ms.
 5. **No input validation** — Decoder doesn't validate before calling `atob`. Use `isValidBase64` from `@/utils/validation`.
 6. **No description shown** — Add tool description from `TOOL_REGISTRY_MAP`.
 
@@ -350,8 +350,8 @@ const dbSetResult = useDebounceCallback((s: string) => { ... })
 // 800ms default
 
 // REQUIRED:
-const processInput = useDebounceCallback((val: string) => { ... }, 150)
-// Explicit 150ms
+const processInput = useDebounceCallback((val: string) => { ... }, 300)
+// Explicit 300ms
 ```
 
 ### CRITICAL: Description Display
@@ -415,7 +415,7 @@ export const EncodingBase64 = () => {
 
   const processInput = useDebounceCallback((val: string) => {
     process(val, action)
-  }, 150)
+  }, 300)
 
   const handleSourceChange = (val: string) => {
     setSource(val)
@@ -536,7 +536,7 @@ export const EncodingBase64 = () => {
 - **No OutputDisplay** — Removed from codebase; not needed for this tool's textarea pattern
 - **useToolError required** — Never implement custom error state in tools [Source: architecture.md#Error Handling]
 - **Standardized CopyButton** — Use from `@/components/common/button/`, not manual Button + CopyIcon [Source: architecture.md#Pattern Examples]
-- **150ms debounce** — Text conversion tools use 150ms debounce on input change [Source: architecture.md#Tool Input Processing]
+- **300ms debounce** — Text conversion tools use 300ms debounce on input change [Source: architecture.md#Tool Input Processing]
 - **Error messages with examples** — Concise, actionable, include valid input example [Source: architecture.md#Error Message Format]
 - **Named exports** — `export const EncodingBase64` not `export default` [Source: project-context.md#Anti-Patterns]
 - **`import type` for types** — Required by `verbatimModuleSyntax` [Source: project-context.md#Language-Specific Rules]
@@ -572,7 +572,7 @@ a32fd58 ♻️: story 2-5
 **Pattern**: `♻️:` prefix for refactor stories. This story should use `♻️: story 3.2`.
 
 **Key files from story 3-1 that inform patterns:**
-- `src/components/feature/color/ColorConvertor.tsx` — Reference pattern (134 lines, flat layout, useToolError, CopyButton, 150ms debounce, TOOL_REGISTRY_MAP description)
+- `src/components/feature/color/ColorConvertor.tsx` — Reference pattern (134 lines, flat layout, useToolError, CopyButton, 300ms debounce, TOOL_REGISTRY_MAP description)
 - `src/components/common/card/Card.tsx` — overflow-y-auto (scroll in Card, not tool)
 - ToolLayout deleted, OutputDisplay deleted
 
@@ -583,7 +583,7 @@ a32fd58 ♻️: story 2-5
 - `src/utils/base64.spec.ts` — Regression tests for encode/decode logic (~16+ test cases)
 
 **Files to MODIFY:**
-- `src/components/feature/encoding/EncodingBase64.tsx` — Refactor: useToolError, CopyButton, 150ms debounce, description, utility functions
+- `src/components/feature/encoding/EncodingBase64.tsx` — Refactor: useToolError, CopyButton, 300ms debounce, description, utility functions
 - `src/utils/index.ts` — Add base64 barrel export (if barrel exists)
 
 **Files NOT to modify:**
@@ -647,7 +647,7 @@ a32fd58 ♻️: story 2-5
 
 **Behavior:**
 - Click "Encode" or "Decode" button on card → dialog opens with corresponding mode
-- Type in dialog source (left pane) → result (right pane) updates in real-time (150ms debounce)
+- Type in dialog source (left pane) → result (right pane) updates in real-time (300ms debounce)
 - Empty source → clear result, clear error
 - Invalid decode input → clear result, show inline error in dialog
 - Close dialog → full reset (source, result, error all cleared)
@@ -665,7 +665,7 @@ a32fd58 ♻️: story 2-5
 - [Source: _bmad-output/planning-artifacts/epics.md#Story 3.2] — Acceptance criteria
 - [Source: _bmad-output/planning-artifacts/epics.md#FR8] — Base64 encode/decode
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Message Format] — Concise, actionable, with example
-- [Source: _bmad-output/planning-artifacts/architecture.md#Tool Input Processing] — 150ms debounce for text conversion
+- [Source: _bmad-output/planning-artifacts/architecture.md#Tool Input Processing] — 300ms debounce for text conversion
 - [Source: _bmad-output/planning-artifacts/architecture.md#Core Architectural Decisions] — useToolError pattern
 - [Source: _bmad-output/planning-artifacts/ux-design-specification.md#Defining Experience] — Paste → result → copy loop
 - [Source: _bmad-output/project-context.md] — 53 project rules (types, imports, naming, etc.)
@@ -674,7 +674,7 @@ a32fd58 ♻️: story 2-5
 - [Source: src/utils/validation.ts#isValidBase64] — Existing Base64 validator (lines 22-25)
 - [Source: src/hooks/useToolError.ts] — Error state hook (13 lines)
 - [Source: src/components/common/button/CopyButton.tsx] — Standardized CopyButton (83 lines)
-- [Source: src/hooks/useDebounceCallback.ts] — Debounce hook (800ms default, override to 150ms)
+- [Source: src/hooks/useDebounceCallback.ts] — Debounce hook (800ms default, override to 300ms)
 - [Source: src/components/common/tabs/Tabs.tsx] — Radix Tabs component (135 lines)
 - [Source: src/components/common/dialog/Dialog.tsx] — Dialog component (83 lines, Radix + Motion, size variants: default/screen/small)
 - [Source: src/types/components/common/dialog.ts] — DialogProps type (injected, onAfterClose, size, title, trigger)
@@ -695,7 +695,7 @@ Claude Opus 4.6
 ### Completion Notes List
 
 - Created `src/utils/base64.ts` with `encodeBase64` and `decodeBase64` functions using `TextEncoder`/`TextDecoder` for full Unicode support (ASCII, CJK, emoji, special chars)
-- Refactored `EncodingBase64.tsx` from 92 lines to 137 lines: replaced raw `btoa`/`atob` with utility functions, `Error` state with `useToolError`, manual copy button with `CopyButton`, added Dialog UI (size="screen" with side-by-side layout), 150ms debounce, tool description, `isValidBase64` validation for decode
+- Refactored `EncodingBase64.tsx` from 92 lines to 137 lines: replaced raw `btoa`/`atob` with utility functions, `Error` state with `useToolError`, manual copy button with `CopyButton`, added Dialog UI (size="screen" with side-by-side layout), 300ms debounce, tool description, `isValidBase64` validation for decode
 - Wrote 19 regression tests covering encode (7 cases), decode (8 cases), and round-trip (4 parameterized cases)
 - All 191 tests pass (19 new + 172 existing), no regressions
 - Build, lint, and format all clean
@@ -710,7 +710,7 @@ Claude Opus 4.6
 - `src/utils/base64.ts` — NEW: `encodeBase64` and `decodeBase64` with Unicode support via TextEncoder/TextDecoder
 - `src/utils/base64.spec.ts` — NEW: 19 regression tests (encode, decode, round-trip, error cases)
 - `src/utils/index.ts` — MODIFIED: Added base64 barrel export
-- `src/components/feature/encoding/EncodingBase64.tsx` — MODIFIED: Full refactor — useToolError, CopyButton, Dialog UI, 150ms debounce, isValidBase64 validation, tool description
+- `src/components/feature/encoding/EncodingBase64.tsx` — MODIFIED: Full refactor — useToolError, CopyButton, Dialog UI, 300ms debounce, isValidBase64 validation, tool description
 
 ## Senior Developer Review (AI)
 

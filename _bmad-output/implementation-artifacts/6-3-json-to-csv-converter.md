@@ -28,7 +28,7 @@ So that **I can quickly transform data between formats for spreadsheets and APIs
 
 **Given** a user opens the "JSON → CSV" dialog and pastes a valid JSON array of objects (e.g., `[{"name":"Alice","age":30},{"name":"Bob","age":25}]`)
 **When** the value is entered
-**Then** a CSV output appears in real-time (debounced 150ms) with headers derived from object keys:
+**Then** a CSV output appears in real-time (debounced 300ms) with headers derived from object keys:
 ```csv
 name,age
 Alice,30
@@ -40,7 +40,7 @@ Bob,25
 
 **Given** a user opens the "CSV → JSON" dialog and pastes valid CSV text (e.g., `name,age\nAlice,30\nBob,25`)
 **When** the value is entered
-**Then** a JSON array of objects appears in real-time (debounced 150ms), formatted with 2-space indentation:
+**Then** a JSON array of objects appears in real-time (debounced 300ms), formatted with 2-space indentation:
 ```json
 [
   {
@@ -163,7 +163,7 @@ Bob,25
   - [x] 3.5 Right side of dialog: result textarea with `CopyButton` in the label — label changes based on mode:
     - JSON→CSV: label "CSV Output", placeholder `name,age\nAlice,30`
     - CSV→JSON: label "JSON Output", placeholder `[\n  {\n    "name": "Alice"\n  }\n]`
-  - [x] 3.6 Use `useToolError` for error state, `useDebounceCallback` (150ms) for processing, `CopyButton` on result section
+  - [x] 3.6 Use `useToolError` for error state, `useDebounceCallback` (300ms) for processing, `CopyButton` on result section
   - [x] 3.7 Process function is synchronous (unlike YAML which was async) — calls `jsonToCsv()` or `csvToJson()` based on mode
   - [x] 3.8 On valid input: display converted result, clear error
   - [x] 3.9 On invalid input: use `getJsonParseError()` (JSON mode) or `getCsvParseError()` (CSV mode) for specific error messages, format as `'Invalid JSON: {msg}'` or `'{msg}'` (CSV errors are already descriptive)
@@ -616,7 +616,7 @@ f8e8266 ✨: story 5-2 JWT Decoder
 - [Source: _bmad-output/planning-artifacts/epics.md#Epic 6] — Epic objectives and FR coverage (FR19)
 - [Source: _bmad-output/planning-artifacts/architecture.md#Tool Registry] — Registry entry pattern with all required fields
 - [Source: _bmad-output/planning-artifacts/architecture.md#Naming Patterns] — `json-to-csv-converter` key, `Data` category
-- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change, 150ms debounce
+- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change, 300ms debounce
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Message Format] — Concise, actionable, with example of valid input
 - [Source: _bmad-output/planning-artifacts/architecture.md#Structure Patterns] — Tool component file structure, data/ directory
 - [Source: _bmad-output/planning-artifacts/architecture.md#Hard Constraints] — Zero server-side processing
@@ -629,7 +629,7 @@ f8e8266 ✨: story 5-2 JWT Decoder
 - [Source: src/constants/tool-registry.ts] — Current registry with 10 tools, alphabetical ordering
 - [Source: src/types/constants/tool-registry.ts] — ToolRegistryKey and ToolCategory unions to update
 - [Source: src/hooks/useToolError.ts] — Error handling hook
-- [Source: src/hooks/useDebounceCallback.ts] — Debounce utility (150ms)
+- [Source: src/hooks/useDebounceCallback.ts] — Debounce utility (300ms)
 - [Source: vite.config.ts] — Pre-render routes pattern (MUST add route)
 - [Source: _bmad-output/implementation-artifacts/6-2-json-to-yaml-converter.md] — Previous story learnings (same epic)
 - [Source: https://www.rfc-editor.org/rfc/rfc4180] — RFC 4180: Common Format and MIME Type for CSV Files

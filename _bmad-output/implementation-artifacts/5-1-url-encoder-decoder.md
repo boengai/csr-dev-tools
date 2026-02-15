@@ -28,7 +28,7 @@ So that **I can quickly prepare or inspect URL-encoded values for web developmen
 
 **Given** a user pastes a plain string into the encode input (e.g., `hello world&foo=bar`)
 **When** the value is entered
-**Then** the URL-encoded output appears in real-time (debounced 150ms): `hello%20world%26foo%3Dbar`
+**Then** the URL-encoded output appears in real-time (debounced 300ms): `hello%20world%26foo%3Dbar`
 **And** a `CopyButton` is adjacent to the output
 
 ### AC3: URL Decoding Works in Real-Time
@@ -75,7 +75,7 @@ So that **I can quickly prepare or inspect URL-encoded values for web developmen
 - [x] Task 3: Create UrlEncoder component (AC: #1, #2, #3, #4, #5)
   - [x] 3.1 Create `src/components/feature/encoding/UrlEncoder.tsx` as named export
   - [x] 3.2 Follow `EncodingBase64.tsx` pattern exactly: dialog-based with encode/decode buttons, full-screen dialog with source/result textareas
-  - [x] 3.3 Use `useToolError` for error state, `useDebounceCallback` (150ms) for processing, `CopyButton` on result
+  - [x] 3.3 Use `useToolError` for error state, `useDebounceCallback` (300ms) for processing, `CopyButton` on result
   - [x] 3.4 Use `FieldForm` with appropriate placeholders: encode placeholder `hello world&foo=bar`, decode placeholder `hello%20world%26foo%3Dbar`
   - [x] 3.5 On decode error, call `setError('Enter a valid URL-encoded string (e.g., hello%20world)')` — clears on valid input via `clearError()`
   - [x] 3.6 Show tool description from `TOOL_REGISTRY_MAP['url-encoder-decoder']`
@@ -102,7 +102,7 @@ This tool is in the **same domain** (`encoding/`) as the existing Base64 tool. T
 
 1. **Dialog-based UI:** Two buttons ("Encode" / "Decode") on the card, clicking opens a full-screen `Dialog` with source textarea on left, result textarea on right (stacked on mobile)
 2. **State management:** `useState` for source, result, action (encode/decode), dialogOpen
-3. **Debounced processing:** `useDebounceCallback` with 150ms delay
+3. **Debounced processing:** `useDebounceCallback` with 300ms delay
 4. **Error display:** `{error != null && <p className="text-error text-body-sm" role="alert">{error}</p>}` at bottom of dialog content
 5. **Tool description:** `TOOL_REGISTRY_MAP['url-encoder-decoder']?.description` shown above buttons
 6. **Reset on close:** `handleReset` clears source, result, error via `onAfterClose`
@@ -268,7 +268,7 @@ export type ToolRegistryKey =
 - [Source: _bmad-output/planning-artifacts/epics.md#Story 5.1] — Full AC definitions and story requirements
 - [Source: _bmad-output/planning-artifacts/epics.md#Epic 5] — Epic objectives and FR coverage (FR9)
 - [Source: _bmad-output/planning-artifacts/architecture.md#Tool Registry] — Registry entry pattern with all required fields
-- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change, 150ms debounce
+- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change, 300ms debounce
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Message Format] — Concise, actionable, with example of valid input
 - [Source: _bmad-output/planning-artifacts/architecture.md#Structure Patterns] — Tool component file structure
 - [Source: _bmad-output/planning-artifacts/architecture.md#Hard Constraints] — Zero server-side processing
@@ -296,7 +296,7 @@ Claude Opus 4.6
 
 - Implemented `encodeUrl()` and `decodeUrl()` pure utility functions wrapping native `encodeURIComponent`/`decodeURIComponent`
 - Created 23 unit tests covering standard encoding, special characters, Unicode, empty input, double-encoding, invalid decode sequences
-- Built `UrlEncoder.tsx` component following `EncodingBase64.tsx` pattern exactly: dialog-based UI with encode/decode buttons, debounced processing (150ms), error handling via `useToolError`, CopyButton on result
+- Built `UrlEncoder.tsx` component following `EncodingBase64.tsx` pattern exactly: dialog-based UI with encode/decode buttons, debounced processing (300ms), error handling via `useToolError`, CopyButton on result
 - Registered tool in `TOOL_REGISTRY` with lazy-loaded component, SEO metadata, and correct alphabetical ordering
 - All 322 tests pass (23 new + 299 existing), lint clean, format clean, build succeeds with separate `UrlEncoder` chunk (2.20 kB)
 

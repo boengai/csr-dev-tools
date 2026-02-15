@@ -74,7 +74,7 @@ const UnixTimestampSection = ({
     const d = new Date(isMilliseconds ? inputNumber : inputNumber * 1_000)
 
     setResult([isMilliseconds ? 'Milliseconds' : 'Seconds', d.toUTCString(), d.toString()])
-  }, 150)
+  }, 300)
 
   const handleInputChange = (val: string) => {
     setInput(val)

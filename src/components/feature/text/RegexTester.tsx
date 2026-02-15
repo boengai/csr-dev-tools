@@ -101,7 +101,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
 
   const debouncedProcess = useDebounceCallback((pat: string, text: string, fl: Flags) => {
     process(pat, text, fl)
-  }, 150)
+  }, 300)
 
   const handlePatternChange = (val: string) => {
     setPattern(val)

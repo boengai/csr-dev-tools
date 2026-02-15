@@ -27,7 +27,7 @@ So that **I can reliably convert between timestamps and human-readable dates wit
 
 **Given** a user enters a Unix timestamp (e.g., `1700000000`)
 **When** the value is entered
-**Then** the human-readable date/time appears in real-time (debounced 150ms)
+**Then** the human-readable date/time appears in real-time (debounced 300ms)
 **And** each output value (Format, GMT, Local) has an adjacent `CopyButton`
 
 ### AC3: Date to Timestamp Conversion
@@ -79,7 +79,7 @@ So that **I can reliably convert between timestamps and human-readable dates wit
   - [x] 3.4 Add `CopyButton` to GMT and Local rows in DateSection (currently missing)
 
 - [x] Task 4: Fix debounce delay (AC: #2)
-  - [x] 4.1 In `UnixTimestampSection`: change `useDebounceCallback((source: string) => {...})` to explicitly specify 150ms delay: `useDebounceCallback((source: string) => {...}, 150)` — the default is 800ms, but architecture specifies 150ms for text conversion tools
+  - [x] 4.1 In `UnixTimestampSection`: change `useDebounceCallback((source: string) => {...})` to explicitly specify 300ms delay: `useDebounceCallback((source: string) => {...}, 300)` — the default is 800ms, but architecture specifies 300ms for text conversion tools
 
 - [x] Task 5: Write regression tests for getDaysInMonth (AC: #6)
   - [x] 5.1 Create `src/utils/time.spec.ts` with tests for `getDaysInMonth`
@@ -144,7 +144,7 @@ DateSection:
 3. **No CopyButton in UnixTimestampSection** — Format/GMT/Local values have no copy buttons. Add CopyButton to each row.
 4. **DateSection uses custom Button+CopyIcon** — Replace with standardized `CopyButton` component. Also add CopyButton to GMT and Local rows.
 5. **Global `isNaN` used** — Line 44: `isNaN(d.getTime())`. Replace with `Number.isNaN(d.getTime())`.
-6. **No explicit debounce delay** — `useDebounceCallback` defaults to 800ms. Architecture pattern requires 150ms for text conversion tools.
+6. **No explicit debounce delay** — `useDebounceCallback` defaults to 800ms. Architecture pattern requires 300ms for text conversion tools.
 7. **No isValidTimestamp usage** — `isValidTimestamp` exists in `validation.ts` but is not used. Should validate input before processing.
 8. **No tests** — `getDaysInMonth` in `time.ts` is untested. Need `time.spec.ts`.
 
@@ -198,7 +198,7 @@ const dbSetResult = useDebounceCallback((source: string) => {
   clearError()
   const inputNumber = Number(source)
   // ... rest of logic
-}, 150)
+}, 300)
 ```
 
 **Note:** `isValidTimestamp` from `validation.ts` checks: digits-only regex + value ≤ 4398046511103 (year ~141,000 in ms). This is the right validation — it rejects non-numeric input and far-future timestamps.
@@ -332,7 +332,7 @@ export const TimeUnixTimestamp = () => {
 - **`Array<T>` not `T[]`** — oxlint enforced [Source: project-context.md#Language-Specific Rules]
 - **100% client-side** — Zero network requests. All date conversion via native `Date` API [Source: architecture.md#NFR9]
 - **No `console.log`** — oxlint enforced [Source: project-context.md#Code Quality Rules]
-- **150ms debounce for text tools** — Architecture pattern for text conversion tools [Source: architecture.md#Tool Input Processing]
+- **300ms debounce for text tools** — Architecture pattern for text conversion tools [Source: architecture.md#Tool Input Processing]
 
 ### Previous Story Intelligence (Story 3.4)
 
@@ -361,13 +361,13 @@ b0fd290 ♻️: story 3.1
 
 **Key files from story 3-4 that inform patterns:**
 - `src/components/feature/image/ImageResizer.tsx` — Latest refactored tool (useToolError, tool description, inline error, CopyButton patterns)
-- `src/components/feature/color/ColorConvertor.tsx` — Text-tool refactor reference (CopyButton in FieldForm suffix, 150ms debounce, error handling)
-- `src/components/feature/encoding/EncodingBase64.tsx` — Text-tool refactor reference (CopyButton, Dialog pattern, useToolError, 150ms debounce)
+- `src/components/feature/color/ColorConvertor.tsx` — Text-tool refactor reference (CopyButton in FieldForm suffix, 300ms debounce, error handling)
+- `src/components/feature/encoding/EncodingBase64.tsx` — Text-tool refactor reference (CopyButton, Dialog pattern, useToolError, 300ms debounce)
 
 ### Project Structure Notes
 
 **Files to MODIFY:**
-- `src/components/feature/time/TimeUnixTimestamp.tsx` — Refactor: useToolError, tool description, CopyButton on all outputs, isValidTimestamp, Number.isNaN, 150ms debounce
+- `src/components/feature/time/TimeUnixTimestamp.tsx` — Refactor: useToolError, tool description, CopyButton on all outputs, isValidTimestamp, Number.isNaN, 300ms debounce
 
 **Files to CREATE:**
 - `src/utils/time.spec.ts` — Tests for `getDaysInMonth`
@@ -392,7 +392,7 @@ b0fd290 ♻️: story 3.1
 
 | Mode | Input | Output | Trigger |
 |------|-------|--------|---------|
-| Timestamp → Date | Unix timestamp (number) | Format type, GMT date, Local date | On input change (debounced 150ms) |
+| Timestamp → Date | Unix timestamp (number) | Format type, GMT date, Local date | On input change (debounced 300ms) |
 | Date → Timestamp | Year/Month/Day/Hour/Minute/Second | Unix timestamp (seconds), GMT date, Local date | On any date field change (immediate) |
 
 **Timestamp → Date (UnixTimestampSection):**
@@ -435,7 +435,7 @@ b0fd290 ♻️: story 3.1
 
 **Performance:**
 - NFR1: Text tool processing under 100ms — native `Date` construction is sub-microsecond
-- Debounce at 150ms per architecture pattern for text conversion tools
+- Debounce at 300ms per architecture pattern for text conversion tools
 - Date field changes in DateSection are immediate (no debounce needed — select changes are discrete, not continuous typing)
 
 ### Latest Technical Information
@@ -462,16 +462,16 @@ b0fd290 ♻️: story 3.1
 - [Source: _bmad-output/planning-artifacts/epics.md#NFR9] — Zero network requests for tool processing
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Handling] — useToolError pattern
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Message Format] — Concise, actionable, with example
-- [Source: _bmad-output/planning-artifacts/architecture.md#Tool Input Processing] — Text tools: 150ms debounce
+- [Source: _bmad-output/planning-artifacts/architecture.md#Tool Input Processing] — Text tools: 300ms debounce
 - [Source: _bmad-output/project-context.md] — 53 project rules (types, imports, naming, etc.)
 - [Source: _bmad-output/implementation-artifacts/3-4-image-resizer-refactor-spec-and-tests.md] — Previous story patterns (useToolError, description, error display, Number.isNaN)
 - [Source: src/components/feature/time/TimeUnixTimestamp.tsx] — Current implementation
-- [Source: src/components/feature/color/ColorConvertor.tsx] — Reference refactored text tool (CopyButton, 150ms debounce)
+- [Source: src/components/feature/color/ColorConvertor.tsx] — Reference refactored text tool (CopyButton, 300ms debounce)
 - [Source: src/components/feature/encoding/EncodingBase64.tsx] — Reference refactored text tool (CopyButton, useToolError)
 - [Source: src/utils/time.ts] — getDaysInMonth utility (needs tests)
 - [Source: src/utils/validation.ts] — isValidTimestamp (already tested, needs to be used in component)
 - [Source: src/hooks/useToolError.ts] — Error state hook
-- [Source: src/hooks/useDebounceCallback.ts] — Debounce hook (default 800ms, override to 150ms)
+- [Source: src/hooks/useDebounceCallback.ts] — Debounce hook (default 800ms, override to 300ms)
 - [Source: src/constants/tool-registry.ts] — TOOL_REGISTRY entry for unix-timestamp
 - [Source: src/types/constants/time.ts] — DateTime type
 - [Source: src/components/common/button/CopyButton.tsx] — Standardized copy button component
@@ -499,7 +499,7 @@ None — clean implementation with no blocking issues.
 - Extracted shared `renderWithCopy` helper to DRY the render prop pattern across both sections
 - Replaced custom `Button` + `CopyIcon` + `useCopyToClipboard` pattern in DateSection with standardized `CopyButton`
 - Removed unused imports: `Button`, `CopyIcon`, `useCopyToClipboard`
-- Changed debounce from default 800ms to explicit 150ms per architecture pattern for text conversion tools
+- Changed debounce from default 800ms to explicit 300ms per architecture pattern for text conversion tools
 - Changed `DateSection` from `export` to internal (only `TimeUnixTimestamp` is the public API)
 - Created `src/utils/time.spec.ts` with 20 tests covering `getDaysInMonth`: all 12 months, 3 leap year rules, 4 edge cases (month 0, month 13, year 0, negative year)
 - All 262 tests pass (242 existing + 20 new), zero regressions
@@ -527,5 +527,5 @@ None — clean implementation with no blocking issues.
 
 ### File List
 
-- `src/components/feature/time/TimeUnixTimestamp.tsx` — Modified: useToolError, tool description, CopyButton on all outputs, isValidTimestamp, Number.isNaN, 150ms debounce, day clamping on year change, input type fix, static option arrays hoisted
+- `src/components/feature/time/TimeUnixTimestamp.tsx` — Modified: useToolError, tool description, CopyButton on all outputs, isValidTimestamp, Number.isNaN, 300ms debounce, day clamping on year change, input type fix, static option arrays hoisted
 - `src/utils/time.spec.ts` — Created: 20 regression tests for getDaysInMonth (deduplicated assertions)

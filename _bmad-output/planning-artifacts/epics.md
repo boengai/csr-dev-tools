@@ -105,7 +105,7 @@ NFR25: Semantic HTML with proper heading hierarchy on all pages
 - Code splitting per route via `lazyRouteComponent()` — each tool is its own chunk
 - Tool component modes: card (dashboard) vs. page (dedicated route) via `mode` variant
 - Implementation sequence: (1) Tool Registry, (2) Per-tool routes, (3) ToolLayout, (4) Sidebar + Command Palette, (5) Pre-rendering, (6) Validation utilities, (7) Error handling, (8) E2E + Lighthouse CI
-- Input processing patterns: text tools on input change with 150ms debounce; file tools on explicit button click; generators on explicit button click; live preview on input change with 150ms debounce
+- Input processing patterns: text tools on input change with 300ms debounce; file tools on explicit button click; generators on explicit button click; live preview on input change with 300ms debounce
 - Loading state patterns: no spinners — use progress bars or skeleton states only. ProgressBar only for operations >300ms.
 - Keyboard shortcuts: `Cmd+K` / `Ctrl+K` for Command Palette toggle (reserved). Centralized `useKeyboardShortcuts` hook.
 - CONTRIBUTING.md required for contributor onboarding (FR33)
@@ -601,7 +601,7 @@ So that **I can rely on consistent, tested color conversion between HEX, RGB, an
 
 **Given** a user inputs a valid HEX value (e.g., `#3B82F6`)
 **When** the value is entered
-**Then** RGB and HSL conversions appear in real-time (debounced 150ms) in the output region
+**Then** RGB and HSL conversions appear in real-time (debounced 300ms) in the output region
 **And** each output value has an adjacent `CopyButton`
 
 **Given** a user inputs a color via the visual color picker
@@ -635,7 +635,7 @@ So that **I can reliably encode and decode Base64 strings with a consistent inte
 
 **Given** a user pastes text into the encode input
 **When** the value is entered
-**Then** the Base64-encoded output appears in real-time (debounced 150ms)
+**Then** the Base64-encoded output appears in real-time (debounced 300ms)
 
 **Given** a user pastes a Base64 string into the decode input
 **When** the value is entered
@@ -723,7 +723,7 @@ So that **I can reliably convert between timestamps and human-readable dates wit
 
 **Given** a user enters a Unix timestamp (e.g., `1700000000`)
 **When** the value is entered
-**Then** the human-readable date/time appears in real-time (debounced 150ms)
+**Then** the human-readable date/time appears in real-time (debounced 300ms)
 
 **Given** a user enters a human-readable date
 **When** the value is entered
@@ -752,7 +752,7 @@ So that **I can reliably convert between PX and REM units with a consistent inte
 
 **Given** a user enters a PX value
 **When** the value is entered
-**Then** the REM equivalent appears in real-time (debounced 150ms)
+**Then** the REM equivalent appears in real-time (debounced 300ms)
 **And** a configurable base font size (default 16px) is available
 
 **Given** a user changes the base font size
@@ -910,7 +910,7 @@ So that **I can quickly prepare or inspect URL-encoded values for web developmen
 
 **Given** a user pastes a plain string into the encode input (e.g., `hello world&foo=bar`)
 **When** the value is entered
-**Then** the URL-encoded output appears in real-time (debounced 150ms): `hello%20world%26foo%3Dbar`
+**Then** the URL-encoded output appears in real-time (debounced 300ms): `hello%20world%26foo%3Dbar`
 **And** a `CopyButton` is adjacent to the output
 
 **Given** a user pastes a URL-encoded string into the decode input
@@ -979,7 +979,7 @@ So that **I can quickly clean up and validate JSON for my development work**.
 
 **Given** a user pastes valid JSON
 **When** the value is entered
-**Then** formatted, indented JSON with syntax highlighting appears in real-time (debounced 150ms)
+**Then** formatted, indented JSON with syntax highlighting appears in real-time (debounced 300ms)
 **And** a `CopyButton` copies the formatted JSON
 
 **Given** a user pastes invalid JSON
@@ -1009,7 +1009,7 @@ So that **I can quickly switch between configuration formats for different tools
 
 **Given** a user pastes valid JSON in JSON→YAML mode
 **When** the value is entered
-**Then** the YAML equivalent appears in real-time (debounced 150ms) in the output
+**Then** the YAML equivalent appears in real-time (debounced 300ms) in the output
 **And** a `CopyButton` copies the YAML output
 
 **Given** a user pastes valid YAML in YAML→JSON mode
@@ -1106,7 +1106,7 @@ So that **I can iterate on regex patterns quickly without switching to a termina
 
 **Given** a user enters a valid regex pattern and test string
 **When** both fields have content
-**Then** all matches are highlighted in the test string in real-time (debounced 150ms)
+**Then** all matches are highlighted in the test string in real-time (debounced 300ms)
 **And** a match count is displayed (e.g., "3 matches found")
 
 **Given** the regex pattern input
@@ -1213,7 +1213,7 @@ So that **I can quickly compute checksums and hashes for verification and develo
 
 **Given** a user enters text and selects an algorithm
 **When** the input changes
-**Then** the hash value is computed and displayed in real-time (debounced 150ms) in `OutputDisplay`
+**Then** the hash value is computed and displayed in real-time (debounced 300ms) in `OutputDisplay`
 **And** a `CopyButton` copies the hex-encoded hash
 
 **Given** multiple algorithms are available
@@ -1257,7 +1257,7 @@ So that **I can design box shadows interactively and copy the CSS code directly 
 
 **Given** any input value changes
 **When** the user adjusts a control
-**Then** the live preview updates in real-time (debounced 150ms) showing a box with the configured shadow
+**Then** the live preview updates in real-time (debounced 300ms) showing a box with the configured shadow
 **And** the CSS output string updates simultaneously (e.g., `box-shadow: 4px 4px 8px 0px rgba(0, 0, 0, 0.25)`)
 
 **Given** the CSS output

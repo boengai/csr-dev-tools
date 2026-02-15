@@ -81,7 +81,7 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
 
   const debouncedProcess = useDebounceCallback((orig: string, mod: string) => {
     process(orig, mod)
-  }, 150)
+  }, 300)
 
   const handleOriginalChange = (val: string) => {
     setOriginal(val)

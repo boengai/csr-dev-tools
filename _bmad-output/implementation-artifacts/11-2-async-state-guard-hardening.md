@@ -25,7 +25,7 @@ so that **I always see results that match my current input, never outdated resul
 
 3. **Hash Generator Multi-Trigger Pattern Verified:** The Hash Generator's 3-ref pattern (`sessionRef`, `algorithmRef`, `textRef`) is verified correct and handles all race conditions: text change during hash computation, algorithm change during hash computation, and simultaneous text+algorithm change.
 
-4. **Debounce Delay Consistency:** All debounce delays are documented with rationale. Current state: 150ms for text processing, 300ms for image/file processing. No changes required unless an inconsistency is found.
+4. **Debounce Delay Consistency:** All debounce delays are documented with rationale. Current state: 300ms for text processing, 300ms for image/file processing. No changes required unless an inconsistency is found.
 
 5. **File-Processing State Cleanup:** All 4 image tools clear ALL related state (source, result, metadata, error) when a new file is uploaded or when input is rejected. Specifically verify the Epic 10 H1 finding (stale compressed result after format rejection) is fixed and the pattern is consistent across ImageResizer, ImageConvertor, ImageCropper, and ImageCompressor.
 
@@ -97,7 +97,7 @@ const processInput = useDebounceCallback(async (input: string) => {
   if (currentSession !== sessionRef.current) return
 
   setResult(result)
-}, 150)
+}, 300)
 ```
 
 ### Hash Generator's Advanced Pattern
@@ -196,7 +196,7 @@ const handleUpload = (file: File) => {
 
 | Delay | Tools | Rationale |
 |-------|-------|-----------|
-| 150ms | TextDiffChecker, JsonToYamlConverter, HashGenerator, RegexTester, JsonFormatter, JsonToCsvConverter, ColorConvertor, TimeUnixTimestamp | Text input — fast enough for responsive feel, slow enough to batch keystrokes |
+| 300ms | TextDiffChecker, JsonToYamlConverter, HashGenerator, RegexTester, JsonFormatter, JsonToCsvConverter, ColorConvertor, TimeUnixTimestamp | Text input — fast enough for responsive feel, slow enough to batch keystrokes |
 | 300ms | ImageCompressor | Image processing — heavier operations need more debounce buffer |
 | (none) | ImageResizer | Uses `useDebounceCallback` without explicit delay (hook default) |
 

@@ -435,10 +435,10 @@ export const useSidebarStore = create<UseSidebarStore>()(
 
 | Tool Type | Processing Trigger | Debounce |
 |-----------|-------------------|----------|
-| Text conversion (color, encoding, units, timestamp) | On input change | 150ms debounce |
+| Text conversion (color, encoding, units, timestamp) | On input change | 300ms debounce |
 | File processing (image resize, convert) | On explicit action button click | None |
 | Generator (UUID, password, hash) | On explicit "Generate" button click | None |
-| Live preview (box shadow, regex) | On input change | 150ms debounce |
+| Live preview (box shadow, regex) | On input change | 300ms debounce |
 
 **Error Handling Flow:**
 

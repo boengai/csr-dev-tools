@@ -32,7 +32,7 @@ export const UnitPxToRem = () => {
       return
     }
     setRemValue(pxToRem(pxNum, baseNum).toString())
-  }, 150)
+  }, 300)
 
   const dbConvertRemToPx = useDebounceCallback((rem: string, base: string) => {
     if (rem.trim() === '') {
@@ -50,7 +50,7 @@ export const UnitPxToRem = () => {
       return
     }
     setPxValue(remToPx(remNum, baseNum).toString())
-  }, 150)
+  }, 300)
 
   const handlePxChange = (val: string) => {
     setPxValue(val)

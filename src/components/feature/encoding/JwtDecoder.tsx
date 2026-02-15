@@ -54,7 +54,7 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
 
   const processInput = useDebounceCallback((val: string) => {
     process(val)
-  }, 150)
+  }, 300)
 
   const handleSourceChange = (val: string) => {
     setSource(val)

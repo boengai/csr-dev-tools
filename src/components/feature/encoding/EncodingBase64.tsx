@@ -42,7 +42,7 @@ export const EncodingBase64 = () => {
 
   const processInput = useDebounceCallback((val: string) => {
     process(val, action)
-  }, 150)
+  }, 300)
 
   const handleSourceChange = (val: string) => {
     setSource(val)

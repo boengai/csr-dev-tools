@@ -28,7 +28,7 @@ So that **I can quickly compute checksums and hashes for verification and develo
 
 **Given** a user enters text and selects an algorithm
 **When** the input changes
-**Then** the hash value is computed and displayed in real-time (debounced 150ms) in the output region
+**Then** the hash value is computed and displayed in real-time (debounced 300ms) in the output region
 **And** a `CopyButton` copies the hex-encoded hash
 
 ### AC3: Algorithm Selection with Immediate Update
@@ -99,7 +99,7 @@ So that **I can quickly compute checksums and hashes for verification and develo
     - **Algorithm selection:** Toggle buttons (MD5, SHA-1, SHA-256, SHA-512) using FlagToggle pattern, default SHA-256
     - **Divider:** `border-t-2 border-dashed border-gray-900`
     - **Bottom:** Output region with algorithm label + hash value in monospace + `CopyButton`
-  - [x] 4.4 Use `useDebounceCallback` with 150ms delay for text input changes
+  - [x] 4.4 Use `useDebounceCallback` with 300ms delay for text input changes
   - [x] 4.5 On algorithm toggle change → compute immediately (no debounce)
   - [x] 4.6 Show "—" when text input is empty
   - [x] 4.7 Show tool description from `TOOL_REGISTRY_MAP['hash-generator']`
@@ -129,7 +129,7 @@ This is the **third and final tool in the 'Generator' category** (Epic 8). Unlik
 
 | Aspect | UUID Generator | Password Generator | Hash Generator |
 |--------|---------------|-------------------|----------------|
-| Trigger | Button click | Button click | On-change (debounced 150ms) |
+| Trigger | Button click | Button click | On-change (debounced 300ms) |
 | Processing | Synchronous | Synchronous | **Asynchronous** |
 | Pre-generated output | Yes (1 UUID) | Yes (1 password) | No (empty "—") |
 | Has text input | No | No | **Yes** (TextAreaInput) |
@@ -164,7 +164,7 @@ This prevents a race condition where the user types "hello" (computation starts)
 
 This tool has **two trigger paths** for hash computation:
 
-1. **Text input changes** → debounced at 150ms via `useDebounceCallback`
+1. **Text input changes** → debounced at 300ms via `useDebounceCallback`
 2. **Algorithm toggle changes** → immediate computation (no debounce) because the user expects instant feedback when switching algorithms
 
 The debounced callback and the immediate callback both call the same `handleCompute` async function. The `sessionRef` prevents stale results from either path.
@@ -226,7 +226,7 @@ Component mounts
   → Default algorithm: SHA-256
 
 User types text in TextAreaInput
-  → Debounced at 150ms via useDebounceCallback
+  → Debounced at 300ms via useDebounceCallback
   → After debounce fires:
     → Increment sessionRef
     → Call computeHash(text, selectedAlgorithm) — async
@@ -316,7 +316,7 @@ The `HashAlgorithm` type matches the Web Crypto API names exactly for SHA varian
 - **Lazy-loaded component** — registry uses `lazy(() => import(...).then(({ HashGenerator }) => ({ default: HashGenerator })))` [Source: architecture.md#Code Splitting]
 - **100% client-side** — zero network requests for hash computation [Source: architecture.md#Hard Constraints]
 - **useToolError for errors** — initialized for consistency; could trigger if `crypto.subtle.digest` fails (unlikely but possible in very old browsers) [Source: architecture.md#Error Handling]
-- **On-change debounce pattern** — 150ms debounce on text input (matches text conversion tools, NOT generator button-click pattern) [Source: epics.md#Story 8.3 AC]
+- **On-change debounce pattern** — 300ms debounce on text input (matches text conversion tools, NOT generator button-click pattern) [Source: epics.md#Story 8.3 AC]
 - **aria-pressed toggles** — algorithm toggles use `aria-pressed` for accessibility [Source: RegexTester.tsx FlagToggle pattern]
 
 ### Library & Framework Requirements
@@ -539,7 +539,7 @@ From Story 8-1 (UUID Generator):
 
 From Story 7-2 (Regex Tester):
 - **FlagToggle pattern** — `aria-pressed` toggle buttons for mode selection
-- **useDebounceCallback usage** — 150ms debounce for live processing on text input
+- **useDebounceCallback usage** — 300ms debounce for live processing on text input
 
 ### Git Intelligence
 
@@ -563,7 +563,7 @@ bc5b207 ✨: story 8-2 Password Generator with RangeInput component
 - [Source: _bmad-output/planning-artifacts/prd.md] — FR24: Users can generate hash values (MD5, SHA-1, SHA-256, SHA-512) from text input
 - [Source: _bmad-output/planning-artifacts/architecture.md#Tool Registry] — Registry entry pattern with all required fields
 - [Source: _bmad-output/planning-artifacts/architecture.md#Naming Patterns] — `hash-generator` key, `Generator` category
-- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change with 150ms debounce
+- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Text conversion: on input change with 300ms debounce
 - [Source: _bmad-output/planning-artifacts/architecture.md#Hard Constraints] — Zero server-side processing
 - [Source: _bmad-output/planning-artifacts/architecture.md#Structure Patterns] — Tool component file structure
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Message Format] — Concise, actionable, with example
@@ -573,7 +573,7 @@ bc5b207 ✨: story 8-2 Password Generator with RangeInput component
 - [Source: src/components/feature/text/RegexTester.tsx] — FlagToggle + useDebounceCallback pattern reference
 - [Source: src/utils/uuid.ts] — Utility function pattern reference (same domain)
 - [Source: src/utils/password.ts] — Utility function pattern reference (same domain)
-- [Source: src/hooks/useDebounceCallback.ts] — Debounce hook (800ms default, override to 150ms)
+- [Source: src/hooks/useDebounceCallback.ts] — Debounce hook (800ms default, override to 300ms)
 - [Source: src/constants/tool-registry.ts] — Current registry with 15 tools, alphabetical ordering
 - [Source: src/types/constants/tool-registry.ts] — ToolRegistryKey union to update (Generator category already exists)
 - [Source: src/hooks/useToolError.ts] — Error handling hook (clearError, error, setError)
@@ -599,7 +599,7 @@ Claude Opus 4.6
 - Created `src/utils/hash.ts` with `computeHash()` async utility supporting MD5 (via js-md5 dynamic import) and SHA-1/SHA-256/SHA-512 (via Web Crypto API)
 - Created `src/utils/hash.spec.ts` with 12 unit tests covering all 4 algorithms, empty strings, known test vectors, Unicode, large input, uniqueness, and lowercase hex output
 - Created `src/components/feature/generator/HashGenerator.tsx` with inline layout: TextAreaInput, algorithm toggle buttons (FlagToggle pattern), dashed divider, output region with CopyButton
-- Component uses `useDebounceCallback(150ms)` for text input, immediate computation on algorithm change, and `sessionRef` for stale result prevention
+- Component uses `useDebounceCallback(300ms)` for text input, immediate computation on algorithm change, and `sessionRef` for stale result prevention
 - Registered tool in TOOL_REGISTRY (alphabetically between color-converter and image-converter), updated ToolRegistryKey type, added pre-render route in vite.config.ts
 - Updated barrel exports in generator/index.ts and utils/index.ts
 - All 505 tests pass (493 existing + 12 new), zero regressions

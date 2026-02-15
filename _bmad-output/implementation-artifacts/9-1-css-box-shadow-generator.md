@@ -145,9 +145,9 @@ Unlike the Hash Generator (async, debounced) or Password Generator (button-click
 
 | Aspect | Box Shadow Generator | Hash Generator (8-3) | Password Generator (8-2) |
 |--------|---------------------|---------------------|------------------------|
-| Trigger | On every state change | On-change (debounced 150ms) | Button click |
+| Trigger | On every state change | On-change (debounced 300ms) | Button click |
 | Processing | **Synchronous** | Asynchronous | Synchronous |
-| Debounce | **None needed** | 150ms | None |
+| Debounce | **None needed** | 300ms | None |
 | External library | **None** | js-md5 (lazy) | None |
 | Pre-generated output | **Yes** (default shadow) | No (empty "—") | Yes (1 password) |
 
@@ -641,7 +641,7 @@ bc5b207 ✨: story 8-2 Password Generator with RangeInput component
 - [Source: _bmad-output/planning-artifacts/prd.md] — FR25: Users can visually generate CSS box-shadow values with live preview
 - [Source: _bmad-output/planning-artifacts/architecture.md#Tool Registry] — Registry entry pattern with all required fields
 - [Source: _bmad-output/planning-artifacts/architecture.md#Naming Patterns] — `box-shadow-generator` key, new `CSS` category
-- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Live preview: on input change with 150ms debounce (overridden: no debounce needed for synchronous)
+- [Source: _bmad-output/planning-artifacts/architecture.md#Process Patterns] — Live preview: on input change with 300ms debounce (overridden: no debounce needed for synchronous)
 - [Source: _bmad-output/planning-artifacts/architecture.md#Hard Constraints] — Zero server-side processing
 - [Source: _bmad-output/planning-artifacts/architecture.md#Structure Patterns] — Tool component file structure, `src/components/feature/css/`
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Message Format] — Concise, actionable, with example

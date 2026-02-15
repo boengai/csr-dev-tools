@@ -27,7 +27,7 @@ So that **I can reliably convert between PX and REM units with a consistent inte
 
 **Given** a user enters a PX value (e.g., `16`)
 **When** the value is entered
-**Then** the REM equivalent appears in real-time (debounced 150ms)
+**Then** the REM equivalent appears in real-time (debounced 300ms)
 **And** each output value (PX, REM) has an adjacent `CopyButton`
 
 ### AC3: Configurable Base Font Size
@@ -96,7 +96,7 @@ So that **I can reliably convert between PX and REM units with a consistent inte
   - [x] 7.1 Import `useDebounceCallback` from `@/hooks`
   - [x] 7.2 Change PX and REM inputs from `type="number"` to `type="text"` — allows non-numeric input to reach validation (per story 3-5 code review M2 pattern)
   - [x] 7.3 Remove `Math.floor` on PX input — allow decimal PX values (12.5px is valid)
-  - [x] 7.4 Create debounced conversion handlers at 150ms:
+  - [x] 7.4 Create debounced conversion handlers at 300ms:
     - `dbConvertPxToRem`: validates PX input, calls `pxToRem()`, updates REM value
     - `dbConvertRemToPx`: validates REM input, calls `remToPx()`, updates PX value
   - [x] 7.5 Input handlers update the typed value immediately (controlled input) and call the debounced converter
@@ -163,7 +163,7 @@ export const UnitPxToRem = () => {
 3. **No CopyButton** — Neither PX nor REM output has a copy button. Add `CopyButton` as `suffix` on both `FieldForm` inputs.
 4. **Hardcoded base font size (16)** — Epic AC says "configurable base font size (default 16px)". Add a base font size input.
 5. **`Math.floor` on PX** — Line 19: `floorVal = Math.floor(numVal)`. This truncates decimal PX values (12.5px → 12px → 0.75rem instead of 12.5px → 0.78125rem). Remove `Math.floor` — allow decimal PX.
-6. **No debounce** — Direct `handleChange` with no debounce. Architecture pattern requires 150ms for text conversion tools.
+6. **No debounce** — Direct `handleChange` with no debounce. Architecture pattern requires 300ms for text conversion tools.
 7. **`type="number"`** — TextInput's `handleChange` silently drops non-numeric input when `type="number"` (line 17-21 of TextInput.tsx). Change to `type="text"` to allow validation error messages (per story 3-5 code review M2).
 8. **No tests** — No utility functions extracted, no test file.
 9. **No pure utility functions** — Conversion logic is inline in the component. Extract to `src/utils/unit.ts` for testability.
@@ -220,7 +220,7 @@ const dbConvertPxToRem = useDebounceCallback((px: string, base: string) => {
   }
   clearError()
   setRemValue(pxToRem(pxNum, baseNum).toString())
-}, 150)
+}, 300)
 
 const dbConvertRemToPx = useDebounceCallback((rem: string, base: string) => {
   if (rem.trim() === '') {
@@ -240,7 +240,7 @@ const dbConvertRemToPx = useDebounceCallback((rem: string, base: string) => {
   }
   clearError()
   setPxValue(remToPx(remNum, baseNum).toString())
-}, 150)
+}, 300)
 ```
 
 **Input handlers** update the displayed value immediately (controlled input), then trigger the debounced converter:
@@ -482,7 +482,7 @@ export const UnitPxToRem = () => {
 - **`Array<T>` not `T[]`** — oxlint enforced [Source: project-context.md#Language-Specific Rules]
 - **100% client-side** — Zero network requests. Pure arithmetic conversion [Source: architecture.md#NFR9]
 - **No `console.log`** — oxlint enforced [Source: project-context.md#Code Quality Rules]
-- **150ms debounce for text tools** — Architecture pattern for text conversion tools [Source: architecture.md#Tool Input Processing]
+- **300ms debounce for text tools** — Architecture pattern for text conversion tools [Source: architecture.md#Tool Input Processing]
 - **`type="text"` for validatable inputs** — Per story 3-5 code review M2, change from `type="number"` to allow error message display
 
 ### Previous Story Intelligence (Story 3.5)
@@ -515,8 +515,8 @@ b0fd290 ♻️: story 3.1
 
 **Key files from story 3-5 that inform patterns:**
 - `src/components/feature/time/TimeUnixTimestamp.tsx` — Latest refactored tool (useToolError, tool description, inline error, CopyButton in DataCellTable)
-- `src/components/feature/color/ColorConvertor.tsx` — Text-tool refactor reference (CopyButton in FieldForm suffix, 150ms debounce, error handling)
-- `src/components/feature/encoding/EncodingBase64.tsx` — Text-tool refactor reference (useToolError, 150ms debounce)
+- `src/components/feature/color/ColorConvertor.tsx` — Text-tool refactor reference (CopyButton in FieldForm suffix, 300ms debounce, error handling)
+- `src/components/feature/encoding/EncodingBase64.tsx` — Text-tool refactor reference (useToolError, 300ms debounce)
 
 **Story 3-5 changed files (from `git diff HEAD~1 --stat`):**
 - `src/components/feature/time/TimeUnixTimestamp.tsx` — 131 lines changed
@@ -530,7 +530,7 @@ b0fd290 ♻️: story 3.1
 - `src/utils/unit.spec.ts` — ~22 regression tests for both functions
 
 **Files to MODIFY:**
-- `src/components/feature/unit/UnitPxToRem.tsx` — Refactor: useToolError, tool description, CopyButton, configurable base, type="text", validation, 150ms debounce, remove Math.floor
+- `src/components/feature/unit/UnitPxToRem.tsx` — Refactor: useToolError, tool description, CopyButton, configurable base, type="text", validation, 300ms debounce, remove Math.floor
 - `src/utils/index.ts` — Add barrel export for `unit.ts`
 
 **Files NOT to modify:**
@@ -555,9 +555,9 @@ b0fd290 ♻️: story 3.1
 
 | Direction | Input | Output | Trigger |
 |-----------|-------|--------|---------|
-| PX → REM | PX value (number) | REM equivalent | On PX input change (debounced 150ms) |
-| REM → PX | REM value (number) | PX equivalent | On REM input change (debounced 150ms) |
-| Base change | Base font size (number) | Recalculate last-edited direction | On base input change (debounced 150ms) |
+| PX → REM | PX value (number) | REM equivalent | On PX input change (debounced 300ms) |
+| REM → PX | REM value (number) | PX equivalent | On REM input change (debounced 300ms) |
+| Base change | Base font size (number) | Recalculate last-edited direction | On base input change (debounced 300ms) |
 
 **Configurable Base Font Size:**
 - Default: 16 (the CSS standard)
@@ -607,7 +607,7 @@ b0fd290 ♻️: story 3.1
 
 **Performance:**
 - NFR1: Text tool processing under 100ms — pure arithmetic is sub-microsecond
-- Debounce at 150ms per architecture pattern for text conversion tools
+- Debounce at 300ms per architecture pattern for text conversion tools
 
 ### Latest Technical Information
 
@@ -630,16 +630,16 @@ b0fd290 ♻️: story 3.1
 - [Source: _bmad-output/planning-artifacts/epics.md#NFR9] — Zero network requests for tool processing
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Handling] — useToolError pattern
 - [Source: _bmad-output/planning-artifacts/architecture.md#Error Message Format] — Concise, actionable, with example
-- [Source: _bmad-output/planning-artifacts/architecture.md#Tool Input Processing] — Text tools: 150ms debounce
+- [Source: _bmad-output/planning-artifacts/architecture.md#Tool Input Processing] — Text tools: 300ms debounce
 - [Source: _bmad-output/project-context.md] — 53 project rules (types, imports, naming, etc.)
 - [Source: _bmad-output/implementation-artifacts/3-5-unix-timestamp-converter-refactor-spec-and-tests.md] — Previous story patterns (useToolError, description, error display, type="text", Number.isNaN, CopyButton)
 - [Source: src/components/feature/unit/UnitPxToRem.tsx] — Current implementation (58 lines, needs full refactor)
-- [Source: src/components/feature/color/ColorConvertor.tsx] — Reference: CopyButton in FieldForm suffix, 150ms debounce, useToolError
+- [Source: src/components/feature/color/ColorConvertor.tsx] — Reference: CopyButton in FieldForm suffix, 300ms debounce, useToolError
 - [Source: src/components/common/button/CopyButton.tsx] — Standardized copy button component
 - [Source: src/components/common/form/FieldForm.tsx] — Form wrapper with suffix prop pass-through
 - [Source: src/components/common/input/TextInput.tsx] — TextInput with suffix rendering and type="number" filter (lines 17-21)
 - [Source: src/hooks/useToolError.ts] — Error state hook
-- [Source: src/hooks/useDebounceCallback.ts] — Debounce hook (default 800ms, override to 150ms)
+- [Source: src/hooks/useDebounceCallback.ts] — Debounce hook (default 800ms, override to 300ms)
 - [Source: src/constants/tool-registry.ts:84-101] — TOOL_REGISTRY entry for px-to-rem (key, category Unit, emoji 📏)
 
 ## Senior Developer Review (AI)
@@ -661,7 +661,7 @@ All 6 ACs verified as implemented. All 8 tasks with 25 subtasks verified as genu
 ## Change Log
 
 - 2026-02-14: Code review — Fixed 3 MEDIUM issues: base field validation gap (M1), helper text conditional rendering (M2), synchronous empty-field clearing (M3). All quality gates pass.
-- 2026-02-14: Implemented story 3-6 — Extracted pure utility functions (pxToRem, remToPx) to src/utils/unit.ts, added 20 regression tests, refactored UnitPxToRem component with useToolError, CopyButton, configurable base font size, 150ms debounce, type="text" inputs, and tool description from registry. All 282 tests pass, build/lint/format clean.
+- 2026-02-14: Implemented story 3-6 — Extracted pure utility functions (pxToRem, remToPx) to src/utils/unit.ts, added 20 regression tests, refactored UnitPxToRem component with useToolError, CopyButton, configurable base font size, 300ms debounce, type="text" inputs, and tool description from registry. All 282 tests pass, build/lint/format clean.
 
 ## Dev Agent Record
 
@@ -681,7 +681,7 @@ No issues encountered during implementation.
 - Task 4: Added `TOOL_REGISTRY_MAP['px-to-rem']` description display at top of component.
 - Task 5: Added `CopyButton` as `suffix` prop on both PX and REM `FieldForm` inputs.
 - Task 6: Added configurable base font size with `baseValue` state (default '16'), `lastEdited` tracking for recalculation direction, and dynamic helper text.
-- Task 7: Added 150ms debounced conversion handlers via `useDebounceCallback`, changed inputs to `type="text"` for validation, removed `Math.floor` on PX input.
+- Task 7: Added 300ms debounced conversion handlers via `useDebounceCallback`, changed inputs to `type="text"` for validation, removed `Math.floor` on PX input.
 - Task 8: All quality gates passed — lint clean, format clean, build succeeds, 282 tests pass (262 existing + 20 new, zero regressions).
 - Code Review Fix M1: Added immediate base validation in handleBaseChange — now shows error for invalid base even when PX/REM are empty.
 - Code Review Fix M2: Helper text now conditionally renders only when base value is a valid positive number.
