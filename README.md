@@ -16,28 +16,51 @@
 
 ## ✨ Features
 
-CSR Developer Tools is a collection of essential utilities that work entirely in your browser - no server required, ensuring your data stays private and secure.
+CSR Developer Tools is a collection of **19 tools** across **9 categories** that work entirely in your browser — no server required, ensuring your data stays private and secure.
 
-### 🎨 **Color Tools**
-- **Color Converter** - Convert between HEX, RGB, HSL, and other color formats
+### 🎨 **Color**
+- **Color Converter** — Convert between HEX, RGB, HSL, OKLCH, LAB, and LCH formats
 
-### 🔧 **Encoding Tools**
-- **Base64 Encoder/Decoder** - Encode and decode Base64 strings instantly
+### 🔲 **CSS**
+- **Box Shadow Generator** — Visually create CSS box-shadow values with a live preview
 
-### 🖼️ **Image Tools**
-- **Image Converter** - Convert between different image formats (PNG, JPG, WebP, etc.)
-- **Image Resize** - Resize images with custom dimensions while maintaining quality
+### 📋 **Data**
+- **JSON Formatter** — Format and validate JSON with clean indentation
+- **JSON ↔ YAML** — Convert between JSON and YAML configuration formats
+- **JSON ↔ CSV** — Convert between JSON arrays and CSV spreadsheet format
 
-### ⏰ **Time Tools**
-- **Unix Timestamp Converter** - Convert between Unix timestamps and human-readable dates
+### 🔤 **Encoding**
+- **Base64 Encoder** — Encode and decode Base64 strings
+- **URL Encoder/Decoder** — Encode and decode URL strings
+- **JWT Decoder** — Decode JWT tokens to inspect header and payload
 
-### 📐 **Unit Tools**
-- **PX to REM Converter** - Convert pixel values to REM units for responsive design
+### 🔑 **Generator**
+- **UUID Generator** — Generate random UUID v4 identifiers, single or in bulk
+- **Password Generator** — Generate random passwords with configurable length and character types
+- **Hash Generator** — Compute hash values from text using MD5, SHA-1, SHA-256, and SHA-512
 
-### 🎛️ **Customizable Layout**
-- Drag-and-drop interface to organize your most-used tools
-- Persistent layout that remembers your preferences
-- Clean, modern UI with dark theme support
+### 🖼️ **Image**
+- **Image Converter** — Convert between PNG, JPG, WebP, GIF, BMP, and AVIF formats
+- **Image Compressor** — Compress JPEG and WebP images with a quality slider and live size preview
+- **Image Cropper** — Crop images using freeform selection or common aspect ratio presets
+- **Image Resizer** — Resize images to custom dimensions with aspect ratio control
+
+### 📝 **Text**
+- **Text Diff** — Compare two text blocks and see line-by-line differences highlighted
+- **Regex Tester** — Test regex patterns against sample text with live match highlighting
+
+### 🕐 **Time**
+- **Unix Timestamp** — Convert between Unix timestamps and human-readable dates
+
+### 📏 **Unit**
+- **PX to REM** — Convert between PX and REM units with configurable base font size
+
+### 🧭 **Navigation & Discovery**
+- **Sidebar** — Collapsible, categorized navigation for all tools
+- **Command Palette** — Fuzzy search any tool with `Cmd+K` / `Ctrl+K`
+- **Dedicated URLs** — Each tool has its own route for bookmarking and sharing
+- **Drag-and-drop dashboard** — Organize your most-used tools on the home page
+- **Persistent layout** — Dashboard remembers your preferences
 
 ## 🚀 Quick Start
 
@@ -85,10 +108,7 @@ pnpm preview
 - **[React 19](https://react.dev/)** - Latest React with modern features
 - **[TypeScript](https://www.typescriptlang.org/)** - Type-safe development
 - **[Vite](https://vitejs.dev/)** - Fast build tool and dev server
-- **[TanStack Router](https://tanstack.com/router)** - Client-side routing
-
-### Data Management
-- **[TanStack Query](https://tanstack.com/query)** - Server state management and caching
+- **[TanStack Router](https://tanstack.com/router)** - Client-side routing with per-tool routes
 
 ### UI & Styling
 - **[Tailwind CSS v4](https://tailwindcss.com/)** - Utility-first CSS framework
@@ -106,36 +126,49 @@ pnpm preview
 - **[oxlint](https://oxc.rs/docs/guide/usage/linter)** - Fast code linting
 - **[oxfmt](https://oxc.rs/docs/guide/usage/formatter)** - Fast code formatting
 - **[Vitest](https://vitest.dev/)** - Unit testing framework
+- **[Playwright](https://playwright.dev/)** - E2E testing framework
+- **[GitHub Actions](https://github.com/features/actions)** - CI/CD pipeline with Lighthouse CI
 
 ## 📁 Project Structure
 
 ```
 csr-dev-tools/
-├── public/                # Static assets
+├── public/                  # Static assets
 ├── src/
-│   ├── components/        # Reusable UI components
-│   │   ├── common/        # Common components (buttons, cards, etc.)
-│   │   ├── feature/       # Feature-specific components
-│   │   └── index.ts       # Component exports
-│   ├── constants/         # constants
-│   │   ├── feature.ts     # Feature constants
-│   │   ├── image.ts       # Image constants
-│   │   ├── route.ts       # Route constants
-│   ├── hooks/             # Custom React hooks
-│   ├── pages/             # Page components
-│   │   ├── home/          # Main dashboard
-│   │   └── showcase/      # Feature showcase
-│   ├── types/             # TypeScript type definitions
-│   ├── utils/             # Utility functions
-│   ├── App.tsx            # Root application component
-│   ├── main.tsx           # Application entry point
-│   ├── routes.tsx         # TanStack Router configuration
-│   └── index.css          # Global styles and Tailwind imports
+│   ├── components/
+│   │   ├── common/          # Shared UI (button, card, sidebar, command-palette, toast, …)
+│   │   ├── feature/         # Tool components by category
+│   │   │   ├── color/       #   Color Converter
+│   │   │   ├── css/         #   Box Shadow Generator
+│   │   │   ├── data/        #   JSON Formatter, JSON↔YAML, JSON↔CSV
+│   │   │   ├── encoding/    #   Base64, URL Encoder, JWT Decoder
+│   │   │   ├── generator/   #   UUID, Password, Hash
+│   │   │   ├── image/       #   Converter, Compressor, Cropper, Resizer
+│   │   │   ├── text/        #   Text Diff, Regex Tester
+│   │   │   ├── time/        #   Unix Timestamp
+│   │   │   └── unit/        #   PX to REM
+│   │   └── index.ts
+│   ├── constants/           # Tool registry, routes, image constants
+│   ├── hooks/               # Custom hooks (copy, debounce, SEO, keyboard shortcuts)
+│   │   ├── persist/         # Persistence hooks
+│   │   └── state/           # Zustand stores
+│   ├── pages/
+│   │   ├── home/            # Dashboard with drag-and-drop layout
+│   │   ├── showcase/        # Feature showcase
+│   │   └── tool/            # Dynamic tool page (renders from registry)
+│   ├── types/               # TypeScript type definitions
+│   ├── utils/               # Utility functions
+│   ├── App.tsx
+│   ├── main.tsx
+│   ├── routes.tsx
+│   └── index.css
+├── e2e/                     # Playwright E2E tests
+├── CONTRIBUTING.md          # Contributor guide
 ├── package.json
-├── vite.config.ts         # Vite configuration
-├── tsconfig.json          # TypeScript configuration
-├── .oxlintrc.json         # oxlint configuration
-└── .oxfmtrc.json          # oxfmt configuration
+├── vite.config.ts
+├── tsconfig.json
+├── .oxlintrc.json
+└── .oxfmtrc.json
 ```
 
 ## 🧩 Available Scripts
@@ -146,7 +179,12 @@ csr-dev-tools/
 | `pnpm build` | Build for production |
 | `pnpm preview` | Preview production build |
 | `pnpm lint` | Run oxlint |
-| `pnpm test` | Run unit tests |
+| `pnpm lint:fix` | Run oxlint with auto-fix |
+| `pnpm format` | Format source files with oxfmt |
+| `pnpm format:check` | Check formatting without writing |
+| `pnpm test` | Run unit tests (Vitest) |
+| `pnpm test:e2e` | Run E2E tests (Playwright) |
+| `pnpm test:e2e:ui` | Run E2E tests with Playwright UI |
 
 ## 🎨 Design System
 
@@ -154,9 +192,10 @@ This project follows a comprehensive design system built on:
 
 ### Component Architecture
 - **Radix UI** as the foundation for accessible, unstyled components
-- **Tailwind CSS v4** for styling with utility classes and CSS-based configuration
-- **Motion One** for smooth animations and transitions
-- **TanStack Router** for routing and lazy component loading
+- **Tailwind CSS v4** with `tv()` (Tailwind Variants) for component styling
+- **motion/react** for smooth animations and transitions
+- **TanStack Router** for routing with lazy-loaded tool components
+- **Centralized Tool Registry** — single source of truth for all tool metadata, routes, and components
 
 ### Code Standards
 - **TypeScript strict mode** for type safety
@@ -172,21 +211,21 @@ This project follows a comprehensive design system built on:
 ## 🌟 Key Features
 
 ### Client-Side Only
-- **100% client-side processing** - your data never leaves your browser
-- **No server dependencies** - works offline after initial load
-- **Privacy-focused** - no data collection or tracking
+- **100% client-side processing** — your data never leaves your browser
+- **No server dependencies** — works offline after initial load
+- **Privacy-focused** — no data collection or tracking
 
 ### Modern Development
 - **React 19** with latest features and optimizations
-- **TypeScript** for enhanced developer experience
+- **TypeScript strict mode** for type safety
 - **TanStack Router** for routing with automatic code splitting
-- **TanStack Query** for intelligent data fetching and caching
 - **Hot module replacement** for instant feedback during development
 - **Optimized build** with tree shaking and lazy loading
+- **562+ unit tests** and **E2E tests** with Playwright
 
-### Responsive Design
+### Accessible & Responsive
+- **WCAG-compliant** — `aria-live` regions, keyboard navigation, semantic markup
 - **Mobile-first** approach with Tailwind CSS
-- **Progressive Web App** capabilities
 - **Touch-friendly** interface for mobile devices
 
 ## 🔒 Privacy & Security
