@@ -45,7 +45,7 @@ const ToastItem = ({ duration, label, type }: Omit<ToastItemProps, 'id'>) => {
       <Root asChild duration={resolvedDuration === 0 ? Infinity : resolvedDuration}>
         <motion.li
           animate={{ opacity: 1, y: 0 }}
-          className="popover text-body-sm flex w-fit items-center gap-2 rounded-sm p-2"
+          className="popover flex w-fit items-center gap-2 rounded-sm p-2 text-body-sm"
           exit={{ opacity: 0, y: -20 }}
           initial={{ opacity: 0, y: -20 }}
           transition={{

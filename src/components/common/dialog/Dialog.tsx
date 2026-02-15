@@ -6,14 +6,14 @@ import type { CompVariant, DialogProps, DialogVariants } from '@/types'
 import { tv } from '@/utils'
 
 const contentVariants: CompVariant<DialogVariants> = tv({
-  base: 'rounded-card shadow-primary/30 fixed top-[50%] left-[50%] z-50 flex -translate-1/2 flex-col overflow-hidden border border-gray-800 bg-gray-950 shadow-[0_0_40px_12px]',
+  base: 'fixed top-[50%] left-[50%] z-50 flex -translate-1/2 flex-col overflow-hidden rounded-card border border-gray-800 bg-gray-950 shadow-[0_0_40px_12px] shadow-primary/30',
   defaultVariants: {
     size: 'default',
   },
   variants: {
     size: {
       default: 'max-h-[90dvh] w-auto max-w-[90dvw] min-w-90',
-      screen: 'tablet:h-[95dvh] tablet:w-[95dvw] tablet:rounded-card h-dvh w-dvw rounded-none',
+      screen: 'h-dvh w-dvw rounded-none tablet:h-[95dvh] tablet:w-[95dvw] tablet:rounded-card',
       small: 'max-h-[90dvh] w-90 max-w-[90dvw]',
     },
   },
@@ -61,7 +61,7 @@ export const Dialog = ({
             <div className="flex w-full shrink-0 items-center gap-3 border-b border-gray-800 px-4 py-2 pt-[calc(var(--safe-area-inset-top)+0.5rem)]">
               <Close asChild>
                 <motion.button
-                  className="bg-error size-3 shrink-0 rounded-full"
+                  className="size-3 shrink-0 rounded-full bg-error"
                   transition={{ duration: 0.15, ease: 'easeOut' }}
                   whileHover={{ opacity: 0.8, scale: 1.15 }}
                   whileTap={{ scale: 0.9 }}
@@ -69,7 +69,7 @@ export const Dialog = ({
                   <span className="sr-only">Close</span>
                 </motion.button>
               </Close>
-              <Title className="text-body-sm grow truncate text-gray-400">{title}</Title>
+              <Title className="grow truncate text-body-sm text-gray-400">{title}</Title>
               <Description className="hidden">{description ?? title}</Description>
             </div>
             <div className="flex size-full grow flex-col overflow-y-auto p-4 pb-[calc(var(--safe-area-inset-bottom)+1rem)]">

@@ -88,8 +88,8 @@ export const UnitPxToRem = () => {
 
   return (
     <div className="flex w-full grow flex-col items-center justify-center gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
-      <div aria-live="polite" className="flex w-full items-center [&>*]:w-1/2">
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      <div aria-live="polite" className="flex w-full items-center *:w-1/2">
         <FieldForm
           label="PX"
           name="px"
@@ -118,7 +118,7 @@ export const UnitPxToRem = () => {
         value={baseValue}
       />
       {Number(baseValue) > 0 && (
-        <p className="text-body-sm text-center text-gray-400">
+        <p className="text-center text-body-sm text-gray-400">
           Calculation based on a root font-size of {baseValue} pixel.
         </p>
       )}

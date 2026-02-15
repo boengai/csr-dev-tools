@@ -59,7 +59,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
               width: indicator.width,
               x: indicator.translateX,
             }}
-            className="border-primary/30 absolute left-0 h-10 rounded-t-md border border-b-0"
+            className="absolute left-0 h-10 rounded-t-md border border-b-0 border-primary/30"
             initial={{
               width: indicator.width,
               x: indicator.translateX,
@@ -75,7 +75,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
             animate={{
               width: indicator.translateX,
             }}
-            className="bg-primary/30 absolute bottom-0 left-0 h-0.5"
+            className="absolute bottom-0 left-0 h-0.5 bg-primary/30"
             initial={{
               width: indicator.translateX,
             }}
@@ -90,7 +90,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
             animate={{
               width: `calc(100% - ${indicator.width}px - ${indicator.translateX}px)`,
             }}
-            className="bg-primary/30 absolute right-0 bottom-0 h-0.5"
+            className="absolute right-0 bottom-0 h-0.5 bg-primary/30"
             initial={{
               width: `calc(100% - ${indicator.width}px - ${indicator.translateX}px)`,
             }}
@@ -105,7 +105,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
         {navTriggers.map(({ trigger, value }) => (
           <Trigger
             asChild
-            className="hover:bg-primary/10 relative shrink-0 rounded-t-md px-4 py-2 text-gray-400 transition-colors delay-300 data-[state=active]:pointer-events-none data-[state=active]:text-white"
+            className="relative shrink-0 rounded-t-md px-4 py-2 text-gray-400 transition-colors delay-300 hover:bg-primary/10 data-[state=active]:pointer-events-none data-[state=active]:text-white"
             key={value}
             value={value}
           >

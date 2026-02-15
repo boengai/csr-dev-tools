@@ -35,7 +35,7 @@ export const SearchInput = ({
         type="text"
         value={value}
       />
-      <kbd className="text-body-xs rounded bg-gray-800 px-1.5 py-0.5 text-gray-500">
+      <kbd className="rounded bg-gray-800 px-1.5 py-0.5 text-body-xs text-gray-500">
         {typeof navigator !== 'undefined' && /Mac/i.test(navigator.userAgent) ? '⌘K' : 'Ctrl+K'}
       </kbd>
     </div>

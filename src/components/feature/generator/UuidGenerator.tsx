@@ -22,7 +22,7 @@ export const UuidGenerator = () => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
       <div className="flex flex-col gap-3">
         <FieldForm
@@ -50,7 +50,7 @@ export const UuidGenerator = () => {
         <div className="flex max-h-80 flex-col gap-1 overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3">
           {uuids.map((uuid, i) => (
             <div className="flex items-center justify-between gap-2" key={i}>
-              <span className="font-mono text-sm text-gray-300">
+              <span className="text-sm font-mono text-gray-300">
                 {uuids.length > 1 && <span className="text-gray-600">{i + 1}. </span>}
                 {uuid}
               </span>
@@ -59,7 +59,6 @@ export const UuidGenerator = () => {
           ))}
         </div>
       </div>
-
     </div>
   )
 }

@@ -58,7 +58,7 @@ export default function App() {
           type="button"
         >
           <SearchIcon />
-          <kbd className="text-body-xs rounded-sm border border-gray-800 bg-gray-950 px-1.5 py-0.5">
+          <kbd className="rounded-sm border border-gray-800 bg-gray-950 px-1.5 py-0.5 text-body-xs">
             {typeof navigator !== 'undefined' && /Mac/i.test(navigator.userAgent) ? '⌘K' : 'Ctrl+K'}
           </kbd>
         </button>

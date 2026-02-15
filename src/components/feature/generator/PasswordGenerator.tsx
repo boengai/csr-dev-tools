@@ -1,10 +1,10 @@
 import { useState } from 'react'
 
+import type { PasswordOptions } from '@/utils'
+
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { DEFAULT_PASSWORD_OPTIONS, generatePassword } from '@/utils'
-
-import type { PasswordOptions } from '@/utils'
 
 const CHAR_TOGGLES: Array<{
   key: keyof Pick<PasswordOptions, 'digits' | 'lowercase' | 'symbols' | 'uppercase'>
@@ -47,7 +47,7 @@ export const PasswordGenerator = () => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
       <div className="flex shrink-0 items-end gap-3">
         <div className="flex w-3/5 flex-col gap-3">
@@ -76,9 +76,9 @@ export const PasswordGenerator = () => {
               <button
                 aria-label={`Toggle ${label}`}
                 aria-pressed={options[key]}
-                className={`w-[calc(50%-0.25rem)] rounded border px-3 font-mono text-xs leading-7 ${
+                className={`text-xs w-[calc(50%-0.25rem)] rounded border px-3 font-mono leading-7 ${
                   options[key]
-                    ? 'border-primary bg-primary/20 text-primary font-bold'
+                    ? 'border-primary bg-primary/20 font-bold text-primary'
                     : 'border-gray-700 bg-transparent text-gray-500'
                 }`}
                 key={key}
@@ -103,7 +103,7 @@ export const PasswordGenerator = () => {
         <div className="flex max-h-80 flex-col gap-1 overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3">
           {passwords.map((pw, i) => (
             <div className="flex items-center justify-between gap-2" key={i}>
-              <span className="font-mono text-sm break-all text-gray-300">
+              <span className="text-sm font-mono break-all text-gray-300">
                 {passwords.length > 1 && <span className="text-gray-600">{i + 1}. </span>}
                 {pw}
               </span>

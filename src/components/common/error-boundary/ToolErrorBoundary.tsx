@@ -1,6 +1,7 @@
+import type { ErrorInfo } from 'react'
+
 import { Component } from 'react'
 
-import type { ErrorInfo } from 'react'
 import type { ToolErrorBoundaryProps } from '@/types'
 
 type ToolErrorBoundaryState = {
@@ -30,9 +31,9 @@ export class ToolErrorBoundary extends Component<ToolErrorBoundaryProps, ToolErr
       }
       return (
         <div className="flex flex-col items-center justify-center gap-3 p-6 text-center" role="alert">
-          <p className="text-error text-body-sm">Something went wrong</p>
+          <p className="text-body-sm text-error">Something went wrong</p>
           <button
-            className="border-error text-body-sm text-error hover:bg-error/10 rounded-md border px-3 py-1"
+            className="rounded-md border border-error px-3 py-1 text-body-sm text-error hover:bg-error/10"
             onClick={this.handleReset}
             type="button"
           >

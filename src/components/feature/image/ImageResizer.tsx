@@ -33,17 +33,17 @@ const ImagePreview = ({
   }
 }) => {
   return (
-    <div className="tablet:size-full tablet:max-h-full flex w-full grow flex-col items-center justify-center gap-4 p-4">
+    <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
       {src ? (
         src === EMPTY_IMAGE ? (
           <NotoEmoji emoji="bomb" size={120} />
         ) : (
           <>
-            <picture className="tablet:max-h-full tablet:overflow-y-auto flex size-full grow flex-col items-center justify-center gap-4">
-              <img alt="preview" className="tablet:max-h-full tablet:w-auto w-full max-w-full" src={src} />
+            <picture className="flex size-full grow flex-col items-center justify-center gap-4 tablet:max-h-full tablet:overflow-y-auto">
+              <img alt="preview" className="w-full max-w-full tablet:max-h-full tablet:w-auto" src={src} />
             </picture>
             {metadata && (
-              <ul className="text-body-sm flex gap-1 text-center text-gray-200 italic">
+              <ul className="flex gap-1 text-center text-body-sm text-gray-200 italic">
                 {metadata.width && metadata.height && (
                   <li>
                     {metadata.width}x{metadata.height};
@@ -116,14 +116,20 @@ export const ImageResizer = () => {
       if (currentSession !== sessionRef.current) return
 
       if (result.dataUrl === EMPTY_IMAGE) {
-        toast({ action: 'add', item: { label: 'Image resize failed — file may be too large for browser memory', type: 'error' } })
+        toast({
+          action: 'add',
+          item: { label: 'Image resize failed — file may be too large for browser memory', type: 'error' },
+        })
         return
       }
 
       setPreview(result)
     } catch {
       if (currentSession !== sessionRef.current) return
-      toast({ action: 'add', item: { label: 'Image resize failed — try smaller dimensions or a different format', type: 'error' } })
+      toast({
+        action: 'add',
+        item: { label: 'Image resize failed — try smaller dimensions or a different format', type: 'error' },
+      })
     }
   })
 
@@ -132,7 +138,10 @@ export const ImageResizer = () => {
     if (!file) return
 
     if (!isValidImageFormat(file.type)) {
-      toast({ action: 'add', item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' } })
+      toast({
+        action: 'add',
+        item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' },
+      })
       return
     }
 
@@ -148,7 +157,10 @@ export const ImageResizer = () => {
       setPreview(result)
       setTabValue(TABS_VALUES.PROCESSING)
     } catch {
-      toast({ action: 'add', item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' } })
+      toast({
+        action: 'add',
+        item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' },
+      })
       handleReset()
     }
   }
@@ -201,7 +213,10 @@ export const ImageResizer = () => {
       setTabValue(TABS_VALUES.DOWNLOAD)
       setDialogOpen(false)
     } catch {
-      toast({ action: 'add', item: { label: 'Image resize failed — try smaller dimensions or a different format', type: 'error' } })
+      toast({
+        action: 'add',
+        item: { label: 'Image resize failed — try smaller dimensions or a different format', type: 'error' },
+      })
       setDialogOpen(false)
     }
   }
@@ -223,7 +238,7 @@ export const ImageResizer = () => {
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <Tabs
           injected={{
@@ -234,7 +249,7 @@ export const ImageResizer = () => {
             {
               content: (
                 <div className="flex w-full grow flex-col items-center justify-center gap-4">
-                  <div className="desktop:w-8/10 w-full">
+                  <div className="w-full desktop:w-8/10">
                     <UploadInput
                       accept="image/*"
                       button={{ block: true, children: 'Select images from your device' }}
@@ -259,7 +274,7 @@ export const ImageResizer = () => {
               content: (
                 <div className="flex w-full grow flex-col items-center justify-center gap-6">
                   <NotoEmoji emoji="check" size={120} />
-                  <div className="desktop:w-8/10 flex w-full flex-col gap-4">
+                  <div className="flex w-full flex-col gap-4 desktop:w-8/10">
                     <Button
                       block
                       icon={<DownloadIcon />}
@@ -292,10 +307,10 @@ export const ImageResizer = () => {
         size="screen"
         title="Adjust the size of your image"
       >
-        <div className="tablet:min-h-0 flex grow flex-col gap-4">
+        <div className="flex grow flex-col gap-4 tablet:min-h-0">
           <div
             aria-live="polite"
-            className="bg-grid-texture tablet:min-h-0 tablet:grow tablet:flex-row flex flex-col items-center justify-center gap-6 bg-black"
+            className="bg-grid-texture flex flex-col items-center justify-center gap-6 bg-black tablet:min-h-0 tablet:grow tablet:flex-row"
           >
             <ImagePreview
               metadata={{
@@ -306,7 +321,7 @@ export const ImageResizer = () => {
               }}
               src={source ? source[1].dataUrl : undefined}
             />
-            <div className="tablet:border-t-none tablet:h-full tablet:w-1 tablet:border-l-2 h-1 w-full border-t-2 border-dashed border-gray-700" />
+            <div className="tablet:border-t-none h-1 w-full border-t-2 border-dashed border-gray-700 tablet:h-full tablet:w-1 tablet:border-l-2" />
             <ImagePreview
               metadata={{
                 format: preview?.format,
@@ -317,8 +332,8 @@ export const ImageResizer = () => {
               src={preview?.dataUrl}
             />
           </div>
-          <div className="desktop:flex-row flex w-full shrink-0 flex-col justify-center gap-2">
-            <div className="tablet:flex-row flex w-full flex-col items-end gap-2">
+          <div className="flex w-full shrink-0 flex-col justify-center gap-2 desktop:flex-row">
+            <div className="flex w-full flex-col items-end gap-2 tablet:flex-row">
               <div className="flex w-full gap-2">
                 <FieldForm
                   disabled={!source}
@@ -339,7 +354,7 @@ export const ImageResizer = () => {
                   value={preview?.height?.toString() ?? ''}
                 />
               </div>
-              <div className="flex w-full gap-2 [&>*]:w-full">
+              <div className="flex w-full gap-2 *:w-full">
                 <ImageFormatSelectInput
                   disabled={!source}
                   onChange={(val) => handleInputChange('format', val)}
@@ -352,7 +367,7 @@ export const ImageResizer = () => {
                 />
               </div>
             </div>
-            <div className="desktop:w-2/5 flex w-full items-end">
+            <div className="flex w-full items-end desktop:w-2/5">
               <Button block disabled={!source} onClick={handleConvert} variant="primary">
                 Convert
               </Button>

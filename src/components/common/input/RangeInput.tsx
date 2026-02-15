@@ -29,7 +29,7 @@ export const RangeInput = ({ disabled, max, min, name, onBlur, onChange, step = 
   return (
     <div className="flex items-center gap-3" data-disabled={disabled}>
       <input
-        className="accent-primary h-2 flex-1 cursor-pointer"
+        className="h-2 flex-1 cursor-pointer accent-primary"
         disabled={disabled}
         max={max}
         min={min}
@@ -41,7 +41,7 @@ export const RangeInput = ({ disabled, max, min, name, onBlur, onChange, step = 
       />
       <input
         aria-label={name}
-        className="w-16 rounded border border-gray-700 bg-gray-950 px-2 py-1 text-center font-mono text-sm text-gray-300"
+        className="text-sm w-16 rounded border border-gray-700 bg-gray-950 px-2 py-1 text-center font-mono text-gray-300"
         disabled={disabled}
         max={max}
         min={min}

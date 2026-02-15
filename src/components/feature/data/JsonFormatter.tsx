@@ -58,7 +58,7 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button block onClick={() => setDialogOpen(true)} variant="default">
@@ -74,7 +74,7 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         title="JSON Format"
       >
         <div className="flex w-full grow flex-col gap-4">
-          <div className="tablet:flex-row flex size-full grow flex-col gap-6">
+          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="JSON Input"
@@ -87,7 +87,7 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
               />
             </div>
 
-            <div className="tablet:border-t-0 tablet:border-l-2 border-t-2 border-dashed border-gray-900" />
+            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
             <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
@@ -106,7 +106,6 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
               />
             </div>
           </div>
-
         </div>
       </Dialog>
     </>

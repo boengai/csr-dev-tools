@@ -8,7 +8,7 @@ export const ProgressBar = ({ value }: { value: number }) => {
       <div className="h-2 w-full rounded-full bg-gray-300">
         <motion.div
           animate={{ width: `${normalizedValue}%` }}
-          className="bg-primary h-full rounded-full"
+          className="h-full rounded-full bg-primary"
           initial={{ width: `0%` }}
           transition={{
             damping: 25,

@@ -46,11 +46,7 @@ const renderWithCopy = (label: string) => (val: string) => (
   </span>
 )
 
-const UnixTimestampSection = ({
-  showError,
-}: {
-  showError: (label: string) => void
-}) => {
+const UnixTimestampSection = ({ showError }: { showError: (label: string) => void }) => {
   const [input, setInput] = useState('')
   const [result, setResult] = useState<Array<string>>([])
 
@@ -93,7 +89,7 @@ const UnixTimestampSection = ({
           value={input}
         />
       </div>
-      <p className="text-body-sm text-center text-gray-500">
+      <p className="text-center text-body-sm text-gray-500">
         Supports Unix timestamps in seconds or milliseconds (auto-detected).
       </p>
       <div aria-live="polite">
@@ -181,8 +177,8 @@ const DateSection = () => {
 
   return (
     <section className="flex grow flex-col gap-2">
-      <div className="desktop:flex-row flex flex-col justify-between gap-1 [&>div>fieldset]:w-1/3">
-        <div className="desktop:w-1/2 flex w-full justify-between gap-1">
+      <div className="flex flex-col justify-between gap-1 desktop:flex-row [&>div>fieldset]:w-1/3">
+        <div className="flex w-full justify-between gap-1 desktop:w-1/2">
           <FieldForm
             label="Year"
             name="year"
@@ -212,7 +208,7 @@ const DateSection = () => {
             value={input.day}
           />
         </div>
-        <div className="desktop:w-1/2 flex w-full justify-between gap-1">
+        <div className="flex w-full justify-between gap-1 desktop:w-1/2">
           <FieldForm
             label="Hour"
             name="hour"
@@ -270,7 +266,7 @@ export const TimeUnixTimestamp = () => {
   const showError = (label: string) => toast({ action: 'add', item: { label, type: 'error' } })
   return (
     <div className="flex grow flex-col gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
       <UnixTimestampSection showError={showError} />
       <hr />
       <DateSection />

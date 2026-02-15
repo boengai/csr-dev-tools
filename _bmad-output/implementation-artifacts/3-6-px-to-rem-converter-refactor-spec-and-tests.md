@@ -132,11 +132,11 @@ export const UnitPxToRem = () => {
     let floorVal: number
     let anotherVal: number
     if (idx === 0) {
-      floorVal = Math.floor(numVal)  // ← Floors PX to integer!
-      anotherVal = floorVal / 16     // ← Hardcoded base 16
+      floorVal = Math.floor(numVal) // ← Floors PX to integer!
+      anotherVal = floorVal / 16 // ← Hardcoded base 16
     } else {
-      floorVal = numVal              // ← No floor for REM
-      anotherVal = floorVal * 16     // ← Hardcoded base 16
+      floorVal = numVal // ← No floor for REM
+      anotherVal = floorVal * 16 // ← Hardcoded base 16
     }
     setValue([
       idx === 0 ? floorVal.toString() : anotherVal.toString(),
@@ -146,9 +146,23 @@ export const UnitPxToRem = () => {
 
   return (
     <div className="flex w-full grow flex-col items-center justify-center gap-4">
-      <div className="flex w-full items-center [&>*]:w-1/2">
-        <FieldForm label="PX" name="px" onChange={(val) => handleChange(val, 0)} placeholder="16" type="number" value={value[0]} />
-        <FieldForm label="REM" name="rem" onChange={(val) => handleChange(val, 1)} placeholder="1" type="number" value={value[1]} />
+      <div className="flex w-full items-center *:w-1/2">
+        <FieldForm
+          label="PX"
+          name="px"
+          onChange={(val) => handleChange(val, 0)}
+          placeholder="16"
+          type="number"
+          value={value[0]}
+        />
+        <FieldForm
+          label="REM"
+          name="rem"
+          onChange={(val) => handleChange(val, 1)}
+          placeholder="1"
+          type="number"
+          value={value[1]}
+        />
       </div>
       <p className="text-body-sm text-center text-gray-400">Calculation based on a root font-size of 16 pixel.</p>
     </div>
@@ -196,6 +210,7 @@ const { clearError, error, setError } = useToolError()
 ```
 
 **`lastEdited` tracking** is needed so that when the user changes the base font size, we know which direction to recalculate:
+
 - If last edited PX → recalculate REM from PX with new base
 - If last edited REM → recalculate PX from REM with new base
 
@@ -418,7 +433,7 @@ When `type="number"` is used on `FieldForm`, the underlying `TextInput` componen
 if (type === 'number') {
   const numericValue = Number(value)
   if (isNaN(numericValue)) {
-    return  // ← Silently drops! Error message never shows.
+    return // ← Silently drops! Error message never shows.
   }
   onChange?.(value)
   return
@@ -450,6 +465,7 @@ Changing to `type="text"` lets non-numeric input reach our `useToolError` valida
 ### Existing Codebase Patterns to Follow
 
 #### Import Ordering
+
 ```tsx
 // 1. External libraries (alphabetical)
 import { useState } from 'react'
@@ -464,6 +480,7 @@ import { pxToRem, remToPx } from '@/utils/unit'
 ```
 
 #### Component Export Pattern
+
 ```tsx
 // Named export, NOT default
 export const UnitPxToRem = () => {
@@ -502,6 +519,7 @@ From story 3-5 (Unix Timestamp Converter refactor):
 ### Git Intelligence
 
 Recent commits:
+
 ```
 eeca4d0 ♻️: story 3-5
 247ff83 ♻️:  story 3-4
@@ -514,11 +532,13 @@ b0fd290 ♻️: story 3.1
 **Pattern**: `♻️:` prefix for refactor stories. This story should use `♻️: story 3-6`.
 
 **Key files from story 3-5 that inform patterns:**
+
 - `src/components/feature/time/TimeUnixTimestamp.tsx` — Latest refactored tool (useToolError, tool description, inline error, CopyButton in DataCellTable)
 - `src/components/feature/color/ColorConvertor.tsx` — Text-tool refactor reference (CopyButton in FieldForm suffix, 300ms debounce, error handling)
 - `src/components/feature/encoding/EncodingBase64.tsx` — Text-tool refactor reference (useToolError, 300ms debounce)
 
 **Story 3-5 changed files (from `git diff HEAD~1 --stat`):**
+
 - `src/components/feature/time/TimeUnixTimestamp.tsx` — 131 lines changed
 - `src/utils/time.spec.ts` — 90 lines (new test file)
 - Sprint status + story file
@@ -526,14 +546,17 @@ b0fd290 ♻️: story 3.1
 ### Project Structure Notes
 
 **Files to CREATE:**
+
 - `src/utils/unit.ts` — Pure conversion functions: `pxToRem`, `remToPx`
 - `src/utils/unit.spec.ts` — ~22 regression tests for both functions
 
 **Files to MODIFY:**
+
 - `src/components/feature/unit/UnitPxToRem.tsx` — Refactor: useToolError, tool description, CopyButton, configurable base, type="text", validation, 300ms debounce, remove Math.floor
 - `src/utils/index.ts` — Add barrel export for `unit.ts`
 
 **Files NOT to modify:**
+
 - `src/constants/tool-registry.ts` — PX to REM entry already exists with correct metadata
 - `src/utils/validation.ts` — No new validator needed (numeric check is inline)
 - `src/components/feature/unit/index.ts` — Already exports `UnitPxToRem`
@@ -548,18 +571,20 @@ b0fd290 ♻️: story 3.1
 **Purpose:** Bidirectional conversion between PX and REM CSS units with configurable base font size, entirely in the browser using pure arithmetic.
 
 **Conversion Formulas:**
+
 - PX → REM: `rem = px / base`
 - REM → PX: `px = rem * base`
 
 **Two-Way Conversion:**
 
-| Direction | Input | Output | Trigger |
-|-----------|-------|--------|---------|
-| PX → REM | PX value (number) | REM equivalent | On PX input change (debounced 300ms) |
-| REM → PX | REM value (number) | PX equivalent | On REM input change (debounced 300ms) |
+| Direction   | Input                   | Output                            | Trigger                                |
+| ----------- | ----------------------- | --------------------------------- | -------------------------------------- |
+| PX → REM    | PX value (number)       | REM equivalent                    | On PX input change (debounced 300ms)   |
+| REM → PX    | REM value (number)      | PX equivalent                     | On REM input change (debounced 300ms)  |
 | Base change | Base font size (number) | Recalculate last-edited direction | On base input change (debounced 300ms) |
 
 **Configurable Base Font Size:**
+
 - Default: 16 (the CSS standard)
 - User can change to any positive number
 - Common values: 10, 14, 16, 18, 20
@@ -567,57 +592,61 @@ b0fd290 ♻️: story 3.1
 
 **Supported Value Ranges:**
 
-| Input | Valid Values | Behavior |
-|-------|-------------|----------|
-| PX | Any number (positive, negative, zero, decimal) | Converts to REM |
-| REM | Any number (positive, negative, zero, decimal) | Converts to PX |
-| Base | Any positive number > 0 | Used as divisor/multiplier |
-| Empty | `""` | Clears both values and error |
-| Non-numeric | `abc`, `12px`, etc. | Shows error message |
-| Base ≤ 0 | `0`, `-1`, etc. | Shows error message (division by zero prevention) |
+| Input       | Valid Values                                   | Behavior                                          |
+| ----------- | ---------------------------------------------- | ------------------------------------------------- |
+| PX          | Any number (positive, negative, zero, decimal) | Converts to REM                                   |
+| REM         | Any number (positive, negative, zero, decimal) | Converts to PX                                    |
+| Base        | Any positive number > 0                        | Used as divisor/multiplier                        |
+| Empty       | `""`                                           | Clears both values and error                      |
+| Non-numeric | `abc`, `12px`, etc.                            | Shows error message                               |
+| Base ≤ 0    | `0`, `-1`, etc.                                | Shows error message (division by zero prevention) |
 
 **Precision:**
+
 - Results rounded to 6 decimal places maximum
 - Trailing zeros automatically stripped (e.g., `0.750000` → `0.75`)
 - `toFixed(6)` + `Number()` pattern
 
 **Example Conversions (base 16):**
 
-| PX | REM | Notes |
-|----|-----|-------|
-| 16 | 1 | Standard reference |
-| 32 | 2 | Double |
-| 8 | 0.5 | Half |
-| 12 | 0.75 | Common spacing |
-| 14 | 0.875 | Common body text |
-| 12.5 | 0.78125 | Decimal PX |
-| 1 | 0.0625 | Small value |
-| 0 | 0 | Zero |
-| -16 | -1 | Negative |
-| 1000 | 62.5 | Large value |
+| PX   | REM     | Notes              |
+| ---- | ------- | ------------------ |
+| 16   | 1       | Standard reference |
+| 32   | 2       | Double             |
+| 8    | 0.5     | Half               |
+| 12   | 0.75    | Common spacing     |
+| 14   | 0.875   | Common body text   |
+| 12.5 | 0.78125 | Decimal PX         |
+| 1    | 0.0625  | Small value        |
+| 0    | 0       | Zero               |
+| -16  | -1      | Negative           |
+| 1000 | 62.5    | Large value        |
 
 **Error Cases:**
 
-| Trigger | Error Message | Display |
-|---------|---------------|---------|
-| Non-numeric PX input | "Enter a valid PX value (e.g., 16)" | Inline via useToolError |
-| Non-numeric REM input | "Enter a valid REM value (e.g., 1)" | Inline via useToolError |
-| Base ≤ 0 or non-numeric | "Base font size must be a positive number (e.g., 16)" | Inline via useToolError |
-| Empty input (cleared) | No error | Error cleared, other field cleared |
+| Trigger                 | Error Message                                         | Display                            |
+| ----------------------- | ----------------------------------------------------- | ---------------------------------- |
+| Non-numeric PX input    | "Enter a valid PX value (e.g., 16)"                   | Inline via useToolError            |
+| Non-numeric REM input   | "Enter a valid REM value (e.g., 1)"                   | Inline via useToolError            |
+| Base ≤ 0 or non-numeric | "Base font size must be a positive number (e.g., 16)" | Inline via useToolError            |
+| Empty input (cleared)   | No error                                              | Error cleared, other field cleared |
 
 **Performance:**
+
 - NFR1: Text tool processing under 100ms — pure arithmetic is sub-microsecond
 - Debounce at 300ms per architecture pattern for text conversion tools
 
 ### Latest Technical Information
 
 **CSS Units:**
+
 - `rem` is relative to the root element's font-size (`:root` or `html`)
 - Default browser font-size is 16px (used as the standard base)
 - No breaking changes or new standards affecting PX/REM conversion
 - CSS `calc()` can mix units, but this tool produces static values
 
 **JavaScript Number Precision:**
+
 - `Number.toFixed(6)` is sufficient for all practical CSS values
 - IEEE 754 double-precision handles all reasonable PX/REM conversions without floating-point issues at 6 decimal places
 - `Number()` correctly strips trailing zeros from `toFixed()` output

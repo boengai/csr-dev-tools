@@ -112,9 +112,9 @@ export const ImageCompressor = () => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <div className="desktop:w-8/10 w-full">
+      <div className="w-full desktop:w-8/10">
         <UploadInput
           accept="image/jpeg,image/webp"
           button={{ block: true, children: 'Select JPEG or WebP image' }}
@@ -139,7 +139,7 @@ export const ImageCompressor = () => {
             Quality: {quality}%
           </label>
           <input
-            className="accent-primary w-full"
+            className="w-full accent-primary"
             disabled={processing}
             id="quality-slider"
             max={100}
@@ -158,16 +158,16 @@ export const ImageCompressor = () => {
           <p className="text-body-sm text-gray-300">
             {formatFileSize(originalInfo.size)} → {formatFileSize(compressed.size)}
             {compressionRatio != null && compressionRatio > 0 ? (
-              <span className="text-success ml-2">{compressionRatio}% smaller</span>
+              <span className="ml-2 text-success">{compressionRatio}% smaller</span>
             ) : (
-              <span className="text-warning ml-2">No reduction</span>
+              <span className="ml-2 text-warning">No reduction</span>
             )}
           </p>
         </div>
       )}
 
       {compressed && !processing && (
-        <div className="desktop:w-8/10 w-full">
+        <div className="w-full desktop:w-8/10">
           <Button block icon={<DownloadIcon />} onClick={handleDownload} variant="primary">
             Download
           </Button>

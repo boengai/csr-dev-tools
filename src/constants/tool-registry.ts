@@ -1,6 +1,7 @@
+import type { ComponentType } from 'react'
+
 import { lazy } from 'react'
 
-import type { ComponentType } from 'react'
 import type { ToolCategory, ToolRegistryEntry } from '@/types'
 
 export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [

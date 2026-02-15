@@ -6,7 +6,7 @@ export const Card = ({ children, onClose, title }: CardProps) => {
   return (
     <motion.article
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      className="rounded-card relative flex size-full grow flex-col overflow-hidden border border-gray-800 bg-gray-950"
+      className="relative flex size-full grow flex-col overflow-hidden rounded-card border border-gray-800 bg-gray-950"
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
       initial={{ opacity: 0, scale: 0.95, y: 10 }}
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
@@ -20,7 +20,7 @@ export const Card = ({ children, onClose, title }: CardProps) => {
       <div className="flex w-full shrink-0 items-center gap-3 border-b border-gray-800 px-4 py-2">
         {onClose && (
           <motion.button
-            className="bg-error size-3 shrink-0 rounded-full"
+            className="size-3 shrink-0 rounded-full bg-error"
             onClick={onClose}
             transition={{ duration: 0.15, ease: 'easeOut' }}
             whileHover={{ opacity: 0.8, scale: 1.15 }}
@@ -29,7 +29,7 @@ export const Card = ({ children, onClose, title }: CardProps) => {
             <span className="sr-only">Close</span>
           </motion.button>
         )}
-        <h3 className="text-body-sm grow truncate text-gray-400">{title}</h3>
+        <h3 className="grow truncate text-body-sm text-gray-400">{title}</h3>
       </div>
       <div className="flex size-full grow flex-col overflow-y-auto p-4">{children}</div>
     </motion.article>

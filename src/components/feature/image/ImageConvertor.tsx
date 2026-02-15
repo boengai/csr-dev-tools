@@ -85,7 +85,10 @@ export const ImageConvertor = () => {
   const handleInputChange = (values: Array<File>) => {
     const invalidFiles = values.filter((f) => !isValidImageFormat(f.type))
     if (invalidFiles.length > 0) {
-      toast({ action: 'add', item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' } })
+      toast({
+        action: 'add',
+        item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' },
+      })
       return
     }
     if (values.length > 0) {
@@ -166,7 +169,10 @@ export const ImageConvertor = () => {
       // go to download tab
       setTabValue(TABS_VALUES.DOWNLOAD)
     } catch {
-      toast({ action: 'add', item: { label: 'Image conversion failed — try a different format or smaller file', type: 'error' } })
+      toast({
+        action: 'add',
+        item: { label: 'Image conversion failed — try a different format or smaller file', type: 'error' },
+      })
       setTabValue(TABS_VALUES.SELECT_FORMAT)
     }
   }
@@ -175,7 +181,7 @@ export const ImageConvertor = () => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
       <Tabs
         injected={{
@@ -186,7 +192,7 @@ export const ImageConvertor = () => {
           {
             content: (
               <div className="flex w-full grow flex-col items-center justify-center gap-4">
-                <div className="desktop:w-8/10 w-full">
+                <div className="w-full desktop:w-8/10">
                   <UploadInput
                     accept="image/*"
                     button={{ block: true, children: 'Select images from your device' }}
@@ -230,7 +236,7 @@ export const ImageConvertor = () => {
                       </span>
                       <button
                         aria-label={`Remove ${img.name}`}
-                        className="hover:bg-error mr-4 rounded-full p-1 text-gray-400 transition-colors hover:text-white"
+                        className="mr-4 rounded-full p-1 text-gray-400 transition-colors hover:bg-error hover:text-white"
                         onClick={() => handleRemoveImage(idx)}
                       >
                         <TrashIcon />
@@ -239,7 +245,7 @@ export const ImageConvertor = () => {
                   ))}
                 </ul>
                 <div className="flex w-full shrink-0 gap-2 [&>button]:w-[calc(40%-8px)]">
-                  <div className="flex w-3/5 items-center gap-2 [&>*]:w-1/2">
+                  <div className="flex w-3/5 items-center gap-2 *:w-1/2">
                     <ImageFormatSelectInput onChange={handleFormatChange} value={target.format} />
                     <ImageQualitySelectInput
                       disabled={!isLossy}
@@ -264,7 +270,7 @@ export const ImageConvertor = () => {
             content: (
               <div aria-live="polite" className="flex w-full grow flex-col items-center justify-center gap-6">
                 <NotoEmoji emoji="robot" size={120} />
-                <div className="desktop:w-8/10 w-full">
+                <div className="w-full desktop:w-8/10">
                   <ProgressBar value={processing} />
                 </div>
               </div>
@@ -275,7 +281,7 @@ export const ImageConvertor = () => {
             content: (
               <div className="flex w-full grow flex-col items-center justify-center gap-6">
                 <NotoEmoji emoji="check" size={120} />
-                <div className="desktop:w-8/10 flex w-full flex-col gap-4">
+                <div className="flex w-full flex-col gap-4 desktop:w-8/10">
                   <Button
                     block
                     icon={<DownloadIcon />}

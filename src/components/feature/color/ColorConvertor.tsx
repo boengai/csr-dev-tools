@@ -96,7 +96,7 @@ export const ColorConvertor = () => {
 
   return (
     <div className="flex size-full grow flex-col gap-2">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
       <input
         aria-label="Color picker"
@@ -121,7 +121,6 @@ export const ColorConvertor = () => {
           </InputWrapper>
         ))}
       </div>
-
     </div>
   )
 }

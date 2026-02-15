@@ -15,8 +15,8 @@ export const copyButtonVariants: CompVariant<CopyButtonVariants> = tv({
   },
   variants: {
     variant: {
-      'icon-only': 'text-body-sm h-8 w-8 p-1.5 hover:bg-gray-800',
-      labeled: 'text-body-sm gap-1.5 px-3 py-1.5 hover:bg-gray-800',
+      'icon-only': 'h-8 w-8 p-1.5 text-body-sm hover:bg-gray-800',
+      labeled: 'gap-1.5 px-3 py-1.5 text-body-sm hover:bg-gray-800',
     },
   },
 })
@@ -57,7 +57,7 @@ export const CopyButton = ({ label, value, variant = 'icon-only' }: CopyButtonPr
           <motion.span
             key="check"
             animate={{ opacity: 1, scale: 1 }}
-            className="text-success inline-flex"
+            className="inline-flex text-success"
             exit={{ opacity: 0, scale: 0.8 }}
             initial={{ opacity: 0, scale: 0.8 }}
             transition={{ duration: 0.15 }}

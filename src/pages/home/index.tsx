@@ -11,7 +11,7 @@ const AddButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'o
   return (
     <motion.button
       animate={{ opacity: 1, scale: 1, y: 0 }}
-      className="[&>svg]:align-center rounded-card flex size-full items-center justify-center border-3 border-dashed"
+      className="[&>svg]:align-center flex size-full items-center justify-center rounded-card border-3 border-dashed"
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
       initial={{
         borderColor: 'var(--color-gray-800)',
@@ -59,7 +59,7 @@ const AppContainer = ({ onOpenDialog, position }: { onOpenDialog: (position: num
 
 const AppLoading = () => {
   return (
-    <div className="bg-primary/10 rounded-card flex grow flex-col items-center justify-center">
+    <div className="flex grow flex-col items-center justify-center rounded-card bg-primary/10">
       <NotoEmoji emoji="robot" size={120} />
     </div>
   )
@@ -90,7 +90,7 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
       injected={{ open: position !== null, setOpen: onDismiss }}
       title={`Select App for Widget#${position !== null ? position + 1 : ''}`}
     >
-      <div className="tablet:columns-2 laptop:columns-3 columns-1 gap-x-6">
+      <div className="columns-1 gap-x-6 tablet:columns-2 laptop:columns-3">
         {CATEGORY_ORDER.filter((cat) => groupedTools[cat]).map((category) => (
           <div className="mb-4 break-inside-avoid" key={category}>
             <span className="block px-2 pb-1 text-[0.6rem] tracking-[0.12em] text-gray-500 uppercase">{category}</span>
@@ -100,7 +100,7 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
                 return (
                   <li key={entry.key}>
                     <button
-                      className="hover:bg-primary/30 flex w-full cursor-pointer items-center justify-between rounded p-2 text-left disabled:pointer-events-none disabled:opacity-50"
+                      className="flex w-full cursor-pointer items-center justify-between rounded p-2 text-left hover:bg-primary/30 disabled:pointer-events-none disabled:opacity-50"
                       disabled={at !== null}
                       onClick={() => handleSelectApp(entry.key)}
                     >
@@ -108,7 +108,7 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
                         <span className="mr-2">{entry.emoji}</span>
                         {entry.name}
                       </span>
-                      {at !== null && <span className="bg-secondary rounded px-1 text-xs text-white">#{at + 1}</span>}
+                      {at !== null && <span className="text-xs rounded bg-secondary px-1 text-white">#{at + 1}</span>}
                     </button>
                   </li>
                 )
@@ -132,7 +132,7 @@ export default function HomePage() {
       <div className="flex grow flex-wrap gap-6 p-6 pb-[calc(1.5rem+var(--safe-area-inset-bottom))]">
         {Array.from({ length: 6 }).map((_, idx) => (
           <section
-            className="tablet:w-[calc(100%/2-1rem)] laptop:aspect-auto laptop:h-[calc(50dvh-3.75rem)] laptop:w-[calc(100%/3-1rem)] flex aspect-2/3 w-full flex-col"
+            className="flex aspect-2/3 w-full flex-col tablet:w-[calc(100%/2-1rem)] laptop:aspect-auto laptop:h-[calc(50dvh-3.75rem)] laptop:w-[calc(100%/3-1rem)]"
             key={`${idx}`}
           >
             <Suspense fallback={<AppLoading />}>

@@ -109,7 +109,7 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button block onClick={() => setDialogOpen(true)} variant="default">
@@ -124,7 +124,7 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         title="Text Diff Checker"
       >
         <div className="flex w-full grow flex-col gap-4">
-          <div className="tablet:flex-row flex min-h-0 flex-1 flex-col gap-6">
+          <div className="flex min-h-0 flex-1 flex-col gap-6 tablet:flex-row">
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="Original"
@@ -159,14 +159,14 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             </div>
             <div
               aria-label="Diff output"
-              className="overflow-auto rounded-lg border border-gray-800 bg-gray-950 font-mono text-sm"
+              className="text-sm overflow-auto rounded-lg border border-gray-800 bg-gray-950 font-mono"
               role="region"
             >
               {rows.length > 0 ? (
                 <>
                   <div className="sticky top-0 z-10 grid grid-cols-2 border-b border-gray-800 bg-gray-950">
-                    <div className="px-3 py-1.5 text-xs font-medium text-gray-500">Original</div>
-                    <div className="border-l border-gray-800 px-3 py-1.5 text-xs font-medium text-gray-500">
+                    <div className="text-xs px-3 py-1.5 font-medium text-gray-500">Original</div>
+                    <div className="text-xs border-l border-gray-800 px-3 py-1.5 font-medium text-gray-500">
                       Modified
                     </div>
                   </div>
@@ -198,7 +198,6 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
               )}
             </div>
           </div>
-
         </div>
       </Dialog>
     </>

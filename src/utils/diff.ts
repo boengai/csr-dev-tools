@@ -1,5 +1,3 @@
-export type { DiffChange, DiffLineType, InlineSpan, SideBySideRow } from '@/types'
-
 import type { DiffChange, InlineSpan, SideBySideRow } from '@/types'
 
 export const computeLineDiff = async (original: string, modified: string): Promise<Array<DiffChange>> => {

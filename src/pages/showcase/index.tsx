@@ -22,14 +22,14 @@ export default function ShowcasePage() {
   return (
     <div className="container mx-auto flex flex-col gap-6 p-6">
       <div className="flex flex-col items-center text-center">
-        <h1 className="text-text mb-2 text-3xl font-bold"> Component Showcase</h1>
+        <h1 className="text-text text-3xl mb-2 font-bold"> Component Showcase</h1>
         <p className="text-text-secondary">A comprehensive demonstration of all components variants and states</p>
       </div>
 
       <Card title="Button">
         <div className="space-y-8">
           {/* Variants */}
-          <div className="tablet:grid-cols-2 laptop:grid-cols-3 grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 gap-6 tablet:grid-cols-2 laptop:grid-cols-3">
             <Group title="Default Variant">
               <Button variant="default">Default</Button>
               <Button disabled variant="default">
@@ -80,7 +80,7 @@ export default function ShowcasePage() {
           </div>
 
           {/* Sizes */}
-          <div className="tablet:grid-cols-3 grid grid-cols-1 gap-6">
+          <div className="grid grid-cols-1 gap-6 tablet:grid-cols-3">
             <Group title="Small Size">
               <Button size="small" variant="default">
                 Small Default
@@ -141,7 +141,7 @@ export default function ShowcasePage() {
             <p className="text-body">
               This dialog demonstrates the custom styling that's compatible with your theme. It includes:
             </p>
-            <ul className="text-body-sm list-inside list-disc space-y-2">
+            <ul className="list-inside list-disc space-y-2 text-body-sm">
               <li>Smooth animations and transitions</li>
               <li>Responsive design</li>
               <li>Accessibility features</li>
@@ -159,7 +159,7 @@ export default function ShowcasePage() {
             <p className="text-body">
               This dialog demonstrates the custom styling that's compatible with your theme. It includes:
             </p>
-            <ul className="text-body-sm list-inside list-disc space-y-2">
+            <ul className="list-inside list-disc space-y-2 text-body-sm">
               <li>Smooth animations and transitions</li>
               <li>Responsive design</li>
               <li>Accessibility features</li>
@@ -177,7 +177,7 @@ export default function ShowcasePage() {
             <p className="text-body">
               This dialog demonstrates the custom styling that's compatible with your theme. It includes:
             </p>
-            <ul className="text-body-sm list-inside list-disc space-y-2">
+            <ul className="list-inside list-disc space-y-2 text-body-sm">
               <li>Smooth animations and transitions</li>
               <li>Responsive design</li>
               <li>Accessibility features</li>

@@ -24,8 +24,8 @@ const FlagToggle = ({ active, flag, onToggle }: { active: boolean; flag: string;
   <button
     aria-label={`Toggle ${flag} flag`}
     aria-pressed={active}
-    className={`min-w-8 rounded border px-2 font-mono text-xs leading-7 ${
-      active ? 'border-primary bg-primary/20 text-primary font-bold' : 'border-gray-700 bg-transparent text-gray-500'
+    className={`text-xs min-w-8 rounded border px-2 font-mono leading-7 ${
+      active ? 'border-primary bg-primary/20 font-bold text-primary' : 'border-gray-700 bg-transparent text-gray-500'
     }`}
     onClick={onToggle}
     type="button"
@@ -37,10 +37,10 @@ const FlagToggle = ({ active, flag, onToggle }: { active: boolean; flag: string;
 const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
   <div className="flex flex-col gap-2">
     {matches.map((match, i) => (
-      <div className="rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-2 text-sm" key={i}>
+      <div className="text-sm rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-2" key={i}>
         <p className="text-gray-300">
           <span className="font-medium text-gray-200">Match {i + 1}:</span>{' '}
-          <span className="text-primary font-mono">&quot;{match.fullMatch}&quot;</span> at index {match.index}
+          <span className="font-mono text-primary">&quot;{match.fullMatch}&quot;</span> at index {match.index}
         </p>
         {match.groups.length > 0 && (
           <div className="mt-1 flex flex-col gap-0.5 pl-4 text-gray-400">
@@ -138,7 +138,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button block onClick={() => setDialogOpen(true)} variant="default">
@@ -194,11 +194,11 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
               {copyText && <CopyButton label="matches" value={copyText} />}
             </div>
 
-            <div className="overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono text-sm break-words whitespace-pre-wrap">
+            <div className="text-sm wrap-break-words overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono whitespace-pre-wrap">
               {segments.length > 0 ? (
                 segments.map((segment, i) =>
                   segment.isMatch ? (
-                    <span className="bg-primary/20 text-primary rounded-xs" key={i}>
+                    <span className="rounded-xs bg-primary/20 text-primary" key={i}>
                       {segment.text}
                     </span>
                   ) : (
@@ -214,7 +214,6 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
 
             {result != null && result.matches.length > 0 && <MatchDetails matches={result.matches} />}
           </div>
-
         </div>
       </Dialog>
     </>

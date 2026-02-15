@@ -121,7 +121,7 @@ export const CommandPalette = () => {
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 aria-label="Search tools"
                 aria-modal="true"
-                className="rounded-card fixed top-[20%] left-1/2 z-50 flex w-full max-w-lg -translate-x-1/2 flex-col overflow-hidden border border-gray-800 bg-gray-950 shadow-xl"
+                className="fixed top-[20%] left-1/2 z-50 flex w-full max-w-lg -translate-x-1/2 flex-col overflow-hidden rounded-card border border-gray-800 bg-gray-950 shadow-xl"
                 exit={{ opacity: 0, scale: 0.95, y: -8 }}
                 initial={{ opacity: 0, scale: 0.95, y: -8 }}
                 onKeyDown={handleKeyDown}
@@ -151,7 +151,7 @@ export const CommandPalette = () => {
                     >
                       <span className="text-lg">{tool.emoji}</span>
                       <span className="grow truncate">{tool.name}</span>
-                      <span className="text-body-xs rounded bg-gray-800 px-2 py-0.5 text-gray-400">
+                      <span className="rounded bg-gray-800 px-2 py-0.5 text-body-xs text-gray-400">
                         {tool.category}
                       </span>
                     </li>
@@ -159,7 +159,7 @@ export const CommandPalette = () => {
                 </ul>
                 {filteredTools.length === 0 && <p className="px-3 py-6 text-center text-gray-500">No tools found</p>}
 
-                <div className="text-body-xs flex items-center gap-4 border-t border-gray-800 px-4 py-2 text-gray-500">
+                <div className="flex items-center gap-4 border-t border-gray-800 px-4 py-2 text-body-xs text-gray-500">
                   <span>
                     <kbd className="rounded bg-gray-800 px-1.5 py-0.5 text-gray-400">↑↓</kbd> navigate
                   </span>

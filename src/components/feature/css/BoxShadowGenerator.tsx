@@ -22,7 +22,7 @@ export const BoxShadowGenerator = () => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
       <div className="flex shrink-0 flex-col gap-3">
         <FieldForm
@@ -87,9 +87,9 @@ export const BoxShadowGenerator = () => {
           <button
             aria-label="Toggle inset shadow"
             aria-pressed={config.inset}
-            className={`rounded border px-3 font-mono text-xs leading-7 ${
+            className={`text-xs rounded border px-3 font-mono leading-7 ${
               config.inset
-                ? 'border-primary bg-primary/20 text-primary font-bold'
+                ? 'border-primary bg-primary/20 font-bold text-primary'
                 : 'border-gray-700 bg-transparent text-gray-500'
             }`}
             onClick={() => setConfig((prev) => ({ ...prev, inset: !prev.inset }))}
@@ -112,10 +112,9 @@ export const BoxShadowGenerator = () => {
           <CopyButton label="CSS box-shadow" value={`box-shadow: ${cssString};`} />
         </div>
         <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
-          <code className="font-mono text-sm text-gray-300">box-shadow: {cssString};</code>
+          <code className="text-sm font-mono text-gray-300">box-shadow: {cssString};</code>
         </div>
       </div>
-
     </div>
   )
 }

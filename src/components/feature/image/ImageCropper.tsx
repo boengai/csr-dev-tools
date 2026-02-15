@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
-import ReactCrop from 'react-image-crop'
-import 'react-image-crop/dist/ReactCrop.css'
-
 import type { Crop, PixelCrop } from 'react-image-crop'
+
+import { useEffect, useRef, useState } from 'react'
+import 'react-image-crop/dist/ReactCrop.css'
+import ReactCrop from 'react-image-crop'
 
 import type { AspectRatioPreset, CropRegion } from '@/types'
 
@@ -160,7 +160,7 @@ export const ImageCropper = () => {
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <Tabs
           injected={{
@@ -171,7 +171,7 @@ export const ImageCropper = () => {
             {
               content: (
                 <div className="flex w-full grow flex-col items-center justify-center gap-4">
-                  <div className="desktop:w-8/10 w-full">
+                  <div className="w-full desktop:w-8/10">
                     <UploadInput
                       accept="image/*"
                       button={{ block: true, children: 'Select image to crop' }}
@@ -188,7 +188,7 @@ export const ImageCropper = () => {
               content: (
                 <div className="flex w-full grow flex-col items-center justify-center gap-6">
                   <NotoEmoji emoji="check" size={120} />
-                  <div className="desktop:w-8/10 flex w-full flex-col gap-4">
+                  <div className="flex w-full flex-col gap-4 desktop:w-8/10">
                     <Button
                       block
                       icon={<DownloadIcon />}
@@ -252,9 +252,9 @@ export const ImageCropper = () => {
             <div className="flex flex-wrap items-center justify-center gap-2">
               {ASPECT_RATIO_OPTIONS.map((option) => (
                 <button
-                  className={`text-body-sm rounded-md px-3 py-1.5 transition-colors ${
+                  className={`rounded-md px-3 py-1.5 text-body-sm transition-colors ${
                     aspectPreset === option.value
-                      ? 'bg-primary text-primary-foreground'
+                      ? 'text-primary-foreground bg-primary'
                       : 'bg-surface-secondary hover:bg-surface-tertiary text-gray-300'
                   }`}
                   disabled={processing}

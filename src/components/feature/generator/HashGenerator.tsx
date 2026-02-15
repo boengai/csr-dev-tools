@@ -71,7 +71,7 @@ export const HashGenerator = () => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
       <TextAreaInput name="hash-input" onChange={handleTextChange} placeholder="Enter text to hash..." value={text} />
 
@@ -80,9 +80,9 @@ export const HashGenerator = () => {
           <button
             aria-label={`Select ${algo} algorithm`}
             aria-pressed={algo === algorithm}
-            className={`rounded border px-3 font-mono text-xs leading-7 ${
+            className={`text-xs rounded border px-3 font-mono leading-7 ${
               algo === algorithm
-                ? 'border-primary bg-primary/20 text-primary font-bold'
+                ? 'border-primary bg-primary/20 font-bold text-primary'
                 : 'border-gray-700 bg-transparent text-gray-500'
             }`}
             key={algo}
@@ -102,10 +102,9 @@ export const HashGenerator = () => {
           {hash && <CopyButton label="hash value" value={hash} />}
         </div>
         <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
-          <span className="font-mono text-sm break-all text-gray-300">{hash || '\u2014'}</span>
+          <span className="text-sm font-mono break-all text-gray-300">{hash || '\u2014'}</span>
         </div>
       </div>
-
     </div>
   )
 }

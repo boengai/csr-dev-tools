@@ -16,7 +16,7 @@ export const DataCellTable = ({ rows }: DataCellTableProps) => {
     >
       <div className="table-row-group">
         {rows.map((r, idx) => (
-          <div className="table-row [&>*]:table-cell [&>*]:p-2" key={idx}>
+          <div className="table-row *:table-cell *:p-2" key={idx}>
             <div className="bg-secondary/50 font-bold">{r.label}</div>
             <motion.div
               animate={{ opacity: 1, x: 0 }}
