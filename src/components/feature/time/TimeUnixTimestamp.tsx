@@ -79,7 +79,7 @@ const UnixTimestampSection = ({ showError }: { showError: (label: string) => voi
 
   return (
     <section className="flex grow flex-col gap-2">
-      <div className="flex items-end gap-2 [&>*:first-child]:w-2/3 [&>*:last-child]:w-1/3">
+      <div className="flex w-full items-end gap-2">
         <FieldForm
           label="Enter a Timestamp"
           name="unixTimestamp"
