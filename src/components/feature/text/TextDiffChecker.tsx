@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import type { InlineSpan, SideBySideRow } from '@/utils'
+import type { InlineSpan, SideBySideRow, ToolComponentProps } from '@/types'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'

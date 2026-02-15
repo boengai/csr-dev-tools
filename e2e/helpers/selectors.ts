@@ -58,9 +58,9 @@ export const card = {
   title: (page: Page, title: string) => page.getByRole('heading', { name: title, level: 3 }),
 }
 
-// --- Error Messages ---
+// --- Error Messages (toast-based, Radix Toast uses role="status") ---
 
 export const errorMessage = {
-  any: (page: Page) => page.getByRole('alert'),
-  withText: (page: Page, text: string) => page.getByRole('alert').filter({ hasText: text }),
+  any: (page: Page) => page.getByRole('status'),
+  withText: (page: Page, text: string) => page.getByRole('status').filter({ hasText: text }),
 }

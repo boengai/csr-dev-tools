@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { SideBySideRow } from '@/utils/diff'
+import type { SideBySideRow } from '@/types'
 
 import { computeLineDiff, computeSideBySideDiff, createUnifiedDiff } from '@/utils/diff'
 
