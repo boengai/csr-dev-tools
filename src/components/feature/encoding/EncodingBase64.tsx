@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToolError } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { decodeBase64, encodeBase64 } from '@/utils/base64'
 import { isValidBase64 } from '@/utils/validation'
 
@@ -13,12 +13,11 @@ export const EncodingBase64 = () => {
   const [result, setResult] = useState('')
   const [action, setAction] = useState<'decode' | 'encode'>('encode')
   const [dialogOpen, setDialogOpen] = useState(false)
-  const { clearError, error, setError } = useToolError()
+  const { toast } = useToast()
 
   const process = (val: string, act: 'decode' | 'encode') => {
     if (val.length === 0) {
       setResult('')
-      clearError()
       return
     }
     try {
@@ -26,14 +25,18 @@ export const EncodingBase64 = () => {
         throw new Error('invalid')
       }
       setResult(act === 'encode' ? encodeBase64(val) : decodeBase64(val))
-      clearError()
     } catch {
       setResult('')
-      setError(
-        act === 'encode'
-          ? 'Unable to encode text — input contains invalid characters'
-          : 'Enter a valid Base64 string (e.g., SGVsbG8=)',
-      )
+      toast({
+        action: 'add',
+        item: {
+          label:
+            act === 'encode'
+              ? 'Unable to encode text — input contains invalid characters'
+              : 'Enter a valid Base64 string (e.g., SGVsbG8=)',
+          type: 'error',
+        },
+      })
     }
   }
 
@@ -50,14 +53,12 @@ export const EncodingBase64 = () => {
     setAction(act)
     setSource('')
     setResult('')
-    clearError()
     setDialogOpen(true)
   }
 
   const handleReset = () => {
     setSource('')
     setResult('')
-    clearError()
   }
 
   const placeholder = action === 'encode' ? 'Hello, World!' : 'SGVsbG8sIFdvcmxkIQ=='
@@ -117,11 +118,6 @@ export const EncodingBase64 = () => {
             </div>
           </div>
 
-          {error != null && (
-            <p className="text-error text-body-sm shrink-0" role="alert">
-              {error}
-            </p>
-          )}
         </div>
       </Dialog>
     </>

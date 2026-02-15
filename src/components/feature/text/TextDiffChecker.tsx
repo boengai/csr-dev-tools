@@ -5,7 +5,7 @@ import type { InlineSpan, SideBySideRow } from '@/utils'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToolError } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { computeSideBySideDiff, createUnifiedDiff } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['text-diff-checker']
@@ -56,7 +56,7 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const [rows, setRows] = useState<Array<SideBySideRow>>([])
   const [unifiedDiff, setUnifiedDiff] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const { clearError, error, setError } = useToolError()
+  const { toast } = useToast()
   const sessionRef = useRef(0)
 
   const process = async (orig: string, mod: string) => {
@@ -64,7 +64,6 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     if (orig.trim().length === 0 && mod.trim().length === 0) {
       setRows([])
       setUnifiedDiff('')
-      clearError()
       return
     }
     try {
@@ -72,12 +71,11 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
       if (session !== sessionRef.current) return
       setRows(sideBySide)
       setUnifiedDiff(patch)
-      clearError()
     } catch {
       if (session !== sessionRef.current) return
       setRows([])
       setUnifiedDiff('')
-      setError('Unable to compute diff')
+      toast({ action: 'add', item: { label: 'Unable to compute diff', type: 'error' } })
     }
   }
 
@@ -101,7 +99,6 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     setModified('')
     setRows([])
     setUnifiedDiff('')
-    clearError()
   }
 
   const handleAfterClose = () => {
@@ -202,11 +199,6 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             </div>
           </div>
 
-          {error != null && (
-            <p className="text-error text-body-sm shrink-0" role="alert">
-              {error}
-            </p>
-          )}
         </div>
       </Dialog>
     </>

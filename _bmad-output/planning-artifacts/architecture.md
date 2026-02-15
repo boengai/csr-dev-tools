@@ -90,7 +90,7 @@ Architecturally, the tool FRs are highly independent — each tool is a self-con
 
 1. **Code Splitting & Bundle Discipline** — Every tool is a lazy-loaded chunk. Adding tools must not bloat the initial bundle. Affects: route registration, component imports, dynamic imports for heavy libraries (e.g., JSZip pattern).
 
-2. **Tool Component Ownership** — Each tool owns its own layout structure, following consistent patterns (useToolError for errors, CopyButton for output copying). No shared layout wrapper — tools are self-contained. Affects: every feature component, mobile stacking, accessibility tab order.
+2. **Tool Component Ownership** — Each tool owns its own layout structure, following consistent patterns (useToast error toasts for errors, CopyButton for output copying). No shared layout wrapper — tools are self-contained. Affects: every feature component, mobile stacking, accessibility tab order.
 
 3. **Accessibility (WCAG 2.1 AA)** — Keyboard navigation, screen reader compatibility, contrast ratios, focus management. Affects: every interactive component, all new sidebar/command palette components, all tool inputs/outputs.
 
@@ -193,7 +193,7 @@ src/
 
 **Important Decisions (Shape Architecture):**
 4. Platform layout state — separate Zustand stores per concern
-5. Error handling — standardized `useToolError` hook + per-tool Error Boundary
+5. Error handling — `useToast` with `type: 'error'` + per-tool Error Boundary
 6. Input validation — shared validation utilities in `src/utils/validation.ts`
 7. Testing strategy — unit tests (logic) + E2E tests (user journeys)
 8. CI/CD pipeline — full quality gates (lint, format, test, build, E2E, Lighthouse CI)
@@ -247,8 +247,8 @@ src/
 - Affects: All tool input handling, error state triggering
 
 **Error Handling: Standardized Hook + Error Boundary**
-- Decision: `useToolError` hook providing `setError`, `clearError`, `error` state. Each tool renders errors inline in a consistent position. React Error Boundary per tool for unexpected crashes.
-- Rationale: Consistent error UX across all tools with a shared hook pattern
+- Decision: `useToast` Zustand store with `type: 'error'` for operational errors. Errors display as toast notifications (3s auto-dismiss). React Error Boundary per tool for unexpected crashes.
+- Rationale: Consistent error UX through a single toast system — no per-tool error state boilerplate
 - Affects: Every tool component
 
 ### Infrastructure & Deployment
@@ -276,12 +276,12 @@ src/
 3. Sidebar + Command Palette — consume registry for navigation
 4. Pre-rendering setup — consumes registry routes for build-time SEO
 5. Shared validation utilities — consumed by new and refactored tools
-6. Error handling standardization — `useToolError` hook + Error Boundaries
+6. Error handling standardization — `useToast` (error toasts) + Error Boundaries
 7. E2E test infrastructure + Lighthouse CI — quality gates
 
 **Cross-Component Dependencies:**
 - Tool Registry → Routes, Dashboard, Sidebar, Command Palette, Pre-renderer, SEO
-- useToolError → Tool components (each tool renders its own error state)
+- useToast (error toasts) → Tool components (errors shown via toast notifications)
 - Zustand stores → Sidebar ↔ Header hamburger, Command Palette ↔ keyboard shortcuts
 - Pre-rendering → Tool Registry (routes), SEO metadata (tool entries)
 - CI pipeline → Unit tests, E2E tests, Lighthouse, build (with pre-rendering)
@@ -305,7 +305,7 @@ All existing naming rules from `project-context.md` remain in effect. Additional
 | Tool category | `PascalCase` enum value | `'Color'`, `'Encoding'`, `'Image'` |
 | Zustand store | `use{Feature}Store` | `useSidebarStore`, `useCommandPaletteStore` |
 | Validation util | `isValid{Format}` returning `boolean` | `isValidHex()`, `isValidBase64()` |
-| Error hook | `useToolError` (singleton pattern) | `const { error, setError, clearError } = useToolError()` |
+| Error toast | `useToast` with `type: 'error'` | `toast({ action: 'add', item: { label: msg, type: 'error' } })` |
 | SEO title | `{Tool Name} - CSR Dev Tools` | `'Color Converter - CSR Dev Tools'` |
 | SEO description | Max 155 chars, action-oriented | `'Convert colors between HEX, RGB, HSL formats...'` |
 | E2E test file | `{tool-key}.spec.ts` in `e2e/` | `e2e/color-converter.spec.ts` |
@@ -444,9 +444,8 @@ export const useSidebarStore = create<UseSidebarStore>()(
 
 1. **Prevention first** — constrain inputs (disabled options, input masks, format hints)
 2. **Validation** — `isValid{Format}()` check on input change (debounced)
-3. **Error display** — `setError('message')` renders inline within the tool component
-4. **Error clear** — `clearError()` called automatically when input changes to valid
-5. **Crash recovery** — `ToolErrorBoundary` catches unexpected errors, shows "Something went wrong" with a Reset button
+3. **Error display** — `toast({ action: 'add', item: { label: msg, type: 'error' } })` shows error as a toast notification (3s auto-dismiss)
+4. **Crash recovery** — `ToolErrorBoundary` catches unexpected errors, shows "Something went wrong" with a Reset button
 
 **Loading State Pattern:**
 
@@ -461,7 +460,7 @@ export const useSidebarStore = create<UseSidebarStore>()(
 
 1. Read `project-context.md` (53 rules) AND this architecture document before implementing any code
 2. Add tools via the centralized `TOOL_REGISTRY` — never register tools manually in page components
-3. Use `useToolError` for error handling — never implement custom error state in tools
+3. Use `useToast` with `type: 'error'` for error handling — never implement custom error state in tools
 4. Use shared validators from `src/utils/validation.ts` — never duplicate validation logic
 5. Follow the exact Zustand store pattern — never create stores with different conventions
 6. Ensure every tool works in both card and page mode — never build single-mode tools
@@ -474,7 +473,7 @@ export const useSidebarStore = create<UseSidebarStore>()(
 - `pnpm test` catches logic regressions (Vitest)
 - E2E tests catch tool behavior regressions (Playwright)
 - Lighthouse CI catches performance/accessibility regressions
-- PR review checklist verifies registry entry, useToolError usage, and both rendering modes
+- PR review checklist verifies registry entry, error toast usage, and both rendering modes
 
 ### Pattern Examples
 
@@ -483,13 +482,13 @@ export const useSidebarStore = create<UseSidebarStore>()(
 // 1. Registry entry in src/constants/tool-registry.ts
 { key: 'jwt-decoder', name: 'JWT Decoder', category: 'Encoding', emoji: '🔑', ... }
 
-// 2. Component owns its own layout, uses useToolError
+// 2. Component owns its own layout, uses useToast for errors
 export const JwtDecoder = () => {
-  const { error, setError, clearError } = useToolError()
+  const { toast } = useToast()
+  // on error: toast({ action: 'add', item: { label: msg, type: 'error' } })
   return (
     <Card>
       {/* Tool header, inputs, outputs, actions — tool owns its layout */}
-      {error && <ErrorMessage>{error}</ErrorMessage>}
       <CopyButton value={output} />
     </Card>
   )
@@ -705,7 +704,7 @@ csr-dev-tools/
     │   ├── useDebounce.ts
     │   ├── useDebounceCallback.ts
     │   ├── useKeyboardShortcuts.ts       # ← NEW: centralized shortcut handler
-    │   ├── useToolError.ts               # ← NEW: standardized tool error state
+    │   ├── useToolSeo.ts                      # Tool SEO metadata hook
     │   ├── state/
     │   │   ├── index.ts
     │   │   ├── useToast.ts
@@ -801,7 +800,7 @@ csr-dev-tools/
 | `usePersistFeatureLayout` | Global | Yes (localStorage) | Home page dashboard |
 | `useSidebarStore` | Global | No | Header, Sidebar, mobile overlay |
 | `useCommandPaletteStore` | Global | No | Header, CommandPalette, keyboard handler |
-| `useToolError` | Per-tool instance | No | Individual tool components (each tool renders its own errors) |
+| `useToast` (errors) | Global | No | Tool components show errors via `type: 'error'` toast |
 
 **Data Flow:**
 
@@ -817,8 +816,8 @@ TOOL_REGISTRY (single source of truth)
 
 User Input → Tool Component → Pure Utility Function → Output Display
                 │                                         │
-                └── useToolError (error state) ───────────┘
-                └── useCopyToClipboard ──→ useToast (confirmation)
+                └── useToast (type: 'error') ────────────────┘
+                └── useCopyToClipboard ──→ useToast (type: 'success')
 ```
 
 ### Requirements to Structure Mapping
@@ -848,7 +847,7 @@ User Input → Tool Component → Pure Utility Function → Output Display
 | Code Splitting | `routes.tsx`, `constants/tool-registry.ts` | Vite config, lazy imports |
 | Accessibility | `components/common/` (Radix primitives) | All tool components |
 | Theme System | `src/index.css` (`@theme`) | All components via Tailwind |
-| Error Handling | `hooks/useToolError.ts`, `common/error-boundary/` | All tool components |
+| Error Handling | `hooks/state/useToast.ts`, `common/error-boundary/` | All tool components |
 | Validation | `utils/validation.ts` | Per-tool validation in feature dirs |
 | SEO | `constants/tool-registry.ts` (metadata) | Pre-render plugin, `pages/tool/` |
 | Mobile Responsiveness | `components/feature/` | Sidebar (mobile overlay), all tool components |
@@ -874,7 +873,7 @@ All technology choices are compatible:
 - Tool registry key naming (`kebab-case`) aligns with route path convention (`/tools/{key}`)
 - New Zustand stores follow exact same `create<T>()()` pattern as existing stores
 - New components follow same `tv()` variant pattern, barrel exports, and type separation
-- Error handling pattern (`useToolError` → tool renders inline error) is consistent with existing toast pattern (`useToast` → `ToastProvider` rendering)
+- Error handling unified through `useToast` — both success and error notifications use the same `ToastProvider` rendering system
 
 **Structure Alignment:** PASS
 
@@ -1010,6 +1009,6 @@ All technology choices are compatible:
 **First Implementation Priority:**
 1. Create `TOOL_REGISTRY` in `src/constants/tool-registry.ts` — migrate existing 6 tools into registry entries
 2. Set up hybrid routing — per-tool routes generated from registry
-3. Refactor existing tools to use `useToolError` and standardized patterns
+3. Refactor existing tools to use `useToast` for errors and standardized patterns
 4. Build sidebar system — consumes registry for category navigation
 5. Build Command Palette — consumes registry for search

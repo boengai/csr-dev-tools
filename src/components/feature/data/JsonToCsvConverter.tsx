@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToolError } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { csvToJson, getCsvParseError, getJsonParseError, jsonToCsv } from '@/utils'
 
 type ConvertMode = 'csv-to-json' | 'json-to-csv'
@@ -14,20 +14,19 @@ export const JsonToCsvConverter = () => {
   const [result, setResult] = useState('')
   const [mode, setMode] = useState<ConvertMode>('json-to-csv')
   const [dialogOpen, setDialogOpen] = useState(false)
-  const { clearError, error, setError } = useToolError()
+  const { toast } = useToast()
 
   const process = (val: string, m: ConvertMode) => {
     if (val.trim().length === 0) {
       setResult('')
-      clearError()
       return
     }
     try {
       const converted = m === 'json-to-csv' ? jsonToCsv(val) : csvToJson(val)
       setResult(converted)
-      clearError()
     } catch (e) {
       setResult('')
+      let label: string
       if (m === 'json-to-csv') {
         const message = e instanceof Error ? e.message : ''
         if (
@@ -35,15 +34,16 @@ export const JsonToCsvConverter = () => {
           message.startsWith('JSON array must contain at least one object') ||
           message.startsWith('All array items must be objects')
         ) {
-          setError(message)
+          label = message
         } else {
           const msg = getJsonParseError(val)
-          setError(msg ? `Invalid JSON: ${msg}` : 'Conversion failed — please check your input')
+          label = msg ? `Invalid JSON: ${msg}` : 'Conversion failed — please check your input'
         }
       } else {
         const msg = getCsvParseError(val)
-        setError(msg ?? 'Conversion failed — please check your input')
+        label = msg ?? 'Conversion failed — please check your input'
       }
+      toast({ action: 'add', item: { label, type: 'error' } })
     }
   }
 
@@ -60,14 +60,12 @@ export const JsonToCsvConverter = () => {
     setMode(m)
     setSource('')
     setResult('')
-    clearError()
     setDialogOpen(true)
   }
 
   const handleReset = () => {
     setSource('')
     setResult('')
-    clearError()
   }
 
   const isJsonMode = mode === 'json-to-csv'
@@ -132,11 +130,6 @@ export const JsonToCsvConverter = () => {
             </div>
           </div>
 
-          {error != null && (
-            <p className="text-error text-body-sm shrink-0" role="alert">
-              {error}
-            </p>
-          )}
         </div>
       </Dialog>
     </>

@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToolError } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { pxToRem, remToPx } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['px-to-rem']
@@ -12,45 +12,43 @@ export const UnitPxToRem = () => {
   const [remValue, setRemValue] = useState('')
   const [baseValue, setBaseValue] = useState('16')
   const [lastEdited, setLastEdited] = useState<'px' | 'rem'>('px')
-  const { clearError, error, setError } = useToolError()
+  const { toast } = useToast()
+
+  const showError = (label: string) => toast({ action: 'add', item: { label, type: 'error' } })
 
   const dbConvertPxToRem = useDebounceCallback((px: string, base: string) => {
     if (px.trim() === '') {
       setRemValue('')
-      clearError()
       return
     }
     const pxNum = Number(px)
     const baseNum = Number(base)
     if (Number.isNaN(pxNum)) {
-      setError('Enter a valid PX value (e.g., 16)')
+      showError('Enter a valid PX value (e.g., 16)')
       return
     }
     if (Number.isNaN(baseNum) || baseNum <= 0) {
-      setError('Base font size must be a positive number (e.g., 16)')
+      showError('Base font size must be a positive number (e.g., 16)')
       return
     }
-    clearError()
     setRemValue(pxToRem(pxNum, baseNum).toString())
   }, 150)
 
   const dbConvertRemToPx = useDebounceCallback((rem: string, base: string) => {
     if (rem.trim() === '') {
       setPxValue('')
-      clearError()
       return
     }
     const remNum = Number(rem)
     const baseNum = Number(base)
     if (Number.isNaN(remNum)) {
-      setError('Enter a valid REM value (e.g., 1)')
+      showError('Enter a valid REM value (e.g., 1)')
       return
     }
     if (Number.isNaN(baseNum) || baseNum <= 0) {
-      setError('Base font size must be a positive number (e.g., 16)')
+      showError('Base font size must be a positive number (e.g., 16)')
       return
     }
-    clearError()
     setPxValue(remToPx(remNum, baseNum).toString())
   }, 150)
 
@@ -59,7 +57,6 @@ export const UnitPxToRem = () => {
     setLastEdited('px')
     if (val.trim() === '') {
       setRemValue('')
-      clearError()
       return
     }
     dbConvertPxToRem(val, baseValue)
@@ -70,7 +67,6 @@ export const UnitPxToRem = () => {
     setLastEdited('rem')
     if (val.trim() === '') {
       setPxValue('')
-      clearError()
       return
     }
     dbConvertRemToPx(val, baseValue)
@@ -80,10 +76,9 @@ export const UnitPxToRem = () => {
     setBaseValue(val)
     const baseNum = Number(val)
     if (val.trim() === '' || Number.isNaN(baseNum) || baseNum <= 0) {
-      setError('Base font size must be a positive number (e.g., 16)')
+      showError('Base font size must be a positive number (e.g., 16)')
       return
     }
-    clearError()
     if (lastEdited === 'px' && pxValue.trim() !== '') {
       dbConvertPxToRem(pxValue, val)
     } else if (lastEdited === 'rem' && remValue.trim() !== '') {
@@ -122,11 +117,6 @@ export const UnitPxToRem = () => {
         type="text"
         value={baseValue}
       />
-      {error != null && (
-        <p className="text-error text-body-sm shrink-0" role="alert">
-          {error}
-        </p>
-      )}
       {Number(baseValue) > 0 && (
         <p className="text-body-sm text-center text-gray-400">
           Calculation based on a root font-size of {baseValue} pixel.

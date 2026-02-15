@@ -5,7 +5,7 @@ import type { DateTime } from '@/types'
 
 import { CopyButton, DataCellTable, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToolError } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { getDaysInMonth } from '@/utils'
 import { isValidTimestamp } from '@/utils/validation'
 
@@ -47,11 +47,9 @@ const renderWithCopy = (label: string) => (val: string) => (
 )
 
 const UnixTimestampSection = ({
-  clearError,
-  setError,
+  showError,
 }: {
-  clearError: () => void
-  setError: (message: string) => void
+  showError: (label: string) => void
 }) => {
   const [input, setInput] = useState('')
   const [result, setResult] = useState<Array<string>>([])
@@ -59,15 +57,13 @@ const UnixTimestampSection = ({
   const dbSetResult = useDebounceCallback((source: string) => {
     if (source.length === 0) {
       setResult([])
-      clearError()
       return
     }
     if (!isValidTimestamp(source)) {
       setResult([])
-      setError('Enter a valid Unix timestamp (e.g., 1700000000)')
+      showError('Enter a valid Unix timestamp (e.g., 1700000000)')
       return
     }
-    clearError()
     const inputNumber = Number(source)
 
     // Auto-detect if timestamp is in seconds or milliseconds
@@ -117,7 +113,7 @@ const UnixTimestampSection = ({
   )
 }
 
-const DateSection = ({ clearError }: { clearError: () => void }) => {
+const DateSection = () => {
   const [input, setInput] = useState<DateTime<string>>(() => {
     const d = new Date()
     return {
@@ -159,7 +155,6 @@ const DateSection = ({ clearError }: { clearError: () => void }) => {
   }, [input.year, input.month])
 
   const handleChange = (key: keyof DateTime, value: string) => {
-    clearError()
     const newInput = { ...input, [key]: value }
     if ((key === 'month' || key === 'year') && newInput.day) {
       newInput.day = Math.min(
@@ -271,18 +266,14 @@ const DateSection = ({ clearError }: { clearError: () => void }) => {
 const toolEntry = TOOL_REGISTRY_MAP['unix-timestamp']
 
 export const TimeUnixTimestamp = () => {
-  const { clearError, error, setError } = useToolError()
+  const { toast } = useToast()
+  const showError = (label: string) => toast({ action: 'add', item: { label, type: 'error' } })
   return (
     <div className="flex grow flex-col gap-4">
       {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
-      <UnixTimestampSection clearError={clearError} setError={setError} />
-      {error != null && (
-        <p className="text-error text-body-sm shrink-0" role="alert">
-          {error}
-        </p>
-      )}
+      <UnixTimestampSection showError={showError} />
       <hr />
-      <DateSection clearError={clearError} />
+      <DateSection />
     </div>
   )
 }

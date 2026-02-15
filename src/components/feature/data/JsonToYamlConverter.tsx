@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToolError } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { getJsonParseError, getYamlParseError, jsonToYaml, yamlToJson } from '@/utils'
 
 type ConvertMode = 'json-to-yaml' | 'yaml-to-json'
@@ -14,31 +14,29 @@ export const JsonToYamlConverter = () => {
   const [result, setResult] = useState('')
   const [mode, setMode] = useState<ConvertMode>('json-to-yaml')
   const [dialogOpen, setDialogOpen] = useState(false)
-  const { clearError, error, setError } = useToolError()
+  const { toast } = useToast()
   const sessionRef = useRef(0)
 
   const process = async (val: string, m: ConvertMode) => {
     const session = ++sessionRef.current
     if (val.trim().length === 0) {
       setResult('')
-      clearError()
       return
     }
     try {
       const converted = m === 'json-to-yaml' ? await jsonToYaml(val) : await yamlToJson(val)
       if (session !== sessionRef.current) return
       setResult(converted)
-      clearError()
     } catch {
       if (session !== sessionRef.current) return
       setResult('')
       if (m === 'json-to-yaml') {
         const msg = getJsonParseError(val)
-        setError(msg ? `Invalid JSON: ${msg}` : 'Conversion failed — please check your input')
+        toast({ action: 'add', item: { label: msg ? `Invalid JSON: ${msg}` : 'Conversion failed — please check your input', type: 'error' } })
       } else {
         const msg = await getYamlParseError(val)
         if (session !== sessionRef.current) return
-        setError(msg ? `Invalid YAML: ${msg}` : 'Conversion failed — please check your input')
+        toast({ action: 'add', item: { label: msg ? `Invalid YAML: ${msg}` : 'Conversion failed — please check your input', type: 'error' } })
       }
     }
   }
@@ -57,7 +55,6 @@ export const JsonToYamlConverter = () => {
     setMode(m)
     setSource('')
     setResult('')
-    clearError()
     setDialogOpen(true)
   }
 
@@ -65,7 +62,6 @@ export const JsonToYamlConverter = () => {
     sessionRef.current++
     setSource('')
     setResult('')
-    clearError()
   }
 
   const isJsonMode = mode === 'json-to-yaml'
@@ -130,11 +126,6 @@ export const JsonToYamlConverter = () => {
             </div>
           </div>
 
-          {error != null && (
-            <p className="text-error text-body-sm shrink-0" role="alert">
-              {error}
-            </p>
-          )}
         </div>
       </Dialog>
     </>

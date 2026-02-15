@@ -1,4 +1,3 @@
-export * from './error'
 export * from './persist'
 export * from './seo'
 export * from './state'

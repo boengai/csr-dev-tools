@@ -4,14 +4,12 @@ import type { BoxShadowConfig } from '@/utils'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolError } from '@/hooks'
 import { DEFAULT_BOX_SHADOW, generateBoxShadowCSS } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['box-shadow-generator']
 
 export const BoxShadowGenerator = () => {
   const [config, setConfig] = useState<BoxShadowConfig>(DEFAULT_BOX_SHADOW)
-  const { error } = useToolError()
 
   const cssString = generateBoxShadowCSS(config)
 
@@ -118,11 +116,6 @@ export const BoxShadowGenerator = () => {
         </div>
       </div>
 
-      {error != null && (
-        <p className="text-error text-body-sm shrink-0" role="alert">
-          {error}
-        </p>
-      )}
     </div>
   )
 }

@@ -5,7 +5,7 @@ import type { ColorFormat } from '@/types'
 
 import { CopyButton, FieldForm, NotoEmoji } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToolError } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { convertColor } from '@/utils/color'
 
 const randomByte = () => Math.floor(Math.random() * 256)
@@ -63,21 +63,19 @@ export const ColorConvertor = () => {
   const [color, setColor] = useState<Record<ColorFormat, string>>(
     convertColor(`rgb(${randomByte()}, ${randomByte()}, ${randomByte()})`, 'rgb'),
   )
-  const { clearError, error, setError } = useToolError()
+  const { toast } = useToast()
 
   const dbConvertColor = useDebounceCallback((source: Record<ColorFormat, string>, format: ColorFormat) => {
     const value = source[format]
     if (!value.trim()) {
-      clearError()
       return
     }
 
     try {
       const convertedColors = convertColor(value, format)
       setColor(convertedColors)
-      clearError()
     } catch {
-      setError(ERROR_MESSAGES[format])
+      toast({ action: 'add', item: { label: ERROR_MESSAGES[format], type: 'error' } })
       setColor({ ...emptyColors, [format]: value })
     }
   }, 150)
@@ -91,9 +89,8 @@ export const ColorConvertor = () => {
     try {
       const converted = convertColor(hex, 'hex')
       setColor(converted)
-      clearError()
     } catch {
-      setError(ERROR_MESSAGES.hex)
+      toast({ action: 'add', item: { label: ERROR_MESSAGES.hex, type: 'error' } })
     }
   }
 
@@ -125,11 +122,6 @@ export const ColorConvertor = () => {
         ))}
       </div>
 
-      {error != null && (
-        <p className="text-error text-body-sm shrink-0" role="alert">
-          {error}
-        </p>
-      )}
     </div>
   )
 }

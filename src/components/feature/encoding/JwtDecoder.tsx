@@ -4,7 +4,7 @@ import type { ToolComponentProps } from '@/types'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToolError } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { decodeJwt, formatPayloadWithTimestamps } from '@/utils/jwt'
 import { isValidJwt } from '@/utils/validation'
 
@@ -17,7 +17,7 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
   const [payloadCopyValue, setPayloadCopyValue] = useState('')
   const [signatureResult, setSignatureResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const { clearError, error, setError } = useToolError()
+  const { toast } = useToast()
 
   const process = (val: string) => {
     if (val.length === 0) {
@@ -25,7 +25,6 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       setPayloadResult('')
       setPayloadCopyValue('')
       setSignatureResult('')
-      clearError()
       return
     }
 
@@ -34,7 +33,7 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       setPayloadResult('')
       setPayloadCopyValue('')
       setSignatureResult('')
-      setError('Enter a valid JWT token (e.g., eyJhbGciOiJIUzI1NiJ9...)')
+      toast({ action: 'add', item: { label: 'Enter a valid JWT token (e.g., eyJhbGciOiJIUzI1NiJ9...)', type: 'error' } })
       return
     }
 
@@ -44,13 +43,12 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       setPayloadCopyValue(JSON.stringify(payload, null, 2))
       setPayloadResult(formatPayloadWithTimestamps(payload))
       setSignatureResult(signature)
-      clearError()
     } catch {
       setHeaderResult('')
       setPayloadResult('')
       setPayloadCopyValue('')
       setSignatureResult('')
-      setError('JWT contains invalid header or payload — could not decode segments')
+      toast({ action: 'add', item: { label: 'JWT contains invalid header or payload — could not decode segments', type: 'error' } })
     }
   }
 
@@ -69,7 +67,6 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
     setPayloadResult('')
     setPayloadCopyValue('')
     setSignatureResult('')
-    clearError()
   }
 
   const handleAfterClose = () => {
@@ -158,11 +155,6 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
             </div>
           </div>
 
-          {error != null && (
-            <p className="text-error text-body-sm shrink-0" role="alert">
-              {error}
-            </p>
-          )}
         </div>
       </Dialog>
     </>

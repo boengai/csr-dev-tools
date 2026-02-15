@@ -16,7 +16,7 @@ import {
   UploadInput,
 } from '@/components/common'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolError, useToast } from '@/hooks'
+import { useToast } from '@/hooks'
 import { convertImageFormat, isValidImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
@@ -38,7 +38,6 @@ export const ImageConvertor = () => {
 
   // hooks
   const { toast } = useToast()
-  const { clearError, error, setError } = useToolError()
 
   // states
   const [tabValue, setTabValue] = useState(TABS_VALUES.IMPORT)
@@ -86,18 +85,16 @@ export const ImageConvertor = () => {
   const handleInputChange = (values: Array<File>) => {
     const invalidFiles = values.filter((f) => !isValidImageFormat(f.type))
     if (invalidFiles.length > 0) {
-      setError('Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)')
+      toast({ action: 'add', item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' } })
       return
     }
     if (values.length > 0) {
-      clearError()
       setSources(values)
       setTabValue(TABS_VALUES.SELECT_FORMAT)
     }
   }
 
   const handleReset = () => {
-    clearError()
     setTabValue(TABS_VALUES.IMPORT)
     setSources([])
   }
@@ -169,7 +166,7 @@ export const ImageConvertor = () => {
       // go to download tab
       setTabValue(TABS_VALUES.DOWNLOAD)
     } catch {
-      setError('Image conversion failed — try a different format or smaller file')
+      toast({ action: 'add', item: { label: 'Image conversion failed — try a different format or smaller file', type: 'error' } })
       setTabValue(TABS_VALUES.SELECT_FORMAT)
     }
   }
@@ -198,11 +195,6 @@ export const ImageConvertor = () => {
                     onChange={handleInputChange}
                   />
                 </div>
-                {error != null && (
-                  <p className="text-error text-body-sm shrink-0" role="alert">
-                    {error}
-                  </p>
-                )}
               </div>
             ),
             value: TABS_VALUES.IMPORT,
@@ -264,11 +256,6 @@ export const ImageConvertor = () => {
                     Convert
                   </Button>
                 </div>
-                {error != null && (
-                  <p className="text-error text-body-sm shrink-0" role="alert">
-                    {error}
-                  </p>
-                )}
               </div>
             ),
             value: TABS_VALUES.SELECT_FORMAT,

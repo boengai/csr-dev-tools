@@ -31,12 +31,18 @@ const ToastTypeIcon = ({ type }: Pick<ToastItemProps, 'type'>) => {
   }
 }
 
-const ToastItem = ({ duration = 1500, label, type }: Omit<ToastItemProps, 'id'>) => {
+const defaultDuration: Record<NonNullable<ToastItemVariant['type']>, number> = {
+  error: 3000,
+  success: 1500,
+}
+
+const ToastItem = ({ duration, label, type }: Omit<ToastItemProps, 'id'>) => {
+  const resolvedDuration = duration ?? defaultDuration[type ?? 'success']
   const iconClassname = iconVariants({ type })
 
   return (
     <AnimatePresence>
-      <Root asChild duration={duration === 0 ? Infinity : duration}>
+      <Root asChild duration={resolvedDuration === 0 ? Infinity : resolvedDuration}>
         <motion.li
           animate={{ opacity: 1, y: 0 }}
           className="popover text-body-sm flex w-fit items-center gap-2 rounded-sm p-2"

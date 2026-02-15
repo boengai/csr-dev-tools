@@ -4,7 +4,7 @@ import type { HashAlgorithm } from '@/utils'
 
 import { CopyButton, TextAreaInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToolError } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { computeHash, DEFAULT_HASH_ALGORITHM, HASH_ALGORITHMS } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['hash-generator']
@@ -18,13 +18,12 @@ export const HashGenerator = () => {
   algorithmRef.current = algorithm
   const textRef = useRef(text)
   textRef.current = text
-  const { clearError, error, setError } = useToolError()
+  const { toast } = useToast()
 
   const handleCompute = useCallback(
     async (input: string, algo: HashAlgorithm) => {
       if (!input) {
         setHash('')
-        clearError()
         return
       }
       const session = ++sessionRef.current
@@ -32,19 +31,23 @@ export const HashGenerator = () => {
         const result = await computeHash(input, algo)
         if (session === sessionRef.current && textRef.current === input) {
           setHash(result)
-          clearError()
         }
       } catch {
         if (session === sessionRef.current && textRef.current === input) {
-          setError(
-            algo === 'MD5'
-              ? 'MD5 library failed to load — try refreshing the page'
-              : 'Hash computation failed — your browser may not support this feature',
-          )
+          toast({
+            action: 'add',
+            item: {
+              label:
+                algo === 'MD5'
+                  ? 'MD5 library failed to load — try refreshing the page'
+                  : 'Hash computation failed — your browser may not support this feature',
+              type: 'error',
+            },
+          })
         }
       }
     },
-    [clearError, setError],
+    [toast],
   )
 
   const debouncedCompute = useDebounceCallback((input: string) => {
@@ -56,7 +59,6 @@ export const HashGenerator = () => {
     if (!value) {
       ++sessionRef.current
       setHash('')
-      clearError()
       return
     }
     debouncedCompute(value)
@@ -104,11 +106,6 @@ export const HashGenerator = () => {
         </div>
       </div>
 
-      {error != null && (
-        <p className="text-error text-body-sm shrink-0" role="alert">
-          {error}
-        </p>
-      )}
     </div>
   )
 }

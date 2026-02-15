@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolError } from '@/hooks'
 import { DEFAULT_PASSWORD_OPTIONS, generatePassword } from '@/utils'
 
 import type { PasswordOptions } from '@/utils'
@@ -23,7 +22,6 @@ export const PasswordGenerator = () => {
   const [options, setOptions] = useState<PasswordOptions>(DEFAULT_PASSWORD_OPTIONS)
   const [count, setCount] = useState(1)
   const [passwords, setPasswords] = useState(() => [generatePassword(DEFAULT_PASSWORD_OPTIONS)])
-  const { error } = useToolError()
 
   const handleGenerate = () => {
     setPasswords(Array.from({ length: count }, () => generatePassword(options)))
@@ -114,11 +112,6 @@ export const PasswordGenerator = () => {
           ))}
         </div>
       </div>
-      {error != null && (
-        <p className="text-error text-body-sm shrink-0" role="alert">
-          {error}
-        </p>
-      )}
     </div>
   )
 }

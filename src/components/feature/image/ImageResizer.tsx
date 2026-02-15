@@ -4,7 +4,7 @@ import type { ImageFormat, ImageProcessingResult } from '@/types'
 
 import { Button, Dialog, DownloadIcon, FieldForm, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToolError, useToast } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { formatFileSize, isValidImageFormat, parseFileName, processImage, resizeImage } from '@/utils'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
@@ -76,7 +76,6 @@ export const ImageResizer = () => {
 
   // hooks
   const { toast } = useToast()
-  const { clearError, error, setError } = useToolError()
 
   const dbSetPreview = useDebounceCallback(async (s: ImageProcessingResult) => {
     if (!source) return
@@ -88,7 +87,7 @@ export const ImageResizer = () => {
 
     // Validate dimensions before processing
     if (Number.isNaN(height) || Number.isNaN(width) || height <= 0 || width <= 0) {
-      setError('Enter valid dimensions (e.g., 800 x 600)')
+      toast({ action: 'add', item: { label: 'Enter valid dimensions (e.g., 800 x 600)', type: 'error' } })
       return
     }
 
@@ -117,15 +116,14 @@ export const ImageResizer = () => {
       if (currentSession !== sessionRef.current) return
 
       if (result.dataUrl === EMPTY_IMAGE) {
-        setError('Image resize failed — file may be too large for browser memory')
+        toast({ action: 'add', item: { label: 'Image resize failed — file may be too large for browser memory', type: 'error' } })
         return
       }
 
-      clearError()
       setPreview(result)
     } catch {
       if (currentSession !== sessionRef.current) return
-      setError('Image resize failed — try smaller dimensions or a different format')
+      toast({ action: 'add', item: { label: 'Image resize failed — try smaller dimensions or a different format', type: 'error' } })
     }
   })
 
@@ -134,11 +132,9 @@ export const ImageResizer = () => {
     if (!file) return
 
     if (!isValidImageFormat(file.type)) {
-      setError('Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)')
+      toast({ action: 'add', item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' } })
       return
     }
-
-    clearError()
 
     try {
       setDialogOpen(true)
@@ -152,7 +148,7 @@ export const ImageResizer = () => {
       setPreview(result)
       setTabValue(TABS_VALUES.PROCESSING)
     } catch {
-      setError('Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)')
+      toast({ action: 'add', item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' } })
       handleReset()
     }
   }
@@ -205,13 +201,12 @@ export const ImageResizer = () => {
       setTabValue(TABS_VALUES.DOWNLOAD)
       setDialogOpen(false)
     } catch {
-      setError('Image resize failed — try smaller dimensions or a different format')
+      toast({ action: 'add', item: { label: 'Image resize failed — try smaller dimensions or a different format', type: 'error' } })
       setDialogOpen(false)
     }
   }
 
   const handleReset = () => {
-    clearError()
     setTabValue(TABS_VALUES.IMPORT)
     setSource(null)
     setPreview(null)
@@ -248,11 +243,6 @@ export const ImageResizer = () => {
                       onChange={handleUploadChange}
                     />
                   </div>
-                  {error != null && (
-                    <p className="text-error text-body-sm shrink-0" role="alert">
-                      {error}
-                    </p>
-                  )}
                 </div>
               ),
               value: TABS_VALUES.IMPORT,
@@ -368,11 +358,6 @@ export const ImageResizer = () => {
               </Button>
             </div>
           </div>
-          {error != null && (
-            <p className="text-error text-body-sm shrink-0" role="alert">
-              {error}
-            </p>
-          )}
         </div>
       </Dialog>
     </>

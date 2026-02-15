@@ -5,7 +5,7 @@ import type { HighlightSegment, RegexMatch, RegexResult } from '@/utils'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToolError } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { buildHighlightSegments, executeRegex, formatMatchesForCopy } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['regex-tester']
@@ -77,20 +77,19 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
   const [result, setResult] = useState<RegexResult | null>(null)
   const [segments, setSegments] = useState<Array<HighlightSegment>>([])
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const { clearError, error, setError } = useToolError()
+  const { toast } = useToast()
 
   const process = (pat: string, text: string, fl: Flags) => {
     if (pat.trim().length === 0 || text.trim().length === 0) {
       setResult(null)
       setSegments([])
-      clearError()
       return
     }
 
     const regexResult = executeRegex(pat, flagsToString(fl), text)
 
     if (regexResult.error != null) {
-      setError(regexResult.error)
+      toast({ action: 'add', item: { label: regexResult.error, type: 'error' } })
       setResult(null)
       setSegments([])
       return
@@ -98,7 +97,6 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
 
     setResult(regexResult)
     setSegments(buildHighlightSegments(text, regexResult.matches))
-    clearError()
   }
 
   const debouncedProcess = useDebounceCallback((pat: string, text: string, fl: Flags) => {
@@ -127,7 +125,6 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
     setFlags(DEFAULT_FLAGS)
     setResult(null)
     setSegments([])
-    clearError()
   }
 
   const handleAfterClose = () => {
@@ -218,11 +215,6 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
             {result != null && result.matches.length > 0 && <MatchDetails matches={result.matches} />}
           </div>
 
-          {error != null && (
-            <p className="text-error text-body-sm shrink-0" role="alert">
-              {error}
-            </p>
-          )}
         </div>
       </Dialog>
     </>

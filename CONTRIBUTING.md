@@ -44,24 +44,27 @@ import { useState } from 'react'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolError } from '@/hooks'
+import { useToast } from '@/hooks'
 
 const toolEntry = TOOL_REGISTRY_MAP['hash-generator']
 
 export const HashGenerator = () => {
   const [input, setInput] = useState('')
   const [output, setOutput] = useState('')
-  const { clearError, error, setError } = useToolError()
+  const { toast } = useToast()
 
   const handleChange = (val: string) => {
     setInput(val)
-    clearError()
     if (val.trim() === '') {
       setOutput('')
       return
     }
-    // your conversion logic here
-    setOutput(val)
+    try {
+      // your conversion logic here
+      setOutput(val)
+    } catch {
+      toast({ action: 'add', item: { label: 'Something went wrong', type: 'error' } })
+    }
   }
 
   return (
@@ -87,11 +90,6 @@ export const HashGenerator = () => {
         type="text"
         value={output}
       />
-      {error != null && (
-        <p className="text-error text-body-sm shrink-0" role="alert">
-          {error}
-        </p>
-      )}
     </div>
   )
 }
@@ -99,7 +97,7 @@ export const HashGenerator = () => {
 
 Key points:
 
-- Use `useToolError` for error handling — every tool must use it
+- Use `useToast` with `type: 'error'` for error handling — errors display as toast notifications (3s duration)
 - Use `TOOL_REGISTRY_MAP` to get the tool entry for description text
 - Named export (`export const HashGenerator`) — no default export
 - Import shared components from `@/components/common`
@@ -391,7 +389,6 @@ csr-dev-tools/
 │   ├── hooks/
 │   │   ├── state/                # Zustand stores
 │   │   ├── persist/              # Persistent state hooks
-│   │   ├── useToolError.ts       # Error handling hook
 │   │   └── index.ts
 │   ├── pages/                    # Route page components (default export)
 │   ├── types/                    # Type definitions mirroring src/ structure
@@ -442,7 +439,7 @@ Copy this checklist into your PR description:
 - [ ] Registry entry added in `src/constants/tool-registry.ts` with all required fields
 - [ ] `ToolCategory` and `ToolRegistryKey` types updated (if new category or key)
 - [ ] Barrel exports added/updated in `index.ts` files
-- [ ] `useToolError` hook used for error handling
+- [ ] `useToast` with `type: 'error'` used for error handling
 - [ ] Unit tests written (co-located `*.spec.ts`)
 - [ ] E2E test written (`e2e/{tool-key}.spec.ts`)
 - [ ] `pnpm lint` passes

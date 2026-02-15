@@ -17,7 +17,7 @@ import {
   UploadInput,
 } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolError, useToast } from '@/hooks'
+import { useToast } from '@/hooks'
 import { ASPECT_RATIO_OPTIONS, clampCropRegion, getAspectRatio, getDefaultCrop, scaleCropToNatural } from '@/utils'
 
 const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT', string> = {
@@ -55,7 +55,6 @@ export const ImageCropper = () => {
   const [showProgress, setShowProgress] = useState(false)
 
   const { toast } = useToast()
-  const { clearError, error, setError } = useToolError()
 
   useEffect(() => {
     return () => {
@@ -77,7 +76,6 @@ export const ImageCropper = () => {
     const file = values[0]
     if (!file) return
 
-    clearError()
     setSource(file)
     setCompletedCrop(null)
     setCrop(undefined)
@@ -91,7 +89,6 @@ export const ImageCropper = () => {
     setCompletedCrop(null)
     setCrop(undefined)
     setAspectPreset('free')
-    clearError()
   }
 
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
@@ -141,7 +138,7 @@ export const ImageCropper = () => {
       setTabValue(TABS_VALUES.DOWNLOAD)
       setDialogOpen(false)
     } catch {
-      setError('Failed to crop image. Please try again.')
+      toast({ action: 'add', item: { label: 'Failed to crop image. Please try again.', type: 'error' } })
     } finally {
       clearTimeout(progressTimerRef.current)
       setShowProgress(false)
@@ -183,11 +180,6 @@ export const ImageCropper = () => {
                       onChange={handleInputChange}
                     />
                   </div>
-                  {error != null && !dialogOpen && (
-                    <p className="text-error text-body-sm shrink-0" role="alert">
-                      {error}
-                    </p>
-                  )}
                 </div>
               ),
               value: TABS_VALUES.IMPORT,
@@ -284,12 +276,6 @@ export const ImageCropper = () => {
             </div>
 
             {showProgress && <ProgressBar value={50} />}
-
-            {error != null && (
-              <p className="text-error text-body-sm text-center" role="alert">
-                {error}
-              </p>
-            )}
 
             <Button block disabled={!completedCrop || processing} onClick={handleCrop} variant="primary">
               Crop

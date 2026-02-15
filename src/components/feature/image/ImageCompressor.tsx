@@ -4,7 +4,7 @@ import type { ImageProcessingResult } from '@/types'
 
 import { Button, DownloadIcon, ProgressBar, UploadInput } from '@/components/common'
 import { COMPRESSIBLE_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToolError, useToast } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { formatFileSize, processImage } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['image-compressor']
@@ -29,7 +29,6 @@ export const ImageCompressor = () => {
   const [showProgress, setShowProgress] = useState(false)
 
   const { toast } = useToast()
-  const { clearError, error, setError } = useToolError()
 
   // M3 fix: cleanup progress timer on unmount
   useEffect(() => {
@@ -48,12 +47,11 @@ export const ImageCompressor = () => {
       try {
         const result = await processImage(file, { quality: q / 100, strategy: 'stretch' })
         if (currentSession !== sessionRef.current) return null
-        clearError()
         setCompressed(result)
         return result
       } catch {
         if (currentSession !== sessionRef.current) return null
-        setError('Compression failed — try a different image')
+        toast({ action: 'add', item: { label: 'Compression failed — try a different image', type: 'error' } })
         return null
       } finally {
         clearTimeout(progressTimerRef.current)
@@ -61,7 +59,7 @@ export const ImageCompressor = () => {
         setProcessing(false)
       }
     },
-    [clearError, setError],
+    [toast],
   )
 
   const debouncedCompress = useDebounceCallback(compress, 300)
@@ -72,14 +70,13 @@ export const ImageCompressor = () => {
 
     // H1 fix: clear stale state on format rejection
     if (!COMPRESSIBLE_FORMATS.has(file.type)) {
-      setError('Image compression supports JPEG and WebP formats')
+      toast({ action: 'add', item: { label: 'Image compression supports JPEG and WebP formats', type: 'error' } })
       setSource(null)
       setCompressed(null)
       setOriginalInfo(null)
       return
     }
 
-    clearError()
     setSource(file)
     setCompressed(null)
     setOriginalInfo({ height: 0, name: file.name, size: file.size, width: 0 })
@@ -126,12 +123,6 @@ export const ImageCompressor = () => {
           onChange={handleInputChange}
         />
       </div>
-
-      {error != null && (
-        <p className="text-error text-body-sm shrink-0" role="alert">
-          {error}
-        </p>
-      )}
 
       {originalInfo && originalInfo.width > 0 && (
         <div className="flex flex-col gap-1">

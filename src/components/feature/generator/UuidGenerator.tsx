@@ -2,7 +2,6 @@ import { useState } from 'react'
 
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolError } from '@/hooks'
 import { generateBulkUuids, generateUuid } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['uuid-generator']
@@ -10,7 +9,6 @@ const toolEntry = TOOL_REGISTRY_MAP['uuid-generator']
 export const UuidGenerator = () => {
   const [count, setCount] = useState(1)
   const [uuids, setUuids] = useState(() => [generateUuid()])
-  const { error } = useToolError()
 
   const handleGenerate = () => {
     setUuids(generateBulkUuids(count))
@@ -62,11 +60,6 @@ export const UuidGenerator = () => {
         </div>
       </div>
 
-      {error != null && (
-        <p className="text-error text-body-sm shrink-0" role="alert">
-          {error}
-        </p>
-      )}
     </div>
   )
 }

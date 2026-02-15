@@ -4,7 +4,7 @@ import type { ToolComponentProps } from '@/types'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToolError } from '@/hooks'
+import { useDebounceCallback, useToast } from '@/hooks'
 import { formatJson, getJsonParseError } from '@/utils/json'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-formatter']
@@ -13,28 +13,26 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   const [source, setSource] = useState('')
   const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const { clearError, error, setError } = useToolError()
+  const { toast } = useToast()
 
   const process = (val: string) => {
     if (val.trim().length === 0) {
       setResult('')
-      clearError()
       return
     }
 
     const parseError = getJsonParseError(val)
     if (parseError != null) {
       setResult('')
-      setError(`Invalid JSON: ${parseError}`)
+      toast({ action: 'add', item: { label: `Invalid JSON: ${parseError}`, type: 'error' } })
       return
     }
 
     try {
       setResult(formatJson(val))
-      clearError()
     } catch {
       setResult('')
-      setError('Unable to format JSON')
+      toast({ action: 'add', item: { label: 'Unable to format JSON', type: 'error' } })
     }
   }
 
@@ -50,7 +48,6 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   const handleReset = () => {
     setSource('')
     setResult('')
-    clearError()
   }
 
   const handleAfterClose = () => {
@@ -110,11 +107,6 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             </div>
           </div>
 
-          {error != null && (
-            <p className="text-error text-body-sm shrink-0" role="alert">
-              {error}
-            </p>
-          )}
         </div>
       </Dialog>
     </>
