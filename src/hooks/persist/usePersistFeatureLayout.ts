@@ -14,12 +14,12 @@ export const usePersistFeatureLayout: UseBoundStore<StoreApi<UsePersistFeatureLa
             value: { ...state.value, [position]: payload },
           })),
         value: {
-          0: 'image-converter',
-          1: 'unix-timestamp',
+          0: 'json-formatter',
+          1: 'uuid-generator',
           2: 'base64-encoder',
-          3: 'color-converter',
-          4: 'image-resizer',
-          5: 'px-to-rem',
+          3: 'jwt-decoder',
+          4: 'unix-timestamp',
+          5: 'regex-tester',
         },
       }),
       {
