@@ -16,7 +16,7 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   const { clearError, error, setError } = useToolError()
 
   const process = (val: string) => {
-    if (val.length === 0) {
+    if (val.trim().length === 0) {
       setResult('')
       clearError()
       return
@@ -92,7 +92,7 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
 
             <div className="tablet:border-t-0 tablet:border-l-2 border-t-2 border-dashed border-gray-900" />
 
-            <div className="flex min-h-0 flex-1 flex-col gap-2">
+            <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 disabled={!result}
                 label={

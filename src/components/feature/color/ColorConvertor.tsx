@@ -109,19 +109,21 @@ export const ColorConvertor = () => {
         value={color.hex || '#000000'}
       />
 
-      {FORMATS.map(({ format, label, placeholder }) => (
-        <InputWrapper key={format} color={color[format]}>
-          <FieldForm
-            label={label}
-            name={format}
-            onChange={(val) => handleColorChange(format, val)}
-            placeholder={placeholder}
-            suffix={<CopyButton label={label} value={color[format]} />}
-            type="text"
-            value={color[format]}
-          />
-        </InputWrapper>
-      ))}
+      <div aria-live="polite">
+        {FORMATS.map(({ format, label, placeholder }) => (
+          <InputWrapper key={format} color={color[format]}>
+            <FieldForm
+              label={label}
+              name={format}
+              onChange={(val) => handleColorChange(format, val)}
+              placeholder={placeholder}
+              suffix={<CopyButton label={label} value={color[format]} />}
+              type="text"
+              value={color[format]}
+            />
+          </InputWrapper>
+        ))}
+      </div>
 
       {error != null && (
         <p className="text-error text-body-sm shrink-0" role="alert">

@@ -100,17 +100,19 @@ const UnixTimestampSection = ({
       <p className="text-body-sm text-center text-gray-500">
         Supports Unix timestamps in seconds or milliseconds (auto-detected).
       </p>
-      <AnimatePresence mode="wait">
-        {result.length > 0 && (
-          <DataCellTable
-            rows={[
-              { label: 'Format', render: renderWithCopy('Format'), value: result[0] },
-              { label: 'GMT', render: renderWithCopy('GMT'), value: result[1] },
-              { label: 'Local', render: renderWithCopy('Local'), value: result[2] },
-            ]}
-          />
-        )}
-      </AnimatePresence>
+      <div aria-live="polite">
+        <AnimatePresence mode="wait">
+          {result.length > 0 && (
+            <DataCellTable
+              rows={[
+                { label: 'Format', render: renderWithCopy('Format'), value: result[0] },
+                { label: 'GMT', render: renderWithCopy('GMT'), value: result[1] },
+                { label: 'Local', render: renderWithCopy('Local'), value: result[2] },
+              ]}
+            />
+          )}
+        </AnimatePresence>
+      </div>
     </section>
   )
 }
@@ -245,21 +247,23 @@ const DateSection = ({ clearError }: { clearError: () => void }) => {
           />
         </div>
       </div>
-      <AnimatePresence mode="wait">
-        {result.length > 0 && (
-          <DataCellTable
-            rows={[
-              {
-                label: 'Unix Timestamp',
-                render: renderWithCopy('Unix Timestamp'),
-                value: result[0],
-              },
-              { label: 'GMT', render: renderWithCopy('GMT'), value: result[1] },
-              { label: 'Local', render: renderWithCopy('Local'), value: result[2] },
-            ]}
-          />
-        )}
-      </AnimatePresence>
+      <div aria-live="polite">
+        <AnimatePresence mode="wait">
+          {result.length > 0 && (
+            <DataCellTable
+              rows={[
+                {
+                  label: 'Unix Timestamp',
+                  render: renderWithCopy('Unix Timestamp'),
+                  value: result[0],
+                },
+                { label: 'GMT', render: renderWithCopy('GMT'), value: result[1] },
+                { label: 'Local', render: renderWithCopy('Local'), value: result[2] },
+              ]}
+            />
+          )}
+        </AnimatePresence>
+      </div>
     </section>
   )
 }

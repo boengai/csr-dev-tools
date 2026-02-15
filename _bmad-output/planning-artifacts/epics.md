@@ -1357,3 +1357,87 @@ So that **I can quickly trim images to exact dimensions for different use cases*
 **When** it crops images
 **Then** it uses the Canvas API for pixel-level cropping — no server calls
 **And** unit tests cover: freeform crop dimensions, preset aspect ratio enforcement, edge cases (crop to full image, crop to minimum size), and mobile touch interaction
+
+---
+
+## Epic 11: Technical Debt Cleanup
+
+Address accumulated HIGH and MEDIUM priority technical debt from Epics 1-10. WCAG accessibility audit, async state guard hardening, and input validation consistency.
+
+**Depends on:** None (all stories are independent cleanup of existing code)
+
+### Story 11.1: WCAG Accessibility Audit & Fix
+
+As a **user relying on assistive technology**,
+I want **all 19 tools to have proper ARIA attributes on interactive controls and dynamic output regions**,
+So that **I receive screen reader announcements when results change and can navigate all controls meaningfully**.
+
+**Acceptance Criteria:**
+
+**Given** all 19 tool components
+**When** they render dynamic output
+**Then** each has `aria-live="polite"` on its primary output container
+
+**Given** icon-only interactive controls (buttons, toggles)
+**When** they render
+**Then** each has `aria-label` describing its purpose
+
+**Given** tool output containers
+**When** they represent distinct content regions
+**Then** they have `role="region"` with an `aria-label`
+
+**Given** error message containers
+**When** they render
+**Then** all 19 tools consistently use `role="alert"`
+
+**Given** tools with existing correct ARIA attributes
+**When** modifications are made
+**Then** zero regressions — existing attributes are preserved
+
+### Story 11.2: Async State Guard Hardening
+
+As a **user interacting with tools that process input asynchronously**,
+I want **all async/debounced tools to discard stale results when my input changes during processing**,
+So that **I always see results that match my current input, never outdated results from a previous operation**.
+
+**Acceptance Criteria:**
+
+**Given** all 12 tools using `useDebounceCallback` or async processing
+**When** they are audited
+**Then** each is classified as: guarded (has sessionRef), needs guard (async risk without protection), or no guard needed (synchronous API)
+
+**Given** tools classified as "needs guard"
+**When** session guards are added
+**Then** the `sessionRef` generation counter pattern prevents stale state updates
+
+**Given** the Hash Generator's multi-trigger pattern
+**When** verified
+**Then** all race conditions (text change, algorithm change, simultaneous change) are handled correctly
+
+**Given** all 4 image tools
+**When** a new file is uploaded or input is rejected
+**Then** ALL related state (source, result, metadata, error) is cleared
+
+### Story 11.3: Input Validation Consistency
+
+As a **user entering whitespace-only or edge-case input into text-based tools**,
+I want **consistent behavior across all tools when my input is empty or whitespace-only**,
+So that **I get clear, predictable feedback rather than confusing error messages or silent failures**.
+
+**Acceptance Criteria:**
+
+**Given** `JsonFormatter` empty-input detection
+**When** the user enters whitespace-only input
+**Then** it uses `val.trim().length === 0` consistent with `JsonToCsvConverter` and `JsonToYamlConverter`
+
+**Given** encoding tools (`EncodingBase64`, `UrlEncoder`)
+**When** whitespace is entered
+**Then** they intentionally treat whitespace as valid input (no trim) — confirmed correct
+
+**Given** the `ProgressBar` component
+**When** imported by consumers
+**Then** it is available via `@/components/common` barrel export
+
+**Given** the `DiffChange` type
+**When** imported
+**Then** it is co-located in `src/types/` (not `src/utils/`)

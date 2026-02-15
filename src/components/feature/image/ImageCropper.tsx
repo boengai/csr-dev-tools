@@ -6,8 +6,16 @@ import type { Crop, PixelCrop } from 'react-image-crop'
 
 import type { AspectRatioPreset, CropRegion } from '@/types'
 
-import { Button, Dialog, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
-import { ProgressBar } from '@/components/common/progress-bar/ProgressBar'
+import {
+  Button,
+  Dialog,
+  DownloadIcon,
+  NotoEmoji,
+  ProgressBar,
+  RefreshIcon,
+  Tabs,
+  UploadInput,
+} from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolError, useToast } from '@/hooks'
 import { ASPECT_RATIO_OPTIONS, clampCropRegion, getAspectRatio, getDefaultCrop, scaleCropToNatural } from '@/utils'
@@ -268,7 +276,7 @@ export const ImageCropper = () => {
               {naturalCrop && (
                 <>
                   <span className="h-5 w-px bg-gray-700" />
-                  <span className="text-body-xs text-gray-500">
+                  <span aria-live="polite" className="text-body-xs text-gray-500">
                     Size: {naturalCrop.width} x {naturalCrop.height} px
                   </span>
                 </>

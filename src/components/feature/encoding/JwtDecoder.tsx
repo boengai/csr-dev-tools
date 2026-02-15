@@ -110,7 +110,7 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
 
             <div className="tablet:border-t-0 tablet:border-l-2 border-t-2 border-dashed border-gray-900" />
 
-            <div className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
+            <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
               <FieldForm
                 disabled={!headerResult}
                 label={

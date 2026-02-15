@@ -2,8 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { ImageProcessingResult } from '@/types'
 
-import { Button, DownloadIcon, UploadInput } from '@/components/common'
-import { ProgressBar } from '@/components/common/progress-bar/ProgressBar'
+import { Button, DownloadIcon, ProgressBar, UploadInput } from '@/components/common'
 import { COMPRESSIBLE_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToolError, useToast } from '@/hooks'
 import { formatFileSize, processImage } from '@/utils'
@@ -20,6 +19,7 @@ type OriginalInfo = {
 export const ImageCompressor = () => {
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const progressTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const sessionRef = useRef(0)
 
   const [source, setSource] = useState<File | null>(null)
   const [originalInfo, setOriginalInfo] = useState<OriginalInfo | null>(null)
@@ -43,12 +43,16 @@ export const ImageCompressor = () => {
       setProcessing(true)
       progressTimerRef.current = setTimeout(() => setShowProgress(true), 300)
 
+      const currentSession = ++sessionRef.current
+
       try {
         const result = await processImage(file, { quality: q / 100, strategy: 'stretch' })
+        if (currentSession !== sessionRef.current) return null
         clearError()
         setCompressed(result)
         return result
       } catch {
+        if (currentSession !== sessionRef.current) return null
         setError('Compression failed — try a different image')
         return null
       } finally {
@@ -159,7 +163,7 @@ export const ImageCompressor = () => {
       {showProgress && <ProgressBar value={50} />}
 
       {compressed && originalInfo && !processing && (
-        <div className="flex flex-col gap-2">
+        <div aria-live="polite" className="flex flex-col gap-2">
           <p className="text-body-sm text-gray-300">
             {formatFileSize(originalInfo.size)} → {formatFileSize(compressed.size)}
             {compressionRatio != null && compressionRatio > 0 ? (

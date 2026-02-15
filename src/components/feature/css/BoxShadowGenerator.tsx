@@ -108,7 +108,7 @@ export const BoxShadowGenerator = () => {
         <div className="h-32 w-48 rounded-lg bg-gray-700" style={{ boxShadow: cssString }} />
       </div>
 
-      <div className="flex flex-col gap-2">
+      <div aria-live="polite" className="flex flex-col gap-2">
         <div className="flex items-center gap-2">
           <span className="text-body-sm font-medium text-gray-400">CSS Output</span>
           <CopyButton label="CSS box-shadow" value={`box-shadow: ${cssString};`} />

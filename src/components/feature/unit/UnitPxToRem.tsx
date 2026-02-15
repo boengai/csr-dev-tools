@@ -94,7 +94,7 @@ export const UnitPxToRem = () => {
   return (
     <div className="flex w-full grow flex-col items-center justify-center gap-4">
       {toolEntry?.description && <p className="text-body-xs shrink-0 text-gray-500">{toolEntry.description}</p>}
-      <div className="flex w-full items-center [&>*]:w-1/2">
+      <div aria-live="polite" className="flex w-full items-center [&>*]:w-1/2">
         <FieldForm
           label="PX"
           name="px"

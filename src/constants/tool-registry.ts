@@ -372,7 +372,15 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
 ]
 
 export const CATEGORY_ORDER: Array<ToolCategory> = [
-  'Color', 'CSS', 'Data', 'Encoding', 'Generator', 'Image', 'Text', 'Time', 'Unit',
+  'Color',
+  'CSS',
+  'Data',
+  'Encoding',
+  'Generator',
+  'Image',
+  'Text',
+  'Time',
+  'Unit',
 ]
 
 export const groupToolsByCategory = (tools: Array<ToolRegistryEntry>) => {

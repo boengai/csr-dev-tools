@@ -9,12 +9,12 @@ import {
   DownloadIcon,
   ImageIcon,
   NotoEmoji,
+  ProgressBar,
   RefreshIcon,
   Tabs,
   TrashIcon,
   UploadInput,
 } from '@/components/common'
-import { ProgressBar } from '@/components/common/progress-bar/ProgressBar'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolError, useToast } from '@/hooks'
 import { convertImageFormat, isValidImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
@@ -237,6 +237,7 @@ export const ImageConvertor = () => {
                         ) : null}
                       </span>
                       <button
+                        aria-label={`Remove ${img.name}`}
                         className="hover:bg-error mr-4 rounded-full p-1 text-gray-400 transition-colors hover:text-white"
                         onClick={() => handleRemoveImage(idx)}
                       >
@@ -274,7 +275,7 @@ export const ImageConvertor = () => {
           },
           {
             content: (
-              <div className="flex w-full grow flex-col items-center justify-center gap-6">
+              <div aria-live="polite" className="flex w-full grow flex-col items-center justify-center gap-6">
                 <NotoEmoji emoji="robot" size={120} />
                 <div className="desktop:w-8/10 w-full">
                   <ProgressBar value={processing} />

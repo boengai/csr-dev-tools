@@ -90,12 +90,10 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
       injected={{ open: position !== null, setOpen: onDismiss }}
       title={`Select App for Widget#${position !== null ? position + 1 : ''}`}
     >
-      <div className="columns-1 gap-x-6 tablet:columns-2 laptop:columns-3">
+      <div className="tablet:columns-2 laptop:columns-3 columns-1 gap-x-6">
         {CATEGORY_ORDER.filter((cat) => groupedTools[cat]).map((category) => (
           <div className="mb-4 break-inside-avoid" key={category}>
-            <span className="block px-2 pb-1 text-[0.6rem] tracking-[0.12em] text-gray-500 uppercase">
-              {category}
-            </span>
+            <span className="block px-2 pb-1 text-[0.6rem] tracking-[0.12em] text-gray-500 uppercase">{category}</span>
             <ul className="flex flex-col gap-1">
               {groupedTools[category].map((entry) => {
                 const at = appPosition[entry.key] ?? null

@@ -1,4 +1,5 @@
 export * from './crop'
+export * from './diff'
 export * from './image'
 export * from './tailwind-variants'
 export * from './validation'

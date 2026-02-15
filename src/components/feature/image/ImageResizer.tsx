@@ -72,12 +72,16 @@ export const ImageResizer = () => {
   const [source, setSource] = useState<[File, ImageProcessingResult] | null>(null)
   const [preview, setPreview] = useState<ImageProcessingResult | null>(null)
 
+  const sessionRef = useRef(0)
+
   // hooks
   const { toast } = useToast()
   const { clearError, error, setError } = useToolError()
 
   const dbSetPreview = useDebounceCallback(async (s: ImageProcessingResult) => {
     if (!source) return
+
+    const currentSession = ++sessionRef.current
 
     let height = s.height
     let width = s.width
@@ -110,6 +114,8 @@ export const ImageResizer = () => {
         },
       )
 
+      if (currentSession !== sessionRef.current) return
+
       if (result.dataUrl === EMPTY_IMAGE) {
         setError('Image resize failed — file may be too large for browser memory')
         return
@@ -118,6 +124,7 @@ export const ImageResizer = () => {
       clearError()
       setPreview(result)
     } catch {
+      if (currentSession !== sessionRef.current) return
       setError('Image resize failed — try smaller dimensions or a different format')
     }
   })
@@ -296,7 +303,10 @@ export const ImageResizer = () => {
         title="Adjust the size of your image"
       >
         <div className="tablet:min-h-0 flex grow flex-col gap-4">
-          <div className="bg-grid-texture tablet:min-h-0 tablet:grow tablet:flex-row flex flex-col items-center justify-center gap-6 bg-black">
+          <div
+            aria-live="polite"
+            className="bg-grid-texture tablet:min-h-0 tablet:grow tablet:flex-row flex flex-col items-center justify-center gap-6 bg-black"
+          >
             <ImagePreview
               metadata={{
                 format: source?.[1].format,
