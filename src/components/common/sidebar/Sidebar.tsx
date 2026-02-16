@@ -2,6 +2,7 @@ import { useLocation } from '@tanstack/react-router'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
+import { XIcon } from '@/components/common/icon/XIcon'
 import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY } from '@/constants'
 import { useSidebarStore } from '@/hooks'
 
@@ -69,7 +70,17 @@ export const Sidebar = () => {
   const groupedTools = useMemo(() => groupToolsByCategory(TOOL_REGISTRY), [])
 
   const navContent = (
-    <div className="flex grow flex-col overflow-y-auto pt-8 pb-4">
+    <div className="flex grow flex-col overflow-y-auto pb-4">
+      <div className="flex items-center justify-end px-2 pt-2">
+        <button
+          aria-label="Close navigation"
+          className="flex size-10 items-center justify-center rounded text-gray-400 transition-colors hover:text-white"
+          onClick={close}
+          type="button"
+        >
+          <XIcon size={20} />
+        </button>
+      </div>
       {CATEGORY_ORDER.filter((cat) => groupedTools[cat]).map((category) => (
         <SidebarCategory categoryName={category} key={category}>
           {groupedTools[category].map((tool) => (
