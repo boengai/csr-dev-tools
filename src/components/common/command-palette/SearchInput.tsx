@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 
 import type { SearchInputProps } from '@/types'
 
-import { SearchIcon } from '@/components/common/icon'
+import { SearchIcon } from '../icon'
 
 export const SearchInput = ({
   activeDescendantId,

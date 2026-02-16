@@ -2,10 +2,10 @@ import { useLocation } from '@tanstack/react-router'
 import { AnimatePresence, motion } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { XIcon } from '@/components/common/icon/XIcon'
 import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY } from '@/constants'
 import { useSidebarStore } from '@/hooks'
 
+import { XIcon } from '../icon'
 import { SidebarCategory } from './SidebarCategory'
 import { SidebarToolItem } from './SidebarToolItem'
 
