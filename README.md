@@ -10,7 +10,7 @@
 [![React](https://img.shields.io/badge/React-19.1.1-61DAFB?logo=react&logoColor=black)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-7.1.2-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 
-[Live Demo](https://your-demo-url.com) • [Report Bug](https://github.com/boengai/csr-dev-tools/issues) • [Request Feature](https://github.com/boengai/csr-dev-tools/issues)
+[GitHub](https://github.com/boengai/csr-dev-tools) • [Report Bug](https://github.com/boengai/csr-dev-tools/issues) • [Request Feature](https://github.com/boengai/csr-dev-tools/issues)
 
 </div>
 

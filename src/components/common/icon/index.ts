@@ -1,6 +1,7 @@
 export * from './AlertIcon'
 export * from './ArrowIcon'
 export * from './CheckIcon'
+export * from './GitHubIcon'
 export * from './ChevronIcon'
 export * from './CopyIcon'
 export * from './DownloadIcon'

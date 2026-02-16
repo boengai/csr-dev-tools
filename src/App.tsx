@@ -1,7 +1,7 @@
 import { Link, Outlet, useLocation } from '@tanstack/react-router'
 import { type ComponentType, lazy, Suspense } from 'react'
 
-import { ArrowIcon, CommandPalette, HamburgerIcon, NotoEmoji, SearchIcon, Sidebar, ToastProvider } from '@/components'
+import { ArrowIcon, CommandPalette, GitHubIcon, HamburgerIcon, NotoEmoji, SearchIcon, Sidebar, ToastProvider } from '@/components'
 import { ROUTE_PATH } from '@/constants'
 import { useCommandPaletteStore, useKeyboardShortcuts, useSidebarStore } from '@/hooks'
 
@@ -51,17 +51,28 @@ export default function App() {
             <span>🏠</span>
           </Link>
         )}
-        <button
-          aria-label="Search tools"
-          className="ml-auto flex items-center gap-2 rounded px-2 py-1 text-gray-400 transition-colors hover:text-white"
-          onClick={openCommandPalette}
-          type="button"
-        >
-          <SearchIcon />
-          <kbd className="rounded-sm border border-gray-800 bg-gray-950 px-1.5 py-0.5 text-body-xs">
-            {typeof navigator !== 'undefined' && /Mac/i.test(navigator.userAgent) ? '⌘K' : 'Ctrl+K'}
-          </kbd>
-        </button>
+        <div className="ml-auto flex items-center gap-2">
+          <button
+            aria-label="Search tools"
+            className="flex items-center gap-2 rounded px-2 py-1 text-gray-400 transition-colors hover:text-white"
+            onClick={openCommandPalette}
+            type="button"
+          >
+            <SearchIcon />
+            <kbd className="rounded-sm border border-gray-800 bg-gray-950 px-1.5 py-0.5 text-body-xs">
+              {typeof navigator !== 'undefined' && /Mac/i.test(navigator.userAgent) ? '⌘K' : 'Ctrl+K'}
+            </kbd>
+          </button>
+          <a
+            aria-label="GitHub repository"
+            className="flex size-10 items-center justify-center rounded text-gray-400 transition-colors hover:text-white"
+            href="https://github.com/boengai/csr-dev-tools"
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            <GitHubIcon />
+          </a>
+        </div>
       </header>
 
       <Sidebar />
