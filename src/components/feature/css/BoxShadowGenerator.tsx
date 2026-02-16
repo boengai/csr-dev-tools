@@ -10,6 +10,7 @@ const toolEntry = TOOL_REGISTRY_MAP['box-shadow-generator']
 
 export const BoxShadowGenerator = () => {
   const [config, setConfig] = useState<BoxShadowConfig>(DEFAULT_BOX_SHADOW)
+  const [previewBg, setPreviewBg] = useState('#ffffff')
 
   const cssString = generateBoxShadowCSS(config)
 
@@ -102,8 +103,20 @@ export const BoxShadowGenerator = () => {
 
       <div className="border-t-2 border-dashed border-gray-900" />
 
-      <div className="flex items-center justify-center rounded-lg border border-gray-800 bg-gray-950 p-16">
-        <div className="h-32 w-48 rounded-lg bg-gray-700" style={{ boxShadow: cssString }} />
+      <div className="relative flex items-center justify-center rounded-lg border border-gray-800 p-16" style={{ backgroundColor: previewBg }}>
+        <div className="absolute right-2 top-2 flex items-center gap-1.5">
+          <label className="text-body-xs text-gray-500" htmlFor="bs-preview-bg">
+            BG
+          </label>
+          <input
+            className="h-6 w-8 cursor-pointer rounded border border-gray-700 bg-transparent"
+            id="bs-preview-bg"
+            onChange={(e) => setPreviewBg(e.target.value)}
+            type="color"
+            value={previewBg}
+          />
+        </div>
+        <div className="h-32 w-48 rounded-lg bg-white border border-gray-200" style={{ boxShadow: cssString }} />
       </div>
 
       <div aria-live="polite" className="flex flex-col gap-2">

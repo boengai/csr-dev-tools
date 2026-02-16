@@ -50,6 +50,8 @@ So that **I can design box shadows interactively and copy the CSS code directly 
 **Given** the tool loads
 **When** the page renders
 **Then** a sensible default shadow is applied (`4px 4px 8px 0px rgba(0, 0, 0, 0.25)`) so the preview is immediately visible
+**And** the preview background defaults to white (`#ffffff`) for shadow visibility
+**And** a background color picker allows the user to adjust the preview background
 
 ### AC6: Color with Alpha Support
 
@@ -173,12 +175,12 @@ The CSS string is a pure function of the shadow config: `generateBoxShadowCSS(co
 │                                                                  │
 │  ──────────── dashed divider ─────────────                       │
 │                                                                  │
-│  ┌─── Preview ──────────────────────────────────────────────┐    │
+│  ┌─── Preview (bg: white, user-adjustable) ───── [BG 🎨] ──┐    │
 │  │                                                           │    │
 │  │    ┌─────────────────────────┐                            │    │
 │  │    │                         │ ← shadow visible           │    │
 │  │    │      Preview Box        │                            │    │
-│  │    │                         │                            │    │
+│  │    │      (bg-white)         │                            │    │
 │  │    └─────────────────────────┘                            │    │
 │  │                                                           │    │
 │  └───────────────────────────────────────────────────────────┘    │
@@ -279,13 +281,29 @@ Reuse the `FlagToggle` pattern from `RegexTester.tsx` and `PasswordGenerator.tsx
 
 The preview region should have:
 - A container with sufficient padding for the shadow to be visible (especially for large blur/spread values)
-- A centered box element with a neutral background that contrasts with the dark theme
+- A white default background (`#ffffff`) so black shadows are immediately visible
+- A user-adjustable background color picker (top-right corner) for testing shadows against different backgrounds
+- A centered white box element with a subtle border
 - The shadow applied via inline `style` prop
 
 ```typescript
-<div className="flex items-center justify-center rounded-lg border border-gray-800 bg-gray-950 p-16">
+const [previewBg, setPreviewBg] = useState('#ffffff')
+
+<div className="relative flex items-center justify-center rounded-lg border border-gray-800 p-16" style={{ backgroundColor: previewBg }}>
+  <div className="absolute right-2 top-2 flex items-center gap-1.5">
+    <label className="text-body-xs text-gray-500" htmlFor="bs-preview-bg">
+      BG
+    </label>
+    <input
+      className="h-6 w-8 cursor-pointer rounded border border-gray-700 bg-transparent"
+      id="bs-preview-bg"
+      onChange={(e) => setPreviewBg(e.target.value)}
+      type="color"
+      value={previewBg}
+    />
+  </div>
   <div
-    className="h-32 w-48 rounded-lg bg-gray-700"
+    className="h-32 w-48 rounded-lg bg-white border border-gray-200"
     style={{ boxShadow: cssString }}
   />
 </div>
@@ -728,3 +746,4 @@ None — no issues encountered during implementation.
 
 - 2026-02-15: Story implemented — CSS Box Shadow Generator with full category bootstrap, 14 unit tests, live preview component, and all registry integrations
 - 2026-02-15: Code review — 4 MEDIUM issues fixed (DRY violation, code smell, a11y mismatch, type safety); story approved
+- 2026-02-16: UX fix — Changed preview background from dark (`bg-gray-950`) to white (`#ffffff`) so default black shadow is visible on load; added user-adjustable BG color picker in preview area
