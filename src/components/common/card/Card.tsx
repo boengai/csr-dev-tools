@@ -5,12 +5,13 @@ import type { CardProps } from '@/types'
 export const Card = ({ children, onClose, title }: CardProps) => {
   return (
     <motion.article
-      animate={{ opacity: 1, scale: 1, y: 0 }}
+      animate={{ backgroundColor: 'var(--color-gray-950)', opacity: 1, scale: 1, y: 0 }}
       className="relative flex size-full grow flex-col overflow-hidden rounded-card border border-gray-800 bg-gray-950"
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
       initial={{ opacity: 0, scale: 0.95, y: 10 }}
       transition={{ duration: 0.3, ease: [0.4, 0, 0.2, 1] }}
       whileHover={{
+        backgroundColor: 'var(--color-gray-950)',
         borderColor: 'var(--color-primary)',
         boxShadow: '0 0 12px oklch(0.55 0.22 310 / 0.1)',
         transition: { duration: 0.2, ease: 'easeOut' },
