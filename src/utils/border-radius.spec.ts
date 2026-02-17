@@ -26,10 +26,14 @@ describe('generateBorderRadiusCss', () => {
     const config = {
       ...DEFAULT_BORDER_RADIUS,
       asymmetric: true,
-      bottomLeft: 40, bottomLeftV: 35,
-      bottomRight: 30, bottomRightV: 25,
-      topLeft: 10, topLeftV: 5,
-      topRight: 20, topRightV: 15,
+      bottomLeft: 40,
+      bottomLeftV: 35,
+      bottomRight: 30,
+      bottomRightV: 25,
+      topLeft: 10,
+      topLeftV: 5,
+      topRight: 20,
+      topRightV: 15,
     }
     expect(generateBorderRadiusCss(config)).toBe('border-radius: 10px 20px 30px 40px / 5px 15px 25px 35px;')
   })
@@ -53,10 +57,14 @@ describe('generateBorderRadiusCss', () => {
     const config = {
       ...DEFAULT_BORDER_RADIUS,
       asymmetric: true,
-      bottomLeft: 10, bottomLeftV: 5,
-      bottomRight: 10, bottomRightV: 5,
-      topLeft: 10, topLeftV: 5,
-      topRight: 10, topRightV: 5,
+      bottomLeft: 10,
+      bottomLeftV: 5,
+      bottomRight: 10,
+      bottomRightV: 5,
+      topLeft: 10,
+      topLeftV: 5,
+      topRight: 10,
+      topRightV: 5,
     }
     expect(generateBorderRadiusCss(config)).toBe('border-radius: 10px / 5px;')
   })

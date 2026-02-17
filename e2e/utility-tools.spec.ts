@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { diffData, escapeData, jwtData, regexData } from './helpers/fixtures'
+import { jwtData } from './helpers/fixtures'
 
 test.describe('UUID Generator', () => {
   test('generates UUID on load', async ({ page }) => {

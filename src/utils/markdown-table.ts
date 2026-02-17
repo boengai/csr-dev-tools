@@ -14,10 +14,7 @@ const separatorCell = (align: ColumnAlignment, width: number): string => {
   }
 }
 
-export const generateMarkdownTable = (
-  data: Array<Array<string>>,
-  alignments: Array<ColumnAlignment>,
-): string => {
+export const generateMarkdownTable = (data: Array<Array<string>>, alignments: Array<ColumnAlignment>): string => {
   if (data.length === 0 || data[0].length === 0) return ''
 
   const colCount = data[0].length
@@ -32,9 +29,7 @@ export const generateMarkdownTable = (
 
   const headerRow = `| ${escaped[0].map((cell, i) => padCell(cell, widths[i])).join(' | ')} |`
   const separator = `| ${widths.map((w, i) => separatorCell(alignments[i] ?? 'left', w)).join(' | ')} |`
-  const dataRows = escaped.slice(1).map(
-    (row) => `| ${row.map((cell, i) => padCell(cell, widths[i])).join(' | ')} |`,
-  )
+  const dataRows = escaped.slice(1).map((row) => `| ${row.map((cell, i) => padCell(cell, widths[i])).join(' | ')} |`)
 
   return [headerRow, separator, ...dataRows].join('\n')
 }

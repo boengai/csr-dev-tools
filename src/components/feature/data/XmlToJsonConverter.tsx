@@ -99,7 +99,10 @@ export const XmlToJsonConverter = ({ autoOpen, onAfterDialogClose }: ToolCompone
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={() => { handleReset(); onAfterDialogClose?.() }}
+        onAfterClose={() => {
+          handleReset()
+          onAfterDialogClose?.()
+        }}
         size="screen"
         title={dialogTitle}
       >

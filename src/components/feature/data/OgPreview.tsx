@@ -46,8 +46,8 @@ const FacebookCard = ({ config }: { config: OgConfig }) => (
   <div className="flex flex-col overflow-hidden border border-gray-700">
     <ImagePlaceholder label={config.image} />
     <div className="flex flex-col gap-0.5 bg-gray-900 p-3">
-      <span className="text-body-xs uppercase text-gray-500">{getDomain(config.url)}</span>
-      <span className="truncate text-body-sm font-bold text-blue-400">{config.title || 'Page Title'}</span>
+      <span className="text-body-xs text-gray-500 uppercase">{getDomain(config.url)}</span>
+      <span className="text-blue-400 truncate text-body-sm font-bold">{config.title || 'Page Title'}</span>
       <span className="line-clamp-2 text-body-xs text-gray-400">{config.description || 'Page description...'}</span>
     </div>
   </div>

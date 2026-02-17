@@ -4,7 +4,11 @@ import { generateMarkdownTable } from './markdown-table'
 
 describe('generateMarkdownTable', () => {
   it('generates basic 3x3 table with left alignment', () => {
-    const data = [['A', 'B', 'C'], ['1', '2', '3'], ['4', '5', '6']]
+    const data = [
+      ['A', 'B', 'C'],
+      ['1', '2', '3'],
+      ['4', '5', '6'],
+    ]
     const result = generateMarkdownTable(data, ['left', 'left', 'left'])
     expect(result).toContain('| A')
     expect(result).toContain(':--')
@@ -24,7 +28,10 @@ describe('generateMarkdownTable', () => {
   })
 
   it('handles mixed alignments', () => {
-    const data = [['L', 'C', 'R'], ['1', '2', '3']]
+    const data = [
+      ['L', 'C', 'R'],
+      ['1', '2', '3'],
+    ]
     const result = generateMarkdownTable(data, ['left', 'center', 'right'])
     const lines = result.split('\n')
     expect(lines[1]).toMatch(/:--/)
@@ -33,7 +40,10 @@ describe('generateMarkdownTable', () => {
   })
 
   it('handles empty cells', () => {
-    const data = [['H1', 'H2'], ['', 'data']]
+    const data = [
+      ['H1', 'H2'],
+      ['', 'data'],
+    ]
     const result = generateMarkdownTable(data, ['left', 'left'])
     expect(result).toContain('|')
     expect(result.split('\n')).toHaveLength(3)
@@ -46,13 +56,19 @@ describe('generateMarkdownTable', () => {
   })
 
   it('generates single data row', () => {
-    const data = [['H1', 'H2'], ['D1', 'D2']]
+    const data = [
+      ['H1', 'H2'],
+      ['D1', 'D2'],
+    ]
     const result = generateMarkdownTable(data, ['left', 'left'])
     expect(result.split('\n')).toHaveLength(3)
   })
 
   it('pads cells for consistent width', () => {
-    const data = [['Short', 'LongerHeader'], ['A', 'B']]
+    const data = [
+      ['Short', 'LongerHeader'],
+      ['A', 'B'],
+    ]
     const result = generateMarkdownTable(data, ['left', 'left'])
     const lines = result.split('\n')
     // All lines should have same structure

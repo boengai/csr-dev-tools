@@ -4,7 +4,14 @@ import type { ToolComponentProps } from '@/types'
 
 import { CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { type CronFieldConfig, type CronFieldMode, type CrontabConfig, buildCronExpression, describeCron, getNextRuns } from '@/utils/crontab'
+import {
+  type CronFieldConfig,
+  type CronFieldMode,
+  type CrontabConfig,
+  buildCronExpression,
+  describeCron,
+  getNextRuns,
+} from '@/utils/crontab'
 
 const toolEntry = TOOL_REGISTRY_MAP['crontab-generator']
 
@@ -31,9 +38,7 @@ const defaultField = (): CronFieldConfig => ({ mode: 'every' })
 
 const modeButtonClass = (active: boolean) =>
   `rounded border px-2 py-1 text-xs font-mono ${
-    active
-      ? 'border-primary bg-primary/20 text-primary font-bold'
-      : 'border-gray-700 bg-transparent text-gray-500'
+    active ? 'border-primary bg-primary/20 text-primary font-bold' : 'border-gray-700 bg-transparent text-gray-500'
   }`
 
 type FieldEditorProps = {
@@ -94,10 +99,8 @@ const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEdi
             const active = (config.values ?? []).includes(val)
             return (
               <button
-                className={`rounded border px-2 py-1 text-xs ${
-                  active
-                    ? 'border-primary bg-primary/20 text-primary'
-                    : 'border-gray-700 text-gray-500'
+                className={`text-xs rounded border px-2 py-1 ${
+                  active ? 'border-primary bg-primary/20 text-primary' : 'border-gray-700 text-gray-500'
                 }`}
                 key={val}
                 onClick={() => toggleValue(val)}

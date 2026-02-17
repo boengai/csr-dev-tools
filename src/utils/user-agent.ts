@@ -14,9 +14,11 @@ const detectBrowser = (ua: string): { name: string; version: string } => {
   if (/Edg\//i.test(ua)) return { name: 'Edge', version: match(ua, /Edg\/([\d.]+)/) }
   if (/OPR\//i.test(ua)) return { name: 'Opera', version: match(ua, /OPR\/([\d.]+)/) }
   if (/Chrome\//i.test(ua) && !/Chromium/i.test(ua)) return { name: 'Chrome', version: match(ua, /Chrome\/([\d.]+)/) }
-  if (/Safari\//i.test(ua) && /Version\//i.test(ua) && !/Chrome/i.test(ua) && !/CriOS/i.test(ua)) return { name: 'Safari', version: match(ua, /Version\/([\d.]+)/) }
+  if (/Safari\//i.test(ua) && /Version\//i.test(ua) && !/Chrome/i.test(ua) && !/CriOS/i.test(ua))
+    return { name: 'Safari', version: match(ua, /Version\/([\d.]+)/) }
   if (/Firefox\//i.test(ua)) return { name: 'Firefox', version: match(ua, /Firefox\/([\d.]+)/) }
-  if (/Trident\//i.test(ua) || /MSIE/i.test(ua)) return { name: 'Internet Explorer', version: match(ua, /(?:MSIE |rv:)([\d.]+)/) }
+  if (/Trident\//i.test(ua) || /MSIE/i.test(ua))
+    return { name: 'Internet Explorer', version: match(ua, /(?:MSIE |rv:)([\d.]+)/) }
   return { name: 'Unknown', version: '' }
 }
 

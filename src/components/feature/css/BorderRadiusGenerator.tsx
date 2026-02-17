@@ -87,10 +87,7 @@ export const BorderRadiusGenerator = (_props: ToolComponentProps) => {
             value={previewBg}
           />
         </div>
-        <div
-          className="h-32 w-48 border border-gray-200 bg-white"
-          style={{ borderRadius: cssValue }}
-        />
+        <div className="h-32 w-48 border border-gray-200 bg-white" style={{ borderRadius: cssValue }} />
       </div>
 
       <div aria-live="polite" className="flex flex-col gap-1">

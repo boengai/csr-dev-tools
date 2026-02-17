@@ -25,7 +25,10 @@ export const imageFileToBase64 = (file: File): Promise<ImageBase64Result> =>
         const dataUri = reader.result as string
         const base64Only = dataUri.split(',')[1] ?? ''
         const { height, width } = await getImageDimensions(dataUri)
-        const safeName = file.name.replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c] ?? c))
+        const safeName = file.name.replace(
+          /[&<>"']/g,
+          (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,
+        )
         const htmlTag = `<img src="${dataUri}" alt="${safeName}" width="${width}" height="${height}" />`
 
         resolve({

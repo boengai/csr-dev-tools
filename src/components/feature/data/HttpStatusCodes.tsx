@@ -69,7 +69,9 @@ export const HttpStatusCodes = (_props: ToolComponentProps) => {
           filtered.map((code) => (
             <div className="rounded border border-gray-800 bg-gray-950 p-3" key={code.code}>
               <div className="flex items-baseline gap-2">
-                <span className={`font-mono text-body-lg font-bold ${CATEGORY_COLORS[code.category] ?? 'text-gray-300'}`}>
+                <span
+                  className={`font-mono text-body-lg font-bold ${CATEGORY_COLORS[code.category] ?? 'text-gray-300'}`}
+                >
                   {code.code}
                 </span>
                 <span className="text-body-sm font-medium text-gray-200">{code.name}</span>

@@ -57,7 +57,7 @@ export const UrlParser = (_props: ToolComponentProps) => {
       />
 
       {result.error && (
-        <p className="text-body-xs text-red-500" role="alert">
+        <p className="text-red-500 text-body-xs" role="alert">
           {result.error}
         </p>
       )}

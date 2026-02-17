@@ -22,9 +22,7 @@ const ALIGN_ICON: Record<ColumnAlignment, string> = {
 }
 
 const createGrid = (rows: number, cols: number): Array<Array<string>> =>
-  Array.from({ length: rows }, (_, r) =>
-    Array.from({ length: cols }, (_, c) => (r === 0 ? `Header ${c + 1}` : '')),
-  )
+  Array.from({ length: rows }, (_, r) => Array.from({ length: cols }, (_, c) => (r === 0 ? `Header ${c + 1}` : '')))
 
 export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
@@ -55,12 +53,13 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
     setCols(clamped)
     setData((prev) =>
       prev.map((row) => {
-        if (clamped > row.length) return [...row, ...Array(clamped - row.length).fill('') as Array<string>]
+        if (clamped > row.length) return [...row, ...(Array(clamped - row.length).fill('') as Array<string>)]
         return row.slice(0, clamped)
       }),
     )
     setAlignments((prev) => {
-      if (clamped > prev.length) return [...prev, ...Array(clamped - prev.length).fill('left') as Array<ColumnAlignment>]
+      if (clamped > prev.length)
+        return [...prev, ...(Array(clamped - prev.length).fill('left') as Array<ColumnAlignment>)]
       return prev.slice(0, clamped)
     })
   }

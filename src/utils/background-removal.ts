@@ -1,10 +1,7 @@
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let cachedPipeline: Promise<any> | null = null
 
-export async function removeBackground(
-  image: Blob,
-  onProgress?: (progress: number) => void,
-): Promise<Blob> {
+export async function removeBackground(image: Blob, onProgress?: (progress: number) => void): Promise<Blob> {
   if (!image.type.startsWith('image/')) {
     throw new Error('Please select an image file (PNG, JPG, or WEBP)')
   }
@@ -17,7 +14,7 @@ export async function removeBackground(
       dtype: 'fp32',
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       progress_callback: onProgress
-        ? (info: any) => {
+        ? (info: { progress?: number }) => {
             if (info?.progress != null) onProgress(info.progress)
           }
         : undefined,
@@ -27,7 +24,7 @@ export async function removeBackground(
   const segmenter = await cachedPipeline
   const rawImage = await RawImage.fromBlob(image)
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const result = await segmenter(rawImage) as any
+  const result = (await segmenter(rawImage)) as any
 
   const width: number = result.width ?? result[0]?.width
   const height: number = result.height ?? result[0]?.height

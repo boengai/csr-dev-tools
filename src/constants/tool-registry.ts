@@ -874,7 +874,8 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
         }),
       ),
     ),
-    description: 'Visually build cron expressions with field selectors, human-readable descriptions, and next run times',
+    description:
+      'Visually build cron expressions with field selectors, human-readable descriptions, and next run times',
     emoji: '🕰️',
     key: 'crontab-generator',
     name: 'Crontab Generator',
@@ -952,7 +953,8 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
         }),
       ),
     ),
-    description: 'Visually configure CSS border-radius with per-corner control. Supports symmetric and asymmetric modes.',
+    description:
+      'Visually configure CSS border-radius with per-corner control. Supports symmetric and asymmetric modes.',
     emoji: '⬜',
     key: 'css-border-radius-generator',
     name: 'Border Radius Generator',
@@ -965,11 +967,9 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Encoding',
     component: lazy(() =>
-      import('@/components/feature/encoding/UrlParser').then(
-        ({ UrlParser }: { UrlParser: ComponentType }) => ({
-          default: UrlParser,
-        }),
-      ),
+      import('@/components/feature/encoding/UrlParser').then(({ UrlParser }: { UrlParser: ComponentType }) => ({
+        default: UrlParser,
+      })),
     ),
     description: 'Parse a URL into its components: protocol, host, port, path, query parameters, and fragment.',
     emoji: '🔗',
@@ -1022,11 +1022,9 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Data',
     component: lazy(() =>
-      import('@/components/feature/data/OgPreview').then(
-        ({ OgPreview }: { OgPreview: ComponentType }) => ({
-          default: OgPreview,
-        }),
-      ),
+      import('@/components/feature/data/OgPreview').then(({ OgPreview }: { OgPreview: ComponentType }) => ({
+        default: OgPreview,
+      })),
     ),
     description: 'Preview Open Graph social cards for Twitter, Facebook, and LinkedIn. Generate meta tags.',
     emoji: '🔖',
@@ -1067,8 +1065,7 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
         }),
       ),
     ),
-    description:
-      'Upload an image and generate favicons in all standard sizes. Download as ZIP with HTML link tags.',
+    description: 'Upload an image and generate favicons in all standard sizes. Download as ZIP with HTML link tags.',
     emoji: '🖼️',
     key: 'favicon-generator',
     name: 'Favicon Generator',

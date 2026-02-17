@@ -228,7 +228,10 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
                       onClick={() => {
                         const anchor = downloadAnchorRef.current
                         if (!anchor?.href || anchor.href === window.location.href) {
-                          toast({ action: 'add', item: { label: 'Download not available. Please try again.', type: 'error' } })
+                          toast({
+                            action: 'add',
+                            item: { label: 'Download not available. Please try again.', type: 'error' },
+                          })
                           return
                         }
                         anchor.click()
@@ -275,7 +278,7 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
                   <p className="text-body-sm text-gray-300">Downloading AI model...</p>
                   <div className="h-2 w-64 overflow-hidden rounded-full bg-gray-800">
                     <div
-                      className="h-full rounded-full bg-blue-500 transition-all duration-300"
+                      className="bg-blue-500 h-full rounded-full transition-all duration-300"
                       style={{ width: `${Math.min(progress, 100)}%` }}
                     />
                   </div>
@@ -291,7 +294,7 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
           {!processing && error && (
             <div aria-live="assertive" className="flex grow flex-col items-center justify-center gap-3">
               <NotoEmoji emoji="bomb" size={120} />
-              <p className="text-body-sm text-red-400">Processing failed. Try a different image.</p>
+              <p className="text-red-400 text-body-sm">Processing failed. Try a different image.</p>
               <Button icon={<RefreshIcon />} onClick={handleReset} size="small">
                 Try Again
               </Button>
@@ -310,7 +313,11 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
                   <p className="shrink-0 text-body-sm font-medium text-gray-300">Original</p>
                   {sourcePreview && (
                     <picture className="flex size-full grow flex-col items-center justify-center gap-4 tablet:max-h-full tablet:overflow-y-auto">
-                      <img alt="original" className="w-full max-w-full tablet:max-h-full tablet:w-auto" src={sourcePreview} />
+                      <img
+                        alt="original"
+                        className="w-full max-w-full tablet:max-h-full tablet:w-auto"
+                        src={sourcePreview}
+                      />
                     </picture>
                   )}
                 </div>
@@ -325,8 +332,7 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
                     style={
                       bgOption === 'transparent'
                         ? {
-                            backgroundImage:
-                              'repeating-conic-gradient(#808080 0% 25%, transparent 0% 50%)',
+                            backgroundImage: 'repeating-conic-gradient(#808080 0% 25%, transparent 0% 50%)',
                             backgroundSize: '16px 16px',
                           }
                         : undefined

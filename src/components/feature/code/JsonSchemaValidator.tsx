@@ -101,23 +101,23 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
 
           <div aria-live="polite">
             {result?.valid && (
-              <div className="rounded-lg border border-green-800 bg-green-950 p-3">
-                <p className="text-body-sm text-green-400">✅ Valid — JSON conforms to the schema</p>
+              <div className="border-green-800 bg-green-950 rounded-lg border p-3">
+                <p className="text-green-400 text-body-sm">✅ Valid — JSON conforms to the schema</p>
               </div>
             )}
 
             {result && !result.valid && result.errors && result.errors[0]?.keyword === 'parse' && (
-              <div className="rounded-lg border border-red-800 bg-red-950 p-3">
-                <p className="text-body-sm text-red-400">❌ {result.errors[0].message}</p>
+              <div className="border-red-800 bg-red-950 rounded-lg border p-3">
+                <p className="text-red-400 text-body-sm">❌ {result.errors[0].message}</p>
               </div>
             )}
 
             {result && !result.valid && result.errors && result.errors[0]?.keyword !== 'parse' && (
-              <div className="rounded-lg border border-red-800 bg-red-950 p-3">
-                <p className="mb-2 text-body-sm font-medium text-red-400">❌ Validation Errors</p>
+              <div className="border-red-800 bg-red-950 rounded-lg border p-3">
+                <p className="text-red-400 mb-2 text-body-sm font-medium">❌ Validation Errors</p>
                 <ul className="flex flex-col gap-1">
                   {result.errors.map((err, i) => (
-                    <li className="font-mono text-body-xs text-red-300" key={i}>
+                    <li className="text-red-300 font-mono text-body-xs" key={i}>
                       <span className="text-red-400">{err.path}</span> — {err.message}{' '}
                       <span className="text-red-500">(keyword: {err.keyword})</span>
                     </li>

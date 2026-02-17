@@ -23,7 +23,8 @@ export const DEFAULT_BORDER_RADIUS: BorderRadiusConfig = {
 }
 
 export const generateBorderRadiusCss = (config: BorderRadiusConfig): string => {
-  const { asymmetric, bottomLeft, bottomLeftV, bottomRight, bottomRightV, topLeft, topLeftV, topRight, topRightV } = config
+  const { asymmetric, bottomLeft, bottomLeftV, bottomRight, bottomRightV, topLeft, topLeftV, topRight, topRightV } =
+    config
 
   const h = [topLeft, topRight, bottomRight, bottomLeft]
   const v = [topLeftV, topRightV, bottomRightV, bottomLeftV]

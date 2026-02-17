@@ -61,14 +61,30 @@ export const unescapeJavaScript = (input: string): string => {
     if (input[i] === '\\' && i + 1 < input.length) {
       const next = input[i + 1]
       switch (next) {
-        case '\\': result += '\\'; break
-        case 'n': result += '\n'; break
-        case 'r': result += '\r'; break
-        case 't': result += '\t'; break
-        case '0': result += '\0'; break
-        case '"': result += '"'; break
-        case "'": result += "'"; break
-        default: result += next; break
+        case '\\':
+          result += '\\'
+          break
+        case 'n':
+          result += '\n'
+          break
+        case 'r':
+          result += '\r'
+          break
+        case 't':
+          result += '\t'
+          break
+        case '0':
+          result += '\0'
+          break
+        case '"':
+          result += '"'
+          break
+        case "'":
+          result += "'"
+          break
+        default:
+          result += next
+          break
       }
       i += 2
     } else {

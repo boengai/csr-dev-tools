@@ -103,7 +103,10 @@ export const TomlToJsonConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={() => { handleReset(); onAfterDialogClose?.() }}
+        onAfterClose={() => {
+          handleReset()
+          onAfterDialogClose?.()
+        }}
         size="screen"
         title={dialogTitle}
       >

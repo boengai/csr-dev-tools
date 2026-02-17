@@ -4,7 +4,8 @@ import { parseUserAgent } from './user-agent'
 
 describe('parseUserAgent', () => {
   it('parses Chrome on Windows 10', () => {
-    const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    const ua =
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     const result = parseUserAgent(ua)
     expect(result.browser.name).toBe('Chrome')
     expect(result.os.name).toBe('Windows')
@@ -21,7 +22,8 @@ describe('parseUserAgent', () => {
   })
 
   it('parses Safari on iOS iPhone — Mobile', () => {
-    const ua = 'Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1'
+    const ua =
+      'Mozilla/5.0 (iPhone; CPU iPhone OS 17_2 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.2 Mobile/15E148 Safari/604.1'
     const result = parseUserAgent(ua)
     expect(result.browser.name).toBe('Safari')
     expect(result.os.name).toBe('iOS')
@@ -30,13 +32,15 @@ describe('parseUserAgent', () => {
   })
 
   it('parses Edge on Windows', () => {
-    const ua = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0'
+    const ua =
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 Edg/120.0.0.0'
     const result = parseUserAgent(ua)
     expect(result.browser.name).toBe('Edge')
   })
 
   it('parses Chrome on Android — Mobile', () => {
-    const ua = 'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36'
+    const ua =
+      'Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36'
     const result = parseUserAgent(ua)
     expect(result.browser.name).toBe('Chrome')
     expect(result.os.name).toBe('Android')
@@ -44,7 +48,8 @@ describe('parseUserAgent', () => {
   })
 
   it('parses Android tablet — Tablet', () => {
-    const ua = 'Mozilla/5.0 (Linux; Android 13; SM-X800) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+    const ua =
+      'Mozilla/5.0 (Linux; Android 13; SM-X800) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
     const result = parseUserAgent(ua)
     expect(result.device).toBe('Tablet')
   })

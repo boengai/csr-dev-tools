@@ -96,7 +96,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
         size="screen"
         title="CSS Animation Builder"
       >
-        <div className="flex grow flex-col gap-4 overflow-auto p-4 tablet:flex-row tablet:min-h-0">
+        <div className="flex grow flex-col gap-4 overflow-auto p-4 tablet:min-h-0 tablet:flex-row">
           {/* Left Panel: Keyframes + Settings */}
           <div className="flex shrink-0 flex-col gap-4 overflow-auto tablet:w-1/2">
             <div className="flex flex-col gap-3">
@@ -107,7 +107,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
                     <span className="text-body-sm font-bold text-primary">{kf.percent}%</span>
                     {config.keyframes.length > 2 && (
                       <button
-                        className="text-body-xs text-red-400 hover:text-red-300"
+                        className="text-red-400 hover:text-red-300 text-body-xs"
                         onClick={() => removeKeyframe(i)}
                         type="button"
                       >
