@@ -107,7 +107,7 @@ export const HmacGenerator = (_props: ToolComponentProps) => {
         name="hmac-secret-key"
         onChange={handleKeyChange}
         placeholder="Enter secret key..."
-        type="password"
+        type="text"
         value={secretKey}
       />
 

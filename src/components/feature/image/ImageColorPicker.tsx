@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 
-const rafThrottle = <T extends (...args: Array<unknown>) => void>(fn: T): T => {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const rafThrottle = <T extends (...args: Array<any>) => void>(fn: T): T => {
   let frame: number | null = null
   return ((...args: Array<unknown>) => {
     if (frame) return

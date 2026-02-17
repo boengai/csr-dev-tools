@@ -139,7 +139,7 @@ export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponen
                 name="dialog-password"
                 onChange={handlePasswordChange}
                 placeholder="Enter password..."
-                type="password"
+                type="text"
                 value={password}
               />
             </div>

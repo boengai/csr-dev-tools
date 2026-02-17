@@ -6,7 +6,7 @@ import type { FaviconResult } from '@/utils/favicon'
 import { Button, CopyButton, Dialog, DownloadIcon, RefreshIcon, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import { downloadFaviconsAsZip, FAVICON_SIZES, generateFaviconLinkTags, generateFavicons } from '@/utils/favicon'
+import { downloadFaviconsAsZip, generateFaviconLinkTags, generateFavicons } from '@/utils/favicon'
 
 const toolEntry = TOOL_REGISTRY_MAP['favicon-generator']
 
@@ -123,7 +123,7 @@ export const FaviconGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponent
               <div className="flex shrink-0 flex-col items-center gap-2">
                 <p className="text-body-sm font-medium text-gray-300">Source Image</p>
                 <img alt="source" className="max-h-40 max-w-40 rounded border border-gray-800" src={sourcePreview} />
-                <Button icon={<RefreshIcon />} onClick={handleReset} size="sm">
+                <Button icon={<RefreshIcon />} onClick={handleReset} size="small">
                   Upload New
                 </Button>
               </div>
