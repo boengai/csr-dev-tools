@@ -43,6 +43,35 @@ export const pxRem = {
   ],
 }
 
+// --- Text Tool Test Data ---
+
+export const textToolData = {
+  caseInput: 'hello world example',
+  wordCountInput: 'The quick brown fox jumps over the lazy dog. This is a second sentence.',
+  sortInput: 'banana\napple\ncherry\napple\ndate',
+  sortedOutput: 'apple\napple\nbanana\ncherry\ndate',
+}
+
+// --- Encoding Test Data ---
+
+export const encodingData = {
+  urlInput: 'https://example.com/path?key=hello world&foo=bar#section',
+  urlEncodeInput: 'hello world & foo=bar',
+  urlEncoded: 'hello%20world%20%26%20foo%3Dbar',
+}
+
+// --- Code Tool Test Data ---
+
+export const codeData = {
+  jsonInput: '{"name":"test","value":123}',
+}
+
+// --- OG Preview Test Data ---
+
+export const ogData = {
+  title: 'My Test Page',
+}
+
 // --- Tool Registry Keys for Navigation ---
 
 export const toolKeys = [
