@@ -159,6 +159,8 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
             </table>
           </div>
 
+          <div className="border-t-2 border-dashed border-gray-900" />
+
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-1">
               <span className="text-body-xs font-medium text-gray-400">Markdown</span>

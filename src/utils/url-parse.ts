@@ -31,7 +31,7 @@ export const parseUrl = (input: string): UrlParseResult => {
     }
   } catch {
     return {
-      error: 'Invalid URL',
+      error: 'Invalid URL — enter a fully qualified URL (e.g., https://example.com)',
       hash: '',
       hostname: '',
       pathname: '',

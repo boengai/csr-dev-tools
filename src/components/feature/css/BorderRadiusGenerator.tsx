@@ -18,6 +18,7 @@ const CORNERS = [
 
 export const BorderRadiusGenerator = (_props: ToolComponentProps) => {
   const [config, setConfig] = useState<BorderRadiusConfig>(DEFAULT_BORDER_RADIUS)
+  const [previewBg, setPreviewBg] = useState('#6366f1')
 
   const css = generateBorderRadiusCss(config)
   const cssValue = css.replace('border-radius: ', '').replace(';', '')
@@ -30,7 +31,7 @@ export const BorderRadiusGenerator = (_props: ToolComponentProps) => {
     <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <div className="flex flex-col gap-3">
+      <div className="flex shrink-0 flex-col gap-3">
         <div className="flex items-center gap-2">
           <button
             aria-pressed={config.asymmetric}
@@ -68,14 +69,31 @@ export const BorderRadiusGenerator = (_props: ToolComponentProps) => {
         ))}
       </div>
 
+      <div className="border-t-2 border-dashed border-gray-900" />
+
       <div
-        className="flex min-h-[160px] items-center justify-center border-2 border-gray-700 bg-primary/30"
-        style={{ borderRadius: cssValue }}
+        className="relative flex items-center justify-center rounded-lg border border-gray-800 p-16"
+        style={{ backgroundColor: previewBg }}
       >
-        <span className="text-body-sm text-gray-300">Preview</span>
+        <div className="absolute top-2 right-2 flex items-center gap-1.5">
+          <label className="text-body-xs text-gray-500" htmlFor="br-preview-bg">
+            BG
+          </label>
+          <input
+            className="h-6 w-8 cursor-pointer rounded border border-gray-700 bg-transparent"
+            id="br-preview-bg"
+            onChange={(e) => setPreviewBg(e.target.value)}
+            type="color"
+            value={previewBg}
+          />
+        </div>
+        <div
+          className="h-32 w-48 border border-gray-200 bg-white"
+          style={{ borderRadius: cssValue }}
+        />
       </div>
 
-      <div className="flex flex-col gap-1">
+      <div aria-live="polite" className="flex flex-col gap-1">
         <div className="flex items-center gap-1">
           <span className="text-body-xs font-medium text-gray-400">CSS</span>
           <CopyButton label="CSS" value={css} />

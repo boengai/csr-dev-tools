@@ -74,6 +74,8 @@ export const UserAgentParser = (_props: ToolComponentProps) => {
         </Button>
       </div>
 
+      {result.browser.name && <div className="border-t-2 border-dashed border-gray-900" />}
+
       {result.browser.name && (
         <div className="flex flex-col gap-2">
           <ResultRow label="Browser" value={fmt(result.browser.name, result.browser.version)} />

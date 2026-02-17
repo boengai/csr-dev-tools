@@ -43,12 +43,12 @@ describe('parseUrl', () => {
 
   it('returns error for invalid URL', () => {
     const result = parseUrl('not a url')
-    expect(result.error).toBe('Invalid URL')
+    expect(result.error).toBe('Invalid URL — enter a fully qualified URL (e.g., https://example.com)')
   })
 
   it('returns error for empty string', () => {
     const result = parseUrl('')
-    expect(result.error).toBe('Invalid URL')
+    expect(result.error).toBe('Invalid URL — enter a fully qualified URL (e.g., https://example.com)')
   })
 
   it('parses URL with only protocol and host', () => {

@@ -12,14 +12,15 @@ const toolEntry = TOOL_REGISTRY_MAP['url-parser']
 
 const EMPTY: UrlParseResult = { hash: '', hostname: '', pathname: '', port: '', protocol: '', searchParams: [] }
 
-const ResultRow = ({ label, value }: { label: string; value: string }) => {
-  if (!value) return null
+const ResultRow = ({ label, value, displayValue }: { label: string; value: string; displayValue?: string }) => {
+  const display = displayValue ?? value
+  if (!display) return null
   return (
     <div className="flex items-center justify-between gap-2 rounded border border-gray-800 bg-gray-950 px-3 py-2">
       <span className="text-body-xs text-gray-400">{label}</span>
       <div className="flex items-center gap-1">
-        <span className="font-mono text-body-xs text-gray-200">{value}</span>
-        <CopyButton label={label} value={value} />
+        <span className="font-mono text-body-xs text-gray-200">{display}</span>
+        {value && <CopyButton label={label} value={value} />}
       </div>
     </div>
   )
@@ -65,7 +66,7 @@ export const UrlParser = (_props: ToolComponentProps) => {
         <div className="flex flex-col gap-2">
           <ResultRow label="Protocol" value={result.protocol} />
           <ResultRow label="Hostname" value={result.hostname} />
-          <ResultRow label="Port" value={result.port} />
+          <ResultRow label="Port" displayValue={result.port || 'default'} value={result.port} />
           <ResultRow label="Path" value={result.pathname} />
           <ResultRow label="Hash" value={result.hash} />
 

@@ -51,6 +51,7 @@ export const HttpStatusCodes = (_props: ToolComponentProps) => {
       <div className="flex flex-wrap gap-2">
         {CATEGORIES.map((cat) => (
           <button
+            aria-pressed={category === cat.value}
             className={`rounded border px-3 py-1 text-body-xs ${category === cat.value ? 'border-primary bg-primary/20 text-primary' : 'border-gray-700 text-gray-500'}`}
             key={cat.label}
             onClick={() => setCategory(cat.value)}

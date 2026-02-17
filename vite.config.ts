@@ -140,6 +140,36 @@ const toolRoutes = [
     title: 'UUID Generator - CSR Dev Tools',
     url: '/tools/uuid-generator',
   },
+  {
+    description: 'Visual CSS border-radius editor with per-corner control, asymmetric mode, and live preview.',
+    path: '/tools/css-border-radius-generator',
+    title: 'CSS Border Radius Generator - CSR Dev Tools',
+    url: '/tools/css-border-radius-generator',
+  },
+  {
+    description: 'Break down URLs into protocol, hostname, port, path, query parameters, and hash fragment.',
+    path: '/tools/url-parser',
+    title: 'URL Parser - CSR Dev Tools',
+    url: '/tools/url-parser',
+  },
+  {
+    description: 'Visual Markdown table builder with editable cells, column alignment, and copy-to-clipboard.',
+    path: '/tools/markdown-table-generator',
+    title: 'Markdown Table Generator - CSR Dev Tools',
+    url: '/tools/markdown-table-generator',
+  },
+  {
+    description: 'Searchable HTTP status code reference with descriptions, categories, and common use cases.',
+    path: '/tools/http-status-codes',
+    title: 'HTTP Status Codes Reference - CSR Dev Tools',
+    url: '/tools/http-status-codes',
+  },
+  {
+    description: 'Parse user agent strings to identify browser, operating system, device type, and rendering engine.',
+    path: '/tools/user-agent-parser',
+    title: 'User Agent Parser - CSR Dev Tools',
+    url: '/tools/user-agent-parser',
+  },
 ]
 
 // https://vite.dev/config/
