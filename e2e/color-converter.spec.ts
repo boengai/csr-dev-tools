@@ -10,9 +10,7 @@ test.describe('Color Converter', () => {
 
   test('renders tool with title and description', async ({ page }) => {
     await expect(card.title(page, 'Color Converter')).toBeVisible()
-    await expect(
-      page.getByText('Convert colors between HEX, RGB, HSL, OKLCH, LAB, and LCH formats'),
-    ).toBeVisible()
+    await expect(page.getByText('Convert colors between HEX, RGB, HSL, OKLCH, LAB, and LCH formats')).toBeVisible()
   })
 
   test('converts hex to other color formats', async ({ page }) => {

@@ -22,11 +22,20 @@ export const commandPalette = {
 
 export const toolInput = {
   byLabel: (page: Page, label: string) =>
-    page.locator('fieldset').filter({ has: page.locator(`label:text-is("${label}")`) }).locator('input'),
+    page
+      .locator('fieldset')
+      .filter({ has: page.locator(`label:text-is("${label}")`) })
+      .locator('input'),
   textAreaByLabel: (page: Page, label: string) =>
-    page.locator('fieldset').filter({ has: page.locator(`label:text-is("${label}")`) }).locator('textarea'),
+    page
+      .locator('fieldset')
+      .filter({ has: page.locator(`label:text-is("${label}")`) })
+      .locator('textarea'),
   selectTrigger: (page: Page, label: string) =>
-    page.locator('fieldset').filter({ has: page.locator(`label:text-is("${label}")`) }).locator('button'),
+    page
+      .locator('fieldset')
+      .filter({ has: page.locator(`label:text-is("${label}")`) })
+      .locator('button'),
   uploadButton: (page: Page) => page.getByRole('button', { name: 'Upload File' }),
 }
 
