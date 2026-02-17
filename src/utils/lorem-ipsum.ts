@@ -202,7 +202,9 @@ const LOREM_WORDS = [
 const LOREM_START = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
 
 const getRandomWord = (index: number): string => {
-  return LOREM_WORDS[index % LOREM_WORDS.length]
+  // Simple hash-based pseudo-random selection to avoid repetitive cycling
+  const hash = ((index * 2654435761) >>> 0) % LOREM_WORDS.length
+  return LOREM_WORDS[hash]
 }
 
 const generateSentence = (wordCount: number, startIndex: number): string => {

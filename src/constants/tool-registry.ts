@@ -27,6 +27,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Image',
     component: lazy(() =>
+      import('@/components/feature/image/BackgroundRemover').then(
+        ({ BackgroundRemover }: { BackgroundRemover: ComponentType }) => ({
+          default: BackgroundRemover,
+        }),
+      ),
+    ),
+    description: 'Remove image backgrounds using AI — fully in your browser',
+    emoji: '✂️',
+    key: 'background-remover',
+    name: 'Background Remover',
+    routePath: '/tools/background-remover',
+    seo: {
+      description:
+        'Remove image backgrounds instantly using AI running in your browser. No uploads, no API calls — fully private and free. Download as transparent PNG or choose a custom background color.',
+      title: 'Background Remover - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Image',
+    component: lazy(() =>
       import('@/components/feature/image/Base64ToImage').then(
         ({ Base64ToImage }: { Base64ToImage: ComponentType }) => ({
           default: Base64ToImage,
@@ -82,6 +102,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       description:
         'Generate CSS box-shadow values visually with a live preview. Adjust offset, blur, spread, color, and opacity — copy the CSS directly into your stylesheet.',
       title: 'Box Shadow Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'CSS',
+    component: lazy(() =>
+      import('@/components/feature/css/CssAnimationBuilder').then(
+        ({ CssAnimationBuilder }: { CssAnimationBuilder: ComponentType }) => ({
+          default: CssAnimationBuilder,
+        }),
+      ),
+    ),
+    description: 'Visually create CSS keyframe animations with live preview and configurable timing',
+    emoji: '🎬',
+    key: 'css-animation-builder',
+    name: 'CSS Animation Builder',
+    routePath: '/tools/css-animation-builder',
+    seo: {
+      description:
+        'Build CSS @keyframes animations visually. Define keyframe steps, timing functions, and preview animations in real-time.',
+      title: 'CSS Animation Builder - CSR Dev Tools',
     },
   },
   {
@@ -384,6 +424,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       description:
         'Format, validate, and beautify JSON online. Paste minified JSON and get clean, indented output instantly in your browser.',
       title: 'JSON Formatter - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/JsonSchemaValidator').then(
+        ({ JsonSchemaValidator }: { JsonSchemaValidator: ComponentType }) => ({
+          default: JsonSchemaValidator,
+        }),
+      ),
+    ),
+    description: 'Validate JSON data against a JSON Schema (draft-07) and see detailed error paths',
+    emoji: '✅',
+    key: 'json-schema-validator',
+    name: 'JSON Schema Validator',
+    routePath: '/tools/json-schema-validator',
+    seo: {
+      description:
+        'Validate JSON data against a JSON Schema (draft-07). See validation errors with JSON paths and keywords — all in the browser.',
+      title: 'JSON Schema Validator - CSR Dev Tools',
     },
   },
   {
@@ -764,6 +824,256 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     seo: {
       description: 'Convert between XML and JSON formats. Free online XML to JSON and JSON to XML converter.',
       title: 'XML to JSON Converter - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/JsonToTypeScript').then(
+        ({ JsonToTypeScript }: { JsonToTypeScript: ComponentType }) => ({
+          default: JsonToTypeScript,
+        }),
+      ),
+    ),
+    description: 'Generate TypeScript interfaces or types from JSON. Paste JSON, get type-safe code.',
+    emoji: '🏗️',
+    key: 'json-to-typescript',
+    name: 'JSON to TypeScript',
+    routePath: '/tools/json-to-typescript',
+    seo: {
+      description:
+        'Generate TypeScript interfaces or types from JSON. Paste JSON, get type-safe code instantly in your browser.',
+      title: 'JSON to TypeScript - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Time',
+    component: lazy(() =>
+      import('@/components/feature/time/CronExpressionParser').then(
+        ({ CronExpressionParser }: { CronExpressionParser: ComponentType }) => ({
+          default: CronExpressionParser,
+        }),
+      ),
+    ),
+    description: 'Parse cron expressions into human-readable text and see the next scheduled run times.',
+    emoji: '⏰',
+    key: 'cron-expression-parser',
+    name: 'Cron Parser',
+    routePath: '/tools/cron-expression-parser',
+    seo: {
+      description: 'Parse cron expressions into human-readable descriptions and preview the next scheduled run times.',
+      title: 'Cron Expression Parser - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Time',
+    component: lazy(() =>
+      import('@/components/feature/time/CrontabGenerator').then(
+        ({ CrontabGenerator }: { CrontabGenerator: ComponentType }) => ({
+          default: CrontabGenerator,
+        }),
+      ),
+    ),
+    description:
+      'Visually build cron expressions with field selectors, human-readable descriptions, and next run times',
+    emoji: '🕰️',
+    key: 'crontab-generator',
+    name: 'Crontab Generator',
+    routePath: '/tools/crontab-generator',
+    seo: {
+      description:
+        'Build cron expressions visually by selecting minute, hour, day, month, and weekday values. See human-readable descriptions and next run times.',
+      title: 'Crontab Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'CSS',
+    component: lazy(() =>
+      import('@/components/feature/css/GridPlayground').then(
+        ({ GridPlayground }: { GridPlayground: ComponentType }) => ({
+          default: GridPlayground,
+        }),
+      ),
+    ),
+    description: 'Visual CSS Grid layout builder. Define rows, columns, gaps, and placement — copy the CSS.',
+    emoji: '🔲',
+    key: 'css-grid-playground',
+    name: 'Grid Playground',
+    routePath: '/tools/css-grid-playground',
+    seo: {
+      description: 'Visual CSS Grid layout builder. Experiment with grid properties and copy the CSS.',
+      title: 'CSS Grid Playground - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Image',
+    component: lazy(() =>
+      import('@/components/feature/image/ImageColorPicker').then(
+        ({ ImageColorPicker }: { ImageColorPicker: ComponentType }) => ({
+          default: ImageColorPicker,
+        }),
+      ),
+    ),
+    description: 'Upload an image and click to extract colors. Get HEX, RGB, and HSL values.',
+    emoji: '🎯',
+    key: 'image-color-picker',
+    name: 'Image Color Picker',
+    routePath: '/tools/image-color-picker',
+    seo: {
+      description: 'Upload an image and click anywhere to extract colors. Get HEX, RGB, and HSL values instantly.',
+      title: 'Image Color Picker - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Text',
+    component: lazy(() =>
+      import('@/components/feature/text/TextSortDedupe').then(
+        ({ TextSortDedupe }: { TextSortDedupe: ComponentType }) => ({
+          default: TextSortDedupe,
+        }),
+      ),
+    ),
+    description: 'Sort lines alphabetically, numerically, or by length. Remove duplicates and empty lines.',
+    emoji: '🔀',
+    key: 'text-sort-dedupe',
+    name: 'Text Sort & Dedupe',
+    routePath: '/tools/text-sort-dedupe',
+    seo: {
+      description:
+        'Sort lines alphabetically, numerically, or by length. Remove duplicates, empty lines, and trim whitespace.',
+      title: 'Text Sort & Dedupe - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'CSS',
+    component: lazy(() =>
+      import('@/components/feature/css/BorderRadiusGenerator').then(
+        ({ BorderRadiusGenerator }: { BorderRadiusGenerator: ComponentType }) => ({
+          default: BorderRadiusGenerator,
+        }),
+      ),
+    ),
+    description:
+      'Visually configure CSS border-radius with per-corner control. Supports symmetric and asymmetric modes.',
+    emoji: '⬜',
+    key: 'css-border-radius-generator',
+    name: 'Border Radius Generator',
+    routePath: '/tools/css-border-radius-generator',
+    seo: {
+      description: 'Visual CSS border-radius editor with per-corner control, asymmetric mode, and live preview.',
+      title: 'CSS Border Radius Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Encoding',
+    component: lazy(() =>
+      import('@/components/feature/encoding/UrlParser').then(({ UrlParser }: { UrlParser: ComponentType }) => ({
+        default: UrlParser,
+      })),
+    ),
+    description: 'Parse a URL into its components: protocol, host, port, path, query parameters, and fragment.',
+    emoji: '🔗',
+    key: 'url-parser',
+    name: 'URL Parser',
+    routePath: '/tools/url-parser',
+    seo: {
+      description: 'Break down URLs into protocol, hostname, port, path, query parameters, and hash fragment.',
+      title: 'URL Parser - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/MarkdownTableGenerator').then(
+        ({ MarkdownTableGenerator }: { MarkdownTableGenerator: ComponentType }) => ({
+          default: MarkdownTableGenerator,
+        }),
+      ),
+    ),
+    description: 'Build Markdown tables visually with editable cells, configurable alignment, and instant output.',
+    emoji: '📊',
+    key: 'markdown-table-generator',
+    name: 'Markdown Table Generator',
+    routePath: '/tools/markdown-table-generator',
+    seo: {
+      description: 'Visual Markdown table builder with editable cells, column alignment, and copy-to-clipboard.',
+      title: 'Markdown Table Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Data',
+    component: lazy(() =>
+      import('@/components/feature/data/HttpStatusCodes').then(
+        ({ HttpStatusCodes }: { HttpStatusCodes: ComponentType }) => ({
+          default: HttpStatusCodes,
+        }),
+      ),
+    ),
+    description: 'Search and browse HTTP status codes with descriptions and common use cases.',
+    emoji: '📡',
+    key: 'http-status-codes',
+    name: 'HTTP Status Codes',
+    routePath: '/tools/http-status-codes',
+    seo: {
+      description: 'Searchable HTTP status code reference with descriptions, categories, and common use cases.',
+      title: 'HTTP Status Codes Reference - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Data',
+    component: lazy(() =>
+      import('@/components/feature/data/OgPreview').then(({ OgPreview }: { OgPreview: ComponentType }) => ({
+        default: OgPreview,
+      })),
+    ),
+    description: 'Preview Open Graph social cards for Twitter, Facebook, and LinkedIn. Generate meta tags.',
+    emoji: '🔖',
+    key: 'og-preview',
+    name: 'OG Preview',
+    routePath: '/tools/og-preview',
+    seo: {
+      description:
+        'Preview how your links will appear on Twitter, Facebook, and LinkedIn. Enter OG meta values and generate ready-to-use meta tags.',
+      title: 'OG Preview - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Text',
+    component: lazy(() =>
+      import('@/components/feature/text/UserAgentParser').then(
+        ({ UserAgentParser }: { UserAgentParser: ComponentType }) => ({
+          default: UserAgentParser,
+        }),
+      ),
+    ),
+    description: 'Parse user agent strings into browser, OS, device type, and engine details.',
+    emoji: '🕵️',
+    key: 'user-agent-parser',
+    name: 'User Agent Parser',
+    routePath: '/tools/user-agent-parser',
+    seo: {
+      description: 'Parse user agent strings to identify browser, operating system, device type, and rendering engine.',
+      title: 'User Agent Parser - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Image',
+    component: lazy(() =>
+      import('@/components/feature/image/FaviconGenerator').then(
+        ({ FaviconGenerator }: { FaviconGenerator: ComponentType }) => ({
+          default: FaviconGenerator,
+        }),
+      ),
+    ),
+    description: 'Upload an image and generate favicons in all standard sizes. Download as ZIP with HTML link tags.',
+    emoji: '🖼️',
+    key: 'favicon-generator',
+    name: 'Favicon Generator',
+    routePath: '/tools/favicon-generator',
+    seo: {
+      description:
+        'Generate favicons in 16x16, 32x32, 48x48, 180x180, 192x192, and 512x512 sizes from any image. Download all as ZIP.',
+      title: 'Favicon Generator - CSR Dev Tools',
     },
   },
 ]

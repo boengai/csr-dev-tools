@@ -1,5 +1,7 @@
 export { CssFormatter } from './CssFormatter'
+export { JsonSchemaValidator } from './JsonSchemaValidator'
 export { HtmlFormatter } from './HtmlFormatter'
 export { JavaScriptMinifier } from './JavaScriptMinifier'
 export { MarkdownPreview } from './MarkdownPreview'
+export { MarkdownTableGenerator } from './MarkdownTableGenerator'
 export { SqlFormatter } from './SqlFormatter'

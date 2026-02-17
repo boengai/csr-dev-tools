@@ -22,9 +22,9 @@ export const countTextStats = (text: string): TextStats => {
       charactersNoSpaces: 0,
       lines: 0,
       paragraphs: 0,
-      readingTime: '0 min',
+      readingTime: '< 1 min',
       sentences: 0,
-      speakingTime: '0 min',
+      speakingTime: '< 1 min',
       words: 0,
     }
   }

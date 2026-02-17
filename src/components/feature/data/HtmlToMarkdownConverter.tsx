@@ -1,5 +1,7 @@
 import { useRef, useState } from 'react'
 
+import type { ToolComponentProps } from '@/types'
+
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
@@ -8,11 +10,11 @@ type ConvertMode = 'html-to-markdown' | 'markdown-to-html'
 
 const toolEntry = TOOL_REGISTRY_MAP['html-to-markdown-converter']
 
-export const HtmlToMarkdownConverter = () => {
+export const HtmlToMarkdownConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
   const [result, setResult] = useState('')
   const [mode, setMode] = useState<ConvertMode>('html-to-markdown')
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
   const sessionRef = useRef(0)
 
@@ -88,7 +90,10 @@ export const HtmlToMarkdownConverter = () => {
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleReset}
+        onAfterClose={() => {
+          handleReset()
+          onAfterDialogClose?.()
+        }}
         size="screen"
         title={dialogTitle}
       >

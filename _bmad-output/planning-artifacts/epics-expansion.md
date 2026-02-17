@@ -672,3 +672,166 @@ So that **I can quickly preview and extract images from Base64-encoded data**.
 4. Epic 12 (Code Formatters) — high demand, several libraries
 5. Epic 15 (CSS & Design) — visual tools, more complex UI
 6. Epic 14 (Crypto Tools) — Web Crypto API, no external deps
+
+---
+
+## Epic 18: Developer Productivity Tools
+
+Users can convert JSON to TypeScript, parse cron expressions, build CSS Grid layouts visually, extract colors from images, and sort/deduplicate text — all in the browser.
+
+### Story 18.1: JSON to TypeScript
+
+As a **user**,
+I want **to paste JSON and get TypeScript interfaces or type aliases generated automatically**,
+So that **I can quickly create type-safe code from API responses or data samples**.
+
+**Category:** Code | **Emoji:** 🏗️ | **Key:** `json-to-typescript`
+
+### Story 18.2: Cron Expression Parser
+
+As a **user**,
+I want **to enter a cron expression and see a human-readable description plus the next scheduled run times**,
+So that **I can understand and verify cron schedules without memorizing the syntax**.
+
+**Category:** Time | **Emoji:** ⏰ | **Key:** `cron-expression-parser`
+
+### Story 18.3: CSS Grid Playground
+
+As a **user**,
+I want **to visually build CSS Grid layouts by adjusting columns, rows, gaps, and alignment**,
+So that **I can experiment with grid properties and copy the resulting CSS**.
+
+**Category:** CSS | **Emoji:** 🔲 | **Key:** `css-grid-playground`
+
+### Story 18.4: Image Color Picker
+
+As a **user**,
+I want **to upload an image and click on it to extract colors in HEX, RGB, and HSL formats**,
+So that **I can sample colors from designs, screenshots, or photos**.
+
+**Category:** Image | **Emoji:** 🎯 | **Key:** `image-color-picker`
+
+### Story 18.5: Text Sort & Dedupe
+
+As a **user**,
+I want **to sort lines alphabetically, numerically, or by length, and optionally remove duplicates and empty lines**,
+So that **I can quickly clean up lists, log files, and text data**.
+
+**Category:** Text | **Emoji:** 🔀 | **Key:** `text-sort-dedupe`
+
+---
+
+## Epic 19: Developer Reference & Utility Tools
+
+Users can generate CSS border-radius visually, parse URLs into components, build Markdown tables visually, look up HTTP status codes, and parse user agent strings — all in the browser.
+
+### Story 19.1: CSS Border Radius Generator
+
+As a **user**,
+I want **to visually configure CSS border-radius with per-corner control and see a live preview**,
+So that **I can design rounded corners without guessing pixel values**.
+
+**Category:** CSS | **Emoji:** ⬜ | **Key:** `css-border-radius-generator`
+
+### Story 19.2: URL Parser
+
+As a **user**,
+I want **to paste a URL and see it broken down into protocol, host, port, path, query parameters, and fragment**,
+So that **I can inspect and debug URLs quickly**.
+
+**Category:** Encoding | **Emoji:** 🔗 | **Key:** `url-parser`
+
+### Story 19.3: Markdown Table Generator
+
+As a **user**,
+I want **to visually build a table by adding rows and columns, then copy the Markdown output**,
+So that **I can create Markdown tables without memorizing the pipe syntax**.
+
+**Category:** Code | **Emoji:** 📊 | **Key:** `markdown-table-generator`
+
+### Story 19.4: HTTP Status Code Reference
+
+As a **user**,
+I want **to search and browse HTTP status codes with descriptions and common use cases**,
+So that **I can quickly look up what a status code means**.
+
+**Category:** Data | **Emoji:** 📡 | **Key:** `http-status-codes`
+
+### Story 19.5: User Agent Parser
+
+As a **user**,
+I want **to paste a user agent string and see it parsed into browser, OS, device, and engine details**,
+So that **I can debug UA-related issues and understand client environments**.
+
+**Category:** Text | **Emoji:** 🕵️ | **Key:** `user-agent-parser`
+
+---
+
+## Epic 20: Advanced Developer Tools
+
+Users can validate JSON against schemas, build cron expressions visually, create CSS keyframe animations, preview Open Graph social cards, and generate multi-size favicons — all in the browser.
+
+### Story 20.1: JSON Schema Validator
+
+As a **user**,
+I want **to paste JSON data and a JSON Schema, then see validation results with specific error paths**,
+So that **I can verify my JSON conforms to a schema without running external tools**.
+
+**Category:** Code | **Emoji:** ✅ | **Key:** `json-schema-validator`
+
+### Story 20.2: Crontab Generator
+
+As a **user**,
+I want **to visually build a cron expression by selecting minute, hour, day, month, and weekday values**,
+So that **I can create correct cron schedules without memorizing the syntax**.
+
+**Category:** Time | **Emoji:** 🕰️ | **Key:** `crontab-generator`
+
+### Story 20.3: CSS Animation Builder
+
+As a **user**,
+I want **to visually create CSS keyframe animations with multiple steps, timing functions, and live preview**,
+So that **I can prototype animations without writing CSS from scratch**.
+
+**Category:** CSS | **Emoji:** 🎬 | **Key:** `css-animation-builder`
+
+### Story 20.4: Open Graph Preview
+
+As a **user**,
+I want **to enter OG meta tag values (title, description, image URL, site name) and see a preview of how the link will appear on Twitter, Facebook, and LinkedIn**,
+So that **I can design social sharing cards before deploying**.
+
+**Category:** Data | **Emoji:** 🔖 | **Key:** `og-preview`
+
+### Story 20.5: Favicon Generator
+
+As a **user**,
+I want **to upload an image and generate favicons in standard sizes (16x16, 32x32, 48x48, 180x180, 192x192, 512x512) with a downloadable zip**,
+So that **I can quickly create all required favicon sizes for my website**.
+
+**Category:** Image | **Emoji:** 🖼️ | **Key:** `favicon-generator`
+
+---
+
+## Epic 21: AI-Powered Image Tools
+
+Users can remove image backgrounds entirely in the browser using AI/ML models with no server processing, ensuring full privacy and zero cost.
+
+### Story 21.1: Background Remover
+
+As a **user**,
+I want **to upload an image and have its background automatically removed using an AI model running in my browser**,
+So that **I can get transparent-background images without uploading to external services or paying for API calls**.
+
+**Category:** Image | **Emoji:** ✂️ | **Key:** `background-remover`
+
+**Technical approach:**
+- Use `@huggingface/transformers` with `Xenova/modnet` model (Apache 2.0 license)
+- Pipeline: `pipeline('background-removal', 'Xenova/modnet', { dtype: 'fp32' })`
+- Model downloads ~25MB on first use, cached by browser after
+- WebGPU with WASM fallback for inference
+- Dialog-based tool (needs space for before/after preview)
+- Show model download progress on first use
+- Before/after slider or side-by-side comparison
+- Choose output: transparent, white, or custom background color
+- Download as PNG

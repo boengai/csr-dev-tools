@@ -8,6 +8,10 @@ export const htmlToMarkdown = async (input: string): Promise<string> => {
 export const markdownToHtml = async (input: string): Promise<string> => {
   if (input.trim().length === 0) throw new Error('Empty input')
   const { marked } = await import('marked')
-  const result = await marked(input)
-  return result
+  const raw = await marked(input)
+  // Sanitize dangerous elements from markdown-generated HTML
+  return raw
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/\son\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]+)/gi, '')
+    .replace(/href\s*=\s*["']?\s*javascript\s*:/gi, 'href="#"')
 }

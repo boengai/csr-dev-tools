@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
@@ -65,8 +65,8 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
     onAfterDialogClose?.()
   }
 
-  const originalSize = new Blob([source]).size
-  const resultSize = new Blob([result]).size
+  const originalSize = useMemo(() => new Blob([source]).size, [source])
+  const resultSize = useMemo(() => new Blob([result]).size, [result])
   const savings = originalSize > 0 ? ((1 - resultSize / originalSize) * 100).toFixed(1) : '0'
 
   return (

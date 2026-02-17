@@ -7,6 +7,7 @@ const sanitizeHtml = (html: string): string => {
     .replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, '')
     .replace(/<object\b[^<]*(?:(?!<\/object>)<[^<]*)*<\/object>/gi, '')
     .replace(/<embed\b[^>]*\/?>/gi, '')
+    .replace(/href\s*=\s*["']?\s*javascript\s*:/gi, 'href="#"')
 }
 
 export const renderMarkdown = (md: string): string => {

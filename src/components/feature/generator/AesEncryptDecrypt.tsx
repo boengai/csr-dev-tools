@@ -1,4 +1,6 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
+
+import type { ToolComponentProps } from '@/types'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
@@ -9,16 +11,18 @@ const toolEntry = TOOL_REGISTRY_MAP['aes-encrypt-decrypt']
 
 type Mode = 'decrypt' | 'encrypt'
 
-export const AesEncryptDecrypt = () => {
+export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
   const [password, setPassword] = useState('')
   const [result, setResult] = useState('')
   const [error, setError] = useState('')
   const [mode, setMode] = useState<Mode>('encrypt')
-  const [dialogOpen, setDialogOpen] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [loading, setLoading] = useState(false)
+  const sessionRef = useRef(0)
 
   const processEncrypt = async (text: string, pass: string) => {
+    const session = ++sessionRef.current
     if (!text || !pass) {
       setResult('')
       setError('')
@@ -27,17 +31,20 @@ export const AesEncryptDecrypt = () => {
     setLoading(true)
     try {
       const encrypted = await aesEncrypt(text, pass)
+      if (session !== sessionRef.current) return
       setResult(encrypted)
       setError('')
     } catch {
+      if (session !== sessionRef.current) return
       setResult('')
       setError('Encryption failed')
     } finally {
-      setLoading(false)
+      if (session === sessionRef.current) setLoading(false)
     }
   }
 
   const processDecrypt = async (text: string, pass: string) => {
+    const session = ++sessionRef.current
     if (!text || !pass) {
       setResult('')
       setError('')
@@ -46,13 +53,15 @@ export const AesEncryptDecrypt = () => {
     setLoading(true)
     try {
       const decrypted = await aesDecrypt(text, pass)
+      if (session !== sessionRef.current) return
       setResult(decrypted)
       setError('')
     } catch {
+      if (session !== sessionRef.current) return
       setResult('')
       setError('Decryption failed — incorrect password or corrupted data')
     } finally {
-      setLoading(false)
+      if (session === sessionRef.current) setLoading(false)
     }
   }
 
@@ -109,7 +118,10 @@ export const AesEncryptDecrypt = () => {
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleReset}
+        onAfterClose={() => {
+          handleReset()
+          onAfterDialogClose?.()
+        }}
         size="screen"
         title={mode === 'encrypt' ? 'AES-256-GCM Encrypt' : 'AES-256-GCM Decrypt'}
       >
