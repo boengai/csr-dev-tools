@@ -34,6 +34,7 @@ export type ToolRegistryEntry = {
 }
 
 export type ToolRegistryKey =
+  | 'aes-encrypt-decrypt'
   | 'base64-to-image'
   | 'base64-encoder'
   | 'box-shadow-generator'
@@ -42,6 +43,7 @@ export type ToolRegistryKey =
   | 'css-formatter'
   | 'css-gradient-generator'
   | 'hash-generator'
+  | 'hmac-generator'
   | 'html-formatter'
   | 'html-to-markdown-converter'
   | 'image-compressor'

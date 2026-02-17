@@ -424,6 +424,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: "Code",
+    component: lazy(() =>
+      import("@/components/feature/code/MarkdownPreview").then(
+        ({ MarkdownPreview }: { MarkdownPreview: ComponentType }) => ({
+          default: MarkdownPreview,
+        }),
+      ),
+    ),
+    description:
+      "Live Markdown preview with HTML output. Write and preview Markdown in your browser",
+    emoji: "📝",
+    key: "markdown-preview",
+    name: "Markdown Preview",
+    routePath: "/tools/markdown-preview",
+    seo: {
+      description:
+        "Live Markdown preview with HTML output. Write and preview Markdown in your browser.",
+      title: "Markdown Preview - CSR Dev Tools",
+    },
+  },
+  {
     category: 'Encoding',
     component: lazy(() =>
       import('@/components/feature/encoding/NumberBaseConverter').then(
@@ -535,6 +556,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     seo: {
       description: 'Escape and unescape strings for HTML, JavaScript, JSON, URL, and XML.',
       title: 'String Escape/Unescape - CSR Dev Tools',
+    },
+  },
+  {
+    category: "Code",
+    component: lazy(() =>
+      import("@/components/feature/code/SqlFormatter").then(
+        ({ SqlFormatter }: { SqlFormatter: ComponentType }) => ({
+          default: SqlFormatter,
+        }),
+      ),
+    ),
+    description:
+      "Format SQL queries with proper indentation. Supports PostgreSQL, MySQL, SQLite, and more",
+    emoji: "🗄️",
+    key: "sql-formatter",
+    name: "SQL Formatter",
+    routePath: "/tools/sql-formatter",
+    seo: {
+      description:
+        "Format SQL queries with proper indentation. Supports PostgreSQL, MySQL, SQLite, and more.",
+      title: "SQL Formatter - CSR Dev Tools",
     },
   },
   {
