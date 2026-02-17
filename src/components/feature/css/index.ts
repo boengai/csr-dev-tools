@@ -1,4 +1,5 @@
 export { BorderRadiusGenerator } from './BorderRadiusGenerator'
+export { CssAnimationBuilder } from './CssAnimationBuilder'
 export { BoxShadowGenerator } from './BoxShadowGenerator'
 export { FlexboxPlayground } from './FlexboxPlayground'
 export { GradientGenerator } from './GradientGenerator'

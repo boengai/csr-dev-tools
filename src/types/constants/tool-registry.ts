@@ -84,3 +84,8 @@ export type ToolRegistryKey =
   | 'markdown-table-generator'
   | 'http-status-codes'
   | 'user-agent-parser'
+  | 'css-animation-builder'
+  | 'og-preview'
+  | 'json-schema-validator'
+  | 'crontab-generator'
+  | 'favicon-generator'

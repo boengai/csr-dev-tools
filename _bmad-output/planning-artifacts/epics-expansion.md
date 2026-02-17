@@ -764,3 +764,49 @@ I want **to paste a user agent string and see it parsed into browser, OS, device
 So that **I can debug UA-related issues and understand client environments**.
 
 **Category:** Text | **Emoji:** 🕵️ | **Key:** `user-agent-parser`
+
+---
+
+## Epic 20: Advanced Developer Tools
+
+Users can validate JSON against schemas, build cron expressions visually, create CSS keyframe animations, preview Open Graph social cards, and generate multi-size favicons — all in the browser.
+
+### Story 20.1: JSON Schema Validator
+
+As a **user**,
+I want **to paste JSON data and a JSON Schema, then see validation results with specific error paths**,
+So that **I can verify my JSON conforms to a schema without running external tools**.
+
+**Category:** Code | **Emoji:** ✅ | **Key:** `json-schema-validator`
+
+### Story 20.2: Crontab Generator
+
+As a **user**,
+I want **to visually build a cron expression by selecting minute, hour, day, month, and weekday values**,
+So that **I can create correct cron schedules without memorizing the syntax**.
+
+**Category:** Time | **Emoji:** 🕰️ | **Key:** `crontab-generator`
+
+### Story 20.3: CSS Animation Builder
+
+As a **user**,
+I want **to visually create CSS keyframe animations with multiple steps, timing functions, and live preview**,
+So that **I can prototype animations without writing CSS from scratch**.
+
+**Category:** CSS | **Emoji:** 🎬 | **Key:** `css-animation-builder`
+
+### Story 20.4: Open Graph Preview
+
+As a **user**,
+I want **to enter OG meta tag values (title, description, image URL, site name) and see a preview of how the link will appear on Twitter, Facebook, and LinkedIn**,
+So that **I can design social sharing cards before deploying**.
+
+**Category:** Data | **Emoji:** 🔖 | **Key:** `og-preview`
+
+### Story 20.5: Favicon Generator
+
+As a **user**,
+I want **to upload an image and generate favicons in standard sizes (16x16, 32x32, 48x48, 180x180, 192x192, 512x512) with a downloadable zip**,
+So that **I can quickly create all required favicon sizes for my website**.
+
+**Category:** Image | **Emoji:** 🖼️ | **Key:** `favicon-generator`

@@ -159,6 +159,13 @@ const toolRoutes = [
     url: '/tools/markdown-table-generator',
   },
   {
+    description:
+      'Validate JSON data against a JSON Schema (draft-07). See validation errors with JSON paths and keywords — all in the browser.',
+    path: '/tools/json-schema-validator',
+    title: 'JSON Schema Validator - CSR Dev Tools',
+    url: '/tools/json-schema-validator',
+  },
+  {
     description: 'Searchable HTTP status code reference with descriptions, categories, and common use cases.',
     path: '/tools/http-status-codes',
     title: 'HTTP Status Codes Reference - CSR Dev Tools',
@@ -169,6 +176,34 @@ const toolRoutes = [
     path: '/tools/user-agent-parser',
     title: 'User Agent Parser - CSR Dev Tools',
     url: '/tools/user-agent-parser',
+  },
+  {
+    description:
+      'Generate favicons in 16x16, 32x32, 48x48, 180x180, 192x192, and 512x512 sizes from any image. Download all as ZIP.',
+    path: '/tools/favicon-generator',
+    title: 'Favicon Generator - CSR Dev Tools',
+    url: '/tools/favicon-generator',
+  },
+  {
+    description:
+      'Build CSS @keyframes animations visually. Define keyframe steps, timing functions, and preview animations in real-time.',
+    path: '/tools/css-animation-builder',
+    title: 'CSS Animation Builder - CSR Dev Tools',
+    url: '/tools/css-animation-builder',
+  },
+  {
+    description:
+      'Build cron expressions visually by selecting minute, hour, day, month, and weekday values. See human-readable descriptions and next run times.',
+    path: '/tools/crontab-generator',
+    title: 'Crontab Generator - CSR Dev Tools',
+    url: '/tools/crontab-generator',
+  },
+  {
+    description:
+      'Preview how your links will appear on Twitter, Facebook, and LinkedIn. Enter OG meta values and generate ready-to-use meta tags.',
+    path: '/tools/og-preview',
+    title: 'OG Preview - CSR Dev Tools',
+    url: '/tools/og-preview',
   },
 ]
 

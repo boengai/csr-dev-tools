@@ -87,6 +87,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'CSS',
     component: lazy(() =>
+      import('@/components/feature/css/CssAnimationBuilder').then(
+        ({ CssAnimationBuilder }: { CssAnimationBuilder: ComponentType }) => ({
+          default: CssAnimationBuilder,
+        }),
+      ),
+    ),
+    description: 'Visually create CSS keyframe animations with live preview and configurable timing',
+    emoji: '🎬',
+    key: 'css-animation-builder',
+    name: 'CSS Animation Builder',
+    routePath: '/tools/css-animation-builder',
+    seo: {
+      description:
+        'Build CSS @keyframes animations visually. Define keyframe steps, timing functions, and preview animations in real-time.',
+      title: 'CSS Animation Builder - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'CSS',
+    component: lazy(() =>
       import('@/components/feature/css/FlexboxPlayground').then(
         ({ FlexboxPlayground }: { FlexboxPlayground: ComponentType }) => ({
           default: FlexboxPlayground,
@@ -384,6 +404,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       description:
         'Format, validate, and beautify JSON online. Paste minified JSON and get clean, indented output instantly in your browser.',
       title: 'JSON Formatter - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/JsonSchemaValidator').then(
+        ({ JsonSchemaValidator }: { JsonSchemaValidator: ComponentType }) => ({
+          default: JsonSchemaValidator,
+        }),
+      ),
+    ),
+    description: 'Validate JSON data against a JSON Schema (draft-07) and see detailed error paths',
+    emoji: '✅',
+    key: 'json-schema-validator',
+    name: 'JSON Schema Validator',
+    routePath: '/tools/json-schema-validator',
+    seo: {
+      description:
+        'Validate JSON data against a JSON Schema (draft-07). See validation errors with JSON paths and keywords — all in the browser.',
+      title: 'JSON Schema Validator - CSR Dev Tools',
     },
   },
   {
@@ -806,6 +846,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Time',
+    component: lazy(() =>
+      import('@/components/feature/time/CrontabGenerator').then(
+        ({ CrontabGenerator }: { CrontabGenerator: ComponentType }) => ({
+          default: CrontabGenerator,
+        }),
+      ),
+    ),
+    description: 'Visually build cron expressions with field selectors, human-readable descriptions, and next run times',
+    emoji: '🕰️',
+    key: 'crontab-generator',
+    name: 'Crontab Generator',
+    routePath: '/tools/crontab-generator',
+    seo: {
+      description:
+        'Build cron expressions visually by selecting minute, hour, day, month, and weekday values. See human-readable descriptions and next run times.',
+      title: 'Crontab Generator - CSR Dev Tools',
+    },
+  },
+  {
     category: 'CSS',
     component: lazy(() =>
       import('@/components/feature/css/GridPlayground').then(
@@ -940,6 +1000,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Data',
+    component: lazy(() =>
+      import('@/components/feature/data/OgPreview').then(
+        ({ OgPreview }: { OgPreview: ComponentType }) => ({
+          default: OgPreview,
+        }),
+      ),
+    ),
+    description: 'Preview Open Graph social cards for Twitter, Facebook, and LinkedIn. Generate meta tags.',
+    emoji: '🔖',
+    key: 'og-preview',
+    name: 'OG Preview',
+    routePath: '/tools/og-preview',
+    seo: {
+      description:
+        'Preview how your links will appear on Twitter, Facebook, and LinkedIn. Enter OG meta values and generate ready-to-use meta tags.',
+      title: 'OG Preview - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Text',
     component: lazy(() =>
       import('@/components/feature/text/UserAgentParser').then(
@@ -956,6 +1036,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     seo: {
       description: 'Parse user agent strings to identify browser, operating system, device type, and rendering engine.',
       title: 'User Agent Parser - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Image',
+    component: lazy(() =>
+      import('@/components/feature/image/FaviconGenerator').then(
+        ({ FaviconGenerator }: { FaviconGenerator: ComponentType }) => ({
+          default: FaviconGenerator,
+        }),
+      ),
+    ),
+    description:
+      'Upload an image and generate favicons in all standard sizes. Download as ZIP with HTML link tags.',
+    emoji: '🖼️',
+    key: 'favicon-generator',
+    name: 'Favicon Generator',
+    routePath: '/tools/favicon-generator',
+    seo: {
+      description:
+        'Generate favicons in 16x16, 32x32, 48x48, 180x180, 192x192, and 512x512 sizes from any image. Download all as ZIP.',
+      title: 'Favicon Generator - CSR Dev Tools',
     },
   },
 ]
