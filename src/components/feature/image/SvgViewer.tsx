@@ -68,7 +68,10 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={() => { handleReset(); onAfterDialogClose?.() }}
+        onAfterClose={() => {
+          handleReset()
+          onAfterDialogClose?.()
+        }}
         size="screen"
         title="SVG Viewer &amp; Optimizer"
       >

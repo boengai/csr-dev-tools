@@ -72,7 +72,10 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={() => { handleReset(); onAfterDialogClose?.() }}
+        onAfterClose={() => {
+          handleReset()
+          onAfterDialogClose?.()
+        }}
         size="screen"
         title="Base64 to Image"
       >
