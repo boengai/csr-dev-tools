@@ -1,2 +1,6 @@
+export * from './LoremIpsumGenerator'
 export * from './RegexTester'
+export * from './StringEscapeUnescape'
+export * from './TextCaseConverter'
 export * from './TextDiffChecker'
+export * from './WordCounter'

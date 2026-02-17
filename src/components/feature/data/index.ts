@@ -1,3 +1,6 @@
+export * from './HtmlToMarkdownConverter'
 export * from './JsonFormatter'
 export * from './JsonToCsvConverter'
 export * from './JsonToYamlConverter'
+export * from './TomlToJsonConverter'
+export * from './XmlToJsonConverter'

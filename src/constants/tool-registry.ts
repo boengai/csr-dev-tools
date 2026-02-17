@@ -6,6 +6,45 @@ import type { ToolCategory, ToolRegistryEntry } from '@/types'
 
 export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
+    category: 'Generator',
+    component: lazy(() =>
+      import('@/components/feature/generator/AesEncryptDecrypt').then(
+        ({ AesEncryptDecrypt }: { AesEncryptDecrypt: ComponentType }) => ({
+          default: AesEncryptDecrypt,
+        }),
+      ),
+    ),
+    description: 'Encrypt and decrypt text using AES-256-GCM with a password. 100% client-side encryption.',
+    emoji: '🔐',
+    key: 'aes-encrypt-decrypt',
+    name: 'AES Encrypt/Decrypt',
+    routePath: '/tools/aes-encrypt-decrypt',
+    seo: {
+      description: 'Encrypt and decrypt text using AES-256-GCM with a password. 100% client-side encryption.',
+      title: 'AES Encrypt/Decrypt - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Image',
+    component: lazy(() =>
+      import('@/components/feature/image/Base64ToImage').then(
+        ({ Base64ToImage }: { Base64ToImage: ComponentType }) => ({
+          default: Base64ToImage,
+        }),
+      ),
+    ),
+    description: 'Convert Base64 strings to downloadable images',
+    emoji: '🖼️',
+    key: 'base64-to-image',
+    name: 'Base64 to Image',
+    routePath: '/tools/base64-to-image',
+    seo: {
+      description:
+        'Convert Base64 strings to downloadable images. Preview and extract images from Base64-encoded data.',
+      title: 'Base64 to Image - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Encoding',
     component: lazy(() =>
       import('@/components/feature/encoding/EncodingBase64').then(
@@ -46,6 +85,63 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'CSS',
+    component: lazy(() =>
+      import('@/components/feature/css/FlexboxPlayground').then(
+        ({ FlexboxPlayground }: { FlexboxPlayground: ComponentType }) => ({
+          default: FlexboxPlayground,
+        }),
+      ),
+    ),
+    description: 'Visual CSS flexbox layout builder. Experiment with flex properties and copy the CSS.',
+    emoji: '📐',
+    key: 'css-flexbox-playground',
+    name: 'Flexbox Playground',
+    routePath: '/tools/css-flexbox-playground',
+    seo: {
+      description: 'Visual CSS flexbox layout builder. Experiment with flex properties and copy the CSS.',
+      title: 'CSS Flexbox Playground - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/CssFormatter').then(({ CssFormatter }: { CssFormatter: ComponentType }) => ({
+        default: CssFormatter,
+      })),
+    ),
+    description: 'Beautify or minify CSS stylesheets',
+    emoji: '🎨',
+    key: 'css-formatter',
+    name: 'CSS Formatter',
+    routePath: '/tools/css-formatter',
+    seo: {
+      description: 'Beautify or minify CSS stylesheets. Free online CSS formatter.',
+      title: 'CSS Formatter - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'CSS',
+    component: lazy(() =>
+      import('@/components/feature/css/GradientGenerator').then(
+        ({ GradientGenerator }: { GradientGenerator: ComponentType }) => ({
+          default: GradientGenerator,
+        }),
+      ),
+    ),
+    description:
+      'Create CSS gradients visually with a live preview. Linear and radial gradients with multiple color stops.',
+    emoji: '🌈',
+    key: 'css-gradient-generator',
+    name: 'Gradient Generator',
+    routePath: '/tools/css-gradient-generator',
+    seo: {
+      description:
+        'Create CSS gradients visually with a live preview. Linear and radial gradients with multiple color stops.',
+      title: 'CSS Gradient Generator - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Color',
     component: lazy(() =>
       import('@/components/feature/color/ColorConvertor').then(
@@ -83,6 +179,80 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       description:
         'Generate MD5, SHA-1, SHA-256, and SHA-512 hash values from text online. Compute checksums instantly in your browser — no server processing.',
       title: 'Hash Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Generator',
+    component: lazy(() =>
+      import('@/components/feature/generator/HmacGenerator').then(
+        ({ HmacGenerator }: { HmacGenerator: ComponentType }) => ({
+          default: HmacGenerator,
+        }),
+      ),
+    ),
+    description:
+      'Generate HMAC signatures using SHA-256, SHA-384, or SHA-512. Verify API signatures and webhook authentication.',
+    emoji: '🔏',
+    key: 'hmac-generator',
+    name: 'HMAC Generator',
+    routePath: '/tools/hmac-generator',
+    seo: {
+      description:
+        'Generate HMAC signatures using SHA-256, SHA-384, or SHA-512. Verify API signatures and webhook authentication.',
+      title: 'HMAC Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/HtmlFormatter').then(({ HtmlFormatter }: { HtmlFormatter: ComponentType }) => ({
+        default: HtmlFormatter,
+      })),
+    ),
+    description: 'Format and beautify HTML with proper indentation, or minify for production',
+    emoji: '📄',
+    key: 'html-formatter',
+    name: 'HTML Formatter',
+    routePath: '/tools/html-formatter',
+    seo: {
+      description: 'Format and beautify HTML with proper indentation, or minify for production.',
+      title: 'HTML Formatter - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Data',
+    component: lazy(() =>
+      import('@/components/feature/data/HtmlToMarkdownConverter').then(
+        ({ HtmlToMarkdownConverter }: { HtmlToMarkdownConverter: ComponentType }) => ({
+          default: HtmlToMarkdownConverter,
+        }),
+      ),
+    ),
+    description: 'Convert between HTML and Markdown. Transform web content to Markdown and back.',
+    emoji: '🔄',
+    key: 'html-to-markdown-converter',
+    name: 'HTML ↔ Markdown',
+    routePath: '/tools/html-to-markdown-converter',
+    seo: {
+      description: 'Convert between HTML and Markdown. Transform web content to Markdown and back.',
+      title: 'HTML to Markdown Converter - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Image',
+    component: lazy(() =>
+      import('@/components/feature/image/SvgViewer').then(({ SvgViewer }: { SvgViewer: ComponentType }) => ({
+        default: SvgViewer,
+      })),
+    ),
+    description: 'View and optimize SVG code with a live preview. Remove metadata and reduce file size.',
+    emoji: '🖼️',
+    key: 'svg-viewer',
+    name: 'SVG Viewer',
+    routePath: '/tools/svg-viewer',
+    seo: {
+      description: 'View and optimize SVG code with a live preview. Remove metadata and reduce file size.',
+      title: 'SVG Viewer - CSR Dev Tools',
     },
   },
   {
@@ -146,6 +316,25 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Image',
     component: lazy(() =>
+      import('@/components/feature/image/ImageToBase64').then(
+        ({ ImageToBase64 }: { ImageToBase64: ComponentType }) => ({
+          default: ImageToBase64,
+        }),
+      ),
+    ),
+    description: 'Convert images to Base64 data URIs for embedding in HTML or CSS',
+    emoji: '🖼️',
+    key: 'image-to-base64',
+    name: 'Image to Base64',
+    routePath: '/tools/image-to-base64',
+    seo: {
+      description: 'Convert images to Base64 data URIs. Embed images directly in HTML or CSS.',
+      title: 'Image to Base64 - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Image',
+    component: lazy(() =>
       import('@/components/feature/image/ImageResizer').then(({ ImageResizer }: { ImageResizer: ComponentType }) => ({
         default: ImageResizer,
       })),
@@ -158,6 +347,25 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     seo: {
       description: 'Resize images to custom width and height dimensions online. Free browser-based image resizer.',
       title: 'Image Resizer - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/JavaScriptMinifier').then(
+        ({ JavaScriptMinifier }: { JavaScriptMinifier: ComponentType }) => ({
+          default: JavaScriptMinifier,
+        }),
+      ),
+    ),
+    description: 'Minify or beautify JavaScript code. See size comparison and copy the result',
+    emoji: '⚡',
+    key: 'javascript-minifier',
+    name: 'JavaScript Minifier',
+    routePath: '/tools/javascript-minifier',
+    seo: {
+      description: 'Minify or beautify JavaScript code. See size comparison and copy the result.',
+      title: 'JavaScript Minifier - CSR Dev Tools',
     },
   },
   {
@@ -237,6 +445,63 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Text',
+    component: lazy(() =>
+      import('@/components/feature/text/LoremIpsumGenerator').then(
+        ({ LoremIpsumGenerator }: { LoremIpsumGenerator: ComponentType }) => ({
+          default: LoremIpsumGenerator,
+        }),
+      ),
+    ),
+    description: 'Generate lorem ipsum placeholder text. Configure paragraphs, sentences, or words',
+    emoji: '📜',
+    key: 'lorem-ipsum-generator',
+    name: 'Lorem Ipsum Generator',
+    routePath: '/tools/lorem-ipsum-generator',
+    seo: {
+      description: 'Generate lorem ipsum placeholder text. Configure paragraphs, sentences, or words.',
+      title: 'Lorem Ipsum Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/MarkdownPreview').then(
+        ({ MarkdownPreview }: { MarkdownPreview: ComponentType }) => ({
+          default: MarkdownPreview,
+        }),
+      ),
+    ),
+    description: 'Live Markdown preview with HTML output. Write and preview Markdown in your browser',
+    emoji: '📝',
+    key: 'markdown-preview',
+    name: 'Markdown Preview',
+    routePath: '/tools/markdown-preview',
+    seo: {
+      description: 'Live Markdown preview with HTML output. Write and preview Markdown in your browser.',
+      title: 'Markdown Preview - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Encoding',
+    component: lazy(() =>
+      import('@/components/feature/encoding/NumberBaseConverter').then(
+        ({ NumberBaseConverter }: { NumberBaseConverter: ComponentType }) => ({
+          default: NumberBaseConverter,
+        }),
+      ),
+    ),
+    description: 'Convert numbers between binary, octal, decimal, and hexadecimal',
+    emoji: '🔢',
+    key: 'number-base-converter',
+    name: 'Number Base Converter',
+    routePath: '/tools/number-base-converter',
+    seo: {
+      description: 'Convert numbers between binary, octal, decimal, and hexadecimal. Free online base converter.',
+      title: 'Number Base Converter - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Generator',
     component: lazy(() =>
       import('@/components/feature/generator/PasswordGenerator').then(
@@ -254,6 +519,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       description:
         'Generate secure random passwords online. Configure length, uppercase, lowercase, digits, and symbols. Cryptographically secure — runs entirely in your browser.',
       title: 'Password Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Generator',
+    component: lazy(() =>
+      import('@/components/feature/generator/QrCodeGenerator').then(
+        ({ QrCodeGenerator }: { QrCodeGenerator: ComponentType }) => ({
+          default: QrCodeGenerator,
+        }),
+      ),
+    ),
+    description: 'Generate QR codes from text or URLs with customizable size, colors, and error correction',
+    emoji: '📱',
+    key: 'qr-code-generator',
+    name: 'QR Code Generator',
+    routePath: '/tools/qr-code-generator',
+    seo: {
+      description:
+        'Generate QR codes from text or URLs. Customize size, colors, and error correction. Free browser-based QR code generator.',
+      title: 'QR Code Generator - CSR Dev Tools',
     },
   },
   {
@@ -295,6 +580,62 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Text',
     component: lazy(() =>
+      import('@/components/feature/text/StringEscapeUnescape').then(
+        ({ StringEscapeUnescape }: { StringEscapeUnescape: ComponentType }) => ({
+          default: StringEscapeUnescape,
+        }),
+      ),
+    ),
+    description: 'Escape and unescape strings for HTML, JavaScript, JSON, URL, and XML',
+    emoji: '🔡',
+    key: 'string-escape-unescape',
+    name: 'String Escape/Unescape',
+    routePath: '/tools/string-escape-unescape',
+    seo: {
+      description: 'Escape and unescape strings for HTML, JavaScript, JSON, URL, and XML.',
+      title: 'String Escape/Unescape - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/SqlFormatter').then(({ SqlFormatter }: { SqlFormatter: ComponentType }) => ({
+        default: SqlFormatter,
+      })),
+    ),
+    description: 'Format SQL queries with proper indentation. Supports PostgreSQL, MySQL, SQLite, and more',
+    emoji: '🗄️',
+    key: 'sql-formatter',
+    name: 'SQL Formatter',
+    routePath: '/tools/sql-formatter',
+    seo: {
+      description: 'Format SQL queries with proper indentation. Supports PostgreSQL, MySQL, SQLite, and more.',
+      title: 'SQL Formatter - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Text',
+    component: lazy(() =>
+      import('@/components/feature/text/TextCaseConverter').then(
+        ({ TextCaseConverter }: { TextCaseConverter: ComponentType }) => ({
+          default: TextCaseConverter,
+        }),
+      ),
+    ),
+    description: 'Convert text between camelCase, PascalCase, snake_case, kebab-case, and more',
+    emoji: '🔤',
+    key: 'text-case-converter',
+    name: 'Text Case Converter',
+    routePath: '/tools/text-case-converter',
+    seo: {
+      description:
+        'Convert text between camelCase, PascalCase, snake_case, kebab-case, and more. Free browser-based tool.',
+      title: 'Text Case Converter - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Text',
+    component: lazy(() =>
       import('@/components/feature/text/TextDiffChecker').then(
         ({ TextDiffChecker }: { TextDiffChecker: ComponentType }) => ({
           default: TextDiffChecker,
@@ -310,6 +651,25 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       description:
         'Compare two text blocks and see line-by-line differences highlighted online. Spot changes between versions of code or text instantly in your browser.',
       title: 'Text Diff Checker - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Data',
+    component: lazy(() =>
+      import('@/components/feature/data/TomlToJsonConverter').then(
+        ({ TomlToJsonConverter }: { TomlToJsonConverter: ComponentType }) => ({
+          default: TomlToJsonConverter,
+        }),
+      ),
+    ),
+    description: 'Convert between TOML and JSON formats. Perfect for Rust and Go config files.',
+    emoji: '⚙️',
+    key: 'toml-to-json-converter',
+    name: 'TOML ↔ JSON',
+    routePath: '/tools/toml-to-json-converter',
+    seo: {
+      description: 'Convert between TOML and JSON formats. Perfect for Rust and Go config files.',
+      title: 'TOML to JSON Converter - CSR Dev Tools',
     },
   },
   {
@@ -370,9 +730,46 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       title: 'UUID Generator - CSR Dev Tools',
     },
   },
+  {
+    category: 'Text',
+    component: lazy(() =>
+      import('@/components/feature/text/WordCounter').then(({ WordCounter }: { WordCounter: ComponentType }) => ({
+        default: WordCounter,
+      })),
+    ),
+    description: 'Count words, characters, sentences, paragraphs, and reading time',
+    emoji: '📊',
+    key: 'word-counter',
+    name: 'Word Counter',
+    routePath: '/tools/word-counter',
+    seo: {
+      description: 'Count words, characters, sentences, paragraphs, and reading time. Free online word counter.',
+      title: 'Word Counter - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Data',
+    component: lazy(() =>
+      import('@/components/feature/data/XmlToJsonConverter').then(
+        ({ XmlToJsonConverter }: { XmlToJsonConverter: ComponentType }) => ({
+          default: XmlToJsonConverter,
+        }),
+      ),
+    ),
+    description: 'Convert between XML and JSON formats. Free online XML to JSON and JSON to XML converter.',
+    emoji: '📋',
+    key: 'xml-to-json-converter',
+    name: 'XML ↔ JSON',
+    routePath: '/tools/xml-to-json-converter',
+    seo: {
+      description: 'Convert between XML and JSON formats. Free online XML to JSON and JSON to XML converter.',
+      title: 'XML to JSON Converter - CSR Dev Tools',
+    },
+  },
 ]
 
 export const CATEGORY_ORDER: Array<ToolCategory> = [
+  'Code',
   'Color',
   'CSS',
   'Data',

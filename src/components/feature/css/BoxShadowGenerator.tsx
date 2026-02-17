@@ -103,8 +103,11 @@ export const BoxShadowGenerator = () => {
 
       <div className="border-t-2 border-dashed border-gray-900" />
 
-      <div className="relative flex items-center justify-center rounded-lg border border-gray-800 p-16" style={{ backgroundColor: previewBg }}>
-        <div className="absolute right-2 top-2 flex items-center gap-1.5">
+      <div
+        className="relative flex items-center justify-center rounded-lg border border-gray-800 p-16"
+        style={{ backgroundColor: previewBg }}
+      >
+        <div className="absolute top-2 right-2 flex items-center gap-1.5">
           <label className="text-body-xs text-gray-500" htmlFor="bs-preview-bg">
             BG
           </label>
@@ -116,7 +119,7 @@ export const BoxShadowGenerator = () => {
             value={previewBg}
           />
         </div>
-        <div className="h-32 w-48 rounded-lg bg-white border border-gray-200" style={{ boxShadow: cssString }} />
+        <div className="h-32 w-48 rounded-lg border border-gray-200 bg-white" style={{ boxShadow: cssString }} />
       </div>
 
       <div aria-live="polite" className="flex flex-col gap-2">

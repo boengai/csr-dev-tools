@@ -46,28 +46,28 @@ export const pxRem = {
 // --- Tool Registry Keys for Navigation ---
 
 export const toolKeys = [
+  'json-formatter',
+  'uuid-generator',
   'base64-encoder',
-  'color-converter',
-  'image-converter',
-  'image-resizer',
-  'px-to-rem',
+  'jwt-decoder',
   'unix-timestamp',
+  'regex-tester',
 ] as const
 
 export const toolNames = [
+  'JSON Formatter',
+  'UUID Generator',
   'Base64 Encoder',
-  'Color Converter',
-  'Image Converter',
-  'Image Resizer',
-  'PX to REM',
+  'JWT Decoder',
   'Unix Timestamp',
+  'Regex Tester',
 ] as const
 
 export const toolRoutes = {
+  'json-formatter': '/tools/json-formatter',
+  'uuid-generator': '/tools/uuid-generator',
   'base64-encoder': '/tools/base64-encoder',
-  'color-converter': '/tools/color-converter',
-  'image-converter': '/tools/image-converter',
-  'image-resizer': '/tools/image-resizer',
-  'px-to-rem': '/tools/px-to-rem',
+  'jwt-decoder': '/tools/jwt-decoder',
   'unix-timestamp': '/tools/unix-timestamp',
+  'regex-tester': '/tools/regex-tester',
 } as const
