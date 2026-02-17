@@ -1,8 +1,7 @@
 import { useState } from 'react'
 
-import type { SvgOptimizeResult } from '@/utils/svg-optimize'
-
 import type { ToolComponentProps } from '@/types'
+import type { SvgOptimizeResult } from '@/utils/svg-optimize'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'

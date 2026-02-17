@@ -1,8 +1,7 @@
 import { useRef, useState } from 'react'
 
-import type { Base64ImageInfo } from '@/utils/base64-image'
-
 import type { ToolComponentProps } from '@/types'
+import type { Base64ImageInfo } from '@/utils/base64-image'
 
 import { Button, Dialog, DownloadIcon, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'

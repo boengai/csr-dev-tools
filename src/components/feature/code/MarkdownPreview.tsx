@@ -81,7 +81,7 @@ export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                 <CopyButton label="HTML source" value={htmlOutput} />
               </div>
               <div
-                className="prose prose-invert min-h-[300px] grow overflow-auto rounded-lg border-2 border-gray-900 bg-gray-950 p-4"
+                className="prose min-h-[300px] grow overflow-auto rounded-lg border-2 border-gray-900 bg-gray-950 p-4 prose-invert"
                 dangerouslySetInnerHTML={{ __html: htmlOutput }}
               />
             </div>
