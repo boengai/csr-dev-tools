@@ -110,7 +110,14 @@ development_status:
   epic-9-retrospective: done
 
   # Epic 10: Advanced Image Tools
-  epic-10: in-progress
+  epic-10: done
   10-1-image-compression: done
-  10-2-image-cropping: review
+  10-2-image-cropping: done
   epic-10-retrospective: done
+
+  # Epic 11: Technical Debt Cleanup
+  epic-11: done
+  11-1-wcag-accessibility-audit: done
+  11-2-async-state-guard-hardening: done
+  11-3-input-validation-consistency: done
+  epic-11-retrospective: optional
