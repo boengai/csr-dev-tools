@@ -17,7 +17,6 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
   const [state, setState] = useState<ProcessingState>('idle')
   const [progress, setProgress] = useState(0)
   const [sourcePreview, setSourcePreview] = useState('')
-  const [resultBlob, setResultBlob] = useState<Blob | null>(null)
   const [resultUrl, setResultUrl] = useState('')
   const [displayUrl, setDisplayUrl] = useState('')
   const [bgOption, setBgOption] = useState<BgOption>('transparent')
@@ -82,7 +81,7 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
         setState('processing')
         const result = await removeBackground(file, onProgress)
         resultBlobRef.current = result
-        setResultBlob(result)
+        // blob stored in ref
 
         const resultObjUrl = URL.createObjectURL(result)
         setResultUrl(resultObjUrl)
@@ -129,7 +128,7 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
     if (resultUrl) URL.revokeObjectURL(resultUrl)
     if (displayUrl && displayUrl !== resultUrl) URL.revokeObjectURL(displayUrl)
     setSourcePreview('')
-    setResultBlob(null)
+    // ref cleared in handleReset
     resultBlobRef.current = null
     setResultUrl('')
     setDisplayUrl('')

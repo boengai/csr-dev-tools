@@ -1,5 +1,5 @@
-let cachedPipeline: Promise<ReturnType<Awaited<typeof import('@huggingface/transformers')>['pipeline']>> | null =
-  null
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+let cachedPipeline: Promise<any> | null = null
 
 export async function removeBackground(
   image: Blob,
@@ -12,33 +12,38 @@ export async function removeBackground(
   const { RawImage, pipeline } = await import('@huggingface/transformers')
 
   if (!cachedPipeline) {
-    cachedPipeline = pipeline('background-removal', 'Xenova/modnet', {
-      dtype: 'fp32' as const,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    cachedPipeline = (pipeline as any)('background-removal', 'Xenova/modnet', {
+      dtype: 'fp32',
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       progress_callback: onProgress
-        ? (info: { progress?: number }) => {
-            if (info.progress != null) onProgress(info.progress)
+        ? (info: any) => {
+            if (info?.progress != null) onProgress(info.progress)
           }
         : undefined,
-    }) as Promise<ReturnType<typeof pipeline>>
+    })
   }
 
   const segmenter = await cachedPipeline
   const rawImage = await RawImage.fromBlob(image)
-  const result = (await (segmenter as (input: unknown) => Promise<{ data: ArrayLike<number>; height: number; width: number }>)(rawImage)) as {
-    data: ArrayLike<number>
-    height: number
-    width: number
-  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const result = await segmenter(rawImage) as any
+
+  const width: number = result.width ?? result[0]?.width
+  const height: number = result.height ?? result[0]?.height
+  const data = result.data ?? result[0]?.data
 
   const canvas = document.createElement('canvas')
-  canvas.width = result.width
-  canvas.height = result.height
+  canvas.width = width
+  canvas.height = height
   const ctx = canvas.getContext('2d')
   if (!ctx) throw new Error('Failed to create canvas context')
 
-  const clampedData =
-    result.data instanceof Uint8ClampedArray ? result.data : new Uint8ClampedArray(result.data as ArrayBufferLike)
-  const imageData = new ImageData(clampedData, result.width, result.height)
+  const pixelArray = new Uint8ClampedArray(width * height * 4)
+  for (let i = 0; i < pixelArray.length; i++) {
+    pixelArray[i] = Number(data[i]) || 0
+  }
+  const imageData = new ImageData(pixelArray, width, height)
   ctx.putImageData(imageData, 0, 0)
 
   return new Promise<Blob>((resolve, reject) => {
