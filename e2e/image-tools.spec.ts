@@ -76,3 +76,10 @@ test.describe('SVG Viewer', () => {
     await expect(dialog.locator('textarea').first()).toBeVisible()
   })
 })
+
+test.describe('Background Remover', () => {
+  test('shows upload button for background removal', async ({ page }) => {
+    await page.goto('/tools/background-remover')
+    await expect(page.getByText('Select image to remove background')).toBeVisible({ timeout: 5000 })
+  })
+})
