@@ -54,8 +54,9 @@ export const FlexboxPlayground = () => {
 
   const removeItem = () => {
     if (items.length <= 3) return
+    const newLength = items.length - 1
     setItems((prev) => prev.slice(0, -1))
-    if (selectedItem !== null && selectedItem >= items.length - 1) {
+    if (selectedItem !== null && selectedItem >= newLength) {
       setSelectedItem(null)
     }
   }

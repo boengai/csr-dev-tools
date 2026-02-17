@@ -26,7 +26,7 @@ export const TextSortDedupe = (_props: ToolComponentProps) => {
   const [trimLines, setTrimLines] = useState(false)
   const [result, setResult] = useState<TextSortResult | null>(null)
 
-  const process = useDebounceCallback((text: string, mode: SortMode, dedup: boolean, empty: boolean, trim: boolean) => {
+  const processImmediate = (text: string, mode: SortMode, dedup: boolean, empty: boolean, trim: boolean) => {
     if (!text.trim()) {
       setResult(null)
       return
@@ -34,17 +34,19 @@ export const TextSortDedupe = (_props: ToolComponentProps) => {
     setResult(
       sortAndProcessText(text, { removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }),
     )
-  }, 300)
+  }
+
+  const processDebounced = useDebounceCallback(processImmediate, 300)
 
   const handleInputChange = (val: string) => {
     setInput(val)
-    process(val, sortMode, removeDuplicates, removeEmpty, trimLines)
+    processDebounced(val, sortMode, removeDuplicates, removeEmpty, trimLines)
   }
 
   const handleSortChange = (val: string) => {
     const mode = val as SortMode
     setSortMode(mode)
-    process(input, mode, removeDuplicates, removeEmpty, trimLines)
+    processImmediate(input, mode, removeDuplicates, removeEmpty, trimLines)
   }
 
   const toggle = (
@@ -55,7 +57,7 @@ export const TextSortDedupe = (_props: ToolComponentProps) => {
     const next = !current
     setter(next)
     const opts = { dedup: removeDuplicates, empty: removeEmpty, trim: trimLines, [field]: next }
-    process(input, sortMode, opts.dedup, opts.empty, opts.trim)
+    processImmediate(input, sortMode, opts.dedup, opts.empty, opts.trim)
   }
 
   return (

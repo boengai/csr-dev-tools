@@ -35,7 +35,7 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
   }
 
   const handleDownload = () => {
-    const content = optimizeResult?.optimized ?? source
+    const content = sanitizeSvg(optimizeResult?.optimized ?? source)
     if (!content) return
     const blob = new Blob([content], { type: 'image/svg+xml' })
     const url = URL.createObjectURL(blob)

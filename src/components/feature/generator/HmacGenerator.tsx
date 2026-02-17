@@ -1,5 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 
+import type { ToolComponentProps } from '@/types'
 import type { HmacAlgorithm, HmacEncoding } from '@/utils'
 
 import { CopyButton, TextAreaInput } from '@/components/common'
@@ -11,7 +12,7 @@ const toolEntry = TOOL_REGISTRY_MAP['hmac-generator']
 
 const ENCODINGS: Array<HmacEncoding> = ['hex', 'base64']
 
-export const HmacGenerator = () => {
+export const HmacGenerator = (_props: ToolComponentProps) => {
   const [message, setMessage] = useState('')
   const [secretKey, setSecretKey] = useState('')
   const [algorithm, setAlgorithm] = useState<HmacAlgorithm>(DEFAULT_HMAC_ALGORITHM)
@@ -106,7 +107,7 @@ export const HmacGenerator = () => {
         name="hmac-secret-key"
         onChange={handleKeyChange}
         placeholder="Enter secret key..."
-        type="text"
+        type="password"
         value={secretKey}
       />
 

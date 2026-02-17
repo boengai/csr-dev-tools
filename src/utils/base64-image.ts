@@ -15,11 +15,11 @@ const MAGIC_BYTES: Array<{ format: string; prefix: string }> = [
   { format: 'svg+xml', prefix: 'PHN2Z' },
 ]
 
-const detectFormatFromBase64 = (base64: string): string => {
+const detectFormatFromBase64 = (base64: string): string | null => {
   for (const { format, prefix } of MAGIC_BYTES) {
     if (base64.startsWith(prefix)) return format
   }
-  return 'png'
+  return null
 }
 
 const getImageDimensions = (dataUri: string): Promise<{ height: number; width: number }> =>
@@ -39,15 +39,16 @@ export const base64ToImageInfo = async (input: string): Promise<Base64ImageInfo>
     base64Only = input.split(',')[1] ?? ''
   } else {
     base64Only = input.trim()
-    const format = detectFormatFromBase64(base64Only)
-    dataUri = `data:image/${format};base64,${base64Only}`
+    const detectedFormat = detectFormatFromBase64(base64Only)
+    const assumedFormat = detectedFormat ?? 'png'
+    dataUri = `data:image/${assumedFormat};base64,${base64Only}`
   }
 
   const estimatedSize = Math.ceil((base64Only.length * 3) / 4)
   const { height, width } = await getImageDimensions(dataUri)
 
   const formatMatch = dataUri.match(/^data:image\/([^;]+);/)
-  const format = formatMatch?.[1] ?? detectFormatFromBase64(base64Only)
+  const format = formatMatch?.[1] ?? detectFormatFromBase64(base64Only) ?? 'unknown'
 
   return { dataUri, estimatedSize, format, height, width }
 }

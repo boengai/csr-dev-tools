@@ -17,7 +17,7 @@ export const DEFAULT_GRID_CONTAINER: GridContainerProps = {
   rows: 'auto auto',
 }
 
-export const generateGridCss = (container: GridContainerProps, _itemCount: number): string => {
+export const generateGridCss = (container: GridContainerProps): string => {
   const lines = [
     'display: grid;',
     `grid-template-columns: ${container.columns};`,

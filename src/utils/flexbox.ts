@@ -41,7 +41,7 @@ export function generateFlexboxCss(
     `justify-content: ${container.justifyContent};`,
     `align-items: ${container.alignItems};`,
     `flex-wrap: ${container.wrap};`,
-    `gap: ${container.gap}px;`,
+    `gap: ${Math.max(0, container.gap)}px;`,
   ].join('\n')
 
   const itemsCss = items.map((item) =>

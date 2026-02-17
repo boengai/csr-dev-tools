@@ -1,5 +1,16 @@
 import { useCallback, useRef, useState } from 'react'
 
+const rafThrottle = <T extends (...args: Array<unknown>) => void>(fn: T): T => {
+  let frame: number | null = null
+  return ((...args: Array<unknown>) => {
+    if (frame) return
+    frame = requestAnimationFrame(() => {
+      fn(...args)
+      frame = null
+    })
+  }) as unknown as T
+}
+
 import type { ToolComponentProps } from '@/types'
 import type { PickedColor } from '@/utils/color-picker'
 
@@ -15,7 +26,6 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
   const [palette, setPalette] = useState<Array<PickedColor>>([])
   const [hoverColor, setHoverColor] = useState<PickedColor | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const imgRef = useRef<HTMLImageElement>(null)
 
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -45,8 +55,8 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
     const rect = canvas.getBoundingClientRect()
     const scaleX = canvas.width / rect.width
     const scaleY = canvas.height / rect.height
-    const x = Math.floor((e.clientX - rect.left) * scaleX)
-    const y = Math.floor((e.clientY - rect.top) * scaleY)
+    const x = Math.min(Math.max(Math.floor((e.clientX - rect.left) * scaleX), 0), canvas.width - 1)
+    const y = Math.min(Math.max(Math.floor((e.clientY - rect.top) * scaleY), 0), canvas.height - 1)
     const pixel = ctx.getImageData(x, y, 1, 1).data
     return pixelToColor(pixel[0], pixel[1], pixel[2])
   }, [])
@@ -61,9 +71,9 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
   )
 
   const handleCanvasMove = useCallback(
-    (e: React.MouseEvent<HTMLCanvasElement>) => {
+    rafThrottle((e: React.MouseEvent<HTMLCanvasElement>) => {
       setHoverColor(getColorAt(e))
-    },
+    }),
     [getColorAt],
   )
 
@@ -158,7 +168,6 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
           </div>
         </div>
       </Dialog>
-      <img alt="" className="hidden" ref={imgRef} />
     </>
   )
 }

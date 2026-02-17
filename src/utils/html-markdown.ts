@@ -7,7 +7,7 @@ export const htmlToMarkdown = async (input: string): Promise<string> => {
 
 export const markdownToHtml = async (input: string): Promise<string> => {
   if (input.trim().length === 0) throw new Error('Empty input')
-  const { marked } = await import('marked')
-  const result = await marked(input)
-  return result
+  const [{ marked }, DOMPurify] = await Promise.all([import('marked'), import('dompurify')])
+  const raw = await marked(input)
+  return DOMPurify.default.sanitize(raw)
 }

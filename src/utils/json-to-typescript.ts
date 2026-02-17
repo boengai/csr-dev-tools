@@ -54,7 +54,12 @@ const inferArrayType = (arr: Array<unknown>, key: string, collected: Array<Colle
   return `Array<${inner}>`
 }
 
+const builtTypes = new Set<string>()
+
 const buildObjectType = (obj: Record<string, unknown>, name: string, collected: Array<CollectedType>): void => {
+  if (builtTypes.has(name)) return
+  builtTypes.add(name)
+
   const keys = Object.keys(obj)
   if (keys.length === 0) {
     collected.push({ body: 'Record<string, unknown>', name })
@@ -82,9 +87,8 @@ export const jsonToTypeScript = (json: string, opts?: Partial<JsonToTsOptions>):
   }
 
   const collected: Array<CollectedType> = []
+  builtTypes.clear()
   buildObjectType(parsed as Record<string, unknown>, options.rootName, collected)
-
-  const sep = options.optionalProperties ? '?: ' : ': '
 
   const output = collected
     .reverse()
@@ -94,7 +98,7 @@ export const jsonToTypeScript = (json: string, opts?: Partial<JsonToTsOptions>):
           ? `interface ${name} extends Record<string, unknown> {}`
           : `type ${name} = Record<string, unknown>`
       }
-      const formatted = body.replace(/: /g, sep)
+      const formatted = options.optionalProperties ? body.replace(/^(\s+\w+): /gm, '$1?: ') : body
       return options.useInterface ? `interface ${name} {\n${formatted}\n}` : `type ${name} = {\n${formatted}\n}`
     })
     .join('\n\n')

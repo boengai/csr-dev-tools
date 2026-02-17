@@ -109,24 +109,24 @@ const getNextRuns = (parsed: Array<Array<number>>, count: number): Array<string>
   const now = new Date()
   const results: Array<string> = []
   const candidate = new Date(now)
-  candidate.setSeconds(0, 0)
-  candidate.setMinutes(candidate.getMinutes() + 1)
+  candidate.setUTCSeconds(0, 0)
+  candidate.setUTCMinutes(candidate.getUTCMinutes() + 1)
 
   const maxIterations = 525600 // 1 year of minutes
   let iterations = 0
 
   while (results.length < count && iterations < maxIterations) {
-    const m = candidate.getMinutes()
-    const h = candidate.getHours()
-    const dom = candidate.getDate()
-    const mon = candidate.getMonth() + 1
-    const dow = candidate.getDay()
+    const m = candidate.getUTCMinutes()
+    const h = candidate.getUTCHours()
+    const dom = candidate.getUTCDate()
+    const mon = candidate.getUTCMonth() + 1
+    const dow = candidate.getUTCDay()
 
     if (minutes.includes(m) && hours.includes(h) && doms.includes(dom) && months.includes(mon) && dows.includes(dow)) {
       results.push(candidate.toISOString().replace('T', ' ').slice(0, 16))
     }
 
-    candidate.setMinutes(candidate.getMinutes() + 1)
+    candidate.setUTCMinutes(candidate.getUTCMinutes() + 1)
     iterations++
   }
 

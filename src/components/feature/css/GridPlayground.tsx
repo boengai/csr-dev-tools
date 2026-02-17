@@ -40,7 +40,7 @@ export const GridPlayground = (_props: ToolComponentProps) => {
   const [container, setContainer] = useState<GridContainerProps>(DEFAULT_GRID_CONTAINER)
   const [itemCount, setItemCount] = useState(6)
 
-  const css = generateGridCss(container, itemCount)
+  const css = generateGridCss(container)
 
   const update = (patch: Partial<GridContainerProps>) => {
     setContainer((prev) => ({ ...prev, ...patch }))

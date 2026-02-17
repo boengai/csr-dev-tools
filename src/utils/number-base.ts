@@ -1,10 +1,14 @@
+const DIGITS = '0123456789abcdefghijklmnopqrstuvwxyz'
+
 export const convertBase = (value: string, fromBase: number, toBase: number): string => {
   if (value.trim().length === 0) throw new Error('Empty input')
+  if (fromBase < 2 || fromBase > 36) throw new Error(`Invalid fromBase: ${fromBase.toString()}. Must be 2-36.`)
+  if (toBase < 2 || toBase > 36) throw new Error(`Invalid toBase: ${toBase.toString()}. Must be 2-36.`)
 
   const cleaned = value.trim().toLowerCase()
 
   // Validate characters for the given base
-  const validChars = '0123456789abcdefghijklmnopqrstuvwxyz'.slice(0, fromBase)
+  const validChars = DIGITS.slice(0, fromBase)
   for (const ch of cleaned) {
     if (!validChars.includes(ch)) {
       throw new Error(`Invalid character '${ch}' for base ${fromBase.toString()}`)
@@ -29,7 +33,7 @@ export const convertBase = (value: string, fromBase: number, toBase: number): st
 
   while (remaining > 0n) {
     const digit = Number(remaining % targetBase)
-    result = '0123456789abcdef'[digit] + result
+    result = DIGITS[digit] + result
     remaining = remaining / targetBase
   }
 
