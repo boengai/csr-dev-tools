@@ -74,3 +74,8 @@ export type ToolRegistryKey =
   | 'uuid-generator'
   | 'word-counter'
   | 'xml-to-json-converter'
+  | 'json-to-typescript'
+  | 'cron-expression-parser'
+  | 'css-grid-playground'
+  | 'image-color-picker'
+  | 'text-sort-dedupe'

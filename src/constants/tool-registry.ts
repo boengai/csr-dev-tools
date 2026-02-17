@@ -766,6 +766,103 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       title: 'XML to JSON Converter - CSR Dev Tools',
     },
   },
+  {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/JsonToTypeScript').then(
+        ({ JsonToTypeScript }: { JsonToTypeScript: ComponentType }) => ({
+          default: JsonToTypeScript,
+        }),
+      ),
+    ),
+    description: 'Generate TypeScript interfaces or types from JSON. Paste JSON, get type-safe code.',
+    emoji: '🏗️',
+    key: 'json-to-typescript',
+    name: 'JSON to TypeScript',
+    routePath: '/tools/json-to-typescript',
+    seo: {
+      description:
+        'Generate TypeScript interfaces or types from JSON. Paste JSON, get type-safe code instantly in your browser.',
+      title: 'JSON to TypeScript - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Time',
+    component: lazy(() =>
+      import('@/components/feature/time/CronExpressionParser').then(
+        ({ CronExpressionParser }: { CronExpressionParser: ComponentType }) => ({
+          default: CronExpressionParser,
+        }),
+      ),
+    ),
+    description: 'Parse cron expressions into human-readable text and see the next scheduled run times.',
+    emoji: '⏰',
+    key: 'cron-expression-parser',
+    name: 'Cron Parser',
+    routePath: '/tools/cron-expression-parser',
+    seo: {
+      description: 'Parse cron expressions into human-readable descriptions and preview the next scheduled run times.',
+      title: 'Cron Expression Parser - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'CSS',
+    component: lazy(() =>
+      import('@/components/feature/css/GridPlayground').then(
+        ({ GridPlayground }: { GridPlayground: ComponentType }) => ({
+          default: GridPlayground,
+        }),
+      ),
+    ),
+    description: 'Visual CSS Grid layout builder. Define rows, columns, gaps, and placement — copy the CSS.',
+    emoji: '🔲',
+    key: 'css-grid-playground',
+    name: 'Grid Playground',
+    routePath: '/tools/css-grid-playground',
+    seo: {
+      description: 'Visual CSS Grid layout builder. Experiment with grid properties and copy the CSS.',
+      title: 'CSS Grid Playground - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Image',
+    component: lazy(() =>
+      import('@/components/feature/image/ImageColorPicker').then(
+        ({ ImageColorPicker }: { ImageColorPicker: ComponentType }) => ({
+          default: ImageColorPicker,
+        }),
+      ),
+    ),
+    description: 'Upload an image and click to extract colors. Get HEX, RGB, and HSL values.',
+    emoji: '🎯',
+    key: 'image-color-picker',
+    name: 'Image Color Picker',
+    routePath: '/tools/image-color-picker',
+    seo: {
+      description: 'Upload an image and click anywhere to extract colors. Get HEX, RGB, and HSL values instantly.',
+      title: 'Image Color Picker - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Text',
+    component: lazy(() =>
+      import('@/components/feature/text/TextSortDedupe').then(
+        ({ TextSortDedupe }: { TextSortDedupe: ComponentType }) => ({
+          default: TextSortDedupe,
+        }),
+      ),
+    ),
+    description: 'Sort lines alphabetically, numerically, or by length. Remove duplicates and empty lines.',
+    emoji: '🔀',
+    key: 'text-sort-dedupe',
+    name: 'Text Sort & Dedupe',
+    routePath: '/tools/text-sort-dedupe',
+    seo: {
+      description:
+        'Sort lines alphabetically, numerically, or by length. Remove duplicates, empty lines, and trim whitespace.',
+      title: 'Text Sort & Dedupe - CSR Dev Tools',
+    },
+  },
 ]
 
 export const CATEGORY_ORDER: Array<ToolCategory> = [
