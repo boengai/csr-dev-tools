@@ -20,7 +20,7 @@ function base64ToArrayBuffer(base64: string): ArrayBuffer {
   return bytes.buffer as ArrayBuffer
 }
 
-async function deriveKey(password: string, salt: Uint8Array): Promise<CryptoKey> {
+async function deriveKey(password: string, salt: ArrayBuffer): Promise<CryptoKey> {
   const encoder = new TextEncoder()
   const keyMaterial = await crypto.subtle.importKey('raw', encoder.encode(password), 'PBKDF2', false, ['deriveKey'])
 
@@ -42,9 +42,13 @@ export async function aesEncrypt(plaintext: string, password: string): Promise<s
   const encoder = new TextEncoder()
   const salt = crypto.getRandomValues(new Uint8Array(SALT_LENGTH))
   const iv = crypto.getRandomValues(new Uint8Array(IV_LENGTH))
-  const key = await deriveKey(password, salt)
+  const key = await deriveKey(password, salt.buffer as ArrayBuffer)
 
-  const ciphertext = await crypto.subtle.encrypt({ iv, name: 'AES-GCM' }, key, encoder.encode(plaintext))
+  const ciphertext = await crypto.subtle.encrypt(
+    { iv: iv.buffer as ArrayBuffer, name: 'AES-GCM' },
+    key,
+    encoder.encode(plaintext),
+  )
 
   // Combine salt + iv + ciphertext
   const combined = new Uint8Array(salt.length + iv.length + new Uint8Array(ciphertext).length)
@@ -62,9 +66,9 @@ export async function aesDecrypt(encrypted: string, password: string): Promise<s
   const iv = data.slice(SALT_LENGTH, SALT_LENGTH + IV_LENGTH)
   const ciphertext = data.slice(SALT_LENGTH + IV_LENGTH)
 
-  const key = await deriveKey(password, salt)
+  const key = await deriveKey(password, salt.buffer as ArrayBuffer)
 
-  const decrypted = await crypto.subtle.decrypt({ iv, name: 'AES-GCM' }, key, ciphertext)
+  const decrypted = await crypto.subtle.decrypt({ iv: iv.buffer as ArrayBuffer, name: 'AES-GCM' }, key, ciphertext)
 
   return new TextDecoder().decode(decrypted)
 }

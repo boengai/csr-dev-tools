@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useDebounceCallback } from '@/hooks'
 import { aesDecrypt, aesEncrypt } from '@/utils/aes'
 
 const toolEntry = TOOL_REGISTRY_MAP['aes-encrypt-decrypt']
@@ -17,7 +17,6 @@ export const AesEncryptDecrypt = () => {
   const [mode, setMode] = useState<Mode>('encrypt')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [loading, setLoading] = useState(false)
-  const { toast } = useToast()
 
   const processEncrypt = async (text: string, pass: string) => {
     if (!text || !pass) {
@@ -153,7 +152,7 @@ export const AesEncryptDecrypt = () => {
                 type="textarea"
                 value={result}
               />
-              {error && <p className="text-body-xs text-red-400">{error}</p>}
+              {error && <p className="text-red-400 text-body-xs">{error}</p>}
             </div>
           </div>
         </div>

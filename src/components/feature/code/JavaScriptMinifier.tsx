@@ -39,7 +39,8 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
     processInput(val)
   }
 
-  const handleModeChange = (m: 'beautify' | 'minify') => {
+  const handleModeChange = (val: string) => {
+    const m = val as 'beautify' | 'minify'
     setMode(m)
     if (source.trim().length > 0) {
       process(source, m, indent)

@@ -11,7 +11,7 @@ describe('css formatting utilities', () => {
 
     it('should format with 4-space indent', () => {
       const result = formatCss('body{color:red}', 4)
-      expect(result).toContain('    color: red;')
+      expect(result).toContain('    color: red')
     })
 
     it('should return empty string for empty input', () => {

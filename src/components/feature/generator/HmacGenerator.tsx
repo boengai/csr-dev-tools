@@ -102,7 +102,7 @@ export const HmacGenerator = () => {
       />
 
       <input
-        className="w-full rounded-lg border border-gray-800 bg-gray-950 px-3 py-2 font-mono text-sm text-gray-300 outline-none placeholder:text-gray-600 focus:border-primary"
+        className="text-sm w-full rounded-lg border border-gray-800 bg-gray-950 px-3 py-2 font-mono text-gray-300 outline-none placeholder:text-gray-600 focus:border-primary"
         name="hmac-secret-key"
         onChange={handleKeyChange}
         placeholder="Enter secret key..."

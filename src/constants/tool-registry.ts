@@ -6,6 +6,25 @@ import type { ToolCategory, ToolRegistryEntry } from '@/types'
 
 export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
+    category: 'Generator',
+    component: lazy(() =>
+      import('@/components/feature/generator/AesEncryptDecrypt').then(
+        ({ AesEncryptDecrypt }: { AesEncryptDecrypt: ComponentType }) => ({
+          default: AesEncryptDecrypt,
+        }),
+      ),
+    ),
+    description: 'Encrypt and decrypt text using AES-256-GCM with a password. 100% client-side encryption.',
+    emoji: '🔐',
+    key: 'aes-encrypt-decrypt',
+    name: 'AES Encrypt/Decrypt',
+    routePath: '/tools/aes-encrypt-decrypt',
+    seo: {
+      description: 'Encrypt and decrypt text using AES-256-GCM with a password. 100% client-side encryption.',
+      title: 'AES Encrypt/Decrypt - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Image',
     component: lazy(() =>
       import('@/components/feature/image/Base64ToImage').then(
@@ -160,6 +179,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       description:
         'Generate MD5, SHA-1, SHA-256, and SHA-512 hash values from text online. Compute checksums instantly in your browser — no server processing.',
       title: 'Hash Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Generator',
+    component: lazy(() =>
+      import('@/components/feature/generator/HmacGenerator').then(
+        ({ HmacGenerator }: { HmacGenerator: ComponentType }) => ({
+          default: HmacGenerator,
+        }),
+      ),
+    ),
+    description:
+      'Generate HMAC signatures using SHA-256, SHA-384, or SHA-512. Verify API signatures and webhook authentication.',
+    emoji: '🔏',
+    key: 'hmac-generator',
+    name: 'HMAC Generator',
+    routePath: '/tools/hmac-generator',
+    seo: {
+      description:
+        'Generate HMAC signatures using SHA-256, SHA-384, or SHA-512. Verify API signatures and webhook authentication.',
+      title: 'HMAC Generator - CSR Dev Tools',
     },
   },
   {
@@ -424,24 +464,22 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
-    category: "Code",
+    category: 'Code',
     component: lazy(() =>
-      import("@/components/feature/code/MarkdownPreview").then(
+      import('@/components/feature/code/MarkdownPreview').then(
         ({ MarkdownPreview }: { MarkdownPreview: ComponentType }) => ({
           default: MarkdownPreview,
         }),
       ),
     ),
-    description:
-      "Live Markdown preview with HTML output. Write and preview Markdown in your browser",
-    emoji: "📝",
-    key: "markdown-preview",
-    name: "Markdown Preview",
-    routePath: "/tools/markdown-preview",
+    description: 'Live Markdown preview with HTML output. Write and preview Markdown in your browser',
+    emoji: '📝',
+    key: 'markdown-preview',
+    name: 'Markdown Preview',
+    routePath: '/tools/markdown-preview',
     seo: {
-      description:
-        "Live Markdown preview with HTML output. Write and preview Markdown in your browser.",
-      title: "Markdown Preview - CSR Dev Tools",
+      description: 'Live Markdown preview with HTML output. Write and preview Markdown in your browser.',
+      title: 'Markdown Preview - CSR Dev Tools',
     },
   },
   {
@@ -559,24 +597,20 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
-    category: "Code",
+    category: 'Code',
     component: lazy(() =>
-      import("@/components/feature/code/SqlFormatter").then(
-        ({ SqlFormatter }: { SqlFormatter: ComponentType }) => ({
-          default: SqlFormatter,
-        }),
-      ),
+      import('@/components/feature/code/SqlFormatter').then(({ SqlFormatter }: { SqlFormatter: ComponentType }) => ({
+        default: SqlFormatter,
+      })),
     ),
-    description:
-      "Format SQL queries with proper indentation. Supports PostgreSQL, MySQL, SQLite, and more",
-    emoji: "🗄️",
-    key: "sql-formatter",
-    name: "SQL Formatter",
-    routePath: "/tools/sql-formatter",
+    description: 'Format SQL queries with proper indentation. Supports PostgreSQL, MySQL, SQLite, and more',
+    emoji: '🗄️',
+    key: 'sql-formatter',
+    name: 'SQL Formatter',
+    routePath: '/tools/sql-formatter',
     seo: {
-      description:
-        "Format SQL queries with proper indentation. Supports PostgreSQL, MySQL, SQLite, and more.",
-      title: "SQL Formatter - CSR Dev Tools",
+      description: 'Format SQL queries with proper indentation. Supports PostgreSQL, MySQL, SQLite, and more.',
+      title: 'SQL Formatter - CSR Dev Tools',
     },
   },
   {
@@ -735,6 +769,7 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
 ]
 
 export const CATEGORY_ORDER: Array<ToolCategory> = [
+  'Code',
   'Color',
   'CSS',
   'Data',
