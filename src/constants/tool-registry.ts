@@ -27,6 +27,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Image',
     component: lazy(() =>
+      import('@/components/feature/image/BackgroundRemover').then(
+        ({ BackgroundRemover }: { BackgroundRemover: ComponentType }) => ({
+          default: BackgroundRemover,
+        }),
+      ),
+    ),
+    description: 'Remove image backgrounds using AI — fully in your browser',
+    emoji: '✂️',
+    key: 'background-remover',
+    name: 'Background Remover',
+    routePath: '/tools/background-remover',
+    seo: {
+      description:
+        'Remove image backgrounds instantly using AI running in your browser. No uploads, no API calls — fully private and free. Download as transparent PNG or choose a custom background color.',
+      title: 'Background Remover - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Image',
+    component: lazy(() =>
       import('@/components/feature/image/Base64ToImage').then(
         ({ Base64ToImage }: { Base64ToImage: ComponentType }) => ({
           default: Base64ToImage,

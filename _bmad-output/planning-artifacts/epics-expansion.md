@@ -810,3 +810,28 @@ I want **to upload an image and generate favicons in standard sizes (16x16, 32x3
 So that **I can quickly create all required favicon sizes for my website**.
 
 **Category:** Image | **Emoji:** 🖼️ | **Key:** `favicon-generator`
+
+---
+
+## Epic 21: AI-Powered Image Tools
+
+Users can remove image backgrounds entirely in the browser using AI/ML models with no server processing, ensuring full privacy and zero cost.
+
+### Story 21.1: Background Remover
+
+As a **user**,
+I want **to upload an image and have its background automatically removed using an AI model running in my browser**,
+So that **I can get transparent-background images without uploading to external services or paying for API calls**.
+
+**Category:** Image | **Emoji:** ✂️ | **Key:** `background-remover`
+
+**Technical approach:**
+- Use `@huggingface/transformers` with `Xenova/modnet` model (Apache 2.0 license)
+- Pipeline: `pipeline('background-removal', 'Xenova/modnet', { dtype: 'fp32' })`
+- Model downloads ~25MB on first use, cached by browser after
+- WebGPU with WASM fallback for inference
+- Dialog-based tool (needs space for before/after preview)
+- Show model download progress on first use
+- Before/after slider or side-by-side comparison
+- Choose output: transparent, white, or custom background color
+- Download as PNG

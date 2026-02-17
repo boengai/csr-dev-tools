@@ -35,6 +35,7 @@ export type ToolRegistryEntry = {
 
 export type ToolRegistryKey =
   | 'aes-encrypt-decrypt'
+  | 'background-remover'
   | 'base64-to-image'
   | 'base64-encoder'
   | 'box-shadow-generator'

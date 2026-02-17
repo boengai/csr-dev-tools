@@ -1,4 +1,5 @@
 export * from './aes'
+export * from './background-removal'
 export * from './base64'
 export * from './base64-image'
 export * from './css-format'

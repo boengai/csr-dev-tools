@@ -10,6 +10,13 @@ import { prerender } from './vite-plugins/prerender'
 const toolRoutes = [
   {
     description:
+      'Remove image backgrounds instantly using AI running in your browser. No uploads, no API calls — fully private and free.',
+    path: '/tools/background-remover',
+    title: 'Background Remover - CSR Dev Tools',
+    url: '/tools/background-remover',
+  },
+  {
+    description:
       'Encode and decode Base64 strings online. Convert text to Base64 and back instantly in your browser.',
     path: '/tools/base64-encoder',
     title: 'Base64 Encoder - CSR Dev Tools',

@@ -17,6 +17,7 @@
     "test:e2e:headed": "playwright test --headed"
   },
   "dependencies": {
+    "@huggingface/transformers": "3.8.1",
     "@radix-ui/react-dialog": "1.1.15",
     "@radix-ui/react-select": "2.2.6",
     "@radix-ui/react-tabs": "1.1.13",
@@ -56,6 +57,7 @@
     "@types/react": "19.2.13",
     "@types/react-dom": "19.2.3",
     "@vitejs/plugin-react": "5.1.4",
+    "jsdom": "28.1.0",
     "oxfmt": "0.31.0",
     "oxlint": "1.46.0",
     "typescript": "5.9.3",
