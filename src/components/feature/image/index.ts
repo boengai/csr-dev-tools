@@ -1,4 +1,7 @@
+export * from './Base64ToImage'
 export * from './ImageCompressor'
 export * from './ImageConvertor'
 export * from './ImageCropper'
 export * from './ImageResizer'
+export * from './ImageToBase64'
+export * from './SvgViewer'

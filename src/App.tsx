@@ -1,7 +1,16 @@
 import { Link, Outlet, useLocation } from '@tanstack/react-router'
 import { type ComponentType, lazy, Suspense } from 'react'
 
-import { ArrowIcon, CommandPalette, GitHubIcon, HamburgerIcon, NotoEmoji, SearchIcon, Sidebar, ToastProvider } from '@/components'
+import {
+  ArrowIcon,
+  CommandPalette,
+  GitHubIcon,
+  HamburgerIcon,
+  NotoEmoji,
+  SearchIcon,
+  Sidebar,
+  ToastProvider,
+} from '@/components'
 import { ROUTE_PATH } from '@/constants'
 import { useCommandPaletteStore, useKeyboardShortcuts, useSidebarStore } from '@/hooks'
 
