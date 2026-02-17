@@ -1,5 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 
+import type { ToolComponentProps } from '@/types'
+
 import { Button, CopyButton, Dialog, DownloadIcon, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
@@ -7,8 +9,8 @@ import { generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils/qr-code'
 
 const toolEntry = TOOL_REGISTRY_MAP['qr-code-generator']
 
-export const QrCodeGenerator = () => {
-  const [dialogOpen, setDialogOpen] = useState(false)
+export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [text, setText] = useState('')
   const [size, setSize] = useState(256)
   const [errorCorrection, setErrorCorrection] = useState<'H' | 'L' | 'M' | 'Q'>('M')
@@ -118,7 +120,7 @@ export const QrCodeGenerator = () => {
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleReset}
+        onAfterClose={() => { handleReset(); onAfterDialogClose?.() }}
         size="screen"
         title="QR Code Generator"
       >

@@ -2,6 +2,8 @@ import { useState } from 'react'
 
 import type { SvgOptimizeResult } from '@/utils/svg-optimize'
 
+import type { ToolComponentProps } from '@/types'
+
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
@@ -9,8 +11,8 @@ import { optimizeSvg, sanitizeSvg } from '@/utils/svg-optimize'
 
 const toolEntry = TOOL_REGISTRY_MAP['svg-viewer']
 
-export const SvgViewer = () => {
-  const [dialogOpen, setDialogOpen] = useState(false)
+export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [source, setSource] = useState('')
   const [safeSvg, setSafeSvg] = useState('')
   const [optimizeResult, setOptimizeResult] = useState<SvgOptimizeResult | null>(null)
@@ -66,7 +68,7 @@ export const SvgViewer = () => {
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleReset}
+        onAfterClose={() => { handleReset(); onAfterDialogClose?.() }}
         size="screen"
         title="SVG Viewer &amp; Optimizer"
       >

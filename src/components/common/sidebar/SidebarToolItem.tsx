@@ -35,8 +35,8 @@ export const SidebarToolItem = ({ emoji, isActive = false, name, toolKey }: Side
 
   return (
     <button className={sidebarToolItemVariants({ active: isActive })} onClick={handleClick} type="button">
-      <span>{emoji}</span>
-      <span>{name}</span>
+      <span className="shrink-0">{emoji}</span>
+      <span className="truncate">{name}</span>
     </button>
   )
 }

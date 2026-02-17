@@ -2,6 +2,8 @@ import { useRef, useState } from 'react'
 
 import type { Base64ImageInfo } from '@/utils/base64-image'
 
+import type { ToolComponentProps } from '@/types'
+
 import { Button, Dialog, DownloadIcon, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
@@ -10,8 +12,8 @@ import { base64ToImageInfo } from '@/utils/base64-image'
 
 const toolEntry = TOOL_REGISTRY_MAP['base64-to-image']
 
-export const Base64ToImage = () => {
-  const [dialogOpen, setDialogOpen] = useState(false)
+export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [input, setInput] = useState('')
   const [info, setInfo] = useState<Base64ImageInfo | null>(null)
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
@@ -70,7 +72,7 @@ export const Base64ToImage = () => {
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleReset}
+        onAfterClose={() => { handleReset(); onAfterDialogClose?.() }}
         size="screen"
         title="Base64 to Image"
       >
