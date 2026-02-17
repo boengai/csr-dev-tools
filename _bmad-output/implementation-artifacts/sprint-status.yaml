@@ -129,7 +129,7 @@ development_status:
   12-3-javascript-minifier: done
   12-4-sql-formatter: done
   12-5-markdown-preview: done
-  epic-12-retrospective: optional
+  epic-12-retrospective: done
 
   # Epic 13: Data & Number Converters
   epic-13: done
@@ -137,20 +137,20 @@ development_status:
   13-2-toml-to-json-converter: done
   13-3-html-to-markdown-converter: done
   13-4-number-base-converter: done
-  epic-13-retrospective: optional
+  epic-13-retrospective: done
 
   # Epic 14: Crypto & Security Tools
   epic-14: done
   14-1-hmac-generator: done
   14-2-aes-encrypt-decrypt: done
-  epic-14-retrospective: optional
+  epic-14-retrospective: done
 
   # Epic 15: CSS & Design Tools
   epic-15: done
   15-1-css-gradient-generator: done
   15-2-css-flexbox-playground: done
   15-3-svg-viewer-optimizer: done
-  epic-15-retrospective: optional
+  epic-15-retrospective: done
 
   # Epic 16: Text Utilities
   epic-16: done
@@ -158,14 +158,14 @@ development_status:
   16-2-word-character-counter: done
   16-3-lorem-ipsum-generator: done
   16-4-string-escape-unescape: done
-  epic-16-retrospective: optional
+  epic-16-retrospective: done
 
   # Epic 17: Image & Media Tools
   epic-17: done
   17-1-qr-code-generator: done
   17-2-image-to-base64: done
   17-3-base64-to-image: done
-  epic-17-retrospective: optional
+  epic-17-retrospective: done
 
   # Epic 18: Developer Productivity Tools
   epic-18: done
