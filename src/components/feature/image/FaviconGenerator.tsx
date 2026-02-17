@@ -10,8 +10,8 @@ import { downloadFaviconsAsZip, generateFaviconLinkTags, generateFavicons } from
 
 const toolEntry = TOOL_REGISTRY_MAP['favicon-generator']
 
-export const FaviconGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
+export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
+  const [dialogOpen, setDialogOpen] = useState(false)
   const [results, setResults] = useState<Array<FaviconResult>>([])
   const [sourcePreview, setSourcePreview] = useState<string>('')
   const [processing, setProcessing] = useState(false)

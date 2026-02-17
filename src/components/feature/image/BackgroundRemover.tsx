@@ -17,9 +17,9 @@ const TABS_VALUES = {
 
 const toolEntry = TOOL_REGISTRY_MAP['background-remover']
 
-export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) => {
   const [tabValue, setTabValue] = useState<string>(TABS_VALUES.IMPORT)
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
+  const [dialogOpen, setDialogOpen] = useState(false)
   const [downloading, setDownloading] = useState(false)
   const [progress, setProgress] = useState(0)
   const [sourcePreview, setSourcePreview] = useState('')
