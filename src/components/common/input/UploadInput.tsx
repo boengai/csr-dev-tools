@@ -12,6 +12,8 @@ export const UploadInput = ({ button, disabled, onBlur, onChange, ...props }: Up
     const files = event.target.files
     if (files?.length) {
       onChange?.(Array.from(files))
+      // Reset value so re-selecting the same file triggers onChange again
+      event.target.value = ''
     }
   }
 

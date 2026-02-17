@@ -2,35 +2,49 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
-import { Button, CopyButton, Dialog, DownloadIcon, RefreshIcon, UploadInput } from '@/components/common'
+import { Button, Dialog, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import { applyBackground, removeBackground } from '@/utils/background-removal'
 
-type ProcessingState = 'done' | 'downloading-model' | 'error' | 'idle' | 'processing'
 type BgOption = 'custom' | 'transparent' | 'white'
+
+const TABS_VALUES = {
+  DOWNLOAD: 'download',
+  IMPORT: 'import',
+  PROCESSING: 'processing',
+} as const
 
 const toolEntry = TOOL_REGISTRY_MAP['background-remover']
 
 export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+  const [tabValue, setTabValue] = useState<string>(TABS_VALUES.IMPORT)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const [state, setState] = useState<ProcessingState>('idle')
+  const [downloading, setDownloading] = useState(false)
   const [progress, setProgress] = useState(0)
   const [sourcePreview, setSourcePreview] = useState('')
   const [resultUrl, setResultUrl] = useState('')
   const [displayUrl, setDisplayUrl] = useState('')
   const [bgOption, setBgOption] = useState<BgOption>('transparent')
   const [customColor, setCustomColor] = useState('#ff0000')
+  const [processing, setProcessing] = useState(false)
+  const [error, setError] = useState(false)
   const { toast } = useToast()
   const resultBlobRef = useRef<Blob | null>(null)
+  const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
+  // Track whether dialog was closed via Confirm (so onAfterClose doesn't reset)
+  const confirmedRef = useRef(false)
+  // Track resultUrl in a ref for stable closure in updateDisplay
+  const resultUrlRef = useRef(resultUrl)
+  resultUrlRef.current = resultUrl
 
   const updateDisplay = useCallback(
     async (option: BgOption, color: string, blob: Blob | null) => {
       if (!blob) return
 
-      // Revoke previous display URL if it differs from the result URL (composited URLs)
+      // Revoke previous composited display URL (use ref for stable comparison)
       setDisplayUrl((prev) => {
-        if (prev && prev !== resultUrl) URL.revokeObjectURL(prev)
+        if (prev && prev !== resultUrlRef.current) URL.revokeObjectURL(prev)
         return prev
       })
 
@@ -48,7 +62,7 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
         toast({ action: 'add', item: { label: 'Failed to apply background color', type: 'error' } })
       }
     },
-    [toast, resultUrl],
+    [toast],
   )
 
   const handleUpload = useCallback(
@@ -62,7 +76,9 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
       }
 
       try {
+        setError(false)
         setDialogOpen(true)
+        setTabValue(TABS_VALUES.PROCESSING)
         setProgress(0)
 
         const url = URL.createObjectURL(file)
@@ -72,25 +88,27 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
         const onProgress = (p: number) => {
           if (!receivedProgress) {
             receivedProgress = true
-            setState('downloading-model')
+            setDownloading(true)
           }
           setProgress(p)
-          if (p >= 100) setState('processing')
+          if (p >= 100) setDownloading(false)
         }
 
-        setState('processing')
+        setProcessing(true)
         const result = await removeBackground(file, onProgress)
         resultBlobRef.current = result
-        // blob stored in ref
 
         const resultObjUrl = URL.createObjectURL(result)
         setResultUrl(resultObjUrl)
         setDisplayUrl(resultObjUrl)
         setBgOption('transparent')
-        setState('done')
+        setProcessing(false)
+        setDownloading(false)
         toast({ action: 'add', item: { label: 'Background removed successfully', type: 'success' } })
       } catch {
-        setState('error')
+        setProcessing(false)
+        setDownloading(false)
+        setError(true)
         toast({ action: 'add', item: { label: 'Failed to remove background. Try a different image.', type: 'error' } })
       }
     },
@@ -115,12 +133,17 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
     [bgOption, updateDisplay],
   )
 
-  const handleDownload = useCallback(() => {
+  const handleConfirm = useCallback(() => {
     if (!displayUrl) return
-    const a = document.createElement('a')
-    a.href = displayUrl
-    a.download = 'background-removed.png'
-    a.click()
+    const anchor = downloadAnchorRef.current
+    if (!anchor) return
+
+    anchor.href = displayUrl
+    anchor.download = 'background-removed.png'
+
+    confirmedRef.current = true
+    setTabValue(TABS_VALUES.DOWNLOAD)
+    setDialogOpen(false)
   }, [displayUrl])
 
   const handleReset = useCallback(() => {
@@ -128,99 +151,146 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
     if (resultUrl) URL.revokeObjectURL(resultUrl)
     if (displayUrl && displayUrl !== resultUrl) URL.revokeObjectURL(displayUrl)
     setSourcePreview('')
-    // ref cleared in handleReset
     resultBlobRef.current = null
     setResultUrl('')
     setDisplayUrl('')
-    setState('idle')
+    setProcessing(false)
+    setDownloading(false)
+    setError(false)
     setProgress(0)
     setBgOption('transparent')
+    setTabValue(TABS_VALUES.IMPORT)
+    // Clear download anchor to prevent stale URL access
+    const anchor = downloadAnchorRef.current
+    if (anchor) {
+      anchor.href = ''
+      anchor.download = ''
+    }
   }, [sourcePreview, resultUrl, displayUrl])
 
+  // Track URLs in refs for unmount-only cleanup
+  const sourcePreviewCleanupRef = useRef(sourcePreview)
+  sourcePreviewCleanupRef.current = sourcePreview
+  const resultUrlCleanupRef = useRef(resultUrl)
+  resultUrlCleanupRef.current = resultUrl
+
+  // eslint-disable-next-line react-hooks/exhaustive-deps -- unmount-only cleanup using refs
   useEffect(() => {
     return () => {
-      if (sourcePreview) URL.revokeObjectURL(sourcePreview)
-      if (resultUrl) URL.revokeObjectURL(resultUrl)
+      if (sourcePreviewCleanupRef.current) URL.revokeObjectURL(sourcePreviewCleanupRef.current)
+      if (resultUrlCleanupRef.current) URL.revokeObjectURL(resultUrlCleanupRef.current)
     }
-  }, [sourcePreview, resultUrl])
-
-  const [dataUrlForCopy, setDataUrlForCopy] = useState('')
-
-  // Convert current display blob to a data URL for the copy button
-  useEffect(() => {
-    if (!displayUrl) {
-      setDataUrlForCopy('')
-      return
-    }
-    // Read the blob from the object URL to produce a real data URL
-    const controller = new AbortController()
-    void fetch(displayUrl, { signal: controller.signal })
-      .then((r) => r.blob())
-      .then((blob) => {
-        const reader = new FileReader()
-        reader.onloadend = () => {
-          if (!controller.signal.aborted && typeof reader.result === 'string') {
-            setDataUrlForCopy(reader.result)
-          }
-        }
-        reader.readAsDataURL(blob)
-      })
-      .catch(() => {
-        /* aborted or failed — ignore */
-      })
-    return () => controller.abort()
-  }, [displayUrl])
+  }, [])
 
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
-        <div className="w-full desktop:w-8/10">
-          <UploadInput
-            accept="image/png,image/jpeg,image/webp"
-            button={{ block: true, children: 'Select image to remove background' }}
-            multiple={false}
-            name="background-remover-source"
-            onChange={handleUpload}
-          />
-        </div>
+
+        <Tabs
+          injected={{
+            setValue: setTabValue,
+            value: tabValue,
+          }}
+          items={[
+            {
+              content: (
+                <div className="flex w-full grow flex-col items-center justify-center gap-4">
+                  <div className="w-full desktop:w-8/10">
+                    <UploadInput
+                      accept="image/png,image/jpeg,image/webp"
+                      button={{ block: true, children: 'Select image to remove background' }}
+                      multiple={false}
+                      name="background-remover-source"
+                      onChange={handleUpload}
+                    />
+                  </div>
+                </div>
+              ),
+              value: TABS_VALUES.IMPORT,
+            },
+            {
+              content: (
+                <div className="flex w-full grow flex-col items-center justify-center gap-6">
+                  <NotoEmoji emoji="robot" size={120} />
+                </div>
+              ),
+              value: TABS_VALUES.PROCESSING,
+            },
+            {
+              content: (
+                <div className="flex w-full grow flex-col items-center justify-center gap-6">
+                  <NotoEmoji emoji="check" size={120} />
+                  <div className="flex w-full flex-col gap-4 desktop:w-8/10">
+                    <Button
+                      block
+                      icon={<DownloadIcon />}
+                      onClick={() => {
+                        const anchor = downloadAnchorRef.current
+                        if (!anchor?.href || anchor.href === window.location.href) {
+                          toast({ action: 'add', item: { label: 'Download not available. Please try again.', type: 'error' } })
+                          return
+                        }
+                        anchor.click()
+                        toast({ action: 'add', item: { label: 'Downloaded background-removed.png', type: 'success' } })
+                      }}
+                      variant="primary"
+                    >
+                      Download
+                    </Button>
+                    <Button block icon={<RefreshIcon />} onClick={handleReset}>
+                      Start Over
+                    </Button>
+                  </div>
+                </div>
+              ),
+              value: TABS_VALUES.DOWNLOAD,
+            },
+          ]}
+        />
+        <a className="hidden" download="" href="" ref={downloadAnchorRef} />
       </div>
 
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
         onAfterClose={() => {
-          handleReset()
+          // Only reset if user dismissed (not confirmed)
+          if (confirmedRef.current) {
+            confirmedRef.current = false
+          } else {
+            handleReset()
+          }
           onAfterDialogClose?.()
         }}
         size="screen"
         title="Background Remover"
       >
-        <div className="flex grow flex-col gap-6 overflow-y-auto">
-          {/* Downloading model state */}
-          {state === 'downloading-model' && (
-            <div className="flex flex-col items-center gap-3 py-8">
-              <p className="text-body-sm text-gray-300">Downloading AI model...</p>
-              <div className="h-2 w-64 overflow-hidden rounded-full bg-gray-800">
-                <div
-                  className="h-full rounded-full bg-blue-500 transition-all duration-300"
-                  style={{ width: `${Math.min(progress, 100)}%` }}
-                />
-              </div>
-              <p className="text-body-xs text-gray-500">{Math.round(progress)}%</p>
-            </div>
-          )}
-
-          {/* Processing state */}
-          {state === 'processing' && (
-            <div className="flex flex-col items-center gap-3 py-8">
-              <div className="size-8 animate-spin rounded-full border-2 border-gray-600 border-t-blue-500" />
-              <p className="text-body-sm text-gray-400">Removing background...</p>
+        <div className="flex grow flex-col gap-4 tablet:min-h-0">
+          {/* Loading states */}
+          {processing && (
+            <div aria-live="polite" className="flex grow flex-col items-center justify-center gap-3">
+              <NotoEmoji emoji="robot" size={120} />
+              {downloading ? (
+                <>
+                  <p className="text-body-sm text-gray-300">Downloading AI model...</p>
+                  <div className="h-2 w-64 overflow-hidden rounded-full bg-gray-800">
+                    <div
+                      className="h-full rounded-full bg-blue-500 transition-all duration-300"
+                      style={{ width: `${Math.min(progress, 100)}%` }}
+                    />
+                  </div>
+                  <p className="text-body-xs text-gray-500">{Math.round(progress)}%</p>
+                </>
+              ) : (
+                <p className="text-body-sm text-gray-400">Removing background...</p>
+              )}
             </div>
           )}
 
           {/* Error state */}
-          {state === 'error' && (
-            <div className="flex flex-col items-center gap-3 py-8">
+          {!processing && error && (
+            <div aria-live="assertive" className="flex grow flex-col items-center justify-center gap-3">
+              <NotoEmoji emoji="bomb" size={120} />
               <p className="text-body-sm text-red-400">Processing failed. Try a different image.</p>
               <Button icon={<RefreshIcon />} onClick={handleReset} size="small">
                 Try Again
@@ -229,96 +299,88 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
           )}
 
           {/* Done state - before/after */}
-          {state === 'done' && (
+          {!processing && !error && displayUrl && (
             <>
-              <div className="flex flex-col gap-6 tablet:flex-row">
+              <div
+                aria-live="polite"
+                className="bg-grid-texture flex flex-col items-center justify-center gap-6 bg-black tablet:min-h-0 tablet:grow tablet:flex-row"
+              >
                 {/* Original */}
-                <div className="flex flex-1 flex-col items-center gap-2">
-                  <p className="text-body-sm font-medium text-gray-300">Original</p>
+                <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
+                  <p className="shrink-0 text-body-sm font-medium text-gray-300">Original</p>
                   {sourcePreview && (
-                    <img
-                      alt="original"
-                      className="max-h-64 max-w-full rounded border border-gray-800 object-contain"
-                      src={sourcePreview}
-                    />
+                    <picture className="flex size-full grow flex-col items-center justify-center gap-4 tablet:max-h-full tablet:overflow-y-auto">
+                      <img alt="original" className="w-full max-w-full tablet:max-h-full tablet:w-auto" src={sourcePreview} />
+                    </picture>
                   )}
                 </div>
 
+                <div className="tablet:border-t-none h-1 w-full border-t-2 border-dashed border-gray-700 tablet:h-full tablet:w-1 tablet:border-l-2" />
+
                 {/* Result */}
-                <div className="flex flex-1 flex-col items-center gap-2">
-                  <p className="text-body-sm font-medium text-gray-300">Result</p>
-                  {displayUrl && (
-                    <div
-                      className="inline-flex rounded border border-gray-800"
-                      style={
-                        bgOption === 'transparent'
-                          ? {
-                              backgroundImage:
-                                'repeating-conic-gradient(#808080 0% 25%, transparent 0% 50%)',
-                              backgroundSize: '16px 16px',
-                            }
-                          : undefined
-                      }
-                    >
-                      <img
-                        alt="result"
-                        className="max-h-64 max-w-full object-contain"
-                        src={displayUrl}
-                      />
-                    </div>
-                  )}
+                <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
+                  <p className="shrink-0 text-body-sm font-medium text-gray-300">Result</p>
+                  <picture
+                    className="flex size-full grow flex-col items-center justify-center gap-4 rounded tablet:max-h-full tablet:overflow-y-auto"
+                    style={
+                      bgOption === 'transparent'
+                        ? {
+                            backgroundImage:
+                              'repeating-conic-gradient(#808080 0% 25%, transparent 0% 50%)',
+                            backgroundSize: '16px 16px',
+                          }
+                        : undefined
+                    }
+                  >
+                    <img alt="result" className="w-full max-w-full tablet:max-h-full tablet:w-auto" src={displayUrl} />
+                  </picture>
                 </div>
               </div>
 
-              {/* Background selector */}
-              <div className="flex flex-wrap items-center gap-4">
-                <span className="text-body-sm text-gray-400">Background:</span>
-                <label className="flex cursor-pointer items-center gap-1.5 text-body-sm text-gray-300">
+              {/* Controls at bottom */}
+              <div className="flex w-full shrink-0 flex-col items-center gap-4">
+                <div className="flex flex-wrap items-center justify-center gap-4">
+                  <span className="text-body-sm text-gray-400">Background:</span>
+                  <label className="flex cursor-pointer items-center gap-1.5 text-body-sm text-gray-300">
+                    <input
+                      checked={bgOption === 'transparent'}
+                      name="bg-option"
+                      onChange={() => handleBgChange('transparent')}
+                      type="radio"
+                    />
+                    Transparent
+                  </label>
+                  <label className="flex cursor-pointer items-center gap-1.5 text-body-sm text-gray-300">
+                    <input
+                      checked={bgOption === 'white'}
+                      name="bg-option"
+                      onChange={() => handleBgChange('white')}
+                      type="radio"
+                    />
+                    White
+                  </label>
+                  <label className="flex cursor-pointer items-center gap-1.5 text-body-sm text-gray-300">
+                    <input
+                      checked={bgOption === 'custom'}
+                      name="bg-option"
+                      onChange={() => handleBgChange('custom')}
+                      type="radio"
+                    />
+                    Custom
+                  </label>
                   <input
-                    checked={bgOption === 'transparent'}
-                    name="bg-option"
-                    onChange={() => handleBgChange('transparent')}
-                    type="radio"
-                  />
-                  Transparent
-                </label>
-                <label className="flex cursor-pointer items-center gap-1.5 text-body-sm text-gray-300">
-                  <input
-                    checked={bgOption === 'white'}
-                    name="bg-option"
-                    onChange={() => handleBgChange('white')}
-                    type="radio"
-                  />
-                  White
-                </label>
-                <label className="flex cursor-pointer items-center gap-1.5 text-body-sm text-gray-300">
-                  <input
-                    checked={bgOption === 'custom'}
-                    name="bg-option"
-                    onChange={() => handleBgChange('custom')}
-                    type="radio"
-                  />
-                  Custom
-                </label>
-                {bgOption === 'custom' && (
-                  <input
-                    className="size-8 cursor-pointer rounded border border-gray-700"
+                    className="size-8 cursor-pointer rounded border border-gray-700 disabled:cursor-not-allowed disabled:opacity-40"
+                    disabled={bgOption !== 'custom'}
                     onChange={(e) => handleColorChange(e.target.value)}
                     type="color"
                     value={customColor}
                   />
-                )}
-              </div>
-
-              {/* Actions */}
-              <div className="flex flex-wrap items-center gap-3">
-                <Button icon={<DownloadIcon />} onClick={handleDownload} variant="primary">
-                  Download PNG
-                </Button>
-                {dataUrlForCopy && <CopyButton label="data URL" value={dataUrlForCopy} />}
-                <Button icon={<RefreshIcon />} onClick={handleReset} size="small">
-                  New Image
-                </Button>
+                </div>
+                <div className="w-full desktop:w-2/5">
+                  <Button block onClick={handleConfirm} variant="primary">
+                    Confirm
+                  </Button>
+                </div>
               </div>
             </>
           )}
