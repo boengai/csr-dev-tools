@@ -175,3 +175,12 @@ development_status:
   18-4-image-color-picker: done
   18-5-text-sort-dedupe: done
   epic-18-retrospective: done
+
+  # Epic 19: Developer Reference & Utility Tools
+  epic-19: done
+  19-1-css-border-radius-generator: done
+  19-2-url-parser: done
+  19-3-markdown-table-generator: done
+  19-4-http-status-codes: done
+  19-5-user-agent-parser: done
+  epic-19-retrospective: optional

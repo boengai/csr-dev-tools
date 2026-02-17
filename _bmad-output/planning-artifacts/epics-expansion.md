@@ -718,3 +718,49 @@ I want **to sort lines alphabetically, numerically, or by length, and optionally
 So that **I can quickly clean up lists, log files, and text data**.
 
 **Category:** Text | **Emoji:** 🔀 | **Key:** `text-sort-dedupe`
+
+---
+
+## Epic 19: Developer Reference & Utility Tools
+
+Users can generate CSS border-radius visually, parse URLs into components, build Markdown tables visually, look up HTTP status codes, and parse user agent strings — all in the browser.
+
+### Story 19.1: CSS Border Radius Generator
+
+As a **user**,
+I want **to visually configure CSS border-radius with per-corner control and see a live preview**,
+So that **I can design rounded corners without guessing pixel values**.
+
+**Category:** CSS | **Emoji:** ⬜ | **Key:** `css-border-radius-generator`
+
+### Story 19.2: URL Parser
+
+As a **user**,
+I want **to paste a URL and see it broken down into protocol, host, port, path, query parameters, and fragment**,
+So that **I can inspect and debug URLs quickly**.
+
+**Category:** Encoding | **Emoji:** 🔗 | **Key:** `url-parser`
+
+### Story 19.3: Markdown Table Generator
+
+As a **user**,
+I want **to visually build a table by adding rows and columns, then copy the Markdown output**,
+So that **I can create Markdown tables without memorizing the pipe syntax**.
+
+**Category:** Code | **Emoji:** 📊 | **Key:** `markdown-table-generator`
+
+### Story 19.4: HTTP Status Code Reference
+
+As a **user**,
+I want **to search and browse HTTP status codes with descriptions and common use cases**,
+So that **I can quickly look up what a status code means**.
+
+**Category:** Data | **Emoji:** 📡 | **Key:** `http-status-codes`
+
+### Story 19.5: User Agent Parser
+
+As a **user**,
+I want **to paste a user agent string and see it parsed into browser, OS, device, and engine details**,
+So that **I can debug UA-related issues and understand client environments**.
+
+**Category:** Text | **Emoji:** 🕵️ | **Key:** `user-agent-parser`

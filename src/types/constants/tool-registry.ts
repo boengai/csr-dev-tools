@@ -79,3 +79,8 @@ export type ToolRegistryKey =
   | 'css-grid-playground'
   | 'image-color-picker'
   | 'text-sort-dedupe'
+  | 'css-border-radius-generator'
+  | 'url-parser'
+  | 'markdown-table-generator'
+  | 'http-status-codes'
+  | 'user-agent-parser'

@@ -863,6 +863,101 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       title: 'Text Sort & Dedupe - CSR Dev Tools',
     },
   },
+  {
+    category: 'CSS',
+    component: lazy(() =>
+      import('@/components/feature/css/BorderRadiusGenerator').then(
+        ({ BorderRadiusGenerator }: { BorderRadiusGenerator: ComponentType }) => ({
+          default: BorderRadiusGenerator,
+        }),
+      ),
+    ),
+    description: 'Visually configure CSS border-radius with per-corner control. Supports symmetric and asymmetric modes.',
+    emoji: '⬜',
+    key: 'css-border-radius-generator',
+    name: 'Border Radius Generator',
+    routePath: '/tools/css-border-radius-generator',
+    seo: {
+      description: 'Visual CSS border-radius editor with per-corner control, asymmetric mode, and live preview.',
+      title: 'CSS Border Radius Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Encoding',
+    component: lazy(() =>
+      import('@/components/feature/encoding/UrlParser').then(
+        ({ UrlParser }: { UrlParser: ComponentType }) => ({
+          default: UrlParser,
+        }),
+      ),
+    ),
+    description: 'Parse a URL into its components: protocol, host, port, path, query parameters, and fragment.',
+    emoji: '🔗',
+    key: 'url-parser',
+    name: 'URL Parser',
+    routePath: '/tools/url-parser',
+    seo: {
+      description: 'Break down URLs into protocol, hostname, port, path, query parameters, and hash fragment.',
+      title: 'URL Parser - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/MarkdownTableGenerator').then(
+        ({ MarkdownTableGenerator }: { MarkdownTableGenerator: ComponentType }) => ({
+          default: MarkdownTableGenerator,
+        }),
+      ),
+    ),
+    description: 'Build Markdown tables visually with editable cells, configurable alignment, and instant output.',
+    emoji: '📊',
+    key: 'markdown-table-generator',
+    name: 'Markdown Table Generator',
+    routePath: '/tools/markdown-table-generator',
+    seo: {
+      description: 'Visual Markdown table builder with editable cells, column alignment, and copy-to-clipboard.',
+      title: 'Markdown Table Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Data',
+    component: lazy(() =>
+      import('@/components/feature/data/HttpStatusCodes').then(
+        ({ HttpStatusCodes }: { HttpStatusCodes: ComponentType }) => ({
+          default: HttpStatusCodes,
+        }),
+      ),
+    ),
+    description: 'Search and browse HTTP status codes with descriptions and common use cases.',
+    emoji: '📡',
+    key: 'http-status-codes',
+    name: 'HTTP Status Codes',
+    routePath: '/tools/http-status-codes',
+    seo: {
+      description: 'Searchable HTTP status code reference with descriptions, categories, and common use cases.',
+      title: 'HTTP Status Codes Reference - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Text',
+    component: lazy(() =>
+      import('@/components/feature/text/UserAgentParser').then(
+        ({ UserAgentParser }: { UserAgentParser: ComponentType }) => ({
+          default: UserAgentParser,
+        }),
+      ),
+    ),
+    description: 'Parse user agent strings into browser, OS, device type, and engine details.',
+    emoji: '🕵️',
+    key: 'user-agent-parser',
+    name: 'User Agent Parser',
+    routePath: '/tools/user-agent-parser',
+    seo: {
+      description: 'Parse user agent strings to identify browser, operating system, device type, and rendering engine.',
+      title: 'User Agent Parser - CSR Dev Tools',
+    },
+  },
 ]
 
 export const CATEGORY_ORDER: Array<ToolCategory> = [
