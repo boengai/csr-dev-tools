@@ -672,3 +672,49 @@ So that **I can quickly preview and extract images from Base64-encoded data**.
 4. Epic 12 (Code Formatters) — high demand, several libraries
 5. Epic 15 (CSS & Design) — visual tools, more complex UI
 6. Epic 14 (Crypto Tools) — Web Crypto API, no external deps
+
+---
+
+## Epic 18: Developer Productivity Tools
+
+Users can convert JSON to TypeScript, parse cron expressions, build CSS Grid layouts visually, extract colors from images, and sort/deduplicate text — all in the browser.
+
+### Story 18.1: JSON to TypeScript
+
+As a **user**,
+I want **to paste JSON and get TypeScript interfaces or type aliases generated automatically**,
+So that **I can quickly create type-safe code from API responses or data samples**.
+
+**Category:** Code | **Emoji:** 🏗️ | **Key:** `json-to-typescript`
+
+### Story 18.2: Cron Expression Parser
+
+As a **user**,
+I want **to enter a cron expression and see a human-readable description plus the next scheduled run times**,
+So that **I can understand and verify cron schedules without memorizing the syntax**.
+
+**Category:** Time | **Emoji:** ⏰ | **Key:** `cron-expression-parser`
+
+### Story 18.3: CSS Grid Playground
+
+As a **user**,
+I want **to visually build CSS Grid layouts by adjusting columns, rows, gaps, and alignment**,
+So that **I can experiment with grid properties and copy the resulting CSS**.
+
+**Category:** CSS | **Emoji:** 🔲 | **Key:** `css-grid-playground`
+
+### Story 18.4: Image Color Picker
+
+As a **user**,
+I want **to upload an image and click on it to extract colors in HEX, RGB, and HSL formats**,
+So that **I can sample colors from designs, screenshots, or photos**.
+
+**Category:** Image | **Emoji:** 🎯 | **Key:** `image-color-picker`
+
+### Story 18.5: Text Sort & Dedupe
+
+As a **user**,
+I want **to sort lines alphabetically, numerically, or by length, and optionally remove duplicates and empty lines**,
+So that **I can quickly clean up lists, log files, and text data**.
+
+**Category:** Text | **Emoji:** 🔀 | **Key:** `text-sort-dedupe`

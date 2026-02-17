@@ -121,3 +121,57 @@ development_status:
   11-2-async-state-guard-hardening: done
   11-3-input-validation-consistency: done
   epic-11-retrospective: optional
+
+  # Epic 12: Code & Markup Formatters
+  epic-12: done
+  12-1-html-formatter: done
+  12-2-css-formatter: done
+  12-3-javascript-minifier: done
+  12-4-sql-formatter: done
+  12-5-markdown-preview: done
+  epic-12-retrospective: optional
+
+  # Epic 13: Data & Number Converters
+  epic-13: done
+  13-1-xml-to-json-converter: done
+  13-2-toml-to-json-converter: done
+  13-3-html-to-markdown-converter: done
+  13-4-number-base-converter: done
+  epic-13-retrospective: optional
+
+  # Epic 14: Crypto & Security Tools
+  epic-14: done
+  14-1-hmac-generator: done
+  14-2-aes-encrypt-decrypt: done
+  epic-14-retrospective: optional
+
+  # Epic 15: CSS & Design Tools
+  epic-15: done
+  15-1-css-gradient-generator: done
+  15-2-css-flexbox-playground: done
+  15-3-svg-viewer-optimizer: done
+  epic-15-retrospective: optional
+
+  # Epic 16: Text Utilities
+  epic-16: done
+  16-1-text-case-converter: done
+  16-2-word-character-counter: done
+  16-3-lorem-ipsum-generator: done
+  16-4-string-escape-unescape: done
+  epic-16-retrospective: optional
+
+  # Epic 17: Image & Media Tools
+  epic-17: done
+  17-1-qr-code-generator: done
+  17-2-image-to-base64: done
+  17-3-base64-to-image: done
+  epic-17-retrospective: optional
+
+  # Epic 18: Developer Productivity Tools
+  epic-18: done
+  18-1-json-to-typescript: done
+  18-2-cron-expression-parser: done
+  18-3-css-grid-playground: done
+  18-4-image-color-picker: done
+  18-5-text-sort-dedupe: done
+  epic-18-retrospective: done
