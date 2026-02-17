@@ -7,7 +7,7 @@ epic: 21
 
 # Story 21.1: Background Remover
 
-Status: review
+Status: done
 
 ## Story
 

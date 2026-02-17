@@ -28,6 +28,13 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
   const updateDisplay = useCallback(
     async (option: BgOption, color: string, blob: Blob | null) => {
       if (!blob) return
+
+      // Revoke previous display URL if it differs from the result URL (composited URLs)
+      setDisplayUrl((prev) => {
+        if (prev && prev !== resultUrl) URL.revokeObjectURL(prev)
+        return prev
+      })
+
       if (option === 'transparent') {
         const url = URL.createObjectURL(blob)
         setDisplayUrl(url)
@@ -42,7 +49,7 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
         toast({ action: 'add', item: { label: 'Failed to apply background color', type: 'error' } })
       }
     },
-    [toast],
+    [toast, resultUrl],
   )
 
   const handleUpload = useCallback(
@@ -57,17 +64,22 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
 
       try {
         setDialogOpen(true)
-        setState('downloading-model')
         setProgress(0)
 
         const url = URL.createObjectURL(file)
         setSourcePreview(url)
 
+        let receivedProgress = false
         const onProgress = (p: number) => {
+          if (!receivedProgress) {
+            receivedProgress = true
+            setState('downloading-model')
+          }
           setProgress(p)
           if (p >= 100) setState('processing')
         }
 
+        setState('processing')
         const result = await removeBackground(file, onProgress)
         resultBlobRef.current = result
         setResultBlob(result)
@@ -133,7 +145,32 @@ export const BackgroundRemover = ({ autoOpen, onAfterDialogClose }: ToolComponen
     }
   }, [sourcePreview, resultUrl])
 
-  const dataUrlForCopy = displayUrl
+  const [dataUrlForCopy, setDataUrlForCopy] = useState('')
+
+  // Convert current display blob to a data URL for the copy button
+  useEffect(() => {
+    if (!displayUrl) {
+      setDataUrlForCopy('')
+      return
+    }
+    // Read the blob from the object URL to produce a real data URL
+    const controller = new AbortController()
+    void fetch(displayUrl, { signal: controller.signal })
+      .then((r) => r.blob())
+      .then((blob) => {
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          if (!controller.signal.aborted && typeof reader.result === 'string') {
+            setDataUrlForCopy(reader.result)
+          }
+        }
+        reader.readAsDataURL(blob)
+      })
+      .catch(() => {
+        /* aborted or failed — ignore */
+      })
+    return () => controller.abort()
+  }, [displayUrl])
 
   return (
     <>

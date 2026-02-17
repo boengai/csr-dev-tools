@@ -153,6 +153,35 @@ describe('background-removal utilities', () => {
       expect(mockSegmenter).toHaveBeenCalledWith('raw-image')
     })
 
+    it('passes onProgress to pipeline progress_callback', async () => {
+      const mock = createMockCanvas()
+      mockDocumentCreateElement(mock)
+
+      const mockSegmenter = vi.fn().mockResolvedValue({
+        data: new Uint8ClampedArray(4 * 2 * 2),
+        height: 2,
+        width: 2,
+      })
+      mockPipeline.mockResolvedValue(mockSegmenter)
+      mockFromBlob.mockResolvedValue('raw-image')
+
+      const progressFn = vi.fn()
+      const blob = new Blob(['fake'], { type: 'image/png' })
+      await removeBackground(blob, progressFn)
+
+      // Verify pipeline was called with progress_callback option
+      expect(mockPipeline).toHaveBeenCalledWith(
+        'background-removal',
+        'Xenova/modnet',
+        expect.objectContaining({ progress_callback: expect.any(Function) }),
+      )
+
+      // Simulate a progress event through the callback
+      const callArgs = mockPipeline.mock.calls[0][2] as { progress_callback: (info: { progress?: number }) => void }
+      callArgs.progress_callback({ progress: 50 })
+      expect(progressFn).toHaveBeenCalledWith(50)
+    })
+
     it('caches the pipeline singleton', async () => {
       const mock = createMockCanvas()
       mockDocumentCreateElement(mock)
