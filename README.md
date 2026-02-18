@@ -6,9 +6,9 @@
 
 [![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
 [![Node.js](https://img.shields.io/badge/Node.js->=24.5.0-339933?logo=node.js&logoColor=white)](https://nodejs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.2-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-19.1.1-61DAFB?logo=react&logoColor=black)](https://react.dev/)
-[![Vite](https://img.shields.io/badge/Vite-7.1.2-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-19.2.4-61DAFB?logo=react&logoColor=black)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/Vite-7.3.1-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/)
 
 [GitHub](https://github.com/boengai/csr-dev-tools) • [Report Bug](https://github.com/boengai/csr-dev-tools/issues) • [Request Feature](https://github.com/boengai/csr-dev-tools/issues)
 
@@ -16,40 +16,79 @@
 
 ## ✨ Features
 
-CSR Developer Tools is a collection of **19 tools** across **9 categories** that work entirely in your browser — no server required, ensuring your data stays private and secure.
+CSR Developer Tools is a collection of **56 tools** across **10 categories** that work entirely in your browser — no server required, ensuring your data stays private and secure.
+
+### 💻 **Code**
+- **CSS Formatter** — Beautify or minify CSS stylesheets
+- **HTML Formatter** — Format and beautify HTML with proper indentation, or minify for production
+- **JavaScript Minifier** — Minify or beautify JavaScript code with size comparison
+- **JSON Schema Validator** — Validate JSON data against a JSON Schema (draft-07)
+- **JSON to TypeScript** — Generate TypeScript interfaces or types from JSON
+- **Markdown Preview** — Live Markdown preview with HTML output
+- **Markdown Table Generator** — Build Markdown tables visually with editable cells and configurable alignment
+- **SQL Formatter** — Format SQL queries with proper indentation (PostgreSQL, MySQL, SQLite, and more)
 
 ### 🎨 **Color**
 - **Color Converter** — Convert between HEX, RGB, HSL, OKLCH, LAB, and LCH formats
 
 ### 🔲 **CSS**
+- **Border Radius Generator** — Visually configure CSS border-radius with per-corner control
 - **Box Shadow Generator** — Visually create CSS box-shadow values with a live preview
+- **CSS Animation Builder** — Visually create CSS keyframe animations with live preview and configurable timing
+- **Flexbox Playground** — Visual CSS flexbox layout builder with live preview
+- **Gradient Generator** — Create CSS gradients visually with linear and radial support
+- **Grid Playground** — Visual CSS Grid layout builder with rows, columns, gaps, and placement
 
 ### 📋 **Data**
+- **HTML ↔ Markdown** — Convert between HTML and Markdown formats
+- **HTTP Status Codes** — Search and browse HTTP status codes with descriptions and use cases
 - **JSON Formatter** — Format and validate JSON with clean indentation
-- **JSON ↔ YAML** — Convert between JSON and YAML configuration formats
 - **JSON ↔ CSV** — Convert between JSON arrays and CSV spreadsheet format
+- **JSON ↔ YAML** — Convert between JSON and YAML configuration formats
+- **OG Preview** — Preview Open Graph social cards for Twitter, Facebook, and LinkedIn
+- **TOML ↔ JSON** — Convert between TOML and JSON formats
+- **XML ↔ JSON** — Convert between XML and JSON formats
 
 ### 🔤 **Encoding**
 - **Base64 Encoder** — Encode and decode Base64 strings
-- **URL Encoder/Decoder** — Encode and decode URL strings
 - **JWT Decoder** — Decode JWT tokens to inspect header and payload
+- **Number Base Converter** — Convert numbers between binary, octal, decimal, and hexadecimal
+- **URL Encoder/Decoder** — Encode and decode URL strings
+- **URL Parser** — Parse a URL into its components: protocol, host, port, path, query parameters, and fragment
 
 ### 🔑 **Generator**
-- **UUID Generator** — Generate random UUID v4 identifiers, single or in bulk
-- **Password Generator** — Generate random passwords with configurable length and character types
+- **AES Encrypt/Decrypt** — Encrypt and decrypt text using AES-256-GCM with a password
 - **Hash Generator** — Compute hash values from text using MD5, SHA-1, SHA-256, and SHA-512
+- **HMAC Generator** — Generate HMAC signatures using SHA-256, SHA-384, or SHA-512
+- **Password Generator** — Generate random passwords with configurable length and character types
+- **QR Code Generator** — Generate QR codes from text or URLs with customizable size, colors, and error correction
+- **UUID Generator** — Generate random UUID v4 identifiers, single or in bulk
 
 ### 🖼️ **Image**
-- **Image Converter** — Convert between PNG, JPG, WebP, GIF, BMP, and AVIF formats
+- **Background Remover** — Remove image backgrounds using AI, fully in your browser
+- **Base64 to Image** — Convert Base64 strings to downloadable images
+- **Favicon Generator** — Generate favicons in all standard sizes and download as ZIP with HTML link tags
+- **Image Color Picker** — Upload an image and click to extract colors in HEX, RGB, and HSL
 - **Image Compressor** — Compress JPEG and WebP images with a quality slider and live size preview
+- **Image Converter** — Convert between PNG, JPG, WebP, GIF, BMP, and AVIF formats
 - **Image Cropper** — Crop images using freeform selection or common aspect ratio presets
 - **Image Resizer** — Resize images to custom dimensions with aspect ratio control
+- **Image to Base64** — Convert images to Base64 data URIs for embedding in HTML or CSS
+- **SVG Viewer** — View and optimize SVG code with a live preview
 
 ### 📝 **Text**
-- **Text Diff** — Compare two text blocks and see line-by-line differences highlighted
+- **Lorem Ipsum Generator** — Generate placeholder text with configurable paragraphs, sentences, or words
 - **Regex Tester** — Test regex patterns against sample text with live match highlighting
+- **String Escape/Unescape** — Escape and unescape strings for HTML, JavaScript, JSON, URL, and XML
+- **Text Case Converter** — Convert text between camelCase, PascalCase, snake_case, kebab-case, and more
+- **Text Diff** — Compare two text blocks and see line-by-line differences highlighted
+- **Text Sort & Dedupe** — Sort lines alphabetically, numerically, or by length and remove duplicates
+- **User Agent Parser** — Parse user agent strings into browser, OS, device type, and engine details
+- **Word Counter** — Count words, characters, sentences, paragraphs, and reading time
 
 ### 🕐 **Time**
+- **Cron Parser** — Parse cron expressions into human-readable text and see next scheduled run times
+- **Crontab Generator** — Visually build cron expressions with field selectors and next run times
 - **Unix Timestamp** — Convert between Unix timestamps and human-readable dates
 
 ### 📏 **Unit**
@@ -113,13 +152,14 @@ pnpm preview
 ### UI & Styling
 - **[Tailwind CSS v4](https://tailwindcss.com/)** - Utility-first CSS framework
 - **[Radix UI](https://www.radix-ui.com/)** - Unstyled, accessible components
-- **[Motion One](https://motion.dev/)** - Smooth animations and transitions
+- **[Motion](https://motion.dev/)** - Smooth animations and transitions
 - **[Tailwind Variants](https://www.tailwind-variants.org/)** - Component variant management
 
 ### State Management
 - **[Zustand](https://zustand-demo.pmnd.rs/)** - Lightweight state management
 
-### File Processing
+### AI & Processing
+- **[Hugging Face Transformers.js](https://huggingface.co/docs/transformers.js)** - On-device AI models (background removal)
 - **[JSZip](https://stuk.github.io/jszip/)** - Client-side ZIP file generation and processing
 
 ### Development Tools
@@ -138,14 +178,15 @@ csr-dev-tools/
 │   ├── components/
 │   │   ├── common/          # Shared UI (button, card, sidebar, command-palette, toast, …)
 │   │   ├── feature/         # Tool components by category
+│   │   │   ├── code/        #   CSS/HTML/JS/SQL formatters, Markdown, JSON Schema, JSON→TS
 │   │   │   ├── color/       #   Color Converter
-│   │   │   ├── css/         #   Box Shadow Generator
-│   │   │   ├── data/        #   JSON Formatter, JSON↔YAML, JSON↔CSV
-│   │   │   ├── encoding/    #   Base64, URL Encoder, JWT Decoder
-│   │   │   ├── generator/   #   UUID, Password, Hash
-│   │   │   ├── image/       #   Converter, Compressor, Cropper, Resizer
-│   │   │   ├── text/        #   Text Diff, Regex Tester
-│   │   │   ├── time/        #   Unix Timestamp
+│   │   │   ├── css/         #   Box Shadow, Gradient, Flexbox, Grid, Animation, Border Radius
+│   │   │   ├── data/        #   JSON Formatter, JSON↔YAML/CSV, XML/TOML↔JSON, HTML↔MD, HTTP Codes, OG Preview
+│   │   │   ├── encoding/    #   Base64, URL Encoder, JWT Decoder, Number Base, URL Parser
+│   │   │   ├── generator/   #   UUID, Password, Hash, HMAC, QR Code, AES Encrypt/Decrypt
+│   │   │   ├── image/       #   Converter, Compressor, Cropper, Resizer, Color Picker, SVG, Base64↔Image, Favicon, Background Remover
+│   │   │   ├── text/        #   Text Diff, Regex, Case Converter, Lorem Ipsum, Word Counter, Sort/Dedupe, Escape, User Agent
+│   │   │   ├── time/        #   Unix Timestamp, Cron Parser, Crontab Generator
 │   │   │   └── unit/        #   PX to REM
 │   │   └── index.ts
 │   ├── constants/           # Tool registry, routes, image constants
@@ -214,6 +255,7 @@ This project follows a comprehensive design system built on:
 - **100% client-side processing** — your data never leaves your browser
 - **No server dependencies** — works offline after initial load
 - **Privacy-focused** — no data collection or tracking
+- **On-device AI** — background removal runs locally using WebGPU/WASM
 
 ### Modern Development
 - **React 19** with latest features and optimizations
@@ -221,7 +263,7 @@ This project follows a comprehensive design system built on:
 - **TanStack Router** for routing with automatic code splitting
 - **Hot module replacement** for instant feedback during development
 - **Optimized build** with tree shaking and lazy loading
-- **562+ unit tests** and **E2E tests** with Playwright
+- **650+ unit tests** and **E2E tests** with Playwright
 
 ### Accessible & Responsive
 - **WCAG-compliant** — `aria-live` regions, keyboard navigation, semantic markup
