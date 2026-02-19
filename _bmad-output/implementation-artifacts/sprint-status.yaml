@@ -197,7 +197,7 @@ development_status:
   # Epic 21: AI-Powered Image Tools
   epic-21: done
   21-1-background-remover: done
-  epic-21-retrospective: optional
+  epic-21-retrospective: done
 
   # Epic 22: Data Format Tools
   epic-22: backlog
