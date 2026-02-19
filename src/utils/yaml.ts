@@ -1,23 +1,31 @@
-export const jsonToYaml = async (input: string): Promise<string> => {
-  if (input.trim().length === 0) throw new Error('Empty input')
-  const { stringify } = await import('yaml')
-  return stringify(JSON.parse(input), { indent: 2 })
-}
+import { parse, stringify } from 'yaml'
 
-export const yamlToJson = async (input: string, indent = 2): Promise<string> => {
+export const formatYaml = (input: string, options?: { indent?: number; sortKeys?: boolean }): string => {
   if (input.trim().length === 0) throw new Error('Empty input')
-  const { parse } = await import('yaml')
   const parsed = parse(input)
-  return JSON.stringify(parsed, null, indent)
+  return stringify(parsed, {
+    indent: options?.indent ?? 2,
+    sortMapEntries: options?.sortKeys ?? false,
+  })
 }
 
-export const getYamlParseError = async (input: string): Promise<string | null> => {
+export const getYamlParseError = (input: string): string | null => {
   if (input.trim().length === 0) return 'Empty input'
   try {
-    const { parse } = await import('yaml')
     parse(input)
     return null
   } catch (e) {
     return e instanceof Error ? e.message : 'Invalid YAML'
   }
+}
+
+export const jsonToYaml = (input: string): string => {
+  if (input.trim().length === 0) throw new Error('Empty input')
+  return stringify(JSON.parse(input), { indent: 2 })
+}
+
+export const yamlToJson = (input: string, indent = 2): string => {
+  if (input.trim().length === 0) throw new Error('Empty input')
+  const parsed = parse(input)
+  return JSON.stringify(parsed, null, indent)
 }

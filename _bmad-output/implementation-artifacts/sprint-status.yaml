@@ -200,12 +200,12 @@ development_status:
   epic-21-retrospective: done
 
   # Epic 22: Data Format Tools
-  epic-22: backlog
-  22-1-yaml-formatter: backlog
-  22-2-env-file-converter: backlog
-  22-3-escaped-json-stringifier: backlog
-  22-4-html-entity-converter: backlog
-  epic-22-retrospective: optional
+  epic-22: done
+  22-1-yaml-formatter: done
+  22-2-env-file-converter: done
+  22-3-escaped-json-stringifier: done
+  22-4-html-entity-converter: done
+  epic-22-retrospective: done
 
   # Epic 23: Design & Visual Tools
   epic-23: backlog

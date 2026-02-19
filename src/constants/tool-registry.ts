@@ -1076,6 +1076,82 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       title: 'Favicon Generator - CSR Dev Tools',
     },
   },
+  {
+    category: 'Data',
+    component: lazy(() =>
+      import('@/components/feature/data/YamlFormatter').then(({ YamlFormatter }: { YamlFormatter: ComponentType }) => ({
+        default: YamlFormatter,
+      })),
+    ),
+    description: 'Format and validate YAML with configurable indentation and key sorting',
+    emoji: '📋',
+    key: 'yaml-formatter',
+    name: 'YAML Formatter',
+    routePath: '/tools/yaml-formatter',
+    seo: {
+      description:
+        'Format and validate YAML online. Configurable indentation, key sorting, and syntax error detection.',
+      title: 'YAML Formatter - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Data',
+    component: lazy(() =>
+      import('@/components/feature/data/EnvFileConverter').then(
+        ({ EnvFileConverter }: { EnvFileConverter: ComponentType }) => ({
+          default: EnvFileConverter,
+        }),
+      ),
+    ),
+    description: 'Convert between .env, JSON, and YAML configuration formats',
+    emoji: '🔄',
+    key: 'env-file-converter',
+    name: 'ENV File Converter',
+    routePath: '/tools/env-file-converter',
+    seo: {
+      description: 'Convert between .env, JSON, and YAML formats. Free online environment file converter.',
+      title: 'ENV File Converter - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Data',
+    component: lazy(() =>
+      import('@/components/feature/data/EscapedJsonStringifier').then(
+        ({ EscapedJsonStringifier }: { EscapedJsonStringifier: ComponentType }) => ({
+          default: EscapedJsonStringifier,
+        }),
+      ),
+    ),
+    description: 'Escape JSON for embedding in strings and unescape back to formatted JSON',
+    emoji: '🔤',
+    key: 'escaped-json-stringifier',
+    name: 'Escaped JSON Stringifier',
+    routePath: '/tools/escaped-json-stringifier',
+    seo: {
+      description: 'Escape and unescape JSON strings online. Stringify JSON for embedding in code or config files.',
+      title: 'Escaped JSON Stringifier - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Data',
+    component: lazy(() =>
+      import('@/components/feature/data/HtmlEntityConverter').then(
+        ({ HtmlEntityConverter }: { HtmlEntityConverter: ComponentType }) => ({
+          default: HtmlEntityConverter,
+        }),
+      ),
+    ),
+    description: 'Encode text to HTML entities and decode HTML entities back to text',
+    emoji: '🏷️',
+    key: 'html-entity-converter',
+    name: 'HTML Entity Converter',
+    routePath: '/tools/html-entity-converter',
+    seo: {
+      description:
+        'Encode and decode HTML entities online. Convert special characters to named or numeric HTML entities.',
+      title: 'HTML Entity Converter - CSR Dev Tools',
+    },
+  },
 ]
 
 export const CATEGORY_ORDER: Array<ToolCategory> = [

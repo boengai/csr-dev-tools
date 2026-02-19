@@ -90,3 +90,7 @@ export type ToolRegistryKey =
   | 'json-schema-validator'
   | 'crontab-generator'
   | 'favicon-generator'
+  | 'env-file-converter'
+  | 'escaped-json-stringifier'
+  | 'html-entity-converter'
+  | 'yaml-formatter'
