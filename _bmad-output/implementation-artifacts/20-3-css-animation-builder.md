@@ -1,13 +1,13 @@
 ---
 story: 20.3
 title: CSS Animation Builder
-status: review
+status: done
 epic: 20
 ---
 
 # Story 20.3: CSS Animation Builder
 
-Status: review
+Status: done
 
 ## Story
 
@@ -295,3 +295,18 @@ N/A
 - MOD: `src/components/feature/css/index.ts` — Added barrel export
 - MOD: `src/utils/index.ts` — Added css-animation barrel export
 - MOD: `vite.config.ts` — Added pre-render route
+
+## Senior Developer Review (AI)
+
+**Reviewer:** csrteam (backfill review)
+**Date:** 2026-02-20
+**Verdict:** Done (all issues fixed)
+
+### Findings Fixed
+
+| Severity | Finding | Fix Applied |
+|----------|---------|-------------|
+| HIGH | CSS injection via unsanitized `iterationCount` string in `<style>` tag | Added `sanitizeIterationCount()` — accepts only positive numbers or 'infinite' |
+| MEDIUM | `direction`, `fillMode`, `timingFunction` typed as `string` — allows arbitrary values | Created union literal types `AnimationDirection`, `AnimationFillMode`, `AnimationTimingFunction` |
+| MEDIUM | `generateAnimationCss` called on every render without memoization | Wrapped in `useMemo` keyed on `[config]` |
+| MEDIUM | Preview style rebuilt on every render without memoization | Wrapped in `useMemo` keyed on `[config]` |

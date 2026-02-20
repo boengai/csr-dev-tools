@@ -14,16 +14,15 @@ describe('og-tags', () => {
   describe('generateOgMetaTags', () => {
     it('generates all og and twitter tags for full config', () => {
       const result = generateOgMetaTags(fullConfig)
-      expect(result).toContain('og:title')
-      expect(result).toContain('og:description')
-      expect(result).toContain('og:image')
-      expect(result).toContain('og:site_name')
-      expect(result).toContain('og:url')
-      expect(result).toContain('og:type')
-      expect(result).toContain('twitter:card')
-      expect(result).toContain('twitter:title')
-      expect(result).toContain('twitter:description')
-      expect(result).toContain('twitter:image')
+      expect(result).toContain('content="My Awesome Page"')
+      expect(result).toContain('content="A great page about awesome things"')
+      expect(result).toContain('content="https://example.com/image.png"')
+      expect(result).toContain('content="Example"')
+      expect(result).toContain('content="https://example.com/page"')
+      expect(result).toContain('property="og:type" content="website"')
+      expect(result).toContain('name="twitter:card" content="summary_large_image"')
+      const lines = result.split('\n')
+      expect(lines.length).toBe(10)
     })
 
     it('generates only provided fields for partial config', () => {

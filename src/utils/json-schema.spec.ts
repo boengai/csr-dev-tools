@@ -99,4 +99,13 @@ describe('validateJsonSchema', () => {
     expect(result.valid).toBe(false)
     expect(result.errors!.length).toBeGreaterThanOrEqual(2)
   })
+
+  it('returns schema error for invalid-but-parseable schema', () => {
+    const invalidSchema = JSON.stringify({ type: 999 })
+    const result = validateJsonSchema('{}', invalidSchema)
+    expect(result.valid).toBe(false)
+    expect(result.errors).not.toBeNull()
+    expect(result.errors![0].keyword).toBe('schema')
+    expect(result.errors![0].message).toContain('Invalid JSON Schema')
+  })
 })

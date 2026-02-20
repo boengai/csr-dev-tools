@@ -1,3 +1,5 @@
+import { escapeHtml } from './string-escape'
+
 export type OgConfig = {
   description: string
   image: string
@@ -5,9 +7,6 @@ export type OgConfig = {
   title: string
   url: string
 }
-
-const escapeHtml = (str: string): string =>
-  str.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 
 export const generateOgMetaTags = (config: OgConfig): string => {
   const tags: Array<string> = []

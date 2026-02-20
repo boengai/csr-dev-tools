@@ -23,9 +23,11 @@ const buildField = (config: CronFieldConfig): string => {
     case 'every':
       return '*'
     case 'specific':
-      return config.values && config.values.length > 0 ? config.values.sort((a, b) => a - b).join(',') : '*'
+      return config.values && config.values.length > 0 ? [...config.values].sort((a, b) => a - b).join(',') : '*'
     case 'range':
-      return config.rangeStart != null && config.rangeEnd != null ? `${config.rangeStart}-${config.rangeEnd}` : '*'
+      return config.rangeStart != null && config.rangeEnd != null && config.rangeStart <= config.rangeEnd
+        ? `${config.rangeStart}-${config.rangeEnd}`
+        : '*'
     case 'interval':
       return config.interval != null && config.interval > 0 ? `*/${config.interval}` : '*'
     default:

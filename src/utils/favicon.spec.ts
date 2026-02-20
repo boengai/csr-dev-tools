@@ -1,6 +1,21 @@
-import { describe, expect, it } from 'vitest'
+// @vitest-environment jsdom
+import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { FAVICON_SIZES, generateFaviconLinkTags } from './favicon'
+import { FAVICON_SIZES, generateFaviconLinkTags, generateFavicons, downloadFaviconsAsZip } from './favicon'
+import type { FaviconResult } from './favicon'
+
+const createMockCanvas = () => {
+  const ctx = {
+    drawImage: vi.fn(),
+  }
+  return {
+    getContext: vi.fn(() => ctx),
+    toBlob: vi.fn((cb: (blob: Blob | null) => void) => cb(new Blob(['test'], { type: 'image/png' }))),
+    toDataURL: vi.fn(() => 'data:image/png;base64,mockdata'),
+    width: 0,
+    height: 0,
+  }
+}
 
 describe('favicon utils', () => {
   describe('FAVICON_SIZES', () => {
@@ -46,6 +61,69 @@ describe('favicon utils', () => {
       expect(tags).toContain('<link rel="icon" type="image/png" sizes="48x48" href="/favicon-48x48.png">')
       expect(tags).toContain('<link rel="icon" type="image/png" sizes="192x192" href="/favicon-192x192.png">')
       expect(tags).toContain('<link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png">')
+    })
+  })
+
+  describe('generateFavicons', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('produces one result per size', async () => {
+      const mockCanvas = createMockCanvas()
+      vi.spyOn(document, 'createElement').mockReturnValue(mockCanvas as unknown as HTMLCanvasElement)
+
+      const img = new Image()
+      const sizes = FAVICON_SIZES.slice(0, 2)
+      const results = await generateFavicons(img, sizes)
+
+      expect(results).toHaveLength(2)
+      expect(results[0].size).toBe(sizes[0])
+      expect(results[1].size).toBe(sizes[1])
+    })
+
+    it('returns valid blobs and data URLs', async () => {
+      const mockCanvas = createMockCanvas()
+      vi.spyOn(document, 'createElement').mockReturnValue(mockCanvas as unknown as HTMLCanvasElement)
+
+      const img = new Image()
+      const sizes = [FAVICON_SIZES[0]]
+      const results = await generateFavicons(img, sizes)
+
+      expect(results[0].blob).toBeInstanceOf(Blob)
+      expect(results[0].dataUrl).toBe('data:image/png;base64,mockdata')
+    })
+  })
+
+  describe('downloadFaviconsAsZip', () => {
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('triggers download with correct filename', async () => {
+      const mockClick = vi.fn()
+      vi.spyOn(document, 'createElement').mockReturnValue({
+        href: '',
+        download: '',
+        click: mockClick,
+      } as unknown as HTMLAnchorElement)
+
+      const mockUrl = 'blob:mock'
+      vi.spyOn(URL, 'createObjectURL').mockReturnValue(mockUrl)
+      vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
+
+      const mockResults: Array<FaviconResult> = [
+        {
+          blob: new Blob(['test'], { type: 'image/png' }),
+          dataUrl: 'data:image/png;base64,test',
+          size: FAVICON_SIZES[0],
+        },
+      ]
+
+      await downloadFaviconsAsZip(mockResults)
+
+      expect(mockClick).toHaveBeenCalledOnce()
+      expect(URL.revokeObjectURL).toHaveBeenCalledWith(mockUrl)
     })
   })
 })

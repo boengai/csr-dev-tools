@@ -1,13 +1,13 @@
 ---
 story: 20.1
 title: JSON Schema Validator
-status: ready-for-dev
+status: done
 epic: 20
 ---
 
 # Story 20.1: JSON Schema Validator
 
-Status: review
+Status: done
 
 ## Story
 
@@ -325,3 +325,18 @@ No issues encountered.
 - `src/components/feature/code/index.ts` — MODIFIED (barrel export)
 - `src/utils/index.ts` — MODIFIED (barrel export)
 - `vite.config.ts` — MODIFIED (pre-render route)
+
+## Senior Developer Review (AI)
+
+**Reviewer:** csrteam (backfill review)
+**Date:** 2026-02-20
+**Verdict:** Done (all issues fixed)
+
+### Findings Fixed
+
+| Severity | Finding | Fix Applied |
+|----------|---------|-------------|
+| HIGH | `ajv.compile()` can throw on invalid schemas — no try/catch | Wrapped compile+validate in try/catch, returns `{keyword:'schema'}` error |
+| MEDIUM | Module-level Ajv singleton causes statefulness issues | Replaced singleton with local `new Ajv()` per call |
+| MEDIUM | Dead code guard (`&&` branch unreachable before `\|\|` branch) in component | Collapsed into single `\|\|` guard, inlined into debouncedValidate |
+| MEDIUM | Separate `validate` function recreated on every render | Inlined logic directly into `useDebounceCallback` callback |

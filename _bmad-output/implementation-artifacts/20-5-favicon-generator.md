@@ -1,13 +1,13 @@
 ---
 story: 20.5
 title: Favicon Generator
-status: ready-for-dev
+status: done
 epic: 20
 ---
 
 # Story 20.5: Favicon Generator
 
-Status: review
+Status: done
 
 ## Story
 
@@ -310,3 +310,17 @@ None needed — clean implementation.
 | `src/components/feature/image/index.ts` | MODIFY | Added FaviconGenerator barrel export |
 | `src/utils/index.ts` | MODIFY | Added favicon barrel export |
 | `vite.config.ts` | MODIFY | Added pre-render route for /tools/favicon-generator |
+
+## Senior Developer Review (AI)
+
+**Reviewer:** csrteam (backfill review)
+**Date:** 2026-02-20
+**Verdict:** Done (all issues fixed)
+
+### Findings Fixed
+
+| Severity | Finding | Fix Applied |
+|----------|---------|-------------|
+| HIGH | No tests for `generateFavicons` or `downloadFaviconsAsZip` | Added 3 tests with jsdom environment, Canvas/DOM mocks |
+| MEDIUM | Non-null assertion `!` on `getContext('2d')` — crashes silently if null | Replaced with explicit null check and descriptive `throw` |
+| MEDIUM | `generateFaviconLinkTags()` called inside component on every render (static output) | Hoisted to module-level constant outside component |

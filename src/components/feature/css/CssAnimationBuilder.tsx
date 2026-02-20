@@ -1,7 +1,7 @@
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { AnimationConfig, KeyframeStep } from '@/utils'
+import type { AnimationConfig, AnimationDirection, AnimationFillMode, AnimationTimingFunction, KeyframeStep } from '@/utils'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
@@ -9,9 +9,9 @@ import { DEFAULT_ANIMATION_CONFIG, generateAnimationCss, buildTransformString } 
 
 const toolEntry = TOOL_REGISTRY_MAP['css-animation-builder']
 
-const TIMING_FUNCTIONS = ['ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out']
-const DIRECTIONS = ['normal', 'reverse', 'alternate', 'alternate-reverse']
-const FILL_MODES = ['none', 'forwards', 'backwards', 'both']
+const TIMING_FUNCTIONS: Array<AnimationTimingFunction> = ['ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out']
+const DIRECTIONS: Array<AnimationDirection> = ['normal', 'reverse', 'alternate', 'alternate-reverse']
+const FILL_MODES: Array<AnimationFillMode> = ['none', 'forwards', 'backwards', 'both']
 const AVAILABLE_PERCENTS = [0, 25, 50, 75, 100]
 
 const createKeyframe = (percent: number): KeyframeStep => ({
@@ -29,7 +29,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
   const [config, setConfig] = useState<AnimationConfig>({ ...DEFAULT_ANIMATION_CONFIG })
   const [animKey, setAnimKey] = useState(0)
 
-  const cssOutput = generateAnimationCss(config)
+  const cssOutput = useMemo(() => generateAnimationCss(config), [config])
 
   const updateConfig = (partial: Partial<AnimationConfig>) => {
     setConfig((prev) => ({ ...prev, ...partial }))
@@ -66,18 +66,17 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
   const existingPercents = new Set(config.keyframes.map((kf) => kf.percent))
   const addablePercents = AVAILABLE_PERCENTS.filter((p) => !existingPercents.has(p))
 
-  // Build preview style
-  const sorted = [...config.keyframes].sort((a, b) => a.percent - b.percent)
-  const keyframeBody = sorted
-    .map(
-      (s) =>
-        `${s.percent}% { opacity: ${s.opacity}; transform: ${buildTransformString(s)}; background-color: ${s.backgroundColor}; }`,
-    )
-    .join(' ')
-  const previewStyle = `
-    @keyframes csr-anim-preview { ${keyframeBody} }
-    .csr-anim-target { animation: csr-anim-preview ${config.duration}s ${config.timingFunction} ${config.iterationCount} ${config.direction} ${config.fillMode}; }
-  `
+  const previewStyle = useMemo(() => {
+    const sorted = [...config.keyframes].sort((a, b) => a.percent - b.percent)
+    const keyframeBody = sorted
+      .map(
+        (s) =>
+          `${s.percent}% { opacity: ${s.opacity}; transform: ${buildTransformString(s)}; background-color: ${s.backgroundColor}; }`,
+      )
+      .join(' ')
+    const iterations = config.iterationCount === 'infinite' ? 'infinite' : (Number(config.iterationCount) > 0 ? config.iterationCount : '1')
+    return `@keyframes csr-anim-preview { ${keyframeBody} } .csr-anim-target { animation: csr-anim-preview ${config.duration}s ${config.timingFunction} ${iterations} ${config.direction} ${config.fillMode}; }`
+  }, [config])
 
   return (
     <div className="flex w-full grow flex-col gap-4">
@@ -212,7 +211,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
               <FieldForm
                 label="Timing Function"
                 name="anim-timing"
-                onChange={(v) => updateConfig({ timingFunction: v })}
+                onChange={(v) => updateConfig({ timingFunction: v as AnimationTimingFunction })}
                 options={TIMING_FUNCTIONS.map((t) => ({ label: t, value: t }))}
                 type="select"
                 value={config.timingFunction}
@@ -228,7 +227,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
               <FieldForm
                 label="Direction"
                 name="anim-direction"
-                onChange={(v) => updateConfig({ direction: v })}
+                onChange={(v) => updateConfig({ direction: v as AnimationDirection })}
                 options={DIRECTIONS.map((d) => ({ label: d, value: d }))}
                 type="select"
                 value={config.direction}
@@ -236,7 +235,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
               <FieldForm
                 label="Fill Mode"
                 name="anim-fill"
-                onChange={(v) => updateConfig({ fillMode: v })}
+                onChange={(v) => updateConfig({ fillMode: v as AnimationFillMode })}
                 options={FILL_MODES.map((f) => ({ label: f, value: f }))}
                 type="select"
                 value={config.fillMode}

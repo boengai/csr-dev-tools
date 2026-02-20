@@ -9,6 +9,7 @@ import { useToast } from '@/hooks'
 import { downloadFaviconsAsZip, generateFaviconLinkTags, generateFavicons } from '@/utils/favicon'
 
 const toolEntry = TOOL_REGISTRY_MAP['favicon-generator']
+const linkTags = generateFaviconLinkTags()
 
 export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -16,8 +17,6 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
   const [sourcePreview, setSourcePreview] = useState<string>('')
   const [processing, setProcessing] = useState(false)
   const { toast } = useToast()
-
-  const linkTags = generateFaviconLinkTags()
 
   const handleUpload = useCallback(
     async (files: Array<File>) => {

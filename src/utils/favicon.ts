@@ -29,7 +29,8 @@ const resizeToCanvas = (img: HTMLImageElement, width: number, height: number): H
   const canvas = document.createElement('canvas')
   canvas.width = width
   canvas.height = height
-  const ctx = canvas.getContext('2d')!
+  const ctx = canvas.getContext('2d')
+  if (!ctx) throw new Error('Canvas 2D context unavailable')
   ctx.drawImage(img, 0, 0, width, height)
   return canvas
 }

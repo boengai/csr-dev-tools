@@ -39,6 +39,24 @@ describe('buildCronExpression', () => {
     expect(buildCronExpression(config)).toBe('*/5 * * * *')
   })
 
+  it('does not mutate original values array', () => {
+    const values = [30, 0, 15]
+    const config: CrontabConfig = {
+      ...allEvery,
+      minute: { mode: 'specific', values },
+    }
+    buildCronExpression(config)
+    expect(values).toEqual([30, 0, 15])
+  })
+
+  it('falls back to * when range start exceeds end', () => {
+    const config: CrontabConfig = {
+      ...allEvery,
+      hour: { mode: 'range', rangeStart: 17, rangeEnd: 9 },
+    }
+    expect(buildCronExpression(config)).toBe('* * * * *')
+  })
+
   it('handles mixed fields', () => {
     const config: CrontabConfig = {
       minute: { mode: 'specific', values: [0] },

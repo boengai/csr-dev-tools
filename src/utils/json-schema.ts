@@ -11,8 +11,6 @@ export type ValidationResult = {
   valid: boolean
 }
 
-const ajvInstance = new Ajv({ allErrors: true })
-
 export function validateJsonSchema(data: string, schema: string): ValidationResult {
   let parsedData: unknown
   try {
@@ -28,19 +26,23 @@ export function validateJsonSchema(data: string, schema: string): ValidationResu
     return { errors: [{ keyword: 'parse', message: 'Invalid JSON in schema input', path: '/' }], valid: false }
   }
 
-  ajvInstance.removeSchema()
-  const validate = ajvInstance.compile(parsedSchema)
-  const valid = validate(parsedData)
+  try {
+    const ajv = new Ajv({ allErrors: true })
+    const validate = ajv.compile(parsedSchema)
+    const valid = validate(parsedData)
 
-  if (valid) {
-    return { errors: null, valid: true }
+    if (valid) {
+      return { errors: null, valid: true }
+    }
+
+    const errors: Array<ValidationError> = (validate.errors ?? []).map((err) => ({
+      keyword: err.keyword,
+      message: err.message ?? 'Unknown error',
+      path: err.instancePath || '/',
+    }))
+
+    return { errors, valid: false }
+  } catch {
+    return { errors: [{ keyword: 'schema', message: 'Invalid JSON Schema', path: '/' }], valid: false }
   }
-
-  const errors: Array<ValidationError> = (validate.errors ?? []).map((err) => ({
-    keyword: err.keyword,
-    message: err.message ?? 'Unknown error',
-    path: err.instancePath || '/',
-  }))
-
-  return { errors, valid: false }
 }

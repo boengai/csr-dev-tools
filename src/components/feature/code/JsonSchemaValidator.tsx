@@ -15,20 +15,12 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
   const [result, setResult] = useState<ValidationResult | null>(null)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
 
-  const validate = (data: string, schema: string) => {
-    if (data.trim().length === 0 && schema.trim().length === 0) {
-      setResult(null)
-      return
-    }
+  const debouncedValidate = useDebounceCallback((data: string, schema: string) => {
     if (data.trim().length === 0 || schema.trim().length === 0) {
       setResult(null)
       return
     }
     setResult(validateJsonSchema(data, schema))
-  }
-
-  const debouncedValidate = useDebounceCallback((data: string, schema: string) => {
-    validate(data, schema)
   }, 300)
 
   const handleDataChange = (val: string) => {

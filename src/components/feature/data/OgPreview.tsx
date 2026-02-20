@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 import type { OgConfig } from '@/utils'
@@ -66,11 +66,14 @@ const LinkedInCard = ({ config }: { config: OgConfig }) => (
 export const OgPreview = (_: ToolComponentProps) => {
   const [config, setConfig] = useState<OgConfig>({ ...DEFAULT_CONFIG })
 
-  const metaTags = generateOgMetaTags(config)
+  const metaTags = useMemo(() => generateOgMetaTags(config), [config])
 
-  const updateField = (field: keyof OgConfig) => (value: string) => {
-    setConfig((prev) => ({ ...prev, [field]: value }))
-  }
+  const updateField = useCallback(
+    (field: keyof OgConfig) => (value: string) => {
+      setConfig((prev) => ({ ...prev, [field]: value }))
+    },
+    [],
+  )
 
   return (
     <div className="flex w-full grow flex-col gap-4">

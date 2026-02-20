@@ -1,13 +1,13 @@
 ---
 story: 20.4
 title: Open Graph Preview
-status: review
+status: done
 epic: 20
 ---
 
 # Story 20.4: Open Graph Preview
 
-Status: review
+Status: done
 
 ## Story
 
@@ -290,3 +290,18 @@ N/A
 - MOD: `src/components/feature/data/index.ts` — Added barrel export
 - MOD: `src/utils/index.ts` — Added og-tags barrel export
 - MOD: `vite.config.ts` — Added pre-render route
+
+## Senior Developer Review (AI)
+
+**Reviewer:** csrteam (backfill review)
+**Date:** 2026-02-20
+**Verdict:** Done (all issues fixed)
+
+### Findings Fixed
+
+| Severity | Finding | Fix Applied |
+|----------|---------|-------------|
+| HIGH | Duplicate `escapeHtml` in og-tags.ts — diverges from canonical string-escape.ts version | Removed local `escapeHtml`, imported from `./string-escape` |
+| MEDIUM | `generateOgMetaTags` called on every render without memoization | Wrapped in `useMemo` keyed on `[config]` |
+| MEDIUM | `updateField` curried function recreated on every render | Wrapped in `useCallback` with empty deps |
+| MEDIUM | Test assertions too shallow — only check property name presence | Strengthened to assert exact content values and line count |
