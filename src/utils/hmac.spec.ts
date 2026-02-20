@@ -2,10 +2,9 @@ import { describe, expect, it } from 'vitest'
 
 import { generateHmac } from './hmac'
 
-// RFC 4231 Test Vectors
+// Known HMAC test vectors (simple string key/message pairs)
 describe('generateHmac', () => {
   it('should generate correct HMAC-SHA-256 for known input', async () => {
-    // "Hi There" with key 0x0b repeated 20 times — but we use simple string keys
     const result = await generateHmac('hello', 'secret', 'SHA-256', 'hex')
     expect(result).toBe('88aab3ede8d3adf94d26ab90d3bafd4a2083070c3bcce9c014ee04a443847c0b')
   })

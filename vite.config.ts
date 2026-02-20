@@ -212,6 +212,19 @@ const toolRoutes = [
     title: 'OG Preview - CSR Dev Tools',
     url: '/tools/og-preview',
   },
+  {
+    description:
+      'Generate HMAC signatures using SHA-256, SHA-384, or SHA-512. Verify API signatures and webhook authentication.',
+    path: '/tools/hmac-generator',
+    title: 'HMAC Generator - CSR Dev Tools',
+    url: '/tools/hmac-generator',
+  },
+  {
+    description: 'Encrypt and decrypt text using AES-256-GCM with a password. 100% client-side encryption.',
+    path: '/tools/aes-encrypt-decrypt',
+    title: 'AES Encrypt/Decrypt - CSR Dev Tools',
+    url: '/tools/aes-encrypt-decrypt',
+  },
 ]
 
 // https://vite.dev/config/

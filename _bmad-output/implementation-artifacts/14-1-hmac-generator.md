@@ -127,3 +127,33 @@ So that **I can verify API signatures and test webhook authentication locally**.
 | `src/types/constants/tool-registry.ts` | MODIFIED |
 | `src/constants/tool-registry.ts` | MODIFIED |
 | `vite.config.ts` | MODIFIED |
+
+### Change Log
+
+| Date | Change | Author |
+|------|--------|--------|
+| 2026-02-20 | Code review (backfill): Fixed misleading RFC 4231 comment in hmac.spec.ts. Added missing prerender route for /tools/hmac-generator to vite.config.ts. Noted: raw `<input>` for secret key (design choice, not fixed), duplicate bufferToBase64 utility across hmac.ts/aes.ts (acceptable duplication). | boengai |
+
+## Senior Developer Review (AI)
+
+**Reviewer:** boengai | **Date:** 2026-02-20 | **Outcome:** Approved with fixes applied
+
+### AC Verification
+
+| AC | Status | Evidence |
+|----|--------|----------|
+| AC1: Tool Registered | IMPLEMENTED | `hmac-generator` in TOOL_REGISTRY, Generator category |
+| AC2: HMAC Generation | IMPLEMENTED | SHA-256/384/512, 300ms debounce, hex/base64 toggle |
+| AC3: Copy Output | IMPLEMENTED | CopyButton when hmac non-empty |
+| AC4: Empty State | IMPLEMENTED | Shows "\u2014" when key or message empty |
+| AC5: Unit Tests | IMPLEMENTED | 6 tests covering vectors, algorithms, encoding |
+
+### Issues Found & Resolved
+
+| # | Severity | Issue | Resolution |
+|---|----------|-------|------------|
+| H1 | HIGH | Missing prerender route in vite.config.ts | Fixed: added /tools/hmac-generator route |
+| M2 | MEDIUM | Misleading RFC 4231 comment | Fixed: updated to "Known HMAC test vectors" |
+| M4 | MEDIUM | Raw `<input>` instead of FieldForm | Noted: intentional label-free inline design |
+| M1 | MEDIUM | Duplicate bufferToBase64 across hmac.ts/aes.ts | Noted: acceptable for small private functions |
+| L1 | LOW | Secret key type="text" | Noted: acceptable for dev tool |
