@@ -16,6 +16,11 @@ export function sanitizeSvg(svg: string): string {
   result = result.replace(/\s(?:xlink:)?href\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*')/gi, '')
   // Remove <set>/<animate> targeting event handlers
   result = result.replace(/<(?:set|animate)\s[^>]*attributeName\s*=\s*(?:"on\w+"|'on\w+')/gi, '<!-- removed -->')
+  // Remove <set>/<animate> targeting href/xlink:href (can inject javascript: URIs dynamically)
+  result = result.replace(
+    /<(?:set|animate)\s[^>]*attributeName\s*=\s*(?:"(?:xlink:)?href"|'(?:xlink:)?href')[^>]*\/?>/gi,
+    '',
+  )
   // Remove foreignObject elements
   result = result.replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi, '')
   result = result.replace(/<foreignObject[\s\S]*?\/>/gi, '')

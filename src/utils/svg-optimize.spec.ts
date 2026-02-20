@@ -30,6 +30,41 @@ describe('svg-optimize utilities', () => {
       const input = '<svg><rect width="100" height="100" fill="red"/></svg>'
       expect(sanitizeSvg(input)).toBe(input)
     })
+
+    it('should remove javascript: URIs from href attributes', () => {
+      const input = '<svg><a href="javascript:alert(1)"><text>click</text></a></svg>'
+      const result = sanitizeSvg(input)
+      expect(result).not.toContain('javascript:')
+    })
+
+    it('should remove javascript: URIs from xlink:href attributes', () => {
+      const input = '<svg><a xlink:href="javascript:alert(1)"><text>click</text></a></svg>'
+      const result = sanitizeSvg(input)
+      expect(result).not.toContain('javascript:')
+    })
+
+    it('should remove <set> targeting event handler attributeName', () => {
+      const input = '<svg><set attributeName="onload" to="alert(1)"/></svg>'
+      const result = sanitizeSvg(input)
+      expect(result).not.toContain('onload')
+    })
+
+    it('should remove <set>/<animate> targeting href attributeName', () => {
+      const input = '<svg><a><set attributeName="href" to="javascript:alert(1)"/><text>click</text></a></svg>'
+      const result = sanitizeSvg(input)
+      expect(result).not.toContain('attributeName="href"')
+    })
+
+    it('should remove <use> with external references', () => {
+      const input = '<svg><use href="https://evil.com/payload.svg#icon"/></svg>'
+      const result = sanitizeSvg(input)
+      expect(result).not.toContain('evil.com')
+    })
+
+    it('should preserve <use> with local fragment references', () => {
+      const input = '<svg><use href="#myIcon"/></svg>'
+      expect(sanitizeSvg(input)).toBe(input)
+    })
   })
 
   describe('optimizeSvg', () => {

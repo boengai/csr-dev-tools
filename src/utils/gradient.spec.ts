@@ -61,6 +61,38 @@ describe('gradient utilities', () => {
         ]),
       ).toBe('radial-gradient(circle, #000 0%, #fff 100%)')
     })
+
+    it('should return fallback gradient for empty stops (linear)', () => {
+      expect(generateGradientCss('linear', 90, [])).toBe('linear-gradient(0deg, #000 0%, #fff 100%)')
+    })
+
+    it('should return fallback gradient for empty stops (radial)', () => {
+      expect(generateGradientCss('radial', 0, [])).toBe('radial-gradient(circle, #000 0%, #fff 100%)')
+    })
+
+    it('should clamp angle to 0-360 range', () => {
+      expect(
+        generateGradientCss('linear', -45, [
+          { color: '#000', position: 0 },
+          { color: '#fff', position: 100 },
+        ]),
+      ).toBe('linear-gradient(0deg, #000 0%, #fff 100%)')
+      expect(
+        generateGradientCss('linear', 500, [
+          { color: '#000', position: 0 },
+          { color: '#fff', position: 100 },
+        ]),
+      ).toBe('linear-gradient(360deg, #000 0%, #fff 100%)')
+    })
+
+    it('should clamp stop positions to 0-100 range', () => {
+      expect(
+        generateGradientCss('linear', 90, [
+          { color: '#ff0000', position: -20 },
+          { color: '#0000ff', position: 150 },
+        ]),
+      ).toBe('linear-gradient(90deg, #ff0000 0%, #0000ff 100%)')
+    })
   })
 
   describe('DEFAULT_GRADIENT', () => {

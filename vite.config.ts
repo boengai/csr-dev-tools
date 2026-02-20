@@ -225,6 +225,25 @@ const toolRoutes = [
     title: 'AES Encrypt/Decrypt - CSR Dev Tools',
     url: '/tools/aes-encrypt-decrypt',
   },
+  {
+    description: 'Visual CSS flexbox layout builder. Experiment with flex properties and copy the CSS.',
+    path: '/tools/css-flexbox-playground',
+    title: 'CSS Flexbox Playground - CSR Dev Tools',
+    url: '/tools/css-flexbox-playground',
+  },
+  {
+    description:
+      'Create CSS gradients visually with a live preview. Linear and radial gradients with multiple color stops.',
+    path: '/tools/css-gradient-generator',
+    title: 'CSS Gradient Generator - CSR Dev Tools',
+    url: '/tools/css-gradient-generator',
+  },
+  {
+    description: 'View and optimize SVG code with a live preview. Remove metadata and reduce file size.',
+    path: '/tools/svg-viewer',
+    title: 'SVG Viewer - CSR Dev Tools',
+    url: '/tools/svg-viewer',
+  },
 ]
 
 // https://vite.dev/config/

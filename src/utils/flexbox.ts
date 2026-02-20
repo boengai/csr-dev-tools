@@ -36,16 +36,16 @@ export function generateFlexboxCss(
   items: Array<FlexboxItemProps>,
 ): { containerCss: string; itemsCss: Array<string> } {
   const containerCss = [
-    'display: flex;',
-    `flex-direction: ${container.direction};`,
-    `justify-content: ${container.justifyContent};`,
-    `align-items: ${container.alignItems};`,
-    `flex-wrap: ${container.wrap};`,
-    `gap: ${Math.max(0, container.gap)}px;`,
+    '  display: flex;',
+    `  flex-direction: ${container.direction};`,
+    `  justify-content: ${container.justifyContent};`,
+    `  align-items: ${container.alignItems};`,
+    `  flex-wrap: ${container.wrap};`,
+    `  gap: ${Math.max(0, container.gap)}px;`,
   ].join('\n')
 
   const itemsCss = items.map((item) =>
-    [`flex-grow: ${item.flexGrow};`, `flex-shrink: ${item.flexShrink};`, `order: ${item.order};`].join('\n'),
+    [`  flex-grow: ${item.flexGrow};`, `  flex-shrink: ${item.flexShrink};`, `  order: ${item.order};`].join('\n'),
   )
 
   return { containerCss, itemsCss }
