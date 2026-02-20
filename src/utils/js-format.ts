@@ -14,10 +14,25 @@ export const formatJs = (js: string, indent: number | 'tab' = 2): string => {
 export const minifyJs = (js: string): string => {
   if (js.trim().length === 0) return ''
 
-  return js
+  // Preserve string literals before stripping comments
+  const strings: Array<string> = []
+  let result = js.replace(/(["'])(?:(?!\1)[^\\]|\\.)*\1/g, (match) => {
+    const idx = strings.length
+    strings.push(match)
+    return `\x00S${idx}\x00`
+  })
+
+  result = result
     .replace(/\/\*[\s\S]*?\*\//g, '')
     .replace(/\/\/.*$/gm, '')
-    .replace(/\n\s*/g, '')
+    .replace(/\n\s*/g, ' ')
     .replace(/\s{2,}/g, ' ')
     .trim()
+
+  // Restore string literals
+  for (let i = 0; i < strings.length; i++) {
+    result = result.replace(`\x00S${i}\x00`, strings[i])
+  }
+
+  return result
 }

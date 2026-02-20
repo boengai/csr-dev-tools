@@ -16,10 +16,24 @@ export const formatHtml = (html: string, indent: number | 'tab' = 2): string => 
 export const minifyHtml = (html: string): string => {
   if (html.trim().length === 0) return ''
 
-  return html
+  // Preserve whitespace-sensitive blocks before minifying
+  const preserved: Array<string> = []
+  let result = html.replace(/<(pre|script|style|code)\b[\s\S]*?<\/\1>/gi, (match) => {
+    const idx = preserved.length
+    preserved.push(match)
+    return `\x00P${idx}\x00`
+  })
+
+  result = result
     .replace(/<!--[\s\S]*?-->/g, '')
-    .replace(/\n\s*/g, '')
-    .replace(/\s{2,}/g, ' ')
+    .replace(/\s+/g, ' ')
     .replace(/>\s+</g, '><')
     .trim()
+
+  // Restore preserved blocks
+  for (let i = 0; i < preserved.length; i++) {
+    result = result.replace(`\x00P${i}\x00`, preserved[i])
+  }
+
+  return result
 }

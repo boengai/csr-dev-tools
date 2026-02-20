@@ -28,5 +28,20 @@ describe('js formatting utilities', () => {
     it('should return empty string for empty input', () => {
       expect(minifyJs('')).toBe('')
     })
+
+    it('should preserve URLs inside string literals', () => {
+      const result = minifyJs('var url = "http://example.com";')
+      expect(result).toContain('"http://example.com"')
+    })
+
+    it('should preserve comment-like content inside strings', () => {
+      const result = minifyJs("var s = '/* not a comment */';")
+      expect(result).toContain("'/* not a comment */'")
+    })
+
+    it('should replace newlines with spaces to preserve statement separation', () => {
+      const result = minifyJs('var a = 1;\nvar b = 2;')
+      expect(result).toContain('var a = 1; var b = 2;')
+    })
   })
 })

@@ -14,6 +14,22 @@ test.describe('HTML Formatter', () => {
     const output = dialog.locator('textarea').nth(1)
     await expect(output).not.toHaveValue('', { timeout: 3000 })
   })
+
+  test('minifies HTML input', async ({ page }) => {
+    await page.goto('/tools/html-formatter')
+    const dialog = page.locator('[role="dialog"]')
+    await expect(dialog).toBeVisible({ timeout: 5000 })
+
+    // Switch to minify mode
+    const modeSelect = dialog.locator('select').first()
+    await modeSelect.selectOption('minify')
+
+    const input = dialog.locator('textarea').first()
+    await input.fill('<div>\n  <p>hello</p>\n</div>')
+
+    const output = dialog.locator('textarea').nth(1)
+    await expect(output).not.toHaveValue('', { timeout: 3000 })
+  })
 })
 
 test.describe('CSS Formatter', () => {
@@ -24,6 +40,21 @@ test.describe('CSS Formatter', () => {
 
     const input = dialog.locator('textarea').first()
     await input.fill(codeFormattingData.css)
+
+    const output = dialog.locator('textarea').nth(1)
+    await expect(output).not.toHaveValue('', { timeout: 3000 })
+  })
+
+  test('minifies CSS input', async ({ page }) => {
+    await page.goto('/tools/css-formatter')
+    const dialog = page.locator('[role="dialog"]')
+    await expect(dialog).toBeVisible({ timeout: 5000 })
+
+    const modeSelect = dialog.locator('select').first()
+    await modeSelect.selectOption('minify')
+
+    const input = dialog.locator('textarea').first()
+    await input.fill('body {\n  color: red;\n  margin: 0;\n}')
 
     const output = dialog.locator('textarea').nth(1)
     await expect(output).not.toHaveValue('', { timeout: 3000 })
@@ -42,6 +73,21 @@ test.describe('JavaScript Minifier', () => {
     const output = dialog.locator('textarea').nth(1)
     await expect(output).not.toHaveValue('', { timeout: 3000 })
   })
+
+  test('beautifies JavaScript input', async ({ page }) => {
+    await page.goto('/tools/javascript-minifier')
+    const dialog = page.locator('[role="dialog"]')
+    await expect(dialog).toBeVisible({ timeout: 5000 })
+
+    const modeSelect = dialog.locator('select').first()
+    await modeSelect.selectOption('beautify')
+
+    const input = dialog.locator('textarea').first()
+    await input.fill('function hello(){return"world"}')
+
+    const output = dialog.locator('textarea').nth(1)
+    await expect(output).not.toHaveValue('', { timeout: 3000 })
+  })
 })
 
 test.describe('SQL Formatter', () => {
@@ -52,6 +98,21 @@ test.describe('SQL Formatter', () => {
 
     const input = dialog.locator('textarea').first()
     await input.fill(codeFormattingData.sql)
+
+    const output = dialog.locator('textarea').nth(1)
+    await expect(output).not.toHaveValue('', { timeout: 3000 })
+  })
+
+  test('formats SQL with dialect change', async ({ page }) => {
+    await page.goto('/tools/sql-formatter')
+    const dialog = page.locator('[role="dialog"]')
+    await expect(dialog).toBeVisible({ timeout: 5000 })
+
+    const dialectSelect = dialog.locator('select').first()
+    await dialectSelect.selectOption('postgresql')
+
+    const input = dialog.locator('textarea').first()
+    await input.fill('select * from users limit 10')
 
     const output = dialog.locator('textarea').nth(1)
     await expect(output).not.toHaveValue('', { timeout: 3000 })

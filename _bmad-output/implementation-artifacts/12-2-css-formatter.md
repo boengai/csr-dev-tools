@@ -142,3 +142,22 @@ Uses the **dialog-based formatter pattern** — card shows description + open bu
 | `src/types/constants/tool-registry.ts` | MODIFIED |
 | `src/constants/tool-registry.ts` | MODIFIED |
 | `vite.config.ts` | MODIFIED |
+
+## Senior Developer Review (AI)
+**Reviewer:** boengai | **Date:** 2026-02-20 | **Status:** Approved with fixes applied
+
+### Findings & Fixes Applied
+| # | Severity | Issue | Resolution |
+|---|----------|-------|------------|
+| M1 | MEDIUM | `minifyCss` regex corrupts CSS values inside string literals containing `{}:;,` | Fixed — string literals now preserved via placeholder extraction before minification |
+| M2 | MEDIUM | E2E test only covered beautify mode | Fixed — added minify mode E2E test |
+| L1 | LOW | Minify test didn't assert exact output | Fixed — test now asserts `body{color:red;margin:0}` |
+| L2 | LOW | Missing tab indent test for formatCss | Accepted — low impact |
+
+### Files Modified During Review
+- `src/utils/css-format.ts` — Fixed minifyCss to preserve CSS string literals
+- `src/utils/css-format.spec.ts` — Added 2 tests (string preservation, data URI), strengthened minify assertion
+- `e2e/code-tools-extended.spec.ts` — Added minify mode E2E test
+
+### Change Log
+- 2026-02-20: Code review backfill — 2 MEDIUM fixed, 2 LOW (1 fixed, 1 accepted)

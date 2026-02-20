@@ -1,7 +1,7 @@
 ---
 story: 12.1
 title: HTML Formatter/Beautifier
-status: ready
+status: done
 epic: 12
 ---
 
@@ -30,3 +30,23 @@ epic: 12
 
 ## Component Pattern
 Follow existing tool patterns (e.g., RegexTester, JsonFormatter).
+
+## Senior Developer Review (AI)
+**Reviewer:** boengai | **Date:** 2026-02-20 | **Status:** Approved with fixes applied
+
+### Findings & Fixes Applied
+| # | Severity | Issue | Resolution |
+|---|----------|-------|------------|
+| H1 | HIGH | `minifyHtml` destroyed whitespace in `<pre>`, `<script>`, `<style>`, `<code>` blocks | Fixed — blocks now preserved via placeholder extraction before minification |
+| M1 | MEDIUM | `minifyHtml` removes whitespace between inline elements (`><`) | Accepted — consistent with standard HTML minifier behavior |
+| M2 | MEDIUM | E2E test only covered beautify mode | Fixed — added minify mode E2E test |
+| L1 | LOW | Unit tests missing edge cases | Fixed — added 6 tests (pre/script/style/code preservation, self-closing tags, attributes) |
+| L2 | LOW | E2E test not in dedicated file per story spec | Accepted — consolidated in `code-tools-extended.spec.ts` per project convention |
+
+### Files Modified During Review
+- `src/utils/html-format.ts` — Fixed minifyHtml to preserve whitespace-sensitive blocks
+- `src/utils/html-format.spec.ts` — Added 6 edge case tests
+- `e2e/code-tools-extended.spec.ts` — Added minify mode E2E test
+
+### Change Log
+- 2026-02-20: Code review backfill — 1 HIGH + 1 MEDIUM fixed, 1 MEDIUM accepted, 2 LOW (1 fixed, 1 accepted)

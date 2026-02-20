@@ -22,7 +22,7 @@ describe('css formatting utilities', () => {
   describe('minifyCss', () => {
     it('should minify CSS', () => {
       const result = minifyCss('body {\n  color: red;\n  margin: 0;\n}')
-      expect(result).not.toContain('\n')
+      expect(result).toBe('body{color:red;margin:0}')
     })
 
     it('should remove comments', () => {
@@ -32,6 +32,16 @@ describe('css formatting utilities', () => {
 
     it('should return empty string for empty input', () => {
       expect(minifyCss('')).toBe('')
+    })
+
+    it('should preserve content inside CSS string literals', () => {
+      const result = minifyCss('.foo { content: "hello { world }"; }')
+      expect(result).toContain('"hello { world }"')
+    })
+
+    it('should preserve quoted URLs with special characters', () => {
+      const result = minifyCss('.bar { background: url("data:image/svg+xml;base64,abc"); }')
+      expect(result).toContain('"data:image/svg+xml;base64,abc"')
     })
   })
 })

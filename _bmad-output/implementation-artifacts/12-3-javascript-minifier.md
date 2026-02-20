@@ -134,3 +134,22 @@ Same dialog-based formatter as CSS Formatter but with **size comparison display*
 | `src/types/constants/tool-registry.ts` | MODIFIED |
 | `src/constants/tool-registry.ts` | MODIFIED |
 | `vite.config.ts` | MODIFIED |
+
+## Senior Developer Review (AI)
+**Reviewer:** boengai | **Date:** 2026-02-20 | **Status:** Approved with fixes applied
+
+### Findings & Fixes Applied
+| # | Severity | Issue | Resolution |
+|---|----------|-------|------------|
+| H1 | HIGH | `minifyJs` regex destroys string literals containing `//` or `/* */` (e.g., URLs) | Fixed — string literals preserved via placeholder extraction before comment removal |
+| M1 | MEDIUM | Newline removal breaks ASI-reliant code (`\n` → empty) | Fixed — newlines replaced with space instead of empty string |
+| M2 | MEDIUM | E2E test only covered minify mode | Fixed — added beautify mode E2E test |
+| L1 | LOW | Size display shows raw bytes vs AC spec's human-readable format | Accepted — functional, minor UX deviation |
+
+### Files Modified During Review
+- `src/utils/js-format.ts` — Fixed minifyJs to preserve string literals and use space for newline replacement
+- `src/utils/js-format.spec.ts` — Added 3 tests (URL preservation, comment-in-string, newline handling)
+- `e2e/code-tools-extended.spec.ts` — Added beautify mode E2E test
+
+### Change Log
+- 2026-02-20: Code review backfill — 1 HIGH + 2 MEDIUM fixed, 1 LOW accepted
