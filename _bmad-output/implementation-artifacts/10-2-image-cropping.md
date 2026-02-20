@@ -551,10 +551,17 @@ Claude Opus 4.6
 - Created 24 unit tests covering all crop utility functions: `getAspectRatio`, `scaleCropToNatural`, `clampCropRegion`, `getDefaultCrop`, `ASPECT_RATIO_OPTIONS`
 - All 562 tests pass (24 new, 538 existing — 0 regressions)
 - Lint: 0 errors, build: clean
+- Post-review: 897 tests pass (26 crop tests, 871 existing — 0 regressions)
 
 ### Change Log
 
 - 2026-02-15: Implemented story 10-2 Image Cropping — new tool with Dialog-based crop workflow (upload → crop in dialog → download tab), grid background, aspect ratio presets with inline size display
+- 2026-02-20: Code review fixes (4 issues fixed):
+  - H1: Merged separate "Crop" + "Download" into single "Crop & Download" button per AC #6
+  - M1: Converted `cropImageCanvas` from sync `toDataURL` to async `toBlob` so ProgressBar can actually display during long operations
+  - M2: Overrode `--rc-drag-handle-mobile-size` CSS variable to 44px for AC #7 mobile touch target compliance
+  - M3: Added zero-division guard in `scaleCropToNatural` for edge case when display dimensions are 0
+  - L2: Added 2 tests for zero display dimension edge cases (26 total, up from 24)
 
 ### File List
 

@@ -110,9 +110,9 @@ The UX Design Specification defines patterns that all tools must follow. Checkin
 
 | UX Pattern | Epic Coverage | Status |
 |------------|---------------|--------|
-| Per-tool layout (no shared ToolLayout) | All stories reference per-tool layout | ✅ Aligned |
+| Per-tool layout | All stories reference per-tool layout | ✅ Aligned |
 | CopyButton for outputs | All stories include CopyButton AC | ✅ Aligned |
-| useToolError for error handling | All stories reference useToolError | ✅ Aligned |
+| Inline error handling | All stories reference inline error handling | ✅ Aligned |
 | Mobile responsive (375px min) | Common AC applied to all stories | ✅ Aligned |
 | WCAG 2.1 AA (aria-live, aria-label, role="alert") | Common AC applied to all stories | ✅ Aligned |
 | Loading skeletons for heavy libs | NFR-E3-01 (Monaco), NFR-E3-02 (Mermaid) addressed in stories 25.3, 26.2 | ✅ Aligned |

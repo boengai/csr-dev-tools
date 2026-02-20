@@ -2,7 +2,7 @@
 
 ## Executive Summary
 
-Expand CSR Dev Tools from 19 tools (9 categories) to **40+ tools (14 categories)** by adding high-demand client-side developer utilities. All new tools follow the established BMAD architecture (TOOL_REGISTRY, ToolLayout, useToolError, CopyButton/OutputDisplay pattern) and maintain 100% client-side processing.
+Expand CSR Dev Tools from 19 tools (9 categories) to **40+ tools (14 categories)** by adding high-demand client-side developer utilities. All new tools follow the established BMAD architecture (TOOL_REGISTRY, per-tool layout, CopyButton pattern) and maintain 100% client-side processing.
 
 ## Market Analysis
 
@@ -31,7 +31,7 @@ Expand CSR Dev Tools from 19 tools (9 categories) to **40+ tools (14 categories)
 ### Key Differentiators
 
 - **100% client-side** — privacy-first, no data leaves the browser
-- **Consistent UX** — every tool follows the same ToolLayout pattern
+- **Consistent UX** — every tool follows the same layout pattern
 - **Dark cosmic theme** — visually distinctive, developer-friendly
 - **Accessible** — WCAG 2.1 AA across all tools
 - **No ads, no tracking** — clean developer experience
@@ -82,5 +82,5 @@ Expand CSR Dev Tools from 19 tools (9 categories) to **40+ tools (14 categories)
 
 - All processing 100% client-side (no server calls)
 - Heavy libraries (SQL parser, TOML, markdown, QR, SVGO) must be code-split and lazy-loaded
-- Follow existing TOOL_REGISTRY + ToolLayout + useToolError patterns
+- Follow existing TOOL_REGISTRY + per-tool layout + CopyButton patterns
 - TypeScript strict mode, Vitest unit tests, Playwright E2E

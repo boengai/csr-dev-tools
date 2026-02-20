@@ -19,6 +19,7 @@ export const scaleCropToNatural = (
   naturalWidth: number,
   naturalHeight: number,
 ): CropRegion => {
+  if (displayWidth === 0 || displayHeight === 0) return { height: 0, width: 0, x: 0, y: 0 }
   const scaleX = naturalWidth / displayWidth
   const scaleY = naturalHeight / displayHeight
   return {

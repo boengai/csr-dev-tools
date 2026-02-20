@@ -16,14 +16,12 @@ inputDocuments:
 
 **Common Dependencies (all stories):**
 - Epic 1: TOOL_REGISTRY
-- Epic 2: ToolLayout, useToolError, CopyButton, OutputDisplay
+- Epic 2: CopyButton
 - All libraries must be lazy-loaded (code-split) to maintain NFR8
 
 **Common Acceptance Criteria (all stories):**
 - Registered in TOOL_REGISTRY with complete metadata (key, name, category, emoji, description, seo, routePath, component)
-- Uses ToolLayout wrapper with mode variants (card/page)
-- Uses useToolError for inline error handling
-- Uses CopyButton/OutputDisplay for output capture
+- Uses CopyButton for output copying
 - 100% client-side processing (zero network requests)
 - Unit tests covering happy paths, edge cases, error states
 - E2E test in `e2e/{tool-key}.spec.ts`
@@ -496,7 +494,7 @@ So that **I can check text length for various requirements (tweets, blog posts, 
 
 **Given** the stats display
 **When** rendered
-**Then** stats are shown in a clean grid/card layout using OutputDisplay variant: table
+**Then** stats are shown in a clean grid/card layout
 
 **Given** empty input
 **When** nothing is entered

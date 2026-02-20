@@ -140,9 +140,9 @@ The PRD is thorough and well-structured. It contains 38 clearly numbered FRs and
 
 | FR | PRD Requirement | Epic Coverage | Status |
 |----|----------------|---------------|--------|
-| FR1 | Browser-only processing | Epic 2 (ToolLayout enforces client-side pattern) | ✓ Covered |
+| FR1 | Browser-only processing | Epic 2 (client-side pattern) | ✓ Covered |
 | FR2 | File upload capability | Epic 2 (UploadInput standardization) | ✓ Covered |
-| FR3 | Download/copy output | Epic 2 (CopyButton, OutputDisplay) | ✓ Covered |
+| FR3 | Download/copy output | Epic 2 (CopyButton) | ✓ Covered |
 | FR4 | Sub-500ms processing results | Epic 2 (real-time output pattern) | ✓ Covered |
 | FR5 | Color conversion HEX/RGB/HSL | Epic 3 (existing tool baseline) | ✓ Covered |
 | FR6 | Color input via text or picker | Epic 3 (existing tool enhancement) | ✓ Covered |
@@ -208,7 +208,7 @@ No phantom FRs detected in epics that don't exist in the PRD.
 | Responsive design | ✓ Aligned | 375px minimum, 44x44px touch targets, breakpoints match PRD exactly |
 | Theme system | ✓ Aligned | Dark-only, OKLCH color space — FR32 dropped (dark-only decision) |
 | Navigation | ✓ Aligned | Sidebar + Command Palette + direct URLs — covers FR26-FR29 |
-| Copy/output patterns | ✓ Aligned | CopyButton + OutputDisplay + toast conventions — covers FR3, FR7 |
+| Copy/output patterns | ✓ Aligned | CopyButton + toast conventions — covers FR3, FR7 |
 | Error handling | ✓ Aligned | Inline errors, prevention-first, no modals — matches PRD approach |
 | Out of scope | ✓ Aligned | No server processing, no accounts, no tool pipelines — same boundaries |
 
@@ -218,12 +218,12 @@ No phantom FRs detected in epics that don't exist in the PRD.
 |------|--------|-------|
 | Sidebar system | ✓ Aligned | Architecture defines `useSidebarStore`, component structure, Zustand pattern |
 | Command Palette | ✓ Aligned | Architecture defines `useCommandPaletteStore`, `useKeyboardShortcuts` hook |
-| ToolLayout component | ✓ Aligned | Architecture defines standardized wrapper with card/page modes |
-| CopyButton/OutputDisplay | ✓ Aligned | Architecture defines component locations and patterns |
+| Per-tool layout | ✓ Aligned | Each tool owns its own layout (ToolLayout deprecated) |
+| CopyButton | ✓ Aligned | Architecture defines component location and pattern (OutputDisplay deprecated) |
 | Per-tool SEO | ✓ Aligned | Architecture specifies build-time pre-rendering, registry SEO metadata |
 | Code splitting | ✓ Aligned | Architecture uses lazy imports in registry — matches UX requirement for no bundle bloat |
 | Mobile patterns | ✓ Aligned | Architecture specifies sidebar overlay on mobile, stacking layout |
-| Error handling | ✓ Aligned | Architecture defines `useToolError` hook + `ToolErrorBoundary` |
+| Error handling | ✓ Aligned | Architecture defines `ToolErrorBoundary` (useToolError deprecated) |
 | Animation/Motion | ✓ Aligned | Architecture includes Motion library in tech stack |
 | Theme system | ✓ Aligned | Architecture references Tailwind @theme with OKLCH tokens |
 
@@ -231,7 +231,7 @@ No phantom FRs detected in epics that don't exist in the PRD.
 
 1. **Minor category naming inconsistency:** UX Journey 4 flow diagram lists "Security" as a separate tool category, but epics group security tools (Hash, Password) under "Generator & Security" (Epic 8). Architecture uses "Generator" as the category. Recommend standardizing to one naming convention.
 
-2. **ToolLayout variant terminology:** UX defines ToolLayout variants as `text | file | visual` (based on input type). Architecture defines modes as `card | page` (based on rendering context). These are complementary, not conflicting, but could confuse implementers — recommend documenting both dimensions clearly.
+2. **Layout terminology:** ToolLayout was deprecated; each tool owns its own layout. The original UX variants (`text | file | visual`) and architecture modes (`card | page`) are no longer relevant as shared component concerns.
 
 3. ~~**Light theme tokens undefined:**~~ **RESOLVED — NOT PLANNED.** Dark-only theme decision made. No light theme tokens needed. Theme toggle (Story 1.5) dropped.
 
@@ -266,14 +266,14 @@ Overall alignment between UX, PRD, and Architecture is **strong**. All three doc
 |------|--------------------------------------|--------------|------------|
 | Epic 1 | ✓ Yes | None — builds on existing MVP | ✓ Independent |
 | Epic 2 | ✓ Yes | Uses TOOL_REGISTRY from Epic 1 | ✓ Valid (depends on prior epic) |
-| Epic 3 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (ToolLayout, useToolError) | ✓ Valid (depends on prior epics) |
+| Epic 3 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (CopyButton) | ✓ Valid (depends on prior epics) |
 | Epic 4 | ✓ Yes | Can be built in parallel with Epics 3+ | ✓ Independent |
-| Epic 5 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (ToolLayout) | ✓ Valid |
-| Epic 6 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (ToolLayout) | ✓ Valid |
-| Epic 7 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (ToolLayout) | ✓ Valid |
-| Epic 8 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (ToolLayout) | ✓ Valid |
-| Epic 9 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (ToolLayout) | ✓ Valid |
-| Epic 10 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (ToolLayout) | ✓ Valid |
+| Epic 5 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (CopyButton) | ✓ Valid |
+| Epic 6 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (CopyButton) | ✓ Valid |
+| Epic 7 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (CopyButton) | ✓ Valid |
+| Epic 8 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (CopyButton) | ✓ Valid |
+| Epic 9 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (CopyButton) | ✓ Valid |
+| Epic 10 | ✓ Yes | Uses Epic 1 (registry) + Epic 2 (CopyButton) | ✓ Valid |
 
 **No forward dependencies detected.** No epic depends on a later epic. No circular dependencies.
 
@@ -337,7 +337,7 @@ All stories use proper Given/When/Then BDD format. Analysis:
 #### Major Issues
 
 **1. Implicit critical-path dependency not documented in epics**
-- Epics 3, 5, 6, 7, 8, 9, and 10 all depend on Epic 1 (TOOL_REGISTRY) and Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay) being completed first
+- Epics 3, 5, 6, 7, 8, 9, and 10 all depend on Epic 1 (TOOL_REGISTRY) and Epic 2 (CopyButton) being completed first
 - This creates a hard critical path: Epic 1 → Epic 2 → Epics 3-10
 - The architecture documents this in its implementation sequence, but the epics document itself doesn't state this dependency explicitly
 - **Recommendation:** Add an explicit "Prerequisites" or "Depends On" field to each epic header stating which prior epics must be complete
@@ -397,7 +397,7 @@ The planning artifacts for csr-dev-tools are comprehensive, well-aligned, and re
 |----------|-------|---------|
 | Critical Violations | 0 | None |
 | Major Issues | 2 | Implicit critical-path dependency undocumented; Epic 4 infrastructure-heavy |
-| Minor Concerns (UX) | 3 | Category naming, ToolLayout terminology, NFR21 deferral (light theme tokens resolved — dark-only) |
+| Minor Concerns (UX) | 3 | Category naming, layout terminology, NFR21 deferral (light theme tokens resolved — dark-only) |
 | Minor Concerns (Epics) | 4 | Developer-facing stories, NFR traceability, Epic 10 ordering, story count distribution |
 
 ### Critical Issues Requiring Immediate Action
@@ -417,7 +417,7 @@ The planning artifacts for csr-dev-tools are comprehensive, well-aligned, and re
 Based on the dependency analysis, the recommended implementation order is:
 
 1. **Epic 1** (Platform Navigation & Tool Discovery) — creates TOOL_REGISTRY foundation
-2. **Epic 2** (Standardized Tool Experience) — creates ToolLayout, CopyButton, OutputDisplay, error handling
+2. **Epic 2** (Standardized Tool Experience) — creates CopyButton, error handling
 3. **Epic 4** (Quality Infrastructure) — can run in parallel with Epic 3; CI/CD and E2E setup
 4. **Epic 3** (Existing Tool Baseline) — refactors 6 existing tools to new standards
 5. **Epics 5-10** (New Tools) — can be built in parallel once Epics 1-2 are complete

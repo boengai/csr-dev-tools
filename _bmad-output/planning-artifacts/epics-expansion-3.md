@@ -17,12 +17,12 @@ inputDocuments:
 
 **Common Dependencies (all stories):**
 - Epic 1: TOOL_REGISTRY, route constants, RoutePath typing
-- Established patterns: per-tool layout, useToolError, CopyButton
+- Established patterns: per-tool layout, CopyButton
 - All libraries must be lazy-loaded (code-split) to maintain NFR8
 
 **Common Acceptance Criteria (all stories):**
 - Registered in TOOL_REGISTRY with complete metadata (key, name, category, emoji, description, seo, routePath, component)
-- Uses useToolError for inline error handling
+- Uses inline error handling
 - Uses CopyButton for output copy
 - 100% client-side processing (zero network requests)
 - Unit tests covering happy paths, edge cases, error states

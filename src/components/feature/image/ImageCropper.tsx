@@ -27,19 +27,39 @@ const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT', string> = {
 
 const toolEntry = TOOL_REGISTRY_MAP['image-cropper']
 
-const cropImageCanvas = (image: HTMLImageElement, crop: CropRegion, mimeType: string, quality?: number): string => {
-  const canvas = document.createElement('canvas')
-  canvas.width = crop.width
-  canvas.height = crop.height
-  const ctx = canvas.getContext('2d')
-  if (!ctx) throw new Error('Canvas context not available')
+const cropImageCanvas = (
+  image: HTMLImageElement,
+  crop: CropRegion,
+  mimeType: string,
+  quality?: number,
+): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const canvas = document.createElement('canvas')
+    canvas.width = crop.width
+    canvas.height = crop.height
+    const ctx = canvas.getContext('2d')
+    if (!ctx) {
+      reject(new Error('Canvas context not available'))
+      return
+    }
 
-  ctx.drawImage(image, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height)
+    ctx.drawImage(image, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height)
 
-  return canvas.toDataURL(mimeType, quality)
-}
+    canvas.toBlob(
+      (blob) => {
+        if (!blob) {
+          reject(new Error('Failed to create image blob'))
+          return
+        }
+        resolve(URL.createObjectURL(blob))
+      },
+      mimeType,
+      quality,
+    )
+  })
 
 export const ImageCropper = () => {
+  const croppedUrlRef = useRef<string | null>(null)
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
   const progressTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
@@ -59,6 +79,7 @@ export const ImageCropper = () => {
   useEffect(() => {
     return () => {
       clearTimeout(progressTimerRef.current)
+      if (croppedUrlRef.current) URL.revokeObjectURL(croppedUrlRef.current)
     }
   }, [])
 
@@ -84,6 +105,10 @@ export const ImageCropper = () => {
   }
 
   const handleReset = () => {
+    if (croppedUrlRef.current) {
+      URL.revokeObjectURL(croppedUrlRef.current)
+      croppedUrlRef.current = null
+    }
     setTabValue(TABS_VALUES.IMPORT)
     setSource(null)
     setCompletedCrop(null)
@@ -110,7 +135,7 @@ export const ImageCropper = () => {
     }
   }
 
-  const handleCrop = () => {
+  const handleCropAndDownload = async () => {
     if (!completedCrop || !imgRef.current || !source) return
 
     setProcessing(true)
@@ -126,15 +151,21 @@ export const ImageCropper = () => {
       )
       const clamped = clampCropRegion(naturalCrop, imgRef.current.naturalWidth, imgRef.current.naturalHeight)
       const mimeType = source.type || 'image/png'
-      const dataUrl = cropImageCanvas(imgRef.current, clamped, mimeType)
+      const blobUrl = await cropImageCanvas(imgRef.current, clamped, mimeType)
+
+      if (croppedUrlRef.current) URL.revokeObjectURL(croppedUrlRef.current)
+      croppedUrlRef.current = blobUrl
 
       const anchor = downloadAnchorRef.current
       if (!anchor) return
       const baseName = source.name.replace(/\.[^.]+$/, '')
       const ext = source.name.split('.').pop() || 'png'
-      anchor.href = dataUrl
-      anchor.download = `cropped-${baseName}.${ext}`
+      const fileName = `cropped-${baseName}.${ext}`
+      anchor.href = blobUrl
+      anchor.download = fileName
+      anchor.click()
 
+      toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
       setTabValue(TABS_VALUES.DOWNLOAD)
       setDialogOpen(false)
     } catch {
@@ -236,6 +267,7 @@ export const ImageCropper = () => {
                 minWidth={10}
                 onChange={(c) => setCrop(c)}
                 onComplete={(c) => setCompletedCrop(c)}
+                style={{ '--rc-drag-handle-mobile-size': '44px' } as React.CSSProperties}
               >
                 <img
                   alt="Crop preview"
@@ -277,8 +309,8 @@ export const ImageCropper = () => {
 
             {showProgress && <ProgressBar value={50} />}
 
-            <Button block disabled={!completedCrop || processing} onClick={handleCrop} variant="primary">
-              Crop
+            <Button block disabled={!completedCrop || processing} onClick={handleCropAndDownload} variant="primary">
+              Crop & Download
             </Button>
           </div>
         </div>

@@ -65,6 +65,18 @@ describe('crop utilities', () => {
 
       expect(result).toEqual({ height: 400, width: 200, x: 0, y: 0 })
     })
+
+    it('returns zero region when displayWidth is 0', () => {
+      const result = scaleCropToNatural({ height: 50, width: 100, x: 10, y: 20 }, 0, 400, 1000, 800)
+
+      expect(result).toEqual({ height: 0, width: 0, x: 0, y: 0 })
+    })
+
+    it('returns zero region when displayHeight is 0', () => {
+      const result = scaleCropToNatural({ height: 50, width: 100, x: 10, y: 20 }, 500, 0, 1000, 800)
+
+      expect(result).toEqual({ height: 0, width: 0, x: 0, y: 0 })
+    })
   })
 
   describe('clampCropRegion', () => {

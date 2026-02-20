@@ -17,7 +17,7 @@ inputDocuments:
 
 ## Executive Summary
 
-Expand CSR Dev Tools from 55 tools to **75 tools** by adding 20 high-demand client-side developer utilities across 5 new categories: data format tools, design & visual tools, security & crypto tools, code & schema tools, and time & diagram tools. All new tools follow the established architecture (TOOL_REGISTRY, per-tool layout, useToolError, CopyButton pattern) and maintain 100% client-side processing.
+Expand CSR Dev Tools from 55 tools to **75 tools** by adding 20 high-demand client-side developer utilities across 5 new categories: data format tools, design & visual tools, security & crypto tools, code & schema tools, and time & diagram tools. All new tools follow the established architecture (TOOL_REGISTRY, per-tool layout, CopyButton pattern) and maintain 100% client-side processing.
 
 ## Product Vision
 

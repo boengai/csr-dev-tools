@@ -97,14 +97,14 @@ NFR25: Semantic HTML with proper heading hierarchy on all pages
 - Hybrid routing: tools live on dashboard (inline cards) AND have dedicated routes (`/tools/{tool-slug}`) for SEO and direct access
 - Build-time pre-rendering via Vite plugin for per-tool SEO (static HTML generation per tool route)
 - Separate Zustand stores per concern: `useSidebarStore`, `useCommandPaletteStore`
-- Standardized error handling: `useToolError` hook + per-tool `ToolErrorBoundary`
+- Standardized error handling: per-tool `ToolErrorBoundary`
 - Shared validation utilities in `src/utils/validation.ts` (e.g., `isValidHex`, `isValidBase64`)
 - Testing strategy: unit tests (Vitest, node env) for logic + E2E tests (Playwright) for user journeys — no component testing layer
 - CI/CD pipeline: lint + format check + unit tests + build (with pre-rendering) + E2E tests + Lighthouse CI
-- ToolLayout standardization — all tools use `ToolLayout` wrapper component for consistent rendering
+- Per-tool layout — each tool owns its own layout structure
 - Code splitting per route via `lazyRouteComponent()` — each tool is its own chunk
 - Tool component modes: card (dashboard) vs. page (dedicated route) via `mode` variant
-- Implementation sequence: (1) Tool Registry, (2) Per-tool routes, (3) ToolLayout, (4) Sidebar + Command Palette, (5) Pre-rendering, (6) Validation utilities, (7) Error handling, (8) E2E + Lighthouse CI
+- Implementation sequence: (1) Tool Registry, (2) Per-tool routes, (3) Sidebar + Command Palette, (4) Pre-rendering, (5) Validation utilities, (6) Error handling, (7) E2E + Lighthouse CI
 - Input processing patterns: text tools on input change with 300ms debounce; file tools on explicit button click; generators on explicit button click; live preview on input change with 300ms debounce
 - Loading state patterns: no spinners — use progress bars or skeleton states only. ProgressBar only for operations >300ms.
 - Keyboard shortcuts: `Cmd+K` / `Ctrl+K` for Command Palette toggle (reserved). Centralized `useKeyboardShortcuts` hook.
@@ -114,9 +114,9 @@ NFR25: Semantic HTML with proper heading hierarchy on all pages
 
 - Sidebar system: collapsible panel on left (~240-280px on desktop), full-screen overlay on mobile. Categories with tool count badges. Hamburger toggle in header.
 - Command Palette: `Cmd+K`/`Ctrl+K` keyboard-triggered search overlay with fuzzy filtering, arrow key navigation, Enter to select
-- Standardized tool layout template (ToolLayout): header → input region → output region → action bar. Mobile stacks vertically.
+- Per-tool layout structure: header → input region → output region → action bar. Mobile stacks vertically.
 - CopyButton component: icon morphs clipboard→check (300ms), reverts after 2s. Toast "Copied to clipboard".
-- OutputDisplay component: formatted read-only output with integrated copy. `aria-live="polite"`. Variants: single, table, code.
+- Formatted read-only output areas with integrated copy via `CopyButton`. `aria-live="polite"`.
 - Dark-first theme with OKLCH color space. Space/Universe theme identity. Space Mono typography.
 - Motion animations: sidebar slide (300ms ease-out), palette fade, button morphs via Motion library
 - Real-time output for text tools (no "Convert" button needed); explicit action buttons for file tools and generators
@@ -133,9 +133,9 @@ NFR25: Semantic HTML with proper heading hierarchy on all pages
 
 ### FR Coverage Map
 
-FR1: Epic 2 - Browser-only processing (ToolLayout enforces client-side pattern)
+FR1: Epic 2 - Browser-only processing (client-side pattern)
 FR2: Epic 2 - File upload capability (UploadInput standardization)
-FR3: Epic 2 - Download/copy output (CopyButton, OutputDisplay)
+FR3: Epic 2 - Download/copy output (CopyButton)
 FR4: Epic 2 - Sub-500ms processing results (real-time output pattern)
 FR5: Epic 3 - Color conversion between HEX, RGB, HSL (existing tool baseline)
 FR6: Epic 3 - Color input via text or picker (existing tool enhancement)
@@ -187,7 +187,7 @@ Users get a consistent, self-explanatory, accessible tool interface with instant
 ### Epic 3: Existing Tool Baseline & Enhancement
 Users get documented, regression-tested, and enhanced versions of all 6 existing tools — refactored to the standardized layout with improved UX.
 **FRs covered:** FR5, FR6, FR7, FR8, FR11, FR12, FR15, FR16, FR30, FR31, FR36, FR37
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
 
 ### Epic 4: Quality Infrastructure & Contributor Experience
 Contributors can add new tools following clear documented patterns, with automated CI/CD quality gates protecting the codebase.
@@ -197,32 +197,32 @@ Contributors can add new tools following clear documented patterns, with automat
 ### Epic 5: Encoding & Decoding Tools
 Users can encode/decode URLs and decode JWT tokens to inspect headers and payloads.
 **FRs covered:** FR9, FR10
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
 
 ### Epic 6: Data & Format Tools
 Users can format/validate JSON and convert between JSON, YAML, and CSV formats.
 **FRs covered:** FR17, FR18, FR19
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
 
 ### Epic 7: Text Analysis Tools
 Users can compare text side-by-side to spot differences and test regex patterns with live match highlighting.
 **FRs covered:** FR20, FR21
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
 
 ### Epic 8: Generator Tools
 Users can generate UUIDs, secure passwords, and cryptographic hash values.
 **FRs covered:** FR22, FR23, FR24
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
 
 ### Epic 9: CSS Visual Tools
 Users can visually create CSS box-shadow values with a live preview and copy the CSS output.
 **FRs covered:** FR25
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
 
 ### Epic 10: Advanced Image Tools
 Users can compress images with quality control and crop images using freeform or preset aspect ratios.
 **FRs covered:** FR13, FR14
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay). Recommended after Epic 3 Stories 3.3/3.4 (Image tool baseline)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton). Recommended after Epic 3 Stories 3.3/3.4 (Image tool baseline)
 
 ---
 
@@ -273,7 +273,7 @@ So that **I can bookmark specific tools and discover them via Google**.
 
 **Given** a user navigates to `/tools/color-converter`
 **When** the page renders
-**Then** the Color Converter tool is displayed in full-page mode via `ToolLayout`
+**Then** the Color Converter tool is displayed in full-page mode
 **And** the page has a unique `<title>` tag: "Color Converter - CSR Dev Tools"
 **And** the page has a unique `<meta name="description">` tag
 **And** the page has Open Graph tags (`og:title`, `og:description`)
@@ -409,7 +409,7 @@ So that **every component and tool renders with the cohesive cosmic theme define
 **Then** there are no visual regressions in layout or functionality — only the color palette, typography, and shadows change
 **And** all text meets WCAG 2.1 AA contrast minimums (4.5:1 body text, 3:1 large text) against the updated backgrounds
 
-**Dependencies:** None — this is a foundational story. Stories 2.1 (ToolLayout) and 2.2 (CopyButton/OutputDisplay) depend on these tokens being in place.
+**Dependencies:** None — this is a foundational story. Story 2.2 (CopyButton) depends on these tokens being in place.
 
 **Scope note:** This story covers design *tokens* only — the CSS custom properties and font. Dark theme only (no light variant). Component-level styling is Epic 2.
 
@@ -421,44 +421,14 @@ Users get a consistent, self-explanatory, accessible tool interface with instant
 
 **Depends on:** Epic 1 (TOOL_REGISTRY for tool metadata and descriptions)
 
-### Story 2.1: ToolLayout Component
+### ~~Story 2.1: ToolLayout Component~~ — DEPRECATED
+
+> **Decision:** ToolLayout was deprecated and removed (story 3-1). Each tool owns its own layout. The consistent layout pattern (header, input, output, action bar) is followed per-tool without a shared wrapper component.
+
+### Story 2.2: CopyButton Component
 
 As a **user**,
-I want **every tool to follow the same spatial layout pattern**,
-So that **I can immediately understand any tool's interface without re-learning where inputs, outputs, and actions are**.
-
-**Acceptance Criteria:**
-
-**Given** a `ToolLayout` component in `src/components/common/tool-layout/`
-**When** a tool component uses `ToolLayout` as its wrapper
-**Then** it renders in a consistent structure: tool header (title + one-line description) → input region → output region → action bar
-
-**Given** a tool is rendered in card mode (dashboard)
-**When** the `mode` variant is `"card"`
-**Then** the tool renders in a compact layout suitable for the dashboard grid
-
-**Given** a tool is rendered in page mode (dedicated route)
-**When** the `mode` variant is `"page"`
-**Then** the tool renders in a full-page layout with expanded workspace
-
-**Given** a tool is viewed on mobile (< 768px)
-**When** the viewport is narrow
-**Then** the ToolLayout stacks regions vertically: input → output → actions
-**And** all tap targets are at least 44x44px
-
-**Given** the `ToolLayout` component
-**When** a screen reader encounters it
-**Then** it renders as a `<section>` with `aria-label` matching the tool name
-**And** tab order follows the logical flow: input → output → actions
-
-**Given** `ToolLayout` types defined in `src/types/components/common/tool-layout.ts`
-**When** a developer creates a new tool
-**Then** TypeScript enforces required props: `title`, `description`, `error` (from `useToolError`), `mode`, and `children`
-
-### Story 2.2: CopyButton & OutputDisplay Components
-
-As a **user**,
-I want **to copy any tool output with a single click and see results in a clean, formatted display**,
+I want **to copy any tool output with a single click**,
 So that **I can quickly capture outputs and paste them directly into my code**.
 
 **Acceptance Criteria:**
@@ -480,19 +450,7 @@ So that **I can quickly capture outputs and paste them directly into my code**.
 **When** the output value is empty
 **Then** the button is disabled
 
-**Given** an `OutputDisplay` component in `src/components/common/output/`
-**When** it receives a value
-**Then** it renders the formatted result with an adjacent `CopyButton`
-
-**Given** `OutputDisplay` has three variants
-**When** variant is `single` — it shows one copyable value (e.g., "rgb(59, 130, 246)")
-**When** variant is `table` — it shows multiple key-value pairs each with their own `CopyButton`
-**When** variant is `code` — it shows a monospace code block with syntax-appropriate formatting
-
-**Given** the output value changes
-**When** a new value is computed
-**Then** the `OutputDisplay` shows a brief highlight flash (200ms background pulse via Motion)
-**And** screen readers are notified via `aria-live="polite"`
+> **Note:** OutputDisplay was deprecated and removed (story 3-1). Each tool manages its own output rendering. CopyButton remains active.
 
 ### Story 2.3: Error Handling System
 
@@ -502,12 +460,8 @@ So that **I can quickly correct my input and continue working without disruption
 
 **Acceptance Criteria:**
 
-**Given** a `useToolError` hook in `src/hooks/`
-**When** a tool component calls `useToolError()`
-**Then** it receives `error` (string | null), `setError(message)`, and `clearError()` functions
-
-**Given** a tool has an error state set via `setError`
-**When** `ToolLayout` renders
+**Given** a tool component with error handling
+**When** an error state is set
 **Then** the error message appears inline below the relevant input, styled with `--color-error`
 **And** the message is concise, actionable, and includes an example of valid input (e.g., "Enter a valid hex color (e.g., #3B82F6)")
 
@@ -560,7 +514,7 @@ So that **I can use any tool instantly without reading documentation**.
 
 **Acceptance Criteria:**
 
-**Given** any tool rendered via `ToolLayout`
+**Given** any tool
 **When** the tool header displays
 **Then** a one-line description is shown below the tool title (sourced from `TOOL_REGISTRY` description field)
 
@@ -584,7 +538,7 @@ So that **I can use any tool instantly without reading documentation**.
 
 Users get documented, regression-tested, and enhanced versions of all 6 existing tools — refactored to the standardized layout with improved UX.
 
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
 
 ### Story 3.1: Color Converter — Refactor, Spec & Tests
 
@@ -596,7 +550,7 @@ So that **I can rely on consistent, tested color conversion between HEX, RGB, an
 
 **Given** the existing `ColorConvertor` component
 **When** it is refactored
-**Then** it uses `ToolLayout` wrapper, `useToolError` for error handling, and `CopyButton`/`OutputDisplay` for output
+**Then** it uses `CopyButton` for output copying
 **And** it is registered in `TOOL_REGISTRY` with complete metadata
 
 **Given** a user inputs a valid HEX value (e.g., `#3B82F6`)
@@ -630,7 +584,7 @@ So that **I can reliably encode and decode Base64 strings with a consistent inte
 
 **Given** the existing `EncodingBase64` component
 **When** it is refactored
-**Then** it uses `ToolLayout`, `useToolError`, `CopyButton`/`OutputDisplay`
+**Then** it uses `CopyButton` for output copying
 **And** it is registered in `TOOL_REGISTRY`
 
 **Given** a user pastes text into the encode input
@@ -659,7 +613,7 @@ So that **I can reliably convert images between formats with a consistent interf
 
 **Given** the existing `ImageConvertor` component
 **When** it is refactored
-**Then** it uses `ToolLayout`, `useToolError`, `OutputDisplay`, and standardized file upload zone
+**Then** it uses standardized file upload zone
 **And** it is registered in `TOOL_REGISTRY`
 
 **Given** a user uploads an image file
@@ -691,7 +645,7 @@ So that **I can reliably resize images with custom dimensions and a consistent i
 
 **Given** the existing `ImageResizer` component
 **When** it is refactored
-**Then** it uses `ToolLayout`, `useToolError`, and standardized file upload zone
+**Then** it uses standardized file upload zone
 **And** it is registered in `TOOL_REGISTRY`
 
 **Given** a user uploads an image
@@ -718,7 +672,7 @@ So that **I can reliably convert between timestamps and human-readable dates wit
 
 **Given** the existing `TimeUnixTimestamp` component
 **When** it is refactored
-**Then** it uses `ToolLayout`, `useToolError`, `CopyButton`/`OutputDisplay`
+**Then** it uses `CopyButton` for output copying
 **And** it is registered in `TOOL_REGISTRY`
 
 **Given** a user enters a Unix timestamp (e.g., `1700000000`)
@@ -747,7 +701,7 @@ So that **I can reliably convert between PX and REM units with a consistent inte
 
 **Given** the existing `UnitPxToRem` component
 **When** it is refactored
-**Then** it uses `ToolLayout`, `useToolError`, `CopyButton`/`OutputDisplay`
+**Then** it uses `CopyButton` for output copying
 **And** it is registered in `TOOL_REGISTRY`
 
 **Given** a user enters a PX value
@@ -886,7 +840,7 @@ So that **I can contribute a tool without needing to ask the maintainer for help
 
 **Given** the CONTRIBUTING guide
 **When** it references code patterns
-**Then** it includes a PR checklist: registry entry added, ToolLayout used, useToolError used, unit tests written, E2E test written, all existing tests pass
+**Then** it includes a PR checklist: registry entry added, unit tests written, E2E test written, all existing tests pass
 
 ---
 
@@ -894,7 +848,7 @@ So that **I can contribute a tool without needing to ask the maintainer for help
 
 Users can encode/decode URLs and decode JWT tokens to inspect headers and payloads.
 
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
 
 ### Story 5.1: URL Encoder/Decoder
 
@@ -906,7 +860,7 @@ So that **I can quickly prepare or inspect URL-encoded values for web developmen
 
 **Given** the URL Encoder/Decoder tool registered in `TOOL_REGISTRY` under the Encoding category
 **When** the user navigates to it
-**Then** it renders via `ToolLayout` with encode and decode modes (tabs or toggle)
+**Then** it renders with encode and decode modes (tabs or toggle)
 
 **Given** a user pastes a plain string into the encode input (e.g., `hello world&foo=bar`)
 **When** the value is entered
@@ -923,7 +877,7 @@ So that **I can quickly prepare or inspect URL-encoded values for web developmen
 
 **Given** the tool component
 **When** it is implemented
-**Then** it uses `useToolError`, shared validation (`isValidUrl`), and all processing is 100% client-side
+**Then** it uses shared validation (`isValidUrl`), and all processing is 100% client-side
 **And** unit tests cover: standard encoding, special characters, Unicode, empty input, already-encoded input, and double-encoding edge cases
 
 ### Story 5.2: JWT Decoder
@@ -936,11 +890,11 @@ So that **I can quickly inspect token contents for debugging without using an ex
 
 **Given** the JWT Decoder tool registered in `TOOL_REGISTRY` under the Encoding category
 **When** the user navigates to it
-**Then** it renders via `ToolLayout` with a single text input for the JWT token
+**Then** it renders with a single text input for the JWT token
 
 **Given** a user pastes a valid JWT token (3 Base64URL-encoded segments separated by dots)
 **When** the value is entered
-**Then** the decoded header and payload are displayed as formatted JSON in separate `OutputDisplay` sections (variant: `code`)
+**Then** the decoded header and payload are displayed as formatted JSON in separate sections
 **And** each section has a `CopyButton`
 **And** the signature section is shown but noted as "not verified" (client-side only, no secret)
 
@@ -963,7 +917,7 @@ So that **I can quickly inspect token contents for debugging without using an ex
 
 Users can format/validate JSON and convert between JSON, YAML, and CSV formats.
 
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
 
 ### Story 6.1: JSON Formatter/Validator
 
@@ -975,7 +929,7 @@ So that **I can quickly clean up and validate JSON for my development work**.
 
 **Given** the JSON Formatter tool registered in `TOOL_REGISTRY` under the Data category
 **When** the user navigates to it
-**Then** it renders via `ToolLayout` with a `TextAreaInput` for raw JSON and an `OutputDisplay` (variant: `code`) for formatted output
+**Then** it renders with a `TextAreaInput` for raw JSON and a code output area for formatted output
 
 **Given** a user pastes valid JSON
 **When** the value is entered
@@ -1005,7 +959,7 @@ So that **I can quickly switch between configuration formats for different tools
 
 **Given** the JSON↔YAML Converter tool registered in `TOOL_REGISTRY` under the Data category
 **When** the user navigates to it
-**Then** it renders via `ToolLayout` with tabs or toggle for JSON→YAML and YAML→JSON modes
+**Then** it renders with tabs or toggle for JSON-to-YAML and YAML-to-JSON modes
 
 **Given** a user pastes valid JSON in JSON→YAML mode
 **When** the value is entered
@@ -1035,7 +989,7 @@ So that **I can quickly transform data between formats for spreadsheets and APIs
 
 **Given** the JSON↔CSV Converter tool registered in `TOOL_REGISTRY` under the Data category
 **When** the user navigates to it
-**Then** it renders via `ToolLayout` with tabs or toggle for JSON→CSV and CSV→JSON modes
+**Then** it renders with tabs or toggle for JSON-to-CSV and CSV-to-JSON modes
 
 **Given** a user pastes a JSON array of objects
 **When** the value is entered
@@ -1061,7 +1015,7 @@ So that **I can quickly transform data between formats for spreadsheets and APIs
 
 Users can compare text side-by-side to spot differences and test regex patterns with live match highlighting.
 
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
 
 ### Story 7.1: Text Diff Checker
 
@@ -1073,7 +1027,7 @@ So that **I can quickly identify changes between two versions of code or text**.
 
 **Given** the Text Diff Checker tool registered in `TOOL_REGISTRY` under the Text category
 **When** the user navigates to it
-**Then** it renders via `ToolLayout` with two side-by-side `TextAreaInput` fields (stacked on mobile) for "Original" and "Modified" text
+**Then** it renders with two side-by-side `TextAreaInput` fields (stacked on mobile) for "Original" and "Modified" text
 
 **Given** a user enters text in both input fields
 **When** both fields have content
@@ -1102,7 +1056,7 @@ So that **I can iterate on regex patterns quickly without switching to a termina
 
 **Given** the Regex Tester tool registered in `TOOL_REGISTRY` under the Text category
 **When** the user navigates to it
-**Then** it renders via `ToolLayout` with a `TextInput` for the regex pattern, a `TextAreaInput` for the test string, and an output region for highlighted matches
+**Then** it renders with a `TextInput` for the regex pattern, a `TextAreaInput` for the test string, and an output region for highlighted matches
 
 **Given** a user enters a valid regex pattern and test string
 **When** both fields have content
@@ -1133,7 +1087,7 @@ So that **I can iterate on regex patterns quickly without switching to a termina
 
 Users can generate UUIDs, secure passwords, and cryptographic hash values.
 
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
 
 ### Story 8.1: UUID Generator
 
@@ -1145,11 +1099,11 @@ So that **I can quickly get unique identifiers for my development work**.
 
 **Given** the UUID Generator tool registered in `TOOL_REGISTRY` under the Generator category
 **When** the user navigates to it
-**Then** it renders via `ToolLayout` with a "Generate" button and an output region
+**Then** it renders with a "Generate" button and an output region
 
 **Given** the user clicks "Generate"
 **When** a single UUID is requested
-**Then** a valid v4 UUID is displayed in the `OutputDisplay` with a `CopyButton`
+**Then** a valid v4 UUID is displayed with a `CopyButton`
 
 **Given** the user selects bulk generation
 **When** they specify a count (e.g., 10) and click "Generate"
@@ -1175,7 +1129,7 @@ So that **I can quickly create secure passwords for development and testing**.
 
 **Given** the Password Generator tool registered in `TOOL_REGISTRY` under the Generator category
 **When** the user navigates to it
-**Then** it renders via `ToolLayout` with configuration options and a "Generate" button
+**Then** it renders with configuration options and a "Generate" button
 
 **Given** the configuration options
 **When** the user views them
@@ -1183,7 +1137,7 @@ So that **I can quickly create secure passwords for development and testing**.
 
 **Given** the user clicks "Generate"
 **When** a password is generated
-**Then** it is displayed in `OutputDisplay` with a `CopyButton`
+**Then** it is displayed with a `CopyButton`
 **And** it respects all selected configuration options
 
 **Given** the user disables all character type toggles
@@ -1209,11 +1163,11 @@ So that **I can quickly compute checksums and hashes for verification and develo
 
 **Given** the Hash Generator tool registered in `TOOL_REGISTRY` under the Generator category
 **When** the user navigates to it
-**Then** it renders via `ToolLayout` with a `TextAreaInput` for text and algorithm selection (MD5, SHA-1, SHA-256, SHA-512)
+**Then** it renders with a `TextAreaInput` for text and algorithm selection (MD5, SHA-1, SHA-256, SHA-512)
 
 **Given** a user enters text and selects an algorithm
 **When** the input changes
-**Then** the hash value is computed and displayed in real-time (debounced 300ms) in `OutputDisplay`
+**Then** the hash value is computed and displayed in real-time (debounced 300ms)
 **And** a `CopyButton` copies the hex-encoded hash
 
 **Given** multiple algorithms are available
@@ -1236,7 +1190,7 @@ So that **I can quickly compute checksums and hashes for verification and develo
 
 Users can visually create CSS box-shadow values with a live preview and copy the CSS output.
 
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
 
 ### Story 9.1: CSS Box Shadow Generator
 
@@ -1248,7 +1202,7 @@ So that **I can design box shadows interactively and copy the CSS code directly 
 
 **Given** the Box Shadow Generator tool registered in `TOOL_REGISTRY` under the CSS category
 **When** the user navigates to it
-**Then** it renders via `ToolLayout` with input controls and a live preview region
+**Then** it renders with input controls and a live preview region
 
 **Given** the input controls
 **When** the user adjusts them
@@ -1279,7 +1233,7 @@ So that **I can design box shadows interactively and copy the CSS code directly 
 
 Users can compress images with quality control and crop images using freeform or preset aspect ratios.
 
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (ToolLayout, useToolError, CopyButton, OutputDisplay). Recommended after Epic 3 Stories 3.3/3.4 (Image tool baseline)
+**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton). Recommended after Epic 3 Stories 3.3/3.4 (Image tool baseline)
 
 ### Story 10.1: Image Compression
 
@@ -1291,7 +1245,7 @@ So that **I can optimize images for web use while controlling the quality-size t
 
 **Given** the Image Compression tool registered in `TOOL_REGISTRY` under the Image category
 **When** the user navigates to it
-**Then** it renders via `ToolLayout` with a file upload zone, quality slider, and output region
+**Then** it renders with a file upload zone, quality slider, and output region
 
 **Given** a user uploads a JPEG or WebP image
 **When** the file is loaded
@@ -1328,7 +1282,7 @@ So that **I can quickly trim images to exact dimensions for different use cases*
 
 **Given** the Image Cropping tool registered in `TOOL_REGISTRY` under the Image category
 **When** the user navigates to it
-**Then** it renders via `ToolLayout` with a file upload zone, cropping canvas, aspect ratio selector, and output region
+**Then** it renders with a file upload zone, cropping canvas, aspect ratio selector, and output region
 
 **Given** a user uploads an image
 **When** the file is loaded

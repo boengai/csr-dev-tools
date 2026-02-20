@@ -264,7 +264,7 @@ This is not an off-the-shelf design system (MUI, Chakra, Ant Design). It's a pur
    - DownloadButton (with format/filename)
    - FileUploadZone (drag-and-drop + click, with format constraints)
    - ResetButton (clear inputs and outputs)
-   - OutputDisplay (formatted result with copy affordance)
+   - ~~OutputDisplay~~ — DEPRECATED (each tool manages its own output rendering)
 
 3. **Design tokens via Tailwind v4 `@theme`** — centralize in `src/index.css`:
    - Color palette (dark-only — no light theme variant)
@@ -856,14 +856,7 @@ flowchart TD
 
 #### Tool Layout Components
 
-**`ToolLayout`**
-- **Purpose:** Standardized wrapper ensuring every tool follows the same spatial structure
-- **Anatomy:** Tool header (title + description) → input region → output region → action bar
-- **States:** idle (ready for input), processing (for file tools — shows progress), complete (output ready)
-- **Variants:** `text` (input/output side-by-side or stacked) | `file` (upload zone + output + download) | `visual` (live preview tools like color picker, box shadow)
-- **Accessibility:** `section` with `aria-label` matching tool name, logical tab order through input → output → actions
-- **Interaction:** provides consistent structure; individual tools fill in their specific inputs/outputs within the regions
-- **Mobile:** always stacks vertically (input → output → actions)
+**~~`ToolLayout`~~** — DEPRECATED (each tool owns its own layout)
 
 **`CopyButton`**
 - **Purpose:** Specialized button that copies a value to clipboard and shows toast confirmation
@@ -873,13 +866,7 @@ flowchart TD
 - **Accessibility:** `aria-label="Copy [value description] to clipboard"`, announces "Copied" to screen readers via toast
 - **Interaction:** click copies associated value to clipboard; triggers toast "Copied to clipboard"; icon briefly shows check mark then reverts
 
-**`OutputDisplay`**
-- **Purpose:** Formatted read-only output area with integrated copy affordance
-- **Anatomy:** Output label + formatted value + CopyButton (inline)
-- **States:** empty (placeholder/dashes), populated (value displayed), updated (brief highlight flash when value changes)
-- **Variants:** `single` (one value, e.g., "rgb(59, 130, 246)") | `table` (multiple key-value pairs, e.g., color converter showing HEX, RGB, HSL) | `code` (monospace block, e.g., JSON output)
-- **Accessibility:** `aria-live="polite"` announces value changes to screen readers, `aria-label` describes the output
-- **Interaction:** value updates in real-time as input changes; CopyButton adjacent to each copyable value; brief highlight animation on value change (Motion)
+**~~`OutputDisplay`~~** — DEPRECATED (each tool manages its own output rendering; CopyButton remains active)
 
 **`CategoryBadge`**
 - **Purpose:** Displays tool count within a sidebar category
@@ -895,11 +882,11 @@ flowchart TD
 **Phase 1 — Core (enables the chosen design direction):**
 1. `HamburgerButton` — required for sidebar toggle
 2. `Sidebar` + `SidebarCategory` + `SidebarToolItem` + `CategoryBadge` — the entire sidebar system
-3. `ToolLayout` — standardized tool wrapper (refactor existing tools to use it)
+3. ~~`ToolLayout`~~ — DEPRECATED (each tool owns its own layout)
 
 **Phase 2 — Enhancement (improves quality and consistency):**
 4. `CopyButton` — extract from repeated patterns across tools
-5. `OutputDisplay` — standardize output rendering across all tools
+5. ~~`OutputDisplay`~~ — DEPRECATED (each tool manages its own output rendering)
 6. `CommandPalette` + `SearchInput` — keyboard-first tool discovery
 
 **Phase 3 — Scaling (supports 60+ tools):**
