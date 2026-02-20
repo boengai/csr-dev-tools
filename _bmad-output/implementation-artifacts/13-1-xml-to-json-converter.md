@@ -61,7 +61,7 @@ So that **I can transform data between these common formats for APIs and configu
   - [x] 1.1 Create `src/utils/xml.ts` with `xmlToJson()`, `jsonToXml()`, `getXmlParseError()`
   - [x] 1.2 Use `fast-xml-parser` library (lazy-loaded via dynamic import)
   - [x] 1.3 Configure attribute prefix `@_` for XML attributes
-  - [x] 1.4 Use DOMParser for XML validation in `getXmlParseError()`
+  - [x] 1.4 Use `fast-xml-parser` `XMLValidator` for XML validation in `getXmlParseError()`
 
 - [x] Task 2: Write unit tests (AC: #6)
   - [x] 2.1 Create `src/utils/xml.spec.ts`
@@ -96,7 +96,7 @@ Uses the **bidirectional converter pattern** — two card buttons open the same 
 - `fast-xml-parser` is lazy-loaded via `await import('fast-xml-parser')` inside the conversion functions
 - `XMLParser` configured with `ignoreAttributes: false` and `attributeNamePrefix: '@_'`
 - `XMLBuilder` uses same attribute config for consistent round-trips
-- `getXmlParseError()` uses browser-native `DOMParser` to validate XML and extract error messages
+- `getXmlParseError()` uses `fast-xml-parser` `XMLValidator` for strict XML validation (testable in node)
 - `sessionRef` pattern prevents displaying stale results when user types rapidly
 - Error messages differentiate between XML parse errors (with detail) and JSON errors
 
@@ -105,7 +105,7 @@ Uses the **bidirectional converter pattern** — two card buttons open the same 
 | File | Purpose |
 |------|---------|
 | `src/utils/xml.ts` | `xmlToJson()`, `jsonToXml()`, `getXmlParseError()` |
-| `src/utils/xml.spec.ts` | 7 unit tests |
+| `src/utils/xml.spec.ts` | 12 unit tests |
 | `src/components/feature/data/XmlToJsonConverter.tsx` | Component (141 lines) |
 
 ## Dev Agent Record
@@ -128,3 +128,20 @@ Uses the **bidirectional converter pattern** — two card buttons open the same 
 | `src/types/constants/tool-registry.ts` | MODIFIED |
 | `src/constants/tool-registry.ts` | MODIFIED |
 | `vite.config.ts` | MODIFIED |
+
+### Senior Developer Review (AI)
+
+**Reviewer:** boengai | **Date:** 2026-02-20
+
+**Findings Fixed:**
+- **H1:** `getXmlParseError` refactored from browser-only `DOMParser` to `fast-xml-parser` `XMLValidator` — now async, testable in node, with 4 new tests added
+- **M1:** Resolved by H1 — no longer depends on browser-only API
+- **M3:** Story test count corrected from 7 to 12
+- **L2:** Validate-after-fail pattern acknowledged (no code change — works as designed)
+
+**Files Changed in Review:**
+| File | Action |
+|------|--------|
+| `src/utils/xml.ts` | MODIFIED (getXmlParseError async + XMLValidator) |
+| `src/utils/xml.spec.ts` | MODIFIED (+4 getXmlParseError tests) |
+| `src/components/feature/data/XmlToJsonConverter.tsx` | MODIFIED (dynamic import for getXmlParseError) |

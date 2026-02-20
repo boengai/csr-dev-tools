@@ -45,6 +45,7 @@
     "tailwind-variants": "3.2.2",
     "tailwindcss": "4.1.18",
     "turndown": "7.2.2",
+    "turndown-plugin-gfm": "1.0.2",
     "yaml": "2.8.2",
     "zustand": "5.0.11"
   },
@@ -70,8 +71,16 @@
   },
   "pnpm": {
     "supportedArchitectures": {
-      "os": ["current", "darwin", "linux"],
-      "cpu": ["current", "arm64", "x64"]
+      "os": [
+        "current",
+        "darwin",
+        "linux"
+      ],
+      "cpu": [
+        "current",
+        "arm64",
+        "x64"
+      ]
     }
   },
   "packageManager": "pnpm@10.11.0",

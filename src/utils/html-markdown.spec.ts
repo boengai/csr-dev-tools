@@ -20,6 +20,19 @@ describe('html-markdown conversion utilities', () => {
       expect(result).toContain('[link](https://example.com)')
     })
 
+    it('should convert images', async () => {
+      const result = await htmlToMarkdown('<img src="test.png" alt="Test image">')
+      expect(result).toContain('![Test image](test.png)')
+    })
+
+    it('should convert tables to GFM markdown', async () => {
+      const html =
+        '<table><thead><tr><th>Name</th><th>Age</th></tr></thead><tbody><tr><td>John</td><td>30</td></tr></tbody></table>'
+      const result = await htmlToMarkdown(html)
+      expect(result).toContain('| Name | Age |')
+      expect(result).toContain('| John | 30 |')
+    })
+
     it('should throw on empty string', async () => {
       await expect(htmlToMarkdown('')).rejects.toThrow('Empty input')
     })
@@ -44,6 +57,22 @@ describe('html-markdown conversion utilities', () => {
 
     it('should throw on empty string', async () => {
       await expect(markdownToHtml('')).rejects.toThrow('Empty input')
+    })
+
+    it('should strip script tags from output', async () => {
+      const result = await markdownToHtml('hello <script>alert("xss")</script> world')
+      expect(result).not.toContain('<script>')
+      expect(result).not.toContain('alert')
+    })
+
+    it('should strip event handlers from output', async () => {
+      const result = await markdownToHtml('<div onload="alert(1)">test</div>')
+      expect(result).not.toContain('onload')
+    })
+
+    it('should neutralize javascript: URIs', async () => {
+      const result = await markdownToHtml('[click](javascript:alert(1))')
+      expect(result).not.toContain('javascript:')
     })
   })
 })

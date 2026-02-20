@@ -5,7 +5,6 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { getXmlParseError } from '@/utils/xml'
 
 type ConvertMode = 'json-to-xml' | 'xml-to-json'
 
@@ -34,7 +33,9 @@ export const XmlToJsonConverter = ({ autoOpen, onAfterDialogClose }: ToolCompone
       if (session !== sessionRef.current) return
       setResult('')
       if (m === 'xml-to-json') {
-        const msg = getXmlParseError(val)
+        const { getXmlParseError } = await import('@/utils/xml')
+        const msg = await getXmlParseError(val)
+        if (session !== sessionRef.current) return
         toast({
           action: 'add',
           item: { label: msg ? `Invalid XML: ${msg}` : 'Conversion failed — please check your input', type: 'error' },

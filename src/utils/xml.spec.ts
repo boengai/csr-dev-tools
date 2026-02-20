@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { xmlToJson, jsonToXml } from '@/utils/xml'
+import { getXmlParseError, jsonToXml, xmlToJson } from '@/utils/xml'
 
 describe('xml conversion utilities', () => {
   describe('xmlToJson', () => {
@@ -39,6 +39,25 @@ describe('xml conversion utilities', () => {
 
     it('should throw on invalid JSON', async () => {
       await expect(jsonToXml('{invalid}')).rejects.toThrow()
+    })
+  })
+
+  describe('getXmlParseError', () => {
+    it('should return null for valid XML', async () => {
+      expect(await getXmlParseError('<root><name>test</name></root>')).toBeNull()
+    })
+
+    it('should return error message for invalid XML', async () => {
+      const error = await getXmlParseError('<root><unclosed>')
+      expect(error).toBeTruthy()
+    })
+
+    it('should return error for empty input', async () => {
+      expect(await getXmlParseError('')).toBe('Empty input')
+    })
+
+    it('should return error for whitespace-only input', async () => {
+      expect(await getXmlParseError('   ')).toBe('Empty input')
     })
   })
 

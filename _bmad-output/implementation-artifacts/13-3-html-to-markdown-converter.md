@@ -88,7 +88,7 @@ Same bidirectional converter pattern. Uses two different libraries for each dire
 
 ### Key Implementation Details
 
-- `turndown` configured with `headingStyle: 'atx'` and `codeBlockStyle: 'fenced'`
+- `turndown` configured with `headingStyle: 'atx'`, `codeBlockStyle: 'fenced'`, and `turndown-plugin-gfm` for GFM table support
 - `turndown` import uses `.default` pattern: `(await import('turndown')).default`
 - `marked` used for MD→HTML (same library as Story 12.5 but lazy-loaded here)
 - Error handling is simpler than XML/TOML — generic "Conversion failed" message (no parse error detail)
@@ -98,7 +98,7 @@ Same bidirectional converter pattern. Uses two different libraries for each dire
 | File | Purpose |
 |------|---------|
 | `src/utils/html-markdown.ts` | `htmlToMarkdown()`, `markdownToHtml()` |
-| `src/utils/html-markdown.spec.ts` | 8 unit tests |
+| `src/utils/html-markdown.spec.ts` | 13 unit tests |
 | `src/components/feature/data/HtmlToMarkdownConverter.tsx` | Component (132 lines) |
 
 ## Dev Agent Record
@@ -121,3 +121,22 @@ Same bidirectional converter pattern. Uses two different libraries for each dire
 | `src/types/constants/tool-registry.ts` | MODIFIED |
 | `src/constants/tool-registry.ts` | MODIFIED |
 | `vite.config.ts` | MODIFIED |
+
+### Senior Developer Review (AI)
+
+**Reviewer:** boengai | **Date:** 2026-02-20
+
+**Findings Fixed:**
+- **H2:** Added `turndown-plugin-gfm` dependency and registered GFM plugin — HTML tables now convert to Markdown tables
+- **H3:** Added 3 XSS sanitization tests (script tags, event handlers, javascript: URIs)
+- **M2:** Extended sanitization regexes to cover `<iframe>`, `<embed>`, `<object>`, `<svg>` tags and `data:` URIs; added defensive comment
+- **M3:** Story test count corrected from 8 to 13
+- **L1:** Added tests for image and table conversion (AC4 coverage)
+
+**Files Changed in Review:**
+| File | Action |
+|------|--------|
+| `src/utils/html-markdown.ts` | MODIFIED (GFM plugin + extended sanitization) |
+| `src/utils/html-markdown.spec.ts` | MODIFIED (+5 tests: images, tables, XSS) |
+| `src/vite-env.d.ts` | MODIFIED (turndown-plugin-gfm type declaration) |
+| `package.json` | MODIFIED (+turndown-plugin-gfm dependency) |

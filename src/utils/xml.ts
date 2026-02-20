@@ -14,13 +14,12 @@ export const jsonToXml = async (input: string): Promise<string> => {
   return builder.build(obj) as string
 }
 
-export const getXmlParseError = (input: string): string | null => {
+export const getXmlParseError = async (input: string): Promise<string | null> => {
   if (input.trim().length === 0) return 'Empty input'
   try {
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(input, 'application/xml')
-    const errorNode = doc.querySelector('parsererror')
-    if (errorNode) return errorNode.textContent ?? 'Invalid XML'
+    const { XMLValidator } = await import('fast-xml-parser')
+    const result = XMLValidator.validate(input)
+    if (result !== true) return result.err.msg
     return null
   } catch (e) {
     return e instanceof Error ? e.message : 'Invalid XML'
