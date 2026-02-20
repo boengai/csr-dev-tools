@@ -1,6 +1,7 @@
 export * from './BackgroundRemover'
 export * from './Base64ToImage'
 export * from './FaviconGenerator'
+export * from './ImageColorPicker'
 export * from './ImageCompressor'
 export * from './ImageConvertor'
 export * from './ImageCropper'

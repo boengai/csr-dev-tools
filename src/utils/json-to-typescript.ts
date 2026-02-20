@@ -11,7 +11,8 @@ const DEFAULT_OPTIONS: JsonToTsOptions = {
 }
 
 const toPascalCase = (str: string): string => {
-  return str.replace(/[^a-zA-Z0-9]+(.)/g, (_, c: string) => c.toUpperCase()).replace(/^./, (c) => c.toUpperCase())
+  const result = str.replace(/[^a-zA-Z0-9]+(.)/g, (_, c: string) => c.toUpperCase()).replace(/^./, (c) => c.toUpperCase())
+  return /^\d/.test(result) ? `_${result}` : result
 }
 
 type CollectedType = {
@@ -78,6 +79,7 @@ const buildObjectType = (obj: Record<string, unknown>, name: string, collected: 
 export const jsonToTypeScript = (json: string, opts?: Partial<JsonToTsOptions>): string => {
   const options = { ...DEFAULT_OPTIONS, ...opts }
   const parsed: unknown = JSON.parse(json)
+  builtTypes.clear()
 
   if (typeof parsed !== 'object' || parsed === null || Array.isArray(parsed)) {
     const t = inferType(parsed, options.rootName, [])
@@ -87,7 +89,6 @@ export const jsonToTypeScript = (json: string, opts?: Partial<JsonToTsOptions>):
   }
 
   const collected: Array<CollectedType> = []
-  builtTypes.clear()
   buildObjectType(parsed as Record<string, unknown>, options.rootName, collected)
 
   const output = collected

@@ -218,3 +218,23 @@ None — no issues encountered during implementation.
 | Modified | `src/components/feature/index.ts` | Added code barrel re-export |
 | Modified | `src/utils/index.ts` | Added json-to-typescript barrel re-export |
 | Modified | `vite.config.ts` | Added json-to-typescript pre-render route |
+
+## Senior Developer Review (AI)
+
+**Reviewer:** boengai (backfill review)
+**Date:** 2026-02-20
+**Verdict:** Done (all issues fixed)
+
+### Findings Fixed
+
+| Severity | Finding | Fix Applied |
+|----------|---------|-------------|
+| HIGH | Module-level `builtTypes` Set caused stale state across calls — non-object inputs never cleared the set | Moved `builtTypes.clear()` to top of `jsonToTypeScript()`, before early return path |
+| HIGH | `toPascalCase` produced invalid TS identifiers for keys starting with digits (e.g., `123abc` → `123Abc`) | Added leading-digit check: prefix `_` when result starts with a digit |
+| HIGH | Missing barrel export for `JsonToTypeScript` in `code/index.ts` | Added `export { JsonToTypeScript }` and sorted exports alphabetically |
+| HIGH | Missing prerender route in `vite.config.ts` | Added `/tools/json-to-typescript` prerender route |
+| MEDIUM | `ToolRegistryKey` union not alphabetically sorted | Sorted entire union alphabetically |
+
+### Change Log
+
+- 2026-02-20: Backfill code review — fixed builtTypes statefulness bug, toPascalCase leading digit bug, added missing barrel export and prerender route

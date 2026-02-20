@@ -17,11 +17,13 @@ export const DEFAULT_GRID_CONTAINER: GridContainerProps = {
   rows: 'auto auto',
 }
 
+const sanitizeGridTrack = (value: string): string => value.replace(/[;{}\\<>]/g, '')
+
 export const generateGridCss = (container: GridContainerProps): string => {
   const lines = [
     'display: grid;',
-    `grid-template-columns: ${container.columns};`,
-    `grid-template-rows: ${container.rows};`,
+    `grid-template-columns: ${sanitizeGridTrack(container.columns)};`,
+    `grid-template-rows: ${sanitizeGridTrack(container.rows)};`,
     `gap: ${container.gap}px;`,
     `justify-items: ${container.justifyItems};`,
     `align-items: ${container.alignItems};`,

@@ -264,6 +264,40 @@ const toolRoutes = [
     title: 'SVG Viewer - CSR Dev Tools',
     url: '/tools/svg-viewer',
   },
+  {
+    description:
+      'Parse cron expressions into human-readable descriptions and preview the next scheduled run times.',
+    path: '/tools/cron-expression-parser',
+    title: 'Cron Expression Parser - CSR Dev Tools',
+    url: '/tools/cron-expression-parser',
+  },
+  {
+    description: 'Visual CSS Grid layout builder. Experiment with grid properties and copy the CSS.',
+    path: '/tools/css-grid-playground',
+    title: 'CSS Grid Playground - CSR Dev Tools',
+    url: '/tools/css-grid-playground',
+  },
+  {
+    description:
+      'Upload an image and click anywhere to extract colors. Get HEX, RGB, and HSL values instantly.',
+    path: '/tools/image-color-picker',
+    title: 'Image Color Picker - CSR Dev Tools',
+    url: '/tools/image-color-picker',
+  },
+  {
+    description:
+      'Generate TypeScript interfaces or types from JSON. Paste JSON, get type-safe code instantly in your browser.',
+    path: '/tools/json-to-typescript',
+    title: 'JSON to TypeScript - CSR Dev Tools',
+    url: '/tools/json-to-typescript',
+  },
+  {
+    description:
+      'Sort lines alphabetically, numerically, or by length. Remove duplicates, empty lines, and trim whitespace.',
+    path: '/tools/text-sort-dedupe',
+    title: 'Text Sort & Dedupe - CSR Dev Tools',
+    url: '/tools/text-sort-dedupe',
+  },
 ]
 
 // https://vite.dev/config/

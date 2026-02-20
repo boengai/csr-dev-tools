@@ -106,6 +106,11 @@ const describeCron = (parsed: Array<Array<number>>): string => {
 
 const getNextRuns = (parsed: Array<Array<number>>, count: number): Array<string> => {
   const [minutes, hours, doms, months, dows] = parsed
+  const minuteSet = new Set(minutes)
+  const hourSet = new Set(hours)
+  const domSet = new Set(doms)
+  const monthSet = new Set(months)
+  const dowSet = new Set(dows)
   const now = new Date()
   const results: Array<string> = []
   const candidate = new Date(now)
@@ -122,7 +127,7 @@ const getNextRuns = (parsed: Array<Array<number>>, count: number): Array<string>
     const mon = candidate.getUTCMonth() + 1
     const dow = candidate.getUTCDay()
 
-    if (minutes.includes(m) && hours.includes(h) && doms.includes(dom) && months.includes(mon) && dows.includes(dow)) {
+    if (minuteSet.has(m) && hourSet.has(h) && domSet.has(dom) && monthSet.has(mon) && dowSet.has(dow)) {
       results.push(candidate.toISOString().replace('T', ' ').slice(0, 16))
     }
 

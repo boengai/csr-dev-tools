@@ -21,7 +21,7 @@ export type TextSortResult = {
 }
 
 export const sortAndProcessText = (input: string, options: TextSortOptions): TextSortResult => {
-  let lines = input.split('\n')
+  let lines = input.replace(/\r\n/g, '\n').split('\n')
   const lineCountBefore = lines.length
 
   if (options.trimLines) {

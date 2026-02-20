@@ -100,7 +100,7 @@ export const TextSortDedupe = (_props: ToolComponentProps) => {
       </div>
 
       {result && (
-        <div className="flex flex-col gap-2">
+        <div aria-live="polite" className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <span className="text-body-xs text-gray-400">
               {result.lineCountBefore} → {result.lineCountAfter} lines
