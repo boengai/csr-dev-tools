@@ -10,6 +10,7 @@ export type UrlParseResult = {
   pathname: string
   port: string
   protocol: string
+  search: string
   searchParams: Array<UrlParam>
 }
 
@@ -27,6 +28,7 @@ export const parseUrl = (input: string): UrlParseResult => {
       pathname: url.pathname,
       port: url.port,
       protocol: url.protocol,
+      search: url.search,
       searchParams,
     }
   } catch {
@@ -37,6 +39,7 @@ export const parseUrl = (input: string): UrlParseResult => {
       pathname: '',
       port: '',
       protocol: '',
+      search: '',
       searchParams: [],
     }
   }

@@ -13,7 +13,7 @@ describe('http-status', () => {
 
   it('has 4xx codes', () => {
     const codes = HTTP_STATUS_CODES.filter((c) => c.category === '4xx Client Error')
-    expect(codes.length).toBeGreaterThanOrEqual(8)
+    expect(codes.length).toBeGreaterThanOrEqual(29)
   })
 
   it('filters by text "not found" matches 404', () => {

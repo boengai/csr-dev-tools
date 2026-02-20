@@ -1,13 +1,13 @@
 ---
 story: 19.1
 title: CSS Border Radius Generator
-status: ready-for-dev
+status: done
 epic: 19
 ---
 
 # Story 19.1: CSS Border Radius Generator
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -79,56 +79,56 @@ So that **I can design rounded corners without guessing pixel values**.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create border-radius utility functions (AC: #3, #4, #5, #7, #8)
-  - [ ] 1.1 Create `src/utils/border-radius.ts` with `generateBorderRadiusCss(config: BorderRadiusConfig): string`
-  - [ ] 1.2 Define `BorderRadiusConfig` type with per-corner horizontal/vertical values and asymmetric flag
-  - [ ] 1.3 Define `DEFAULT_BORDER_RADIUS` constant with all corners at 8px
-  - [ ] 1.4 Implement symmetric shorthand: `border-radius: TL TR BR BL`
-  - [ ] 1.5 Implement asymmetric 8-value syntax: `border-radius: TLh TRh BRh BLh / TLv TRv BRv BLv`
-  - [ ] 1.6 Optimize output: collapse to single value when all corners are equal
-  - [ ] 1.7 Export `generateBorderRadiusCss`, `BorderRadiusConfig`, `DEFAULT_BORDER_RADIUS`
+- [x] Task 1: Create border-radius utility functions (AC: #3, #4, #5, #7, #8)
+  - [x] 1.1 Create `src/utils/border-radius.ts` with `generateBorderRadiusCss(config: BorderRadiusConfig): string`
+  - [x] 1.2 Define `BorderRadiusConfig` type with per-corner horizontal/vertical values and asymmetric flag
+  - [x] 1.3 Define `DEFAULT_BORDER_RADIUS` constant with all corners at 8px
+  - [x] 1.4 Implement symmetric shorthand: `border-radius: TL TR BR BL`
+  - [x] 1.5 Implement asymmetric 8-value syntax: `border-radius: TLh TRh BRh BLh / TLv TRv BRv BLv`
+  - [x] 1.6 Optimize output: collapse to single value when all corners are equal
+  - [x] 1.7 Export `generateBorderRadiusCss`, `BorderRadiusConfig`, `DEFAULT_BORDER_RADIUS`
 
-- [ ] Task 2: Write unit tests for border-radius utilities (AC: #8)
-  - [ ] 2.1 Create `src/utils/border-radius.spec.ts`
-  - [ ] 2.2 Test default config produces `8px`
-  - [ ] 2.3 Test all corners same value collapses to single value: `10px`
-  - [ ] 2.4 Test all corners different: `10px 20px 30px 40px`
-  - [ ] 2.5 Test two-value shorthand when TL=BR and TR=BL: `10px 20px`
-  - [ ] 2.6 Test asymmetric mode: `10px 20px 30px 40px / 5px 15px 25px 35px`
-  - [ ] 2.7 Test zero values: `0px`
-  - [ ] 2.8 Test max values: `100px`
-  - [ ] 2.9 Test mixed asymmetric where horizontal equals vertical collapses slash syntax
-  - [ ] 2.10 Test asymmetric with all same horizontal and vertical: `10px / 5px`
+- [x] Task 2: Write unit tests for border-radius utilities (AC: #8)
+  - [x] 2.1 Create `src/utils/border-radius.spec.ts`
+  - [x] 2.2 Test default config produces `8px`
+  - [x] 2.3 Test all corners same value collapses to single value: `10px`
+  - [x] 2.4 Test all corners different: `10px 20px 30px 40px`
+  - [x] 2.5 Test two-value shorthand when TL=BR and TR=BL: `10px 20px`
+  - [x] 2.6 Test asymmetric mode: `10px 20px 30px 40px / 5px 15px 25px 35px`
+  - [x] 2.7 Test zero values: `0px`
+  - [x] 2.8 Test max values: `100px`
+  - [x] 2.9 Test mixed asymmetric where horizontal equals vertical collapses slash syntax
+  - [x] 2.10 Test asymmetric with all same horizontal and vertical: `10px / 5px`
 
-- [ ] Task 3: Create BorderRadiusGenerator component (AC: #1, #2, #3, #4, #5, #6, #7)
-  - [ ] 3.1 Create `src/components/feature/css/BorderRadiusGenerator.tsx` as named export
-  - [ ] 3.2 Render inline layout following BoxShadowGenerator pattern:
+- [x] Task 3: Create BorderRadiusGenerator component (AC: #1, #2, #3, #4, #5, #6, #7)
+  - [x] 3.1 Create `src/components/feature/css/BorderRadiusGenerator.tsx` as named export
+  - [x] 3.2 Render inline layout following BoxShadowGenerator pattern:
     - **Top:** Tool description from registry
     - **Controls:** 4 range sliders (symmetric) or 8 range sliders (asymmetric) via `FieldForm` type="range"
     - **Divider:** `border-t-2 border-dashed border-gray-900`
     - **Preview:** Box element with applied border-radius + CSS output + `CopyButton`
-  - [ ] 3.3 Use `useState` for all radius properties, initialized from `DEFAULT_BORDER_RADIUS`
-  - [ ] 3.4 Add asymmetric mode toggle using `aria-pressed` button (FlagToggle pattern)
-  - [ ] 3.5 Compute CSS string on every render via `generateBorderRadiusCss()` — no debounce
-  - [ ] 3.6 Apply border-radius to preview box via inline `style={{ borderRadius: cssValue }}`
-  - [ ] 3.7 Add preview background color picker (default primary/branded color)
-  - [ ] 3.8 CSS output in monospace code block with `CopyButton`
-  - [ ] 3.9 Show tool description from `TOOL_REGISTRY_MAP['css-border-radius-generator']`
+  - [x] 3.3 Use `useState` for all radius properties, initialized from `DEFAULT_BORDER_RADIUS`
+  - [x] 3.4 Add asymmetric mode toggle using `aria-pressed` button (FlagToggle pattern)
+  - [x] 3.5 Compute CSS string on every render via `generateBorderRadiusCss()` — no debounce
+  - [x] 3.6 Apply border-radius to preview box via inline `style={{ borderRadius: cssValue }}`
+  - [x] 3.7 Add preview background color picker (default primary/branded color)
+  - [x] 3.8 CSS output in monospace code block with `CopyButton`
+  - [x] 3.9 Show tool description from `TOOL_REGISTRY_MAP['css-border-radius-generator']`
 
-- [ ] Task 4: Register tool in TOOL_REGISTRY (AC: #1)
-  - [ ] 4.1 Add `'css-border-radius-generator'` to `ToolRegistryKey` union in `src/types/constants/tool-registry.ts`
-  - [ ] 4.2 Add registry entry to `TOOL_REGISTRY` array in `src/constants/tool-registry.ts` (alphabetically)
-  - [ ] 4.3 Add pre-render route in `vite.config.ts` toolRoutes array
+- [x] Task 4: Register tool in TOOL_REGISTRY (AC: #1)
+  - [x] 4.1 Add `'css-border-radius-generator'` to `ToolRegistryKey` union in `src/types/constants/tool-registry.ts`
+  - [x] 4.2 Add registry entry to `TOOL_REGISTRY` array in `src/constants/tool-registry.ts` (alphabetically)
+  - [x] 4.3 Add pre-render route in `vite.config.ts` toolRoutes array
 
-- [ ] Task 5: Create barrel exports (AC: #1)
-  - [ ] 5.1 Add `export { BorderRadiusGenerator } from './BorderRadiusGenerator'` to `src/components/feature/css/index.ts`
-  - [ ] 5.2 Add `export * from './border-radius'` to `src/utils/index.ts`
+- [x] Task 5: Create barrel exports (AC: #1)
+  - [x] 5.1 Add `export { BorderRadiusGenerator } from './BorderRadiusGenerator'` to `src/components/feature/css/index.ts`
+  - [x] 5.2 Add `export * from './border-radius'` to `src/utils/index.ts`
 
-- [ ] Task 6: Verify integration (AC: #1, #2, #3, #4, #5, #6, #7, #8)
-  - [ ] 6.1 Run `pnpm lint` — no errors
-  - [ ] 6.2 Run `pnpm format:check` — no formatting issues
-  - [ ] 6.3 Run `pnpm test` — all tests pass
-  - [ ] 6.4 Run `pnpm build` — build succeeds, tool chunk is separate
+- [x] Task 6: Verify integration (AC: #1, #2, #3, #4, #5, #6, #7, #8)
+  - [x] 6.1 Run `pnpm lint` — no errors
+  - [x] 6.2 Run `pnpm format:check` — no formatting issues
+  - [x] 6.3 Run `pnpm test` — all tests pass
+  - [x] 6.4 Run `pnpm build` — build succeeds, tool chunk is separate
 
 ## Dev Notes
 
@@ -232,8 +232,44 @@ type BorderRadiusConfig = {
 
 ### Agent Model Used
 
+Unknown (story file not updated by dev agent)
+
 ### Debug Log References
+
+None recorded.
 
 ### Completion Notes List
 
+- Created `generateBorderRadiusCss()` with symmetric shorthand, asymmetric slash syntax, and smart collapsing (1-4 value shorthand)
+- 10 unit tests covering default, same corners, different corners, two-value shorthand, three-value shorthand, asymmetric slash, asymmetric collapse, zero, max, and collapsed asymmetric
+- BorderRadiusGenerator component with inline layout, per-corner range sliders with number inputs, asymmetric toggle, live preview, color picker, CopyButton
+- Tool registered in TOOL_REGISTRY, barrel exports, pre-render route
+
+### File List
+
+| Status | File | Description |
+|--------|------|-------------|
+| Created | `src/utils/border-radius.ts` | BorderRadiusConfig type, DEFAULT_BORDER_RADIUS, generateBorderRadiusCss() |
+| Created | `src/utils/border-radius.spec.ts` | 10 unit tests for border-radius utilities |
+| Created | `src/components/feature/css/BorderRadiusGenerator.tsx` | Border Radius Generator component |
+| Modified | `src/types/constants/tool-registry.ts` | Added 'css-border-radius-generator' to ToolRegistryKey |
+| Modified | `src/constants/tool-registry.ts` | Added registry entry |
+| Modified | `src/components/feature/css/index.ts` | Added BorderRadiusGenerator barrel export |
+| Modified | `src/utils/index.ts` | Added border-radius barrel export |
+| Modified | `vite.config.ts` | Added pre-render route |
+
 ### Change Log
+
+- 2026-02-20: Story file backfilled — status updated to done, tasks checked, Dev Agent Record populated
+
+## Senior Developer Review (AI)
+
+**Reviewer:** boengai (backfill review)
+**Date:** 2026-02-20
+**Verdict:** Done (all issues fixed)
+
+### Findings Fixed
+
+| Severity | Finding | Fix Applied |
+|----------|---------|-------------|
+| MEDIUM | AC2 requires accompanying number input alongside range sliders but only range sliders were rendered | Added number input next to each range slider for direct value entry |

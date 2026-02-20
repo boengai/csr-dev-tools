@@ -68,6 +68,14 @@ describe('parseUserAgent', () => {
     expect(result.engine.name).toBe('Unknown')
   })
 
+  it('parses Opera', () => {
+    const ua =
+      'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 OPR/106.0.0.0'
+    const result = parseUserAgent(ua)
+    expect(result.browser.name).toBe('Opera')
+    expect(result.browser.version).toBe('106.0.0.0')
+  })
+
   it('returns Unknown for garbage string', () => {
     const result = parseUserAgent('not a real user agent string at all')
     expect(result.browser.name).toBe('Unknown')

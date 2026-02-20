@@ -11,7 +11,9 @@ const DEFAULT_OPTIONS: JsonToTsOptions = {
 }
 
 const toPascalCase = (str: string): string => {
-  const result = str.replace(/[^a-zA-Z0-9]+(.)/g, (_, c: string) => c.toUpperCase()).replace(/^./, (c) => c.toUpperCase())
+  const result = str
+    .replace(/[^a-zA-Z0-9]+(.)/g, (_, c: string) => c.toUpperCase())
+    .replace(/^./, (c) => c.toUpperCase())
   return /^\d/.test(result) ? `_${result}` : result
 }
 

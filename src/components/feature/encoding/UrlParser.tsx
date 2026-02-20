@@ -10,7 +10,15 @@ import { parseUrl } from '@/utils/url-parse'
 
 const toolEntry = TOOL_REGISTRY_MAP['url-parser']
 
-const EMPTY: UrlParseResult = { hash: '', hostname: '', pathname: '', port: '', protocol: '', searchParams: [] }
+const EMPTY: UrlParseResult = {
+  hash: '',
+  hostname: '',
+  pathname: '',
+  port: '',
+  protocol: '',
+  search: '',
+  searchParams: [],
+}
 
 const ResultRow = ({ label, value, displayValue }: { label: string; value: string; displayValue?: string }) => {
   const display = displayValue ?? value
@@ -72,7 +80,10 @@ export const UrlParser = (_props: ToolComponentProps) => {
 
           {result.searchParams.length > 0 && (
             <div className="flex flex-col gap-1 rounded border border-gray-800 bg-gray-950 p-3">
-              <span className="text-body-xs font-medium text-gray-400">Query Parameters</span>
+              <div className="flex items-center justify-between">
+                <span className="text-body-xs font-medium text-gray-400">Query Parameters</span>
+                <CopyButton label="Query String" value={result.search} />
+              </div>
               {result.searchParams.map((param, i) => (
                 <div className="flex items-center justify-between gap-2 py-1" key={i}>
                   <span className="font-mono text-body-xs text-primary-light">{param.key}</span>

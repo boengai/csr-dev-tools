@@ -10,6 +10,7 @@ describe('parseUrl', () => {
     expect(result.port).toBe('8080')
     expect(result.pathname).toBe('/path')
     expect(result.hash).toBe('#section')
+    expect(result.search).toBe('?key=value')
     expect(result.searchParams).toEqual([{ key: 'key', value: 'value' }])
   })
 

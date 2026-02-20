@@ -28,26 +28,29 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
   const [hoverColor, setHoverColor] = useState<PickedColor | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
-  const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0]
-    if (!file) return
-    if (imageUrl) URL.revokeObjectURL(imageUrl)
-    const url = URL.createObjectURL(file)
-    setImageUrl(url)
-    setPalette([])
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (!file) return
+      if (imageUrl) URL.revokeObjectURL(imageUrl)
+      const url = URL.createObjectURL(file)
+      setImageUrl(url)
+      setPalette([])
 
-    const img = new Image()
-    img.onload = () => {
-      const canvas = canvasRef.current
-      if (!canvas) return
-      canvas.width = img.naturalWidth
-      canvas.height = img.naturalHeight
-      const ctx = canvas.getContext('2d')
-      if (!ctx) return
-      ctx.drawImage(img, 0, 0)
-    }
-    img.src = url
-  }, [imageUrl])
+      const img = new Image()
+      img.onload = () => {
+        const canvas = canvasRef.current
+        if (!canvas) return
+        canvas.width = img.naturalWidth
+        canvas.height = img.naturalHeight
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return
+        ctx.drawImage(img, 0, 0)
+      }
+      img.src = url
+    },
+    [imageUrl],
+  )
 
   const getColorAt = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current

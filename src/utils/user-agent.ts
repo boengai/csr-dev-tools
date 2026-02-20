@@ -37,7 +37,7 @@ const detectOs = (ua: string): { name: string; version: string } => {
 }
 
 const detectDevice = (ua: string): string => {
-  if (/iPhone|Android.*Mobile/i.test(ua)) return 'Mobile'
+  if (/iPhone|iPod|Android.*Mobile/i.test(ua)) return 'Mobile'
   if (/iPad|Android(?!.*Mobile)/i.test(ua)) return 'Tablet'
   return 'Desktop'
 }

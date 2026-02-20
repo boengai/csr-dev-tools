@@ -3,7 +3,7 @@ import { useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { ColumnAlignment } from '@/utils/markdown-table'
 
-import { Button, CopyButton, Dialog } from '@/components/common'
+import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { generateMarkdownTable } from '@/utils/markdown-table'
 
@@ -26,9 +26,9 @@ const createGrid = (rows: number, cols: number): Array<Array<string>> =>
 
 export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const [rows, setRows] = useState(4)
+  const [rows, setRows] = useState(3)
   const [cols, setCols] = useState(3)
-  const [data, setData] = useState<Array<Array<string>>>(createGrid(4, 3))
+  const [data, setData] = useState<Array<Array<string>>>(createGrid(3, 3))
   const [alignments, setAlignments] = useState<Array<ColumnAlignment>>(Array(3).fill('left') as Array<ColumnAlignment>)
 
   const output = generateMarkdownTable(data, alignments)
@@ -69,9 +69,9 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
   }
 
   const handleReset = () => {
-    setRows(4)
+    setRows(3)
     setCols(3)
-    setData(createGrid(4, 3))
+    setData(createGrid(3, 3))
     setAlignments(Array(3).fill('left') as Array<ColumnAlignment>)
   }
 
@@ -96,28 +96,28 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
       >
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex items-center gap-4">
-            <label className="flex items-center gap-2 text-body-xs text-gray-400">
-              Rows
-              <input
-                className="w-16 rounded border border-gray-800 bg-gray-950 px-2 py-1 text-body-xs text-gray-200"
+            <div className="w-24">
+              <FieldForm
+                label="Rows"
                 max={20}
                 min={2}
-                onChange={(e) => handleRowsChange(Number(e.target.value))}
+                name="table-rows"
+                onChange={(val: string) => handleRowsChange(Number(val))}
                 type="number"
-                value={rows}
+                value={String(rows)}
               />
-            </label>
-            <label className="flex items-center gap-2 text-body-xs text-gray-400">
-              Cols
-              <input
-                className="w-16 rounded border border-gray-800 bg-gray-950 px-2 py-1 text-body-xs text-gray-200"
+            </div>
+            <div className="w-24">
+              <FieldForm
+                label="Cols"
                 max={10}
                 min={2}
-                onChange={(e) => handleColsChange(Number(e.target.value))}
+                name="table-cols"
+                onChange={(val: string) => handleColsChange(Number(val))}
                 type="number"
-                value={cols}
+                value={String(cols)}
               />
-            </label>
+            </div>
           </div>
 
           <div className="overflow-auto">

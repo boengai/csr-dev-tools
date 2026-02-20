@@ -1,13 +1,13 @@
 ---
 story: 19.3
 title: Markdown Table Generator
-status: ready-for-dev
+status: done
 epic: 19
 ---
 
 # Story 19.3: Markdown Table Generator
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -79,53 +79,53 @@ So that **I can create Markdown tables without memorizing the pipe syntax**.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create markdown-table utility (AC: #4, #5, #8)
-  - [ ] 1.1 Create `src/utils/markdown-table.ts` with `generateMarkdownTable(data: Array<Array<string>>, alignments: Array<ColumnAlignment>): string`
-  - [ ] 1.2 Define `ColumnAlignment` type: `'left' | 'center' | 'right'`
-  - [ ] 1.3 Generate header row with pipe separators
-  - [ ] 1.4 Generate separator row with alignment markers (`:---`, `:---:`, `---:`)
-  - [ ] 1.5 Generate data rows with pipe separators
-  - [ ] 1.6 Escape pipe characters (`|`) in cell content
-  - [ ] 1.7 Pad cells for consistent column widths
-  - [ ] 1.8 Export `generateMarkdownTable`, `ColumnAlignment`
+- [x] Task 1: Create markdown-table utility (AC: #4, #5, #8)
+  - [x] 1.1 Create `src/utils/markdown-table.ts` with `generateMarkdownTable(data: Array<Array<string>>, alignments: Array<ColumnAlignment>): string`
+  - [x] 1.2 Define `ColumnAlignment` type: `'left' | 'center' | 'right'`
+  - [x] 1.3 Generate header row with pipe separators
+  - [x] 1.4 Generate separator row with alignment markers (`:---`, `:---:`, `---:`)
+  - [x] 1.5 Generate data rows with pipe separators
+  - [x] 1.6 Escape pipe characters (`|`) in cell content
+  - [x] 1.7 Pad cells for consistent column widths
+  - [x] 1.8 Export `generateMarkdownTable`, `ColumnAlignment`
 
-- [ ] Task 2: Write unit tests (AC: #8)
-  - [ ] 2.1 Create `src/utils/markdown-table.spec.ts`
-  - [ ] 2.2 Test basic 3x3 table with left alignment
-  - [ ] 2.3 Test center alignment separator `:---:`
-  - [ ] 2.4 Test right alignment separator `---:`
-  - [ ] 2.5 Test mixed alignments across columns
-  - [ ] 2.6 Test empty cells produce valid Markdown
-  - [ ] 2.7 Test pipe characters in cell content are escaped
-  - [ ] 2.8 Test single data row (header + 1 row)
-  - [ ] 2.9 Test column width padding for readability
-  - [ ] 2.10 Test header-only table (2 rows: header + separator)
+- [x] Task 2: Write unit tests (AC: #8)
+  - [x] 2.1 Create `src/utils/markdown-table.spec.ts`
+  - [x] 2.2 Test basic 3x3 table with left alignment
+  - [x] 2.3 Test center alignment separator `:---:`
+  - [x] 2.4 Test right alignment separator `---:`
+  - [x] 2.5 Test mixed alignments across columns
+  - [x] 2.6 Test empty cells produce valid Markdown
+  - [x] 2.7 Test pipe characters in cell content are escaped
+  - [x] 2.8 Test single data row (header + 1 row)
+  - [x] 2.9 Test column width padding for readability
+  - [x] 2.10 Test header-only table (2 rows: header + separator)
 
-- [ ] Task 3: Create MarkdownTableGenerator component (AC: #1, #2, #3, #4, #5, #6, #7)
-  - [ ] 3.1 Create `src/components/feature/code/MarkdownTableGenerator.tsx` as named export
-  - [ ] 3.2 Dialog-based layout using `Dialog` component with `size="screen"`
-  - [ ] 3.3 Row/column count controls using `FieldForm` type="number" or buttons
-  - [ ] 3.4 Render editable grid: text inputs for each cell, header row visually distinguished
-  - [ ] 3.5 Alignment buttons per column (cycle through left → center → right)
-  - [ ] 3.6 Compute Markdown output via `generateMarkdownTable()` on every state change
-  - [ ] 3.7 Display Markdown output in monospace code block with `CopyButton`
-  - [ ] 3.8 Show tool description from `TOOL_REGISTRY_MAP['markdown-table-generator']`
-  - [ ] 3.9 Manage 2D array state for cell content: `Array<Array<string>>`
+- [x] Task 3: Create MarkdownTableGenerator component (AC: #1, #2, #3, #4, #5, #6, #7)
+  - [x] 3.1 Create `src/components/feature/code/MarkdownTableGenerator.tsx` as named export
+  - [x] 3.2 Dialog-based layout using `Dialog` component with `size="screen"`
+  - [x] 3.3 Row/column count controls using `FieldForm` type="number"
+  - [x] 3.4 Render editable grid: text inputs for each cell, header row visually distinguished
+  - [x] 3.5 Alignment buttons per column (cycle through left → center → right)
+  - [x] 3.6 Compute Markdown output via `generateMarkdownTable()` on every state change
+  - [x] 3.7 Display Markdown output in monospace code block with `CopyButton`
+  - [x] 3.8 Show tool description from `TOOL_REGISTRY_MAP['markdown-table-generator']`
+  - [x] 3.9 Manage 2D array state for cell content: `Array<Array<string>>`
 
-- [ ] Task 4: Register tool in TOOL_REGISTRY (AC: #1)
-  - [ ] 4.1 Add `'markdown-table-generator'` to `ToolRegistryKey` union
-  - [ ] 4.2 Add registry entry to `TOOL_REGISTRY` (Code category, 📊 emoji)
-  - [ ] 4.3 Add pre-render route in `vite.config.ts`
+- [x] Task 4: Register tool in TOOL_REGISTRY (AC: #1)
+  - [x] 4.1 Add `'markdown-table-generator'` to `ToolRegistryKey` union
+  - [x] 4.2 Add registry entry to `TOOL_REGISTRY` (Code category, 📊 emoji)
+  - [x] 4.3 Add pre-render route in `vite.config.ts`
 
-- [ ] Task 5: Create barrel exports (AC: #1)
-  - [ ] 5.1 Add `export { MarkdownTableGenerator } from './MarkdownTableGenerator'` to `src/components/feature/code/index.ts`
-  - [ ] 5.2 Add `export * from './markdown-table'` to `src/utils/index.ts`
+- [x] Task 5: Create barrel exports (AC: #1)
+  - [x] 5.1 Add `export { MarkdownTableGenerator } from './MarkdownTableGenerator'` to `src/components/feature/code/index.ts`
+  - [x] 5.2 Add `export * from './markdown-table'` to `src/utils/index.ts`
 
-- [ ] Task 6: Verify integration (AC: #1, #2, #3, #4, #5, #6, #7, #8)
-  - [ ] 6.1 Run `pnpm lint` — no errors
-  - [ ] 6.2 Run `pnpm format:check` — no formatting issues
-  - [ ] 6.3 Run `pnpm test` — all tests pass
-  - [ ] 6.4 Run `pnpm build` — build succeeds
+- [x] Task 6: Verify integration (AC: #1, #2, #3, #4, #5, #6, #7, #8)
+  - [x] 6.1 Run `pnpm lint` — no errors
+  - [x] 6.2 Run `pnpm format:check` — no formatting issues
+  - [x] 6.3 Run `pnpm test` — all tests pass
+  - [x] 6.4 Run `pnpm build` — build succeeds
 
 ## Dev Notes
 
@@ -204,8 +204,45 @@ From Story 19.2 (URL Parser):
 
 ### Agent Model Used
 
+Unknown (story file not updated by dev agent)
+
 ### Debug Log References
+
+None recorded.
 
 ### Completion Notes List
 
+- Created `generateMarkdownTable()` with pipe separators, alignment markers, pipe escaping, and padded column widths
+- 10 unit tests covering basic table, center/right/mixed alignment, empty cells, pipe escaping, single data row, padding, header-only, and empty data
+- MarkdownTableGenerator dialog component with row/col FieldForm controls, editable grid, alignment cycling buttons, live Markdown preview with CopyButton
+- Tool registered in TOOL_REGISTRY under Code category, barrel exports, pre-render route
+
+### File List
+
+| Status | File | Description |
+|--------|------|-------------|
+| Created | `src/utils/markdown-table.ts` | generateMarkdownTable(), ColumnAlignment type |
+| Created | `src/utils/markdown-table.spec.ts` | 10 unit tests for Markdown table generation |
+| Created | `src/components/feature/code/MarkdownTableGenerator.tsx` | Markdown Table Generator component |
+| Modified | `src/types/constants/tool-registry.ts` | Added 'markdown-table-generator' to ToolRegistryKey |
+| Modified | `src/constants/tool-registry.ts` | Added registry entry |
+| Modified | `src/components/feature/code/index.ts` | Added barrel export |
+| Modified | `src/utils/index.ts` | Added markdown-table barrel export |
+| Modified | `vite.config.ts` | Added pre-render route |
+
 ### Change Log
+
+- 2026-02-20: Story file backfilled — status updated to done, tasks checked, Dev Agent Record populated
+
+## Senior Developer Review (AI)
+
+**Reviewer:** boengai (backfill review)
+**Date:** 2026-02-20
+**Verdict:** Done (all issues fixed)
+
+### Findings Fixed
+
+| Severity | Finding | Fix Applied |
+|----------|---------|-------------|
+| MEDIUM | AC2 specifies default 3 rows (including header) but implementation defaulted to 4 | Changed default rows from 4 to 3 in useState, createGrid, and handleReset |
+| MEDIUM | Task 3.3 specifies FieldForm for row/column controls but raw `<input>` was used | Replaced raw inputs with `FieldForm type="number"` for consistency |

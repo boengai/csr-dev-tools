@@ -1,13 +1,13 @@
 ---
 story: 19.2
 title: URL Parser
-status: ready-for-dev
+status: done
 epic: 19
 ---
 
 # Story 19.2: URL Parser
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -72,48 +72,48 @@ So that **I can inspect and debug URLs quickly**.
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create URL parse utility (AC: #2, #3, #4, #5, #7)
-  - [ ] 1.1 Create `src/utils/url-parse.ts` with `parseUrl(input: string): UrlParseResult`
-  - [ ] 1.2 Define `UrlParseResult` type: `{ protocol, hostname, port, pathname, search, searchParams: Array<{key, value}>, hash, error? }`
-  - [ ] 1.3 Use native `URL` constructor, catch errors and return `{ error: string }`
-  - [ ] 1.4 Parse `searchParams` into key-value array from `URL.searchParams`
-  - [ ] 1.5 Export `parseUrl`, `UrlParseResult`
+- [x] Task 1: Create URL parse utility (AC: #2, #3, #4, #5, #7)
+  - [x] 1.1 Create `src/utils/url-parse.ts` with `parseUrl(input: string): UrlParseResult`
+  - [x] 1.2 Define `UrlParseResult` type: `{ protocol, hostname, port, pathname, search, searchParams: Array<{key, value}>, hash, error? }`
+  - [x] 1.3 Use native `URL` constructor, catch errors and return `{ error: string }`
+  - [x] 1.4 Parse `searchParams` into key-value array from `URL.searchParams`
+  - [x] 1.5 Export `parseUrl`, `UrlParseResult`
 
-- [ ] Task 2: Write unit tests (AC: #7)
-  - [ ] 2.1 Create `src/utils/url-parse.spec.ts`
-  - [ ] 2.2 Test full URL: `https://example.com:8080/path?key=value#section`
-  - [ ] 2.3 Test URL without port: `https://example.com/path`
-  - [ ] 2.4 Test URL without query params
-  - [ ] 2.5 Test URL without hash
-  - [ ] 2.6 Test multiple query params
-  - [ ] 2.7 Test encoded query params (e.g., `%20`, `+`)
-  - [ ] 2.8 Test invalid URL returns error
-  - [ ] 2.9 Test empty string returns error
-  - [ ] 2.10 Test URL with only protocol and host
+- [x] Task 2: Write unit tests (AC: #7)
+  - [x] 2.1 Create `src/utils/url-parse.spec.ts`
+  - [x] 2.2 Test full URL: `https://example.com:8080/path?key=value#section`
+  - [x] 2.3 Test URL without port: `https://example.com/path`
+  - [x] 2.4 Test URL without query params
+  - [x] 2.5 Test URL without hash
+  - [x] 2.6 Test multiple query params
+  - [x] 2.7 Test encoded query params (e.g., `%20`, `+`)
+  - [x] 2.8 Test invalid URL returns error
+  - [x] 2.9 Test empty string returns error
+  - [x] 2.10 Test URL with only protocol and host
 
-- [ ] Task 3: Create UrlParser component (AC: #1, #2, #3, #4, #5, #6)
-  - [ ] 3.1 Create `src/components/feature/encoding/UrlParser.tsx` as named export
-  - [ ] 3.2 Text input via `FieldForm` type="text" with placeholder URL
-  - [ ] 3.3 Parse URL on input change with 300ms debounce via `useDebounceCallback`
-  - [ ] 3.4 Display parsed parts in labeled rows, each with `CopyButton`
-  - [ ] 3.5 Display search params as key-value table
-  - [ ] 3.6 Show error via `useToolError` for invalid URLs
-  - [ ] 3.7 Show tool description from `TOOL_REGISTRY_MAP['url-parser']`
+- [x] Task 3: Create UrlParser component (AC: #1, #2, #3, #4, #5, #6)
+  - [x] 3.1 Create `src/components/feature/encoding/UrlParser.tsx` as named export
+  - [x] 3.2 Text input via `FieldForm` type="text" with placeholder URL
+  - [x] 3.3 Parse URL on input change with 300ms debounce via `useDebounceCallback`
+  - [x] 3.4 Display parsed parts in labeled rows, each with `CopyButton`
+  - [x] 3.5 Display search params as key-value table
+  - [x] 3.6 Show error via inline `<p role="alert">` (useToolError not implemented in codebase)
+  - [x] 3.7 Show tool description from `TOOL_REGISTRY_MAP['url-parser']`
 
-- [ ] Task 4: Register tool in TOOL_REGISTRY (AC: #1)
-  - [ ] 4.1 Add `'url-parser'` to `ToolRegistryKey` union in `src/types/constants/tool-registry.ts`
-  - [ ] 4.2 Add registry entry to `TOOL_REGISTRY` in `src/constants/tool-registry.ts`
-  - [ ] 4.3 Add pre-render route in `vite.config.ts`
+- [x] Task 4: Register tool in TOOL_REGISTRY (AC: #1)
+  - [x] 4.1 Add `'url-parser'` to `ToolRegistryKey` union in `src/types/constants/tool-registry.ts`
+  - [x] 4.2 Add registry entry to `TOOL_REGISTRY` in `src/constants/tool-registry.ts`
+  - [x] 4.3 Add pre-render route in `vite.config.ts`
 
-- [ ] Task 5: Create barrel exports (AC: #1)
-  - [ ] 5.1 Add `export { UrlParser } from './UrlParser'` to `src/components/feature/encoding/index.ts`
-  - [ ] 5.2 Add `export * from './url-parse'` to `src/utils/index.ts`
+- [x] Task 5: Create barrel exports (AC: #1)
+  - [x] 5.1 Add `export { UrlParser } from './UrlParser'` to `src/components/feature/encoding/index.ts`
+  - [x] 5.2 Add `export * from './url-parse'` to `src/utils/index.ts`
 
-- [ ] Task 6: Verify integration (AC: #1, #2, #3, #4, #5, #6, #7)
-  - [ ] 6.1 Run `pnpm lint` — no errors
-  - [ ] 6.2 Run `pnpm format:check` — no formatting issues
-  - [ ] 6.3 Run `pnpm test` — all tests pass
-  - [ ] 6.4 Run `pnpm build` — build succeeds
+- [x] Task 6: Verify integration (AC: #1, #2, #3, #4, #5, #6, #7)
+  - [x] 6.1 Run `pnpm lint` — no errors
+  - [x] 6.2 Run `pnpm format:check` — no formatting issues
+  - [x] 6.3 Run `pnpm test` — all tests pass
+  - [x] 6.4 Run `pnpm build` — build succeeds
 
 ## Dev Notes
 
@@ -187,8 +187,45 @@ From Story 19.1 (CSS Border Radius Generator):
 
 ### Agent Model Used
 
+Unknown (story file not updated by dev agent)
+
 ### Debug Log References
+
+None recorded.
 
 ### Completion Notes List
 
+- Created `parseUrl()` using native URL constructor with error handling, returns protocol, hostname, port, pathname, search, hash, and key-value searchParams
+- 10 unit tests covering full URL, no port, no query, no hash, multiple params, encoded params, invalid URL, empty string, protocol-only, and error field absence
+- UrlParser component with debounced input (300ms), ResultRow per URL part with CopyButton, query params table with per-value CopyButton and full query string CopyButton
+- Tool registered in TOOL_REGISTRY under Encoding category, barrel exports, pre-render route
+
+### File List
+
+| Status | File | Description |
+|--------|------|-------------|
+| Created | `src/utils/url-parse.ts` | parseUrl(), UrlParseResult, UrlParam types |
+| Created | `src/utils/url-parse.spec.ts` | 10 unit tests for URL parsing |
+| Created | `src/components/feature/encoding/UrlParser.tsx` | URL Parser component |
+| Modified | `src/types/constants/tool-registry.ts` | Added 'url-parser' to ToolRegistryKey |
+| Modified | `src/constants/tool-registry.ts` | Added registry entry |
+| Modified | `src/components/feature/encoding/index.ts` | Added UrlParser barrel export |
+| Modified | `src/utils/index.ts` | Added url-parse barrel export |
+| Modified | `vite.config.ts` | Added pre-render route |
+
 ### Change Log
+
+- 2026-02-20: Story file backfilled — status updated to done, tasks checked, Dev Agent Record populated
+
+## Senior Developer Review (AI)
+
+**Reviewer:** boengai (backfill review)
+**Date:** 2026-02-20
+**Verdict:** Done (all issues fixed)
+
+### Findings Fixed
+
+| Severity | Finding | Fix Applied |
+|----------|---------|-------------|
+| MEDIUM | AC4 requires CopyButton for full query string but none existed | Added CopyButton for full query string in Query Parameters header |
+| MEDIUM | UrlParseResult type missing `search` field per Task 1.2 spec | Added `search` field to type and populated with `url.search` |

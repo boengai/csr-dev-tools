@@ -66,18 +66,27 @@ export const HttpStatusCodes = (_props: ToolComponentProps) => {
         {filtered.length === 0 ? (
           <p className="text-body-sm text-gray-500">No matching status codes</p>
         ) : (
-          filtered.map((code) => (
-            <div className="rounded border border-gray-800 bg-gray-950 p-3" key={code.code}>
-              <div className="flex items-baseline gap-2">
-                <span
-                  className={`font-mono text-body-lg font-bold ${CATEGORY_COLORS[code.category] ?? 'text-gray-300'}`}
+          filtered.map((code, i) => (
+            <div key={code.code}>
+              {!category && (i === 0 || filtered[i - 1].category !== code.category) && (
+                <p
+                  className={`mb-2 ${i > 0 ? 'mt-3' : ''} border-b border-gray-800 pb-1 text-body-xs font-medium ${CATEGORY_COLORS[code.category] ?? 'text-gray-300'}`}
                 >
-                  {code.code}
-                </span>
-                <span className="text-body-sm font-medium text-gray-200">{code.name}</span>
+                  {code.category}
+                </p>
+              )}
+              <div className="rounded border border-gray-800 bg-gray-950 p-3">
+                <div className="flex items-baseline gap-2">
+                  <span
+                    className={`font-mono text-body-lg font-bold ${CATEGORY_COLORS[code.category] ?? 'text-gray-300'}`}
+                  >
+                    {code.code}
+                  </span>
+                  <span className="text-body-sm font-medium text-gray-200">{code.name}</span>
+                </div>
+                <p className="mt-1 text-body-xs text-gray-400">{code.description}</p>
+                <p className="mt-1 text-body-xs text-gray-500">💡 {code.useCase}</p>
               </div>
-              <p className="mt-1 text-body-xs text-gray-400">{code.description}</p>
-              <p className="mt-1 text-body-xs text-gray-500">💡 {code.useCase}</p>
             </div>
           ))
         )}
