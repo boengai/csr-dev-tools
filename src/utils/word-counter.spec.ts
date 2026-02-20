@@ -10,6 +10,8 @@ describe('word counter utilities', () => {
     expect(stats.sentences).toBe(0)
     expect(stats.paragraphs).toBe(0)
     expect(stats.lines).toBe(0)
+    expect(stats.readingTime).toBe('0 min')
+    expect(stats.speakingTime).toBe('0 min')
   })
 
   it('should count characters correctly', () => {

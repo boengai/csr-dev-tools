@@ -59,4 +59,28 @@ describe('string escape utilities', () => {
     expect(escapeString('', 'html')).toBe('')
     expect(unescapeString('', 'html')).toBe('')
   })
+
+  describe('roundtrip', () => {
+    const input = '<div class="test">&\'hello\nworld\t</div>'
+
+    it('should roundtrip HTML', () => {
+      expect(unescapeString(escapeString(input, 'html'), 'html')).toBe(input)
+    })
+
+    it('should roundtrip JavaScript', () => {
+      expect(unescapeString(escapeString(input, 'javascript'), 'javascript')).toBe(input)
+    })
+
+    it('should roundtrip JSON', () => {
+      expect(unescapeString(escapeString(input, 'json'), 'json')).toBe(input)
+    })
+
+    it('should roundtrip URL', () => {
+      expect(unescapeString(escapeString(input, 'url'), 'url')).toBe(input)
+    })
+
+    it('should roundtrip XML', () => {
+      expect(unescapeString(escapeString(input, 'xml'), 'xml')).toBe(input)
+    })
+  })
 })

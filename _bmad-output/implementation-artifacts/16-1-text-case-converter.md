@@ -121,3 +121,22 @@ So that **I can quickly transform variable names and text for different coding c
 | `src/types/constants/tool-registry.ts` | MODIFIED |
 | `src/constants/tool-registry.ts` | MODIFIED |
 | `vite.config.ts` | MODIFIED |
+
+### Change Log
+
+| Date | Change |
+|------|--------|
+| 2026-02-20 | Code review (backfill): added digit-boundary tests for `splitWords` (`text-case.spec.ts`) |
+
+### Senior Developer Review (AI)
+
+**Reviewer:** boengai | **Date:** 2026-02-20 | **Status:** Approved
+
+**Findings Fixed:**
+- [M5] Added digit-boundary tests for `splitWords` letter-to-digit and digit-to-letter regex handling (`text-case.spec.ts`)
+
+**Notes:**
+- All ACs verified and implemented correctly
+- 11 case conversions working as specified
+- CopyButton on each result confirmed
+- `splitWords` handles all documented boundary types

@@ -10,6 +10,7 @@ export type TextStats = {
 }
 
 const formatTime = (minutes: number): string => {
+  if (minutes === 0) return '0 min'
   if (minutes < 1) return '< 1 min'
   const m = Math.ceil(minutes)
   return `${String(m)} min`
@@ -22,9 +23,9 @@ export const countTextStats = (text: string): TextStats => {
       charactersNoSpaces: 0,
       lines: 0,
       paragraphs: 0,
-      readingTime: '< 1 min',
+      readingTime: '0 min',
       sentences: 0,
-      speakingTime: '< 1 min',
+      speakingTime: '0 min',
       words: 0,
     }
   }

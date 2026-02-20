@@ -135,3 +135,24 @@ From Story 16.3 (Lorem Ipsum Generator):
 | `src/types/constants/tool-registry.ts` | MODIFIED |
 | `src/constants/tool-registry.ts` | MODIFIED |
 | `vite.config.ts` | MODIFIED |
+
+### Change Log
+
+| Date | Change |
+|------|--------|
+| 2026-02-20 | Code review (backfill): added `\b`/`\f`/`\v` JS escape sequences; added roundtrip tests for all modes |
+
+### Senior Developer Review (AI)
+
+**Reviewer:** boengai | **Date:** 2026-02-20 | **Status:** Approved
+
+**Findings Fixed:**
+- [M3] `escapeJavaScript` now handles `\b` (backspace, via `\x08`), `\f` (form feed), `\v` (vertical tab)
+- [M3] `unescapeJavaScript` switch now includes `case 'b'`, `case 'f'`, `case 'v'`
+- [M4] Added 5 roundtrip tests verifying `unescape(escape(input)) === input` for all modes (HTML, JS, JSON, URL, XML)
+
+**Notes:**
+- All 5 escape modes working correctly
+- HTML entities match AC4 spec exactly
+- Error handling via toast on invalid unescape sequences confirmed
+- Direction toggle and mode change with immediate reprocessing verified

@@ -39,6 +39,18 @@ describe('text case utilities', () => {
     })
   })
 
+  describe('digit boundary splitting', () => {
+    it('should split on letter-to-digit boundaries', () => {
+      expect(toCamelCase('hello2World')).toBe('hello2World')
+      expect(toSnakeCase('test123value')).toBe('test_123_value')
+    })
+
+    it('should split on digit-to-letter boundaries', () => {
+      expect(toPascalCase('2fast2furious')).toBe('2Fast2Furious')
+      expect(toKebabCase('v2release')).toBe('v-2-release')
+    })
+  })
+
   describe('toPascalCase', () => {
     it('should convert space-separated words', () => {
       expect(toPascalCase(input)).toBe('HelloWorldTest')

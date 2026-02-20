@@ -134,3 +134,23 @@ From Story 16.1 (Text Case Converter):
 | `src/types/constants/tool-registry.ts` | MODIFIED |
 | `src/constants/tool-registry.ts` | MODIFIED |
 | `vite.config.ts` | MODIFIED |
+
+### Change Log
+
+| Date | Change |
+|------|--------|
+| 2026-02-20 | Code review (backfill): fixed AC4 — empty input now shows `0 min` for readingTime/speakingTime; added missing test assertions |
+
+### Senior Developer Review (AI)
+
+**Reviewer:** boengai | **Date:** 2026-02-20 | **Status:** Approved
+
+**Findings Fixed:**
+- [M1] `formatTime(0)` now returns `'0 min'` instead of `'< 1 min'` — satisfies AC4 "all stats show 0"
+- [M1] `EMPTY_STATS` in WordCounter component updated to `'0 min'` for readingTime/speakingTime
+- [M2] Empty-string test now verifies `readingTime` and `speakingTime` values
+
+**Notes:**
+- All 8 stats compute correctly for non-empty input
+- Grid layout confirmed as `grid grid-cols-2 gap-3`
+- Debounce at 300ms working as specified

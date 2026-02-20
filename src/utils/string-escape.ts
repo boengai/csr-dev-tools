@@ -50,6 +50,9 @@ export const escapeJavaScript = (input: string): string => {
     .replace(/\n/g, '\\n')
     .replace(/\r/g, '\\r')
     .replace(/\t/g, '\\t')
+    .replace(/\x08/g, '\\b')
+    .replace(/\f/g, '\\f')
+    .replace(/\v/g, '\\v')
     .replace(/\0/g, '\\0')
 }
 
@@ -72,6 +75,15 @@ export const unescapeJavaScript = (input: string): string => {
           break
         case 't':
           result += '\t'
+          break
+        case 'b':
+          result += '\b'
+          break
+        case 'f':
+          result += '\f'
+          break
+        case 'v':
+          result += '\v'
           break
         case '0':
           result += '\0'
