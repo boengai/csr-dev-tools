@@ -158,6 +158,7 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             </div>
             <div
               aria-label="Diff output"
+              aria-live="polite"
               className="text-sm overflow-auto rounded-lg border border-gray-800 bg-gray-950 font-mono"
               role="region"
             >

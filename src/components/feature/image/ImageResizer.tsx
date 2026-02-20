@@ -222,6 +222,7 @@ export const ImageResizer = () => {
   }
 
   const handleReset = () => {
+    sessionRef.current++
     setTabValue(TABS_VALUES.IMPORT)
     setSource(null)
     setPreview(null)

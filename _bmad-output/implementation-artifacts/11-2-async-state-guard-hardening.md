@@ -206,3 +206,24 @@ const handleUpload = (file: File) => {
 - `pnpm lint` — 0 errors
 - `pnpm format:check` — clean
 - `pnpm build` — success
+
+---
+
+## Senior Developer Review (AI)
+
+**Reviewer:** boengai | **Date:** 2026-02-20 | **Outcome:** Changes Requested → Fixed
+
+### Findings (5 total — 2 MEDIUM fixed, 3 LOW noted)
+
+| # | Severity | Issue | Resolution |
+|---|----------|-------|------------|
+| M1 | MEDIUM | `ImageResizer.tsx` `handleReset` (L224) missing `sessionRef.current++` — in-flight resize could overwrite cleaned state | **FIXED** — added `sessionRef.current++` to `handleReset` |
+| M2 | MEDIUM | `ImageCompressor.tsx` `finally` block (L56-60) runs unconditionally on stale sessions — prematurely clears `processing` state | **FIXED** — wrapped `finally` contents in `if (currentSession === sessionRef.current)` |
+| L3 | LOW | `JsonToYamlConverter.tsx` `await` on synchronous functions creates unnecessary microtask yields | Noted — harmless, future-proofing acceptable |
+| L4 | LOW | `ImageResizer.tsx` `handleUploadChange` has unguarded `await processImage()` | Noted — unlikely race due to upload dialog UX |
+| L5 | LOW | `HashGenerator.tsx` `handleAlgorithmChange` missing sessionRef cancel for pending debounced computes | Noted — 300ms debounce window makes practical impact minimal |
+
+### Change Log
+- **11-2-R1**: Added `sessionRef.current++` to `ImageResizer.tsx` `handleReset`
+- **11-2-R2**: Wrapped `ImageCompressor.tsx` `finally` block in session check
+- All 897 tests pass, lint clean, format clean, build success

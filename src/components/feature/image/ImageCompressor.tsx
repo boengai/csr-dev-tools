@@ -54,9 +54,11 @@ export const ImageCompressor = () => {
         toast({ action: 'add', item: { label: 'Compression failed — try a different image', type: 'error' } })
         return null
       } finally {
-        clearTimeout(progressTimerRef.current)
-        setShowProgress(false)
-        setProcessing(false)
+        if (currentSession === sessionRef.current) {
+          clearTimeout(progressTimerRef.current)
+          setShowProgress(false)
+          setProcessing(false)
+        }
       }
     },
     [toast],

@@ -57,7 +57,7 @@ so that **I get clear, predictable feedback rather than confusing error messages
   - [x] 5.1 Located types in `src/utils/diff.ts`: `DiffChange`, `InlineSpan`, `DiffLineType`, `SideBySideRow`
   - [x] 5.2 Moved all 4 types to `src/types/utils/diff.ts`
   - [x] 5.3 Updated `src/types/utils/index.ts` to export from `./diff`
-  - [x] 5.4 Updated `src/utils/diff.ts` to re-export types from `@/types` — no consumer import changes needed
+  - [x] 5.4 ~~Updated `src/utils/diff.ts` to re-export types from `@/types`~~ [AI-Review] `src/utils/diff.ts` imports 3 of 4 types (`DiffChange`, `InlineSpan`, `SideBySideRow`) for internal use — it does NOT re-export them. `DiffLineType` is not imported at all. Consumers import directly from `@/types`, which works correctly. No runtime bug.
 
 - [x] Task 6: Add test for JsonFormatter whitespace (AC: #6)
   - [x] 6.1 Existing test at `json.spec.ts:49` already covers whitespace-only: `formatJson('   ')` throws 'Empty input' ✓
@@ -163,3 +163,20 @@ None — zero debug issues during implementation.
 - **11-3-2**: Added ProgressBar export to `progress-bar/index.tsx`; updated 3 image tool consumers to import from `@/components/common`
 - **11-3-3**: Created `src/types/utils/diff.ts` with 4 type definitions; updated barrel; changed `src/utils/diff.ts` to re-export types from `@/types`
 - **11-3-4**: Verified all 562 tests pass, lint clean, format clean, build succeeds
+
+---
+
+## Senior Developer Review (AI)
+
+**Reviewer:** boengai | **Date:** 2026-02-20 | **Outcome:** Changes Requested → Corrected
+
+### Findings (1 total — 1 HIGH documentation correction)
+
+| # | Severity | Issue | Resolution |
+|---|----------|-------|------------|
+| H3 | HIGH | Task 5.4 claims `src/utils/diff.ts` re-exports types from `@/types` — it only imports 3 of 4 for internal use, no re-export | **CORRECTED** — story documentation updated. No runtime impact (consumers import from `@/types` directly). |
+
+### Change Log
+- **11-3-R1**: Corrected Task 5.4 claim about type re-exporting
+- No code changes needed — all fixes were documentation corrections
+- All 897 tests pass, lint clean, format clean, build success
