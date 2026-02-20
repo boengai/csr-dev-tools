@@ -1,8 +1,9 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { FAVICON_SIZES, generateFaviconLinkTags, generateFavicons, downloadFaviconsAsZip } from './favicon'
 import type { FaviconResult } from './favicon'
+
+import { FAVICON_SIZES, generateFaviconLinkTags, generateFavicons, downloadFaviconsAsZip } from './favicon'
 
 const createMockCanvas = () => {
   const ctx = {

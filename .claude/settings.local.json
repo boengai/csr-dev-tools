@@ -2,7 +2,13 @@
   "permissions": {
     "allow": [
       "WebFetch",
-      "WebSearch"
+      "WebSearch",
+      "Bash(pnpm lint:*)",
+      "Bash(pnpm format:check:*)",
+      "Bash(pnpm test:*)",
+      "Bash(pnpm exec oxfmt:*)",
+      "Bash(pnpm build:*)",
+      "Bash(pnpm test:e2e:*)"
     ]
   }
 }

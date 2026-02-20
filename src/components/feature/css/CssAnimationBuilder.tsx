@@ -1,7 +1,13 @@
 import { useMemo, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { AnimationConfig, AnimationDirection, AnimationFillMode, AnimationTimingFunction, KeyframeStep } from '@/utils'
+import type {
+  AnimationConfig,
+  AnimationDirection,
+  AnimationFillMode,
+  AnimationTimingFunction,
+  KeyframeStep,
+} from '@/utils'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
@@ -74,7 +80,12 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
           `${s.percent}% { opacity: ${s.opacity}; transform: ${buildTransformString(s)}; background-color: ${s.backgroundColor}; }`,
       )
       .join(' ')
-    const iterations = config.iterationCount === 'infinite' ? 'infinite' : (Number(config.iterationCount) > 0 ? config.iterationCount : '1')
+    const iterations =
+      config.iterationCount === 'infinite'
+        ? 'infinite'
+        : Number(config.iterationCount) > 0
+          ? config.iterationCount
+          : '1'
     return `@keyframes csr-anim-preview { ${keyframeBody} } .csr-anim-target { animation: csr-anim-preview ${config.duration}s ${config.timingFunction} ${iterations} ${config.direction} ${config.fillMode}; }`
   }, [config])
 

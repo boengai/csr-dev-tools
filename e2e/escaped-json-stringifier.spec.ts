@@ -6,7 +6,6 @@ test.describe('Escaped JSON Stringifier', () => {
   })
 
   test('stringifies valid JSON', async ({ page }) => {
-    await page.getByRole('button', { name: /Stringify/i }).first().click()
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
@@ -18,9 +17,10 @@ test.describe('Escaped JSON Stringifier', () => {
   })
 
   test('parses escaped JSON string', async ({ page }) => {
-    await page.getByRole('button', { name: /Parse/i }).first().click()
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
+    // Dispatch click on mode button behind dialog overlay to switch mode
+    await page.locator('button', { hasText: /^Parse$/ }).first().dispatchEvent('click')
 
     const input = dialog.locator('textarea').first()
     await input.fill('{\\"name\\":\\"John\\"}')

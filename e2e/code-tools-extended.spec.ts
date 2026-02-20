@@ -21,8 +21,9 @@ test.describe('HTML Formatter', () => {
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     // Switch to minify mode
-    const modeSelect = dialog.locator('select').first()
-    await modeSelect.selectOption('minify')
+    const trigger = dialog.locator('[role="combobox"]').first()
+    await trigger.click()
+    await page.locator('[role="option"]').filter({ hasText: /minify/i }).click()
 
     const input = dialog.locator('textarea').first()
     await input.fill('<div>\n  <p>hello</p>\n</div>')
@@ -50,8 +51,9 @@ test.describe('CSS Formatter', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
-    const modeSelect = dialog.locator('select').first()
-    await modeSelect.selectOption('minify')
+    const trigger = dialog.locator('[role="combobox"]').first()
+    await trigger.click()
+    await page.locator('[role="option"]').filter({ hasText: /minify/i }).click()
 
     const input = dialog.locator('textarea').first()
     await input.fill('body {\n  color: red;\n  margin: 0;\n}')
@@ -79,8 +81,9 @@ test.describe('JavaScript Minifier', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
-    const modeSelect = dialog.locator('select').first()
-    await modeSelect.selectOption('beautify')
+    const trigger = dialog.locator('[role="combobox"]').first()
+    await trigger.click()
+    await page.locator('[role="option"]').filter({ hasText: /beautify/i }).click()
 
     const input = dialog.locator('textarea').first()
     await input.fill('function hello(){return"world"}')
@@ -108,8 +111,9 @@ test.describe('SQL Formatter', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
-    const dialectSelect = dialog.locator('select').first()
-    await dialectSelect.selectOption('postgresql')
+    const trigger = dialog.locator('[role="combobox"]').first()
+    await trigger.click()
+    await page.locator('[role="option"]').filter({ hasText: /postgresql/i }).click()
 
     const input = dialog.locator('textarea').first()
     await input.fill('select * from users limit 10')

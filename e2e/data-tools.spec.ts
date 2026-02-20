@@ -28,7 +28,7 @@ test.describe('User Agent Parser', () => {
   test('clicks Use Mine and shows parsed result', async ({ page }) => {
     await page.goto('/tools/user-agent-parser')
 
-    await page.getByRole('button', { name: 'Use Mine' }).click()
+    await page.getByRole('button', { name: 'Use my UA' }).click()
 
     // Should show parsed browser info
     await expect(page.getByText('Browser', { exact: true })).toBeVisible({ timeout: 3000 })

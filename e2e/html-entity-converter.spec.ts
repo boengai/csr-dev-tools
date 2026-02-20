@@ -6,7 +6,6 @@ test.describe('HTML Entity Converter', () => {
   })
 
   test('encodes special characters to HTML entities', async ({ page }) => {
-    await page.getByRole('button', { name: /Encode/i }).first().click()
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
@@ -18,9 +17,10 @@ test.describe('HTML Entity Converter', () => {
   })
 
   test('decodes HTML entities back to text', async ({ page }) => {
-    await page.getByRole('button', { name: /Decode/i }).first().click()
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
+    // Dispatch click on mode button behind dialog overlay to switch mode
+    await page.locator('button', { hasText: /^Decode$/ }).first().dispatchEvent('click')
 
     const input = dialog.locator('textarea').first()
     await input.fill('&lt;div&gt;')
