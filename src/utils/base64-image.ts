@@ -13,9 +13,10 @@ const MAGIC_BYTES: Array<{ format: string; prefix: string }> = [
   { format: 'webp', prefix: 'UklGR' },
   { format: 'bmp', prefix: 'Qk' },
   { format: 'svg+xml', prefix: 'PHN2Z' },
+  { format: 'svg+xml', prefix: 'PD94b' },
 ]
 
-const detectFormatFromBase64 = (base64: string): string | null => {
+export const detectFormatFromBase64 = (base64: string): string | null => {
   for (const { format, prefix } of MAGIC_BYTES) {
     if (base64.startsWith(prefix)) return format
   }
@@ -48,7 +49,8 @@ export const base64ToImageInfo = async (input: string): Promise<Base64ImageInfo>
   const { height, width } = await getImageDimensions(dataUri)
 
   const formatMatch = dataUri.match(/^data:image\/([^;]+);/)
-  const format = formatMatch?.[1] ?? detectFormatFromBase64(base64Only) ?? 'unknown'
+  const rawFormat = formatMatch?.[1] ?? detectFormatFromBase64(base64Only) ?? 'unknown'
+  const format = rawFormat === 'svg+xml' ? 'svg' : rawFormat
 
   return { dataUri, estimatedSize, format, height, width }
 }

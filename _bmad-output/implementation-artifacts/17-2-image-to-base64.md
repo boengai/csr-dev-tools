@@ -123,6 +123,10 @@ anthropic/claude-opus-4-6
 - Component handles both file picker upload and UploadInput integration
 - Three distinct copy targets (data URI, base64 only, HTML tag) per requirements
 
+### Change Log
+
+- 2026-02-20: Code review (backfill) — Fixed 5 issues: added missing `ToolComponentProps` (autoOpen/onAfterDialogClose), added image thumbnail preview (AC4), fixed barrel import violations, added prerender route
+
 ### File List
 
 | File | Action |

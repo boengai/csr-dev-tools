@@ -1,17 +1,17 @@
 import { useState } from 'react'
 
-import type { ImageBase64Result } from '@/utils/image-base64'
+import type { ToolComponentProps } from '@/types'
+import type { ImageBase64Result } from '@/utils'
 
 import { CopyButton, Dialog, FieldForm, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import { formatFileSize } from '@/utils'
-import { formatBase64Size, imageFileToBase64 } from '@/utils/image-base64'
+import { formatBase64Size, formatFileSize, imageFileToBase64 } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['image-to-base64']
 
-export const ImageToBase64 = () => {
-  const [dialogOpen, setDialogOpen] = useState(false)
+export const ImageToBase64 = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [result, setResult] = useState<ImageBase64Result | null>(null)
   const { toast } = useToast()
 
@@ -60,17 +60,27 @@ export const ImageToBase64 = () => {
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleReset}
+        onAfterClose={() => {
+          handleReset()
+          onAfterDialogClose?.()
+        }}
         size="screen"
         title="Image to Base64"
       >
         {result && (
           <div className="flex w-full grow flex-col gap-4">
-            <div className="flex flex-col gap-1">
-              <p className="text-body-sm text-gray-300">
-                {result.fileName} — {result.width}x{result.height} — {formatFileSize(result.originalSize)}
-              </p>
-              <p className="text-body-xs text-gray-500">Base64 length: {formatBase64Size(result.base64Length)}</p>
+            <div className="flex items-start gap-4">
+              <img
+                alt={result.fileName}
+                className="max-h-24 max-w-24 shrink-0 rounded-lg border border-gray-800 object-contain"
+                src={result.dataUri}
+              />
+              <div className="flex flex-col gap-1">
+                <p className="text-body-sm text-gray-300">
+                  {result.fileName} — {result.width}x{result.height} — {formatFileSize(result.originalSize)}
+                </p>
+                <p className="text-body-xs text-gray-500">Base64 length: {formatBase64Size(result.base64Length)}</p>
+              </div>
             </div>
 
             <div className="border-t-2 border-dashed border-gray-900" />

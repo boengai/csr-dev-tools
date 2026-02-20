@@ -122,6 +122,10 @@ anthropic/claude-opus-4-6
 - Magic bytes cover PNG, JPEG, GIF, WebP, BMP, SVG formats
 - Component handles both `data:image/...` URIs and raw Base64 strings seamlessly
 
+### Change Log
+
+- 2026-02-20: Code review (backfill) — Fixed 7 issues: normalized `svg+xml` to `svg` for download filenames, exported and tested `detectFormatFromBase64` (8 new tests), added `<?xml` SVG detection, fixed barrel import violations, added prerender route, cleaned hidden anchor attrs
+
 ### File List
 
 | File | Action |

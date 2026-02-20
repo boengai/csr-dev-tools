@@ -17,6 +17,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Convert Base64 strings to downloadable images. Preview and extract images from Base64-encoded data.',
+    path: '/tools/base64-to-image',
+    title: 'Base64 to Image - CSR Dev Tools',
+    url: '/tools/base64-to-image',
+  },
+  {
+    description:
       'Encode and decode Base64 strings online. Convert text to Base64 and back instantly in your browser.',
     path: '/tools/base64-encoder',
     title: 'Base64 Encoder - CSR Dev Tools',
@@ -71,6 +78,12 @@ const toolRoutes = [
     url: '/tools/image-resizer',
   },
   {
+    description: 'Convert images to Base64 data URIs. Embed images directly in HTML or CSS.',
+    path: '/tools/image-to-base64',
+    title: 'Image to Base64 - CSR Dev Tools',
+    url: '/tools/image-to-base64',
+  },
+  {
     description:
       'Format, validate, and beautify JSON online. Paste minified JSON and get clean, indented output instantly in your browser.',
     path: '/tools/json-formatter',
@@ -104,6 +117,13 @@ const toolRoutes = [
     path: '/tools/password-generator',
     title: 'Password Generator - CSR Dev Tools',
     url: '/tools/password-generator',
+  },
+  {
+    description:
+      'Generate QR codes from text or URLs. Customize size, colors, and error correction. Free browser-based QR code generator.',
+    path: '/tools/qr-code-generator',
+    title: 'QR Code Generator - CSR Dev Tools',
+    url: '/tools/qr-code-generator',
   },
   {
     description:

@@ -1,11 +1,12 @@
 import { useCallback, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
+import type { QrErrorCorrectionLevel } from '@/utils'
 
 import { Button, CopyButton, Dialog, DownloadIcon, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils/qr-code'
+import { generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['qr-code-generator']
 
@@ -13,7 +14,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [text, setText] = useState('')
   const [size, setSize] = useState(256)
-  const [errorCorrection, setErrorCorrection] = useState<'H' | 'L' | 'M' | 'Q'>('M')
+  const [errorCorrection, setErrorCorrection] = useState<QrErrorCorrectionLevel>('M')
   const [foreground, setForeground] = useState('#000000')
   const [background, setBackground] = useState('#ffffff')
   const [dataUrl, setDataUrl] = useState('')
@@ -22,7 +23,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const { toast } = useToast()
 
   const generate = useCallback(
-    async (t: string, s: number, ec: 'H' | 'L' | 'M' | 'Q', fg: string, bg: string) => {
+    async (t: string, s: number, ec: QrErrorCorrectionLevel, fg: string, bg: string) => {
       if (!t) {
         setDataUrl('')
         setSvgString('')
@@ -69,7 +70,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   }
 
   const handleEcChange = (val: string) => {
-    const ec = val as 'H' | 'L' | 'M' | 'Q'
+    const ec = val as QrErrorCorrectionLevel
     setErrorCorrection(ec)
     debouncedGenerate(text, size, ec, foreground, background)
   }
@@ -215,7 +216,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
           </div>
         </div>
       </Dialog>
-      <a className="hidden" download="" href="" ref={downloadAnchorRef} />
+      <a className="hidden" ref={downloadAnchorRef} />
     </>
   )
 }

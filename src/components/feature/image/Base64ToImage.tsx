@@ -1,13 +1,12 @@
 import { useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { Base64ImageInfo } from '@/utils/base64-image'
+import type { Base64ImageInfo } from '@/utils'
 
 import { Button, Dialog, DownloadIcon, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { formatFileSize } from '@/utils'
-import { base64ToImageInfo } from '@/utils/base64-image'
+import { base64ToImageInfo, formatFileSize } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['base64-to-image']
 
@@ -119,7 +118,7 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
           </div>
         </div>
       </Dialog>
-      <a className="hidden" download="" href="" ref={downloadAnchorRef} />
+      <a className="hidden" ref={downloadAnchorRef} />
     </>
   )
 }

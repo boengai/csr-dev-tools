@@ -118,7 +118,7 @@ So that **I can create QR codes for links, contact info, or any text without usi
 | File | Purpose |
 |------|---------|
 | `src/utils/qr-code.ts` | `generateQrCodeDataUrl()`, `generateQrCodeSvgString()`, `QrCodeOptions` |
-| `src/utils/qr-code.spec.ts` | 4 unit tests |
+| `src/utils/qr-code.spec.ts` | 5 unit tests |
 | `src/components/feature/generator/QrCodeGenerator.tsx` | Component (221 lines) |
 
 ## Dev Agent Record
@@ -127,7 +127,11 @@ So that **I can create QR codes for links, contact info, or any text without usi
 
 - Created QR code generation utilities using `qrcode` library for both PNG and SVG output
 - QrCodeGenerator component with full configuration, download, SVG copy
-- 4 unit tests covering data URL format, size, empty input, SVG output
+- 5 unit tests covering data URL format, size, empty input, SVG output, error correction levels
+
+### Change Log
+
+- 2026-02-20: Code review (backfill) — Fixed 7 issues: added missing prerender route in vite.config.ts, fixed barrel import violation, extracted `QrErrorCorrectionLevel` type to eliminate duplication, cleaned up hidden anchor attrs, added EC level roundtrip test
 
 ### File List
 
