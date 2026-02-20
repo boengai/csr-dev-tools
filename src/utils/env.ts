@@ -69,8 +69,15 @@ export const jsonToEnv = (input: string): string => {
   }
   return Object.entries(obj)
     .map(([key, value]) => {
-      const strVal = String(value)
-      return needsQuoting(strVal) ? `${key}="${strVal}"` : `${key}=${strVal}`
+      if (value !== null && typeof value === 'object') {
+        throw new Error(`Value for "${key}" is a nested object/array — .env only supports flat key=value pairs`)
+      }
+      const strVal = String(value ?? '')
+      if (needsQuoting(strVal)) {
+        const escaped = strVal.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+        return `${key}="${escaped}"`
+      }
+      return `${key}=${strVal}`
     })
     .join('\n')
 }
@@ -83,8 +90,15 @@ export const yamlToEnv = (input: string): string => {
   }
   return Object.entries(obj)
     .map(([key, value]) => {
-      const strVal = String(value)
-      return needsQuoting(strVal) ? `${key}="${strVal}"` : `${key}=${strVal}`
+      if (value !== null && typeof value === 'object') {
+        throw new Error(`Value for "${key}" is a nested object/array — .env only supports flat key=value pairs`)
+      }
+      const strVal = String(value ?? '')
+      if (needsQuoting(strVal)) {
+        const escaped = strVal.replace(/\\/g, '\\\\').replace(/"/g, '\\"')
+        return `${key}="${escaped}"`
+      }
+      return `${key}=${strVal}`
     })
     .join('\n')
 }

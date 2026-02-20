@@ -30,6 +30,9 @@ So that **I can safely handle special characters in HTML content**.
 ### Agent Model Used
 claude-opus-4-6 (direct implementation)
 
+### Change Log
+- 2026-02-20: Code review fixes — replaced charCodeAt(0) with codePointAt(0) for proper emoji encoding, removed dead code branch in encodeHtmlEntities
+
 ### File List
 - src/utils/html-entity.ts
 - src/utils/html-entity.spec.ts

@@ -32,6 +32,10 @@ describe('html entity utilities', () => {
       expect(encodeHtmlEntities('hello world')).toBe('hello world')
     })
 
+    it('should encode emoji with correct code point in numeric mode', () => {
+      expect(encodeHtmlEntities('\u{1F600}', 'numeric')).toBe('&#128512;')
+    })
+
     it('should throw on empty input', () => {
       expect(() => encodeHtmlEntities('')).toThrow('Empty input')
     })

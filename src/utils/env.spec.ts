@@ -81,6 +81,19 @@ describe('env utilities', () => {
     it('should throw on empty input', () => {
       expect(() => jsonToEnv('')).toThrow('Empty input')
     })
+
+    it('should throw on nested object values', () => {
+      expect(() => jsonToEnv('{"config":{"host":"localhost"}}')).toThrow('nested object/array')
+    })
+
+    it('should throw on array values', () => {
+      expect(() => jsonToEnv('{"tags":["a","b"]}')).toThrow('nested object/array')
+    })
+
+    it('should escape inner double quotes in values', () => {
+      const result = jsonToEnv('{"MSG":"he said \\"hello\\""}')
+      expect(result).toBe('MSG="he said \\"hello\\""')
+    })
   })
 
   describe('yamlToEnv', () => {
@@ -96,6 +109,10 @@ describe('env utilities', () => {
 
     it('should throw on empty input', () => {
       expect(() => yamlToEnv('')).toThrow('Empty input')
+    })
+
+    it('should throw on nested mapping values', () => {
+      expect(() => yamlToEnv('config:\n  host: localhost')).toThrow('nested object/array')
     })
   })
 })

@@ -1,13 +1,13 @@
 ---
 story: 22.1
 title: YAML Formatter/Validator
-status: ready-for-dev
+status: done
 epic: 22
 ---
 
 # Story 22.1: YAML Formatter/Validator
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -75,6 +75,19 @@ category: Data, emoji: 📋, key: yaml-formatter, name: YAML Formatter, routePat
 ## Dev Agent Record
 
 ### Agent Model Used
+claude-opus-4-6 (direct implementation)
+
 ### Completion Notes List
+- Story file was not updated by original dev agent — backfilled during Epic 22 code review
+
 ### Change Log
+- 2026-02-20: Code review backfill — story status corrected to done, dev agent record populated
+
 ### File List
+- src/utils/yaml.ts
+- src/utils/yaml.spec.ts
+- src/components/feature/data/YamlFormatter.tsx
+- src/components/feature/data/index.ts
+- src/types/constants/tool-registry.ts
+- src/constants/tool-registry.ts
+- e2e/yaml-formatter.spec.ts

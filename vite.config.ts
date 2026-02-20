@@ -298,6 +298,32 @@ const toolRoutes = [
     title: 'Text Sort & Dedupe - CSR Dev Tools',
     url: '/tools/text-sort-dedupe',
   },
+  {
+    description: 'Convert between .env, JSON, and YAML formats. Free online environment file converter.',
+    path: '/tools/env-file-converter',
+    title: 'ENV File Converter - CSR Dev Tools',
+    url: '/tools/env-file-converter',
+  },
+  {
+    description: 'Escape and unescape JSON strings online. Stringify JSON for embedding in code or config files.',
+    path: '/tools/escaped-json-stringifier',
+    title: 'Escaped JSON Stringifier - CSR Dev Tools',
+    url: '/tools/escaped-json-stringifier',
+  },
+  {
+    description:
+      'Encode and decode HTML entities online. Convert special characters to named or numeric HTML entities.',
+    path: '/tools/html-entity-converter',
+    title: 'HTML Entity Converter - CSR Dev Tools',
+    url: '/tools/html-entity-converter',
+  },
+  {
+    description:
+      'Format and validate YAML online. Configurable indentation, key sorting, and syntax error detection.',
+    path: '/tools/yaml-formatter',
+    title: 'YAML Formatter - CSR Dev Tools',
+    url: '/tools/yaml-formatter',
+  },
 ]
 
 // https://vite.dev/config/

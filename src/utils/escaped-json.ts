@@ -16,12 +16,8 @@ export const parseStringifiedJson = (input: string): string => {
   try {
     unescaped = JSON.parse(`"${input}"`)
   } catch {
-    try {
-      unescaped = JSON.parse(`"${JSON.parse(`"${input}"`)}"`)
-    } catch {
-      throw new Error('Invalid escaped JSON string')
-    }
+    throw new Error('Invalid escaped JSON string')
   }
-  JSON.parse(unescaped)
-  return JSON.stringify(JSON.parse(unescaped), null, 2)
+  const parsed = JSON.parse(unescaped)
+  return JSON.stringify(parsed, null, 2)
 }

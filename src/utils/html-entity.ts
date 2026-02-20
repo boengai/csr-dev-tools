@@ -35,12 +35,8 @@ export const encodeHtmlEntities = (input: string, mode: EncodeMode = 'named'): s
   for (const char of input) {
     if (mode === 'named' && NAMED_ENTITIES[char]) {
       result += NAMED_ENTITIES[char]
-    } else if (char.charCodeAt(0) > 127 || '<>&"\''.includes(char)) {
-      if (mode === 'named' && NAMED_ENTITIES[char]) {
-        result += NAMED_ENTITIES[char]
-      } else {
-        result += `&#${char.charCodeAt(0)};`
-      }
+    } else if ((char.codePointAt(0) ?? 0) > 127 || '<>&"\''.includes(char)) {
+      result += `&#${char.codePointAt(0)};`
     } else {
       result += char
     }

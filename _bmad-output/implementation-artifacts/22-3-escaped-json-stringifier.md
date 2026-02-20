@@ -30,6 +30,9 @@ So that **I can safely embed JSON in contexts that require string escaping**.
 ### Agent Model Used
 claude-opus-4-6 (direct implementation)
 
+### Change Log
+- 2026-02-20: Code review fixes — removed dead double-escape fallback in parseStringifiedJson, eliminated redundant JSON.parse call
+
 ### File List
 - src/utils/escaped-json.ts
 - src/utils/escaped-json.spec.ts
