@@ -190,7 +190,7 @@ No new unit tests required for ARIA attribute additions in a node/vitest environ
 
 ## Senior Developer Review (AI)
 
-**Reviewer:** boengai | **Date:** 2026-02-20 | **Outcome:** Changes Requested → Fixed
+**Reviewer:** csrteam | **Date:** 2026-02-20 | **Outcome:** Changes Requested → Fixed
 
 ### Findings (3 total — 2 HIGH corrected, 1 LOW noted)
 

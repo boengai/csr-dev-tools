@@ -131,7 +131,7 @@ Uses the **bidirectional converter pattern** — two card buttons open the same 
 
 ### Senior Developer Review (AI)
 
-**Reviewer:** boengai | **Date:** 2026-02-20
+**Reviewer:** csrteam | **Date:** 2026-02-20
 
 **Findings Fixed:**
 - **H1:** `getXmlParseError` refactored from browser-only `DOMParser` to `fast-xml-parser` `XMLValidator` — now async, testable in node, with 4 new tests added

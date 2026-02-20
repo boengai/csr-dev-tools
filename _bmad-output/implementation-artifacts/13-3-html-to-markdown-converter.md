@@ -124,7 +124,7 @@ Same bidirectional converter pattern. Uses two different libraries for each dire
 
 ### Senior Developer Review (AI)
 
-**Reviewer:** boengai | **Date:** 2026-02-20
+**Reviewer:** csrteam | **Date:** 2026-02-20
 
 **Findings Fixed:**
 - **H2:** Added `turndown-plugin-gfm` dependency and registered GFM plugin — HTML tables now convert to Markdown tables

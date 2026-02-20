@@ -131,7 +131,7 @@ Identical bidirectional converter pattern as XML↔JSON. Uses `smol-toml` (light
 
 ### Senior Developer Review (AI)
 
-**Reviewer:** boengai | **Date:** 2026-02-20
+**Reviewer:** csrteam | **Date:** 2026-02-20
 
 **Findings Fixed:**
 - **M3:** Story test count corrected from 9 to 11

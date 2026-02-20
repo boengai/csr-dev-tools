@@ -135,7 +135,7 @@ Unique among Epic 12 tools — uses **rendered HTML preview** instead of formatt
 | `vite.config.ts` | MODIFIED |
 
 ## Senior Developer Review (AI)
-**Reviewer:** boengai | **Date:** 2026-02-20 | **Status:** Approved with fixes applied
+**Reviewer:** csrteam | **Date:** 2026-02-20 | **Status:** Approved with fixes applied
 
 ### Findings & Fixes Applied
 | # | Severity | Issue | Resolution |

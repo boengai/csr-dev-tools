@@ -14,13 +14,13 @@ classification:
   complexity: low
   projectContext: brownfield
 date: 2026-02-18
-author: boengai
+author: csrteam
 project_name: csr-dev-tools
 ---
 
 # PRD Expansion — CSR Dev Tools (2026-02-18)
 
-**Author:** boengai
+**Author:** csrteam
 **Date:** 2026-02-18
 **Base PRD:** prd.md (2026-02-11)
 

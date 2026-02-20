@@ -143,11 +143,11 @@ From Story 14.1 (HMAC Generator):
 
 | Date | Change | Author |
 |------|--------|--------|
-| 2026-02-20 | Code review (backfill): Fixed barrel import bypass in AesEncryptDecrypt.tsx (`@/utils/aes` -> `@/utils`). Added missing prerender route for /tools/aes-encrypt-decrypt to vite.config.ts. Noted: AC2 says "tabs" but implementation uses card buttons per AC1 (story wording inconsistency). | boengai |
+| 2026-02-20 | Code review (backfill): Fixed barrel import bypass in AesEncryptDecrypt.tsx (`@/utils/aes` -> `@/utils`). Added missing prerender route for /tools/aes-encrypt-decrypt to vite.config.ts. Noted: AC2 says "tabs" but implementation uses card buttons per AC1 (story wording inconsistency). | csrteam |
 
 ## Senior Developer Review (AI)
 
-**Reviewer:** boengai | **Date:** 2026-02-20 | **Outcome:** Approved with fixes applied
+**Reviewer:** csrteam | **Date:** 2026-02-20 | **Outcome:** Approved with fixes applied
 
 ### AC Verification
 

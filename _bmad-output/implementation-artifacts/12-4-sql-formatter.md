@@ -133,7 +133,7 @@ Format-only tool (no minify mode). Uses `sql-formatter` library for dialect-awar
 | `vite.config.ts` | MODIFIED |
 
 ## Senior Developer Review (AI)
-**Reviewer:** boengai | **Date:** 2026-02-20 | **Status:** Approved with fixes applied
+**Reviewer:** csrteam | **Date:** 2026-02-20 | **Status:** Approved with fixes applied
 
 ### Findings & Fixes Applied
 | # | Severity | Issue | Resolution |

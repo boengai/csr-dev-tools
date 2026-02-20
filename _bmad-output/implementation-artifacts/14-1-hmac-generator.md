@@ -132,11 +132,11 @@ So that **I can verify API signatures and test webhook authentication locally**.
 
 | Date | Change | Author |
 |------|--------|--------|
-| 2026-02-20 | Code review (backfill): Fixed misleading RFC 4231 comment in hmac.spec.ts. Added missing prerender route for /tools/hmac-generator to vite.config.ts. Noted: raw `<input>` for secret key (design choice, not fixed), duplicate bufferToBase64 utility across hmac.ts/aes.ts (acceptable duplication). | boengai |
+| 2026-02-20 | Code review (backfill): Fixed misleading RFC 4231 comment in hmac.spec.ts. Added missing prerender route for /tools/hmac-generator to vite.config.ts. Noted: raw `<input>` for secret key (design choice, not fixed), duplicate bufferToBase64 utility across hmac.ts/aes.ts (acceptable duplication). | csrteam |
 
 ## Senior Developer Review (AI)
 
-**Reviewer:** boengai | **Date:** 2026-02-20 | **Outcome:** Approved with fixes applied
+**Reviewer:** csrteam | **Date:** 2026-02-20 | **Outcome:** Approved with fixes applied
 
 ### AC Verification
 

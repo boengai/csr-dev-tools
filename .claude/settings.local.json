@@ -1,24 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Read",
-      "Write",
-      "Edit",
       "WebFetch",
-      "WebSearch",
-      "Bash(pnpm:*)",
-      "Bash(npx:*)",
-      "Bash(ls:*)",
-      "Bash(cat:*)",
-      "Bash(grep:*)",
-      "Bash(find:*)",
-      "Bash(node:*)",
-      "Bash(git:*)",
-      "Bash(head:*)",
-      "Bash(tail:*)",
-      "Bash(wc:*)",
-      "Bash(sed:*)",
-      "Bash(mkdir:*)"
+      "WebSearch"
     ]
   }
 }

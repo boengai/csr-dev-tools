@@ -144,7 +144,7 @@ From Story 16.3 (Lorem Ipsum Generator):
 
 ### Senior Developer Review (AI)
 
-**Reviewer:** boengai | **Date:** 2026-02-20 | **Status:** Approved
+**Reviewer:** csrteam | **Date:** 2026-02-20 | **Status:** Approved
 
 **Findings Fixed:**
 - [M3] `escapeJavaScript` now handles `\b` (backspace, via `\x08`), `\f` (form feed), `\v` (vertical tab)

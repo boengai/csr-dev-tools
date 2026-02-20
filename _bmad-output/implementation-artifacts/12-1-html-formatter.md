@@ -32,7 +32,7 @@ epic: 12
 Follow existing tool patterns (e.g., RegexTester, JsonFormatter).
 
 ## Senior Developer Review (AI)
-**Reviewer:** boengai | **Date:** 2026-02-20 | **Status:** Approved with fixes applied
+**Reviewer:** csrteam | **Date:** 2026-02-20 | **Status:** Approved with fixes applied
 
 ### Findings & Fixes Applied
 | # | Severity | Issue | Resolution |

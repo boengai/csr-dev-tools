@@ -143,7 +143,7 @@ From Story 16.1 (Text Case Converter):
 
 ### Senior Developer Review (AI)
 
-**Reviewer:** boengai | **Date:** 2026-02-20 | **Status:** Approved
+**Reviewer:** csrteam | **Date:** 2026-02-20 | **Status:** Approved
 
 **Findings Fixed:**
 - [M1] `formatTime(0)` now returns `'0 min'` instead of `'< 1 min'` — satisfies AC4 "all stats show 0"

@@ -130,7 +130,7 @@ So that **I can quickly transform variable names and text for different coding c
 
 ### Senior Developer Review (AI)
 
-**Reviewer:** boengai | **Date:** 2026-02-20 | **Status:** Approved
+**Reviewer:** csrteam | **Date:** 2026-02-20 | **Status:** Approved
 
 **Findings Fixed:**
 - [M5] Added digit-boundary tests for `splitWords` letter-to-digit and digit-to-letter regex handling (`text-case.spec.ts`)
