@@ -313,6 +313,13 @@ const toolRoutes = [
     url: '/tools/text-sort-dedupe',
   },
   {
+    description:
+      'Convert any file to a data URI for embedding in HTML/CSS. Decode data URIs back to files. Supports images, fonts, SVGs, and more. Free online data URI tool.',
+    path: '/tools/data-uri-generator',
+    title: 'Data URI Generator - CSR Dev Tools',
+    url: '/tools/data-uri-generator',
+  },
+  {
     description: 'Convert between .env, JSON, and YAML formats. Free online environment file converter.',
     path: '/tools/env-file-converter',
     title: 'ENV File Converter - CSR Dev Tools',

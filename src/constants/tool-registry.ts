@@ -1136,6 +1136,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Data',
     component: lazy(() =>
+      import('@/components/feature/data/DataUriGenerator').then(
+        ({ DataUriGenerator }: { DataUriGenerator: ComponentType }) => ({
+          default: DataUriGenerator,
+        }),
+      ),
+    ),
+    description: 'Convert files to data URIs and decode data URIs back to files.',
+    emoji: '🔗',
+    key: 'data-uri-generator',
+    name: 'Data URI Generator',
+    routePath: '/tools/data-uri-generator',
+    seo: {
+      description:
+        'Convert any file to a data URI for embedding in HTML/CSS. Decode data URIs back to files. Supports images, fonts, SVGs, and more. Free online data URI tool.',
+      title: 'Data URI Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Data',
+    component: lazy(() =>
       import('@/components/feature/data/EnvFileConverter').then(
         ({ EnvFileConverter }: { EnvFileConverter: ComponentType }) => ({
           default: EnvFileConverter,

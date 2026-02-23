@@ -1,3 +1,4 @@
+export * from './DataUriGenerator'
 export * from './EnvFileConverter'
 export * from './EscapedJsonStringifier'
 export * from './HtmlEntityConverter'
