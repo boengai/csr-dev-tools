@@ -846,18 +846,18 @@ type ToolRegistryEntry = {
 
 ### References
 
-- **Architecture Document:** `/Users/boe-100x/Documents/projects/labs/boengai/csr-dev-tools/_bmad-output/planning-artifacts/architecture.md`
+- **Architecture Document:** `{project-root}/_bmad-output/planning-artifacts/architecture.md`
   - Section: "Communication Patterns > Zustand Store Pattern" (exact store pattern)
   - Section: "Structure Patterns > New Platform Component Location" (file locations)
   - Section: "Architectural Boundaries > Component Boundaries" (sidebar in layout)
   - Section: "Architectural Boundaries > State Boundaries" (useSidebarStore scope)
-- **UX Design Specification:** `/Users/boe-100x/Documents/projects/labs/boengai/csr-dev-tools/_bmad-output/planning-artifacts/ux-design-specification.md`
+- **UX Design Specification:** `{project-root}/_bmad-output/planning-artifacts/ux-design-specification.md`
   - Section: "Design Direction Decision > Implementation Approach" (sidebar layout)
   - Section: "Component Strategy > Custom Components > Sidebar System" (component specs)
   - Section: "UX Consistency Patterns > Navigation Patterns" (animation specs)
   - Section: "User Journey Flows > Journey 4: Tool Discovery via Sidebar" (user flow)
-- **Project Context:** `/Users/boe-100x/Documents/projects/labs/boengai/csr-dev-tools/_bmad-output/project-context.md` (53 rules)
-- **Epics Document:** `/Users/boe-100x/Documents/projects/labs/boengai/csr-dev-tools/_bmad-output/planning-artifacts/epics.md`
+- **Project Context:** `{project-root}/_bmad-output/project-context.md` (53 rules)
+- **Epics Document:** `{project-root}/_bmad-output/planning-artifacts/epics.md`
   - Section: "Epic 1 > Story 1.3" (acceptance criteria)
 - **Existing Pattern References:**
   - Zustand store pattern: `src/hooks/state/useToast.ts`
