@@ -41,6 +41,7 @@ export type ToolRegistryKey =
   | 'base64-to-image'
   | 'box-shadow-generator'
   | 'color-converter'
+  | 'color-palette-generator'
   | 'cron-expression-parser'
   | 'crontab-generator'
   | 'css-animation-builder'

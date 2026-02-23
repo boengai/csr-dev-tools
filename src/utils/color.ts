@@ -4,7 +4,7 @@ import type { ColorFormat, HSLColor, LABColor, LCHColor, OKLCHColor, RGBColor } 
 
 // Utility functions
 const clamp = (value: number, min: number, max: number): number => Math.min(Math.max(value, min), max)
-const normalizeHue = (hue: number): number => ((hue % 360) + 360) % 360
+export const normalizeHue = (hue: number): number => ((hue % 360) + 360) % 360
 const srgbToLinear = (c: number): number => (c <= 0.04045 ? c / 12.92 : Math.pow((c + 0.055) / 1.055, 2.4))
 const linearToSrgb = (c: number): number => {
   const abs_c = Math.abs(c)
@@ -555,6 +555,8 @@ const formatLch = (source: LCHColor): string => {
 const formatOklch = (source: OKLCHColor): string => {
   return `oklch(${source.l.toFixed(4)} ${source.c.toFixed(4)} ${source.h.toFixed(2)})`
 }
+
+export const hexToHsl = (hex: string): HSLColor => rgbToHsl(hexToRgb(parseHex(hex)))
 
 // Main conversion function that takes any color format and converts to all others
 export const convertColor = (source: string, sourceFormat: ColorFormat): Record<ColorFormat, string> => {

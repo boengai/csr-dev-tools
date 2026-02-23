@@ -52,6 +52,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Generate complementary, analogous, triadic, and monochromatic color palettes. Free online color palette generator.',
+    path: '/tools/color-palette-generator',
+    title: 'Color Palette Generator - CSR Dev Tools',
+    url: '/tools/color-palette-generator',
+  },
+  {
+    description:
       'Generate MD5, SHA-1, SHA-256, and SHA-512 hash values from text online. Compute checksums instantly in your browser — no server processing.',
     path: '/tools/hash-generator',
     title: 'Hash Generator - CSR Dev Tools',

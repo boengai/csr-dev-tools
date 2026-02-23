@@ -221,6 +221,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Color',
+    component: lazy(() =>
+      import('@/components/feature/color/ColorPaletteGenerator').then(
+        ({ ColorPaletteGenerator }: { ColorPaletteGenerator: ComponentType }) => ({
+          default: ColorPaletteGenerator,
+        }),
+      ),
+    ),
+    description: 'Generate harmonious color palettes from a base color using color theory.',
+    emoji: '🎨',
+    key: 'color-palette-generator',
+    name: 'Color Palette Generator',
+    routePath: '/tools/color-palette-generator',
+    seo: {
+      description:
+        'Generate complementary, analogous, triadic, and monochromatic color palettes. Free online color palette generator.',
+      title: 'Color Palette Generator - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Generator',
     component: lazy(() =>
       import('@/components/feature/generator/HashGenerator').then(
