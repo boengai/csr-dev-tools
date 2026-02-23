@@ -677,6 +677,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Security',
+    component: lazy(() =>
+      import('@/components/feature/security/SshKeyFingerprint').then(
+        ({ SshKeyFingerprint }: { SshKeyFingerprint: ComponentType }) => ({
+          default: SshKeyFingerprint,
+        }),
+      ),
+    ),
+    description: 'Paste an SSH public key to view its SHA256 and MD5 fingerprints, key type, and bit size.',
+    emoji: '🔑',
+    key: 'ssh-key-fingerprint',
+    name: 'SSH Key Fingerprint',
+    routePath: '/tools/ssh-key-fingerprint',
+    seo: {
+      description:
+        'View SSH public key fingerprints in SHA256 and MD5 formats. Supports ssh-rsa, ssh-ed25519, and ECDSA keys. Extract key type, bit size, and comment. Free online SSH key tool.',
+      title: 'SSH Key Fingerprint - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Text',
     component: lazy(() =>
       import('@/components/feature/text/StringEscapeUnescape').then(
@@ -1241,6 +1261,7 @@ export const CATEGORY_ORDER: Array<ToolCategory> = [
   'Encoding',
   'Generator',
   'Image',
+  'Security',
   'Text',
   'Time',
   'Unit',

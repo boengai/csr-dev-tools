@@ -307,6 +307,13 @@ const toolRoutes = [
   },
   {
     description:
+      'View SSH public key fingerprints in SHA256 and MD5 formats. Supports ssh-rsa, ssh-ed25519, and ECDSA keys. Extract key type, bit size, and comment. Free online SSH key tool.',
+    path: '/tools/ssh-key-fingerprint',
+    title: 'SSH Key Fingerprint - CSR Dev Tools',
+    url: '/tools/ssh-key-fingerprint',
+  },
+  {
+    description:
       'Sort lines alphabetically, numerically, or by length. Remove duplicates, empty lines, and trim whitespace.',
     path: '/tools/text-sort-dedupe',
     title: 'Text Sort & Dedupe - CSR Dev Tools',
