@@ -10,6 +10,13 @@ import { prerender } from './vite-plugins/prerender'
 const toolRoutes = [
   {
     description:
+      'Calculate image and video dimensions based on aspect ratio. Free online aspect ratio calculator.',
+    path: '/tools/aspect-ratio-calculator',
+    title: 'Aspect Ratio Calculator - CSR Dev Tools',
+    url: '/tools/aspect-ratio-calculator',
+  },
+  {
+    description:
       'Remove image backgrounds instantly using AI running in your browser. No uploads, no API calls — fully private and free.',
     path: '/tools/background-remover',
     title: 'Background Remover - CSR Dev Tools',

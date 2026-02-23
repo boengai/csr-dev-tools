@@ -25,6 +25,25 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Unit',
+    component: lazy(() =>
+      import('@/components/feature/unit/AspectRatioCalculator').then(
+        ({ AspectRatioCalculator }: { AspectRatioCalculator: ComponentType }) => ({
+          default: AspectRatioCalculator,
+        }),
+      ),
+    ),
+    description: 'Calculate dimensions while preserving aspect ratios. Convert between common ratios.',
+    emoji: '📐',
+    key: 'aspect-ratio-calculator',
+    name: 'Aspect Ratio Calculator',
+    routePath: '/tools/aspect-ratio-calculator',
+    seo: {
+      description: 'Calculate image and video dimensions based on aspect ratio. Free online aspect ratio calculator.',
+      title: 'Aspect Ratio Calculator - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Image',
     component: lazy(() =>
       import('@/components/feature/image/BackgroundRemover').then(

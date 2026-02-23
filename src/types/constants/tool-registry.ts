@@ -35,6 +35,7 @@ export type ToolRegistryEntry = {
 
 export type ToolRegistryKey =
   | 'aes-encrypt-decrypt'
+  | 'aspect-ratio-calculator'
   | 'background-remover'
   | 'base64-encoder'
   | 'base64-to-image'
