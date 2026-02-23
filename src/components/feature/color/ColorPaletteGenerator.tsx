@@ -124,7 +124,7 @@ export const ColorPaletteGenerator = () => {
                 type="button"
               >
                 <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/40" />
-                <div className="relative z-10 hidden flex-col items-center gap-0.5 text-center group-hover:flex group-focus-within:flex">
+                <div className="relative z-10 hidden flex-col items-center gap-0.5 text-center group-focus-within:flex group-hover:flex">
                   <span className="rounded bg-black/60 px-1.5 py-0.5 text-body-xs font-medium text-white">
                     {color.hex}
                   </span>

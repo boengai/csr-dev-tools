@@ -78,6 +78,7 @@ export type ToolRegistryKey =
   | 'number-base-converter'
   | 'og-preview'
   | 'password-generator'
+  | 'placeholder-image-generator'
   | 'px-to-rem'
   | 'qr-code-generator'
   | 'regex-tester'

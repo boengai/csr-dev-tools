@@ -211,7 +211,7 @@ development_status:
   epic-23: in-progress
   23-1-aspect-ratio-calculator: done
   23-2-color-palette-generator: done
-  23-3-placeholder-image-generator: backlog
+  23-3-placeholder-image-generator: done
   23-4-data-uri-generator: backlog
   epic-23-retrospective: optional
 

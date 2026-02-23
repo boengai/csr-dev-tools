@@ -338,6 +338,13 @@ const toolRoutes = [
     title: 'YAML Formatter - CSR Dev Tools',
     url: '/tools/yaml-formatter',
   },
+  {
+    description:
+      'Generate customizable placeholder images with dimensions, colors, and text. Download as PNG or SVG. Free online placeholder image generator.',
+    path: '/tools/placeholder-image-generator',
+    title: 'Placeholder Image Generator - CSR Dev Tools',
+    url: '/tools/placeholder-image-generator',
+  },
 ]
 
 // https://vite.dev/config/

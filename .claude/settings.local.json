@@ -4,11 +4,11 @@
       "WebFetch",
       "WebSearch",
       "Bash(pnpm lint:*)",
-      "Bash(pnpm format:check:*)",
+      "Bash(pnpm format:*)",
       "Bash(pnpm test:*)",
       "Bash(pnpm exec oxfmt:*)",
       "Bash(pnpm build:*)",
-      "Bash(pnpm test:e2e:*)"
+      "Bash(pnpm exec playwright test:*)"
     ]
   }
 }

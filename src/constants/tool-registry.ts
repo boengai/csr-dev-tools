@@ -1191,6 +1191,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       title: 'HTML Entity Converter - CSR Dev Tools',
     },
   },
+  {
+    category: 'Image',
+    component: lazy(() =>
+      import('@/components/feature/image/PlaceholderImageGenerator').then(
+        ({ PlaceholderImageGenerator }: { PlaceholderImageGenerator: ComponentType }) => ({
+          default: PlaceholderImageGenerator,
+        }),
+      ),
+    ),
+    description: 'Generate placeholder images with custom dimensions, colors, and text.',
+    emoji: '🖼️',
+    key: 'placeholder-image-generator',
+    name: 'Placeholder Image Generator',
+    routePath: '/tools/placeholder-image-generator',
+    seo: {
+      description:
+        'Generate customizable placeholder images with dimensions, colors, and text. Download as PNG or SVG. Free online placeholder image generator.',
+      title: 'Placeholder Image Generator - CSR Dev Tools',
+    },
+  },
 ]
 
 export const CATEGORY_ORDER: Array<ToolCategory> = [
