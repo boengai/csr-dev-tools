@@ -32,7 +32,7 @@ const COST_OPTIONS = Array.from({ length: 28 }, (_, i) => {
 const INVALID_HASH_MESSAGE =
   'Invalid bcrypt hash. Expected format: $2a$/$2b$/$2y$ followed by cost and 53 characters (e.g., $2b$10$...)'
 
-const HashTab = () => {
+const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => void }) => {
   const [password, setPassword] = useState('')
   const [rounds, setRounds] = useState('10')
   const [hashing, setHashing] = useState(false)
@@ -62,6 +62,7 @@ const HashTab = () => {
 
   const handleHash = useCallback(async () => {
     setHashing(true)
+    onProcessingChange(true)
     setResult(null)
     setHashBreakdown(null)
     startTimeRef.current = performance.now()
@@ -83,12 +84,14 @@ const HashTab = () => {
     } finally {
       clearTimer()
       setHashing(false)
+      onProcessingChange(false)
     }
-  }, [password, rounds, clearTimer, toast])
+  }, [password, rounds, clearTimer, toast, onProcessingChange])
 
   return (
     <div className="flex w-full flex-col gap-4">
       <TextInput
+        disabled={hashing}
         name="hash-password"
         onChange={handlePasswordChange}
         onEnter={hashing ? undefined : handleHash}
@@ -104,6 +107,7 @@ const HashTab = () => {
       )}
 
       <SelectInput
+        disabled={hashing}
         name="cost-factor"
         onChange={setRounds}
         options={COST_OPTIONS}
@@ -151,7 +155,7 @@ const HashTab = () => {
   )
 }
 
-const VerifyTab = () => {
+const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => void }) => {
   const [password, setPassword] = useState('')
   const [hashInput, setHashInput] = useState('')
   const [verifying, setVerifying] = useState(false)
@@ -190,6 +194,7 @@ const VerifyTab = () => {
     }
 
     setVerifying(true)
+    onProcessingChange(true)
     setResult(null)
     startTimeRef.current = performance.now()
     setElapsedDisplay(0)
@@ -209,12 +214,14 @@ const VerifyTab = () => {
     } finally {
       clearTimer()
       setVerifying(false)
+      onProcessingChange(false)
     }
-  }, [password, hashInput, clearTimer, toast])
+  }, [password, hashInput, clearTimer, toast, onProcessingChange])
 
   return (
     <div className="flex w-full flex-col gap-4">
       <TextInput
+        disabled={verifying}
         name="verify-password"
         onChange={handlePasswordChange}
         onEnter={verifying ? undefined : handleVerify}
@@ -225,6 +232,7 @@ const VerifyTab = () => {
 
       <div className="[&_textarea]:font-mono">
         <TextAreaInput
+          disabled={verifying}
           name="verify-hash"
           onChange={handleHashChange}
           placeholder="Enter bcrypt hash ($2b$...)"
@@ -267,14 +275,24 @@ const VerifyTab = () => {
 }
 
 export const BcryptHasher = (_props: ToolComponentProps) => {
+  const [processing, setProcessing] = useState(false)
+
   return (
     <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
       <Tabs
         items={[
-          { content: <HashTab />, trigger: <button>Hash</button>, value: 'hash' },
-          { content: <VerifyTab />, trigger: <button>Verify</button>, value: 'verify' },
+          {
+            content: <HashTab onProcessingChange={setProcessing} />,
+            trigger: <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>Hash</button>,
+            value: 'hash',
+          },
+          {
+            content: <VerifyTab onProcessingChange={setProcessing} />,
+            trigger: <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>Verify</button>,
+            value: 'verify',
+          },
         ]}
       />
     </div>
