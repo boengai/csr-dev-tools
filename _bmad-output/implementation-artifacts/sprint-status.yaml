@@ -220,7 +220,7 @@ development_status:
   24-1-ssh-key-fingerprint: done
   24-2-certificate-decoder: done
   24-3-bcrypt-hasher: done
-  24-4-chmod-calculator: backlog
+  24-4-chmod-calculator: done
   24-5-rsa-key-generator: backlog
   epic-24-retrospective: optional
 

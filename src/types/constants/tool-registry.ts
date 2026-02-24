@@ -43,6 +43,7 @@ export type ToolRegistryKey =
   | 'bcrypt-hasher'
   | 'box-shadow-generator'
   | 'certificate-decoder'
+  | 'chmod-calculator'
   | 'color-converter'
   | 'color-palette-generator'
   | 'cron-expression-parser'

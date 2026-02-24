@@ -720,6 +720,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Security',
     component: lazy(() =>
+      import('@/components/feature/security/ChmodCalculator').then(
+        ({ ChmodCalculator }: { ChmodCalculator: ComponentType }) => ({
+          default: ChmodCalculator,
+        }),
+      ),
+    ),
+    description:
+      'Convert between symbolic (rwxr-xr-x), octal (755), and visual chmod notations. Toggle permissions with an interactive checkbox grid and common presets.',
+    emoji: '\u{1F6E1}\uFE0F',
+    key: 'chmod-calculator',
+    name: 'Chmod Calculator',
+    routePath: '/tools/chmod-calculator',
+    seo: {
+      description:
+        'Calculate Unix file permissions online. Convert between octal (755), symbolic (rwxr-xr-x), and visual checkbox notation. Interactive chmod calculator with common presets. Free client-side tool.',
+      title: 'Chmod Calculator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Security',
+    component: lazy(() =>
       import('@/components/feature/security/SshKeyFingerprint').then(
         ({ SshKeyFingerprint }: { SshKeyFingerprint: ComponentType }) => ({
           default: SshKeyFingerprint,

@@ -59,6 +59,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Calculate Unix file permissions online. Convert between octal (755), symbolic (rwxr-xr-x), and visual checkbox notation. Interactive chmod calculator with common presets. Free client-side tool.',
+    path: '/tools/chmod-calculator',
+    title: 'Chmod Calculator - CSR Dev Tools',
+    url: '/tools/chmod-calculator',
+  },
+  {
+    description:
       'Convert colors between HEX, RGB, HSL, OKLCH, LAB, and LCH formats online. Free browser-based color converter.',
     path: '/tools/color-converter',
     title: 'Color Converter - CSR Dev Tools',
