@@ -38,6 +38,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Hash passwords with bcrypt online. Generate bcrypt hashes with configurable cost factor, verify passwords against hashes, view hash breakdown. Free client-side bcrypt tool.',
+    path: '/tools/bcrypt-hasher',
+    title: 'Bcrypt Hasher - CSR Dev Tools',
+    url: '/tools/bcrypt-hasher',
+  },
+  {
+    description:
       'Generate CSS box-shadow values visually with a live preview. Adjust offset, blur, spread, color, and opacity — copy the CSS directly into your stylesheet.',
     path: '/tools/box-shadow-generator',
     title: 'Box Shadow Generator - CSR Dev Tools',

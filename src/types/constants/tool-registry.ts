@@ -40,6 +40,7 @@ export type ToolRegistryKey =
   | 'background-remover'
   | 'base64-encoder'
   | 'base64-to-image'
+  | 'bcrypt-hasher'
   | 'box-shadow-generator'
   | 'certificate-decoder'
   | 'color-converter'

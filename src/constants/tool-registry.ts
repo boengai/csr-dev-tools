@@ -679,6 +679,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Security',
     component: lazy(() =>
+      import('@/components/feature/security/BcryptHasher').then(
+        ({ BcryptHasher }: { BcryptHasher: ComponentType }) => ({
+          default: BcryptHasher,
+        }),
+      ),
+    ),
+    description:
+      'Hash passwords with bcrypt and verify plaintext against bcrypt hashes. Adjust cost factor, view hash breakdown, and track elapsed time.',
+    emoji: '🔒',
+    key: 'bcrypt-hasher',
+    name: 'Bcrypt Hasher',
+    routePath: '/tools/bcrypt-hasher',
+    seo: {
+      description:
+        'Hash passwords with bcrypt online. Generate bcrypt hashes with configurable cost factor, verify passwords against hashes, view hash breakdown. Free client-side bcrypt tool.',
+      title: 'Bcrypt Hasher - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Security',
+    component: lazy(() =>
       import('@/components/feature/security/CertificateDecoder').then(
         ({ CertificateDecoder }: { CertificateDecoder: ComponentType }) => ({
           default: CertificateDecoder,
