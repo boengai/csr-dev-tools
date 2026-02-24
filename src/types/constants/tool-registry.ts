@@ -41,6 +41,7 @@ export type ToolRegistryKey =
   | 'base64-encoder'
   | 'base64-to-image'
   | 'box-shadow-generator'
+  | 'certificate-decoder'
   | 'color-converter'
   | 'color-palette-generator'
   | 'cron-expression-parser'

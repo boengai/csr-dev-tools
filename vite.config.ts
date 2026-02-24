@@ -45,6 +45,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Decode PEM-encoded X.509 certificates online. View subject, issuer, validity dates, public key, signature algorithm, SAN, and extensions. Free client-side SSL/TLS certificate inspector.',
+    path: '/tools/certificate-decoder',
+    title: 'Certificate Decoder - CSR Dev Tools',
+    url: '/tools/certificate-decoder',
+  },
+  {
+    description:
       'Convert colors between HEX, RGB, HSL, OKLCH, LAB, and LCH formats online. Free browser-based color converter.',
     path: '/tools/color-converter',
     title: 'Color Converter - CSR Dev Tools',

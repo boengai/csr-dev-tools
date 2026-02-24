@@ -679,6 +679,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Security',
     component: lazy(() =>
+      import('@/components/feature/security/CertificateDecoder').then(
+        ({ CertificateDecoder }: { CertificateDecoder: ComponentType }) => ({
+          default: CertificateDecoder,
+        }),
+      ),
+    ),
+    description: 'Paste a PEM-encoded X.509 certificate to view its subject, issuer, validity, extensions, and more.',
+    emoji: '📜',
+    key: 'certificate-decoder',
+    name: 'Certificate Decoder',
+    routePath: '/tools/certificate-decoder',
+    seo: {
+      description:
+        'Decode PEM-encoded X.509 certificates online. View subject, issuer, validity dates, public key, signature algorithm, SAN, and extensions. Free client-side SSL/TLS certificate inspector.',
+      title: 'Certificate Decoder - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Security',
+    component: lazy(() =>
       import('@/components/feature/security/SshKeyFingerprint').then(
         ({ SshKeyFingerprint }: { SshKeyFingerprint: ComponentType }) => ({
           default: SshKeyFingerprint,

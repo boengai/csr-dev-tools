@@ -218,7 +218,7 @@ development_status:
   # Epic 24: Security & Crypto Tools
   epic-24: in-progress
   24-1-ssh-key-fingerprint: done
-  24-2-certificate-decoder: backlog
+  24-2-certificate-decoder: done
   24-3-bcrypt-hasher: backlog
   24-4-chmod-calculator: backlog
   24-5-rsa-key-generator: backlog
