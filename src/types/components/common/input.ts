@@ -17,7 +17,7 @@ export type SelectInputProps = Omit<BaseInputProps, 'onEnter'> & {
 }
 
 export type TextAreaInputProps = BaseInputProps &
-  Pick<TextareaHTMLAttributes<HTMLTextAreaElement>, 'autoCorrect' | 'rows'>
+  Pick<TextareaHTMLAttributes<HTMLTextAreaElement>, 'autoCorrect' | 'readOnly' | 'rows'>
 
 export type TextInputProps = BaseInputProps &
   Pick<InputHTMLAttributes<HTMLTextAreaElement>, 'autoCorrect' | 'inputMode'> & {

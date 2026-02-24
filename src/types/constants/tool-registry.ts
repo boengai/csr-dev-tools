@@ -87,6 +87,7 @@ export type ToolRegistryKey =
   | 'px-to-rem'
   | 'qr-code-generator'
   | 'regex-tester'
+  | 'rsa-key-generator'
   | 'sql-formatter'
   | 'ssh-key-fingerprint'
   | 'string-escape-unescape'

@@ -741,6 +741,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Security',
     component: lazy(() =>
+      import('@/components/feature/security/RsaKeyGenerator').then(
+        ({ RsaKeyGenerator }: { RsaKeyGenerator: ComponentType }) => ({
+          default: RsaKeyGenerator,
+        }),
+      ),
+    ),
+    description:
+      'Generate RSA key pairs entirely in your browser using Web Crypto API. Download public and private keys in PEM format. Keys never leave your browser.',
+    emoji: '🔐',
+    key: 'rsa-key-generator',
+    name: 'RSA Key Generator',
+    routePath: '/tools/rsa-key-generator',
+    seo: {
+      description:
+        'Generate RSA 2048 or 4096-bit key pairs online. Download public and private keys in PEM format. 100% client-side — keys never leave your browser. Free RSA key generator.',
+      title: 'RSA Key Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Security',
+    component: lazy(() =>
       import('@/components/feature/security/SshKeyFingerprint').then(
         ({ SshKeyFingerprint }: { SshKeyFingerprint: ComponentType }) => ({
           default: SshKeyFingerprint,

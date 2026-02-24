@@ -221,7 +221,7 @@ development_status:
   24-2-certificate-decoder: done
   24-3-bcrypt-hasher: done
   24-4-chmod-calculator: done
-  24-5-rsa-key-generator: backlog
+  24-5-rsa-key-generator: done
   epic-24-retrospective: optional
 
   # Epic 25: Code & Schema Tools

@@ -176,6 +176,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Generate RSA 2048 or 4096-bit key pairs online. Download public and private keys in PEM format. 100% client-side — keys never leave your browser. Free RSA key generator.',
+    path: '/tools/rsa-key-generator',
+    title: 'RSA Key Generator - CSR Dev Tools',
+    url: '/tools/rsa-key-generator',
+  },
+  {
+    description:
       'Compare two text blocks and see line-by-line differences highlighted online. Spot changes between versions of code or text instantly in your browser.',
     path: '/tools/text-diff-checker',
     title: 'Text Diff Checker - CSR Dev Tools',
