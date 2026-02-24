@@ -58,6 +58,7 @@ export type ToolRegistryKey =
   | 'env-file-converter'
   | 'escaped-json-stringifier'
   | 'favicon-generator'
+  | 'graphql-schema-viewer'
   | 'hash-generator'
   | 'hmac-generator'
   | 'html-entity-converter'

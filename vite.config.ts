@@ -80,6 +80,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Explore GraphQL schemas online. Paste SDL to browse types, fields, arguments, and relationships. Filter and navigate type definitions. 100% client-side GraphQL schema browser.',
+    path: '/tools/graphql-schema-viewer',
+    title: 'GraphQL Schema Viewer - CSR Dev Tools',
+    url: '/tools/graphql-schema-viewer',
+  },
+  {
+    description:
       'Generate MD5, SHA-1, SHA-256, and SHA-512 hash values from text online. Compute checksums instantly in your browser — no server processing.',
     path: '/tools/hash-generator',
     title: 'Hash Generator - CSR Dev Tools',

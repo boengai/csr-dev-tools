@@ -1,4 +1,5 @@
 export { CssFormatter } from './CssFormatter'
+export { GraphqlSchemaViewer } from './GraphqlSchemaViewer'
 export { HtmlFormatter } from './HtmlFormatter'
 export { JavaScriptMinifier } from './JavaScriptMinifier'
 export { JsonSchemaValidator } from './JsonSchemaValidator'

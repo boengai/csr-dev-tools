@@ -261,6 +261,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/GraphqlSchemaViewer').then(
+        ({ GraphqlSchemaViewer }: { GraphqlSchemaViewer: ComponentType }) => ({
+          default: GraphqlSchemaViewer,
+        }),
+      ),
+    ),
+    description:
+      'Paste a GraphQL schema (SDL) and browse its types, fields, arguments, and relationships. Explore Object, Input, Enum, Interface, Union, and Scalar types with clickable cross-references.',
+    emoji: '📊',
+    key: 'graphql-schema-viewer',
+    name: 'GraphQL Schema Viewer',
+    routePath: '/tools/graphql-schema-viewer',
+    seo: {
+      description:
+        'Explore GraphQL schemas online. Paste SDL to browse types, fields, arguments, and relationships. Filter and navigate type definitions. 100% client-side GraphQL schema browser.',
+      title: 'GraphQL Schema Viewer - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Generator',
     component: lazy(() =>
       import('@/components/feature/generator/HmacGenerator').then(

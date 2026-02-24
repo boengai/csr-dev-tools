@@ -33,6 +33,7 @@
     "diff": "8.0.3",
     "dompurify": "3.3.1",
     "fast-xml-parser": "5.3.6",
+    "graphql": "16.13.0",
     "js-beautify": "1.15.4",
     "js-md5": "0.8.3",
     "jszip": "3.10.1",

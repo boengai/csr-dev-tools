@@ -225,8 +225,8 @@ development_status:
   epic-24-retrospective: done
 
   # Epic 25: Code & Schema Tools
-  epic-25: backlog
-  25-1-graphql-schema-viewer: backlog
+  epic-25: in-progress
+  25-1-graphql-schema-viewer: done
   25-2-protobuf-to-json: backlog
   25-3-typescript-playground: backlog
   25-4-jsonpath-evaluator: backlog
