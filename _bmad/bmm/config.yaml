@@ -3,7 +3,7 @@
 # Version: 6.0.2
 # Date: 2026-02-23T04:57:43.866Z
 
-project_name: bmadv5
+project_name: csr-dev-tools
 user_skill_level: intermediate
 planning_artifacts: "{project-root}/_bmad-output/planning-artifacts"
 implementation_artifacts: "{project-root}/_bmad-output/implementation-artifacts"
