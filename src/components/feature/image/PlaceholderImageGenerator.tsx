@@ -135,11 +135,23 @@ export const PlaceholderImageGenerator = () => {
     const w = Math.round(Number(width))
     const h = Math.round(Number(height))
     if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) {
-      toast({ action: 'add', item: { label: 'Enter valid dimensions (e.g., 800 x 600)', type: 'error' } })
+      toast({
+        action: 'add',
+        item: {
+          label: 'Enter valid dimensions (e.g., 800 x 600)',
+          type: 'error',
+        },
+      })
       return null
     }
     if (w > MAX_DIMENSION || h > MAX_DIMENSION) {
-      toast({ action: 'add', item: { label: `Maximum dimension is ${MAX_DIMENSION}x${MAX_DIMENSION}`, type: 'error' } })
+      toast({
+        action: 'add',
+        item: {
+          label: `Maximum dimension is ${MAX_DIMENSION}x${MAX_DIMENSION}`,
+          type: 'error',
+        },
+      })
       return null
     }
     return { bgColor, height: h, text, textColor, width: w }
@@ -154,10 +166,16 @@ export const PlaceholderImageGenerator = () => {
       downloadBlob(blob, `placeholder-${opts.width}x${opts.height}.png`)
       toast({
         action: 'add',
-        item: { label: `Downloaded placeholder-${opts.width}x${opts.height}.png`, type: 'success' },
+        item: {
+          label: `Downloaded placeholder-${opts.width}x${opts.height}.png`,
+          type: 'success',
+        },
       })
     } catch {
-      toast({ action: 'add', item: { label: 'Failed to generate PNG', type: 'error' } })
+      toast({
+        action: 'add',
+        item: { label: 'Failed to generate PNG', type: 'error' },
+      })
     }
   }
 
@@ -168,7 +186,10 @@ export const PlaceholderImageGenerator = () => {
     downloadSvg(svg, `placeholder-${opts.width}x${opts.height}.svg`)
     toast({
       action: 'add',
-      item: { label: `Downloaded placeholder-${opts.width}x${opts.height}.svg`, type: 'success' },
+      item: {
+        label: `Downloaded placeholder-${opts.width}x${opts.height}.svg`,
+        type: 'success',
+      },
     })
   }
 
@@ -262,27 +283,6 @@ export const PlaceholderImageGenerator = () => {
             type="text"
             value={text}
           />
-
-          <div className="flex gap-2">
-            <Button
-              aria-label="Download PNG image"
-              block
-              icon={<DownloadIcon />}
-              onClick={handleDownloadPng}
-              variant="primary"
-            >
-              Download PNG
-            </Button>
-            <Button
-              aria-label="Download SVG image"
-              block
-              icon={<DownloadIcon />}
-              onClick={handleDownloadSvg}
-              variant="default"
-            >
-              Download SVG
-            </Button>
-          </div>
         </div>
 
         <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
@@ -291,13 +291,22 @@ export const PlaceholderImageGenerator = () => {
           {previewUri ? (
             <img
               alt={`Placeholder image preview: ${displayText}, background ${bgColor}, text ${textColor}`}
-              className="max-h-full max-w-full rounded-lg border border-gray-700 object-contain"
+              className="max-h-full max-w-full border border-gray-700 object-contain"
               src={previewUri}
             />
           ) : (
             <p className="text-body-sm text-gray-500">Enter dimensions to preview</p>
           )}
         </div>
+      </div>
+
+      <div className="flex w-full gap-8 [&>button]:w-[calc(50%-1rem)]">
+        <Button aria-label="Download PNG image" icon={<DownloadIcon />} onClick={handleDownloadPng} variant="primary">
+          Download PNG
+        </Button>
+        <Button aria-label="Download SVG image" icon={<DownloadIcon />} onClick={handleDownloadSvg} variant="default">
+          Download SVG
+        </Button>
       </div>
     </div>
   )
