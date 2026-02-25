@@ -235,6 +235,6 @@ development_status:
   # Epic 26: Time & Diagram Tools
   epic-26: in-progress
   26-1-timezone-converter: done
-  26-2-mermaid-renderer: backlog
+  26-2-mermaid-renderer: done
   26-3-ip-subnet-calculator: backlog
   epic-26-retrospective: optional

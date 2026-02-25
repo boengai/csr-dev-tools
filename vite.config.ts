@@ -1,3 +1,5 @@
+import path from 'node:path'
+
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
@@ -243,6 +245,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Render Mermaid diagrams to SVG online. Live preview for flowcharts, sequence diagrams, class diagrams, state diagrams, gantt charts, and more. Export SVG or PNG, 100% client-side.',
+    path: '/tools/mermaid-renderer',
+    title: 'Mermaid Renderer - CSR Dev Tools',
+    url: '/tools/mermaid-renderer',
+  },
+  {
+    description:
       'Validate JSON data against a JSON Schema (draft-07). See validation errors with JSON paths and keywords — all in the browser.',
     path: '/tools/json-schema-validator',
     title: 'JSON Schema Validator - CSR Dev Tools',
@@ -427,4 +436,9 @@ const toolRoutes = [
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), tsConfigPaths(), tailwindcss(), prerender(toolRoutes)],
+  resolve: {
+    alias: {
+      mermaid: path.join(import.meta.dirname, 'node_modules/mermaid/dist/mermaid.esm.min.mjs'),
+    },
+  },
 })

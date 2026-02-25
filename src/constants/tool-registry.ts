@@ -1227,6 +1227,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/MermaidRenderer').then(
+        ({ MermaidRenderer }: { MermaidRenderer: ComponentType }) => ({
+          default: MermaidRenderer,
+        }),
+      ),
+    ),
+    description:
+      'Write Mermaid diagram syntax and see a live SVG preview. Supports flowchart, sequence, class, state, gantt, pie, and more. Export as SVG or PNG.',
+    emoji: '🧜',
+    key: 'mermaid-renderer',
+    name: 'Mermaid Renderer',
+    routePath: '/tools/mermaid-renderer',
+    seo: {
+      description:
+        'Render Mermaid diagrams to SVG online. Live preview for flowcharts, sequence diagrams, class diagrams, state diagrams, gantt charts, and more. Export SVG or PNG, 100% client-side.',
+      title: 'Mermaid Renderer - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Data',
     component: lazy(() =>
       import('@/components/feature/data/HttpStatusCodes').then(
