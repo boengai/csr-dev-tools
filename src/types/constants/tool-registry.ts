@@ -98,6 +98,7 @@ export type ToolRegistryKey =
   | 'text-diff-checker'
   | 'text-sort-dedupe'
   | 'toml-to-json-converter'
+  | 'typescript-playground'
   | 'unix-timestamp'
   | 'url-encoder-decoder'
   | 'url-parser'

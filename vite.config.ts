@@ -401,6 +401,13 @@ const toolRoutes = [
     title: 'Protobuf to JSON - CSR Dev Tools',
     url: '/tools/protobuf-to-json',
   },
+  {
+    description:
+      'TypeScript playground with real-time type checking and JavaScript transpilation. Write TypeScript code with IntelliSense, error highlighting, and instant JS output. 100% client-side.',
+    path: '/tools/typescript-playground',
+    title: 'TypeScript Playground - CSR Dev Tools',
+    url: '/tools/typescript-playground',
+  },
 ]
 
 // https://vite.dev/config/

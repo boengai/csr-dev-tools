@@ -896,6 +896,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/TypescriptPlayground').then(
+        ({ TypescriptPlayground }: { TypescriptPlayground: ComponentType }) => ({
+          default: TypescriptPlayground,
+        }),
+      ),
+    ),
+    description:
+      'Write TypeScript with real-time type checking, error squiggles, and hover info. See transpiled JavaScript output instantly. Powered by Monaco Editor.',
+    emoji: '🏗️',
+    key: 'typescript-playground',
+    name: 'TypeScript Playground',
+    routePath: '/tools/typescript-playground',
+    seo: {
+      description:
+        'TypeScript playground with real-time type checking and JavaScript transpilation. Write TypeScript code with IntelliSense, error highlighting, and instant JS output. 100% client-side.',
+      title: 'TypeScript Playground - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Time',
     component: lazy(() =>
       import('@/components/feature/time/TimeUnixTimestamp').then(
