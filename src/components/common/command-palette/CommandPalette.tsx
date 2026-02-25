@@ -8,7 +8,19 @@ import type { ToolRegistryEntry } from '@/types'
 import { TOOL_REGISTRY } from '@/constants'
 import { useCommandPaletteStore } from '@/hooks'
 
+import { tv } from '@/utils'
+
 import { SearchInput } from './SearchInput'
+
+const paletteItemStyles = tv({
+  base: 'flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2',
+  variants: {
+    highlighted: {
+      true: 'bg-primary/20 text-white',
+      false: 'text-gray-300 hover:bg-gray-900',
+    },
+  },
+})
 
 export const CommandPalette = () => {
   const isOpen = useCommandPaletteStore((state) => state.isOpen)
@@ -140,9 +152,7 @@ export const CommandPalette = () => {
                   {filteredTools.map((tool, index) => (
                     <li
                       aria-selected={index === highlightedIndex}
-                      className={`flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2 ${
-                        index === highlightedIndex ? 'bg-primary/20 text-white' : 'text-gray-300 hover:bg-gray-900'
-                      }`}
+                      className={paletteItemStyles({ highlighted: index === highlightedIndex })}
                       id={`command-palette-option-${tool.key}`}
                       key={tool.key}
                       onClick={() => handleSelectTool(tool)}

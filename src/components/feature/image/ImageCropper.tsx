@@ -18,7 +18,27 @@ import {
 } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import { ASPECT_RATIO_OPTIONS, clampCropRegion, getAspectRatio, getDefaultCrop, scaleCropToNatural } from '@/utils'
+import { ASPECT_RATIO_OPTIONS, clampCropRegion, getAspectRatio, getDefaultCrop, scaleCropToNatural, tv } from '@/utils'
+
+const cropAreaStyles = tv({
+  base: 'bg-grid-texture flex grow items-center justify-center overflow-auto bg-black',
+  variants: {
+    disabled: {
+      true: 'pointer-events-none opacity-70',
+      false: '',
+    },
+  },
+})
+
+const aspectButtonStyles = tv({
+  base: 'rounded-md px-3 py-1.5 text-body-sm transition-colors',
+  variants: {
+    active: {
+      true: 'text-primary-foreground bg-primary',
+      false: 'bg-surface-secondary hover:bg-surface-tertiary text-gray-300',
+    },
+  },
+})
 
 const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT', string> = {
   DOWNLOAD: 'download',
@@ -257,7 +277,7 @@ export const ImageCropper = () => {
       >
         <div className="flex size-full flex-col">
           <div
-            className={`bg-grid-texture flex grow items-center justify-center overflow-auto bg-black ${processing ? 'pointer-events-none opacity-70' : ''}`}
+            className={cropAreaStyles({ disabled: processing })}
           >
             {imageUrl && (
               <ReactCrop
@@ -284,11 +304,7 @@ export const ImageCropper = () => {
             <div className="flex flex-wrap items-center justify-center gap-2">
               {ASPECT_RATIO_OPTIONS.map((option) => (
                 <button
-                  className={`rounded-md px-3 py-1.5 text-body-sm transition-colors ${
-                    aspectPreset === option.value
-                      ? 'text-primary-foreground bg-primary'
-                      : 'bg-surface-secondary hover:bg-surface-tertiary text-gray-300'
-                  }`}
+                  className={aspectButtonStyles({ active: aspectPreset === option.value })}
                   disabled={processing}
                   key={option.value}
                   onClick={() => handleAspectChange(option.value)}

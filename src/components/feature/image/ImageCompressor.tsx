@@ -5,7 +5,17 @@ import type { ImageProcessingResult } from '@/types'
 import { Button, DownloadIcon, ProgressBar, UploadInput } from '@/components/common'
 import { COMPRESSIBLE_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { formatFileSize, processImage } from '@/utils'
+import { formatFileSize, processImage, tv } from '@/utils'
+
+const processingWrapperStyles = tv({
+  base: 'flex flex-col gap-2',
+  variants: {
+    disabled: {
+      true: 'pointer-events-none opacity-70',
+      false: '',
+    },
+  },
+})
 
 const toolEntry = TOOL_REGISTRY_MAP['image-compressor']
 
@@ -136,7 +146,7 @@ export const ImageCompressor = () => {
 
       {/* M2 fix: dim slider during processing */}
       {source && (
-        <div className={`flex flex-col gap-2 ${processing ? 'pointer-events-none opacity-70' : ''}`}>
+        <div className={processingWrapperStyles({ disabled: processing })}>
           <label className="text-body-sm text-gray-300" htmlFor="quality-slider">
             Quality: {quality}%
           </label>

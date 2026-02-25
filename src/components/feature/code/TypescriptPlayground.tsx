@@ -8,6 +8,7 @@ import type { ToolComponentProps } from '@/types'
 import { CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import { tv } from '@/utils'
 
 type EditorInstance = Parameters<OnMount>[0]
 type MarkerData = Parameters<OnValidate>[0][0]
@@ -53,6 +54,16 @@ type DiagnosticError = {
   message: string
   severity: 'error' | 'warning'
 }
+
+const severityStyles = tv({
+  base: 'shrink-0',
+  variants: {
+    severity: {
+      error: 'text-red-400',
+      warning: 'text-yellow-400',
+    },
+  },
+})
 
 const EditorSkeleton = () => (
   <div className="flex h-full w-full animate-pulse items-center justify-center rounded bg-gray-800">
@@ -185,7 +196,7 @@ export const TypescriptPlayground = (_props: ToolComponentProps) => {
                   className="flex items-start gap-2 px-1 py-0.5 font-mono text-body-xs"
                   key={`${error.line}-${error.column}-${index}`}
                 >
-                  <span className={error.severity === 'error' ? 'text-red-400 shrink-0' : 'text-yellow-400 shrink-0'}>
+                  <span className={severityStyles({ severity: error.severity })}>
                     {error.severity === 'error' ? '●' : '▲'}
                   </span>
                   <span className="shrink-0 text-gray-500">

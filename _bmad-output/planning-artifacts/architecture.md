@@ -498,6 +498,39 @@ export const JwtDecoder = () => {
 import { isValidJwt } from '@/utils/validation'
 ```
 
+**Conditional Styling Pattern — MANDATORY `tv()` Usage:**
+
+All conditional className logic MUST use the `tv()` wrapper from `@/utils` (tailwind-variants). Inline ternary expressions in className attributes are **banned**.
+
+```typescript
+// ✅ CORRECT — Use tv() for all conditional styling
+import { tv } from '@/utils'
+
+const itemStyles = tv({
+  base: 'flex cursor-pointer items-center gap-3 rounded-lg px-3 py-2',
+  variants: {
+    highlighted: {
+      true: 'bg-primary/20 text-white',
+      false: 'text-gray-300 hover:bg-gray-900',
+    },
+  },
+})
+
+// Usage:
+<div className={itemStyles({ highlighted: index === highlightedIndex })}>
+
+// ✅ CORRECT — For component-level variants with types
+import type { CompVariant } from '@/types'
+type ButtonVariants = { variant: 'primary' | 'secondary'; size: 'small' | 'default' }
+const buttonVariants: CompVariant<ButtonVariants> = tv({ ... })
+
+// ❌ BANNED — Inline ternary in className
+className={`base-classes ${condition ? 'active-classes' : 'inactive-classes'}`}
+className={condition ? 'class-a' : 'class-b'}
+```
+
+**Rationale:** `tv()` provides type safety, readability, consistent merge behavior via `twMerge`, and a single pattern for all conditional styling across the codebase.
+
 **Anti-Patterns to Avoid:**
 ```typescript
 // ❌ Manual registration in home/index.tsx instead of registry
@@ -506,6 +539,7 @@ import { isValidJwt } from '@/utils/validation'
 // ❌ Default export for tool component
 // ❌ import from 'framer-motion' instead of 'motion/react'
 // ❌ interface ToolProps {} instead of type ToolProps = {}
+// ❌ Inline ternary in className — use tv() instead
 ```
 
 ## Project Structure & Boundaries

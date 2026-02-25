@@ -46,6 +46,7 @@ import {
   saveDiagram,
   saveDiagramIndex,
   serializeDiagram,
+  tv,
   validateDiagramSchema,
 } from '@/utils'
 
@@ -58,6 +59,16 @@ import { TableNodeComponent } from './TableNode'
 
 const nodeTypes: NodeTypes = { tableNode: TableNodeComponent }
 const edgeTypes: EdgeTypes = { relationship: RelationshipEdgeComponent }
+
+const diagramItemStyles = tv({
+  base: 'flex items-center gap-2 border-b border-gray-800 px-3 py-2 transition-colors hover:bg-gray-900',
+  variants: {
+    active: {
+      true: 'bg-gray-800',
+      false: '',
+    },
+  },
+})
 
 const toolEntry = TOOL_REGISTRY_MAP['db-diagram']
 
@@ -1041,7 +1052,7 @@ const DiagramCanvas = () => {
               ) : (
                 diagramIndex.map((entry) => (
                   <div
-                    className={`flex items-center gap-2 border-b border-gray-800 px-3 py-2 transition-colors hover:bg-gray-900 ${activeDiagramId === entry.id ? 'bg-gray-800' : ''}`}
+                    className={diagramItemStyles({ active: activeDiagramId === entry.id })}
                     data-testid={`diagram-item-${entry.id}`}
                     key={entry.id}
                   >

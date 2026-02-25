@@ -6,6 +6,7 @@ import type { ToolComponentProps } from '@/types'
 import { CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
+import { tv } from '@/utils'
 import {
   type ConversionResult,
   type TimezoneEntry,
@@ -53,6 +54,26 @@ function getInitialTargets(localTz: string): Array<string> {
 }
 
 const toolEntry = TOOL_REGISTRY_MAP['timezone-converter']
+
+const pickerItemStyles = tv({
+  base: 'cursor-pointer px-3 py-2 text-body-sm text-gray-300 hover:bg-gray-800',
+  variants: {
+    active: {
+      true: 'bg-gray-800',
+      false: '',
+    },
+  },
+})
+
+const favoriteButtonStyles = tv({
+  base: 'p-1 text-body-sm',
+  variants: {
+    favorite: {
+      true: 'text-yellow-400',
+      false: 'text-gray-600 hover:text-gray-400',
+    },
+  },
+})
 
 type TargetResult = {
   result: ConversionResult
@@ -165,7 +186,7 @@ const TimezoneSearchPicker = ({
           {visibleItems.map((entry, i) => (
             <li
               aria-selected={i === activeIndex}
-              className={`cursor-pointer px-3 py-2 text-body-sm text-gray-300 hover:bg-gray-800 ${i === activeIndex ? 'bg-gray-800' : ''}`}
+              className={pickerItemStyles({ active: i === activeIndex })}
               key={entry.id}
               onClick={() => selectItem(entry.id)}
               role="option"
@@ -403,7 +424,7 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
                             ? `Remove ${entry?.city ?? timezoneId} from favorites`
                             : `Add ${entry?.city ?? timezoneId} to favorites`
                         }
-                        className={`p-1 text-body-sm ${isFav ? 'text-yellow-400' : 'text-gray-600 hover:text-gray-400'}`}
+                        className={favoriteButtonStyles({ favorite: isFav })}
                         onClick={() => handleToggleFavorite(timezoneId)}
                         type="button"
                       >

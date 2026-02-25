@@ -5,7 +5,19 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY } from '@/constants'
 import { useSidebarStore } from '@/hooks'
 
+import { tv } from '@/utils'
+
 import { XIcon } from '../icon'
+
+const sidebarNavStyles = tv({
+  base: 'fixed inset-y-0 left-0 z-50 flex flex-col border-r border-gray-800 bg-gray-950 pt-(--safe-area-inset-top) pb-(--safe-area-inset-bottom)',
+  variants: {
+    mobile: {
+      true: 'w-full',
+      false: 'w-[260px]',
+    },
+  },
+})
 import { SidebarCategory } from './SidebarCategory'
 import { SidebarToolItem } from './SidebarToolItem'
 
@@ -120,7 +132,7 @@ export const Sidebar = () => {
           <motion.nav
             animate={{ x: 0 }}
             aria-label="Tool navigation"
-            className={`fixed inset-y-0 left-0 z-50 flex flex-col border-r border-gray-800 bg-gray-950 pt-(--safe-area-inset-top) pb-(--safe-area-inset-bottom) ${isMobile ? 'w-full' : 'w-[260px]'}`}
+            className={sidebarNavStyles({ mobile: isMobile })}
             exit={{ x: '-100%' }}
             initial={{ x: '-100%' }}
             ref={sidebarRef}

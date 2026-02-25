@@ -5,7 +5,18 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import { tv } from '@/utils'
 import { jsonToTypeScript } from '@/utils/json-to-typescript'
+
+const toggleButtonStyles = tv({
+  base: 'shrink-0 rounded border px-3 py-1 text-body-xs',
+  variants: {
+    active: {
+      true: 'border-primary bg-primary/20 text-primary',
+      false: 'border-gray-700 text-gray-500',
+    },
+  },
+})
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-typescript']
 
@@ -89,14 +100,14 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
               value={rootName}
             />
             <button
-              className={`shrink-0 rounded border px-3 py-1 text-body-xs ${useInterface ? 'border-primary bg-primary/20 text-primary' : 'border-gray-700 text-gray-500'}`}
+              className={toggleButtonStyles({ active: useInterface })}
               onClick={handleToggleInterface}
               type="button"
             >
               {useInterface ? 'interface' : 'type'}
             </button>
             <button
-              className={`shrink-0 rounded border px-3 py-1 text-body-xs ${optionalProps ? 'border-primary bg-primary/20 text-primary' : 'border-gray-700 text-gray-500'}`}
+              className={toggleButtonStyles({ active: optionalProps })}
               onClick={handleToggleOptional}
               type="button"
             >

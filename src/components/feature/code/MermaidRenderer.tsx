@@ -6,7 +6,18 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CopyButton, TextAreaInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import { tv } from '@/utils'
 import { downloadPng, downloadSvg, initializeMermaid, renderMermaid, svgToPng } from '@/utils/mermaid-renderer'
+
+const chevronStyles = tv({
+  base: 'inline-block transition-transform',
+  variants: {
+    open: {
+      true: 'rotate-90',
+      false: '',
+    },
+  },
+})
 
 const toolEntry = TOOL_REGISTRY_MAP['mermaid-renderer']
 
@@ -149,7 +160,7 @@ export const MermaidRenderer = (_props: ToolComponentProps) => {
               onClick={() => setReferenceOpen((prev) => !prev)}
               type="button"
             >
-              <span className={`inline-block transition-transform ${referenceOpen ? 'rotate-90' : ''}`}>▶</span>
+              <span className={chevronStyles({ open: referenceOpen })}>▶</span>
               Syntax Reference
             </button>
 

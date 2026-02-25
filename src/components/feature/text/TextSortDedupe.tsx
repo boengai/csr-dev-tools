@@ -6,7 +6,18 @@ import type { SortMode, TextSortResult } from '@/utils/text-sort'
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
+import { tv } from '@/utils'
 import { sortAndProcessText } from '@/utils/text-sort'
+
+const toggleButtonStyles = tv({
+  base: 'rounded border px-3 py-1 text-body-xs',
+  variants: {
+    active: {
+      true: 'border-primary bg-primary/20 text-primary',
+      false: 'border-gray-700 text-gray-500',
+    },
+  },
+})
 
 const toolEntry = TOOL_REGISTRY_MAP['text-sort-dedupe']
 
@@ -89,7 +100,7 @@ export const TextSortDedupe = (_props: ToolComponentProps) => {
           { current: trimLines, field: 'trim' as const, label: 'Trim', setter: setTrimLines },
         ].map(({ current, field, label, setter }) => (
           <button
-            className={`rounded border px-3 py-1 text-body-xs ${current ? 'border-primary bg-primary/20 text-primary' : 'border-gray-700 text-gray-500'}`}
+            className={toggleButtonStyles({ active: current })}
             key={field}
             onClick={() => toggle(setter, current, field)}
             type="button"

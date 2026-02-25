@@ -3,7 +3,27 @@ import { useState } from 'react'
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { calculateDimension, parseRatio, simplifyRatio } from '@/utils'
+import { calculateDimension, parseRatio, simplifyRatio, tv } from '@/utils'
+
+const lockIndicatorStyles = tv({
+  base: 'ml-1 text-body-xs',
+  variants: {
+    locked: {
+      true: 'text-blue-400',
+      false: 'text-gray-500',
+    },
+  },
+})
+
+const presetButtonStyles = tv({
+  base: 'rounded-md border px-3 py-1.5 text-body-sm transition-colors',
+  variants: {
+    active: {
+      true: 'border-blue-500 bg-blue-500/20 text-blue-300',
+      false: 'border-gray-600 text-gray-300 hover:border-gray-400',
+    },
+  },
+})
 
 const toolEntry = TOOL_REGISTRY_MAP['aspect-ratio-calculator']
 
@@ -167,7 +187,7 @@ export const AspectRatioCalculator = () => {
               <span className="flex items-center gap-1">
                 Width
                 <button
-                  className={`ml-1 text-body-xs ${locked === 'width' ? 'text-blue-400' : 'text-gray-500'}`}
+                  className={lockIndicatorStyles({ locked: locked === 'width' })}
                   onClick={() => toggleLock('width')}
                   title={locked === 'width' ? 'Unlock width' : 'Lock width'}
                   type="button"
@@ -188,7 +208,7 @@ export const AspectRatioCalculator = () => {
               <span className="flex items-center gap-1">
                 Height
                 <button
-                  className={`ml-1 text-body-xs ${locked === 'height' ? 'text-blue-400' : 'text-gray-500'}`}
+                  className={lockIndicatorStyles({ locked: locked === 'height' })}
                   onClick={() => toggleLock('height')}
                   title={locked === 'height' ? 'Unlock height' : 'Lock height'}
                   type="button"
@@ -219,11 +239,7 @@ export const AspectRatioCalculator = () => {
         <div className="flex flex-wrap gap-2">
           {PRESETS.map((preset) => (
             <button
-              className={`rounded-md border px-3 py-1.5 text-body-sm transition-colors ${
-                ratio === preset.label
-                  ? 'border-blue-500 bg-blue-500/20 text-blue-300'
-                  : 'border-gray-600 text-gray-300 hover:border-gray-400'
-              }`}
+              className={presetButtonStyles({ active: ratio === preset.label })}
               key={preset.label}
               onClick={() => applyRatio(preset.w, preset.h)}
               type="button"

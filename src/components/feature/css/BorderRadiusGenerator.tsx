@@ -5,7 +5,18 @@ import type { BorderRadiusConfig } from '@/utils/border-radius'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { tv } from '@/utils'
 import { DEFAULT_BORDER_RADIUS, generateBorderRadiusCss } from '@/utils/border-radius'
+
+const toggleButtonStyles = tv({
+  base: 'rounded border px-3 py-1 text-body-xs',
+  variants: {
+    active: {
+      true: 'border-primary bg-primary/20 text-primary',
+      false: 'border-gray-700 text-gray-500',
+    },
+  },
+})
 
 const toolEntry = TOOL_REGISTRY_MAP['css-border-radius-generator']
 
@@ -35,7 +46,7 @@ export const BorderRadiusGenerator = (_props: ToolComponentProps) => {
         <div className="flex items-center gap-2">
           <button
             aria-pressed={config.asymmetric}
-            className={`rounded border px-3 py-1 text-body-xs ${config.asymmetric ? 'border-primary bg-primary/20 text-primary' : 'border-gray-700 text-gray-500'}`}
+            className={toggleButtonStyles({ active: config.asymmetric })}
             onClick={() => update('asymmetric', !config.asymmetric)}
             type="button"
           >

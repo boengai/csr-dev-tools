@@ -5,7 +5,28 @@ import type { HttpStatusCategory } from '@/utils/http-status'
 
 import { FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { tv } from '@/utils'
 import { filterHttpStatusCodes, HTTP_STATUS_CODES } from '@/utils/http-status'
+
+const categoryFilterStyles = tv({
+  base: 'rounded border px-3 py-1 text-body-xs',
+  variants: {
+    active: {
+      true: 'border-primary bg-primary/20 text-primary',
+      false: 'border-gray-700 text-gray-500',
+    },
+  },
+})
+
+const sectionHeaderStyles = tv({
+  base: 'mb-2 border-b border-gray-800 pb-1 text-body-xs font-medium',
+  variants: {
+    spaced: {
+      true: 'mt-3',
+      false: '',
+    },
+  },
+})
 
 const toolEntry = TOOL_REGISTRY_MAP['http-status-codes']
 
@@ -52,7 +73,7 @@ export const HttpStatusCodes = (_props: ToolComponentProps) => {
         {CATEGORIES.map((cat) => (
           <button
             aria-pressed={category === cat.value}
-            className={`rounded border px-3 py-1 text-body-xs ${category === cat.value ? 'border-primary bg-primary/20 text-primary' : 'border-gray-700 text-gray-500'}`}
+            className={categoryFilterStyles({ active: category === cat.value })}
             key={cat.label}
             onClick={() => setCategory(cat.value)}
             type="button"
@@ -70,7 +91,7 @@ export const HttpStatusCodes = (_props: ToolComponentProps) => {
             <div key={code.code}>
               {!category && (i === 0 || filtered[i - 1].category !== code.category) && (
                 <p
-                  className={`mb-2 ${i > 0 ? 'mt-3' : ''} border-b border-gray-800 pb-1 text-body-xs font-medium ${CATEGORY_COLORS[code.category] ?? 'text-gray-300'}`}
+                  className={`${sectionHeaderStyles({ spaced: i > 0 })} ${CATEGORY_COLORS[code.category] ?? 'text-gray-300'}`}
                 >
                   {code.category}
                 </p>

@@ -6,8 +6,19 @@ import type { CertificateExtension, CertificateInfo, ValidityStatus } from '@/ut
 import { CopyButton, TextAreaInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import { tv } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['certificate-decoder']
+
+const resultValueStyles = tv({
+  base: 'truncate text-body-xs text-gray-200',
+  variants: {
+    mono: {
+      true: 'font-mono',
+      false: '',
+    },
+  },
+})
 
 const ResultRow = ({
   copyValue,
@@ -23,7 +34,7 @@ const ResultRow = ({
   <div className="flex items-center justify-between gap-2 rounded border border-gray-800 bg-gray-950 px-3 py-2">
     <span className="shrink-0 text-body-xs text-gray-400">{label}</span>
     <div className="flex items-center gap-1 overflow-hidden">
-      <span className={`truncate text-body-xs text-gray-200 ${mono ? 'font-mono' : ''}`}>{value}</span>
+      <span className={resultValueStyles({ mono })}>{value}</span>
       <CopyButton label={label} value={copyValue ?? value} />
     </div>
   </div>
