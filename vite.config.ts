@@ -129,6 +129,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Calculate IPv4 subnet details online. Input CIDR notation or IP with subnet mask to see network address, broadcast, host range, wildcard mask, and binary representation. 100% client-side.',
+    path: '/tools/ip-subnet-calculator',
+    title: 'IP Subnet Calculator - CSR Dev Tools',
+    url: '/tools/ip-subnet-calculator',
+  },
+  {
+    description:
       'Format, validate, and beautify JSON online. Paste minified JSON and get clean, indented output instantly in your browser.',
     path: '/tools/json-formatter',
     title: 'JSON Formatter - CSR Dev Tools',

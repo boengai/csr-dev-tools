@@ -450,6 +450,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Network',
+    component: lazy(() =>
+      import('@/components/feature/network/IpSubnetCalculator').then(
+        ({ IpSubnetCalculator }: { IpSubnetCalculator: ComponentType }) => ({
+          default: IpSubnetCalculator,
+        }),
+      ),
+    ),
+    description:
+      'Calculate IPv4 subnet details from CIDR notation or IP and subnet mask. Shows network address, broadcast, host range, and binary representation.',
+    emoji: '🌐',
+    key: 'ip-subnet-calculator',
+    name: 'IP Subnet Calculator',
+    routePath: '/tools/ip-subnet-calculator',
+    seo: {
+      description:
+        'Calculate IPv4 subnet details online. Input CIDR notation or IP with subnet mask to see network address, broadcast, host range, wildcard mask, and binary representation. 100% client-side.',
+      title: 'IP Subnet Calculator - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Code',
     component: lazy(() =>
       import('@/components/feature/code/JavaScriptMinifier').then(
@@ -1470,6 +1491,7 @@ export const CATEGORY_ORDER: Array<ToolCategory> = [
   'Encoding',
   'Generator',
   'Image',
+  'Network',
   'Security',
   'Text',
   'Time',
