@@ -10,6 +10,8 @@ import { downloadPng, downloadSvg, initializeMermaid, renderMermaid, svgToPng } 
 
 const toolEntry = TOOL_REGISTRY_MAP['mermaid-renderer']
 
+const MERMAID_PREFILL_KEY = 'csr-dev-tools-mermaid-renderer-prefill'
+
 const DEFAULT_CODE = `flowchart TD
     A[Start] --> B{Decision}
     B -->|Yes| C[Do something]
@@ -61,7 +63,16 @@ export const MermaidRenderer = (_props: ToolComponentProps) => {
       initializedRef.current = true
       initializeMermaid()
       setIsReady(true)
-      handleRender(DEFAULT_CODE)
+
+      // Check for cross-tool prefill from DB Diagram
+      const prefill = localStorage.getItem(MERMAID_PREFILL_KEY)
+      if (prefill) {
+        localStorage.removeItem(MERMAID_PREFILL_KEY)
+        setCode(prefill)
+        handleRender(prefill)
+      } else {
+        handleRender(DEFAULT_CODE)
+      }
     }
   }, [handleRender])
 

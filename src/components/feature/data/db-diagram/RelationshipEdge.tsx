@@ -42,7 +42,7 @@ export const RelationshipEdgeComponent = ({
 
   return (
     <>
-      <BaseEdge id={id} markerEnd={markerEnd} path={edgePath} style={{ ...style, stroke: '#6b7280', strokeWidth: 2 }} />
+      <BaseEdge id={id} markerEnd={markerEnd} path={edgePath} style={{ ...style, stroke: 'var(--color-primary)', strokeWidth: 2 }} />
       <EdgeLabelRenderer>
         <div
           className="nodrag nopan pointer-events-auto absolute"
@@ -51,7 +51,7 @@ export const RelationshipEdgeComponent = ({
           }}
         >
           <button
-            className="text-xs rounded bg-gray-800 px-2 py-0.5 font-bold text-gray-300 transition-colors hover:bg-gray-700 hover:text-white"
+            className="text-xs rounded bg-black px-2 py-0.5 font-bold text-white transition-colors hover:bg-gray-900"
             data-testid={`edge-label-${id}`}
             onClick={() => setShowDropdown(!showDropdown)}
             type="button"
@@ -63,7 +63,7 @@ export const RelationshipEdgeComponent = ({
               {RELATION_OPTIONS.map((opt) => (
                 <button
                   className={`text-xs block w-full px-3 py-1 transition-colors hover:bg-gray-700 ${
-                    opt === data?.relationType ? 'text-blue-400' : 'text-gray-300'
+                    opt === data?.relationType ? 'text-primary' : 'text-gray-300'
                   }`}
                   key={opt}
                   onClick={() => handleRelationChange(opt)}

@@ -243,5 +243,5 @@ development_status:
   epic-27: in-progress
   27-1-db-diagram-canvas-and-entities: done
   27-2-db-diagram-sql-export-and-persistence: done
-  27-3-db-diagram-import-and-cross-tool-integration: ready-for-dev
+  27-3-db-diagram-import-and-cross-tool-integration: done
   epic-27-retrospective: optional

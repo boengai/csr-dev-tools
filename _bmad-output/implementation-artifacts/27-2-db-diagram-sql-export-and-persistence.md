@@ -133,7 +133,7 @@ so that **I can generate real database schemas from my visual designs and resume
     export function deleteDiagram(id: string): void
     export function generateDiagramId(): string
     ```
-  - [x] 3.2 Storage pattern: lightweight index key stores manifest (names, timestamps, IDs). Actual diagram data in separate keys (`csr-dev-tools-db-diagram-{id}`). This matches the architecture discussed in party mode.
+    - [x] 3.2 Storage pattern: single nested localStorage key `csr-dev-tools-db-diagrams` containing `{ index: [...], diagrams: { [id]: DiagramSchema } }`. Originally used split keys (1 index + N diagram keys), consolidated to single key for cleaner storage.
   - [x] 3.3 Key naming follows project convention: `'csr-dev-tools-{tool-key}-{data-name}'` (see TimezoneConverter `FAVORITES_KEY` pattern).
 
 - [x] Task 4: Add toolbar SQL export controls to DbDiagram (AC: #1, #2, #3, #4)
@@ -271,14 +271,18 @@ CREATE TABLE users (
 ### localStorage Schema
 
 ```
-localStorage keys:
-├── csr-dev-tools-db-diagram-index     → Array<DiagramIndexEntry>
-├── csr-dev-tools-db-diagram-abc123    → DiagramSchema (full diagram data)
-├── csr-dev-tools-db-diagram-def456    → DiagramSchema
-└── ...
+localStorage key:
+csr-dev-tools-db-diagrams → DiagramStore {
+  index: Array<DiagramIndexEntry>,
+  diagrams: {
+    [id: string]: DiagramSchema
+  }
+}
 ```
 
-A typical diagram with 20 tables is ~20-40KB JSON. localStorage provides 5-10MB. Users would need 100+ complex diagrams to hit limits — warn if `localStorage` write throws a `QuotaExceededError`.
+All diagrams stored in a single nested key. A typical diagram with 20 tables is ~20-40KB JSON. localStorage provides 5-10MB. Users would need 100+ complex diagrams to hit limits — warn if `localStorage` write throws a `QuotaExceededError`.
+
+`DiagramStore` type defined in `src/types/utils/db-diagram.ts`.
 
 ### What This Story Does NOT Include (Deferred to 27.3)
 
@@ -376,3 +380,4 @@ None — clean implementation with no blocking issues.
 
 - 2026-02-25: Implemented Story 27.2 — SQL export (PostgreSQL/MySQL/SQLite), localStorage persistence with autosave, diagram management UI (save/load/rename/delete/new), JSON export/import. Added 46 unit tests and 7 E2E tests.
 - 2026-02-25: Code review fixes — Fixed SQLite non-SERIAL PK bug (missing PRIMARY KEY constraint), extracted `downloadTextFile` to `src/utils/file.ts`, extracted `formatRelativeTime` to `src/utils/time.ts`, added SQLite PK and inline FK test coverage (+2 tests), fixed `saveStatusTimeoutRef` cleanup on unmount. All 1398 tests pass.
+- 2026-02-25: UX improvements — Consolidated localStorage from split keys (1 index + N diagram keys) to single nested key `csr-dev-tools-db-diagrams` with `DiagramStore` type (`{ index, diagrams }`). Added `DiagramStore` type to `src/types/utils/db-diagram.ts`. On mount, auto-restores the most recently updated diagram instead of starting with an empty canvas. Diagrams list button moved to leftmost toolbar position with `ListIcon` (icon-only). E2E tests updated for dropdown interaction pattern.

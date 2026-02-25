@@ -237,6 +237,7 @@ Claude Opus 4.6
 
 - 2026-02-25: Story 27.1 implemented — DB Diagram canvas with table entities and relationships
 - 2026-02-25: Code review fixes — formatting (oxfmt), type field ordering, placeholder callback clarity, data-testid on edge labels, corrected E2E AC coverage claim
+- 2026-02-25: UX improvements — Toolbar buttons replaced with `<Button />` component (primary/default variants, small size). Relationship edge lines changed from gray (`#6b7280`) to primary color (`var(--color-primary)`). Relationship labels changed to black bg + white text. New table spawn positions now cascade diagonally (30px offset per table) instead of stacking at canvas center. Clear All button now shows confirmation dialog before clearing.
 
 ### File List
 

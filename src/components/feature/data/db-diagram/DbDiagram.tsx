@@ -23,21 +23,26 @@ import type {
   ToolComponentProps,
 } from '@/types'
 
-import { Button, CopyButton, Dialog } from '@/components/common'
+import { Button, CopyButton, Dialog, DropdownMenu, ChevronIcon, ListIcon } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import {
   createDefaultColumn,
   createDefaultTable,
+  gridLayoutPositions,
   deleteDiagram,
   deserializeDiagram,
   downloadTextFile,
   formatRelativeTime,
   generateDiagramId,
   generateId,
+  generateMermaidER,
   generateSql,
+  generateTypeScript,
   loadDiagram,
   loadDiagramIndex,
+  parseJsonSchema,
+  parseSqlDdl,
   saveDiagram,
   saveDiagramIndex,
   serializeDiagram,
@@ -62,6 +67,17 @@ const DIALECT_OPTIONS: Array<{ label: string; value: SqlDialect }> = [
   { label: 'SQLite', value: 'sqlite' },
 ]
 
+type SidePanel =
+  | 'diagram-list'
+  | 'export-mermaid'
+  | 'export-sql'
+  | 'export-typescript'
+  | 'import-json-schema'
+  | 'import-sql'
+  | null
+
+const MERMAID_PREFILL_KEY = 'csr-dev-tools-mermaid-renderer-prefill'
+
 const DiagramCanvas = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState<TableNode>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<RelationshipEdge>([])
@@ -76,14 +92,18 @@ const DiagramCanvas = () => {
   const [editNameValue, setEditNameValue] = useState('')
   const nameInputRef = useRef<HTMLInputElement>(null)
 
-  // Panel state
-  const [showSqlPanel, setShowSqlPanel] = useState(false)
-  const [showDiagramList, setShowDiagramList] = useState(false)
+  // Panel state (only one side panel at a time)
+  const [activePanel, setActivePanel] = useState<SidePanel>(null)
   const [sqlDialect, setSqlDialect] = useState<SqlDialect>('postgresql')
 
-  // Autosave indicator
-  const [saveStatus, setSaveStatus] = useState<'idle' | 'saved'>('idle')
-  const saveStatusTimeoutRef = useRef<number | undefined>(undefined)
+  // Import state
+  const [importSqlText, setImportSqlText] = useState('')
+  const [importSqlDialect, setImportSqlDialect] = useState<SqlDialect>('postgresql')
+  const [importSqlMerge, setImportSqlMerge] = useState(false)
+  const [importSqlErrors, setImportSqlErrors] = useState<Array<{ line: number; message: string }>>([])
+  const [importJsonSchemaText, setImportJsonSchemaText] = useState('')
+  const [importJsonSchemaMerge, setImportJsonSchemaMerge] = useState(false)
+  const [importJsonSchemaErrors, setImportJsonSchemaErrors] = useState<Array<string>>([])
 
   // Rename state for diagram list items
   const [renamingId, setRenamingId] = useState<string | null>(null)
@@ -94,13 +114,25 @@ const DiagramCanvas = () => {
   // File input ref for JSON import
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Load diagram index on mount + cleanup save status timeout
+  // Load diagram index on mount + restore last updated diagram
   useEffect(() => {
-    setDiagramIndex(loadDiagramIndex())
-    return () => {
-      if (saveStatusTimeoutRef.current) clearTimeout(saveStatusTimeoutRef.current)
+    const idx = loadDiagramIndex()
+    setDiagramIndex(idx)
+
+    if (idx.length > 0) {
+      const latest = [...idx].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0]
+      const schema = loadDiagram(latest.id)
+      if (schema) {
+        const { edges: restoredEdges, nodes: restoredNodes } = deserializeDiagram(schema)
+        setNodes(restoredNodes as Array<TableNode>)
+        setEdges(restoredEdges as Array<RelationshipEdge>)
+        setActiveDiagramId(latest.id)
+        setDiagramName(latest.name)
+        setTableCount(restoredNodes.length)
+        setTimeout(() => fitView({ padding: 0.2 }), 50)
+      }
     }
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Listen for relationship type change events from edge component
   useEffect(() => {
@@ -122,7 +154,6 @@ const DiagramCanvas = () => {
 
     let id = activeDiagramId
     if (!id) {
-      // Auto-create a new diagram entry on first modification
       id = generateDiagramId()
       setActiveDiagramId(id)
     }
@@ -135,7 +166,6 @@ const DiagramCanvas = () => {
       return
     }
 
-    // Update index
     const now = new Date().toISOString()
     const idx = loadDiagramIndex()
     const existing = idx.findIndex((e) => e.id === id)
@@ -155,15 +185,11 @@ const DiagramCanvas = () => {
     saveDiagramIndex(idx)
     setDiagramIndex(idx)
 
-    // Show save indicator
-    setSaveStatus('saved')
-    if (saveStatusTimeoutRef.current) clearTimeout(saveStatusTimeoutRef.current)
-    saveStatusTimeoutRef.current = window.setTimeout(() => setSaveStatus('idle'), 2000)
+    toast({ action: 'add', item: { label: 'Diagram saved', type: 'success' } })
   }, [nodes, edges, activeDiagramId, diagramName, toast])
 
   const debouncedSave = useDebounceCallback(performSave, 1000)
 
-  // Trigger autosave on nodes/edges change
   useEffect(() => {
     debouncedSave()
   }, [nodes, edges, debouncedSave])
@@ -175,9 +201,27 @@ const DiagramCanvas = () => {
     return generateSql(schema, sqlDialect)
   }, [nodes, edges, sqlDialect])
 
+  // Mermaid generation (reactive, synchronous)
+  const generatedMermaid = useMemo(() => {
+    if (nodes.length === 0) return ''
+    const schema = serializeDiagram(nodes, edges)
+    return generateMermaidER(schema)
+  }, [nodes, edges])
+
+  // TypeScript generation (reactive, synchronous)
+  const generatedTypescript = useMemo(() => {
+    if (nodes.length === 0) return ''
+    const schema = serializeDiagram(nodes, edges)
+    return generateTypeScript(schema)
+  }, [nodes, edges])
+
   const handleAddTable = useCallback(() => {
     const { columns, tableName } = createDefaultTable(tableCount)
-    const position = screenToFlowPosition({ x: window.innerWidth / 2, y: window.innerHeight / 2 })
+    const offset = tableCount * 30
+    const position = screenToFlowPosition({
+      x: window.innerWidth / 2 + offset,
+      y: window.innerHeight / 2 + offset,
+    })
     const noop = () => {}
     const newNode: TableNode = {
       data: {
@@ -259,13 +303,21 @@ const DiagramCanvas = () => {
     [setNodes, setEdges],
   )
 
+  const handleRearrange = useCallback(() => {
+    setNodes((nds) => {
+      const positions = gridLayoutPositions(nds.length)
+      return nds.map((node, i) => ({ ...node, position: positions[i] }))
+    })
+    setTimeout(() => fitView({ padding: 0.2 }), 50)
+  }, [setNodes, fitView])
+
   const handleClearAll = useCallback(() => {
+    if (!window.confirm('Clear all tables and relationships? This cannot be undone.')) return
     setNodes([])
     setEdges([])
     setTableCount(0)
   }, [setNodes, setEdges])
 
-  // Inject callbacks into node data on every render
   const nodesWithCallbacks = nodes.map((node) => ({
     ...node,
     data: {
@@ -310,14 +362,13 @@ const DiagramCanvas = () => {
       const entry = diagramIndex.find((e) => e.id === id)
       if (entry) setDiagramName(entry.name)
       setTableCount(newNodes.length)
-      setShowDiagramList(false)
+      setActivePanel(null)
       setTimeout(() => fitView({ padding: 0.2 }), 50)
     },
     [diagramIndex, setNodes, setEdges, fitView, toast],
   )
 
   const handleNewDiagram = useCallback(() => {
-    // Find next "Untitled Diagram" increment
     const idx = loadDiagramIndex()
     let num = 1
     const baseName = 'Untitled Diagram'
@@ -333,7 +384,7 @@ const DiagramCanvas = () => {
     setTableCount(0)
     setActiveDiagramId(null)
     setDiagramName(name)
-    setShowDiagramList(false)
+    setActivePanel(null)
   }, [setNodes, setEdges])
 
   const handleDeleteDiagram = useCallback(
@@ -402,7 +453,7 @@ const DiagramCanvas = () => {
     downloadTextFile(json, `${safeName}.json`, 'application/json')
   }, [nodes, edges, diagramName])
 
-  // JSON import
+  // JSON file import
   const handleImportJson = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
@@ -434,20 +485,121 @@ const DiagramCanvas = () => {
         }
       }
       reader.readAsText(file)
-
-      // Reset file input so same file can be re-imported
       e.target.value = ''
     },
     [setNodes, setEdges, fitView, toast],
   )
 
-  const toolbarBtnClass =
-    'text-xs rounded bg-gray-800 px-3 py-1.5 font-medium text-gray-300 transition-colors hover:bg-gray-700'
+  // Import SQL DDL
+  const handleImportSql = useCallback(() => {
+    if (!importSqlText.trim()) return
+
+    const result = parseSqlDdl(importSqlText, importSqlDialect)
+    setImportSqlErrors(result.errors)
+
+    if (result.tables.length === 0) {
+      toast({ action: 'add', item: { label: 'No valid CREATE TABLE statements found.', type: 'error' } })
+      return
+    }
+
+    const { edges: newEdges, nodes: newNodes } = deserializeDiagram({
+      relationships: result.relationships,
+      tables: result.tables,
+    })
+
+    if (importSqlMerge) {
+      setNodes((nds) => [...nds, ...(newNodes as Array<TableNode>)])
+      setEdges((eds) => [...eds, ...(newEdges as Array<RelationshipEdge>)])
+    } else {
+      setNodes(newNodes as Array<TableNode>)
+      setEdges(newEdges as Array<RelationshipEdge>)
+    }
+
+    setTableCount((c) => c + result.tables.length)
+    setTimeout(() => fitView({ padding: 0.2 }), 50)
+
+    const errorCount = result.errors.length
+    const importedCount = result.tables.length
+    toast({
+      action: 'add',
+      item: {
+        label: `Imported ${importedCount} table${importedCount !== 1 ? 's' : ''}${errorCount > 0 ? ` (${errorCount} error${errorCount !== 1 ? 's' : ''})` : ''}`,
+        type: errorCount > 0 ? 'error' : 'success',
+      },
+    })
+  }, [importSqlText, importSqlDialect, importSqlMerge, setNodes, setEdges, fitView, toast])
+
+  // Import JSON Schema
+  const handleImportJsonSchema = useCallback(() => {
+    if (!importJsonSchemaText.trim()) return
+
+    try {
+      const parsed = JSON.parse(importJsonSchemaText)
+      const result = parseJsonSchema(parsed)
+      setImportJsonSchemaErrors(result.errors.map((e) => e.message))
+
+      if (result.tables.length === 0) {
+        toast({ action: 'add', item: { label: 'No valid definitions found in JSON Schema.', type: 'error' } })
+        return
+      }
+
+      const { edges: newEdges, nodes: newNodes } = deserializeDiagram({
+        relationships: result.relationships,
+        tables: result.tables,
+      })
+
+      if (importJsonSchemaMerge) {
+        setNodes((nds) => [...nds, ...(newNodes as Array<TableNode>)])
+        setEdges((eds) => [...eds, ...(newEdges as Array<RelationshipEdge>)])
+      } else {
+        setNodes(newNodes as Array<TableNode>)
+        setEdges(newEdges as Array<RelationshipEdge>)
+      }
+
+      setTableCount((c) => c + result.tables.length)
+      setTimeout(() => fitView({ padding: 0.2 }), 50)
+
+      toast({
+        action: 'add',
+        item: {
+          label: `Imported ${result.tables.length} table${result.tables.length !== 1 ? 's' : ''} from JSON Schema`,
+          type: 'success',
+        },
+      })
+    } catch {
+      setImportJsonSchemaErrors(['Invalid JSON. Please check the syntax.'])
+      toast({ action: 'add', item: { label: 'Invalid JSON syntax.', type: 'error' } })
+    }
+  }, [importJsonSchemaText, importJsonSchemaMerge, setNodes, setEdges, fitView, toast])
+
+  // Open in Mermaid Renderer
+  const handleOpenInMermaidRenderer = useCallback(() => {
+    if (!generatedMermaid) return
+    localStorage.setItem(MERMAID_PREFILL_KEY, generatedMermaid)
+    window.open('/tools/mermaid-renderer', '_blank')
+  }, [generatedMermaid])
+
+  // Panel toggle helper
+  const togglePanel = useCallback((panel: SidePanel) => {
+    setActivePanel((prev) => {
+      if (prev === panel) return null
+      if (panel === 'diagram-list') setDiagramIndex(loadDiagramIndex())
+      return panel
+    })
+  }, [])
 
   return (
     <div className="flex h-full flex-col">
       {/* Toolbar */}
       <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-gray-800 bg-gray-950 px-3 py-2">
+        <Button
+          data-testid="diagrams-btn"
+          icon={<ListIcon size={16} />}
+          onClick={() => togglePanel('diagram-list')}
+          size="small"
+          variant={activePanel === 'diagram-list' ? 'primary' : 'default'}
+        />
+
         {/* Diagram name */}
         {editingName ? (
           <input
@@ -464,7 +616,7 @@ const DiagramCanvas = () => {
           />
         ) : (
           <button
-            className="text-xs hover:text-blue-400 max-w-[200px] truncate font-bold text-white"
+            className="text-xs max-w-[200px] truncate font-bold text-white hover:text-primary"
             data-testid="diagram-name"
             onClick={() => {
               setEditNameValue(diagramName)
@@ -476,54 +628,52 @@ const DiagramCanvas = () => {
           </button>
         )}
 
-        {saveStatus === 'saved' && <span className="text-green-500 text-[10px]">Saved</span>}
-
         <div className="mx-1 h-4 w-px bg-gray-700" />
 
-        <button
-          className="bg-blue-600 text-xs hover:bg-blue-500 rounded px-3 py-1.5 font-medium text-white transition-colors"
-          data-testid="add-table-btn"
-          onClick={handleAddTable}
-          type="button"
-        >
+        <Button data-testid="add-table-btn" onClick={handleAddTable} size="small" variant="primary">
           + Add Table
-        </button>
-        <button
-          className={toolbarBtnClass}
-          data-testid="fit-view-btn"
-          onClick={() => fitView({ padding: 0.2 })}
-          type="button"
-        >
+        </Button>
+        <Button data-testid="rearrange-btn" onClick={handleRearrange} size="small" variant="default">
+          Rearrange
+        </Button>
+        <Button data-testid="fit-view-btn" onClick={() => fitView({ padding: 0.2 })} size="small" variant="default">
           Fit View
-        </button>
-        <button className={toolbarBtnClass} data-testid="clear-all-btn" onClick={handleClearAll} type="button">
+        </Button>
+        <Button data-testid="clear-all-btn" onClick={handleClearAll} size="small" variant="default">
           Clear All
-        </button>
+        </Button>
 
         <div className="mx-1 h-4 w-px bg-gray-700" />
 
-        <button
-          className={`${toolbarBtnClass} ${showSqlPanel ? 'bg-blue-700 text-white' : ''}`}
-          data-testid="export-sql-btn"
-          onClick={() => {
-            setShowSqlPanel(!showSqlPanel)
-            setShowDiagramList(false)
-          }}
-          type="button"
-        >
-          Export SQL
-        </button>
-        <button className={toolbarBtnClass} data-testid="export-json-btn" onClick={handleExportJson} type="button">
-          Export JSON
-        </button>
-        <button
-          className={toolbarBtnClass}
-          data-testid="import-json-btn"
-          onClick={() => fileInputRef.current?.click()}
-          type="button"
-        >
-          Import JSON
-        </button>
+        {/* Import dropdown */}
+        <DropdownMenu
+          items={[
+            {
+              active: activePanel === 'import-sql',
+              'data-testid': 'import-sql-btn',
+              label: 'Import SQL',
+              onSelect: () => togglePanel('import-sql'),
+            },
+            {
+              active: activePanel === 'import-json-schema',
+              'data-testid': 'import-json-schema-btn',
+              label: 'Import Schema',
+              onSelect: () => togglePanel('import-json-schema'),
+            },
+            {
+              'data-testid': 'import-json-btn',
+              label: 'Import JSON',
+              onSelect: () => fileInputRef.current?.click(),
+            },
+          ]}
+          trigger={
+            <Button data-testid="import-dropdown-btn" size="small" variant="default">
+              <span className="inline-flex items-center gap-1">
+                Import <ChevronIcon size={12} />
+              </span>
+            </Button>
+          }
+        />
         <input
           accept=".json"
           className="hidden"
@@ -533,20 +683,41 @@ const DiagramCanvas = () => {
           type="file"
         />
 
-        <div className="mx-1 h-4 w-px bg-gray-700" />
-
-        <button
-          className={`${toolbarBtnClass} ${showDiagramList ? 'bg-blue-700 text-white' : ''}`}
-          data-testid="diagrams-btn"
-          onClick={() => {
-            setShowDiagramList(!showDiagramList)
-            setShowSqlPanel(false)
-            setDiagramIndex(loadDiagramIndex())
-          }}
-          type="button"
-        >
-          Diagrams
-        </button>
+        {/* Export dropdown */}
+        <DropdownMenu
+          items={[
+            {
+              active: activePanel === 'export-sql',
+              'data-testid': 'export-sql-btn',
+              label: 'Export SQL',
+              onSelect: () => togglePanel('export-sql'),
+            },
+            {
+              active: activePanel === 'export-mermaid',
+              'data-testid': 'export-mermaid-btn',
+              label: 'Export Mermaid',
+              onSelect: () => togglePanel('export-mermaid'),
+            },
+            {
+              active: activePanel === 'export-typescript',
+              'data-testid': 'export-typescript-btn',
+              label: 'Export TS',
+              onSelect: () => togglePanel('export-typescript'),
+            },
+            {
+              'data-testid': 'export-json-btn',
+              label: 'Export JSON',
+              onSelect: handleExportJson,
+            },
+          ]}
+          trigger={
+            <Button data-testid="export-dropdown-btn" size="small" variant="default">
+              <span className="inline-flex items-center gap-1">
+                Export <ChevronIcon size={12} />
+              </span>
+            </Button>
+          }
+        />
       </div>
 
       {/* Main content area */}
@@ -571,14 +742,155 @@ const DiagramCanvas = () => {
           </ReactFlow>
         </div>
 
+        {/* Import SQL Panel */}
+        {activePanel === 'import-sql' && (
+          <div
+            className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950"
+            data-testid="import-sql-panel"
+          >
+            <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
+              <span className="text-xs font-bold text-white">Import SQL</span>
+              <button
+                className="text-xs text-gray-400 hover:text-white"
+                onClick={() => setActivePanel(null)}
+                type="button"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="flex items-center gap-2 border-b border-gray-800 px-3 py-2">
+              <label className="text-xs text-gray-400" htmlFor="import-dialect-select">
+                Dialect:
+              </label>
+              <select
+                className="text-xs rounded bg-gray-800 px-2 py-1 text-white outline-none"
+                data-testid="import-dialect-select"
+                id="import-dialect-select"
+                onChange={(e) => setImportSqlDialect(e.target.value as SqlDialect)}
+                value={importSqlDialect}
+              >
+                {DIALECT_OPTIONS.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className="flex-1 overflow-auto p-3">
+              <textarea
+                className="text-xs h-48 w-full resize-none rounded border border-gray-700 bg-gray-900 p-2 font-mono text-gray-300 outline-none focus:border-primary"
+                data-testid="import-sql-textarea"
+                onChange={(e) => setImportSqlText(e.target.value)}
+                placeholder="Paste CREATE TABLE statements..."
+                value={importSqlText}
+              />
+
+              {importSqlErrors.length > 0 && (
+                <div className="mt-2 space-y-1" data-testid="import-sql-errors">
+                  {importSqlErrors.map((err, i) => (
+                    <p className="text-[10px] text-error" key={i}>
+                      {err.message}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-2 border-t border-gray-800 px-3 py-2">
+              <label className="flex items-center gap-2 text-[10px] text-gray-400">
+                <input
+                  checked={importSqlMerge}
+                  className="rounded"
+                  data-testid="import-sql-merge"
+                  onChange={(e) => setImportSqlMerge(e.target.checked)}
+                  type="checkbox"
+                />
+                Merge with existing (otherwise replaces)
+              </label>
+              <button
+                className="text-xs w-full rounded bg-primary px-3 py-1.5 font-medium text-white transition-colors hover:bg-primary/90 disabled:opacity-50"
+                data-testid="import-sql-submit"
+                disabled={!importSqlText.trim()}
+                onClick={handleImportSql}
+                type="button"
+              >
+                Import
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* Import JSON Schema Panel */}
+        {activePanel === 'import-json-schema' && (
+          <div
+            className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950"
+            data-testid="import-json-schema-panel"
+          >
+            <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
+              <span className="text-xs font-bold text-white">Import JSON Schema</span>
+              <button
+                className="text-xs text-gray-400 hover:text-white"
+                onClick={() => setActivePanel(null)}
+                type="button"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-auto p-3">
+              <textarea
+                className="text-xs h-48 w-full resize-none rounded border border-gray-700 bg-gray-900 p-2 font-mono text-gray-300 outline-none focus:border-primary"
+                data-testid="import-json-schema-textarea"
+                onChange={(e) => setImportJsonSchemaText(e.target.value)}
+                placeholder="Paste JSON Schema..."
+                value={importJsonSchemaText}
+              />
+
+              {importJsonSchemaErrors.length > 0 && (
+                <div className="mt-2 space-y-1" data-testid="import-json-schema-errors">
+                  {importJsonSchemaErrors.map((err, i) => (
+                    <p className="text-[10px] text-error" key={i}>
+                      {err}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-2 border-t border-gray-800 px-3 py-2">
+              <label className="flex items-center gap-2 text-[10px] text-gray-400">
+                <input
+                  checked={importJsonSchemaMerge}
+                  className="rounded"
+                  data-testid="import-json-schema-merge"
+                  onChange={(e) => setImportJsonSchemaMerge(e.target.checked)}
+                  type="checkbox"
+                />
+                Merge with existing (otherwise replaces)
+              </label>
+              <button
+                className="text-xs w-full rounded bg-primary px-3 py-1.5 font-medium text-white transition-colors hover:bg-primary/90 disabled:opacity-50"
+                data-testid="import-json-schema-submit"
+                disabled={!importJsonSchemaText.trim()}
+                onClick={handleImportJsonSchema}
+                type="button"
+              >
+                Import
+              </button>
+            </div>
+          </div>
+        )}
+
         {/* SQL Export Panel */}
-        {showSqlPanel && (
+        {activePanel === 'export-sql' && (
           <div className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950" data-testid="sql-panel">
             <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
               <span className="text-xs font-bold text-white">SQL Export</span>
               <button
                 className="text-xs text-gray-400 hover:text-white"
-                onClick={() => setShowSqlPanel(false)}
+                onClick={() => setActivePanel(null)}
                 type="button"
               >
                 Close
@@ -625,8 +937,78 @@ const DiagramCanvas = () => {
           </div>
         )}
 
+        {/* Mermaid Export Panel */}
+        {activePanel === 'export-mermaid' && (
+          <div className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950" data-testid="mermaid-panel">
+            <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
+              <span className="text-xs font-bold text-white">Mermaid Export</span>
+              <button
+                className="text-xs text-gray-400 hover:text-white"
+                onClick={() => setActivePanel(null)}
+                type="button"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-auto p-3">
+              <pre
+                className="text-xs font-mono break-all whitespace-pre-wrap text-gray-300"
+                data-testid="mermaid-output"
+              >
+                {generatedMermaid || '%% Add tables and relationships to generate Mermaid ER syntax'}
+              </pre>
+            </div>
+
+            <div className="flex flex-wrap gap-2 border-t border-gray-800 px-3 py-2">
+              <CopyButton label="Mermaid" value={generatedMermaid} variant="labeled" />
+              <button
+                className="text-xs rounded bg-gray-800 px-3 py-1.5 font-medium text-gray-300 transition-colors hover:bg-gray-700 disabled:opacity-50"
+                data-testid="open-mermaid-renderer-btn"
+                disabled={!generatedMermaid}
+                onClick={handleOpenInMermaidRenderer}
+                type="button"
+              >
+                Open in Mermaid Renderer
+              </button>
+            </div>
+          </div>
+        )}
+
+        {/* TypeScript Export Panel */}
+        {activePanel === 'export-typescript' && (
+          <div
+            className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950"
+            data-testid="typescript-panel"
+          >
+            <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
+              <span className="text-xs font-bold text-white">TypeScript Export</span>
+              <button
+                className="text-xs text-gray-400 hover:text-white"
+                onClick={() => setActivePanel(null)}
+                type="button"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-auto p-3">
+              <pre
+                className="text-xs font-mono break-all whitespace-pre-wrap text-gray-300"
+                data-testid="typescript-output"
+              >
+                {generatedTypescript || '// Add tables to generate TypeScript types'}
+              </pre>
+            </div>
+
+            <div className="flex gap-2 border-t border-gray-800 px-3 py-2">
+              <CopyButton label="TypeScript" value={generatedTypescript} variant="labeled" />
+            </div>
+          </div>
+        )}
+
         {/* Diagram List Panel */}
-        {showDiagramList && (
+        {activePanel === 'diagram-list' && (
           <div
             className="flex w-72 shrink-0 flex-col border-l border-gray-800 bg-gray-950"
             data-testid="diagram-list-panel"
@@ -635,7 +1017,7 @@ const DiagramCanvas = () => {
               <span className="text-xs font-bold text-white">Diagrams</span>
               <button
                 className="text-xs text-gray-400 hover:text-white"
-                onClick={() => setShowDiagramList(false)}
+                onClick={() => setActivePanel(null)}
                 type="button"
               >
                 Close
@@ -644,7 +1026,7 @@ const DiagramCanvas = () => {
 
             <div className="border-b border-gray-800 px-3 py-2">
               <button
-                className="bg-blue-600 text-xs hover:bg-blue-500 w-full rounded px-3 py-1.5 font-medium text-white transition-colors"
+                className="text-xs w-full rounded bg-primary px-3 py-1.5 font-medium text-white transition-colors hover:bg-primary/90"
                 data-testid="new-diagram-btn"
                 onClick={handleNewDiagram}
                 type="button"
@@ -688,7 +1070,7 @@ const DiagramCanvas = () => {
                     </button>
 
                     <button
-                      className="hover:text-blue-400 text-[10px] text-gray-500"
+                      className="text-[10px] text-gray-500 hover:text-primary"
                       onClick={(e) => {
                         e.stopPropagation()
                         setRenamingId(entry.id)
@@ -700,7 +1082,7 @@ const DiagramCanvas = () => {
                       Rename
                     </button>
                     <button
-                      className="hover:text-red-400 text-[10px] text-gray-500"
+                      className="text-[10px] text-gray-500 hover:text-error"
                       onClick={(e) => {
                         e.stopPropagation()
                         handleDeleteDiagram(entry.id)

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { DiagramIndexEntry, DiagramSchema } from '@/types'
+import type { DiagramIndexEntry, DiagramSchema, DiagramStore } from '@/types'
 
 import {
   deleteDiagram,
@@ -10,6 +10,8 @@ import {
   saveDiagram,
   saveDiagramIndex,
 } from './db-diagram-storage'
+
+const STORAGE_KEY = 'csr-dev-tools-db-diagrams'
 
 const mockStorage = new Map<string, string>()
 
@@ -48,6 +50,10 @@ const makeSampleIndex = (): Array<DiagramIndexEntry> => [
   },
 ]
 
+const setStore = (store: DiagramStore) => {
+  mockStorage.set(STORAGE_KEY, JSON.stringify(store))
+}
+
 describe('db-diagram-storage', () => {
   beforeEach(() => {
     mockStorage.clear()
@@ -71,27 +77,34 @@ describe('db-diagram-storage', () => {
   })
 
   describe('loadDiagramIndex', () => {
-    it('should return empty array when no index exists', () => {
+    it('should return empty array when no store exists', () => {
       expect(loadDiagramIndex()).toEqual([])
     })
 
-    it('should return parsed index from localStorage', () => {
+    it('should return parsed index from store', () => {
       const index = makeSampleIndex()
-      mockStorage.set('csr-dev-tools-db-diagram-index', JSON.stringify(index))
+      setStore({ diagrams: {}, index })
       expect(loadDiagramIndex()).toEqual(index)
     })
 
     it('should return empty array on invalid JSON', () => {
-      mockStorage.set('csr-dev-tools-db-diagram-index', 'invalid-json')
+      mockStorage.set(STORAGE_KEY, 'invalid-json')
       expect(loadDiagramIndex()).toEqual([])
     })
   })
 
   describe('saveDiagramIndex', () => {
-    it('should save index to localStorage', () => {
+    it('should save index within the store', () => {
+      const schema = makeSampleSchema()
+      setStore({ diagrams: { 'diagram-1': schema }, index: [] })
+
       const index = makeSampleIndex()
       saveDiagramIndex(index)
-      expect(localStorageMock.setItem).toHaveBeenCalledWith('csr-dev-tools-db-diagram-index', JSON.stringify(index))
+
+      const stored: DiagramStore = JSON.parse(mockStorage.get(STORAGE_KEY)!)
+      expect(stored.index).toEqual(index)
+      // diagrams should be preserved
+      expect(stored.diagrams['diagram-1']).toEqual(schema)
     })
   })
 
@@ -100,42 +113,54 @@ describe('db-diagram-storage', () => {
       expect(loadDiagram('nonexistent')).toBeNull()
     })
 
-    it('should return parsed diagram from localStorage', () => {
+    it('should return parsed diagram from store', () => {
       const schema = makeSampleSchema()
-      mockStorage.set('csr-dev-tools-db-diagram-diagram-1', JSON.stringify(schema))
+      setStore({ diagrams: { 'diagram-1': schema }, index: [] })
       expect(loadDiagram('diagram-1')).toEqual(schema)
     })
   })
 
   describe('saveDiagram', () => {
-    it('should save diagram to localStorage with correct key', () => {
+    it('should save diagram within the store', () => {
       const schema = makeSampleSchema()
       saveDiagram('diagram-1', schema)
-      expect(localStorageMock.setItem).toHaveBeenCalledWith(
-        'csr-dev-tools-db-diagram-diagram-1',
-        JSON.stringify(schema),
-      )
+
+      const stored: DiagramStore = JSON.parse(mockStorage.get(STORAGE_KEY)!)
+      expect(stored.diagrams['diagram-1']).toEqual(schema)
+    })
+
+    it('should preserve existing diagrams when saving a new one', () => {
+      const schema1 = makeSampleSchema()
+      const schema2 = makeSampleSchema()
+      setStore({ diagrams: { 'diagram-1': schema1 }, index: [] })
+
+      saveDiagram('diagram-2', schema2)
+
+      const stored: DiagramStore = JSON.parse(mockStorage.get(STORAGE_KEY)!)
+      expect(stored.diagrams['diagram-1']).toEqual(schema1)
+      expect(stored.diagrams['diagram-2']).toEqual(schema2)
     })
   })
 
   describe('deleteDiagram', () => {
     it('should remove diagram data and update index', () => {
       const index = makeSampleIndex()
-      mockStorage.set('csr-dev-tools-db-diagram-index', JSON.stringify(index))
-      mockStorage.set('csr-dev-tools-db-diagram-diagram-1', '{}')
+      setStore({ diagrams: { 'diagram-1': makeSampleSchema() }, index })
 
       deleteDiagram('diagram-1')
 
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith('csr-dev-tools-db-diagram-diagram-1')
-      // Index should be updated without the deleted entry
-      const updatedIndex = JSON.parse(mockStorage.get('csr-dev-tools-db-diagram-index') ?? '[]')
-      expect(updatedIndex).toEqual([])
+      const stored: DiagramStore = JSON.parse(mockStorage.get(STORAGE_KEY)!)
+      expect(stored.diagrams['diagram-1']).toBeUndefined()
+      expect(stored.index).toEqual([])
     })
 
-    it('should handle deletion when diagram is not in index', () => {
-      mockStorage.set('csr-dev-tools-db-diagram-index', JSON.stringify([]))
+    it('should handle deletion when diagram is not in store', () => {
+      setStore({ diagrams: {}, index: [] })
       deleteDiagram('nonexistent')
-      expect(localStorageMock.removeItem).toHaveBeenCalledWith('csr-dev-tools-db-diagram-nonexistent')
+
+      const stored: DiagramStore = JSON.parse(mockStorage.get(STORAGE_KEY)!)
+      expect(stored.diagrams).toEqual({})
+      expect(stored.index).toEqual([])
     })
   })
 })

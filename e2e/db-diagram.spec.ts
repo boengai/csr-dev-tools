@@ -71,7 +71,8 @@ test.describe('DB Diagram', () => {
     await page.getByTestId('add-table-btn').click()
     await expect(page.locator('[data-testid^="table-node-"]').first()).toBeVisible({ timeout: 5000 })
 
-    // Open SQL panel
+    // Open SQL panel via Export dropdown
+    await page.getByTestId('export-dropdown-btn').click()
     await page.getByTestId('export-sql-btn').click()
     await expect(page.getByTestId('sql-panel')).toBeVisible()
     await expect(page.getByTestId('sql-output')).toBeVisible()
@@ -86,7 +87,8 @@ test.describe('DB Diagram', () => {
     await page.getByTestId('add-table-btn').click()
     await expect(page.locator('[data-testid^="table-node-"]').first()).toBeVisible({ timeout: 5000 })
 
-    // Open SQL panel
+    // Open SQL panel via Export dropdown
+    await page.getByTestId('export-dropdown-btn').click()
     await page.getByTestId('export-sql-btn').click()
     await expect(page.getByTestId('sql-panel')).toBeVisible()
 
@@ -166,6 +168,110 @@ test.describe('DB Diagram', () => {
     await expect(page.getByTestId('diagram-name')).toHaveText('My Custom Name')
   })
 
+  // Story 27.3 E2E Tests
+
+  test('can import SQL and see tables appear on canvas (AC #1, #2)', async ({ page }) => {
+    await page.getByTestId('import-dropdown-btn').click()
+    await page.getByTestId('import-sql-btn').click()
+    await expect(page.getByTestId('import-sql-panel')).toBeVisible()
+
+    const sqlInput = page.getByTestId('import-sql-textarea')
+    await sqlInput.fill(
+      'CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255));\nCREATE TABLE posts (id INT PRIMARY KEY, user_id INT, FOREIGN KEY (user_id) REFERENCES users(id));',
+    )
+    await page.getByTestId('import-sql-submit').click()
+
+    // Two table nodes should appear
+    await expect(page.locator('[data-testid^="table-node-"]')).toHaveCount(2, { timeout: 5000 })
+  })
+
+  test('import SQL with errors shows partial results + error message (AC #4)', async ({ page }) => {
+    await page.getByTestId('import-dropdown-btn').click()
+    await page.getByTestId('import-sql-btn').click()
+    await expect(page.getByTestId('import-sql-panel')).toBeVisible()
+
+    const sqlInput = page.getByTestId('import-sql-textarea')
+    await sqlInput.fill('CREATE TABLE valid_table (id INT PRIMARY KEY);\nTHIS IS INVALID SQL;')
+    await page.getByTestId('import-sql-submit').click()
+
+    // Should import the valid table
+    await expect(page.locator('[data-testid^="table-node-"]')).toHaveCount(1, { timeout: 5000 })
+
+    // Should show errors
+    await expect(page.getByTestId('import-sql-errors')).toBeVisible()
+  })
+
+  test('can export Mermaid and see valid output (AC #6)', async ({ page }) => {
+    // Add a table first
+    await page.getByTestId('add-table-btn').click()
+    await expect(page.locator('[data-testid^="table-node-"]').first()).toBeVisible({ timeout: 5000 })
+
+    // Open Mermaid panel via Export dropdown
+    await page.getByTestId('export-dropdown-btn').click()
+    await page.getByTestId('export-mermaid-btn').click()
+    await expect(page.getByTestId('mermaid-panel')).toBeVisible()
+    await expect(page.getByTestId('mermaid-output')).toBeVisible()
+
+    const mermaidText = await page.getByTestId('mermaid-output').textContent()
+    expect(mermaidText).toContain('erDiagram')
+  })
+
+  test('can export TypeScript and see valid output (AC #8)', async ({ page }) => {
+    // Add a table first
+    await page.getByTestId('add-table-btn').click()
+    await expect(page.locator('[data-testid^="table-node-"]').first()).toBeVisible({ timeout: 5000 })
+
+    // Open TypeScript panel via Export dropdown
+    await page.getByTestId('export-dropdown-btn').click()
+    await page.getByTestId('export-typescript-btn').click()
+    await expect(page.getByTestId('typescript-panel')).toBeVisible()
+    await expect(page.getByTestId('typescript-output')).toBeVisible()
+
+    const tsText = await page.getByTestId('typescript-output').textContent()
+    expect(tsText).toContain('export type')
+  })
+
+  test('can import JSON Schema and see tables appear on canvas (AC #10)', async ({ page }) => {
+    await page.getByTestId('import-dropdown-btn').click()
+    await page.getByTestId('import-json-schema-btn').click()
+    await expect(page.getByTestId('import-json-schema-panel')).toBeVisible()
+
+    const schemaInput = page.getByTestId('import-json-schema-textarea')
+    await schemaInput.fill(
+      JSON.stringify({
+        definitions: {
+          User: {
+            properties: { email: { type: 'string' }, id: { type: 'integer' }, name: { type: 'string' } },
+            required: ['id', 'email'],
+            type: 'object',
+          },
+        },
+      }),
+    )
+    await page.getByTestId('import-json-schema-submit').click()
+
+    await expect(page.locator('[data-testid^="table-node-"]')).toHaveCount(1, { timeout: 5000 })
+  })
+
+  test('import SQL with merge adds tables alongside existing (AC #5)', async ({ page }) => {
+    // Add a table manually first
+    await page.getByTestId('add-table-btn').click()
+    await expect(page.locator('[data-testid^="table-node-"]')).toHaveCount(1, { timeout: 5000 })
+
+    // Open import SQL panel via Import dropdown and enable merge
+    await page.getByTestId('import-dropdown-btn').click()
+    await page.getByTestId('import-sql-btn').click()
+    await expect(page.getByTestId('import-sql-panel')).toBeVisible()
+    await page.getByTestId('import-sql-merge').check()
+
+    const sqlInput = page.getByTestId('import-sql-textarea')
+    await sqlInput.fill('CREATE TABLE imported_table (id INT PRIMARY KEY);')
+    await page.getByTestId('import-sql-submit').click()
+
+    // Should now have 2 tables (1 existing + 1 imported)
+    await expect(page.locator('[data-testid^="table-node-"]')).toHaveCount(2, { timeout: 5000 })
+  })
+
   test('can export and import JSON (AC #12, #13)', async ({ page }) => {
     // Add a table
     await page.getByTestId('add-table-btn').click()
@@ -178,7 +284,8 @@ test.describe('DB Diagram', () => {
     await nameInput.fill('export_test')
     await nameInput.press('Enter')
 
-    // Export JSON — capture download
+    // Export JSON via Export dropdown — capture download
+    await page.getByTestId('export-dropdown-btn').click()
     const [download] = await Promise.all([
       page.waitForEvent('download'),
       page.getByTestId('export-json-btn').click(),
@@ -190,7 +297,8 @@ test.describe('DB Diagram', () => {
     await page.getByTestId('clear-all-btn').click()
     await expect(page.locator('[data-testid^="table-node-"]')).toHaveCount(0)
 
-    // Import the downloaded JSON
+    // Import the downloaded JSON via Import dropdown
+    await page.getByTestId('import-dropdown-btn').click()
     const fileChooserPromise = page.waitForEvent('filechooser')
     await page.getByTestId('import-json-btn').click()
     const fileChooser = await fileChooserPromise

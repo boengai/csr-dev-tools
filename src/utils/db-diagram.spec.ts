@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { createDefaultColumn, createDefaultTable, generateId } from './db-diagram'
+import { createDefaultColumn, createDefaultTable, generateId, gridLayoutPositions } from './db-diagram'
 
 describe('db-diagram utils', () => {
   describe('generateId', () => {
@@ -45,6 +45,39 @@ describe('db-diagram utils', () => {
     it('should default name to "column" when not provided', () => {
       const col = createDefaultColumn()
       expect(col.name).toBe('column')
+    })
+  })
+
+  describe('gridLayoutPositions', () => {
+    it('should return empty array for count 0', () => {
+      expect(gridLayoutPositions(0)).toEqual([])
+    })
+
+    it('should return single position at origin for count 1', () => {
+      expect(gridLayoutPositions(1)).toEqual([{ x: 0, y: 0 }])
+    })
+
+    it('should lay out 4 items in a 3-column grid', () => {
+      const positions = gridLayoutPositions(4)
+      expect(positions).toEqual([
+        { x: 0, y: 0 },
+        { x: 400, y: 0 },
+        { x: 800, y: 0 },
+        { x: 0, y: 350 },
+      ])
+    })
+
+    it('should wrap to third row for 7 items', () => {
+      const positions = gridLayoutPositions(7)
+      expect(positions).toHaveLength(7)
+      // First row
+      expect(positions[0]).toEqual({ x: 0, y: 0 })
+      expect(positions[2]).toEqual({ x: 800, y: 0 })
+      // Second row
+      expect(positions[3]).toEqual({ x: 0, y: 350 })
+      expect(positions[5]).toEqual({ x: 800, y: 350 })
+      // Third row
+      expect(positions[6]).toEqual({ x: 0, y: 700 })
     })
   })
 

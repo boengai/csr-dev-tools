@@ -35,6 +35,17 @@ export const createDefaultColumn = (name = 'column', isPrimaryKey = false): Tabl
   type: isPrimaryKey ? 'INT' : 'VARCHAR',
 })
 
+export function gridLayoutPositions(count: number): Array<{ x: number; y: number }> {
+  const GRID_COLS = 3
+  const H_SPACING = 400
+  const V_SPACING = 350
+
+  return Array.from({ length: count }, (_, i) => ({
+    x: (i % GRID_COLS) * H_SPACING,
+    y: Math.floor(i / GRID_COLS) * V_SPACING,
+  }))
+}
+
 export const createDefaultTable = (tableCount: number) => {
   const tableName = `table_${tableCount + 1}`
   const idColumn = createDefaultColumn('id', true)

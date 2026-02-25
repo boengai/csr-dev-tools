@@ -71,3 +71,8 @@ export type DiagramSchema = {
     position: { x: number; y: number }
   }>
 }
+
+export type DiagramStore = {
+  diagrams: Record<string, DiagramSchema>
+  index: Array<DiagramIndexEntry>
+}

@@ -10,6 +10,13 @@ import { COLUMN_TYPES } from '@/utils'
 
 export type TableNode = Node<TableNodeData, 'tableNode'>
 
+const CONSTRAINT_COLORS: Record<string, { active: string; inactive: string }> = {
+  error: { active: 'bg-error/15 text-error ring-1 ring-error/30', inactive: 'bg-gray-900 text-gray-500' },
+  info: { active: 'bg-info/15 text-info ring-1 ring-info/30', inactive: 'bg-gray-900 text-gray-500' },
+  success: { active: 'bg-success/15 text-success ring-1 ring-success/30', inactive: 'bg-gray-900 text-gray-500' },
+  warning: { active: 'bg-warning/15 text-warning ring-1 ring-warning/30', inactive: 'bg-gray-900 text-gray-500' },
+}
+
 const ConstraintToggle = ({
   active,
   color,
@@ -17,24 +24,27 @@ const ConstraintToggle = ({
   onClick,
 }: {
   active: boolean
-  color: string
+  color: keyof typeof CONSTRAINT_COLORS
   label: string
   onClick: () => void
-}) => (
-  <button
-    className={`rounded px-1 py-0.5 text-[10px] leading-none font-bold transition-colors ${
-      active ? `${color} text-gray-950` : 'bg-gray-800 text-gray-500'
-    }`}
-    onClick={(e) => {
-      e.stopPropagation()
-      onClick()
-    }}
-    title={label}
-    type="button"
-  >
-    {label}
-  </button>
-)
+}) => {
+  const styles = CONSTRAINT_COLORS[color]
+  return (
+    <button
+      className={`rounded px-1 py-0.5 text-[10px] leading-none font-bold transition-colors ${
+        active ? styles.active : styles.inactive
+      }`}
+      onClick={(e) => {
+        e.stopPropagation()
+        onClick()
+      }}
+      title={label}
+      type="button"
+    >
+      {label}
+    </button>
+  )
+}
 
 export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
   const [editing, setEditing] = useState(false)
@@ -62,11 +72,11 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
 
   return (
     <div
-      className="min-w-[220px] rounded-lg border border-gray-700 bg-gray-900 shadow-lg"
+      className="min-w-[220px] rounded-lg border border-gray-800 bg-gray-950 shadow-lg"
       data-testid={`table-node-${id}`}
     >
       {/* Header */}
-      <div className="flex items-center justify-between rounded-t-lg border-b border-gray-700 bg-gray-800 px-3 py-2">
+      <div className="flex items-center justify-between rounded-t-lg border-b border-gray-800 bg-gray-900 px-3 py-2">
         {editing ? (
           <input
             autoFocus
@@ -85,7 +95,7 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
           />
         ) : (
           <button
-            className="text-sm hover:text-blue-400 font-bold text-white"
+            className="text-sm hover:text-primary font-bold text-white"
             onClick={() => {
               setEditName(data.tableName)
               setEditing(true)
@@ -96,7 +106,7 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
           </button>
         )}
         <button
-          className="hover:text-red-400 ml-2 text-gray-500"
+          className="hover:text-error ml-2 text-gray-500"
           onClick={() => data.onDeleteTable()}
           title="Delete table"
           type="button"
@@ -121,14 +131,14 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
             <div className="flex flex-1 items-center gap-1 pr-2 pl-2">
               {/* Column name */}
               <input
-                className="text-xs w-20 shrink-0 bg-transparent text-gray-300 outline-none focus:text-white"
+                className="text-xs w-20 shrink-0 rounded border border-gray-700 bg-transparent px-1 text-gray-300 outline-none focus:text-white"
                 onChange={(e) => data.onColumnChange(col.id, { name: e.target.value })}
                 value={col.name}
               />
 
               {/* Type dropdown */}
               <select
-                className="h-5 shrink-0 rounded bg-gray-800 px-0.5 text-[10px] text-gray-400 outline-none"
+                className="h-5 shrink-0 rounded border border-gray-700 bg-transparent px-0.5 text-[10px] text-gray-400 outline-none"
                 onChange={(e) => data.onColumnChange(col.id, { type: e.target.value as ColumnType })}
                 value={col.type}
               >
@@ -143,25 +153,25 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
               <div className="flex gap-0.5">
                 <ConstraintToggle
                   active={col.constraints.isPrimaryKey}
-                  color="bg-yellow-500"
+                  color="warning"
                   label="PK"
                   onClick={() => handleConstraintChange(col, 'isPrimaryKey')}
                 />
                 <ConstraintToggle
                   active={col.constraints.isForeignKey}
-                  color="bg-blue-500"
+                  color="info"
                   label="FK"
                   onClick={() => handleConstraintChange(col, 'isForeignKey')}
                 />
                 <ConstraintToggle
                   active={!col.constraints.isNullable}
-                  color="bg-red-500"
+                  color="error"
                   label="NN"
                   onClick={() => handleConstraintChange(col, 'isNullable')}
                 />
                 <ConstraintToggle
                   active={col.constraints.isUnique}
-                  color="bg-green-500"
+                  color="success"
                   label="UQ"
                   onClick={() => handleConstraintChange(col, 'isUnique')}
                 />
@@ -169,7 +179,7 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
 
               {/* Delete column */}
               <button
-                className="hover:text-red-400 ml-auto text-gray-600 opacity-0 transition-opacity group-hover:opacity-100"
+                className="hover:text-error ml-auto text-gray-600 opacity-0 transition-opacity group-hover:opacity-100"
                 onClick={() => data.onDeleteColumn(col.id)}
                 title="Delete column"
                 type="button"
