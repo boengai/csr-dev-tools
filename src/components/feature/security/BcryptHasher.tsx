@@ -285,12 +285,20 @@ export const BcryptHasher = (_props: ToolComponentProps) => {
         items={[
           {
             content: <HashTab onProcessingChange={setProcessing} />,
-            trigger: <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>Hash</button>,
+            trigger: (
+              <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>
+                Hash
+              </button>
+            ),
             value: 'hash',
           },
           {
             content: <VerifyTab onProcessingChange={setProcessing} />,
-            trigger: <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>Verify</button>,
+            trigger: (
+              <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>
+                Verify
+              </button>
+            ),
             value: 'verify',
           },
         ]}

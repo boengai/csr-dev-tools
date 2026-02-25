@@ -394,6 +394,13 @@ const toolRoutes = [
     title: 'Placeholder Image Generator - CSR Dev Tools',
     url: '/tools/placeholder-image-generator',
   },
+  {
+    description:
+      'Convert Protocol Buffer definitions to JSON online. Paste .proto files to browse message types and generate sample JSON structures. 100% client-side Protobuf to JSON converter.',
+    path: '/tools/protobuf-to-json',
+    title: 'Protobuf to JSON - CSR Dev Tools',
+    url: '/tools/protobuf-to-json',
+  },
 ]
 
 // https://vite.dev/config/

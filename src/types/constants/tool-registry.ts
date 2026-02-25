@@ -85,6 +85,7 @@ export type ToolRegistryKey =
   | 'og-preview'
   | 'password-generator'
   | 'placeholder-image-generator'
+  | 'protobuf-to-json'
   | 'px-to-rem'
   | 'qr-code-generator'
   | 'regex-tester'

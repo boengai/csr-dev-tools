@@ -1355,6 +1355,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
       title: 'Placeholder Image Generator - CSR Dev Tools',
     },
   },
+  {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/ProtobufToJson').then(
+        ({ ProtobufToJson }: { ProtobufToJson: ComponentType }) => ({
+          default: ProtobufToJson,
+        }),
+      ),
+    ),
+    description:
+      'Paste .proto definitions and see corresponding JSON structures with default values. Browse message types, nested messages, enums, and repeated fields.',
+    emoji: '📦',
+    key: 'protobuf-to-json',
+    name: 'Protobuf to JSON',
+    routePath: '/tools/protobuf-to-json',
+    seo: {
+      description:
+        'Convert Protocol Buffer definitions to JSON online. Paste .proto files to browse message types and generate sample JSON structures. 100% client-side Protobuf to JSON converter.',
+      title: 'Protobuf to JSON - CSR Dev Tools',
+    },
+  },
 ]
 
 export const CATEGORY_ORDER: Array<ToolCategory> = [
