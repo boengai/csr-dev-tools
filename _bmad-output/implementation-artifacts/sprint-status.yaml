@@ -240,8 +240,8 @@ development_status:
   epic-26-retrospective: done
 
   # Epic 27: Database Diagram Tools
-  epic-27: in-progress
+  epic-27: done
   27-1-db-diagram-canvas-and-entities: done
   27-2-db-diagram-sql-export-and-persistence: done
   27-3-db-diagram-import-and-cross-tool-integration: done
-  epic-27-retrospective: optional
+  epic-27-retrospective: done
