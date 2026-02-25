@@ -225,12 +225,12 @@ development_status:
   epic-24-retrospective: done
 
   # Epic 25: Code & Schema Tools
-  epic-25: in-progress
+  epic-25: done
   25-1-graphql-schema-viewer: done
   25-2-protobuf-to-json: done
   25-3-typescript-playground: done
   25-4-jsonpath-evaluator: done
-  epic-25-retrospective: optional
+  epic-25-retrospective: done
 
   # Epic 26: Time & Diagram Tools
   epic-26: backlog
