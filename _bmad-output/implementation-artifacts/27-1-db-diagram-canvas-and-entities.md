@@ -1,6 +1,6 @@
 # Story 27.1: DB Diagram — Canvas, Table Entities & Relationships
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -52,163 +52,45 @@ so that **I can design and visualize database schemas directly in CSR Dev Tools 
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Install @xyflow/react and set up foundation (AC: #1)
-  - [ ] 1.1 Install `@xyflow/react` package
-  - [ ] 1.2 Add `'db-diagram'` to `ToolRegistryKey` union in `src/types/constants/tool-registry.ts`
-  - [ ] 1.3 Add registry entry to `TOOL_REGISTRY` in `src/constants/tool-registry.ts`:
-    ```typescript
-    {
-      category: 'Data',
-      component: lazy(() =>
-        import('@/components/feature/data/db-diagram').then(
-          ({ DbDiagram }: { DbDiagram: ComponentType }) => ({
-            default: DbDiagram,
-          }),
-        ),
-      ),
-      description: 'Design entity-relationship diagrams with an interactive visual canvas',
-      emoji: '🗄️',
-      key: 'db-diagram',
-      name: 'DB Diagram',
-      routePath: '/tools/db-diagram',
-      seo: {
-        description: 'Design and visualize database entity-relationship diagrams with an interactive canvas. Add tables, define columns, draw relationships — all in the browser.',
-        title: 'DB Diagram - CSR Dev Tools',
-      },
-    }
-    ```
-  - [ ] 1.4 Create `src/components/feature/data/db-diagram/` directory structure
+- [x] Task 1: Install @xyflow/react and set up foundation (AC: #1)
+  - [x] 1.1 Install `@xyflow/react` package
+  - [x] 1.2 Add `'db-diagram'` to `ToolRegistryKey` union in `src/types/constants/tool-registry.ts`
+  - [x] 1.3 Add registry entry to `TOOL_REGISTRY` in `src/constants/tool-registry.ts`
+  - [x] 1.4 Create `src/components/feature/data/db-diagram/` directory structure
 
-- [ ] Task 2: Define types (AC: all)
-  - [ ] 2.1 Create `src/types/utils/db-diagram.ts` (follows existing pattern: `crop.ts`, `diff.ts`, `image.ts`):
-    ```typescript
-    export type ColumnType = 'INT' | 'BIGINT' | 'SERIAL' | 'VARCHAR' | 'TEXT' | 'BOOLEAN' | 'DATE' | 'TIMESTAMP' | 'FLOAT' | 'DECIMAL' | 'UUID' | 'JSON' | 'BLOB'
+- [x] Task 2: Define types (AC: all)
+  - [x] 2.1 Create `src/types/utils/db-diagram.ts`
+  - [x] 2.2 Export from barrel: add `export * from './db-diagram'` to `src/types/utils/index.ts`
 
-    export type ColumnConstraint = {
-      isPrimaryKey: boolean
-      isForeignKey: boolean
-      isNullable: boolean
-      isUnique: boolean
-    }
+- [x] Task 3: Create TableNode custom node component (AC: #2, #3, #4, #5, #8)
+  - [x] 3.1 Create `src/components/feature/data/db-diagram/TableNode.tsx`
+  - [x] 3.2 Define `nodeTypes` object outside component: `{ tableNode: TableNodeComponent }`
 
-    export type TableColumn = {
-      id: string
-      name: string
-      type: ColumnType
-      constraints: ColumnConstraint
-    }
+- [x] Task 4: Create RelationshipEdge custom edge component (AC: #6, #7)
+  - [x] 4.1 Create `src/components/feature/data/db-diagram/RelationshipEdge.tsx`
+  - [x] 4.2 Define `edgeTypes` object outside component: `{ relationship: RelationshipEdgeComponent }`
 
-    export type TableNodeData = {
-      tableName: string
-      columns: Array<TableColumn>
-      onTableNameChange: (name: string) => void
-      onAddColumn: () => void
-      onColumnChange: (columnId: string, updates: Partial<TableColumn>) => void
-      onDeleteColumn: (columnId: string) => void
-      onDeleteTable: () => void
-    }
+- [x] Task 5: Create main DbDiagram component (AC: #1, #2, #6, #9, #10)
+  - [x] 5.1 Create `src/components/feature/data/db-diagram/DbDiagram.tsx`
+  - [x] 5.2 Implement `onConnect` callback
+  - [x] 5.3 Implement table CRUD operations
+  - [x] 5.4 Implement relationship cardinality change via CustomEvent
+  - [x] 5.5 ReactFlow container sizing with flex layout
 
-    export type RelationshipType = '1:1' | '1:N' | 'N:M'
+- [x] Task 6: Create barrel export and index (AC: all)
+  - [x] 6.1 Create `src/components/feature/data/db-diagram/index.ts` exporting `DbDiagram`
+  - [x] 6.2 Update `src/components/feature/data/index.ts` to include db-diagram export
 
-    export type RelationshipEdgeData = {
-      relationType: RelationshipType
-      sourceColumnId: string
-      targetColumnId: string
-    }
+- [x] Task 7: Import React Flow CSS (AC: #1)
+  - [x] 7.1 Import `@xyflow/react/dist/style.css` in the DbDiagram component file
 
-    // Forward-compatible schema type — defined now for Story 27.2 persistence.
-    // Not used in 27.1 implementation. Do NOT implement serialization in this story.
-    export type DiagramSchema = {
-      tables: Array<{
-        id: string
-        name: string
-        columns: Array<TableColumn>
-        position: { x: number; y: number }
-      }>
-      relationships: Array<{
-        id: string
-        sourceTableId: string
-        sourceColumnId: string
-        targetTableId: string
-        targetColumnId: string
-        relationType: RelationshipType
-      }>
-    }
-    ```
-  - [ ] 2.2 Export from barrel: add `export * from './db-diagram'` to `src/types/utils/index.ts`
+- [x] Task 8: Unit tests (AC: all)
+  - [x] 8.1 Create `src/utils/db-diagram.spec.ts` with 8 tests for generateId, createDefaultColumn, createDefaultTable
+  - [x] 8.2 React Flow canvas interactions covered by E2E
 
-- [ ] Task 3: Create TableNode custom node component (AC: #2, #3, #4, #5, #8)
-  - [ ] 3.1 Create `src/components/feature/data/db-diagram/TableNode.tsx`:
-    - Renders a card-like node with dark theme styling consistent with project
-    - Table name as editable header (click to edit, Enter/blur to save)
-    - Column rows with: name (editable text), type (select dropdown), constraint toggles (PK/FK/Nullable/Unique as small icons)
-    - "Add Column" button at bottom
-    - Delete table button (X) in header
-    - Delete column button (X) per row
-    - Left-side `<Handle type="target">` and right-side `<Handle type="source">` per column row, with `id={columnId}`
-    - Use `tv()` for styling variants consistent with project design system
-  - [ ] 3.2 Define `nodeTypes` object outside component: `{ tableNode: TableNode }`
-
-- [ ] Task 4: Create RelationshipEdge custom edge component (AC: #6, #7)
-  - [ ] 4.1 Create `src/components/feature/data/db-diagram/RelationshipEdge.tsx`:
-    - Uses `BaseEdge` + `getSmoothStepPath` for orthogonal right-angle connectors
-    - `EdgeLabelRenderer` shows cardinality badge (1:1, 1:N, N:M)
-    - Click on label opens a small dropdown to change cardinality — dispatch change via a custom event or callback ref pattern (do NOT store callbacks in edge `data` — React Flow diffs edge data by reference, causing stale closures)
-    - Edge styled with project colors (gray-500 stroke, hover highlight)
-  - [ ] 4.2 Define `edgeTypes` object outside component: `{ relationship: RelationshipEdge }`
-
-- [ ] Task 5: Create main DbDiagram component (AC: #1, #2, #6, #9, #10)
-  - [ ] 5.1 Create `src/components/feature/data/db-diagram/DbDiagram.tsx`:
-    - Named export: `export const DbDiagram = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {}`
-    - Opens in Dialog with `size="screen"` (same pattern as CssAnimationBuilder)
-    - Inside Dialog: toolbar at top + ReactFlow canvas filling remaining space
-    - Toolbar contains: "Add Table" button, "Fit View" button, "Clear All" button
-    - ReactFlow props: `nodeTypes`, `edgeTypes`, `onConnect` handler, `fitView`, dark theme via `colorMode="dark"`
-    - Include `<Controls />`, `<MiniMap />`, `<Background variant={BackgroundVariant.Dots} />`
-    - Manage nodes/edges state with `useNodesState` and `useEdgesState` from @xyflow/react
-  - [ ] 5.2 Implement `onConnect` callback:
-    - Creates a new relationship edge when user drags between handles
-    - Default cardinality: `'1:N'`
-    - Edge type: `'relationship'`
-  - [ ] 5.3 Implement table CRUD operations:
-    - `handleAddTable`: Creates new node at center of visible viewport using `useReactFlow().screenToFlowPosition()` — do NOT hardcode `{x: 0, y: 0}` or nodes will always appear at canvas origin
-    - `handleDeleteTable`: Removes node + all connected edges
-    - `handleTableNameChange`: Updates node data
-    - `handleAddColumn`: Adds column to node data
-    - `handleColumnChange`: Updates column in node data
-    - `handleDeleteColumn`: Removes column + connected edges
-  - [ ] 5.4 Implement relationship cardinality change:
-    - `handleRelationTypeChange(edgeId, newType)`: Updates edge data via `setEdges` — the main component manages this, RelationshipEdge communicates via a callback prop passed through a React context or a ref-based approach (NOT via edge `data` callbacks)
-  - [ ] 5.5 **ReactFlow container sizing**: The `<ReactFlow>` parent div MUST have explicit dimensions (`h-full w-full` with a flex parent that has a defined height). Inside the Dialog with `size="screen"`, use `<div className="flex h-full flex-col">` as wrapper, with the toolbar as `shrink-0` and the ReactFlow container as `flex-1`
-
-- [ ] Task 6: Create barrel export and index (AC: all)
-  - [ ] 6.1 Create `src/components/feature/data/db-diagram/index.ts` exporting `DbDiagram`
-  - [ ] 6.2 Update `src/components/feature/data/index.ts` to include db-diagram export
-
-- [ ] Task 7: Import React Flow CSS (AC: #1)
-  - [ ] 7.1 Import `@xyflow/react/dist/style.css` in the DbDiagram component file (NOT globally — keep it scoped to this lazy-loaded chunk)
-
-- [ ] Task 8: Unit tests (AC: all)
-  - [ ] 8.1 Create `src/utils/db-diagram.spec.ts` with tests for:
-    - Default table generation logic (correct name incrementing, default column)
-    - Column ID generation uniqueness
-    - Any pure helper functions extracted to `src/utils/db-diagram.ts` (e.g., `createDefaultTable`, `createDefaultColumn`, `generateId`)
-  - [ ] 8.2 Note: React Flow canvas interactions are covered by E2E, not unit tests. Do NOT write serialization tests — that's Story 27.2 scope.
-
-- [ ] Task 9: E2E test (AC: #1, #2, #3, #4, #6, #8)
-  - [ ] 9.1 Create `e2e/db-diagram.spec.ts`:
-    - Tool loads and shows canvas (verify `.react-flow` container visible)
-    - Can add a table and see it on canvas (click `[data-testid="add-table-btn"]`, verify node appears)
-    - Can edit table name (click table header text, type new name, blur)
-    - Can add columns to a table (click add-column button in node)
-    - Can delete a table (click delete button on node header)
-    - Responsive: canvas renders at 375px viewport
-  - [ ] 9.2 Add `data-testid` attributes to key interactive elements:
-    - `data-testid="add-table-btn"` on toolbar Add Table button
-    - `data-testid="fit-view-btn"` on toolbar Fit View button
-    - `data-testid="clear-all-btn"` on toolbar Clear All button
-    - `data-testid="table-node-{id}"` on each table node wrapper
-    - Note: React Flow canvas drag/connect interactions are complex in Playwright — test basic CRUD, defer drag-to-connect E2E to manual testing
+- [x] Task 9: E2E test (AC: #1, #2, #3, #4, #8)
+  - [x] 9.1 Create `e2e/db-diagram.spec.ts` with 6 tests
+  - [x] 9.2 Add `data-testid` attributes to key interactive elements
 
 ## Dev Notes
 
@@ -328,10 +210,51 @@ Recent commits show consistent patterns:
 
 ### Agent Model Used
 
-{{agent_model_name_version}}
+Claude Opus 4.6
 
 ### Debug Log References
 
+- Fixed Tailwind v4 important syntax: `!class` -> `class!` for Handle styling
+- Fixed TypeScript `addEdge` return type mismatch: cast `addEdge()` result to `Array<RelationshipEdge>`
+- Removed unused `sourceHandleId`/`targetHandleId` props from RelationshipEdgeComponent
+- Added explicit `import { describe, expect, it } from 'vitest'` to spec file (required for `tsc -b`)
+- E2E tests: adapted for `autoOpen` behavior where Dialog opens immediately, making content behind `aria-hidden`
+
 ### Completion Notes List
 
+- Installed `@xyflow/react` v12.10.1
+- Created full DB Diagram tool with interactive canvas: add/edit/delete tables, add/edit/delete columns, draw relationships, change cardinality
+- TableNode supports inline name editing, column type dropdown (13 SQL types), constraint toggles (PK/FK/NN/UQ)
+- RelationshipEdge uses CustomEvent for cardinality changes (avoids stale closures per dev notes rule #8)
+- `nodeTypes` and `edgeTypes` defined outside components (per dev notes rule #1)
+- ReactFlow CSS imported in component file, not globally (per dev notes rule #2)
+- All 1350 unit tests pass (8 new db-diagram tests), 0 regressions
+- All 6 E2E tests pass (canvas, add table, edit name, add columns, delete table, responsive)
+- Build succeeds with no TypeScript errors
+- Lint passes with 0 errors (only pre-existing warnings)
+
+### Change Log
+
+- 2026-02-25: Story 27.1 implemented — DB Diagram canvas with table entities and relationships
+- 2026-02-25: Code review fixes — formatting (oxfmt), type field ordering, placeholder callback clarity, data-testid on edge labels, corrected E2E AC coverage claim
+
 ### File List
+
+New files:
+- src/components/feature/data/db-diagram/DbDiagram.tsx
+- src/components/feature/data/db-diagram/TableNode.tsx
+- src/components/feature/data/db-diagram/RelationshipEdge.tsx
+- src/components/feature/data/db-diagram/index.ts
+- src/types/utils/db-diagram.ts
+- src/utils/db-diagram.ts
+- src/utils/db-diagram.spec.ts
+- e2e/db-diagram.spec.ts
+
+Modified files:
+- src/constants/tool-registry.ts (added db-diagram registry entry)
+- src/types/constants/tool-registry.ts (added 'db-diagram' to ToolRegistryKey union)
+- src/types/utils/index.ts (added db-diagram barrel export)
+- src/utils/index.ts (added db-diagram barrel export)
+- src/components/feature/data/index.ts (added db-diagram barrel export)
+- package.json (added @xyflow/react dependency)
+- pnpm-lock.yaml (updated lockfile)

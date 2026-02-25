@@ -1,0 +1,1 @@
+export { DbDiagram } from './DbDiagram'

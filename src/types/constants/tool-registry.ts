@@ -56,6 +56,7 @@ export type ToolRegistryKey =
   | 'css-gradient-generator'
   | 'css-grid-playground'
   | 'data-uri-generator'
+  | 'db-diagram'
   | 'env-file-converter'
   | 'escaped-json-stringifier'
   | 'favicon-generator'

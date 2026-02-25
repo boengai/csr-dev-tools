@@ -1385,6 +1385,24 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Data',
     component: lazy(() =>
+      import('@/components/feature/data/db-diagram').then(({ DbDiagram }: { DbDiagram: ComponentType }) => ({
+        default: DbDiagram,
+      })),
+    ),
+    description: 'Design entity-relationship diagrams with an interactive visual canvas',
+    emoji: '🗄️',
+    key: 'db-diagram',
+    name: 'DB Diagram',
+    routePath: '/tools/db-diagram',
+    seo: {
+      description:
+        'Design and visualize database entity-relationship diagrams with an interactive canvas. Add tables, define columns, draw relationships — all in the browser.',
+      title: 'DB Diagram - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Data',
+    component: lazy(() =>
       import('@/components/feature/data/EnvFileConverter').then(
         ({ EnvFileConverter }: { EnvFileConverter: ComponentType }) => ({
           default: EnvFileConverter,

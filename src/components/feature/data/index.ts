@@ -1,4 +1,5 @@
 export * from './DataUriGenerator'
+export * from './db-diagram'
 export * from './EnvFileConverter'
 export * from './EscapedJsonStringifier'
 export * from './HtmlEntityConverter'
