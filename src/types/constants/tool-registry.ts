@@ -98,6 +98,7 @@ export type ToolRegistryKey =
   | 'text-case-converter'
   | 'text-diff-checker'
   | 'text-sort-dedupe'
+  | 'timezone-converter'
   | 'toml-to-json-converter'
   | 'typescript-playground'
   | 'unix-timestamp'

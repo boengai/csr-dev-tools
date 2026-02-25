@@ -1150,6 +1150,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Time',
+    component: lazy(() =>
+      import('@/components/feature/time/TimezoneConverter').then(
+        ({ TimezoneConverter }: { TimezoneConverter: ComponentType }) => ({
+          default: TimezoneConverter,
+        }),
+      ),
+    ),
+    description:
+      'Convert date and time between timezones with searchable timezone selection, multiple simultaneous targets, and favorites. Handles DST automatically.',
+    emoji: '🌍',
+    key: 'timezone-converter',
+    name: 'Timezone Converter',
+    routePath: '/tools/timezone-converter',
+    seo: {
+      description:
+        'Convert date and time between IANA timezones online. Search by city, abbreviation (PST, EST), or region. Multiple timezone comparison, DST-aware, 100% client-side.',
+      title: 'Timezone Converter - CSR Dev Tools',
+    },
+  },
+  {
     category: 'CSS',
     component: lazy(() =>
       import('@/components/feature/css/BorderRadiusGenerator').then(

@@ -363,6 +363,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Convert date and time between IANA timezones online. Search by city, abbreviation (PST, EST), or region. Multiple timezone comparison, DST-aware, 100% client-side.',
+    path: '/tools/timezone-converter',
+    title: 'Timezone Converter - CSR Dev Tools',
+    url: '/tools/timezone-converter',
+  },
+  {
+    description:
       'Convert any file to a data URI for embedding in HTML/CSS. Decode data URIs back to files. Supports images, fonts, SVGs, and more. Free online data URI tool.',
     path: '/tools/data-uri-generator',
     title: 'Data URI Generator - CSR Dev Tools',

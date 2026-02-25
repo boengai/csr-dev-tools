@@ -147,7 +147,7 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
     <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <div className="flex flex-col gap-4 md:flex-row">
+      <div className="md:flex-row flex flex-col gap-4">
         {/* Left Panel: JSON Input */}
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <h3 className="text-body-sm font-semibold text-gray-100">JSON Input</h3>
@@ -234,7 +234,9 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
                 <p className="text-body-xs text-gray-500">Enter a JSONPath expression to see results</p>
               )}
 
-              {parsedData == null && !parseError && <p className="text-body-xs text-gray-500">Paste JSON to get started</p>}
+              {parsedData == null && !parseError && (
+                <p className="text-body-xs text-gray-500">Paste JSON to get started</p>
+              )}
             </div>
           </div>
 
