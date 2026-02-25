@@ -1,6 +1,6 @@
 # Story 27.2: DB Diagram — SQL Export & Persistence
 
-Status: ready-for-dev
+Status: done
 
 ## Story
 
@@ -67,8 +67,8 @@ so that **I can generate real database schemas from my visual designs and resume
 
 ## Tasks / Subtasks
 
-- [ ] Task 1: Create SQL generation utility (AC: #1, #2)
-  - [ ] 1.1 Create `src/utils/db-diagram-sql.ts` with pure functions:
+- [x] Task 1: Create SQL generation utility (AC: #1, #2)
+  - [x] 1.1 Create `src/utils/db-diagram-sql.ts` with pure functions:
     ```typescript
     export type SqlDialect = 'postgresql' | 'mysql' | 'sqlite'
 
@@ -77,7 +77,7 @@ so that **I can generate real database schemas from my visual designs and resume
     export function mapColumnType(type: ColumnType, dialect: SqlDialect): string
     export function generateForeignKeys(relationships: Array<DiagramRelationship>, dialect: SqlDialect): string
     ```
-  - [ ] 1.2 Implement dialect-specific type mappings:
+  - [x] 1.2 Implement dialect-specific type mappings:
     | ColumnType | PostgreSQL | MySQL | SQLite |
     |------------|-----------|-------|--------|
     | INT | `INTEGER` | `INT` | `INTEGER` |
@@ -93,27 +93,27 @@ so that **I can generate real database schemas from my visual designs and resume
     | UUID | `UUID` | `CHAR(36)` | `TEXT` |
     | JSON | `JSONB` | `JSON` | `TEXT` |
     | BLOB | `BYTEA` | `BLOB` | `BLOB` |
-  - [ ] 1.3 Implement constraint generation:
+  - [x] 1.3 Implement constraint generation:
     - PRIMARY KEY: `PRIMARY KEY` (inline for single column, table-level for composite)
     - FOREIGN KEY: `REFERENCES {table}({column})` for PostgreSQL/MySQL, `REFERENCES {table}({column})` for SQLite
     - NOT NULL: `NOT NULL` (all dialects)
     - UNIQUE: `UNIQUE` (all dialects)
-  - [ ] 1.4 Implement MySQL-specific: add `ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;` to table suffix
-  - [ ] 1.5 Generate SQL in dependency order — tables referenced by FKs are created first (topological sort)
+  - [x] 1.4 Implement MySQL-specific: add `ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;` to table suffix
+  - [x] 1.5 Generate SQL in dependency order — tables referenced by FKs are created first (topological sort)
 
-- [ ] Task 2: Create serialization utility (AC: #5, #7, #12, #13)
-  - [ ] 2.1 Create `src/utils/db-diagram-persistence.ts`:
+- [x] Task 2: Create serialization utility (AC: #5, #7, #12, #13)
+  - [x] 2.1 Create `src/utils/db-diagram-persistence.ts`:
     ```typescript
     export function serializeDiagram(nodes: Array<Node>, edges: Array<Edge>): DiagramSchema
     export function deserializeDiagram(schema: DiagramSchema): { nodes: Array<Node>, edges: Array<Edge> }
     export function validateDiagramSchema(data: unknown): data is DiagramSchema
     ```
-  - [ ] 2.2 `serializeDiagram`: Extract table data + positions from React Flow nodes, relationship data from edges. Strip callback functions — store only serializable data.
-  - [ ] 2.3 `deserializeDiagram`: Reconstruct React Flow nodes/edges from schema. Callbacks are NOT stored — they're re-attached by the component after deserialization.
-  - [ ] 2.4 `validateDiagramSchema`: Runtime validation for imported JSON — check required fields, types, referential integrity (FK references exist).
+  - [x] 2.2 `serializeDiagram`: Extract table data + positions from React Flow nodes, relationship data from edges. Strip callback functions — store only serializable data.
+  - [x] 2.3 `deserializeDiagram`: Reconstruct React Flow nodes/edges from schema. Callbacks are NOT stored — they're re-attached by the component after deserialization.
+  - [x] 2.4 `validateDiagramSchema`: Runtime validation for imported JSON — check required fields, types, referential integrity (FK references exist).
 
-- [ ] Task 3: Implement localStorage persistence (AC: #5, #6, #7, #8, #9, #10, #11)
-  - [ ] 3.1 Create `src/utils/db-diagram-storage.ts`:
+- [x] Task 3: Implement localStorage persistence (AC: #5, #6, #7, #8, #9, #10, #11)
+  - [x] 3.1 Create `src/utils/db-diagram-storage.ts`:
     ```typescript
     const INDEX_KEY = 'csr-dev-tools-db-diagram-index'
     const DIAGRAM_KEY_PREFIX = 'csr-dev-tools-db-diagram-'
@@ -133,40 +133,40 @@ so that **I can generate real database schemas from my visual designs and resume
     export function deleteDiagram(id: string): void
     export function generateDiagramId(): string
     ```
-  - [ ] 3.2 Storage pattern: lightweight index key stores manifest (names, timestamps, IDs). Actual diagram data in separate keys (`csr-dev-tools-db-diagram-{id}`). This matches the architecture discussed in party mode.
-  - [ ] 3.3 Key naming follows project convention: `'csr-dev-tools-{tool-key}-{data-name}'` (see TimezoneConverter `FAVORITES_KEY` pattern).
+  - [x] 3.2 Storage pattern: lightweight index key stores manifest (names, timestamps, IDs). Actual diagram data in separate keys (`csr-dev-tools-db-diagram-{id}`). This matches the architecture discussed in party mode.
+  - [x] 3.3 Key naming follows project convention: `'csr-dev-tools-{tool-key}-{data-name}'` (see TimezoneConverter `FAVORITES_KEY` pattern).
 
-- [ ] Task 4: Add toolbar SQL export controls to DbDiagram (AC: #1, #2, #3, #4)
-  - [ ] 4.1 Add "Export SQL" button to toolbar → opens a side panel or bottom panel (NOT a separate Dialog — keep the canvas visible)
-  - [ ] 4.2 SQL panel contains:
+- [x] Task 4: Add toolbar SQL export controls to DbDiagram (AC: #1, #2, #3, #4)
+  - [x] 4.1 Add "Export SQL" button to toolbar → opens a side panel or bottom panel (NOT a separate Dialog — keep the canvas visible)
+  - [x] 4.2 SQL panel contains:
     - Dialect selector: `<SelectInput>` with options PostgreSQL (default), MySQL, SQLite
     - Read-only code output area showing generated SQL (use `<pre>` with monospace, or a `<TextAreaInput>` with `readOnly`)
     - `<CopyButton value={generatedSql} />` for clipboard copy
     - "Download .sql" button using `file.ts` download utility
-  - [ ] 4.3 SQL regenerates reactively when dialect changes (no debounce needed — generation is synchronous and fast)
+  - [x] 4.3 SQL regenerates reactively when dialect changes (no debounce needed — generation is synchronous and fast)
 
-- [ ] Task 5: Add diagram management UI to DbDiagram (AC: #6, #9, #10, #11)
-  - [ ] 5.1 Add diagram name display in the toolbar (editable on click, like table name pattern)
-  - [ ] 5.2 Add "Diagrams" button to toolbar → opens a sidebar panel listing saved diagrams
-  - [ ] 5.3 Diagram list shows: name, last modified (relative time like "2 min ago"), table count badge
-  - [ ] 5.4 Each list item has: click to load, rename icon, delete icon (with confirmation via `window.confirm`)
-  - [ ] 5.5 "New Diagram" button at top of list panel
-  - [ ] 5.6 Current diagram highlighted in list
+- [x] Task 5: Add diagram management UI to DbDiagram (AC: #6, #9, #10, #11)
+  - [x] 5.1 Add diagram name display in the toolbar (editable on click, like table name pattern)
+  - [x] 5.2 Add "Diagrams" button to toolbar → opens a sidebar panel listing saved diagrams
+  - [x] 5.3 Diagram list shows: name, last modified (relative time like "2 min ago"), table count badge
+  - [x] 5.4 Each list item has: click to load, rename icon, delete icon (with confirmation via `window.confirm`)
+  - [x] 5.5 "New Diagram" button at top of list panel
+  - [x] 5.6 Current diagram highlighted in list
 
-- [ ] Task 6: Implement autosave (AC: #8)
-  - [ ] 6.1 Use `useDebounceCallback` from `@/hooks` with 1000ms delay
-  - [ ] 6.2 Trigger on any nodes/edges state change (use `useEffect` watching nodes and edges arrays)
-  - [ ] 6.3 On autosave: serialize diagram → save to localStorage → update index entry (name, updatedAt, tableCount)
-  - [ ] 6.4 Show subtle save indicator in toolbar (e.g., "Saved" text that appears briefly, or a small check icon)
-  - [ ] 6.5 On first canvas modification with no active diagram: auto-create a new diagram entry
+- [x] Task 6: Implement autosave (AC: #8)
+  - [x] 6.1 Use `useDebounceCallback` from `@/hooks` with 1000ms delay
+  - [x] 6.2 Trigger on any nodes/edges state change (use `useEffect` watching nodes and edges arrays)
+  - [x] 6.3 On autosave: serialize diagram → save to localStorage → update index entry (name, updatedAt, tableCount)
+  - [x] 6.4 Show subtle save indicator in toolbar (e.g., "Saved" text that appears briefly, or a small check icon)
+  - [x] 6.5 On first canvas modification with no active diagram: auto-create a new diagram entry
 
-- [ ] Task 7: Add JSON export/import (AC: #12, #13)
-  - [ ] 7.1 "Export JSON" button in toolbar: serialize current diagram → download as `{diagram-name}.json`
-  - [ ] 7.2 "Import JSON" button in toolbar: use file input → read JSON → validate with `validateDiagramSchema` → deserialize → load onto canvas
-  - [ ] 7.3 On invalid JSON import: show error toast with `useToast({ action: 'add', item: { label: 'Invalid diagram file. Expected a CSR Dev Tools diagram JSON.', type: 'error' } })`
+- [x] Task 7: Add JSON export/import (AC: #12, #13)
+  - [x] 7.1 "Export JSON" button in toolbar: serialize current diagram → download as `{diagram-name}.json`
+  - [x] 7.2 "Import JSON" button in toolbar: use file input → read JSON → validate with `validateDiagramSchema` → deserialize → load onto canvas
+  - [x] 7.3 On invalid JSON import: show error toast with `useToast({ action: 'add', item: { label: 'Invalid diagram file. Expected a CSR Dev Tools diagram JSON.', type: 'error' } })`
 
-- [ ] Task 8: Add types for new features (AC: all)
-  - [ ] 8.1 Add to `src/types/utils/db-diagram.ts`:
+- [x] Task 8: Add types for new features (AC: all)
+  - [x] 8.1 Add to `src/types/utils/db-diagram.ts`:
     ```typescript
     export type SqlDialect = 'postgresql' | 'mysql' | 'sqlite'
 
@@ -179,8 +179,8 @@ so that **I can generate real database schemas from my visual designs and resume
     }
     ```
 
-- [ ] Task 9: Unit tests (AC: #1, #2, #5, #7, #12)
-  - [ ] 9.1 Create `src/utils/db-diagram-sql.spec.ts`:
+- [x] Task 9: Unit tests (AC: #1, #2, #5, #7, #12)
+  - [x] 9.1 Create `src/utils/db-diagram-sql.spec.ts`:
     - Generates valid PostgreSQL CREATE TABLE for single table with PK
     - Generates valid MySQL CREATE TABLE with AUTO_INCREMENT and ENGINE=InnoDB
     - Generates valid SQLite CREATE TABLE with AUTOINCREMENT
@@ -189,20 +189,20 @@ so that **I can generate real database schemas from my visual designs and resume
     - Handles tables with no columns (edge case)
     - Generates tables in FK dependency order (topological sort)
     - N:M relationships generate a junction table
-  - [ ] 9.2 Create `src/utils/db-diagram-persistence.spec.ts`:
+  - [x] 9.2 Create `src/utils/db-diagram-persistence.spec.ts`:
     - Serializes nodes/edges to DiagramSchema correctly
     - Deserializes DiagramSchema back to nodes/edges
     - Round-trip: serialize → deserialize produces equivalent state
     - Validates valid schema returns true
     - Rejects schema with missing fields
     - Rejects schema with invalid FK references
-  - [ ] 9.3 Create `src/utils/db-diagram-storage.spec.ts`:
+  - [x] 9.3 Create `src/utils/db-diagram-storage.spec.ts`:
     - CRUD operations on localStorage (mock `localStorage` in tests)
     - Index stays in sync with diagram data
     - Delete removes both index entry and diagram data
 
-- [ ] Task 10: E2E test additions (AC: #1, #3, #5, #6, #7)
-  - [ ] 10.1 Update `e2e/db-diagram.spec.ts`:
+- [x] Task 10: E2E test additions (AC: #1, #3, #5, #6, #7)
+  - [x] 10.1 Update `e2e/db-diagram.spec.ts`:
     - Can export SQL and copy to clipboard
     - Can switch dialect and see SQL change
     - Diagram persists after page reload (autosave → reload → diagram restored)
@@ -328,10 +328,51 @@ src/components/feature/data/db-diagram/DbDiagram.tsx — Add SQL export panel, d
 
 ### Agent Model Used
 
-{{agent_model_name_version}}
+Claude Opus 4.6
 
 ### Debug Log References
 
+None — clean implementation with no blocking issues.
+
 ### Completion Notes List
 
+- **Task 1 (SQL Generation):** Created `db-diagram-sql.ts` with pure functions for SQL DDL generation. Supports PostgreSQL, MySQL, SQLite dialects with correct type mappings for all 13 column types. Implements topological sort for FK dependency ordering and automatic junction table generation for N:M relationships. MySQL-specific ENGINE=InnoDB suffix implemented.
+- **Task 2 (Serialization):** Created `db-diagram-persistence.ts` with `serializeDiagram`, `deserializeDiagram`, and `validateDiagramSchema`. Correctly strips callback functions during serialization and reconstructs React Flow handle IDs during deserialization. Validates referential integrity of FK references in imported schemas.
+- **Task 3 (localStorage Persistence):** Created `db-diagram-storage.ts` with index + individual diagram storage pattern. Keys follow project convention (`csr-dev-tools-db-diagram-*`). Index stores lightweight manifest, individual diagrams stored separately.
+- **Task 4 (SQL Export Panel):** Added side panel with dialect selector (native `<select>`), read-only SQL output, CopyButton integration, and .sql file download. Panel opens alongside canvas (not in dialog).
+- **Task 5 (Diagram Management):** Added diagram list sidebar with name, relative time, table count. Supports load, rename (inline edit), delete (with confirm), and New Diagram. Editable diagram name in toolbar.
+- **Task 6 (Autosave):** Used project's `useDebounceCallback` with 1000ms delay. Triggers on nodes/edges state changes. Auto-creates diagram entry on first modification. Shows "Saved" indicator briefly. Handles QuotaExceededError with toast.
+- **Task 7 (JSON Export/Import):** Export serializes diagram to JSON and downloads via Blob URL. Import uses file input, validates schema with `validateDiagramSchema`, shows error toast on invalid files.
+- **Task 8 (Types):** Added `SqlDialect` and `DiagramIndexEntry` types to `src/types/utils/db-diagram.ts`.
+- **Task 9 (Unit Tests):** Created 3 test files with comprehensive coverage: SQL generation (24 tests), persistence/serialization (13 tests), localStorage storage (11 tests). All 1398 tests pass.
+- **Task 10 (E2E Tests):** Added 7 new E2E tests covering SQL export, dialect switching, autosave persistence, diagram management, rename, and JSON round-trip.
+
+### Implementation Notes
+
+- Used native `<select>` for dialect selector instead of Radix `SelectInput` to avoid z-index/portal issues inside the ReactFlow dialog panel
+- Download utility extracted to shared `downloadTextFile` in `src/utils/file.ts` (same Blob URL + anchor click pattern as `mermaid-renderer.ts`)
+- Topological sort uses Kahn's algorithm (BFS-based) for FK dependency ordering
+- N:M junction tables named `{source}_{target}` with composite primary key
+
 ### File List
+
+**New files:**
+- src/utils/db-diagram-sql.ts
+- src/utils/db-diagram-sql.spec.ts
+- src/utils/db-diagram-persistence.ts
+- src/utils/db-diagram-persistence.spec.ts
+- src/utils/db-diagram-storage.ts
+- src/utils/db-diagram-storage.spec.ts
+
+**Modified files:**
+- src/types/utils/db-diagram.ts (added SqlDialect, DiagramIndexEntry types)
+- src/utils/index.ts (added barrel exports for new modules)
+- src/utils/file.ts (added shared downloadTextFile utility)
+- src/utils/time.ts (added formatRelativeTime utility)
+- src/components/feature/data/db-diagram/DbDiagram.tsx (SQL export panel, diagram management, autosave, JSON import/export)
+- e2e/db-diagram.spec.ts (added 7 new E2E tests)
+
+### Change Log
+
+- 2026-02-25: Implemented Story 27.2 — SQL export (PostgreSQL/MySQL/SQLite), localStorage persistence with autosave, diagram management UI (save/load/rename/delete/new), JSON export/import. Added 46 unit tests and 7 E2E tests.
+- 2026-02-25: Code review fixes — Fixed SQLite non-SERIAL PK bug (missing PRIMARY KEY constraint), extracted `downloadTextFile` to `src/utils/file.ts`, extracted `formatRelativeTime` to `src/utils/time.ts`, added SQLite PK and inline FK test coverage (+2 tests), fixed `saveStatusTimeoutRef` cleanup on unmount. All 1398 tests pass.

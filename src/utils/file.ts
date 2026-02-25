@@ -42,3 +42,16 @@ export const parseDataUrlToBlob = async (source: string): Promise<Blob> => {
   const res = await fetch(source)
   return res.blob()
 }
+
+/**
+ * Download a text string as a file via Blob URL
+ */
+export const downloadTextFile = (content: string, filename: string, mimeType = 'text/plain'): void => {
+  const blob = new Blob([content], { type: mimeType })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}

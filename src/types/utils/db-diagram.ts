@@ -45,8 +45,16 @@ export type RelationshipEdgeData = {
   targetColumnId: string
 }
 
-// Forward-compatible schema type — defined now for Story 27.2 persistence.
-// Not used in 27.1 implementation. Do NOT implement serialization in this story.
+export type SqlDialect = 'mysql' | 'postgresql' | 'sqlite'
+
+export type DiagramIndexEntry = {
+  createdAt: string
+  id: string
+  name: string
+  tableCount: number
+  updatedAt: string
+}
+
 export type DiagramSchema = {
   relationships: Array<{
     id: string
