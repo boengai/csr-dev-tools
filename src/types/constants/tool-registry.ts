@@ -77,6 +77,7 @@ export type ToolRegistryKey =
   | 'json-to-csv-converter'
   | 'json-to-typescript'
   | 'json-to-yaml-converter'
+  | 'jsonpath-evaluator'
   | 'jwt-decoder'
   | 'lorem-ipsum-generator'
   | 'markdown-preview'

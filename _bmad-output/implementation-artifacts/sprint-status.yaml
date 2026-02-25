@@ -229,7 +229,7 @@ development_status:
   25-1-graphql-schema-viewer: done
   25-2-protobuf-to-json: done
   25-3-typescript-playground: done
-  25-4-jsonpath-evaluator: backlog
+  25-4-jsonpath-evaluator: done
   epic-25-retrospective: optional
 
   # Epic 26: Time & Diagram Tools

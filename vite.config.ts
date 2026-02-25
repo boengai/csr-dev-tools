@@ -148,6 +148,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Evaluate JSONPath expressions against JSON data online. Test queries like $.store.book[*].author with real-time results showing matched paths and values. 100% client-side JSONPath tester.',
+    path: '/tools/jsonpath-evaluator',
+    title: 'JSONPath Evaluator - CSR Dev Tools',
+    url: '/tools/jsonpath-evaluator',
+  },
+  {
+    description:
       'Decode JWT tokens online. Inspect header, payload, and signature instantly in your browser without external services.',
     path: '/tools/jwt-decoder',
     title: 'JWT Decoder - CSR Dev Tools',

@@ -37,6 +37,7 @@
     "graphql": "16.13.0",
     "js-beautify": "1.15.4",
     "js-md5": "0.8.3",
+    "jsonpath-plus": "10.4.0",
     "jszip": "3.10.1",
     "marked": "15.0.7",
     "motion": "12.34.0",

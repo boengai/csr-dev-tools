@@ -547,6 +547,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
+    category: 'Code',
+    component: lazy(() =>
+      import('@/components/feature/code/JsonpathEvaluator').then(
+        ({ JsonpathEvaluator }: { JsonpathEvaluator: ComponentType }) => ({
+          default: JsonpathEvaluator,
+        }),
+      ),
+    ),
+    description:
+      'Evaluate JSONPath expressions against JSON data. See matched paths and values in real-time with a cheatsheet of common patterns.',
+    emoji: '🎯',
+    key: 'jsonpath-evaluator',
+    name: 'JSONPath Evaluator',
+    routePath: '/tools/jsonpath-evaluator',
+    seo: {
+      description:
+        'Evaluate JSONPath expressions against JSON data online. Test queries like $.store.book[*].author with real-time results showing matched paths and values. 100% client-side JSONPath tester.',
+      title: 'JSONPath Evaluator - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Encoding',
     component: lazy(() =>
       import('@/components/feature/encoding/JwtDecoder').then(({ JwtDecoder }: { JwtDecoder: ComponentType }) => ({
