@@ -199,8 +199,8 @@ export const PlaceholderImageGenerator = () => {
     <div className="flex size-full grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-        <div className="flex min-h-0 flex-1 flex-col gap-3">
+      <div className="flex grow flex-col gap-6 overflow-y-auto tablet:flex-row">
+        <div className="flex shrink-0 flex-col gap-3 tablet:flex-1 tablet:shrink tablet:overflow-y-auto">
           <div className="flex gap-3">
             <FieldForm
               label="Width"
@@ -300,7 +300,7 @@ export const PlaceholderImageGenerator = () => {
         </div>
       </div>
 
-      <div className="flex w-full gap-8 [&>button]:w-[calc(50%-1rem)]">
+      <div className="flex w-full shrink-0 gap-8 [&>button]:w-[calc(50%-1rem)]">
         <Button aria-label="Download PNG image" icon={<DownloadIcon />} onClick={handleDownloadPng} variant="primary">
           Download PNG
         </Button>

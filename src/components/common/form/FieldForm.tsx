@@ -34,7 +34,7 @@ const InputController = (props: InputControllerProps) => {
 export const FieldForm = ({ label, ...props }: FieldFormProps) => {
   return (
     <fieldset className={fieldsetStyles({ grow: props.type === 'textarea' })}>
-      <label className="min-h-8 shrink-0 pl-2 text-gray-100">{label}</label>
+      {label && <label className="min-h-8 shrink-0 pl-2 text-gray-100">{label}</label>}
       <InputController {...props} />
     </fieldset>
   )
