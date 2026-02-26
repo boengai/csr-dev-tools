@@ -94,7 +94,7 @@ export const FaviconGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponent
     <>
       <div className="flex w-full grow flex-col gap-4">
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
-        <div className="w-full desktop:w-8/10">
+        <div className="flex grow flex-col items-center justify-center gap-2">
           <UploadInput
             accept="image/png,image/jpeg,image/webp,image/svg+xml"
             button={{ block: true, children: 'Select image to generate favicons' }}

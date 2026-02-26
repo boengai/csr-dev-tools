@@ -126,7 +126,7 @@ export const ImageCompressor = () => {
     <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <div className="w-full desktop:w-8/10">
+      <div className="flex grow flex-col items-center justify-center gap-2">
         <UploadInput
           accept="image/jpeg,image/webp"
           button={{ block: true, children: 'Select JPEG or WebP image' }}

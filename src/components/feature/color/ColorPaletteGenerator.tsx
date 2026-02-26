@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import type { HarmonyType, PaletteColor } from '@/utils/color-palette'
 
-import { CopyButton, FieldForm, SelectInput } from '@/components/common'
+import { Button, CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useCopyToClipboard, useDebounceCallback, useToast } from '@/hooks'
 import { formatPaletteAsCss, generatePalette } from '@/utils/color-palette'
@@ -124,7 +124,7 @@ export const ColorPaletteGenerator = () => {
                 type="button"
               >
                 <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/40" />
-                <div className="relative z-10 hidden flex-col items-center gap-0.5 text-center group-focus-within:flex group-hover:flex">
+                <div className="relative z-10 flex flex-col items-center gap-0.5 text-center opacity-0 group-focus-within:opacity-100 group-hover:opacity-100">
                   <span className="rounded bg-black/60 px-1.5 py-0.5 text-body-xs font-medium text-white">
                     {color.hex}
                   </span>
@@ -140,14 +140,9 @@ export const ColorPaletteGenerator = () => {
       </div>
 
       {palette.length > 0 && (
-        <button
-          aria-label="Export CSS custom properties"
-          className="self-start rounded bg-gray-700 px-4 py-2 text-body-sm text-white transition-colors hover:bg-gray-600"
-          onClick={handleCopyCss}
-          type="button"
-        >
+        <Button aria-label="Export CSS custom properties" onClick={handleCopyCss} variant="default">
           Export CSS
-        </button>
+        </Button>
       )}
     </div>
   )

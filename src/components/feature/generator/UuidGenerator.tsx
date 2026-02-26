@@ -34,7 +34,7 @@ export const UuidGenerator = () => {
           type="range"
           value={String(count)}
         />
-        <Button onClick={handleGenerate} variant="default">
+        <Button onClick={handleGenerate} variant="primary">
           Generate
         </Button>
       </div>

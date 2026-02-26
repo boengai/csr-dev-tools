@@ -56,7 +56,7 @@ export const LoremIpsumGenerator = () => {
           <input checked={startWithLorem} onChange={(e) => setStartWithLorem(e.target.checked)} type="checkbox" />
           Start with &quot;Lorem ipsum dolor sit amet...&quot;
         </label>
-        <Button onClick={handleGenerate} variant="default">
+        <Button onClick={handleGenerate} variant="primary">
           Generate
         </Button>
       </div>

@@ -124,7 +124,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
       <div className="flex w-full grow flex-col gap-4">
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-        <div className="w-full desktop:w-8/10">
+        <div className="flex grow flex-col items-center justify-center gap-2">
           <UploadInput
             accept="*/*"
             button={{ block: true, children: 'Select file to encode' }}
@@ -132,9 +132,6 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
             name="data-uri-encode"
             onChange={handleFileUpload}
           />
-        </div>
-
-        <div className="flex grow flex-col items-center justify-center gap-2">
           <Button aria-label="Open decode data URI dialog" block onClick={() => setDecodeOpen(true)} variant="default">
             Decode Data URI
           </Button>

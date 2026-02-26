@@ -69,7 +69,7 @@ export const UserAgentParser = (_props: ToolComponentProps) => {
             value={input}
           />
         </div>
-        <Button onClick={handleUseMyUa} variant="default">
+        <Button onClick={handleUseMyUa} variant="primary">
           Use my UA
         </Button>
       </div>

@@ -1121,9 +1121,11 @@ export const DbDiagram = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
     <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <Button onClick={() => setDialogOpen(true)} variant="primary">
-        Open DB Diagram
-      </Button>
+      <div className="flex grow flex-col items-center justify-center gap-2">
+        <Button block onClick={() => setDialogOpen(true)} variant="primary">
+          Open DB Diagram
+        </Button>
+      </div>
 
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}

@@ -3,7 +3,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { SubnetResult } from '@/utils/ip-subnet'
 
-import { CopyButton } from '@/components/common'
+import { CopyButton, Tabs } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import {
@@ -201,76 +201,61 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
       <div className="md:flex-row flex flex-col gap-4">
         {/* Input Section */}
         <div className="md:w-[35%] flex w-full flex-col gap-4">
-          {/* Mode Toggle */}
-          <div className="flex gap-2" role="group" aria-label="Input mode">
-            <button
-              aria-pressed={mode === 'cidr'}
-              className={`rounded-md px-4 py-2 text-body-sm font-medium transition-colors ${
-                mode === 'cidr'
-                  ? 'bg-gray-700 text-gray-100'
-                  : 'bg-gray-900 text-gray-400 hover:bg-gray-800 hover:text-gray-300'
-              }`}
-              onClick={() => handleModeChange('cidr')}
-              type="button"
-            >
-              CIDR Notation
-            </button>
-            <button
-              aria-pressed={mode === 'ip-mask'}
-              className={`rounded-md px-4 py-2 text-body-sm font-medium transition-colors ${
-                mode === 'ip-mask'
-                  ? 'bg-gray-700 text-gray-100'
-                  : 'bg-gray-900 text-gray-400 hover:bg-gray-800 hover:text-gray-300'
-              }`}
-              onClick={() => handleModeChange('ip-mask')}
-              type="button"
-            >
-              IP + Mask
-            </button>
-          </div>
-
-          {/* Input Fields */}
-          {mode === 'cidr' ? (
-            <label className="flex flex-col gap-1">
-              <span className="text-body-xs font-medium text-gray-400">CIDR Notation</span>
-              <input
-                className="rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-body-sm text-gray-100 transition-colors outline-none placeholder:text-gray-600 focus:border-gray-500"
-                data-testid="cidr-input"
-                name="cidr-input"
-                onChange={handleCidrChange}
-                placeholder="192.168.1.0/24"
-                type="text"
-                value={cidrInput}
-              />
-            </label>
-          ) : (
-            <div className="flex flex-col gap-3">
-              <label className="flex flex-col gap-1">
-                <span className="text-body-xs font-medium text-gray-400">IP Address</span>
-                <input
-                  className="rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-body-sm text-gray-100 transition-colors outline-none placeholder:text-gray-600 focus:border-gray-500"
-                  data-testid="ip-input"
-                  name="ip-input"
-                  onChange={handleIpChange}
-                  placeholder="192.168.1.0"
-                  type="text"
-                  value={ipInput}
-                />
-              </label>
-              <label className="flex flex-col gap-1">
-                <span className="text-body-xs font-medium text-gray-400">Subnet Mask</span>
-                <input
-                  className="rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-body-sm text-gray-100 transition-colors outline-none placeholder:text-gray-600 focus:border-gray-500"
-                  data-testid="mask-input"
-                  name="mask-input"
-                  onChange={handleMaskChange}
-                  placeholder="255.255.255.0"
-                  type="text"
-                  value={maskInput}
-                />
-              </label>
-            </div>
-          )}
+          <Tabs
+            injected={{ setValue: (v) => handleModeChange(v as InputMode), value: mode }}
+            items={[
+              {
+                content: (
+                  <label className="flex flex-col gap-1">
+                    <span className="text-body-xs font-medium text-gray-400">CIDR Notation</span>
+                    <input
+                      className="rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-body-sm text-gray-100 transition-colors outline-none placeholder:text-gray-600 focus:border-gray-500"
+                      data-testid="cidr-input"
+                      name="cidr-input"
+                      onChange={handleCidrChange}
+                      placeholder="192.168.1.0/24"
+                      type="text"
+                      value={cidrInput}
+                    />
+                  </label>
+                ),
+                trigger: <button type="button">CIDR Notation</button>,
+                value: 'cidr',
+              },
+              {
+                content: (
+                  <div className="flex flex-col gap-3">
+                    <label className="flex flex-col gap-1">
+                      <span className="text-body-xs font-medium text-gray-400">IP Address</span>
+                      <input
+                        className="rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-body-sm text-gray-100 transition-colors outline-none placeholder:text-gray-600 focus:border-gray-500"
+                        data-testid="ip-input"
+                        name="ip-input"
+                        onChange={handleIpChange}
+                        placeholder="192.168.1.0"
+                        type="text"
+                        value={ipInput}
+                      />
+                    </label>
+                    <label className="flex flex-col gap-1">
+                      <span className="text-body-xs font-medium text-gray-400">Subnet Mask</span>
+                      <input
+                        className="rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-body-sm text-gray-100 transition-colors outline-none placeholder:text-gray-600 focus:border-gray-500"
+                        data-testid="mask-input"
+                        name="mask-input"
+                        onChange={handleMaskChange}
+                        placeholder="255.255.255.0"
+                        type="text"
+                        value={maskInput}
+                      />
+                    </label>
+                  </div>
+                ),
+                trigger: <button type="button">IP + Mask</button>,
+                value: 'ip-mask',
+              },
+            ]}
+          />
 
           {/* Error Display */}
           {error && (

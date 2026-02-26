@@ -114,13 +114,13 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
             <div className="flex items-center gap-2">
               <Button
                 onClick={() => handleDirectionChange('escape')}
-                variant={direction === 'escape' ? 'default' : 'secondary'}
+                variant={direction === 'escape' ? 'default' : 'primary'}
               >
                 Escape
               </Button>
               <Button
                 onClick={() => handleDirectionChange('unescape')}
-                variant={direction === 'unescape' ? 'default' : 'secondary'}
+                variant={direction === 'unescape' ? 'default' : 'primary'}
               >
                 Unescape
               </Button>

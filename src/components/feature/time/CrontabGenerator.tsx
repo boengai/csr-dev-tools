@@ -37,7 +37,7 @@ const MODES: Array<{ label: string; value: CronFieldMode }> = [
 const defaultField = (): CronFieldConfig => ({ mode: 'every' })
 
 const modeButtonClass = (active: boolean) =>
-  `rounded border px-2 py-1 text-xs font-mono ${
+  `rounded border px-1.5 py-0.5 text-[11px] font-mono ${
     active ? 'border-primary bg-primary/20 text-primary font-bold' : 'border-gray-700 bg-transparent text-gray-500'
   }`
 

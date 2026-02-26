@@ -9,7 +9,7 @@ import type {
   JustifyContent,
 } from '@/utils'
 
-import { CopyButton, FieldForm } from '@/components/common'
+import { CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { DEFAULT_CONTAINER, DEFAULT_ITEM, generateFlexboxCss } from '@/utils'
 
@@ -67,32 +67,6 @@ export const FlexboxPlayground = () => {
     setItems((prev) => prev.map((item, i) => (i === index ? { ...item, [key]: parsed } : item)))
   }
 
-  const makeSelect = (
-    id: string,
-    label: string,
-    value: string,
-    options: Array<string>,
-    onChange: (v: string) => void,
-  ) => (
-    <div className="flex items-center gap-2">
-      <label className="text-body-sm whitespace-nowrap text-gray-100" htmlFor={id}>
-        {label}
-      </label>
-      <select
-        className="text-sm rounded border border-gray-700 bg-transparent px-2 py-1 text-gray-100"
-        id={id}
-        onChange={(e) => onChange(e.target.value)}
-        value={value}
-      >
-        {options.map((o) => (
-          <option key={o} value={o}>
-            {o}
-          </option>
-        ))}
-      </select>
-    </div>
-  )
-
   const fullCss =
     `.container {\n${containerCss}\n}` + items.map((_, i) => `\n\n.item-${i + 1} {\n${itemsCss[i]}\n}`).join('')
 
@@ -102,18 +76,34 @@ export const FlexboxPlayground = () => {
 
       <div className="flex shrink-0 flex-col gap-3">
         <div className="flex flex-wrap gap-4">
-          {makeSelect('fb-dir', 'Direction', container.direction, DIRECTION_OPTIONS, (v) =>
-            setContainer((prev) => ({ ...prev, direction: v as FlexDirection })),
-          )}
-          {makeSelect('fb-justify', 'Justify', container.justifyContent, JUSTIFY_OPTIONS, (v) =>
-            setContainer((prev) => ({ ...prev, justifyContent: v as JustifyContent })),
-          )}
-          {makeSelect('fb-align', 'Align', container.alignItems, ALIGN_OPTIONS, (v) =>
-            setContainer((prev) => ({ ...prev, alignItems: v as AlignItems })),
-          )}
-          {makeSelect('fb-wrap', 'Wrap', container.wrap, WRAP_OPTIONS, (v) =>
-            setContainer((prev) => ({ ...prev, wrap: v as FlexWrap })),
-          )}
+          <SelectInput
+            name="fb-dir"
+            onChange={(v) => setContainer((prev) => ({ ...prev, direction: v as FlexDirection }))}
+            options={DIRECTION_OPTIONS.map((o) => ({ label: o, value: o }))}
+            placeholder="Direction"
+            value={container.direction}
+          />
+          <SelectInput
+            name="fb-justify"
+            onChange={(v) => setContainer((prev) => ({ ...prev, justifyContent: v as JustifyContent }))}
+            options={JUSTIFY_OPTIONS.map((o) => ({ label: o, value: o }))}
+            placeholder="Justify"
+            value={container.justifyContent}
+          />
+          <SelectInput
+            name="fb-align"
+            onChange={(v) => setContainer((prev) => ({ ...prev, alignItems: v as AlignItems }))}
+            options={ALIGN_OPTIONS.map((o) => ({ label: o, value: o }))}
+            placeholder="Align"
+            value={container.alignItems}
+          />
+          <SelectInput
+            name="fb-wrap"
+            onChange={(v) => setContainer((prev) => ({ ...prev, wrap: v as FlexWrap }))}
+            options={WRAP_OPTIONS.map((o) => ({ label: o, value: o }))}
+            placeholder="Wrap"
+            value={container.wrap}
+          />
         </div>
 
         <FieldForm
