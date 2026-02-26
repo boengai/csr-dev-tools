@@ -3,7 +3,7 @@ import { type PropsWithChildren, useState } from 'react'
 
 import type { ColorFormat } from '@/types'
 
-import { CopyButton, FieldForm, NotoEmoji } from '@/components/common'
+import { ColorInput, CopyButton, FieldForm, NotoEmoji } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { convertColor } from '@/utils/color'
@@ -98,13 +98,7 @@ export const ColorConvertor = () => {
     <div className="flex size-full grow flex-col gap-2">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <input
-        aria-label="Color picker"
-        className="h-10 w-full shrink-0 cursor-pointer rounded border border-gray-700 bg-transparent p-1 [&::-webkit-color-swatch]:rounded [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch-wrapper]:p-0"
-        onChange={(e) => handlePickerChange(e.target.value)}
-        type="color"
-        value={color.hex || '#000000'}
-      />
+      <ColorInput onChange={handlePickerChange} size="full" value={color.hex || '#000000'} />
 
       <div aria-live="polite">
         {FORMATS.map(({ format, label, placeholder }) => (

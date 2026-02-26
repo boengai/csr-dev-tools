@@ -2,14 +2,20 @@ import type { ChangeEvent, KeyboardEvent } from 'react'
 
 import type { TextAreaInputProps } from '@/types'
 
+import { inputVariants } from './TextInput'
+
 export const TextAreaInput = ({
+  block = true,
   disabled,
   onChange,
   onEnter,
   placeholder = 'Type here...',
   rows = 4,
+  size = 'default',
   ...props
 }: TextAreaInputProps) => {
+  const wrapperClassName = inputVariants({ block, size })
+
   const handleChange = (e: ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value
 
@@ -23,7 +29,7 @@ export const TextAreaInput = ({
   }
 
   return (
-    <div className="input h-auto flex-col py-2" data-disabled={disabled}>
+    <div className={`${wrapperClassName} h-auto flex-col py-2`} data-disabled={disabled}>
       <textarea
         {...props}
         autoComplete="off"

@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import type { PlaceholderOptions } from '@/utils/placeholder-image'
 
-import { Button, DownloadIcon, FieldForm, SelectInput } from '@/components/common'
+import { Button, ColorInput, DownloadIcon, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import {
@@ -232,14 +232,7 @@ export const PlaceholderImageGenerator = () => {
               Background Color
             </label>
             <div className="flex items-center gap-2">
-              <input
-                aria-label="Background color picker"
-                className="h-10 w-14 shrink-0 cursor-pointer rounded border border-gray-700 bg-transparent p-1 [&::-webkit-color-swatch]:rounded [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch-wrapper]:p-0"
-                id="placeholder-bg-color"
-                onChange={(e) => handleBgPickerChange(e.target.value)}
-                type="color"
-                value={toPickerHex(bgColor)}
-              />
+              <ColorInput className="h-10 w-14 shrink-0" onChange={handleBgPickerChange} value={toPickerHex(bgColor)} />
               <FieldForm
                 label=""
                 name="placeholder-bg-hex"
@@ -256,14 +249,7 @@ export const PlaceholderImageGenerator = () => {
               Text Color
             </label>
             <div className="flex items-center gap-2">
-              <input
-                aria-label="Text color picker"
-                className="h-10 w-14 shrink-0 cursor-pointer rounded border border-gray-700 bg-transparent p-1 [&::-webkit-color-swatch]:rounded [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch-wrapper]:p-0"
-                id="placeholder-text-color"
-                onChange={(e) => handleTextColorPickerChange(e.target.value)}
-                type="color"
-                value={toPickerHex(textColor)}
-              />
+              <ColorInput className="h-10 w-14 shrink-0" onChange={handleTextColorPickerChange} value={toPickerHex(textColor)} />
               <FieldForm
                 label=""
                 name="placeholder-text-color-hex"

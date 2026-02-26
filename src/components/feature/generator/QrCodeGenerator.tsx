@@ -3,7 +3,7 @@ import { useCallback, useRef, useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { QrErrorCorrectionLevel } from '@/utils'
 
-import { Button, CopyButton, Dialog, DownloadIcon, FieldForm } from '@/components/common'
+import { Button, ColorInput, CopyButton, Dialog, DownloadIcon, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils'
@@ -170,25 +170,13 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                   <label className="text-body-sm font-medium text-gray-400" htmlFor="qr-fg">
                     Foreground
                   </label>
-                  <input
-                    className="h-10 w-20 cursor-pointer rounded border border-gray-800 bg-transparent"
-                    id="qr-fg"
-                    onChange={(e) => handleFgChange(e.target.value)}
-                    type="color"
-                    value={foreground}
-                  />
+                  <ColorInput className="h-10 w-20" onChange={handleFgChange} value={foreground} />
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-body-sm font-medium text-gray-400" htmlFor="qr-bg">
                     Background
                   </label>
-                  <input
-                    className="h-10 w-20 cursor-pointer rounded border border-gray-800 bg-transparent"
-                    id="qr-bg"
-                    onChange={(e) => handleBgChange(e.target.value)}
-                    type="color"
-                    value={background}
-                  />
+                  <ColorInput className="h-10 w-20" onChange={handleBgChange} value={background} />
                 </div>
               </div>
             </div>

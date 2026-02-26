@@ -5,6 +5,7 @@ import { useCallback, useRef, useState } from 'react'
 
 import type { ColumnType, TableColumn, TableNodeData } from '@/types'
 
+import { SelectInput, TextInput } from '@/components/common'
 import { XIcon } from '@/components/common/icon'
 import { COLUMN_TYPES } from '@/utils'
 
@@ -78,11 +79,12 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
       {/* Header */}
       <div className="flex items-center justify-between rounded-t-lg border-b border-gray-800 bg-gray-900 px-3 py-2">
         {editing ? (
-          <input
+          <TextInput
             autoFocus
-            className="text-sm w-full rounded bg-gray-700 px-1 py-0.5 font-bold text-white outline-none"
+            block={false}
+            name="table-name"
             onBlur={commitName}
-            onChange={(e) => setEditName(e.target.value)}
+            onChange={(value) => setEditName(value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') commitName()
               if (e.key === 'Escape') {
@@ -91,11 +93,13 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
               }
             }}
             ref={inputRef}
+            size="compact"
+            type="text"
             value={editName}
           />
         ) : (
           <button
-            className="text-sm hover:text-primary font-bold text-white"
+            className="text-sm font-bold text-white hover:text-primary"
             onClick={() => {
               setEditName(data.tableName)
               setEditing(true)
@@ -106,7 +110,7 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
           </button>
         )}
         <button
-          className="hover:text-error ml-2 text-gray-500"
+          className="ml-2 text-gray-500 hover:text-error"
           onClick={() => data.onDeleteTable()}
           title="Delete table"
           type="button"
@@ -130,14 +134,28 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
 
             <div className="flex flex-1 items-center gap-1 pr-2 pl-2">
               {/* Column name */}
-              <input
-                className="text-xs w-20 shrink-0 rounded border border-gray-700 bg-transparent px-1 text-gray-300 outline-none focus:text-white"
-                onChange={(e) => data.onColumnChange(col.id, { name: e.target.value })}
-                value={col.name}
-              />
+              <div className="min-w-45">
+                <TextInput
+                  block={false}
+                  name="column-name"
+                  onChange={(value) => data.onColumnChange(col.id, { name: value })}
+                  size="compact"
+                  type="text"
+                  value={col.name}
+                />
+              </div>
 
               {/* Type dropdown */}
-              <select
+              <div className="min-w-30">
+                <SelectInput
+                  name="column-type"
+                  onChange={(value) => data.onColumnChange(col.id, { type: value as ColumnType })}
+                  options={COLUMN_TYPES.map((t) => ({ label: t, value: t }))}
+                  size="compact"
+                  value={col.type}
+                />
+              </div>
+              {/* <select
                 className="h-5 shrink-0 rounded border border-gray-700 bg-transparent px-0.5 text-[10px] text-gray-400 outline-none"
                 onChange={(e) => data.onColumnChange(col.id, { type: e.target.value as ColumnType })}
                 value={col.type}
@@ -147,7 +165,7 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
                     {t}
                   </option>
                 ))}
-              </select>
+              </select> */}
 
               {/* Constraint toggles */}
               <div className="flex gap-0.5">
@@ -179,7 +197,7 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
 
               {/* Delete column */}
               <button
-                className="hover:text-error ml-auto text-gray-600 opacity-0 transition-opacity group-hover:opacity-100"
+                className="ml-auto text-gray-600 opacity-0 transition-opacity group-hover:opacity-100 hover:text-error"
                 onClick={() => data.onDeleteColumn(col.id)}
                 title="Delete column"
                 type="button"

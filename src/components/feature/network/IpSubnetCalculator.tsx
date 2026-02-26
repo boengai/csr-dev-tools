@@ -3,7 +3,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { SubnetResult } from '@/utils/ip-subnet'
 
-import { CopyButton, Tabs } from '@/components/common'
+import { CopyButton, FieldForm, Tabs } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import {
@@ -112,8 +112,7 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
   const debouncedCalculate = useDebounceCallback(performCalculation, 300)
 
   const handleCidrChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
+    (value: string) => {
       setCidrInput(value)
       debouncedCalculate(value, '', '', 'cidr')
     },
@@ -121,8 +120,7 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
   )
 
   const handleIpChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
+    (value: string) => {
       setIpInput(value)
       debouncedCalculate('', value, maskInputRef.current, 'ip-mask')
     },
@@ -130,8 +128,7 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
   )
 
   const handleMaskChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value
+    (value: string) => {
       setMaskInput(value)
       debouncedCalculate('', ipInputRef.current, value, 'ip-mask')
     },
@@ -206,18 +203,14 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
             items={[
               {
                 content: (
-                  <label className="flex flex-col gap-1">
-                    <span className="text-body-xs font-medium text-gray-400">CIDR Notation</span>
-                    <input
-                      className="rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-body-sm text-gray-100 transition-colors outline-none placeholder:text-gray-600 focus:border-gray-500"
-                      data-testid="cidr-input"
-                      name="cidr-input"
-                      onChange={handleCidrChange}
-                      placeholder="192.168.1.0/24"
-                      type="text"
-                      value={cidrInput}
-                    />
-                  </label>
+                  <FieldForm
+                    label="CIDR Notation"
+                    name="cidr-input"
+                    onChange={handleCidrChange}
+                    placeholder="192.168.1.0/24"
+                    type="text"
+                    value={cidrInput}
+                  />
                 ),
                 trigger: <button type="button">CIDR Notation</button>,
                 value: 'cidr',
@@ -225,30 +218,22 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
               {
                 content: (
                   <div className="flex flex-col gap-3">
-                    <label className="flex flex-col gap-1">
-                      <span className="text-body-xs font-medium text-gray-400">IP Address</span>
-                      <input
-                        className="rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-body-sm text-gray-100 transition-colors outline-none placeholder:text-gray-600 focus:border-gray-500"
-                        data-testid="ip-input"
-                        name="ip-input"
-                        onChange={handleIpChange}
-                        placeholder="192.168.1.0"
-                        type="text"
-                        value={ipInput}
-                      />
-                    </label>
-                    <label className="flex flex-col gap-1">
-                      <span className="text-body-xs font-medium text-gray-400">Subnet Mask</span>
-                      <input
-                        className="rounded-md border border-gray-700 bg-gray-900 px-3 py-2 text-body-sm text-gray-100 transition-colors outline-none placeholder:text-gray-600 focus:border-gray-500"
-                        data-testid="mask-input"
-                        name="mask-input"
-                        onChange={handleMaskChange}
-                        placeholder="255.255.255.0"
-                        type="text"
-                        value={maskInput}
-                      />
-                    </label>
+                    <FieldForm
+                      label="IP Address"
+                      name="ip-input"
+                      onChange={handleIpChange}
+                      placeholder="192.168.1.0"
+                      type="text"
+                      value={ipInput}
+                    />
+                    <FieldForm
+                      label="Subnet Mask"
+                      name="mask-input"
+                      onChange={handleMaskChange}
+                      placeholder="255.255.255.0"
+                      type="text"
+                      value={maskInput}
+                    />
                   </div>
                 ),
                 trigger: <button type="button">IP + Mask</button>,

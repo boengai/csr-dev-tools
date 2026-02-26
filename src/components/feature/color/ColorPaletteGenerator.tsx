@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import type { HarmonyType, PaletteColor } from '@/utils/color-palette'
 
-import { Button, CopyButton, FieldForm, SelectInput } from '@/components/common'
+import { Button, ColorInput, CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useCopyToClipboard, useDebounceCallback, useToast } from '@/hooks'
 import { formatPaletteAsCss, generatePalette } from '@/utils/color-palette'
@@ -86,13 +86,7 @@ export const ColorPaletteGenerator = () => {
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
       <div className="flex flex-col gap-3">
-        <input
-          aria-label="Color picker"
-          className="h-10 w-full shrink-0 cursor-pointer rounded border border-gray-700 bg-transparent p-1 [&::-webkit-color-swatch]:rounded [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch-wrapper]:p-0"
-          onChange={(e) => handlePickerChange(e.target.value)}
-          type="color"
-          value={toPickerHex(hexInput)}
-        />
+        <ColorInput onChange={handlePickerChange} size="full" value={toPickerHex(hexInput)} />
 
         <FieldForm
           label="Hex Color"
@@ -140,7 +134,7 @@ export const ColorPaletteGenerator = () => {
       </div>
 
       {palette.length > 0 && (
-        <Button aria-label="Export CSS custom properties" onClick={handleCopyCss} variant="default">
+        <Button aria-label="Export CSS custom properties" onClick={handleCopyCss} variant="primary">
           Export CSS
         </Button>
       )}

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { BorderRadiusConfig } from '@/utils/border-radius'
 
-import { CopyButton, FieldForm } from '@/components/common'
+import { ColorInput, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { tv } from '@/utils'
 import { DEFAULT_BORDER_RADIUS, generateBorderRadiusCss } from '@/utils/border-radius'
@@ -56,49 +56,25 @@ export const BorderRadiusGenerator = (_props: ToolComponentProps) => {
 
         {CORNERS.map((corner) => (
           <div className="flex flex-col gap-1" key={corner.hKey}>
-            <div className="flex items-center gap-2">
-              <div className="grow">
-                <FieldForm
-                  label={`${corner.label}${config.asymmetric ? ' H' : ''}`}
-                  max={100}
-                  min={0}
-                  name={corner.hKey}
-                  onChange={(val: string) => update(corner.hKey, Number(val))}
-                  type="range"
-                  value={String(config[corner.hKey])}
-                />
-              </div>
-              <input
-                className="w-16 rounded border border-gray-800 bg-gray-950 px-2 py-1 text-center text-body-xs text-gray-200"
+            <FieldForm
+              label={`${corner.label}${config.asymmetric ? ' H' : ''}`}
+              max={100}
+              min={0}
+              name={corner.hKey}
+              onChange={(val: string) => update(corner.hKey, Number(val))}
+              type="range"
+              value={String(config[corner.hKey])}
+            />
+            {config.asymmetric && (
+              <FieldForm
+                label={`${corner.label} V`}
                 max={100}
                 min={0}
-                onChange={(e) => update(corner.hKey, Math.max(0, Math.min(100, Number(e.target.value))))}
-                type="number"
-                value={config[corner.hKey]}
+                name={corner.vKey}
+                onChange={(val: string) => update(corner.vKey, Number(val))}
+                type="range"
+                value={String(config[corner.vKey])}
               />
-            </div>
-            {config.asymmetric && (
-              <div className="flex items-center gap-2">
-                <div className="grow">
-                  <FieldForm
-                    label={`${corner.label} V`}
-                    max={100}
-                    min={0}
-                    name={corner.vKey}
-                    onChange={(val: string) => update(corner.vKey, Number(val))}
-                    type="range"
-                    value={String(config[corner.vKey])}
-                  />
-                </div>
-                <input
-                  className="w-16 rounded border border-gray-800 bg-gray-950 px-2 py-1 text-center text-body-xs text-gray-200"
-                  max={100}
-                  min={0}
-                  onChange={(e) => update(corner.vKey, Math.max(0, Math.min(100, Number(e.target.value))))}
-                  type="number"
-                  value={config[corner.vKey]}
-                />
-              </div>
             )}
           </div>
         ))}
@@ -114,13 +90,7 @@ export const BorderRadiusGenerator = (_props: ToolComponentProps) => {
           <label className="text-body-xs text-gray-500" htmlFor="br-preview-bg">
             BG
           </label>
-          <input
-            className="h-6 w-8 cursor-pointer rounded border border-gray-700 bg-transparent"
-            id="br-preview-bg"
-            onChange={(e) => setPreviewBg(e.target.value)}
-            type="color"
-            value={previewBg}
-          />
+          <ColorInput className="h-6 w-8" onChange={setPreviewBg} value={previewBg} />
         </div>
         <div className="h-32 w-48 border border-gray-200 bg-white" style={{ borderRadius: cssValue }} />
       </div>

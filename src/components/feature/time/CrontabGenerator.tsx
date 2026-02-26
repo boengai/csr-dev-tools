@@ -2,7 +2,7 @@ import { useMemo, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
-import { CopyButton } from '@/components/common'
+import { CopyButton, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import {
   type CronFieldConfig,
@@ -114,11 +114,11 @@ const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEdi
       )}
 
       {config.mode === 'specific' && !useButtons && (
-        <div className="ml-32">
-          <input
-            className="w-48 rounded border border-gray-700 bg-gray-950 px-2 py-1 text-body-xs text-gray-300"
-            onChange={(e) => {
-              const vals = e.target.value
+        <div className="ml-32 w-48">
+          <TextInput
+            name={`field-${fieldIndex}-specific`}
+            onChange={(value) => {
+              const vals = value
                 .split(',')
                 .map((s) => parseInt(s.trim(), 10))
                 .filter((n) => !isNaN(n) && n >= min && n <= max)
@@ -134,36 +134,45 @@ const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEdi
       {config.mode === 'range' && (
         <div className="ml-32 flex items-center gap-2">
           <label className="text-body-xs text-gray-500">Start:</label>
-          <input
-            className="w-16 rounded border border-gray-700 bg-gray-950 px-2 py-1 text-body-xs text-gray-300"
-            max={max}
-            min={min}
-            onChange={(e) => onChange({ ...config, rangeStart: parseInt(e.target.value, 10) || min })}
-            type="number"
-            value={config.rangeStart ?? min}
-          />
+          <div className="w-16">
+            <FieldForm
+              label=""
+              max={max}
+              min={min}
+              name={`field-${fieldIndex}-range-start`}
+              onChange={(value) => onChange({ ...config, rangeStart: parseInt(value, 10) || min })}
+              type="number"
+              value={String(config.rangeStart ?? min)}
+            />
+          </div>
           <label className="text-body-xs text-gray-500">End:</label>
-          <input
-            className="w-16 rounded border border-gray-700 bg-gray-950 px-2 py-1 text-body-xs text-gray-300"
-            max={max}
-            min={min}
-            onChange={(e) => onChange({ ...config, rangeEnd: parseInt(e.target.value, 10) || max })}
-            type="number"
-            value={config.rangeEnd ?? max}
-          />
+          <div className="w-16">
+            <FieldForm
+              label=""
+              max={max}
+              min={min}
+              name={`field-${fieldIndex}-range-end`}
+              onChange={(value) => onChange({ ...config, rangeEnd: parseInt(value, 10) || max })}
+              type="number"
+              value={String(config.rangeEnd ?? max)}
+            />
+          </div>
         </div>
       )}
 
       {config.mode === 'interval' && (
         <div className="ml-32 flex items-center gap-2">
           <label className="text-body-xs text-gray-500">Every</label>
-          <input
-            className="w-16 rounded border border-gray-700 bg-gray-950 px-2 py-1 text-body-xs text-gray-300"
-            min={1}
-            onChange={(e) => onChange({ ...config, interval: parseInt(e.target.value, 10) || 1 })}
-            type="number"
-            value={config.interval ?? 1}
-          />
+          <div className="w-16">
+            <FieldForm
+              label=""
+              min={1}
+              name={`field-${fieldIndex}-interval`}
+              onChange={(value) => onChange({ ...config, interval: parseInt(value, 10) || 1 })}
+              type="number"
+              value={String(config.interval ?? 1)}
+            />
+          </div>
         </div>
       )}
     </div>

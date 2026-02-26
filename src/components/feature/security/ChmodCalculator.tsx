@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { ChmodState } from '@/utils/chmod-calculator'
 
-import { Button, CopyButton, TextInput } from '@/components/common'
+import { Button, CheckboxInput, CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import {
   isValidOctal,
@@ -170,12 +170,11 @@ export const ChmodCalculator = (_props: ToolComponentProps) => {
                 </td>
                 {PERMS.map((perm) => (
                   <td key={perm} className="px-4 py-3 text-center">
-                    <input
+                    <CheckboxInput
                       aria-label={`${group} ${perm} permission`}
                       checked={state[group][perm]}
                       className="h-5 w-5 cursor-pointer accent-primary"
                       onChange={() => handleCheckboxChange(group, perm)}
-                      type="checkbox"
                     />
                   </td>
                 ))}

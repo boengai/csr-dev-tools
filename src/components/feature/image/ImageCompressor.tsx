@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { ImageProcessingResult } from '@/types'
 
-import { Button, DownloadIcon, ProgressBar, UploadInput } from '@/components/common'
+import { Button, DownloadIcon, FieldForm, ProgressBar, UploadInput } from '@/components/common'
 import { COMPRESSIBLE_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { formatFileSize, processImage, tv } from '@/utils'
@@ -147,18 +147,15 @@ export const ImageCompressor = () => {
       {/* M2 fix: dim slider during processing */}
       {source && (
         <div className={processingWrapperStyles({ disabled: processing })}>
-          <label className="text-body-sm text-gray-300" htmlFor="quality-slider">
-            Quality: {quality}%
-          </label>
-          <input
-            className="w-full accent-primary"
+          <FieldForm
             disabled={processing}
-            id="quality-slider"
+            label="Quality"
             max={100}
             min={1}
-            onChange={(e) => handleQualityChange(Number(e.target.value))}
+            name="quality-slider"
+            onChange={(val: string) => handleQualityChange(Number(val))}
             type="range"
-            value={quality}
+            value={String(quality)}
           />
         </div>
       )}

@@ -16,31 +16,32 @@ import { AnimatePresence, motion } from 'motion/react'
 import type { SelectInputProps } from '@/types'
 
 import { CheckIcon, ChevronIcon } from '../icon'
+import { inputVariants } from './TextInput'
 
 export const SelectInput = ({
+  block = true,
   disabled,
   name,
   onBlur,
   onChange,
-  options: items,
+  options,
   placeholder,
+  size = 'default',
   value,
 }: SelectInputProps) => {
+  const wrapperClassName = inputVariants({ block, size })
+
   return (
     <Root disabled={disabled} name={name} onValueChange={onChange} value={value}>
-      <Trigger className="input group [&>span]:first:truncate" onBlur={onBlur}>
+      <Trigger className={`${wrapperClassName} group [&>span]:first:truncate`} onBlur={onBlur}>
         <Value placeholder={placeholder} />
         <Icon className="text-gray-400 transition-transform duration-500 group-data-[state=open]:rotate-180">
-          <ChevronIcon size={20} />
+          <ChevronIcon size={size === 'compact' ? 16 : 20} />
         </Icon>
       </Trigger>
       <Portal>
         <AnimatePresence>
-          <Content
-            asChild
-            className="popover z-50 max-h-[30dvh] w-[var(--radix-select-trigger-width)]"
-            position="popper"
-          >
+          <Content asChild className="popover z-50 max-h-[30dvh] w-(--radix-select-trigger-width)" position="popper">
             <motion.div
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 8 }}
@@ -53,7 +54,7 @@ export const SelectInput = ({
               }}
             >
               <Viewport>
-                {items.map((itm) => (
+                {options.map((itm) => (
                   <Item
                     className="flex cursor-pointer items-center justify-between truncate px-4 py-2 transition-colors hover:bg-primary/50 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50 data-[state=checked]:pointer-events-none"
                     disabled={itm.disabled}

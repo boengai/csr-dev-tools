@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
-import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CheckboxInput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { parseStringifiedJson, stringifyJson } from '@/utils/escaped-json'
@@ -103,7 +103,7 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
           {isStringify && (
             <div className="flex items-center gap-4">
               <label className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400">
-                <input checked={doubleEscape} onChange={handleDoubleEscapeChange} type="checkbox" />
+                <CheckboxInput checked={doubleEscape} onChange={() => handleDoubleEscapeChange()} />
                 Double Escape
               </label>
             </div>

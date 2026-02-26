@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
-import { CopyButton, TextInput } from '@/components/common'
+import { Button, CopyButton, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import { tv } from '@/utils'
@@ -317,41 +317,25 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
           </div>
 
           <div className="flex gap-2">
-            <div className="flex-1">
-              <label className="mb-1 block text-body-xs text-gray-500" htmlFor="tz-date">
-                Date
-              </label>
-              <input
-                className="focus:border-blue-500 w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-body-sm text-gray-200 focus:outline-none"
-                id="tz-date"
-                onChange={(e) => setDateInput(e.target.value)}
-                type="date"
-                value={dateInput}
-              />
-            </div>
-            <div className="flex-1">
-              <label className="mb-1 block text-body-xs text-gray-500" htmlFor="tz-time">
-                Time
-              </label>
-              <input
-                className="focus:border-blue-500 w-full rounded border border-gray-700 bg-gray-900 px-3 py-2 text-body-sm text-gray-200 focus:outline-none"
-                id="tz-time"
-                onChange={(e) => setTimeInput(e.target.value)}
-                type="time"
-                value={timeInput}
-              />
-            </div>
+            <FieldForm
+              label="Date"
+              name="tz-date"
+              onChange={setDateInput}
+              type="date"
+              value={dateInput}
+            />
+            <FieldForm
+              label="Time"
+              name="tz-time"
+              onChange={setTimeInput}
+              type="time"
+              value={timeInput}
+            />
           </div>
 
-          <button
-            aria-label="Set current date and time"
-            className="bg-blue-600 hover:bg-blue-700 w-full rounded px-3 py-2 text-body-sm font-medium text-white"
-            data-testid="now-button"
-            onClick={handleNow}
-            type="button"
-          >
+          <Button block data-testid="now-button" onClick={handleNow} variant="primary">
             Now
-          </button>
+          </Button>
 
           {error && (
             <p className="text-red-400 text-body-xs" role="alert">

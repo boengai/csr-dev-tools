@@ -3,7 +3,7 @@ import { useCallback, useRef, useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { HmacAlgorithm, HmacEncoding } from '@/utils'
 
-import { CopyButton, TextAreaInput } from '@/components/common'
+import { CopyButton, FieldForm, TextAreaInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { DEFAULT_HMAC_ALGORITHM, DEFAULT_HMAC_ENCODING, generateHmac, HMAC_ALGORITHMS } from '@/utils'
@@ -70,8 +70,7 @@ export const HmacGenerator = (_props: ToolComponentProps) => {
     debouncedCompute(value, secretKey)
   }
 
-  const handleKeyChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value
+  const handleKeyChange = (value: string) => {
     setSecretKey(value)
     if (!value || !message) {
       ++sessionRef.current
@@ -102,8 +101,8 @@ export const HmacGenerator = (_props: ToolComponentProps) => {
         value={message}
       />
 
-      <input
-        className="text-sm w-full rounded-lg border border-gray-800 bg-gray-950 px-3 py-2 font-mono text-gray-300 outline-none placeholder:text-gray-600 focus:border-primary"
+      <FieldForm
+        label=""
         name="hmac-secret-key"
         onChange={handleKeyChange}
         placeholder="Enter secret key..."

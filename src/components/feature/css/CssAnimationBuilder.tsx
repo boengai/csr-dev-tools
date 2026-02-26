@@ -9,7 +9,7 @@ import type {
   KeyframeStep,
 } from '@/utils'
 
-import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, ColorInput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { DEFAULT_ANIMATION_CONFIG, generateAnimationCss, buildTransformString } from '@/utils'
 
@@ -179,13 +179,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
                       <label className="text-body-xs text-gray-400" htmlFor={`kf-${i}-bg`}>
                         BG Color
                       </label>
-                      <input
-                        className="h-8 w-12 cursor-pointer rounded border border-gray-700 bg-transparent"
-                        id={`kf-${i}-bg`}
-                        onChange={(e) => updateKeyframe(i, { backgroundColor: e.target.value })}
-                        type="color"
-                        value={kf.backgroundColor}
-                      />
+                      <ColorInput onChange={(val) => updateKeyframe(i, { backgroundColor: val })} value={kf.backgroundColor} />
                     </div>
                   </div>
                 </div>

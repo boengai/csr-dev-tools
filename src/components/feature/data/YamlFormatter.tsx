@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
-import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CheckboxInput, CopyButton, Dialog, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { formatYaml, getYamlParseError } from '@/utils/yaml'
@@ -100,27 +100,15 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
       >
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex items-center gap-4">
-            <fieldset className="flex items-center gap-2">
-              <legend className="sr-only">Indent</legend>
-              <label className="text-body-xs text-gray-400" htmlFor="indent-select">
-                Indent
-              </label>
-              <select
-                className="rounded border border-gray-700 bg-gray-900 px-2 py-1 text-body-xs text-gray-200"
-                id="indent-select"
-                onChange={(e) => handleIndentChange(e.target.value)}
-                value={indent}
-              >
-                {INDENT_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
-            </fieldset>
+            <SelectInput
+              name="indent-select"
+              onChange={handleIndentChange}
+              options={INDENT_OPTIONS.map((opt) => ({ label: opt.label, value: String(opt.value) }))}
+              value={String(indent)}
+            />
 
             <label className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400">
-              <input checked={sortKeys} onChange={handleSortKeysChange} type="checkbox" />
+              <CheckboxInput checked={sortKeys} onChange={() => handleSortKeysChange()} />
               Sort Keys
             </label>
           </div>

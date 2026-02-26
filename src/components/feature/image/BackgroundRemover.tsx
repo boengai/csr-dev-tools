@@ -2,7 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
-import { Button, Dialog, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
+import { Button, ColorInput, Dialog, DownloadIcon, NotoEmoji, RadioGroupInput, RefreshIcon, Tabs, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import { applyBackground, removeBackground } from '@/utils/background-removal'
@@ -347,40 +347,17 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
               <div className="flex w-full shrink-0 flex-col items-center gap-4">
                 <div className="flex flex-wrap items-center justify-center gap-4">
                   <span className="text-body-sm text-gray-400">Background:</span>
-                  <label className="flex cursor-pointer items-center gap-1.5 text-body-sm text-gray-300">
-                    <input
-                      checked={bgOption === 'transparent'}
-                      name="bg-option"
-                      onChange={() => handleBgChange('transparent')}
-                      type="radio"
-                    />
-                    Transparent
-                  </label>
-                  <label className="flex cursor-pointer items-center gap-1.5 text-body-sm text-gray-300">
-                    <input
-                      checked={bgOption === 'white'}
-                      name="bg-option"
-                      onChange={() => handleBgChange('white')}
-                      type="radio"
-                    />
-                    White
-                  </label>
-                  <label className="flex cursor-pointer items-center gap-1.5 text-body-sm text-gray-300">
-                    <input
-                      checked={bgOption === 'custom'}
-                      name="bg-option"
-                      onChange={() => handleBgChange('custom')}
-                      type="radio"
-                    />
-                    Custom
-                  </label>
-                  <input
-                    className="size-8 cursor-pointer rounded border border-gray-700 disabled:cursor-not-allowed disabled:opacity-40"
-                    disabled={bgOption !== 'custom'}
-                    onChange={(e) => handleColorChange(e.target.value)}
-                    type="color"
-                    value={customColor}
+                  <RadioGroupInput
+                    name="bg-option"
+                    onChange={(val) => handleBgChange(val as BgOption)}
+                    options={[
+                      { label: 'Transparent', value: 'transparent' },
+                      { label: 'White', value: 'white' },
+                      { label: 'Custom', value: 'custom' },
+                    ]}
+                    value={bgOption}
                   />
+                  <ColorInput className="size-8" disabled={bgOption !== 'custom'} onChange={handleColorChange} value={customColor} />
                 </div>
                 <div className="w-full desktop:w-2/5">
                   <Button block onClick={handleConfirm} variant="primary">

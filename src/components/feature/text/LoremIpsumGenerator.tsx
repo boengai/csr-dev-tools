@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Button, CopyButton, FieldForm } from '@/components/common'
+import { Button, CheckboxInput, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { generateLoremIpsum } from '@/utils/lorem-ipsum'
 
@@ -53,7 +53,7 @@ export const LoremIpsumGenerator = () => {
           value={unit}
         />
         <label className="flex items-center gap-2 text-body-sm text-gray-400">
-          <input checked={startWithLorem} onChange={(e) => setStartWithLorem(e.target.checked)} type="checkbox" />
+          <CheckboxInput checked={startWithLorem} onChange={setStartWithLorem} />
           Start with &quot;Lorem ipsum dolor sit amet...&quot;
         </label>
         <Button onClick={handleGenerate} variant="primary">

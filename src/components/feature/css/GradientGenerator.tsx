@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import type { GradientConfig, GradientStop, GradientType } from '@/utils'
 
-import { CopyButton, FieldForm } from '@/components/common'
+import { ColorInput, CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { DEFAULT_GRADIENT, generateGradientCss } from '@/utils'
 
@@ -67,20 +67,15 @@ export const GradientGenerator = () => {
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
       <div className="flex shrink-0 flex-col gap-3">
-        <div className="flex items-center gap-4">
-          <label className="text-body-sm text-gray-100" htmlFor="grad-type">
-            Type
-          </label>
-          <select
-            className="text-sm rounded border border-gray-700 bg-transparent px-2 py-1 text-gray-100"
-            id="grad-type"
-            onChange={(e) => handleTypeChange(e.target.value)}
-            value={config.type}
-          >
-            <option value="linear">Linear</option>
-            <option value="radial">Radial</option>
-          </select>
-        </div>
+        <SelectInput
+          name="grad-type"
+          onChange={handleTypeChange}
+          options={[
+            { label: 'Linear', value: 'linear' },
+            { label: 'Radial', value: 'radial' },
+          ]}
+          value={config.type}
+        />
 
         {config.type === 'linear' && (
           <FieldForm
@@ -108,13 +103,7 @@ export const GradientGenerator = () => {
 
           {config.stops.map((stop: GradientStop, index: number) => (
             <div className="flex items-center gap-3" key={index}>
-              <input
-                aria-label={`Stop ${index + 1} color`}
-                className="h-8 w-12 cursor-pointer rounded border border-gray-700 bg-transparent"
-                onChange={(e) => handleStopColorChange(index, e.target.value)}
-                type="color"
-                value={stop.color}
-              />
+              <ColorInput onChange={(color) => handleStopColorChange(index, color)} value={stop.color} />
               <div className="flex-1">
                 <FieldForm
                   label={`Position ${index + 1}`}

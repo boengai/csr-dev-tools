@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
-import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CopyButton, Dialog, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { decodeHtmlEntities, encodeHtmlEntities } from '@/utils/html-entity'
@@ -101,23 +101,15 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
       >
         <div className="flex w-full grow flex-col gap-4">
           {isEncode && (
-            <div className="flex items-center gap-4">
-              <fieldset className="flex items-center gap-2">
-                <legend className="sr-only">Entity Format</legend>
-                <label className="text-body-xs text-gray-400" htmlFor="entity-mode-select">
-                  Format
-                </label>
-                <select
-                  className="rounded border border-gray-700 bg-gray-900 px-2 py-1 text-body-xs text-gray-200"
-                  id="entity-mode-select"
-                  onChange={(e) => handleEntityModeChange(e.target.value)}
-                  value={entityMode}
-                >
-                  <option value="named">Named Entities</option>
-                  <option value="numeric">Numeric Entities</option>
-                </select>
-              </fieldset>
-            </div>
+            <SelectInput
+              name="entity-mode-select"
+              onChange={handleEntityModeChange}
+              options={[
+                { label: 'Named Entities', value: 'named' },
+                { label: 'Numeric Entities', value: 'numeric' },
+              ]}
+              value={entityMode}
+            />
           )}
 
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">

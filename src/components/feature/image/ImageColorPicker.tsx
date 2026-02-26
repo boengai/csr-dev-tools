@@ -3,7 +3,7 @@ import { useCallback, useRef, useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { PickedColor } from '@/utils/color-picker'
 
-import { Button, CopyButton, Dialog } from '@/components/common'
+import { Button, CopyButton, Dialog, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { pixelToColor } from '@/utils/color-picker'
 
@@ -29,8 +29,8 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   const handleFileChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      const file = e.target.files?.[0]
+    (files: Array<File>) => {
+      const file = files[0]
       if (!file) return
       if (imageUrl) URL.revokeObjectURL(imageUrl)
       const url = URL.createObjectURL(file)
@@ -111,11 +111,12 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
             <div className="flex min-h-0 flex-1 flex-col gap-3">
-              <input
+              <UploadInput
                 accept="image/*"
-                className="block w-full cursor-pointer rounded border border-gray-800 bg-gray-950 p-2 text-body-sm text-gray-400 file:mr-3 file:rounded file:border-0 file:bg-primary/20 file:px-3 file:py-1 file:text-body-xs file:text-primary"
+                button={{ block: true, children: 'Select Image' }}
+                multiple={false}
+                name="image-color-picker"
                 onChange={handleFileChange}
-                type="file"
               />
               {imageUrl && (
                 <div className="relative overflow-auto rounded-lg border border-gray-800">

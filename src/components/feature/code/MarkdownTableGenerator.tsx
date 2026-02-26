@@ -3,20 +3,9 @@ import { useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { ColumnAlignment } from '@/utils/markdown-table'
 
-import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CopyButton, Dialog, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { tv } from '@/utils'
 import { generateMarkdownTable } from '@/utils/markdown-table'
-
-const cellInputStyles = tv({
-  base: 'w-full rounded border border-gray-800 bg-gray-950 px-2 py-1 text-body-xs',
-  variants: {
-    header: {
-      true: 'font-bold text-gray-100',
-      false: 'text-gray-300',
-    },
-  },
-})
 
 const toolEntry = TOOL_REGISTRY_MAP['markdown-table-generator']
 
@@ -153,13 +142,17 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
                 {data.map((row, r) => (
                   <tr key={r}>
                     {row.map((cell, c) => (
-                      <td className="border border-gray-800 p-1" key={c}>
-                        <input
-                          className={cellInputStyles({ header: r === 0 })}
-                          onChange={(e) => updateCell(r, c, e.target.value)}
+                      <td
+                        className={`border border-gray-800 p-1 ${r === 0 ? '[&_input]:font-bold [&_input]:text-gray-100' : ''}`}
+                        key={c}
+                      >
+                        <TextInput
+                          name={`cell-${r}-${c}`}
+                          onChange={(value) => updateCell(r, c, value)}
                           placeholder={r === 0 ? `Header ${c + 1}` : ''}
                           type="text"
                           value={cell}
+                          size="compact"
                         />
                       </td>
                     ))}

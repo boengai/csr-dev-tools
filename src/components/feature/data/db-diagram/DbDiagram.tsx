@@ -23,7 +23,7 @@ import type {
   ToolComponentProps,
 } from '@/types'
 
-import { Button, CopyButton, Dialog, DropdownMenu, ChevronIcon, ListIcon } from '@/components/common'
+import { Button, CopyButton, Dialog, DropdownMenu, ChevronIcon, ListIcon, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import {
@@ -613,16 +613,19 @@ const DiagramCanvas = () => {
 
         {/* Diagram name */}
         {editingName ? (
-          <input
+          <TextInput
             autoFocus
-            className="text-xs w-40 rounded bg-gray-800 px-2 py-1 font-bold text-white outline-none"
+            block={false}
+            name="diagram-name"
             onBlur={handleDiagramNameCommit}
-            onChange={(e) => setEditNameValue(e.target.value)}
+            onChange={(value) => setEditNameValue(value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') handleDiagramNameCommit()
               if (e.key === 'Escape') setEditingName(false)
             }}
             ref={nameInputRef}
+            size="compact"
+            type="text"
             value={editNameValue}
           />
         ) : (
@@ -1050,61 +1053,66 @@ const DiagramCanvas = () => {
               {diagramIndex.length === 0 ? (
                 <div className="text-xs px-3 py-4 text-center text-gray-500">No saved diagrams</div>
               ) : (
-                diagramIndex.map((entry) => (
-                  <div
-                    className={diagramItemStyles({ active: activeDiagramId === entry.id })}
-                    data-testid={`diagram-item-${entry.id}`}
-                    key={entry.id}
-                  >
-                    <button className="flex-1 text-left" onClick={() => handleLoadDiagram(entry.id)} type="button">
-                      {renamingId === entry.id ? (
-                        <input
-                          autoFocus
-                          className="text-xs w-full rounded bg-gray-700 px-1 text-white outline-none"
-                          onBlur={() => handleRenameDiagram(entry.id, renameValue)}
-                          onChange={(e) => setRenameValue(e.target.value)}
-                          onClick={(e) => e.stopPropagation()}
-                          onKeyDown={(e) => {
-                            if (e.key === 'Enter') handleRenameDiagram(entry.id, renameValue)
-                            if (e.key === 'Escape') setRenamingId(null)
-                          }}
-                          value={renameValue}
-                        />
-                      ) : (
-                        <>
-                          <div className="text-xs truncate font-medium text-white">{entry.name}</div>
-                          <div className="text-[10px] text-gray-500">
-                            {formatRelativeTime(entry.updatedAt)} · {entry.tableCount} tables
-                          </div>
-                        </>
-                      )}
-                    </button>
+                [...diagramIndex]
+                  .sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+                  .map((entry) => (
+                    <div
+                      className={diagramItemStyles({ active: activeDiagramId === entry.id })}
+                      data-testid={`diagram-item-${entry.id}`}
+                      key={entry.id}
+                    >
+                      <button className="flex-1 text-left" onClick={() => handleLoadDiagram(entry.id)} type="button">
+                        {renamingId === entry.id ? (
+                          <TextInput
+                            autoFocus
+                            block={false}
+                            onBlur={() => handleRenameDiagram(entry.id, renameValue)}
+                            onChange={(value) => setRenameValue(value)}
+                            onClick={(e) => e.stopPropagation()}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter') handleRenameDiagram(entry.id, renameValue)
+                              if (e.key === 'Escape') setRenamingId(null)
+                            }}
+                            name="diagram-name"
+                            size="compact"
+                            type="text"
+                            value={renameValue}
+                          />
+                        ) : (
+                          <>
+                            <div className="text-xs truncate font-medium text-white">{entry.name}</div>
+                            <div className="text-[10px] text-gray-500">
+                              {formatRelativeTime(entry.updatedAt)} · {entry.tableCount} tables
+                            </div>
+                          </>
+                        )}
+                      </button>
 
-                    <button
-                      className="text-[10px] text-gray-500 hover:text-primary"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        setRenamingId(entry.id)
-                        setRenameValue(entry.name)
-                      }}
-                      title="Rename"
-                      type="button"
-                    >
-                      Rename
-                    </button>
-                    <button
-                      className="text-[10px] text-gray-500 hover:text-error"
-                      onClick={(e) => {
-                        e.stopPropagation()
-                        handleDeleteDiagram(entry.id)
-                      }}
-                      title="Delete"
-                      type="button"
-                    >
-                      Delete
-                    </button>
-                  </div>
-                ))
+                      <button
+                        className="text-[10px] text-gray-500 hover:text-primary"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setRenamingId(entry.id)
+                          setRenameValue(entry.name)
+                        }}
+                        title="Rename"
+                        type="button"
+                      >
+                        Rename
+                      </button>
+                      <button
+                        className="text-[10px] text-gray-500 hover:text-error"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          handleDeleteDiagram(entry.id)
+                        }}
+                        title="Delete"
+                        type="button"
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  ))
               )}
             </div>
           </div>

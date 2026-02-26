@@ -2,7 +2,7 @@ import type { FieldFormProps, InputControllerProps } from '@/types'
 
 import { tv } from '@/utils'
 
-import { RangeInput, SelectInput, TextAreaInput, TextInput, UploadInput } from '../input'
+import { ColorInput, RadioGroupInput, RangeInput, SelectInput, TextAreaInput, TextInput, UploadInput } from '../input'
 
 const fieldsetStyles = tv({
   base: 'flex w-full flex-col gap-1',
@@ -16,14 +16,22 @@ const fieldsetStyles = tv({
 
 const InputController = (props: InputControllerProps) => {
   switch (props.type) {
+    case 'color':
+      return <ColorInput {...{ ...props, type: undefined }} />
+    case 'date':
+      return <TextInput {...props} type="date" />
     case 'number':
       return <TextInput {...props} type="number" />
+    case 'radio':
+      return <RadioGroupInput {...{ ...props, type: undefined }} />
     case 'range':
       return <RangeInput {...props} />
     case 'select':
       return <SelectInput {...{ ...props, type: undefined }} />
     case 'textarea':
       return <TextAreaInput {...{ ...props, type: undefined }} />
+    case 'time':
+      return <TextInput {...props} type="time" />
     case 'upload':
       return <UploadInput {...{ ...props, type: undefined }} />
     default:
