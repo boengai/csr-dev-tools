@@ -1,12 +1,14 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
+import type { MermaidFixSuggestion } from '@/utils/mermaid-auto-fix'
 import type { ToolComponentProps } from '@/types'
 
-import { Button, CopyButton, TextAreaInput } from '@/components/common'
+import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { tv } from '@/utils'
+import { suggestMermaidFix } from '@/utils/mermaid-auto-fix'
 import { downloadPng, downloadSvg, initializeMermaid, renderMermaid, svgToPng } from '@/utils/mermaid-renderer'
 
 const chevronStyles = tv({
@@ -39,13 +41,15 @@ const SYNTAX_EXAMPLES = [
   { code: 'pie\n    title Distribution\n    "A": 40\n    "B": 30\n    "C": 30', label: 'Pie' },
 ]
 
-export const MermaidRenderer = (_props: ToolComponentProps) => {
+export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [code, setCode] = useState(DEFAULT_CODE)
   const [svg, setSvg] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isReady, setIsReady] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [referenceOpen, setReferenceOpen] = useState(false)
   const [exportingPng, setExportingPng] = useState(false)
+  const [fixSuggestion, setFixSuggestion] = useState<MermaidFixSuggestion | null>(null)
   const { toast } = useToast()
 
   const renderCounterRef = useRef(0)
@@ -58,11 +62,14 @@ export const MermaidRenderer = (_props: ToolComponentProps) => {
       if (currentRender === renderCounterRef.current) {
         setSvg(result.svg)
         setError(null)
+        setFixSuggestion(null)
       }
     } catch (err) {
       if (currentRender === renderCounterRef.current) {
-        setError(err instanceof Error ? err.message : 'Invalid Mermaid syntax')
+        const errorMessage = err instanceof Error ? err.message : 'Invalid Mermaid syntax'
+        setError(errorMessage)
         setSvg('')
+        setFixSuggestion(suggestMermaidFix(input, errorMessage))
       }
     }
   }, [])
@@ -119,112 +126,161 @@ export const MermaidRenderer = (_props: ToolComponentProps) => {
     handleRender(exampleCode)
   }
 
-  if (!isReady) {
-    return (
-      <div className="flex h-full w-full animate-pulse items-center justify-center rounded bg-gray-800">
-        <span className="text-body-xs text-gray-500">Loading Mermaid renderer...</span>
-      </div>
-    )
+  const handleApplyFix = useCallback(() => {
+    if (!fixSuggestion) return
+    setCode(fixSuggestion.fixedCode)
+    setFixSuggestion(null)
+    handleRender(fixSuggestion.fixedCode)
+  }, [fixSuggestion, handleRender])
+
+  const handleReset = () => {
+    setCode(DEFAULT_CODE)
+    setSvg('')
+    setError(null)
+    setFixSuggestion(null)
+    setReferenceOpen(false)
+  }
+
+  const handleAfterClose = () => {
+    handleReset()
+    onAfterDialogClose?.()
   }
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+    <>
+      <div className="flex w-full grow flex-col gap-4">
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <div className="md:flex-row flex flex-col gap-4">
-        {/* Left Panel: Editor Section */}
-        <div className="md:w-[45%] flex min-w-0 flex-col gap-2">
-          <h3 className="text-body-sm font-semibold text-gray-100">Mermaid Syntax</h3>
-          <div className="[&_textarea]:font-mono">
-            <TextAreaInput
-              name="mermaid-input"
-              onChange={handleCodeChange}
-              placeholder="Enter Mermaid diagram syntax..."
-              rows={12}
-              value={code}
-            />
-          </div>
-
-          {error && (
-            <p className="text-red-400 text-body-xs" role="alert">
-              {error}
-            </p>
-          )}
-
-          {/* Syntax Reference Toggle */}
-          <div className="flex flex-col gap-2">
-            <button
-              aria-expanded={referenceOpen}
-              aria-label="Syntax Reference"
-              className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400 hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-              onClick={() => setReferenceOpen((prev) => !prev)}
-              type="button"
-            >
-              <span className={chevronStyles({ open: referenceOpen })}>▶</span>
-              Syntax Reference
-            </button>
-
-            <AnimatePresence>
-              {referenceOpen && (
-                <motion.div
-                  animate={{ height: 'auto', opacity: 1 }}
-                  className="overflow-hidden"
-                  exit={{ height: 0, opacity: 0 }}
-                  initial={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div className="flex flex-col gap-2 rounded border border-gray-800 bg-gray-950 p-3">
-                    {SYNTAX_EXAMPLES.map((example) => (
-                      <div className="flex items-start justify-between gap-2" key={example.label}>
-                        <div className="min-w-0 flex-1">
-                          <button
-                            aria-label={`Use ${example.label} example`}
-                            className="cursor-pointer text-body-xs font-semibold text-primary hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-                            onClick={() => handleExampleClick(example.code)}
-                            type="button"
-                          >
-                            {example.label}
-                          </button>
-                          <pre className="mt-1 overflow-x-auto font-mono text-body-xs whitespace-pre-wrap text-gray-400">
-                            {example.code}
-                          </pre>
-                        </div>
-                        <CopyButton label={example.label} value={example.code} variant="icon-only" />
-                      </div>
-                    ))}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </div>
-
-        {/* Right Panel: Preview Section */}
-        <div className="md:w-[55%] flex min-w-0 flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <h3 className="text-body-sm font-semibold text-gray-100">Preview</h3>
-            <div className="flex gap-2">
-              <Button disabled={!svg} onClick={handleExportSvg} size="small" variant="secondary">
-                Export SVG
-              </Button>
-              <Button disabled={!svg || exportingPng} onClick={handleExportPng} size="small" variant="secondary">
-                {exportingPng ? 'Exporting...' : 'Export PNG'}
-              </Button>
-            </div>
-          </div>
-
-          <div
-            aria-live="polite"
-            className="flex min-h-64 flex-1 items-center justify-center overflow-auto rounded border border-gray-800 bg-gray-900 p-4"
-          >
-            {svg ? (
-              <div className="[&_svg]:max-w-full" dangerouslySetInnerHTML={{ __html: svg }} />
-            ) : (
-              !error && <p className="text-body-xs text-gray-500">Enter Mermaid syntax to see a preview</p>
-            )}
-          </div>
+        <div className="flex grow flex-col items-center justify-center gap-2">
+          <Button block onClick={() => setDialogOpen(true)} variant="default">
+            Render
+          </Button>
         </div>
       </div>
-    </div>
+
+      <Dialog
+        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
+        onAfterClose={handleAfterClose}
+        size="screen"
+        title="Mermaid Renderer"
+      >
+        <div className="flex w-full grow flex-col gap-4">
+          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
+            {/* Left Panel: Input */}
+            <div className="flex min-h-0 flex-1 flex-col gap-2">
+              <FieldForm
+                label="Mermaid Syntax"
+                name="mermaid-input"
+                onChange={handleCodeChange}
+                placeholder="Enter Mermaid diagram syntax..."
+                rows={16}
+                type="textarea"
+                value={code}
+              />
+
+              <AnimatePresence>
+                {error && (
+                  <motion.div
+                    animate={{ height: 'auto', opacity: 1 }}
+                    className="flex flex-col gap-2 overflow-hidden"
+                    exit={{ height: 0, opacity: 0 }}
+                    initial={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <p className="text-body-xs text-error" role="alert">
+                      {error}
+                    </p>
+
+                    {fixSuggestion && (
+                      <div className="flex items-center gap-2">
+                        <p className="text-body-xs text-yellow-400">
+                          Suggestion: {fixSuggestion.description}
+                        </p>
+                        <Button onClick={handleApplyFix} size="small" variant="warning">
+                          Auto-fix
+                        </Button>
+                      </div>
+                    )}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+
+              {/* Syntax Reference Toggle */}
+              <div className="flex flex-col gap-2">
+                <button
+                  aria-expanded={referenceOpen}
+                  aria-label="Syntax Reference"
+                  className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400 hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                  onClick={() => setReferenceOpen((prev) => !prev)}
+                  type="button"
+                >
+                  <span className={chevronStyles({ open: referenceOpen })}>▶</span>
+                  Syntax Reference
+                </button>
+
+                <AnimatePresence>
+                  {referenceOpen && (
+                    <motion.div
+                      animate={{ height: 'auto', opacity: 1 }}
+                      className="overflow-hidden"
+                      exit={{ height: 0, opacity: 0 }}
+                      initial={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                    >
+                      <div className="flex flex-col gap-2 rounded border border-gray-800 bg-gray-950 p-3">
+                        {SYNTAX_EXAMPLES.map((example) => (
+                          <div className="flex items-start justify-between gap-2" key={example.label}>
+                            <div className="min-w-0 flex-1">
+                              <button
+                                aria-label={`Use ${example.label} example`}
+                                className="cursor-pointer text-body-xs font-semibold text-primary hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                                onClick={() => handleExampleClick(example.code)}
+                                type="button"
+                              >
+                                {example.label}
+                              </button>
+                              <pre className="mt-1 overflow-x-auto font-mono text-body-xs whitespace-pre-wrap text-gray-400">
+                                {example.code}
+                              </pre>
+                            </div>
+                            <CopyButton label={example.label} value={example.code} variant="icon-only" />
+                          </div>
+                        ))}
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Divider */}
+            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
+
+            {/* Right Panel: Preview */}
+            <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2">
+              <div className="flex items-center gap-1">
+                <span className="text-body-xs font-medium text-gray-300">Preview</span>
+                <div className="ml-auto flex gap-2">
+                  <Button disabled={!svg} onClick={handleExportSvg} size="small" variant="secondary">
+                    Export SVG
+                  </Button>
+                  <Button disabled={!svg || exportingPng} onClick={handleExportPng} size="small" variant="secondary">
+                    {exportingPng ? 'Exporting...' : 'Export PNG'}
+                  </Button>
+                </div>
+              </div>
+
+              <div className="flex min-h-[300px] flex-1 items-center justify-center overflow-auto">
+                {svg ? (
+                  <div className="w-full [&_svg]:h-auto [&_svg]:w-full" dangerouslySetInnerHTML={{ __html: svg }} />
+                ) : (
+                  !error && <p className="text-body-xs text-gray-500">Enter Mermaid syntax to see a preview</p>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </Dialog>
+    </>
   )
 }
