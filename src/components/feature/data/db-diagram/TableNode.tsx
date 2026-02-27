@@ -120,7 +120,7 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
       </div>
 
       {/* Columns */}
-      <div className="flex flex-col">
+      <div className="relative flex flex-col">
         {data.columns.map((col) => (
           <div className="group relative flex items-center border-b border-gray-800 px-1 py-1" key={col.id}>
             {/* Target handle (left) */}
@@ -207,13 +207,7 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
       </div>
 
       {/* Add Column button */}
-      <Button
-        block
-        data-testid={`add-column-btn-${id}`}
-        onClick={() => data.onAddColumn()}
-        size="small"
-        variant="text"
-      >
+      <Button block data-testid={`add-column-btn-${id}`} onClick={() => data.onAddColumn()} size="small" variant="text">
         + Add Column
       </Button>
     </div>

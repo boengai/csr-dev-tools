@@ -13,6 +13,7 @@ import {
   useEdgesState,
   useNodesState,
   useReactFlow,
+  useUpdateNodeInternals,
 } from '@xyflow/react'
 import { useCallback, useEffect, useMemo, useRef, useState, type ButtonHTMLAttributes } from 'react'
 
@@ -117,6 +118,7 @@ const DiagramCanvas = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState<TableNode>([])
   const [edges, setEdges, onEdgesChange] = useEdgesState<RelationshipEdge>([])
   const { screenToFlowPosition, fitView } = useReactFlow()
+  const updateNodeInternals = useUpdateNodeInternals()
   const [tableCount, setTableCount] = useState(0)
   const sqlExtensions = useMemo(() => [sqlLang()], [])
   const jsonExtensions = useMemo(() => [json()], [])
@@ -171,7 +173,10 @@ const DiagramCanvas = () => {
         setActiveDiagramId(latest.id)
         setDiagramName(latest.name)
         setTableCount(restoredNodes.length)
-        setTimeout(() => fitView({ padding: 0.2 }), 50)
+        setTimeout(() => {
+          updateNodeInternals(restoredNodes.map((n) => n.id))
+          fitView({ padding: 0.2 })
+        }, 100)
       }
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
@@ -188,6 +193,16 @@ const DiagramCanvas = () => {
     }
     window.addEventListener('db-diagram-relation-change', handler)
     return () => window.removeEventListener('db-diagram-relation-change', handler)
+  }, [setEdges])
+
+  // Listen for edge delete events from edge component
+  useEffect(() => {
+    const handler = (e: Event) => {
+      const { edgeId } = (e as CustomEvent<{ edgeId: string }>).detail
+      setEdges((eds) => eds.filter((edge) => edge.id !== edgeId))
+    }
+    window.addEventListener('db-diagram-edge-delete', handler)
+    return () => window.removeEventListener('db-diagram-edge-delete', handler)
   }, [setEdges])
 
   // Autosave logic
@@ -446,9 +461,12 @@ const DiagramCanvas = () => {
       if (entry) setDiagramName(entry.name)
       setTableCount(newNodes.length)
       setActivePanel(null)
-      setTimeout(() => fitView({ padding: 0.2 }), 50)
+      setTimeout(() => {
+        updateNodeInternals(newNodes.map((n) => n.id))
+        fitView({ padding: 0.2 })
+      }, 100)
     },
-    [diagramIndex, setNodes, setEdges, fitView, toast],
+    [diagramIndex, setNodes, setEdges, fitView, updateNodeInternals, toast],
   )
 
   const handleNewDiagram = useCallback(() => {
@@ -559,7 +577,10 @@ const DiagramCanvas = () => {
           setTableCount(newNodes.length)
           setActiveDiagramId(null)
           setDiagramName(file.name.replace(/\.json$/i, ''))
-          setTimeout(() => fitView({ padding: 0.2 }), 50)
+          setTimeout(() => {
+            updateNodeInternals(newNodes.map((n) => n.id))
+            fitView({ padding: 0.2 })
+          }, 100)
         } catch {
           toast({
             action: 'add',
@@ -570,7 +591,7 @@ const DiagramCanvas = () => {
       reader.readAsText(file)
       e.target.value = ''
     },
-    [setNodes, setEdges, fitView, toast],
+    [setNodes, setEdges, fitView, updateNodeInternals, toast],
   )
 
   // Import SQL DDL
@@ -599,7 +620,10 @@ const DiagramCanvas = () => {
     }
 
     setTableCount((c) => c + result.tables.length)
-    setTimeout(() => fitView({ padding: 0.2 }), 50)
+    setTimeout(() => {
+      updateNodeInternals(newNodes.map((n) => n.id))
+      fitView({ padding: 0.2 })
+    }, 100)
 
     const errorCount = result.errors.length
     const importedCount = result.tables.length
@@ -610,7 +634,7 @@ const DiagramCanvas = () => {
         type: errorCount > 0 ? 'error' : 'success',
       },
     })
-  }, [importSqlText, importSqlDialect, importSqlMerge, setNodes, setEdges, fitView, toast])
+  }, [importSqlText, importSqlDialect, importSqlMerge, setNodes, setEdges, fitView, updateNodeInternals, toast])
 
   // Import JSON Schema
   const handleImportJsonSchema = useCallback(() => {
@@ -640,7 +664,10 @@ const DiagramCanvas = () => {
       }
 
       setTableCount((c) => c + result.tables.length)
-      setTimeout(() => fitView({ padding: 0.2 }), 50)
+      setTimeout(() => {
+        updateNodeInternals(newNodes.map((n) => n.id))
+        fitView({ padding: 0.2 })
+      }, 100)
 
       toast({
         action: 'add',
@@ -653,7 +680,7 @@ const DiagramCanvas = () => {
       setImportJsonSchemaErrors(['Invalid JSON. Please check the syntax.'])
       toast({ action: 'add', item: { label: 'Invalid JSON syntax.', type: 'error' } })
     }
-  }, [importJsonSchemaText, importJsonSchemaMerge, setNodes, setEdges, fitView, toast])
+  }, [importJsonSchemaText, importJsonSchemaMerge, setNodes, setEdges, fitView, updateNodeInternals, toast])
 
   // Open in Mermaid Renderer
   const handleOpenInMermaidRenderer = useCallback(() => {
@@ -837,7 +864,31 @@ const DiagramCanvas = () => {
             proOptions={{ hideAttribution: true }}
           >
             <Controls />
-            <MiniMap />
+            <MiniMap
+              bgColor="oklch(0.12 0.008 270)"
+              maskColor="rgba(0, 0, 0, 0.6)"
+              maskStrokeColor="oklch(0.55 0.22 310)"
+              maskStrokeWidth={2}
+              nodeColor={(node) => {
+                const palette = [
+                  'oklch(0.55 0.22 310)',
+                  'oklch(0.65 0.12 260)',
+                  'oklch(0.6 0.15 240)',
+                  'oklch(0.65 0.18 165)',
+                  'oklch(0.75 0.15 85)',
+                  'oklch(0.6 0.2 15)',
+                  'oklch(0.7 0.15 30)',
+                  'oklch(0.6 0.18 200)',
+                ]
+                const idx = nodesWithCallbacks.findIndex((n) => n.id === node.id)
+                return palette[idx % palette.length]
+              }}
+              nodeStrokeColor="oklch(0.25 0.008 270)"
+              nodeStrokeWidth={2}
+              pannable
+              style={{ borderRadius: 8, border: '1px solid oklch(0.25 0.008 270)' }}
+              zoomable
+            />
             <Background gap={16} variant={BackgroundVariant.Dots} />
           </ReactFlow>
         </div>
