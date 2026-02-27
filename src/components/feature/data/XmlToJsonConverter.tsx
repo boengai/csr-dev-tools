@@ -112,6 +112,7 @@ export const XmlToJsonConverter = ({ autoOpen, onAfterDialogClose }: ToolCompone
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label={sourceLabel}
+                lineNumbers
                 name="dialog-source"
                 onChange={handleSourceChange}
                 placeholder={sourcePlaceholder}

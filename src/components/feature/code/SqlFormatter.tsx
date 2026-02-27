@@ -117,6 +117,7 @@ export const SqlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="SQL Input"
+                lineNumbers
                 name="dialog-source"
                 onChange={handleSourceChange}
                 placeholder="SELECT id, name FROM users WHERE active = 1 ORDER BY name"

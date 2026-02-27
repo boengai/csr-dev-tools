@@ -67,6 +67,7 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="JSON Data"
+                lineNumbers
                 name="json-data"
                 onChange={handleDataChange}
                 placeholder='{"name": "John", "age": 30}'
@@ -81,6 +82,7 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="JSON Schema"
+                lineNumbers
                 name="json-schema"
                 onChange={handleSchemaChange}
                 placeholder='{"type": "object", "properties": {"name": {"type": "string"}}}'

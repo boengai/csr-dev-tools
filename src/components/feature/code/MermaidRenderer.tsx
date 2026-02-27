@@ -170,6 +170,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="Mermaid Syntax"
+                lineNumbers
                 name="mermaid-input"
                 onChange={handleCodeChange}
                 placeholder="Enter Mermaid diagram syntax..."

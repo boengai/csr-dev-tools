@@ -144,16 +144,15 @@ export const CertificateDecoder = (_props: ToolComponentProps) => {
     <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <div className="[&_textarea]:font-mono">
-        <TextAreaInput
-          aria-label="PEM certificate input"
-          name="certificate-input"
-          onChange={handleChange}
-          placeholder="Paste PEM-encoded certificate here..."
-          rows={8}
-          value={input}
-        />
-      </div>
+      <TextAreaInput
+        aria-label="PEM certificate input"
+        lineNumbers
+        name="certificate-input"
+        onChange={handleChange}
+        placeholder="Paste PEM-encoded certificate here..."
+        rows={8}
+        value={input}
+      />
 
       {loading && input.trim() && (
         <p className="text-body-xs text-gray-400" role="status">

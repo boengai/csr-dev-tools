@@ -118,6 +118,7 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="JSON Input"
+                lineNumbers
                 name="json-source"
                 onChange={handleSourceChange}
                 placeholder={'{\n  "name": "John",\n  "age": 30\n}'}

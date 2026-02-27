@@ -47,7 +47,9 @@ export type SelectInputProps = Omit<BaseInputProps, 'onEnter'> &
 
 export type TextAreaInputProps = BaseInputProps &
   Pick<TextareaHTMLAttributes<HTMLTextAreaElement>, 'autoCorrect' | 'readOnly' | 'rows'> &
-  Partial<InputVariants>
+  Partial<InputVariants> & {
+    lineNumbers?: boolean
+  }
 
 export type TextInputProps = BaseInputProps &
   Pick<InputHTMLAttributes<HTMLInputElement>, 'autoFocus' | 'autoCorrect' | 'inputMode' | 'onKeyDown' | 'onClick'> &

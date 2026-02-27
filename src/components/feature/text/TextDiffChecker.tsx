@@ -127,6 +127,7 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="Original"
+                lineNumbers
                 name="original"
                 onChange={handleOriginalChange}
                 placeholder="Paste original text here..."
@@ -139,6 +140,7 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="Modified"
+                lineNumbers
                 name="modified"
                 onChange={handleModifiedChange}
                 placeholder="Paste modified text here..."

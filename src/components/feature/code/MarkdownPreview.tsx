@@ -64,6 +64,7 @@ export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="Markdown Input"
+                lineNumbers
                 name="dialog-source"
                 onChange={handleSourceChange}
                 placeholder="# Hello World\n\nWrite **markdown** here..."
