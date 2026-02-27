@@ -1,21 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
 import { formatHtml, minifyHtml } from '@/utils/html-format'
 
 const toolEntry = TOOL_REGISTRY_MAP['html-formatter']
 
 export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useState('')
+  const [source, setSource] = useLocalStorage('csr-dev-tools-html-formatter-source', '')
   const [result, setResult] = useState('')
   const [mode, setMode] = useState<'beautify' | 'minify'>('beautify')
   const [indent, setIndent] = useState<number | 'tab'>(2)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
+  const initializedRef = useRef(false)
 
   const process = (val: string, m: 'beautify' | 'minify', ind: number | 'tab') => {
     if (val.trim().length === 0) {
@@ -33,6 +34,14 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   const processInput = useDebounceCallback((val: string) => {
     process(val, mode, indent)
   }, 300)
+
+  useEffect(() => {
+    if (!initializedRef.current) {
+      initializedRef.current = true
+      if (source) process(source, mode, indent)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
+  }, [])
 
   const handleSourceChange = (val: string) => {
     setSource(val)
@@ -56,7 +65,6 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   }
 
   const handleReset = () => {
-    setSource('')
     setResult('')
   }
 
@@ -71,7 +79,10 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
+          <Button block onClick={() => {
+            setDialogOpen(true)
+            if (source.trim()) process(source, mode, indent)
+          }} variant="default">
             Format
           </Button>
         </div>
@@ -113,7 +124,7 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
           </div>
 
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 flex-1 flex-col gap-2">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="HTML Input"
                 name="dialog-source"
@@ -126,7 +137,7 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
 
             <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
-            <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2">
+            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <CodeOutput
                 label={
                   <span className="flex items-center gap-1">

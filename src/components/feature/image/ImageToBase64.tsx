@@ -85,7 +85,7 @@ export const ImageToBase64 = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
 
             <div className="border-t-2 border-dashed border-gray-900" />
 
-            <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-4">
+            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-4">
               <div className="flex min-h-0 flex-col gap-2">
                 <FieldForm
                   disabled

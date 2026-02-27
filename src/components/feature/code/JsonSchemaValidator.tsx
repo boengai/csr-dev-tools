@@ -1,19 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
 import { Button, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback } from '@/hooks'
+import { useDebounceCallback, useLocalStorage } from '@/hooks'
 import { type ValidationResult, validateJsonSchema } from '@/utils/json-schema'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-schema-validator']
 
 export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [jsonData, setJsonData] = useState('')
-  const [jsonSchema, setJsonSchema] = useState('')
+  const [jsonData, setJsonData] = useLocalStorage('csr-dev-tools-json-schema-validator-data', '')
+  const [jsonSchema, setJsonSchema] = useLocalStorage('csr-dev-tools-json-schema-validator-schema', '')
   const [result, setResult] = useState<ValidationResult | null>(null)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
+  const initializedRef = useRef(false)
 
   const debouncedValidate = useDebounceCallback((data: string, schema: string) => {
     if (data.trim().length === 0 || schema.trim().length === 0) {
@@ -22,6 +23,16 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
     }
     setResult(validateJsonSchema(data, schema))
   }, 300)
+
+  useEffect(() => {
+    if (!initializedRef.current) {
+      initializedRef.current = true
+      if (jsonData && jsonSchema) {
+        setResult(validateJsonSchema(jsonData, jsonSchema))
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
+  }, [])
 
   const handleDataChange = (val: string) => {
     setJsonData(val)
@@ -34,8 +45,6 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
   }
 
   const handleReset = () => {
-    setJsonData('')
-    setJsonSchema('')
     setResult(null)
   }
 
@@ -50,7 +59,12 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
+          <Button block onClick={() => {
+            setDialogOpen(true)
+            if (jsonData.trim() && jsonSchema.trim()) {
+              setResult(validateJsonSchema(jsonData, jsonSchema))
+            }
+          }} variant="default">
             Validate
           </Button>
         </div>
@@ -64,7 +78,7 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
       >
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 flex-1 flex-col gap-2">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="JSON Data"
                 name="json-data"
@@ -77,7 +91,7 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
 
             <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
-            <div className="flex min-h-0 flex-1 flex-col gap-2">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="JSON Schema"
                 name="json-schema"

@@ -128,7 +128,7 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
           </div>
 
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 flex-1 flex-col gap-2">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="Source"
                 name="dialog-source"
@@ -141,7 +141,7 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
 
             <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
-            <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2">
+            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <CodeOutput
                 label={
                   <span className="flex items-center gap-1">

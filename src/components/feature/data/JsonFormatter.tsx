@@ -1,19 +1,20 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
 import { formatJson, getJsonParseError } from '@/utils/json'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-formatter']
 
 export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useState('')
+  const [source, setSource] = useLocalStorage('csr-dev-tools-json-formatter-source', '')
   const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
+  const initializedRef = useRef(false)
 
   const process = (val: string) => {
     if (val.trim().length === 0) {
@@ -40,13 +41,20 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     process(val)
   }, 300)
 
+  useEffect(() => {
+    if (!initializedRef.current) {
+      initializedRef.current = true
+      if (source) process(source)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
+  }, [])
+
   const handleSourceChange = (val: string) => {
     setSource(val)
     processInput(val)
   }
 
   const handleReset = () => {
-    setSource('')
     setResult('')
   }
 
@@ -61,7 +69,10 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
+          <Button block onClick={() => {
+            setDialogOpen(true)
+            if (source.trim()) process(source)
+          }} variant="default">
             Format
           </Button>
         </div>
@@ -75,7 +86,7 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
       >
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 flex-1 flex-col gap-2">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="JSON Input"
                 name="dialog-source"
@@ -88,7 +99,7 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
 
             <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
-            <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2">
+            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <CodeOutput
                 label={
                   <span className="flex items-center gap-1">

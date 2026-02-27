@@ -3,6 +3,8 @@ import CodeMirror from '@uiw/react-codemirror'
 
 import type { CodeInputProps } from '@/types'
 
+import { EditorView } from '@uiw/react-codemirror'
+
 import { tv } from '@/utils'
 
 import { codeInputBaseTheme, codeInputCompactTheme, codeInputTheme } from './code-input-theme'
@@ -42,7 +44,7 @@ export const CodeInput = ({
   value = '',
 }: CodeInputProps) => {
   const extensions = useMemo(() => {
-    const exts = [codeInputBaseTheme, ...(externalExtensions ?? [])]
+    const exts = [codeInputBaseTheme, EditorView.lineWrapping, ...(externalExtensions ?? [])]
     if (size === 'compact') {
       exts.push(codeInputCompactTheme)
     }

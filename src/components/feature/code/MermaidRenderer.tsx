@@ -6,7 +6,7 @@ import type { ToolComponentProps } from '@/types'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
 import { tv } from '@/utils'
 import { suggestMermaidFix } from '@/utils/mermaid-auto-fix'
 import { downloadPng, downloadSvg, initializeMermaid, renderMermaid, svgToPng } from '@/utils/mermaid-renderer'
@@ -42,7 +42,7 @@ const SYNTAX_EXAMPLES = [
 ]
 
 export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [code, setCode] = useState(DEFAULT_CODE)
+  const [code, setCode] = useLocalStorage('csr-dev-tools-mermaid-renderer-code', DEFAULT_CODE)
   const [svg, setSvg] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
@@ -87,10 +87,11 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         setCode(prefill)
         handleRender(prefill)
       } else {
-        handleRender(DEFAULT_CODE)
+        handleRender(code)
       }
     }
-  }, [handleRender])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
+  }, [])
 
   const handleCodeChange = (value: string) => {
     setCode(value)
@@ -165,7 +166,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
             {/* Left Panel: Input */}
-            <div className="flex min-h-0 flex-1 flex-col gap-2">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="Mermaid Syntax"
                 name="mermaid-input"
@@ -254,7 +255,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
             {/* Right Panel: Preview */}
-            <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2">
+            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <div className="flex items-center gap-1">
                 <span className="text-body-xs font-medium text-gray-300">Preview</span>
                 <div className="ml-auto flex gap-2">

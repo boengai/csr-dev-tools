@@ -1,11 +1,11 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 import type { GraphqlSchemaInfo, GraphqlTypeInfo, GraphqlTypeKind } from '@/utils/graphql-schema-viewer'
 
 import { CodeInput, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
 const toolEntry = TOOL_REGISTRY_MAP['graphql-schema-viewer']
 
 const getTypeKindLabel = (kind: GraphqlTypeKind): string => {
@@ -228,12 +228,13 @@ input CreateUserInput {
 scalar DateTime`
 
 export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
-  const [input, setInput] = useState('')
+  const [input, setInput] = useLocalStorage('csr-dev-tools-graphql-schema-viewer-input', '')
   const [schemaInfo, setSchemaInfo] = useState<GraphqlSchemaInfo | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [selectedType, setSelectedType] = useState<string | null>(null)
   const [filter, setFilter] = useState('')
   const { toast } = useToast()
+  const initializedRef = useRef(false)
 
   const handleParse = useDebounceCallback(async (value: string) => {
     if (!value.trim()) {
@@ -263,6 +264,13 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
     setInput(value)
     handleParse(value)
   }
+
+  useEffect(() => {
+    if (!initializedRef.current) {
+      initializedRef.current = true
+      if (input) handleParse(input)
+    }
+  }, [handleParse, input])
 
   const handleLoadExample = useCallback(() => {
     setInput(SAMPLE_SCHEMA)

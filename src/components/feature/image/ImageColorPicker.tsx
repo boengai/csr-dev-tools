@@ -110,7 +110,7 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
       >
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 flex-1 flex-col gap-3">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
               <UploadInput
                 accept="image/*"
                 button={{ block: true, children: 'Select Image' }}
@@ -138,7 +138,7 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
 
             <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
-            <div className="flex min-h-0 flex-1 flex-col gap-3">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
               <span className="text-body-xs font-medium text-gray-400">Palette ({palette.length}/10)</span>
               {palette.length === 0 ? (
                 <p className="text-body-sm text-gray-500">Click on the image to pick colors</p>

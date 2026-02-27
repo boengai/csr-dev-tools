@@ -9,7 +9,7 @@ import { json } from '@codemirror/lang-json'
 
 import { CodeInput, CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
 import { tv } from '@/utils'
 import { evaluateJsonPath, formatResultValue, parseJsonInput } from '@/utils/jsonpath-evaluator'
 
@@ -69,8 +69,8 @@ const CHEATSHEET_ENTRIES = [
 ]
 
 export const JsonpathEvaluator = (_props: ToolComponentProps) => {
-  const [jsonInput, setJsonInput] = useState(SAMPLE_JSON)
-  const [expression, setExpression] = useState(DEFAULT_EXPRESSION)
+  const [jsonInput, setJsonInput] = useLocalStorage('csr-dev-tools-jsonpath-evaluator-json', SAMPLE_JSON)
+  const [expression, setExpression] = useLocalStorage('csr-dev-tools-jsonpath-evaluator-expression', DEFAULT_EXPRESSION)
   const [parsedData, setParsedData] = useState<unknown>(null)
   const [parseError, setParseError] = useState<string | null>(null)
   const [evaluation, setEvaluation] = useState<JsonPathEvaluation | null>(null)
@@ -79,7 +79,7 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
 
   const initializedRef = useRef(false)
   const parsedDataRef = useRef<unknown>(null)
-  const expressionRef = useRef(DEFAULT_EXPRESSION)
+  const expressionRef = useRef(expression)
 
   const runEvaluation = useCallback(
     (data: unknown, expr: string) => {
@@ -119,14 +119,15 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      const result = parseJsonInput(SAMPLE_JSON)
+      const result = parseJsonInput(jsonInput)
       if (result.success) {
         setParsedData(result.data)
         parsedDataRef.current = result.data
-        runEvaluation(result.data, DEFAULT_EXPRESSION)
+        runEvaluation(result.data, expression)
       }
     }
-  }, [runEvaluation])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
+  }, [])
 
   const handleJsonChange = (value: string) => {
     setJsonInput(value)

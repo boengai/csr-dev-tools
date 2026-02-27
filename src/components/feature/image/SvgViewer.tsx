@@ -76,7 +76,7 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
       >
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 flex-1 flex-col gap-2">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="SVG Code"
                 name="svg-source"
@@ -115,7 +115,7 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
 
             <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
-            <div className="flex min-h-0 flex-1 flex-col gap-2">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <div className="flex items-center gap-2">
                 <span className="text-body-sm font-medium text-gray-400">Preview</span>
                 {displaySvg && <CopyButton label="SVG" value={displaySvg} />}

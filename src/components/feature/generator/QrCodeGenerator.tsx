@@ -130,7 +130,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
       >
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 flex-1 flex-col gap-4">
+            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4">
               <FieldForm
                 label="Text or URL"
                 name="qr-text"
@@ -183,7 +183,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
 
             <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
-            <div aria-live="polite" className="flex min-h-0 flex-1 flex-col items-center gap-4">
+            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col items-center gap-4">
               {dataUrl ? (
                 <>
                   <img alt="QR Code" className="rounded-lg" height={size} src={dataUrl} width={size} />

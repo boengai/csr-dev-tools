@@ -184,7 +184,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
 
           <div className="border-t-2 border-dashed border-gray-900" />
 
-          <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2">
+          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
             <div className="flex items-center gap-2">
               <span className="text-body-sm font-medium text-gray-400">
                 {result != null ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'} found` : 'Output'}

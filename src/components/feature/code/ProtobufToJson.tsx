@@ -1,11 +1,11 @@
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufSchemaInfo } from '@/utils/protobuf-to-json'
 
 import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-to-json']
 
@@ -136,12 +136,13 @@ function annotateJsonWithEnums(jsonStr: string, allEnums: Array<ProtobufEnumInfo
 }
 
 export const ProtobufToJson = (_props: ToolComponentProps) => {
-  const [input, setInput] = useState('')
+  const [input, setInput] = useLocalStorage('csr-dev-tools-protobuf-to-json-input', '')
   const [schemaInfo, setSchemaInfo] = useState<ProtobufSchemaInfo | null>(null)
   const [error, setError] = useState<{ line: number | null; message: string } | null>(null)
   const [selectedEntry, setSelectedEntry] = useState<string | null>(null)
   const [generatedJson, setGeneratedJson] = useState<string | null>(null)
   const { toast } = useToast()
+  const initializedRef = useRef(false)
 
   const handleParse = useDebounceCallback(async (value: string) => {
     if (!value.trim()) {
@@ -174,6 +175,13 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
     setInput(value)
     handleParse(value)
   }
+
+  useEffect(() => {
+    if (!initializedRef.current) {
+      initializedRef.current = true
+      if (input) handleParse(input)
+    }
+  }, [handleParse, input])
 
   const handleLoadExample = useCallback(() => {
     setInput(SAMPLE_PROTO)
