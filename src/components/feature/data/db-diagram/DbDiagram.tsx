@@ -14,7 +14,7 @@ import {
   useNodesState,
   useReactFlow,
 } from '@xyflow/react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState, type ButtonHTMLAttributes } from 'react'
 
 import type {
   DiagramIndexEntry,
@@ -25,13 +25,23 @@ import type {
   ToolComponentProps,
 } from '@/types'
 
-import { Button, CodeInput, CopyButton, Dialog, DropdownMenu, ChevronIcon, ListIcon, TextInput } from '@/components/common'
+import {
+  Button,
+  CheckboxInput,
+  ChevronIcon,
+  CodeInput,
+  CopyButton,
+  Dialog,
+  DropdownMenu,
+  ListIcon,
+  SelectInput,
+  TextInput,
+} from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import {
   createDefaultColumn,
   createDefaultTable,
-  gridLayoutPositions,
   deleteDiagram,
   deserializeDiagram,
   downloadTextFile,
@@ -42,6 +52,7 @@ import {
   generateMermaidER,
   generateSql,
   generateTypeScript,
+  gridLayoutPositions,
   loadDiagram,
   loadDiagramIndex,
   parseDbml,
@@ -93,6 +104,14 @@ type SidePanel =
   | null
 
 const MERMAID_PREFILL_KEY = 'csr-dev-tools-mermaid-renderer-prefill'
+
+const CloseButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>) => {
+  return (
+    <button className="text-xs text-gray-400 hover:text-white" onClick={onClick} type="button">
+      Close
+    </button>
+  )
+}
 
 const DiagramCanvas = () => {
   const [nodes, setNodes, onNodesChange] = useNodesState<TableNode>([])
@@ -644,18 +663,21 @@ const DiagramCanvas = () => {
   }, [generatedMermaid])
 
   // Panel toggle helper
-  const togglePanel = useCallback((panel: SidePanel) => {
-    setActivePanel((prev) => {
-      if (prev === panel) return null
-      if (panel === 'diagram-list') setDiagramIndex(loadDiagramIndex())
-      if (panel === 'dbml') {
-        setDbmlSource('diagram')
-        setDbmlText(generatedDbmlText)
-        setDbmlErrors([])
-      }
-      return panel
-    })
-  }, [generatedDbmlText])
+  const togglePanel = useCallback(
+    (panel: SidePanel) => {
+      setActivePanel((prev) => {
+        if (prev === panel) return null
+        if (panel === 'diagram-list') setDiagramIndex(loadDiagramIndex())
+        if (panel === 'dbml') {
+          setDbmlSource('diagram')
+          setDbmlText(generatedDbmlText)
+          setDbmlErrors([])
+        }
+        return panel
+      })
+    },
+    [generatedDbmlText],
+  )
 
   return (
     <div className="flex h-full flex-col">
@@ -828,32 +850,19 @@ const DiagramCanvas = () => {
           >
             <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
               <span className="text-xs font-bold text-white">Import SQL</span>
-              <button
-                className="text-xs text-gray-400 hover:text-white"
-                onClick={() => setActivePanel(null)}
-                type="button"
-              >
-                Close
-              </button>
+              <CloseButton onClick={() => setActivePanel(null)} />
             </div>
 
             <div className="flex items-center gap-2 border-b border-gray-800 px-3 py-2">
-              <label className="text-xs text-gray-400" htmlFor="import-dialect-select">
-                Dialect:
-              </label>
-              <select
-                className="text-xs rounded bg-gray-800 px-2 py-1 text-white outline-none"
-                data-testid="import-dialect-select"
-                id="import-dialect-select"
-                onChange={(e) => setImportSqlDialect(e.target.value as SqlDialect)}
+              <span className="text-xs text-gray-400">Dialect:</span>
+              <SelectInput
+                block={false}
+                name="import-dialect-select"
+                onChange={(value) => setImportSqlDialect(value as SqlDialect)}
+                options={DIALECT_OPTIONS}
+                size="compact"
                 value={importSqlDialect}
-              >
-                {DIALECT_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
             <div className="flex-1 overflow-auto p-3">
@@ -880,12 +889,11 @@ const DiagramCanvas = () => {
 
             <div className="flex flex-col gap-2 border-t border-gray-800 px-3 py-2">
               <label className="flex items-center gap-2 text-[10px] text-gray-400">
-                <input
+                <CheckboxInput
                   checked={importSqlMerge}
                   className="rounded"
-                  data-testid="import-sql-merge"
-                  onChange={(e) => setImportSqlMerge(e.target.checked)}
-                  type="checkbox"
+                  name="import-sql-merge"
+                  onChange={setImportSqlMerge}
                 />
                 Merge with existing (otherwise replaces)
               </label>
@@ -910,13 +918,7 @@ const DiagramCanvas = () => {
           >
             <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
               <span className="text-xs font-bold text-white">Import JSON Schema</span>
-              <button
-                className="text-xs text-gray-400 hover:text-white"
-                onClick={() => setActivePanel(null)}
-                type="button"
-              >
-                Close
-              </button>
+              <CloseButton onClick={() => setActivePanel(null)} />
             </div>
 
             <div className="flex-1 overflow-auto p-3">
@@ -943,24 +945,24 @@ const DiagramCanvas = () => {
 
             <div className="flex flex-col gap-2 border-t border-gray-800 px-3 py-2">
               <label className="flex items-center gap-2 text-[10px] text-gray-400">
-                <input
+                <CheckboxInput
                   checked={importJsonSchemaMerge}
                   className="rounded"
-                  data-testid="import-json-schema-merge"
-                  onChange={(e) => setImportJsonSchemaMerge(e.target.checked)}
-                  type="checkbox"
+                  name="import-json-schema-merge"
+                  onChange={setImportJsonSchemaMerge}
                 />
                 Merge with existing (otherwise replaces)
               </label>
-              <button
-                className="text-xs w-full rounded bg-primary px-3 py-1.5 font-medium text-white transition-colors hover:bg-primary/90 disabled:opacity-50"
+              <Button
+                block
                 data-testid="import-json-schema-submit"
                 disabled={!importJsonSchemaText.trim()}
                 onClick={handleImportJsonSchema}
-                type="button"
+                size="small"
+                variant="primary"
               >
                 Import
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -970,32 +972,19 @@ const DiagramCanvas = () => {
           <div className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950" data-testid="sql-panel">
             <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
               <span className="text-xs font-bold text-white">SQL Export</span>
-              <button
-                className="text-xs text-gray-400 hover:text-white"
-                onClick={() => setActivePanel(null)}
-                type="button"
-              >
-                Close
-              </button>
+              <CloseButton onClick={() => setActivePanel(null)} />
             </div>
 
             <div className="flex items-center gap-2 border-b border-gray-800 px-3 py-2">
-              <label className="text-xs text-gray-400" htmlFor="dialect-select">
-                Dialect:
-              </label>
-              <select
-                className="text-xs rounded bg-gray-800 px-2 py-1 text-white outline-none"
-                data-testid="dialect-select"
-                id="dialect-select"
-                onChange={(e) => setSqlDialect(e.target.value as SqlDialect)}
+              <span className="text-xs text-gray-400">Dialect:</span>
+              <SelectInput
+                block={false}
+                name="dialect-select"
+                onChange={(value) => setSqlDialect(value as SqlDialect)}
+                options={DIALECT_OPTIONS}
+                size="compact"
                 value={sqlDialect}
-              >
-                {DIALECT_OPTIONS.map((opt) => (
-                  <option key={opt.value} value={opt.value}>
-                    {opt.label}
-                  </option>
-                ))}
-              </select>
+              />
             </div>
 
             <div className="flex-1 overflow-auto p-3">
@@ -1005,16 +994,19 @@ const DiagramCanvas = () => {
             </div>
 
             <div className="flex gap-2 border-t border-gray-800 px-3 py-2">
-              <CopyButton label="SQL" value={generatedSql} variant="labeled" />
-              <button
-                className="text-xs rounded bg-gray-800 px-3 py-1.5 font-medium text-gray-300 transition-colors hover:bg-gray-700 disabled:opacity-50"
-                data-testid="download-sql-btn"
-                disabled={!generatedSql}
-                onClick={handleDownloadSql}
-                type="button"
-              >
-                Download .sql
-              </button>
+              <CopyButton label="SQL" value={generatedSql} />
+              <div className="grow">
+                <Button
+                  block
+                  data-testid="download-sql-btn"
+                  disabled={!generatedSql}
+                  onClick={handleDownloadSql}
+                  size="small"
+                  variant="primary"
+                >
+                  Download .sql
+                </Button>
+              </div>
             </div>
           </div>
         )}
@@ -1024,13 +1016,7 @@ const DiagramCanvas = () => {
           <div className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950" data-testid="mermaid-panel">
             <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
               <span className="text-xs font-bold text-white">Mermaid Export</span>
-              <button
-                className="text-xs text-gray-400 hover:text-white"
-                onClick={() => setActivePanel(null)}
-                type="button"
-              >
-                Close
-              </button>
+              <CloseButton onClick={() => setActivePanel(null)} />
             </div>
 
             <div className="flex-1 overflow-auto p-3">
@@ -1043,16 +1029,19 @@ const DiagramCanvas = () => {
             </div>
 
             <div className="flex flex-wrap gap-2 border-t border-gray-800 px-3 py-2">
-              <CopyButton label="Mermaid" value={generatedMermaid} variant="labeled" />
-              <button
-                className="text-xs rounded bg-gray-800 px-3 py-1.5 font-medium text-gray-300 transition-colors hover:bg-gray-700 disabled:opacity-50"
-                data-testid="open-mermaid-renderer-btn"
-                disabled={!generatedMermaid}
-                onClick={handleOpenInMermaidRenderer}
-                type="button"
-              >
-                Open in Mermaid Renderer
-              </button>
+              <CopyButton label="Mermaid" value={generatedMermaid} />
+              <div className="grow">
+                <Button
+                  block
+                  data-testid="open-mermaid-renderer-btn"
+                  disabled={!generatedMermaid}
+                  onClick={handleOpenInMermaidRenderer}
+                  size="small"
+                  variant="primary"
+                >
+                  Open in Mermaid Renderer
+                </Button>
+              </div>
             </div>
           </div>
         )}
@@ -1065,13 +1054,7 @@ const DiagramCanvas = () => {
           >
             <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
               <span className="text-xs font-bold text-white">TypeScript Export</span>
-              <button
-                className="text-xs text-gray-400 hover:text-white"
-                onClick={() => setActivePanel(null)}
-                type="button"
-              >
-                Close
-              </button>
+              <CloseButton onClick={() => setActivePanel(null)} />
             </div>
 
             <div className="flex-1 overflow-auto p-3">
@@ -1084,29 +1067,22 @@ const DiagramCanvas = () => {
             </div>
 
             <div className="flex gap-2 border-t border-gray-800 px-3 py-2">
-              <CopyButton label="TypeScript" value={generatedTypescript} variant="labeled" />
+              <CopyButton label="TypeScript" value={generatedTypescript} />
             </div>
           </div>
         )}
 
         {/* DBML Editor Panel */}
         {activePanel === 'dbml' && (
-          <div
-            className="flex w-96 shrink-0 flex-col border-l border-gray-800 bg-gray-950"
-            data-testid="dbml-panel"
-          >
+          <div className="flex w-96 shrink-0 flex-col border-l border-gray-800 bg-gray-950" data-testid="dbml-panel">
             <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
               <span className="text-xs font-bold text-white">DBML Editor</span>
-              <button
-                className="text-xs text-gray-400 hover:text-white"
+              <CloseButton
                 onClick={() => {
                   setDbmlSource('diagram')
                   setActivePanel(null)
                 }}
-                type="button"
-              >
-                Close
-              </button>
+              />
             </div>
 
             <div className="flex flex-1 flex-col overflow-hidden p-3">
@@ -1114,7 +1090,9 @@ const DiagramCanvas = () => {
                 height="100%"
                 name="dbml-editor"
                 onChange={handleDbmlChange}
-                placeholder={"// Define your schema in DBML\n\nTable users {\n  id serial [pk]\n  name varchar [not null]\n}"}
+                placeholder={
+                  '// Define your schema in DBML\n\nTable users {\n  id serial [pk]\n  name varchar [not null]\n}'
+                }
                 size="compact"
                 value={dbmlText}
               />
@@ -1131,19 +1109,22 @@ const DiagramCanvas = () => {
             </div>
 
             <div className="flex gap-2 border-t border-gray-800 px-3 py-2">
-              <CopyButton label="DBML" value={dbmlText} variant="labeled" />
-              <button
-                className="text-xs rounded bg-gray-800 px-3 py-1.5 font-medium text-gray-300 transition-colors hover:bg-gray-700"
-                data-testid="dbml-sync-btn"
-                onClick={() => {
-                  setDbmlSource('diagram')
-                  setDbmlText(generatedDbmlText)
-                  setDbmlErrors([])
-                }}
-                type="button"
-              >
-                Sync from Diagram
-              </button>
+              <CopyButton label="DBML" value={dbmlText} />
+              <div className="grow">
+                <Button
+                  block
+                  data-testid="dbml-sync-btn"
+                  onClick={() => {
+                    setDbmlSource('diagram')
+                    setDbmlText(generatedDbmlText)
+                    setDbmlErrors([])
+                  }}
+                  size="small"
+                  variant="primary"
+                >
+                  Sync from Diagram
+                </Button>
+              </div>
             </div>
           </div>
         )}
@@ -1156,24 +1137,13 @@ const DiagramCanvas = () => {
           >
             <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
               <span className="text-xs font-bold text-white">Diagrams</span>
-              <button
-                className="text-xs text-gray-400 hover:text-white"
-                onClick={() => setActivePanel(null)}
-                type="button"
-              >
-                Close
-              </button>
+              <CloseButton onClick={() => setActivePanel(null)} />
             </div>
 
             <div className="border-b border-gray-800 px-3 py-2">
-              <button
-                className="text-xs w-full rounded bg-primary px-3 py-1.5 font-medium text-white transition-colors hover:bg-primary/90"
-                data-testid="new-diagram-btn"
-                onClick={handleNewDiagram}
-                type="button"
-              >
+              <Button block data-testid="new-diagram-btn" onClick={handleNewDiagram} size="small" variant="primary">
                 + New Diagram
-              </button>
+              </Button>
             </div>
 
             <div className="flex-1 overflow-auto">
@@ -1188,7 +1158,11 @@ const DiagramCanvas = () => {
                       data-testid={`diagram-item-${entry.id}`}
                       key={entry.id}
                     >
-                      <button className="flex-1 text-left" onClick={() => handleLoadDiagram(entry.id)} type="button">
+                      <button
+                        className="flex-1 cursor-pointer text-left"
+                        onClick={() => handleLoadDiagram(entry.id)}
+                        type="button"
+                      >
                         {renamingId === entry.id ? (
                           <TextInput
                             autoFocus
@@ -1207,7 +1181,7 @@ const DiagramCanvas = () => {
                           />
                         ) : (
                           <>
-                            <div className="text-xs truncate font-medium text-white">{entry.name}</div>
+                            <div className="text-xs w-40 truncate font-medium text-white">{entry.name}</div>
                             <div className="text-[10px] text-gray-500">
                               {formatRelativeTime(entry.updatedAt)} · {entry.tableCount} tables
                             </div>

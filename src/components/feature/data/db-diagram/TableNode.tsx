@@ -5,7 +5,7 @@ import { useCallback, useRef, useState } from 'react'
 
 import type { ColumnType, TableColumn, TableNodeData } from '@/types'
 
-import { SelectInput, TextInput } from '@/components/common'
+import { Button, SelectInput, TextInput } from '@/components/common'
 import { XIcon } from '@/components/common/icon'
 import { COLUMN_TYPES } from '@/utils'
 
@@ -98,16 +98,16 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
             value={editName}
           />
         ) : (
-          <button
-            className="text-sm font-bold text-white hover:text-primary"
+          <Button
             onClick={() => {
               setEditName(data.tableName)
               setEditing(true)
             }}
-            type="button"
+            size="small"
+            variant="text"
           >
-            🗄️ {data.tableName}
-          </button>
+            <span className="font-bold">🗄️ {data.tableName}</span>
+          </Button>
         )}
         <button
           className="ml-2 text-gray-500 hover:text-error"
@@ -155,18 +155,6 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
                   value={col.type}
                 />
               </div>
-              {/* <select
-                className="h-5 shrink-0 rounded border border-gray-700 bg-transparent px-0.5 text-[10px] text-gray-400 outline-none"
-                onChange={(e) => data.onColumnChange(col.id, { type: e.target.value as ColumnType })}
-                value={col.type}
-              >
-                {COLUMN_TYPES.map((t) => (
-                  <option key={t} value={t}>
-                    {t}
-                  </option>
-                ))}
-              </select> */}
-
               {/* Constraint toggles */}
               <div className="flex gap-0.5">
                 <ConstraintToggle
@@ -219,14 +207,15 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
       </div>
 
       {/* Add Column button */}
-      <button
-        className="text-xs w-full rounded-b-lg px-3 py-1.5 text-gray-500 transition-colors hover:bg-gray-800 hover:text-gray-300"
+      <Button
+        block
         data-testid={`add-column-btn-${id}`}
         onClick={() => data.onAddColumn()}
-        type="button"
+        size="small"
+        variant="text"
       >
         + Add Column
-      </button>
+      </Button>
     </div>
   )
 }
