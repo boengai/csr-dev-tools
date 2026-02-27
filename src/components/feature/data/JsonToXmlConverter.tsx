@@ -5,11 +5,10 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
-import { getTomlParseError } from '@/utils/toml'
 
-type ConvertMode = 'json-to-toml' | 'toml-to-json'
+type ConvertMode = 'json-to-xml' | 'xml-to-json'
 
-const toolEntry = TOOL_REGISTRY_MAP['toml-to-json-converter']
+const toolEntry = TOOL_REGISTRY_MAP['json-to-xml-converter']
 
 const sourceKey = (m: ConvertMode) => `csr-dev-tools-${m}-source`
 
@@ -22,8 +21,8 @@ const readSource = (m: ConvertMode): string => {
   }
 }
 
-export const TomlToJsonConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [mode, setMode] = useLocalStorage<ConvertMode>('csr-dev-tools-toml-to-json-mode', 'toml-to-json')
+export const JsonToXmlConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+  const [mode, setMode] = useLocalStorage<ConvertMode>('csr-dev-tools-json-to-xml-mode', 'xml-to-json')
   const [source, setSource] = useState(() => readSource(mode))
   const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
@@ -39,22 +38,20 @@ export const TomlToJsonConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
       return
     }
     try {
-      const { tomlToJson, jsonToToml } = await import('@/utils/toml')
-      const converted = m === 'toml-to-json' ? await tomlToJson(val) : await jsonToToml(val)
+      const { xmlToJson, jsonToXml } = await import('@/utils/xml')
+      const converted = m === 'xml-to-json' ? await xmlToJson(val) : await jsonToXml(val)
       if (session !== sessionRef.current) return
       setResult(converted)
     } catch {
       if (session !== sessionRef.current) return
       setResult('')
-      if (m === 'toml-to-json') {
-        const msg = await getTomlParseError(val)
+      if (m === 'xml-to-json') {
+        const { getXmlParseError } = await import('@/utils/xml')
+        const msg = await getXmlParseError(val)
         if (session !== sessionRef.current) return
         toast({
           action: 'add',
-          item: {
-            label: msg ? `Invalid TOML: ${msg}` : 'Conversion failed — please check your input',
-            type: 'error',
-          },
+          item: { label: msg ? `Invalid XML: ${msg}` : 'Conversion failed — please check your input', type: 'error' },
         })
       } else {
         toast({
@@ -99,17 +96,17 @@ export const TomlToJsonConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
     setResult('')
   }
 
-  const isTomlMode = mode === 'toml-to-json'
+  const isXmlMode = mode === 'xml-to-json'
 
-  const sourceLabel = isTomlMode ? 'TOML Input' : 'JSON Input'
-  const sourcePlaceholder = isTomlMode
-    ? '[server]\nhost = "localhost"\nport = 8080'
-    : '{\n  "server": {\n    "host": "localhost",\n    "port": 8080\n  }\n}'
-  const resultLabel = isTomlMode ? 'JSON Output' : 'TOML Output'
-  const resultPlaceholder = isTomlMode
-    ? '{\n  "server": {\n    "host": "localhost",\n    "port": 8080\n  }\n}'
-    : '[server]\nhost = "localhost"\nport = 8080'
-  const dialogTitle = isTomlMode ? 'TOML → JSON' : 'JSON → TOML'
+  const sourceLabel = isXmlMode ? 'XML Input' : 'JSON Input'
+  const sourcePlaceholder = isXmlMode
+    ? '<root>\n  <name>John</name>\n  <age>30</age>\n</root>'
+    : '{\n  "root": {\n    "name": "John",\n    "age": 30\n  }\n}'
+  const resultLabel = isXmlMode ? 'JSON Output' : 'XML Output'
+  const resultPlaceholder = isXmlMode
+    ? '{\n  "root": {\n    "name": "John",\n    "age": 30\n  }\n}'
+    : '<root>\n  <name>John</name>\n  <age>30</age>\n</root>'
+  const dialogTitle = isXmlMode ? 'XML → JSON' : 'JSON → XML'
 
   return (
     <>
@@ -117,11 +114,11 @@ export const TomlToJsonConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => openDialog('toml-to-json')} variant="default">
-            TOML → JSON
+          <Button block onClick={() => openDialog('xml-to-json')} variant="default">
+            XML → JSON
           </Button>
-          <Button block onClick={() => openDialog('json-to-toml')} variant="default">
-            JSON → TOML
+          <Button block onClick={() => openDialog('json-to-xml')} variant="default">
+            JSON → XML
           </Button>
         </div>
       </div>

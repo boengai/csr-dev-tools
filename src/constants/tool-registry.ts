@@ -921,20 +921,20 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Data',
     component: lazy(() =>
-      import('@/components/feature/data/TomlToJsonConverter').then(
-        ({ TomlToJsonConverter }: { TomlToJsonConverter: ComponentType }) => ({
-          default: TomlToJsonConverter,
+      import('@/components/feature/data/JsonToTomlConverter').then(
+        ({ JsonToTomlConverter }: { JsonToTomlConverter: ComponentType }) => ({
+          default: JsonToTomlConverter,
         }),
       ),
     ),
-    description: 'Convert between TOML and JSON formats. Perfect for Rust and Go config files.',
+    description: 'Convert between JSON and TOML formats. Perfect for Rust and Go config files.',
     emoji: '⚙️',
-    key: 'toml-to-json-converter',
-    name: 'TOML ↔ JSON',
-    routePath: '/tools/toml-to-json-converter',
+    key: 'json-to-toml-converter',
+    name: 'JSON ↔ TOML',
+    routePath: '/tools/json-to-toml-converter',
     seo: {
-      description: 'Convert between TOML and JSON formats. Perfect for Rust and Go config files.',
-      title: 'TOML to JSON Converter - CSR Dev Tools',
+      description: 'Convert between JSON and TOML formats. Perfect for Rust and Go config files.',
+      title: 'JSON to TOML Converter - CSR Dev Tools',
     },
   },
   {
@@ -1036,20 +1036,20 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Data',
     component: lazy(() =>
-      import('@/components/feature/data/XmlToJsonConverter').then(
-        ({ XmlToJsonConverter }: { XmlToJsonConverter: ComponentType }) => ({
-          default: XmlToJsonConverter,
+      import('@/components/feature/data/JsonToXmlConverter').then(
+        ({ JsonToXmlConverter }: { JsonToXmlConverter: ComponentType }) => ({
+          default: JsonToXmlConverter,
         }),
       ),
     ),
-    description: 'Convert between XML and JSON formats. Free online XML to JSON and JSON to XML converter.',
+    description: 'Convert between JSON and XML formats. Free online JSON to XML and XML to JSON converter.',
     emoji: '📋',
-    key: 'xml-to-json-converter',
-    name: 'XML ↔ JSON',
-    routePath: '/tools/xml-to-json-converter',
+    key: 'json-to-xml-converter',
+    name: 'JSON ↔ XML',
+    routePath: '/tools/json-to-xml-converter',
     seo: {
-      description: 'Convert between XML and JSON formats. Free online XML to JSON and JSON to XML converter.',
-      title: 'XML to JSON Converter - CSR Dev Tools',
+      description: 'Convert between JSON and XML formats. Free online JSON to XML and XML to JSON converter.',
+      title: 'JSON to XML Converter - CSR Dev Tools',
     },
   },
   {

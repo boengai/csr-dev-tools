@@ -34,9 +34,9 @@ test.describe('JSON to YAML Converter', () => {
   })
 })
 
-test.describe('XML to JSON Converter', () => {
+test.describe('JSON to XML Converter', () => {
   test('converts XML to JSON', async ({ page }) => {
-    await page.goto('/tools/xml-to-json-converter')
+    await page.goto('/tools/json-to-xml-converter')
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
@@ -48,9 +48,9 @@ test.describe('XML to JSON Converter', () => {
   })
 })
 
-test.describe('TOML to JSON Converter', () => {
+test.describe('JSON to TOML Converter', () => {
   test('converts TOML to JSON', async ({ page }) => {
-    await page.goto('/tools/toml-to-json-converter')
+    await page.goto('/tools/json-to-toml-converter')
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
