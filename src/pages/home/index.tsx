@@ -5,7 +5,7 @@ import type { ToolRegistryKey } from '@/types'
 
 import { Card, Dialog, NotoEmoji, PlusIcon } from '@/components'
 import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY, TOOL_REGISTRY_MAP } from '@/constants'
-import { usePersistFeatureLayout } from '@/hooks'
+import { useDebounceCallback, usePersistFeatureLayout } from '@/hooks'
 
 const AddButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>) => {
   return (
@@ -66,8 +66,10 @@ const AppLoading = () => {
 }
 
 const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; position: null | number }) => {
-  //hook
   const { setter, value } = usePersistFeatureLayout()
+  const [search, setSearch] = useState('')
+  const [debouncedSearch, setDebouncedSearch] = useState('')
+  const debouncedSetSearch = useDebounceCallback(setDebouncedSearch, 200)
 
   const appPosition = Object.entries(value).reduce((acc: Record<string, number>, cur) => {
     if (cur[1] !== null) {
@@ -77,6 +79,19 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
   }, {})
 
   const groupedTools = useMemo(() => groupToolsByCategory(TOOL_REGISTRY), [])
+
+  const filteredGroupedTools = useMemo(() => {
+    if (!debouncedSearch.trim()) return groupedTools
+    const query = debouncedSearch.toLowerCase()
+    const filtered: typeof groupedTools = {}
+    for (const [category, tools] of Object.entries(groupedTools)) {
+      const matched = tools.filter(
+        (t) => t.name.toLowerCase().includes(query) || t.key.toLowerCase().includes(query),
+      )
+      if (matched.length > 0) filtered[category] = matched
+    }
+    return filtered
+  }, [groupedTools, debouncedSearch])
 
   const handleSelectApp = (value: ToolRegistryKey) => {
     if (position !== null) {
@@ -90,33 +105,50 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
       injected={{ open: position !== null, setOpen: onDismiss }}
       title={`Select App for Widget#${position !== null ? position + 1 : ''}`}
     >
-      <div className="columns-1 gap-x-6 tablet:columns-2 laptop:columns-3">
-        {CATEGORY_ORDER.filter((cat) => groupedTools[cat]).map((category) => (
-          <div className="mb-4 break-inside-avoid" key={category}>
-            <span className="block px-2 pb-1 text-[0.6rem] tracking-[0.12em] text-gray-500 uppercase">{category}</span>
-            <ul className="flex flex-col gap-1">
-              {groupedTools[category].map((entry) => {
-                const at = appPosition[entry.key] ?? null
-                return (
-                  <li key={entry.key}>
-                    <button
-                      className="flex w-full cursor-pointer items-center justify-between rounded p-2 text-left hover:bg-primary/30 disabled:pointer-events-none disabled:opacity-50"
-                      disabled={at !== null}
-                      onClick={() => handleSelectApp(entry.key)}
-                    >
-                      <span>
-                        <span className="mr-2">{entry.emoji}</span>
-                        {entry.name}
-                      </span>
-                      {at !== null && <span className="text-xs rounded bg-secondary px-1 text-white">#{at + 1}</span>}
-                    </button>
-                  </li>
-                )
-              })}
-            </ul>
-          </div>
-        ))}
+      <div className="mb-4">
+        <input
+          autoFocus
+          className="w-full rounded-md border border-gray-800 bg-gray-950 px-3 py-2 text-body-sm text-white placeholder:text-gray-500 focus:border-primary focus:outline-none"
+          onChange={(e) => {
+            setSearch(e.target.value)
+            debouncedSetSearch(e.target.value)
+          }}
+          placeholder="Search tools..."
+          type="text"
+          value={search}
+        />
       </div>
+      {CATEGORY_ORDER.some((cat) => filteredGroupedTools[cat]) ? (
+        <div className="columns-1 gap-x-6 tablet:columns-2 laptop:columns-3">
+          {CATEGORY_ORDER.filter((cat) => filteredGroupedTools[cat]).map((category) => (
+            <div className="mb-4 break-inside-avoid" key={category}>
+              <span className="block px-2 pb-1 text-[0.6rem] tracking-[0.12em] text-gray-500 uppercase">{category}</span>
+              <ul className="flex flex-col gap-1">
+                {filteredGroupedTools[category].map((entry) => {
+                  const at = appPosition[entry.key] ?? null
+                  return (
+                    <li key={entry.key}>
+                      <button
+                        className="flex w-full cursor-pointer items-center justify-between rounded p-2 text-left hover:bg-primary/30 disabled:pointer-events-none disabled:opacity-50"
+                        disabled={at !== null}
+                        onClick={() => handleSelectApp(entry.key)}
+                      >
+                        <span>
+                          <span className="mr-2">{entry.emoji}</span>
+                          {entry.name}
+                        </span>
+                        {at !== null && <span className="text-xs rounded bg-secondary px-1 text-white">#{at + 1}</span>}
+                      </button>
+                    </li>
+                  )
+                })}
+              </ul>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <p className="py-8 text-center text-body-sm text-gray-500">No tools found for "{debouncedSearch}"</p>
+      )}
     </Dialog>
   )
 }
