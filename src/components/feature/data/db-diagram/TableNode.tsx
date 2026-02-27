@@ -125,10 +125,10 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
           <div className="group relative flex items-center border-b border-gray-800 px-1 py-1" key={col.id}>
             {/* Target handle (left) */}
             <Handle
-              className="left-0! h-2.5! w-2.5! rounded-full! border-2! border-gray-600! bg-gray-400!"
+              className="h-[10px]! w-[10px]! rounded-full! border-2! border-gray-600! bg-gray-400!"
               id={`${id}-${col.id}-target`}
               position={Position.Left}
-              style={{ top: '50%' }}
+              style={{ left: -5, top: '50%', transform: 'translateY(-50%)' }}
               type="target"
             />
 
@@ -208,10 +208,10 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
 
             {/* Source handle (right) */}
             <Handle
-              className="right-0! h-2.5! w-2.5! rounded-full! border-2! border-gray-600! bg-gray-400!"
+              className="h-[10px]! w-[10px]! rounded-full! border-2! border-gray-600! bg-gray-400!"
               id={`${id}-${col.id}-source`}
               position={Position.Right}
-              style={{ top: '50%' }}
+              style={{ right: -5, top: '50%', transform: 'translateY(-50%)' }}
               type="source"
             />
           </div>
