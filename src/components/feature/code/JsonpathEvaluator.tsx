@@ -1,10 +1,13 @@
 import { AnimatePresence, motion } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
+
 import type { ToolComponentProps } from '@/types'
 import type { JsonPathEvaluation, JsonParseResult } from '@/utils/jsonpath-evaluator'
 
-import { CopyButton, TextAreaInput, TextInput } from '@/components/common'
+import { json } from '@codemirror/lang-json'
+
+import { CodeInput, CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { tv } from '@/utils'
@@ -142,6 +145,8 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
     runEvaluation(parsedDataRef.current, expr)
   }
 
+  const jsonExtensions = useMemo(() => [json()], [])
+
   const allResultsJson = useMemo(
     () =>
       evaluation?.success
@@ -162,15 +167,14 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
         {/* Left Panel: JSON Input */}
         <div className="flex min-w-0 flex-1 flex-col gap-2">
           <h3 className="text-body-sm font-semibold text-gray-100">JSON Input</h3>
-          <div aria-label="JSON input" className="[&_textarea]:font-mono">
-            <TextAreaInput
-              name="json-input"
-              onChange={handleJsonChange}
-              placeholder="Paste JSON here..."
-              rows={16}
-              value={jsonInput}
-            />
-          </div>
+          <CodeInput
+            aria-label="JSON input"
+            extensions={jsonExtensions}
+            name="json-input"
+            onChange={handleJsonChange}
+            placeholder="Paste JSON here..."
+            value={jsonInput}
+          />
           {parseError && (
             <p className="text-red-400 text-body-xs" role="alert">
               {parseError}

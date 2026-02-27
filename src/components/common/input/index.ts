@@ -1,3 +1,4 @@
+export * from './CodeInput'
 export * from './CheckboxInput'
 export * from './ColorInput'
 export * from './RadioGroupInput'

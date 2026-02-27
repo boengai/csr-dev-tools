@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
 import type {
+  CodeInputProps,
   ColorInputProps,
   RadioGroupInputProps,
   RangeInputProps,
@@ -15,6 +16,7 @@ export type FieldFormProps = InputControllerProps & {
 }
 
 export type InputControllerProps =
+  | CodeInputForm
   | ColorInputForm
   | DateInputForm
   | NumberInputForm
@@ -25,6 +27,10 @@ export type InputControllerProps =
   | TextInputForm
   | TimeInputForm
   | UploadInputForm
+
+type CodeInputForm = Omit<CodeInputProps, 'type'> & {
+  type: 'code'
+}
 
 type ColorInputForm = ColorInputProps & {
   type: 'color'

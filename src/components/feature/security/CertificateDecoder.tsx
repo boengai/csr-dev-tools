@@ -3,7 +3,7 @@ import { useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { CertificateExtension, CertificateInfo, ValidityStatus } from '@/utils/certificate-decoder'
 
-import { CopyButton, TextAreaInput } from '@/components/common'
+import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { tv } from '@/utils'
@@ -144,13 +144,12 @@ export const CertificateDecoder = (_props: ToolComponentProps) => {
     <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <TextAreaInput
+      <CodeInput
         aria-label="PEM certificate input"
-        lineNumbers
+        minHeight="200px"
         name="certificate-input"
         onChange={handleChange}
         placeholder="Paste PEM-encoded certificate here..."
-        rows={8}
         value={input}
       />
 

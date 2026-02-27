@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { BcryptHashComponents, BcryptHashResult, BcryptVerifyResult } from '@/utils/bcrypt-hasher'
 
-import { Button, CopyButton, SelectInput, Tabs, TextAreaInput, TextInput } from '@/components/common'
+import { Button, CodeInput, CopyButton, SelectInput, Tabs, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import {
@@ -230,16 +230,14 @@ const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) =>
         value={password}
       />
 
-      <div className="[&_textarea]:font-mono">
-        <TextAreaInput
-          disabled={verifying}
-          name="verify-hash"
-          onChange={handleHashChange}
-          placeholder="Enter bcrypt hash ($2b$...)"
-          rows={2}
-          value={hashInput}
-        />
-      </div>
+      <CodeInput
+        disabled={verifying}
+        minHeight="60px"
+        name="verify-hash"
+        onChange={handleHashChange}
+        placeholder="Enter bcrypt hash ($2b$...)"
+        value={hashInput}
+      />
 
       <Button disabled={verifying} onClick={handleVerify} variant="primary">
         {verifying ? 'Verifying...' : 'Verify Password'}

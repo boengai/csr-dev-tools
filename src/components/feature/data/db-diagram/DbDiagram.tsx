@@ -1,5 +1,7 @@
 import type { Connection, EdgeTypes, NodeTypes } from '@xyflow/react'
 
+import { json } from '@codemirror/lang-json'
+import { sql as sqlLang } from '@codemirror/lang-sql'
 import {
   Background,
   BackgroundVariant,
@@ -23,7 +25,7 @@ import type {
   ToolComponentProps,
 } from '@/types'
 
-import { Button, CopyButton, Dialog, DropdownMenu, ChevronIcon, ListIcon, TextInput } from '@/components/common'
+import { Button, CodeInput, CopyButton, Dialog, DropdownMenu, ChevronIcon, ListIcon, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import {
@@ -97,6 +99,8 @@ const DiagramCanvas = () => {
   const [edges, setEdges, onEdgesChange] = useEdgesState<RelationshipEdge>([])
   const { screenToFlowPosition, fitView } = useReactFlow()
   const [tableCount, setTableCount] = useState(0)
+  const sqlExtensions = useMemo(() => [sqlLang()], [])
+  const jsonExtensions = useMemo(() => [json()], [])
 
   // Diagram management state
   const [activeDiagramId, setActiveDiagramId] = useState<string | null>(null)
@@ -853,11 +857,13 @@ const DiagramCanvas = () => {
             </div>
 
             <div className="flex-1 overflow-auto p-3">
-              <textarea
-                className="text-xs h-48 w-full resize-none rounded border border-gray-700 bg-gray-900 p-2 font-mono text-gray-300 outline-none focus:border-primary"
-                data-testid="import-sql-textarea"
-                onChange={(e) => setImportSqlText(e.target.value)}
+              <CodeInput
+                extensions={sqlExtensions}
+                height="192px"
+                name="import-sql-input"
+                onChange={setImportSqlText}
                 placeholder="Paste CREATE TABLE statements..."
+                size="compact"
                 value={importSqlText}
               />
 
@@ -914,11 +920,13 @@ const DiagramCanvas = () => {
             </div>
 
             <div className="flex-1 overflow-auto p-3">
-              <textarea
-                className="text-xs h-48 w-full resize-none rounded border border-gray-700 bg-gray-900 p-2 font-mono text-gray-300 outline-none focus:border-primary"
-                data-testid="import-json-schema-textarea"
-                onChange={(e) => setImportJsonSchemaText(e.target.value)}
+              <CodeInput
+                extensions={jsonExtensions}
+                height="192px"
+                name="import-json-schema-input"
+                onChange={setImportJsonSchemaText}
                 placeholder="Paste JSON Schema..."
+                size="compact"
                 value={importJsonSchemaText}
               />
 
@@ -1102,11 +1110,12 @@ const DiagramCanvas = () => {
             </div>
 
             <div className="flex flex-1 flex-col overflow-hidden p-3">
-              <textarea
-                className="text-xs flex-1 resize-none rounded border border-gray-700 bg-gray-900 p-2 font-mono text-gray-300 outline-none focus:border-primary"
-                data-testid="dbml-textarea"
-                onChange={(e) => handleDbmlChange(e.target.value)}
-                placeholder="// Define your schema in DBML&#10;&#10;Table users {&#10;  id serial [pk]&#10;  name varchar [not null]&#10;}"
+              <CodeInput
+                height="100%"
+                name="dbml-editor"
+                onChange={handleDbmlChange}
+                placeholder={"// Define your schema in DBML\n\nTable users {\n  id serial [pk]\n  name varchar [not null]\n}"}
+                size="compact"
                 value={dbmlText}
               />
 

@@ -174,12 +174,10 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
 
             <FieldForm
               label="Test String"
-              lineNumbers
               name="test-string"
               onChange={handleTestStringChange}
               placeholder="Enter text to test against..."
-              rows={8}
-              type="textarea"
+              type="code"
               value={testString}
             />
           </div>

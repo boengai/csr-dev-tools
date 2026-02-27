@@ -116,12 +116,10 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="HTML Input"
-                lineNumbers
                 name="dialog-source"
                 onChange={handleSourceChange}
                 placeholder="<div><p>Hello World</p></div>"
-                rows={12}
-                type="textarea"
+                type="code"
                 value={source}
               />
             </div>

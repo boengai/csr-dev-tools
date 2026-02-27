@@ -131,12 +131,10 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="Source"
-                lineNumbers
                 name="dialog-source"
                 onChange={handleSourceChange}
                 placeholder="Enter text to escape or unescape..."
-                rows={12}
-                type="textarea"
+                type="code"
                 value={source}
               />
             </div>

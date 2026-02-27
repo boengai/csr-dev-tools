@@ -82,8 +82,7 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
                 name="svg-source"
                 onChange={handleSourceChange}
                 placeholder='<svg xmlns="http://www.w3.org/2000/svg" ...>'
-                rows={12}
-                type="textarea"
+                type="code"
                 value={source}
               />
 

@@ -3,7 +3,7 @@ import { useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { SshKeyInfo } from '@/utils/ssh-fingerprint'
 
-import { CopyButton, TextAreaInput } from '@/components/common'
+import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { analyzeSshKey } from '@/utils/ssh-fingerprint'
@@ -66,16 +66,14 @@ export const SshKeyFingerprint = (_props: ToolComponentProps) => {
     <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <div className="[&_textarea]:font-mono">
-        <TextAreaInput
-          aria-label="SSH public key input"
-          name="ssh-key-input"
-          onChange={handleChange}
-          placeholder="Paste SSH public key here..."
-          rows={4}
-          value={input}
-        />
-      </div>
+      <CodeInput
+        aria-label="SSH public key input"
+        minHeight="100px"
+        name="ssh-key-input"
+        onChange={handleChange}
+        placeholder="Paste SSH public key here..."
+        value={input}
+      />
 
       {loading && input.trim() && <p className="text-body-xs text-gray-400">Calculating...</p>}
 

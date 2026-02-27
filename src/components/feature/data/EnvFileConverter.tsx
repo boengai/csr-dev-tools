@@ -163,12 +163,10 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label={config.sourceLabel}
-                lineNumbers
                 name="dialog-source"
                 onChange={handleSourceChange}
                 placeholder={config.sourcePlaceholder}
-                rows={12}
-                type="textarea"
+                type="code"
                 value={source}
               />
             </div>

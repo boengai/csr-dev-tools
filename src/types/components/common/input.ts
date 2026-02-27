@@ -1,6 +1,24 @@
+import type { Extension } from '@codemirror/state'
 import type { InputHTMLAttributes, ReactElement, RefAttributes, TextareaHTMLAttributes } from 'react'
 
 import type { ButtonProps } from './button'
+
+export type CodeInputProps = {
+  'aria-label'?: string
+  block?: boolean
+  disabled?: boolean
+  extensions?: Array<Extension>
+  height?: string
+  maxHeight?: string
+  minHeight?: string
+  name: string
+  onBlur?: () => void
+  onChange?: (value: string) => void
+  placeholder?: string
+  readOnly?: boolean
+  size?: 'compact' | 'default'
+  value?: string
+}
 
 export type CheckboxInputProps = {
   'aria-label'?: string
@@ -47,9 +65,7 @@ export type SelectInputProps = Omit<BaseInputProps, 'onEnter'> &
 
 export type TextAreaInputProps = BaseInputProps &
   Pick<TextareaHTMLAttributes<HTMLTextAreaElement>, 'autoCorrect' | 'readOnly' | 'rows'> &
-  Partial<InputVariants> & {
-    lineNumbers?: boolean
-  }
+  Partial<InputVariants>
 
 export type TextInputProps = BaseInputProps &
   Pick<InputHTMLAttributes<HTMLInputElement>, 'autoFocus' | 'autoCorrect' | 'inputMode' | 'onKeyDown' | 'onClick'> &

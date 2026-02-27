@@ -102,12 +102,10 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="JWT Token"
-                lineNumbers
                 name="dialog-source"
                 onChange={handleSourceChange}
                 placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                rows={12}
-                type="textarea"
+                type="code"
                 value={source}
               />
             </div>

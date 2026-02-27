@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { GraphqlSchemaInfo, GraphqlTypeInfo, GraphqlTypeKind } from '@/utils/graphql-schema-viewer'
 
-import { TextAreaInput, TextInput } from '@/components/common'
+import { CodeInput, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 const toolEntry = TOOL_REGISTRY_MAP['graphql-schema-viewer']
@@ -297,16 +297,13 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
     <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <div className="[&_textarea]:font-mono">
-        <TextAreaInput
-          aria-label="GraphQL SDL input"
-          name="graphql-sdl-input"
-          onChange={handleChange}
-          placeholder="Paste your GraphQL schema (SDL) here..."
-          rows={12}
-          value={input}
-        />
-      </div>
+      <CodeInput
+        aria-label="GraphQL SDL input"
+        name="graphql-sdl-input"
+        onChange={handleChange}
+        placeholder="Paste your GraphQL schema (SDL) here..."
+        value={input}
+      />
 
       {error && (
         <p className="text-red-400 text-body-xs" role="alert">

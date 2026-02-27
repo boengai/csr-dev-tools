@@ -113,12 +113,10 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label={isStringify ? 'JSON Input' : 'Escaped String Input'}
-                lineNumbers
                 name="dialog-source"
                 onChange={handleSourceChange}
                 placeholder={isStringify ? '{"name":"John","age":30}' : '{\\"name\\":\\"John\\",\\"age\\":30}'}
-                rows={12}
-                type="textarea"
+                type="code"
                 value={source}
               />
             </div>

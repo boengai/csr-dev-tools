@@ -78,12 +78,10 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             <div className="flex min-h-0 flex-1 flex-col gap-2">
               <FieldForm
                 label="JSON Input"
-                lineNumbers
                 name="dialog-source"
                 onChange={handleSourceChange}
                 placeholder='{"name":"John","age":30,"tags":["dev","tools"]}'
-                rows={12}
-                type="textarea"
+                type="code"
                 value={source}
               />
             </div>

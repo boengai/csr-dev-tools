@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { RsaKeyPair, RsaKeySize } from '@/utils/rsa-key-generator'
 
-import { Button, CopyButton, TextAreaInput } from '@/components/common'
+import { Button, CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import { downloadPemFile, generateRsaKeyPair } from '@/utils/rsa-key-generator'
@@ -130,9 +130,7 @@ export const RsaKeyGenerator = (_props: ToolComponentProps) => {
                 </Button>
               </div>
             </div>
-            <div className="[&_textarea]:font-mono">
-              <TextAreaInput name="public-key-output" placeholder="" readOnly rows={6} value={keyPair.publicKey} />
-            </div>
+            <CodeInput minHeight="150px" name="public-key-output" readOnly value={keyPair.publicKey} />
           </div>
 
           {/* Private Key */}
@@ -146,9 +144,7 @@ export const RsaKeyGenerator = (_props: ToolComponentProps) => {
                 </Button>
               </div>
             </div>
-            <div className="[&_textarea]:font-mono">
-              <TextAreaInput name="private-key-output" placeholder="" readOnly rows={15} value={keyPair.privateKey} />
-            </div>
+            <CodeInput minHeight="360px" name="private-key-output" readOnly value={keyPair.privateKey} />
           </div>
 
           {/* Download All */}

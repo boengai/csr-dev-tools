@@ -3,7 +3,7 @@ import { useCallback, useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufSchemaInfo } from '@/utils/protobuf-to-json'
 
-import { CopyButton, TextAreaInput } from '@/components/common'
+import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 
@@ -212,16 +212,13 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
     <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <div className="[&_textarea]:font-mono">
-        <TextAreaInput
-          aria-label="Proto definition input"
-          name="proto-input"
-          onChange={handleChange}
-          placeholder="Paste your .proto definition here..."
-          rows={12}
-          value={input}
-        />
-      </div>
+      <CodeInput
+        aria-label="Proto definition input"
+        name="proto-input"
+        onChange={handleChange}
+        placeholder="Paste your .proto definition here..."
+        value={input}
+      />
 
       {error && (
         <p className="text-red-400 text-body-xs" role="alert">
