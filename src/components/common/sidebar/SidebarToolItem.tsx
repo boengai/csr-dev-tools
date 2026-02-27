@@ -29,7 +29,7 @@ export const SidebarToolItem = ({ emoji, isActive = false, name, toolKey }: Side
   const navigate = useNavigate()
 
   const handleClick = useCallback(() => {
-    navigate({ to: `${ROUTE_PATH.TOOL}/${toolKey}` })
+    navigate({ to: `${ROUTE_PATH.TOOLS}/${toolKey}` })
     close()
   }, [close, navigate, toolKey])
 

@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { useToast } from '@/hooks'
 import { generateBulkUuids, generateUuid } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['uuid-generator']
@@ -9,9 +10,14 @@ const toolEntry = TOOL_REGISTRY_MAP['uuid-generator']
 export const UuidGenerator = () => {
   const [count, setCount] = useState(1)
   const [uuids, setUuids] = useState(() => [generateUuid()])
+  const { toast } = useToast()
 
   const handleGenerate = () => {
     setUuids(generateBulkUuids(count))
+    toast({
+      action: 'add',
+      item: { label: `Generated ${count} UUID${count > 1 ? 's' : ''}`, type: 'success' },
+    })
   }
 
   const handleCountChange = (val: string) => {

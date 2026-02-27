@@ -4,6 +4,7 @@ import type { PasswordOptions } from '@/utils'
 
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { useToast } from '@/hooks'
 import { DEFAULT_PASSWORD_OPTIONS, generatePassword } from '@/utils'
 
 const CHAR_TOGGLES: Array<{
@@ -22,9 +23,14 @@ export const PasswordGenerator = () => {
   const [options, setOptions] = useState<PasswordOptions>(DEFAULT_PASSWORD_OPTIONS)
   const [count, setCount] = useState(1)
   const [passwords, setPasswords] = useState(() => [generatePassword(DEFAULT_PASSWORD_OPTIONS)])
+  const { toast } = useToast()
 
   const handleGenerate = () => {
     setPasswords(Array.from({ length: count }, () => generatePassword(options)))
+    toast({
+      action: 'add',
+      item: { label: `Generated ${count} password${count > 1 ? 's' : ''}`, type: 'success' },
+    })
   }
 
   const handleLengthChange = (value: string) => {

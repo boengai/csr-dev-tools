@@ -22,11 +22,11 @@ const readSource = (m: ConvertMode): string => {
   }
 }
 
-export const JsonToTomlConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const JsonToTomlConverter = ({ onAfterDialogClose }: ToolComponentProps) => {
   const [mode, setMode] = useLocalStorage<ConvertMode>('csr-dev-tools-json-to-toml-mode', 'toml-to-json')
   const [source, setSource] = useState(() => readSource(mode))
   const [result, setResult] = useState('')
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
+  const [dialogOpen, setDialogOpen] = useState(false)
   const { toast } = useToast()
   const sessionRef = useRef(0)
   const initializedRef = useRef(false)
@@ -79,7 +79,9 @@ export const JsonToTomlConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    try { localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val)) } catch {}
+    try {
+      localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val))
+    } catch {}
     processInput(val)
   }
 

@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { Button, CheckboxInput, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { useToast } from '@/hooks'
 import { generateLoremIpsum } from '@/utils/lorem-ipsum'
 
 const toolEntry = TOOL_REGISTRY_MAP['lorem-ipsum-generator']
@@ -19,9 +20,14 @@ export const LoremIpsumGenerator = () => {
   const [unit, setUnit] = useState<LoremUnit>('paragraphs')
   const [startWithLorem, setStartWithLorem] = useState(true)
   const [output, setOutput] = useState(() => generateLoremIpsum(3, 'paragraphs', true))
+  const { toast } = useToast()
 
   const handleGenerate = () => {
     setOutput(generateLoremIpsum(count, unit, startWithLorem))
+    toast({
+      action: 'add',
+      item: { label: `Generated ${count} ${unit}`, type: 'success' },
+    })
   }
 
   const handleCountChange = (val: string) => {

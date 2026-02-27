@@ -21,11 +21,11 @@ const readSource = (m: ConvertMode): string => {
   }
 }
 
-export const JsonToXmlConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const JsonToXmlConverter = ({ onAfterDialogClose }: ToolComponentProps) => {
   const [mode, setMode] = useLocalStorage<ConvertMode>('csr-dev-tools-json-to-xml-mode', 'xml-to-json')
   const [source, setSource] = useState(() => readSource(mode))
   const [result, setResult] = useState('')
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
+  const [dialogOpen, setDialogOpen] = useState(false)
   const { toast } = useToast()
   const sessionRef = useRef(0)
   const initializedRef = useRef(false)
@@ -76,7 +76,9 @@ export const JsonToXmlConverter = ({ autoOpen, onAfterDialogClose }: ToolCompone
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    try { localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val)) } catch {}
+    try {
+      localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val))
+    } catch {}
     processInput(val)
   }
 

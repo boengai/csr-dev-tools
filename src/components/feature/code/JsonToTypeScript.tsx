@@ -5,18 +5,7 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
-import { tv } from '@/utils'
 import { jsonToTypeScript } from '@/utils/json-to-typescript'
-
-const toggleButtonStyles = tv({
-  base: 'shrink-0 rounded border px-3 py-1 text-body-xs',
-  variants: {
-    active: {
-      true: 'border-primary bg-primary/20 text-primary',
-      false: 'border-gray-700 text-gray-500',
-    },
-  },
-})
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-typescript']
 
@@ -38,9 +27,22 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
     try {
       setOutput(jsonToTypeScript(json, { optionalProperties: optional, rootName: root, useInterface: iface }))
     } catch {
-      toast({ action: 'add', item: { label: 'Invalid JSON input', type: 'error' } })
+      setOutput('')
     }
   }, 300)
+
+  const handleGenerate = () => {
+    if (!source.trim()) {
+      toast({ action: 'add', item: { label: 'Please enter JSON input', type: 'error' } })
+      return
+    }
+    try {
+      setOutput(jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }))
+      toast({ action: 'add', item: { label: 'TypeScript generated successfully', type: 'success' } })
+    } catch {
+      toast({ action: 'add', item: { label: 'Invalid JSON input', type: 'error' } })
+    }
+  }
 
   useEffect(() => {
     if (!initializedRef.current) {
@@ -90,16 +92,20 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
       <div className="flex w-full grow flex-col gap-4">
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => {
-            setDialogOpen(true)
-            if (source.trim()) {
-              try {
-                setOutput(jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }))
-              } catch {
-                // invalid JSON — ignore
+          <Button
+            block
+            onClick={() => {
+              setDialogOpen(true)
+              if (source.trim()) {
+                try {
+                  setOutput(jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }))
+                } catch {
+                  // invalid JSON — ignore
+                }
               }
-            }
-          }} variant="default">
+            }}
+            variant="default"
+          >
             Convert JSON to TypeScript
           </Button>
         </div>
@@ -114,7 +120,7 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
         title="JSON to TypeScript"
       >
         <div className="flex w-full grow flex-col gap-4">
-          <div className="flex items-center gap-4">
+          <div className="flex items-end gap-4">
             <FieldForm
               label="Root Name"
               name="root-name"
@@ -122,20 +128,15 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
               type="text"
               value={rootName}
             />
-            <button
-              className={toggleButtonStyles({ active: useInterface })}
-              onClick={handleToggleInterface}
-              type="button"
-            >
+            <Button onClick={handleToggleInterface} type="button" variant="primary">
               {useInterface ? 'interface' : 'type'}
-            </button>
-            <button
-              className={toggleButtonStyles({ active: optionalProps })}
-              onClick={handleToggleOptional}
-              type="button"
-            >
+            </Button>
+            <Button onClick={handleToggleOptional} type="button" variant="primary">
               optional?
-            </button>
+            </Button>
+            <Button onClick={handleGenerate} variant="primary">
+              Generate
+            </Button>
           </div>
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
             <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">

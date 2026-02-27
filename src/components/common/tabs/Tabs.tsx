@@ -30,13 +30,12 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
 
   const handleValueChange = (value: string) => {
     injected?.setValue(value)
-    updateIndicator()
   }
 
-  // update indicator when component mounted
+  // update indicator when value changes or on mount
   useEffect(() => {
     updateIndicator()
-  }, [])
+  }, [injected?.value])
 
   return (
     <Root
