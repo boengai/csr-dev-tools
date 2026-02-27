@@ -14,14 +14,9 @@ const routeTree = rootRoute.addChildren([
     path: ROUTE_PATH.HOME,
   }),
   createRoute({
-    component: lazyRouteComponent(() => import('@/pages/showcase')),
+    component: lazyRouteComponent(() => import('@/pages/tools')),
     getParentRoute: () => rootRoute,
-    path: ROUTE_PATH.SHOWCASE,
-  }),
-  createRoute({
-    component: lazyRouteComponent(() => import('@/pages/tool')),
-    getParentRoute: () => rootRoute,
-    path: `${ROUTE_PATH.TOOL}/$toolKey`,
+    path: `${ROUTE_PATH.TOOLS}/$toolKey`,
   }),
 ])
 

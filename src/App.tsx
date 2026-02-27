@@ -36,7 +36,7 @@ export default function App() {
   const toggle = useSidebarStore((state) => state.toggle)
   const openCommandPalette = useCommandPaletteStore((state) => state.open)
   const { pathname } = useLocation()
-  const isToolPage = pathname.startsWith(ROUTE_PATH.TOOL + '/')
+  const isToolPage = pathname.startsWith(ROUTE_PATH.TOOLS + '/')
 
   return (
     <>

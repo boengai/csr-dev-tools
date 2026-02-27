@@ -7,7 +7,7 @@ import { Card, NotoEmoji } from '@/components'
 import { ROUTE_PATH, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolSeo } from '@/hooks'
 
-export default function ToolPage() {
+export default function ToolsPage() {
   const { toolKey } = useParams({ strict: false })
   const tool = TOOL_REGISTRY_MAP[toolKey]
 
@@ -15,10 +15,10 @@ export default function ToolPage() {
     return <Navigate to={ROUTE_PATH.HOME} />
   }
 
-  return <ToolPageContent tool={tool} />
+  return <ToolsPageContent tool={tool} />
 }
 
-const ToolPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
+const ToolsPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
   const navigate = useNavigate()
 
   useToolSeo({
