@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
-import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { decodeJwt, formatPayloadWithTimestamps } from '@/utils/jwt'
@@ -115,48 +115,36 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
             <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
             <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
-              <FieldForm
-                disabled={!headerResult}
+              <CodeOutput
                 label={
                   <span className="flex items-center gap-1">
                     <span>Header</span>
                     <CopyButton label="header" value={headerResult} />
                   </span>
                 }
-                name="header-result"
                 placeholder='{"alg": "HS256", "typ": "JWT"}'
-                rows={4}
-                type="textarea"
                 value={headerResult}
               />
 
-              <FieldForm
-                disabled={!payloadResult}
+              <CodeOutput
                 label={
                   <span className="flex items-center gap-1">
                     <span>Payload</span>
                     <CopyButton label="payload" value={payloadCopyValue} />
                   </span>
                 }
-                name="payload-result"
                 placeholder='{"sub": "1234567890", "name": "John Doe"}'
-                rows={6}
-                type="textarea"
                 value={payloadResult}
               />
 
-              <FieldForm
-                disabled={!signatureResult}
+              <CodeOutput
                 label={
                   <span className="flex items-center gap-1">
                     <span>Signature (not verified — client-side only)</span>
                     <CopyButton label="signature" value={signatureResult} />
                   </span>
                 }
-                name="signature-result"
                 placeholder="Base64URL signature string"
-                rows={2}
-                type="textarea"
                 value={signatureResult}
               />
             </div>

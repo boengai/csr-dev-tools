@@ -45,7 +45,6 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const [code, setCode] = useState(DEFAULT_CODE)
   const [svg, setSvg] = useState('')
   const [error, setError] = useState<string | null>(null)
-  const [isReady, setIsReady] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [referenceOpen, setReferenceOpen] = useState(false)
   const [exportingPng, setExportingPng] = useState(false)
@@ -80,7 +79,6 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     if (!initializedRef.current) {
       initializedRef.current = true
       initializeMermaid()
-      setIsReady(true)
 
       // Check for cross-tool prefill from DB Diagram
       const prefill = localStorage.getItem(MERMAID_PREFILL_KEY)

@@ -12,8 +12,8 @@ test.describe('Escaped JSON Stringifier', () => {
     const input = dialog.locator('textarea').first()
     await input.fill('{"name":"John"}')
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 
   test('parses escaped JSON string', async ({ page }) => {
@@ -25,7 +25,7 @@ test.describe('Escaped JSON Stringifier', () => {
     const input = dialog.locator('textarea').first()
     await input.fill('{\\"name\\":\\"John\\"}')
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })

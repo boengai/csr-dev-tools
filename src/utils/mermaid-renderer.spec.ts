@@ -56,6 +56,7 @@ describe('mermaid-renderer', () => {
         logLevel: 'error',
         securityLevel: 'strict',
         startOnLoad: false,
+        suppressErrorRendering: true,
         theme: 'dark',
       })
     })

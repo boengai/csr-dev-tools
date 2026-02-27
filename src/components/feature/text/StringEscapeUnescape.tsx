@@ -3,7 +3,7 @@ import { useState } from 'react'
 import type { ToolComponentProps } from '@/types'
 import type { EscapeMode } from '@/utils/string-escape'
 
-import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { escapeString, unescapeString } from '@/utils/string-escape'
@@ -144,18 +144,14 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
             <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
             <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2">
-              <FieldForm
-                disabled={!result}
+              <CodeOutput
                 label={
                   <span className="flex items-center gap-1">
                     <span>Result</span>
                     <CopyButton label="result" value={result} />
                   </span>
                 }
-                name="result"
                 placeholder="Result will appear here..."
-                rows={12}
-                type="textarea"
                 value={result}
               />
             </div>

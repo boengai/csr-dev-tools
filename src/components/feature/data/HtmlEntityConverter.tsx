@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
-import { Button, CopyButton, Dialog, FieldForm, SelectInput } from '@/components/common'
+import { Button, CodeOutput, CopyButton, Dialog, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { decodeHtmlEntities, encodeHtmlEntities } from '@/utils/html-entity'
@@ -130,20 +130,16 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
             <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
             <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2">
-              <FieldForm
-                disabled={!result}
+              <CodeOutput
                 label={
                   <span className="flex items-center gap-1">
                     <span>{isEncode ? 'Encoded Output' : 'Decoded Output'}</span>
                     <CopyButton label="result" value={result} />
                   </span>
                 }
-                name="result"
                 placeholder={
                   isEncode ? '&lt;div class=&quot;hello&quot;&gt;&amp;copy; 2024&lt;/div&gt;' : '<div>&copy; 2024</div>'
                 }
-                rows={12}
-                type="textarea"
                 value={result}
               />
             </div>

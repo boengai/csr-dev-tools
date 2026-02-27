@@ -13,8 +13,8 @@ test.describe('JSON to CSV Converter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill(dataConversionData.jsonArray)
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })
 
@@ -29,8 +29,8 @@ test.describe('JSON to YAML Converter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill(dataConversionData.jsonForYaml)
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })
 
@@ -43,8 +43,8 @@ test.describe('XML to JSON Converter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill(dataConversionData.xml)
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })
 
@@ -57,8 +57,8 @@ test.describe('TOML to JSON Converter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill(dataConversionData.toml)
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })
 
@@ -71,8 +71,8 @@ test.describe('HTML to Markdown Converter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill(dataConversionData.htmlForMd)
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })
 

@@ -11,8 +11,8 @@ test.describe('Base64 Encoder', () => {
     const input = page.locator('[role="dialog"] textarea').first()
     await input.fill(base64.valid.decoded)
 
-    const output = page.locator('[role="dialog"] textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = page.locator('[role="dialog"] pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })
 
@@ -24,8 +24,8 @@ test.describe('URL Encoder/Decoder', () => {
     const input = page.locator('[role="dialog"] textarea').first()
     await input.fill('hello world & foo=bar')
 
-    const output = page.locator('[role="dialog"] textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = page.locator('[role="dialog"] pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })
 

@@ -11,8 +11,8 @@ test.describe('HTML Formatter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill(codeFormattingData.html)
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 
   test('minifies HTML input', async ({ page }) => {
@@ -28,8 +28,8 @@ test.describe('HTML Formatter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill('<div>\n  <p>hello</p>\n</div>')
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })
 
@@ -42,8 +42,8 @@ test.describe('CSS Formatter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill(codeFormattingData.css)
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 
   test('minifies CSS input', async ({ page }) => {
@@ -58,8 +58,8 @@ test.describe('CSS Formatter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill('body {\n  color: red;\n  margin: 0;\n}')
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })
 
@@ -72,8 +72,8 @@ test.describe('JavaScript Minifier', () => {
     const input = dialog.locator('textarea').first()
     await input.fill(codeFormattingData.js)
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 
   test('beautifies JavaScript input', async ({ page }) => {
@@ -88,8 +88,8 @@ test.describe('JavaScript Minifier', () => {
     const input = dialog.locator('textarea').first()
     await input.fill('function hello(){return"world"}')
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })
 
@@ -102,8 +102,8 @@ test.describe('SQL Formatter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill(codeFormattingData.sql)
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 
   test('formats SQL with dialect change', async ({ page }) => {
@@ -118,8 +118,8 @@ test.describe('SQL Formatter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill('select * from users limit 10')
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })
 

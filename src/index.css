@@ -90,6 +90,9 @@
   --radius-sm: 4px;
   --radius-card: 6px;
 
+  /* Font */
+  --font-mono: 'Space Mono', monospace;
+
   /* Breakpoints */
   --breakpoint-*: initial;
   --breakpoint-tablet: 48rem;

@@ -12,8 +12,8 @@ test.describe('ENV File Converter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill('FOO=bar\nBAZ=123')
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 
   test('converts JSON to .env', async ({ page }) => {
@@ -25,7 +25,7 @@ test.describe('ENV File Converter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill('{"FOO":"bar","BAZ":"123"}')
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })

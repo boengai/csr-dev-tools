@@ -10,9 +10,9 @@ test.describe('JSON Formatter', () => {
     await expect(input).toBeVisible({ timeout: 5000 })
     await input.fill(codeData.jsonInput)
 
-    // Verify formatted output appears in the second textarea
-    const output = page.locator('[role="dialog"] textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    // Verify formatted output appears in the output pre block
+    const output = page.locator('[role="dialog"] pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })
 

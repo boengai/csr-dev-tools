@@ -12,8 +12,8 @@ test.describe('HTML Entity Converter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill('<div>')
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 
   test('decodes HTML entities back to text', async ({ page }) => {
@@ -25,7 +25,7 @@ test.describe('HTML Entity Converter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill('&lt;div&gt;')
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 })

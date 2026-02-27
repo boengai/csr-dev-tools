@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
-import { Button, CheckboxInput, CopyButton, Dialog, FieldForm, SelectInput } from '@/components/common'
+import { Button, CheckboxInput, CodeOutput, CopyButton, Dialog, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { formatYaml, getYamlParseError } from '@/utils/yaml'
@@ -130,18 +130,14 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
             <div aria-live="polite" className="flex min-h-0 flex-1 flex-col gap-2">
-              <FieldForm
-                disabled={!result}
+              <CodeOutput
                 label={
                   <span className="flex items-center gap-1">
                     <span>Formatted YAML</span>
                     <CopyButton label="formatted YAML" value={result} />
                   </span>
                 }
-                name="result"
                 placeholder={'name: John\nage: 30\ntags:\n  - dev\n  - tools'}
-                rows={12}
-                type="textarea"
                 value={result}
               />
             </div>

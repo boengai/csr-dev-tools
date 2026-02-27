@@ -24,8 +24,8 @@ test.describe('YAML Formatter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill('name: John\nage: 30\ntags:\n  - dev\n  - tools')
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
   })
 
   test('shows error toast for invalid YAML', async ({ page }) => {
@@ -45,8 +45,8 @@ test.describe('YAML Formatter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill('name: John\nage: 30')
 
-    const output = dialog.locator('textarea').nth(1)
-    await expect(output).not.toHaveValue('', { timeout: 3000 })
+    const output = dialog.locator('pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 3000 })
 
     await copyButton.byLabel(page, 'formatted YAML').click()
     await expect(toast.copied(page)).toBeVisible({ timeout: 2000 })
@@ -61,7 +61,7 @@ test.describe('YAML Formatter', () => {
     const input = dialog.locator('textarea').first()
     await input.fill('z: 1\na: 2\nm: 3')
 
-    const output = dialog.locator('textarea').nth(1)
+    const output = dialog.locator('pre').first()
     await expect(output).toContainText('a: 2', { timeout: 3000 })
   })
 })
