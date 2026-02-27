@@ -34,6 +34,7 @@ import {
   deserializeDiagram,
   downloadTextFile,
   formatRelativeTime,
+  generateDbml,
   generateDiagramId,
   generateId,
   generateMermaidER,
@@ -41,6 +42,7 @@ import {
   generateTypeScript,
   loadDiagram,
   loadDiagramIndex,
+  parseDbml,
   parseJsonSchema,
   parseSqlDdl,
   saveDiagram,
@@ -79,6 +81,7 @@ const DIALECT_OPTIONS: Array<{ label: string; value: SqlDialect }> = [
 ]
 
 type SidePanel =
+  | 'dbml'
   | 'diagram-list'
   | 'export-mermaid'
   | 'export-sql'
@@ -115,6 +118,11 @@ const DiagramCanvas = () => {
   const [importJsonSchemaText, setImportJsonSchemaText] = useState('')
   const [importJsonSchemaMerge, setImportJsonSchemaMerge] = useState(false)
   const [importJsonSchemaErrors, setImportJsonSchemaErrors] = useState<Array<string>>([])
+
+  // DBML state
+  const [dbmlText, setDbmlText] = useState('')
+  const [dbmlErrors, setDbmlErrors] = useState<Array<{ line: number; message: string }>>([])
+  const [dbmlSource, setDbmlSource] = useState<'diagram' | 'editor'>('diagram')
 
   // Rename state for diagram list items
   const [renamingId, setRenamingId] = useState<string | null>(null)
@@ -199,7 +207,7 @@ const DiagramCanvas = () => {
     toast({ action: 'add', item: { label: 'Diagram saved', type: 'success' } })
   }, [nodes, edges, activeDiagramId, diagramName, toast])
 
-  const debouncedSave = useDebounceCallback(performSave, 1000)
+  const debouncedSave = useDebounceCallback(performSave, 3000)
 
   useEffect(() => {
     debouncedSave()
@@ -225,6 +233,54 @@ const DiagramCanvas = () => {
     const schema = serializeDiagram(nodes, edges)
     return generateTypeScript(schema)
   }, [nodes, edges])
+
+  // DBML generation (reactive, synchronous)
+  const generatedDbmlText = useMemo(() => {
+    if (nodes.length === 0) return ''
+    const schema = serializeDiagram(nodes, edges)
+    return generateDbml(schema)
+  }, [nodes, edges])
+
+  // Sync diagram → DBML editor when source is diagram
+  useEffect(() => {
+    if (dbmlSource === 'diagram' && activePanel === 'dbml') {
+      setDbmlText(generatedDbmlText)
+      setDbmlErrors([])
+    }
+  }, [generatedDbmlText, dbmlSource, activePanel])
+
+  // Parse DBML editor → diagram (debounced)
+  const applyDbml = useCallback(
+    (text: string) => {
+      if (!text.trim()) return
+
+      const result = parseDbml(text)
+      setDbmlErrors(result.errors)
+
+      if (result.tables.length === 0) return
+
+      const { edges: newEdges, nodes: newNodes } = deserializeDiagram({
+        relationships: result.relationships,
+        tables: result.tables,
+      })
+
+      setNodes(newNodes as Array<TableNode>)
+      setEdges(newEdges as Array<RelationshipEdge>)
+      setTableCount(result.tables.length)
+    },
+    [setNodes, setEdges],
+  )
+
+  const debouncedApplyDbml = useDebounceCallback(applyDbml, 500)
+
+  const handleDbmlChange = useCallback(
+    (text: string) => {
+      setDbmlSource('editor')
+      setDbmlText(text)
+      debouncedApplyDbml(text)
+    },
+    [debouncedApplyDbml],
+  )
 
   const handleAddTable = useCallback(() => {
     const { columns, tableName } = createDefaultTable(tableCount)
@@ -321,13 +377,6 @@ const DiagramCanvas = () => {
     })
     setTimeout(() => fitView({ padding: 0.2 }), 50)
   }, [setNodes, fitView])
-
-  const handleClearAll = useCallback(() => {
-    if (!window.confirm('Clear all tables and relationships? This cannot be undone.')) return
-    setNodes([])
-    setEdges([])
-    setTableCount(0)
-  }, [setNodes, setEdges])
 
   const nodesWithCallbacks = nodes.map((node) => ({
     ...node,
@@ -595,9 +644,14 @@ const DiagramCanvas = () => {
     setActivePanel((prev) => {
       if (prev === panel) return null
       if (panel === 'diagram-list') setDiagramIndex(loadDiagramIndex())
+      if (panel === 'dbml') {
+        setDbmlSource('diagram')
+        setDbmlText(generatedDbmlText)
+        setDbmlErrors([])
+      }
       return panel
     })
-  }, [])
+  }, [generatedDbmlText])
 
   return (
     <div className="flex h-full flex-col">
@@ -652,9 +706,6 @@ const DiagramCanvas = () => {
         </Button>
         <Button data-testid="fit-view-btn" onClick={() => fitView({ padding: 0.2 })} size="small" variant="default">
           Fit View
-        </Button>
-        <Button data-testid="clear-all-btn" onClick={handleClearAll} size="small" variant="default">
-          Clear All
         </Button>
 
         <div className="mx-1 h-4 w-px bg-gray-700" />
@@ -732,6 +783,15 @@ const DiagramCanvas = () => {
             </Button>
           }
         />
+
+        <Button
+          data-testid="dbml-btn"
+          onClick={() => togglePanel('dbml')}
+          size="small"
+          variant={activePanel === 'dbml' ? 'primary' : 'default'}
+        >
+          DBML
+        </Button>
       </div>
 
       {/* Main content area */}
@@ -1017,6 +1077,64 @@ const DiagramCanvas = () => {
 
             <div className="flex gap-2 border-t border-gray-800 px-3 py-2">
               <CopyButton label="TypeScript" value={generatedTypescript} variant="labeled" />
+            </div>
+          </div>
+        )}
+
+        {/* DBML Editor Panel */}
+        {activePanel === 'dbml' && (
+          <div
+            className="flex w-96 shrink-0 flex-col border-l border-gray-800 bg-gray-950"
+            data-testid="dbml-panel"
+          >
+            <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
+              <span className="text-xs font-bold text-white">DBML Editor</span>
+              <button
+                className="text-xs text-gray-400 hover:text-white"
+                onClick={() => {
+                  setDbmlSource('diagram')
+                  setActivePanel(null)
+                }}
+                type="button"
+              >
+                Close
+              </button>
+            </div>
+
+            <div className="flex flex-1 flex-col overflow-hidden p-3">
+              <textarea
+                className="text-xs flex-1 resize-none rounded border border-gray-700 bg-gray-900 p-2 font-mono text-gray-300 outline-none focus:border-primary"
+                data-testid="dbml-textarea"
+                onChange={(e) => handleDbmlChange(e.target.value)}
+                placeholder="// Define your schema in DBML&#10;&#10;Table users {&#10;  id serial [pk]&#10;  name varchar [not null]&#10;}"
+                value={dbmlText}
+              />
+
+              {dbmlErrors.length > 0 && (
+                <div className="mt-2 max-h-24 space-y-1 overflow-auto" data-testid="dbml-errors">
+                  {dbmlErrors.map((err, i) => (
+                    <p className="text-[10px] text-error" key={i}>
+                      Line {err.line}: {err.message}
+                    </p>
+                  ))}
+                </div>
+              )}
+            </div>
+
+            <div className="flex gap-2 border-t border-gray-800 px-3 py-2">
+              <CopyButton label="DBML" value={dbmlText} variant="labeled" />
+              <button
+                className="text-xs rounded bg-gray-800 px-3 py-1.5 font-medium text-gray-300 transition-colors hover:bg-gray-700"
+                data-testid="dbml-sync-btn"
+                onClick={() => {
+                  setDbmlSource('diagram')
+                  setDbmlText(generatedDbmlText)
+                  setDbmlErrors([])
+                }}
+                type="button"
+              >
+                Sync from Diagram
+              </button>
             </div>
           </div>
         )}
