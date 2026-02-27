@@ -1,6 +1,6 @@
 import type { Edge, EdgeProps } from '@xyflow/react'
 
-import { BaseEdge, EdgeLabelRenderer, Position, getSmoothStepPath } from '@xyflow/react'
+import { EdgeLabelRenderer, Position, getSmoothStepPath } from '@xyflow/react'
 import { useCallback, useState } from 'react'
 
 import type { RelationshipEdgeData, RelationshipType } from '@/types'
@@ -21,11 +21,11 @@ export const RelationshipEdgeComponent = ({
   markerEnd,
   sourceX,
   sourceY,
-  style,
   targetX,
   targetY,
 }: EdgeProps<RelationshipEdge>) => {
   const [showDropdown, setShowDropdown] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
 
   const [edgePath, labelX, labelY] = getSmoothStepPath({
     sourcePosition: Position.Right,
@@ -55,18 +55,34 @@ export const RelationshipEdgeComponent = ({
 
   return (
     <>
-      <BaseEdge
-        id={id}
-        markerEnd={markerEnd}
-        path={edgePath}
-        style={{ ...style, stroke: 'var(--color-primary)', strokeWidth: 2 }}
-      />
+      <g onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
+        {/* Invisible wider path for easier hover detection */}
+        <path d={edgePath} fill="none" stroke="transparent" strokeWidth={20} />
+        {/* Visible edge path */}
+        <path
+          className="react-flow__edge-path"
+          d={edgePath}
+          fill="none"
+          markerEnd={markerEnd}
+          style={{
+            opacity: isHovered ? 1 : 0.5,
+            stroke: 'var(--color-primary)',
+            strokeDasharray: isHovered ? '6 0' : '6 4',
+            strokeWidth: 2,
+            transition: 'opacity 0.2s ease, stroke-dasharray 0.2s ease',
+          }}
+        />
+      </g>
       <EdgeLabelRenderer>
         <div
           className="nodrag nopan pointer-events-auto absolute"
           style={{
+            opacity: isHovered ? 1 : 0.8,
             transform: `translate(-50%, -50%) translate(${labelX}px,${labelY}px)`,
+            transition: 'opacity 0.2s ease',
           }}
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
         >
           <button
             className="text-xs rounded bg-black px-2 py-0.5 font-bold text-white transition-colors hover:bg-gray-900"
