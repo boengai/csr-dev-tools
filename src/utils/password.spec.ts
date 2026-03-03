@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
-import { DEFAULT_PASSWORD_OPTIONS, generatePassword, SYMBOL_CHARS } from '@/utils/password'
+import { DEFAULT_PASSWORD_OPTIONS, generatePassword } from '@/utils/password'
+
+const SYMBOL_CHARS = "!@#$%^&*()-_=+[]{}|;:',./<>?~`"
 
 describe('password utilities', () => {
   describe('generatePassword', () => {

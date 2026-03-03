@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 
@@ -223,10 +223,10 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
 
                   {evaluation.results.length > 0 && (
                     <div className="flex max-h-96 flex-col gap-2 overflow-y-auto">
-                      {evaluation.results.map((result, index) => (
+                      {evaluation.results.map((result) => (
                         <div
                           className="flex flex-col gap-1 rounded border border-gray-800 bg-gray-950 p-3"
-                          key={`${result.path}-${index}`}
+                          key={result.path}
                         >
                           <div className="flex items-center justify-between gap-2">
                             <span className="truncate font-mono text-body-xs text-gray-400">{result.path}</span>
@@ -270,7 +270,7 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
 
             <AnimatePresence>
               {cheatsheetOpen && (
-                <motion.div
+                <m.div
                   animate={{ height: 'auto', opacity: 1 }}
                   className="overflow-hidden"
                   exit={{ height: 0, opacity: 0 }}
@@ -304,7 +304,7 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
                       </tbody>
                     </table>
                   </div>
-                </motion.div>
+                </m.div>
               )}
             </AnimatePresence>
           </div>

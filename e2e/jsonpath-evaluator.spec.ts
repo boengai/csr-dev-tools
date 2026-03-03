@@ -1,11 +1,12 @@
 import { expect, test } from '@playwright/test'
 
-import { card } from './helpers/selectors'
+import { card, codeInput } from './helpers/selectors'
 
 test.describe('JSONPath Evaluator', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/tools/jsonpath-evaluator')
-    await expect(page.locator('textarea')).toBeVisible({ timeout: 5000 })
+    const editor = codeInput.byName(page, 'json-input').locator('.cm-editor')
+    await expect(editor).toBeVisible({ timeout: 10000 })
   })
 
   test('renders tool with title and description', async ({ page }) => {
@@ -16,8 +17,8 @@ test.describe('JSONPath Evaluator', () => {
   })
 
   test('default sample JSON is present on load with default expression and results', async ({ page }) => {
-    const textarea = page.locator('textarea')
-    await expect(textarea).toHaveValue(/store/)
+    const cmContent = codeInput.content(page, 'json-input')
+    await expect(cmContent).toContainText('store')
 
     const expressionInput = page.locator('input[name="jsonpath-expression"]')
     await expect(expressionInput).toHaveValue('$.store.book[*].author')
@@ -29,7 +30,7 @@ test.describe('JSONPath Evaluator', () => {
   })
 
   test('type valid JSON + valid JSONPath → results display with paths and values', async ({ page }) => {
-    await page.locator('textarea').fill('{"users": [{"name": "Alice"}, {"name": "Bob"}]}')
+    await codeInput.fill(page, 'json-input', '{"users": [{"name": "Alice"}, {"name": "Bob"}]}')
 
     // Wait for JSON parse to complete by checking that expression still evaluates
     await expect(page.getByRole('status')).toContainText(/match/, { timeout: 5000 })
@@ -81,7 +82,7 @@ test.describe('JSONPath Evaluator', () => {
   })
 
   test('type invalid JSON → parse error shown', async ({ page }) => {
-    await page.locator('textarea').fill('{invalid json}')
+    await codeInput.fill(page, 'json-input', '{invalid json}')
 
     await expect(page.getByRole('alert')).toBeVisible({ timeout: 5000 })
   })
@@ -102,7 +103,8 @@ test.describe('JSONPath Evaluator', () => {
   test('mobile viewport (375px) responsiveness — inputs and results stack vertically', async ({ page }) => {
     await page.setViewportSize({ height: 812, width: 375 })
 
-    await expect(page.locator('textarea')).toBeVisible()
+    const editor = codeInput.byName(page, 'json-input').locator('.cm-editor')
+    await expect(editor).toBeVisible()
     await expect(page.locator('input[name="jsonpath-expression"]')).toBeVisible()
     await expect(page.getByRole('status')).toContainText('match', { timeout: 5000 })
   })

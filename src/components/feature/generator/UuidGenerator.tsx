@@ -55,7 +55,7 @@ export const UuidGenerator = () => {
 
         <div className="flex max-h-80 flex-col gap-1 overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3">
           {uuids.map((uuid, i) => (
-            <div className="flex items-center justify-between gap-2" key={i}>
+            <div className="flex items-center justify-between gap-2" key={uuid}>
               <span className="text-sm font-mono text-gray-300">
                 {uuids.length > 1 && <span className="text-gray-600">{i + 1}. </span>}
                 {uuid}

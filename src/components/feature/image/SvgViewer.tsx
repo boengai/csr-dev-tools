@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import DOMPurify from 'dompurify'
+import { useEffect, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 import type { SvgOptimizeResult } from '@/utils/svg-optimize'
@@ -15,6 +16,13 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
   const [source, setSource] = useState('')
   const [safeSvg, setSafeSvg] = useState('')
   const [optimizeResult, setOptimizeResult] = useState<SvgOptimizeResult | null>(null)
+  const previewRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (previewRef.current) {
+      previewRef.current.innerHTML = DOMPurify.sanitize(safeSvg, { USE_PROFILES: { svg: true } })
+    }
+  }, [safeSvg])
 
   const updatePreview = useDebounceCallback((val: string) => {
     setSafeSvg(val ? sanitizeSvg(val) : '')
@@ -122,7 +130,7 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
               </div>
               <div
                 className="flex flex-1 items-center justify-center rounded-lg border border-gray-800 bg-white p-4"
-                dangerouslySetInnerHTML={{ __html: safeSvg }}
+                ref={previewRef}
                 style={{ minHeight: '200px' }}
               />
               {source && <span className="text-body-xs text-gray-500">Size: {new Blob([source]).size} bytes</span>}

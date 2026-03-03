@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import type { PasswordOptions } from '@/utils'
 
@@ -22,11 +22,12 @@ const toolEntry = TOOL_REGISTRY_MAP['password-generator']
 export const PasswordGenerator = () => {
   const [options, setOptions] = useState<PasswordOptions>(DEFAULT_PASSWORD_OPTIONS)
   const [count, setCount] = useState(1)
-  const [passwords, setPasswords] = useState(() => [generatePassword(DEFAULT_PASSWORD_OPTIONS)])
+  const nextPwId = useRef(1)
+  const [passwords, setPasswords] = useState(() => [{ _id: 0, value: generatePassword(DEFAULT_PASSWORD_OPTIONS) }])
   const { toast } = useToast()
 
   const handleGenerate = () => {
-    setPasswords(Array.from({ length: count }, () => generatePassword(options)))
+    setPasswords(Array.from({ length: count }, () => ({ _id: nextPwId.current++, value: generatePassword(options) })))
     toast({
       action: 'add',
       item: { label: `Generated ${count} password${count > 1 ? 's' : ''}`, type: 'success' },
@@ -104,16 +105,16 @@ export const PasswordGenerator = () => {
       <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
         <div className="flex items-center gap-2">
           <span className="text-body-sm font-medium text-gray-400">Generated Passwords ({passwords.length})</span>
-          {passwords.length > 0 && <CopyButton label="all passwords" value={passwords.join('\n')} />}
+          {passwords.length > 0 && <CopyButton label="all passwords" value={passwords.map((p) => p.value).join('\n')} />}
         </div>
         <div className="flex max-h-80 flex-col gap-1 overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3">
           {passwords.map((pw, i) => (
-            <div className="flex items-center justify-between gap-2" key={i}>
+            <div className="flex items-center justify-between gap-2" key={pw._id}>
               <span className="text-sm font-mono break-all text-gray-300">
                 {passwords.length > 1 && <span className="text-gray-600">{i + 1}. </span>}
-                {pw}
+                {pw.value}
               </span>
-              <CopyButton label={`password ${i + 1}`} value={pw} />
+              <CopyButton label={`password ${i + 1}`} value={pw.value} />
             </div>
           ))}
         </div>

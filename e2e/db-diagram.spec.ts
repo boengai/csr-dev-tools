@@ -1,5 +1,40 @@
 import { expect, test } from '@playwright/test'
 
+/**
+ * Helper: fill a CodeMirror editor identified by its wrapper data-testid.
+ * Clicks the contenteditable `.cm-content` area and uses keyboard.insertText
+ * to inject text (CodeMirror does not respond to normal .fill()).
+ */
+async function fillCodeInput(page: import('@playwright/test').Page, testId: string, text: string) {
+  const cmEditor = page.getByTestId(testId).locator('.cm-content')
+  await cmEditor.click()
+  await page.keyboard.insertText(text)
+}
+
+/**
+ * Helper: select a value in a Radix Select (combobox) that lives inside
+ * the element identified by `parentTestId`.
+ */
+async function selectRadixOption(
+  page: import('@playwright/test').Page,
+  parentTestId: string,
+  optionText: string,
+) {
+  const trigger = page.getByTestId(parentTestId).locator('[role="combobox"]')
+  await trigger.click()
+  await page.locator('[role="option"]').filter({ hasText: optionText }).click()
+}
+
+/**
+ * Helper: clear the canvas by creating a new diagram via the diagram-list panel.
+ * (The old `clear-all-btn` no longer exists.)
+ */
+async function createNewDiagram(page: import('@playwright/test').Page) {
+  await page.getByTestId('diagrams-btn').click()
+  await expect(page.getByTestId('diagram-list-panel')).toBeVisible()
+  await page.getByTestId('new-diagram-btn').click()
+}
+
 test.describe('DB Diagram', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/tools/db-diagram')
@@ -10,7 +45,7 @@ test.describe('DB Diagram', () => {
   test('canvas renders with toolbar controls and minimap (AC #1)', async ({ page }) => {
     await expect(page.getByTestId('add-table-btn')).toBeVisible()
     await expect(page.getByTestId('fit-view-btn')).toBeVisible()
-    await expect(page.getByTestId('clear-all-btn')).toBeVisible()
+    await expect(page.getByTestId('diagrams-btn')).toBeVisible()
   })
 
   test('can add a table and see it on canvas (AC #2)', async ({ page }) => {
@@ -26,11 +61,13 @@ test.describe('DB Diagram', () => {
     const tableNode = page.locator('[data-testid^="table-node-"]').first()
     await expect(tableNode).toBeVisible({ timeout: 5000 })
 
-    // Click table name to edit
+    // Click table name button to enter editing mode
     await tableNode.getByText('table_1').click()
-    const nameInput = tableNode.locator('input').first()
+    const nameInput = tableNode.locator('input[name="table-name"]')
+    await expect(nameInput).toBeVisible({ timeout: 2000 })
     await nameInput.fill('users')
-    await nameInput.press('Enter')
+    // Blur the input to commit the name by clicking an innocuous toolbar button
+    await page.getByTestId('fit-view-btn').click({ force: true })
 
     await expect(tableNode.getByText('users')).toBeVisible()
   })
@@ -44,7 +81,7 @@ test.describe('DB Diagram', () => {
     await tableNode.getByText('+ Add Column').click()
 
     // Should now have id column + new column = verify second column name input exists
-    const columnInputs = tableNode.locator('input:not([type="color"])')
+    const columnInputs = tableNode.locator('input[name="column-name"]')
     const count = await columnInputs.count()
     expect(count).toBeGreaterThanOrEqual(2)
   })
@@ -92,17 +129,17 @@ test.describe('DB Diagram', () => {
     await page.getByTestId('export-sql-btn').click()
     await expect(page.getByTestId('sql-panel')).toBeVisible()
 
-    // Default is PostgreSQL — check for SERIAL
+    // Default is PostgreSQL -- check for CREATE TABLE
     const pgSql = await page.getByTestId('sql-output').textContent()
     expect(pgSql).toContain('CREATE TABLE')
 
-    // Switch to MySQL
-    await page.getByTestId('dialect-select').selectOption('mysql')
+    // Switch to MySQL via Radix Select
+    await selectRadixOption(page, 'sql-panel', 'MySQL')
     const mysqlSql = await page.getByTestId('sql-output').textContent()
     expect(mysqlSql).toContain('ENGINE=InnoDB')
 
-    // Switch to SQLite
-    await page.getByTestId('dialect-select').selectOption('sqlite')
+    // Switch to SQLite via Radix Select
+    await selectRadixOption(page, 'sql-panel', 'SQLite')
     const sqliteSql = await page.getByTestId('sql-output').textContent()
     expect(sqliteSql).not.toContain('ENGINE=InnoDB')
   })
@@ -115,25 +152,24 @@ test.describe('DB Diagram', () => {
 
     // Edit table name
     await tableNode.getByText('table_1').click()
-    const nameInput = tableNode.locator('input').first()
+    const nameInput = tableNode.locator('input[name="table-name"]')
+    await expect(nameInput).toBeVisible({ timeout: 2000 })
     await nameInput.fill('persisted_table')
-    await nameInput.press('Enter')
+    // Blur the input to commit the name by clicking an innocuous toolbar button
+    await page.getByTestId('fit-view-btn').click({ force: true })
+    await expect(tableNode.getByText('persisted_table')).toBeVisible({ timeout: 3000 })
 
-    // Wait for autosave (1s debounce + margin)
-    await page.waitForTimeout(1500)
-
-    // Open diagrams panel and load the saved diagram
-    await page.getByTestId('diagrams-btn').click()
-    await expect(page.getByTestId('diagram-list-panel')).toBeVisible()
+    // Wait for autosave to complete (3s debounce + confirmation toast)
+    await expect(page.getByText('Diagram saved', { exact: true })).toBeVisible({ timeout: 8000 })
 
     // Reload page
     await page.reload()
     await expect(page.locator('.react-flow')).toBeVisible({ timeout: 15000 })
 
-    // Open diagrams panel and verify saved diagram exists
-    await page.getByTestId('diagrams-btn').click()
-    await expect(page.getByTestId('diagram-list-panel')).toBeVisible()
-    await expect(page.getByText('persisted_table', { exact: false })).toBeVisible({ timeout: 5000 })
+    // Verify the table with the persisted name is restored on the canvas
+    const restoredNode = page.locator('[data-testid^="table-node-"]').first()
+    await expect(restoredNode).toBeVisible({ timeout: 5000 })
+    await expect(restoredNode.getByText('persisted_table')).toBeVisible({ timeout: 5000 })
   })
 
   test('can create and switch between multiple diagrams (AC #6, #9)', async ({ page }) => {
@@ -161,9 +197,11 @@ test.describe('DB Diagram', () => {
 
     // Click diagram name to rename
     await page.getByTestId('diagram-name').click()
-    const nameInput = page.locator('input[class*="font-bold"]').first()
-    await nameInput.fill('My Custom Name')
-    await nameInput.press('Enter')
+    const diagramNameInput = page.locator('input[name="diagram-name"]')
+    await expect(diagramNameInput).toBeVisible({ timeout: 2000 })
+    await diagramNameInput.fill('My Custom Name')
+    // Blur the input to commit the name by clicking an innocuous toolbar button
+    await page.getByTestId('fit-view-btn').click({ force: true })
 
     await expect(page.getByTestId('diagram-name')).toHaveText('My Custom Name')
   })
@@ -175,8 +213,9 @@ test.describe('DB Diagram', () => {
     await page.getByTestId('import-sql-btn').click()
     await expect(page.getByTestId('import-sql-panel')).toBeVisible()
 
-    const sqlInput = page.getByTestId('import-sql-textarea')
-    await sqlInput.fill(
+    await fillCodeInput(
+      page,
+      'code-input-import-sql-input',
       'CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255));\nCREATE TABLE posts (id INT PRIMARY KEY, user_id INT, FOREIGN KEY (user_id) REFERENCES users(id));',
     )
     await page.getByTestId('import-sql-submit').click()
@@ -190,8 +229,11 @@ test.describe('DB Diagram', () => {
     await page.getByTestId('import-sql-btn').click()
     await expect(page.getByTestId('import-sql-panel')).toBeVisible()
 
-    const sqlInput = page.getByTestId('import-sql-textarea')
-    await sqlInput.fill('CREATE TABLE valid_table (id INT PRIMARY KEY);\nTHIS IS INVALID SQL;')
+    await fillCodeInput(
+      page,
+      'code-input-import-sql-input',
+      'CREATE TABLE valid_table (id INT PRIMARY KEY);\nTHIS IS INVALID SQL;',
+    )
     await page.getByTestId('import-sql-submit').click()
 
     // Should import the valid table
@@ -236,8 +278,9 @@ test.describe('DB Diagram', () => {
     await page.getByTestId('import-json-schema-btn').click()
     await expect(page.getByTestId('import-json-schema-panel')).toBeVisible()
 
-    const schemaInput = page.getByTestId('import-json-schema-textarea')
-    await schemaInput.fill(
+    await fillCodeInput(
+      page,
+      'code-input-import-json-schema-input',
       JSON.stringify({
         definitions: {
           User: {
@@ -262,10 +305,13 @@ test.describe('DB Diagram', () => {
     await page.getByTestId('import-dropdown-btn').click()
     await page.getByTestId('import-sql-btn').click()
     await expect(page.getByTestId('import-sql-panel')).toBeVisible()
-    await page.getByTestId('import-sql-merge').check()
+    await page.locator('#import-sql-merge').check()
 
-    const sqlInput = page.getByTestId('import-sql-textarea')
-    await sqlInput.fill('CREATE TABLE imported_table (id INT PRIMARY KEY);')
+    await fillCodeInput(
+      page,
+      'code-input-import-sql-input',
+      'CREATE TABLE imported_table (id INT PRIMARY KEY);',
+    )
     await page.getByTestId('import-sql-submit').click()
 
     // Should now have 2 tables (1 existing + 1 imported)
@@ -280,11 +326,14 @@ test.describe('DB Diagram', () => {
 
     // Rename the table for identification
     await tableNode.getByText('table_1').click()
-    const nameInput = tableNode.locator('input').first()
+    const nameInput = tableNode.locator('input[name="table-name"]')
+    await expect(nameInput).toBeVisible({ timeout: 2000 })
     await nameInput.fill('export_test')
-    await nameInput.press('Enter')
+    // Blur the input to commit the name by clicking an innocuous toolbar button
+    await page.getByTestId('fit-view-btn').click({ force: true })
+    await expect(tableNode.getByText('export_test')).toBeVisible({ timeout: 3000 })
 
-    // Export JSON via Export dropdown — capture download
+    // Export JSON via Export dropdown -- capture download
     await page.getByTestId('export-dropdown-btn').click()
     const [download] = await Promise.all([
       page.waitForEvent('download'),
@@ -293,8 +342,8 @@ test.describe('DB Diagram', () => {
     const path = await download.path()
     expect(path).toBeTruthy()
 
-    // Clear canvas
-    await page.getByTestId('clear-all-btn').click()
+    // Clear canvas by creating a new diagram
+    await createNewDiagram(page)
     await expect(page.locator('[data-testid^="table-node-"]')).toHaveCount(0)
 
     // Import the downloaded JSON via Import dropdown

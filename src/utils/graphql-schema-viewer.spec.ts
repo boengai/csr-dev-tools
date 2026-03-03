@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatGraphqlType, parseGraphqlSchema } from '@/utils/graphql-schema-viewer'
+import { parseGraphqlSchema } from '@/utils/graphql-schema-viewer'
 
 const COMPREHENSIVE_SDL = `
 type Query {
@@ -274,21 +274,4 @@ type Query {
     })
   })
 
-  describe('formatGraphqlType', () => {
-    it('should format plain type', () => {
-      expect(formatGraphqlType('User', false, false)).toBe('User')
-    })
-
-    it('should format non-null type', () => {
-      expect(formatGraphqlType('User', true, false)).toBe('User!')
-    })
-
-    it('should format non-null list type', () => {
-      expect(formatGraphqlType('User', true, true)).toBe('[User!]!')
-    })
-
-    it('should format nullable list type', () => {
-      expect(formatGraphqlType('User', false, true)).toBe('[User]')
-    })
-  })
 })

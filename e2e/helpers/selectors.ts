@@ -39,11 +39,34 @@ export const toolInput = {
   uploadButton: (page: Page) => page.getByRole('button', { name: 'Upload File' }),
 }
 
-// --- Tool Outputs ---
+// --- CodeMirror (CodeInput) Helpers ---
 
-export const toolOutput = {
-  byLabel: (page: Page, label: string) =>
-    page.locator('fieldset').filter({ has: page.locator(`label:text-is("${label}")`) }),
+export const codeInput = {
+  /** Get the CodeMirror wrapper by its name (data-testid="code-input-{name}") */
+  byName: (page: Page, name: string) => page.getByTestId(`code-input-${name}`),
+
+  /** Get the editable content area of a CodeMirror editor */
+  content: (page: Page, name: string) => page.getByTestId(`code-input-${name}`).locator('.cm-content'),
+
+  /** Fill a CodeMirror editor: click, select all, then type new content */
+  fill: async (page: Page, name: string, text: string) => {
+    const cm = page.getByTestId(`code-input-${name}`).locator('.cm-content')
+    await cm.click()
+    await page.keyboard.press('Meta+A')
+    await page.keyboard.insertText(text)
+  },
+}
+
+/** Get the first CodeMirror content area inside a container (e.g. dialog) */
+export const codeInputIn = {
+  content: (container: ReturnType<Page['locator']>) => container.locator('.cm-content').first(),
+
+  fill: async (page: Page, container: ReturnType<Page['locator']>, text: string) => {
+    const cm = container.locator('.cm-content').first()
+    await cm.click()
+    await page.keyboard.press('Meta+A')
+    await page.keyboard.insertText(text)
+  },
 }
 
 // --- Copy Button ---

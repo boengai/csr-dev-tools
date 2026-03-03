@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { card, copyButton, toast } from './helpers/selectors'
+import { codeInputIn, copyButton, toast } from './helpers/selectors'
 
 test.describe('YAML Formatter', () => {
   test.beforeEach(async ({ page }) => {
@@ -21,8 +21,7 @@ test.describe('YAML Formatter', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
-    const input = dialog.locator('textarea').first()
-    await input.fill('name: John\nage: 30\ntags:\n  - dev\n  - tools')
+    await codeInputIn.fill(page, dialog, 'name: John\nage: 30\ntags:\n  - dev\n  - tools')
 
     const output = dialog.locator('pre[data-has-value]').first()
     await expect(output).toBeVisible({ timeout: 3000 })
@@ -32,8 +31,7 @@ test.describe('YAML Formatter', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
-    const input = dialog.locator('textarea').first()
-    await input.fill('key: [unclosed')
+    await codeInputIn.fill(page, dialog, 'key: [unclosed')
 
     await expect(page.getByText(/Invalid YAML/).first()).toBeVisible({ timeout: 3000 })
   })
@@ -42,8 +40,7 @@ test.describe('YAML Formatter', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
-    const input = dialog.locator('textarea').first()
-    await input.fill('name: John\nage: 30')
+    await codeInputIn.fill(page, dialog, 'name: John\nage: 30')
 
     const output = dialog.locator('pre[data-has-value]').first()
     await expect(output).toBeVisible({ timeout: 3000 })
@@ -58,8 +55,7 @@ test.describe('YAML Formatter', () => {
 
     await dialog.getByLabel('Sort Keys').check()
 
-    const input = dialog.locator('textarea').first()
-    await input.fill('z: 1\na: 2\nm: 3')
+    await codeInputIn.fill(page, dialog, 'z: 1\na: 2\nm: 3')
 
     const output = dialog.locator('pre').first()
     await expect(output).toContainText('a: 2', { timeout: 3000 })

@@ -126,8 +126,8 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
         <div className="flex w-full grow flex-col gap-4">
           {isStringify && (
             <div className="flex items-center gap-4">
-              <label className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400">
-                <CheckboxInput checked={doubleEscape} onChange={() => handleDoubleEscapeChange()} />
+              <label className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400" htmlFor="double-escape">
+                <CheckboxInput checked={doubleEscape} id="double-escape" onChange={() => handleDoubleEscapeChange()} />
                 Double Escape
               </label>
             </div>

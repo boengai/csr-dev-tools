@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 
 export const ProgressBar = ({ value }: { value: number }) => {
   const normalizedValue = Math.min(Math.max(value, 0), 100)
@@ -6,7 +6,7 @@ export const ProgressBar = ({ value }: { value: number }) => {
   return (
     <div className="flex w-full shrink-0 flex-col gap-2">
       <div className="h-2 w-full rounded-full bg-gray-300">
-        <motion.div
+        <m.div
           animate={{ width: `${normalizedValue}%` }}
           className="h-full rounded-full bg-primary"
           initial={{ width: `0%` }}

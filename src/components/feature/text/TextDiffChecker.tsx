@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useReducer, useRef } from 'react'
 
 import type { InlineSpan, SideBySideRow, ToolComponentProps } from '@/types'
 
@@ -10,11 +10,14 @@ import { computeSideBySideDiff, createUnifiedDiff } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['text-diff-checker']
 
 const renderSpans = (spans: Array<InlineSpan>, side: 'left' | 'right') => {
-  return spans.map((span, i) => {
-    if (span.type === 'equal') return <span key={i}>{span.text}</span>
+  let offset = 0
+  return spans.map((span) => {
+    const key = `${side}-${offset}`
+    offset += span.text.length
+    if (span.type === 'equal') return <span key={key}>{span.text}</span>
     const highlight = side === 'left' ? 'bg-error/25' : 'bg-success/25'
     return (
-      <span className={highlight} key={i}>
+      <span className={highlight} key={key}>
         {span.text}
       </span>
     )
@@ -49,31 +52,61 @@ const DiffCell = ({
   )
 }
 
+type State = {
+  dialogOpen: boolean
+  modified: string
+  original: string
+  rows: Array<SideBySideRow>
+  unifiedDiff: string
+}
+
+type Action =
+  | { type: 'SET_ORIGINAL'; payload: string }
+  | { type: 'SET_MODIFIED'; payload: string }
+  | { type: 'SET_DIFF_RESULT'; payload: { rows: Array<SideBySideRow>; unifiedDiff: string } }
+  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
+  | { type: 'RESET' }
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'SET_ORIGINAL':
+      return { ...state, original: action.payload }
+    case 'SET_MODIFIED':
+      return { ...state, modified: action.payload }
+    case 'SET_DIFF_RESULT':
+      return { ...state, rows: action.payload.rows, unifiedDiff: action.payload.unifiedDiff }
+    case 'SET_DIALOG_OPEN':
+      return { ...state, dialogOpen: action.payload }
+    case 'RESET':
+      return { ...state, original: '', modified: '', rows: [], unifiedDiff: '' }
+  }
+}
+
 export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [original, setOriginal] = useState('')
-  const [modified, setModified] = useState('')
-  const [rows, setRows] = useState<Array<SideBySideRow>>([])
-  const [unifiedDiff, setUnifiedDiff] = useState('')
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
+  const [state, dispatch] = useReducer(reducer, {
+    original: '',
+    modified: '',
+    rows: [],
+    unifiedDiff: '',
+    dialogOpen: autoOpen ?? false,
+  })
+  const { original, modified, rows, unifiedDiff, dialogOpen } = state
   const { toast } = useToast()
   const sessionRef = useRef(0)
 
   const process = async (orig: string, mod: string) => {
     const session = ++sessionRef.current
     if (orig.trim().length === 0 && mod.trim().length === 0) {
-      setRows([])
-      setUnifiedDiff('')
+      dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
       return
     }
     try {
       const [sideBySide, patch] = await Promise.all([computeSideBySideDiff(orig, mod), createUnifiedDiff(orig, mod)])
       if (session !== sessionRef.current) return
-      setRows(sideBySide)
-      setUnifiedDiff(patch)
+      dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: sideBySide, unifiedDiff: patch } })
     } catch {
       if (session !== sessionRef.current) return
-      setRows([])
-      setUnifiedDiff('')
+      dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
       toast({ action: 'add', item: { label: 'Unable to compute diff', type: 'error' } })
     }
   }
@@ -83,21 +116,18 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   }, 300)
 
   const handleOriginalChange = (val: string) => {
-    setOriginal(val)
+    dispatch({ type: 'SET_ORIGINAL', payload: val })
     debouncedProcess(val, modified)
   }
 
   const handleModifiedChange = (val: string) => {
-    setModified(val)
+    dispatch({ type: 'SET_MODIFIED', payload: val })
     debouncedProcess(original, val)
   }
 
   const handleReset = () => {
     sessionRef.current++
-    setOriginal('')
-    setModified('')
-    setRows([])
-    setUnifiedDiff('')
+    dispatch({ type: 'RESET' })
   }
 
   const handleAfterClose = () => {
@@ -111,13 +141,13 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
+          <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">
             Compare
           </Button>
         </div>
       </div>
       <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
+        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
         onAfterClose={handleAfterClose}
         size="screen"
         title="Text Diff Checker"
@@ -169,8 +199,8 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                     </div>
                   </div>
                   <div className="grid grid-cols-2">
-                    {rows.map((row, i) => (
-                      <div className="col-span-2 grid grid-cols-subgrid" key={i}>
+                    {rows.map((row) => (
+                      <div className="col-span-2 grid grid-cols-subgrid" key={`${row.leftLineNum ?? 'e'}-${row.rightLineNum ?? 'e'}-${row.leftType}-${row.rightType}`}>
                         <DiffCell
                           content={row.leftContent}
                           lineNum={row.leftLineNum}

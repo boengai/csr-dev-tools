@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import { useState } from 'react'
 
 import type { HarmonyType, PaletteColor } from '@/utils/color-palette'
@@ -86,7 +86,7 @@ export const ColorPaletteGenerator = () => {
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
       <div className="flex flex-col gap-3">
-        <ColorInput onChange={handlePickerChange} size="full" value={toPickerHex(hexInput)} />
+        <ColorInput aria-label="Color picker" onChange={handlePickerChange} size="full" value={toPickerHex(hexInput)} />
 
         <FieldForm
           label="Hex Color"
@@ -105,12 +105,12 @@ export const ColorPaletteGenerator = () => {
         {palette.length > 0 && (
           <div className="max-sm:grid-cols-1 grid grid-cols-5 gap-2">
             {palette.map((color, i) => (
-              <motion.button
+              <m.button
                 animate={{ opacity: 1, scale: 1 }}
                 aria-label={`Copy color ${color.hex}`}
                 className="group focus-visible:ring-blue-500 relative flex min-h-24 cursor-pointer flex-col items-center justify-end overflow-hidden rounded-lg border border-gray-700 p-2 transition-shadow hover:shadow-lg focus-visible:ring-2 focus-visible:outline-none"
                 initial={{ opacity: 0, scale: 0.9 }}
-                key={`${color.hex}-${i}`}
+                key={color.hex}
                 onClick={() => copyToClipboard(color.hex)}
                 style={{ backgroundColor: color.hex }}
                 tabIndex={0}
@@ -127,7 +127,7 @@ export const ColorPaletteGenerator = () => {
                     {formatHsl(color.hsl)}
                   </span>
                 </div>
-              </motion.button>
+              </m.button>
             ))}
           </div>
         )}

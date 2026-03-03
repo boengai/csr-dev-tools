@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import type { GradientConfig, GradientStop, GradientType } from '@/utils'
 
@@ -10,8 +10,15 @@ const toolEntry = TOOL_REGISTRY_MAP['css-gradient-generator']
 
 const ITEM_COLORS = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe', '#43e97b', '#fa709a']
 
+type GradientStopWithId = GradientStop & { _id: number }
+type LocalConfig = Omit<GradientConfig, 'stops'> & { stops: Array<GradientStopWithId> }
+
 export const GradientGenerator = () => {
-  const [config, setConfig] = useState<GradientConfig>(DEFAULT_GRADIENT)
+  const nextStopId = useRef(DEFAULT_GRADIENT.stops.length)
+  const [config, setConfig] = useState<LocalConfig>(() => ({
+    ...DEFAULT_GRADIENT,
+    stops: DEFAULT_GRADIENT.stops.map((s, i) => ({ ...s, _id: i })),
+  }))
 
   const cssValue = generateGradientCss(config.type, config.angle, config.stops)
 
@@ -47,6 +54,7 @@ export const GradientGenerator = () => {
       stops: [
         ...prev.stops,
         {
+          _id: nextStopId.current++,
           color: ITEM_COLORS[prev.stops.length % ITEM_COLORS.length],
           position: 50,
         },
@@ -101,8 +109,8 @@ export const GradientGenerator = () => {
             </button>
           </div>
 
-          {config.stops.map((stop: GradientStop, index: number) => (
-            <div className="flex items-center gap-3" key={index}>
+          {config.stops.map((stop, index) => (
+            <div className="flex items-center gap-3" key={stop._id}>
               <ColorInput onChange={(color) => handleStopColorChange(index, color)} value={stop.color} />
               <div className="flex-1">
                 <FieldForm

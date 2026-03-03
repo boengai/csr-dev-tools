@@ -1,5 +1,5 @@
-import { motion } from 'motion/react'
-import { type ButtonHTMLAttributes, Suspense, useMemo, useState } from 'react'
+import { m } from 'motion/react'
+import { type ButtonHTMLAttributes, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { ToolRegistryKey } from '@/types'
 
@@ -9,7 +9,7 @@ import { useDebounceCallback, usePersistFeatureLayout } from '@/hooks'
 
 const AddButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>) => {
   return (
-    <motion.button
+    <m.button
       animate={{ opacity: 1, scale: 1, y: 0 }}
       className="[&>svg]:align-center flex size-full items-center justify-center rounded-card border-3 border-dashed"
       exit={{ opacity: 0, scale: 0.95, y: -10 }}
@@ -30,7 +30,7 @@ const AddButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'o
       }}
     >
       <PlusIcon size={120} />
-    </motion.button>
+    </m.button>
   )
 }
 
@@ -70,6 +70,11 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const debouncedSetSearch = useDebounceCallback(setDebouncedSearch, 200)
+  const searchInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    if (position !== null) searchInputRef.current?.focus()
+  }, [position])
 
   const appPosition = Object.entries(value).reduce((acc: Record<string, number>, cur) => {
     if (cur[1] !== null) {
@@ -107,13 +112,13 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
     >
       <div className="mb-4">
         <input
-          autoFocus
           className="w-full rounded-md border border-gray-800 bg-gray-950 px-3 py-2 text-body-sm text-white placeholder:text-gray-500 focus:border-primary focus:outline-none"
           onChange={(e) => {
             setSearch(e.target.value)
             debouncedSetSearch(e.target.value)
           }}
           placeholder="Search tools..."
+          ref={searchInputRef}
           type="text"
           value={search}
         />

@@ -6,7 +6,7 @@ export type PlaceholderOptions = {
   width: number
 }
 
-export type PlaceholderPreset = {
+type PlaceholderPreset = {
   height: number
   label: string
   width: number
@@ -46,7 +46,7 @@ export const generatePlaceholderSvg = (options: PlaceholderOptions): string => {
   ].join('\n')
 }
 
-export const autoSizeFont = (
+const autoSizeFont = (
   ctx: CanvasRenderingContext2D,
   text: string,
   maxWidth: number,

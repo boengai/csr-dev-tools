@@ -1,10 +1,10 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 
 import type { DataCellTableProps } from '@/types'
 
 export const DataCellTable = ({ rows }: DataCellTableProps) => {
   return (
-    <motion.div
+    <m.div
       animate={{ opacity: 1, scale: 1, y: 0 }}
       className="table w-full border-spacing-x-1 border-spacing-y-2 overflow-hidden"
       exit={{ opacity: 0, scale: 0.98, y: -10 }}
@@ -16,9 +16,9 @@ export const DataCellTable = ({ rows }: DataCellTableProps) => {
     >
       <div className="table-row-group">
         {rows.map((r, idx) => (
-          <div className="table-row *:table-cell *:p-2" key={idx}>
+          <div className="table-row *:table-cell *:p-2" key={r.value}>
             <div className="bg-secondary/50 font-bold">{r.label}</div>
-            <motion.div
+            <m.div
               animate={{ opacity: 1, x: 0 }}
               className="bg-secondary/30 text-body-sm"
               initial={{ opacity: 0, x: 10 }}
@@ -30,10 +30,10 @@ export const DataCellTable = ({ rows }: DataCellTableProps) => {
               }}
             >
               {r.render?.(r.value) ?? r.value}
-            </motion.div>
+            </m.div>
           </div>
         ))}
       </div>
-    </motion.div>
+    </m.div>
   )
 }

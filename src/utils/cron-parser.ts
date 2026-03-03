@@ -173,12 +173,10 @@ export const parseCron = (expression: string, nextCount = 5): CronParseResult =>
   }
 }
 
-export type CronPreset = {
+export const CRON_PRESETS: Array<{
   expression: string
   label: string
-}
-
-export const CRON_PRESETS: Array<CronPreset> = [
+}> = [
   { expression: '* * * * *', label: 'Every minute' },
   { expression: '*/5 * * * *', label: 'Every 5 minutes' },
   { expression: '0 * * * *', label: 'Every hour' },

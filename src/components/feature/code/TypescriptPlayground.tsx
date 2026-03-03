@@ -1,7 +1,6 @@
 import type { EditorProps, Monaco, OnMount, OnValidate } from '@monaco-editor/react'
 
-import Editor from '@monaco-editor/react'
-import { useRef, useState } from 'react'
+import { lazy, Suspense, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
@@ -9,6 +8,8 @@ import { CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { tv } from '@/utils'
+
+const Editor = lazy(() => import('@monaco-editor/react'))
 
 type EditorInstance = Parameters<OnMount>[0]
 type MarkerData = Parameters<OnValidate>[0][0]
@@ -148,18 +149,20 @@ export const TypescriptPlayground = (_props: ToolComponentProps) => {
         <div aria-label="TypeScript code editor" className="flex min-w-0 flex-1 flex-col gap-1">
           <h3 className="text-body-sm font-semibold text-gray-100">TypeScript</h3>
           <div className="md:h-[400px] h-[300px] overflow-hidden rounded border border-gray-800">
-            <Editor
-              beforeMount={handleBeforeMount}
-              defaultLanguage="typescript"
-              defaultValue={SAMPLE_CODE}
-              height="100%"
-              loading={<EditorSkeleton />}
-              onChange={handleEditorChange}
-              onMount={handleEditorMount}
-              onValidate={handleValidation}
-              options={EDITOR_OPTIONS}
-              theme="vs-dark"
-            />
+            <Suspense fallback={<EditorSkeleton />}>
+              <Editor
+                beforeMount={handleBeforeMount}
+                defaultLanguage="typescript"
+                defaultValue={SAMPLE_CODE}
+                height="100%"
+                loading={<EditorSkeleton />}
+                onChange={handleEditorChange}
+                onMount={handleEditorMount}
+                onValidate={handleValidation}
+                options={EDITOR_OPTIONS}
+                theme="vs-dark"
+              />
+            </Suspense>
           </div>
         </div>
 
@@ -169,14 +172,16 @@ export const TypescriptPlayground = (_props: ToolComponentProps) => {
             <CopyButton label="Copy JS" value={transpiledJs} />
           </div>
           <div className="md:h-[400px] h-[300px] overflow-hidden rounded border border-gray-800">
-            <Editor
-              defaultLanguage="javascript"
-              height="100%"
-              loading={<EditorSkeleton />}
-              options={READONLY_EDITOR_OPTIONS}
-              theme="vs-dark"
-              value={transpiledJs}
-            />
+            <Suspense fallback={<EditorSkeleton />}>
+              <Editor
+                defaultLanguage="javascript"
+                height="100%"
+                loading={<EditorSkeleton />}
+                options={READONLY_EDITOR_OPTIONS}
+                theme="vs-dark"
+                value={transpiledJs}
+              />
+            </Suspense>
           </div>
         </div>
       </div>
@@ -190,11 +195,11 @@ export const TypescriptPlayground = (_props: ToolComponentProps) => {
               {warningCount > 0 && `${warningCount} warning${warningCount !== 1 ? 's' : ''}`}
             </p>
             <ul className="max-h-40 overflow-y-auto rounded border border-gray-800 bg-gray-950 p-2">
-              {errors.map((error, index) => (
+              {errors.map((error) => (
                 <li
                   aria-label={`${error.severity === 'error' ? 'Error' : 'Warning'} on line ${error.line}: ${error.message}`}
                   className="flex items-start gap-2 px-1 py-0.5 font-mono text-body-xs"
-                  key={`${error.line}-${error.column}-${index}`}
+                  key={`${error.line}-${error.column}-${error.message}`}
                 >
                   <span className={severityStyles({ severity: error.severity })}>
                     {error.severity === 'error' ? '●' : '▲'}

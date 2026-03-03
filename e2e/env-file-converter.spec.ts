@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { codeInputIn } from './helpers/selectors'
+
 test.describe('ENV File Converter', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/tools/env-file-converter')
@@ -9,8 +11,7 @@ test.describe('ENV File Converter', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
-    const input = dialog.locator('textarea').first()
-    await input.fill('FOO=bar\nBAZ=123')
+    await codeInputIn.fill(page, dialog, 'FOO=bar\nBAZ=123')
 
     const output = dialog.locator('pre[data-has-value]').first()
     await expect(output).toBeVisible({ timeout: 3000 })
@@ -22,8 +23,7 @@ test.describe('ENV File Converter', () => {
     // Dispatch click on mode button behind dialog overlay to switch mode
     await page.locator('button', { hasText: /JSON → \.env/i }).first().dispatchEvent('click')
 
-    const input = dialog.locator('textarea').first()
-    await input.fill('{"FOO":"bar","BAZ":"123"}')
+    await codeInputIn.fill(page, dialog, '{"FOO":"bar","BAZ":"123"}')
 
     const output = dialog.locator('pre[data-has-value]').first()
     await expect(output).toBeVisible({ timeout: 3000 })

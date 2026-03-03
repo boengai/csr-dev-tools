@@ -1,6 +1,6 @@
 import type { Crop, PixelCrop } from 'react-image-crop'
 
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useReducer, useRef } from 'react'
 import 'react-image-crop/dist/ReactCrop.css'
 import ReactCrop from 'react-image-crop'
 
@@ -78,21 +78,83 @@ const cropImageCanvas = (
     )
   })
 
+type State = {
+  aspectPreset: AspectRatioPreset
+  completedCrop: PixelCrop | null
+  crop: Crop | undefined
+  dialogOpen: boolean
+  imageUrl: string | null
+  processing: boolean
+  showProgress: boolean
+  source: File | null
+  tabValue: string
+}
+
+type Action =
+  | { type: 'SET_ASPECT_PRESET'; payload: AspectRatioPreset }
+  | { type: 'SET_COMPLETED_CROP'; payload: PixelCrop | null }
+  | { type: 'SET_CROP'; payload: Crop | undefined }
+  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
+  | { type: 'SET_IMAGE_URL'; payload: string | null }
+  | { type: 'SET_PROCESSING'; payload: boolean }
+  | { type: 'SET_SHOW_PROGRESS'; payload: boolean }
+  | { type: 'SET_SOURCE'; payload: File | null }
+  | { type: 'SET_TAB_VALUE'; payload: string }
+  | { type: 'INPUT_FILE'; payload: File }
+  | { type: 'FINISH_PROCESSING' }
+  | { type: 'RESET' }
+
+const initialState: State = {
+  aspectPreset: 'free',
+  completedCrop: null,
+  crop: undefined,
+  dialogOpen: false,
+  imageUrl: null,
+  processing: false,
+  showProgress: false,
+  source: null,
+  tabValue: TABS_VALUES.IMPORT,
+}
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'SET_ASPECT_PRESET':
+      return { ...state, aspectPreset: action.payload }
+    case 'SET_COMPLETED_CROP':
+      return { ...state, completedCrop: action.payload }
+    case 'SET_CROP':
+      return { ...state, crop: action.payload }
+    case 'SET_DIALOG_OPEN':
+      return { ...state, dialogOpen: action.payload }
+    case 'SET_IMAGE_URL':
+      return { ...state, imageUrl: action.payload }
+    case 'SET_PROCESSING':
+      return { ...state, processing: action.payload }
+    case 'SET_SHOW_PROGRESS':
+      return { ...state, showProgress: action.payload }
+    case 'SET_SOURCE':
+      return { ...state, source: action.payload }
+    case 'SET_TAB_VALUE':
+      return { ...state, tabValue: action.payload }
+    case 'INPUT_FILE':
+      return { ...state, source: action.payload, completedCrop: null, crop: undefined, aspectPreset: 'free', dialogOpen: true }
+    case 'FINISH_PROCESSING':
+      return { ...state, showProgress: false, processing: false }
+    case 'RESET':
+      return { ...initialState }
+    default:
+      return state
+  }
+}
+
 export const ImageCropper = () => {
   const croppedUrlRef = useRef<string | null>(null)
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
   const progressTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
-  const [tabValue, setTabValue] = useState(TABS_VALUES.IMPORT)
-  const [source, setSource] = useState<File | null>(null)
-  const [imageUrl, setImageUrl] = useState<string | null>(null)
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [crop, setCrop] = useState<Crop>()
-  const [completedCrop, setCompletedCrop] = useState<PixelCrop | null>(null)
-  const [aspectPreset, setAspectPreset] = useState<AspectRatioPreset>('free')
-  const [processing, setProcessing] = useState(false)
-  const [showProgress, setShowProgress] = useState(false)
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const { aspectPreset, completedCrop, crop, dialogOpen, imageUrl, processing, showProgress, source, tabValue } = state
 
   const { toast } = useToast()
 
@@ -105,11 +167,11 @@ export const ImageCropper = () => {
 
   useEffect(() => {
     if (!source) {
-      setImageUrl(null)
+      dispatch({ type: 'SET_IMAGE_URL', payload: null })
       return
     }
     const url = URL.createObjectURL(source)
-    setImageUrl(url)
+    dispatch({ type: 'SET_IMAGE_URL', payload: url })
     return () => URL.revokeObjectURL(url)
   }, [source])
 
@@ -117,11 +179,7 @@ export const ImageCropper = () => {
     const file = values[0]
     if (!file) return
 
-    setSource(file)
-    setCompletedCrop(null)
-    setCrop(undefined)
-    setAspectPreset('free')
-    setDialogOpen(true)
+    dispatch({ type: 'INPUT_FILE', payload: file })
   }
 
   const handleReset = () => {
@@ -129,37 +187,33 @@ export const ImageCropper = () => {
       URL.revokeObjectURL(croppedUrlRef.current)
       croppedUrlRef.current = null
     }
-    setTabValue(TABS_VALUES.IMPORT)
-    setSource(null)
-    setCompletedCrop(null)
-    setCrop(undefined)
-    setAspectPreset('free')
+    dispatch({ type: 'RESET' })
   }
 
   const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
     const { height, width } = e.currentTarget
     const defaultCrop = getDefaultCrop(width, height, getAspectRatio(aspectPreset))
     const pixelCrop = { ...defaultCrop, unit: 'px' as const }
-    setCrop(pixelCrop)
-    setCompletedCrop(pixelCrop)
+    dispatch({ type: 'SET_CROP', payload: pixelCrop })
+    dispatch({ type: 'SET_COMPLETED_CROP', payload: pixelCrop })
   }
 
   const handleAspectChange = (preset: AspectRatioPreset) => {
-    setAspectPreset(preset)
+    dispatch({ type: 'SET_ASPECT_PRESET', payload: preset })
     if (imgRef.current) {
       const { height, width } = imgRef.current
       const defaultCrop = getDefaultCrop(width, height, getAspectRatio(preset))
       const pixelCrop = { ...defaultCrop, unit: 'px' as const }
-      setCrop(pixelCrop)
-      setCompletedCrop(pixelCrop)
+      dispatch({ type: 'SET_CROP', payload: pixelCrop })
+      dispatch({ type: 'SET_COMPLETED_CROP', payload: pixelCrop })
     }
   }
 
   const handleCropAndDownload = async () => {
     if (!completedCrop || !imgRef.current || !source) return
 
-    setProcessing(true)
-    progressTimerRef.current = setTimeout(() => setShowProgress(true), 300)
+    dispatch({ type: 'SET_PROCESSING', payload: true })
+    progressTimerRef.current = setTimeout(() => dispatch({ type: 'SET_SHOW_PROGRESS', payload: true }), 300)
 
     try {
       const naturalCrop = scaleCropToNatural(
@@ -186,14 +240,13 @@ export const ImageCropper = () => {
       anchor.click()
 
       toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
-      setTabValue(TABS_VALUES.DOWNLOAD)
-      setDialogOpen(false)
+      dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.DOWNLOAD })
+      dispatch({ type: 'SET_DIALOG_OPEN', payload: false })
     } catch {
       toast({ action: 'add', item: { label: 'Failed to crop image. Please try again.', type: 'error' } })
     } finally {
       clearTimeout(progressTimerRef.current)
-      setShowProgress(false)
-      setProcessing(false)
+      dispatch({ type: 'FINISH_PROCESSING' })
     }
   }
 
@@ -215,7 +268,7 @@ export const ImageCropper = () => {
 
         <Tabs
           injected={{
-            setValue: setTabValue,
+            setValue: (val: string) => dispatch({ type: 'SET_TAB_VALUE', payload: val }),
             value: tabValue,
           }}
           items={[
@@ -264,11 +317,11 @@ export const ImageCropper = () => {
             },
           ]}
         />
-        <a className="hidden" download="" href="" ref={downloadAnchorRef} />
+        <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
       </div>
       <Dialog
         description="Crop your image using the selection handles"
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
+        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
         onAfterClose={() => {
           if (tabValue !== TABS_VALUES.DOWNLOAD) handleReset()
         }}
@@ -285,8 +338,8 @@ export const ImageCropper = () => {
                 crop={crop}
                 minHeight={10}
                 minWidth={10}
-                onChange={(c) => setCrop(c)}
-                onComplete={(c) => setCompletedCrop(c)}
+                onChange={(c) => dispatch({ type: 'SET_CROP', payload: c })}
+                onComplete={(c) => dispatch({ type: 'SET_COMPLETED_CROP', payload: c })}
                 style={{ '--rc-drag-handle-mobile-size': '44px' } as React.CSSProperties}
               >
                 <img

@@ -17,7 +17,7 @@ export type HighlightSegment = {
   text: string
 }
 
-export const MAX_MATCHES = 5000
+const MAX_MATCHES = 5000
 
 export const executeRegex = (pattern: string, flags: string, text: string): RegexResult => {
   let regex: RegExp

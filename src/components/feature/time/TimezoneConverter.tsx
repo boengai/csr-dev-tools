@@ -1,5 +1,5 @@
-import { AnimatePresence, motion } from 'motion/react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { AnimatePresence, m } from 'motion/react'
+import { useCallback, useEffect, useId, useMemo, useReducer, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
@@ -96,6 +96,7 @@ const TimezoneSearchPicker = ({
   const [activeIndex, setActiveIndex] = useState(-1)
   const containerRef = useRef<HTMLDivElement>(null)
   const listRef = useRef<HTMLUListElement>(null)
+  const listboxId = useId()
 
   const sortedIndex = useMemo(() => {
     const favSet = new Set(favorites)
@@ -117,11 +118,6 @@ const TimezoneSearchPicker = ({
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
   }, [])
-
-  // Reset active index when filtered results change
-  useEffect(() => {
-    setActiveIndex(-1)
-  }, [filtered])
 
   const selectItem = (id: string) => {
     onSelect(id)
@@ -165,12 +161,13 @@ const TimezoneSearchPicker = ({
   }, [activeIndex])
 
   return (
-    <div className="relative" onKeyDown={handleKeyDown} ref={containerRef}>
+    <div aria-controls={listboxId} aria-expanded={isOpen} className="relative" onKeyDown={handleKeyDown} ref={containerRef} role="combobox">
       <TextInput
         name="timezone-search"
         onChange={(val) => {
           setQuery(val)
           setIsOpen(true)
+          setActiveIndex(-1)
         }}
         placeholder={placeholder}
         type="text"
@@ -179,6 +176,7 @@ const TimezoneSearchPicker = ({
       {isOpen && (
         <ul
           className="absolute z-10 mt-1 max-h-48 w-full overflow-y-auto rounded-md border border-gray-700 bg-gray-900 shadow-lg"
+          id={listboxId}
           ref={listRef}
           role="listbox"
         >
@@ -189,6 +187,9 @@ const TimezoneSearchPicker = ({
               className={pickerItemStyles({ active: i === activeIndex })}
               key={entry.id}
               onClick={() => selectItem(entry.id)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') selectItem(entry.id)
+              }}
               role="option"
             >
               <span className="font-medium text-gray-100">{entry.city}</span>
@@ -204,15 +205,78 @@ const TimezoneSearchPicker = ({
   )
 }
 
+type ConverterState = {
+  dateInput: string
+  error: string
+  favorites: Array<string>
+  results: Array<TargetResult>
+  showAddPicker: boolean
+  sourceTz: string
+  targetTzIds: Array<string>
+  timeInput: string
+}
+
+type ConverterAction =
+  | { type: 'SET_SOURCE_TZ'; payload: string }
+  | { type: 'SET_DATE_INPUT'; payload: string }
+  | { type: 'SET_TIME_INPUT'; payload: string }
+  | { type: 'SET_DATE_AND_TIME'; payload: { dateInput: string; timeInput: string } }
+  | { type: 'SET_TARGET_TZ_IDS'; payload: Array<string> }
+  | { type: 'ADD_TARGET_TZ'; payload: string }
+  | { type: 'REMOVE_TARGET_TZ'; payload: string }
+  | { type: 'SET_FAVORITES'; payload: Array<string> }
+  | { type: 'SET_RESULTS'; payload: Array<TargetResult> }
+  | { type: 'SET_ERROR'; payload: string }
+  | { type: 'SET_SHOW_ADD_PICKER'; payload: boolean }
+  | { type: 'SET_CONVERSION_RESULT'; payload: { error: string; results: Array<TargetResult> } }
+
+function converterReducer(state: ConverterState, action: ConverterAction): ConverterState {
+  switch (action.type) {
+    case 'SET_SOURCE_TZ':
+      return { ...state, sourceTz: action.payload }
+    case 'SET_DATE_INPUT':
+      return { ...state, dateInput: action.payload }
+    case 'SET_TIME_INPUT':
+      return { ...state, timeInput: action.payload }
+    case 'SET_DATE_AND_TIME':
+      return { ...state, dateInput: action.payload.dateInput, timeInput: action.payload.timeInput }
+    case 'SET_TARGET_TZ_IDS':
+      return { ...state, targetTzIds: action.payload }
+    case 'ADD_TARGET_TZ':
+      if (state.targetTzIds.includes(action.payload)) return { ...state, showAddPicker: false }
+      return { ...state, targetTzIds: [...state.targetTzIds, action.payload], showAddPicker: false }
+    case 'REMOVE_TARGET_TZ':
+      return { ...state, targetTzIds: state.targetTzIds.filter((tz) => tz !== action.payload) }
+    case 'SET_FAVORITES':
+      return { ...state, favorites: action.payload }
+    case 'SET_RESULTS':
+      return { ...state, results: action.payload }
+    case 'SET_ERROR':
+      return { ...state, error: action.payload }
+    case 'SET_SHOW_ADD_PICKER':
+      return { ...state, showAddPicker: action.payload }
+    case 'SET_CONVERSION_RESULT':
+      return { ...state, error: action.payload.error, results: action.payload.results }
+  }
+}
+
+function createInitialConverterState(): ConverterState {
+  const sourceTz = getLocalTimezone()
+  return {
+    sourceTz,
+    dateInput: formatNowDate(),
+    timeInput: formatNowTime(),
+    targetTzIds: getInitialTargets(sourceTz),
+    favorites: loadFavorites(),
+    results: [],
+    error: '',
+    showAddPicker: false,
+  }
+}
+
 export const TimezoneConverter = (_props: ToolComponentProps) => {
-  const [sourceTz, setSourceTz] = useState(getLocalTimezone)
-  const [dateInput, setDateInput] = useState(formatNowDate)
-  const [timeInput, setTimeInput] = useState(formatNowTime)
-  const [targetTzIds, setTargetTzIds] = useState<Array<string>>(() => getInitialTargets(getLocalTimezone()))
-  const [favorites, setFavorites] = useState<Array<string>>(loadFavorites)
-  const [results, setResults] = useState<Array<TargetResult>>([])
-  const [error, setError] = useState('')
-  const [showAddPicker, setShowAddPicker] = useState(false)
+  const [state, dispatch] = useReducer(converterReducer, null, createInitialConverterState)
+  const { sourceTz, dateInput, timeInput, targetTzIds, favorites, results, error, showAddPicker } = state
 
   const index = useMemo(() => buildTimezoneIndex(), [])
 
@@ -233,24 +297,21 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
     const targets = targetTzIdsRef.current
 
     if (!d || !t) {
-      setResults([])
-      setError('')
+      dispatch({ type: 'SET_CONVERSION_RESULT', payload: { error: '', results: [] } })
       return
     }
 
     const parsed = parseDateTimeInput(d, t, src)
     if (!parsed) {
-      setError('Invalid date or time input')
-      setResults([])
+      dispatch({ type: 'SET_CONVERSION_RESULT', payload: { error: 'Invalid date or time input', results: [] } })
       return
     }
 
-    setError('')
     const newResults: Array<TargetResult> = targets.map((tzId) => ({
       result: convertTimezone(parsed, src, tzId),
       timezoneId: tzId,
     }))
-    setResults(newResults)
+    dispatch({ type: 'SET_CONVERSION_RESULT', payload: { error: '', results: newResults } })
   }, [])
 
   const debouncedCompute = useDebounceCallback(computeResults, 300)
@@ -261,31 +322,25 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
   }, [sourceTz, dateInput, timeInput, targetTzIds, debouncedCompute])
 
   const handleNow = () => {
-    setDateInput(formatNowDate())
-    setTimeInput(formatNowTime())
+    dispatch({ type: 'SET_DATE_AND_TIME', payload: { dateInput: formatNowDate(), timeInput: formatNowTime() } })
   }
 
   const handleAddTarget = (id: string) => {
-    if (!targetTzIds.includes(id)) {
-      setTargetTzIds((prev) => [...prev, id])
-    }
-    setShowAddPicker(false)
+    dispatch({ type: 'ADD_TARGET_TZ', payload: id })
   }
 
   const handleRemoveTarget = (id: string) => {
-    setTargetTzIds((prev) => prev.filter((tz) => tz !== id))
+    dispatch({ type: 'REMOVE_TARGET_TZ', payload: id })
   }
 
   const handleToggleFavorite = (id: string) => {
-    setFavorites((prev) => {
-      const next = prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
-      saveFavorites(next)
-      return next
-    })
+    const next = favorites.includes(id) ? favorites.filter((f) => f !== id) : [...favorites, id]
+    saveFavorites(next)
+    dispatch({ type: 'SET_FAVORITES', payload: next })
   }
 
   const handleSourceSelect = (id: string) => {
-    setSourceTz(id)
+    dispatch({ type: 'SET_SOURCE_TZ', payload: id })
   }
 
   const sourceEntry = useMemo(() => index.find((e) => e.id === sourceTz), [index, sourceTz])
@@ -300,7 +355,7 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
           <h3 className="text-body-sm font-semibold text-gray-300">Source</h3>
 
           <div>
-            <label className="mb-1 block text-body-xs text-gray-500">Timezone</label>
+            <label className="mb-1 block text-body-xs text-gray-500" htmlFor="source-timezone-search">Timezone</label>
             {sourceEntry && (
               <div className="mb-1 flex items-center gap-1">
                 <span className="rounded bg-gray-800 px-2 py-0.5 text-body-xs text-gray-200">
@@ -320,14 +375,14 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
             <FieldForm
               label="Date"
               name="tz-date"
-              onChange={setDateInput}
+              onChange={(val: string) => dispatch({ type: 'SET_DATE_INPUT', payload: val })}
               type="date"
               value={dateInput}
             />
             <FieldForm
               label="Time"
               name="tz-time"
-              onChange={setTimeInput}
+              onChange={(val: string) => dispatch({ type: 'SET_TIME_INPUT', payload: val })}
               type="time"
               value={timeInput}
             />
@@ -352,7 +407,7 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
               aria-label="Add target timezone"
               className="rounded bg-gray-700 px-3 py-1 text-body-xs text-gray-200 hover:bg-gray-600"
               data-testid="add-timezone-button"
-              onClick={() => setShowAddPicker((prev) => !prev)}
+              onClick={() => dispatch({ type: 'SET_SHOW_ADD_PICKER', payload: !showAddPicker })}
               type="button"
             >
               + Add Timezone
@@ -380,7 +435,7 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
                 const isFav = favorites.includes(timezoneId)
                 const copyValue = `${result.date} ${result.time} ${result.abbreviation}`
                 return (
-                  <motion.div
+                  <m.div
                     animate={{ opacity: 1, y: 0 }}
                     className="flex items-center justify-between rounded border border-gray-700 bg-gray-900 p-3"
                     exit={{ opacity: 0, y: -10 }}
@@ -423,7 +478,7 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
                         ✕
                       </button>
                     </div>
-                  </motion.div>
+                  </m.div>
                 )
               })}
             </AnimatePresence>

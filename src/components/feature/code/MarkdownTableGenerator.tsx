@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useReducer } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 import type { ColumnAlignment } from '@/utils/markdown-table'
@@ -24,55 +24,110 @@ const ALIGN_ICON: Record<ColumnAlignment, string> = {
 const createGrid = (rows: number, cols: number): Array<Array<string>> =>
   Array.from({ length: rows }, (_, r) => Array.from({ length: cols }, (_, c) => (r === 0 ? `Header ${c + 1}` : '')))
 
+type State = {
+  alignments: Array<ColumnAlignment>
+  cols: number
+  data: Array<Array<string>>
+  dialogOpen: boolean
+  rows: number
+}
+
+type Action =
+  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
+  | { type: 'SET_ROWS'; payload: number }
+  | { type: 'SET_COLS'; payload: number }
+  | { type: 'SET_DATA'; payload: Array<Array<string>> }
+  | { type: 'SET_ALIGNMENTS'; payload: Array<ColumnAlignment> }
+  | { type: 'UPDATE_CELL'; payload: { r: number; c: number; val: string } }
+  | { type: 'CHANGE_ROWS'; payload: number }
+  | { type: 'CHANGE_COLS'; payload: number }
+  | { type: 'TOGGLE_ALIGN'; payload: number }
+  | { type: 'RESET' }
+
+const createInitialState = (): State => ({
+  alignments: Array(3).fill('left') as Array<ColumnAlignment>,
+  cols: 3,
+  data: createGrid(3, 3),
+  dialogOpen: false,
+  rows: 3,
+})
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'SET_DIALOG_OPEN':
+      return { ...state, dialogOpen: action.payload }
+    case 'SET_ROWS':
+      return { ...state, rows: action.payload }
+    case 'SET_COLS':
+      return { ...state, cols: action.payload }
+    case 'SET_DATA':
+      return { ...state, data: action.payload }
+    case 'SET_ALIGNMENTS':
+      return { ...state, alignments: action.payload }
+    case 'UPDATE_CELL':
+      return {
+        ...state,
+        data: state.data.map((row, ri) =>
+          ri === action.payload.r ? row.map((cell, ci) => (ci === action.payload.c ? action.payload.val : cell)) : row,
+        ),
+      }
+    case 'CHANGE_ROWS': {
+      const clamped = Math.max(2, Math.min(20, action.payload))
+      const newData =
+        clamped > state.data.length
+          ? [...state.data, ...Array.from({ length: clamped - state.data.length }, () => Array(state.cols).fill('') as Array<string>)]
+          : state.data.slice(0, clamped)
+      return { ...state, rows: clamped, data: newData }
+    }
+    case 'CHANGE_COLS': {
+      const clamped = Math.max(2, Math.min(10, action.payload))
+      const newData = state.data.map((row) => {
+        if (clamped > row.length) return [...row, ...(Array(clamped - row.length).fill('') as Array<string>)]
+        return row.slice(0, clamped)
+      })
+      const newAlignments =
+        clamped > state.alignments.length
+          ? [...state.alignments, ...(Array(clamped - state.alignments.length).fill('left') as Array<ColumnAlignment>)]
+          : state.alignments.slice(0, clamped)
+      return { ...state, cols: clamped, data: newData, alignments: newAlignments }
+    }
+    case 'TOGGLE_ALIGN':
+      return {
+        ...state,
+        alignments: state.alignments.map((a, i) => (i === action.payload ? NEXT_ALIGN[a] : a)),
+      }
+    case 'RESET':
+      return createInitialState()
+  }
+}
+
 export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const [rows, setRows] = useState(3)
-  const [cols, setCols] = useState(3)
-  const [data, setData] = useState<Array<Array<string>>>(createGrid(3, 3))
-  const [alignments, setAlignments] = useState<Array<ColumnAlignment>>(Array(3).fill('left') as Array<ColumnAlignment>)
+  const [state, dispatch] = useReducer(reducer, undefined, () => ({
+    ...createInitialState(),
+    dialogOpen: autoOpen ?? false,
+  }))
+  const { alignments, cols, data, dialogOpen, rows } = state
 
   const output = generateMarkdownTable(data, alignments)
 
   const updateCell = (r: number, c: number, val: string) => {
-    setData((prev) => prev.map((row, ri) => (ri === r ? row.map((cell, ci) => (ci === c ? val : cell)) : row)))
+    dispatch({ type: 'UPDATE_CELL', payload: { r, c, val } })
   }
 
   const handleRowsChange = (n: number) => {
-    const clamped = Math.max(2, Math.min(20, n))
-    setRows(clamped)
-    setData((prev) => {
-      if (clamped > prev.length) {
-        return [...prev, ...Array.from({ length: clamped - prev.length }, () => Array(cols).fill('') as Array<string>)]
-      }
-      return prev.slice(0, clamped)
-    })
+    dispatch({ type: 'CHANGE_ROWS', payload: n })
   }
 
   const handleColsChange = (n: number) => {
-    const clamped = Math.max(2, Math.min(10, n))
-    setCols(clamped)
-    setData((prev) =>
-      prev.map((row) => {
-        if (clamped > row.length) return [...row, ...(Array(clamped - row.length).fill('') as Array<string>)]
-        return row.slice(0, clamped)
-      }),
-    )
-    setAlignments((prev) => {
-      if (clamped > prev.length)
-        return [...prev, ...(Array(clamped - prev.length).fill('left') as Array<ColumnAlignment>)]
-      return prev.slice(0, clamped)
-    })
+    dispatch({ type: 'CHANGE_COLS', payload: n })
   }
 
   const toggleAlign = (c: number) => {
-    setAlignments((prev) => prev.map((a, i) => (i === c ? NEXT_ALIGN[a] : a)))
+    dispatch({ type: 'TOGGLE_ALIGN', payload: c })
   }
 
   const handleReset = () => {
-    setRows(3)
-    setCols(3)
-    setData(createGrid(3, 3))
-    setAlignments(Array(3).fill('left') as Array<ColumnAlignment>)
+    dispatch({ type: 'RESET' })
   }
 
   return (
@@ -80,13 +135,13 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
       <div className="flex w-full grow flex-col gap-4">
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
+          <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">
             Build Table
           </Button>
         </div>
       </div>
       <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
+        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
         onAfterClose={() => {
           handleReset()
           onAfterDialogClose?.()

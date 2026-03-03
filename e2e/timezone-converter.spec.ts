@@ -20,8 +20,8 @@ test.describe('Timezone Converter', () => {
     await expect(page.locator('span.rounded.bg-gray-800').first()).toBeVisible()
 
     // Date and time inputs are present and populated
-    const dateInput = page.locator('#tz-date')
-    const timeInput = page.locator('#tz-time')
+    const dateInput = page.locator('input[name="tz-date"]')
+    const timeInput = page.locator('input[name="tz-time"]')
     await expect(dateInput).toBeVisible()
     await expect(timeInput).toBeVisible()
     await expect(dateInput).not.toHaveValue('')
@@ -34,8 +34,8 @@ test.describe('Timezone Converter', () => {
 
   test('click "Now" button → date and time inputs are populated with current values', async ({ page }) => {
     // Clear inputs first
-    const dateInput = page.locator('#tz-date')
-    const timeInput = page.locator('#tz-time')
+    const dateInput = page.locator('input[name="tz-date"]')
+    const timeInput = page.locator('input[name="tz-time"]')
 
     await dateInput.fill('')
     await timeInput.fill('')
@@ -57,7 +57,7 @@ test.describe('Timezone Converter', () => {
     const initialText = await targetResults.first().textContent()
 
     // Change the date
-    const dateInput = page.locator('#tz-date')
+    const dateInput = page.locator('input[name="tz-date"]')
     await dateInput.fill('2020-01-15')
 
     // Wait for debounced update (300ms + buffer)
@@ -182,8 +182,8 @@ test.describe('Timezone Converter', () => {
     // Verify key elements are still visible
     await expect(page.getByText('Source')).toBeVisible()
     await expect(page.getByText('Target Timezones')).toBeVisible()
-    await expect(page.locator('#tz-date')).toBeVisible()
-    await expect(page.locator('#tz-time')).toBeVisible()
+    await expect(page.locator('input[name="tz-date"]')).toBeVisible()
+    await expect(page.locator('input[name="tz-time"]')).toBeVisible()
     await expect(page.locator('[role="status"]').first()).toBeVisible({ timeout: 5000 })
   })
 })

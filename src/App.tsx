@@ -1,4 +1,5 @@
 import { Link, Outlet, useLocation } from '@tanstack/react-router'
+import { domAnimation, LazyMotion } from 'motion/react'
 import { type ComponentType, lazy, Suspense } from 'react'
 
 import {
@@ -39,7 +40,7 @@ export default function App() {
   const isToolPage = pathname.startsWith(ROUTE_PATH.TOOLS + '/')
 
   return (
-    <>
+    <LazyMotion features={domAnimation} strict>
       <header className="relative z-30 flex h-12 shrink-0 items-center gap-2 px-4 pt-[var(--safe-area-inset-top)]">
         <button
           aria-expanded={isOpen}
@@ -96,6 +97,6 @@ export default function App() {
 
       <CommandPalette />
       <ToastProvider />
-    </>
+    </LazyMotion>
   )
 }

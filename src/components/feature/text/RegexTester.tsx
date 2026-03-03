@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useReducer } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 import type { HighlightSegment, RegexMatch, RegexResult } from '@/utils'
@@ -37,7 +37,7 @@ const FlagToggle = ({ active, flag, onToggle }: { active: boolean; flag: string;
 const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
   <div className="flex flex-col gap-2">
     {matches.map((match, i) => (
-      <div className="text-sm rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-2" key={i}>
+      <div className="text-sm rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-2" key={`${match.index}-${match.fullMatch}`}>
         <p className="text-gray-300">
           <span className="font-medium text-gray-200">Match {i + 1}:</span>{' '}
           <span className="font-mono text-primary">&quot;{match.fullMatch}&quot;</span> at index {match.index}
@@ -45,7 +45,7 @@ const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
         {match.groups.length > 0 && (
           <div className="mt-1 flex flex-col gap-0.5 pl-4 text-gray-400">
             {match.groups.map((group, g) => (
-              <p key={g}>
+              <p key={`group-${g}`}>
                 Group {g + 1}:{' '}
                 {group === undefined ? (
                   <span className="text-gray-600 italic">undefined</span>
@@ -70,19 +70,55 @@ const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
   </div>
 )
 
+type State = {
+  dialogOpen: boolean
+  flags: Flags
+  pattern: string
+  result: RegexResult | null
+  segments: Array<HighlightSegment>
+  testString: string
+}
+
+type Action =
+  | { type: 'SET_PATTERN'; payload: string }
+  | { type: 'SET_TEST_STRING'; payload: string }
+  | { type: 'SET_FLAGS'; payload: Flags }
+  | { type: 'SET_RESULT'; payload: { result: RegexResult | null; segments: Array<HighlightSegment> } }
+  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
+  | { type: 'RESET' }
+
+function reducer(state: State, action: Action): State {
+  switch (action.type) {
+    case 'SET_PATTERN':
+      return { ...state, pattern: action.payload }
+    case 'SET_TEST_STRING':
+      return { ...state, testString: action.payload }
+    case 'SET_FLAGS':
+      return { ...state, flags: action.payload }
+    case 'SET_RESULT':
+      return { ...state, result: action.payload.result, segments: action.payload.segments }
+    case 'SET_DIALOG_OPEN':
+      return { ...state, dialogOpen: action.payload }
+    case 'RESET':
+      return { ...state, pattern: '', testString: '', flags: DEFAULT_FLAGS, result: null, segments: [] }
+  }
+}
+
 export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [pattern, setPattern] = useState('')
-  const [testString, setTestString] = useState('')
-  const [flags, setFlags] = useState<Flags>(DEFAULT_FLAGS)
-  const [result, setResult] = useState<RegexResult | null>(null)
-  const [segments, setSegments] = useState<Array<HighlightSegment>>([])
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
+  const [state, dispatch] = useReducer(reducer, {
+    pattern: '',
+    testString: '',
+    flags: DEFAULT_FLAGS,
+    result: null,
+    segments: [],
+    dialogOpen: autoOpen ?? false,
+  })
+  const { pattern, testString, flags, result, segments, dialogOpen } = state
   const { toast } = useToast()
 
   const process = (pat: string, text: string, fl: Flags) => {
     if (pat.trim().length === 0 || text.trim().length === 0) {
-      setResult(null)
-      setSegments([])
+      dispatch({ type: 'SET_RESULT', payload: { result: null, segments: [] } })
       return
     }
 
@@ -90,13 +126,11 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
 
     if (regexResult.error != null) {
       toast({ action: 'add', item: { label: regexResult.error, type: 'error' } })
-      setResult(null)
-      setSegments([])
+      dispatch({ type: 'SET_RESULT', payload: { result: null, segments: [] } })
       return
     }
 
-    setResult(regexResult)
-    setSegments(buildHighlightSegments(text, regexResult.matches))
+    dispatch({ type: 'SET_RESULT', payload: { result: regexResult, segments: buildHighlightSegments(text, regexResult.matches) } })
   }
 
   const debouncedProcess = useDebounceCallback((pat: string, text: string, fl: Flags) => {
@@ -104,27 +138,23 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
   }, 300)
 
   const handlePatternChange = (val: string) => {
-    setPattern(val)
+    dispatch({ type: 'SET_PATTERN', payload: val })
     debouncedProcess(val, testString, flags)
   }
 
   const handleTestStringChange = (val: string) => {
-    setTestString(val)
+    dispatch({ type: 'SET_TEST_STRING', payload: val })
     debouncedProcess(pattern, val, flags)
   }
 
   const handleFlagToggle = (flag: keyof Flags) => {
     const updated = { ...flags, [flag]: !flags[flag] }
-    setFlags(updated)
+    dispatch({ type: 'SET_FLAGS', payload: updated })
     debouncedProcess(pattern, testString, updated)
   }
 
   const handleReset = () => {
-    setPattern('')
-    setTestString('')
-    setFlags(DEFAULT_FLAGS)
-    setResult(null)
-    setSegments([])
+    dispatch({ type: 'RESET' })
   }
 
   const handleAfterClose = () => {
@@ -141,13 +171,13 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
+          <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">
             Test Regex
           </Button>
         </div>
       </div>
       <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
+        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
         onAfterClose={handleAfterClose}
         size="screen"
         title="Regex Tester"
@@ -195,17 +225,22 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
 
             <div className="text-sm wrap-break-words overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono whitespace-pre-wrap">
               {segments.length > 0 ? (
-                segments.map((segment, i) =>
-                  segment.isMatch ? (
-                    <span className="rounded-xs bg-primary/20 text-primary" key={i}>
-                      {segment.text}
-                    </span>
-                  ) : (
-                    <span className="text-gray-400" key={i}>
-                      {segment.text}
-                    </span>
-                  ),
-                )
+                (() => {
+                  let offset = 0
+                  return segments.map((segment) => {
+                    const key = `seg-${offset}`
+                    offset += segment.text.length
+                    return segment.isMatch ? (
+                      <span className="rounded-xs bg-primary/20 text-primary" key={key}>
+                        {segment.text}
+                      </span>
+                    ) : (
+                      <span className="text-gray-400" key={key}>
+                        {segment.text}
+                      </span>
+                    )
+                  })
+                })()
               ) : (
                 <p className="text-gray-600">Highlighted matches will appear here...</p>
               )}

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useReducer, useRef } from 'react'
 
 import type { ImageProcessingResult } from '@/types'
 
@@ -26,17 +26,67 @@ type OriginalInfo = {
   width: number
 }
 
+type State = {
+  compressed: ImageProcessingResult | null
+  originalInfo: OriginalInfo | null
+  processing: boolean
+  quality: number
+  showProgress: boolean
+  source: File | null
+}
+
+type Action =
+  | { type: 'SET_COMPRESSED'; payload: ImageProcessingResult | null }
+  | { type: 'SET_ORIGINAL_INFO'; payload: OriginalInfo | null }
+  | { type: 'SET_PROCESSING'; payload: boolean }
+  | { type: 'SET_QUALITY'; payload: number }
+  | { type: 'SET_SHOW_PROGRESS'; payload: boolean }
+  | { type: 'SET_SOURCE'; payload: File | null }
+  | { type: 'CLEAR_ON_REJECT' }
+  | { type: 'START_COMPRESS'; payload: { source: File } }
+  | { type: 'FINISH_COMPRESS' }
+
+const initialState: State = {
+  compressed: null,
+  originalInfo: null,
+  processing: false,
+  quality: 80,
+  showProgress: false,
+  source: null,
+}
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'SET_COMPRESSED':
+      return { ...state, compressed: action.payload }
+    case 'SET_ORIGINAL_INFO':
+      return { ...state, originalInfo: action.payload }
+    case 'SET_PROCESSING':
+      return { ...state, processing: action.payload }
+    case 'SET_QUALITY':
+      return { ...state, quality: action.payload }
+    case 'SET_SHOW_PROGRESS':
+      return { ...state, showProgress: action.payload }
+    case 'SET_SOURCE':
+      return { ...state, source: action.payload }
+    case 'CLEAR_ON_REJECT':
+      return { ...state, source: null, compressed: null, originalInfo: null }
+    case 'START_COMPRESS':
+      return { ...state, source: action.payload.source, compressed: null, originalInfo: { height: 0, name: action.payload.source.name, size: action.payload.source.size, width: 0 } }
+    case 'FINISH_COMPRESS':
+      return { ...state, showProgress: false, processing: false }
+    default:
+      return state
+  }
+}
+
 export const ImageCompressor = () => {
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const progressTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
   const sessionRef = useRef(0)
 
-  const [source, setSource] = useState<File | null>(null)
-  const [originalInfo, setOriginalInfo] = useState<OriginalInfo | null>(null)
-  const [quality, setQuality] = useState(80)
-  const [compressed, setCompressed] = useState<ImageProcessingResult | null>(null)
-  const [processing, setProcessing] = useState(false)
-  const [showProgress, setShowProgress] = useState(false)
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const { compressed, originalInfo, processing, quality, showProgress, source } = state
 
   const { toast } = useToast()
 
@@ -49,15 +99,15 @@ export const ImageCompressor = () => {
 
   const compress = useCallback(
     async (file: File, q: number) => {
-      setProcessing(true)
-      progressTimerRef.current = setTimeout(() => setShowProgress(true), 300)
+      dispatch({ type: 'SET_PROCESSING', payload: true })
+      progressTimerRef.current = setTimeout(() => dispatch({ type: 'SET_SHOW_PROGRESS', payload: true }), 300)
 
       const currentSession = ++sessionRef.current
 
       try {
         const result = await processImage(file, { quality: q / 100, strategy: 'stretch' })
         if (currentSession !== sessionRef.current) return null
-        setCompressed(result)
+        dispatch({ type: 'SET_COMPRESSED', payload: result })
         return result
       } catch {
         if (currentSession !== sessionRef.current) return null
@@ -66,8 +116,7 @@ export const ImageCompressor = () => {
       } finally {
         if (currentSession === sessionRef.current) {
           clearTimeout(progressTimerRef.current)
-          setShowProgress(false)
-          setProcessing(false)
+          dispatch({ type: 'FINISH_COMPRESS' })
         }
       }
     },
@@ -83,25 +132,21 @@ export const ImageCompressor = () => {
     // H1 fix: clear stale state on format rejection
     if (!COMPRESSIBLE_FORMATS.has(file.type)) {
       toast({ action: 'add', item: { label: 'Image compression supports JPEG and WebP formats', type: 'error' } })
-      setSource(null)
-      setCompressed(null)
-      setOriginalInfo(null)
+      dispatch({ type: 'CLEAR_ON_REJECT' })
       return
     }
 
-    setSource(file)
-    setCompressed(null)
-    setOriginalInfo({ height: 0, name: file.name, size: file.size, width: 0 })
+    dispatch({ type: 'START_COMPRESS', payload: { source: file } })
 
     // M1 fix: single processImage call — get dimensions AND compressed result
     const result = await compress(file, quality)
     if (result) {
-      setOriginalInfo({ height: result.height, name: file.name, size: file.size, width: result.width })
+      dispatch({ type: 'SET_ORIGINAL_INFO', payload: { height: result.height, name: file.name, size: file.size, width: result.width } })
     }
   }
 
   const handleQualityChange = (newQuality: number) => {
-    setQuality(newQuality)
+    dispatch({ type: 'SET_QUALITY', payload: newQuality })
     if (source) {
       debouncedCompress(source, newQuality)
     }
@@ -183,7 +228,7 @@ export const ImageCompressor = () => {
         </div>
       )}
 
-      <a className="hidden" download="" href="" ref={downloadAnchorRef} />
+      <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
     </div>
   )
 }

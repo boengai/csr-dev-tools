@@ -1,5 +1,5 @@
 import { Content, List, Root, Trigger } from '@radix-ui/react-tabs'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import type { TabsProps } from '@/types'
@@ -53,7 +53,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
           className="absolute bottom-0 left-0 z-0 size-full data-[hidden=true]:hidden"
           data-hidden={navTriggers.length === 0}
         >
-          <motion.div
+          <m.div
             animate={{
               width: indicator.width,
               x: indicator.translateX,
@@ -70,7 +70,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
               type: 'spring',
             }}
           />
-          <motion.div
+          <m.div
             animate={{
               width: indicator.translateX,
             }}
@@ -85,7 +85,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
               type: 'spring',
             }}
           />
-          <motion.div
+          <m.div
             animate={{
               width: `calc(100% - ${indicator.width}px - ${indicator.translateX}px)`,
             }}
@@ -115,7 +115,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
       <AnimatePresence>
         {items.map(({ content, value }) => (
           <Content asChild key={value} value={value}>
-            <motion.div
+            <m.div
               animate={{ opacity: 1, y: 0 }}
               className="flex size-full grow flex-col overflow-y-auto"
               exit={{ opacity: 0, y: -10 }}
@@ -124,7 +124,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
               transition={{ duration: 0.3, ease: 'easeInOut' }}
             >
               {content}
-            </motion.div>
+            </m.div>
           </Content>
         ))}
       </AnimatePresence>

@@ -1,7 +1,7 @@
-export const UPPERCASE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-export const LOWERCASE_CHARS = 'abcdefghijklmnopqrstuvwxyz'
-export const DIGIT_CHARS = '0123456789'
-export const SYMBOL_CHARS = "!@#$%^&*()-_=+[]{}|;:',./<>?~`"
+const UPPERCASE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+const LOWERCASE_CHARS = 'abcdefghijklmnopqrstuvwxyz'
+const DIGIT_CHARS = '0123456789'
+const SYMBOL_CHARS = "!@#$%^&*()-_=+[]{}|;:',./<>?~`"
 
 export type PasswordOptions = {
   digits: boolean

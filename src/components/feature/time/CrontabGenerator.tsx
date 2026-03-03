@@ -133,7 +133,7 @@ const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEdi
 
       {config.mode === 'range' && (
         <div className="ml-32 flex items-center gap-2">
-          <label className="text-body-xs text-gray-500">Start:</label>
+          <span className="text-body-xs text-gray-500">Start:</span>
           <div className="w-16">
             <FieldForm
               label=""
@@ -145,7 +145,7 @@ const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEdi
               value={String(config.rangeStart ?? min)}
             />
           </div>
-          <label className="text-body-xs text-gray-500">End:</label>
+          <span className="text-body-xs text-gray-500">End:</span>
           <div className="w-16">
             <FieldForm
               label=""
@@ -162,7 +162,7 @@ const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEdi
 
       {config.mode === 'interval' && (
         <div className="ml-32 flex items-center gap-2">
-          <label className="text-body-xs text-gray-500">Every</label>
+          <span className="text-body-xs text-gray-500">Every</span>
           <div className="w-16">
             <FieldForm
               label=""
@@ -233,8 +233,8 @@ export const CrontabGenerator = (_: ToolComponentProps) => {
         <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
           <span className="text-body-xs font-medium text-gray-400">Next {nextRuns.length} runs (UTC)</span>
           <ul className="mt-1 flex flex-col gap-1">
-            {nextRuns.map((run, i) => (
-              <li className="font-mono text-body-xs text-gray-300" key={i}>
+            {nextRuns.map((run) => (
+              <li className="font-mono text-body-xs text-gray-300" key={run}>
                 {run}
               </li>
             ))}

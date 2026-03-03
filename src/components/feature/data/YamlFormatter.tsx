@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useReducer } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
@@ -14,31 +14,67 @@ const INDENT_OPTIONS = [
   { label: '4 spaces', value: 4 },
 ]
 
+type State = {
+  dialogOpen: boolean
+  indent: number
+  result: string
+  sortKeys: boolean
+  source: string
+}
+
+type Action =
+  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
+  | { type: 'SET_INDENT'; payload: number }
+  | { type: 'SET_RESULT'; payload: string }
+  | { type: 'SET_SORT_KEYS'; payload: boolean }
+  | { type: 'SET_SOURCE'; payload: string }
+  | { type: 'RESET' }
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'SET_DIALOG_OPEN':
+      return { ...state, dialogOpen: action.payload }
+    case 'SET_INDENT':
+      return { ...state, indent: action.payload }
+    case 'SET_RESULT':
+      return { ...state, result: action.payload }
+    case 'SET_SORT_KEYS':
+      return { ...state, sortKeys: action.payload }
+    case 'SET_SOURCE':
+      return { ...state, source: action.payload }
+    case 'RESET':
+      return { ...state, indent: 2, result: '', sortKeys: false, source: '' }
+  }
+}
+
 export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useState('')
-  const [result, setResult] = useState('')
-  const [indent, setIndent] = useState(2)
-  const [sortKeys, setSortKeys] = useState(false)
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
+  const [state, dispatch] = useReducer(reducer, {
+    dialogOpen: autoOpen ?? false,
+    indent: 2,
+    result: '',
+    sortKeys: false,
+    source: '',
+  })
+  const { dialogOpen, indent, result, sortKeys, source } = state
   const { toast } = useToast()
 
   const process = (val: string, currentIndent: number, currentSortKeys: boolean) => {
     if (val.trim().length === 0) {
-      setResult('')
+      dispatch({ type: 'SET_RESULT', payload: '' })
       return
     }
 
     const parseError = getYamlParseError(val)
     if (parseError != null) {
-      setResult('')
+      dispatch({ type: 'SET_RESULT', payload: '' })
       toast({ action: 'add', item: { label: `Invalid YAML: ${parseError}`, type: 'error' } })
       return
     }
 
     try {
-      setResult(formatYaml(val, { indent: currentIndent, sortKeys: currentSortKeys }))
+      dispatch({ type: 'SET_RESULT', payload: formatYaml(val, { indent: currentIndent, sortKeys: currentSortKeys }) })
     } catch {
-      setResult('')
+      dispatch({ type: 'SET_RESULT', payload: '' })
       toast({ action: 'add', item: { label: 'Unable to format YAML', type: 'error' } })
     }
   }
@@ -48,13 +84,13 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   }, 300)
 
   const handleSourceChange = (val: string) => {
-    setSource(val)
+    dispatch({ type: 'SET_SOURCE', payload: val })
     processInput(val, indent, sortKeys)
   }
 
   const handleIndentChange = (val: string) => {
     const newIndent = Number(val)
-    setIndent(newIndent)
+    dispatch({ type: 'SET_INDENT', payload: newIndent })
     if (source.trim().length > 0) {
       process(source, newIndent, sortKeys)
     }
@@ -62,17 +98,14 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
 
   const handleSortKeysChange = () => {
     const newSortKeys = !sortKeys
-    setSortKeys(newSortKeys)
+    dispatch({ type: 'SET_SORT_KEYS', payload: newSortKeys })
     if (source.trim().length > 0) {
       process(source, indent, newSortKeys)
     }
   }
 
   const handleReset = () => {
-    setSource('')
-    setResult('')
-    setIndent(2)
-    setSortKeys(false)
+    dispatch({ type: 'RESET' })
   }
 
   const handleAfterClose = () => {
@@ -86,14 +119,14 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
+          <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">
             Format
           </Button>
         </div>
       </div>
 
       <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
+        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
         onAfterClose={handleAfterClose}
         size="screen"
         title="YAML Format"
@@ -107,8 +140,8 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
               value={String(indent)}
             />
 
-            <label className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400">
-              <CheckboxInput checked={sortKeys} onChange={() => handleSortKeysChange()} />
+            <label className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400" htmlFor="yaml-sort-keys">
+              <CheckboxInput checked={sortKeys} id="yaml-sort-keys" onChange={() => handleSortKeysChange()} />
               Sort Keys
             </label>
           </div>

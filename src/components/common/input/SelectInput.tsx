@@ -11,7 +11,7 @@ import {
   Value,
   Viewport,
 } from '@radix-ui/react-select'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 
 import type { SelectInputProps } from '@/types'
 
@@ -42,7 +42,7 @@ export const SelectInput = ({
       <Portal>
         <AnimatePresence>
           <Content asChild className="popover z-50 max-h-[30dvh] w-(--radix-select-trigger-width)" position="popper">
-            <motion.div
+            <m.div
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 8 }}
               initial={{ opacity: 0, scale: 0.9, y: 16 }}
@@ -69,7 +69,7 @@ export const SelectInput = ({
                 ))}
               </Viewport>
               <Arrow />
-            </motion.div>
+            </m.div>
           </Content>
         </AnimatePresence>
       </Portal>

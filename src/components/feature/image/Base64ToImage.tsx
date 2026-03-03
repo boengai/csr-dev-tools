@@ -118,7 +118,7 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
           </div>
         </div>
       </Dialog>
-      <a className="hidden" ref={downloadAnchorRef} />
+      <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
     </>
   )
 }

@@ -38,11 +38,11 @@ export const escapeHtml = (input: string): string => {
   return input.replace(/[&<>"']/g, (ch) => HTML_ESCAPE_MAP[ch] ?? ch)
 }
 
-export const unescapeHtml = (input: string): string => {
+const unescapeHtml = (input: string): string => {
   return input.replace(/&(?:amp|lt|gt|quot|#39|#x27|apos);/g, (entity) => HTML_UNESCAPE_MAP[entity] ?? entity)
 }
 
-export const escapeJavaScript = (input: string): string => {
+const escapeJavaScript = (input: string): string => {
   return input
     .replace(/\\/g, '\\\\')
     .replace(/'/g, "\\'")
@@ -56,7 +56,7 @@ export const escapeJavaScript = (input: string): string => {
     .replace(/\0/g, '\\0')
 }
 
-export const unescapeJavaScript = (input: string): string => {
+const unescapeJavaScript = (input: string): string => {
   // Process character by character to handle escape sequences correctly
   let result = ''
   let i = 0
@@ -107,11 +107,11 @@ export const unescapeJavaScript = (input: string): string => {
   return result
 }
 
-export const escapeJson = (input: string): string => {
+const escapeJson = (input: string): string => {
   return JSON.stringify(input).slice(1, -1)
 }
 
-export const unescapeJson = (input: string): string => {
+const unescapeJson = (input: string): string => {
   try {
     return JSON.parse(`"${input}"`) as string
   } catch {
@@ -119,19 +119,19 @@ export const unescapeJson = (input: string): string => {
   }
 }
 
-export const escapeUrlString = (input: string): string => {
+const escapeUrlString = (input: string): string => {
   return encodeURIComponent(input)
 }
 
-export const unescapeUrlString = (input: string): string => {
+const unescapeUrlString = (input: string): string => {
   return decodeURIComponent(input)
 }
 
-export const escapeXml = (input: string): string => {
+const escapeXml = (input: string): string => {
   return input.replace(/[&<>"']/g, (ch) => XML_ESCAPE_MAP[ch] ?? ch)
 }
 
-export const unescapeXml = (input: string): string => {
+const unescapeXml = (input: string): string => {
   return input.replace(/&(?:amp|lt|gt|quot|apos);/g, (entity) => XML_UNESCAPE_MAP[entity] ?? entity)
 }
 

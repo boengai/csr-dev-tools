@@ -1,5 +1,5 @@
 import { useLocation } from '@tanstack/react-router'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY } from '@/constants'
@@ -115,7 +115,7 @@ export const Sidebar = () => {
       {/* Backdrop */}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
+          <m.div
             animate={{ opacity: 1 }}
             className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
             exit={{ opacity: 0 }}
@@ -129,7 +129,7 @@ export const Sidebar = () => {
       {/* Drawer */}
       <AnimatePresence>
         {isOpen && (
-          <motion.nav
+          <m.nav
             animate={{ x: 0 }}
             aria-label="Tool navigation"
             className={sidebarNavStyles({ mobile: isMobile })}
@@ -139,7 +139,7 @@ export const Sidebar = () => {
             transition={{ duration: 0.3, ease: 'easeOut' }}
           >
             {navContent}
-          </motion.nav>
+          </m.nav>
         )}
       </AnimatePresence>
     </>

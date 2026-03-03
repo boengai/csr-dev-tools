@@ -1,10 +1,10 @@
-import { useState } from 'react'
+import { useMemo, useReducer } from 'react'
 
 import type { PlaceholderOptions } from '@/utils/placeholder-image'
 
 import { Button, ColorInput, DownloadIcon, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useToast } from '@/hooks'
 import {
   canvasToBlob,
   downloadBlob,
@@ -52,83 +52,88 @@ const buildPreviewUri = (options: PlaceholderOptions): string => {
 
 const toolEntry = TOOL_REGISTRY_MAP['placeholder-image-generator']
 
+type State = {
+  bgColor: string
+  bgHexInput: string
+  height: string
+  text: string
+  textColor: string
+  textHexInput: string
+  width: string
+}
+
+type Action =
+  | { type: 'SET_BG_HEX'; value: string }
+  | { type: 'SET_BG_PICKER'; hex: string }
+  | { type: 'SET_HEIGHT'; value: string }
+  | { type: 'SET_PRESET'; height: string; width: string }
+  | { type: 'SET_TEXT'; value: string }
+  | { type: 'SET_TEXT_COLOR_HEX'; value: string }
+  | { type: 'SET_TEXT_COLOR_PICKER'; hex: string }
+  | { type: 'SET_WIDTH'; value: string }
+
+const initialState: State = {
+  bgColor: DEFAULT_BG_COLOR,
+  bgHexInput: DEFAULT_BG_COLOR,
+  height: DEFAULT_HEIGHT,
+  text: '',
+  textColor: DEFAULT_TEXT_COLOR,
+  textHexInput: DEFAULT_TEXT_COLOR,
+  width: DEFAULT_WIDTH,
+}
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'SET_WIDTH':
+      return { ...state, width: action.value }
+    case 'SET_HEIGHT':
+      return { ...state, height: action.value }
+    case 'SET_PRESET':
+      return { ...state, height: action.height, width: action.width }
+    case 'SET_BG_PICKER':
+      return { ...state, bgColor: action.hex, bgHexInput: action.hex }
+    case 'SET_BG_HEX': {
+      const next = { ...state, bgHexInput: action.value }
+      if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(action.value)) {
+        next.bgColor = toPickerHex(action.value)
+      }
+      return next
+    }
+    case 'SET_TEXT_COLOR_PICKER':
+      return { ...state, textColor: action.hex, textHexInput: action.hex }
+    case 'SET_TEXT_COLOR_HEX': {
+      const next = { ...state, textHexInput: action.value }
+      if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(action.value)) {
+        next.textColor = toPickerHex(action.value)
+      }
+      return next
+    }
+    case 'SET_TEXT':
+      return { ...state, text: action.value }
+  }
+}
+
 export const PlaceholderImageGenerator = () => {
-  const [width, setWidth] = useState(DEFAULT_WIDTH)
-  const [height, setHeight] = useState(DEFAULT_HEIGHT)
-  const [bgColor, setBgColor] = useState(DEFAULT_BG_COLOR)
-  const [bgHexInput, setBgHexInput] = useState(DEFAULT_BG_COLOR)
-  const [textColor, setTextColor] = useState(DEFAULT_TEXT_COLOR)
-  const [textHexInput, setTextHexInput] = useState(DEFAULT_TEXT_COLOR)
-  const [text, setText] = useState('')
-  const [previewUri, setPreviewUri] = useState(() => {
-    const opts = buildOptions(DEFAULT_WIDTH, DEFAULT_HEIGHT, DEFAULT_BG_COLOR, DEFAULT_TEXT_COLOR, '')
-    return opts ? buildPreviewUri(opts) : ''
-  })
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const { bgColor, bgHexInput, height, text, textColor, textHexInput, width } = state
   const { toast } = useToast()
 
-  const updatePreview = (w: string, h: string, bg: string, tc: string, t: string) => {
-    const opts = buildOptions(w, h, bg, tc, t)
-    if (!opts) {
-      setPreviewUri('')
-      return
-    }
-    setPreviewUri(buildPreviewUri(opts))
-  }
+  const previewUri = useMemo(() => {
+    const opts = buildOptions(width, height, bgColor, textColor, text)
+    return opts ? buildPreviewUri(opts) : ''
+  }, [width, height, bgColor, textColor, text])
 
-  const debouncedUpdatePreview = useDebounceCallback((w: string, h: string, bg: string, tc: string, t: string) => {
-    updatePreview(w, h, bg, tc, t)
-  }, 300)
-
-  const handleWidthChange = (val: string) => {
-    setWidth(val)
-    debouncedUpdatePreview(val, height, bgColor, textColor, text)
-  }
-
-  const handleHeightChange = (val: string) => {
-    setHeight(val)
-    debouncedUpdatePreview(width, val, bgColor, textColor, text)
-  }
+  const handleWidthChange = (val: string) => dispatch({ type: 'SET_WIDTH', value: val })
+  const handleHeightChange = (val: string) => dispatch({ type: 'SET_HEIGHT', value: val })
+  const handleTextChange = (val: string) => dispatch({ type: 'SET_TEXT', value: val })
+  const handleBgPickerChange = (hex: string) => dispatch({ type: 'SET_BG_PICKER', hex })
+  const handleBgHexChange = (val: string) => dispatch({ type: 'SET_BG_HEX', value: val })
+  const handleTextColorPickerChange = (hex: string) => dispatch({ type: 'SET_TEXT_COLOR_PICKER', hex })
+  const handleTextColorHexChange = (val: string) => dispatch({ type: 'SET_TEXT_COLOR_HEX', value: val })
 
   const handlePresetChange = (val: string) => {
     const [w, h] = val.split('x')
-    setWidth(w)
-    setHeight(h)
-    updatePreview(w, h, bgColor, textColor, text)
-  }
-
-  const handleBgPickerChange = (hex: string) => {
-    setBgColor(hex)
-    setBgHexInput(hex)
-    updatePreview(width, height, hex, textColor, text)
-  }
-
-  const handleBgHexChange = (val: string) => {
-    setBgHexInput(val)
-    if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(val)) {
-      const expanded = toPickerHex(val)
-      setBgColor(expanded)
-      debouncedUpdatePreview(width, height, val, textColor, text)
-    }
-  }
-
-  const handleTextColorPickerChange = (hex: string) => {
-    setTextColor(hex)
-    setTextHexInput(hex)
-    updatePreview(width, height, bgColor, hex, text)
-  }
-
-  const handleTextColorHexChange = (val: string) => {
-    setTextHexInput(val)
-    if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(val)) {
-      const expanded = toPickerHex(val)
-      setTextColor(expanded)
-      debouncedUpdatePreview(width, height, bgColor, val, text)
-    }
-  }
-
-  const handleTextChange = (val: string) => {
-    setText(val)
-    debouncedUpdatePreview(width, height, bgColor, textColor, val)
+    dispatch({ type: 'SET_PRESET', height: h, width: w })
   }
 
   const validateDimensions = (): PlaceholderOptions | null => {
@@ -232,7 +237,7 @@ export const PlaceholderImageGenerator = () => {
               Background Color
             </label>
             <div className="flex items-center gap-2">
-              <ColorInput className="h-10 w-14 shrink-0" onChange={handleBgPickerChange} value={toPickerHex(bgColor)} />
+              <ColorInput aria-label="Background color picker" className="h-10 w-14 shrink-0" onChange={handleBgPickerChange} value={toPickerHex(bgColor)} />
               <FieldForm
                 label=""
                 name="placeholder-bg-hex"

@@ -5,7 +5,7 @@ export type HttpStatusCategory =
   | '4xx Client Error'
   | '5xx Server Error'
 
-export type HttpStatusCode = {
+type HttpStatusCode = {
   category: HttpStatusCategory
   code: number
   description: string

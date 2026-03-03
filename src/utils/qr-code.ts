@@ -2,7 +2,7 @@ import QRCode from 'qrcode'
 
 export type QrErrorCorrectionLevel = 'H' | 'L' | 'M' | 'Q'
 
-export type QrCodeOptions = {
+type QrCodeOptions = {
   background?: string
   errorCorrectionLevel?: QrErrorCorrectionLevel
   foreground?: string

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { card } from './helpers/selectors'
+import { card, codeInput } from './helpers/selectors'
 
 const VALID_PROTO = `syntax = "proto3";
 
@@ -97,7 +97,8 @@ message Collection {
 test.describe('Protobuf to JSON', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/tools/protobuf-to-json')
-    await expect(page.locator('textarea')).toBeVisible({ timeout: 5000 })
+    const editor = codeInput.byName(page, 'proto-input').locator('.cm-editor')
+    await expect(editor).toBeVisible({ timeout: 5000 })
   })
 
   test('renders tool with title and description', async ({ page }) => {
@@ -108,7 +109,7 @@ test.describe('Protobuf to JSON', () => {
   })
 
   test('paste valid .proto with multiple message types → message list shows all types', async ({ page }) => {
-    await page.locator('textarea').fill(VALID_PROTO)
+    await codeInput.fill(page, 'proto-input', VALID_PROTO)
 
     await expect(page.getByLabel('Person - Message type')).toBeVisible({ timeout: 5000 })
     await expect(page.getByLabel('Address - Message type')).toBeVisible()
@@ -121,7 +122,7 @@ test.describe('Protobuf to JSON', () => {
   test('click a message in the list → JSON output panel shows sample JSON with correct field defaults', async ({
     page,
   }) => {
-    await page.locator('textarea').fill(VALID_PROTO)
+    await codeInput.fill(page, 'proto-input', VALID_PROTO)
 
     const outputPanel = page.locator('[aria-live="polite"]')
 
@@ -134,7 +135,7 @@ test.describe('Protobuf to JSON', () => {
   })
 
   test('proto with nested messages → JSON output shows nested objects', async ({ page }) => {
-    await page.locator('textarea').fill(NESTED_PROTO)
+    await codeInput.fill(page, 'proto-input', NESTED_PROTO)
 
     const outputPanel = page.locator('[aria-live="polite"]')
 
@@ -147,14 +148,14 @@ test.describe('Protobuf to JSON', () => {
   })
 
   test('paste invalid .proto syntax → error message with line number is displayed', async ({ page }) => {
-    await page.locator('textarea').fill(INVALID_PROTO)
+    await codeInput.fill(page, 'proto-input', INVALID_PROTO)
 
     await expect(page.getByRole('alert')).toBeVisible({ timeout: 5000 })
     await expect(page.getByRole('alert')).toContainText(/line/i)
   })
 
   test('proto with enum fields → JSON output uses first enum value name', async ({ page }) => {
-    await page.locator('textarea').fill(ENUM_PROTO)
+    await codeInput.fill(page, 'proto-input', ENUM_PROTO)
 
     const outputPanel = page.locator('[aria-live="polite"]')
 
@@ -165,7 +166,7 @@ test.describe('Protobuf to JSON', () => {
   })
 
   test('proto with repeated fields → JSON output shows arrays', async ({ page }) => {
-    await page.locator('textarea').fill(REPEATED_PROTO)
+    await codeInput.fill(page, 'proto-input', REPEATED_PROTO)
 
     const outputPanel = page.locator('[aria-live="polite"]')
 
@@ -180,7 +181,7 @@ test.describe('Protobuf to JSON', () => {
   })
 
   test('paste new proto → previous selection is cleared, new messages shown', async ({ page }) => {
-    await page.locator('textarea').fill(VALID_PROTO)
+    await codeInput.fill(page, 'proto-input', VALID_PROTO)
 
     await expect(page.getByLabel('Person - Message type')).toBeVisible({ timeout: 5000 })
     await page.getByLabel('Person - Message type').click()
@@ -188,7 +189,7 @@ test.describe('Protobuf to JSON', () => {
     const outputPanel = page.locator('[aria-live="polite"]')
     await expect(outputPanel.getByText('"name"')).toBeVisible()
 
-    await page.locator('textarea').fill(NESTED_PROTO)
+    await codeInput.fill(page, 'proto-input', NESTED_PROTO)
     await expect(page.getByLabel('Parent - Message type')).toBeVisible({ timeout: 5000 })
     await expect(page.getByLabel('Person - Message type')).not.toBeVisible()
   })
@@ -196,9 +197,10 @@ test.describe('Protobuf to JSON', () => {
   test('mobile viewport (375px) responsiveness — layout stacks vertically', async ({ page }) => {
     await page.setViewportSize({ height: 812, width: 375 })
 
-    await expect(page.locator('textarea')).toBeVisible()
+    const editor = codeInput.byName(page, 'proto-input').locator('.cm-editor')
+    await expect(editor).toBeVisible()
 
-    await page.locator('textarea').fill(VALID_PROTO)
+    await codeInput.fill(page, 'proto-input', VALID_PROTO)
     await expect(page.getByLabel('Person - Message type')).toBeVisible({ timeout: 5000 })
     await expect(page.getByLabel('Address - Message type')).toBeVisible()
   })

@@ -7,6 +7,7 @@ export const CheckboxInput = ({
   checked,
   className,
   disabled,
+  id,
   name,
   onBlur,
   onChange,
@@ -21,6 +22,7 @@ export const CheckboxInput = ({
       checked={checked}
       className={className}
       disabled={disabled}
+      id={id}
       name={name}
       onBlur={onBlur}
       onChange={handleChange}

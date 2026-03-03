@@ -1,5 +1,5 @@
-import { motion } from 'motion/react'
-import { useEffect, useRef, useState } from 'react'
+import { m } from 'motion/react'
+import { useEffect, useReducer, useRef } from 'react'
 
 import type { ImageFormat } from '@/types'
 
@@ -32,6 +32,53 @@ const fakeWait = (ms: number = 500) => new Promise((resolve) => setTimeout(resol
 
 const toolEntry = TOOL_REGISTRY_MAP['image-converter']
 
+type State = {
+  previews: Array<{ height: number; url: string; width: number }>
+  processing: number
+  sources: Array<File>
+  tabValue: string
+  target: { format: ImageFormat; quality: string }
+}
+
+type Action =
+  | { type: 'SET_TAB_VALUE'; payload: string }
+  | { type: 'SET_SOURCES'; payload: Array<File> }
+  | { type: 'SET_TARGET'; payload: { format: ImageFormat; quality: string } }
+  | { type: 'SET_PROCESSING'; payload: number }
+  | { type: 'SET_PREVIEWS'; payload: Array<{ height: number; url: string; width: number }> }
+  | { type: 'INCREMENT_PROCESSING'; payload: number }
+  | { type: 'REMOVE_SOURCE'; payload: number }
+  | { type: 'RESET' }
+
+const initialState: State = {
+  previews: [],
+  processing: 0,
+  sources: [],
+  tabValue: TABS_VALUES.IMPORT,
+  target: { format: 'image/webp', quality: '0.8' },
+}
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'SET_TAB_VALUE':
+      return { ...state, tabValue: action.payload }
+    case 'SET_SOURCES':
+      return { ...state, sources: action.payload }
+    case 'SET_TARGET':
+      return { ...state, target: action.payload }
+    case 'SET_PROCESSING':
+      return { ...state, processing: action.payload }
+    case 'SET_PREVIEWS':
+      return { ...state, previews: action.payload }
+    case 'INCREMENT_PROCESSING':
+      return { ...state, processing: state.processing + action.payload }
+    case 'REMOVE_SOURCE':
+      return { ...state, sources: state.sources.filter((_, i) => i !== action.payload) }
+    case 'RESET':
+      return { ...state, tabValue: TABS_VALUES.IMPORT, sources: [] }
+  }
+}
+
 export const ImageConvertor = () => {
   // ref
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
@@ -39,19 +86,13 @@ export const ImageConvertor = () => {
   // hooks
   const { toast } = useToast()
 
-  // states
-  const [tabValue, setTabValue] = useState(TABS_VALUES.IMPORT)
-  const [sources, setSources] = useState<Array<File>>([])
-  const [target, setTarget] = useState<{ format: ImageFormat; quality: string }>({
-    format: 'image/webp',
-    quality: '0.8',
-  })
-  const [processing, setProcessing] = useState(0)
-  const [previews, setPreviews] = useState<Array<{ height: number; url: string; width: number }>>([])
+  // state
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const { previews, processing, sources, tabValue, target } = state
 
   useEffect(() => {
     if (sources.length === 0) {
-      setPreviews([])
+      dispatch({ type: 'SET_PREVIEWS', payload: [] })
       return
     }
 
@@ -71,7 +112,7 @@ export const ImageConvertor = () => {
           }),
       ),
     ).then((data) => {
-      if (!cancelled) setPreviews(data)
+      if (!cancelled) dispatch({ type: 'SET_PREVIEWS', payload: data })
     })
 
     return () => {
@@ -92,28 +133,27 @@ export const ImageConvertor = () => {
       return
     }
     if (values.length > 0) {
-      setSources(values)
-      setTabValue(TABS_VALUES.SELECT_FORMAT)
+      dispatch({ type: 'SET_SOURCES', payload: values })
+      dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.SELECT_FORMAT })
     }
   }
 
   const handleReset = () => {
-    setTabValue(TABS_VALUES.IMPORT)
-    setSources([])
+    dispatch({ type: 'RESET' })
   }
 
   const handleRemoveImage = (idx: number) => {
-    setSources((prev) => prev.filter((_, i) => i !== idx))
+    dispatch({ type: 'REMOVE_SOURCE', payload: idx })
     if (sources.length === 1) {
-      setTabValue(TABS_VALUES.IMPORT)
+      dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.IMPORT })
     }
   }
 
   const handleFormatChange = (value: string) => {
-    setTarget((prev) => ({
-      ...prev,
-      format: value as ImageFormat,
-    }))
+    dispatch({
+      type: 'SET_TARGET',
+      payload: { ...target, format: value as ImageFormat },
+    })
   }
 
   const handleConvert = async () => {
@@ -122,10 +162,10 @@ export const ImageConvertor = () => {
 
     try {
       // go to processing tab
-      setTabValue(TABS_VALUES.PROCESSING)
+      dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.PROCESSING })
 
       // reset state
-      setProcessing(0)
+      dispatch({ type: 'SET_PROCESSING', payload: 0 })
       anchor.href = ''
       anchor.download = ''
 
@@ -140,7 +180,7 @@ export const ImageConvertor = () => {
         ])
 
         formattedImages[`${parseFileName(img.name, target.format)}`] = fi
-        setProcessing((prev) => prev + processTick)
+        dispatch({ type: 'INCREMENT_PROCESSING', payload: processTick })
       }
 
       // wait for animation to complete
@@ -167,13 +207,13 @@ export const ImageConvertor = () => {
       toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
 
       // go to download tab
-      setTabValue(TABS_VALUES.DOWNLOAD)
+      dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.DOWNLOAD })
     } catch {
       toast({
         action: 'add',
         item: { label: 'Image conversion failed — try a different format or smaller file', type: 'error' },
       })
-      setTabValue(TABS_VALUES.SELECT_FORMAT)
+      dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.SELECT_FORMAT })
     }
   }
 
@@ -185,7 +225,7 @@ export const ImageConvertor = () => {
 
       <Tabs
         injected={{
-          setValue: setTabValue,
+          setValue: (value: string) => dispatch({ type: 'SET_TAB_VALUE', payload: value }),
           value: tabValue,
         }}
         items={[
@@ -213,12 +253,12 @@ export const ImageConvertor = () => {
                 </Button>
                 <ul className="flex max-h-full w-full grow flex-col gap-2 overflow-y-auto">
                   {sources.map((img, idx) => (
-                    <motion.li
+                    <m.li
                       animate={{ opacity: 1, y: 0 }}
                       className="flex w-full items-center gap-2"
                       exit={{ opacity: 0, y: -16 }}
                       initial={{ opacity: 0, y: 16 }}
-                      key={`${idx}-${img.name}`}
+                      key={`${img.name}-${img.size}-${img.lastModified}`}
                       transition={{ damping: 30, stiffness: 300, type: 'spring' }}
                     >
                       {previews[idx] ? (
@@ -241,7 +281,7 @@ export const ImageConvertor = () => {
                       >
                         <TrashIcon />
                       </button>
-                    </motion.li>
+                    </m.li>
                   ))}
                 </ul>
                 <div className="flex w-full shrink-0 gap-2 [&>button]:w-[calc(40%-8px)]">
@@ -250,10 +290,10 @@ export const ImageConvertor = () => {
                     <ImageQualitySelectInput
                       disabled={!isLossy}
                       onChange={(value) =>
-                        setTarget((prev) => ({
-                          ...prev,
-                          quality: value,
-                        }))
+                        dispatch({
+                          type: 'SET_TARGET',
+                          payload: { ...target, quality: value },
+                        })
                       }
                       value={target.quality.toString()}
                     />
@@ -300,7 +340,7 @@ export const ImageConvertor = () => {
           },
         ]}
       />
-      <a className="hidden" download="" href="" ref={downloadAnchorRef} />
+      <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
     </div>
   )
 }

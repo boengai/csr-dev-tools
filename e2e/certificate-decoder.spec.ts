@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { card, copyButton, toast } from './helpers/selectors'
+import { card, codeInput, copyButton, toast } from './helpers/selectors'
 
 // Self-signed RSA 2048 cert with SAN, Key Usage, EKU, Basic Constraints
 // CN=test.example.com, O=Test Org, C=US — valid 2026-02-24 to 2027-02-24
@@ -55,7 +55,7 @@ MWAkWb7IFQ==
 test.describe('Certificate Decoder', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/tools/certificate-decoder')
-    await expect(page.locator('textarea')).toBeVisible({ timeout: 5000 })
+    await expect(codeInput.byName(page, 'certificate-input').locator('.cm-editor')).toBeVisible({ timeout: 5000 })
   })
 
   test('renders tool with title and description', async ({ page }) => {
@@ -70,17 +70,17 @@ test.describe('Certificate Decoder', () => {
   test('paste valid PEM certificate → Subject, Issuer, Serial Number, dates, algorithms displayed', async ({
     page,
   }) => {
-    await page.locator('textarea').fill(VALID_CERT_PEM)
+    await codeInput.fill(page, 'certificate-input', VALID_CERT_PEM)
 
-    await expect(page.getByText('test.example.com')).toBeVisible({ timeout: 5000 })
-    await expect(page.getByText('Test Org')).toBeVisible()
+    await expect(page.getByText('test.example.com').first()).toBeVisible({ timeout: 5000 })
+    await expect(page.getByText('Test Org').first()).toBeVisible()
     await expect(page.getByText('Serial Number')).toBeVisible()
     await expect(page.getByText('RSA 2048 bits')).toBeVisible()
     await expect(page.getByText('SHA-256 with RSA')).toBeVisible()
   })
 
   test('paste cert with SAN extension → extension values displayed', async ({ page }) => {
-    await page.locator('textarea').fill(VALID_CERT_PEM)
+    await codeInput.fill(page, 'certificate-input', VALID_CERT_PEM)
 
     await expect(page.getByText('Subject Alternative Name')).toBeVisible({ timeout: 5000 })
     await expect(page.getByText('DNS:test.example.com')).toBeVisible()
@@ -89,22 +89,22 @@ test.describe('Certificate Decoder', () => {
   })
 
   test('paste valid cert → "Valid" status indicator shown', async ({ page }) => {
-    await page.locator('textarea').fill(VALID_CERT_PEM)
+    await codeInput.fill(page, 'certificate-input', VALID_CERT_PEM)
 
     await expect(page.getByText('Valid', { exact: false })).toBeVisible({ timeout: 5000 })
     await expect(page.getByText('✓')).toBeVisible()
   })
 
   test('paste expired cert → "Expired" status indicator shown', async ({ page }) => {
-    await page.locator('textarea').fill(EXPIRED_CERT_PEM)
+    await codeInput.fill(page, 'certificate-input', EXPIRED_CERT_PEM)
 
-    await expect(page.getByText('Expired', { exact: false })).toBeVisible({ timeout: 5000 })
+    await expect(page.getByText('Expired').first()).toBeVisible({ timeout: 5000 })
     await expect(page.getByText('✗')).toBeVisible()
-    await expect(page.getByText('expired.example.com')).toBeVisible()
+    await expect(page.getByText('expired.example.com').first()).toBeVisible()
   })
 
   test('paste invalid PEM → error toast shown', async ({ page }) => {
-    await page.locator('textarea').fill('this is not a certificate')
+    await codeInput.fill(page, 'certificate-input', 'this is not a certificate')
 
     await expect(toast.message(page, 'Certificate format not recognized. Paste a PEM-encoded certificate (-----BEGIN CERTIFICATE-----)')).toBeVisible({
       timeout: 3000,
@@ -113,9 +113,9 @@ test.describe('Certificate Decoder', () => {
 
   test('click CopyButton for Subject → clipboard copy toast shown', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
-    await page.locator('textarea').fill(VALID_CERT_PEM)
+    await codeInput.fill(page, 'certificate-input', VALID_CERT_PEM)
 
-    await expect(page.getByText('test.example.com')).toBeVisible({ timeout: 5000 })
+    await expect(page.getByText('test.example.com').first()).toBeVisible({ timeout: 5000 })
     await copyButton.byLabel(page, 'Subject').click()
     await expect(toast.copied(page)).toBeVisible({ timeout: 3000 })
   })
@@ -123,10 +123,10 @@ test.describe('Certificate Decoder', () => {
   test('mobile viewport (375px) responsiveness', async ({ page }) => {
     await page.setViewportSize({ height: 812, width: 375 })
 
-    await expect(page.locator('textarea')).toBeVisible()
+    await expect(codeInput.byName(page, 'certificate-input').locator('.cm-editor')).toBeVisible()
 
-    await page.locator('textarea').fill(VALID_CERT_PEM)
-    await expect(page.getByText('test.example.com')).toBeVisible({ timeout: 5000 })
+    await codeInput.fill(page, 'certificate-input', VALID_CERT_PEM)
+    await expect(page.getByText('test.example.com').first()).toBeVisible({ timeout: 5000 })
     await expect(page.getByText('RSA 2048 bits')).toBeVisible()
   })
 
@@ -135,7 +135,7 @@ test.describe('Certificate Decoder', () => {
 MIIEpAIBAAKCAQEA...fake...
 -----END RSA PRIVATE KEY-----`
 
-    await page.locator('textarea').fill(privateKey)
+    await codeInput.fill(page, 'certificate-input', privateKey)
 
     await expect(
       toast.message(page, 'This appears to be a private key. Only paste certificates for security.'),

@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import DOMPurify from 'dompurify'
+import { useEffect, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
@@ -13,6 +14,13 @@ export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const [source, setSource] = useState('')
   const [htmlOutput, setHtmlOutput] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
+  const previewRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (previewRef.current) {
+      previewRef.current.innerHTML = DOMPurify.sanitize(htmlOutput)
+    }
+  }, [htmlOutput])
 
   const process = (val: string) => {
     if (val.trim().length === 0) {
@@ -81,7 +89,7 @@ export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentP
               </div>
               <div
                 className="prose min-h-[300px] grow overflow-auto rounded-lg border-2 border-gray-900 bg-gray-950 p-4 prose-invert"
-                dangerouslySetInnerHTML={{ __html: htmlOutput }}
+                ref={previewRef}
               />
             </div>
           </div>

@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import { jwtData } from './helpers/fixtures'
+import { codeInputIn } from './helpers/selectors'
 
 test.describe('UUID Generator', () => {
   test('generates UUID on load', async ({ page }) => {
@@ -18,8 +19,7 @@ test.describe('JWT Decoder', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
-    const input = dialog.locator('textarea, input').first()
-    await input.fill(jwtData.token)
+    await codeInputIn.fill(page, dialog, jwtData.token)
 
     await expect(dialog.getByText('John Doe').first()).toBeVisible({ timeout: 3000 })
   })
@@ -31,8 +31,9 @@ test.describe('Regex Tester', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
-    // Should have input fields for pattern and test string
-    await expect(dialog.locator('input, textarea').first()).toBeVisible()
+    // Should have input field for pattern and CodeMirror editor for test string
+    await expect(dialog.locator('input').first()).toBeVisible()
+    await expect(dialog.locator('.cm-editor').first()).toBeVisible()
   })
 })
 
@@ -54,9 +55,9 @@ test.describe('Text Diff Checker', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
-    const textareas = dialog.locator('textarea')
-    await expect(textareas.first()).toBeVisible()
-    await expect(textareas.nth(1)).toBeVisible()
+    const editors = dialog.locator('.cm-editor')
+    await expect(editors.first()).toBeVisible()
+    await expect(editors.nth(1)).toBeVisible()
   })
 })
 
@@ -66,7 +67,7 @@ test.describe('String Escape/Unescape', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
-    await expect(dialog.locator('textarea').first()).toBeVisible()
+    await expect(dialog.locator('.cm-editor').first()).toBeVisible()
   })
 })
 

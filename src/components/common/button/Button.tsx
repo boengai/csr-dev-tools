@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 
 import type { ButtonProps, ButtonVariants, CompVariant } from '@/types'
 
@@ -46,7 +46,7 @@ export const Button = ({
   const className = buttonVariants({ block, size, variant })
 
   return (
-    <motion.button
+    <m.button
       {...props}
       className={className}
       initial={{ scale: 1, y: 0 }}
@@ -69,6 +69,6 @@ export const Button = ({
         {icon}
         {children}
       </span>
-    </motion.button>
+    </m.button>
   )
 }

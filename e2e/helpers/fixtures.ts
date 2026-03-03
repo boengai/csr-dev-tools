@@ -23,26 +23,6 @@ export const base64 = {
   },
 }
 
-// --- Timestamp Test Data ---
-
-export const timestamps = {
-  epoch: 0,
-  epochDate: 'January 1, 1970',
-  sample: 1700000000,
-  sampleDate: '2023',
-}
-
-// --- PX to REM Conversion Pairs ---
-
-export const pxRem = {
-  baseFontSize: 16,
-  pairs: [
-    { px: '16', rem: '1' },
-    { px: '32', rem: '2' },
-    { px: '8', rem: '0.5' },
-  ],
-}
-
 // --- Text Tool Test Data ---
 
 export const textToolData = {
@@ -52,36 +32,11 @@ export const textToolData = {
   sortedOutput: 'apple\napple\nbanana\ncherry\ndate',
 }
 
-// --- Encoding Test Data ---
-
-export const encodingData = {
-  urlInput: 'https://example.com/path?key=hello world&foo=bar#section',
-  urlEncodeInput: 'hello world & foo=bar',
-  urlEncoded: 'hello%20world%20%26%20foo%3Dbar',
-}
-
 // --- Code Tool Test Data ---
 
 export const codeData = {
   jsonInput: '{"name":"test","value":123}',
 }
-
-// --- OG Preview Test Data ---
-
-export const ogData = {
-  title: 'My Test Page',
-}
-
-// --- Tool Registry Keys for Navigation ---
-
-export const toolKeys = [
-  'json-formatter',
-  'uuid-generator',
-  'base64-encoder',
-  'jwt-decoder',
-  'unix-timestamp',
-  'regex-tester',
-] as const
 
 export const toolNames = [
   'JSON Formatter',
@@ -127,31 +82,3 @@ export const dataConversionData = {
   htmlForMd: '<h1>Title</h1><p>Hello <strong>world</strong></p>',
 }
 
-// --- Regex Test Data ---
-
-export const regexData = {
-  pattern: '\\d+',
-  testString: 'abc 123 def 456',
-}
-
-// --- Diff Test Data ---
-
-export const diffData = {
-  text1: 'Hello World\nThis is a test\nLine three',
-  text2: 'Hello World\nThis is changed\nLine three',
-}
-
-// --- String Escape Test Data ---
-
-export const escapeData = {
-  input: 'He said "hello" & it\'s fine',
-}
-
-export const toolRoutes = {
-  'json-formatter': '/tools/json-formatter',
-  'uuid-generator': '/tools/uuid-generator',
-  'base64-encoder': '/tools/base64-encoder',
-  'jwt-decoder': '/tools/jwt-decoder',
-  'unix-timestamp': '/tools/unix-timestamp',
-  'regex-tester': '/tools/regex-tester',
-} as const

@@ -1,4 +1,4 @@
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { CompVariant, CopyButtonProps, CopyButtonVariants } from '@/types'
@@ -54,7 +54,7 @@ export const CopyButton = ({ label, value, variant = 'icon-only' }: CopyButtonPr
     <button aria-label={ariaLabel} className={className} disabled={!value} onClick={handleCopy} type="button">
       <AnimatePresence initial={false} mode="wait">
         {isCopied ? (
-          <motion.span
+          <m.span
             key="check"
             animate={{ opacity: 1, scale: 1 }}
             className="inline-flex text-success"
@@ -63,9 +63,9 @@ export const CopyButton = ({ label, value, variant = 'icon-only' }: CopyButtonPr
             transition={{ duration: 0.15 }}
           >
             <CheckIcon size={16} />
-          </motion.span>
+          </m.span>
         ) : (
-          <motion.span
+          <m.span
             key="copy"
             animate={{ opacity: 1, scale: 1 }}
             className="inline-flex"
@@ -74,7 +74,7 @@ export const CopyButton = ({ label, value, variant = 'icon-only' }: CopyButtonPr
             transition={{ duration: 0.15 }}
           >
             <CopyIcon size={16} />
-          </motion.span>
+          </m.span>
         )}
       </AnimatePresence>
       {variant === 'labeled' && <span>Copy</span>}

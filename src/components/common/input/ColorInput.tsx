@@ -17,13 +17,14 @@ const colorInputStyles = tv({
   },
 })
 
-export const ColorInput = ({ className, disabled, name, onBlur, onChange, size = 'swatch', value }: ColorInputProps) => {
+export const ColorInput = ({ 'aria-label': ariaLabel, className, disabled, name, onBlur, onChange, size = 'swatch', value }: ColorInputProps) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange?.(e.target.value)
   }
 
   return (
     <input
+      aria-label={ariaLabel}
       className={colorInputStyles({ className, size })}
       disabled={disabled}
       name={name}

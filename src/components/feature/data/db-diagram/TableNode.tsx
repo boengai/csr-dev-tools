@@ -52,6 +52,12 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
   const [editName, setEditName] = useState(data.tableName)
   const inputRef = useRef<HTMLInputElement>(null)
 
+  const startEditing = useCallback(() => {
+    setEditName(data.tableName)
+    setEditing(true)
+    requestAnimationFrame(() => inputRef.current?.focus())
+  }, [data.tableName])
+
   const commitName = useCallback(() => {
     const trimmed = editName.trim()
     if (trimmed && trimmed !== data.tableName) {
@@ -80,7 +86,6 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
       <div className="flex items-center justify-between rounded-t-lg border-b border-gray-800 bg-gray-900 px-3 py-2">
         {editing ? (
           <TextInput
-            autoFocus
             block={false}
             name="table-name"
             onBlur={commitName}
@@ -99,10 +104,7 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
           />
         ) : (
           <Button
-            onClick={() => {
-              setEditName(data.tableName)
-              setEditing(true)
-            }}
+            onClick={startEditing}
             size="small"
             variant="text"
           >

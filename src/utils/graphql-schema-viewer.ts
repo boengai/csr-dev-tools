@@ -13,7 +13,7 @@ import {
 
 export type GraphqlTypeKind = 'Enum' | 'Input' | 'Interface' | 'Object' | 'Scalar' | 'Union'
 
-export type GraphqlArgInfo = {
+type GraphqlArgInfo = {
   defaultValue: string | null
   description: string | null
   formattedType: string
@@ -23,13 +23,13 @@ export type GraphqlArgInfo = {
   typeName: string
 }
 
-export type GraphqlEnumValue = {
+type GraphqlEnumValue = {
   deprecationReason: string | null
   description: string | null
   name: string
 }
 
-export type GraphqlFieldInfo = {
+type GraphqlFieldInfo = {
   args: Array<GraphqlArgInfo>
   deprecationReason: string | null
   description: string | null
@@ -59,7 +59,7 @@ export type GraphqlSchemaInfo = {
   types: Array<GraphqlTypeInfo>
 }
 
-export type GraphqlParseResult = { error: string; success: false } | { schema: GraphqlSchemaInfo; success: true }
+type GraphqlParseResult = { error: string; success: false } | { schema: GraphqlSchemaInfo; success: true }
 
 const BUILT_IN_SCALARS = ['Boolean', 'Float', 'ID', 'Int', 'String']
 
@@ -193,21 +193,3 @@ export const parseGraphqlSchema = (sdl: string): GraphqlParseResult => {
   }
 }
 
-export const getTypeKindLabel = (kind: GraphqlTypeKind): string => {
-  const labels: Record<GraphqlTypeKind, string> = {
-    Enum: 'Enum',
-    Input: 'Input Object',
-    Interface: 'Interface',
-    Object: 'Object',
-    Scalar: 'Scalar',
-    Union: 'Union',
-  }
-  return labels[kind]
-}
-
-export const formatGraphqlType = (typeName: string, isNonNull: boolean, isList: boolean): string => {
-  if (isList) {
-    return isNonNull ? `[${typeName}!]!` : `[${typeName}]`
-  }
-  return isNonNull ? `${typeName}!` : typeName
-}

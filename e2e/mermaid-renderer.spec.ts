@@ -1,13 +1,17 @@
 import { expect, test } from '@playwright/test'
 
+import { codeInput } from './helpers/selectors'
+
 test.describe('Mermaid Renderer', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/tools/mermaid-renderer')
-    await expect(page.getByRole('heading', { name: 'Mermaid Syntax' })).toBeVisible({ timeout: 10000 })
+    // Dialog auto-opens; wait for the CodeMirror editor inside it
+    const editor = codeInput.byName(page, 'mermaid-input').locator('.cm-editor')
+    await expect(editor).toBeVisible({ timeout: 10000 })
   })
 
   test('navigate to /tools/mermaid-renderer, verify title and description', async ({ page }) => {
-    await expect(page.getByRole('heading', { name: 'Mermaid Syntax' })).toBeVisible()
+    await expect(page.getByText('Mermaid Syntax')).toBeVisible()
     await expect(page.getByText('Write Mermaid diagram syntax and see a live SVG preview')).toBeVisible()
   })
 
@@ -15,8 +19,8 @@ test.describe('Mermaid Renderer', () => {
     page,
   }) => {
     await page.goto('/tools/mermaid-renderer')
-    const textarea = page.locator('textarea[name="mermaid-input"]')
-    await expect(textarea).toBeVisible({ timeout: 10000 })
+    const editor = codeInput.byName(page, 'mermaid-input').locator('.cm-editor')
+    await expect(editor).toBeVisible({ timeout: 10000 })
   })
 
   test('default sample code renders a flowchart SVG preview on load (AC #2)', async ({ page }) => {
@@ -25,29 +29,25 @@ test.describe('Mermaid Renderer', () => {
   })
 
   test('type valid Mermaid syntax → SVG preview updates after debounce (AC #2)', async ({ page }) => {
-    const textarea = page.locator('textarea[name="mermaid-input"]')
-    await textarea.fill('sequenceDiagram\n    Alice->>Bob: Hello')
+    await codeInput.fill(page, 'mermaid-input', 'sequenceDiagram\n    Alice->>Bob: Hello')
 
     const previewContainer = page.locator('[aria-live="polite"]')
     await expect(previewContainer.locator('svg').first()).toBeVisible({ timeout: 10000 })
   })
 
   test('type invalid syntax → error message appears with role="alert" (AC #3)', async ({ page }) => {
-    const textarea = page.locator('textarea[name="mermaid-input"]')
-    await textarea.fill('this is not valid mermaid syntax !!!')
+    await codeInput.fill(page, 'mermaid-input', 'this is not valid mermaid syntax !!!')
 
     const errorAlert = page.locator('[role="alert"]')
     await expect(errorAlert).toBeVisible({ timeout: 10000 })
   })
 
   test('fix invalid syntax → error clears and SVG preview appears (AC #3)', async ({ page }) => {
-    const textarea = page.locator('textarea[name="mermaid-input"]')
-
-    await textarea.fill('this is not valid mermaid syntax !!!')
+    await codeInput.fill(page, 'mermaid-input', 'this is not valid mermaid syntax !!!')
     const errorAlert = page.locator('[role="alert"]')
     await expect(errorAlert).toBeVisible({ timeout: 10000 })
 
-    await textarea.fill('flowchart TD\n    A --> B')
+    await codeInput.fill(page, 'mermaid-input', 'flowchart TD\n    A --> B')
     const previewContainer = page.locator('[aria-live="polite"]')
     await expect(previewContainer.locator('svg').first()).toBeVisible({ timeout: 10000 })
     await expect(errorAlert).not.toBeVisible()
@@ -111,16 +111,15 @@ test.describe('Mermaid Renderer', () => {
   test('mobile viewport (375px) responsiveness — editor and preview stack vertically', async ({ page }) => {
     await page.setViewportSize({ height: 812, width: 375 })
 
-    await expect(page.getByRole('heading', { name: 'Mermaid Syntax' })).toBeVisible()
-    await expect(page.getByRole('heading', { name: 'Preview' })).toBeVisible()
+    await expect(page.getByText('Mermaid Syntax', { exact: true })).toBeVisible()
+    await expect(page.getByText('Preview', { exact: true })).toBeVisible()
 
-    const textarea = page.locator('textarea[name="mermaid-input"]')
-    await expect(textarea).toBeVisible()
+    const editor = codeInput.byName(page, 'mermaid-input').locator('.cm-editor')
+    await expect(editor).toBeVisible()
   })
 
   test('export buttons are disabled when no SVG is available (empty/invalid input)', async ({ page }) => {
-    const textarea = page.locator('textarea[name="mermaid-input"]')
-    await textarea.fill('')
+    await codeInput.fill(page, 'mermaid-input', '')
 
     const exportSvgButton = page.getByRole('button', { name: 'Export SVG' })
     const exportPngButton = page.getByRole('button', { name: 'Export PNG' })

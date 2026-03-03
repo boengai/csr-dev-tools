@@ -84,8 +84,8 @@ export const UrlParser = (_props: ToolComponentProps) => {
                 <span className="text-body-xs font-medium text-gray-400">Query Parameters</span>
                 <CopyButton label="Query String" value={result.search} />
               </div>
-              {result.searchParams.map((param, i) => (
-                <div className="flex items-center justify-between gap-2 py-1" key={i}>
+              {result.searchParams.map((param) => (
+                <div className="flex items-center justify-between gap-2 py-1" key={`${param.key}=${param.value}`}>
                   <span className="font-mono text-body-xs text-primary-light">{param.key}</span>
                   <div className="flex items-center gap-1">
                     <span className="font-mono text-body-xs text-gray-200">{param.value}</span>

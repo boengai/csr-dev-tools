@@ -21,10 +21,13 @@ const rafThrottle = <T extends (...args: Array<any>) => void>(fn: T): T => {
 
 const toolEntry = TOOL_REGISTRY_MAP['image-color-picker']
 
+type PickedColorWithId = PickedColor & { _id: number }
+
 export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [imageUrl, setImageUrl] = useState('')
-  const [palette, setPalette] = useState<Array<PickedColor>>([])
+  const nextColorId = useRef(0)
+  const [palette, setPalette] = useState<Array<PickedColorWithId>>([])
   const [hoverColor, setHoverColor] = useState<PickedColor | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -70,7 +73,7 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
     (e: React.MouseEvent<HTMLCanvasElement>) => {
       const color = getColorAt(e)
       if (!color) return
-      setPalette((prev) => [color, ...prev].slice(0, 10))
+      setPalette((prev) => [{ ...color, _id: nextColorId.current++ }, ...prev].slice(0, 10))
     },
     [getColorAt],
   )
@@ -144,8 +147,8 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
                 <p className="text-body-sm text-gray-500">Click on the image to pick colors</p>
               ) : (
                 <div className="flex flex-col gap-2 overflow-auto">
-                  {palette.map((color, i) => (
-                    <div className="flex items-center gap-3 rounded border border-gray-800 bg-gray-950 p-2" key={i}>
+                  {palette.map((color) => (
+                    <div className="flex items-center gap-3 rounded border border-gray-800 bg-gray-950 p-2" key={color._id}>
                       <div className="size-10 shrink-0 rounded" style={{ backgroundColor: color.hex }} />
                       <div className="flex flex-col gap-0.5">
                         <div className="flex items-center gap-1">

@@ -114,7 +114,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
             <div className="flex flex-col gap-3">
               <h3 className="text-body-sm font-medium text-gray-300">Keyframes</h3>
               {config.keyframes.map((kf, i) => (
-                <div className="rounded border border-gray-800 bg-gray-950 p-3" key={`${kf.percent}-${i}`}>
+                <div className="rounded border border-gray-800 bg-gray-950 p-3" key={kf.percent}>
                   <div className="mb-2 flex items-center justify-between">
                     <span className="text-body-sm font-bold text-primary">{kf.percent}%</span>
                     {config.keyframes.length > 2 && (

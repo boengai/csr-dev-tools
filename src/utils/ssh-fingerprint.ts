@@ -18,7 +18,7 @@ type ParsedKeyBlob = {
   keyType: string
 }
 
-export const KNOWN_KEY_TYPES = new Set([
+const KNOWN_KEY_TYPES = new Set([
   'ecdsa-sha2-nistp256',
   'ecdsa-sha2-nistp384',
   'ecdsa-sha2-nistp521',
@@ -29,7 +29,7 @@ export const KNOWN_KEY_TYPES = new Set([
   'ssh-rsa',
 ])
 
-export class SshKeyBlobReader {
+class SshKeyBlobReader {
   private view: DataView
   private offset = 0
 
@@ -56,7 +56,7 @@ export class SshKeyBlobReader {
   }
 }
 
-export const parseAuthorizedKeysLine = (line: string): ParsedKeyLine | null => {
+const parseAuthorizedKeysLine = (line: string): ParsedKeyLine | null => {
   const trimmed = line.trim()
   if (!trimmed || trimmed.startsWith('#')) return null
 
@@ -84,7 +84,7 @@ export const parseAuthorizedKeysLine = (line: string): ParsedKeyLine | null => {
   return null
 }
 
-export const getRsaBitLength = (modulus: Uint8Array): number => {
+const getRsaBitLength = (modulus: Uint8Array): number => {
   let startIndex = 0
   while (startIndex < modulus.length && modulus[startIndex] === 0x00) {
     startIndex++
@@ -104,7 +104,7 @@ const CURVE_BITS: Record<string, number> = {
   nistp521: 521,
 }
 
-export const parseKeyBlob = (blob: ArrayBuffer): ParsedKeyBlob => {
+const parseKeyBlob = (blob: ArrayBuffer): ParsedKeyBlob => {
   const reader = new SshKeyBlobReader(blob)
   const keyType = reader.readString()
 
@@ -132,7 +132,7 @@ export const parseKeyBlob = (blob: ArrayBuffer): ParsedKeyBlob => {
   return { bits: 0, keyType }
 }
 
-export const sha256Fingerprint = async (keyBlobBase64: string): Promise<string> => {
+const sha256Fingerprint = async (keyBlobBase64: string): Promise<string> => {
   const binaryString = atob(keyBlobBase64)
   const bytes = new Uint8Array(binaryString.length)
   for (let i = 0; i < binaryString.length; i++) {
@@ -220,7 +220,7 @@ const md5Raw = (data: Uint8Array): string => {
   return Array.from(result, (b) => b.toString(16).padStart(2, '0')).join(':')
 }
 
-export const md5Fingerprint = (keyBlobBase64: string): string => {
+const md5Fingerprint = (keyBlobBase64: string): string => {
   const binaryString = atob(keyBlobBase64)
   const bytes = new Uint8Array(binaryString.length)
   for (let i = 0; i < binaryString.length; i++) {

@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import type {
   AlignItems,
@@ -40,16 +40,23 @@ const JUSTIFY_OPTIONS: Array<JustifyContent> = [
 const ALIGN_OPTIONS: Array<AlignItems> = ['flex-start', 'center', 'flex-end', 'stretch', 'baseline']
 const WRAP_OPTIONS: Array<FlexWrap> = ['nowrap', 'wrap', 'wrap-reverse']
 
+type FlexItemEntry = FlexboxItemProps & { _id: number }
+
 export const FlexboxPlayground = () => {
   const [container, setContainer] = useState<FlexboxContainerProps>(DEFAULT_CONTAINER)
-  const [items, setItems] = useState<Array<FlexboxItemProps>>([DEFAULT_ITEM, DEFAULT_ITEM, DEFAULT_ITEM])
+  const nextItemId = useRef(3)
+  const [items, setItems] = useState<Array<FlexItemEntry>>(() => [
+    { ...DEFAULT_ITEM, _id: 0 },
+    { ...DEFAULT_ITEM, _id: 1 },
+    { ...DEFAULT_ITEM, _id: 2 },
+  ])
   const [selectedItem, setSelectedItem] = useState<number | null>(null)
 
   const { containerCss, itemsCss } = generateFlexboxCss(container, items)
 
   const addItem = () => {
     if (items.length >= 10) return
-    setItems((prev) => [...prev, { ...DEFAULT_ITEM }])
+    setItems((prev) => [...prev, { ...DEFAULT_ITEM, _id: nextItemId.current++ }])
   }
 
   const removeItem = () => {
@@ -186,19 +193,19 @@ export const FlexboxPlayground = () => {
           justifyContent: container.justifyContent,
         }}
       >
-        {items.map((_, index) => (
+        {items.map((item, index) => (
           <button
             aria-label={`Item ${index + 1}`}
             className={`text-sm flex h-16 w-16 items-center justify-center rounded font-bold text-white ${
               selectedItem === index ? 'ring-2 ring-white' : ''
             }`}
-            key={index}
+            key={item._id}
             onClick={() => setSelectedItem(selectedItem === index ? null : index)}
             style={{
               backgroundColor: ITEM_COLORS[index % ITEM_COLORS.length],
-              flexGrow: items[index].flexGrow,
-              flexShrink: items[index].flexShrink,
-              order: items[index].order,
+              flexGrow: item.flexGrow,
+              flexShrink: item.flexShrink,
+              order: item.order,
             }}
             type="button"
           >

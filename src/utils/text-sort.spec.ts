@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
 
-import { DEFAULT_SORT_OPTIONS, sortAndProcessText } from './text-sort'
+import { sortAndProcessText } from './text-sort'
+
+const DEFAULT_SORT_OPTIONS = {
+  removeDuplicates: false,
+  removeEmpty: false,
+  sortMode: 'az' as const,
+  trimLines: false,
+}
 
 describe('sortAndProcessText', () => {
   it('sorts A-Z', () => {

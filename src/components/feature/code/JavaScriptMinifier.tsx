@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useReducer } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
@@ -7,25 +7,61 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { formatJs, minifyJs } from '@/utils/js-format'
 
+type State = {
+  dialogOpen: boolean
+  indent: number | 'tab'
+  mode: 'beautify' | 'minify'
+  result: string
+  source: string
+}
+
+type Action =
+  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
+  | { type: 'SET_INDENT'; payload: number | 'tab' }
+  | { type: 'SET_MODE'; payload: 'beautify' | 'minify' }
+  | { type: 'SET_RESULT'; payload: string }
+  | { type: 'SET_SOURCE'; payload: string }
+  | { type: 'RESET' }
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'SET_DIALOG_OPEN':
+      return { ...state, dialogOpen: action.payload }
+    case 'SET_INDENT':
+      return { ...state, indent: action.payload }
+    case 'SET_MODE':
+      return { ...state, mode: action.payload }
+    case 'SET_RESULT':
+      return { ...state, result: action.payload }
+    case 'SET_SOURCE':
+      return { ...state, source: action.payload }
+    case 'RESET':
+      return { ...state, result: '', source: '' }
+  }
+}
+
 const toolEntry = TOOL_REGISTRY_MAP['javascript-minifier']
 
 export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useState('')
-  const [result, setResult] = useState('')
-  const [mode, setMode] = useState<'beautify' | 'minify'>('minify')
-  const [indent, setIndent] = useState<number | 'tab'>(2)
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
+  const [state, dispatch] = useReducer(reducer, {
+    dialogOpen: autoOpen ?? false,
+    indent: 2,
+    mode: 'minify',
+    result: '',
+    source: '',
+  })
+  const { dialogOpen, indent, mode, result, source } = state
   const { toast } = useToast()
 
   const process = (val: string, m: 'beautify' | 'minify', ind: number | 'tab') => {
     if (val.trim().length === 0) {
-      setResult('')
+      dispatch({ type: 'SET_RESULT', payload: '' })
       return
     }
     try {
-      setResult(m === 'beautify' ? formatJs(val, ind) : minifyJs(val))
+      dispatch({ type: 'SET_RESULT', payload: m === 'beautify' ? formatJs(val, ind) : minifyJs(val) })
     } catch {
-      setResult('')
+      dispatch({ type: 'SET_RESULT', payload: '' })
       toast({ action: 'add', item: { label: 'Unable to process JavaScript', type: 'error' } })
     }
   }
@@ -35,13 +71,13 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
   }, 300)
 
   const handleSourceChange = (val: string) => {
-    setSource(val)
+    dispatch({ type: 'SET_SOURCE', payload: val })
     processInput(val)
   }
 
   const handleModeChange = (val: string) => {
     const m = val as 'beautify' | 'minify'
-    setMode(m)
+    dispatch({ type: 'SET_MODE', payload: m })
     if (source.trim().length > 0) {
       process(source, m, indent)
     }
@@ -49,15 +85,14 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
 
   const handleIndentChange = (val: string) => {
     const ind = val === 'tab' ? 'tab' : Number(val)
-    setIndent(ind)
+    dispatch({ type: 'SET_INDENT', payload: ind })
     if (source.trim().length > 0) {
       process(source, mode, ind)
     }
   }
 
   const handleReset = () => {
-    setSource('')
-    setResult('')
+    dispatch({ type: 'RESET' })
   }
 
   const handleAfterClose = () => {
@@ -65,8 +100,8 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
     onAfterDialogClose?.()
   }
 
-  const originalSize = useMemo(() => new Blob([source]).size, [source])
-  const resultSize = useMemo(() => new Blob([result]).size, [result])
+  const originalSize = new Blob([source]).size
+  const resultSize = new Blob([result]).size
   const savings = originalSize > 0 ? ((1 - resultSize / originalSize) * 100).toFixed(1) : '0'
 
   return (
@@ -75,14 +110,14 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
+          <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">
             Minify / Beautify
           </Button>
         </div>
       </div>
 
       <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
+        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
         onAfterClose={handleAfterClose}
         size="screen"
         title="JavaScript Minifier"

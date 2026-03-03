@@ -58,8 +58,8 @@ export const LoremIpsumGenerator = () => {
           type="select"
           value={unit}
         />
-        <label className="flex items-center gap-2 text-body-sm text-gray-400">
-          <CheckboxInput checked={startWithLorem} onChange={setStartWithLorem} />
+        <label className="flex items-center gap-2 text-body-sm text-gray-400" htmlFor="start-with-lorem">
+          <CheckboxInput checked={startWithLorem} id="start-with-lorem" onChange={setStartWithLorem} />
           Start with &quot;Lorem ipsum dolor sit amet...&quot;
         </label>
         <Button onClick={handleGenerate} variant="primary">

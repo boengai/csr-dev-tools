@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react'
+import { useReducer, useRef } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 import type { DataUriDecodeResult, DataUriEncodeResult } from '@/utils'
@@ -18,12 +18,53 @@ const getMimeExtension = (mimeType: string): string => {
   return sub
 }
 
+type State = {
+  decodeInput: string
+  decodeOpen: boolean
+  decodeResult: DataUriDecodeResult | null
+  encodeOpen: boolean
+  encodeResult: DataUriEncodeResult | null
+}
+
+type Action =
+  | { type: 'SET_DECODE_INPUT'; payload: string }
+  | { type: 'SET_DECODE_OPEN'; payload: boolean }
+  | { type: 'SET_DECODE_RESULT'; payload: DataUriDecodeResult | null }
+  | { type: 'SET_ENCODE_OPEN'; payload: boolean }
+  | { type: 'SET_ENCODE_RESULT'; payload: DataUriEncodeResult | null }
+  | { type: 'RESET_ENCODE' }
+  | { type: 'RESET_DECODE' }
+
+const initialState: State = {
+  decodeInput: '',
+  decodeOpen: false,
+  decodeResult: null,
+  encodeOpen: false,
+  encodeResult: null,
+}
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'SET_DECODE_INPUT':
+      return { ...state, decodeInput: action.payload }
+    case 'SET_DECODE_OPEN':
+      return { ...state, decodeOpen: action.payload }
+    case 'SET_DECODE_RESULT':
+      return { ...state, decodeResult: action.payload }
+    case 'SET_ENCODE_OPEN':
+      return { ...state, encodeOpen: action.payload }
+    case 'SET_ENCODE_RESULT':
+      return { ...state, encodeResult: action.payload }
+    case 'RESET_ENCODE':
+      return { ...state, encodeResult: null }
+    case 'RESET_DECODE':
+      return { ...state, decodeInput: '', decodeResult: null }
+  }
+}
+
 export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
-  const [encodeOpen, setEncodeOpen] = useState(false)
-  const [decodeOpen, setDecodeOpen] = useState(false)
-  const [encodeResult, setEncodeResult] = useState<DataUriEncodeResult | null>(null)
-  const [decodeInput, setDecodeInput] = useState('')
-  const [decodeResult, setDecodeResult] = useState<DataUriDecodeResult | null>(null)
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const { decodeInput, decodeOpen, decodeResult, encodeOpen, encodeResult } = state
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const { toast } = useToast()
 
@@ -33,8 +74,8 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
 
     try {
       const result = await fileToDataUri(file)
-      setEncodeResult(result)
-      setEncodeOpen(true)
+      dispatch({ type: 'SET_ENCODE_RESULT', payload: result })
+      dispatch({ type: 'SET_ENCODE_OPEN', payload: true })
 
       if (result.isLargeFile) {
         toast({
@@ -55,12 +96,12 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
 
   const processDecodeInput = useDebounceCallback((val: string) => {
     if (!val.trim()) {
-      setDecodeResult(null)
+      dispatch({ type: 'SET_DECODE_RESULT', payload: null })
       return
     }
 
     if (!isValidDataUri(val.trim())) {
-      setDecodeResult(null)
+      dispatch({ type: 'SET_DECODE_RESULT', payload: null })
       toast({
         action: 'add',
         item: { label: 'Invalid data URI format (e.g., data:image/png;base64,...)', type: 'error' },
@@ -70,9 +111,9 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
 
     try {
       const result = parseDataUri(val.trim())
-      setDecodeResult(result)
+      dispatch({ type: 'SET_DECODE_RESULT', payload: result })
     } catch {
-      setDecodeResult(null)
+      dispatch({ type: 'SET_DECODE_RESULT', payload: null })
       toast({
         action: 'add',
         item: { label: 'Invalid data URI format (e.g., data:image/png;base64,...)', type: 'error' },
@@ -81,7 +122,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
   }, 300)
 
   const handleDecodeInputChange = (val: string) => {
-    setDecodeInput(val)
+    dispatch({ type: 'SET_DECODE_INPUT', payload: val })
     processDecodeInput(val)
   }
 
@@ -111,12 +152,11 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
   }
 
   const handleEncodeReset = () => {
-    setEncodeResult(null)
+    dispatch({ type: 'RESET_ENCODE' })
   }
 
   const handleDecodeReset = () => {
-    setDecodeInput('')
-    setDecodeResult(null)
+    dispatch({ type: 'RESET_DECODE' })
   }
 
   return (
@@ -132,7 +172,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
             name="data-uri-encode"
             onChange={handleFileUpload}
           />
-          <Button aria-label="Open decode data URI dialog" block onClick={() => setDecodeOpen(true)} variant="default">
+          <Button aria-label="Open decode data URI dialog" block onClick={() => dispatch({ type: 'SET_DECODE_OPEN', payload: true })} variant="default">
             Decode Data URI
           </Button>
         </div>
@@ -140,7 +180,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
 
       {/* Encode Dialog */}
       <Dialog
-        injected={{ open: encodeOpen, setOpen: setEncodeOpen }}
+        injected={{ open: encodeOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_ENCODE_OPEN', payload: open }) }}
         onAfterClose={() => {
           handleEncodeReset()
           onAfterDialogClose?.()
@@ -238,7 +278,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
 
       {/* Decode Dialog */}
       <Dialog
-        injected={{ open: decodeOpen, setOpen: setDecodeOpen }}
+        injected={{ open: decodeOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DECODE_OPEN', payload: open }) }}
         onAfterClose={() => {
           handleDecodeReset()
           onAfterDialogClose?.()
@@ -296,7 +336,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
         </div>
       </Dialog>
 
-      <a className="hidden" ref={downloadAnchorRef} />
+      <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
     </>
   )
 }

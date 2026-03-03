@@ -1,13 +1,14 @@
-import { type ImgHTMLAttributes, useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import type { ImageFormat, ImageProcessingResult } from '@/types'
 
-import { Button, Dialog, DownloadIcon, FieldForm, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
+import { Button, Dialog, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { formatFileSize, isValidImageFormat, parseFileName, processImage, resizeImage } from '@/utils'
+import { isValidImageFormat, parseFileName, processImage, resizeImage } from '@/utils'
 
-import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
+import { EMPTY_IMAGE, ImagePreview } from './ImagePreview'
+import { ImageResizerControls } from './ImageResizerControls'
 
 const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING', string> = {
   DOWNLOAD: 'download',
@@ -15,52 +16,7 @@ const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING', string> = {
   PROCESSING: 'processing',
 }
 
-const EMPTY_IMAGE = 'data:,'
-
 const toolEntry = TOOL_REGISTRY_MAP['image-resizer']
-
-const formatBytes = formatFileSize
-
-const ImagePreview = ({
-  metadata,
-  src,
-}: Pick<ImgHTMLAttributes<HTMLImageElement>, 'src'> & {
-  metadata?: {
-    format?: ImageFormat
-    height?: number
-    size?: number
-    width?: number
-  }
-}) => {
-  return (
-    <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
-      {src ? (
-        src === EMPTY_IMAGE ? (
-          <NotoEmoji emoji="bomb" size={120} />
-        ) : (
-          <>
-            <picture className="flex size-full grow flex-col items-center justify-center gap-4 tablet:max-h-full tablet:overflow-y-auto">
-              <img alt="preview" className="w-full max-w-full tablet:max-h-full tablet:w-auto" src={src} />
-            </picture>
-            {metadata && (
-              <ul className="flex gap-1 text-center text-body-sm text-gray-200 italic">
-                {metadata.width && metadata.height && (
-                  <li>
-                    {metadata.width}x{metadata.height};
-                  </li>
-                )}
-                {metadata.format && <li>{metadata.format};</li>}
-                {metadata.size && <li>{formatBytes(metadata.size)};</li>}
-              </ul>
-            )}
-          </>
-        )
-      ) : (
-        <NotoEmoji emoji="robot" size={120} />
-      )}
-    </div>
-  )
-}
 
 export const ImageResizer = () => {
   // ref
@@ -300,7 +256,7 @@ export const ImageResizer = () => {
             },
           ]}
         />
-        <a className="hidden" download="" href="" ref={downloadAnchorRef} />
+        <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
       </div>
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
@@ -333,47 +289,13 @@ export const ImageResizer = () => {
               src={preview?.dataUrl}
             />
           </div>
-          <div className="flex w-full shrink-0 flex-col justify-center gap-2 desktop:flex-row">
-            <div className="flex w-full flex-col items-end gap-2 tablet:flex-row">
-              <div className="flex w-full gap-2">
-                <FieldForm
-                  disabled={!source}
-                  label="Width"
-                  name="width"
-                  onChange={(val) => handleInputChange('width', val)}
-                  placeholder="1920"
-                  type="number"
-                  value={preview?.width?.toString() ?? ''}
-                />
-                <FieldForm
-                  disabled={!source}
-                  label="Height"
-                  name="height"
-                  onChange={(val) => handleInputChange('height', val)}
-                  placeholder="1080"
-                  type="number"
-                  value={preview?.height?.toString() ?? ''}
-                />
-              </div>
-              <div className="flex w-full gap-2 *:w-full">
-                <ImageFormatSelectInput
-                  disabled={!source}
-                  onChange={(val) => handleInputChange('format', val)}
-                  value={preview?.format}
-                />
-                <ImageQualitySelectInput
-                  disabled={!source || !isLossy}
-                  onChange={(val) => handleInputChange('quality', val)}
-                  value={!isLossy ? '1' : preview?.quality?.toString()}
-                />
-              </div>
-            </div>
-            <div className="flex w-full items-end desktop:w-2/5">
-              <Button block disabled={!source} onClick={handleConvert} variant="primary">
-                Convert
-              </Button>
-            </div>
-          </div>
+          <ImageResizerControls
+            isLossy={isLossy}
+            onConvert={handleConvert}
+            onInputChange={handleInputChange}
+            preview={preview}
+            source={source}
+          />
         </div>
       </Dialog>
     </>

@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import { useCallback, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
@@ -105,7 +105,7 @@ export const RsaKeyGenerator = (_props: ToolComponentProps) => {
         <Button aria-label="Generate RSA key pair" disabled={generating} onClick={handleGenerate} variant="primary">
           {generating ? (
             <span className="flex items-center gap-2">
-              <motion.span
+              <m.span
                 animate={{ rotate: 360 }}
                 aria-label="Generating RSA key pair"
                 className="inline-block h-4 w-4 rounded-full border-2 border-white/30 border-t-white"

@@ -1,4 +1,4 @@
-export type MermaidFixRule = {
+type MermaidFixRule = {
   apply: (code: string) => string
   description: string
   detect: (code: string, error: string) => boolean

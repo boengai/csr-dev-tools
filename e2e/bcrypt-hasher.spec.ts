@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { card, copyButton, toast } from './helpers/selectors'
+import { card, codeInput, copyButton, toast } from './helpers/selectors'
 
 test.describe('Bcrypt Hasher', () => {
   test.beforeEach(async ({ page }) => {
@@ -58,7 +58,7 @@ test.describe('Bcrypt Hasher', () => {
     // Switch to Verify tab
     await page.getByRole('tab', { name: 'verify' }).click()
     await page.getByPlaceholder('Enter password...').fill('matchtest')
-    await page.locator('textarea').fill(generatedHash!)
+    await codeInput.fill(page, 'verify-hash', generatedHash!)
     await page.getByRole('button', { name: 'Verify Password' }).click()
 
     await expect(page.getByText('Password matches hash')).toBeVisible({ timeout: 15000 })
@@ -78,7 +78,7 @@ test.describe('Bcrypt Hasher', () => {
     // Switch to Verify tab with wrong password
     await page.getByRole('tab', { name: 'verify' }).click()
     await page.getByPlaceholder('Enter password...').fill('wrongpassword')
-    await page.locator('textarea').fill(generatedHash!)
+    await codeInput.fill(page, 'verify-hash', generatedHash!)
     await page.getByRole('button', { name: 'Verify Password' }).click()
 
     await expect(page.getByText('Password does not match')).toBeVisible({ timeout: 15000 })
@@ -87,7 +87,7 @@ test.describe('Bcrypt Hasher', () => {
   test('enter invalid hash format → error toast shown', async ({ page }) => {
     await page.getByRole('tab', { name: 'verify' }).click()
     await page.getByPlaceholder('Enter password...').fill('test')
-    await page.locator('textarea').fill('not-a-valid-hash')
+    await codeInput.fill(page, 'verify-hash', 'not-a-valid-hash')
     await page.getByRole('button', { name: 'Verify Password' }).click()
 
     await expect(

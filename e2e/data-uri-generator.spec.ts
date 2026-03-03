@@ -131,7 +131,7 @@ test.describe('Data URI Generator', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
     await expect(
-      toast.message(page, 'File exceeds 30 KB — consider using a regular file reference for better performance'),
+      toast.message(page, 'File exceeds 30 KB — consider using a regular file reference for better performance').first(),
     ).toBeVisible({ timeout: 3000 })
   })
 

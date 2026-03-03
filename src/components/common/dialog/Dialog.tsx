@@ -1,5 +1,5 @@
 import { Close, Content, Description, Overlay, Portal, Root, Title, Trigger } from '@radix-ui/react-dialog'
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 
 import type { CompVariant, DialogProps, DialogVariants } from '@/types'
 
@@ -42,7 +42,7 @@ export const Dialog = ({
       {trigger && <Trigger asChild>{trigger}</Trigger>}
       <Portal>
         <Overlay asChild forceMount>
-          <motion.div
+          <m.div
             animate={{ opacity: 1 }}
             className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
             exit={{ opacity: 0 }}
@@ -50,8 +50,8 @@ export const Dialog = ({
             transition={{ duration: 0.2, ease: 'easeOut' }}
           />
         </Overlay>
-        <Content asChild autoFocus={false} forceMount>
-          <motion.div
+        <Content asChild forceMount onOpenAutoFocus={(e) => e.preventDefault()}>
+          <m.div
             animate={{ opacity: 1, scale: 1, y: 0 }}
             className={contentClassName}
             exit={{ opacity: 0, scale: 0.95, y: -8 }}
@@ -60,14 +60,14 @@ export const Dialog = ({
           >
             <div className="flex w-full shrink-0 items-center gap-3 border-b border-gray-800 px-4 py-2 pt-[calc(var(--safe-area-inset-top)+0.5rem)]">
               <Close asChild>
-                <motion.button
+                <m.button
                   className="size-3 shrink-0 rounded-full bg-error"
                   transition={{ duration: 0.15, ease: 'easeOut' }}
                   whileHover={{ opacity: 0.8, scale: 1.15 }}
                   whileTap={{ scale: 0.9 }}
                 >
                   <span className="sr-only">Close</span>
-                </motion.button>
+                </m.button>
               </Close>
               <Title className="grow truncate text-body-sm text-gray-400">{title}</Title>
               <Description className="hidden">{description ?? title}</Description>
@@ -75,7 +75,7 @@ export const Dialog = ({
             <div className="flex size-full grow flex-col overflow-y-auto p-4 pb-[calc(var(--safe-area-inset-bottom)+1rem)]">
               {children}
             </div>
-          </motion.div>
+          </m.div>
         </Content>
       </Portal>
     </Root>

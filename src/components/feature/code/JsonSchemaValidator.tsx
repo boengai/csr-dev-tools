@@ -120,8 +120,8 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
               <div className="border-red-800 bg-red-950 rounded-lg border p-3">
                 <p className="text-red-400 mb-2 text-body-sm font-medium">❌ Validation Errors</p>
                 <ul className="flex flex-col gap-1">
-                  {result.errors.map((err, i) => (
-                    <li className="text-red-300 font-mono text-body-xs" key={i}>
+                  {result.errors.map((err) => (
+                    <li className="text-red-300 font-mono text-body-xs" key={`${err.path}-${err.keyword}-${err.message}`}>
                       <span className="text-red-400">{err.path}</span> — {err.message}{' '}
                       <span className="text-red-500">(keyword: {err.keyword})</span>
                     </li>

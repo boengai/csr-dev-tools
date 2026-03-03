@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import { useMemo } from 'react'
 
 export const TwinkleStarsAnimate = () => {
@@ -17,13 +17,13 @@ export const TwinkleStarsAnimate = () => {
   return (
     <section className="fixed top-0 left-0 z-0 h-[90dvh] w-full overflow-hidden">
       {stars.map((star) => (
-        <motion.div
+        <m.div
           animate={{
             opacity: [0, 1, 0],
-            scale: [0, 1, 0],
+            scale: [0.95, 1, 0.95],
           }}
           className="absolute rounded-full bg-white"
-          initial={{ opacity: 0, scale: 0 }}
+          initial={{ opacity: 0, scale: 0.95 }}
           key={star.id}
           style={{
             height: `${star.size}px`,

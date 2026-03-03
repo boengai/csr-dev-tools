@@ -1,8 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useReducer, useRef } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 
-import { Button, ColorInput, Dialog, DownloadIcon, NotoEmoji, RadioGroupInput, RefreshIcon, Tabs, UploadInput } from '@/components/common'
+import { Button, Dialog, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
+import { BackgroundRemoverError } from '@/components/feature/image/BackgroundRemoverError'
+import { BackgroundRemoverProcessing } from '@/components/feature/image/BackgroundRemoverProcessing'
+import { BackgroundRemoverResult } from '@/components/feature/image/BackgroundRemoverResult'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import { applyBackground, removeBackground } from '@/utils/background-removal'
@@ -17,18 +20,94 @@ const TABS_VALUES = {
 
 const toolEntry = TOOL_REGISTRY_MAP['background-remover']
 
+type State = {
+  bgOption: BgOption
+  customColor: string
+  dialogOpen: boolean
+  displayUrl: string
+  downloading: boolean
+  error: boolean
+  processing: boolean
+  progress: number
+  resultUrl: string
+  sourcePreview: string
+  tabValue: string
+}
+
+type Action =
+  | { type: 'SET_BG_OPTION'; payload: BgOption }
+  | { type: 'SET_CUSTOM_COLOR'; payload: string }
+  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
+  | { type: 'SET_DISPLAY_URL'; payload: string }
+  | { type: 'SET_DOWNLOADING'; payload: boolean }
+  | { type: 'SET_ERROR'; payload: boolean }
+  | { type: 'SET_PROCESSING'; payload: boolean }
+  | { type: 'SET_PROGRESS'; payload: number }
+  | { type: 'SET_RESULT_URL'; payload: string }
+  | { type: 'SET_SOURCE_PREVIEW'; payload: string }
+  | { type: 'SET_TAB_VALUE'; payload: string }
+  | { type: 'START_UPLOAD'; payload: { sourcePreview: string } }
+  | { type: 'UPLOAD_SUCCESS'; payload: { resultUrl: string; displayUrl: string } }
+  | { type: 'UPLOAD_FAILURE' }
+  | { type: 'CONFIRM'; payload: { tabValue: string } }
+  | { type: 'RESET' }
+
+const initialState: State = {
+  bgOption: 'transparent',
+  customColor: '#ff0000',
+  dialogOpen: false,
+  displayUrl: '',
+  downloading: false,
+  error: false,
+  processing: false,
+  progress: 0,
+  resultUrl: '',
+  sourcePreview: '',
+  tabValue: TABS_VALUES.IMPORT,
+}
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'SET_BG_OPTION':
+      return { ...state, bgOption: action.payload }
+    case 'SET_CUSTOM_COLOR':
+      return { ...state, customColor: action.payload }
+    case 'SET_DIALOG_OPEN':
+      return { ...state, dialogOpen: action.payload }
+    case 'SET_DISPLAY_URL':
+      return { ...state, displayUrl: action.payload }
+    case 'SET_DOWNLOADING':
+      return { ...state, downloading: action.payload }
+    case 'SET_ERROR':
+      return { ...state, error: action.payload }
+    case 'SET_PROCESSING':
+      return { ...state, processing: action.payload }
+    case 'SET_PROGRESS':
+      return { ...state, progress: action.payload }
+    case 'SET_RESULT_URL':
+      return { ...state, resultUrl: action.payload }
+    case 'SET_SOURCE_PREVIEW':
+      return { ...state, sourcePreview: action.payload }
+    case 'SET_TAB_VALUE':
+      return { ...state, tabValue: action.payload }
+    case 'START_UPLOAD':
+      return { ...state, error: false, dialogOpen: true, tabValue: TABS_VALUES.PROCESSING, progress: 0, sourcePreview: action.payload.sourcePreview }
+    case 'UPLOAD_SUCCESS':
+      return { ...state, resultUrl: action.payload.resultUrl, displayUrl: action.payload.displayUrl, bgOption: 'transparent', processing: false, downloading: false }
+    case 'UPLOAD_FAILURE':
+      return { ...state, processing: false, downloading: false, error: true }
+    case 'CONFIRM':
+      return { ...state, tabValue: action.payload.tabValue, dialogOpen: false }
+    case 'RESET':
+      return { ...initialState }
+    default:
+      return state
+  }
+}
+
 export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) => {
-  const [tabValue, setTabValue] = useState<string>(TABS_VALUES.IMPORT)
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [downloading, setDownloading] = useState(false)
-  const [progress, setProgress] = useState(0)
-  const [sourcePreview, setSourcePreview] = useState('')
-  const [resultUrl, setResultUrl] = useState('')
-  const [displayUrl, setDisplayUrl] = useState('')
-  const [bgOption, setBgOption] = useState<BgOption>('transparent')
-  const [customColor, setCustomColor] = useState('#ff0000')
-  const [processing, setProcessing] = useState(false)
-  const [error, setError] = useState(false)
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const { bgOption, customColor, dialogOpen, displayUrl, downloading, error, processing, progress, resultUrl, sourcePreview, tabValue } = state
   const { toast } = useToast()
   const resultBlobRef = useRef<Blob | null>(null)
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
@@ -43,21 +122,18 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
       if (!blob) return
 
       // Revoke previous composited display URL (use ref for stable comparison)
-      setDisplayUrl((prev) => {
-        if (prev && prev !== resultUrlRef.current) URL.revokeObjectURL(prev)
-        return prev
-      })
+      dispatch({ type: 'SET_DISPLAY_URL', payload: '' })
 
       if (option === 'transparent') {
         const url = URL.createObjectURL(blob)
-        setDisplayUrl(url)
+        dispatch({ type: 'SET_DISPLAY_URL', payload: url })
         return
       }
       try {
         const bgColor = option === 'white' ? '#ffffff' : color
         const composited = await applyBackground(blob, bgColor)
         const url = URL.createObjectURL(composited)
-        setDisplayUrl(url)
+        dispatch({ type: 'SET_DISPLAY_URL', payload: url })
       } catch {
         toast({ action: 'add', item: { label: 'Failed to apply background color', type: 'error' } })
       }
@@ -76,39 +152,28 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
       }
 
       try {
-        setError(false)
-        setDialogOpen(true)
-        setTabValue(TABS_VALUES.PROCESSING)
-        setProgress(0)
-
         const url = URL.createObjectURL(file)
-        setSourcePreview(url)
+        dispatch({ type: 'START_UPLOAD', payload: { sourcePreview: url } })
 
         let receivedProgress = false
         const onProgress = (p: number) => {
           if (!receivedProgress) {
             receivedProgress = true
-            setDownloading(true)
+            dispatch({ type: 'SET_DOWNLOADING', payload: true })
           }
-          setProgress(p)
-          if (p >= 100) setDownloading(false)
+          dispatch({ type: 'SET_PROGRESS', payload: p })
+          if (p >= 100) dispatch({ type: 'SET_DOWNLOADING', payload: false })
         }
 
-        setProcessing(true)
+        dispatch({ type: 'SET_PROCESSING', payload: true })
         const result = await removeBackground(file, onProgress)
         resultBlobRef.current = result
 
         const resultObjUrl = URL.createObjectURL(result)
-        setResultUrl(resultObjUrl)
-        setDisplayUrl(resultObjUrl)
-        setBgOption('transparent')
-        setProcessing(false)
-        setDownloading(false)
+        dispatch({ type: 'UPLOAD_SUCCESS', payload: { resultUrl: resultObjUrl, displayUrl: resultObjUrl } })
         toast({ action: 'add', item: { label: 'Background removed successfully', type: 'success' } })
       } catch {
-        setProcessing(false)
-        setDownloading(false)
-        setError(true)
+        dispatch({ type: 'UPLOAD_FAILURE' })
         toast({ action: 'add', item: { label: 'Failed to remove background. Try a different image.', type: 'error' } })
       }
     },
@@ -117,7 +182,7 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
 
   const handleBgChange = useCallback(
     (option: BgOption) => {
-      setBgOption(option)
+      dispatch({ type: 'SET_BG_OPTION', payload: option })
       void updateDisplay(option, customColor, resultBlobRef.current)
     },
     [customColor, updateDisplay],
@@ -125,7 +190,7 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
 
   const handleColorChange = useCallback(
     (color: string) => {
-      setCustomColor(color)
+      dispatch({ type: 'SET_CUSTOM_COLOR', payload: color })
       if (bgOption === 'custom') {
         void updateDisplay('custom', color, resultBlobRef.current)
       }
@@ -142,24 +207,15 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
     anchor.download = 'background-removed.png'
 
     confirmedRef.current = true
-    setTabValue(TABS_VALUES.DOWNLOAD)
-    setDialogOpen(false)
+    dispatch({ type: 'CONFIRM', payload: { tabValue: TABS_VALUES.DOWNLOAD } })
   }, [displayUrl])
 
   const handleReset = useCallback(() => {
     if (sourcePreview) URL.revokeObjectURL(sourcePreview)
     if (resultUrl) URL.revokeObjectURL(resultUrl)
     if (displayUrl && displayUrl !== resultUrl) URL.revokeObjectURL(displayUrl)
-    setSourcePreview('')
     resultBlobRef.current = null
-    setResultUrl('')
-    setDisplayUrl('')
-    setProcessing(false)
-    setDownloading(false)
-    setError(false)
-    setProgress(0)
-    setBgOption('transparent')
-    setTabValue(TABS_VALUES.IMPORT)
+    dispatch({ type: 'RESET' })
     // Clear download anchor to prevent stale URL access
     const anchor = downloadAnchorRef.current
     if (anchor) {
@@ -189,7 +245,7 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
 
         <Tabs
           injected={{
-            setValue: setTabValue,
+            setValue: (val: string) => dispatch({ type: 'SET_TAB_VALUE', payload: val }),
             value: tabValue,
           }}
           items={[
@@ -251,11 +307,11 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
             },
           ]}
         />
-        <a className="hidden" download="" href="" ref={downloadAnchorRef} />
+        <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
       </div>
 
       <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
+        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
         onAfterClose={() => {
           // Only reset if user dismissed (not confirmed)
           if (confirmedRef.current) {
@@ -270,102 +326,22 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
       >
         <div className="flex grow flex-col gap-4 tablet:min-h-0">
           {/* Loading states */}
-          {processing && (
-            <div aria-live="polite" className="flex grow flex-col items-center justify-center gap-3">
-              <NotoEmoji emoji="robot" size={120} />
-              {downloading ? (
-                <>
-                  <p className="text-body-sm text-gray-300">Downloading AI model...</p>
-                  <div className="h-2 w-64 overflow-hidden rounded-full bg-gray-800">
-                    <div
-                      className="bg-blue-500 h-full rounded-full transition-all duration-300"
-                      style={{ width: `${Math.min(progress, 100)}%` }}
-                    />
-                  </div>
-                  <p className="text-body-xs text-gray-500">{Math.round(progress)}%</p>
-                </>
-              ) : (
-                <p className="text-body-sm text-gray-400">Removing background...</p>
-              )}
-            </div>
-          )}
+          {processing && <BackgroundRemoverProcessing downloading={downloading} progress={progress} />}
 
           {/* Error state */}
-          {!processing && error && (
-            <div aria-live="assertive" className="flex grow flex-col items-center justify-center gap-3">
-              <NotoEmoji emoji="bomb" size={120} />
-              <p className="text-red-400 text-body-sm">Processing failed. Try a different image.</p>
-              <Button icon={<RefreshIcon />} onClick={handleReset} size="small">
-                Try Again
-              </Button>
-            </div>
-          )}
+          {!processing && error && <BackgroundRemoverError onReset={handleReset} />}
 
           {/* Done state - before/after */}
           {!processing && !error && displayUrl && (
-            <>
-              <div
-                aria-live="polite"
-                className="bg-grid-texture flex flex-col items-center justify-center gap-6 bg-black tablet:min-h-0 tablet:grow tablet:flex-row"
-              >
-                {/* Original */}
-                <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
-                  <p className="shrink-0 text-body-sm font-medium text-gray-300">Original</p>
-                  {sourcePreview && (
-                    <picture className="flex size-full grow flex-col items-center justify-center gap-4 tablet:max-h-full tablet:overflow-y-auto">
-                      <img
-                        alt="original"
-                        className="w-full max-w-full tablet:max-h-full tablet:w-auto"
-                        src={sourcePreview}
-                      />
-                    </picture>
-                  )}
-                </div>
-
-                <div className="tablet:border-t-none h-1 w-full border-t-2 border-dashed border-gray-700 tablet:h-full tablet:w-1 tablet:border-l-2" />
-
-                {/* Result */}
-                <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
-                  <p className="shrink-0 text-body-sm font-medium text-gray-300">Result</p>
-                  <picture
-                    className="flex size-full grow flex-col items-center justify-center gap-4 rounded tablet:max-h-full tablet:overflow-y-auto"
-                    style={
-                      bgOption === 'transparent'
-                        ? {
-                            backgroundImage: 'repeating-conic-gradient(#808080 0% 25%, transparent 0% 50%)',
-                            backgroundSize: '16px 16px',
-                          }
-                        : undefined
-                    }
-                  >
-                    <img alt="result" className="w-full max-w-full tablet:max-h-full tablet:w-auto" src={displayUrl} />
-                  </picture>
-                </div>
-              </div>
-
-              {/* Controls at bottom */}
-              <div className="flex w-full shrink-0 flex-col items-center gap-4">
-                <div className="flex flex-wrap items-center justify-center gap-4">
-                  <span className="text-body-sm text-gray-400">Background:</span>
-                  <RadioGroupInput
-                    name="bg-option"
-                    onChange={(val) => handleBgChange(val as BgOption)}
-                    options={[
-                      { label: 'Transparent', value: 'transparent' },
-                      { label: 'White', value: 'white' },
-                      { label: 'Custom', value: 'custom' },
-                    ]}
-                    value={bgOption}
-                  />
-                  <ColorInput className="size-8" disabled={bgOption !== 'custom'} onChange={handleColorChange} value={customColor} />
-                </div>
-                <div className="w-full desktop:w-2/5">
-                  <Button block onClick={handleConfirm} variant="primary">
-                    Confirm
-                  </Button>
-                </div>
-              </div>
-            </>
+            <BackgroundRemoverResult
+              bgOption={bgOption}
+              customColor={customColor}
+              displayUrl={displayUrl}
+              onBgChange={handleBgChange}
+              onColorChange={handleColorChange}
+              onConfirm={handleConfirm}
+              sourcePreview={sourcePreview}
+            />
           )}
         </div>
       </Dialog>

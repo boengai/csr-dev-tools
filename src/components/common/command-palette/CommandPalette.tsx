@@ -1,12 +1,13 @@
 import { Content, Overlay, Portal, Root } from '@radix-ui/react-dialog'
 import { useNavigate } from '@tanstack/react-router'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { ToolRegistryEntry } from '@/types'
 
 import { TOOL_REGISTRY } from '@/constants'
 import { useCommandPaletteStore } from '@/hooks'
+import { getPreviouslyFocusedElement } from '@/hooks/state/useCommandPaletteStore'
 
 import { tv } from '@/utils'
 
@@ -29,22 +30,14 @@ export const CommandPalette = () => {
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
   const [highlightedIndex, setHighlightedIndex] = useState(0)
-  const previouslyFocusedRef = useRef<HTMLElement | null>(null)
   const listRef = useRef<HTMLUListElement>(null)
-
-  // Capture previously focused element on open
-  useEffect(() => {
-    if (isOpen) {
-      previouslyFocusedRef.current = document.activeElement as HTMLElement
-    }
-  }, [isOpen])
 
   const handleClose = useCallback(() => {
     close()
     setQuery('')
     setHighlightedIndex(0)
     requestAnimationFrame(() => {
-      previouslyFocusedRef.current?.focus()
+      getPreviouslyFocusedElement()?.focus()
     })
   }, [close])
 
@@ -55,11 +48,6 @@ export const CommandPalette = () => {
       (tool) =>
         tool.name.toLowerCase().includes(normalizedQuery) || tool.category.toLowerCase().includes(normalizedQuery),
     )
-  }, [query])
-
-  // Reset highlighted index when query changes
-  useEffect(() => {
-    setHighlightedIndex(0)
   }, [query])
 
   // Auto-scroll highlighted item into view
@@ -120,7 +108,7 @@ export const CommandPalette = () => {
         {isOpen && (
           <Portal forceMount>
             <Overlay asChild forceMount>
-              <motion.div
+              <m.div
                 animate={{ opacity: 1 }}
                 className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm"
                 exit={{ opacity: 0 }}
@@ -129,7 +117,7 @@ export const CommandPalette = () => {
               />
             </Overlay>
             <Content asChild forceMount onOpenAutoFocus={(e) => e.preventDefault()}>
-              <motion.div
+              <m.div
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 aria-label="Search tools"
                 aria-modal="true"
@@ -140,7 +128,7 @@ export const CommandPalette = () => {
                 role="dialog"
                 transition={{ duration: 0.2, ease: 'easeOut' }}
               >
-                <SearchInput activeDescendantId={activeDescendantId} onChange={setQuery} value={query} />
+                <SearchInput activeDescendantId={activeDescendantId} onChange={(val) => { setQuery(val); setHighlightedIndex(0) }} value={query} />
 
                 <ul
                   aria-label="Search results"
@@ -156,6 +144,9 @@ export const CommandPalette = () => {
                       id={`command-palette-option-${tool.key}`}
                       key={tool.key}
                       onClick={() => handleSelectTool(tool)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') handleSelectTool(tool)
+                      }}
                       onMouseEnter={() => setHighlightedIndex(index)}
                       role="option"
                     >
@@ -180,7 +171,7 @@ export const CommandPalette = () => {
                     <kbd className="rounded bg-gray-800 px-1.5 py-0.5 text-gray-400">esc</kbd> close
                   </span>
                 </div>
-              </motion.div>
+              </m.div>
             </Content>
           </Portal>
         )}

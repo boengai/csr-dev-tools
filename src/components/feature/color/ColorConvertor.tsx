@@ -1,4 +1,4 @@
-import { motion } from 'motion/react'
+import { m } from 'motion/react'
 import { type PropsWithChildren, useState } from 'react'
 
 import type { ColorFormat } from '@/types'
@@ -41,7 +41,7 @@ const InputWrapper = ({ children, color }: PropsWithChildren<{ color: string }>)
   return (
     <div className="flex w-full items-end gap-2">
       {color ? (
-        <motion.div
+        <m.div
           animate={{ opacity: 1, scale: 1 }}
           className="size-10 shrink-0 rounded shadow"
           initial={{ opacity: 0, scale: 0.8 }}
@@ -61,7 +61,7 @@ const toolEntry = TOOL_REGISTRY_MAP['color-converter']
 
 export const ColorConvertor = () => {
   const [color, setColor] = useState<Record<ColorFormat, string>>(
-    convertColor(`rgb(${randomByte()}, ${randomByte()}, ${randomByte()})`, 'rgb'),
+    () => convertColor(`rgb(${randomByte()}, ${randomByte()}, ${randomByte()})`, 'rgb'),
   )
   const { toast } = useToast()
 
@@ -98,7 +98,7 @@ export const ColorConvertor = () => {
     <div className="flex size-full grow flex-col gap-2">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
-      <ColorInput onChange={handlePickerChange} size="full" value={color.hex || '#000000'} />
+      <ColorInput aria-label="Color picker" onChange={handlePickerChange} size="full" value={color.hex || '#000000'} />
 
       <div aria-live="polite">
         {FORMATS.map(({ format, label, placeholder }) => (

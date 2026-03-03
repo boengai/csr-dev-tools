@@ -61,9 +61,9 @@ describe('db-diagram utils', () => {
       const positions = gridLayoutPositions(4)
       expect(positions).toEqual([
         { x: 0, y: 0 },
-        { x: 400, y: 0 },
-        { x: 800, y: 0 },
-        { x: 0, y: 350 },
+        { x: 600, y: 0 },
+        { x: 1200, y: 0 },
+        { x: 0, y: 550 },
       ])
     })
 
@@ -72,12 +72,12 @@ describe('db-diagram utils', () => {
       expect(positions).toHaveLength(7)
       // First row
       expect(positions[0]).toEqual({ x: 0, y: 0 })
-      expect(positions[2]).toEqual({ x: 800, y: 0 })
+      expect(positions[2]).toEqual({ x: 1200, y: 0 })
       // Second row
-      expect(positions[3]).toEqual({ x: 0, y: 350 })
-      expect(positions[5]).toEqual({ x: 800, y: 350 })
+      expect(positions[3]).toEqual({ x: 0, y: 550 })
+      expect(positions[5]).toEqual({ x: 1200, y: 550 })
       // Third row
-      expect(positions[6]).toEqual({ x: 0, y: 700 })
+      expect(positions[6]).toEqual({ x: 0, y: 1100 })
     })
   })
 

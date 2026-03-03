@@ -1,5 +1,5 @@
 import { Provider, Root, Title, Viewport } from '@radix-ui/react-toast'
-import { AnimatePresence, motion } from 'motion/react'
+import { AnimatePresence, m } from 'motion/react'
 
 import { useToast } from '@/hooks'
 import { type CompVariant, type ToastItemProps, type ToastItemVariant } from '@/types'
@@ -43,7 +43,7 @@ const ToastItem = ({ duration, label, type }: Omit<ToastItemProps, 'id'>) => {
   return (
     <AnimatePresence>
       <Root asChild duration={resolvedDuration === 0 ? Infinity : resolvedDuration}>
-        <motion.li
+        <m.li
           animate={{ opacity: 1, y: 0 }}
           className="popover flex w-fit items-center gap-2 rounded-sm p-2 text-body-sm"
           exit={{ opacity: 0, y: -20 }}
@@ -54,7 +54,7 @@ const ToastItem = ({ duration, label, type }: Omit<ToastItemProps, 'id'>) => {
             opacity: { duration: 0.15 },
           }}
         >
-          <motion.div
+          <m.div
             animate={{
               rotate: [0, 5, -5, 0],
               scale: [1, 1.2, 1],
@@ -67,9 +67,9 @@ const ToastItem = ({ duration, label, type }: Omit<ToastItemProps, 'id'>) => {
             }}
           >
             <ToastTypeIcon type={type} />
-          </motion.div>
+          </m.div>
           <Title className="capitalize">{label}</Title>
-        </motion.li>
+        </m.li>
       </Root>
     </AnimatePresence>
   )

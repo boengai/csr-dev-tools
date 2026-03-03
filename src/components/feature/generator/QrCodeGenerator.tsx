@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useReducer, useRef } from 'react'
 
 import type { ToolComponentProps } from '@/types'
 import type { QrErrorCorrectionLevel } from '@/utils'
@@ -10,23 +10,80 @@ import { generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['qr-code-generator']
 
+type State = {
+  background: string
+  dataUrl: string
+  dialogOpen: boolean
+  errorCorrection: QrErrorCorrectionLevel
+  foreground: string
+  size: number
+  svgString: string
+  text: string
+}
+
+type Action =
+  | { type: 'SET_BACKGROUND'; payload: string }
+  | { type: 'SET_DATA_URL'; payload: string }
+  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
+  | { type: 'SET_ERROR_CORRECTION'; payload: QrErrorCorrectionLevel }
+  | { type: 'SET_FOREGROUND'; payload: string }
+  | { type: 'SET_SIZE'; payload: number }
+  | { type: 'SET_SVG_STRING'; payload: string }
+  | { type: 'SET_TEXT'; payload: string }
+  | { type: 'GENERATE_SUCCESS'; payload: { dataUrl: string; svgString: string } }
+  | { type: 'CLEAR_OUTPUT' }
+  | { type: 'RESET' }
+
+const initialState: State = {
+  background: '#ffffff',
+  dataUrl: '',
+  dialogOpen: false,
+  errorCorrection: 'M',
+  foreground: '#000000',
+  size: 256,
+  svgString: '',
+  text: '',
+}
+
+const reducer = (state: State, action: Action): State => {
+  switch (action.type) {
+    case 'SET_BACKGROUND':
+      return { ...state, background: action.payload }
+    case 'SET_DATA_URL':
+      return { ...state, dataUrl: action.payload }
+    case 'SET_DIALOG_OPEN':
+      return { ...state, dialogOpen: action.payload }
+    case 'SET_ERROR_CORRECTION':
+      return { ...state, errorCorrection: action.payload }
+    case 'SET_FOREGROUND':
+      return { ...state, foreground: action.payload }
+    case 'SET_SIZE':
+      return { ...state, size: action.payload }
+    case 'SET_SVG_STRING':
+      return { ...state, svgString: action.payload }
+    case 'SET_TEXT':
+      return { ...state, text: action.payload }
+    case 'GENERATE_SUCCESS':
+      return { ...state, dataUrl: action.payload.dataUrl, svgString: action.payload.svgString }
+    case 'CLEAR_OUTPUT':
+      return { ...state, dataUrl: '', svgString: '' }
+    case 'RESET':
+      return { ...initialState, dialogOpen: state.dialogOpen }
+    default:
+      return state
+  }
+}
+
 export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const [text, setText] = useState('')
-  const [size, setSize] = useState(256)
-  const [errorCorrection, setErrorCorrection] = useState<QrErrorCorrectionLevel>('M')
-  const [foreground, setForeground] = useState('#000000')
-  const [background, setBackground] = useState('#ffffff')
-  const [dataUrl, setDataUrl] = useState('')
-  const [svgString, setSvgString] = useState('')
+  const [state, dispatch] = useReducer(reducer, { ...initialState, dialogOpen: autoOpen ?? false })
+  const { background, dataUrl, dialogOpen, errorCorrection, foreground, size, svgString, text } = state
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const { toast } = useToast()
 
   const generate = useCallback(
     async (t: string, s: number, ec: QrErrorCorrectionLevel, fg: string, bg: string) => {
       if (!t) {
-        setDataUrl('')
-        setSvgString('')
+        dispatch({ type: 'CLEAR_OUTPUT' })
         return
       }
       try {
@@ -44,8 +101,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             size: s,
           }),
         ])
-        setDataUrl(url)
-        setSvgString(svg)
+        dispatch({ type: 'GENERATE_SUCCESS', payload: { dataUrl: url, svgString: svg } })
       } catch {
         toast({
           action: 'add',
@@ -59,29 +115,29 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const debouncedGenerate = useDebounceCallback(generate, 300)
 
   const handleTextChange = (val: string) => {
-    setText(val)
+    dispatch({ type: 'SET_TEXT', payload: val })
     debouncedGenerate(val, size, errorCorrection, foreground, background)
   }
 
   const handleSizeChange = (val: string) => {
     const n = Number(val)
-    setSize(n)
+    dispatch({ type: 'SET_SIZE', payload: n })
     debouncedGenerate(text, n, errorCorrection, foreground, background)
   }
 
   const handleEcChange = (val: string) => {
     const ec = val as QrErrorCorrectionLevel
-    setErrorCorrection(ec)
+    dispatch({ type: 'SET_ERROR_CORRECTION', payload: ec })
     debouncedGenerate(text, size, ec, foreground, background)
   }
 
   const handleFgChange = (val: string) => {
-    setForeground(val)
+    dispatch({ type: 'SET_FOREGROUND', payload: val })
     debouncedGenerate(text, size, errorCorrection, val, background)
   }
 
   const handleBgChange = (val: string) => {
-    setBackground(val)
+    dispatch({ type: 'SET_BACKGROUND', payload: val })
     debouncedGenerate(text, size, errorCorrection, foreground, val)
   }
 
@@ -99,13 +155,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   }
 
   const handleReset = () => {
-    setText('')
-    setSize(256)
-    setErrorCorrection('M')
-    setForeground('#000000')
-    setBackground('#ffffff')
-    setDataUrl('')
-    setSvgString('')
+    dispatch({ type: 'RESET' })
   }
 
   return (
@@ -114,13 +164,13 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
+          <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">
             Generate QR Code
           </Button>
         </div>
       </div>
       <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
+        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
         onAfterClose={() => {
           handleReset()
           onAfterDialogClose?.()
@@ -204,7 +254,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
           </div>
         </div>
       </Dialog>
-      <a className="hidden" ref={downloadAnchorRef} />
+      <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
     </>
   )
 }

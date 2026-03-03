@@ -69,11 +69,11 @@ test.describe('QR Code Generator', () => {
 })
 
 test.describe('SVG Viewer', () => {
-  test('shows textarea for SVG input in dialog', async ({ page }) => {
+  test('shows code editor for SVG input in dialog', async ({ page }) => {
     await page.goto('/tools/svg-viewer')
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
-    await expect(dialog.locator('textarea').first()).toBeVisible()
+    await expect(dialog.locator('.cm-editor').first()).toBeVisible()
   })
 })
 

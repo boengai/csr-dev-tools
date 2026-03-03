@@ -1,6 +1,6 @@
 export type SortMode = 'az' | 'length-asc' | 'length-desc' | 'numeric' | 'za'
 
-export type TextSortOptions = {
+type TextSortOptions = {
   removeDuplicates: boolean
   removeEmpty: boolean
   sortMode: SortMode

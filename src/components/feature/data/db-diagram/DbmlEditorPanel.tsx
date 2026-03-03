@@ -1,0 +1,66 @@
+import { Button, CodeInput, CopyButton } from '@/components/common'
+
+import { CloseButton } from './CloseButton'
+
+type DbmlEditorPanelProps = {
+  dbmlErrors: Array<{ line: number; message: string }>
+  dbmlText: string
+  onClose: () => void
+  onDbmlChange: (text: string) => void
+  onSyncFromDiagram: () => void
+}
+
+export const DbmlEditorPanel = ({
+  dbmlErrors,
+  dbmlText,
+  onClose,
+  onDbmlChange,
+  onSyncFromDiagram,
+}: DbmlEditorPanelProps) => {
+  return (
+    <div className="flex w-96 shrink-0 flex-col border-l border-gray-800 bg-gray-950" data-testid="dbml-panel">
+      <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
+        <span className="text-xs font-bold text-white">DBML Editor</span>
+        <CloseButton onClick={onClose} />
+      </div>
+
+      <div className="flex flex-1 flex-col overflow-hidden p-3">
+        <CodeInput
+          height="100%"
+          name="dbml-editor"
+          onChange={onDbmlChange}
+          placeholder={
+            '// Define your schema in DBML\n\nTable users {\n  id serial [pk]\n  name varchar [not null]\n}'
+          }
+          size="compact"
+          value={dbmlText}
+        />
+
+        {dbmlErrors.length > 0 && (
+          <div className="mt-2 max-h-24 space-y-1 overflow-auto" data-testid="dbml-errors">
+            {dbmlErrors.map((err) => (
+              <p className="text-[10px] text-error" key={`${err.line}-${err.message}`}>
+                Line {err.line}: {err.message}
+              </p>
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="flex gap-2 border-t border-gray-800 px-3 py-2">
+        <CopyButton label="DBML" value={dbmlText} />
+        <div className="grow">
+          <Button
+            block
+            data-testid="dbml-sync-btn"
+            onClick={onSyncFromDiagram}
+            size="small"
+            variant="primary"
+          >
+            Sync from Diagram
+          </Button>
+        </div>
+      </div>
+    </div>
+  )
+}

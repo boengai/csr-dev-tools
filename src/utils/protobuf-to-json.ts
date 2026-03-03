@@ -1,6 +1,6 @@
 import * as protobuf from 'protobufjs'
 
-export type ProtobufFieldInfo = {
+type ProtobufFieldInfo = {
   description: string | null
   id: number
   isMap: boolean
@@ -33,7 +33,7 @@ export type ProtobufSchemaInfo = {
   syntax: string | null
 }
 
-export type ProtobufParseResult =
+type ProtobufParseResult =
   | { error: string; line: number | null; success: false }
   | { schema: ProtobufSchemaInfo; success: true }
 

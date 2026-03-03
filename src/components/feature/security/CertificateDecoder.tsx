@@ -195,8 +195,8 @@ export const CertificateDecoder = (_props: ToolComponentProps) => {
             {result.extensions.length > 0 && (
               <div className="flex flex-col gap-2">
                 <h3 className="text-body-xs font-medium text-gray-300">Extensions</h3>
-                {result.extensions.map((ext, index) => (
-                  <ExtensionItem ext={ext} key={`${ext.oid}-${index}`} />
+                {result.extensions.map((ext) => (
+                  <ExtensionItem ext={ext} key={`${ext.oid}-${ext.name}`} />
                 ))}
               </div>
             )}

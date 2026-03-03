@@ -78,8 +78,8 @@ export const CronExpressionParser = (_props: ToolComponentProps) => {
           <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
             <span className="text-body-xs font-medium text-gray-400">Next {result.nextRuns.length} runs (UTC)</span>
             <ul className="mt-1 flex flex-col gap-1">
-              {result.nextRuns.map((run, i) => (
-                <li className="font-mono text-body-xs text-gray-300" key={i}>
+              {result.nextRuns.map((run) => (
+                <li className="font-mono text-body-xs text-gray-300" key={run}>
                   {run}
                 </li>
               ))}
