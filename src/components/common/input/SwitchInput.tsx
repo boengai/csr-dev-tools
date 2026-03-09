@@ -23,7 +23,7 @@ export const SwitchInput = ({
       onBlur={onBlur}
       onCheckedChange={onChange}
     >
-      <Thumb className="block size-5 translate-x-0.5 rounded-full bg-white transition-transform data-[state=checked]:translate-x-[1.25rem]" />
+      <Thumb className="block size-5 translate-x-0.5 rounded-full bg-white transition-transform data-[state=checked]:translate-x-5" />
     </Root>
   )
 }
