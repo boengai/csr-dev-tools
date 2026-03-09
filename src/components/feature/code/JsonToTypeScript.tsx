@@ -4,14 +4,14 @@ import type { ToolComponentProps } from '@/types'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import { jsonToTypeScript } from '@/utils/json-to-typescript'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-typescript']
 
 export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const [source, setSource] = useLocalStorage('csr-dev-tools-json-to-typescript-source', '')
+  const [source, setSource] = useInputLocalStorage('csr-dev-tools-json-to-typescript-source', '')
   const [output, setOutput] = useState('')
   const [rootName, setRootName] = useState('Root')
   const [useInterface, setUseInterface] = useState(true)

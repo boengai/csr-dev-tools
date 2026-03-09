@@ -4,7 +4,7 @@ import type { ToolComponentProps } from '@/types'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import { decodeHtmlEntities, encodeHtmlEntities } from '@/utils/html-entity'
 
 type ConvertMode = 'encode' | 'decode'
@@ -24,7 +24,7 @@ const readSource = (m: ConvertMode): string => {
 }
 
 export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [mode, setMode] = useLocalStorage<ConvertMode>('csr-dev-tools-html-entity-mode', 'encode')
+  const [mode, setMode] = useInputLocalStorage<ConvertMode>('csr-dev-tools-html-entity-mode', 'encode')
   const [source, setSource] = useState(() => readSource(mode))
   const [result, setResult] = useState('')
   const [entityMode, setEntityMode] = useState<EntityMode>('named')
@@ -66,7 +66,9 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    try { localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val)) } catch {}
+    try {
+      localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val))
+    } catch {}
     processInput(val)
   }
 

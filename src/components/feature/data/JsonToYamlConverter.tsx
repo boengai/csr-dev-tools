@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import { getJsonParseError, getYamlParseError, jsonToYaml, yamlToJson } from '@/utils'
 
 type ConvertMode = 'json-to-yaml' | 'yaml-to-json'
@@ -21,7 +21,7 @@ const readSource = (m: ConvertMode): string => {
 }
 
 export const JsonToYamlConverter = () => {
-  const [mode, setMode] = useLocalStorage<ConvertMode>('csr-dev-tools-json-to-yaml-mode', 'json-to-yaml')
+  const [mode, setMode] = useInputLocalStorage<ConvertMode>('csr-dev-tools-json-to-yaml-mode', 'json-to-yaml')
   const [source, setSource] = useState(() => readSource(mode))
   const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
@@ -74,7 +74,9 @@ export const JsonToYamlConverter = () => {
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    try { localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val)) } catch {}
+    try {
+      localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val))
+    } catch {}
     processInput(val)
   }
 

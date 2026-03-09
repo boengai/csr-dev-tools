@@ -4,13 +4,13 @@ import type { ToolComponentProps } from '@/types'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import { formatJson, getJsonParseError } from '@/utils/json'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-formatter']
 
 export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useLocalStorage('csr-dev-tools-json-formatter-source', '')
+  const [source, setSource] = useInputLocalStorage('csr-dev-tools-json-formatter-source', '')
   const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
@@ -69,10 +69,14 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => {
-            setDialogOpen(true)
-            if (source.trim()) process(source)
-          }} variant="default">
+          <Button
+            block
+            onClick={() => {
+              setDialogOpen(true)
+              if (source.trim()) process(source)
+            }}
+            variant="default"
+          >
             Format
           </Button>
         </div>

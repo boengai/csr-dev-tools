@@ -1,15 +1,13 @@
+import { json } from '@codemirror/lang-json'
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-
 
 import type { ToolComponentProps } from '@/types'
 import type { JsonPathEvaluation, JsonParseResult } from '@/utils/jsonpath-evaluator'
 
-import { json } from '@codemirror/lang-json'
-
 import { CodeInput, CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import { tv } from '@/utils'
 import { evaluateJsonPath, formatResultValue, parseJsonInput } from '@/utils/jsonpath-evaluator'
 
@@ -69,8 +67,11 @@ const CHEATSHEET_ENTRIES = [
 ]
 
 export const JsonpathEvaluator = (_props: ToolComponentProps) => {
-  const [jsonInput, setJsonInput] = useLocalStorage('csr-dev-tools-jsonpath-evaluator-json', SAMPLE_JSON)
-  const [expression, setExpression] = useLocalStorage('csr-dev-tools-jsonpath-evaluator-expression', DEFAULT_EXPRESSION)
+  const [jsonInput, setJsonInput] = useInputLocalStorage('csr-dev-tools-jsonpath-evaluator-json', SAMPLE_JSON)
+  const [expression, setExpression] = useInputLocalStorage(
+    'csr-dev-tools-jsonpath-evaluator-expression',
+    DEFAULT_EXPRESSION,
+  )
   const [parsedData, setParsedData] = useState<unknown>(null)
   const [parseError, setParseError] = useState<string | null>(null)
   const [evaluation, setEvaluation] = useState<JsonPathEvaluation | null>(null)

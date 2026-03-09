@@ -4,13 +4,13 @@ import type { ToolComponentProps } from '@/types'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import { formatHtml, minifyHtml } from '@/utils/html-format'
 
 const toolEntry = TOOL_REGISTRY_MAP['html-formatter']
 
 export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useLocalStorage('csr-dev-tools-html-formatter-source', '')
+  const [source, setSource] = useInputLocalStorage('csr-dev-tools-html-formatter-source', '')
   const [result, setResult] = useState('')
   const [mode, setMode] = useState<'beautify' | 'minify'>('beautify')
   const [indent, setIndent] = useState<number | 'tab'>(2)
@@ -79,10 +79,14 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => {
-            setDialogOpen(true)
-            if (source.trim()) process(source, mode, indent)
-          }} variant="default">
+          <Button
+            block
+            onClick={() => {
+              setDialogOpen(true)
+              if (source.trim()) process(source, mode, indent)
+            }}
+            variant="default"
+          >
             Format
           </Button>
         </div>

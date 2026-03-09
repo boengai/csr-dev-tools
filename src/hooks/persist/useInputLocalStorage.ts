@@ -2,7 +2,7 @@ import { useCallback, useState } from 'react'
 
 type SetValue<T> = React.Dispatch<React.SetStateAction<T>>
 
-export function useLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
+export function useInputLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
   const [storedValue, setStoredValue] = useState<T>(() => {
     try {
       const item = localStorage.getItem(key)

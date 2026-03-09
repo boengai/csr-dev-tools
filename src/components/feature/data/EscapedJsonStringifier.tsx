@@ -4,7 +4,7 @@ import type { ToolComponentProps } from '@/types'
 
 import { Button, CheckboxInput, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import { parseStringifiedJson, stringifyJson } from '@/utils/escaped-json'
 
 type ConvertMode = 'stringify' | 'parse'
@@ -23,7 +23,7 @@ const readSource = (m: ConvertMode): string => {
 }
 
 export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [mode, setMode] = useLocalStorage<ConvertMode>('csr-dev-tools-escaped-json-mode', 'stringify')
+  const [mode, setMode] = useInputLocalStorage<ConvertMode>('csr-dev-tools-escaped-json-mode', 'stringify')
   const [source, setSource] = useState(() => readSource(mode))
   const [result, setResult] = useState('')
   const [doubleEscape, setDoubleEscape] = useState(false)
@@ -65,7 +65,9 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    try { localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val)) } catch {}
+    try {
+      localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val))
+    } catch {}
     processInput(val)
   }
 
@@ -126,7 +128,10 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
         <div className="flex w-full grow flex-col gap-4">
           {isStringify && (
             <div className="flex items-center gap-4">
-              <label className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400" htmlFor="double-escape">
+              <label
+                className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400"
+                htmlFor="double-escape"
+              >
                 <CheckboxInput checked={doubleEscape} id="double-escape" onChange={() => handleDoubleEscapeChange()} />
                 Double Escape
               </label>

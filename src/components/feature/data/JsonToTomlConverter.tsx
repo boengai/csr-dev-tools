@@ -4,7 +4,7 @@ import type { ToolComponentProps } from '@/types'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import { getTomlParseError } from '@/utils/toml'
 
 type ConvertMode = 'json-to-toml' | 'toml-to-json'
@@ -23,7 +23,7 @@ const readSource = (m: ConvertMode): string => {
 }
 
 export const JsonToTomlConverter = ({ onAfterDialogClose }: ToolComponentProps) => {
-  const [mode, setMode] = useLocalStorage<ConvertMode>('csr-dev-tools-json-to-toml-mode', 'toml-to-json')
+  const [mode, setMode] = useInputLocalStorage<ConvertMode>('csr-dev-tools-json-to-toml-mode', 'toml-to-json')
   const [source, setSource] = useState(() => readSource(mode))
   const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)

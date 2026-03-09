@@ -4,7 +4,7 @@ import type { ToolComponentProps } from '@/types'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 
 type ConvertMode = 'json-to-xml' | 'xml-to-json'
 
@@ -22,7 +22,7 @@ const readSource = (m: ConvertMode): string => {
 }
 
 export const JsonToXmlConverter = ({ onAfterDialogClose }: ToolComponentProps) => {
-  const [mode, setMode] = useLocalStorage<ConvertMode>('csr-dev-tools-json-to-xml-mode', 'xml-to-json')
+  const [mode, setMode] = useInputLocalStorage<ConvertMode>('csr-dev-tools-json-to-xml-mode', 'xml-to-json')
   const [source, setSource] = useState(() => readSource(mode))
   const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)

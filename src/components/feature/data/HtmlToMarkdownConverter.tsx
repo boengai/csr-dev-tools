@@ -4,7 +4,7 @@ import type { ToolComponentProps } from '@/types'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 
 type ConvertMode = 'html-to-markdown' | 'markdown-to-html'
 
@@ -22,7 +22,7 @@ const readSource = (m: ConvertMode): string => {
 }
 
 export const HtmlToMarkdownConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [mode, setMode] = useLocalStorage<ConvertMode>('csr-dev-tools-html-to-markdown-mode', 'html-to-markdown')
+  const [mode, setMode] = useInputLocalStorage<ConvertMode>('csr-dev-tools-html-to-markdown-mode', 'html-to-markdown')
   const [source, setSource] = useState(() => readSource(mode))
   const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
@@ -66,7 +66,9 @@ export const HtmlToMarkdownConverter = ({ autoOpen, onAfterDialogClose }: ToolCo
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    try { localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val)) } catch {}
+    try {
+      localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val))
+    } catch {}
     processInput(val)
   }
 

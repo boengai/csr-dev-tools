@@ -2,12 +2,12 @@ import DOMPurify from 'dompurify'
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useReducer, useRef } from 'react'
 
-import type { MermaidFixSuggestion } from '@/utils/mermaid-auto-fix'
 import type { ToolComponentProps } from '@/types'
+import type { MermaidFixSuggestion } from '@/utils/mermaid-auto-fix'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import { tv } from '@/utils'
 import { suggestMermaidFix } from '@/utils/mermaid-auto-fix'
 import { downloadPng, downloadSvg, initializeMermaid, renderMermaid, svgToPng } from '@/utils/mermaid-renderer'
@@ -97,7 +97,7 @@ const reducer = (state: State, action: Action): State => {
 }
 
 export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [code, setCode] = useLocalStorage('csr-dev-tools-mermaid-renderer-code', DEFAULT_CODE)
+  const [code, setCode] = useInputLocalStorage('csr-dev-tools-mermaid-renderer-code', DEFAULT_CODE)
   const [state, dispatch] = useReducer(reducer, { ...initialState, dialogOpen: autoOpen ?? false })
   const { dialogOpen, error, exportingPng, fixSuggestion, referenceOpen, svg } = state
   const { toast } = useToast()
@@ -122,7 +122,10 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     } catch (err) {
       if (currentRender === renderCounterRef.current) {
         const errorMessage = err instanceof Error ? err.message : 'Invalid Mermaid syntax'
-        dispatch({ type: 'RENDER_ERROR', payload: { error: errorMessage, fixSuggestion: suggestMermaidFix(input, errorMessage) } })
+        dispatch({
+          type: 'RENDER_ERROR',
+          payload: { error: errorMessage, fixSuggestion: suggestMermaidFix(input, errorMessage) },
+        })
       }
     }
   }, [])
@@ -209,7 +212,10 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
       </div>
 
       <Dialog
-        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
+        injected={{
+          open: dialogOpen,
+          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
+        }}
         onAfterClose={handleAfterClose}
         size="screen"
         title="Mermaid Renderer"
@@ -242,9 +248,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
 
                     {fixSuggestion && (
                       <div className="flex items-center gap-2">
-                        <p className="text-body-xs text-yellow-400">
-                          Suggestion: {fixSuggestion.description}
-                        </p>
+                        <p className="text-yellow-400 text-body-xs">Suggestion: {fixSuggestion.description}</p>
                         <Button onClick={handleApplyFix} size="small" variant="warning">
                           Auto-fix
                         </Button>

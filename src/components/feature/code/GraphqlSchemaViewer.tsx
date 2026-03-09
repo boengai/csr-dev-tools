@@ -5,7 +5,7 @@ import type { GraphqlSchemaInfo, GraphqlTypeInfo, GraphqlTypeKind } from '@/util
 
 import { CodeInput, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 const toolEntry = TOOL_REGISTRY_MAP['graphql-schema-viewer']
 
 const getTypeKindLabel = (kind: GraphqlTypeKind): string => {
@@ -228,7 +228,7 @@ input CreateUserInput {
 scalar DateTime`
 
 export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
-  const [input, setInput] = useLocalStorage('csr-dev-tools-graphql-schema-viewer-input', '')
+  const [input, setInput] = useInputLocalStorage('csr-dev-tools-graphql-schema-viewer-input', '')
   const [schemaInfo, setSchemaInfo] = useState<GraphqlSchemaInfo | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [selectedType, setSelectedType] = useState<string | null>(null)

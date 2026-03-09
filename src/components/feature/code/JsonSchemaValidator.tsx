@@ -4,14 +4,14 @@ import type { ToolComponentProps } from '@/types'
 
 import { Button, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useLocalStorage } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage } from '@/hooks'
 import { type ValidationResult, validateJsonSchema } from '@/utils/json-schema'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-schema-validator']
 
 export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [jsonData, setJsonData] = useLocalStorage('csr-dev-tools-json-schema-validator-data', '')
-  const [jsonSchema, setJsonSchema] = useLocalStorage('csr-dev-tools-json-schema-validator-schema', '')
+  const [jsonData, setJsonData] = useInputLocalStorage('csr-dev-tools-json-schema-validator-data', '')
+  const [jsonSchema, setJsonSchema] = useInputLocalStorage('csr-dev-tools-json-schema-validator-schema', '')
   const [result, setResult] = useState<ValidationResult | null>(null)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const initializedRef = useRef(false)
@@ -59,12 +59,16 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => {
-            setDialogOpen(true)
-            if (jsonData.trim() && jsonSchema.trim()) {
-              setResult(validateJsonSchema(jsonData, jsonSchema))
-            }
-          }} variant="default">
+          <Button
+            block
+            onClick={() => {
+              setDialogOpen(true)
+              if (jsonData.trim() && jsonSchema.trim()) {
+                setResult(validateJsonSchema(jsonData, jsonSchema))
+              }
+            }}
+            variant="default"
+          >
             Validate
           </Button>
         </div>
@@ -121,7 +125,10 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
                 <p className="text-red-400 mb-2 text-body-sm font-medium">❌ Validation Errors</p>
                 <ul className="flex flex-col gap-1">
                   {result.errors.map((err) => (
-                    <li className="text-red-300 font-mono text-body-xs" key={`${err.path}-${err.keyword}-${err.message}`}>
+                    <li
+                      className="text-red-300 font-mono text-body-xs"
+                      key={`${err.path}-${err.keyword}-${err.message}`}
+                    >
                       <span className="text-red-400">{err.path}</span> — {err.message}{' '}
                       <span className="text-red-500">(keyword: {err.keyword})</span>
                     </li>
