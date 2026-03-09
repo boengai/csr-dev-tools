@@ -6,6 +6,7 @@ import type {
   RadioGroupInputProps,
   RangeInputProps,
   SelectInputProps,
+  SwitchInputProps,
   TextAreaInputProps,
   TextInputProps,
   UploadInputProps,
@@ -23,6 +24,7 @@ export type InputControllerProps =
   | RadioGroupInputForm
   | RangeInputForm
   | SelectInputForm
+  | SwitchInputForm
   | TextAreaInputForm
   | TextInputForm
   | TimeInputForm
@@ -68,6 +70,10 @@ type TextInputForm = Omit<TextInputProps, 'type'> & {
 
 type TimeInputForm = Omit<TextInputProps, 'type'> & {
   type: 'time'
+}
+
+type SwitchInputForm = SwitchInputProps & {
+  type: 'switch'
 }
 
 type UploadInputForm = UploadInputProps & {

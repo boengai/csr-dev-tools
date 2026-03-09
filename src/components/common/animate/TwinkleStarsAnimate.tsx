@@ -1,4 +1,3 @@
-import { m } from 'motion/react'
 import { useMemo } from 'react'
 
 export const TwinkleStarsAnimate = () => {
@@ -17,25 +16,15 @@ export const TwinkleStarsAnimate = () => {
   return (
     <section className="fixed top-0 left-0 z-0 h-[90dvh] w-full overflow-hidden">
       {stars.map((star) => (
-        <m.div
-          animate={{
-            opacity: [0, 1, 0],
-            scale: [0.95, 1, 0.95],
-          }}
+        <div
           className="absolute rounded-full bg-white"
-          initial={{ opacity: 0, scale: 0.95 }}
           key={star.id}
           style={{
+            animation: `twinkle ${star.duration}s ease-in-out ${star.delay}s infinite`,
             height: `${star.size}px`,
             left: `${star.x}%`,
             top: `${star.y}%`,
             width: `${star.size}px`,
-          }}
-          transition={{
-            delay: star.delay,
-            duration: star.duration,
-            ease: 'easeInOut',
-            repeat: Infinity,
           }}
         />
       ))}

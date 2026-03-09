@@ -31,6 +31,17 @@ export type CheckboxInputProps = {
   onChange?: (checked: boolean) => void
 }
 
+export type SwitchInputProps = {
+  'aria-label'?: string
+  checked: boolean
+  className?: string
+  disabled?: boolean
+  id?: string
+  name?: string
+  onBlur?: () => void
+  onChange?: (checked: boolean) => void
+}
+
 export type ColorInputProps = {
   'aria-label'?: string
   className?: string

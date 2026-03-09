@@ -9,11 +9,12 @@ import {
   HamburgerIcon,
   NotoEmoji,
   SearchIcon,
+  SettingsDialog,
   Sidebar,
   ToastProvider,
 } from '@/components'
 import { ROUTE_PATH } from '@/constants'
-import { useCommandPaletteStore, useKeyboardShortcuts, useSidebarStore } from '@/hooks'
+import { useCommandPaletteStore, useKeyboardShortcuts, usePersistSettings, useSidebarStore } from '@/hooks'
 
 const TwinkleStarsAnimate = lazy(() =>
   import('@/components/common/animate/TwinkleStarsAnimate').then(
@@ -36,12 +37,13 @@ export default function App() {
   const isOpen = useSidebarStore((state) => state.isOpen)
   const toggle = useSidebarStore((state) => state.toggle)
   const openCommandPalette = useCommandPaletteStore((state) => state.open)
+  const showBackgroundAnimation = usePersistSettings((s) => s.value.showBackgroundAnimation)
   const { pathname } = useLocation()
   const isToolPage = pathname.startsWith(ROUTE_PATH.TOOLS + '/')
 
   return (
     <LazyMotion features={domAnimation} strict>
-      <header className="relative z-30 flex h-12 shrink-0 items-center gap-2 px-4 pt-[var(--safe-area-inset-top)]">
+      <header className="relative z-30 flex h-12 shrink-0 items-center gap-2 px-4 pt-(--safe-area-inset-top)">
         <button
           aria-expanded={isOpen}
           aria-label="Toggle navigation"
@@ -82,14 +84,17 @@ export default function App() {
           >
             <GitHubIcon />
           </a>
+          <SettingsDialog />
         </div>
       </header>
 
       <Sidebar />
       <main className="bg-pixel-texture relative flex grow flex-col overflow-y-auto [&>*:not(:first-child)]:relative">
-        <Suspense fallback={<></>}>
-          <TwinkleStarsAnimate />
-        </Suspense>
+        {showBackgroundAnimation && (
+          <Suspense fallback={<></>}>
+            <TwinkleStarsAnimate />
+          </Suspense>
+        )}
         <Suspense fallback={<PageLoading />}>
           <Outlet />
         </Suspense>
