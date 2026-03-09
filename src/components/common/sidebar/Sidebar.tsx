@@ -8,6 +8,8 @@ import { useSidebarStore } from '@/hooks'
 import { tv } from '@/utils'
 
 import { XIcon } from '../icon'
+import { SidebarCategory } from './SidebarCategory'
+import { SidebarToolItem } from './SidebarToolItem'
 
 const sidebarNavStyles = tv({
   base: 'fixed inset-y-0 left-0 z-50 flex flex-col border-r border-gray-800 bg-gray-950 pt-(--safe-area-inset-top) pb-(--safe-area-inset-bottom)',
@@ -18,8 +20,6 @@ const sidebarNavStyles = tv({
     },
   },
 })
-import { SidebarCategory } from './SidebarCategory'
-import { SidebarToolItem } from './SidebarToolItem'
 
 export const Sidebar = () => {
   const close = useSidebarStore((state) => state.close)

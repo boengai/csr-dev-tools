@@ -1,9 +1,7 @@
+import CodeMirror, { EditorView } from '@uiw/react-codemirror'
 import { useMemo } from 'react'
-import CodeMirror from '@uiw/react-codemirror'
 
 import type { CodeInputProps } from '@/types'
-
-import { EditorView } from '@uiw/react-codemirror'
 
 import { tv } from '@/utils'
 

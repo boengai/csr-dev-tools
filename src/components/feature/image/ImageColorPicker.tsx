@@ -79,9 +79,11 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
   )
 
   const handleCanvasMove = useCallback(
-    rafThrottle((e: React.MouseEvent<HTMLCanvasElement>) => {
-      setHoverColor(getColorAt(e))
-    }),
+    (e: React.MouseEvent<HTMLCanvasElement>) => {
+      rafThrottle((ev: React.MouseEvent<HTMLCanvasElement>) => {
+        setHoverColor(getColorAt(ev))
+      })(e)
+    },
     [getColorAt],
   )
 

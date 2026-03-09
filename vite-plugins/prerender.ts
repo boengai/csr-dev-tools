@@ -20,6 +20,7 @@ export const prerender = (routes: Array<PreRenderRoute>): Plugin => {
       const templatePath = resolve(distDir, 'index.html')
 
       if (!existsSync(templatePath)) {
+        // eslint-disable-next-line no-console -- build plugin needs console output
         console.warn('[prerender] dist/index.html not found, skipping pre-render')
         return
       }
@@ -65,6 +66,7 @@ export const prerender = (routes: Array<PreRenderRoute>): Plugin => {
         writeFileSync(outputPath, html, 'utf-8')
       }
 
+      // eslint-disable-next-line no-console -- build plugin needs console output
       console.log(`[prerender] Generated ${routes.length} static HTML files`)
     },
     name: 'vite-plugin-prerender-seo',

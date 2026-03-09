@@ -50,9 +50,11 @@ const escapeJavaScript = (input: string): string => {
     .replace(/\n/g, '\\n')
     .replace(/\r/g, '\\r')
     .replace(/\t/g, '\\t')
+    // eslint-disable-next-line no-control-regex -- intentional: matching backspace char
     .replace(/\x08/g, '\\b')
     .replace(/\f/g, '\\f')
     .replace(/\v/g, '\\v')
+    // eslint-disable-next-line no-control-regex -- intentional: matching null char
     .replace(/\0/g, '\\0')
 }
 

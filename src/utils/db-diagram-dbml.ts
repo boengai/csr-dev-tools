@@ -157,7 +157,7 @@ function parseConstraintBrackets(bracketContent: string): {
     } else if (part.startsWith('ref:')) {
       // inline ref: ref: > table.column or ref: - table.column
       const refStr = part.slice(4).trim()
-      const refMatch = refStr.match(/^([<>\-]+)\s*(\w+)\.(\w+)$/)
+      const refMatch = refStr.match(/^([<>-]+)\s*(\w+)\.(\w+)$/)
       if (refMatch) {
         inlineRef = { column: refMatch[3], table: refMatch[2] }
         result.isForeignKey = true
@@ -228,7 +228,7 @@ function parseRefLine(
   // Ref: table1.col - table2.col
   // Ref: table1.col <> table2.col
   const trimmed = line.trim()
-  const refMatch = trimmed.match(/^Ref\s*:\s*(\w+)\.(\w+)\s*(<>|[<>\-])\s*(\w+)\.(\w+)\s*$/i)
+  const refMatch = trimmed.match(/^Ref\s*:\s*(\w+)\.(\w+)\s*(<>|[<>-])\s*(\w+)\.(\w+)\s*$/i)
   if (!refMatch) return null
 
   const symbol = refMatch[3]

@@ -186,7 +186,7 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
   const handleLoadExample = useCallback(() => {
     setInput(SAMPLE_PROTO)
     handleParse(SAMPLE_PROTO)
-  }, [handleParse])
+  }, [handleParse, setInput])
 
   const handleSelectEntry = useCallback(
     async (entry: BrowsableEntry) => {

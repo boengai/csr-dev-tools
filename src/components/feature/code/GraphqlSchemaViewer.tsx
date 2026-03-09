@@ -275,7 +275,7 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
   const handleLoadExample = useCallback(() => {
     setInput(SAMPLE_SCHEMA)
     handleParse(SAMPLE_SCHEMA)
-  }, [handleParse])
+  }, [handleParse, setInput])
 
   const handleNavigateToType = useCallback(
     (typeName: string) => {
