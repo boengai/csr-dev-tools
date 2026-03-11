@@ -1,11 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import type { GraphqlSchemaInfo, GraphqlTypeInfo, GraphqlTypeKind } from '@/utils/graphql-schema-viewer'
-
 import { CodeInput, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
+import { cnMerge } from '@/utils'
+import type { GraphqlSchemaInfo, GraphqlTypeInfo, GraphqlTypeKind } from '@/utils/graphql-schema-viewer'
 const toolEntry = TOOL_REGISTRY_MAP['graphql-schema-viewer']
 
 const getTypeKindLabel = (kind: GraphqlTypeKind): string => {
@@ -34,7 +34,10 @@ const KindBadge = ({ kind }: { kind: GraphqlTypeKind }) => {
   return (
     <span
       aria-label={`${getTypeKindLabel(kind)} type`}
-      className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded border text-[10px] font-bold ${style.badge}`}
+      className={cnMerge(
+        'inline-flex h-6 w-6 shrink-0 items-center justify-center rounded border text-[10px] font-bold',
+        style.badge,
+      )}
     >
       {style.label}
     </span>

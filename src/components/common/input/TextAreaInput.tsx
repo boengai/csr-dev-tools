@@ -1,6 +1,7 @@
 import type { ChangeEvent, KeyboardEvent } from 'react'
 
 import type { TextAreaInputProps } from '@/types'
+import { cnMerge } from '@/utils'
 
 import { inputVariants } from './TextInput'
 
@@ -28,7 +29,7 @@ export const TextAreaInput = ({
   }
 
   return (
-    <div className={`${wrapperClassName} h-auto flex-col py-2`} data-disabled={disabled}>
+    <div className={cnMerge(wrapperClassName, 'h-auto flex-col py-2')} data-disabled={disabled}>
       <textarea
         {...props}
         autoComplete="off"

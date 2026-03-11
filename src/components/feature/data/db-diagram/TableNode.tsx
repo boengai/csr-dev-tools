@@ -1,21 +1,22 @@
 import type { Node, NodeProps } from '@xyflow/react'
-
 import { Handle, Position } from '@xyflow/react'
 import { useCallback, useRef, useState } from 'react'
 
-import type { ColumnType, TableColumn, TableNodeData } from '@/types'
-
 import { Button, SelectInput, TextInput } from '@/components/common'
 import { XIcon } from '@/components/common/icon'
-import { COLUMN_TYPES } from '@/utils'
+import type { ColumnType, TableColumn, TableNodeData } from '@/types'
+import { cnMerge, COLUMN_TYPES } from '@/utils'
 
 export type TableNode = Node<TableNodeData, 'tableNode'>
 
 const CONSTRAINT_COLORS: Record<string, string> = {
-  error: 'data-[state=active]:bg-error/15 data-[state=active]:text-error data-[state=active]:ring-1 data-[state=active]:ring-error/30',
+  error:
+    'data-[state=active]:bg-error/15 data-[state=active]:text-error data-[state=active]:ring-1 data-[state=active]:ring-error/30',
   info: 'data-[state=active]:bg-info/15 data-[state=active]:text-info data-[state=active]:ring-1 data-[state=active]:ring-info/30',
-  success: 'data-[state=active]:bg-success/15 data-[state=active]:text-success data-[state=active]:ring-1 data-[state=active]:ring-success/30',
-  warning: 'data-[state=active]:bg-warning/15 data-[state=active]:text-warning data-[state=active]:ring-1 data-[state=active]:ring-warning/30',
+  success:
+    'data-[state=active]:bg-success/15 data-[state=active]:text-success data-[state=active]:ring-1 data-[state=active]:ring-success/30',
+  warning:
+    'data-[state=active]:bg-warning/15 data-[state=active]:text-warning data-[state=active]:ring-1 data-[state=active]:ring-warning/30',
 }
 
 const ConstraintToggle = ({
@@ -31,7 +32,10 @@ const ConstraintToggle = ({
 }) => {
   return (
     <button
-      className={`rounded px-1 py-0.5 text-[10px] leading-none font-bold transition-colors data-[state=inactive]:bg-gray-900 data-[state=inactive]:text-gray-500 ${CONSTRAINT_COLORS[color] ?? ''}`}
+      className={cnMerge(
+        'rounded px-1 py-0.5 text-[10px] leading-none font-bold transition-colors',
+        CONSTRAINT_COLORS[color] ?? '',
+      )}
       data-state={active ? 'active' : 'inactive'}
       onClick={(e) => {
         e.stopPropagation()
@@ -101,11 +105,7 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
             value={editName}
           />
         ) : (
-          <Button
-            onClick={startEditing}
-            size="small"
-            variant="text"
-          >
+          <Button onClick={startEditing} size="small" variant="text">
             <span className="font-bold">🗄️ {data.tableName}</span>
           </Button>
         )}

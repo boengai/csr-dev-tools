@@ -1,12 +1,11 @@
 import { useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import type { CertificateExtension, CertificateInfo, ValidityStatus } from '@/utils/certificate-decoder'
-
 import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { tv } from '@/utils'
+import type { ToolComponentProps } from '@/types'
+import { cnMerge, tv } from '@/utils'
+import type { CertificateExtension, CertificateInfo, ValidityStatus } from '@/utils/certificate-decoder'
 
 const toolEntry = TOOL_REGISTRY_MAP['certificate-decoder']
 
@@ -75,7 +74,10 @@ const ValidityBadge = ({
 
   return (
     <div
-      className={`inline-flex items-center gap-1.5 rounded border px-2.5 py-1 text-body-xs font-medium ${config.style}`}
+      className={cnMerge(
+        'inline-flex items-center gap-1.5 rounded border px-2.5 py-1 text-body-xs font-medium',
+        config.style,
+      )}
     >
       <span aria-hidden="true">{config.icon}</span>
       <span>

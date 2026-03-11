@@ -14,6 +14,7 @@ import {
 import { AnimatePresence, m } from 'motion/react'
 
 import type { SelectInputProps } from '@/types'
+import { cnMerge } from '@/utils'
 
 import { CheckIcon, ChevronIcon } from '../icon'
 import { inputVariants } from './TextInput'
@@ -33,7 +34,7 @@ export const SelectInput = ({
 
   return (
     <Root disabled={disabled} name={name} onValueChange={onChange} value={value}>
-      <Trigger className={`${wrapperClassName} group [&>span]:first:truncate`} onBlur={onBlur}>
+      <Trigger className={cnMerge(wrapperClassName, 'group [&>span]:first:truncate')} onBlur={onBlur}>
         <Value placeholder={placeholder} />
         <Icon className="text-gray-400 transition-transform duration-500 group-data-[state=open]:rotate-180">
           <ChevronIcon size={size === 'compact' ? 16 : 20} />

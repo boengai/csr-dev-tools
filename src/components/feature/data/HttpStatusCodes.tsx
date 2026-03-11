@@ -1,11 +1,10 @@
 import { useMemo, useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import type { HttpStatusCategory } from '@/utils/http-status'
-
 import { FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { tv } from '@/utils'
+import type { ToolComponentProps } from '@/types'
+import { cnMerge, tv } from '@/utils'
+import type { HttpStatusCategory } from '@/utils/http-status'
 import { filterHttpStatusCodes, HTTP_STATUS_CODES } from '@/utils/http-status'
 
 const categoryFilterStyles = tv({
@@ -91,7 +90,10 @@ export const HttpStatusCodes = (_props: ToolComponentProps) => {
             <div key={code.code}>
               {!category && (i === 0 || filtered[i - 1].category !== code.category) && (
                 <p
-                  className={`${sectionHeaderStyles({ spaced: i > 0 })} ${CATEGORY_COLORS[code.category] ?? 'text-gray-300'}`}
+                  className={cnMerge(
+                    sectionHeaderStyles({ spaced: i > 0 }),
+                    CATEGORY_COLORS[code.category] ?? 'text-gray-300',
+                  )}
                 >
                   {code.category}
                 </p>
@@ -99,7 +101,10 @@ export const HttpStatusCodes = (_props: ToolComponentProps) => {
               <div className="rounded border border-gray-800 bg-gray-950 p-3">
                 <div className="flex items-baseline gap-2">
                   <span
-                    className={`font-mono text-body-lg font-bold ${CATEGORY_COLORS[code.category] ?? 'text-gray-300'}`}
+                    className={cnMerge(
+                      'font-mono text-body-lg font-bold',
+                      CATEGORY_COLORS[code.category] ?? 'text-gray-300',
+                    )}
                   >
                     {code.code}
                   </span>

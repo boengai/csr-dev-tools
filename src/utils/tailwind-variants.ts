@@ -1,6 +1,6 @@
-import { createTV } from 'tailwind-variants'
+import { createTV, cnMerge as cnMergeFn, type TVConfig } from 'tailwind-variants'
 
-export const tv = createTV({
+const twMergeConfig: TVConfig = {
   twMerge: true,
   twMergeConfig: {
     extend: {
@@ -18,4 +18,7 @@ export const tv = createTV({
       },
     },
   },
-})
+}
+
+export const cnMerge = (...classes: Array<string>) => cnMergeFn(classes)(twMergeConfig)
+export const tv = createTV(twMergeConfig)
