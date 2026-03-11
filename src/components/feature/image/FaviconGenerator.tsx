@@ -1,17 +1,16 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import { downloadFaviconsAsZip, type FaviconResult, generateFaviconLinkTags, generateFavicons } from '@/utils'
-
 import { Button, CopyButton, Dialog, DownloadIcon, RefreshIcon, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
+import { downloadFaviconsAsZip, type FaviconResult, generateFaviconLinkTags, generateFavicons } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['favicon-generator']
 const linkTags = generateFaviconLinkTags()
 
-export const FaviconGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
+export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
+  const [dialogOpen, setDialogOpen] = useState(false)
   const [results, setResults] = useState<Array<FaviconResult>>([])
   const [sourcePreview, setSourcePreview] = useState<string>('')
   const [processing, setProcessing] = useState(false)
