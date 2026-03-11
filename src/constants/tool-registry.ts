@@ -6,9 +6,9 @@ import type { ToolCategory, ToolRegistryEntry } from '@/types'
 
 export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
-    category: 'Generator',
+    category: 'Security',
     component: lazy(() =>
-      import('@/components/feature/generator/AesEncryptDecrypt').then(
+      import('@/components/feature/security/AesEncryptDecrypt').then(
         ({ AesEncryptDecrypt }: { AesEncryptDecrypt: ComponentType }) => ({
           default: AesEncryptDecrypt,
         }),
@@ -241,9 +241,9 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
-    category: 'Generator',
+    category: 'Security',
     component: lazy(() =>
-      import('@/components/feature/generator/HashGenerator').then(
+      import('@/components/feature/security/HashGenerator').then(
         ({ HashGenerator }: { HashGenerator: ComponentType }) => ({
           default: HashGenerator,
         }),
@@ -282,9 +282,9 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     },
   },
   {
-    category: 'Generator',
+    category: 'Security',
     component: lazy(() =>
-      import('@/components/feature/generator/HmacGenerator').then(
+      import('@/components/feature/security/HmacGenerator').then(
         ({ HmacGenerator }: { HmacGenerator: ComponentType }) => ({
           default: HmacGenerator,
         }),

@@ -1,25 +1,28 @@
 ---
-stepsCompleted: ['step-01-validate-prerequisites', 'step-02-design-epics', 'step-03-create-stories', 'step-04-final-validation']
 status: complete
-inputDocuments:
-  - prd.md
-  - architecture.md
-  - ux-design-specification.md
+reorganization: true
+previousEpics: "5-27 (scattered by batch)"
+newEpics: "5-16 (1 epic = 1 category)"
+date: 2026-03-11
 ---
 
-<!-- DEPRECATION NOTICE (story 3-1): ToolLayout and OutputDisplay were deprecated and removed.
-     Each tool owns its own layout. CopyButton remains active. References to ToolLayout/OutputDisplay
-     in epic dependencies and story ACs below are outdated — ignore them during implementation. -->
+# CSR Dev Tools — Reorganized Epic Breakdown
 
-# csr-dev-tools - Epic Breakdown
+## Reorganization Summary
 
-## Overview
+Epics 5-27 have been consolidated into Epics 5-16, organized by ToolCategory. Each epic now maps 1:1 to a tool category in the codebase. This makes it straightforward to add new tools: find the category epic, add a story.
 
-This document provides the complete epic and story breakdown for csr-dev-tools, decomposing the requirements from the PRD, UX Design, and Architecture into implementable stories.
+**Epics 1-4 remain unchanged:**
+- Epic 1: Platform Navigation & Tool Discovery (foundation)
+- Epic 2: Standardized Tool Experience (foundation)
+- Epic 3: Existing Tool Baseline & Enhancement (foundation)
+- Epic 4: Quality Infrastructure & Contributor Experience (foundation)
+
+---
 
 ## Requirements Inventory
 
-### Functional Requirements
+### Functional Requirements (Original)
 
 FR1: Users can process any supported conversion/transformation entirely in the browser without server communication
 FR2: Users can upload files (images, text) from their device for processing
@@ -60,7 +63,30 @@ FR36: Developers can reference a documented feature spec for each existing tool 
 FR37: Developers can run regression test stories for each existing tool covering happy paths, edge cases, and error states
 FR38: Users can see a one-line tool description and placeholder text or tooltips on each input field explaining accepted formats and values
 
-### NonFunctional Requirements
+### Functional Requirements (Expansion 3)
+
+FR-E3-01: YAML Formatting & Validation
+FR-E3-02: ENV File Conversion
+FR-E3-03: Escaped JSON Stringification
+FR-E3-04: HTML Entity Encoding/Decoding
+FR-E3-05: Aspect Ratio Calculation
+FR-E3-06: Color Palette Generation
+FR-E3-07: Placeholder Image Generation
+FR-E3-08: Data URI Generation
+FR-E3-09: SSH Key Fingerprint Viewing
+FR-E3-10: X.509 Certificate Decoding
+FR-E3-11: Bcrypt Hashing & Verification
+FR-E3-12: Chmod Permission Calculation
+FR-E3-13: RSA Key Pair Generation
+FR-E3-14: GraphQL Schema Viewing
+FR-E3-15: Protobuf to JSON Conversion
+FR-E3-16: TypeScript Playground
+FR-E3-17: JSON Path Evaluation
+FR-E3-18: Timezone Conversion
+FR-E3-19: Mermaid Diagram Rendering
+FR-E3-20: IP/Subnet Calculation
+
+### Non-Functional Requirements
 
 NFR1: Tool processing operations (color conversion, encoding, unit conversion) complete in under 100ms as measured by browser Performance API timing
 NFR2: Image processing operations (resize, convert, compress) complete in under 3 seconds for files up to 10MB as measured by automated benchmark tests
@@ -88,497 +114,57 @@ NFR23: Lighthouse SEO score of 90+
 NFR24: Each tool page has unique title, meta description, and Open Graph tags
 NFR25: Semantic HTML with proper heading hierarchy on all pages
 
-### Additional Requirements
-
-**From Architecture:**
-
-- Brownfield project — no starter template needed. Existing MVP with 6 tools is the foundation.
-- Centralized TOOL_REGISTRY in `src/constants/tool-registry.ts` as single source of truth for all tools (metadata, routes, lazy imports, SEO)
-- Hybrid routing: tools live on dashboard (inline cards) AND have dedicated routes (`/tools/{tool-slug}`) for SEO and direct access
-- Build-time pre-rendering via Vite plugin for per-tool SEO (static HTML generation per tool route)
-- Separate Zustand stores per concern: `useSidebarStore`, `useCommandPaletteStore`
-- Standardized error handling: per-tool `ToolErrorBoundary`
-- Shared validation utilities in `src/utils/validation.ts` (e.g., `isValidHex`, `isValidBase64`)
-- Testing strategy: unit tests (Vitest, node env) for logic + E2E tests (Playwright) for user journeys — no component testing layer
-- CI/CD pipeline: lint + format check + unit tests + build (with pre-rendering) + E2E tests + Lighthouse CI
-- Per-tool layout — each tool owns its own layout structure
-- Code splitting per route via `lazyRouteComponent()` — each tool is its own chunk
-- Tool component modes: card (dashboard) vs. page (dedicated route) via `mode` variant
-- Implementation sequence: (1) Tool Registry, (2) Per-tool routes, (3) Sidebar + Command Palette, (4) Pre-rendering, (5) Validation utilities, (6) Error handling, (7) E2E + Lighthouse CI
-- Input processing patterns: text tools on input change with 300ms debounce; file tools on explicit button click; generators on explicit button click; live preview on input change with 300ms debounce
-- Loading state patterns: no spinners — use progress bars or skeleton states only. ProgressBar only for operations >300ms.
-- Keyboard shortcuts: `Cmd+K` / `Ctrl+K` for Command Palette toggle (reserved). Centralized `useKeyboardShortcuts` hook.
-- CONTRIBUTING.md required for contributor onboarding (FR33)
-
-**From UX Design:**
-
-- Sidebar system: collapsible panel on left (~240-280px on desktop), full-screen overlay on mobile. Categories with tool count badges. Hamburger toggle in header.
-- Command Palette: `Cmd+K`/`Ctrl+K` keyboard-triggered search overlay with fuzzy filtering, arrow key navigation, Enter to select
-- Per-tool layout structure: header → input region → output region → action bar. Mobile stacks vertically.
-- CopyButton component: icon morphs clipboard→check (300ms), reverts after 2s. Toast "Copied to clipboard".
-- Formatted read-only output areas with integrated copy via `CopyButton`. `aria-live="polite"`.
-- Dark-first theme with OKLCH color space. Space/Universe theme identity. Space Mono typography.
-- Motion animations: sidebar slide (300ms ease-out), palette fade, button morphs via Motion library
-- Real-time output for text tools (no "Convert" button needed); explicit action buttons for file tools and generators
-- Error prevention first: constrain inputs, disable invalid options, smart defaults. Inline errors only, never modal.
-- Error message format: concise, actionable, no blame. Always include example of valid input.
-- Button hierarchy: primary (filled, max ONE per tool), secondary (outlined), tertiary (text-only), destructive (outlined error color)
-- File upload zone: dashed border, upload icon, accepted formats listed. Drag-and-drop + click.
-- Processing state: input locked (opacity 0.7) during processing, cancelable for long operations
-- Card highlight pulse when navigating via sidebar or Command Palette (500ms, --color-primary border)
-- Toast conventions: copy success = "Copied to clipboard", download success = "Downloaded [filename]", duration 2.5s auto-dismiss
-- Responsive design: 375px min viewport, 44x44px touch targets, mobile-first breakpoints
-- Zero-onboarding: every tool is self-explanatory via visible labels, smart placeholders, format hints
-- Accessibility: Radix UI for accessible primitives, focus trapping in modals, `Escape` closes overlays, all elements keyboard-accessible
-
-### FR Coverage Map
-
-FR1: Epic 2 - Browser-only processing (client-side pattern)
-FR2: Epic 2 - File upload capability (UploadInput standardization)
-FR3: Epic 2 - Download/copy output (CopyButton)
-FR4: Epic 2 - Sub-500ms processing results (real-time output pattern)
-FR5: Epic 3 - Color conversion between HEX, RGB, HSL (existing tool baseline)
-FR6: Epic 3 - Color input via text or picker (existing tool enhancement)
-FR7: Epic 3 - Copy color values to clipboard (existing tool baseline)
-FR8: Epic 3 - Base64 encode/decode (existing tool baseline)
-FR9: Epic 5 - URL encode/decode (new tool)
-FR10: Epic 5 - JWT token decoding (new tool)
-FR11: Epic 3 - Image format conversion (existing tool baseline)
-FR12: Epic 3 - Image resize (existing tool baseline)
-FR13: Epic 10 - Image compression with quality control (new capability)
-FR14: Epic 10 - Image cropping with aspect ratio presets (new capability)
-FR15: Epic 3 - Unix timestamp conversion (existing tool baseline)
-FR16: Epic 3 - PX to REM conversion (existing tool baseline)
-FR17: Epic 6 - JSON format/validate with syntax highlighting (new tool)
-FR18: Epic 6 - JSON to YAML conversion (new tool)
-FR19: Epic 6 - JSON to CSV conversion (new tool)
-FR20: Epic 7 - Text diff comparison (new tool)
-FR21: Epic 7 - Regex testing with live highlighting (new tool)
-FR22: Epic 8 - UUID generation (new tool)
-FR23: Epic 8 - Password generation (new tool)
-FR24: Epic 8 - Hash generation (new tool)
-FR25: Epic 9 - CSS box-shadow visual generator (new tool)
-FR26: Epic 1 - Central dashboard browsing (tool registry + dashboard)
-FR27: Epic 1 - Direct URL navigation per tool (hybrid routing)
-FR28: Epic 1 - Search/filter tools by name or category (command palette + sidebar)
-FR29: Epic 1 - Mobile access at 375px with touch-friendly layout (responsive sidebar)
-FR30: Epic 3 - Dashboard drag-and-drop customization (existing feature baseline)
-FR31: Epic 3 - Persistent layout preferences (existing feature baseline)
-~~FR32: Epic 1 - Light/dark theme toggle (theme system)~~ — **NOT PLANNED**
-FR33: Epic 4 - CONTRIBUTING guide with file structure and PR checklist
-FR34: Epic 4 - Local development environment setup
-FR35: Epic 4 - Test validation for contributor changes
-FR36: Epic 3 - Feature spec documentation per existing tool
-FR37: Epic 3 - Regression test stories per existing tool
-FR38: Epic 2 - Tool descriptions, placeholders, and format tooltips
-
-## Epic List
-
-### Epic 1: Platform Navigation & Tool Discovery
-Users can discover, search, and navigate to all tools via a categorized sidebar, command palette (Cmd+K), and dedicated URLs — on any device.
-**FRs covered:** FR26, FR27, FR28, FR29
-**Depends on:** None — builds on existing MVP foundation
-
-### Epic 2: Standardized Tool Experience
-Users get a consistent, self-explanatory, accessible tool interface with instant feedback, clear error handling, and one-click output capture across every tool.
-**FRs covered:** FR1, FR2, FR3, FR4, FR38
-**Depends on:** Epic 1 (TOOL_REGISTRY for tool metadata and descriptions)
-
-### Epic 3: Existing Tool Baseline & Enhancement
-Users get documented, regression-tested, and enhanced versions of all 6 existing tools — refactored to the standardized layout with improved UX.
-**FRs covered:** FR5, FR6, FR7, FR8, FR11, FR12, FR15, FR16, FR30, FR31, FR36, FR37
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
-
-### Epic 4: Quality Infrastructure & Contributor Experience
-Contributors can add new tools following clear documented patterns, with automated CI/CD quality gates protecting the codebase.
-**FRs covered:** FR33, FR34, FR35
-**Depends on:** Epic 1 (TOOL_REGISTRY for contributor workflow documentation)
-
-### Epic 5: Encoding & Decoding Tools
-Users can encode/decode URLs and decode JWT tokens to inspect headers and payloads.
-**FRs covered:** FR9, FR10
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
-
-### Epic 6: Data & Format Tools
-Users can format/validate JSON and convert between JSON, YAML, and CSV formats.
-**FRs covered:** FR17, FR18, FR19
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
-
-### Epic 7: Text Analysis Tools
-Users can compare text side-by-side to spot differences and test regex patterns with live match highlighting.
-**FRs covered:** FR20, FR21
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
-
-### Epic 8: Generator Tools
-Users can generate UUIDs, secure passwords, and cryptographic hash values.
-**FRs covered:** FR22, FR23, FR24
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
-
-### Epic 9: CSS Visual Tools
-Users can visually create CSS box-shadow values with a live preview and copy the CSS output.
-**FRs covered:** FR25
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
-
-### Epic 10: Advanced Image Tools
-Users can compress images with quality control and crop images using freeform or preset aspect ratios.
-**FRs covered:** FR13, FR14
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton). Recommended after Epic 3 Stories 3.3/3.4 (Image tool baseline)
+New (Expansion 3):
+- NFR-E3-01: Monaco Editor lazy-load with loading skeleton
+- NFR-E3-02: Mermaid library lazy-load with loading skeleton
+- NFR-E3-03: RSA 4096-bit generation progress indicator
+- NFR-E3-04: Bcrypt hashing progress/elapsed time indicator
 
 ---
 
-## Epic 1: Platform Navigation & Tool Discovery
+## Common Dependencies (all tool stories)
 
-Users can discover, search, and navigate to all tools via a categorized sidebar, command palette (Cmd+K), and dedicated URLs — on any device.
+- Epic 1: TOOL_REGISTRY, route constants, RoutePath typing
+- Epic 2: CopyButton
+- Established patterns: per-tool layout, CopyButton
+- All libraries must be lazy-loaded (code-split) to maintain NFR8
 
-**Depends on:** None — builds on existing MVP foundation
+## Common Acceptance Criteria (all tool stories)
 
-### Story 1.1: Centralized Tool Registry
-
-As a **user**,
-I want **all tools organized through a single registry that powers the dashboard**,
-So that **I can browse a consistent, up-to-date tool catalog from the central dashboard**.
-
-**Acceptance Criteria:**
-
-**Given** the application source code
-**When** a developer inspects `src/constants/tool-registry.ts`
-**Then** a `TOOL_REGISTRY` array exists containing entries for all 6 existing tools (Color Converter, Base64 Encoder, Image Converter, Image Resizer, Unix Timestamp, PX to REM)
-**And** each entry includes: `key` (kebab-case), `name`, `category`, `emoji`, `description`, `seo` (title + description), `routePath`, and `component` (lazy import)
-
-**Given** the home page dashboard
-**When** the page renders
-**Then** tool cards are generated from `TOOL_REGISTRY` instead of manual `FEATURE_TITLE` constants and hardcoded lazy imports
-**And** existing drag-and-drop layout and persistent preferences continue to work unchanged
-
-**Given** a `ToolRegistryEntry` type defined in `src/types/constants/tool-registry.ts`
-**When** a registry entry is created
-**Then** TypeScript enforces all required fields are present with correct types
-
-**Given** the existing 6 tools
-**When** the registry is consumed by the dashboard
-**Then** all 6 tools render and function identically to the pre-registry behavior (no regression)
-
-### Story 1.2: Dedicated Tool Routes & SEO
-
-As a **user**,
-I want **to navigate directly to any tool via a unique URL and find tools through search engines**,
-So that **I can bookmark specific tools and discover them via Google**.
-
-**Acceptance Criteria:**
-
-**Given** the `TOOL_REGISTRY` exists
-**When** the router configuration is loaded
-**Then** each tool has a dedicated route at `/tools/{tool-key}` generated from the registry
-**And** each route lazy-loads only that tool's component chunk
-
-**Given** a user navigates to `/tools/color-converter`
-**When** the page renders
-**Then** the Color Converter tool is displayed in full-page mode
-**And** the page has a unique `<title>` tag: "Color Converter - CSR Dev Tools"
-**And** the page has a unique `<meta name="description">` tag
-**And** the page has Open Graph tags (`og:title`, `og:description`)
-
-**Given** a build-time pre-rendering plugin is configured in `vite.config.ts`
-**When** `pnpm build` runs
-**Then** static HTML is generated for each tool route with correct meta tags embedded
-**And** search engine crawlers receive fully-rendered HTML with SEO metadata
-
-**Given** a user is on a dedicated tool page
-**When** they use the browser back button
-**Then** they return to their previous page with scroll position restored
-
-### Story 1.3: Sidebar Navigation System
-
-As a **user**,
-I want **a collapsible sidebar showing all tools grouped by category**,
-So that **I can quickly browse and navigate to any tool without scrolling the dashboard**.
-
-**Acceptance Criteria:**
-
-**Given** the user is on the dashboard
-**When** they click the hamburger icon in the header
-**Then** the sidebar slides in from the left (300ms ease-out animation via Motion)
-**And** on desktop, the sidebar takes ~240-280px and pushes the dashboard content to the right
-**And** on mobile (< 768px), the sidebar opens as a full-screen overlay with dark backdrop
-
-**Given** the sidebar is open
-**When** the user views the sidebar content
-**Then** tools are grouped by category (Color, Encoding, Image, Time, Unit, Data, Generator, CSS, Text)
-**And** each category header shows a tool count badge (`CategoryBadge`)
-**And** each category is expandable/collapsible with a chevron icon
-**And** all categories default to expanded on first load
-
-**Given** the sidebar is open
-**When** the user clicks a tool name (`SidebarToolItem`)
-**Then** the dashboard scrolls to that tool's card with a brief highlight pulse (500ms, `--color-primary` border)
-**And** on mobile, the sidebar closes automatically after selection
-
-**Given** the sidebar is open
-**When** the user presses `Escape` or clicks outside the sidebar (mobile) or clicks the X/hamburger toggle
-**Then** the sidebar closes with a slide-out animation
-
-**Given** the sidebar is open on mobile
-**When** focus is inside the sidebar
-**Then** focus is trapped within the sidebar (cannot tab to elements behind the overlay)
-**And** the sidebar has `nav` landmark with `aria-label="Tool navigation"`
-
-**Given** a `useSidebarStore` Zustand store in `src/hooks/state/`
-**When** the sidebar state changes
-**Then** `isOpen`, `open`, `close`, and `toggle` actions are available following the existing Zustand store pattern
-
-### Story 1.4: Command Palette Search
-
-As a **user**,
-I want **to press Cmd+K to open a search overlay and instantly jump to any tool by name**,
-So that **I can navigate to tools with keyboard speed without browsing the sidebar or scrolling the dashboard**.
-
-**Acceptance Criteria:**
-
-**Given** the user is anywhere in the app
-**When** they press `Cmd+K` (Mac) or `Ctrl+K` (Windows/Linux)
-**Then** the Command Palette opens as a centered modal with backdrop blur
-**And** the search input is auto-focused
-
-**Given** the Command Palette is open
-**When** the user types a partial tool name (e.g., "col")
-**Then** results are filtered in real-time using fuzzy matching against tool names from `TOOL_REGISTRY`
-**And** each result shows: tool emoji + tool name + category tag
-
-**Given** the Command Palette shows filtered results
-**When** the user presses `↑`/`↓` arrow keys
-**Then** the highlighted result changes accordingly
-**And** when the user presses `Enter`
-**Then** the palette closes and the dashboard scrolls to the selected tool with a highlight pulse
-
-**Given** the Command Palette is open
-**When** the user presses `Escape` or clicks outside the modal
-**Then** the palette closes and focus returns to the previously focused element
-
-**Given** a `useCommandPaletteStore` Zustand store and `useKeyboardShortcuts` hook
-**When** the Command Palette state changes
-**Then** `isOpen`, `open`, `close`, and `toggle` actions are available
-**And** the keyboard shortcut is registered centrally via `useKeyboardShortcuts`
-
-**Given** the Command Palette modal
-**When** a screen reader encounters it
-**Then** it has `role="dialog"`, `aria-modal="true"`, `aria-label="Search tools"`
-**And** the search input has `role="combobox"` with `aria-autocomplete="list"`
-
-### ~~Story 1.5: Theme Toggle~~ — NOT PLANNED
-
-> **Decision:** Dark-only theme. The space/universe visual identity is inherently dark. No light theme variant will be implemented. FR32 is dropped.
-
-### Story 1.6: Design System Foundation — Apply UX Direction
-
-As a **user**,
-I want **the application's visual identity to reflect the approved Space/Universe design direction**,
-So that **every component and tool renders with the cohesive cosmic theme defined in the UX Design Specification**.
-
-**Acceptance Criteria:**
-
-**Given** `src/index.css` with existing `@theme` design tokens
-**When** the tokens are updated
-**Then** the primary brand color is `oklch(0.55 0.22 310)` (cosmic magenta-purple)
-**And** the secondary brand color is `oklch(0.65 0.12 260)` (nebula blue-violet)
-**And** the full neutral scale uses cool space-blue tinted grays (hue 270, low chroma 0.008) matching the UX spec values exactly
-
-**Given** the semantic color tokens
-**When** they are updated
-**Then** info is `oklch(0.6 0.15 240)`, warning is `oklch(0.75 0.15 85)`, success is `oklch(0.65 0.18 165)`, error is `oklch(0.6 0.2 15)`
-
-**Given** the background gradient
-**When** it is updated
-**Then** it uses the 6-stop gradient from the UX spec: void black → midnight blue → deep space purple → nebula purple → distant nebula magenta → nebula edge glow
-
-**Given** `index.html` font loading
-**When** the font reference is updated
-**Then** Space Mono is loaded from Google Fonts (regular 400, bold 700, italic variants)
-**And** the `@theme` font-family token references `'Space Mono', monospace`
-**And** Google Sans Code references are removed
-
-**Given** the shadow scale tokens
-**When** they are updated
-**Then** the 4-step scale (`--shadow-sm` through `--shadow-xl`) matches the UX spec's crisper, tighter shadow values
-
-**Given** the border radius tokens
-**When** they are defined
-**Then** `--radius-sm` is `4px` (small elements) and `--radius-card` is `6px` (cards/containers) per the 32-bit subtle influence
-
-**Given** all token updates are applied
-**When** the existing 6 tools and dashboard render
-**Then** there are no visual regressions in layout or functionality — only the color palette, typography, and shadows change
-**And** all text meets WCAG 2.1 AA contrast minimums (4.5:1 body text, 3:1 large text) against the updated backgrounds
-
-**Dependencies:** None — this is a foundational story. Story 2.2 (CopyButton) depends on these tokens being in place.
-
-**Scope note:** This story covers design *tokens* only — the CSS custom properties and font. Dark theme only (no light variant). Component-level styling is Epic 2.
+- Registered in TOOL_REGISTRY with complete metadata (key, name, category, emoji, description, seo, routePath, component)
+- Uses inline error handling
+- Uses CopyButton for output copying
+- 100% client-side processing (zero network requests)
+- Unit tests covering happy paths, edge cases, error states
+- E2E test in `e2e/{tool-key}.spec.ts`
+- WCAG 2.1 AA: aria-live on output, aria-label on icon buttons, role="alert" on errors
+- Mobile responsive down to 375px viewport
+- TypeScript strict mode, oxlint/oxfmt compliant
+- Lazy-loaded route via lazyRouteComponent
 
 ---
 
-## Epic 2: Standardized Tool Experience
+## Epic 5: Encoding Tools
 
-Users get a consistent, self-explanatory, accessible tool interface with instant feedback, clear error handling, and one-click output capture across every tool.
+**Category:** Encoding | **Tools:** 5
 
-**Depends on:** Epic 1 (TOOL_REGISTRY for tool metadata and descriptions)
+| Story | Tool | Key | Emoji | Source |
+|-------|------|-----|-------|--------|
+| 5.1 | Base64 Encoder | base64-encoder | 🔤 | Baseline (Epic 3) |
+| 5.2 | JWT Decoder | jwt-decoder | 🔑 | Old 5.2 |
+| 5.3 | Number Base Converter | number-base-converter | 🔢 | Old 13.4 |
+| 5.4 | URL Encoder/Decoder | url-encoder-decoder | 🔗 | Old 5.1 |
+| 5.5 | URL Parser | url-parser | 🌐 | Old 19.2 |
 
-### ~~Story 2.1: ToolLayout Component~~ — DEPRECATED
+### Story 5.1: Base64 Encoder/Decoder
 
-> **Decision:** ToolLayout was deprecated and removed (story 3-1). Each tool owns its own layout. The consistent layout pattern (header, input, output, action bar) is followed per-tool without a shared wrapper component.
-
-### Story 2.2: CopyButton Component
-
-As a **user**,
-I want **to copy any tool output with a single click**,
-So that **I can quickly capture outputs and paste them directly into my code**.
-
-**Acceptance Criteria:**
-
-**Given** a `CopyButton` component in `src/components/common/button/`
-**When** the user clicks it
-**Then** the associated value is copied to the clipboard
-**And** the icon morphs from clipboard to check mark (300ms transition)
-**And** a toast appears: "Copied to clipboard" (auto-dismiss 2.5s)
-**And** the icon reverts to clipboard after 2 seconds
-
-**Given** `CopyButton` has two variants
-**When** rendered as `icon-only`
-**Then** it shows only the icon (compact, for inline use next to output values)
-**When** rendered as `labeled`
-**Then** it shows icon + "Copy" text (for action bars)
-
-**Given** `CopyButton` with nothing to copy
-**When** the output value is empty
-**Then** the button is disabled
-
-> **Note:** OutputDisplay was deprecated and removed (story 3-1). Each tool manages its own output rendering. CopyButton remains active.
-
-### Story 2.3: Error Handling System
-
-As a **user**,
-I want **clear, inline error feedback when I enter invalid input — and never a modal or blocking dialog**,
-So that **I can quickly correct my input and continue working without disruption**.
-
-**Acceptance Criteria:**
-
-**Given** a tool component with error handling
-**When** an error state is set
-**Then** the error message appears inline below the relevant input, styled with `--color-error`
-**And** the message is concise, actionable, and includes an example of valid input (e.g., "Enter a valid hex color (e.g., #3B82F6)")
-
-**Given** a tool has an active error
-**When** the user corrects the input to a valid value
-**Then** `clearError()` is called automatically and the error message disappears
-
-**Given** a `ToolErrorBoundary` component in `src/components/common/error-boundary/`
-**When** an unexpected JavaScript error occurs within a tool
-**Then** the error boundary catches it and displays "Something went wrong" with a Reset button
-**And** the error does not crash the entire application — only the affected tool
-
-**Given** the error handling system
-**When** an error message is displayed
-**Then** it is never a modal dialog, never an alert box, and never a blocking overlay
-
-### Story 2.4: Input Validation Utilities
-
-As a **developer**,
-I want **shared validation functions for common input formats**,
-So that **I can validate user input consistently across all tools without duplicating logic**.
-
-**Acceptance Criteria:**
-
-**Given** `src/utils/validation.ts`
-**When** a developer imports validation functions
-**Then** the following validators are available: `isValidHex`, `isValidRgb`, `isValidHsl`, `isValidBase64`, `isValidUrl`, `isValidJson`, `isValidJwt`, `isValidUuid`, `isValidTimestamp`
-**And** each returns a `boolean`
-
-**Given** a validation function
-**When** called with valid input
-**Then** it returns `true`
-**When** called with invalid input
-**Then** it returns `false`
-**And** it never throws an exception
-
-**Given** `src/utils/validation.spec.ts`
-**When** tests are run via `pnpm test`
-**Then** all validation functions have test coverage for valid inputs, invalid inputs, and edge cases (empty string, null-like values, boundary values)
-
-**Given** corresponding types in `src/types/utils/validation.ts`
-**When** TypeScript compiles
-**Then** all validator function signatures are properly typed
-
-### Story 2.5: Tool Descriptions, Placeholders & Tooltips
-
-As a **user**,
-I want **every tool to show a one-line description and have input fields with clear placeholder text explaining accepted formats**,
-So that **I can use any tool instantly without reading documentation**.
-
-**Acceptance Criteria:**
-
-**Given** any tool
-**When** the tool header displays
-**Then** a one-line description is shown below the tool title (sourced from `TOOL_REGISTRY` description field)
-
-**Given** any text input field in a tool
-**When** the field is empty
-**Then** placeholder text shows the expected format (e.g., `#3B82F6` for hex input, `1700000000` for timestamp, `SGVsbG8=` for Base64)
-
-**Given** any input field in a tool
-**When** the field has a visible label via `FieldForm` wrapper
-**Then** the label clearly describes what input is expected
-**And** labels are always visible above the input — never placeholder-only labels
-
-**Given** any select dropdown in a tool
-**When** it renders
-**Then** it has a sensible default pre-selected (most common option first)
-**And** there is no empty "Choose an option" placeholder state
-
----
-
-## Epic 3: Existing Tool Baseline & Enhancement
-
-Users get documented, regression-tested, and enhanced versions of all 6 existing tools — refactored to the standardized layout with improved UX.
-
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
-
-### Story 3.1: Color Converter — Refactor, Spec & Tests
-
-As a **user**,
-I want **the Color Converter tool to use the standardized layout with documented behavior and regression tests**,
-So that **I can rely on consistent, tested color conversion between HEX, RGB, and HSL formats**.
-
-**Acceptance Criteria:**
-
-**Given** the existing `ColorConvertor` component
-**When** it is refactored
-**Then** it uses `CopyButton` for output copying
-**And** it is registered in `TOOL_REGISTRY` with complete metadata
-
-**Given** a user inputs a valid HEX value (e.g., `#3B82F6`)
-**When** the value is entered
-**Then** RGB and HSL conversions appear in real-time (debounced 300ms) in the output region
-**And** each output value has an adjacent `CopyButton`
-
-**Given** a user inputs a color via the visual color picker
-**When** a color is selected
-**Then** all format outputs (HEX, RGB, HSL) update immediately
-
-**Given** a user inputs an invalid color value
-**When** validation fails
-**Then** an inline error appears: "Enter a valid hex color (e.g., #3B82F6)"
-
-**Given** a feature spec document
-**When** a developer reads it
-**Then** it covers: supported input formats (HEX 3/6/8-digit, RGB, HSL), output formats, edge cases (with/without #, shorthand hex, out-of-range values), and expected behavior
-
-**Given** regression test stories in `src/utils/color.spec.ts`
-**When** `pnpm test` runs
-**Then** all happy paths, edge cases, and error states pass
-
-### Story 3.2: Base64 Encoder — Refactor, Spec & Tests
+> **Note:** This was a baseline tool (old Epic 3, Story 3.2) with its own refactor spec.
 
 As a **user**,
 I want **the Base64 tool to use the standardized layout with documented behavior and regression tests**,
 So that **I can reliably encode and decode Base64 strings with a consistent interface**.
+
+**Category:** Encoding | **Emoji:** 🔤 | **Key:** `base64-encoder`
 
 **Acceptance Criteria:**
 
@@ -603,288 +189,13 @@ So that **I can reliably encode and decode Base64 strings with a consistent inte
 **When** tests run
 **Then** coverage includes: standard encoding, Unicode handling, empty input, whitespace handling, invalid decode input, and large string performance
 
-### Story 3.3: Image Converter — Refactor, Spec & Tests
-
-As a **user**,
-I want **the Image Converter tool to use the standardized layout with documented behavior and regression tests**,
-So that **I can reliably convert images between formats with a consistent interface**.
-
-**Acceptance Criteria:**
-
-**Given** the existing `ImageConvertor` component
-**When** it is refactored
-**Then** it uses standardized file upload zone
-**And** it is registered in `TOOL_REGISTRY`
-
-**Given** a user uploads an image file
-**When** the file is loaded
-**Then** the filename and dimensions are displayed
-**And** a format selection dropdown offers: PNG, JPG, WebP, GIF, BMP, AVIF (where browser-supported)
-
-**Given** a user selects a target format and clicks "Convert"
-**When** processing completes
-**Then** the converted image is available for download
-**And** a `ProgressBar` appears only if processing exceeds 300ms
-**And** a toast confirms: "Downloaded {filename}"
-
-**Given** a user uploads an unsupported file type
-**When** validation fails
-**Then** an inline error appears with accepted formats listed
-
-**Given** a feature spec and regression tests
-**When** tests run
-**Then** coverage includes: supported format conversions, large file handling (up to 10MB), invalid file types, and mobile upload behavior
-
-### Story 3.4: Image Resizer — Refactor, Spec & Tests
-
-As a **user**,
-I want **the Image Resizer tool to use the standardized layout with documented behavior and regression tests**,
-So that **I can reliably resize images with custom dimensions and a consistent interface**.
-
-**Acceptance Criteria:**
-
-**Given** the existing `ImageResizer` component
-**When** it is refactored
-**Then** it uses standardized file upload zone
-**And** it is registered in `TOOL_REGISTRY`
-
-**Given** a user uploads an image
-**When** the file is loaded
-**Then** current dimensions (width x height) are displayed
-**And** width and height input fields are pre-filled with current dimensions
-
-**Given** a user enters target dimensions and clicks "Resize"
-**When** processing completes
-**Then** the resized image is available for download with filename format `resized-image.{ext}`
-**And** a `ProgressBar` appears only if processing exceeds 300ms
-
-**Given** a feature spec and regression tests
-**When** tests run
-**Then** coverage includes: upscale, downscale, aspect ratio behavior, large file handling, minimum dimensions, and mobile upload behavior
-
-### Story 3.5: Unix Timestamp Converter — Refactor, Spec & Tests
-
-As a **user**,
-I want **the Unix Timestamp tool to use the standardized layout with documented behavior and regression tests**,
-So that **I can reliably convert between timestamps and human-readable dates with a consistent interface**.
-
-**Acceptance Criteria:**
-
-**Given** the existing `TimeUnixTimestamp` component
-**When** it is refactored
-**Then** it uses `CopyButton` for output copying
-**And** it is registered in `TOOL_REGISTRY`
-
-**Given** a user enters a Unix timestamp (e.g., `1700000000`)
-**When** the value is entered
-**Then** the human-readable date/time appears in real-time (debounced 300ms)
-
-**Given** a user enters a human-readable date
-**When** the value is entered
-**Then** the corresponding Unix timestamp appears in real-time
-
-**Given** an invalid timestamp input
-**When** validation fails
-**Then** an inline error appears: "Enter a valid Unix timestamp (e.g., 1700000000)"
-
-**Given** a feature spec and regression tests
-**When** tests run
-**Then** coverage includes: seconds vs milliseconds, negative timestamps (pre-1970), current time, date-to-timestamp, edge cases (epoch 0, far future)
-
-### Story 3.6: PX to REM Converter — Refactor, Spec & Tests
-
-As a **user**,
-I want **the PX to REM tool to use the standardized layout with documented behavior and regression tests**,
-So that **I can reliably convert between PX and REM units with a consistent interface**.
-
-**Acceptance Criteria:**
-
-**Given** the existing `UnitPxToRem` component
-**When** it is refactored
-**Then** it uses `CopyButton` for output copying
-**And** it is registered in `TOOL_REGISTRY`
-
-**Given** a user enters a PX value
-**When** the value is entered
-**Then** the REM equivalent appears in real-time (debounced 300ms)
-**And** a configurable base font size (default 16px) is available
-
-**Given** a user changes the base font size
-**When** the base is adjusted
-**Then** all conversions update immediately to reflect the new base
-
-**Given** a feature spec and regression tests
-**When** tests run
-**Then** coverage includes: standard conversion (16px = 1rem), custom base sizes, decimal values, zero, negative values, and large values
-
-### Story 3.7: Dashboard Layout Persistence Baseline
-
-As a **user**,
-I want **my dashboard tool card arrangement to persist and work reliably with the new registry-based system**,
-So that **my personalized layout is preserved across sessions after the registry migration**.
-
-**Acceptance Criteria:**
-
-**Given** the existing `usePersistFeatureLayout` hook
-**When** the dashboard renders tools from `TOOL_REGISTRY`
-**Then** drag-and-drop card reordering continues to function
-**And** layout preferences persist across browser sessions via localStorage
-
-**Given** a user with an existing saved layout (pre-registry)
-**When** they load the app after the registry migration
-**Then** their layout preferences are preserved or gracefully migrated
-**And** no layout data is lost
-
-**Given** new tools are added to `TOOL_REGISTRY` in the future
-**When** the dashboard loads
-**Then** new tools appear in the grid without disrupting the user's existing arrangement
-
----
-
-## Epic 4: Quality Infrastructure & Contributor Experience
-
-Contributors can add new tools following clear documented patterns, with automated CI/CD quality gates protecting the codebase.
-
-**Depends on:** Epic 1 (TOOL_REGISTRY for contributor workflow documentation)
-
-### Story 4.1: E2E Test Infrastructure
-
-As a **contributor**,
-I want **a Playwright E2E test setup with helper utilities**,
-So that **I can write browser-level tests that validate tool behavior in a real browser environment**.
-
-**Acceptance Criteria:**
-
-**Given** `playwright.config.ts` at the project root
-**When** a developer runs the E2E test command
-**Then** Playwright launches a browser and executes tests against the local dev server
-
-**Given** the `e2e/` directory structure
-**When** a developer inspects it
-**Then** it contains: `helpers/selectors.ts` (shared test selectors), `helpers/fixtures.ts` (shared test data), and at least one example tool E2E test
-
-**Given** `e2e/helpers/selectors.ts`
-**When** imported by a test
-**Then** it provides reusable selectors for common elements (tool inputs, outputs, copy buttons, toast notifications)
-
-**Given** the E2E test infrastructure
-**When** a contributor writes a new tool E2E test
-**Then** they follow the pattern: one file per tool as `e2e/{tool-key}.spec.ts`
-
-### Story 4.2: CI/CD Pipeline
-
-As a **contributor**,
-I want **automated quality gates that run on every pull request**,
-So that **I get immediate feedback on code quality and can't accidentally merge broken code**.
-
-**Acceptance Criteria:**
-
-**Given** `.github/workflows/ci.yml`
-**When** a pull request is opened or updated
-**Then** the pipeline runs in sequence: lint (`pnpm lint`) → format check (`pnpm format:check`) → unit tests (`pnpm test`) → build (`pnpm build`)
-
-**Given** any pipeline step fails
-**When** the PR status is checked
-**Then** the PR is blocked from merging with a clear failure indicator and log output
-
-**Given** all pipeline steps pass
-**When** the PR status is checked
-**Then** the PR shows a green success status
-
-**Given** the pipeline configuration
-**When** a developer inspects it
-**Then** it uses `pnpm` for package management and caches `node_modules` for faster runs
-
-### Story 4.3: Lighthouse CI Integration
-
-As a **contributor**,
-I want **automated Lighthouse scores checked on every PR**,
-So that **performance, accessibility, and SEO regressions are caught before merging**.
-
-**Acceptance Criteria:**
-
-**Given** `.github/workflows/lighthouse.yml` and `lighthouserc.js`
-**When** a PR is opened or updated
-**Then** Lighthouse CI runs against the built site
-
-**Given** Lighthouse CI results
-**When** scores are computed
-**Then** the PR fails if Performance < 90, Accessibility < 90, or SEO < 90
-
-**Given** Lighthouse CI results
-**When** scores pass thresholds
-**Then** the scores are visible in the PR status checks
-
-### Story 4.4: CONTRIBUTING Guide & Developer Documentation
-
-As a **contributor**,
-I want **a clear guide explaining how to add a new tool step-by-step**,
-So that **I can contribute a tool without needing to ask the maintainer for help**.
-
-**Acceptance Criteria:**
-
-**Given** `CONTRIBUTING.md` at the project root
-**When** a contributor reads it
-**Then** it documents the complete "add a new tool" workflow:
-1. Create component in `src/components/feature/{domain}/`
-2. Add types in `src/types/components/feature/{domain}/`
-3. Add barrel exports in `index.ts` files
-4. Add registry entry in `src/constants/tool-registry.ts`
-5. Add validation functions if needed in `src/utils/validation.ts`
-6. Write unit tests for logic in `*.spec.ts`
-7. Write E2E test in `e2e/{tool-key}.spec.ts`
-
-**Given** the CONTRIBUTING guide
-**When** a contributor follows it end-to-end
-**Then** the new tool appears in the dashboard selection dialog, has a dedicated route, shows in the sidebar and command palette, and passes all quality gates
-
-**Given** the CONTRIBUTING guide
-**When** it references code patterns
-**Then** it includes a PR checklist: registry entry added, unit tests written, E2E test written, all existing tests pass
-
----
-
-## Epic 5: Encoding & Decoding Tools
-
-Users can encode/decode URLs and decode JWT tokens to inspect headers and payloads.
-
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
-
-### Story 5.1: URL Encoder/Decoder
-
-As a **user**,
-I want **to encode and decode URL strings in the browser**,
-So that **I can quickly prepare or inspect URL-encoded values for web development**.
-
-**Acceptance Criteria:**
-
-**Given** the URL Encoder/Decoder tool registered in `TOOL_REGISTRY` under the Encoding category
-**When** the user navigates to it
-**Then** it renders with encode and decode modes (tabs or toggle)
-
-**Given** a user pastes a plain string into the encode input (e.g., `hello world&foo=bar`)
-**When** the value is entered
-**Then** the URL-encoded output appears in real-time (debounced 300ms): `hello%20world%26foo%3Dbar`
-**And** a `CopyButton` is adjacent to the output
-
-**Given** a user pastes a URL-encoded string into the decode input
-**When** the value is entered
-**Then** the decoded plaintext appears in real-time
-
-**Given** an invalid encoded string (e.g., `%ZZ`)
-**When** decoding fails
-**Then** an inline error appears: "Enter a valid URL-encoded string (e.g., hello%20world)"
-
-**Given** the tool component
-**When** it is implemented
-**Then** it uses shared validation (`isValidUrl`), and all processing is 100% client-side
-**And** unit tests cover: standard encoding, special characters, Unicode, empty input, already-encoded input, and double-encoding edge cases
-
 ### Story 5.2: JWT Decoder
 
 As a **user**,
 I want **to paste a JWT token and see the decoded header and payload**,
 So that **I can quickly inspect token contents for debugging without using an external service**.
+
+**Category:** Encoding | **Emoji:** 🔑 | **Key:** `jwt-decoder`
 
 **Acceptance Criteria:**
 
@@ -911,19 +222,299 @@ So that **I can quickly inspect token contents for debugging without using an ex
 **Then** zero network requests are made — decoding is entirely client-side (Base64URL decode, JSON parse)
 **And** unit tests cover: valid tokens, expired tokens, tokens with various claims, invalid formats, and malformed segments
 
+### Story 5.3: Number Base Converter
+
+As a **user**,
+I want **to convert numbers between binary, octal, decimal, and hexadecimal**,
+So that **I can quickly work with different number representations for low-level programming**.
+
+**Category:** Encoding | **Emoji:** 🔢 | **Key:** `number-base-converter`
+
+**Acceptance Criteria:**
+
+**Given** four input fields (Binary, Octal, Decimal, Hex)
+**When** the user types in any field
+**Then** all other fields update in real-time with the converted values
+
+**Given** the user enters an invalid value for the selected base
+**When** validation fails
+**Then** an inline error appears (e.g., "Binary only allows 0 and 1")
+
+**Given** large numbers
+**When** entered
+**Then** BigInt is used for precision beyond Number.MAX_SAFE_INTEGER
+
+**Library:** None — native JavaScript parseInt/toString + BigInt
+**Unit tests:** All base conversions, zero, negative (two's complement display), large numbers, invalid characters, empty input, max safe integer boundary
+
+### Story 5.4: URL Encoder/Decoder
+
+As a **user**,
+I want **to encode and decode URL strings in the browser**,
+So that **I can quickly prepare or inspect URL-encoded values for web development**.
+
+**Category:** Encoding | **Emoji:** 🔗 | **Key:** `url-encoder-decoder`
+
+**Acceptance Criteria:**
+
+**Given** the URL Encoder/Decoder tool registered in `TOOL_REGISTRY` under the Encoding category
+**When** the user navigates to it
+**Then** it renders with encode and decode modes (tabs or toggle)
+
+**Given** a user pastes a plain string into the encode input (e.g., `hello world&foo=bar`)
+**When** the value is entered
+**Then** the URL-encoded output appears in real-time (debounced 300ms): `hello%20world%26foo%3Dbar`
+**And** a `CopyButton` is adjacent to the output
+
+**Given** a user pastes a URL-encoded string into the decode input
+**When** the value is entered
+**Then** the decoded plaintext appears in real-time
+
+**Given** an invalid encoded string (e.g., `%ZZ`)
+**When** decoding fails
+**Then** an inline error appears: "Enter a valid URL-encoded string (e.g., hello%20world)"
+
+**Given** the tool component
+**When** it is implemented
+**Then** it uses shared validation (`isValidUrl`), and all processing is 100% client-side
+**And** unit tests cover: standard encoding, special characters, Unicode, empty input, already-encoded input, and double-encoding edge cases
+
+### Story 5.5: URL Parser
+
+As a **user**,
+I want **to paste a URL and see it broken down into protocol, host, port, path, query parameters, and fragment**,
+So that **I can inspect and debug URLs quickly**.
+
+**Category:** Encoding | **Emoji:** 🌐 | **Key:** `url-parser`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes a valid URL
+**When** the value is entered
+**Then** the URL is broken down into: protocol, host, port, path, query parameters (as key-value pairs), and fragment
+**And** each component has a `CopyButton`
+
+**Given** an invalid URL
+**When** entered
+**Then** an inline error appears with a description of the issue
+
+**Given** the tool implementation
+**When** it parses URLs
+**Then** it uses the native `URL` API — no server calls
+**And** unit tests cover: complete URLs, relative URLs, URLs with ports, query strings, fragments, special characters, and edge cases
+
 ---
 
-## Epic 6: Data & Format Tools
+## Epic 6: Data Tools
 
-Users can format/validate JSON and convert between JSON, YAML, and CSV formats.
+**Category:** Data | **Tools:** 14
 
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
+| Story | Tool | Key | Emoji | Source |
+|-------|------|-----|-------|--------|
+| 6.1 | Data URI Generator | data-uri-generator | 📎 | Old 23.4 |
+| 6.2 | DB Diagram | db-diagram | 🗄️ | Old 27 |
+| 6.3 | ENV File Converter | env-file-converter | 📋 | Old 22.2 |
+| 6.4 | Escaped JSON Stringifier | escaped-json-stringifier | 🪢 | Old 22.3 |
+| 6.5 | HTML Entity Converter | html-entity-converter | 🏷️ | Old 22.4 |
+| 6.6 | HTML to Markdown Converter | html-to-markdown-converter | 📝 | Old 13.3 |
+| 6.7 | HTTP Status Codes | http-status-codes | 📡 | Old 19.4 |
+| 6.8 | JSON Formatter | json-formatter | 📋 | Old 6.1 |
+| 6.9 | JSON to CSV Converter | json-to-csv-converter | 📊 | Old 6.3 |
+| 6.10 | JSON to TOML Converter | json-to-toml-converter | ⚙️ | Old 13.2 |
+| 6.11 | JSON to XML Converter | json-to-xml-converter | 📄 | Old 13.1 |
+| 6.12 | JSON to YAML Converter | json-to-yaml-converter | 🔄 | Old 6.2 |
+| 6.13 | OG Preview | og-preview | 👁️ | Old 20.4 |
+| 6.14 | YAML Formatter | yaml-formatter | 📝 | Old 22.1 |
 
-### Story 6.1: JSON Formatter/Validator
+### Story 6.1: Data URI Generator
+
+As a **developer**,
+I want **to convert files to data URIs and decode data URIs back to files**,
+So that **I can embed small assets directly in HTML/CSS without extra HTTP requests**.
+
+**Category:** Data | **Emoji:** 📎 | **Key:** `data-uri-generator`
+
+**Acceptance Criteria:**
+
+**Given** the user uploads a file (image, font, SVG, etc.)
+**When** the file is loaded
+**Then** a data URI is generated with correct MIME type and Base64 encoding, and file size is displayed
+
+**Given** the user pastes a data URI
+**When** "Decode" mode is active
+**Then** the MIME type, encoding, and decoded size are shown, with a preview for images
+
+**Given** an image file is uploaded
+**When** the data URI is generated
+**Then** both the data URI and an HTML `<img>` tag example are shown
+
+**Given** a CSS-compatible file (image, font)
+**When** the data URI is generated
+**Then** a CSS `url()` example is also shown
+
+**Given** a file larger than 30KB
+**When** uploaded
+**Then** a warning suggests using a regular file reference instead of data URI for performance
+
+### Story 6.2: DB Diagram
+
+As a **developer**,
+I want **to define database schemas and see them rendered as entity-relationship diagrams**,
+So that **I can visualize and document database structures**.
+
+**Category:** Data | **Emoji:** 🗄️ | **Key:** `db-diagram`
+
+**Acceptance Criteria:**
+
+> Note: This tool was referenced as Epic 27 in the original planning but no detailed ACs were written. ACs to be defined during implementation planning.
+
+**Given** the user enters a database schema definition
+**When** the schema is parsed
+**Then** an ER diagram is rendered showing tables, columns, and relationships
+
+**Given** the rendered diagram
+**When** the user clicks "Export"
+**Then** the diagram can be downloaded as SVG or PNG
+
+### Story 6.3: ENV File Converter
+
+As a **developer**,
+I want **to convert between .env format and JSON/YAML formats**,
+So that **I can quickly transform configuration between different file formats**.
+
+**Category:** Data | **Emoji:** 📋 | **Key:** `env-file-converter`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes a .env file (KEY=value format)
+**When** the user selects "To JSON" output format
+**Then** a JSON object is generated with keys and values, handling quoted values and comments
+
+**Given** the user pastes a .env file
+**When** the user selects "To YAML" output format
+**Then** equivalent YAML is generated
+
+**Given** the user pastes JSON or YAML
+**When** the user selects "To .env" output format
+**Then** a .env file is generated with KEY=value pairs, quoting values with spaces/special chars
+
+**Given** the .env input contains comments (lines starting with #)
+**When** converted to JSON/YAML
+**Then** comments are stripped (with a note that comments cannot be preserved)
+
+**Given** the .env input contains empty lines or malformed lines
+**When** converted
+**Then** empty lines are skipped and malformed lines show a warning
+
+### Story 6.4: Escaped JSON Stringifier
+
+As a **developer**,
+I want **to escape JSON for embedding in strings (e.g., in code or config files) and unescape them back**,
+So that **I can safely embed JSON in contexts that require string escaping**.
+
+**Category:** Data | **Emoji:** 🪢 | **Key:** `escaped-json-stringifier`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes valid JSON
+**When** "Stringify" mode is active
+**Then** the JSON is escaped as a string (quotes escaped, newlines as \n, etc.)
+
+**Given** the user pastes an escaped JSON string
+**When** "Parse" mode is active
+**Then** the original JSON is reconstructed and pretty-printed
+
+**Given** invalid input in either mode
+**When** entered
+**Then** a clear error message explains the issue
+
+**Given** the user toggles "Double Escape"
+**When** JSON is entered in Stringify mode
+**Then** the output is double-escaped (for embedding in JSON within JSON)
+
+### Story 6.5: HTML Entity Converter
+
+As a **developer**,
+I want **to encode text into HTML entities and decode HTML entities back to text**,
+So that **I can safely handle special characters in HTML content**.
+
+**Category:** Data | **Emoji:** 🏷️ | **Key:** `html-entity-converter`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes plain text with special characters (<, >, &, ", ')
+**When** "Encode" mode is active
+**Then** characters are converted to HTML entities (&lt;, &gt;, &amp;, &quot;, &#39;)
+
+**Given** the user pastes text with HTML entities
+**When** "Decode" mode is active
+**Then** entities are converted back to their character equivalents
+
+**Given** the user selects "Named Entities" option
+**When** encoding
+**Then** named entities are used where available (e.g., &copy; instead of &#169;)
+
+**Given** the user selects "Numeric Entities" option
+**When** encoding
+**Then** all entities use numeric format (&#60; instead of &lt;)
+
+### Story 6.6: HTML to Markdown Converter
+
+As a **user**,
+I want **to convert HTML to Markdown and Markdown to HTML**,
+So that **I can transform content between these formats for documentation and web publishing**.
+
+**Category:** Data | **Emoji:** 📝 | **Key:** `html-to-markdown-converter`
+
+**Acceptance Criteria:**
+
+**Given** tabs for HTML→Markdown and Markdown→HTML modes
+**When** the user pastes valid HTML
+**Then** Markdown equivalent appears in real-time
+
+**Given** Markdown→HTML mode
+**When** Markdown is entered
+**Then** HTML output appears
+
+**Given** complex HTML (tables, images, links)
+**When** converted to Markdown
+**Then** GFM table syntax and standard markdown elements are used
+
+**Library:** `turndown` (HTML→MD), `marked` (MD→HTML) — lazy-loaded
+**Unit tests:** Headings, paragraphs, links, images, tables, lists, code blocks, inline styles (stripped), empty input, malformed HTML
+
+### Story 6.7: HTTP Status Codes
+
+As a **user**,
+I want **to search and browse HTTP status codes with descriptions and common use cases**,
+So that **I can quickly look up what a status code means**.
+
+**Category:** Data | **Emoji:** 📡 | **Key:** `http-status-codes`
+
+**Acceptance Criteria:**
+
+**Given** the user navigates to the HTTP Status Codes tool
+**When** the page loads
+**Then** all HTTP status codes are displayed grouped by category (1xx, 2xx, 3xx, 4xx, 5xx) with name and description
+
+**Given** a search input
+**When** the user types a code number or keyword
+**Then** results are filtered in real-time
+
+**Given** each status code entry
+**When** displayed
+**Then** it shows: code number, name, description, and common use cases
+
+**Library:** None — static embedded data
+**Unit tests:** Search filtering, category grouping, all standard codes present
+
+### Story 6.8: JSON Formatter/Validator
 
 As a **user**,
 I want **to paste JSON and see it formatted with syntax highlighting, or get clear validation errors**,
 So that **I can quickly clean up and validate JSON for my development work**.
+
+**Category:** Data | **Emoji:** 📋 | **Key:** `json-formatter`
 
 **Acceptance Criteria:**
 
@@ -949,11 +540,95 @@ So that **I can quickly clean up and validate JSON for my development work**.
 **Then** all parsing and formatting uses native `JSON.parse` / `JSON.stringify` — no server calls
 **And** unit tests cover: valid JSON (objects, arrays, nested), invalid JSON, empty input, large JSON, special characters, and Unicode
 
-### Story 6.2: JSON to YAML Converter
+### Story 6.9: JSON to CSV Converter
+
+As a **user**,
+I want **to convert JSON arrays to CSV and CSV to JSON**,
+So that **I can quickly transform data between formats for spreadsheets and APIs**.
+
+**Category:** Data | **Emoji:** 📊 | **Key:** `json-to-csv-converter`
+
+**Acceptance Criteria:**
+
+**Given** the JSON↔CSV Converter tool registered in `TOOL_REGISTRY` under the Data category
+**When** the user navigates to it
+**Then** it renders with tabs or toggle for JSON-to-CSV and CSV-to-JSON modes
+
+**Given** a user pastes a JSON array of objects
+**When** the value is entered
+**Then** a CSV output appears with headers derived from object keys
+**And** a `CopyButton` and download option are available
+
+**Given** a user pastes CSV text
+**When** the value is entered
+**Then** a JSON array of objects appears with keys from the CSV header row
+
+**Given** the JSON input is not an array of flat objects
+**When** conversion is attempted
+**Then** an inline error explains: "JSON must be an array of objects (e.g., [{"name": "Alice"}])"
+
+**Given** the tool implementation
+**When** it processes data
+**Then** CSV handling covers: quoted fields, commas within values, newlines within quoted fields, and header row detection
+**And** unit tests cover: simple arrays, nested objects (flattened), empty arrays, single-row, special characters in values
+
+### Story 6.10: JSON to TOML Converter
+
+As a **user**,
+I want **to convert between TOML and JSON formats**,
+So that **I can work with Rust/Go config files and transform them to JSON and back**.
+
+**Category:** Data | **Emoji:** ⚙️ | **Key:** `json-to-toml-converter`
+
+**Acceptance Criteria:**
+
+**Given** tabs for TOML→JSON and JSON→TOML modes
+**When** the user pastes valid TOML
+**Then** formatted JSON appears in real-time
+
+**Given** JSON→TOML mode
+**When** the user pastes valid JSON
+**Then** TOML output appears
+
+**Given** invalid input
+**When** parsing fails
+**Then** an inline error describes the issue
+
+**Library:** `@iarna/toml` or `smol-toml` — lazy-loaded
+**Unit tests:** Basic key-value, tables, arrays, nested tables, inline tables, dates, multiline strings, invalid input
+
+### Story 6.11: JSON to XML Converter
+
+As a **user**,
+I want **to convert between XML and JSON formats**,
+So that **I can transform data between these common formats for APIs and configuration files**.
+
+**Category:** Data | **Emoji:** 📄 | **Key:** `json-to-xml-converter`
+
+**Acceptance Criteria:**
+
+**Given** tabs for XML→JSON and JSON→XML modes
+**When** the user pastes valid XML in XML→JSON mode
+**Then** the JSON equivalent appears in real-time (debounced 300ms)
+
+**Given** JSON→XML mode
+**When** the user pastes valid JSON
+**Then** formatted XML output appears
+
+**Given** invalid input in either mode
+**When** parsing fails
+**Then** an inline error describes the issue with line number if available
+
+**Library:** `fast-xml-parser` — lazy-loaded
+**Unit tests:** Simple elements, attributes, nested structures, arrays, CDATA, namespaces, empty elements, invalid XML/JSON
+
+### Story 6.12: JSON to YAML Converter
 
 As a **user**,
 I want **to convert JSON to YAML and YAML to JSON**,
 So that **I can quickly switch between configuration formats for different tools and platforms**.
+
+**Category:** Data | **Emoji:** 🔄 | **Key:** `json-to-yaml-converter`
 
 **Acceptance Criteria:**
 
@@ -979,78 +654,111 @@ So that **I can quickly switch between configuration formats for different tools
 **Then** a client-side YAML library is used (code-split, lazy-loaded — does not increase initial bundle)
 **And** unit tests cover: simple objects, nested structures, arrays, special YAML features (anchors, multiline strings), and edge cases
 
-### Story 6.3: JSON to CSV Converter
+### Story 6.13: OG Preview
 
 As a **user**,
-I want **to convert JSON arrays to CSV and CSV to JSON**,
-So that **I can quickly transform data between formats for spreadsheets and APIs**.
+I want **to enter OG meta tag values (title, description, image URL, site name) and see a preview of how the link will appear on Twitter, Facebook, and LinkedIn**,
+So that **I can design social sharing cards before deploying**.
+
+**Category:** Data | **Emoji:** 👁️ | **Key:** `og-preview`
 
 **Acceptance Criteria:**
 
-**Given** the JSON↔CSV Converter tool registered in `TOOL_REGISTRY` under the Data category
-**When** the user navigates to it
-**Then** it renders with tabs or toggle for JSON-to-CSV and CSV-to-JSON modes
+**Given** input fields for og:title, og:description, og:image, og:site_name
+**When** values are entered
+**Then** live previews update showing how the link card will appear on Twitter, Facebook, and LinkedIn
 
-**Given** a user pastes a JSON array of objects
+**Given** the previews
+**When** displayed
+**Then** each platform's card layout accurately represents the platform's current rendering style
+
+**Given** the og:image field
+**When** a URL is entered
+**Then** the image is loaded and displayed in the preview cards
+
+**Given** meta tag output
+**When** the user clicks CopyButton
+**Then** the complete `<meta>` tag HTML is copied to clipboard
+
+**Library:** None — CSS-based preview cards
+**Unit tests:** Meta tag generation, character limits, image URL handling, empty fields
+
+### Story 6.14: YAML Formatter/Validator
+
+As a **developer**,
+I want **to paste YAML and see it formatted with proper indentation, with validation errors highlighted**,
+So that **I can clean up and validate YAML configuration files quickly**.
+
+**Category:** Data | **Emoji:** 📝 | **Key:** `yaml-formatter`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes valid YAML
 **When** the value is entered
-**Then** a CSV output appears with headers derived from object keys
-**And** a `CopyButton` and download option are available
+**Then** formatted YAML appears in real-time (debounced 300ms) with configurable indent (2/4 spaces)
 
-**Given** a user pastes CSV text
+**Given** the user pastes invalid YAML
 **When** the value is entered
-**Then** a JSON array of objects appears with keys from the CSV header row
+**Then** a clear error message shows the line number and nature of the syntax error
 
-**Given** the JSON input is not an array of flat objects
-**When** conversion is attempted
-**Then** an inline error explains: "JSON must be an array of objects (e.g., [{\"name\": \"Alice\"}])"
+**Given** formatted YAML output
+**When** the user clicks CopyButton
+**Then** the formatted output is copied to clipboard
 
-**Given** the tool implementation
-**When** it processes data
-**Then** CSV handling covers: quoted fields, commas within values, newlines within quoted fields, and header row detection
-**And** unit tests cover: simple arrays, nested objects (flattened), empty arrays, single-row, special characters in values
+**Given** the user selects "Sort Keys" option
+**When** YAML is entered
+**Then** all object keys are sorted alphabetically in the output
 
 ---
 
-## Epic 7: Text Analysis Tools
+## Epic 7: Text Tools
 
-Users can compare text side-by-side to spot differences and test regex patterns with live match highlighting.
+**Category:** Text | **Tools:** 8
 
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
+| Story | Tool | Key | Emoji | Source |
+|-------|------|-----|-------|--------|
+| 7.1 | Lorem Ipsum Generator | lorem-ipsum-generator | 📜 | Old 16.3 |
+| 7.2 | Regex Tester | regex-tester | 🔍 | Old 7.2 |
+| 7.3 | String Escape/Unescape | string-escape-unescape | 🪄 | Old 16.4 |
+| 7.4 | Text Case Converter | text-case-converter | 🔠 | Old 16.1 |
+| 7.5 | Text Diff Checker | text-diff-checker | 📝 | Old 7.1 |
+| 7.6 | Text Sort & Dedupe | text-sort-dedupe | 📋 | Old 18.5 |
+| 7.7 | User Agent Parser | user-agent-parser | 🕵️ | Old 19.5 |
+| 7.8 | Word Counter | word-counter | 🔢 | Old 16.2 |
 
-### Story 7.1: Text Diff Checker
+### Story 7.1: Lorem Ipsum Generator
 
 As a **user**,
-I want **to paste two text blocks and see line-by-line differences highlighted**,
-So that **I can quickly identify changes between two versions of code or text**.
+I want **to generate placeholder text with configurable length**,
+So that **I can quickly get dummy content for designs and prototypes**.
+
+**Category:** Text | **Emoji:** 📜 | **Key:** `lorem-ipsum-generator`
 
 **Acceptance Criteria:**
 
-**Given** the Text Diff Checker tool registered in `TOOL_REGISTRY` under the Text category
-**When** the user navigates to it
-**Then** it renders with two side-by-side `TextAreaInput` fields (stacked on mobile) for "Original" and "Modified" text
+**Given** the generator interface
+**When** the user configures options
+**Then** they can select: unit (paragraphs, sentences, words), count (1-100), and "Start with Lorem ipsum..." toggle
 
-**Given** a user enters text in both input fields
-**When** both fields have content
-**Then** a line-by-line diff is computed and displayed below the inputs
-**And** added lines are highlighted in green (`--color-success` tint)
-**And** removed lines are highlighted in red (`--color-error` tint)
-**And** unchanged lines are shown in default styling
+**Given** the user clicks "Generate" or adjusts a setting
+**When** generation runs
+**Then** the lorem ipsum text appears in the output
+**And** a CopyButton copies the full text
 
-**Given** the diff output
-**When** the user clicks "Copy Diff"
-**Then** the diff output is copied to clipboard in a standard unified diff format
+**Given** paragraph mode
+**When** generated
+**Then** paragraphs are separated by blank lines and vary in length (3-7 sentences)
 
-**Given** the tool implementation
-**When** it computes diffs
-**Then** it uses a proven open-source diff library (code-split, lazy-loaded)
-**And** processing completes within the 500ms target for typical text sizes
-**And** unit tests cover: identical texts, completely different texts, single line changes, multiline changes, empty inputs, and large texts
+**Library:** None — embedded lorem ipsum word list (~200 words), shuffled for variety
+**Unit tests:** Word count accuracy, paragraph count, sentence count, "Lorem ipsum" start toggle, empty/zero count edge case
 
 ### Story 7.2: Regex Tester
 
 As a **user**,
 I want **to test a regular expression against sample text and see matches highlighted in real-time**,
 So that **I can iterate on regex patterns quickly without switching to a terminal or external tool**.
+
+**Category:** Text | **Emoji:** 🔍 | **Key:** `regex-tester`
 
 **Acceptance Criteria:**
 
@@ -1081,49 +789,205 @@ So that **I can iterate on regex patterns quickly without switching to a termina
 **Then** it uses native JavaScript `RegExp` — no server calls
 **And** unit tests cover: simple patterns, capture groups, flags, invalid patterns, no matches, Unicode, and patterns that could cause catastrophic backtracking (with timeout protection)
 
+### Story 7.3: String Escape/Unescape
+
+As a **user**,
+I want **to escape and unescape strings for different contexts (HTML, JavaScript, URL, JSON)**,
+So that **I can safely embed content in different contexts**.
+
+**Category:** Text | **Emoji:** 🪄 | **Key:** `string-escape-unescape`
+
+**Acceptance Criteria:**
+
+**Given** the tool interface
+**When** the user selects an escape mode
+**Then** modes available: HTML entities, JavaScript string, JSON string, URL encoding, XML entities, CSV
+
+**Given** the user enters text in the input
+**When** the value changes
+**Then** escaped/unescaped output appears in real-time (debounced 300ms) based on selected mode and direction (escape/unescape)
+
+**Given** HTML entities mode
+**When** escaping `<script>alert("XSS")</script>`
+**Then** output: `&lt;script&gt;alert(&quot;XSS&quot;)&lt;/script&gt;`
+
+**Library:** None — native JavaScript string manipulation
+**Unit tests:** All escape modes (HTML, JS, JSON, URL, XML, CSV), roundtrip (escape then unescape), special characters, Unicode, empty input
+
+### Story 7.4: Text Case Converter
+
+As a **user**,
+I want **to convert text between different case formats**,
+So that **I can quickly transform variable names and text for different coding conventions**.
+
+**Category:** Text | **Emoji:** 🔠 | **Key:** `text-case-converter`
+
+**Acceptance Criteria:**
+
+**Given** the user enters text
+**When** content is provided
+**Then** all case conversions display simultaneously:
+- camelCase
+- PascalCase
+- snake_case
+- kebab-case
+- CONSTANT_CASE
+- Title Case
+- UPPER CASE
+- lower case
+- Sentence case
+- dot.case
+- path/case
+
+**Given** each output
+**When** displayed
+**Then** each has its own CopyButton
+
+**Given** multi-word or mixed-case input
+**When** entered
+**Then** the converter intelligently splits on spaces, underscores, hyphens, and camelCase boundaries
+
+**Library:** None — native JavaScript string manipulation
+**Unit tests:** All case conversions, multi-word, single word, already-cased input, special characters, numbers, empty input, Unicode
+
+### Story 7.5: Text Diff Checker
+
+As a **user**,
+I want **to paste two text blocks and see line-by-line differences highlighted**,
+So that **I can quickly identify changes between two versions of code or text**.
+
+**Category:** Text | **Emoji:** 📝 | **Key:** `text-diff-checker`
+
+**Acceptance Criteria:**
+
+**Given** the Text Diff Checker tool registered in `TOOL_REGISTRY` under the Text category
+**When** the user navigates to it
+**Then** it renders with two side-by-side `TextAreaInput` fields (stacked on mobile) for "Original" and "Modified" text
+
+**Given** a user enters text in both input fields
+**When** both fields have content
+**Then** a line-by-line diff is computed and displayed below the inputs
+**And** added lines are highlighted in green (`--color-success` tint)
+**And** removed lines are highlighted in red (`--color-error` tint)
+**And** unchanged lines are shown in default styling
+
+**Given** the diff output
+**When** the user clicks "Copy Diff"
+**Then** the diff output is copied to clipboard in a standard unified diff format
+
+**Given** the tool implementation
+**When** it computes diffs
+**Then** it uses a proven open-source diff library (code-split, lazy-loaded)
+**And** processing completes within the 500ms target for typical text sizes
+**And** unit tests cover: identical texts, completely different texts, single line changes, multiline changes, empty inputs, and large texts
+
+### Story 7.6: Text Sort & Dedupe
+
+As a **user**,
+I want **to sort lines alphabetically, numerically, or by length, and optionally remove duplicates and empty lines**,
+So that **I can quickly clean up lists, log files, and text data**.
+
+**Category:** Text | **Emoji:** 📋 | **Key:** `text-sort-dedupe`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes multi-line text
+**When** the value is entered
+**Then** lines can be sorted alphabetically (A-Z / Z-A), numerically, or by line length
+
+**Given** a "Remove duplicates" toggle
+**When** enabled
+**Then** duplicate lines are removed from the output
+
+**Given** a "Remove empty lines" toggle
+**When** enabled
+**Then** blank lines are stripped from the output
+
+**Given** the sorted/deduped output
+**When** displayed
+**Then** a CopyButton copies the result and line count stats are shown (original count vs output count)
+
+**Library:** None — native JavaScript array operations
+**Unit tests:** All sort modes, deduplication, empty line removal, mixed content, Unicode, empty input, single line
+
+### Story 7.7: User Agent Parser
+
+As a **user**,
+I want **to paste a user agent string and see it parsed into browser, OS, device, and engine details**,
+So that **I can debug UA-related issues and understand client environments**.
+
+**Category:** Text | **Emoji:** 🕵️ | **Key:** `user-agent-parser`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes a user agent string
+**When** the value is entered
+**Then** parsed details are displayed: browser name & version, operating system & version, device type, and rendering engine
+
+**Given** the tool loads
+**When** the page renders
+**Then** the current browser's user agent is pre-populated as a smart default
+
+**Given** each parsed field
+**When** displayed
+**Then** each has its own CopyButton
+
+**Library:** `ua-parser-js` or similar — lazy-loaded
+**Unit tests:** Common browser UAs (Chrome, Firefox, Safari, Edge), mobile UAs, bot UAs, empty input, malformed UAs
+
+### Story 7.8: Word/Character Counter
+
+As a **user**,
+I want **to paste text and see word count, character count, sentence count, paragraph count, and estimated reading time**,
+So that **I can check text length for various requirements (tweets, blog posts, essays)**.
+
+**Category:** Text | **Emoji:** 🔢 | **Key:** `word-counter`
+
+**Acceptance Criteria:**
+
+**Given** the user enters text
+**When** content changes
+**Then** the following stats update in real-time:
+- Characters (with and without spaces)
+- Words
+- Sentences
+- Paragraphs
+- Lines
+- Reading time (avg 200 wpm)
+- Speaking time (avg 130 wpm)
+
+**Given** the stats display
+**When** rendered
+**Then** stats are shown in a clean grid/card layout
+
+**Given** empty input
+**When** nothing is entered
+**Then** all stats show 0
+
+**Library:** None — native JavaScript
+**Unit tests:** Standard text, empty input, whitespace-only, single word, punctuation-heavy, Unicode, very long text
+
 ---
 
 ## Epic 8: Generator Tools
 
-Users can generate UUIDs, secure passwords, and cryptographic hash values.
+**Category:** Generator | **Tools:** 3
 
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
+| Story | Tool | Key | Emoji | Source |
+|-------|------|-----|-------|--------|
+| 8.1 | Password Generator | password-generator | 🔒 | Old 8.2 |
+| 8.2 | QR Code Generator | qr-code-generator | 📱 | Old 17.1 |
+| 8.3 | UUID Generator | uuid-generator | 🆔 | Old 8.1 |
 
-### Story 8.1: UUID Generator
+> **Note:** Hash Generator (old 8.3) has been moved to Epic 13 (Security) as it is more closely aligned with cryptographic tools.
 
-As a **user**,
-I want **to generate UUIDs with a single click or in bulk**,
-So that **I can quickly get unique identifiers for my development work**.
-
-**Acceptance Criteria:**
-
-**Given** the UUID Generator tool registered in `TOOL_REGISTRY` under the Generator category
-**When** the user navigates to it
-**Then** it renders with a "Generate" button and an output region
-
-**Given** the user clicks "Generate"
-**When** a single UUID is requested
-**Then** a valid v4 UUID is displayed with a `CopyButton`
-
-**Given** the user selects bulk generation
-**When** they specify a count (e.g., 10) and click "Generate"
-**Then** the requested number of UUIDs are displayed, each on its own line with individual `CopyButton`s
-**And** a "Copy All" secondary button copies all UUIDs
-
-**Given** the tool loads
-**When** the page renders
-**Then** one UUID is pre-generated as a smart default so the output is immediately useful
-
-**Given** the tool implementation
-**When** UUIDs are generated
-**Then** it uses `crypto.randomUUID()` (Web Crypto API) — no server calls
-**And** unit tests cover: UUID v4 format validation, uniqueness across bulk generation, and bulk count limits
-
-### Story 8.2: Password Generator
+### Story 8.1: Password Generator
 
 As a **user**,
 I want **to generate random passwords with configurable length and character types**,
 So that **I can quickly create secure passwords for development and testing**.
+
+**Category:** Generator | **Emoji:** 🔒 | **Key:** `password-generator`
 
 **Acceptance Criteria:**
 
@@ -1153,50 +1017,90 @@ So that **I can quickly create secure passwords for development and testing**.
 **Then** it uses `crypto.getRandomValues()` for cryptographically secure randomness — no `Math.random()`
 **And** unit tests cover: length constraints, character type filtering, minimum 1 character of each enabled type, edge cases (length 8, length 128), and all-types-disabled prevention
 
-### Story 8.3: Hash Generator
+### Story 8.2: QR Code Generator
 
 As a **user**,
-I want **to generate hash values from text input using common algorithms**,
-So that **I can quickly compute checksums and hashes for verification and development**.
+I want **to generate QR codes from text or URLs and download them as images**,
+So that **I can create QR codes for links, contact info, or any text without using external services**.
+
+**Category:** Generator | **Emoji:** 📱 | **Key:** `qr-code-generator`
 
 **Acceptance Criteria:**
 
-**Given** the Hash Generator tool registered in `TOOL_REGISTRY` under the Generator category
+**Given** the user enters text or a URL
+**When** content is provided
+**Then** a QR code is generated and displayed as a live preview in real-time (debounced 300ms)
+
+**Given** configuration options
+**When** the user adjusts them
+**Then** they can configure: size (128-512px), error correction level (L/M/Q/H), foreground color, background color
+
+**Given** the generated QR code
+**When** the user clicks "Download"
+**Then** the QR code downloads as PNG
+**And** a "Copy as SVG" option copies SVG markup
+
+**Given** empty input
+**When** nothing is entered
+**Then** no QR code is displayed (empty state)
+
+**Library:** `qrcode` (npm) — lazy-loaded
+**Unit tests:** Text encoding, URL encoding, size options, error correction levels, color customization, empty input, very long text (QR capacity limits)
+
+### Story 8.3: UUID Generator
+
+As a **user**,
+I want **to generate UUIDs with a single click or in bulk**,
+So that **I can quickly get unique identifiers for my development work**.
+
+**Category:** Generator | **Emoji:** 🆔 | **Key:** `uuid-generator`
+
+**Acceptance Criteria:**
+
+**Given** the UUID Generator tool registered in `TOOL_REGISTRY` under the Generator category
 **When** the user navigates to it
-**Then** it renders with a `TextAreaInput` for text and algorithm selection (MD5, SHA-1, SHA-256, SHA-512)
+**Then** it renders with a "Generate" button and an output region
 
-**Given** a user enters text and selects an algorithm
-**When** the input changes
-**Then** the hash value is computed and displayed in real-time (debounced 300ms)
-**And** a `CopyButton` copies the hex-encoded hash
+**Given** the user clicks "Generate"
+**When** a single UUID is requested
+**Then** a valid v4 UUID is displayed with a `CopyButton`
 
-**Given** multiple algorithms are available
-**When** the user selects a different algorithm
-**Then** the output updates immediately for the current input text
+**Given** the user selects bulk generation
+**When** they specify a count (e.g., 10) and click "Generate"
+**Then** the requested number of UUIDs are displayed, each on its own line with individual `CopyButton`s
+**And** a "Copy All" secondary button copies all UUIDs
 
-**Given** the tool loads with empty input
-**When** no text is entered
-**Then** the output shows dashes or "—" (empty state per UX pattern)
+**Given** the tool loads
+**When** the page renders
+**Then** one UUID is pre-generated as a smart default so the output is immediately useful
 
 **Given** the tool implementation
-**When** hashes are computed
-**Then** SHA algorithms use the Web Crypto API (`crypto.subtle.digest`) — no server calls
-**And** MD5 uses a lightweight client-side library (code-split, lazy-loaded)
-**And** unit tests cover: known hash values for test vectors, empty input, Unicode text, large input, and all 4 algorithms
+**When** UUIDs are generated
+**Then** it uses `crypto.randomUUID()` (Web Crypto API) — no server calls
+**And** unit tests cover: UUID v4 format validation, uniqueness across bulk generation, and bulk count limits
 
 ---
 
-## Epic 9: CSS Visual Tools
+## Epic 9: CSS Tools
 
-Users can visually create CSS box-shadow values with a live preview and copy the CSS output.
+**Category:** CSS | **Tools:** 6
 
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton)
+| Story | Tool | Key | Emoji | Source |
+|-------|------|-----|-------|--------|
+| 9.1 | Box Shadow Generator | box-shadow-generator | 🎨 | Old 9.1 |
+| 9.2 | CSS Animation Builder | css-animation-builder | 🎬 | Old 20.3 |
+| 9.3 | Border Radius Generator | css-border-radius-generator | ⬜ | Old 19.1 |
+| 9.4 | Flexbox Playground | css-flexbox-playground | 📦 | Old 15.2 |
+| 9.5 | Gradient Generator | css-gradient-generator | 🌈 | Old 15.1 |
+| 9.6 | Grid Playground | css-grid-playground | 🔲 | Old 18.3 |
 
 ### Story 9.1: CSS Box Shadow Generator
 
 As a **user**,
 I want **to visually configure CSS box-shadow properties and see a live preview**,
 So that **I can design box shadows interactively and copy the CSS code directly into my stylesheet**.
+
+**Category:** CSS | **Emoji:** 🎨 | **Key:** `box-shadow-generator`
 
 **Acceptance Criteria:**
 
@@ -1227,19 +1131,312 @@ So that **I can design box shadows interactively and copy the CSS code directly 
 **Then** all processing is client-side — live DOM style manipulation for preview
 **And** unit tests cover: CSS string generation for all property combinations, inset toggle, zero values, negative offsets, and color format output
 
+### Story 9.2: CSS Animation Builder
+
+As a **user**,
+I want **to visually create CSS keyframe animations with multiple steps, timing functions, and live preview**,
+So that **I can prototype animations without writing CSS from scratch**.
+
+**Category:** CSS | **Emoji:** 🎬 | **Key:** `css-animation-builder`
+
+**Acceptance Criteria:**
+
+**Given** the animation builder interface
+**When** the user interacts
+**Then** they can define keyframe steps (0%, 25%, 50%, 75%, 100%) with CSS properties at each step
+
+**Given** timing function options
+**When** the user selects one
+**Then** options include: ease, ease-in, ease-out, ease-in-out, linear, and custom cubic-bezier
+
+**Given** animation properties
+**When** configured
+**Then** duration, delay, iteration count, direction, and fill mode can be set
+
+**Given** a live preview
+**When** any property changes
+**Then** the animated element updates in real-time
+
+**Given** the CSS output
+**When** CopyButton is clicked
+**Then** the complete `@keyframes` rule and animation shorthand are copied
+
+**Library:** None — native CSS + DOM manipulation
+**Unit tests:** Keyframe CSS generation, timing functions, animation shorthand, edge cases
+
+### Story 9.3: CSS Border Radius Generator
+
+As a **user**,
+I want **to visually configure CSS border-radius with per-corner control and see a live preview**,
+So that **I can design rounded corners without guessing pixel values**.
+
+**Category:** CSS | **Emoji:** ⬜ | **Key:** `css-border-radius-generator`
+
+**Acceptance Criteria:**
+
+**Given** the border radius generator
+**When** the user interacts
+**Then** they can control each corner independently (top-left, top-right, bottom-right, bottom-left) via sliders or numeric inputs
+
+**Given** a "Link corners" toggle
+**When** enabled
+**Then** changing one corner value updates all corners equally
+
+**Given** any corner value change
+**When** the user adjusts
+**Then** a live preview box updates showing the border radius
+**And** the CSS output updates (e.g., `border-radius: 10px 20px 30px 40px`)
+
+**Given** the CSS output
+**When** CopyButton is clicked
+**Then** the complete `border-radius` CSS property is copied
+
+**Library:** None — native CSS + DOM
+**Unit tests:** CSS string generation, individual corners, linked corners, shorthand output, zero values
+
+### Story 9.4: CSS Flexbox Playground
+
+As a **user**,
+I want **to visually configure CSS flexbox properties and see the layout result**,
+So that **I can learn and experiment with flexbox without writing code**.
+
+**Category:** CSS | **Emoji:** 📦 | **Key:** `css-flexbox-playground`
+
+**Acceptance Criteria:**
+
+**Given** the flexbox playground
+**When** the user views the interface
+**Then** they see: a visual container with child items, and controls for container properties (flex-direction, justify-content, align-items, flex-wrap, gap)
+
+**Given** the child items
+**When** the user interacts
+**Then** they can add/remove items (3-10) and configure per-item properties (flex-grow, flex-shrink, flex-basis, align-self, order)
+
+**Given** any property change
+**When** the user adjusts a control
+**Then** the visual layout updates in real-time
+**And** the CSS output for both container and items updates
+
+**Given** the CSS output
+**When** CopyButton is clicked
+**Then** the complete CSS for the flexbox layout is copied
+
+**Library:** None — native CSS + DOM
+**Unit tests:** CSS generation for all property combinations, item count limits, reset behavior
+
+### Story 9.5: CSS Gradient Generator
+
+As a **user**,
+I want **to visually build CSS gradients with multiple color stops and see a live preview**,
+So that **I can design beautiful gradients and copy the CSS directly**.
+
+**Category:** CSS | **Emoji:** 🌈 | **Key:** `css-gradient-generator`
+
+**Acceptance Criteria:**
+
+**Given** the gradient builder interface
+**When** the user interacts with it
+**Then** they can configure: gradient type (linear/radial), angle (for linear), color stops (add/remove/reposition), and each stop's color + position
+
+**Given** any input change
+**When** the user adjusts controls
+**Then** the live preview updates in real-time
+**And** the CSS output updates (e.g., `background: linear-gradient(135deg, #667eea 0%, #764ba2 100%)`)
+
+**Given** the color stops
+**When** the user interacts
+**Then** they can add new stops (click on gradient bar), remove stops (min 2), drag to reposition, and pick color via color input
+
+**Given** the CSS output
+**When** CopyButton is clicked
+**Then** the complete CSS property is copied (with vendor prefixes option)
+
+**Library:** None — native CSS + DOM manipulation
+**Unit tests:** CSS string generation, linear angles, radial shapes, multiple stops, color formats, vendor prefix output
+
+### Story 9.6: CSS Grid Playground
+
+As a **user**,
+I want **to visually build CSS Grid layouts by adjusting columns, rows, gaps, and alignment**,
+So that **I can experiment with grid properties and copy the resulting CSS**.
+
+**Category:** CSS | **Emoji:** 🔲 | **Key:** `css-grid-playground`
+
+**Acceptance Criteria:**
+
+**Given** the grid playground interface
+**When** the user interacts
+**Then** they can configure: grid-template-columns, grid-template-rows, gap, justify-items, align-items
+
+**Given** child grid items
+**When** the user interacts
+**Then** they can configure per-item placement (grid-column, grid-row, justify-self, align-self)
+
+**Given** any property change
+**When** the user adjusts a control
+**Then** the visual grid layout updates in real-time
+**And** the CSS output updates
+
+**Given** the CSS output
+**When** CopyButton is clicked
+**Then** the complete CSS for the grid layout is copied
+
+**Library:** None — native CSS + DOM
+**Unit tests:** CSS generation for grid properties, fractional units, auto sizing, named areas, item placement
+
 ---
 
-## Epic 10: Advanced Image Tools
+## Epic 10: Image Tools
 
-Users can compress images with quality control and crop images using freeform or preset aspect ratios.
+**Category:** Image | **Tools:** 11
 
-**Depends on:** Epic 1 (TOOL_REGISTRY), Epic 2 (CopyButton). Recommended after Epic 3 Stories 3.3/3.4 (Image tool baseline)
+| Story | Tool | Key | Emoji | Source |
+|-------|------|-----|-------|--------|
+| 10.1 | Background Remover | background-remover | ✂️ | Old 21.1 |
+| 10.2 | Base64 to Image | base64-to-image | 🖼️ | Old 17.3 |
+| 10.3 | Favicon Generator | favicon-generator | ⭐ | Old 20.5 |
+| 10.4 | Image Color Picker | image-color-picker | 🎨 | Old 18.4 |
+| 10.5 | Image Compressor | image-compressor | 📦 | Old 10.1 |
+| 10.6 | Image Converter | image-converter | 🔄 | Baseline (Epic 3) |
+| 10.7 | Image Cropper | image-cropper | ✂️ | Old 10.2 |
+| 10.8 | Image Resizer | image-resizer | 📐 | Baseline (Epic 3) |
+| 10.9 | Image to Base64 | image-to-base64 | 🔤 | Old 17.2 |
+| 10.10 | Placeholder Image Generator | placeholder-image-generator | 🖼️ | Old 23.3 |
+| 10.11 | SVG Viewer | svg-viewer | 🔍 | Old 15.3 |
 
-### Story 10.1: Image Compression
+### Story 10.1: Background Remover
+
+As a **user**,
+I want **to upload an image and have its background automatically removed using an AI model running in my browser**,
+So that **I can get transparent-background images without uploading to external services or paying for API calls**.
+
+**Category:** Image | **Emoji:** ✂️ | **Key:** `background-remover`
+
+**Acceptance Criteria:**
+
+**Given** the user uploads an image
+**When** the file is loaded
+**Then** the AI model processes the image and produces a transparent-background result
+
+**Given** the first time the tool is used
+**When** the model needs to download (~25MB)
+**Then** a download progress indicator is shown
+
+**Given** the processed image
+**When** displayed
+**Then** a before/after slider or side-by-side comparison is shown
+
+**Given** background output options
+**When** the user selects one
+**Then** they can choose: transparent, white, or custom background color
+
+**Given** the processed image
+**When** the user clicks "Download"
+**Then** the image downloads as PNG
+
+**Technical approach:**
+- Use `@huggingface/transformers` with `Xenova/modnet` model (Apache 2.0 license)
+- Pipeline: `pipeline('background-removal', 'Xenova/modnet', { dtype: 'fp32' })`
+- Model downloads ~25MB on first use, cached by browser after
+- WebGPU with WASM fallback for inference
+- Dialog-based tool (needs space for before/after preview)
+
+### Story 10.2: Base64 to Image
+
+As a **user**,
+I want **to paste a Base64 string or data URI and see/download the image**,
+So that **I can quickly preview and extract images from Base64-encoded data**.
+
+**Category:** Image | **Emoji:** 🖼️ | **Key:** `base64-to-image`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes a Base64 data URI or raw Base64 string
+**When** the value is entered
+**Then** the decoded image is displayed as a preview
+**And** image info is shown: dimensions, format, estimated file size
+
+**Given** the preview
+**When** the user clicks "Download"
+**Then** the image downloads with auto-detected format and filename `decoded-image.{ext}`
+
+**Given** an invalid Base64 string
+**When** decoding fails
+**Then** an inline error: "Enter a valid Base64-encoded image (starts with data:image/ or is a valid Base64 string)"
+
+**Given** raw Base64 without data URI prefix
+**When** entered
+**Then** the tool attempts to detect the image format from the magic bytes and renders accordingly
+
+**Library:** Native Canvas API + FileReader
+**Unit tests:** Data URI parsing, raw Base64 decoding, format detection, invalid input, large images, various image formats
+
+### Story 10.3: Favicon Generator
+
+As a **user**,
+I want **to upload an image and generate favicons in standard sizes (16x16, 32x32, 48x48, 180x180, 192x192, 512x512) with a downloadable zip**,
+So that **I can quickly create all required favicon sizes for my website**.
+
+**Category:** Image | **Emoji:** ⭐ | **Key:** `favicon-generator`
+
+**Acceptance Criteria:**
+
+**Given** the user uploads an image
+**When** the file is loaded
+**Then** favicons are generated in standard sizes: 16x16, 32x32, 48x48, 180x180, 192x192, 512x512
+
+**Given** the generated favicons
+**When** displayed
+**Then** each size is shown as a preview with individual download buttons
+
+**Given** a "Download All" button
+**When** clicked
+**Then** all favicons are packaged in a zip file and downloaded
+
+**Given** the source image
+**When** it is not square
+**Then** the image is center-cropped to square before resizing
+
+**Library:** Canvas API + JSZip (lazy-loaded)
+**Unit tests:** Size generation, square cropping, zip packaging, format handling, invalid file types
+
+### Story 10.4: Image Color Picker
+
+As a **user**,
+I want **to upload an image and click on it to extract colors in HEX, RGB, and HSL formats**,
+So that **I can sample colors from designs, screenshots, or photos**.
+
+**Category:** Image | **Emoji:** 🎨 | **Key:** `image-color-picker`
+
+**Acceptance Criteria:**
+
+**Given** the user uploads an image
+**When** the image is loaded
+**Then** it is displayed in a canvas element for interaction
+
+**Given** the user clicks on a pixel in the image
+**When** the click registers
+**Then** the color at that pixel is extracted and displayed in HEX, RGB, and HSL formats
+**And** each format has a CopyButton
+
+**Given** a magnifier/loupe
+**When** the user hovers over the image
+**Then** a zoomed preview shows pixels around the cursor for precise selection
+
+**Given** a color history
+**When** multiple colors are picked
+**Then** recently picked colors are shown as a palette strip for reference
+
+**Library:** Native Canvas API
+**Unit tests:** Color extraction accuracy, format conversions, edge pixels, transparent pixels
+
+### Story 10.5: Image Compressor
 
 As a **user**,
 I want **to compress JPEG and WebP images using a quality slider and see the resulting file size before downloading**,
 So that **I can optimize images for web use while controlling the quality-size tradeoff**.
+
+**Category:** Image | **Emoji:** 📦 | **Key:** `image-compressor`
 
 **Acceptance Criteria:**
 
@@ -1272,11 +1469,49 @@ So that **I can optimize images for web use while controlling the quality-size t
 **And** processing completes within 3 seconds for files up to 10MB
 **And** unit tests cover: JPEG compression, WebP compression, quality range validation, file size reduction verification, and unsupported format handling
 
-### Story 10.2: Image Cropping
+### Story 10.6: Image Converter
+
+> **Note:** This was a baseline tool (old Epic 3, Story 3.3) with its own refactor spec.
+
+As a **user**,
+I want **the Image Converter tool to use the standardized layout with documented behavior and regression tests**,
+So that **I can reliably convert images between formats with a consistent interface**.
+
+**Category:** Image | **Emoji:** 🔄 | **Key:** `image-converter`
+
+**Acceptance Criteria:**
+
+**Given** the existing `ImageConvertor` component
+**When** it is refactored
+**Then** it uses standardized file upload zone
+**And** it is registered in `TOOL_REGISTRY`
+
+**Given** a user uploads an image file
+**When** the file is loaded
+**Then** the filename and dimensions are displayed
+**And** a format selection dropdown offers: PNG, JPG, WebP, GIF, BMP, AVIF (where browser-supported)
+
+**Given** a user selects a target format and clicks "Convert"
+**When** processing completes
+**Then** the converted image is available for download
+**And** a `ProgressBar` appears only if processing exceeds 300ms
+**And** a toast confirms: "Downloaded {filename}"
+
+**Given** a user uploads an unsupported file type
+**When** validation fails
+**Then** an inline error appears with accepted formats listed
+
+**Given** a feature spec and regression tests
+**When** tests run
+**Then** coverage includes: supported format conversions, large file handling (up to 10MB), invalid file types, and mobile upload behavior
+
+### Story 10.7: Image Cropper
 
 As a **user**,
 I want **to crop images using freeform selection or common aspect ratio presets**,
 So that **I can quickly trim images to exact dimensions for different use cases**.
+
+**Category:** Image | **Emoji:** ✂️ | **Key:** `image-cropper`
 
 **Acceptance Criteria:**
 
@@ -1312,23 +1547,1131 @@ So that **I can quickly trim images to exact dimensions for different use cases*
 **Then** it uses the Canvas API for pixel-level cropping — no server calls
 **And** unit tests cover: freeform crop dimensions, preset aspect ratio enforcement, edge cases (crop to full image, crop to minimum size), and mobile touch interaction
 
+### Story 10.8: Image Resizer
+
+> **Note:** This was a baseline tool (old Epic 3, Story 3.4) with its own refactor spec.
+
+As a **user**,
+I want **the Image Resizer tool to use the standardized layout with documented behavior and regression tests**,
+So that **I can reliably resize images with custom dimensions and a consistent interface**.
+
+**Category:** Image | **Emoji:** 📐 | **Key:** `image-resizer`
+
+**Acceptance Criteria:**
+
+**Given** the existing `ImageResizer` component
+**When** it is refactored
+**Then** it uses standardized file upload zone
+**And** it is registered in `TOOL_REGISTRY`
+
+**Given** a user uploads an image
+**When** the file is loaded
+**Then** current dimensions (width x height) are displayed
+**And** width and height input fields are pre-filled with current dimensions
+
+**Given** a user enters target dimensions and clicks "Resize"
+**When** processing completes
+**Then** the resized image is available for download with filename format `resized-image.{ext}`
+**And** a `ProgressBar` appears only if processing exceeds 300ms
+
+**Given** a feature spec and regression tests
+**When** tests run
+**Then** coverage includes: upscale, downscale, aspect ratio behavior, large file handling, minimum dimensions, and mobile upload behavior
+
+### Story 10.9: Image to Base64
+
+As a **user**,
+I want **to upload an image and get the Base64 data URI**,
+So that **I can embed images directly in HTML, CSS, or JSON without external files**.
+
+**Category:** Image | **Emoji:** 🔤 | **Key:** `image-to-base64`
+
+**Acceptance Criteria:**
+
+**Given** the user uploads an image (drag-and-drop or file picker)
+**When** the file is loaded
+**Then** the Base64 data URI is displayed in the output
+**And** file info is shown: filename, dimensions, original size, Base64 string length
+
+**Given** the output display
+**When** rendered
+**Then** three copyable outputs are available:
+- Full data URI (`data:image/png;base64,...`)
+- Base64 string only (no data URI prefix)
+- HTML `<img>` tag with embedded data URI
+
+**Given** a non-image file
+**When** uploaded
+**Then** an inline error: "Please upload an image file (PNG, JPG, WebP, GIF, BMP, SVG)"
+
+**Library:** Native FileReader API
+**Unit tests:** PNG, JPG, WebP, GIF, SVG conversion, data URI format, large files, invalid files, MIME type detection
+
+### Story 10.10: Placeholder Image Generator
+
+As a **developer**,
+I want **to generate placeholder images with custom dimensions, colors, and text**,
+So that **I can use them in mockups and development without external services**.
+
+**Category:** Image | **Emoji:** 🖼️ | **Key:** `placeholder-image-generator`
+
+**Acceptance Criteria:**
+
+**Given** the user enters width and height (e.g., 800x600)
+**When** values are entered
+**Then** a placeholder image is rendered in a canvas with the specified dimensions
+
+**Given** the user customizes background color and text color
+**When** colors are changed
+**Then** the preview updates in real-time
+
+**Given** the user enters custom text (or uses default "{W}x{H}")
+**When** text is entered
+**Then** it's centered on the placeholder image
+
+**Given** common size presets (thumbnail 150x150, banner 1200x630, avatar 200x200, hero 1920x1080)
+**When** a preset is selected
+**Then** dimensions are populated
+
+**Given** the generated placeholder
+**When** the user clicks "Download PNG" or "Download SVG"
+**Then** the image is downloaded in the selected format
+
+### Story 10.11: SVG Viewer/Optimizer
+
+As a **user**,
+I want **to paste SVG code, see a live preview, and optimize the SVG**,
+So that **I can inspect, debug, and reduce SVG file size**.
+
+**Category:** Image | **Emoji:** 🔍 | **Key:** `svg-viewer`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes SVG code
+**When** valid SVG is entered
+**Then** a live preview renders the SVG
+**And** file size is displayed
+
+**Given** an "Optimize" button
+**When** clicked
+**Then** the SVG is optimized (remove metadata, comments, unnecessary attributes)
+**And** original vs optimized size is shown (e.g., "4.2 KB → 2.1 KB (50% reduction)")
+
+**Given** the optimized SVG
+**When** CopyButton is clicked
+**Then** the optimized SVG code is copied
+
+**Given** invalid SVG
+**When** entered
+**Then** an inline error with description
+
+**Library:** `svgo` (browser build) — lazy-loaded
+**Unit tests:** Valid SVG rendering, optimization size reduction, invalid SVG handling, empty input, complex SVGs with metadata
+
 ---
 
-## Epic 11: Technical Debt Cleanup
+## Epic 11: Code Tools
 
-Address accumulated HIGH and MEDIUM priority technical debt from Epics 1-10. WCAG accessibility audit, async state guard hardening, and input validation consistency.
+**Category:** Code | **Tools:** 13
 
-**Depends on:** None (all stories are independent cleanup of existing code)
+| Story | Tool | Key | Emoji | Source |
+|-------|------|-----|-------|--------|
+| 11.1 | CSS Formatter | css-formatter | 🎨 | Old 12.2 |
+| 11.2 | GraphQL Schema Viewer | graphql-schema-viewer | 📊 | Old 25.1 |
+| 11.3 | HTML Formatter | html-formatter | 📄 | Old 12.1 |
+| 11.4 | JavaScript Minifier | javascript-minifier | ⚡ | Old 12.3 |
+| 11.5 | JSON Schema Validator | json-schema-validator | ✅ | Old 20.1 |
+| 11.6 | JSON to TypeScript | json-to-typescript | 🔷 | Old 18.1 |
+| 11.7 | JSONPath Evaluator | jsonpath-evaluator | 🎯 | Old 25.4 |
+| 11.8 | Markdown Preview | markdown-preview | 👁️ | Old 12.5 |
+| 11.9 | Markdown Table Generator | markdown-table-generator | 📊 | Old 19.3 |
+| 11.10 | Mermaid Renderer | mermaid-renderer | 🧜 | Old 26.2 |
+| 11.11 | Protobuf to JSON | protobuf-to-json | 🔄 | Old 25.2 |
+| 11.12 | SQL Formatter | sql-formatter | 🗃️ | Old 12.4 |
+| 11.13 | TypeScript Playground | typescript-playground | 🟦 | Old 25.3 |
 
-### Story 11.1: WCAG Accessibility Audit & Fix
+### Story 11.1: CSS Formatter/Minifier
+
+As a **user**,
+I want **to paste CSS and see it beautified or minified**,
+So that **I can clean up stylesheets or prepare them for production**.
+
+**Category:** Code | **Emoji:** 🎨 | **Key:** `css-formatter`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes valid CSS
+**When** the value is entered
+**Then** beautified CSS appears with proper indentation and one-property-per-line
+
+**Given** a "Minify" toggle is enabled
+**When** CSS is entered
+**Then** the output is minified (whitespace/comments removed)
+
+**Given** invalid CSS
+**When** entered
+**Then** best-effort formatting with inline warning
+
+**Library:** `js-beautify` (CSS beautifier) — lazy-loaded
+**Unit tests:** Valid CSS, media queries, nested selectors, variables, minify mode, empty input, large stylesheets
+
+### Story 11.2: GraphQL Schema Viewer
+
+As a **developer**,
+I want **to paste a GraphQL schema (SDL) and browse its types, fields, and relationships**,
+So that **I can explore API schemas without running a GraphQL server**.
+
+**Category:** Code | **Emoji:** 📊 | **Key:** `graphql-schema-viewer`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes valid GraphQL SDL
+**When** parsed
+**Then** all types (Object, Input, Enum, Interface, Union, Scalar) are listed in a browsable sidebar/list
+
+**Given** the user selects a type
+**When** clicked
+**Then** all fields, arguments, directives, and descriptions for that type are displayed
+
+**Given** a field references another type
+**When** the type name is displayed
+**Then** it's clickable/linkable to navigate to that type's definition
+
+**Given** invalid GraphQL SDL
+**When** parsed
+**Then** syntax errors are shown with line numbers
+
+**Given** a loaded schema
+**When** the user types in a search/filter box
+**Then** types and fields are filtered by name
+
+**Dependencies:** graphql package
+
+### Story 11.3: HTML Formatter/Beautifier
+
+As a **user**,
+I want **to paste HTML and see it formatted with proper indentation, or minified for production**,
+So that **I can clean up messy HTML quickly**.
+
+**Category:** Code | **Emoji:** 📄 | **Key:** `html-formatter`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes valid HTML
+**When** the value is entered
+**Then** beautified HTML appears in real-time (debounced 300ms) with configurable indent (2/4 spaces or tab)
+
+**Given** a "Minify" toggle is enabled
+**When** HTML is entered
+**Then** the output is minified (whitespace removed, attributes compressed)
+
+**Given** invalid/malformed HTML
+**When** entered
+**Then** best-effort formatting is applied (HTML is forgiving) with a warning if tags are unclosed
+
+**Library:** `js-beautify` (HTML beautifier) — lazy-loaded
+**Unit tests:** Valid HTML, nested elements, self-closing tags, malformed HTML, empty input, large documents, minify mode
+
+### Story 11.4: JavaScript Minifier
+
+As a **user**,
+I want **to paste JavaScript and get a minified version**,
+So that **I can quickly reduce JS file size for production**.
+
+**Category:** Code | **Emoji:** ⚡ | **Key:** `javascript-minifier`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes valid JavaScript
+**When** the value is entered
+**Then** minified JS appears in real-time (debounced 300ms)
+**And** original size vs minified size is displayed (e.g., "2.4 KB → 890 B")
+
+**Given** a "Beautify" toggle
+**When** enabled
+**Then** the output is formatted/beautified instead of minified
+
+**Given** invalid JavaScript (syntax error)
+**When** entered
+**Then** an inline error shows the parse error location
+
+**Library:** `js-beautify` for beautify, `terser` for minify — lazy-loaded
+**Unit tests:** Valid JS, ES modules, arrow functions, async/await, template literals, syntax errors, empty input, size calculation
+
+### Story 11.5: JSON Schema Validator
+
+As a **user**,
+I want **to paste JSON data and a JSON Schema, then see validation results with specific error paths**,
+So that **I can verify my JSON conforms to a schema without running external tools**.
+
+**Category:** Code | **Emoji:** ✅ | **Key:** `json-schema-validator`
+
+**Acceptance Criteria:**
+
+**Given** two input areas — one for JSON data, one for JSON Schema
+**When** both are provided
+**Then** validation runs and results are displayed
+
+**Given** the JSON conforms to the schema
+**When** validated
+**Then** a success message is shown: "Valid"
+
+**Given** the JSON does not conform
+**When** validated
+**Then** each validation error is listed with: error path (e.g., `$.items[0].price`), error message, and expected vs actual values
+
+**Given** invalid JSON or invalid schema
+**When** either cannot be parsed
+**Then** a clear parse error is shown for the relevant input
+
+**Library:** `ajv` — lazy-loaded
+**Unit tests:** Valid schemas, validation failures, nested paths, array validation, required fields, pattern matching, invalid JSON/schema
+
+### Story 11.6: JSON to TypeScript
+
+As a **user**,
+I want **to paste JSON and get TypeScript interfaces or type aliases generated automatically**,
+So that **I can quickly create type-safe code from API responses or data samples**.
+
+**Category:** Code | **Emoji:** 🔷 | **Key:** `json-to-typescript`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes valid JSON
+**When** the value is entered
+**Then** TypeScript type definitions are generated in real-time (debounced 300ms)
+
+**Given** generation options
+**When** the user configures them
+**Then** they can choose: `type` vs `interface`, root type name, optional properties toggle, array type style
+
+**Given** nested JSON objects
+**When** converted
+**Then** nested types are generated with descriptive names derived from the key path
+
+**Given** the generated TypeScript
+**When** CopyButton is clicked
+**Then** the complete TypeScript code is copied
+
+**Library:** `json-to-ts` or custom implementation — lazy-loaded
+**Unit tests:** Simple objects, nested objects, arrays, mixed types, null values, empty objects, naming conventions
+
+### Story 11.7: JSONPath Evaluator
+
+As a **developer**,
+I want **to paste JSON and evaluate JSONPath expressions against it**,
+So that **I can test and debug JSONPath queries for API data extraction**.
+
+**Category:** Code | **Emoji:** 🎯 | **Key:** `jsonpath-evaluator`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes valid JSON in the input area
+**When** JSON is entered
+**Then** it's parsed and formatted
+
+**Given** the user enters a JSONPath expression (e.g., $.store.book[*].author)
+**When** the expression is entered
+**Then** matching results are displayed in real-time
+
+**Given** the JSONPath expression matches multiple values
+**When** results are shown
+**Then** each result shows its path and value
+
+**Given** an invalid JSONPath expression
+**When** entered
+**Then** a clear error message is shown
+
+**Given** no matches found
+**When** evaluated
+**Then** "No matches" is displayed
+
+**Given** common JSONPath examples
+**When** the user clicks a cheatsheet toggle
+**Then** common patterns are shown ($.*, $..name, $[0], $[?(@.price<10)])
+
+**Dependencies:** jsonpath-plus
+
+### Story 11.8: Markdown Preview
+
+As a **user**,
+I want **to write Markdown and see a live HTML preview side-by-side**,
+So that **I can author READMEs and docs with instant feedback**.
+
+**Category:** Code | **Emoji:** 👁️ | **Key:** `markdown-preview`
+
+**Acceptance Criteria:**
+
+**Given** the user types Markdown in the left panel
+**When** content changes
+**Then** rendered HTML preview appears in the right panel in real-time (debounced 300ms)
+
+**Given** the preview panel
+**When** it renders
+**Then** it supports: headings, bold/italic, links, images, code blocks (with syntax highlighting), tables, lists, blockquotes, horizontal rules
+
+**Given** a "Copy HTML" button
+**When** clicked
+**Then** the rendered HTML source is copied to clipboard
+
+**Given** mobile viewport
+**When** < 768px
+**Then** panels stack vertically (editor on top, preview below)
+
+**Library:** `marked` + `highlight.js` (for code blocks) — lazy-loaded
+**Unit tests:** All markdown elements, GFM (GitHub Flavored Markdown), XSS prevention (sanitized output), empty input, large documents
+
+### Story 11.9: Markdown Table Generator
+
+As a **user**,
+I want **to visually build a table by adding rows and columns, then copy the Markdown output**,
+So that **I can create Markdown tables without memorizing the pipe syntax**.
+
+**Category:** Code | **Emoji:** 📊 | **Key:** `markdown-table-generator`
+
+**Acceptance Criteria:**
+
+**Given** the table builder interface
+**When** the user interacts
+**Then** they can add/remove rows and columns, and edit cell content inline
+
+**Given** column alignment options
+**When** the user selects alignment (left, center, right)
+**Then** the Markdown output uses the appropriate colon syntax (`:---`, `:---:`, `---:`)
+
+**Given** the table content
+**When** it changes
+**Then** the Markdown output updates in real-time
+
+**Given** the Markdown output
+**When** CopyButton is clicked
+**Then** the complete Markdown table is copied
+
+**Given** an "Import CSV" option
+**When** CSV is pasted
+**Then** the table is populated from the CSV data
+
+**Library:** None — native DOM + string formatting
+**Unit tests:** Markdown generation, alignment syntax, special characters in cells, empty cells, import from CSV
+
+### Story 11.10: Mermaid Diagram Renderer
+
+As a **developer/technical writer**,
+I want **to write Mermaid diagram syntax and see a live SVG preview**,
+So that **I can create and iterate on diagrams without embedding them in markdown renderers**.
+
+**Category:** Code | **Emoji:** 🧜 | **Key:** `mermaid-renderer`
+
+**Acceptance Criteria:**
+
+**Given** the tool loads
+**When** Mermaid library initializes
+**Then** a loading skeleton is shown until ready (NFR-E3-02)
+
+**Given** the user types valid Mermaid syntax (flowchart, sequence, class, etc.)
+**When** typing (debounced 500ms)
+**Then** a live SVG preview is rendered
+
+**Given** invalid Mermaid syntax
+**When** entered
+**Then** an error message from the parser is shown
+
+**Given** a rendered diagram
+**When** the user clicks "Export SVG"
+**Then** the SVG is downloaded
+
+**Given** a rendered diagram
+**When** the user clicks "Export PNG"
+**Then** the SVG is rasterized and downloaded as PNG
+
+**Given** a syntax reference panel
+**When** toggled
+**Then** quick-reference examples are shown for flowchart, sequence, class, state, gantt, and pie diagram types
+
+**Dependencies:** mermaid
+
+### Story 11.11: Protobuf to JSON
+
+As a **developer**,
+I want **to paste .proto definitions and see corresponding JSON structures**,
+So that **I can understand the JSON shape of Protobuf messages without running protoc**.
+
+**Category:** Code | **Emoji:** 🔄 | **Key:** `protobuf-to-json`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes a valid .proto file with message definitions
+**When** parsed
+**Then** all message types are listed
+
+**Given** the user selects a message type
+**When** selected
+**Then** a sample JSON structure is generated with default values for each field type
+
+**Given** nested messages or repeated fields
+**When** JSON is generated
+**Then** nested objects and arrays are correctly represented
+
+**Given** invalid .proto syntax
+**When** pasted
+**Then** parsing errors are shown with line context
+
+**Given** enum fields in the proto
+**When** JSON is generated
+**Then** the first enum value is used as default, with a comment listing all values
+
+**Dependencies:** protobufjs
+
+### Story 11.12: SQL Formatter
+
+As a **user**,
+I want **to paste SQL and see it formatted with proper indentation and keyword highlighting**,
+So that **I can make complex queries readable**.
+
+**Category:** Code | **Emoji:** 🗃️ | **Key:** `sql-formatter`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes a SQL query
+**When** the value is entered
+**Then** formatted SQL appears with uppercase keywords, proper indentation, and one clause per line
+
+**Given** dialect selection
+**When** the user picks a dialect (Standard SQL, PostgreSQL, MySQL, SQLite, BigQuery)
+**Then** formatting adapts to dialect-specific syntax
+
+**Given** a configurable indent option
+**When** changed (2/4 spaces or tab)
+**Then** formatting updates accordingly
+
+**Library:** `sql-formatter` — lazy-loaded
+**Unit tests:** Simple SELECT, JOINs, subqueries, CTEs, INSERT/UPDATE/DELETE, dialect differences, empty input, invalid SQL
+
+### Story 11.13: TypeScript Playground
+
+As a **developer**,
+I want **to write TypeScript in a browser-based editor with real-time type checking and JS output**,
+So that **I can quickly experiment with TypeScript without setting up a project**.
+
+**Category:** Code | **Emoji:** 🟦 | **Key:** `typescript-playground`
+
+**Acceptance Criteria:**
+
+**Given** the tool loads
+**When** Monaco Editor initializes
+**Then** a loading skeleton is shown until the editor is ready (NFR-E3-01)
+
+**Given** the user types TypeScript code
+**When** typing
+**Then** real-time type checking runs with error squiggles and hover type info
+
+**Given** valid TypeScript code
+**When** entered
+**Then** transpiled JavaScript output is shown in a secondary read-only editor pane
+
+**Given** TypeScript with type errors
+**When** errors exist
+**Then** errors are listed below the editor with line numbers and messages
+
+**Given** the user clicks "Copy JS"
+**When** clicked
+**Then** the transpiled JavaScript is copied to clipboard
+
+**Dependencies:** @monaco-editor/react, typescript (via Monaco's built-in TS worker)
+
+---
+
+## Epic 12: Color Tools
+
+**Category:** Color | **Tools:** 2
+
+| Story | Tool | Key | Emoji | Source |
+|-------|------|-----|-------|--------|
+| 12.1 | Color Converter | color-converter | 🎨 | Baseline (Epic 3) |
+| 12.2 | Color Palette Generator | color-palette-generator | 🌈 | Old 23.2 |
+
+### Story 12.1: Color Converter
+
+> **Note:** This was a baseline tool (old Epic 3, Story 3.1) with its own refactor spec.
+
+As a **user**,
+I want **the Color Converter tool to use the standardized layout with documented behavior and regression tests**,
+So that **I can rely on consistent, tested color conversion between HEX, RGB, and HSL formats**.
+
+**Category:** Color | **Emoji:** 🎨 | **Key:** `color-converter`
+
+**Acceptance Criteria:**
+
+**Given** the existing `ColorConvertor` component
+**When** it is refactored
+**Then** it uses `CopyButton` for output copying
+**And** it is registered in `TOOL_REGISTRY` with complete metadata
+
+**Given** a user inputs a valid HEX value (e.g., `#3B82F6`)
+**When** the value is entered
+**Then** RGB and HSL conversions appear in real-time (debounced 300ms) in the output region
+**And** each output value has an adjacent `CopyButton`
+
+**Given** a user inputs a color via the visual color picker
+**When** a color is selected
+**Then** all format outputs (HEX, RGB, HSL) update immediately
+
+**Given** a user inputs an invalid color value
+**When** validation fails
+**Then** an inline error appears: "Enter a valid hex color (e.g., #3B82F6)"
+
+**Given** a feature spec document
+**When** a developer reads it
+**Then** it covers: supported input formats (HEX 3/6/8-digit, RGB, HSL), output formats, edge cases (with/without #, shorthand hex, out-of-range values), and expected behavior
+
+**Given** regression test stories in `src/utils/color.spec.ts`
+**When** `pnpm test` runs
+**Then** all happy paths, edge cases, and error states pass
+
+### Story 12.2: Color Palette Generator
+
+As a **designer/developer**,
+I want **to generate harmonious color palettes from a base color**,
+So that **I can quickly create consistent color schemes for my projects**.
+
+**Category:** Color | **Emoji:** 🌈 | **Key:** `color-palette-generator`
+
+**Acceptance Criteria:**
+
+**Given** the user inputs a base color (HEX, RGB, or HSL)
+**When** a harmony type is selected (complementary, analogous, triadic, split-complementary, monochromatic)
+**Then** a palette of 5 harmonious colors is generated and displayed as swatches
+
+**Given** a generated palette
+**When** the user hovers over a color swatch
+**Then** HEX, RGB, and HSL values are shown
+
+**Given** a generated palette
+**When** the user clicks a swatch
+**Then** the HEX value is copied to clipboard
+
+**Given** a generated palette
+**When** the user clicks "Export CSS"
+**Then** CSS custom properties are generated (--color-1: #xxx; etc.)
+
+**Given** the user uses a color picker input
+**When** the color changes
+**Then** the palette updates in real-time
+
+---
+
+## Epic 13: Security Tools
+
+**Category:** Security | **Tools:** 8
+
+Includes crypto tools (AES, Hash, HMAC) moved from the former Generator category.
+
+| Story | Tool | Key | Emoji | Source |
+|-------|------|-----|-------|--------|
+| 13.1 | AES Encrypt/Decrypt | aes-encrypt-decrypt | 🔐 | Old 14.2 |
+| 13.2 | Bcrypt Hasher | bcrypt-hasher | 🔒 | Old 24.3 |
+| 13.3 | Certificate Decoder | certificate-decoder | 📜 | Old 24.2 |
+| 13.4 | Chmod Calculator | chmod-calculator | 🔐 | Old 24.4 |
+| 13.5 | Hash Generator | hash-generator | #️⃣ | Old 8.3 |
+| 13.6 | HMAC Generator | hmac-generator | 🔏 | Old 14.1 |
+| 13.7 | RSA Key Generator | rsa-key-generator | 🔑 | Old 24.5 |
+| 13.8 | SSH Key Fingerprint | ssh-key-fingerprint | 🔑 | Old 24.1 |
+
+### Story 13.1: AES Encrypt/Decrypt
+
+As a **user**,
+I want **to encrypt and decrypt text using AES with a password**,
+So that **I can quickly protect sensitive data without installing encryption tools**.
+
+**Category:** Security | **Emoji:** 🔐 | **Key:** `aes-encrypt-decrypt`
+
+**Acceptance Criteria:**
+
+**Given** tabs for Encrypt and Decrypt modes
+**When** the user enters plaintext and a password in Encrypt mode
+**Then** the AES-GCM encrypted output appears as a Base64 string (includes IV + ciphertext)
+
+**Given** Decrypt mode
+**When** the user pastes the encrypted Base64 string and the correct password
+**Then** the original plaintext appears
+
+**Given** a wrong password in Decrypt mode
+**When** decryption fails
+**Then** an inline error: "Decryption failed — incorrect password or corrupted data"
+
+**Given** the encryption process
+**When** it runs
+**Then** it uses PBKDF2 for key derivation (100K iterations, random salt) and AES-256-GCM for encryption
+**And** output format: Base64(salt + iv + ciphertext + authTag)
+
+**Library:** Web Crypto API — no external deps
+**Unit tests:** Encrypt/decrypt roundtrip, wrong password, empty input, Unicode text, large text, output format validation
+
+### Story 13.2: Bcrypt Hasher
+
+As a **developer**,
+I want **to hash passwords with bcrypt and verify plaintext against bcrypt hashes**,
+So that **I can generate and test password hashes during development**.
+
+**Category:** Security | **Emoji:** 🔒 | **Key:** `bcrypt-hasher`
+
+**Acceptance Criteria:**
+
+**Given** the user enters a plaintext password
+**When** "Hash" mode is active and a cost factor is selected (4-31, default 10)
+**Then** a bcrypt hash is generated and displayed
+
+**Given** bcrypt hashing is in progress (especially high cost factors)
+**When** hashing
+**Then** a progress indicator and elapsed time are shown (NFR-E3-04)
+
+**Given** the user enters plaintext and a bcrypt hash
+**When** "Verify" mode is active
+**Then** the result shows "Match" or "No Match"
+
+**Given** an invalid bcrypt hash format
+**When** entered for verification
+**Then** an error explains the expected format ($2a$/$2b$/$2y$ prefix)
+
+**Dependencies:** bcryptjs
+
+### Story 13.3: Certificate Decoder
+
+As a **developer/devops engineer**,
+I want **to paste a PEM-encoded X.509 certificate and see its decoded details**,
+So that **I can inspect certificate properties without openssl CLI**.
+
+**Category:** Security | **Emoji:** 📜 | **Key:** `certificate-decoder`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes a PEM-encoded certificate (-----BEGIN CERTIFICATE-----)
+**When** parsed
+**Then** decoded details are shown: Subject, Issuer, Serial Number, Validity (Not Before/Not After), Public Key Algorithm & Size, Signature Algorithm
+
+**Given** the certificate has extensions (SAN, Key Usage, etc.)
+**When** decoded
+**Then** extensions are listed with their values
+
+**Given** the certificate validity dates
+**When** displayed
+**Then** a visual indicator shows if the certificate is currently valid, expired, or not yet valid
+
+**Given** an invalid PEM or non-certificate PEM
+**When** pasted
+**Then** a clear error explains what was expected
+
+**Dependencies:** asn1js + pkijs (or lightweight ASN.1 parser)
+
+### Story 13.4: Chmod Calculator
+
+As a **developer/devops engineer**,
+I want **to convert between symbolic (rwxr-xr-x), octal (755), and visual (checkbox) chmod notations**,
+So that **I can quickly determine correct file permissions**.
+
+**Category:** Security | **Emoji:** 🔐 | **Key:** `chmod-calculator`
+
+**Acceptance Criteria:**
+
+**Given** the user enters an octal permission (e.g., 755)
+**When** entered
+**Then** the symbolic notation (rwxr-xr-x) and a 3x3 checkbox grid (owner/group/other x read/write/execute) are updated
+
+**Given** the user toggles checkboxes in the visual grid
+**When** a checkbox changes
+**Then** both octal and symbolic notations update in real-time
+
+**Given** the user types symbolic notation (e.g., rwxr-xr-x)
+**When** entered
+**Then** octal and checkbox grid update accordingly
+
+**Given** common presets (644, 755, 777, 600, 400)
+**When** selected
+**Then** all three representations update
+
+**Given** any notation
+**When** displayed
+**Then** a human-readable description is shown (e.g., "Owner: read, write, execute | Group: read, execute | Other: read, execute")
+
+### Story 13.5: Hash Generator
+
+As a **user**,
+I want **to generate hash values from text input using common algorithms**,
+So that **I can quickly compute checksums and hashes for verification and development**.
+
+**Category:** Security | **Emoji:** #️⃣ | **Key:** `hash-generator`
+
+**Acceptance Criteria:**
+
+**Given** the Hash Generator tool registered in `TOOL_REGISTRY` under the Security category
+**When** the user navigates to it
+**Then** it renders with a `TextAreaInput` for text and algorithm selection (MD5, SHA-1, SHA-256, SHA-512)
+
+**Given** a user enters text and selects an algorithm
+**When** the input changes
+**Then** the hash value is computed and displayed in real-time (debounced 300ms)
+**And** a `CopyButton` copies the hex-encoded hash
+
+**Given** multiple algorithms are available
+**When** the user selects a different algorithm
+**Then** the output updates immediately for the current input text
+
+**Given** the tool loads with empty input
+**When** no text is entered
+**Then** the output shows dashes or "---" (empty state per UX pattern)
+
+**Given** the tool implementation
+**When** hashes are computed
+**Then** SHA algorithms use the Web Crypto API (`crypto.subtle.digest`) — no server calls
+**And** MD5 uses a lightweight client-side library (code-split, lazy-loaded)
+**And** unit tests cover: known hash values for test vectors, empty input, Unicode text, large input, and all 4 algorithms
+
+### Story 13.6: HMAC Generator
+
+As a **user**,
+I want **to generate HMAC signatures from a message and secret key**,
+So that **I can verify API signatures and test webhook authentication locally**.
+
+**Category:** Security | **Emoji:** 🔏 | **Key:** `hmac-generator`
+
+**Acceptance Criteria:**
+
+**Given** inputs for message text, secret key, and algorithm selection (SHA-256, SHA-384, SHA-512)
+**When** both message and key are provided
+**Then** the HMAC signature appears in real-time (debounced 300ms) in hex encoding
+**And** a toggle for hex/base64 output encoding is available
+
+**Given** the output
+**When** displayed
+**Then** a CopyButton copies the HMAC value
+
+**Given** empty key or message
+**When** either is missing
+**Then** output shows "---" (empty state)
+
+**Library:** Web Crypto API (`crypto.subtle.importKey` + `crypto.subtle.sign`) — no external deps
+**Unit tests:** Known HMAC test vectors (RFC 4231), all algorithms, empty inputs, Unicode key/message, hex vs base64 encoding
+
+### Story 13.7: RSA Key Pair Generator
+
+As a **developer**,
+I want **to generate RSA key pairs entirely in the browser**,
+So that **I can create keys for development without installing tools, knowing my private key never leaves the browser**.
+
+**Category:** Security | **Emoji:** 🔑 | **Key:** `rsa-key-generator`
+
+**Acceptance Criteria:**
+
+**Given** the user selects a key size (2048 or 4096 bits)
+**When** "Generate" is clicked
+**Then** an RSA key pair is generated using Web Crypto API and displayed in PEM format
+
+**Given** 4096-bit key generation (may take 1-3s)
+**When** generating
+**Then** a progress indicator is shown (NFR-E3-03)
+
+**Given** generated keys
+**When** displayed
+**Then** public and private keys are shown in separate copyable fields
+
+**Given** generated keys
+**When** the user clicks "Download"
+**Then** keys are downloaded as .pem files (public.pem, private.pem)
+
+**Given** a security notice
+**When** the tool loads
+**Then** a banner confirms "Keys are generated entirely in your browser. No data is sent to any server."
+
+**Dependencies:** Web Crypto API (native)
+
+### Story 13.8: SSH Key Fingerprint Viewer
+
+As a **developer/devops engineer**,
+I want **to paste an SSH public key and see its fingerprint in standard formats**,
+So that **I can verify SSH key identity without using the command line**.
+
+**Category:** Security | **Emoji:** 🔑 | **Key:** `ssh-key-fingerprint`
+
+**Acceptance Criteria:**
+
+**Given** the user pastes a valid SSH public key (ssh-rsa, ssh-ed25519, ecdsa-sha2-*)
+**When** the key is pasted
+**Then** SHA256 and MD5 fingerprints are displayed, along with key type and bit size
+
+**Given** the user pastes an OpenSSH authorized_keys line (with optional comment)
+**When** parsed
+**Then** the comment field is extracted and displayed alongside the fingerprint
+
+**Given** an invalid or malformed key
+**When** pasted
+**Then** a clear error message indicates the key format is not recognized
+
+**Given** fingerprint output
+**When** the user clicks copy on either format
+**Then** the fingerprint string is copied to clipboard (e.g., SHA256:xxx or MD5:xx:xx:xx...)
+
+---
+
+## Epic 14: Time Tools
+
+**Category:** Time | **Tools:** 4
+
+| Story | Tool | Key | Emoji | Source |
+|-------|------|-----|-------|--------|
+| 14.1 | Cron Parser | cron-expression-parser | ⏰ | Old 18.2 |
+| 14.2 | Crontab Generator | crontab-generator | 📅 | Old 20.2 |
+| 14.3 | Timezone Converter | timezone-converter | 🌍 | Old 26.1 |
+| 14.4 | Unix Timestamp | unix-timestamp | ⏱️ | Baseline (Epic 3) |
+
+### Story 14.1: Cron Expression Parser
+
+As a **user**,
+I want **to enter a cron expression and see a human-readable description plus the next scheduled run times**,
+So that **I can understand and verify cron schedules without memorizing the syntax**.
+
+**Category:** Time | **Emoji:** ⏰ | **Key:** `cron-expression-parser`
+
+**Acceptance Criteria:**
+
+**Given** the user enters a valid cron expression (e.g., `*/5 * * * *`)
+**When** the value is entered
+**Then** a human-readable description is shown (e.g., "Every 5 minutes")
+**And** the next 5 scheduled run times are listed
+
+**Given** an invalid cron expression
+**When** entered
+**Then** an inline error explains which field is invalid
+
+**Given** a 5-field and 6-field (with seconds) format
+**When** either is entered
+**Then** both formats are supported
+
+**Given** preset examples
+**When** available
+**Then** common cron patterns are shown as clickable presets (hourly, daily, weekly, monthly)
+
+**Library:** `cronstrue` (human-readable) + `cron-parser` (next runs) — lazy-loaded
+**Unit tests:** Common patterns, all fields, invalid expressions, edge cases (Feb 29, leap years), 6-field format
+
+### Story 14.2: Crontab Generator
+
+As a **user**,
+I want **to visually build a cron expression by selecting minute, hour, day, month, and weekday values**,
+So that **I can create correct cron schedules without memorizing the syntax**.
+
+**Category:** Time | **Emoji:** 📅 | **Key:** `crontab-generator`
+
+**Acceptance Criteria:**
+
+**Given** the crontab generator interface
+**When** the user interacts
+**Then** they can select values for each cron field: minute, hour, day of month, month, day of week
+
+**Given** each field
+**When** the user configures it
+**Then** they can choose: specific values, ranges, intervals (*/N), or wildcard (*)
+
+**Given** any field change
+**When** the user adjusts a value
+**Then** the cron expression updates in real-time
+**And** a human-readable description updates simultaneously
+
+**Given** the generated cron expression
+**When** CopyButton is clicked
+**Then** the expression is copied to clipboard
+
+**Given** common presets
+**When** selected (hourly, daily at midnight, weekly on Monday, etc.)
+**Then** the fields are populated accordingly
+
+**Library:** None (generation) + `cronstrue` (description) — lazy-loaded
+**Unit tests:** All field types, ranges, intervals, wildcards, preset accuracy
+
+### Story 14.3: Timezone Converter
+
+As a **developer working with distributed teams**,
+I want **to convert date/times between different timezones**,
+So that **I can coordinate meetings and understand timestamps across time zones**.
+
+**Category:** Time | **Emoji:** 🌍 | **Key:** `timezone-converter`
+
+**Acceptance Criteria:**
+
+**Given** the user selects a source timezone and enters a date/time
+**When** a target timezone is selected
+**Then** the converted date/time is displayed, accounting for DST
+
+**Given** multiple target timezones can be added
+**When** the user adds timezones
+**Then** all target times are shown simultaneously
+
+**Given** the "Now" button
+**When** clicked
+**Then** the current date/time is populated in the source timezone
+
+**Given** all IANA timezones
+**When** the timezone picker is used
+**Then** timezones are searchable by name, city, or abbreviation (e.g., "PST", "Tokyo", "America/New_York")
+
+**Given** a favorites feature
+**When** the user stars a timezone
+**Then** it appears at the top of the list for quick access (persisted in localStorage)
+
+### Story 14.4: Unix Timestamp Converter
+
+> **Note:** This was a baseline tool (old Epic 3, Story 3.5) with its own refactor spec.
+
+As a **user**,
+I want **the Unix Timestamp tool to use the standardized layout with documented behavior and regression tests**,
+So that **I can reliably convert between timestamps and human-readable dates with a consistent interface**.
+
+**Category:** Time | **Emoji:** ⏱️ | **Key:** `unix-timestamp`
+
+**Acceptance Criteria:**
+
+**Given** the existing `TimeUnixTimestamp` component
+**When** it is refactored
+**Then** it uses `CopyButton` for output copying
+**And** it is registered in `TOOL_REGISTRY`
+
+**Given** a user enters a Unix timestamp (e.g., `1700000000`)
+**When** the value is entered
+**Then** the human-readable date/time appears in real-time (debounced 300ms)
+
+**Given** a user enters a human-readable date
+**When** the value is entered
+**Then** the corresponding Unix timestamp appears in real-time
+
+**Given** an invalid timestamp input
+**When** validation fails
+**Then** an inline error appears: "Enter a valid Unix timestamp (e.g., 1700000000)"
+
+**Given** a feature spec and regression tests
+**When** tests run
+**Then** coverage includes: seconds vs milliseconds, negative timestamps (pre-1970), current time, date-to-timestamp, edge cases (epoch 0, far future)
+
+---
+
+## Epic 15: Unit Tools
+
+**Category:** Unit | **Tools:** 2
+
+| Story | Tool | Key | Emoji | Source |
+|-------|------|-----|-------|--------|
+| 15.1 | Aspect Ratio Calculator | aspect-ratio-calculator | 📐 | Old 23.1 |
+| 15.2 | PX to REM | px-to-rem | 📏 | Baseline (Epic 3) |
+
+### Story 15.1: Aspect Ratio Calculator
+
+As a **designer/developer**,
+I want **to calculate dimensions while preserving aspect ratios and convert between common ratios**,
+So that **I can quickly determine correct dimensions for responsive layouts and media**.
+
+**Category:** Unit | **Emoji:** 📐 | **Key:** `aspect-ratio-calculator`
+
+**Acceptance Criteria:**
+
+**Given** the user enters a width and aspect ratio (e.g., 16:9)
+**When** either value changes
+**Then** the corresponding height is calculated and displayed in real-time
+
+**Given** the user enters width and height
+**When** values are entered
+**Then** the simplified aspect ratio is calculated (e.g., 1920x1080 -> 16:9)
+
+**Given** common preset ratios (16:9, 4:3, 1:1, 21:9, 9:16)
+**When** the user selects a preset
+**Then** the ratio is applied and dimensions recalculated
+
+**Given** the user locks one dimension
+**When** changing the ratio
+**Then** only the unlocked dimension updates
+
+### Story 15.2: PX to REM Converter
+
+> **Note:** This was a baseline tool (old Epic 3, Story 3.6) with its own refactor spec.
+
+As a **user**,
+I want **the PX to REM tool to use the standardized layout with documented behavior and regression tests**,
+So that **I can reliably convert between PX and REM units with a consistent interface**.
+
+**Category:** Unit | **Emoji:** 📏 | **Key:** `px-to-rem`
+
+**Acceptance Criteria:**
+
+**Given** the existing `UnitPxToRem` component
+**When** it is refactored
+**Then** it uses `CopyButton` for output copying
+**And** it is registered in `TOOL_REGISTRY`
+
+**Given** a user enters a PX value
+**When** the value is entered
+**Then** the REM equivalent appears in real-time (debounced 300ms)
+**And** a configurable base font size (default 16px) is available
+
+**Given** a user changes the base font size
+**When** the base is adjusted
+**Then** all conversions update immediately to reflect the new base
+
+**Given** a feature spec and regression tests
+**When** tests run
+**Then** coverage includes: standard conversion (16px = 1rem), custom base sizes, decimal values, zero, negative values, and large values
+
+---
+
+## Epic 16: Network Tools
+
+**Category:** Network | **Tools:** 1
+
+| Story | Tool | Key | Emoji | Source |
+|-------|------|-----|-------|--------|
+| 16.1 | IP Subnet Calculator | ip-subnet-calculator | 🌐 | Old 26.3 |
+
+### Story 16.1: IP/Subnet Calculator
+
+As a **developer/devops engineer**,
+I want **to input CIDR notation or IP+subnet mask and see calculated network details**,
+So that **I can plan and verify network configurations without manual binary math**.
+
+**Category:** Network | **Emoji:** 🌐 | **Key:** `ip-subnet-calculator`
+
+**Acceptance Criteria:**
+
+**Given** the user enters CIDR notation (e.g., 192.168.1.0/24)
+**When** entered
+**Then** the following are displayed: Network Address, Broadcast Address, Subnet Mask, Wildcard Mask, First Usable Host, Last Usable Host, Total Hosts, CIDR notation
+
+**Given** the user enters IP and subnet mask separately
+**When** both are entered
+**Then** the same calculations are performed
+
+**Given** IPv4 addresses
+**When** calculated
+**Then** a binary representation of the IP and mask is shown with network/host bit coloring
+
+**Given** an invalid IP or mask
+**When** entered
+**Then** a clear error message explains the issue
+
+**Given** the user enters a /32 or /31 CIDR
+**When** calculated
+**Then** correct special-case handling is shown (single host or point-to-point)
+
+---
+
+## Appendix A: Technical Debt (Old Epic 11)
+
+> The following stories from old Epic 11 are cross-cutting concerns that apply across all tool epics. They are not a numbered category epic but are tracked here for reference.
+
+### Old Story 11.1: WCAG Accessibility Audit & Fix
 
 As a **user relying on assistive technology**,
-I want **all 19 tools to have proper ARIA attributes on interactive controls and dynamic output regions**,
+I want **all tools to have proper ARIA attributes on interactive controls and dynamic output regions**,
 So that **I receive screen reader announcements when results change and can navigate all controls meaningfully**.
 
 **Acceptance Criteria:**
 
-**Given** all 19 tool components
+**Given** all tool components
 **When** they render dynamic output
 **Then** each has `aria-live="polite"` on its primary output container
 
@@ -1342,13 +2685,9 @@ So that **I receive screen reader announcements when results change and can navi
 
 **Given** error message containers
 **When** they render
-**Then** all 19 tools consistently use `role="alert"`
+**Then** all tools consistently use `role="alert"`
 
-**Given** tools with existing correct ARIA attributes
-**When** modifications are made
-**Then** zero regressions — existing attributes are preserved
-
-### Story 11.2: Async State Guard Hardening
+### Old Story 11.2: Async State Guard Hardening
 
 As a **user interacting with tools that process input asynchronously**,
 I want **all async/debounced tools to discard stale results when my input changes during processing**,
@@ -1356,7 +2695,7 @@ So that **I always see results that match my current input, never outdated resul
 
 **Acceptance Criteria:**
 
-**Given** all 12 tools using `useDebounceCallback` or async processing
+**Given** all tools using `useDebounceCallback` or async processing
 **When** they are audited
 **Then** each is classified as: guarded (has sessionRef), needs guard (async risk without protection), or no guard needed (synchronous API)
 
@@ -1368,11 +2707,11 @@ So that **I always see results that match my current input, never outdated resul
 **When** verified
 **Then** all race conditions (text change, algorithm change, simultaneous change) are handled correctly
 
-**Given** all 4 image tools
+**Given** all image tools
 **When** a new file is uploaded or input is rejected
 **Then** ALL related state (source, result, metadata, error) is cleared
 
-### Story 11.3: Input Validation Consistency
+### Old Story 11.3: Input Validation Consistency
 
 As a **user entering whitespace-only or edge-case input into text-based tools**,
 I want **consistent behavior across all tools when my input is empty or whitespace-only**,
@@ -1395,3 +2734,42 @@ So that **I get clear, predictable feedback rather than confusing error messages
 **Given** the `DiffChange` type
 **When** imported
 **Then** it is co-located in `src/types/` (not `src/utils/`)
+
+---
+
+## Previous Epic Mapping
+
+For reference, this is how tools from the old epics (5-27) map to the new structure:
+
+| Old Epic | New Epic(s) |
+|----------|-------------|
+| 5 (Encoding & Decoding) | 5 (Encoding) |
+| 6 (Data & Format) | 6 (Data) |
+| 7 (Text Analysis) | 7 (Text) |
+| 8 (Generator) | 8 (Generator), 13 (Security) |
+| 9 (CSS Visual) | 9 (CSS) |
+| 10 (Advanced Image) | 10 (Image) |
+| 11 (Tech Debt) | Retired — cross-cutting, see Appendix A |
+| 12 (Code Formatters) | 11 (Code) |
+| 13 (Data Converters) | 6 (Data), 5 (Encoding) |
+| 14 (Crypto & Security) | 13 (Security) |
+| 15 (CSS & Design) | 9 (CSS), 10 (Image) |
+| 16 (Text Utilities) | 7 (Text) |
+| 17 (Image & Media) | 10 (Image), 8 (Generator) |
+| 18 (Dev Productivity) | 11 (Code), 14 (Time), 9 (CSS), 10 (Image), 7 (Text) |
+| 19 (Dev Reference) | 9 (CSS), 6 (Data), 5 (Encoding), 7 (Text), 11 (Code) |
+| 20 (Advanced Dev) | 11 (Code), 6 (Data), 14 (Time), 9 (CSS), 10 (Image) |
+| 21 (AI Image) | 10 (Image) |
+| 22 (Data Format) | 6 (Data) |
+| 23 (Design & Visual) | 12 (Color), 10 (Image), 15 (Unit) |
+| 24 (Security & Crypto) | 13 (Security) |
+| 25 (Code & Schema) | 11 (Code) |
+| 26 (Time & Diagram) | 14 (Time), 11 (Code), 16 (Network) |
+| 27 (DB Diagram) | 6 (Data) |
+
+## Adding New Tools
+
+To add a new tool:
+1. Identify which category it belongs to (matches `ToolCategory` type)
+2. Add a new story to the corresponding epic (e.g., new CSS tool -> Epic 9, next story number)
+3. If the tool doesn't fit any existing category, create a new epic (Epic 17+) with the new category
