@@ -1,10 +1,10 @@
 # CSR Developer Tools - Project Overview
 
-**Generated:** 2026-02-11 | **Scan Level:** Quick | **Mode:** Initial Scan
+**Generated:** 2026-03-11 | **Scan Level:** Quick | **Mode:** Full Rescan
 
 ## Executive Summary
 
-CSR Developer Tools is a **100% client-side** single-page application (SPA) that provides browser-based developer utilities. All processing happens locally in the user's browser with zero server dependencies, ensuring complete data privacy.
+CSR Developer Tools is a **100% client-side** single-page application (SPA) that provides browser-based developer utilities. All processing happens locally in the user's browser with zero server dependencies, ensuring complete data privacy. The project has grown from 6 initial tools to **77+ developer tools** across 12 categories.
 
 ## Project Identity
 
@@ -18,16 +18,22 @@ CSR Developer Tools is a **100% client-side** single-page application (SPA) that
 | **Package Manager** | pnpm 10.11.0 |
 | **Node.js Requirement** | >= 24.5.0 |
 
-## Features
+## Tool Categories (77+ tools)
 
-| Feature | Component | Description |
-|---------|-----------|-------------|
-| Color Converter | `ColorConvertor` | Convert between HEX, RGB, HSL, OKLCH, LAB, LCH formats |
-| Base64 Encoder | `EncodingBase64` | Encode and decode Base64 strings |
-| Image Converter | `ImageConvertor` | Convert between image formats (PNG, JPG, WebP, etc.) |
-| Image Resizer | `ImageResizer` | Resize images with custom dimensions |
-| Unix Timestamp | `TimeUnixTimestamp` | Convert between Unix timestamps and human-readable dates |
-| PX to REM | `UnitPxToRem` | Convert pixel values to REM units |
+| Category | Count | Examples |
+|----------|-------|---------|
+| Code | 13 | JSON to TypeScript, SQL Formatter, Mermaid Renderer, TypeScript Playground |
+| Data | 14 | JSON Formatter, CSV Converter, YAML/TOML/XML Converters, DB Diagram Builder |
+| Image | 16 | Color Picker, Background Remover, Cropper, Favicon Generator, SVG Viewer |
+| Text | 8 | Regex Tester, Text Diff, Lorem Ipsum, Word Counter, Case Converter |
+| CSS | 6 | Flexbox Playground, Grid Playground, Animation Builder, Gradient Generator |
+| Encoding | 5 | Base64, JWT Decoder, URL Encoder/Parser, Number Base Converter |
+| Generator | 6 | Password, UUID, QR Code, Hash, HMAC, AES Encrypt/Decrypt |
+| Security | 5 | Bcrypt Hasher, Certificate Decoder, Chmod Calculator, RSA/SSH Key tools |
+| Time | 4 | Unix Timestamp, Cron Parser, Crontab Generator, Timezone Converter |
+| Color | 2 | Color Converter, Color Palette Generator |
+| Unit | 2 | PX to REM, Aspect Ratio Calculator |
+| Network | 1 | IP Subnet Calculator |
 
 ## Technology Stack Summary
 
@@ -36,25 +42,32 @@ CSR Developer Tools is a **100% client-side** single-page application (SPA) that
 | **UI Framework** | React | 19.2.4 |
 | **Language** | TypeScript | 5.9.3 (strict mode) |
 | **Build Tool** | Vite | 7.3.1 |
-| **Routing** | TanStack Router | 1.159.5 |
+| **Routing** | TanStack Router | 1.166.3 |
 | **Server State** | TanStack React Query | 5.90.21 |
-| **Styling** | Tailwind CSS | 4.1.18 (v4 via Vite plugin) |
+| **Styling** | Tailwind CSS | 4.2.1 (v4 via Vite plugin) |
 | **Component Variants** | tailwind-variants | 3.2.2 |
-| **Accessible Primitives** | Radix UI | Dialog, Select, Tabs, Toast |
-| **Animations** | Motion | 12.34.0 |
+| **Accessible Primitives** | Radix UI | Dialog, Select, Switch, Tabs, Toast, Dropdown Menu |
+| **Animations** | Motion | 12.35.1 |
 | **Client State** | Zustand | 5.0.11 |
+| **Code Editor** | CodeMirror / Monaco Editor | Various |
+| **Diagrams** | Mermaid + React Flow (@xyflow) | 11.12.3 / 12.10.1 |
+| **AI/ML** | @huggingface/transformers | 3.8.1 |
 | **File Processing** | JSZip | 3.10.1 (lazy-loaded) |
-| **Linter** | oxlint | 1.46.0 |
-| **Formatter** | oxfmt | 0.31.0 (alpha) |
-| **Test Runner** | Vitest | 4.0.18 |
+| **Linter** | oxlint | 1.51.0 |
+| **Formatter** | oxfmt | 0.36.0 |
+| **Unit Test Runner** | Vitest | 4.0.18 |
+| **E2E Test Runner** | Playwright | 1.58.2 |
 
 ## Architecture Type
 
-**Component-based SPA** with lazy-loaded routes.
+**Component-based SPA** with dynamic tool routing and lazy-loaded components.
 
-- All routes use `lazyRouteComponent()` for code splitting
-- Feature components are lazy-loaded per tool
-- No server/API layer -- all processing is client-side
+- Tool registry (`tool-registry.ts`) defines all 77+ tools with lazy-loaded components
+- Dynamic routing via `/tools/$toolKey` for individual tool pages
+- Home page dashboard with searchable tool grid
+- Sidebar navigation with categorized tool listing
+- Command palette for quick tool access
+- All processing is client-side -- no server/API layer
 - Zustand stores for client state, React Query configured but no server calls
 - Tailwind CSS v4 with CSS-first configuration (no JS config file)
 
@@ -65,6 +78,7 @@ CSR Developer Tools is a **100% client-side** single-page application (SPA) that
 3. **ESM only** with `verbatimModuleSyntax: true`
 4. **Type definitions separated** into `src/types/` mirroring the source structure
 5. **Barrel exports** via `index.ts` files at every folder level
+6. **Tool registry pattern** -- all tools registered in centralized `tool-registry.ts`
 
 ## Related Documentation
 

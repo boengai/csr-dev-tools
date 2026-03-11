@@ -1,10 +1,10 @@
 # CSR Developer Tools - Architecture
 
-**Generated:** 2026-02-11 | **Scan Level:** Quick
+**Generated:** 2026-03-11 | **Scan Level:** Quick
 
 ## Architecture Pattern
 
-**Component-based SPA** with lazy-loaded routes, Zustand state management, and Radix UI accessible primitives.
+**Component-based SPA** with centralized tool registry, dynamic routing, lazy-loaded components, Zustand state management, and Radix UI accessible primitives.
 
 ## Technology Stack
 
@@ -13,19 +13,37 @@
 | UI Framework | React | 19.2.4 | Component rendering, JSX via react-jsx |
 | Language | TypeScript | 5.9.3 | Strict mode, target ES2022, verbatimModuleSyntax |
 | Build Tool | Vite | 7.3.1 | Dev server, HMR, production bundling |
-| Routing | TanStack Router | 1.159.5 | Lazy-loaded file-based routing |
+| Routing | TanStack Router | 1.166.3 | Dynamic tool routing with lazy loading |
 | Server State | TanStack React Query | 5.90.21 | Configured but unused (no server calls) |
-| Styling | Tailwind CSS | 4.1.18 | v4 via @tailwindcss/vite plugin |
+| Styling | Tailwind CSS | 4.2.1 | v4 via @tailwindcss/vite plugin |
+| Typography | @tailwindcss/typography | 0.5.19 | Prose styling for markdown preview |
 | Variants | tailwind-variants | 3.2.2 | Component variant API via custom `tv()` wrapper |
 | Merge | tailwind-merge | 3.4.0 | Peer dep of tailwind-variants for class deduplication |
-| Primitives | Radix UI | Various | Dialog, Select, Tabs, Toast (accessible, unstyled) |
-| Animation | Motion | 12.34.0 | Animations via `motion/react` (NOT framer-motion) |
+| Primitives | Radix UI | Various | Dialog, Select, Switch, Tabs, Toast, Dropdown Menu |
+| Animation | Motion | 12.35.1 | Animations via `motion/react` (NOT framer-motion) |
 | Client State | Zustand | 5.0.11 | Lightweight stores in `hooks/state/` |
+| Code Editor | @uiw/react-codemirror | 4.25.8 | JSON, SQL syntax highlighting |
+| Code Editor | @monaco-editor/react | 4.7.0 | TypeScript playground with full IntelliSense |
+| Diagrams | @xyflow/react | 12.10.1 | Database diagram flow visualization |
+| Diagrams | mermaid | 11.12.3 | Mermaid diagram rendering |
+| Markdown | marked | 17.0.4 | Markdown to HTML parsing |
+| HTML Sanitize | dompurify | 3.3.2 | XSS-safe HTML rendering |
+| AI/ML | @huggingface/transformers | 3.8.1 | In-browser image background removal |
+| Data Formats | fast-xml-parser, yaml, smol-toml | Various | XML, YAML, TOML parsing/generation |
+| Data Formats | graphql, protobufjs | Various | GraphQL schema viewing, Protobuf decoding |
+| Code Format | js-beautify, sql-formatter | Various | JavaScript, HTML, CSS, SQL formatting |
+| Crypto | bcryptjs, @peculiar/x509 | Various | Bcrypt hashing, X.509 certificate decoding |
+| QR | qrcode | 1.5.4 | QR code generation |
+| Image | react-image-crop | 11.0.10 | Image cropping UI |
+| HTML Convert | turndown + turndown-plugin-gfm | Various | HTML to Markdown conversion |
+| JSON | ajv, jsonpath-plus | Various | JSON schema validation, JSONPath queries |
+| Diff | diff | 8.0.3 | Text diffing |
 | File Processing | JSZip | 3.10.1 | ZIP generation (dynamic import, lazy-loaded) |
-| Linting | oxlint | 1.46.0 | Fast linter with TypeScript + React plugins |
-| Formatting | oxfmt | 0.31.0 | Fast formatter with Tailwind class sorting (alpha) |
-| Testing | Vitest | 4.0.18 | Node environment, globals enabled |
-| Path Aliases | vite-tsconfig-paths | 6.1.0 | Resolves `@/*` path alias in Vite and Vitest |
+| Linting | oxlint | 1.51.0 | Fast linter with TypeScript + React plugins |
+| Formatting | oxfmt | 0.36.0 | Fast formatter with Tailwind class sorting |
+| Unit Testing | Vitest | 4.0.18 | Node environment, globals enabled |
+| E2E Testing | Playwright | 1.58.2 | Cross-browser end-to-end testing |
+| Path Aliases | vite-tsconfig-paths | 6.1.1 | Resolves `@/*` path alias in Vite and Vitest |
 
 ## Application Architecture
 
@@ -33,40 +51,49 @@
 [Browser]
   └── React SPA (main.tsx entry)
         ├── TanStack Router (routes.tsx)
-        │     ├── / (Home page) ──→ Feature components (lazy-loaded)
-        │     └── /showcase ──→ Showcase page
+        │     ├── / (Home page) ──→ Tool dashboard with search & grid
+        │     └── /tools/$toolKey ──→ Dynamic tool page (from registry)
+        ├── Tool Registry (constants/tool-registry.ts)
+        │     └── 77+ tools with lazy-loaded components, metadata, SEO
         ├── Zustand Stores (hooks/state/)
-        │     └── useToast ──→ Toast notification state
+        │     ├── useToast ──→ Toast notification state
+        │     ├── useCommandPaletteStore ──→ Command palette open/search state
+        │     └── useSidebarStore ──→ Sidebar visibility state
         ├── Persistent State (hooks/persist/)
-        │     └── usePersistFeatureLayout ──→ Feature card layout
+        │     ├── usePersistFeatureLayout ──→ Feature card layout preference
+        │     ├── usePersistSettings ──→ User settings persistence
+        │     └── useInputLocalStorage ──→ Tool input value persistence
         └── Utility Functions (utils/)
-              ├── color.ts ──→ Color format conversion
-              ├── image.ts ──→ Image processing
-              ├── file.ts ──→ File utilities
-              └── time.ts ──→ Time/date utilities
+              ├── 85 utility modules covering all tool logic
+              └── 84 co-located spec files (~1,427 unit tests)
 ```
 
 ## Component Architecture
 
 ```
 App.tsx (root, lazy-loaded)
-├── TwinkleStarsAnimate (background animation)
+├── Sidebar (categorized tool navigation)
+├── CommandPalette (⌘K quick tool search)
+├── SettingsDialog (user preferences)
 ├── Outlet (router)
 │   ├── Home Page
-│   │   ├── Feature Cards (lazy-loaded per tool)
-│   │   │   ├── ColorConvertor
-│   │   │   ├── EncodingBase64
-│   │   │   ├── ImageConvertor
-│   │   │   ├── ImageResizer
-│   │   │   ├── TimeUnixTimestamp
-│   │   │   └── UnitPxToRem
-│   │   └── Common Components
-│   │       ├── Button, Card, Dialog
-│   │       ├── TextInput, SelectInput, TextAreaInput, UploadInput
-│   │       ├── Tabs, ProgressBar, FieldForm
-│   │       ├── DataCellTable
-│   │       └── Icon components (Copy, Download, Upload, etc.)
-│   └── Showcase Page
+│   │   ├── Tool grid (searchable, filterable)
+│   │   └── Layout toggle (grid/list via usePersistFeatureLayout)
+│   └── Tools Page (/tools/$toolKey)
+│       ├── ToolErrorBoundary (error handling per tool)
+│       └── Lazy-loaded tool component (from registry)
+│           ├── Code tools (13): JsonToTypeScript, MermaidRenderer, TypescriptPlayground...
+│           ├── Data tools (14): DbDiagram, JsonFormatter, CsvConverter...
+│           ├── Image tools (16): BackgroundRemover, ImageCropper, SvgViewer...
+│           ├── Text tools (8): RegexTester, TextDiffChecker, WordCounter...
+│           ├── CSS tools (6): FlexboxPlayground, GridPlayground, CssAnimationBuilder...
+│           ├── Encoding tools (5): EncodingBase64, JwtDecoder, UrlParser...
+│           ├── Generator tools (6): PasswordGenerator, QrCodeGenerator, UuidGenerator...
+│           ├── Security tools (5): BcryptHasher, CertificateDecoder, RsaKeyGenerator...
+│           ├── Time tools (4): CronExpressionParser, TimezoneConverter...
+│           ├── Color tools (2): ColorConvertor, ColorPaletteGenerator
+│           ├── Unit tools (2): UnitPxToRem, AspectRatioCalculator
+│           └── Network tools (1): IpSubnetCalculator
 └── ToastProvider (global toast notifications)
 ```
 
@@ -74,8 +101,8 @@ App.tsx (root, lazy-loaded)
 
 | Path | Page | Loading |
 |------|------|---------|
-| `/` | Home (dashboard with tool cards) | `lazyRouteComponent` |
-| `/showcase` | Showcase | `lazyRouteComponent` |
+| `/` | Home (dashboard with searchable tool grid) | `lazyRouteComponent` |
+| `/tools/$toolKey` | Dynamic tool page (resolved from registry) | `lazyRouteComponent` |
 | `*` (not found) | Redirects to `/` | Built-in |
 
 Router config: `defaultPreload: 'intent'`, `scrollRestoration: true`
@@ -85,31 +112,52 @@ Router config: `defaultPreload: 'intent'`, `scrollRestoration: true`
 | Store | Location | Purpose |
 |-------|----------|---------|
 | `useToast` | `hooks/state/useToast.ts` | Global toast notification state |
-| `usePersistFeatureLayout` | `hooks/persist/usePersistFeatureLayout.ts` | Persisted feature card layout |
+| `useCommandPaletteStore` | `hooks/state/useCommandPaletteStore.ts` | Command palette open/close and search state |
+| `useSidebarStore` | `hooks/state/useSidebarStore.ts` | Sidebar visibility state |
+| `usePersistFeatureLayout` | `hooks/persist/usePersistFeatureLayout.ts` | Persisted feature card layout preference |
+| `usePersistSettings` | `hooks/persist/usePersistSettings.ts` | Persisted user settings |
+| `useInputLocalStorage` | `hooks/persist/useInputLocalStorage.ts` | Persisted tool input values across sessions |
 
 Pattern: `create<T>()((set: StoreApi<T>['setState']) => ({...}))`
+
+## Custom Hooks
+
+| Hook | Location | Purpose |
+|------|----------|---------|
+| `useCopyToClipboard` | `hooks/useCopyToClipboard.ts` | Clipboard API wrapper with toast feedback |
+| `useDebounce` | `hooks/useDebounce.ts` | Debounced value hook |
+| `useDebounceCallback` | `hooks/useDebounceCallback.ts` | Debounced callback hook |
+| `useKeyboardShortcuts` | `hooks/useKeyboardShortcuts.ts` | Global keyboard shortcut handler |
+| `useToolSeo` | `hooks/useToolSeo.ts` | Dynamic SEO metadata per tool page |
 
 ## Styling Architecture
 
 - **Tailwind CSS v4** via `@tailwindcss/vite` plugin (no PostCSS, no JS config)
-- **CSS-first config** via `@theme` in `src/index.css`
+- **CSS-first config** via `@theme` in `src/index.css` using OKLCH color space
+- **@tailwindcss/typography** for prose styling (markdown preview)
 - **tailwind-variants** for component variants using custom `tv()` wrapper from `@/utils`
 - **CompVariant<T>** type for typed variant definitions
 - **oxfmt** sorts Tailwind classes inside `tv()` calls automatically
+- **Custom breakpoints**: `tablet:` (48rem), `laptop:` (80rem), `desktop:` (120rem)
+- **Default breakpoints removed**: Do NOT use `sm:`, `md:`, `lg:`, `xl:`, `2xl:`
 
 ## Build & Bundle Strategy
 
 - **Code splitting** per route via `lazyRouteComponent()`
-- **Feature-level code splitting** -- each tool is its own lazy-loaded chunk
-- **JSZip lazy import** -- only loaded when zipping multiple images
+- **Feature-level code splitting** -- each tool is its own lazy-loaded chunk via registry
+- **Heavy dependency lazy imports** -- JSZip, Monaco Editor, Mermaid, HuggingFace loaded on demand
 - **Entry point**: `src/main.tsx` → mounts React app with router and query provider
 
 ## Testing Strategy
 
-- **Vitest 4** with node environment and globals enabled
-- **Co-located test files**: `*.spec.ts` alongside source (e.g., `color.spec.ts`)
-- **Pure function testing only** -- no DOM/component tests
-- **15 tests** in `src/utils/color.spec.ts` covering color conversion logic
+- **Unit Tests**: Vitest 4 with node environment, globals enabled
+  - 84 spec files co-located in `src/utils/` (~1,427 test cases)
+  - Pure function testing -- no DOM/component tests
+  - Path aliases `@/*` work in tests via `vite-tsconfig-paths`
+- **E2E Tests**: Playwright 1.58.2
+  - 34 tool-specific E2E specs in `e2e/`
+  - 2 platform specs in `e2e/platform/` (home, navigation)
+  - Cross-browser testing support
 
 ## Module System
 
@@ -117,3 +165,12 @@ Pattern: `create<T>()((set: StoreApi<T>['setState']) => ({...}))`
 - **verbatimModuleSyntax**: `import type` required for type-only imports
 - **Path alias**: `@/*` maps to `src/*`
 - **Barrel exports**: Every folder has `index.ts` re-exporting siblings
+
+## Tool Registry Pattern
+
+All tools are registered in `src/constants/tool-registry.ts` with:
+- **Key**: Unique tool identifier (used as route parameter)
+- **Component**: Lazy-loaded via dynamic import
+- **Category**: Classification (code, data, image, text, css, etc.)
+- **Metadata**: Emoji, title, description
+- **SEO**: Title and description for dynamic meta tags

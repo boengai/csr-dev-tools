@@ -1,6 +1,6 @@
 # CSR Developer Tools - Development Guide
 
-**Generated:** 2026-02-11 | **Scan Level:** Quick
+**Generated:** 2026-03-11 | **Scan Level:** Quick
 
 ## Prerequisites
 
@@ -31,7 +31,10 @@ pnpm install
 | `pnpm lint:fix` | Auto-fix linting issues |
 | `pnpm format` | Format all source files with oxfmt |
 | `pnpm format:check` | Check formatting without writing |
-| `pnpm test` | Run Vitest in single-run mode |
+| `pnpm test` | Run Vitest unit tests in single-run mode |
+| `pnpm test:e2e` | Run Playwright E2E tests |
+| `pnpm test:e2e:ui` | Run Playwright E2E tests with interactive UI |
+| `pnpm test:e2e:headed` | Run Playwright E2E tests in headed browser |
 
 ## Environment Setup
 
@@ -88,30 +91,53 @@ Output: `dist/` directory with static HTML, CSS, JS chunks.
 
 ## Testing
 
+### Unit Tests (Vitest)
+
 - **Framework**: Vitest 4.0.18
 - **Environment**: Node (not jsdom)
 - **Globals**: Enabled (`describe`, `it`, `expect` available without import)
-- **Test files**: Co-located as `*.spec.ts` alongside source files
+- **Test files**: Co-located as `*.spec.ts` alongside source files in `src/utils/`
+- **Coverage**: 84 spec files with ~1,427 test cases
 - **Path aliases**: `@/*` works in tests via `vite-tsconfig-paths`
 
-Current test suite: 15 tests in `src/utils/color.spec.ts`
-
 ```bash
-# Run tests
+# Run unit tests
 pnpm test
 
 # Run tests in watch mode
 pnpm vitest
 ```
 
+### E2E Tests (Playwright)
+
+- **Framework**: Playwright 1.58.2
+- **Test files**: `e2e/` directory
+  - 34 tool-specific test specs
+  - 2 platform tests in `e2e/platform/` (home, navigation)
+
+```bash
+# Run E2E tests (headless)
+pnpm test:e2e
+
+# Run with interactive UI
+pnpm test:e2e:ui
+
+# Run in headed browser mode
+pnpm test:e2e:headed
+```
+
 ## Adding a New Tool
 
-1. Create feature component in `src/components/feature/{domain}/`
-2. Add types in `src/types/` mirroring the component path
-3. Add barrel exports up the chain (`index.ts` files)
-4. Add feature key to `src/constants/feature.ts` and `FeatureKey` type
-5. Register lazy import and case in `src/pages/home/index.tsx`
-6. Add route if tool gets its own page
+1. **Create utility** in `src/utils/<name>.ts` with pure logic functions
+2. **Create tests** in `src/utils/<name>.spec.ts` (co-located)
+3. **Create feature component** in `src/components/feature/<category>/<Name>.tsx`
+4. **Add types** in `src/types/` mirroring the component path (if needed)
+5. **Add barrel exports** up the chain (`index.ts` files)
+6. **Register in tool registry** in `src/constants/tool-registry.ts`:
+   - Key, category, emoji, title, description
+   - Lazy-loaded component import
+   - SEO metadata (title, description)
+7. **Add E2E test** in `e2e/<name>.spec.ts`
 
 ## Responsive Breakpoints
 
@@ -145,3 +171,12 @@ Never use `sm:`, `md:`, `lg:`, `xl:`, or `2xl:` — they have no effect.
 
 - **Commit prefixes**: Emoji-based (e.g., `📝:` docs, `🤖:` automation, `🐛:` bugfix)
 - **Branch strategy**: Feature branches off `main`
+
+## Design System
+
+- **Color space**: OKLCH throughout (defined in `src/index.css` `@theme`)
+- **Primary color**: Purple (oklch 0.55 0.22 310)
+- **Font**: Space Mono (monospace)
+- **Dark theme**: Default and only theme
+- **Shadows**: Custom OKLCH-based shadows (sm, md, lg, xl, glow)
+- **Border radius**: `--radius-sm: 4px`, `--radius-card: 6px`
