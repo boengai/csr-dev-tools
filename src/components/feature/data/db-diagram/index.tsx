@@ -1,7 +1,6 @@
-import type { Connection, EdgeTypes, NodeTypes, OnEdgesChange, OnNodesChange } from '@xyflow/react'
-
 import { json } from '@codemirror/lang-json'
 import { sql as sqlLang } from '@codemirror/lang-sql'
+import type { Connection, EdgeTypes, NodeTypes, OnEdgesChange, OnNodesChange } from '@xyflow/react'
 import {
   Background,
   BackgroundVariant,
@@ -14,27 +13,25 @@ import {
 } from '@xyflow/react'
 import { useMemo, useReducer, useRef, useState } from 'react'
 
-import type { DiagramIndexEntry, SqlDialect, ToolComponentProps } from '@/types'
-
 import { Button, Dialog } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import type { DiagramIndexEntry, SqlDialect, ToolComponentProps } from '@/types'
 
 import '@xyflow/react/dist/style.css'
-import type { RelationshipEdge } from './RelationshipEdge'
-import type { SidePanel } from './types'
-import type { TableNode } from './TableNode'
-
 import { DbmlEditorPanel } from './DbmlEditorPanel'
 import { DiagramListPanel } from './DiagramListPanel'
+import { diagramReducer, initialDiagramState } from './diagramReducer'
 import { DiagramToolbar } from './DiagramToolbar'
 import { ExportMermaidPanel } from './ExportMermaidPanel'
 import { ExportSqlPanel } from './ExportSqlPanel'
 import { ExportTypescriptPanel } from './ExportTypescriptPanel'
 import { ImportJsonSchemaPanel } from './ImportJsonSchemaPanel'
 import { ImportSqlPanel } from './ImportSqlPanel'
+import type { RelationshipEdge } from './RelationshipEdge'
 import { RelationshipEdgeComponent } from './RelationshipEdge'
+import type { TableNode } from './TableNode'
 import { TableNodeComponent } from './TableNode'
-import { diagramReducer, initialDiagramState } from './diagramReducer'
+import type { SidePanel } from './types'
 import { useDiagramHandlers } from './useDiagramHandlers'
 
 const nodeTypes: NodeTypes = { tableNode: TableNodeComponent }
@@ -250,12 +247,7 @@ const SidePanelRenderer = ({
         />
       )
     case 'export-typescript':
-      return (
-        <ExportTypescriptPanel
-          generatedTypescript={generatedTypescript}
-          onClose={handleClosePanel}
-        />
-      )
+      return <ExportTypescriptPanel generatedTypescript={generatedTypescript} onClose={handleClosePanel} />
     case 'dbml':
       return (
         <DbmlEditorPanel

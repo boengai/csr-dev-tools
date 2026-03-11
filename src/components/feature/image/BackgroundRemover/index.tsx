@@ -1,14 +1,14 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-
 import { Button, Dialog, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
-import { BackgroundRemoverError } from '@/components/feature/image/BackgroundRemoverError'
-import { BackgroundRemoverProcessing } from '@/components/feature/image/BackgroundRemoverProcessing'
-import { BackgroundRemoverResult } from '@/components/feature/image/BackgroundRemoverResult'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
 import { applyBackground, removeBackground } from '@/utils/background-removal'
+
+import { BackgroundRemoverError } from './Error'
+import { BackgroundRemoverProcessing } from './Processing'
+import { BackgroundRemoverResult } from './Result'
 
 type BgOption = 'custom' | 'transparent' | 'white'
 
@@ -91,9 +91,23 @@ const reducer = (state: State, action: Action): State => {
     case 'SET_TAB_VALUE':
       return { ...state, tabValue: action.payload }
     case 'START_UPLOAD':
-      return { ...state, error: false, dialogOpen: true, tabValue: TABS_VALUES.PROCESSING, progress: 0, sourcePreview: action.payload.sourcePreview }
+      return {
+        ...state,
+        error: false,
+        dialogOpen: true,
+        tabValue: TABS_VALUES.PROCESSING,
+        progress: 0,
+        sourcePreview: action.payload.sourcePreview,
+      }
     case 'UPLOAD_SUCCESS':
-      return { ...state, resultUrl: action.payload.resultUrl, displayUrl: action.payload.displayUrl, bgOption: 'transparent', processing: false, downloading: false }
+      return {
+        ...state,
+        resultUrl: action.payload.resultUrl,
+        displayUrl: action.payload.displayUrl,
+        bgOption: 'transparent',
+        processing: false,
+        downloading: false,
+      }
     case 'UPLOAD_FAILURE':
       return { ...state, processing: false, downloading: false, error: true }
     case 'CONFIRM':
@@ -107,7 +121,19 @@ const reducer = (state: State, action: Action): State => {
 
 export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) => {
   const [state, dispatch] = useReducer(reducer, initialState)
-  const { bgOption, customColor, dialogOpen, displayUrl, downloading, error, processing, progress, resultUrl, sourcePreview, tabValue } = state
+  const {
+    bgOption,
+    customColor,
+    dialogOpen,
+    displayUrl,
+    downloading,
+    error,
+    processing,
+    progress,
+    resultUrl,
+    sourcePreview,
+    tabValue,
+  } = state
   const { toast } = useToast()
   const resultBlobRef = useRef<Blob | null>(null)
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
@@ -311,7 +337,10 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
       </div>
 
       <Dialog
-        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
+        injected={{
+          open: dialogOpen,
+          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
+        }}
         onAfterClose={() => {
           // Only reset if user dismissed (not confirmed)
           if (confirmedRef.current) {

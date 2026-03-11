@@ -1,9 +1,8 @@
 import { useState } from 'react'
 
-import type { BoxShadowConfig } from '@/utils'
-
 import { ColorInput, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import type { BoxShadowConfig } from '@/utils'
 import { DEFAULT_BOX_SHADOW, generateBoxShadowCSS } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['box-shadow-generator']
@@ -105,7 +104,7 @@ export const BoxShadowGenerator = () => {
           <label className="text-body-xs text-gray-500" htmlFor="bs-preview-bg">
             BG
           </label>
-          <ColorInput className="h-6 w-8" onChange={setPreviewBg} value={previewBg} />
+          <ColorInput onChange={setPreviewBg} value={previewBg} />
         </div>
         <div className="h-32 w-48 rounded-lg border border-gray-200 bg-white" style={{ boxShadow: cssString }} />
       </div>

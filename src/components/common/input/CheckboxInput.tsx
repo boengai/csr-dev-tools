@@ -5,7 +5,6 @@ import type { CheckboxInputProps } from '@/types'
 export const CheckboxInput = ({
   'aria-label': ariaLabel,
   checked,
-  className,
   disabled,
   id,
   name,
@@ -20,7 +19,6 @@ export const CheckboxInput = ({
     <input
       aria-label={ariaLabel}
       checked={checked}
-      className={className}
       disabled={disabled}
       id={id}
       name={name}

@@ -1,8 +1,7 @@
 import type { Extension } from '@codemirror/state'
 
-import type { SqlDialect } from '@/types'
-
 import { CheckboxInput, CodeInput, SelectInput } from '@/components/common'
+import type { SqlDialect } from '@/types'
 
 import { CloseButton } from './CloseButton'
 import { DIALECT_OPTIONS } from './constants'
@@ -33,10 +32,7 @@ export const ImportSqlPanel = ({
   sqlExtensions,
 }: ImportSqlPanelProps) => {
   return (
-    <div
-      className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950"
-      data-testid="import-sql-panel"
-    >
+    <div className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950" data-testid="import-sql-panel">
       <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
         <span className="text-xs font-bold text-white">Import SQL</span>
         <CloseButton onClick={onClose} />
@@ -80,7 +76,6 @@ export const ImportSqlPanel = ({
         <label className="flex items-center gap-2 text-[10px] text-gray-400" htmlFor="import-sql-merge">
           <CheckboxInput
             checked={importSqlMerge}
-            className="rounded"
             id="import-sql-merge"
             name="import-sql-merge"
             onChange={setImportSqlMerge}

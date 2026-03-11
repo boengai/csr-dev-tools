@@ -1,11 +1,10 @@
 import { useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import type { BorderRadiusConfig } from '@/utils/border-radius'
-
 import { ColorInput, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import type { ToolComponentProps } from '@/types'
 import { tv } from '@/utils'
+import type { BorderRadiusConfig } from '@/utils/border-radius'
 import { DEFAULT_BORDER_RADIUS, generateBorderRadiusCss } from '@/utils/border-radius'
 
 const toggleButtonStyles = tv({
@@ -90,7 +89,7 @@ export const BorderRadiusGenerator = (_props: ToolComponentProps) => {
           <label className="text-body-xs text-gray-500" htmlFor="br-preview-bg">
             BG
           </label>
-          <ColorInput className="h-6 w-8" onChange={setPreviewBg} value={previewBg} />
+          <ColorInput onChange={setPreviewBg} value={previewBg} />
         </div>
         <div className="h-32 w-48 border border-gray-200 bg-white" style={{ borderRadius: cssValue }} />
       </div>

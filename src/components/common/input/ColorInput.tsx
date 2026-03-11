@@ -18,7 +18,6 @@ const colorInputStyles = tv({
 
 export const ColorInput = ({
   'aria-label': ariaLabel,
-  className,
   disabled,
   name,
   onBlur,
@@ -26,6 +25,8 @@ export const ColorInput = ({
   size = 'swatch',
   value,
 }: ColorInputProps) => {
+  const className = colorInputStyles({ size })
+
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange?.(e.target.value)
   }
@@ -33,7 +34,7 @@ export const ColorInput = ({
   return (
     <input
       aria-label={ariaLabel}
-      className={colorInputStyles({ className, size })}
+      className={className}
       disabled={disabled}
       name={name}
       onBlur={onBlur}

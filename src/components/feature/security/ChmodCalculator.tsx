@@ -1,10 +1,9 @@
 import { useCallback, useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import type { ChmodState } from '@/utils/chmod-calculator'
-
 import { Button, CheckboxInput, CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import type { ToolComponentProps } from '@/types'
+import type { ChmodState } from '@/utils/chmod-calculator'
 import {
   isValidOctal,
   isValidSymbolic,
@@ -173,7 +172,6 @@ export const ChmodCalculator = (_props: ToolComponentProps) => {
                     <CheckboxInput
                       aria-label={`${group} ${perm} permission`}
                       checked={state[group][perm]}
-                      className="h-5 w-5 cursor-pointer accent-primary"
                       onChange={() => handleCheckboxChange(group, perm)}
                     />
                   </td>

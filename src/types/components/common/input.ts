@@ -23,7 +23,6 @@ export type CodeInputProps = {
 export type CheckboxInputProps = {
   'aria-label'?: string
   checked: boolean
-  className?: string
   disabled?: boolean
   id?: string
   name?: string
@@ -34,7 +33,6 @@ export type CheckboxInputProps = {
 export type SwitchInputProps = {
   'aria-label'?: string
   checked: boolean
-  className?: string
   disabled?: boolean
   id?: string
   name?: string
@@ -44,7 +42,6 @@ export type SwitchInputProps = {
 
 export type ColorInputProps = {
   'aria-label'?: string
-  className?: string
   disabled?: boolean
   name?: string
   onBlur?: () => void

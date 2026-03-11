@@ -1,11 +1,10 @@
 import { useCallback, useReducer, useRef } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import type { QrErrorCorrectionLevel } from '@/utils'
-
 import { Button, ColorInput, CopyButton, Dialog, DownloadIcon, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
+import type { QrErrorCorrectionLevel } from '@/utils'
 import { generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['qr-code-generator']
@@ -170,7 +169,10 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         </div>
       </div>
       <Dialog
-        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
+        injected={{
+          open: dialogOpen,
+          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
+        }}
         onAfterClose={() => {
           handleReset()
           onAfterDialogClose?.()
@@ -220,13 +222,13 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                   <label className="text-body-sm font-medium text-gray-400" htmlFor="qr-fg">
                     Foreground
                   </label>
-                  <ColorInput className="h-10 w-20" onChange={handleFgChange} value={foreground} />
+                  <ColorInput onChange={handleFgChange} value={foreground} />
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-body-sm font-medium text-gray-400" htmlFor="qr-bg">
                     Background
                   </label>
-                  <ColorInput className="h-10 w-20" onChange={handleBgChange} value={background} />
+                  <ColorInput onChange={handleBgChange} value={background} />
                 </div>
               </div>
             </div>

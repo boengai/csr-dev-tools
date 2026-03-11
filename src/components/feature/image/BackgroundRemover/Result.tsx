@@ -32,11 +32,7 @@ export const BackgroundRemoverResult = ({
           <p className="shrink-0 text-body-sm font-medium text-gray-300">Original</p>
           {sourcePreview && (
             <picture className="flex size-full grow flex-col items-center justify-center gap-4 tablet:max-h-full tablet:overflow-y-auto">
-              <img
-                alt="original"
-                className="w-full max-w-full tablet:max-h-full tablet:w-auto"
-                src={sourcePreview}
-              />
+              <img alt="original" className="w-full max-w-full tablet:max-h-full tablet:w-auto" src={sourcePreview} />
             </picture>
           )}
         </div>
@@ -76,7 +72,7 @@ export const BackgroundRemoverResult = ({
             ]}
             value={bgOption}
           />
-          <ColorInput className="size-8" disabled={bgOption !== 'custom'} onChange={onColorChange} value={customColor} />
+          <ColorInput disabled={bgOption !== 'custom'} onChange={onColorChange} value={customColor} />
         </div>
         <div className="w-full desktop:w-2/5">
           <Button block onClick={onConfirm} variant="primary">

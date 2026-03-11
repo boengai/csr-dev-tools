@@ -61,7 +61,6 @@ export const ImportJsonSchemaPanel = ({
         <label className="flex items-center gap-2 text-[10px] text-gray-400" htmlFor="import-json-schema-merge">
           <CheckboxInput
             checked={importJsonSchemaMerge}
-            className="rounded"
             id="import-json-schema-merge"
             name="import-json-schema-merge"
             onChange={setImportJsonSchemaMerge}

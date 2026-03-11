@@ -1,10 +1,9 @@
 import { useMemo, useReducer } from 'react'
 
-import type { PlaceholderOptions } from '@/utils/placeholder-image'
-
 import { Button, ColorInput, DownloadIcon, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
+import type { PlaceholderOptions } from '@/utils/placeholder-image'
 import {
   canvasToBlob,
   downloadBlob,
@@ -237,7 +236,11 @@ export const PlaceholderImageGenerator = () => {
               Background Color
             </label>
             <div className="flex items-center gap-2">
-              <ColorInput aria-label="Background color picker" className="h-10 w-14 shrink-0" onChange={handleBgPickerChange} value={toPickerHex(bgColor)} />
+              <ColorInput
+                aria-label="Background color picker"
+                onChange={handleBgPickerChange}
+                value={toPickerHex(bgColor)}
+              />
               <FieldForm
                 label=""
                 name="placeholder-bg-hex"
@@ -254,7 +257,7 @@ export const PlaceholderImageGenerator = () => {
               Text Color
             </label>
             <div className="flex items-center gap-2">
-              <ColorInput className="h-10 w-14 shrink-0" onChange={handleTextColorPickerChange} value={toPickerHex(textColor)} />
+              <ColorInput onChange={handleTextColorPickerChange} value={toPickerHex(textColor)} />
               <FieldForm
                 label=""
                 name="placeholder-text-color-hex"
