@@ -1,11 +1,10 @@
 import type { ChangeEvent } from 'react'
 
 import type { ColorInputProps } from '@/types'
-
 import { tv } from '@/utils'
 
 const colorInputStyles = tv({
-  base: 'cursor-pointer rounded border border-gray-700 bg-transparent p-1 [&::-webkit-color-swatch]:rounded [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch-wrapper]:p-0 disabled:cursor-not-allowed disabled:opacity-40',
+  base: 'shrink-0 cursor-pointer rounded border border-gray-700 bg-transparent p-1 disabled:cursor-not-allowed disabled:opacity-40 [&::-webkit-color-swatch]:rounded [&::-webkit-color-swatch]:border-none [&::-webkit-color-swatch-wrapper]:p-0',
   variants: {
     size: {
       full: 'h-10 w-full',
@@ -17,7 +16,16 @@ const colorInputStyles = tv({
   },
 })
 
-export const ColorInput = ({ 'aria-label': ariaLabel, className, disabled, name, onBlur, onChange, size = 'swatch', value }: ColorInputProps) => {
+export const ColorInput = ({
+  'aria-label': ariaLabel,
+  className,
+  disabled,
+  name,
+  onBlur,
+  onChange,
+  size = 'swatch',
+  value,
+}: ColorInputProps) => {
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     onChange?.(e.target.value)
   }

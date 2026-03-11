@@ -1,8 +1,17 @@
 import type { FieldFormProps, InputControllerProps } from '@/types'
-
 import { tv } from '@/utils'
 
-import { CodeInput, ColorInput, RadioGroupInput, RangeInput, SelectInput, SwitchInput, TextAreaInput, TextInput, UploadInput } from '../input'
+import {
+  CodeInput,
+  ColorInput,
+  RadioGroupInput,
+  RangeInput,
+  SelectInput,
+  SwitchInput,
+  TextAreaInput,
+  TextInput,
+  UploadInput,
+} from '../input'
 
 const fieldsetStyles = tv({
   base: 'flex w-full flex-col gap-1',
@@ -46,7 +55,7 @@ const InputController = (props: InputControllerProps) => {
 export const FieldForm = ({ label, ...props }: FieldFormProps) => {
   return (
     <fieldset className={fieldsetStyles({ grow: props.type === 'textarea' || props.type === 'code' })}>
-      {label && <label className="min-h-8 shrink-0 pl-2 text-gray-100">{label}</label>}
+      {label && <label className="shrink-0 pl-2 text-gray-100">{label}</label>}
       <InputController {...props} />
     </fieldset>
   )

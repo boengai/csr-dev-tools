@@ -1,11 +1,10 @@
 import { m } from 'motion/react'
 import { type PropsWithChildren, useState } from 'react'
 
-import type { ColorFormat } from '@/types'
-
 import { ColorInput, CopyButton, FieldForm, NotoEmoji } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import type { ColorFormat } from '@/types'
 import { convertColor } from '@/utils/color'
 
 const randomByte = () => Math.floor(Math.random() * 256)
@@ -43,7 +42,7 @@ const InputWrapper = ({ children, color }: PropsWithChildren<{ color: string }>)
       {color ? (
         <m.div
           animate={{ opacity: 1, scale: 1 }}
-          className="size-10 shrink-0 rounded shadow"
+          className="mb-1 size-10 shrink-0 rounded shadow"
           initial={{ opacity: 0, scale: 0.8 }}
           key={color}
           style={{ backgroundColor: color }}
@@ -60,8 +59,8 @@ const InputWrapper = ({ children, color }: PropsWithChildren<{ color: string }>)
 const toolEntry = TOOL_REGISTRY_MAP['color-converter']
 
 export const ColorConvertor = () => {
-  const [color, setColor] = useState<Record<ColorFormat, string>>(
-    () => convertColor(`rgb(${randomByte()}, ${randomByte()}, ${randomByte()})`, 'rgb'),
+  const [color, setColor] = useState<Record<ColorFormat, string>>(() =>
+    convertColor(`rgb(${randomByte()}, ${randomByte()}, ${randomByte()})`, 'rgb'),
   )
   const { toast } = useToast()
 
@@ -97,10 +96,8 @@ export const ColorConvertor = () => {
   return (
     <div className="flex size-full grow flex-col gap-2">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
-
       <ColorInput aria-label="Color picker" onChange={handlePickerChange} size="full" value={color.hex || '#000000'} />
-
-      <div aria-live="polite">
+      <div aria-live="polite" className="flex flex-wrap gap-4">
         {FORMATS.map(({ format, label, placeholder }) => (
           <InputWrapper key={format} color={color[format]}>
             <FieldForm
