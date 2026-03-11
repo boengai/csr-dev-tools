@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { parseGraphqlSchema } from '@/utils/graphql-schema-viewer'
+import { parseGraphqlSchema } from '@/utils'
 
 const COMPREHENSIVE_SDL = `
 type Query {

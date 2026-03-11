@@ -2,8 +2,7 @@ import { useState } from 'react'
 
 import { ColorInput, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { BoxShadowConfig } from '@/utils'
-import { DEFAULT_BOX_SHADOW, generateBoxShadowCSS } from '@/utils'
+import { type BoxShadowConfig, DEFAULT_BOX_SHADOW, generateBoxShadowCSS } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['box-shadow-generator']
 

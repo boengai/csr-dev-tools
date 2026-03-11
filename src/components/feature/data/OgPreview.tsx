@@ -1,11 +1,10 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { OgConfig } from '@/utils'
+import { generateOgMetaTags, type OgConfig } from '@/utils'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { generateOgMetaTags } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['og-preview']
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { pxToRem, remToPx } from '@/utils/unit'
+import { pxToRem, remToPx } from '@/utils'
 
 describe('unit utilities', () => {
   describe('pxToRem', () => {

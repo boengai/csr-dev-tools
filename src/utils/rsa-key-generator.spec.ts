@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { arrayBufferToPem, generateRsaKeyPair } from '@/utils/rsa-key-generator'
+import { arrayBufferToPem, generateRsaKeyPair } from '@/utils'
 
 describe('rsa-key-generator', () => {
   describe('arrayBufferToPem', () => {

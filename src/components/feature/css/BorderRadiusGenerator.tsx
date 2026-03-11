@@ -3,9 +3,7 @@ import { useState } from 'react'
 import { ColorInput, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
-import { tv } from '@/utils'
-import type { BorderRadiusConfig } from '@/utils/border-radius'
-import { DEFAULT_BORDER_RADIUS, generateBorderRadiusCss } from '@/utils/border-radius'
+import { type BorderRadiusConfig, DEFAULT_BORDER_RADIUS, generateBorderRadiusCss, tv } from '@/utils'
 
 const toggleButtonStyles = tv({
   base: 'rounded border px-3 py-1 text-body-xs',

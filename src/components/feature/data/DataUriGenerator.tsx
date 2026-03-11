@@ -1,12 +1,11 @@
 import { useReducer, useRef } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { DataUriDecodeResult, DataUriEncodeResult } from '@/utils'
+import { type DataUriDecodeResult, type DataUriEncodeResult, fileToDataUri, formatFileSize, isValidDataUri, parseDataUri, parseDataUrlToBlob } from '@/utils'
 
 import { Button, CopyButton, Dialog, DownloadIcon, FieldForm, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { fileToDataUri, formatFileSize, isValidDataUri, parseDataUri, parseDataUrlToBlob } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['data-uri-generator']
 

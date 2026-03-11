@@ -5,8 +5,7 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { decodeJwt, formatPayloadWithTimestamps } from '@/utils/jwt'
-import { isValidJwt } from '@/utils/validation'
+import { decodeJwt, formatPayloadWithTimestamps, isValidJwt } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['jwt-decoder']
 

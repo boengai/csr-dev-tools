@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { buildHighlightSegments, executeRegex, formatMatchesForCopy } from '@/utils/regex'
+import { buildHighlightSegments, executeRegex, formatMatchesForCopy } from '@/utils'
 
 describe('regex utilities', () => {
   describe('executeRegex', () => {

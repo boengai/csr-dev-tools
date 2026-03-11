@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatCss, minifyCss } from '@/utils/css-format'
+import { formatCss, minifyCss } from '@/utils'
 
 describe('css formatting utilities', () => {
   describe('formatCss', () => {

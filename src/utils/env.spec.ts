@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { envToJson, envToYaml, jsonToEnv, parseEnv, yamlToEnv } from '@/utils/env'
+import { envToJson, envToYaml, jsonToEnv, parseEnv, yamlToEnv } from '@/utils'
 
 describe('env utilities', () => {
   describe('parseEnv', () => {

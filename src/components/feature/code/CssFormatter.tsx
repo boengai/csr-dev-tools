@@ -5,7 +5,7 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { formatCss, minifyCss } from '@/utils/css-format'
+import { formatCss, minifyCss } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['css-formatter']
 

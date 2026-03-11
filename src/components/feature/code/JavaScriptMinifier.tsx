@@ -5,7 +5,7 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { formatJs, minifyJs } from '@/utils/js-format'
+import { formatJs, minifyJs } from '@/utils'
 
 type State = {
   dialogOpen: boolean

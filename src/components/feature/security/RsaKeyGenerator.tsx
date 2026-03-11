@@ -2,12 +2,11 @@ import { m } from 'motion/react'
 import { useCallback, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { RsaKeyPair, RsaKeySize } from '@/utils/rsa-key-generator'
+import { downloadPemFile, generateRsaKeyPair, type RsaKeyPair, type RsaKeySize } from '@/utils'
 
 import { Button, CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import { downloadPemFile, generateRsaKeyPair } from '@/utils/rsa-key-generator'
 
 const toolEntry = TOOL_REGISTRY_MAP['rsa-key-generator']
 

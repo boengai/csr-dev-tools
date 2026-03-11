@@ -5,7 +5,7 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { envToJson, envToYaml, jsonToEnv, yamlToEnv } from '@/utils/env'
+import { envToJson, envToYaml, jsonToEnv, yamlToEnv } from '@/utils'
 
 type ConvertMode = 'env-to-json' | 'env-to-yaml' | 'json-to-env' | 'yaml-to-env'
 

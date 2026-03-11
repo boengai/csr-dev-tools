@@ -5,7 +5,7 @@ import { ColorInput, CopyButton, FieldForm, NotoEmoji } from '@/components/commo
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ColorFormat } from '@/types'
-import { convertColor } from '@/utils/color'
+import { convertColor } from '@/utils'
 
 const randomByte = () => Math.floor(Math.random() * 256)
 

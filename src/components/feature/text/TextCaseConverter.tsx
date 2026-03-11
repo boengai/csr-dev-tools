@@ -17,7 +17,7 @@ import {
   toSnakeCase,
   toTitleCase,
   toUpperCase,
-} from '@/utils/text-case'
+} from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['text-case-converter']
 

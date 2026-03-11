@@ -4,7 +4,7 @@ import { Button, Dialog, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { applyBackground, removeBackground } from '@/utils/background-removal'
+import { applyBackground, removeBackground } from '@/utils'
 
 import { BackgroundRemoverError } from './Error'
 import { BackgroundRemoverProcessing } from './Processing'

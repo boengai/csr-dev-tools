@@ -1,12 +1,11 @@
 import { useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { Base64ImageInfo } from '@/utils'
+import { type Base64ImageInfo, base64ToImageInfo, formatFileSize } from '@/utils'
 
 import { Button, Dialog, DownloadIcon, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { base64ToImageInfo, formatFileSize } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['base64-to-image']
 

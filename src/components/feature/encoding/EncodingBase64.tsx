@@ -3,8 +3,7 @@ import { useState } from 'react'
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { decodeBase64, encodeBase64 } from '@/utils/base64'
-import { isValidBase64 } from '@/utils/validation'
+import { decodeBase64, encodeBase64, isValidBase64 } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['base64-encoder']
 

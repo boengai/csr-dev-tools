@@ -12,7 +12,7 @@ import {
   toSnakeCase,
   toTitleCase,
   toUpperCase,
-} from '@/utils/text-case'
+} from '@/utils'
 
 describe('text case utilities', () => {
   const input = 'hello world test'

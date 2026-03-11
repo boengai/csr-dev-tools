@@ -1,11 +1,10 @@
 import { useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { GridAlignItems, GridContainerProps, GridJustifyItems } from '@/utils/css-grid'
+import { DEFAULT_GRID_CONTAINER, generateGridCss, type GridAlignItems, type GridContainerProps, type GridJustifyItems } from '@/utils'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { DEFAULT_GRID_CONTAINER, generateGridCss } from '@/utils/css-grid'
 
 const toolEntry = TOOL_REGISTRY_MAP['css-grid-playground']
 

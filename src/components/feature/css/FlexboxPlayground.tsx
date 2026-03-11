@@ -1,18 +1,8 @@
 import { useRef, useState } from 'react'
 
-import type {
-  AlignItems,
-  FlexDirection,
-  FlexWrap,
-  FlexboxContainerProps,
-  FlexboxItemProps,
-  JustifyContent,
-} from '@/utils'
-
+import { type AlignItems, DEFAULT_CONTAINER, DEFAULT_ITEM, type FlexboxContainerProps, type FlexboxItemProps, type FlexDirection, type FlexWrap, generateFlexboxCss, type JustifyContent } from '@/utils'
 import { CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { DEFAULT_CONTAINER, DEFAULT_ITEM, generateFlexboxCss } from '@/utils'
-
 const toolEntry = TOOL_REGISTRY_MAP['css-flexbox-playground']
 
 const ITEM_COLORS = [

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatSql } from '@/utils/sql-format'
+import { formatSql } from '@/utils'
 
 describe('sql formatting utilities', () => {
   describe('formatSql', () => {

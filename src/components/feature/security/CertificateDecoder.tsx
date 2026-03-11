@@ -4,8 +4,7 @@ import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { cnMerge, tv } from '@/utils'
-import type { CertificateExtension, CertificateInfo, ValidityStatus } from '@/utils/certificate-decoder'
+import { type CertificateExtension, type CertificateInfo, cnMerge, tv, type ValidityStatus } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['certificate-decoder']
 

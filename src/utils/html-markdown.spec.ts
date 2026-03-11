@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { htmlToMarkdown, markdownToHtml } from '@/utils/html-markdown'
+import { htmlToMarkdown, markdownToHtml } from '@/utils'
 
 describe('html-markdown conversion utilities', () => {
   describe('htmlToMarkdown', () => {

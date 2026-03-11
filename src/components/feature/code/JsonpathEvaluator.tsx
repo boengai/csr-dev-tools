@@ -3,13 +3,11 @@ import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { JsonPathEvaluation, JsonParseResult } from '@/utils/jsonpath-evaluator'
+import { evaluateJsonPath, formatResultValue, type JsonParseResult, type JsonPathEvaluation, parseJsonInput, tv } from '@/utils'
 
 import { CodeInput, CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
-import { tv } from '@/utils'
-import { evaluateJsonPath, formatResultValue, parseJsonInput } from '@/utils/jsonpath-evaluator'
 
 const chevronStyles = tv({
   base: 'inline-block transition-transform',

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { getDaysInMonth } from '@/utils/time'
+import { getDaysInMonth } from '@/utils'
 
 describe('time utilities', () => {
   describe('getDaysInMonth', () => {

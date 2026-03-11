@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { escapeString, unescapeString } from '@/utils/string-escape'
+import { escapeString, unescapeString } from '@/utils'
 
 describe('string escape utilities', () => {
   describe('html', () => {

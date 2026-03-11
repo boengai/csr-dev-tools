@@ -5,7 +5,7 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
-import { jsonToTypeScript } from '@/utils/json-to-typescript'
+import { jsonToTypeScript } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-typescript']
 

@@ -5,7 +5,7 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CheckboxInput, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
-import { parseStringifiedJson, stringifyJson } from '@/utils/escaped-json'
+import { parseStringifiedJson, stringifyJson } from '@/utils'
 
 type ConvertMode = 'stringify' | 'parse'
 

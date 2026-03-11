@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { decodeUrl, encodeUrl } from '@/utils/url'
+import { decodeUrl, encodeUrl } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['url-encoder-decoder']
 

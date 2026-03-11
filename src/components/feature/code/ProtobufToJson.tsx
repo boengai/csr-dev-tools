@@ -4,8 +4,7 @@ import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { cnMerge } from '@/utils'
-import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufSchemaInfo } from '@/utils/protobuf-to-json'
+import { cnMerge, type ProtobufEnumInfo, type ProtobufMessageInfo, type ProtobufSchemaInfo } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-to-json']
 

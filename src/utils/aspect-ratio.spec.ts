@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { calculateDimension, parseRatio, simplifyRatio } from '@/utils/aspect-ratio'
+import { calculateDimension, parseRatio, simplifyRatio } from '@/utils'
 
 describe('aspect-ratio', () => {
   describe('simplifyRatio', () => {

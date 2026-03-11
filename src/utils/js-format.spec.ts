@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatJs, minifyJs } from '@/utils/js-format'
+import { formatJs, minifyJs } from '@/utils'
 
 describe('js formatting utilities', () => {
   describe('formatJs', () => {

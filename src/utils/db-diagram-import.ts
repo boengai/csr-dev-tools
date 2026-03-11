@@ -1,6 +1,6 @@
 import type { ColumnType, DiagramSchema, SqlDialect } from '@/types'
 
-import { generateId } from '@/utils/db-diagram'
+import { generateId } from './db-diagram'
 
 export type ParseResult = {
   errors: Array<{ line: number; message: string }>

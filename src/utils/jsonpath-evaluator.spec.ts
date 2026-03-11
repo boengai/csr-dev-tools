@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { evaluateJsonPath, formatResultValue, parseJsonInput } from '@/utils/jsonpath-evaluator'
+import { evaluateJsonPath, formatResultValue, parseJsonInput } from '@/utils'
 
 describe('jsonpath-evaluator', () => {
   describe('parseJsonInput', () => {

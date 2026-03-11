@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatYaml, getYamlParseError, jsonToYaml, yamlToJson } from '@/utils/yaml'
+import { formatYaml, getYamlParseError, jsonToYaml, yamlToJson } from '@/utils'
 
 describe('yaml utilities', () => {
   describe('formatYaml', () => {

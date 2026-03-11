@@ -5,7 +5,7 @@ import type { ToolComponentProps } from '@/types'
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
-import { type CronParseResult, CRON_PRESETS, parseCron } from '@/utils/cron-parser'
+import { type CronParseResult, CRON_PRESETS, parseCron } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['cron-expression-parser']
 

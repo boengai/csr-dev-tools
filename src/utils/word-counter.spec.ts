@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { countTextStats } from '@/utils/word-counter'
+import { countTextStats } from '@/utils'
 
 describe('word counter utilities', () => {
   it('should return zeros for empty string', () => {

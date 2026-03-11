@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { decodeHtmlEntities, encodeHtmlEntities } from '@/utils/html-entity'
+import { decodeHtmlEntities, encodeHtmlEntities } from '@/utils'
 
 describe('html entity utilities', () => {
   describe('encodeHtmlEntities', () => {

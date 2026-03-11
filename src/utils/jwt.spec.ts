@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { decodeJwt, formatPayloadWithTimestamps, formatTimestampClaim } from '@/utils/jwt'
+import { decodeJwt, formatPayloadWithTimestamps, formatTimestampClaim } from '@/utils'
 
 describe('jwt decoding utilities', () => {
   // Standard test JWT: {"alg":"HS256","typ":"JWT"}.{"sub":"1234567890","name":"John Doe","iat":1516239022}

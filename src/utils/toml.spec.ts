@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { getTomlParseError, jsonToToml, tomlToJson } from '@/utils/toml'
+import { getTomlParseError, jsonToToml, tomlToJson } from '@/utils'
 
 describe('toml conversion utilities', () => {
   describe('tomlToJson', () => {

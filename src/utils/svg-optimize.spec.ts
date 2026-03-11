@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { optimizeSvg, sanitizeSvg } from '@/utils/svg-optimize'
+import { optimizeSvg, sanitizeSvg } from '@/utils'
 
 describe('svg-optimize utilities', () => {
   describe('sanitizeSvg', () => {

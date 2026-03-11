@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { DEFAULT_GRADIENT, generateGradientCss } from '@/utils/gradient'
+import { DEFAULT_GRADIENT, generateGradientCss } from '@/utils'
 
 describe('gradient utilities', () => {
   describe('generateGradientCss', () => {

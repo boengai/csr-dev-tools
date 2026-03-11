@@ -1,12 +1,11 @@
 import { useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { SshKeyInfo } from '@/utils/ssh-fingerprint'
+import { analyzeSshKey, type SshKeyInfo } from '@/utils'
 
 import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { analyzeSshKey } from '@/utils/ssh-fingerprint'
 
 const toolEntry = TOOL_REGISTRY_MAP['ssh-key-fingerprint']
 

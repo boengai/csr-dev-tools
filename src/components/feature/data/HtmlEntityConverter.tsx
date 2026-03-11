@@ -5,7 +5,7 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
-import { decodeHtmlEntities, encodeHtmlEntities } from '@/utils/html-entity'
+import { decodeHtmlEntities, encodeHtmlEntities } from '@/utils'
 
 type ConvertMode = 'encode' | 'decode'
 type EntityMode = 'named' | 'numeric'

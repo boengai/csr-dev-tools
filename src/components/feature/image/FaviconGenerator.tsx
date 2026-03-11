@@ -1,12 +1,11 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { FaviconResult } from '@/utils/favicon'
+import { downloadFaviconsAsZip, type FaviconResult, generateFaviconLinkTags, generateFavicons } from '@/utils'
 
 import { Button, CopyButton, Dialog, DownloadIcon, RefreshIcon, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import { downloadFaviconsAsZip, generateFaviconLinkTags, generateFavicons } from '@/utils/favicon'
 
 const toolEntry = TOOL_REGISTRY_MAP['favicon-generator']
 const linkTags = generateFaviconLinkTags()

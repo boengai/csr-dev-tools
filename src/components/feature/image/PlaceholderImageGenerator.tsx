@@ -3,16 +3,7 @@ import { useMemo, useReducer } from 'react'
 import { Button, ColorInput, DownloadIcon, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import type { PlaceholderOptions } from '@/utils/placeholder-image'
-import {
-  canvasToBlob,
-  downloadBlob,
-  downloadSvg,
-  generatePlaceholderCanvas,
-  generatePlaceholderSvg,
-  PLACEHOLDER_PRESETS,
-} from '@/utils/placeholder-image'
-
+import { canvasToBlob, downloadBlob, downloadSvg, generatePlaceholderCanvas, generatePlaceholderSvg, PLACEHOLDER_PRESETS, type PlaceholderOptions } from '@/utils'
 const DEFAULT_WIDTH = '800'
 const DEFAULT_HEIGHT = '600'
 const DEFAULT_BG_COLOR = '#cccccc'

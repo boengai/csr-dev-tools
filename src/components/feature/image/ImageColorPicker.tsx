@@ -1,11 +1,10 @@
 import { useCallback, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { PickedColor } from '@/utils/color-picker'
+import { type PickedColor, pixelToColor } from '@/utils'
 
 import { Button, CopyButton, Dialog, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { pixelToColor } from '@/utils/color-picker'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const rafThrottle = <T extends (...args: Array<any>) => void>(fn: T): T => {

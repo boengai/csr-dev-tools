@@ -5,7 +5,7 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CheckboxInput, CodeOutput, CopyButton, Dialog, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { formatYaml, getYamlParseError } from '@/utils/yaml'
+import { formatYaml, getYamlParseError } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['yaml-formatter']
 

@@ -1,6 +1,6 @@
 import type { ColumnType, DiagramSchema, RelationshipType } from '@/types'
 
-import { generateId, gridLayoutPositions } from '@/utils/db-diagram'
+import { generateId, gridLayoutPositions } from './db-diagram'
 
 import type { ParseResult } from './db-diagram-import'
 

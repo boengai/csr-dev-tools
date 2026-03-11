@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button, CheckboxInput, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import { generateLoremIpsum } from '@/utils/lorem-ipsum'
+import { generateLoremIpsum } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['lorem-ipsum-generator']
 

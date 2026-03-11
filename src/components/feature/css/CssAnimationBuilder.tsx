@@ -1,18 +1,9 @@
 import { useMemo, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type {
-  AnimationConfig,
-  AnimationDirection,
-  AnimationFillMode,
-  AnimationTimingFunction,
-  KeyframeStep,
-} from '@/utils'
-
+import { type AnimationConfig, type AnimationDirection, type AnimationFillMode, type AnimationTimingFunction, buildTransformString, DEFAULT_ANIMATION_CONFIG, generateAnimationCss, type KeyframeStep } from '@/utils'
 import { Button, ColorInput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { DEFAULT_ANIMATION_CONFIG, generateAnimationCss, buildTransformString } from '@/utils'
-
 const toolEntry = TOOL_REGISTRY_MAP['css-animation-builder']
 
 const TIMING_FUNCTIONS: Array<AnimationTimingFunction> = ['ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out']

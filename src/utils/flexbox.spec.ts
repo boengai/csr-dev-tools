@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { DEFAULT_CONTAINER, DEFAULT_ITEM, generateFlexboxCss } from '@/utils/flexbox'
+import { DEFAULT_CONTAINER, DEFAULT_ITEM, generateFlexboxCss } from '@/utils'
 
 describe('flexbox utilities', () => {
   describe('generateFlexboxCss', () => {

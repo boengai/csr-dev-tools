@@ -1,12 +1,11 @@
 import { useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { EscapeMode } from '@/utils/string-escape'
+import { type EscapeMode, escapeString, unescapeString } from '@/utils'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { escapeString, unescapeString } from '@/utils/string-escape'
 
 const toolEntry = TOOL_REGISTRY_MAP['string-escape-unescape']
 

@@ -1,20 +1,10 @@
 import { useCallback, useMemo, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { SubnetResult } from '@/utils/ip-subnet'
-
+import { calculateSubnet, maskToPrefix, parseCidr, prefixToMask, type SubnetResult, validateIpv4, validateSubnetMask } from '@/utils'
 import { CopyButton, FieldForm, Tabs } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
-import {
-  calculateSubnet,
-  maskToPrefix,
-  parseCidr,
-  prefixToMask,
-  validateIpv4,
-  validateSubnetMask,
-} from '@/utils/ip-subnet'
-
 type InputMode = 'cidr' | 'ip-mask'
 
 const toolEntry = TOOL_REGISTRY_MAP['ip-subnet-calculator']

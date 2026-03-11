@@ -3,14 +3,11 @@ import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useReducer, useRef } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { MermaidFixSuggestion } from '@/utils/mermaid-auto-fix'
+import { downloadMermaidSvg, downloadPng, initializeMermaid, type MermaidFixSuggestion, renderMermaid, suggestMermaidFix, svgToPng, tv } from '@/utils'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
-import { tv } from '@/utils'
-import { suggestMermaidFix } from '@/utils/mermaid-auto-fix'
-import { downloadPng, downloadSvg, initializeMermaid, renderMermaid, svgToPng } from '@/utils/mermaid-renderer'
 
 const chevronStyles = tv({
   base: 'inline-block transition-transform',
@@ -157,7 +154,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
 
   const handleExportSvg = () => {
     try {
-      downloadSvg(svg)
+      downloadMermaidSvg(svg)
       toast({ action: 'add', item: { label: 'Downloaded mermaid-diagram.svg', type: 'success' } })
     } catch {
       toast({ action: 'add', item: { label: 'Failed to export SVG', type: 'error' } })

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { csvToJson, getCsvParseError, jsonToCsv } from '@/utils/csv'
+import { csvToJson, getCsvParseError, jsonToCsv } from '@/utils'
 
 describe('csv conversion utilities', () => {
   describe('jsonToCsv', () => {

@@ -5,7 +5,7 @@ import type { ToolComponentProps } from '@/types'
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { convertBase, isValidForBase } from '@/utils/number-base'
+import { convertBase, isValidForBase } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['number-base-converter']
 

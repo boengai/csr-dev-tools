@@ -3,17 +3,7 @@ import { useCallback, useState } from 'react'
 import { Button, CheckboxInput, CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
-import type { ChmodState } from '@/utils/chmod-calculator'
-import {
-  isValidOctal,
-  isValidSymbolic,
-  octalToState,
-  stateToDescription,
-  stateToOctal,
-  stateToSymbolic,
-  symbolicToState,
-} from '@/utils/chmod-calculator'
-
+import { type ChmodState, isValidOctal, isValidSymbolic, octalToState, stateToDescription, stateToOctal, stateToSymbolic, symbolicToState } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['chmod-calculator']
 
 const DEFAULT_STATE = octalToState('755')!

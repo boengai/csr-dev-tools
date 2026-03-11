@@ -1,22 +1,11 @@
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useId, useMemo, useReducer, useRef, useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-
 import { Button, CopyButton, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
-import { tv } from '@/utils'
-import {
-  type ConversionResult,
-  type TimezoneEntry,
-  buildTimezoneIndex,
-  convertTimezone,
-  getLocalTimezone,
-  parseDateTimeInput,
-  searchTimezones,
-} from '@/utils/timezone-converter'
-
+import type { ToolComponentProps } from '@/types'
+import { buildTimezoneIndex, type ConversionResult, convertTimezone, getLocalTimezone, parseDateTimeInput, searchTimezones, type TimezoneEntry, tv } from '@/utils'
 const FAVORITES_KEY = 'csr-dev-tools-timezone-favorites'
 
 function loadFavorites(): Array<string> {
@@ -161,7 +150,14 @@ const TimezoneSearchPicker = ({
   }, [activeIndex])
 
   return (
-    <div aria-controls={listboxId} aria-expanded={isOpen} className="relative" onKeyDown={handleKeyDown} ref={containerRef} role="combobox">
+    <div
+      aria-controls={listboxId}
+      aria-expanded={isOpen}
+      className="relative"
+      onKeyDown={handleKeyDown}
+      ref={containerRef}
+      role="combobox"
+    >
       <TextInput
         name="timezone-search"
         onChange={(val) => {
@@ -355,7 +351,9 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
           <h3 className="text-body-sm font-semibold text-gray-300">Source</h3>
 
           <div>
-            <label className="mb-1 block text-body-xs text-gray-500" htmlFor="source-timezone-search">Timezone</label>
+            <label className="mb-1 block text-body-xs text-gray-500" htmlFor="source-timezone-search">
+              Timezone
+            </label>
             {sourceEntry && (
               <div className="mb-1 flex items-center gap-1">
                 <span className="rounded bg-gray-800 px-2 py-0.5 text-body-xs text-gray-200">

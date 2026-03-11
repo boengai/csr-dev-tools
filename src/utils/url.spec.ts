@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { decodeUrl, encodeUrl } from '@/utils/url'
+import { decodeUrl, encodeUrl } from '@/utils'
 
 describe('url encoding utilities', () => {
   describe('encodeUrl', () => {

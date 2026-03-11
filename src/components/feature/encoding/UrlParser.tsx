@@ -1,12 +1,11 @@
 import { useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { UrlParseResult } from '@/utils/url-parse'
+import { parseUrl, type UrlParseResult } from '@/utils'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
-import { parseUrl } from '@/utils/url-parse'
 
 const toolEntry = TOOL_REGISTRY_MAP['url-parser']
 

@@ -8,7 +8,7 @@ import {
   parseDateTimeInput,
   parseOffsetToMinutes,
   searchTimezones,
-} from '@/utils/timezone-converter'
+} from '@/utils'
 
 describe('timezone-converter', () => {
   describe('getTimezoneList', () => {

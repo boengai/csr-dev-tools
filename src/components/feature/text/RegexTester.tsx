@@ -1,12 +1,11 @@
 import { useReducer } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { HighlightSegment, RegexMatch, RegexResult } from '@/utils'
+import { buildHighlightSegments, executeRegex, formatMatchesForCopy, type HighlightSegment, type RegexMatch, type RegexResult } from '@/utils'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import { buildHighlightSegments, executeRegex, formatMatchesForCopy } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['regex-tester']
 

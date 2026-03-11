@@ -3,9 +3,7 @@ import { useMemo, useState } from 'react'
 import { FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
-import { cnMerge, tv } from '@/utils'
-import type { HttpStatusCategory } from '@/utils/http-status'
-import { filterHttpStatusCodes, HTTP_STATUS_CODES } from '@/utils/http-status'
+import { cnMerge, filterHttpStatusCodes, HTTP_STATUS_CODES, type HttpStatusCategory, tv } from '@/utils'
 
 const categoryFilterStyles = tv({
   base: 'rounded border px-3 py-1 text-body-xs',

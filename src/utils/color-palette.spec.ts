@@ -10,7 +10,7 @@ import {
   generatePalette,
   generateSplitComplementaryPalette,
   generateTriadicPalette,
-} from '@/utils/color-palette'
+} from '@/utils'
 
 describe('color-palette', () => {
   const baseHsl: HSLColor = { h: 217, l: 59.8, s: 91.18 } // ~#3b82f6

@@ -2,12 +2,11 @@ import DOMPurify from 'dompurify'
 import { useEffect, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { SvgOptimizeResult } from '@/utils/svg-optimize'
+import { optimizeSvg, sanitizeSvg, type SvgOptimizeResult } from '@/utils'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
-import { optimizeSvg, sanitizeSvg } from '@/utils/svg-optimize'
 
 const toolEntry = TOOL_REGISTRY_MAP['svg-viewer']
 

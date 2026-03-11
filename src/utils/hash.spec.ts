@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { computeHash, DEFAULT_HASH_ALGORITHM, HASH_ALGORITHMS } from '@/utils/hash'
+import { computeHash, DEFAULT_HASH_ALGORITHM, HASH_ALGORITHMS } from '@/utils'
 
 describe('hash utilities', () => {
   describe('computeHash', () => {

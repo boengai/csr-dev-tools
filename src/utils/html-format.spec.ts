@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatHtml, minifyHtml } from '@/utils/html-format'
+import { formatHtml, minifyHtml } from '@/utils'
 
 describe('html formatting utilities', () => {
   describe('formatHtml', () => {

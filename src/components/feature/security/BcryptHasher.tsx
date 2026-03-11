@@ -1,19 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { BcryptHashComponents, BcryptHashResult, BcryptVerifyResult } from '@/utils/bcrypt-hasher'
-
+import { type BcryptHashComponents, type BcryptHashResult, type BcryptVerifyResult, checkPasswordTruncation, hashPassword, isValidBcryptHash, parseBcryptHash, verifyPassword } from '@/utils'
 import { Button, CodeInput, CopyButton, SelectInput, Tabs, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import {
-  checkPasswordTruncation,
-  hashPassword,
-  isValidBcryptHash,
-  parseBcryptHash,
-  verifyPassword,
-} from '@/utils/bcrypt-hasher'
-
 const toolEntry = TOOL_REGISTRY_MAP['bcrypt-hasher']
 
 const COST_OPTIONS = Array.from({ length: 28 }, (_, i) => {

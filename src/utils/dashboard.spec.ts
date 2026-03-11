@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { isValidLayoutValue, migrateLayoutValue } from '@/utils/dashboard'
+import { isValidLayoutValue, migrateLayoutValue } from '@/utils'
 
 describe('dashboard utilities', () => {
   describe('migrateLayoutValue', () => {

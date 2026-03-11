@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { DEFAULT_BOX_SHADOW, generateBoxShadowCSS, hexToRgba } from '@/utils/box-shadow'
+import { DEFAULT_BOX_SHADOW, generateBoxShadowCSS, hexToRgba } from '@/utils'
 
 describe('box-shadow utilities', () => {
   describe('hexToRgba', () => {

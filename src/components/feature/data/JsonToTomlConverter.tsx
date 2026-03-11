@@ -5,7 +5,7 @@ import type { ToolComponentProps } from '@/types'
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
-import { getTomlParseError } from '@/utils/toml'
+import { getTomlParseError } from '@/utils'
 
 type ConvertMode = 'json-to-toml' | 'toml-to-json'
 

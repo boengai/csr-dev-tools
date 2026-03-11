@@ -11,7 +11,7 @@ import {
   buildCronExpression,
   describeCron,
   getNextRuns,
-} from '@/utils/crontab'
+} from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['crontab-generator']
 

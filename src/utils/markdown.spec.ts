@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { renderMarkdown } from '@/utils/markdown'
+import { renderMarkdown } from '@/utils'
 
 describe('markdown utilities', () => {
   describe('renderMarkdown', () => {

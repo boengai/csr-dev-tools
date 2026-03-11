@@ -1,6 +1,6 @@
 import type { HSLColor } from '@/types'
 
-import { convertColor, hexToHsl, normalizeHue } from '@/utils/color'
+import { convertColor, hexToHsl, normalizeHue } from './color'
 
 export type HarmonyType = 'analogous' | 'complementary' | 'monochromatic' | 'split-complementary' | 'triadic'
 

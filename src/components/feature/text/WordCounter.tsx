@@ -1,12 +1,11 @@
 import { useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { TextStats } from '@/utils/word-counter'
+import { countTextStats, type TextStats } from '@/utils'
 
 import { Button, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
-import { countTextStats } from '@/utils/word-counter'
 
 const toolEntry = TOOL_REGISTRY_MAP['word-counter']
 

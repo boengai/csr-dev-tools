@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatJson, getJsonParseError } from '@/utils/json'
+import { formatJson, getJsonParseError } from '@/utils'
 
 describe('json formatting utilities', () => {
   describe('formatJson', () => {

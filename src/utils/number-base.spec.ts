@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { convertBase, isValidForBase } from '@/utils/number-base'
+import { convertBase, isValidForBase } from '@/utils'
 
 describe('number base conversion utilities', () => {
   describe('convertBase', () => {

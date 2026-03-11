@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { generateLoremIpsum } from '@/utils/lorem-ipsum'
+import { generateLoremIpsum } from '@/utils'
 
 describe('lorem ipsum utilities', () => {
   it('should return empty string for count 0', () => {

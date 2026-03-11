@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { DEFAULT_PASSWORD_OPTIONS, generatePassword } from '@/utils/password'
+import { DEFAULT_PASSWORD_OPTIONS, generatePassword } from '@/utils'
 
 const SYMBOL_CHARS = "!@#$%^&*()-_=+[]{}|;:',./<>?~`"
 

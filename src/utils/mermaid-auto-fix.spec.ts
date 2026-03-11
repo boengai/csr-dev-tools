@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { suggestMermaidFix } from '@/utils/mermaid-auto-fix'
+import { suggestMermaidFix } from '@/utils'
 
 describe('mermaid-auto-fix', () => {
   describe('suggestMermaidFix', () => {

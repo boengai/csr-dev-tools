@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 
 import { COMPRESSIBLE_FORMATS } from '@/constants/image'
-import { formatFileSize, parseDataUrlToBlob, parseFileName } from '@/utils/file'
-import { calculateDimensions, getSafeImageFormat, isValidImageFormat, validateCoordinates } from '@/utils/image'
+import { formatFileSize, parseDataUrlToBlob, parseFileName } from '@/utils'
+import { calculateDimensions, getSafeImageFormat, isValidImageFormat, validateCoordinates } from '@/utils'
 
 describe('image utilities', () => {
   describe('isValidImageFormat', () => {

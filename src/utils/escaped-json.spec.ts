@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { parseStringifiedJson, stringifyJson } from '@/utils/escaped-json'
+import { parseStringifiedJson, stringifyJson } from '@/utils'
 
 describe('escaped json utilities', () => {
   describe('stringifyJson', () => {

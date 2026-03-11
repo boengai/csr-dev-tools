@@ -1,11 +1,10 @@
 import { useRef, useState } from 'react'
 
-import type { PasswordOptions } from '@/utils'
+import { DEFAULT_PASSWORD_OPTIONS, generatePassword, type PasswordOptions } from '@/utils'
 
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import { DEFAULT_PASSWORD_OPTIONS, generatePassword } from '@/utils'
 
 const CHAR_TOGGLES: Array<{
   key: keyof Pick<PasswordOptions, 'digits' | 'lowercase' | 'symbols' | 'uppercase'>

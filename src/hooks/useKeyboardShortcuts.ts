@@ -1,6 +1,6 @@
 import { useEffect } from 'react'
 
-import { useCommandPaletteStore } from '@/hooks/state'
+import { useCommandPaletteStore } from './state'
 
 export const useKeyboardShortcuts = () => {
   const toggleCommandPalette = useCommandPaletteStore((state) => state.toggle)

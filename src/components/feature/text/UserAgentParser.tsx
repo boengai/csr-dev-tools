@@ -1,12 +1,11 @@
 import { useState } from 'react'
 
 import type { ToolComponentProps } from '@/types'
-import type { UserAgentResult } from '@/utils/user-agent'
+import { parseUserAgent, type UserAgentResult } from '@/utils'
 
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
-import { parseUserAgent } from '@/utils/user-agent'
 
 const toolEntry = TOOL_REGISTRY_MAP['user-agent-parser']
 

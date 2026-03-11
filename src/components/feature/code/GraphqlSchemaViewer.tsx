@@ -4,8 +4,7 @@ import { CodeInput, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { cnMerge } from '@/utils'
-import type { GraphqlSchemaInfo, GraphqlTypeInfo, GraphqlTypeKind } from '@/utils/graphql-schema-viewer'
+import { cnMerge, type GraphqlSchemaInfo, type GraphqlTypeInfo, type GraphqlTypeKind } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['graphql-schema-viewer']
 
 const getTypeKindLabel = (kind: GraphqlTypeKind): string => {

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { getXmlParseError, jsonToXml, xmlToJson } from '@/utils/xml'
+import { getXmlParseError, jsonToXml, xmlToJson } from '@/utils'
 
 describe('xml conversion utilities', () => {
   describe('xmlToJson', () => {
