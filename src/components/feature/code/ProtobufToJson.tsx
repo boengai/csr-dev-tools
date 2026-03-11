@@ -258,11 +258,8 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
                   <button
                     aria-current={selectedEntry === entry.fullName ? 'true' : undefined}
                     aria-label={`${entry.name} - ${entry.kind === 'message' ? 'Message' : 'Enum'} type`}
-                    className={`flex min-h-[44px] cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-left transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
-                      selectedEntry === entry.fullName
-                        ? 'bg-gray-800 text-gray-100'
-                        : 'text-gray-400 hover:bg-gray-900 hover:text-gray-200'
-                    }`}
+                    className="flex min-h-[44px] cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-left transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none data-[state=active]:bg-gray-800 data-[state=active]:text-gray-100 data-[state=inactive]:text-gray-400 data-[state=inactive]:hover:bg-gray-900 data-[state=inactive]:hover:text-gray-200"
+                    data-state={selectedEntry === entry.fullName ? 'active' : 'inactive'}
                     key={entry.fullName}
                     onClick={() => handleSelectEntry(entry)}
                     type="button"

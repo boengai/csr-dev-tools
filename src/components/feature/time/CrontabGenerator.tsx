@@ -99,9 +99,8 @@ const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEdi
             const active = (config.values ?? []).includes(val)
             return (
               <button
-                className={`text-xs rounded border px-2 py-1 ${
-                  active ? 'border-primary bg-primary/20 text-primary' : 'border-gray-700 text-gray-500'
-                }`}
+                className="text-xs rounded border px-2 py-1 data-[state=active]:border-primary data-[state=active]:bg-primary/20 data-[state=active]:text-primary data-[state=inactive]:border-gray-700 data-[state=inactive]:text-gray-500"
+                data-state={active ? 'active' : 'inactive'}
                 key={val}
                 onClick={() => toggleValue(val)}
                 type="button"

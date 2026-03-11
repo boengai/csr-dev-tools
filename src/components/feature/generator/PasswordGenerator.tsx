@@ -83,11 +83,8 @@ export const PasswordGenerator = () => {
               <button
                 aria-label={`Toggle ${label}`}
                 aria-pressed={options[key]}
-                className={`text-xs w-[calc(50%-0.25rem)] rounded border px-3 font-mono leading-7 ${
-                  options[key]
-                    ? 'border-primary bg-primary/20 font-bold text-primary'
-                    : 'border-gray-700 bg-transparent text-gray-500'
-                }`}
+                className="text-xs w-[calc(50%-0.25rem)] rounded border px-3 font-mono leading-7 data-[state=active]:border-primary data-[state=active]:bg-primary/20 data-[state=active]:font-bold data-[state=active]:text-primary data-[state=inactive]:border-gray-700 data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
+                data-state={options[key] ? 'active' : 'inactive'}
                 key={key}
                 onClick={() => handleToggle(key)}
                 type="button"

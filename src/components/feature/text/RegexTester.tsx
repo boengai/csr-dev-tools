@@ -24,9 +24,8 @@ const FlagToggle = ({ active, flag, onToggle }: { active: boolean; flag: string;
   <button
     aria-label={`Toggle ${flag} flag`}
     aria-pressed={active}
-    className={`text-xs min-w-8 rounded border px-2 font-mono leading-7 ${
-      active ? 'border-primary bg-primary/20 font-bold text-primary' : 'border-gray-700 bg-transparent text-gray-500'
-    }`}
+    className="text-xs min-w-8 rounded border px-2 font-mono leading-7 data-[state=active]:border-primary data-[state=active]:bg-primary/20 data-[state=active]:font-bold data-[state=active]:text-primary data-[state=inactive]:border-gray-700 data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
+    data-state={active ? 'active' : 'inactive'}
     onClick={onToggle}
     type="button"
   >

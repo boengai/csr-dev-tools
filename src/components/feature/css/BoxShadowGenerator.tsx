@@ -81,11 +81,8 @@ export const BoxShadowGenerator = () => {
           <button
             aria-label="Toggle inset shadow"
             aria-pressed={config.inset}
-            className={`text-xs rounded border px-3 font-mono leading-7 ${
-              config.inset
-                ? 'border-primary bg-primary/20 font-bold text-primary'
-                : 'border-gray-700 bg-transparent text-gray-500'
-            }`}
+            className="text-xs rounded border px-3 font-mono leading-7 data-[state=active]:border-primary data-[state=active]:bg-primary/20 data-[state=active]:font-bold data-[state=active]:text-primary data-[state=inactive]:border-gray-700 data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
+            data-state={config.inset ? 'active' : 'inactive'}
             onClick={() => setConfig((prev) => ({ ...prev, inset: !prev.inset }))}
             type="button"
           >

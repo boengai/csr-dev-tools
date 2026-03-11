@@ -87,11 +87,8 @@ export const RsaKeyGenerator = (_props: ToolComponentProps) => {
               <button
                 key={option.value}
                 aria-pressed={keySize === option.value}
-                className={`rounded border px-4 py-2 text-body-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none ${
-                  keySize === option.value
-                    ? 'border-primary bg-primary/20 text-white'
-                    : 'border-gray-700 bg-transparent text-gray-400 hover:border-gray-500'
-                }`}
+                className="rounded border px-4 py-2 text-body-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none data-[state=active]:border-primary data-[state=active]:bg-primary/20 data-[state=active]:text-white data-[state=inactive]:border-gray-700 data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-400 data-[state=inactive]:hover:border-gray-500"
+                data-state={keySize === option.value ? 'active' : 'inactive'}
                 onClick={() => setKeySize(option.value)}
                 type="button"
               >

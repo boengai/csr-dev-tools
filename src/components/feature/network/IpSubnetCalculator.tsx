@@ -254,11 +254,8 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
             {PRESET_PREFIXES.map((prefix) => (
               <button
                 aria-label={`Set prefix length to ${prefix}`}
-                className={`rounded-md px-2.5 py-1 text-body-xs font-medium transition-colors ${
-                  result?.prefixLength === prefix
-                    ? 'bg-gray-700 text-gray-100'
-                    : 'bg-gray-900 text-gray-400 hover:bg-gray-800 hover:text-gray-300'
-                }`}
+                className="rounded-md px-2.5 py-1 text-body-xs font-medium transition-colors data-[state=active]:bg-gray-700 data-[state=active]:text-gray-100 data-[state=inactive]:bg-gray-900 data-[state=inactive]:text-gray-400 data-[state=inactive]:hover:bg-gray-800 data-[state=inactive]:hover:text-gray-300"
+                data-state={result?.prefixLength === prefix ? 'active' : 'inactive'}
                 key={prefix}
                 onClick={() => handlePreset(prefix)}
                 type="button"

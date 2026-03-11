@@ -198,7 +198,8 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
                   <tr key={r}>
                     {row.map((cell, c) => (
                       <td
-                        className={`border border-gray-800 p-1 ${r === 0 ? '[&_input]:font-bold [&_input]:text-gray-100' : ''}`}
+                        className="border border-gray-800 p-1 data-[state=header]:[&_input]:font-bold data-[state=header]:[&_input]:text-gray-100"
+                        data-state={r === 0 ? 'header' : 'body'}
                         key={c}
                       >
                         <TextInput

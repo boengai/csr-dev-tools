@@ -37,15 +37,11 @@ const DiffCell = ({
   spans: Array<InlineSpan> | null
   type: SideBySideRow['leftType']
 }) => {
-  const bgClass = type === 'removed' ? 'bg-error/10' : type === 'added' ? 'bg-success/10' : ''
-  const textClass = type === 'removed' ? 'text-error' : type === 'added' ? 'text-success' : 'text-gray-400'
-  const barClass = type === 'removed' ? 'bg-error' : type === 'added' ? 'bg-success' : 'bg-transparent'
-
   return (
-    <div className={`flex ${bgClass}`}>
+    <div className="flex data-[state=removed]:bg-error/10 data-[state=added]:bg-success/10" data-state={type}>
       <span className="w-10 shrink-0 py-px pr-2 text-right text-gray-600 select-none">{lineNum ?? ''}</span>
-      <span className={`w-0.5 shrink-0 ${barClass}`} />
-      <span className={`min-w-0 flex-1 py-px pl-2 ${textClass}`}>
+      <span className="w-0.5 shrink-0 bg-transparent data-[state=removed]:bg-error data-[state=added]:bg-success" data-state={type} />
+      <span className="min-w-0 flex-1 py-px pl-2 text-gray-400 data-[state=removed]:text-error data-[state=added]:text-success" data-state={type}>
         {type === 'empty' ? '' : spans ? renderSpans(spans, side) : content || ' '}
       </span>
     </div>

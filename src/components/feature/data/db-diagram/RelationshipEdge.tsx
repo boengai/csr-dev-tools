@@ -96,9 +96,8 @@ export const RelationshipEdgeComponent = ({
             <div className="absolute top-full left-1/2 z-50 mt-1 -translate-x-1/2 rounded border border-gray-700 bg-gray-800 shadow-lg">
               {RELATION_OPTIONS.map((opt) => (
                 <button
-                  className={`text-xs block w-full px-3 py-1 transition-colors hover:bg-gray-700 ${
-                    opt === data?.relationType ? 'text-primary' : 'text-gray-300'
-                  }`}
+                  className="text-xs block w-full px-3 py-1 transition-colors hover:bg-gray-700 data-[state=active]:text-primary data-[state=inactive]:text-gray-300"
+                  data-state={opt === data?.relationType ? 'active' : 'inactive'}
                   key={opt}
                   onClick={() => handleRelationChange(opt)}
                   type="button"

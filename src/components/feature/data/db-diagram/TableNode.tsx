@@ -11,11 +11,11 @@ import { COLUMN_TYPES } from '@/utils'
 
 export type TableNode = Node<TableNodeData, 'tableNode'>
 
-const CONSTRAINT_COLORS: Record<string, { active: string; inactive: string }> = {
-  error: { active: 'bg-error/15 text-error ring-1 ring-error/30', inactive: 'bg-gray-900 text-gray-500' },
-  info: { active: 'bg-info/15 text-info ring-1 ring-info/30', inactive: 'bg-gray-900 text-gray-500' },
-  success: { active: 'bg-success/15 text-success ring-1 ring-success/30', inactive: 'bg-gray-900 text-gray-500' },
-  warning: { active: 'bg-warning/15 text-warning ring-1 ring-warning/30', inactive: 'bg-gray-900 text-gray-500' },
+const CONSTRAINT_COLORS: Record<string, string> = {
+  error: 'data-[state=active]:bg-error/15 data-[state=active]:text-error data-[state=active]:ring-1 data-[state=active]:ring-error/30',
+  info: 'data-[state=active]:bg-info/15 data-[state=active]:text-info data-[state=active]:ring-1 data-[state=active]:ring-info/30',
+  success: 'data-[state=active]:bg-success/15 data-[state=active]:text-success data-[state=active]:ring-1 data-[state=active]:ring-success/30',
+  warning: 'data-[state=active]:bg-warning/15 data-[state=active]:text-warning data-[state=active]:ring-1 data-[state=active]:ring-warning/30',
 }
 
 const ConstraintToggle = ({
@@ -29,12 +29,10 @@ const ConstraintToggle = ({
   label: string
   onClick: () => void
 }) => {
-  const styles = CONSTRAINT_COLORS[color]
   return (
     <button
-      className={`rounded px-1 py-0.5 text-[10px] leading-none font-bold transition-colors ${
-        active ? styles.active : styles.inactive
-      }`}
+      className={`rounded px-1 py-0.5 text-[10px] leading-none font-bold transition-colors data-[state=inactive]:bg-gray-900 data-[state=inactive]:text-gray-500 ${CONSTRAINT_COLORS[color] ?? ''}`}
+      data-state={active ? 'active' : 'inactive'}
       onClick={(e) => {
         e.stopPropagation()
         onClick()

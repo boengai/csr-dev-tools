@@ -196,9 +196,8 @@ export const FlexboxPlayground = () => {
         {items.map((item, index) => (
           <button
             aria-label={`Item ${index + 1}`}
-            className={`text-sm flex h-16 w-16 items-center justify-center rounded font-bold text-white ${
-              selectedItem === index ? 'ring-2 ring-white' : ''
-            }`}
+            className="text-sm flex h-16 w-16 items-center justify-center rounded font-bold text-white data-[state=active]:ring-2 data-[state=active]:ring-white"
+            data-state={selectedItem === index ? 'active' : 'inactive'}
             key={item._id}
             onClick={() => setSelectedItem(selectedItem === index ? null : index)}
             style={{

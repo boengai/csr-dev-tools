@@ -80,11 +80,8 @@ export const HashGenerator = () => {
           <button
             aria-label={`Select ${algo} algorithm`}
             aria-pressed={algo === algorithm}
-            className={`text-xs rounded border px-3 font-mono leading-7 ${
-              algo === algorithm
-                ? 'border-primary bg-primary/20 font-bold text-primary'
-                : 'border-gray-700 bg-transparent text-gray-500'
-            }`}
+            className="text-xs rounded border px-3 font-mono leading-7 data-[state=active]:border-primary data-[state=active]:bg-primary/20 data-[state=active]:font-bold data-[state=active]:text-primary data-[state=inactive]:border-gray-700 data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
+            data-state={algo === algorithm ? 'active' : 'inactive'}
             key={algo}
             onClick={() => handleAlgorithmChange(algo)}
             type="button"
