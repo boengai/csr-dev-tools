@@ -2,7 +2,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import type { FaviconResult } from './favicon'
-
 import { FAVICON_SIZES, generateFaviconLinkTags, generateFavicons, downloadFaviconsAsZip } from './favicon'
 
 const createMockCanvas = () => {

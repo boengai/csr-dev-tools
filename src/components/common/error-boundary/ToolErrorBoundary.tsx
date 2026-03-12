@@ -1,5 +1,4 @@
 import type { ErrorInfo } from 'react'
-
 import { Component } from 'react'
 
 import type { ToolErrorBoundaryProps } from '@/types'

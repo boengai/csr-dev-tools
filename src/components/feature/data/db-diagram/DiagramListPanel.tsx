@@ -1,8 +1,7 @@
 import type { RefObject } from 'react'
 
-import type { DiagramIndexEntry } from '@/types'
-
 import { Button, TextInput } from '@/components/common'
+import type { DiagramIndexEntry } from '@/types'
 import { formatRelativeTime, tv } from '@/utils'
 
 import { CloseButton } from './CloseButton'
@@ -49,10 +48,7 @@ export const DiagramListPanel = ({
   setRenamingId,
 }: DiagramListPanelProps) => {
   return (
-    <div
-      className="flex w-72 shrink-0 flex-col border-l border-gray-800 bg-gray-950"
-      data-testid="diagram-list-panel"
-    >
+    <div className="flex w-72 shrink-0 flex-col border-l border-gray-800 bg-gray-950" data-testid="diagram-list-panel">
       <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
         <span className="text-xs font-bold text-white">Diagrams</span>
         <CloseButton onClick={onClose} />

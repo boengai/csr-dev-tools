@@ -8,11 +8,7 @@ type ExportMermaidPanelProps = {
   onOpenInRenderer: () => void
 }
 
-export const ExportMermaidPanel = ({
-  generatedMermaid,
-  onClose,
-  onOpenInRenderer,
-}: ExportMermaidPanelProps) => {
+export const ExportMermaidPanel = ({ generatedMermaid, onClose, onOpenInRenderer }: ExportMermaidPanelProps) => {
   return (
     <div className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950" data-testid="mermaid-panel">
       <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
@@ -21,10 +17,7 @@ export const ExportMermaidPanel = ({
       </div>
 
       <div className="flex-1 overflow-auto p-3">
-        <pre
-          className="text-xs font-mono break-all whitespace-pre-wrap text-gray-300"
-          data-testid="mermaid-output"
-        >
+        <pre className="text-xs font-mono break-all whitespace-pre-wrap text-gray-300" data-testid="mermaid-output">
           {generatedMermaid || '%% Add tables and relationships to generate Mermaid ER syntax'}
         </pre>
       </div>

@@ -1,7 +1,7 @@
 import type { ColumnType, DiagramSchema } from '@/types'
-import type { ParseResult } from './db-diagram-import'
 
 import { generateId } from './db-diagram'
+import type { ParseResult } from './db-diagram-import'
 
 type JsonSchemaProperty = {
   $ref?: string

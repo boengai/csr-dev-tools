@@ -42,7 +42,7 @@ export const RangeInput = ({ disabled, max, min, name, onBlur, onChange, step = 
         <Track className="relative h-1.5 grow rounded-full bg-gray-800">
           <Range className="absolute h-full rounded-full bg-primary" />
         </Track>
-        <Thumb className="block size-4 rounded-full border border-gray-700 bg-gray-200 transition-colors hover:bg-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/30 disabled:cursor-not-allowed disabled:opacity-50" />
+        <Thumb className="block size-4 rounded-full border border-gray-700 bg-gray-200 transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50" />
       </Root>
       <input
         aria-label={name}

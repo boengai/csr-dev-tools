@@ -1,7 +1,6 @@
 import type { ChangeEvent, KeyboardEvent } from 'react'
 
 import type { CompVariant, InputVariants, TextInputProps } from '@/types'
-
 import { tv } from '@/utils'
 
 export const inputVariants: CompVariant<InputVariants> = tv({

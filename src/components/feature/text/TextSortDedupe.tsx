@@ -1,11 +1,10 @@
 import { useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import { sortAndProcessText, type SortMode, type TextSortResult, tv } from '@/utils'
-
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
+import { sortAndProcessText, type SortMode, type TextSortResult, tv } from '@/utils'
 
 const toggleButtonStyles = tv({
   base: 'rounded border px-3 py-1 text-body-xs',

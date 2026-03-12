@@ -1,10 +1,9 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react'
 
-import type { ImageProcessingResult } from '@/types'
-
 import { Button, DownloadIcon, FieldForm, ProgressBar, UploadInput } from '@/components/common'
 import { COMPRESSIBLE_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import type { ImageProcessingResult } from '@/types'
 import { formatFileSize, processImage, tv } from '@/utils'
 
 const processingWrapperStyles = tv({
@@ -72,7 +71,12 @@ const reducer = (state: State, action: Action): State => {
     case 'CLEAR_ON_REJECT':
       return { ...state, source: null, compressed: null, originalInfo: null }
     case 'START_COMPRESS':
-      return { ...state, source: action.payload.source, compressed: null, originalInfo: { height: 0, name: action.payload.source.name, size: action.payload.source.size, width: 0 } }
+      return {
+        ...state,
+        source: action.payload.source,
+        compressed: null,
+        originalInfo: { height: 0, name: action.payload.source.name, size: action.payload.source.size, width: 0 },
+      }
     case 'FINISH_COMPRESS':
       return { ...state, showProgress: false, processing: false }
     default:
@@ -141,7 +145,10 @@ export const ImageCompressor = () => {
     // M1 fix: single processImage call — get dimensions AND compressed result
     const result = await compress(file, quality)
     if (result) {
-      dispatch({ type: 'SET_ORIGINAL_INFO', payload: { height: result.height, name: file.name, size: file.size, width: result.width } })
+      dispatch({
+        type: 'SET_ORIGINAL_INFO',
+        payload: { height: result.height, name: file.name, size: file.size, width: result.width },
+      })
     }
   }
 

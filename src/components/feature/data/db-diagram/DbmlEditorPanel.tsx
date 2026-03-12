@@ -29,9 +29,7 @@ export const DbmlEditorPanel = ({
           height="100%"
           name="dbml-editor"
           onChange={onDbmlChange}
-          placeholder={
-            '// Define your schema in DBML\n\nTable users {\n  id serial [pk]\n  name varchar [not null]\n}'
-          }
+          placeholder={'// Define your schema in DBML\n\nTable users {\n  id serial [pk]\n  name varchar [not null]\n}'}
           size="compact"
           value={dbmlText}
         />
@@ -50,13 +48,7 @@ export const DbmlEditorPanel = ({
       <div className="flex gap-2 border-t border-gray-800 px-3 py-2">
         <CopyButton label="DBML" value={dbmlText} />
         <div className="grow">
-          <Button
-            block
-            data-testid="dbml-sync-btn"
-            onClick={onSyncFromDiagram}
-            size="small"
-            variant="primary"
-          >
+          <Button block data-testid="dbml-sync-btn" onClick={onSyncFromDiagram} size="small" variant="primary">
             Sync from Diagram
           </Button>
         </div>

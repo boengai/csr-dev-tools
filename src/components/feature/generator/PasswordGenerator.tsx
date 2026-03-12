@@ -1,10 +1,9 @@
 import { useRef, useState } from 'react'
 
-import { DEFAULT_PASSWORD_OPTIONS, generatePassword, type PasswordOptions } from '@/utils'
-
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
+import { DEFAULT_PASSWORD_OPTIONS, generatePassword, type PasswordOptions } from '@/utils'
 
 const CHAR_TOGGLES: Array<{
   key: keyof Pick<PasswordOptions, 'digits' | 'lowercase' | 'symbols' | 'uppercase'>
@@ -101,7 +100,9 @@ export const PasswordGenerator = () => {
       <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
         <div className="flex items-center gap-2">
           <span className="text-body-sm font-medium text-gray-400">Generated Passwords ({passwords.length})</span>
-          {passwords.length > 0 && <CopyButton label="all passwords" value={passwords.map((p) => p.value).join('\n')} />}
+          {passwords.length > 0 && (
+            <CopyButton label="all passwords" value={passwords.map((p) => p.value).join('\n')} />
+          )}
         </div>
         <div className="flex max-h-80 flex-col gap-1 overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3">
           {passwords.map((pw, i) => (

@@ -1,9 +1,18 @@
 import { useMemo, useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import { type AnimationConfig, type AnimationDirection, type AnimationFillMode, type AnimationTimingFunction, buildTransformString, DEFAULT_ANIMATION_CONFIG, generateAnimationCss, type KeyframeStep } from '@/utils'
 import { Button, ColorInput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import type { ToolComponentProps } from '@/types'
+import {
+  type AnimationConfig,
+  type AnimationDirection,
+  type AnimationFillMode,
+  type AnimationTimingFunction,
+  buildTransformString,
+  DEFAULT_ANIMATION_CONFIG,
+  generateAnimationCss,
+  type KeyframeStep,
+} from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['css-animation-builder']
 
 const TIMING_FUNCTIONS: Array<AnimationTimingFunction> = ['ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out']
@@ -170,7 +179,10 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
                       <label className="text-body-xs text-gray-400" htmlFor={`kf-${i}-bg`}>
                         BG Color
                       </label>
-                      <ColorInput onChange={(val) => updateKeyframe(i, { backgroundColor: val })} value={kf.backgroundColor} />
+                      <ColorInput
+                        onChange={(val) => updateKeyframe(i, { backgroundColor: val })}
+                        value={kf.backgroundColor}
+                      />
                     </div>
                   </div>
                 </div>

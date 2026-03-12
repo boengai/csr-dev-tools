@@ -1,6 +1,5 @@
-import type { SelectInputProps } from '@/types'
-
 import { SelectInput } from '@/components/common'
+import type { SelectInputProps } from '@/types'
 
 export const ImageQualitySelectInput = (props: Pick<SelectInputProps, 'disabled' | 'onChange' | 'value'>) => {
   const options = Array.from({ length: 20 }, (_, i) => ({

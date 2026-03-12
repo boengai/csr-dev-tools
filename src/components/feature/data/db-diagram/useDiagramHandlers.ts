@@ -1,18 +1,10 @@
 import type { Connection } from '@xyflow/react'
-import type { Dispatch, RefObject, SetStateAction } from 'react'
-
 import { addEdge, useReactFlow, useUpdateNodeInternals } from '@xyflow/react'
+import type { Dispatch, RefObject, SetStateAction } from 'react'
 import { useCallback, useEffect, useMemo } from 'react'
 
-import type {
-  DiagramIndexEntry,
-  RelationshipEdgeData,
-  RelationshipType,
-  SqlDialect,
-  TableColumn,
-} from '@/types'
-
 import { useDebounceCallback, useToast } from '@/hooks'
+import type { DiagramIndexEntry, RelationshipEdgeData, RelationshipType, SqlDialect, TableColumn } from '@/types'
 import {
   createDefaultColumn,
   createDefaultTable,
@@ -37,10 +29,10 @@ import {
   validateDiagramSchema,
 } from '@/utils'
 
+import type { DiagramAction, DiagramState } from './diagramReducer'
 import type { RelationshipEdge } from './RelationshipEdge'
 import type { TableNode } from './TableNode'
 import type { SidePanel } from './types'
-import type { DiagramAction, DiagramState } from './diagramReducer'
 
 const MERMAID_PREFILL_KEY = 'csr-dev-tools-mermaid-renderer-prefill'
 
@@ -231,7 +223,10 @@ export const useDiagramHandlers = ({
 
       setNodes(newNodes as Array<TableNode>)
       setEdges(newEdges as Array<RelationshipEdge>)
-      dispatch({ type: 'UPDATE_DBML_FROM_EDITOR', payload: { errors: result.errors, tableCount: result.tables.length } })
+      dispatch({
+        type: 'UPDATE_DBML_FROM_EDITOR',
+        payload: { errors: result.errors, tableCount: result.tables.length },
+      })
     },
     [setNodes, setEdges, dispatch],
   )
@@ -577,7 +572,18 @@ export const useDiagramHandlers = ({
         type: errorCount > 0 ? 'error' : 'success',
       },
     })
-  }, [state.importSqlText, state.importSqlDialect, state.importSqlMerge, state.tableCount, setNodes, setEdges, fitView, updateNodeInternals, toast, dispatch])
+  }, [
+    state.importSqlText,
+    state.importSqlDialect,
+    state.importSqlMerge,
+    state.tableCount,
+    setNodes,
+    setEdges,
+    fitView,
+    updateNodeInternals,
+    toast,
+    dispatch,
+  ])
 
   const handleImportJsonSchema = useCallback(() => {
     if (!state.importJsonSchemaText.trim()) return
@@ -622,7 +628,17 @@ export const useDiagramHandlers = ({
       dispatch({ type: 'SET_IMPORT_JSON_SCHEMA_ERRORS', payload: ['Invalid JSON. Please check the syntax.'] })
       toast({ action: 'add', item: { label: 'Invalid JSON syntax.', type: 'error' } })
     }
-  }, [state.importJsonSchemaText, state.importJsonSchemaMerge, state.tableCount, setNodes, setEdges, fitView, updateNodeInternals, toast, dispatch])
+  }, [
+    state.importJsonSchemaText,
+    state.importJsonSchemaMerge,
+    state.tableCount,
+    setNodes,
+    setEdges,
+    fitView,
+    updateNodeInternals,
+    toast,
+    dispatch,
+  ])
 
   const handleOpenInMermaidRenderer = useCallback(() => {
     if (!generatedMermaid) return
@@ -664,32 +680,65 @@ export const useDiagramHandlers = ({
   // -------------------------------------------------------------------------
   // Focus handlers (replacing useEffect-based focus)
   // -------------------------------------------------------------------------
-  const handleStartEditingName = useCallback((currentName: string) => {
-    dispatch({ type: 'START_EDITING_NAME', payload: { editNameValue: currentName } })
-    requestAnimationFrame(() => nameInputRef.current?.focus())
-  }, [dispatch, nameInputRef])
+  const handleStartEditingName = useCallback(
+    (currentName: string) => {
+      dispatch({ type: 'START_EDITING_NAME', payload: { editNameValue: currentName } })
+      requestAnimationFrame(() => nameInputRef.current?.focus())
+    },
+    [dispatch, nameInputRef],
+  )
 
   const handleStopEditingName = useCallback(() => {
     dispatch({ type: 'STOP_EDITING_NAME' })
   }, [dispatch])
 
-  const handleStartRenaming = useCallback((id: string, name: string) => {
-    dispatch({ type: 'START_RENAMING', payload: { id, name } })
-    requestAnimationFrame(() => renameInputRef.current?.focus())
-  }, [dispatch, renameInputRef])
+  const handleStartRenaming = useCallback(
+    (id: string, name: string) => {
+      dispatch({ type: 'START_RENAMING', payload: { id, name } })
+      requestAnimationFrame(() => renameInputRef.current?.focus())
+    },
+    [dispatch, renameInputRef],
+  )
 
   // -------------------------------------------------------------------------
   // Dispatch wrappers for child components
   // -------------------------------------------------------------------------
-  const setEditNameValue = useCallback((value: string) => dispatch({ type: 'SET_EDIT_NAME_VALUE', payload: value }), [dispatch])
-  const setImportSqlText = useCallback((value: string) => dispatch({ type: 'SET_IMPORT_SQL_TEXT', payload: value }), [dispatch])
-  const setImportSqlDialect = useCallback((value: SqlDialect) => dispatch({ type: 'SET_IMPORT_SQL_DIALECT', payload: value }), [dispatch])
-  const setImportSqlMerge = useCallback((value: boolean) => dispatch({ type: 'SET_IMPORT_SQL_MERGE', payload: value }), [dispatch])
-  const setImportJsonSchemaText = useCallback((value: string) => dispatch({ type: 'SET_IMPORT_JSON_SCHEMA_TEXT', payload: value }), [dispatch])
-  const setImportJsonSchemaMerge = useCallback((value: boolean) => dispatch({ type: 'SET_IMPORT_JSON_SCHEMA_MERGE', payload: value }), [dispatch])
-  const setSqlDialect = useCallback((value: SqlDialect) => dispatch({ type: 'SET_SQL_DIALECT', payload: value }), [dispatch])
-  const setRenameValue = useCallback((value: string) => dispatch({ type: 'SET_RENAME_VALUE', payload: value }), [dispatch])
-  const setRenamingId = useCallback((id: string | null) => dispatch({ type: 'SET_RENAMING_ID', payload: id }), [dispatch])
+  const setEditNameValue = useCallback(
+    (value: string) => dispatch({ type: 'SET_EDIT_NAME_VALUE', payload: value }),
+    [dispatch],
+  )
+  const setImportSqlText = useCallback(
+    (value: string) => dispatch({ type: 'SET_IMPORT_SQL_TEXT', payload: value }),
+    [dispatch],
+  )
+  const setImportSqlDialect = useCallback(
+    (value: SqlDialect) => dispatch({ type: 'SET_IMPORT_SQL_DIALECT', payload: value }),
+    [dispatch],
+  )
+  const setImportSqlMerge = useCallback(
+    (value: boolean) => dispatch({ type: 'SET_IMPORT_SQL_MERGE', payload: value }),
+    [dispatch],
+  )
+  const setImportJsonSchemaText = useCallback(
+    (value: string) => dispatch({ type: 'SET_IMPORT_JSON_SCHEMA_TEXT', payload: value }),
+    [dispatch],
+  )
+  const setImportJsonSchemaMerge = useCallback(
+    (value: boolean) => dispatch({ type: 'SET_IMPORT_JSON_SCHEMA_MERGE', payload: value }),
+    [dispatch],
+  )
+  const setSqlDialect = useCallback(
+    (value: SqlDialect) => dispatch({ type: 'SET_SQL_DIALECT', payload: value }),
+    [dispatch],
+  )
+  const setRenameValue = useCallback(
+    (value: string) => dispatch({ type: 'SET_RENAME_VALUE', payload: value }),
+    [dispatch],
+  )
+  const setRenamingId = useCallback(
+    (id: string | null) => dispatch({ type: 'SET_RENAMING_ID', payload: id }),
+    [dispatch],
+  )
 
   return {
     fitView,

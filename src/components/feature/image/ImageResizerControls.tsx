@@ -1,6 +1,5 @@
-import type { ImageProcessingResult } from '@/types'
-
 import { Button, FieldForm } from '@/components/common'
+import type { ImageProcessingResult } from '@/types'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
 
@@ -12,7 +11,13 @@ type ImageResizerControlsProps = {
   source: [File, ImageProcessingResult] | null
 }
 
-export const ImageResizerControls = ({ isLossy, onConvert, onInputChange, preview, source }: ImageResizerControlsProps) => {
+export const ImageResizerControls = ({
+  isLossy,
+  onConvert,
+  onInputChange,
+  preview,
+  source,
+}: ImageResizerControlsProps) => {
   return (
     <div className="flex w-full shrink-0 flex-col justify-center gap-2 desktop:flex-row">
       <div className="flex w-full flex-col items-end gap-2 tablet:flex-row">

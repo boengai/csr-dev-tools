@@ -2,12 +2,18 @@ import { json } from '@codemirror/lang-json'
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import { evaluateJsonPath, formatResultValue, type JsonParseResult, type JsonPathEvaluation, parseJsonInput, tv } from '@/utils'
-
 import { CodeInput, CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
+import {
+  evaluateJsonPath,
+  formatResultValue,
+  type JsonParseResult,
+  type JsonPathEvaluation,
+  parseJsonInput,
+  tv,
+} from '@/utils'
 
 const chevronStyles = tv({
   base: 'inline-block transition-transform',

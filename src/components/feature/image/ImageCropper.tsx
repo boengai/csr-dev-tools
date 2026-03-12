@@ -1,10 +1,8 @@
+import { useEffect, useReducer, useRef } from 'react'
 import type { Crop, PixelCrop } from 'react-image-crop'
 
-import { useEffect, useReducer, useRef } from 'react'
 import 'react-image-crop/dist/ReactCrop.css'
 import ReactCrop from 'react-image-crop'
-
-import type { AspectRatioPreset, CropRegion } from '@/types'
 
 import {
   Button,
@@ -18,6 +16,7 @@ import {
 } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
+import type { AspectRatioPreset, CropRegion } from '@/types'
 import { ASPECT_RATIO_OPTIONS, clampCropRegion, getAspectRatio, getDefaultCrop, scaleCropToNatural, tv } from '@/utils'
 
 const cropAreaStyles = tv({
@@ -137,7 +136,14 @@ const reducer = (state: State, action: Action): State => {
     case 'SET_TAB_VALUE':
       return { ...state, tabValue: action.payload }
     case 'INPUT_FILE':
-      return { ...state, source: action.payload, completedCrop: null, crop: undefined, aspectPreset: 'free', dialogOpen: true }
+      return {
+        ...state,
+        source: action.payload,
+        completedCrop: null,
+        crop: undefined,
+        aspectPreset: 'free',
+        dialogOpen: true,
+      }
     case 'FINISH_PROCESSING':
       return { ...state, showProgress: false, processing: false }
     case 'RESET':
@@ -321,7 +327,10 @@ export const ImageCropper = () => {
       </div>
       <Dialog
         description="Crop your image using the selection handles"
-        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
+        injected={{
+          open: dialogOpen,
+          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
+        }}
         onAfterClose={() => {
           if (tabValue !== TABS_VALUES.DOWNLOAD) handleReset()
         }}
@@ -329,9 +338,7 @@ export const ImageCropper = () => {
         title={source?.name ?? 'Crop Image'}
       >
         <div className="flex size-full flex-col">
-          <div
-            className={cropAreaStyles({ disabled: processing })}
-          >
+          <div className={cropAreaStyles({ disabled: processing })}>
             {imageUrl && (
               <ReactCrop
                 aspect={getAspectRatio(aspectPreset)}

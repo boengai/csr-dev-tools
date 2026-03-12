@@ -63,9 +63,7 @@ const MERMAID_FIX_RULES: Array<MermaidFixRule> = [
       }
 
       // Second pass: replace box → rect for blocks with messages
-      const boxLinesToConvert = new Set(
-        boxRanges.filter((r) => r.hasMessages).map((r) => r.start),
-      )
+      const boxLinesToConvert = new Set(boxRanges.filter((r) => r.hasMessages).map((r) => r.start))
 
       return lines
         .map((line, i) => {
@@ -78,9 +76,7 @@ const MERMAID_FIX_RULES: Array<MermaidFixRule> = [
           const rest = match[2].trim()
 
           // Try to extract color portion (rgb/rgba/hex/transparent)
-          const colorMatch = rest.match(
-            /^(rgba?\([^)]+\)|#[0-9a-fA-F]{3,8}|transparent)\s*/i,
-          )
+          const colorMatch = rest.match(/^(rgba?\([^)]+\)|#[0-9a-fA-F]{3,8}|transparent)\s*/i)
 
           if (colorMatch) {
             return `${indent}rect ${colorMatch[1]}`
@@ -98,11 +94,7 @@ const MERMAID_FIX_RULES: Array<MermaidFixRule> = [
       if (!isSequenceDiagram) return false
 
       // Check error pattern from Mermaid parser
-      if (
-        /Expecting.*(?:'end'|'participant'|'participant_actor'|'destroy').*got\s+'ACTOR'/i.test(
-          error,
-        )
-      ) {
+      if (/Expecting.*(?:'end'|'participant'|'participant_actor'|'destroy').*got\s+'ACTOR'/i.test(error)) {
         return true
       }
 
@@ -127,10 +119,7 @@ const MERMAID_FIX_RULES: Array<MermaidFixRule> = [
       if (KNOWN_DIAGRAM_TYPES.test(firstLine)) return false
       // Also check if a correction exists — if so, the typo rule should handle it
       if (DIAGRAM_TYPE_CORRECTIONS.has(firstLine.toLowerCase())) return false
-      return (
-        /no diagram type detected|unknown diagram type/i.test(error) ||
-        /Parse error on line 1/i.test(error)
-      )
+      return /no diagram type detected|unknown diagram type/i.test(error) || /Parse error on line 1/i.test(error)
     },
     id: 'missing-diagram-type',
   },
@@ -209,10 +198,7 @@ const MERMAID_FIX_RULES: Array<MermaidFixRule> = [
   },
 ]
 
-export const suggestMermaidFix = (
-  code: string,
-  error: string,
-): MermaidFixSuggestion | null => {
+export const suggestMermaidFix = (code: string, error: string): MermaidFixSuggestion | null => {
   if (!code.trim() || !error) return null
 
   for (const rule of MERMAID_FIX_RULES) {

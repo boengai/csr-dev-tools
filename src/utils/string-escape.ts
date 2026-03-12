@@ -43,19 +43,21 @@ const unescapeHtml = (input: string): string => {
 }
 
 const escapeJavaScript = (input: string): string => {
-  return input
-    .replace(/\\/g, '\\\\')
-    .replace(/'/g, "\\'")
-    .replace(/"/g, '\\"')
-    .replace(/\n/g, '\\n')
-    .replace(/\r/g, '\\r')
-    .replace(/\t/g, '\\t')
-    // eslint-disable-next-line no-control-regex -- intentional: matching backspace char
-    .replace(/\x08/g, '\\b')
-    .replace(/\f/g, '\\f')
-    .replace(/\v/g, '\\v')
-    // eslint-disable-next-line no-control-regex -- intentional: matching null char
-    .replace(/\0/g, '\\0')
+  return (
+    input
+      .replace(/\\/g, '\\\\')
+      .replace(/'/g, "\\'")
+      .replace(/"/g, '\\"')
+      .replace(/\n/g, '\\n')
+      .replace(/\r/g, '\\r')
+      .replace(/\t/g, '\\t')
+      // eslint-disable-next-line no-control-regex -- intentional: matching backspace char
+      .replace(/\x08/g, '\\b')
+      .replace(/\f/g, '\\f')
+      .replace(/\v/g, '\\v')
+      // eslint-disable-next-line no-control-regex -- intentional: matching null char
+      .replace(/\0/g, '\\0')
+  )
 }
 
 const unescapeJavaScript = (input: string): string => {

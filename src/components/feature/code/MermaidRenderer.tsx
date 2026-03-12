@@ -2,12 +2,20 @@ import DOMPurify from 'dompurify'
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useReducer, useRef } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import { downloadMermaidSvg, downloadPng, initializeMermaid, type MermaidFixSuggestion, renderMermaid, suggestMermaidFix, svgToPng, tv } from '@/utils'
-
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
+import {
+  downloadMermaidSvg,
+  downloadPng,
+  initializeMermaid,
+  type MermaidFixSuggestion,
+  renderMermaid,
+  suggestMermaidFix,
+  svgToPng,
+  tv,
+} from '@/utils'
 
 const chevronStyles = tv({
   base: 'inline-block transition-transform',

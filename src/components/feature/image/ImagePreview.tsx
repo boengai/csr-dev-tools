@@ -1,8 +1,7 @@
 import type { ImgHTMLAttributes } from 'react'
 
-import type { ImageFormat } from '@/types'
-
 import { NotoEmoji } from '@/components/common'
+import type { ImageFormat } from '@/types'
 import { formatFileSize } from '@/utils'
 
 export const EMPTY_IMAGE = 'data:,'

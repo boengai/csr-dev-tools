@@ -5,7 +5,16 @@ import { Button, CopyButton, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { buildTimezoneIndex, type ConversionResult, convertTimezone, getLocalTimezone, parseDateTimeInput, searchTimezones, type TimezoneEntry, tv } from '@/utils'
+import {
+  buildTimezoneIndex,
+  type ConversionResult,
+  convertTimezone,
+  getLocalTimezone,
+  parseDateTimeInput,
+  searchTimezones,
+  type TimezoneEntry,
+  tv,
+} from '@/utils'
 const FAVORITES_KEY = 'csr-dev-tools-timezone-favorites'
 
 function loadFavorites(): Array<string> {

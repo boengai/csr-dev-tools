@@ -30,11 +30,17 @@ export type DiagramAction =
   | { type: 'CLOSE_PANEL' }
   | { type: 'COMMIT_DIAGRAM_NAME'; payload: { trimmedName: string } }
   | { type: 'IMPORT_JSON_FILE'; payload: { diagramName: string; tableCount: number } }
-  | { type: 'LOAD_DIAGRAM'; payload: { diagramId: string; diagramIndex: Array<DiagramIndexEntry>; diagramName: string; tableCount: number } }
+  | {
+      type: 'LOAD_DIAGRAM'
+      payload: { diagramId: string; diagramIndex: Array<DiagramIndexEntry>; diagramName: string; tableCount: number }
+    }
   | { type: 'OPEN_DBML_PANEL'; payload: { generatedDbmlText: string } }
   | { type: 'OPEN_DIAGRAM_LIST_PANEL'; payload: { diagramIndex: Array<DiagramIndexEntry> } }
   | { type: 'RENAME_DIAGRAM_DONE'; payload: { diagramIndex: Array<DiagramIndexEntry>; newName?: string } }
-  | { type: 'RESTORE_DIAGRAM'; payload: { diagramId: string; diagramIndex: Array<DiagramIndexEntry>; diagramName: string; tableCount: number } }
+  | {
+      type: 'RESTORE_DIAGRAM'
+      payload: { diagramId: string; diagramIndex: Array<DiagramIndexEntry>; diagramName: string; tableCount: number }
+    }
   | { type: 'SET_ACTIVE_DIAGRAM_ID'; payload: string | null }
   | { type: 'SET_ACTIVE_PANEL'; payload: SidePanel }
   | { type: 'SET_DBML_ERRORS'; payload: Array<{ line: number; message: string }> }
@@ -57,7 +63,10 @@ export type DiagramAction =
   | { type: 'START_RENAMING'; payload: { id: string; name: string } }
   | { type: 'STOP_EDITING_NAME' }
   | { type: 'SYNC_DBML_FROM_DIAGRAM'; payload: { generatedDbmlText: string } }
-  | { type: 'UPDATE_DBML_FROM_EDITOR'; payload: { errors: Array<{ line: number; message: string }>; tableCount: number } }
+  | {
+      type: 'UPDATE_DBML_FROM_EDITOR'
+      payload: { errors: Array<{ line: number; message: string }>; tableCount: number }
+    }
   | { type: 'UPDATE_DIAGRAM_INDEX_AFTER_SAVE'; payload: { diagramIndex: Array<DiagramIndexEntry> } }
 
 export const initialDiagramState: DiagramState = {

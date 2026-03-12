@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
 import type { PlaceholderOptions } from '@/utils'
-
 import { generatePlaceholderSvg, PLACEHOLDER_PRESETS } from '@/utils'
 
 const defaultOptions: PlaceholderOptions = {

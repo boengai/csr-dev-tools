@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
 
 type ConvertMode = 'json-to-xml' | 'xml-to-json'
 

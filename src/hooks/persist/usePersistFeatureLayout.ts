@@ -2,7 +2,6 @@ import { create, type StoreApi, type UseBoundStore } from 'zustand'
 import { persist } from 'zustand/middleware'
 
 import type { UsePersistFeatureLayout } from '@/types'
-
 import { migrateLayoutValue } from '@/utils'
 
 export const usePersistFeatureLayout: UseBoundStore<StoreApi<UsePersistFeatureLayout>> =

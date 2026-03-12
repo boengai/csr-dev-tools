@@ -1,7 +1,6 @@
 import { m } from 'motion/react'
 
 import type { ButtonProps, ButtonVariants, CompVariant } from '@/types'
-
 import { tv } from '@/utils'
 
 const buttonVariants: CompVariant<ButtonVariants> = tv({

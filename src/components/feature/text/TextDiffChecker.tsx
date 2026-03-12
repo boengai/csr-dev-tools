@@ -1,10 +1,9 @@
 import { useReducer, useRef } from 'react'
 
-import type { InlineSpan, SideBySideRow, ToolComponentProps } from '@/types'
-
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import type { InlineSpan, SideBySideRow, ToolComponentProps } from '@/types'
 import { computeSideBySideDiff, createUnifiedDiff } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['text-diff-checker']
@@ -38,10 +37,16 @@ const DiffCell = ({
   type: SideBySideRow['leftType']
 }) => {
   return (
-    <div className="flex data-[state=removed]:bg-error/10 data-[state=added]:bg-success/10" data-state={type}>
+    <div className="flex data-[state=added]:bg-success/10 data-[state=removed]:bg-error/10" data-state={type}>
       <span className="w-10 shrink-0 py-px pr-2 text-right text-gray-600 select-none">{lineNum ?? ''}</span>
-      <span className="w-0.5 shrink-0 bg-transparent data-[state=removed]:bg-error data-[state=added]:bg-success" data-state={type} />
-      <span className="min-w-0 flex-1 py-px pl-2 text-gray-400 data-[state=removed]:text-error data-[state=added]:text-success" data-state={type}>
+      <span
+        className="w-0.5 shrink-0 bg-transparent data-[state=added]:bg-success data-[state=removed]:bg-error"
+        data-state={type}
+      />
+      <span
+        className="min-w-0 flex-1 py-px pl-2 text-gray-400 data-[state=added]:text-success data-[state=removed]:text-error"
+        data-state={type}
+      >
         {type === 'empty' ? '' : spans ? renderSpans(spans, side) : content || ' '}
       </span>
     </div>
@@ -143,7 +148,10 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         </div>
       </div>
       <Dialog
-        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
+        injected={{
+          open: dialogOpen,
+          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
+        }}
         onAfterClose={handleAfterClose}
         size="screen"
         title="Text Diff Checker"
@@ -196,7 +204,10 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                   </div>
                   <div className="grid grid-cols-2">
                     {rows.map((row) => (
-                      <div className="col-span-2 grid grid-cols-subgrid" key={`${row.leftLineNum ?? 'e'}-${row.rightLineNum ?? 'e'}-${row.leftType}-${row.rightType}`}>
+                      <div
+                        className="col-span-2 grid grid-cols-subgrid"
+                        key={`${row.leftLineNum ?? 'e'}-${row.rightLineNum ?? 'e'}-${row.leftType}-${row.rightType}`}
+                      >
                         <DiffCell
                           content={row.leftContent}
                           lineNum={row.leftLineNum}

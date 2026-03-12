@@ -1,10 +1,9 @@
 import { useReducer } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
 import { formatJs, minifyJs } from '@/utils'
 
 type State = {
@@ -117,7 +116,10 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
       </div>
 
       <Dialog
-        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
+        injected={{
+          open: dialogOpen,
+          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
+        }}
         onAfterClose={handleAfterClose}
         size="screen"
         title="JavaScript Minifier"

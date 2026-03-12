@@ -2,7 +2,6 @@ import { Close, Content, Description, Overlay, Portal, Root, Title, Trigger } fr
 import { m } from 'motion/react'
 
 import type { CompVariant, DialogProps, DialogVariants } from '@/types'
-
 import { tv } from '@/utils'
 
 const contentVariants: CompVariant<DialogVariants> = tv({

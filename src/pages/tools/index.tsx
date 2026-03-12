@@ -1,11 +1,10 @@
 import { Navigate, useNavigate, useParams } from '@tanstack/react-router'
 import { Suspense } from 'react'
 
-import type { ToolRegistryEntry } from '@/types'
-
 import { Card, NotoEmoji } from '@/components'
 import { ROUTE_PATH, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolSeo } from '@/hooks'
+import type { ToolRegistryEntry } from '@/types'
 
 export default function ToolsPage() {
   const { toolKey } = useParams({ strict: false })

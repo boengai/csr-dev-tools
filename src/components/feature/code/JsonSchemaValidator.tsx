@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-
 import { Button, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
 import { type ValidationResult, validateJsonSchema } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-schema-validator']

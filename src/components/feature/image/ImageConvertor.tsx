@@ -1,8 +1,6 @@
 import { m } from 'motion/react'
 import { useEffect, useReducer, useRef } from 'react'
 
-import type { ImageFormat } from '@/types'
-
 import {
   ArrowIcon,
   Button,
@@ -17,6 +15,7 @@ import {
 } from '@/components/common'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
+import type { ImageFormat } from '@/types'
 import { convertImageFormat, isValidImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'

@@ -1,11 +1,18 @@
 import { useReducer, useRef } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import { type DataUriDecodeResult, type DataUriEncodeResult, fileToDataUri, formatFileSize, isValidDataUri, parseDataUri, parseDataUrlToBlob } from '@/utils'
-
 import { Button, CopyButton, Dialog, DownloadIcon, FieldForm, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
+import {
+  type DataUriDecodeResult,
+  type DataUriEncodeResult,
+  fileToDataUri,
+  formatFileSize,
+  isValidDataUri,
+  parseDataUri,
+  parseDataUrlToBlob,
+} from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['data-uri-generator']
 
@@ -171,7 +178,12 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
             name="data-uri-encode"
             onChange={handleFileUpload}
           />
-          <Button aria-label="Open decode data URI dialog" block onClick={() => dispatch({ type: 'SET_DECODE_OPEN', payload: true })} variant="default">
+          <Button
+            aria-label="Open decode data URI dialog"
+            block
+            onClick={() => dispatch({ type: 'SET_DECODE_OPEN', payload: true })}
+            variant="default"
+          >
             Decode Data URI
           </Button>
         </div>
@@ -179,7 +191,10 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
 
       {/* Encode Dialog */}
       <Dialog
-        injected={{ open: encodeOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_ENCODE_OPEN', payload: open }) }}
+        injected={{
+          open: encodeOpen,
+          setOpen: (open: boolean) => dispatch({ type: 'SET_ENCODE_OPEN', payload: open }),
+        }}
         onAfterClose={() => {
           handleEncodeReset()
           onAfterDialogClose?.()
@@ -277,7 +292,10 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
 
       {/* Decode Dialog */}
       <Dialog
-        injected={{ open: decodeOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DECODE_OPEN', payload: open }) }}
+        injected={{
+          open: decodeOpen,
+          setOpen: (open: boolean) => dispatch({ type: 'SET_DECODE_OPEN', payload: open }),
+        }}
         onAfterClose={() => {
           handleDecodeReset()
           onAfterDialogClose?.()

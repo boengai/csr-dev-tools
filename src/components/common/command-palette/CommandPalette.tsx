@@ -3,12 +3,10 @@ import { useNavigate } from '@tanstack/react-router'
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import type { ToolRegistryEntry } from '@/types'
-
 import { TOOL_REGISTRY } from '@/constants'
 import { useCommandPaletteStore } from '@/hooks'
 import { getPreviouslyFocusedElement } from '@/hooks/state/useCommandPaletteStore'
-
+import type { ToolRegistryEntry } from '@/types'
 import { tv } from '@/utils'
 
 import { SearchInput } from './SearchInput'
@@ -128,7 +126,14 @@ export const CommandPalette = () => {
                 role="dialog"
                 transition={{ duration: 0.2, ease: 'easeOut' }}
               >
-                <SearchInput activeDescendantId={activeDescendantId} onChange={(val) => { setQuery(val); setHighlightedIndex(0) }} value={query} />
+                <SearchInput
+                  activeDescendantId={activeDescendantId}
+                  onChange={(val) => {
+                    setQuery(val)
+                    setHighlightedIndex(0)
+                  }}
+                  value={query}
+                />
 
                 <ul
                   aria-label="Search results"

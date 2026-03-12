@@ -1,5 +1,4 @@
 import type { GraphQLArgument, GraphQLField, GraphQLInputField, GraphQLNamedType } from 'graphql'
-
 import {
   GraphQLError,
   buildSchema,
@@ -192,4 +191,3 @@ export const parseGraphqlSchema = (sdl: string): GraphqlParseResult => {
     return { error: 'Failed to parse GraphQL schema', success: false }
   }
 }
-

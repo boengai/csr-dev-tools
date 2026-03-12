@@ -1,10 +1,9 @@
 import { useCallback, useRef, useState } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import { type PickedColor, pixelToColor } from '@/utils'
-
 import { Button, CopyButton, Dialog, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import type { ToolComponentProps } from '@/types'
+import { type PickedColor, pixelToColor } from '@/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const rafThrottle = <T extends (...args: Array<any>) => void>(fn: T): T => {
@@ -149,7 +148,10 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
               ) : (
                 <div className="flex flex-col gap-2 overflow-auto">
                   {palette.map((color) => (
-                    <div className="flex items-center gap-3 rounded border border-gray-800 bg-gray-950 p-2" key={color._id}>
+                    <div
+                      className="flex items-center gap-3 rounded border border-gray-800 bg-gray-950 p-2"
+                      key={color._id}
+                    >
                       <div className="size-10 shrink-0 rounded" style={{ backgroundColor: color.hex }} />
                       <div className="flex flex-col gap-0.5">
                         <div className="flex items-center gap-1">

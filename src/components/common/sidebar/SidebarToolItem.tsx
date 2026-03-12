@@ -1,10 +1,9 @@
 import { useNavigate } from '@tanstack/react-router'
 import { useCallback } from 'react'
 
-import type { CompVariant, SidebarToolItemProps } from '@/types'
-
 import { ROUTE_PATH } from '@/constants'
 import { useSidebarStore } from '@/hooks'
+import type { CompVariant, SidebarToolItemProps } from '@/types'
 import { tv } from '@/utils'
 
 type SidebarToolItemVariants = {

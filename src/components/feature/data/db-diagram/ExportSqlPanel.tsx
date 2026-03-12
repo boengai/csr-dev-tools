@@ -1,6 +1,5 @@
-import type { SqlDialect } from '@/types'
-
 import { Button, CopyButton, SelectInput } from '@/components/common'
+import type { SqlDialect } from '@/types'
 
 import { CloseButton } from './CloseButton'
 import { DIALECT_OPTIONS } from './constants'

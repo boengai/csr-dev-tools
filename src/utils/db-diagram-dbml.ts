@@ -1,7 +1,6 @@
 import type { ColumnType, DiagramSchema, RelationshipType } from '@/types'
 
 import { generateId, gridLayoutPositions } from './db-diagram'
-
 import type { ParseResult } from './db-diagram-import'
 
 // ── Generator ──────────────────────────────────────────────────────
@@ -219,10 +218,7 @@ function parseColumnLine(
   }
 }
 
-function parseRefLine(
-  line: string,
-  lineNumber: number,
-): ParsedRef | null {
+function parseRefLine(line: string, lineNumber: number): ParsedRef | null {
   // Ref: table1.col < table2.col
   // Ref: table1.col > table2.col
   // Ref: table1.col - table2.col
@@ -383,9 +379,7 @@ export function parseDbml(text: string): ParseResult {
       const refTable = tableByName.get(parsedCol.inlineRef.table.toLowerCase())
       if (!refTable) continue
 
-      const refCol = refTable.columns.find(
-        (c) => c.name.toLowerCase() === parsedCol.inlineRef!.column.toLowerCase(),
-      )
+      const refCol = refTable.columns.find((c) => c.name.toLowerCase() === parsedCol.inlineRef!.column.toLowerCase())
       if (!refCol) continue
 
       const sourceCol = layouted.columns[cIdx]

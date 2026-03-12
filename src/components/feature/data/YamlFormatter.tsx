@@ -1,10 +1,9 @@
 import { useReducer } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-
 import { Button, CheckboxInput, CodeOutput, CopyButton, Dialog, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
 import { formatYaml, getYamlParseError } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['yaml-formatter']
@@ -126,7 +125,10 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
       </div>
 
       <Dialog
-        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
+        injected={{
+          open: dialogOpen,
+          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
+        }}
         onAfterClose={handleAfterClose}
         size="screen"
         title="YAML Format"
@@ -140,7 +142,10 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
               value={String(indent)}
             />
 
-            <label className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400" htmlFor="yaml-sort-keys">
+            <label
+              className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400"
+              htmlFor="yaml-sort-keys"
+            >
               <CheckboxInput checked={sortKeys} id="yaml-sort-keys" onChange={() => handleSortKeysChange()} />
               Sort Keys
             </label>

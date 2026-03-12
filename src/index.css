@@ -128,7 +128,7 @@
   }
 
   #root {
-    @apply h-dvh w-full flex flex-col overflow-hidden text-body text-gray-200 bg-fixed;
+    @apply flex h-dvh w-full flex-col overflow-hidden bg-fixed text-body text-gray-200;
     background-color: oklch(0.02 0.005 270);
     background-image:
       radial-gradient(ellipse at 20% 50%, oklch(0.12 0.04 280) 0%, transparent 50%),

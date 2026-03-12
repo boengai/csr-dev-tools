@@ -1,10 +1,9 @@
 import { useEffect, useRef, useState } from 'react'
 
-import type { ImageFormat, ImageProcessingResult } from '@/types'
-
 import { Button, Dialog, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import type { ImageFormat, ImageProcessingResult } from '@/types'
 import { isValidImageFormat, parseFileName, processImage, resizeImage } from '@/utils'
 
 import { EMPTY_IMAGE, ImagePreview } from './ImagePreview'

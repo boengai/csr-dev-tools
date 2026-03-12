@@ -1,11 +1,17 @@
 import { useReducer } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import { buildHighlightSegments, executeRegex, formatMatchesForCopy, type HighlightSegment, type RegexMatch, type RegexResult } from '@/utils'
-
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
+import {
+  buildHighlightSegments,
+  executeRegex,
+  formatMatchesForCopy,
+  type HighlightSegment,
+  type RegexMatch,
+  type RegexResult,
+} from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['regex-tester']
 
@@ -35,7 +41,10 @@ const FlagToggle = ({ active, flag, onToggle }: { active: boolean; flag: string;
 const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
   <div className="flex flex-col gap-2">
     {matches.map((match, i) => (
-      <div className="text-sm rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-2" key={`${match.index}-${match.fullMatch}`}>
+      <div
+        className="text-sm rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-2"
+        key={`${match.index}-${match.fullMatch}`}
+      >
         <p className="text-gray-300">
           <span className="font-medium text-gray-200">Match {i + 1}:</span>{' '}
           <span className="font-mono text-primary">&quot;{match.fullMatch}&quot;</span> at index {match.index}
@@ -128,7 +137,10 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
       return
     }
 
-    dispatch({ type: 'SET_RESULT', payload: { result: regexResult, segments: buildHighlightSegments(text, regexResult.matches) } })
+    dispatch({
+      type: 'SET_RESULT',
+      payload: { result: regexResult, segments: buildHighlightSegments(text, regexResult.matches) },
+    })
   }
 
   const debouncedProcess = useDebounceCallback((pat: string, text: string, fl: Flags) => {
@@ -175,7 +187,10 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
         </div>
       </div>
       <Dialog
-        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
+        injected={{
+          open: dialogOpen,
+          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
+        }}
         onAfterClose={handleAfterClose}
         size="screen"
         title="Regex Tester"

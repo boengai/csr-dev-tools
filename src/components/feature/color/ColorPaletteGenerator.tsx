@@ -1,11 +1,10 @@
 import { m } from 'motion/react'
 import { useState } from 'react'
 
-import { formatPaletteAsCss, generatePalette, type HarmonyType, type PaletteColor } from '@/utils'
-
 import { Button, ColorInput, CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useCopyToClipboard, useDebounceCallback, useToast } from '@/hooks'
+import { formatPaletteAsCss, generatePalette, type HarmonyType, type PaletteColor } from '@/utils'
 
 const HARMONY_OPTIONS: Array<{ label: string; value: HarmonyType }> = [
   { label: 'Analogous', value: 'analogous' },

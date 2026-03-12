@@ -15,8 +15,18 @@ describe('generateDbml', () => {
       tables: [
         {
           columns: [
-            { constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true }, id: 'c1', name: 'id', type: 'SERIAL' },
-            { constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: false, isUnique: false }, id: 'c2', name: 'name', type: 'VARCHAR' },
+            {
+              constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true },
+              id: 'c1',
+              name: 'id',
+              type: 'SERIAL',
+            },
+            {
+              constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: false, isUnique: false },
+              id: 'c2',
+              name: 'name',
+              type: 'VARCHAR',
+            },
           ],
           id: 't1',
           name: 'users',
@@ -38,8 +48,18 @@ describe('generateDbml', () => {
       tables: [
         {
           columns: [
-            { constraints: { isForeignKey: false, isNullable: true, isPrimaryKey: false, isUnique: false }, id: 'c1', name: 'bio', type: 'TEXT' },
-            { constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: false, isUnique: true }, id: 'c2', name: 'email', type: 'VARCHAR' },
+            {
+              constraints: { isForeignKey: false, isNullable: true, isPrimaryKey: false, isUnique: false },
+              id: 'c1',
+              name: 'bio',
+              type: 'TEXT',
+            },
+            {
+              constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: false, isUnique: true },
+              id: 'c2',
+              name: 'email',
+              type: 'VARCHAR',
+            },
           ],
           id: 't1',
           name: 'profiles',
@@ -56,21 +76,57 @@ describe('generateDbml', () => {
   it('generates relationships', () => {
     const schema: DiagramSchema = {
       relationships: [
-        { id: 'r1', relationType: '1:N', sourceColumnId: 'c1', sourceTableId: 't1', targetColumnId: 'c3', targetTableId: 't2' },
-        { id: 'r2', relationType: '1:1', sourceColumnId: 'c1', sourceTableId: 't1', targetColumnId: 'c4', targetTableId: 't2' },
+        {
+          id: 'r1',
+          relationType: '1:N',
+          sourceColumnId: 'c1',
+          sourceTableId: 't1',
+          targetColumnId: 'c3',
+          targetTableId: 't2',
+        },
+        {
+          id: 'r2',
+          relationType: '1:1',
+          sourceColumnId: 'c1',
+          sourceTableId: 't1',
+          targetColumnId: 'c4',
+          targetTableId: 't2',
+        },
       ],
       tables: [
         {
-          columns: [{ constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true }, id: 'c1', name: 'id', type: 'SERIAL' }],
+          columns: [
+            {
+              constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true },
+              id: 'c1',
+              name: 'id',
+              type: 'SERIAL',
+            },
+          ],
           id: 't1',
           name: 'users',
           position: { x: 0, y: 0 },
         },
         {
           columns: [
-            { constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true }, id: 'c2', name: 'id', type: 'SERIAL' },
-            { constraints: { isForeignKey: true, isNullable: false, isPrimaryKey: false, isUnique: false }, id: 'c3', name: 'user_id', type: 'INT' },
-            { constraints: { isForeignKey: true, isNullable: false, isPrimaryKey: false, isUnique: true }, id: 'c4', name: 'profile_id', type: 'INT' },
+            {
+              constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true },
+              id: 'c2',
+              name: 'id',
+              type: 'SERIAL',
+            },
+            {
+              constraints: { isForeignKey: true, isNullable: false, isPrimaryKey: false, isUnique: false },
+              id: 'c3',
+              name: 'user_id',
+              type: 'INT',
+            },
+            {
+              constraints: { isForeignKey: true, isNullable: false, isPrimaryKey: false, isUnique: true },
+              id: 'c4',
+              name: 'profile_id',
+              type: 'INT',
+            },
           ],
           id: 't2',
           name: 'posts',
@@ -87,17 +143,38 @@ describe('generateDbml', () => {
   it('generates N:M relationship', () => {
     const schema: DiagramSchema = {
       relationships: [
-        { id: 'r1', relationType: 'N:M', sourceColumnId: 'c1', sourceTableId: 't1', targetColumnId: 'c2', targetTableId: 't2' },
+        {
+          id: 'r1',
+          relationType: 'N:M',
+          sourceColumnId: 'c1',
+          sourceTableId: 't1',
+          targetColumnId: 'c2',
+          targetTableId: 't2',
+        },
       ],
       tables: [
         {
-          columns: [{ constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true }, id: 'c1', name: 'id', type: 'INT' }],
+          columns: [
+            {
+              constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true },
+              id: 'c1',
+              name: 'id',
+              type: 'INT',
+            },
+          ],
           id: 't1',
           name: 'tags',
           position: { x: 0, y: 0 },
         },
         {
-          columns: [{ constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true }, id: 'c2', name: 'id', type: 'INT' }],
+          columns: [
+            {
+              constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true },
+              id: 'c2',
+              name: 'id',
+              type: 'INT',
+            },
+          ],
           id: 't2',
           name: 'posts',
           position: { x: 300, y: 0 },
@@ -317,13 +394,30 @@ describe('round-trip', () => {
   it('generate → parse produces equivalent schema', () => {
     const original: DiagramSchema = {
       relationships: [
-        { id: 'r1', relationType: '1:N', sourceColumnId: 'c1', sourceTableId: 't1', targetColumnId: 'c3', targetTableId: 't2' },
+        {
+          id: 'r1',
+          relationType: '1:N',
+          sourceColumnId: 'c1',
+          sourceTableId: 't1',
+          targetColumnId: 'c3',
+          targetTableId: 't2',
+        },
       ],
       tables: [
         {
           columns: [
-            { constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true }, id: 'c1', name: 'id', type: 'SERIAL' },
-            { constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: false, isUnique: false }, id: 'c2', name: 'name', type: 'VARCHAR' },
+            {
+              constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true },
+              id: 'c1',
+              name: 'id',
+              type: 'SERIAL',
+            },
+            {
+              constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: false, isUnique: false },
+              id: 'c2',
+              name: 'name',
+              type: 'VARCHAR',
+            },
           ],
           id: 't1',
           name: 'users',
@@ -331,8 +425,18 @@ describe('round-trip', () => {
         },
         {
           columns: [
-            { constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true }, id: 'c2b', name: 'id', type: 'SERIAL' },
-            { constraints: { isForeignKey: true, isNullable: false, isPrimaryKey: false, isUnique: false }, id: 'c3', name: 'user_id', type: 'INT' },
+            {
+              constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true },
+              id: 'c2b',
+              name: 'id',
+              type: 'SERIAL',
+            },
+            {
+              constraints: { isForeignKey: true, isNullable: false, isPrimaryKey: false, isUnique: false },
+              id: 'c3',
+              name: 'user_id',
+              type: 'INT',
+            },
           ],
           id: 't2',
           name: 'posts',

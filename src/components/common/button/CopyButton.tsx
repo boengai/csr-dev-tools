@@ -1,9 +1,8 @@
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import type { CompVariant, CopyButtonProps, CopyButtonVariants } from '@/types'
-
 import { useCopyToClipboard } from '@/hooks'
+import type { CompVariant, CopyButtonProps, CopyButtonVariants } from '@/types'
 import { tv } from '@/utils'
 
 import { CheckIcon, CopyIcon } from '../icon'

@@ -4,7 +4,6 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY } from '@/constants'
 import { useSidebarStore } from '@/hooks'
-
 import { tv } from '@/utils'
 
 import { XIcon } from '../icon'

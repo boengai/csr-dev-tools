@@ -1,7 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
 import type { HSLColor } from '@/types'
-
 import {
   formatPaletteAsCss,
   generateAnalogousPalette,

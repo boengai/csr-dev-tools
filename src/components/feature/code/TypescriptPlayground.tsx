@@ -1,12 +1,10 @@
 import type { EditorProps, Monaco, OnMount, OnValidate } from '@monaco-editor/react'
-
 import { lazy, Suspense, useRef, useState } from 'react'
-
-import type { ToolComponentProps } from '@/types'
 
 import { CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
 import { tv } from '@/utils'
 
 const Editor = lazy(() => import('@monaco-editor/react'))

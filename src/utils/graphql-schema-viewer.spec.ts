@@ -273,5 +273,4 @@ type Query {
       expect(limitArg?.formattedType).toBe('Int')
     })
   })
-
 })

@@ -1,10 +1,9 @@
 import { useReducer } from 'react'
 
-import type { ToolComponentProps } from '@/types'
-import { type ColumnAlignment, generateMarkdownTable } from '@/utils'
-
 import { Button, CopyButton, Dialog, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import type { ToolComponentProps } from '@/types'
+import { type ColumnAlignment, generateMarkdownTable } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['markdown-table-generator']
 
@@ -74,7 +73,10 @@ const reducer = (state: State, action: Action): State => {
       const clamped = Math.max(2, Math.min(20, action.payload))
       const newData =
         clamped > state.data.length
-          ? [...state.data, ...Array.from({ length: clamped - state.data.length }, () => Array(state.cols).fill('') as Array<string>)]
+          ? [
+              ...state.data,
+              ...Array.from({ length: clamped - state.data.length }, () => Array(state.cols).fill('') as Array<string>),
+            ]
           : state.data.slice(0, clamped)
       return { ...state, rows: clamped, data: newData }
     }
@@ -140,7 +142,10 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
         </div>
       </div>
       <Dialog
-        injected={{ open: dialogOpen, setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }) }}
+        injected={{
+          open: dialogOpen,
+          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
+        }}
         onAfterClose={() => {
           handleReset()
           onAfterDialogClose?.()

@@ -1,11 +1,10 @@
 import { m } from 'motion/react'
 import { type ButtonHTMLAttributes, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 
-import type { ToolRegistryKey } from '@/types'
-
 import { Card, Dialog, NotoEmoji, PlusIcon } from '@/components'
 import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY, TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, usePersistFeatureLayout } from '@/hooks'
+import type { ToolRegistryKey } from '@/types'
 
 const AddButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>) => {
   return (
@@ -90,9 +89,7 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
     const query = debouncedSearch.toLowerCase()
     const filtered: typeof groupedTools = {}
     for (const [category, tools] of Object.entries(groupedTools)) {
-      const matched = tools.filter(
-        (t) => t.name.toLowerCase().includes(query) || t.key.toLowerCase().includes(query),
-      )
+      const matched = tools.filter((t) => t.name.toLowerCase().includes(query) || t.key.toLowerCase().includes(query))
       if (matched.length > 0) filtered[category] = matched
     }
     return filtered
@@ -127,7 +124,9 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
         <div className="columns-1 gap-x-6 tablet:columns-2 laptop:columns-3">
           {CATEGORY_ORDER.filter((cat) => filteredGroupedTools[cat]).map((category) => (
             <div className="mb-4 break-inside-avoid" key={category}>
-              <span className="block px-2 pb-1 text-[0.6rem] tracking-[0.12em] text-gray-500 uppercase">{category}</span>
+              <span className="block px-2 pb-1 text-[0.6rem] tracking-[0.12em] text-gray-500 uppercase">
+                {category}
+              </span>
               <ul className="flex flex-col gap-1">
                 {filteredGroupedTools[category].map((entry) => {
                   const at = appPosition[entry.key] ?? null

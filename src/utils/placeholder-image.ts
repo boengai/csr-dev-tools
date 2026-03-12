@@ -46,12 +46,7 @@ export const generatePlaceholderSvg = (options: PlaceholderOptions): string => {
   ].join('\n')
 }
 
-const autoSizeFont = (
-  ctx: CanvasRenderingContext2D,
-  text: string,
-  maxWidth: number,
-  maxHeight: number,
-): number => {
+const autoSizeFont = (ctx: CanvasRenderingContext2D, text: string, maxWidth: number, maxHeight: number): number => {
   let fontSize = Math.min(maxWidth, maxHeight) / 8
   ctx.font = `bold ${fontSize}px sans-serif`
   let measured = ctx.measureText(text)

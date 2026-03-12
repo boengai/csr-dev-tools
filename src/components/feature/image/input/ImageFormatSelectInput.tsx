@@ -1,9 +1,8 @@
 import { useMemo } from 'react'
 
-import type { ImageFormat, SelectInputProps } from '@/types'
-
 import { SelectInput } from '@/components/common'
 import { IMAGE_LABEL, IMAGE_VALUE } from '@/constants'
+import type { ImageFormat, SelectInputProps } from '@/types'
 
 const ALL_FORMATS: Array<ImageFormat> = [
   'image/png',
