@@ -31,7 +31,13 @@ const resizeToCanvas = (img: HTMLImageElement, width: number, height: number): H
   canvas.height = height
   const ctx = canvas.getContext('2d')
   if (!ctx) throw new Error('Canvas 2D context unavailable')
-  ctx.drawImage(img, 0, 0, width, height)
+
+  const scale = Math.min(width / img.width, height / img.height)
+  const scaledW = img.width * scale
+  const scaledH = img.height * scale
+  const x = (width - scaledW) / 2
+  const y = (height - scaledH) / 2
+  ctx.drawImage(img, x, y, scaledW, scaledH)
   return canvas
 }
 

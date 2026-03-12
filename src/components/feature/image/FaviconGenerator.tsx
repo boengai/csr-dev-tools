@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react'
+import { type ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 
 import { Button, CopyButton, Dialog, DownloadIcon, RefreshIcon, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
@@ -14,6 +14,7 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
   const [results, setResults] = useState<Array<FaviconResult>>([])
   const [sourcePreview, setSourcePreview] = useState<string>('')
   const [processing, setProcessing] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
 
   const handleUpload = useCallback(
@@ -70,13 +71,26 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
     URL.revokeObjectURL(url)
   }
 
-  const handleReset = () => {
+  const resetState = () => {
     if (sourcePreview) {
       URL.revokeObjectURL(sourcePreview)
     }
     setResults([])
     setSourcePreview('')
     setProcessing(false)
+  }
+
+  const handleNewUpload = () => {
+    fileInputRef.current?.click()
+  }
+
+  const handleFileInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (files?.length) {
+      resetState()
+      handleUpload(Array.from(files))
+      e.target.value = ''
+    }
   }
 
   // Cleanup object URL on unmount
@@ -103,10 +117,18 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
         </div>
       </div>
 
+      <input
+        accept="image/png,image/jpeg,image/webp,image/svg+xml"
+        className="hidden"
+        onChange={handleFileInputChange}
+        ref={fileInputRef}
+        type="file"
+      />
+
       <Dialog
         injected={{ open: dialogOpen, setOpen: setDialogOpen }}
         onAfterClose={() => {
-          handleReset()
+          resetState()
           onAfterDialogClose?.()
         }}
         size="screen"
@@ -119,8 +141,8 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
             {sourcePreview && (
               <div className="flex shrink-0 flex-col items-center gap-2">
                 <p className="text-body-sm font-medium text-gray-300">Source Image</p>
-                <img alt="source" className="max-h-40 max-w-40 rounded border border-gray-800" src={sourcePreview} />
-                <Button icon={<RefreshIcon />} onClick={handleReset} size="small">
+                <img alt="source" className="w-full max-w-40 rounded border border-gray-800" src={sourcePreview} />
+                <Button icon={<RefreshIcon />} onClick={handleNewUpload} size="small">
                   Upload New
                 </Button>
               </div>
