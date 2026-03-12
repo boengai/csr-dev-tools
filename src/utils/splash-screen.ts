@@ -1,5 +1,3 @@
-import JSZip from 'jszip'
-
 import type { SplashScreenDevice } from '@/constants'
 import { IOS_DEVICES, MASKABLE_ICON_SIZES, MASKABLE_SAFE_ZONE_RATIO, PWA_ICON_SIZES } from '@/constants'
 
@@ -207,6 +205,7 @@ export const generateManifestIcons = (): string => {
 }
 
 export const downloadSplashScreenZip = async (output: SplashScreenGeneratorOutput): Promise<void> => {
+  const { default: JSZip } = await import('jszip')
   const zip = new JSZip()
 
   for (const splash of output.splashScreens) {

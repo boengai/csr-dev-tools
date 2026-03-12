@@ -72,15 +72,14 @@ describe('splash-screen', () => {
       }
     })
 
-    it('landscape should swap width and height', () => {
+    it('landscape should swap width and height relative to portrait', () => {
       for (const device of IOS_DEVICES) {
-        const portraitW = device.width
-        const portraitH = device.height
-        // Landscape swaps: landscapeW = portraitH, landscapeH = portraitW
-        const landscapeW = portraitH
-        const landscapeH = portraitW
-        expect(landscapeW).toBe(device.height)
-        expect(landscapeH).toBe(device.width)
+        // In portrait: canvas width = device.width, canvas height = device.height
+        // In landscape: canvas width = device.height, canvas height = device.width
+        // Verify the swap produces different dimensions (width becomes height)
+        const landscapeW = device.height
+        const landscapeH = device.width
+        expect(landscapeW).toBeGreaterThan(landscapeH)
       }
     })
   })

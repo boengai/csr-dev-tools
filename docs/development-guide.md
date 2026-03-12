@@ -97,7 +97,7 @@ Output: `dist/` directory with static HTML, CSS, JS chunks.
 - **Environment**: Node (not jsdom)
 - **Globals**: Enabled (`describe`, `it`, `expect` available without import)
 - **Test files**: Co-located as `*.spec.ts` alongside source files in `src/utils/`
-- **Coverage**: 84 spec files with ~1,427 test cases
+- **Coverage**: 87 spec files with ~1,509 test cases
 - **Path aliases**: `@/*` works in tests via `vite-tsconfig-paths`
 
 ```bash
@@ -112,7 +112,7 @@ pnpm vitest
 
 - **Framework**: Playwright 1.58.2
 - **Test files**: `e2e/` directory
-  - 34 tool-specific test specs
+  - 36 tool-specific test specs
   - 2 platform tests in `e2e/platform/` (home, navigation)
 
 ```bash

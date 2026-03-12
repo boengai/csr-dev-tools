@@ -11,6 +11,7 @@ export const IOS_DEVICES: Array<SplashScreenDevice> = [
   { category: 'iphone', height: 2868, name: 'iPhone 17 Pro Max', scaleFactor: 3, width: 1320 },
   { category: 'iphone', height: 2622, name: 'iPhone 17 Pro', scaleFactor: 3, width: 1206 },
   { category: 'iphone', height: 2796, name: 'iPhone 17', scaleFactor: 3, width: 1290 },
+  { category: 'iphone', height: 2796, name: 'iPhone 17 Air', scaleFactor: 3, width: 1290 },
   { category: 'iphone', height: 2796, name: 'iPhone 16 Pro Max', scaleFactor: 3, width: 1320 },
   { category: 'iphone', height: 2622, name: 'iPhone 16 Pro', scaleFactor: 3, width: 1206 },
   { category: 'iphone', height: 2796, name: 'iPhone 16', scaleFactor: 3, width: 1290 },

@@ -162,7 +162,7 @@ development_status:
   10-9-image-to-base64: done
   10-10-placeholder-image-generator: done
   10-11-svg-viewer: done
-  10-12-splash-screen-generator: review
+  10-12-splash-screen-generator: done
   epic-10-retrospective: optional
 
   # Epic 11: Code Tools

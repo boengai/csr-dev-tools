@@ -31,7 +31,7 @@ csr-dev-tools/
 ├── dist/                   # Production build output
 ├── e2e/                    # Playwright E2E test specs
 │   ├── platform/           # Platform-level E2E tests (home, navigation)
-│   └── *.spec.ts           # 34 tool-specific E2E test files
+│   └── *.spec.ts           # 36 tool-specific E2E test files
 ├── public/                 # Static assets served as-is
 │   └── fonts/              # Noto Emoji font files
 └── src/                    # Application source code (see below)
@@ -69,7 +69,7 @@ src/
 │   │   ├── table/          # DataCellTable (key-value display)
 │   │   ├── tabs/           # Tabs (Radix-based tab component)
 │   │   └── toast/          # ToastProvider (Radix toast + Zustand)
-│   └── feature/            # Feature-specific tool components (82 components)
+│   └── feature/            # Feature-specific tool components (83 components)
 │       ├── code/           # 13 tools: JsonToTypeScript, MermaidRenderer, etc.
 │       ├── color/          # 2 tools: ColorConvertor, ColorPaletteGenerator
 │       ├── css/            # 6 tools: FlexboxPlayground, GridPlayground, etc.
@@ -81,11 +81,11 @@ src/
 │       │       ├── diagramReducer.ts, useDiagramHandlers.ts
 │       │       └── types.ts, constants.ts
 │       ├── encoding/       # 5 tools: Base64, JwtDecoder, UrlEncoder, etc.
-│       ├── generator/      # 6 tools: Password, UUID, QR Code, Hash, etc.
-│       ├── image/          # 16 tools: BackgroundRemover, Cropper, etc.
+│       ├── generator/      # 3 tools: Password, UUID, QR Code
+│       ├── image/          # 12 tools: BackgroundRemover, SplashScreenGenerator, etc.
 │       │   └── input/      # Shared: ImageFormatSelectInput, ImageQualitySelectInput
 │       ├── network/        # 1 tool: IpSubnetCalculator
-│       ├── security/       # 5 tools: BcryptHasher, CertificateDecoder, etc.
+│       ├── security/       # 8 tools: AesEncryptDecrypt, BcryptHasher, HashGenerator, etc.
 │       ├── text/           # 8 tools: RegexTester, TextDiffChecker, etc.
 │       ├── time/           # 4 tools: CronExpressionParser, TimezoneConverter, etc.
 │       └── unit/           # 2 tools: UnitPxToRem, AspectRatioCalculator
@@ -95,7 +95,8 @@ src/
 │   ├── feature.ts          # Feature constants
 │   ├── image.ts            # Image format/quality constants
 │   ├── route.ts            # ROUTE_PATH record: HOME (/), TOOLS (/tools)
-│   └── tool-registry.ts    # ★ Central registry: 77+ tools with lazy imports,
+│   ├── splash-screen.ts    # iOS device manifest, PWA icon sizes, safe zone ratio
+│   └── tool-registry.ts    # ★ Central registry: 78 tools with lazy imports,
 │                           #   categories, metadata, SEO, and descriptions
 │
 ├── hooks/                  # Custom React hooks
@@ -145,22 +146,22 @@ src/
     ├── validation.ts       # Input validation utilities
     ├── ... (80+ more utility modules)
     ├── db-diagram*.ts      # 9 modules for DB diagram feature
-    └── *.spec.ts           # 84 co-located test files (~1,427 test cases)
+    └── *.spec.ts           # 87 co-located test files (~1,509 test cases)
 ```
 
 ## Critical Folders
 
 | Folder | Purpose | Key Files |
 |--------|---------|-----------|
-| `src/constants/tool-registry.ts` | Central tool definition | All 77+ tools registered here |
+| `src/constants/tool-registry.ts` | Central tool definition | All 78 tools registered here |
 | `src/components/common/` | Reusable UI primitives | 30 components across 18 categories |
-| `src/components/feature/` | Tool implementations | 82 components across 12 categories |
+| `src/components/feature/` | Tool implementations | 83 components across 12 categories |
 | `src/hooks/state/` | Zustand stores | Toast, CommandPalette, Sidebar |
 | `src/hooks/persist/` | Persistent state | Layout, Settings, Input persistence |
 | `src/types/` | All type definitions | Mirrors src/ structure exactly |
-| `src/utils/` | Pure logic functions | 85 modules with 84 test files |
+| `src/utils/` | Pure logic functions | 88 modules with 87 test files |
 | `src/pages/` | Route pages | Home dashboard, Dynamic tool page |
-| `e2e/` | E2E test specs | 34 tool tests + 2 platform tests |
+| `e2e/` | E2E test specs | 36 tool tests + 2 platform tests |
 
 ## Entry Points
 

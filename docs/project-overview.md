@@ -4,7 +4,7 @@
 
 ## Executive Summary
 
-CSR Developer Tools is a **100% client-side** single-page application (SPA) that provides browser-based developer utilities. All processing happens locally in the user's browser with zero server dependencies, ensuring complete data privacy. The project has grown from 6 initial tools to **77+ developer tools** across 12 categories.
+CSR Developer Tools is a **100% client-side** single-page application (SPA) that provides browser-based developer utilities. All processing happens locally in the user's browser with zero server dependencies, ensuring complete data privacy. The project has grown from 6 initial tools to **78 developer tools** across 12 categories.
 
 ## Project Identity
 
@@ -18,19 +18,19 @@ CSR Developer Tools is a **100% client-side** single-page application (SPA) that
 | **Package Manager** | pnpm 10.11.0 |
 | **Node.js Requirement** | >= 24.5.0 |
 
-## Tool Categories (77+ tools)
+## Tool Categories (78 tools)
 
 | Category | Count | Examples |
 |----------|-------|---------|
-| Code | 13 | JSON to TypeScript, SQL Formatter, Mermaid Renderer, TypeScript Playground |
 | Data | 14 | JSON Formatter, CSV Converter, YAML/TOML/XML Converters, DB Diagram Builder |
-| Image | 16 | Color Picker, Background Remover, Cropper, Favicon Generator, SVG Viewer |
+| Code | 13 | JSON to TypeScript, SQL Formatter, Mermaid Renderer, TypeScript Playground |
+| Image | 12 | Background Remover, Favicon Generator, Splash Screen Generator, SVG Viewer |
+| Security | 8 | AES Encrypt/Decrypt, Bcrypt Hasher, Hash/HMAC Generator, RSA/SSH Key tools |
 | Text | 8 | Regex Tester, Text Diff, Lorem Ipsum, Word Counter, Case Converter |
 | CSS | 6 | Flexbox Playground, Grid Playground, Animation Builder, Gradient Generator |
 | Encoding | 5 | Base64, JWT Decoder, URL Encoder/Parser, Number Base Converter |
-| Generator | 6 | Password, UUID, QR Code, Hash, HMAC, AES Encrypt/Decrypt |
-| Security | 5 | Bcrypt Hasher, Certificate Decoder, Chmod Calculator, RSA/SSH Key tools |
 | Time | 4 | Unix Timestamp, Cron Parser, Crontab Generator, Timezone Converter |
+| Generator | 3 | Password, UUID, QR Code |
 | Color | 2 | Color Converter, Color Palette Generator |
 | Unit | 2 | PX to REM, Aspect Ratio Calculator |
 | Network | 1 | IP Subnet Calculator |
@@ -62,7 +62,7 @@ CSR Developer Tools is a **100% client-side** single-page application (SPA) that
 
 **Component-based SPA** with dynamic tool routing and lazy-loaded components.
 
-- Tool registry (`tool-registry.ts`) defines all 77+ tools with lazy-loaded components
+- Tool registry (`tool-registry.ts`) defines all 78 tools with lazy-loaded components
 - Dynamic routing via `/tools/$toolKey` for individual tool pages
 - Home page dashboard with searchable tool grid
 - Sidebar navigation with categorized tool listing

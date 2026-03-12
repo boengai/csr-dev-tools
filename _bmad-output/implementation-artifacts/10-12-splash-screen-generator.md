@@ -1,13 +1,13 @@
 ---
 story: 10.12
 title: Splash Screen Generator
-status: review
+status: done
 epic: 10
 ---
 
 # Story 10.12: Splash Screen Generator
 
-Status: review
+Status: done
 
 ## Story
 
@@ -231,7 +231,7 @@ Claude Opus 4.6
 ### Completion Notes List
 
 - Implemented complete Splash Screen Generator tool following FaviconGenerator patterns
-- Device manifest covers 19 iPhones + 5 iPads with portrait/landscape orientations (48 splash screens total)
+- Device manifest covers 20 iPhones + 5 iPads with portrait/landscape orientations (50 splash screens total)
 - 8 standard PWA icons (48-512px) + 2 maskable icons (192, 512) = 10 icons
 - Total ~58 assets generated per run with progress callback
 - Canvas compositing: source centered on background color, maskable icons respect 80% safe zone
@@ -254,6 +254,7 @@ Claude Opus 4.6
 - 2026-03-12: Add in-dialog "Upload New" via hidden file input (both SplashScreen and FaviconGenerator)
 - 2026-03-12: Add image scale slider (10%–100%) with live three-frame preview (icon, portrait, landscape)
 - 2026-03-12: Fix safe zone border contrast — auto-switches based on background luminance
+- 2026-03-12: Code review fixes — lazy-load JSZip, add iPhone 17 Air device, fix tautological test, wrap handleDownloadAll in useCallback, fix formatting
 
 ### File List
 

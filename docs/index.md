@@ -9,7 +9,7 @@
 - **Framework:** React 19.2.4 + Vite 7.3.1
 - **Architecture:** Component-based SPA with dynamic tool routing
 - **Constraint:** 100% client-side -- zero server dependencies
-- **Scale:** 77+ developer tools across 12 categories
+- **Scale:** 78 developer tools across 12 categories
 
 ## Quick Reference
 
@@ -22,15 +22,15 @@
 - **Diagrams:** Mermaid + React Flow (@xyflow)
 - **AI/ML:** @huggingface/transformers (in-browser background removal)
 - **Linting/Formatting:** oxlint 1.51.0 + oxfmt 0.36.0
-- **Unit Testing:** Vitest 4 (84 spec files, ~1,427 tests)
-- **E2E Testing:** Playwright 1.58.2 (34 tool + 2 platform specs)
+- **Unit Testing:** Vitest 4 (87 spec files, ~1,509 tests)
+- **E2E Testing:** Playwright 1.58.2 (36 tool + 2 platform specs)
 
 ## Generated Documentation
 
 - [Project Overview](./project-overview.md) -- Executive summary, features, tech stack
 - [Architecture](./architecture.md) -- Architecture patterns, component hierarchy, state management
 - [Source Tree Analysis](./source-tree-analysis.md) -- Annotated directory structure, critical folders
-- [Component Inventory](./component-inventory.md) -- All 130 UI components categorized
+- [Component Inventory](./component-inventory.md) -- All 131 UI components categorized
 - [Development Guide](./development-guide.md) -- Setup, scripts, code style, testing, adding tools
 
 ## Existing Documentation
@@ -61,19 +61,19 @@ pnpm build        # TypeScript + Vite production build
 pnpm preview      # Preview build locally
 ```
 
-## Tools (77+ across 12 categories)
+## Tools (78 across 12 categories)
 
 | Category | Count | Key Components |
 |----------|-------|----------------|
-| Code | 13 | JsonToTypeScript, MermaidRenderer, TypescriptPlayground, SqlFormatter |
 | Data | 14 | DbDiagram, JsonFormatter, CsvConverter, YamlFormatter, OgPreview |
-| Image | 16 | BackgroundRemover, ImageCropper, FaviconGenerator, SvgViewer |
+| Code | 13 | JsonToTypeScript, MermaidRenderer, TypescriptPlayground, SqlFormatter |
+| Image | 12 | BackgroundRemover, FaviconGenerator, SplashScreenGenerator, SvgViewer |
+| Security | 8 | AesEncryptDecrypt, BcryptHasher, HashGenerator, RsaKeyGenerator |
 | Text | 8 | RegexTester, TextDiffChecker, WordCounter, LoremIpsumGenerator |
 | CSS | 6 | FlexboxPlayground, GridPlayground, CssAnimationBuilder, GradientGenerator |
 | Encoding | 5 | Base64, JwtDecoder, UrlEncoder, UrlParser, NumberBaseConverter |
-| Generator | 6 | PasswordGenerator, QrCodeGenerator, UuidGenerator, HashGenerator |
-| Security | 5 | BcryptHasher, CertificateDecoder, ChmodCalculator, RsaKeyGenerator |
 | Time | 4 | CronExpressionParser, CrontabGenerator, TimezoneConverter |
+| Generator | 3 | PasswordGenerator, QrCodeGenerator, UuidGenerator |
 | Color | 2 | ColorConvertor, ColorPaletteGenerator |
 | Unit | 2 | UnitPxToRem, AspectRatioCalculator |
 | Network | 1 | IpSubnetCalculator |

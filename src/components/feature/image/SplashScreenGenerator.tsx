@@ -1,6 +1,15 @@
 import { type ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 
-import { Button, CopyButton, Dialog, DownloadIcon, RangeInput, RefreshIcon, Tabs, UploadInput } from '@/components/common'
+import {
+  Button,
+  CopyButton,
+  Dialog,
+  DownloadIcon,
+  RangeInput,
+  RefreshIcon,
+  Tabs,
+  UploadInput,
+} from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -76,7 +85,7 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
     }
   }, [sourceImage, backgroundColor, imageScale, toast])
 
-  const handleDownloadAll = async () => {
+  const handleDownloadAll = useCallback(async () => {
     if (!results) return
     try {
       await downloadSplashScreenZip(results)
@@ -84,7 +93,7 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
     } catch {
       toast({ action: 'add', item: { label: 'Failed to download ZIP', type: 'error' } })
     }
-  }
+  }, [results, toast])
 
   const handleDownloadSingle = (blob: Blob, fileName: string) => {
     const url = URL.createObjectURL(blob)
@@ -315,7 +324,14 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
                 <label className="text-body-sm text-gray-300" htmlFor="image-scale">
                   Image Scale ({imageScale}%)
                 </label>
-                <RangeInput max={100} min={10} name="image-scale" onChange={setImageScale} step={5} value={imageScale} />
+                <RangeInput
+                  max={100}
+                  min={10}
+                  name="image-scale"
+                  onChange={setImageScale}
+                  step={5}
+                  value={imageScale}
+                />
                 <span className="text-body-xs text-gray-500">80% aligns with maskable safe zone</span>
               </div>
 

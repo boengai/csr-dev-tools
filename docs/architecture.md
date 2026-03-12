@@ -54,7 +54,7 @@
         │     ├── / (Home page) ──→ Tool dashboard with search & grid
         │     └── /tools/$toolKey ──→ Dynamic tool page (from registry)
         ├── Tool Registry (constants/tool-registry.ts)
-        │     └── 77+ tools with lazy-loaded components, metadata, SEO
+        │     └── 78 tools with lazy-loaded components, metadata, SEO
         ├── Zustand Stores (hooks/state/)
         │     ├── useToast ──→ Toast notification state
         │     ├── useCommandPaletteStore ──→ Command palette open/search state
@@ -64,8 +64,8 @@
         │     ├── usePersistSettings ──→ User settings persistence
         │     └── useInputLocalStorage ──→ Tool input value persistence
         └── Utility Functions (utils/)
-              ├── 85 utility modules covering all tool logic
-              └── 84 co-located spec files (~1,427 unit tests)
+              ├── 88 utility modules covering all tool logic
+              └── 87 co-located spec files (~1,509 unit tests)
 ```
 
 ## Component Architecture
@@ -84,12 +84,12 @@ App.tsx (root, lazy-loaded)
 │       └── Lazy-loaded tool component (from registry)
 │           ├── Code tools (13): JsonToTypeScript, MermaidRenderer, TypescriptPlayground...
 │           ├── Data tools (14): DbDiagram, JsonFormatter, CsvConverter...
-│           ├── Image tools (16): BackgroundRemover, ImageCropper, SvgViewer...
+│           ├── Image tools (12): BackgroundRemover, SplashScreenGenerator, SvgViewer...
 │           ├── Text tools (8): RegexTester, TextDiffChecker, WordCounter...
 │           ├── CSS tools (6): FlexboxPlayground, GridPlayground, CssAnimationBuilder...
 │           ├── Encoding tools (5): EncodingBase64, JwtDecoder, UrlParser...
-│           ├── Generator tools (6): PasswordGenerator, QrCodeGenerator, UuidGenerator...
-│           ├── Security tools (5): BcryptHasher, CertificateDecoder, RsaKeyGenerator...
+│           ├── Generator tools (3): PasswordGenerator, QrCodeGenerator, UuidGenerator
+│           ├── Security tools (8): AesEncryptDecrypt, BcryptHasher, HashGenerator, RsaKeyGenerator...
 │           ├── Time tools (4): CronExpressionParser, TimezoneConverter...
 │           ├── Color tools (2): ColorConvertor, ColorPaletteGenerator
 │           ├── Unit tools (2): UnitPxToRem, AspectRatioCalculator
@@ -151,11 +151,11 @@ Pattern: `create<T>()((set: StoreApi<T>['setState']) => ({...}))`
 ## Testing Strategy
 
 - **Unit Tests**: Vitest 4 with node environment, globals enabled
-  - 84 spec files co-located in `src/utils/` (~1,427 test cases)
+  - 87 spec files co-located in `src/utils/` (~1,509 test cases)
   - Pure function testing -- no DOM/component tests
   - Path aliases `@/*` work in tests via `vite-tsconfig-paths`
 - **E2E Tests**: Playwright 1.58.2
-  - 34 tool-specific E2E specs in `e2e/`
+  - 36 tool-specific E2E specs in `e2e/`
   - 2 platform specs in `e2e/platform/` (home, navigation)
   - Cross-browser testing support
 

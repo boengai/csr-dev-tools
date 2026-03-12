@@ -29,7 +29,7 @@
 
 ## Features
 
-CSR Developer Tools is a collection of **77 tools** across **12 categories** that work entirely in your browser — no server required, ensuring your data stays private and secure.
+CSR Developer Tools is a collection of **78 tools** across **12 categories** that work entirely in your browser — no server required, ensuring your data stays private and secure.
 
 ### Code
 
@@ -88,9 +88,6 @@ CSR Developer Tools is a collection of **77 tools** across **12 categories** tha
 
 ### Generator
 
-- **AES Encrypt/Decrypt** — Encrypt and decrypt text using AES-256-GCM with a password
-- **Hash Generator** — Compute hash values from text using MD5, SHA-1, SHA-256, and SHA-512
-- **HMAC Generator** — Generate HMAC signatures using SHA-256, SHA-384, or SHA-512
 - **Password Generator** — Generate random passwords with configurable length and character types
 - **QR Code Generator** — Generate QR codes from text or URLs with customizable size, colors, and error correction
 - **UUID Generator** — Generate random UUID v4 identifiers, single or in bulk
@@ -107,6 +104,7 @@ CSR Developer Tools is a collection of **77 tools** across **12 categories** tha
 - **Image Resizer** — Resize images to custom dimensions with aspect ratio control
 - **Image to Base64** — Convert images to Base64 data URIs for embedding in HTML or CSS
 - **Placeholder Image Generator** — Generate placeholder images with custom dimensions, colors, and text
+- **Splash Screen Generator** — Generate iOS splash screens, Android/PWA icons, and manifest files from a single image
 - **SVG Viewer** — View and optimize SVG code with a live preview
 
 ### Network
@@ -115,9 +113,12 @@ CSR Developer Tools is a collection of **77 tools** across **12 categories** tha
 
 ### Security
 
+- **AES Encrypt/Decrypt** — Encrypt and decrypt text using AES-256-GCM with a password
 - **Bcrypt Hasher** — Hash passwords with bcrypt and verify plaintext against hashes
 - **Certificate Decoder** — Decode PEM-encoded X.509 certificates with full detail inspection
 - **Chmod Calculator** — Convert between symbolic, octal, and visual chmod notations
+- **Hash Generator** — Compute hash values from text using MD5, SHA-1, SHA-256, and SHA-512
+- **HMAC Generator** — Generate HMAC signatures using SHA-256, SHA-384, or SHA-512
 - **RSA Key Generator** — Generate RSA 2048/4096-bit key pairs in browser via Web Crypto API
 - **SSH Key Fingerprint** — Compute SHA256 and MD5 fingerprints from SSH public keys
 
@@ -251,11 +252,11 @@ csr-dev-tools/
 │   │   │   ├── data/        #   JSON Formatter, JSON<->YAML/CSV, XML/TOML<->JSON, HTML<->MD,
 │   │   │   │                #   HTTP Codes, OG Preview, DB Diagram, ENV, YAML Formatter, ...
 │   │   │   ├── encoding/    #   Base64, URL Encoder, JWT Decoder, Number Base, URL Parser
-│   │   │   ├── generator/   #   UUID, Password, Hash, HMAC, QR Code, AES Encrypt/Decrypt
+│   │   │   ├── generator/   #   UUID, Password, QR Code
 │   │   │   ├── image/       #   Converter, Compressor, Cropper, Resizer, Color Picker, SVG,
-│   │   │   │                #   Base64<->Image, Favicon, Background Remover, Placeholder
+│   │   │   │                #   Base64<->Image, Favicon, Background Remover, Placeholder, Splash Screen
 │   │   │   ├── network/     #   IP Subnet Calculator
-│   │   │   ├── security/    #   Bcrypt, Certificate Decoder, Chmod, RSA Key, SSH Fingerprint
+│   │   │   ├── security/    #   AES, Bcrypt, Certificate, Chmod, Hash, HMAC, RSA Key, SSH
 │   │   │   ├── text/        #   Text Diff, Regex, Case Converter, Lorem Ipsum, Word Counter,
 │   │   │   │                #   Sort/Dedupe, Escape, User Agent
 │   │   │   ├── time/        #   Unix Timestamp, Cron Parser, Crontab Generator, Timezone
@@ -340,7 +341,7 @@ This project follows a comprehensive design system built on:
 - **TanStack Router** for routing with automatic code splitting
 - **Hot module replacement** for instant feedback during development
 - **Optimized build** with tree shaking and lazy loading
-- **1,450+ unit tests** and **E2E tests** with Playwright
+- **1,500+ unit tests** and **E2E tests** with Playwright
 
 ### Accessible & Responsive
 

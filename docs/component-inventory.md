@@ -7,9 +7,9 @@
 | Category | Count |
 |----------|-------|
 | Common Components | 30 |
-| Feature Components | 82 |
+| Feature Components | 83 |
 | Icon Components | 18 |
-| **Total** | **130** |
+| **Total** | **131** |
 
 ## Common Components (`src/components/common/`)
 
@@ -153,18 +153,15 @@
 | `UrlEncoder` | URL encode/decode strings |
 | `UrlParser` | Parse and inspect URL components |
 
-### Generator Tools (`generator/`) — 6 components
+### Generator Tools (`generator/`) — 3 components
 
 | Component | Description |
 |-----------|-------------|
-| `AesEncryptDecrypt` | AES-256 encryption and decryption |
-| `HashGenerator` | Generate MD5, SHA-1, SHA-256, SHA-512 hashes |
-| `HmacGenerator` | Generate HMAC signatures |
 | `PasswordGenerator` | Generate secure random passwords |
 | `QrCodeGenerator` | Generate QR codes from text/URLs |
 | `UuidGenerator` | Generate UUID v4 identifiers |
 
-### Image Tools (`image/`) — 16 components
+### Image Tools (`image/`) — 17 components
 
 | Component | Description |
 |-----------|-------------|
@@ -179,6 +176,7 @@
 | `ImageResizer` | Resize images with custom dimensions |
 | `ImageToBase64` | Convert images to Base64 strings |
 | `PlaceholderImageGenerator` | Generate placeholder images |
+| `SplashScreenGenerator` | Generate iOS splash screens, Android/PWA icons, and manifest files |
 | `SvgViewer` | View and inspect SVG files |
 | `ImageFormatSelectInput` | Image format selector dropdown (shared input) |
 | `ImageQualitySelectInput` | Image quality selector dropdown (shared input) |
@@ -189,13 +187,16 @@
 |-----------|-------------|
 | `IpSubnetCalculator` | Calculate IP subnets, CIDR ranges, network info |
 
-### Security Tools (`security/`) — 5 components
+### Security Tools (`security/`) — 8 components
 
 | Component | Description |
 |-----------|-------------|
+| `AesEncryptDecrypt` | AES-256 encryption and decryption |
 | `BcryptHasher` | Hash and verify bcrypt passwords |
 | `CertificateDecoder` | Decode X.509 certificates |
 | `ChmodCalculator` | Calculate Unix file permissions |
+| `HashGenerator` | Generate MD5, SHA-1, SHA-256, SHA-512 hashes |
+| `HmacGenerator` | Generate HMAC signatures |
 | `RsaKeyGenerator` | Generate RSA key pairs |
 | `SshKeyFingerprint` | Calculate SSH key fingerprints |
 
