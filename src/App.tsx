@@ -2,17 +2,8 @@ import { Link, Outlet, useLocation } from '@tanstack/react-router'
 import { domAnimation, LazyMotion } from 'motion/react'
 import { type ComponentType, lazy, Suspense } from 'react'
 
-import {
-  ArrowIcon,
-  CommandPalette,
-  GitHubIcon,
-  HamburgerIcon,
-  NotoEmoji,
-  SearchIcon,
-  SettingsDialog,
-  Sidebar,
-  ToastProvider,
-} from '@/components'
+import { NotoEmoji } from '@/components/common/emoji' // optimized import
+import { ArrowIcon, GitHubIcon, HamburgerIcon, SearchIcon } from '@/components/common/icon' // optimized import
 import { ROUTE_PATH } from '@/constants'
 import { useCommandPaletteStore, useKeyboardShortcuts, usePersistSettings, useSidebarStore } from '@/hooks'
 
@@ -22,6 +13,34 @@ const TwinkleStarsAnimate = lazy(() =>
       default: TwinkleStarsAnimate,
     }),
   ),
+)
+
+const CommandPalette = lazy(() =>
+  import('@/components/common/command-palette/CommandPalette').then(
+    ({ CommandPalette }: { CommandPalette: ComponentType }) => ({
+      default: CommandPalette,
+    }),
+  ),
+)
+
+const Sidebar = lazy(() =>
+  import('@/components/common/sidebar/Sidebar').then(({ Sidebar }: { Sidebar: ComponentType }) => ({
+    default: Sidebar,
+  })),
+)
+
+const SettingsDialog = lazy(() =>
+  import('@/components/common/settings/SettingsDialog').then(
+    ({ SettingsDialog }: { SettingsDialog: ComponentType }) => ({
+      default: SettingsDialog,
+    }),
+  ),
+)
+
+const ToastProvider = lazy(() =>
+  import('@/components/common/toast/ToastProvider').then(({ ToastProvider }: { ToastProvider: ComponentType }) => ({
+    default: ToastProvider,
+  })),
 )
 
 const PageLoading = () => {
@@ -84,11 +103,15 @@ export default function App() {
           >
             <GitHubIcon />
           </a>
-          <SettingsDialog />
+          <Suspense>
+            <SettingsDialog />
+          </Suspense>
         </div>
       </header>
 
-      <Sidebar />
+      <Suspense>
+        <Sidebar />
+      </Suspense>
       <main className="bg-pixel-texture relative flex grow flex-col overflow-y-auto [&>*:not(:first-child)]:relative">
         {showBackgroundAnimation && (
           <Suspense fallback={<></>}>
@@ -100,8 +123,12 @@ export default function App() {
         </Suspense>
       </main>
 
-      <CommandPalette />
-      <ToastProvider />
+      <Suspense>
+        <CommandPalette />
+      </Suspense>
+      <Suspense>
+        <ToastProvider />
+      </Suspense>
     </LazyMotion>
   )
 }
