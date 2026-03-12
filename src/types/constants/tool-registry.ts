@@ -97,6 +97,7 @@ export type ToolRegistryKey =
   | 'qr-code-generator'
   | 'regex-tester'
   | 'rsa-key-generator'
+  | 'splash-screen-generator'
   | 'sql-formatter'
   | 'ssh-key-fingerprint'
   | 'string-escape-unescape'

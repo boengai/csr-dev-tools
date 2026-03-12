@@ -338,6 +338,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Generate iOS splash screens, Android/PWA icons, and manifest files from a single image. All device sizes, maskable icons, meta tags, and ZIP download. 100% client-side.',
+    path: '/tools/splash-screen-generator',
+    title: 'Splash Screen Generator - CSR Dev Tools',
+    url: '/tools/splash-screen-generator',
+  },
+  {
+    description:
       'Parse cron expressions into human-readable descriptions and preview the next scheduled run times.',
     path: '/tools/cron-expression-parser',
     title: 'Cron Expression Parser - CSR Dev Tools',

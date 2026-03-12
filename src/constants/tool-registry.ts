@@ -357,6 +357,27 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Image',
     component: lazy(() =>
+      import('@/components/feature/image/SplashScreenGenerator').then(
+        ({ SplashScreenGenerator }: { SplashScreenGenerator: ComponentType }) => ({
+          default: SplashScreenGenerator,
+        }),
+      ),
+    ),
+    description:
+      'Generate iOS splash screens, Android/PWA icons (standard + maskable), and configuration files from a single image.',
+    emoji: '📱',
+    key: 'splash-screen-generator',
+    name: 'Splash Screen Generator',
+    routePath: '/tools/splash-screen-generator',
+    seo: {
+      description:
+        'Generate iOS splash screens, Android/PWA icons, and manifest files from a single image. All device sizes, maskable icons, meta tags, and ZIP download. 100% client-side.',
+      title: 'Splash Screen Generator - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Image',
+    component: lazy(() =>
       import('@/components/feature/image/ImageConvertor').then(
         ({ ImageConvertor }: { ImageConvertor: ComponentType }) => ({
           default: ImageConvertor,
