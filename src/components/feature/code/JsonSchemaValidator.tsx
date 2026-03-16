@@ -9,8 +9,11 @@ import { type ValidationResult, validateJsonSchema } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['json-schema-validator']
 
 export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [jsonData, setJsonData] = useInputLocalStorage('csr-dev-tools-json-schema-validator-data', '')
-  const [jsonSchema, setJsonSchema] = useInputLocalStorage('csr-dev-tools-json-schema-validator-schema', '')
+  const [inputs, setInputs] = useInputLocalStorage('csr-dev-tools-json-schema-validator', {
+    jsonData: '',
+    jsonSchema: '',
+  })
+  const { jsonData, jsonSchema } = inputs
   const [result, setResult] = useState<ValidationResult | null>(null)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const initializedRef = useRef(false)
@@ -34,12 +37,12 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
   }, [])
 
   const handleDataChange = (val: string) => {
-    setJsonData(val)
+    setInputs((prev) => ({ ...prev, jsonData: val }))
     debouncedValidate(val, jsonSchema)
   }
 
   const handleSchemaChange = (val: string) => {
-    setJsonSchema(val)
+    setInputs((prev) => ({ ...prev, jsonSchema: val }))
     debouncedValidate(jsonData, val)
   }
 

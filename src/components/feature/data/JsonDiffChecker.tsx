@@ -80,8 +80,8 @@ function reducer(state: State, action: Action): State {
 }
 
 export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [original, setOriginal] = useInputLocalStorage('csr-dev-tools-json-diff-original', '')
-  const [modified, setModified] = useInputLocalStorage('csr-dev-tools-json-diff-modified', '')
+  const [inputs, setInputs] = useInputLocalStorage('csr-dev-tools-json-diff', { original: '', modified: '' })
+  const { original, modified } = inputs
   const [state, dispatch] = useReducer(reducer, {
     rows: [],
     unifiedDiff: '',
@@ -141,19 +141,18 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   }, [])
 
   const handleOriginalChange = (val: string) => {
-    setOriginal(val)
+    setInputs((prev) => ({ ...prev, original: val }))
     debouncedProcess(val, modified)
   }
 
   const handleModifiedChange = (val: string) => {
-    setModified(val)
+    setInputs((prev) => ({ ...prev, modified: val }))
     debouncedProcess(original, val)
   }
 
   const handleReset = () => {
     sessionRef.current++
-    setOriginal('')
-    setModified('')
+    setInputs({ original: '', modified: '' })
     dispatch({ type: 'RESET' })
   }
 

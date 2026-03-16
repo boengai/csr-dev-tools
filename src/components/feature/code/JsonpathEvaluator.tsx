@@ -71,11 +71,11 @@ const CHEATSHEET_ENTRIES = [
 ]
 
 export const JsonpathEvaluator = (_props: ToolComponentProps) => {
-  const [jsonInput, setJsonInput] = useInputLocalStorage('csr-dev-tools-jsonpath-evaluator-json', SAMPLE_JSON)
-  const [expression, setExpression] = useInputLocalStorage(
-    'csr-dev-tools-jsonpath-evaluator-expression',
-    DEFAULT_EXPRESSION,
-  )
+  const [inputs, setInputs] = useInputLocalStorage('csr-dev-tools-jsonpath-evaluator', {
+    jsonInput: SAMPLE_JSON,
+    expression: DEFAULT_EXPRESSION,
+  })
+  const { jsonInput, expression } = inputs
   const [parsedData, setParsedData] = useState<unknown>(null)
   const [parseError, setParseError] = useState<string | null>(null)
   const [evaluation, setEvaluation] = useState<JsonPathEvaluation | null>(null)
@@ -135,18 +135,18 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
   }, [])
 
   const handleJsonChange = (value: string) => {
-    setJsonInput(value)
+    setInputs((prev) => ({ ...prev, jsonInput: value }))
     debouncedParseAndEvaluate(value)
   }
 
   const handleExpressionChange = (value: string) => {
-    setExpression(value)
+    setInputs((prev) => ({ ...prev, expression: value }))
     expressionRef.current = value
     debouncedEvaluate(value)
   }
 
   const handleCheatsheetClick = (expr: string) => {
-    setExpression(expr)
+    setInputs((prev) => ({ ...prev, expression: expr }))
     expressionRef.current = expr
     runEvaluation(parsedDataRef.current, expr)
   }
