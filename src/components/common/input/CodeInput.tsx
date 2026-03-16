@@ -56,7 +56,7 @@ const codeInputBaseTheme = EditorView.theme({
     padding: '8px 0',
   },
   '.cm-line': {
-    padding: '0 16px 0 12px',
+    padding: '1.5px 16px 0 12px',
   },
   '.cm-gutters': {
     borderRight: '1px solid var(--color-gray-800)',
