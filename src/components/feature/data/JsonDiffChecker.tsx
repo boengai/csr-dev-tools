@@ -4,9 +4,9 @@ import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { InlineSpan, SideBySideRow, ToolComponentProps } from '@/types'
-import { computeSideBySideDiff, createUnifiedDiff } from '@/utils'
+import { computeSideBySideDiff, createUnifiedDiff, getJsonDiffError, normalizeJson } from '@/utils'
 
-const toolEntry = TOOL_REGISTRY_MAP['text-diff-checker']
+const toolEntry = TOOL_REGISTRY_MAP['json-diff-checker']
 
 const renderSpans = (spans: Array<InlineSpan>, side: 'left' | 'right') => {
   let offset = 0
@@ -55,12 +55,14 @@ const DiffCell = ({
 
 type State = {
   dialogOpen: boolean
+  error: string
   rows: Array<SideBySideRow>
   unifiedDiff: string
 }
 
 type Action =
   | { type: 'SET_DIFF_RESULT'; payload: { rows: Array<SideBySideRow>; unifiedDiff: string } }
+  | { type: 'SET_ERROR'; payload: string }
   | { type: 'SET_DIALOG_OPEN'; payload: boolean }
   | { type: 'RESET' }
 
@@ -68,40 +70,61 @@ function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'SET_DIFF_RESULT':
       return { ...state, rows: action.payload.rows, unifiedDiff: action.payload.unifiedDiff }
+    case 'SET_ERROR':
+      return { ...state, error: action.payload }
     case 'SET_DIALOG_OPEN':
       return { ...state, dialogOpen: action.payload }
     case 'RESET':
-      return { ...state, rows: [], unifiedDiff: '' }
+      return { ...state, rows: [], unifiedDiff: '', error: '' }
   }
 }
 
-export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [original, setOriginal] = useInputLocalStorage('csr-dev-tools-text-diff-original', '')
-  const [modified, setModified] = useInputLocalStorage('csr-dev-tools-text-diff-modified', '')
+export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+  const [original, setOriginal] = useInputLocalStorage('csr-dev-tools-json-diff-original', '')
+  const [modified, setModified] = useInputLocalStorage('csr-dev-tools-json-diff-modified', '')
   const [state, dispatch] = useReducer(reducer, {
     rows: [],
     unifiedDiff: '',
+    error: '',
     dialogOpen: autoOpen ?? false,
   })
-  const { rows, unifiedDiff, dialogOpen } = state
+  const { rows, unifiedDiff, error, dialogOpen } = state
   const { toast } = useToast()
   const sessionRef = useRef(0)
   const initializedRef = useRef(false)
 
   const process = async (orig: string, mod: string) => {
     const session = ++sessionRef.current
+
     if (orig.trim().length === 0 && mod.trim().length === 0) {
+      dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
+      dispatch({ type: 'SET_ERROR', payload: '' })
+      return
+    }
+
+    const origError = getJsonDiffError(orig, 'Original')
+    const modError = getJsonDiffError(mod, 'Modified')
+    if (origError || modError) {
+      dispatch({ type: 'SET_ERROR', payload: (origError ?? modError) as string })
       dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
       return
     }
+
     try {
-      const [sideBySide, patch] = await Promise.all([computeSideBySideDiff(orig, mod), createUnifiedDiff(orig, mod)])
+      const normalizedOrig = orig.trim().length === 0 ? '' : normalizeJson(orig)
+      const normalizedMod = mod.trim().length === 0 ? '' : normalizeJson(mod)
+
+      const [sideBySide, patch] = await Promise.all([
+        computeSideBySideDiff(normalizedOrig, normalizedMod),
+        createUnifiedDiff(normalizedOrig, normalizedMod),
+      ])
       if (session !== sessionRef.current) return
       dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: sideBySide, unifiedDiff: patch } })
+      dispatch({ type: 'SET_ERROR', payload: '' })
     } catch {
       if (session !== sessionRef.current) return
       dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
-      toast({ action: 'add', item: { label: 'Unable to compute diff', type: 'error' } })
+      toast({ action: 'add', item: { label: 'Unable to compute JSON diff', type: 'error' } })
     }
   }
 
@@ -157,7 +180,7 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         }}
         onAfterClose={handleAfterClose}
         size="screen"
-        title="Text Diff Checker"
+        title="JSON Diff Checker"
       >
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-6 tablet:flex-row">
@@ -166,7 +189,7 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                 label="Original"
                 name="original"
                 onChange={handleOriginalChange}
-                placeholder="Paste original text here..."
+                placeholder='{"key": "paste JSON here..."}'
                 type="code"
                 value={original}
               />
@@ -177,7 +200,7 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                 label="Modified"
                 name="modified"
                 onChange={handleModifiedChange}
-                placeholder="Paste modified text here..."
+                placeholder='{"key": "paste JSON here..."}'
                 type="code"
                 value={modified}
               />
@@ -185,6 +208,12 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
           </div>
 
           <div className="border-t-2 border-dashed border-gray-900" />
+
+          {error && (
+            <p className="text-body-sm text-error" role="alert">
+              {error}
+            </p>
+          )}
 
           <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
             <div className="flex items-center gap-1">

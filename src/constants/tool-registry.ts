@@ -512,6 +512,26 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Data',
     component: lazy(() =>
+      import('@/components/feature/data/JsonDiffChecker').then(
+        ({ JsonDiffChecker }: { JsonDiffChecker: ComponentType }) => ({
+          default: JsonDiffChecker,
+        }),
+      ),
+    ),
+    description: 'Compare two JSON objects side-by-side with sorted keys and highlighted differences',
+    emoji: '🔀',
+    key: 'json-diff-checker',
+    name: 'JSON Diff',
+    routePath: '/tools/json-diff-checker',
+    seo: {
+      description:
+        'Compare two JSON objects side-by-side with automatically sorted keys and highlighted differences. Detect value changes, missing keys, and type mismatches instantly in your browser.',
+      title: 'JSON Diff Checker - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Data',
+    component: lazy(() =>
       import('@/components/feature/data/JsonFormatter').then(({ JsonFormatter }: { JsonFormatter: ComponentType }) => ({
         default: JsonFormatter,
       })),

@@ -75,6 +75,7 @@ export type ToolRegistryKey =
   | 'image-to-base64'
   | 'ip-subnet-calculator'
   | 'javascript-minifier'
+  | 'json-diff-checker'
   | 'json-formatter'
   | 'json-schema-validator'
   | 'json-to-csv-converter'

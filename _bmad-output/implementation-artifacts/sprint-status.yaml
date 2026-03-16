@@ -120,6 +120,7 @@ development_status:
   6-12-json-to-yaml-converter: done
   6-13-og-preview: done
   6-14-yaml-formatter: done
+  6-15-json-diff-checker: done
   epic-6-retrospective: done
 
   # Epic 7: Text Tools

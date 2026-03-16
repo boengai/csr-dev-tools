@@ -627,6 +627,7 @@ No issues encountered. All tasks completed in a single pass.
 - 2026-02-14: Story 7-1 Text Diff Checker implemented — new diff utility, 16 unit tests, TextDiffChecker component, new Text category in registry and sidebar
 - 2026-02-14: Code review — fixed theme color tokens (H1), layout competition (M1), accessibility attributes (M2), added trailing newline test (L2). 3 fixes applied, 2 items deferred.
 - 2026-02-14: Side-by-side diff view — replaced unified diff rendering with CSS grid side-by-side layout. Added `computeSideBySideDiff` with `diffWords` inline highlighting, `DiffCell` component, sticky headers, line numbers, indicator bars. Added 8 new tests (448 total). Chunk grew from 3.26 kB to 5.70 kB.
+- 2026-03-16: Added localStorage input persistence using `useInputLocalStorage` hook. Original/modified inputs pulled out of reducer, restored on mount with auto-diff recompute. Cleared on dialog close.
 
 ### File List
 

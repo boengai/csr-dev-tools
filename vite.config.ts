@@ -136,6 +136,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Compare two JSON objects side-by-side with automatically sorted keys and highlighted differences. Detect value changes, missing keys, and type mismatches instantly in your browser.',
+    path: '/tools/json-diff-checker',
+    title: 'JSON Diff Checker - CSR Dev Tools',
+    url: '/tools/json-diff-checker',
+  },
+  {
+    description:
       'Format, validate, and beautify JSON online. Paste minified JSON and get clean, indented output instantly in your browser.',
     path: '/tools/json-formatter',
     title: 'JSON Formatter - CSR Dev Tools',
