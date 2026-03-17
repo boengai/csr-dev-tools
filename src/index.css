@@ -115,6 +115,10 @@
     line-height: 1.6;
   }
 
+  ::selection {
+    background: oklch(0.55 0.22 310 / 0.3);
+  }
+
   *:focus {
     @apply outline-none;
   }
