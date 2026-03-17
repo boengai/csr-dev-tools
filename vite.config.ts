@@ -440,6 +440,13 @@ const toolRoutes = [
   },
   {
     description:
+      'Encode and decode Protocol Buffer messages online. Convert JSON to protobuf binary (base64, hex, text) and back using .proto schemas. 100% client-side protobuf codec.',
+    path: '/tools/protobuf-codec',
+    title: 'Protobuf Codec - CSR Dev Tools',
+    url: '/tools/protobuf-codec',
+  },
+  {
+    description:
       'Convert Protocol Buffer definitions to JSON online. Paste .proto files to browse message types and generate sample JSON structures. 100% client-side Protobuf to JSON converter.',
     path: '/tools/protobuf-to-json',
     title: 'Protobuf to JSON - CSR Dev Tools',

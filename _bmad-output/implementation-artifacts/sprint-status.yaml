@@ -1,5 +1,5 @@
 # generated: 2026-02-12
-# updated: 2026-03-12
+# updated: 2026-03-17
 # project: csr-dev-tools
 # project_key: NOKEY
 # tracking_system: file-system
@@ -40,7 +40,7 @@
 # - Dev moves story to 'review', then runs code-review (fresh context, different LLM recommended)
 
 generated: 2026-02-12
-updated: 2026-03-12
+updated: 2026-03-17
 project: csr-dev-tools
 project_key: NOKEY
 tracking_system: file-system
@@ -167,7 +167,7 @@ development_status:
   epic-10-retrospective: optional
 
   # Epic 11: Code Tools
-  epic-11: done
+  epic-11: in-progress
   11-1-css-formatter: done
   11-2-graphql-schema-viewer: done
   11-3-html-formatter: done
@@ -181,6 +181,7 @@ development_status:
   11-11-protobuf-to-json: done
   11-12-sql-formatter: done
   11-13-typescript-playground: done
+  11-14-protobuf-codec: done
   epic-11-retrospective: done
 
   # Epic 12: Color Tools

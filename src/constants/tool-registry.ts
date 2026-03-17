@@ -1521,6 +1521,25 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
   {
     category: 'Code',
     component: lazy(() =>
+      import('@/components/feature/code/ProtobufCodec').then(({ ProtobufCodec }: { ProtobufCodec: ComponentType }) => ({
+        default: ProtobufCodec,
+      })),
+    ),
+    description:
+      'Encode JSON to protobuf binary (base64/hex/raw) and decode protobuf binary back to JSON using a .proto schema. Full round-trip codec for development and testing.',
+    emoji: '🔄',
+    key: 'protobuf-codec',
+    name: 'Protobuf Codec',
+    routePath: '/tools/protobuf-codec',
+    seo: {
+      description:
+        'Encode and decode Protocol Buffer messages online. Convert JSON to protobuf binary (base64, hex, text) and back using .proto schemas. 100% client-side protobuf codec.',
+      title: 'Protobuf Codec - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Code',
+    component: lazy(() =>
       import('@/components/feature/code/ProtobufToJson').then(
         ({ ProtobufToJson }: { ProtobufToJson: ComponentType }) => ({
           default: ProtobufToJson,

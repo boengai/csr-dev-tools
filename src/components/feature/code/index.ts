@@ -1,0 +1,1 @@
+export { ProtobufCodec } from './ProtobufCodec'
