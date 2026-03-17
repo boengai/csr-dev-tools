@@ -41,7 +41,7 @@ export const codeData = {
 export const toolNames = [
   'JSON Formatter',
   'UUID Generator',
-  'Base64 Encoder',
+  'Base64 Codec',
   'JWT Decoder',
   'Unix Timestamp',
   'Regex Tester',

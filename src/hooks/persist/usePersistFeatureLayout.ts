@@ -15,7 +15,7 @@ export const usePersistFeatureLayout: UseBoundStore<StoreApi<UsePersistFeatureLa
         value: {
           0: 'json-formatter',
           1: 'uuid-generator',
-          2: 'base64-encoder',
+          2: 'base64-codec',
           3: 'jwt-decoder',
           4: 'unix-timestamp',
           5: 'regex-tester',
@@ -23,14 +23,14 @@ export const usePersistFeatureLayout: UseBoundStore<StoreApi<UsePersistFeatureLa
       }),
       {
         migrate: (persistedState, version) => {
-          if (version === 0) {
+          if (version <= 1) {
             const state = persistedState as UsePersistFeatureLayout
             return { ...state, value: migrateLayoutValue(state.value) }
           }
           return persistedState as UsePersistFeatureLayout
         },
         name: 'feature_layout',
-        version: 1,
+        version: 2,
       },
     ),
   )

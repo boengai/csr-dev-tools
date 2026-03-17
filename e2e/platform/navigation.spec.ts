@@ -5,7 +5,7 @@ import { commandPalette, sidebar } from '../helpers/selectors'
 const TOOL_ROUTES = [
   '/tools/text-case-converter',
   '/tools/word-counter',
-  '/tools/base64-encoder',
+  '/tools/base64-codec',
   '/tools/url-parser',
   '/tools/box-shadow-generator',
   '/tools/http-status-codes',
@@ -36,7 +36,7 @@ test.describe('Navigation', () => {
     await expect(commandPalette.searchInput(page)).toBeVisible()
     await commandPalette.searchInput(page).fill('Base64')
 
-    await expect(commandPalette.resultOption(page, /Base64 Encoder/)).toBeVisible({ timeout: 3000 })
+    await expect(commandPalette.resultOption(page, /Base64 Codec/)).toBeVisible({ timeout: 3000 })
   })
 
   test('tool routes load without error', async ({ page }) => {

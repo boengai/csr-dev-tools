@@ -1,12 +1,13 @@
 import type { ToolRegistryKey } from '@/types'
 
 const FEATURE_KEY_TO_REGISTRY_KEY: Record<string, ToolRegistryKey> = {
-  BASE64_ENCODER: 'base64-encoder',
+  BASE64_ENCODER: 'base64-codec',
   COLOR_CONVERTER: 'color-converter',
   IMAGE_CONVERTOR: 'image-converter',
   IMAGE_RESIZER: 'image-resizer',
   PX_TO_REM: 'px-to-rem',
   UNIX_TIMESTAMP: 'unix-timestamp',
+  'base64-encoder': 'base64-codec',
 }
 
 const REGISTRY_KEY_SET = new Set<string>(Object.values(FEATURE_KEY_TO_REGISTRY_KEY))

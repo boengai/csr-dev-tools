@@ -5,7 +5,7 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { decodeBase64, encodeBase64, isValidBase64 } from '@/utils'
 
-const toolEntry = TOOL_REGISTRY_MAP['base64-encoder']
+const toolEntry = TOOL_REGISTRY_MAP['base64-codec']
 
 export const EncodingBase64 = () => {
   const [source, setSource] = useState('')
@@ -87,7 +87,7 @@ export const EncodingBase64 = () => {
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
             <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <FieldForm
-                label="Source"
+                label={<span className="block h-8">Source</span>}
                 name="dialog-source"
                 onChange={handleSourceChange}
                 placeholder={placeholder}

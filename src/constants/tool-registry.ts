@@ -93,13 +93,13 @@ export const TOOL_REGISTRY: Array<ToolRegistryEntry> = [
     ),
     description: 'Encode and decode Base64 strings in the browser',
     emoji: '🔤',
-    key: 'base64-encoder',
-    name: 'Base64 Encoder',
-    routePath: '/tools/base64-encoder',
+    key: 'base64-codec',
+    name: 'Base64 Codec',
+    routePath: '/tools/base64-codec',
     seo: {
       description:
         'Encode and decode Base64 strings online. Convert text to Base64 and back instantly in your browser.',
-      title: 'Base64 Encoder - CSR Dev Tools',
+      title: 'Base64 Codec - CSR Dev Tools',
     },
   },
   {

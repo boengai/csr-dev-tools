@@ -17,7 +17,7 @@ describe('dashboard utilities', () => {
       expect(result).toEqual({
         0: 'image-converter',
         1: 'unix-timestamp',
-        2: 'base64-encoder',
+        2: 'base64-codec',
         3: 'color-converter',
         4: 'image-resizer',
         5: 'px-to-rem',
@@ -28,7 +28,7 @@ describe('dashboard utilities', () => {
       const current = {
         0: 'image-converter',
         1: 'unix-timestamp',
-        2: 'base64-encoder',
+        2: 'base64-codec',
       }
       expect(migrateLayoutValue(current)).toEqual(current)
     })
@@ -55,7 +55,7 @@ describe('dashboard utilities', () => {
         3: null,
       }
       expect(migrateLayoutValue(value)).toEqual({
-        0: 'base64-encoder',
+        0: 'base64-codec',
         1: 'color-converter',
         2: null,
         3: null,
@@ -100,7 +100,7 @@ describe('dashboard utilities', () => {
 
   describe('isValidLayoutValue', () => {
     const validKeys = new Set([
-      'base64-encoder',
+      'base64-codec',
       'color-converter',
       'image-converter',
       'image-resizer',
@@ -112,7 +112,7 @@ describe('dashboard utilities', () => {
       const value = {
         0: 'image-converter',
         1: 'unix-timestamp',
-        2: 'base64-encoder',
+        2: 'base64-codec',
         3: 'color-converter',
         4: 'image-resizer',
         5: 'px-to-rem',

@@ -2,9 +2,9 @@ import { expect, test } from '@playwright/test'
 
 import { base64 } from './helpers/fixtures'
 
-test.describe('Base64 Encoder', () => {
+test.describe('Base64 Codec', () => {
   test('encodes text to base64', async ({ page }) => {
-    await page.goto('/tools/base64-encoder')
+    await page.goto('/tools/base64-codec')
     // Open the encode dialog
     await page.getByRole('button', { name: /^Encode$/ }).click()
 

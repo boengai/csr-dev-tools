@@ -39,7 +39,7 @@ export type ToolRegistryKey =
   | 'aes-encrypt-decrypt'
   | 'aspect-ratio-calculator'
   | 'background-remover'
-  | 'base64-encoder'
+  | 'base64-codec'
   | 'base64-to-image'
   | 'bcrypt-hasher'
   | 'box-shadow-generator'

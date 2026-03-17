@@ -34,9 +34,9 @@ const toolRoutes = [
   {
     description:
       'Encode and decode Base64 strings online. Convert text to Base64 and back instantly in your browser.',
-    path: '/tools/base64-encoder',
-    title: 'Base64 Encoder - CSR Dev Tools',
-    url: '/tools/base64-encoder',
+    path: '/tools/base64-codec',
+    title: 'Base64 Codec - CSR Dev Tools',
+    url: '/tools/base64-codec',
   },
   {
     description:
