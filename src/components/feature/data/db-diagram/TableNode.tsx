@@ -1,13 +1,11 @@
-import type { Node, NodeProps } from '@xyflow/react'
+import type { NodeProps } from '@xyflow/react'
 import { Handle, Position } from '@xyflow/react'
 import { useCallback, useRef, useState } from 'react'
 
 import { Button, SelectInput, TextInput } from '@/components/common'
 import { XIcon } from '@/components/common/icon'
-import type { ColumnType, TableColumn, TableNodeData } from '@/types'
+import type { ColumnType, TableColumn, TableNode } from '@/types'
 import { cnMerge, COLUMN_TYPES } from '@/utils'
-
-export type TableNode = Node<TableNodeData, 'tableNode'>
 
 const CONSTRAINT_COLORS: Record<string, string> = {
   error:

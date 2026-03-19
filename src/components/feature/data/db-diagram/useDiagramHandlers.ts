@@ -4,7 +4,18 @@ import type { Dispatch, RefObject, SetStateAction } from 'react'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { useDebounceCallback, useToast } from '@/hooks'
-import type { DiagramIndexEntry, RelationshipEdgeData, RelationshipType, SqlDialect, TableColumn } from '@/types'
+import type {
+  DiagramAction,
+  DiagramIndexEntry,
+  DiagramState,
+  RelationshipEdge,
+  RelationshipEdgeData,
+  RelationshipType,
+  SidePanel,
+  SqlDialect,
+  TableColumn,
+  TableNode,
+} from '@/types'
 import {
   createDefaultColumn,
   createDefaultTable,
@@ -29,10 +40,6 @@ import {
   validateDiagramSchema,
 } from '@/utils'
 
-import type { DiagramAction, DiagramState } from './diagramReducer'
-import type { RelationshipEdge } from './RelationshipEdge'
-import type { TableNode } from './TableNode'
-import type { SidePanel } from './types'
 
 const MERMAID_PREFILL_KEY = 'csr-dev-tools-mermaid-renderer-prefill'
 

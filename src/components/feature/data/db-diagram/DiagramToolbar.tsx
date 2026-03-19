@@ -1,8 +1,7 @@
 import type { RefObject } from 'react'
 
 import { Button, ChevronIcon, DropdownMenu, ListIcon, TextInput } from '@/components/common'
-
-import type { SidePanel } from './types'
+import type { SidePanel } from '@/types'
 
 type DiagramToolbarProps = {
   activePanel: SidePanel

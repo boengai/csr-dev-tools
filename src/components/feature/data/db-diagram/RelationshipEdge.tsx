@@ -1,10 +1,8 @@
-import type { Edge, EdgeProps } from '@xyflow/react'
+import type { EdgeProps } from '@xyflow/react'
 import { EdgeLabelRenderer, Position, getSmoothStepPath } from '@xyflow/react'
 import { useCallback, useState } from 'react'
 
-import type { RelationshipEdgeData, RelationshipType } from '@/types'
-
-export type RelationshipEdge = Edge<RelationshipEdgeData, 'relationship'>
+import type { RelationshipEdge, RelationshipType } from '@/types'
 
 const RELATION_OPTIONS: Array<RelationshipType> = ['1:1', '1:N', 'N:M']
 

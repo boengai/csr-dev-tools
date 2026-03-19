@@ -15,7 +15,7 @@ import { useMemo, useReducer, useRef, useState } from 'react'
 
 import { Button, Dialog } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { DiagramIndexEntry, SqlDialect, ToolComponentProps } from '@/types'
+import type { DiagramIndexEntry, RelationshipEdge, SidePanel, SqlDialect, TableNode, ToolComponentProps } from '@/types'
 
 import '@xyflow/react/dist/style.css'
 import { DbmlEditorPanel } from './DbmlEditorPanel'
@@ -27,11 +27,8 @@ import { ExportSqlPanel } from './ExportSqlPanel'
 import { ExportTypescriptPanel } from './ExportTypescriptPanel'
 import { ImportJsonSchemaPanel } from './ImportJsonSchemaPanel'
 import { ImportSqlPanel } from './ImportSqlPanel'
-import type { RelationshipEdge } from './RelationshipEdge'
 import { RelationshipEdgeComponent } from './RelationshipEdge'
-import type { TableNode } from './TableNode'
 import { TableNodeComponent } from './TableNode'
-import type { SidePanel } from './types'
 import { useDiagramHandlers } from './useDiagramHandlers'
 
 const nodeTypes: NodeTypes = { tableNode: TableNodeComponent }
