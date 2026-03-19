@@ -1,15 +1,15 @@
 # CSR Developer Tools - Component Inventory
 
-**Generated:** 2026-03-11 | **Scan Level:** Quick
+**Updated:** 2026-03-20 | **Scan Level:** Quick
 
 ## Summary
 
 | Category | Count |
 |----------|-------|
 | Common Components | 30 |
-| Feature Components | 83 |
+| Feature Components | 96 |
 | Icon Components | 18 |
-| **Total** | **131** |
+| **Total** | **144** |
 
 ## Common Components (`src/components/common/`)
 
@@ -88,7 +88,7 @@
 
 ## Feature Components (`src/components/feature/`)
 
-### Code Tools (`code/`) — 13 components
+### Code Tools (`code/`) — 14 components
 
 | Component | Description |
 |-----------|-------------|
@@ -102,6 +102,7 @@
 | `MarkdownPreview` | Live markdown preview with syntax highlighting |
 | `MarkdownTableGenerator` | Generate markdown tables visually |
 | `MermaidRenderer` | Render Mermaid diagrams (flowcharts, sequences, etc.) |
+| `ProtobufCodec` | Encode/decode Protobuf with base64/hex/raw format support |
 | `ProtobufToJson` | Decode Protobuf messages to JSON |
 | `SqlFormatter` | Format and beautify SQL queries |
 | `TypescriptPlayground` | Full TypeScript editor with Monaco (IntelliSense) |
@@ -124,7 +125,7 @@
 | `GradientGenerator` | Visual CSS gradient generator |
 | `GridPlayground` | Interactive CSS grid layout playground |
 
-### Data Tools (`data/`) — 14 components
+### Data Tools (`data/`) — 15 components
 
 | Component | Description |
 |-----------|-------------|
@@ -135,6 +136,7 @@
 | `HtmlEntityConverter` | Encode/decode HTML entities |
 | `HtmlToMarkdownConverter` | Convert HTML to Markdown (Turndown) |
 | `HttpStatusCodes` | HTTP status code reference |
+| `JsonDiffChecker` | Compare two JSON documents and show differences |
 | `JsonFormatter` | Format, minify, and validate JSON |
 | `JsonToCsvConverter` | Convert JSON arrays to CSV |
 | `JsonToTomlConverter` | Convert JSON to TOML format |
@@ -147,7 +149,7 @@
 
 | Component | Description |
 |-----------|-------------|
-| `EncodingBase64` | Base64 string encoder/decoder |
+| `EncodingBase64` | Base64 string codec (encode/decode) |
 | `JwtDecoder` | Decode and inspect JWT tokens |
 | `NumberBaseConverter` | Convert between number bases (bin, oct, dec, hex) |
 | `UrlEncoder` | URL encode/decode strings |
@@ -161,7 +163,7 @@
 | `QrCodeGenerator` | Generate QR codes from text/URLs |
 | `UuidGenerator` | Generate UUID v4 identifiers |
 
-### Image Tools (`image/`) — 17 components
+### Image Tools (`image/`) — 18 components
 
 | Component | Description |
 |-----------|-------------|
@@ -174,6 +176,7 @@
 | `ImageCropper` | Crop images with aspect ratio controls |
 | `ImagePreview` | Preview uploaded images |
 | `ImageResizer` | Resize images with custom dimensions |
+| `ImageResizerControls` | Resize controls sub-component (shared by ImageResizer) |
 | `ImageToBase64` | Convert images to Base64 strings |
 | `PlaceholderImageGenerator` | Generate placeholder images |
 | `SplashScreenGenerator` | Generate iOS splash screens, Android/PWA icons, and manifest files |

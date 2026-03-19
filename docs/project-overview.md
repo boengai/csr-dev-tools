@@ -1,10 +1,10 @@
 # CSR Developer Tools - Project Overview
 
-**Generated:** 2026-03-11 | **Scan Level:** Quick | **Mode:** Full Rescan
+**Updated:** 2026-03-20 | **Scan Level:** Quick
 
 ## Executive Summary
 
-CSR Developer Tools is a **100% client-side** single-page application (SPA) that provides browser-based developer utilities. All processing happens locally in the user's browser with zero server dependencies, ensuring complete data privacy. The project has grown from 6 initial tools to **78 developer tools** across 12 categories.
+CSR Developer Tools is a **100% client-side** single-page application (SPA) that provides browser-based developer utilities. All processing happens locally in the user's browser with zero server dependencies, ensuring complete data privacy. The project has grown from 6 initial tools to **80 developer tools** across 12 categories.
 
 ## Project Identity
 
@@ -18,12 +18,12 @@ CSR Developer Tools is a **100% client-side** single-page application (SPA) that
 | **Package Manager** | pnpm 10.11.0 |
 | **Node.js Requirement** | >= 24.5.0 |
 
-## Tool Categories (78 tools)
+## Tool Categories (80 tools)
 
 | Category | Count | Examples |
 |----------|-------|---------|
-| Data | 14 | JSON Formatter, CSV Converter, YAML/TOML/XML Converters, DB Diagram Builder |
-| Code | 13 | JSON to TypeScript, SQL Formatter, Mermaid Renderer, TypeScript Playground |
+| Data | 15 | JSON Formatter, JSON Diff, CSV Converter, YAML/TOML/XML Converters, DB Diagram Builder |
+| Code | 14 | JSON to TypeScript, SQL Formatter, Mermaid Renderer, Protobuf Codec, TypeScript Playground |
 | Image | 12 | Background Remover, Favicon Generator, Splash Screen Generator, SVG Viewer |
 | Security | 8 | AES Encrypt/Decrypt, Bcrypt Hasher, Hash/HMAC Generator, RSA/SSH Key tools |
 | Text | 8 | Regex Tester, Text Diff, Lorem Ipsum, Word Counter, Case Converter |
@@ -62,7 +62,7 @@ CSR Developer Tools is a **100% client-side** single-page application (SPA) that
 
 **Component-based SPA** with dynamic tool routing and lazy-loaded components.
 
-- Tool registry (`tool-registry.ts`) defines all 78 tools with lazy-loaded components
+- Tool registry (`tool-registry.ts`) defines all 80 tools with lazy-loaded components
 - Dynamic routing via `/tools/$toolKey` for individual tool pages
 - Home page dashboard with searchable tool grid
 - Sidebar navigation with categorized tool listing

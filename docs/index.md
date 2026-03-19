@@ -1,6 +1,6 @@
 # CSR Developer Tools - Documentation Index
 
-**Generated:** 2026-03-11 | **Workflow:** full_rescan (quick)
+**Updated:** 2026-03-20
 
 ## Project Overview
 
@@ -9,7 +9,7 @@
 - **Framework:** React 19.2.4 + Vite 7.3.1
 - **Architecture:** Component-based SPA with dynamic tool routing
 - **Constraint:** 100% client-side -- zero server dependencies
-- **Scale:** 78 developer tools across 12 categories
+- **Scale:** 80 developer tools across 12 categories
 
 ## Quick Reference
 
@@ -22,15 +22,15 @@
 - **Diagrams:** Mermaid + React Flow (@xyflow)
 - **AI/ML:** @huggingface/transformers (in-browser background removal)
 - **Linting/Formatting:** oxlint 1.51.0 + oxfmt 0.36.0
-- **Unit Testing:** Vitest 4 (87 spec files, ~1,509 tests)
-- **E2E Testing:** Playwright 1.58.2 (36 tool + 2 platform specs)
+- **Unit Testing:** Vitest 4 (88 spec files, ~1,554 tests)
+- **E2E Testing:** Playwright 1.58.2 (37 tool + 2 platform specs)
 
 ## Generated Documentation
 
 - [Project Overview](./project-overview.md) -- Executive summary, features, tech stack
 - [Architecture](./architecture.md) -- Architecture patterns, component hierarchy, state management
 - [Source Tree Analysis](./source-tree-analysis.md) -- Annotated directory structure, critical folders
-- [Component Inventory](./component-inventory.md) -- All 131 UI components categorized
+- [Component Inventory](./component-inventory.md) -- All 144 UI components categorized
 - [Development Guide](./development-guide.md) -- Setup, scripts, code style, testing, adding tools
 
 ## Existing Documentation
@@ -61,12 +61,12 @@ pnpm build        # TypeScript + Vite production build
 pnpm preview      # Preview build locally
 ```
 
-## Tools (78 across 12 categories)
+## Tools (80 across 12 categories)
 
 | Category | Count | Key Components |
 |----------|-------|----------------|
-| Data | 14 | DbDiagram, JsonFormatter, CsvConverter, YamlFormatter, OgPreview |
-| Code | 13 | JsonToTypeScript, MermaidRenderer, TypescriptPlayground, SqlFormatter |
+| Data | 15 | DbDiagram, JsonDiffChecker, JsonFormatter, CsvConverter, YamlFormatter, OgPreview |
+| Code | 14 | JsonToTypeScript, MermaidRenderer, ProtobufCodec, TypescriptPlayground, SqlFormatter |
 | Image | 12 | BackgroundRemover, FaviconGenerator, SplashScreenGenerator, SvgViewer |
 | Security | 8 | AesEncryptDecrypt, BcryptHasher, HashGenerator, RsaKeyGenerator |
 | Text | 8 | RegexTester, TextDiffChecker, WordCounter, LoremIpsumGenerator |

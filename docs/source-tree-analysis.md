@@ -1,6 +1,6 @@
 # CSR Developer Tools - Source Tree Analysis
 
-**Generated:** 2026-03-11 | **Scan Level:** Quick
+**Updated:** 2026-03-20 | **Scan Level:** Quick
 
 ## Project Root
 
@@ -31,7 +31,8 @@ csr-dev-tools/
 ├── dist/                   # Production build output
 ├── e2e/                    # Playwright E2E test specs
 │   ├── platform/           # Platform-level E2E tests (home, navigation)
-│   └── *.spec.ts           # 36 tool-specific E2E test files
+│   ├── helpers/            # Test helpers (fixtures, selectors)
+│   └── *.spec.ts           # 37 tool-specific E2E test files
 ├── public/                 # Static assets served as-is
 │   └── fonts/              # Noto Emoji font files
 └── src/                    # Application source code (see below)
@@ -49,7 +50,7 @@ src/
 │
 ├── components/             # All UI components
 │   ├── index.ts            # Barrel export
-│   ├── common/             # Reusable UI primitives (30 components)
+│   ├── common/             # Reusable UI primitives (30 components + 18 icons)
 │   │   ├── animate/        # TwinkleStarsAnimate (background stars)
 │   │   ├── button/         # Button, CopyButton (motion-enhanced)
 │   │   ├── card/           # Card (feature tool container)
@@ -69,11 +70,11 @@ src/
 │   │   ├── table/          # DataCellTable (key-value display)
 │   │   ├── tabs/           # Tabs (Radix-based tab component)
 │   │   └── toast/          # ToastProvider (Radix toast + Zustand)
-│   └── feature/            # Feature-specific tool components (83 components)
-│       ├── code/           # 13 tools: JsonToTypeScript, MermaidRenderer, etc.
+│   └── feature/            # Feature-specific tool components (96 components)
+│       ├── code/           # 14 tools: JsonToTypeScript, MermaidRenderer, ProtobufCodec, etc.
 │       ├── color/          # 2 tools: ColorConvertor, ColorPaletteGenerator
 │       ├── css/            # 6 tools: FlexboxPlayground, GridPlayground, etc.
-│       ├── data/           # 14 tools: DbDiagram, JsonFormatter, etc.
+│       ├── data/           # 15 tools: DbDiagram, JsonDiffChecker, JsonFormatter, etc.
 │       │   └── db-diagram/ # Complex sub-component: visual DB diagram builder
 │       │       ├── DbDiagram.tsx, TableNode.tsx, RelationshipEdge.tsx
 │       │       ├── DiagramToolbar.tsx, DiagramListPanel.tsx
@@ -135,7 +136,7 @@ src/
 │   └── utils/              # Types for utility functions
 │       └── index.ts
 │
-└── utils/                  # Pure utility functions (85 modules)
+└── utils/                  # Pure utility functions (89 modules)
     ├── index.ts            # Barrel export
     ├── tailwind-variants.ts # Custom tv() wrapper with twMerge config
     ├── color.ts            # Color format conversion (HEX, RGB, HSL, OKLCH, LAB, LCH)
@@ -146,22 +147,22 @@ src/
     ├── validation.ts       # Input validation utilities
     ├── ... (80+ more utility modules)
     ├── db-diagram*.ts      # 9 modules for DB diagram feature
-    └── *.spec.ts           # 87 co-located test files (~1,509 test cases)
+    └── *.spec.ts           # 88 co-located test files (~1,554 test cases)
 ```
 
 ## Critical Folders
 
 | Folder | Purpose | Key Files |
 |--------|---------|-----------|
-| `src/constants/tool-registry.ts` | Central tool definition | All 78 tools registered here |
-| `src/components/common/` | Reusable UI primitives | 30 components across 18 categories |
-| `src/components/feature/` | Tool implementations | 83 components across 12 categories |
+| `src/constants/tool-registry.ts` | Central tool definition | All 80 tools registered here |
+| `src/components/common/` | Reusable UI primitives | 30 components + 18 icons across 18 categories |
+| `src/components/feature/` | Tool implementations | 96 components across 12 categories |
 | `src/hooks/state/` | Zustand stores | Toast, CommandPalette, Sidebar |
 | `src/hooks/persist/` | Persistent state | Layout, Settings, Input persistence |
 | `src/types/` | All type definitions | Mirrors src/ structure exactly |
-| `src/utils/` | Pure logic functions | 88 modules with 87 test files |
+| `src/utils/` | Pure logic functions | 89 modules with 88 test files |
 | `src/pages/` | Route pages | Home dashboard, Dynamic tool page |
-| `e2e/` | E2E test specs | 36 tool tests + 2 platform tests |
+| `e2e/` | E2E test specs | 37 tool tests + 2 platform tests |
 
 ## Entry Points
 

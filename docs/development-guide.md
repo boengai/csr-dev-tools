@@ -1,6 +1,6 @@
 # CSR Developer Tools - Development Guide
 
-**Generated:** 2026-03-11 | **Scan Level:** Quick
+**Updated:** 2026-03-20 | **Scan Level:** Quick
 
 ## Prerequisites
 
@@ -89,6 +89,18 @@ Output: `dist/` directory with static HTML, CSS, JS chunks.
 | `trailingComma` | all |
 | Tailwind sorting | Enabled (including `tv()` function calls) |
 
+### Styling Rules
+
+- **No inline ternary in `className`** -- all conditional class logic must use `tv()` variants from `@/utils`
+  ```tsx
+  // ❌ BANNED
+  <div className={isActive ? 'bg-primary' : 'bg-gray-800'} />
+
+  // ✅ CORRECT — use tv() variants
+  const styles = tv({ base: '...', variants: { active: { true: 'bg-primary', false: 'bg-gray-800' } } })
+  <div className={styles({ active: isActive })} />
+  ```
+
 ## Testing
 
 ### Unit Tests (Vitest)
@@ -97,7 +109,7 @@ Output: `dist/` directory with static HTML, CSS, JS chunks.
 - **Environment**: Node (not jsdom)
 - **Globals**: Enabled (`describe`, `it`, `expect` available without import)
 - **Test files**: Co-located as `*.spec.ts` alongside source files in `src/utils/`
-- **Coverage**: 87 spec files with ~1,509 test cases
+- **Coverage**: 88 spec files with ~1,554 test cases
 - **Path aliases**: `@/*` works in tests via `vite-tsconfig-paths`
 
 ```bash
@@ -112,7 +124,7 @@ pnpm vitest
 
 - **Framework**: Playwright 1.58.2
 - **Test files**: `e2e/` directory
-  - 36 tool-specific test specs
+  - 37 tool-specific test specs
   - 2 platform tests in `e2e/platform/` (home, navigation)
 
 ```bash

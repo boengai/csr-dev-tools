@@ -1,6 +1,6 @@
 # CSR Developer Tools - Architecture
 
-**Generated:** 2026-03-11 | **Scan Level:** Quick
+**Updated:** 2026-03-20 | **Scan Level:** Quick
 
 ## Architecture Pattern
 
@@ -54,7 +54,7 @@
         │     ├── / (Home page) ──→ Tool dashboard with search & grid
         │     └── /tools/$toolKey ──→ Dynamic tool page (from registry)
         ├── Tool Registry (constants/tool-registry.ts)
-        │     └── 78 tools with lazy-loaded components, metadata, SEO
+        │     └── 80 tools with lazy-loaded components, metadata, SEO
         ├── Zustand Stores (hooks/state/)
         │     ├── useToast ──→ Toast notification state
         │     ├── useCommandPaletteStore ──→ Command palette open/search state
@@ -64,8 +64,8 @@
         │     ├── usePersistSettings ──→ User settings persistence
         │     └── useInputLocalStorage ──→ Tool input value persistence
         └── Utility Functions (utils/)
-              ├── 88 utility modules covering all tool logic
-              └── 87 co-located spec files (~1,509 unit tests)
+              ├── 89 utility modules covering all tool logic
+              └── 88 co-located spec files (~1,554 unit tests)
 ```
 
 ## Component Architecture
@@ -82,8 +82,8 @@ App.tsx (root, lazy-loaded)
 │   └── Tools Page (/tools/$toolKey)
 │       ├── ToolErrorBoundary (error handling per tool)
 │       └── Lazy-loaded tool component (from registry)
-│           ├── Code tools (13): JsonToTypeScript, MermaidRenderer, TypescriptPlayground...
-│           ├── Data tools (14): DbDiagram, JsonFormatter, CsvConverter...
+│           ├── Code tools (14): JsonToTypeScript, MermaidRenderer, ProtobufCodec, TypescriptPlayground...
+│           ├── Data tools (15): DbDiagram, JsonDiffChecker, JsonFormatter, CsvConverter...
 │           ├── Image tools (12): BackgroundRemover, SplashScreenGenerator, SvgViewer...
 │           ├── Text tools (8): RegexTester, TextDiffChecker, WordCounter...
 │           ├── CSS tools (6): FlexboxPlayground, GridPlayground, CssAnimationBuilder...
@@ -138,6 +138,7 @@ Pattern: `create<T>()((set: StoreApi<T>['setState']) => ({...}))`
 - **tailwind-variants** for component variants using custom `tv()` wrapper from `@/utils`
 - **CompVariant<T>** type for typed variant definitions
 - **oxfmt** sorts Tailwind classes inside `tv()` calls automatically
+- **No inline ternary classNames**: All conditional class logic MUST use `tv()` variants — inline ternary in `className` is banned
 - **Custom breakpoints**: `tablet:` (48rem), `laptop:` (80rem), `desktop:` (120rem)
 - **Default breakpoints removed**: Do NOT use `sm:`, `md:`, `lg:`, `xl:`, `2xl:`
 
@@ -151,11 +152,11 @@ Pattern: `create<T>()((set: StoreApi<T>['setState']) => ({...}))`
 ## Testing Strategy
 
 - **Unit Tests**: Vitest 4 with node environment, globals enabled
-  - 87 spec files co-located in `src/utils/` (~1,509 test cases)
+  - 88 spec files co-located in `src/utils/` (~1,554 test cases)
   - Pure function testing -- no DOM/component tests
   - Path aliases `@/*` work in tests via `vite-tsconfig-paths`
 - **E2E Tests**: Playwright 1.58.2
-  - 36 tool-specific E2E specs in `e2e/`
+  - 37 tool-specific E2E specs in `e2e/`
   - 2 platform specs in `e2e/platform/` (home, navigation)
   - Cross-browser testing support
 
