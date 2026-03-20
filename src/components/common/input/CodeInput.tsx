@@ -12,7 +12,7 @@ const codeInputTheme = createTheme({
     background: 'var(--color-gray-950)',
     foreground: 'var(--color-gray-200)',
     caret: 'var(--color-primary-light)',
-    selection: 'oklch(0.55 0.22 310 / 0.2)',
+    selection: 'oklch(0.55 0.22 310 / 0.5)',
     selectionMatch: 'oklch(0.55 0.22 310 / 0.1)',
     lineHighlight: 'oklch(0.15 0.008 270 / 0.5)',
     gutterBackground: 'var(--color-gray-950)',
