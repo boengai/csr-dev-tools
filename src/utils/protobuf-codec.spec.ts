@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { decodeProtobuf, encodeProtobuf } from './protobuf-codec'
+import { detectProtobufFormat, decodeProtobuf, encodeProtobuf } from './protobuf-codec'
 
 const SIMPLE_PROTO = `
 syntax = "proto3";
@@ -185,6 +185,40 @@ describe('protobuf-codec', () => {
 
       const parsed = JSON.parse(decoded.output)
       expect(parsed).toEqual(json)
+    })
+  })
+
+  describe('detectProtobufFormat', () => {
+    it('detects valid base64 string', () => {
+      const input = btoa('hello world')
+      const result = detectProtobufFormat(input)
+      expect(result).toBe('base64')
+    })
+
+    it('detects valid hex string', () => {
+      const result = detectProtobufFormat('0a05416c69636510011801')
+      expect(result).toBe('hex')
+    })
+
+    it('detects raw binary (non-text bytes)', () => {
+      const raw = String.fromCharCode(0x0a, 0x05, 0x41, 0x6c, 0x69, 0x63, 0x65, 0x10, 0x1e, 0x18, 0x01)
+      const result = detectProtobufFormat(raw)
+      expect(result).toBe('raw')
+    })
+
+    it('detects base64 with padding', () => {
+      const result = detectProtobufFormat('SGVsbG8gV29ybGQ=')
+      expect(result).toBe('base64')
+    })
+
+    it('detects base64 without padding', () => {
+      const result = detectProtobufFormat('SGVsbG8gV29ybGQ')
+      expect(result).toBe('base64')
+    })
+
+    it('returns raw for empty string', () => {
+      const result = detectProtobufFormat('')
+      expect(result).toBe('raw')
     })
   })
 

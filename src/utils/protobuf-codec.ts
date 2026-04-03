@@ -87,6 +87,31 @@ function resolveMessageType(schema: string, messageTypeName: string): protobuf.T
   return messageType
 }
 
+export function detectProtobufFormat(input: string): OutputFormat {
+  const trimmed = input.trim()
+  if (!trimmed) return 'raw'
+
+  // Check hex first: even-length string of strictly hex chars
+  if (/^[0-9a-fA-F\s]+$/.test(trimmed)) {
+    const stripped = trimmed.replace(/\s/g, '')
+    if (stripped.length % 2 === 0 && stripped.length >= 2) {
+      return 'hex'
+    }
+  }
+
+  // Check base64: valid charset + valid length (may have padding)
+  if (/^[A-Za-z0-9+/\s]+=*$/.test(trimmed) && trimmed.length >= 4) {
+    try {
+      atob(trimmed.replace(/\s/g, ''))
+      return 'base64'
+    } catch {
+      // not valid base64
+    }
+  }
+
+  return 'raw'
+}
+
 export function encodeProtobuf(
   schema: string,
   messageTypeName: string,
