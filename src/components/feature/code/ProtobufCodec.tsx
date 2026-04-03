@@ -309,6 +309,13 @@ const DecodeContent = ({
     [onFormatChange, onSourceChange, schema, selectedMessageType, processDecode, toast],
   )
 
+  const handleDownloadJson = useCallback(() => {
+    if (!result) return
+    const timestamp = Date.now()
+    const safeName = selectedMessageType.replace(/[^a-zA-Z0-9-_]/g, '_')
+    downloadTextFile(result, `decoded_${safeName}_${timestamp}.json`, 'application/json')
+  }, [result, selectedMessageType])
+
   return (
     <div className="flex w-full grow flex-col gap-4">
       {messageTypes.length > 0 && (
@@ -371,6 +378,15 @@ const DecodeContent = ({
             <span className="flex items-center gap-1">
               <span>Result</span>
               <CopyButton label="result" value={result} />
+              <button
+                aria-label="Download decoded JSON"
+                className="inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md p-1.5 text-body-sm transition-colors hover:bg-gray-800 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                disabled={!result}
+                onClick={handleDownloadJson}
+                type="button"
+              >
+                <DownloadIcon size={16} />
+              </button>
             </span>
           }
           placeholder='{ "name": "Alice" }'
