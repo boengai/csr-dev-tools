@@ -55,3 +55,16 @@ export const downloadTextFile = (content: string, filename: string, mimeType = '
   a.click()
   URL.revokeObjectURL(url)
 }
+
+/**
+ * Download binary data as a file via Blob URL
+ */
+export const downloadBinaryFile = (data: Uint8Array, filename: string, mimeType = 'application/octet-stream'): void => {
+  const blob = new Blob([data], { type: mimeType })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
+}
