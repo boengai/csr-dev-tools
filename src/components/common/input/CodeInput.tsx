@@ -77,7 +77,7 @@ const codeInputCompactTheme = EditorView.theme({
 })
 
 const wrapperVariants = tv({
-  base: 'flex min-h-0 flex-col [&_.cm-editor]:min-h-0 [&_.cm-editor]:flex-1 [&>div]:flex [&>div]:min-h-0 [&>div]:flex-1 [&>div]:flex-col',
+  base: 'flex min-h-0 flex-col overflow-scroll [&_.cm-editor]:min-h-0 [&_.cm-editor]:flex-1 [&>div]:flex [&>div]:min-h-0 [&>div]:flex-1 [&>div]:flex-col',
   variants: {
     block: {
       true: 'w-full grow',
