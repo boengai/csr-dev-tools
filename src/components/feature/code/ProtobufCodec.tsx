@@ -161,8 +161,8 @@ const EncodeContent = ({
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      <div className="flex grow flex-col gap-6 tablet:flex-row">
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-2">
+      <div className="flex flex-col gap-6 tablet:flex-row">
+        <div className="flex flex-1 flex-col justify-center gap-2">
           <SelectInput
             name="message-type-select"
             onChange={handleMessageTypeChange}
@@ -172,7 +172,7 @@ const EncodeContent = ({
           />
         </div>
         <div className="w-px" />
-        <div className="flex min-h-0 min-w-0 flex-1 items-center gap-2">
+        <div className="flex flex-1 items-center gap-2">
           <UploadInput
             accept=".json,application/json"
             button={{ children: 'Upload JSON' }}
@@ -327,8 +327,8 @@ const DecodeContent = ({
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      <div className="flex grow flex-col gap-6 tablet:flex-row">
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-2">
+      <div className="flex flex-col gap-6 tablet:flex-row">
+        <div className="flex flex-1 flex-col justify-center gap-2">
           <SelectInput
             name="message-type-select"
             onChange={handleMessageTypeChange}
@@ -339,7 +339,7 @@ const DecodeContent = ({
           />
         </div>
         <div className="w-px" />
-        <div className="flex min-h-0 min-w-0 flex-1 items-center gap-2">
+        <div className="flex flex-1 items-center gap-2">
           <FieldForm
             label="Input Format"
             name="format"
