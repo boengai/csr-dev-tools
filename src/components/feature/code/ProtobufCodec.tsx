@@ -5,6 +5,7 @@ import { downloadBinaryFile, downloadTextFile } from '@/utils/file'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import { detectProtobufFormat } from '@/utils/protobuf-codec'
 import type { OutputFormat } from '@/utils/protobuf-codec'
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-codec']
@@ -290,6 +291,24 @@ const DecodeContent = ({
     [onMessageTypeChange, source, schema, format, processDecode],
   )
 
+  const handleUploadPb = useCallback(
+    (files: Array<File>) => {
+      const file = files[0]
+      if (!file) return
+      const reader = new FileReader()
+      reader.onload = () => {
+        const text = reader.result as string
+        const detected = detectProtobufFormat(text)
+        onFormatChange(detected)
+        onSourceChange(text)
+        processDecode(schema, selectedMessageType, text, detected)
+        toast({ action: 'add', item: { label: `Auto-detected format: ${detected}`, type: 'info' } })
+      }
+      reader.readAsText(file)
+    },
+    [onFormatChange, onSourceChange, schema, selectedMessageType, processDecode, toast],
+  )
+
   return (
     <div className="flex w-full grow flex-col gap-4">
       {messageTypes.length > 0 && (
@@ -325,6 +344,13 @@ const DecodeContent = ({
         <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
         <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <UploadInput
+            accept=".pb,.bin,.txt,.protobuf"
+            button={{ children: 'Upload .pb' }}
+            multiple={false}
+            name="upload-pb"
+            onChange={handleUploadPb}
+          />
           <FieldForm
             label=""
             name="dialog-source"
