@@ -291,14 +291,24 @@ const DecodeContent = ({
       if (!file) return
       const reader = new FileReader()
       reader.onload = () => {
-        const text = reader.result as string
+        const buffer = reader.result as ArrayBuffer
+        const bytes = new Uint8Array(buffer)
+        // Convert to latin1 string (preserves all byte values, unlike UTF-8)
+        let raw = ''
+        for (const byte of bytes) {
+          raw += String.fromCharCode(byte)
+        }
+        // Try to detect if the content is base64 or hex text
+        const textDecoder = new TextDecoder()
+        const text = textDecoder.decode(bytes)
         const detected = detectProtobufFormat(text)
+        const value = detected === 'raw' ? raw : text
         onFormatChange(detected)
-        onSourceChange(text)
-        processDecode(schema, selectedMessageType, text, detected)
+        onSourceChange(value)
+        processDecode(schema, selectedMessageType, value, detected)
         toast({ action: 'add', item: { label: `Auto-detected format: ${detected}`, type: 'success' } })
       }
-      reader.readAsText(file)
+      reader.readAsArrayBuffer(file)
     },
     [onFormatChange, onSourceChange, schema, selectedMessageType, processDecode, toast],
   )
