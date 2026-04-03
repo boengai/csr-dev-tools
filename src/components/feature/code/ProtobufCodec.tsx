@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Button, CodeInput, CodeOutput, CopyButton, Dialog, DownloadIcon, FieldForm, UploadInput } from '@/components/common'
+import { downloadBinaryFile, downloadTextFile } from '@/utils/file'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -146,6 +147,21 @@ const EncodeContent = ({
     [onSourceChange, schema, selectedMessageType, format, processEncode],
   )
 
+  const handleDownloadEncoded = useCallback(() => {
+    if (!result) return
+    const timestamp = Date.now()
+    const safeName = selectedMessageType.replace(/[^a-zA-Z0-9-_]/g, '_')
+    if (format === 'raw') {
+      const bytes = new Uint8Array(result.length)
+      for (let i = 0; i < result.length; i++) {
+        bytes[i] = result.charCodeAt(i) & 0xff
+      }
+      downloadBinaryFile(bytes, `encoded_${safeName}_${timestamp}.pb`)
+    } else {
+      downloadTextFile(result, `encoded_${safeName}_${timestamp}.pb.txt`, 'text/plain')
+    }
+  }, [result, format, selectedMessageType])
+
   return (
     <div className="flex w-full grow flex-col gap-4">
       {messageTypes.length > 0 && (
@@ -187,6 +203,15 @@ const EncodeContent = ({
             <span className="flex items-center gap-1">
               <span>Result</span>
               <CopyButton label="result" value={result} />
+              <button
+                aria-label="Download encoded result"
+                className="inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md p-1.5 text-body-sm transition-colors hover:bg-gray-800 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+                disabled={!result}
+                onClick={handleDownloadEncoded}
+                type="button"
+              >
+                <DownloadIcon size={16} />
+              </button>
             </span>
           }
           name="format"
