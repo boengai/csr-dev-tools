@@ -1,10 +1,20 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Button, CodeInput, CodeOutput, CopyButton, Dialog, DownloadIcon, FieldForm, UploadInput } from '@/components/common'
-import { downloadBinaryFile, downloadTextFile } from '@/utils/file'
+import {
+  Button,
+  CodeInput,
+  CodeOutput,
+  CopyButton,
+  Dialog,
+  DownloadIcon,
+  FieldForm,
+  SelectInput,
+  UploadInput,
+} from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import { downloadBinaryFile, downloadTextFile } from '@/utils/file'
 import { detectProtobufFormat } from '@/utils/protobuf-codec'
 import type { OutputFormat } from '@/utils/protobuf-codec'
 
@@ -33,32 +43,6 @@ const FORMAT_OPTIONS = [
   { label: 'Hex', value: 'hex' },
   { label: 'Raw Binary', value: 'raw' },
 ]
-
-type MessageTypeSelectProps = {
-  messageTypes: Array<string>
-  onChange: (value: string) => void
-  value: string
-}
-
-const MessageTypeSelect = ({ messageTypes, onChange, value }: MessageTypeSelectProps) => (
-  <div className="flex items-center gap-2">
-    <label className="shrink-0 text-body-xs text-gray-400" htmlFor="message-type-select">
-      Message Type
-    </label>
-    <select
-      className="rounded border border-gray-700 bg-gray-900 px-2 py-1.5 text-body-xs text-gray-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-      id="message-type-select"
-      onChange={(e) => onChange(e.target.value)}
-      value={value}
-    >
-      {messageTypes.map((name) => (
-        <option key={name} value={name}>
-          {name}
-        </option>
-      ))}
-    </select>
-  </div>
-)
 
 type ContentProps = {
   format: OutputFormat
@@ -165,10 +149,27 @@ const EncodeContent = ({
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {messageTypes.length > 0 && (
-        <MessageTypeSelect messageTypes={messageTypes} onChange={handleMessageTypeChange} value={selectedMessageType} />
-      )}
-
+      <div className="flex grow flex-col gap-6 tablet:flex-row">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-2">
+          <SelectInput
+            name="message-type-select"
+            onChange={handleMessageTypeChange}
+            options={messageTypes.map((name) => ({ label: name, value: name }))}
+            placeholder="Select message type"
+            value={selectedMessageType}
+          />
+        </div>
+        <div className="w-px" />
+        <div className="flex min-h-0 min-w-0 flex-1 items-center gap-2">
+          <UploadInput
+            accept=".json,application/json"
+            button={{ children: 'Upload JSON' }}
+            multiple={false}
+            name="upload-json"
+            onChange={handleUploadJson}
+          />
+        </div>
+      </div>
       <div className="flex grow flex-col gap-6 tablet:flex-row">
         <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
           <CodeInput
@@ -181,13 +182,6 @@ const EncodeContent = ({
         </div>
         <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
         <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-          <UploadInput
-            accept=".json,application/json"
-            button={{ children: 'Upload JSON' }}
-            multiple={false}
-            name="upload-json"
-            onChange={handleUploadJson}
-          />
           <CodeInput
             aria-label="JSON input"
             name="dialog-source"
@@ -302,7 +296,7 @@ const DecodeContent = ({
         onFormatChange(detected)
         onSourceChange(text)
         processDecode(schema, selectedMessageType, text, detected)
-        toast({ action: 'add', item: { label: `Auto-detected format: ${detected}`, type: 'info' } })
+        toast({ action: 'add', item: { label: `Auto-detected format: ${detected}`, type: 'success' } })
       }
       reader.readAsText(file)
     },
@@ -318,25 +312,36 @@ const DecodeContent = ({
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {messageTypes.length > 0 && (
-        <div className="flex grow flex-col gap-6 tablet:flex-row">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-2">
-            <MessageTypeSelect messageTypes={messageTypes} onChange={handleMessageTypeChange} value={selectedMessageType} />
-          </div>
-          <div className="w-px" />
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-            <FieldForm
-              label="Input Format"
-              name="format"
-              onChange={handleFormatChange}
-              options={FORMAT_OPTIONS}
-              type="radio"
-              value={format}
-            />
-          </div>
+      <div className="flex grow flex-col gap-6 tablet:flex-row">
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col justify-center gap-2">
+          <SelectInput
+            name="message-type-select"
+            onChange={handleMessageTypeChange}
+            options={messageTypes.map((name) => ({ label: name, value: name }))}
+            placeholder="Select message type"
+            size="compact"
+            value={selectedMessageType}
+          />
         </div>
-      )}
-
+        <div className="w-px" />
+        <div className="flex min-h-0 min-w-0 flex-1 items-center gap-2">
+          <FieldForm
+            label="Input Format"
+            name="format"
+            onChange={handleFormatChange}
+            options={FORMAT_OPTIONS}
+            type="radio"
+            value={format}
+          />
+          <UploadInput
+            accept=".pb,.bin,.txt,.protobuf"
+            button={{ children: 'Upload .pb' }}
+            multiple={false}
+            name="upload-pb"
+            onChange={handleUploadPb}
+          />
+        </div>
+      </div>
       <div className="flex grow flex-col gap-6 tablet:flex-row">
         <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
           <CodeInput
@@ -351,13 +356,6 @@ const DecodeContent = ({
         <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
         <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-          <UploadInput
-            accept=".pb,.bin,.txt,.protobuf"
-            button={{ children: 'Upload .pb' }}
-            multiple={false}
-            name="upload-pb"
-            onChange={handleUploadPb}
-          />
           <FieldForm
             label=""
             name="dialog-source"
@@ -400,7 +398,10 @@ const DecodeContent = ({
 export const ProtobufCodec = (_props: ToolComponentProps) => {
   const [action, setAction] = useState<Action>('encode')
   const [dialogOpen, setDialogOpen] = useState(false)
-  const [persisted, setPersisted] = useInputLocalStorage<PersistedState>('csr-dev-tools-protobuf-codec-input', INITIAL_STATE)
+  const [persisted, setPersisted] = useInputLocalStorage<PersistedState>(
+    'csr-dev-tools-protobuf-codec-input',
+    INITIAL_STATE,
+  )
   const [messageTypes, setMessageTypes] = useState<Array<string>>([])
   const [selectedMessageType, setSelectedMessageType] = useState('')
   const { toast } = useToast()

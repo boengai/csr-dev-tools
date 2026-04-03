@@ -32,10 +32,9 @@ test.describe('Protobuf Codec', () => {
     await schemaInput.click()
     await page.keyboard.type(SAMPLE_PROTO)
 
-    const dropdown = page.locator('#message-type-select')
+    const dropdown = page.locator('[role="dialog"] [role="combobox"]')
     await expect(dropdown).toBeVisible({ timeout: 5000 })
-    await expect(dropdown.locator('option')).toHaveCount(1)
-    await expect(dropdown.locator('option').first()).toHaveText('Person')
+    await expect(dropdown).toContainText('Person')
   })
 
   test('encode happy path produces output', async ({ page }) => {
@@ -45,7 +44,7 @@ test.describe('Protobuf Codec', () => {
     await schemaInput.click()
     await page.keyboard.type(SAMPLE_PROTO)
 
-    await expect(page.locator('#message-type-select')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('[role="dialog"] [role="combobox"]')).toBeVisible({ timeout: 5000 })
 
     const sourceInput = page.locator('[role="dialog"] textarea').first()
     await sourceInput.fill('{"name": "Alice", "age": 30, "active": true}')
@@ -62,7 +61,7 @@ test.describe('Protobuf Codec', () => {
     await schemaInput.click()
     await page.keyboard.type(SAMPLE_PROTO)
 
-    await expect(page.locator('#message-type-select')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('[role="dialog"] [role="combobox"]')).toBeVisible({ timeout: 5000 })
 
     const sourceInput = page.locator('[role="dialog"] textarea').first()
     await sourceInput.fill('{"name": "Alice", "age": 30, "active": true}')
@@ -81,7 +80,7 @@ test.describe('Protobuf Codec', () => {
     const decodeSchemaInput = page.locator('[role="dialog"] .cm-content')
     await expect(decodeSchemaInput).toBeVisible()
 
-    await expect(page.locator('#message-type-select')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('[role="dialog"] [role="combobox"]')).toBeVisible({ timeout: 5000 })
 
     const decodeSourceInput = page.locator('[role="dialog"] textarea').first()
     await decodeSourceInput.fill(encodedValue ?? '')
@@ -98,7 +97,7 @@ test.describe('Protobuf Codec', () => {
     await schemaInput.click()
     await page.keyboard.type(SAMPLE_PROTO)
 
-    await expect(page.locator('#message-type-select')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('[role="dialog"] [role="combobox"]')).toBeVisible({ timeout: 5000 })
 
     const sourceInput = page.locator('[role="dialog"] textarea').first()
     await sourceInput.fill('!!!invalid-base64!!!')
@@ -130,7 +129,7 @@ test.describe('Protobuf Codec', () => {
     await schemaInput.click()
     await page.keyboard.type(SAMPLE_PROTO)
 
-    await expect(page.locator('#message-type-select')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('[role="dialog"] [role="combobox"]')).toBeVisible({ timeout: 5000 })
 
     const sourceInput = page.locator('[role="dialog"] textarea').first()
     await sourceInput.fill('{"name": "Alice", "age": 30, "active": true}')
@@ -149,7 +148,7 @@ test.describe('Protobuf Codec', () => {
     const schemaInput = page.locator('[role="dialog"] .cm-content')
     await schemaInput.click()
     await page.keyboard.type(SAMPLE_PROTO)
-    await expect(page.locator('#message-type-select')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('[role="dialog"] [role="combobox"]')).toBeVisible({ timeout: 5000 })
 
     const sourceInput = page.locator('[role="dialog"] textarea').first()
     await sourceInput.fill('{"name": "Alice", "age": 30, "active": true}')
@@ -163,7 +162,7 @@ test.describe('Protobuf Codec', () => {
     await expect(page.locator('[role="dialog"]')).not.toBeVisible()
     await page.getByRole('button', { name: /^Decode$/ }).click()
 
-    await expect(page.locator('#message-type-select')).toBeVisible({ timeout: 5000 })
+    await expect(page.locator('[role="dialog"] [role="combobox"]')).toBeVisible({ timeout: 5000 })
 
     const decodeSourceInput = page.locator('[role="dialog"] textarea').first()
     await decodeSourceInput.fill(encodedValue ?? '')
