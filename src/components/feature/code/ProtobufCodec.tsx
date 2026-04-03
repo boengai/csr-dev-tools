@@ -105,6 +105,13 @@ const EncodeContent = ({
     300,
   )
 
+  useEffect(() => {
+    if (schema && selectedMessageType && source) {
+      processEncode(schema, selectedMessageType, source, format)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once when messageType becomes available
+  }, [selectedMessageType])
+
   const handleSourceChange = useCallback(
     (value: string) => {
       onSourceChange(value)
@@ -265,6 +272,13 @@ const DecodeContent = ({
     },
     300,
   )
+
+  useEffect(() => {
+    if (schema && selectedMessageType && source) {
+      processDecode(schema, selectedMessageType, source, format)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once when messageType becomes available
+  }, [selectedMessageType])
 
   const handleSourceChange = useCallback(
     (value: string) => {
