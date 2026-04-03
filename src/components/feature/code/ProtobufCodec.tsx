@@ -56,6 +56,18 @@ type ContentProps = {
   source: string
 }
 
+const DownloadButton = (props: { ariaLabel: string; disabled: boolean; onClick: () => void }) => {
+  return (
+    <button
+      {...props}
+      className="inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md p-1.5 text-body-sm transition-colors hover:bg-gray-800 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
+      type="button"
+    >
+      <DownloadIcon size={16} />
+    </button>
+  )
+}
+
 const EncodeContent = ({
   format,
   messageTypes,
@@ -193,28 +205,21 @@ const EncodeContent = ({
       </div>
       <div className="border-t-2 border-dashed border-gray-900" />
       {messageTypes.length > 0 && (
-        <FieldForm
-          label={
-            <span className="flex items-center gap-1">
-              <span>Result</span>
-              <CopyButton label="result" value={result} />
-              <button
-                aria-label="Download encoded result"
-                className="inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md p-1.5 text-body-sm transition-colors hover:bg-gray-800 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                disabled={!result}
-                onClick={handleDownloadEncoded}
-                type="button"
-              >
-                <DownloadIcon size={16} />
-              </button>
-            </span>
-          }
-          name="format"
-          onChange={handleFormatChange}
-          options={FORMAT_OPTIONS}
-          type="radio"
-          value={format}
-        />
+        <div className="flex flex-col gap-2">
+          <div className="flex items-center gap-1 pl-2">
+            <span>Result</span>
+            <CopyButton label="result" value={result} />
+            <DownloadButton ariaLabel="Download encoded result" disabled={!result} onClick={handleDownloadEncoded} />
+          </div>
+          <FieldForm
+            label=""
+            name="format"
+            onChange={handleFormatChange}
+            options={FORMAT_OPTIONS}
+            type="radio"
+            value={format}
+          />
+        </div>
       )}
 
       <div aria-live="polite" className="flex min-h-0 flex-col gap-2">
@@ -362,9 +367,7 @@ const DecodeContent = ({
             value={schema}
           />
         </div>
-
         <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
         <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
           <FieldForm
             label=""
@@ -381,25 +384,12 @@ const DecodeContent = ({
       <div className="border-t-2 border-dashed border-gray-900" />
 
       <div aria-live="polite" className="flex min-h-0 flex-col gap-2">
-        <CodeOutput
-          label={
-            <span className="flex items-center gap-1">
-              <span>Result</span>
-              <CopyButton label="result" value={result} />
-              <button
-                aria-label="Download decoded JSON"
-                className="inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md p-1.5 text-body-sm transition-colors hover:bg-gray-800 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
-                disabled={!result}
-                onClick={handleDownloadJson}
-                type="button"
-              >
-                <DownloadIcon size={16} />
-              </button>
-            </span>
-          }
-          placeholder='{ "name": "Alice" }'
-          value={result}
-        />
+        <div className="flex items-center gap-1">
+          <span>Result</span>
+          <CopyButton label="result" value={result} />
+          <DownloadButton ariaLabel="Download decoded JSON" disabled={!result} onClick={handleDownloadJson} />
+        </div>
+        <CodeOutput placeholder='{ "name": "Alice" }' value={result} />
       </div>
     </div>
   )
