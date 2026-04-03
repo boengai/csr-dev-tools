@@ -112,4 +112,66 @@ test.describe('Protobuf Codec', () => {
     await page.goto('/tools/protobuf-to-json')
     await expect(page.locator('text=Paste your .proto definition here')).toBeVisible({ timeout: 5000 })
   })
+
+  test('encode dialog shows upload JSON button', async ({ page }) => {
+    await page.getByRole('button', { name: /^Encode$/ }).click()
+    await expect(page.getByRole('button', { name: /Upload JSON/ })).toBeVisible()
+  })
+
+  test('decode dialog shows upload .pb button', async ({ page }) => {
+    await page.getByRole('button', { name: /^Decode$/ }).click()
+    await expect(page.getByRole('button', { name: /Upload \.pb/ })).toBeVisible()
+  })
+
+  test('encode result shows download button when output exists', async ({ page }) => {
+    await page.getByRole('button', { name: /^Encode$/ }).click()
+
+    const schemaInput = page.locator('[role="dialog"] .cm-content')
+    await schemaInput.click()
+    await page.keyboard.type(SAMPLE_PROTO)
+
+    await expect(page.locator('#message-type-select')).toBeVisible({ timeout: 5000 })
+
+    const sourceInput = page.locator('[role="dialog"] textarea').first()
+    await sourceInput.fill('{"name": "Alice", "age": 30, "active": true}')
+
+    const output = page.locator('[role="dialog"] pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 5000 })
+
+    const downloadBtn = page.getByRole('button', { name: /Download encoded result/ })
+    await expect(downloadBtn).toBeEnabled()
+  })
+
+  test('decode result shows download button when output exists', async ({ page }) => {
+    // First encode
+    await page.getByRole('button', { name: /^Encode$/ }).click()
+
+    const schemaInput = page.locator('[role="dialog"] .cm-content')
+    await schemaInput.click()
+    await page.keyboard.type(SAMPLE_PROTO)
+    await expect(page.locator('#message-type-select')).toBeVisible({ timeout: 5000 })
+
+    const sourceInput = page.locator('[role="dialog"] textarea').first()
+    await sourceInput.fill('{"name": "Alice", "age": 30, "active": true}')
+
+    const output = page.locator('[role="dialog"] pre[data-has-value]').first()
+    await expect(output).toBeVisible({ timeout: 5000 })
+    const encodedValue = await output.textContent()
+
+    // Switch to decode
+    await page.keyboard.press('Escape')
+    await expect(page.locator('[role="dialog"]')).not.toBeVisible()
+    await page.getByRole('button', { name: /^Decode$/ }).click()
+
+    await expect(page.locator('#message-type-select')).toBeVisible({ timeout: 5000 })
+
+    const decodeSourceInput = page.locator('[role="dialog"] textarea').first()
+    await decodeSourceInput.fill(encodedValue ?? '')
+
+    const decodeOutput = page.locator('[role="dialog"] pre[data-has-value]').first()
+    await expect(decodeOutput).toBeVisible({ timeout: 5000 })
+
+    const downloadBtn = page.getByRole('button', { name: /Download decoded JSON/ })
+    await expect(downloadBtn).toBeEnabled()
+  })
 })
