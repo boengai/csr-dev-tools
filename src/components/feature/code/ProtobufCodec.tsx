@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Button, CodeInput, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CodeInput, CodeOutput, CopyButton, Dialog, DownloadIcon, FieldForm, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -131,6 +131,21 @@ const EncodeContent = ({
     [onMessageTypeChange, source, schema, format, processEncode],
   )
 
+  const handleUploadJson = useCallback(
+    (files: Array<File>) => {
+      const file = files[0]
+      if (!file) return
+      const reader = new FileReader()
+      reader.onload = () => {
+        const text = reader.result as string
+        onSourceChange(text)
+        processEncode(schema, selectedMessageType, text, format)
+      }
+      reader.readAsText(file)
+    },
+    [onSourceChange, schema, selectedMessageType, format, processEncode],
+  )
+
   return (
     <div className="flex w-full grow flex-col gap-4">
       {messageTypes.length > 0 && (
@@ -149,6 +164,13 @@ const EncodeContent = ({
         </div>
         <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
         <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <UploadInput
+            accept=".json,application/json"
+            button={{ children: 'Upload JSON' }}
+            multiple={false}
+            name="upload-json"
+            onChange={handleUploadJson}
+          />
           <CodeInput
             aria-label="JSON input"
             name="dialog-source"
