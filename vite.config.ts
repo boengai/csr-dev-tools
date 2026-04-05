@@ -3,7 +3,6 @@ import path from 'node:path'
 import tailwindcss from '@tailwindcss/vite'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
-import tsConfigPaths from 'vite-tsconfig-paths'
 
 import { prerender } from './vite-plugins/prerender'
 
@@ -463,8 +462,9 @@ const toolRoutes = [
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [react(), tsConfigPaths(), tailwindcss(), prerender(toolRoutes)],
+  plugins: [react(), tailwindcss(), prerender(toolRoutes)],
   resolve: {
+    tsconfigPaths: true,
     alias: {
       mermaid: path.join(import.meta.dirname, 'node_modules/mermaid/dist/mermaid.esm.min.mjs'),
     },

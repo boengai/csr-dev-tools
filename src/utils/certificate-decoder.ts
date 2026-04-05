@@ -1,3 +1,4 @@
+import 'reflect-metadata'
 import type { ValidityStatus, CertificateExtension, CertificateInfo } from "@/types/utils/certificate-decoder";
 
 const MAX_INPUT_LENGTH = 32_768
