@@ -5,11 +5,9 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { aesDecrypt, aesEncrypt } from '@/utils'
+import type { Mode } from "@/types/components/feature/security/aesEncryptDecrypt";
 
 const toolEntry = TOOL_REGISTRY_MAP['aes-encrypt-decrypt']
-
-type Mode = 'decrypt' | 'encrypt'
-
 export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
   const [password, setPassword] = useState('')

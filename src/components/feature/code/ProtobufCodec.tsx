@@ -17,19 +17,9 @@ import type { ToolComponentProps } from '@/types'
 import { downloadBinaryFile, downloadTextFile } from '@/utils/file'
 import { detectProtobufFormat } from '@/utils/protobuf-codec'
 import type { OutputFormat } from '@/utils/protobuf-codec'
+import type { Action, PersistedState, ContentProps } from "@/types/components/feature/code/protobufCodec";
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-codec']
-
-type Action = 'decode' | 'encode'
-
-type PersistedState = {
-  decodeFormat: OutputFormat
-  decodeSource: string
-  encodeFormat: OutputFormat
-  encodeSource: string
-  schema: string
-}
-
 const INITIAL_STATE: PersistedState = {
   decodeFormat: 'base64',
   decodeSource: '',
@@ -43,19 +33,6 @@ const FORMAT_OPTIONS = [
   { label: 'Hex', value: 'hex' },
   { label: 'Raw Binary', value: 'raw' },
 ]
-
-type ContentProps = {
-  format: OutputFormat
-  messageTypes: Array<string>
-  onFormatChange: (value: string) => void
-  onMessageTypeChange: (value: string) => void
-  onSchemaChange: (value: string) => void
-  onSourceChange: (value: string) => void
-  schema: string
-  selectedMessageType: string
-  source: string
-}
-
 const DownloadButton = (props: { ariaLabel: string; disabled: boolean; onClick: () => void }) => {
   return (
     <button

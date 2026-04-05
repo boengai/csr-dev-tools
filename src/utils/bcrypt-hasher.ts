@@ -1,19 +1,4 @@
-export type BcryptHashResult = {
-  elapsed: number
-  hash: string
-  rounds: number
-}
-
-export type BcryptVerifyResult = {
-  elapsed: number
-  match: boolean
-}
-
-export type BcryptHashComponents = {
-  rounds: number
-  salt: string
-  version: string
-}
+import type { BcryptHashResult, BcryptVerifyResult, BcryptHashComponents } from "@/types/utils/bcrypt-hasher";
 
 export const hashPassword = async (
   password: string,
@@ -72,3 +57,5 @@ export const parseBcryptHash = (hash: string): BcryptHashComponents => {
 export const checkPasswordTruncation = (password: string): boolean => {
   return new TextEncoder().encode(password).length > 72
 }
+
+export type { BcryptHashResult, BcryptVerifyResult, BcryptHashComponents } from "@/types/utils/bcrypt-hasher";

@@ -5,6 +5,7 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { InlineSpan, SideBySideRow, ToolComponentProps } from '@/types'
 import { computeSideBySideDiff, createUnifiedDiff } from '@/utils'
+import type { State, Action } from "@/types/components/feature/text/textDiffChecker";
 
 const toolEntry = TOOL_REGISTRY_MAP['text-diff-checker']
 
@@ -52,17 +53,6 @@ const DiffCell = ({
     </div>
   )
 }
-
-type State = {
-  dialogOpen: boolean
-  rows: Array<SideBySideRow>
-  unifiedDiff: string
-}
-
-type Action =
-  | { type: 'SET_DIFF_RESULT'; payload: { rows: Array<SideBySideRow>; unifiedDiff: string } }
-  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
-  | { type: 'RESET' }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {

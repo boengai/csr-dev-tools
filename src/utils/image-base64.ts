@@ -1,13 +1,4 @@
-export type ImageBase64Result = {
-  base64Length: number
-  base64Only: string
-  dataUri: string
-  fileName: string
-  height: number
-  htmlTag: string
-  originalSize: number
-  width: number
-}
+import type { ImageBase64Result } from "@/types/utils/image-base64";
 
 const getImageDimensions = (dataUri: string): Promise<{ height: number; width: number }> =>
   new Promise((resolve, reject) => {
@@ -54,3 +45,5 @@ export const formatBase64Size = (length: number): string => {
   if (length < 1024 * 1024) return `${(length / 1024).toFixed(1)} KB`
   return `${(length / (1024 * 1024)).toFixed(1)} MB`
 }
+
+export type { ImageBase64Result } from "@/types/utils/image-base64";

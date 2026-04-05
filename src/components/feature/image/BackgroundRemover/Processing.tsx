@@ -1,9 +1,5 @@
 import { NotoEmoji } from '@/components/common'
-
-type BackgroundRemoverProcessingProps = {
-  downloading: boolean
-  progress: number
-}
+import type { BackgroundRemoverProcessingProps } from "@/types/components/feature/image/BackgroundRemover/processing";
 
 export const BackgroundRemoverProcessing = ({ downloading, progress }: BackgroundRemoverProcessingProps) => {
   return (

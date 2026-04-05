@@ -5,8 +5,7 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { envToJson, envToYaml, jsonToEnv, yamlToEnv } from '@/utils'
-
-type ConvertMode = 'env-to-json' | 'env-to-yaml' | 'json-to-env' | 'yaml-to-env'
+import type { ConvertMode } from "@/types/components/feature/data/envFileConverter";
 
 const toolEntry = TOOL_REGISTRY_MAP['env-file-converter']
 

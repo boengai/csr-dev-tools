@@ -1,14 +1,7 @@
 import type { HSLColor } from '@/types'
 
 import { convertColor, hexToHsl, normalizeHue } from './color'
-
-export type HarmonyType = 'analogous' | 'complementary' | 'monochromatic' | 'split-complementary' | 'triadic'
-
-export type PaletteColor = {
-  hex: string
-  hsl: HSLColor
-  rgb: string
-}
+import type { HarmonyType, PaletteColor } from "@/types/utils/color-palette";
 
 const createPaletteColor = (hsl: HSLColor): PaletteColor => {
   const hslString = `hsl(${hsl.h.toFixed(2)} ${hsl.s.toFixed(2)}% ${hsl.l.toFixed(2)}%)`
@@ -103,3 +96,5 @@ export const generatePalette = (baseColor: string, harmonyType: HarmonyType): Ar
 export const formatPaletteAsCss = (palette: Array<PaletteColor>): string => {
   return palette.map((color, i) => `--palette-${i + 1}: ${color.hex};`).join('\n')
 }
+
+export type { HarmonyType, PaletteColor } from "@/types/utils/color-palette";

@@ -1,11 +1,4 @@
-export type SortMode = 'az' | 'length-asc' | 'length-desc' | 'numeric' | 'za'
-
-type TextSortOptions = {
-  removeDuplicates: boolean
-  removeEmpty: boolean
-  sortMode: SortMode
-  trimLines: boolean
-}
+import type { TextSortResult, TextSortOptions } from "@/types/utils/text-sort";
 
 export const DEFAULT_SORT_OPTIONS: TextSortOptions = {
   removeDuplicates: false,
@@ -13,13 +6,6 @@ export const DEFAULT_SORT_OPTIONS: TextSortOptions = {
   sortMode: 'az',
   trimLines: false,
 }
-
-export type TextSortResult = {
-  lineCountAfter: number
-  lineCountBefore: number
-  output: string
-}
-
 export const sortAndProcessText = (input: string, options: TextSortOptions): TextSortResult => {
   let lines = input.replace(/\r\n/g, '\n').split('\n')
   const lineCountBefore = lines.length
@@ -67,3 +53,5 @@ export const sortAndProcessText = (input: string, options: TextSortOptions): Tex
     output: lines.join('\n'),
   }
 }
+
+export type { SortMode, TextSortResult } from "@/types/utils/text-sort";

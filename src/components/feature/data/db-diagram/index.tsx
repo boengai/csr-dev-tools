@@ -1,6 +1,6 @@
 import { json } from '@codemirror/lang-json'
 import { sql as sqlLang } from '@codemirror/lang-sql'
-import type { Connection, EdgeTypes, NodeTypes, OnEdgesChange, OnNodesChange } from '@xyflow/react'
+import type { EdgeTypes, NodeTypes } from '@xyflow/react'
 import {
   Background,
   BackgroundVariant,
@@ -15,7 +15,7 @@ import { useMemo, useReducer, useRef, useState } from 'react'
 
 import { Button, Dialog } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { DiagramIndexEntry, RelationshipEdge, SidePanel, SqlDialect, TableNode, ToolComponentProps } from '@/types'
+import type { RelationshipEdge, TableNode, ToolComponentProps } from '@/types'
 
 import '@xyflow/react/dist/style.css'
 import { DbmlEditorPanel } from './DbmlEditorPanel'
@@ -30,6 +30,7 @@ import { ImportSqlPanel } from './ImportSqlPanel'
 import { RelationshipEdgeComponent } from './RelationshipEdge'
 import { TableNodeComponent } from './TableNode'
 import { useDiagramHandlers } from './useDiagramHandlers'
+import type { DiagramFlowCanvasProps, SidePanelRendererProps } from "@/types/components/feature/data/db-diagram/index";
 
 const nodeTypes: NodeTypes = { tableNode: TableNodeComponent }
 const edgeTypes: EdgeTypes = { relationship: RelationshipEdgeComponent }
@@ -39,17 +40,6 @@ const toolEntry = TOOL_REGISTRY_MAP['db-diagram']
 // ---------------------------------------------------------------------------
 // DiagramFlowCanvas - extracted ReactFlow rendering
 // ---------------------------------------------------------------------------
-
-type DiagramFlowCanvasProps = {
-  edgeTypes: EdgeTypes
-  edges: Array<RelationshipEdge>
-  nodeTypes: NodeTypes
-  nodesWithCallbacks: Array<TableNode>
-  onConnect: (connection: Connection) => void
-  onEdgesChange: OnEdgesChange<RelationshipEdge>
-  onNodesChange: OnNodesChange<TableNode>
-}
-
 const DiagramFlowCanvas = ({
   edgeTypes: edgeTypesProp,
   edges,
@@ -106,52 +96,6 @@ const DiagramFlowCanvas = ({
 // ---------------------------------------------------------------------------
 // SidePanelRenderer - extracted conditional side panel rendering
 // ---------------------------------------------------------------------------
-
-type SidePanelRendererProps = {
-  activePanel: SidePanel
-  activeDiagramId: string | null
-  dbmlErrors: Array<{ line: number; message: string }>
-  dbmlText: string
-  diagramIndex: Array<DiagramIndexEntry>
-  generatedMermaid: string
-  generatedSql: string
-  generatedTypescript: string
-  handleClosePanel: () => void
-  handleDbmlChange: (text: string) => void
-  handleDbmlClose: () => void
-  handleDeleteDiagram: (id: string) => void
-  handleDownloadSql: () => void
-  handleImportJsonSchema: () => void
-  handleImportSql: () => void
-  handleLoadDiagram: (id: string) => void
-  handleNewDiagram: () => void
-  handleOpenInMermaidRenderer: () => void
-  handleRenameDiagram: (id: string, newName: string) => void
-  handleStartRenaming: (id: string, name: string) => void
-  handleSyncFromDiagram: () => void
-  importJsonSchemaErrors: Array<string>
-  importJsonSchemaMerge: boolean
-  importJsonSchemaText: string
-  importSqlDialect: SqlDialect
-  importSqlErrors: Array<{ line: number; message: string }>
-  importSqlMerge: boolean
-  importSqlText: string
-  jsonExtensions: Array<import('@codemirror/state').Extension>
-  renameInputRef: React.RefObject<HTMLInputElement | null>
-  renameValue: string
-  renamingId: string | null
-  setImportJsonSchemaMerge: (value: boolean) => void
-  setImportJsonSchemaText: (value: string) => void
-  setImportSqlDialect: (value: SqlDialect) => void
-  setImportSqlMerge: (value: boolean) => void
-  setImportSqlText: (value: string) => void
-  setRenameValue: (value: string) => void
-  setRenamingId: (id: string | null) => void
-  setSqlDialect: (value: SqlDialect) => void
-  sqlDialect: SqlDialect
-  sqlExtensions: Array<import('@codemirror/state').Extension>
-}
-
 const SidePanelRenderer = ({
   activePanel,
   activeDiagramId,

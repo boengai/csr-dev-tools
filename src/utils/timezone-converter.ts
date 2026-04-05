@@ -1,21 +1,4 @@
-export type TimezoneEntry = {
-  abbreviation: string
-  city: string
-  id: string
-  label: string
-  offset: string
-  offsetMinutes: number
-  region: string
-  searchTokens: Array<string>
-}
-
-export type ConversionResult = {
-  abbreviation: string
-  date: string
-  offset: string
-  time: string
-  timezone: string
-}
+import type { TimezoneEntry, ConversionResult } from "@/types/utils/timezone-converter";
 
 let cachedIndex: Array<TimezoneEntry> | null = null
 let cachedRefDate: number | null = null
@@ -215,3 +198,5 @@ export function parseDateTimeInput(dateStr: string, timeStr: string, timezone: s
 export function getLocalTimezone(): string {
   return Intl.DateTimeFormat().resolvedOptions().timeZone
 }
+
+export type { TimezoneEntry, ConversionResult } from "@/types/utils/timezone-converter";

@@ -1,16 +1,9 @@
+import type { PasswordOptions } from "@/types/utils/password";
+
 const UPPERCASE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const LOWERCASE_CHARS = 'abcdefghijklmnopqrstuvwxyz'
 const DIGIT_CHARS = '0123456789'
 const SYMBOL_CHARS = "!@#$%^&*()-_=+[]{}|;:',./<>?~`"
-
-export type PasswordOptions = {
-  digits: boolean
-  length: number
-  lowercase: boolean
-  symbols: boolean
-  uppercase: boolean
-}
-
 export const DEFAULT_PASSWORD_OPTIONS: PasswordOptions = {
   digits: true,
   length: 16,
@@ -59,3 +52,5 @@ export const generatePassword = (options: PasswordOptions): string => {
 
   return fisherYatesShuffle(chars).join('')
 }
+
+export type { PasswordOptions } from "@/types/utils/password";

@@ -1,8 +1,7 @@
 import { format } from 'sql-formatter'
+import type { SqlFormatDialect } from "@/types/utils/sql-format";
 
-export type SqlDialect = 'bigquery' | 'mysql' | 'postgresql' | 'sql' | 'sqlite'
-
-export const formatSql = (sql: string, dialect: SqlDialect = 'sql', indent: number = 2): string => {
+export const formatSql = (sql: string, dialect: SqlFormatDialect = 'sql', indent: number = 2): string => {
   if (sql.trim().length === 0) return ''
 
   return format(sql, {
@@ -12,3 +11,5 @@ export const formatSql = (sql: string, dialect: SqlDialect = 'sql', indent: numb
     keywordCase: 'upper',
   })
 }
+
+export type { SqlFormatDialect } from "@/types/utils/sql-format";

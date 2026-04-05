@@ -1,4 +1,4 @@
-import type { EditorProps, Monaco, OnMount, OnValidate } from '@monaco-editor/react'
+import type { EditorProps, Monaco } from '@monaco-editor/react'
 import { lazy, Suspense, useRef, useState } from 'react'
 
 import { CopyButton } from '@/components/common'
@@ -6,12 +6,9 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { tv } from '@/utils'
+import type { EditorInstance, MarkerData, DiagnosticError } from "@/types/components/feature/code/typescriptPlayground";
 
 const Editor = lazy(() => import('@monaco-editor/react'))
-
-type EditorInstance = Parameters<OnMount>[0]
-type MarkerData = Parameters<OnValidate>[0][0]
-
 const toolEntry = TOOL_REGISTRY_MAP['typescript-playground']
 
 const SAMPLE_CODE = `type User = {
@@ -46,14 +43,6 @@ const READONLY_EDITOR_OPTIONS: EditorProps['options'] = {
   domReadOnly: true,
   readOnly: true,
 }
-
-type DiagnosticError = {
-  column: number
-  line: number
-  message: string
-  severity: 'error' | 'warning'
-}
-
 const severityStyles = tv({
   base: 'shrink-0',
   variants: {

@@ -1,12 +1,5 @@
 import { escapeHtml } from './string-escape'
-
-export type OgConfig = {
-  description: string
-  image: string
-  siteName: string
-  title: string
-  url: string
-}
+import type { OgConfig } from "@/types/utils/og-tags";
 
 export const generateOgMetaTags = (config: OgConfig): string => {
   const tags: Array<string> = []
@@ -49,3 +42,5 @@ export const generateOgMetaTags = (config: OgConfig): string => {
 
   return tags.join('\n')
 }
+
+export type { OgConfig } from "@/types/utils/og-tags";

@@ -1,3 +1,5 @@
+import type { EncodeMode } from "@/types/utils/html-entity";
+
 const NAMED_ENTITIES: Record<string, string> = {
   '&': '&amp;',
   '<': '&lt;',
@@ -26,9 +28,6 @@ const REVERSE_NAMED: Record<string, string> = {}
 for (const [char, entity] of Object.entries(NAMED_ENTITIES)) {
   REVERSE_NAMED[entity] = char
 }
-
-type EncodeMode = 'named' | 'numeric'
-
 export const encodeHtmlEntities = (input: string, mode: EncodeMode = 'named'): string => {
   if (input.length === 0) throw new Error('Empty input')
   let result = ''

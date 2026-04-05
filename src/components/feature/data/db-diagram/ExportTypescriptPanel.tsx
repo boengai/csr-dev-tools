@@ -1,11 +1,7 @@
 import { CopyButton } from '@/components/common'
 
 import { CloseButton } from './CloseButton'
-
-type ExportTypescriptPanelProps = {
-  generatedTypescript: string
-  onClose: () => void
-}
+import type { ExportTypescriptPanelProps } from "@/types/components/feature/data/db-diagram/exportTypescriptPanel";
 
 export const ExportTypescriptPanel = ({ generatedTypescript, onClose }: ExportTypescriptPanelProps) => {
   return (

@@ -1,16 +1,4 @@
-export type CronParseResult = {
-  description: string
-  error: string | null
-  nextRuns: Array<string>
-  valid: boolean
-}
-
-type CronField = {
-  max: number
-  min: number
-  name: string
-  names?: Array<string>
-}
+import type { CronParseResult, CronField } from "@/types/utils/cron-parser";
 
 const FIELDS: Array<CronField> = [
   { max: 59, min: 0, name: 'minute' },
@@ -186,3 +174,5 @@ export const CRON_PRESETS: Array<{
   { expression: '0 0 1 * *', label: 'Monthly on the 1st' },
   { expression: '30 4 * * *', label: 'Daily at 4:30 AM' },
 ]
+
+export type { CronParseResult } from "@/types/utils/cron-parser";

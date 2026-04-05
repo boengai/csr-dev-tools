@@ -13,7 +13,7 @@ import {
   validateIpv4,
   validateSubnetMask,
 } from '@/utils'
-type InputMode = 'cidr' | 'ip-mask'
+import type { InputMode } from "@/types/components/feature/network/ipSubnetCalculator";
 
 const toolEntry = TOOL_REGISTRY_MAP['ip-subnet-calculator']
 

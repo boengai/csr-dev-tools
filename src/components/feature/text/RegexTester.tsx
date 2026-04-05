@@ -8,15 +8,11 @@ import {
   buildHighlightSegments,
   executeRegex,
   formatMatchesForCopy,
-  type HighlightSegment,
-  type RegexMatch,
-  type RegexResult,
+  type RegexMatch
 } from '@/utils'
+import type { Flags, State, Action } from "@/types/components/feature/text/regexTester";
 
 const toolEntry = TOOL_REGISTRY_MAP['regex-tester']
-
-type Flags = { g: boolean; i: boolean; m: boolean }
-
 const DEFAULT_FLAGS: Flags = { g: true, i: false, m: false }
 
 const flagsToString = (flags: Flags) =>
@@ -76,23 +72,6 @@ const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
     ))}
   </div>
 )
-
-type State = {
-  dialogOpen: boolean
-  flags: Flags
-  pattern: string
-  result: RegexResult | null
-  segments: Array<HighlightSegment>
-  testString: string
-}
-
-type Action =
-  | { type: 'SET_PATTERN'; payload: string }
-  | { type: 'SET_TEST_STRING'; payload: string }
-  | { type: 'SET_FLAGS'; payload: Flags }
-  | { type: 'SET_RESULT'; payload: { result: RegexResult | null; segments: Array<HighlightSegment> } }
-  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
-  | { type: 'RESET' }
 
 function reducer(state: State, action: Action): State {
   switch (action.type) {

@@ -4,6 +4,7 @@ import { Button, CopyButton, Dialog, FieldForm, TextInput } from '@/components/c
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
 import { type ColumnAlignment, generateMarkdownTable } from '@/utils'
+import type { State, Action } from "@/types/components/feature/code/markdownTableGenerator";
 
 const toolEntry = TOOL_REGISTRY_MAP['markdown-table-generator']
 
@@ -21,27 +22,6 @@ const ALIGN_ICON: Record<ColumnAlignment, string> = {
 
 const createGrid = (rows: number, cols: number): Array<Array<string>> =>
   Array.from({ length: rows }, (_, r) => Array.from({ length: cols }, (_, c) => (r === 0 ? `Header ${c + 1}` : '')))
-
-type State = {
-  alignments: Array<ColumnAlignment>
-  cols: number
-  data: Array<Array<string>>
-  dialogOpen: boolean
-  rows: number
-}
-
-type Action =
-  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
-  | { type: 'SET_ROWS'; payload: number }
-  | { type: 'SET_COLS'; payload: number }
-  | { type: 'SET_DATA'; payload: Array<Array<string>> }
-  | { type: 'SET_ALIGNMENTS'; payload: Array<ColumnAlignment> }
-  | { type: 'UPDATE_CELL'; payload: { r: number; c: number; val: string } }
-  | { type: 'CHANGE_ROWS'; payload: number }
-  | { type: 'CHANGE_COLS'; payload: number }
-  | { type: 'TOGGLE_ALIGN'; payload: number }
-  | { type: 'RESET' }
-
 const createInitialState = (): State => ({
   alignments: Array(3).fill('left') as Array<ColumnAlignment>,
   cols: 3,

@@ -5,14 +5,13 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import {
-  type DataUriDecodeResult,
-  type DataUriEncodeResult,
   fileToDataUri,
   formatFileSize,
   isValidDataUri,
   parseDataUri,
   parseDataUrlToBlob,
 } from '@/utils'
+import type { State, Action } from "@/types/components/feature/data/dataUriGenerator";
 
 const toolEntry = TOOL_REGISTRY_MAP['data-uri-generator']
 
@@ -23,24 +22,6 @@ const getMimeExtension = (mimeType: string): string => {
   if (sub === 'plain') return 'txt'
   return sub
 }
-
-type State = {
-  decodeInput: string
-  decodeOpen: boolean
-  decodeResult: DataUriDecodeResult | null
-  encodeOpen: boolean
-  encodeResult: DataUriEncodeResult | null
-}
-
-type Action =
-  | { type: 'SET_DECODE_INPUT'; payload: string }
-  | { type: 'SET_DECODE_OPEN'; payload: boolean }
-  | { type: 'SET_DECODE_RESULT'; payload: DataUriDecodeResult | null }
-  | { type: 'SET_ENCODE_OPEN'; payload: boolean }
-  | { type: 'SET_ENCODE_RESULT'; payload: DataUriEncodeResult | null }
-  | { type: 'RESET_ENCODE' }
-  | { type: 'RESET_DECODE' }
-
 const initialState: State = {
   decodeInput: '',
   decodeOpen: false,

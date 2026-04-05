@@ -1,0 +1,1 @@
+export type SetValue<T> = React.Dispatch<React.SetStateAction<T>>

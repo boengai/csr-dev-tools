@@ -1,6 +1,4 @@
 import { useEffect, useReducer, useRef } from 'react'
-import type { Crop, PixelCrop } from 'react-image-crop'
-
 import 'react-image-crop/dist/ReactCrop.css'
 import ReactCrop from 'react-image-crop'
 
@@ -18,6 +16,7 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { AspectRatioPreset, CropRegion } from '@/types'
 import { ASPECT_RATIO_OPTIONS, clampCropRegion, getAspectRatio, getDefaultCrop, scaleCropToNatural, tv } from '@/utils'
+import type { State, Action } from "@/types/components/feature/image/imageCropper";
 
 const cropAreaStyles = tv({
   base: 'bg-grid-texture flex grow items-center justify-center overflow-auto bg-black',
@@ -76,33 +75,6 @@ const cropImageCanvas = (
       quality,
     )
   })
-
-type State = {
-  aspectPreset: AspectRatioPreset
-  completedCrop: PixelCrop | null
-  crop: Crop | undefined
-  dialogOpen: boolean
-  imageUrl: string | null
-  processing: boolean
-  showProgress: boolean
-  source: File | null
-  tabValue: string
-}
-
-type Action =
-  | { type: 'SET_ASPECT_PRESET'; payload: AspectRatioPreset }
-  | { type: 'SET_COMPLETED_CROP'; payload: PixelCrop | null }
-  | { type: 'SET_CROP'; payload: Crop | undefined }
-  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
-  | { type: 'SET_IMAGE_URL'; payload: string | null }
-  | { type: 'SET_PROCESSING'; payload: boolean }
-  | { type: 'SET_SHOW_PROGRESS'; payload: boolean }
-  | { type: 'SET_SOURCE'; payload: File | null }
-  | { type: 'SET_TAB_VALUE'; payload: string }
-  | { type: 'INPUT_FILE'; payload: File }
-  | { type: 'FINISH_PROCESSING' }
-  | { type: 'RESET' }
-
 const initialState: State = {
   aspectPreset: 'free',
   completedCrop: null,

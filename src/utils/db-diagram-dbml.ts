@@ -2,6 +2,7 @@ import type { ColumnType, DiagramSchema, RelationshipType } from '@/types'
 
 import { generateId, gridLayoutPositions } from './db-diagram'
 import type { ParseResult } from './db-diagram-import'
+import type { ParsedTable, ParsedRef } from "@/types/utils/db-diagram-dbml";
 
 // ── Generator ──────────────────────────────────────────────────────
 
@@ -104,28 +105,6 @@ const REL_SYMBOL_REVERSE: Record<string, RelationshipType> = {
   '<': '1:N',
   '>': '1:N', // reversed direction handled in relationship building
   '<>': 'N:M',
-}
-
-type ParsedTable = {
-  columns: Array<{
-    constraints: { isForeignKey: boolean; isNullable: boolean; isPrimaryKey: boolean; isUnique: boolean }
-    id: string
-    inlineRef?: { column: string; table: string }
-    name: string
-    type: ColumnType
-  }>
-  lineNumber: number
-  name: string
-}
-
-type ParsedRef = {
-  lineNumber: number
-  relationType: RelationshipType
-  reversed: boolean
-  sourceColumn: string
-  sourceTable: string
-  targetColumn: string
-  targetTable: string
 }
 
 function parseConstraintBrackets(bracketContent: string): {

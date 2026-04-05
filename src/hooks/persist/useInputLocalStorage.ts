@@ -1,6 +1,5 @@
 import { useCallback, useState } from 'react'
-
-type SetValue<T> = React.Dispatch<React.SetStateAction<T>>
+import type { SetValue } from "@/types/hooks/persist/useInputLocalStorage";
 
 export function useInputLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
   const [storedValue, setStoredValue] = useState<T>(() => {

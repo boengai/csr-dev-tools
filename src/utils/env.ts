@@ -1,9 +1,5 @@
 import { parse as parseYaml, stringify as stringifyYaml } from 'yaml'
-
-type EnvParseResult = {
-  entries: Array<{ key: string; value: string }>
-  warnings: Array<string>
-}
+import type { EnvParseResult } from "@/types/utils/env";
 
 export const parseEnv = (input: string): EnvParseResult => {
   if (input.trim().length === 0) throw new Error('Empty input')

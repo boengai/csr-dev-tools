@@ -1,9 +1,4 @@
-export type UserAgentResult = {
-  browser: { name: string; version: string }
-  device: string
-  engine: { name: string; version: string }
-  os: { name: string; version: string }
-}
+import type { UserAgentResult } from "@/types/utils/user-agent";
 
 const match = (ua: string, pattern: RegExp): string => {
   const m = ua.match(pattern)
@@ -69,3 +64,5 @@ export const parseUserAgent = (ua: string): UserAgentResult => {
     os: detectOs(ua),
   }
 }
+
+export type { UserAgentResult } from "@/types/utils/user-agent";

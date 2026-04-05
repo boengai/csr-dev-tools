@@ -9,8 +9,7 @@ import { applyBackground, removeBackground } from '@/utils'
 import { BackgroundRemoverError } from './Error'
 import { BackgroundRemoverProcessing } from './Processing'
 import { BackgroundRemoverResult } from './Result'
-
-type BgOption = 'custom' | 'transparent' | 'white'
+import type { BgOption, State, Action } from "@/types/components/feature/image/BackgroundRemover/index";
 
 const TABS_VALUES = {
   DOWNLOAD: 'download',
@@ -19,39 +18,6 @@ const TABS_VALUES = {
 } as const
 
 const toolEntry = TOOL_REGISTRY_MAP['background-remover']
-
-type State = {
-  bgOption: BgOption
-  customColor: string
-  dialogOpen: boolean
-  displayUrl: string
-  downloading: boolean
-  error: boolean
-  processing: boolean
-  progress: number
-  resultUrl: string
-  sourcePreview: string
-  tabValue: string
-}
-
-type Action =
-  | { type: 'SET_BG_OPTION'; payload: BgOption }
-  | { type: 'SET_CUSTOM_COLOR'; payload: string }
-  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
-  | { type: 'SET_DISPLAY_URL'; payload: string }
-  | { type: 'SET_DOWNLOADING'; payload: boolean }
-  | { type: 'SET_ERROR'; payload: boolean }
-  | { type: 'SET_PROCESSING'; payload: boolean }
-  | { type: 'SET_PROGRESS'; payload: number }
-  | { type: 'SET_RESULT_URL'; payload: string }
-  | { type: 'SET_SOURCE_PREVIEW'; payload: string }
-  | { type: 'SET_TAB_VALUE'; payload: string }
-  | { type: 'START_UPLOAD'; payload: { sourcePreview: string } }
-  | { type: 'UPLOAD_SUCCESS'; payload: { resultUrl: string; displayUrl: string } }
-  | { type: 'UPLOAD_FAILURE' }
-  | { type: 'CONFIRM'; payload: { tabValue: string } }
-  | { type: 'RESET' }
-
 const initialState: State = {
   bgOption: 'transparent',
   customColor: '#ff0000',

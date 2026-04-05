@@ -1,25 +1,4 @@
-export type DataUriEncodeResult = {
-  base64Only: string
-  cssUrl: string | null
-  dataUri: string
-  encodedSize: number
-  fileName: string
-  htmlImgTag: string | null
-  isCssCompatible: boolean
-  isImage: boolean
-  isLargeFile: boolean
-  mimeType: string
-  originalSize: number
-}
-
-export type DataUriDecodeResult = {
-  data: string
-  decodedSize: number
-  encoding: string
-  isImage: boolean
-  mimeType: string
-  previewUri: string | null
-}
+import type { DataUriEncodeResult, DataUriDecodeResult } from "@/types/utils/data-uri";
 
 export const SIZE_WARNING_THRESHOLD = 30 * 1024
 
@@ -89,3 +68,5 @@ export const parseDataUri = (uri: string): DataUriDecodeResult => {
     previewUri: isImage ? uri : null,
   }
 }
+
+export type { DataUriEncodeResult, DataUriDecodeResult } from "@/types/utils/data-uri";

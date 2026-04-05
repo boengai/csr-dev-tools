@@ -1,25 +1,4 @@
-export type ValidityStatus = 'expired' | 'not-yet-valid' | 'valid'
-
-export type CertificateExtension = {
-  critical: boolean
-  name: string
-  oid: string
-  value: string
-}
-
-export type CertificateInfo = {
-  extensions: Array<CertificateExtension>
-  isValid: boolean
-  issuer: string
-  notAfter: Date
-  notBefore: Date
-  publicKeyAlgorithm: string
-  publicKeySize: number
-  serialNumber: string
-  signatureAlgorithm: string
-  subject: string
-  validityStatus: ValidityStatus
-}
+import type { ValidityStatus, CertificateExtension, CertificateInfo } from "@/types/utils/certificate-decoder";
 
 const MAX_INPUT_LENGTH = 32_768
 
@@ -287,3 +266,5 @@ export const parsePemCertificate = async (input: string): Promise<CertificateInf
     validityStatus,
   }
 }
+
+export type { ValidityStatus, CertificateExtension, CertificateInfo } from "@/types/utils/certificate-decoder";

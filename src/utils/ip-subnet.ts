@@ -1,16 +1,4 @@
-export type SubnetResult = {
-  binaryIp: string
-  binaryMask: string
-  broadcastAddress: string
-  cidr: string
-  firstUsableHost: string
-  lastUsableHost: string
-  networkAddress: string
-  prefixLength: number
-  subnetMask: string
-  totalHosts: number
-  wildcardMask: string
-}
+import type { SubnetResult } from "@/types/utils/ip-subnet";
 
 export const validateIpv4 = (ip: string): boolean => {
   const parts = ip.split('.')
@@ -137,3 +125,5 @@ export const calculateSubnet = (ip: string, prefixLength: number): SubnetResult 
     wildcardMask,
   }
 }
+
+export type { SubnetResult } from "@/types/utils/ip-subnet";

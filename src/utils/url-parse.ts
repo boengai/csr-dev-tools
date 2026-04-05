@@ -1,18 +1,4 @@
-export type UrlParam = {
-  key: string
-  value: string
-}
-
-export type UrlParseResult = {
-  error?: string
-  hash: string
-  hostname: string
-  pathname: string
-  port: string
-  protocol: string
-  search: string
-  searchParams: Array<UrlParam>
-}
+import type { UrlParam, UrlParseResult } from "@/types/utils/url-parse";
 
 export const parseUrl = (input: string): UrlParseResult => {
   try {
@@ -44,3 +30,5 @@ export const parseUrl = (input: string): UrlParseResult => {
     }
   }
 }
+
+export type { UrlParam, UrlParseResult } from "@/types/utils/url-parse";

@@ -5,16 +5,9 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { convertBase, isValidForBase } from '@/utils'
+import type { BaseField } from "@/types/components/feature/encoding/numberBaseConverter";
 
 const toolEntry = TOOL_REGISTRY_MAP['number-base-converter']
-
-type BaseField = {
-  base: number
-  label: string
-  name: string
-  placeholder: string
-}
-
 const BASE_FIELDS: Array<BaseField> = [
   { base: 2, label: 'Binary', name: 'binary', placeholder: '101010' },
   { base: 8, label: 'Octal', name: 'octal', placeholder: '52' },

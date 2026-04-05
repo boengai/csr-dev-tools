@@ -5,8 +5,7 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { getTomlParseError } from '@/utils'
-
-type ConvertMode = 'json-to-toml' | 'toml-to-json'
+import type { ConvertMode } from "@/types/components/feature/data/jsonToTomlConverter";
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-toml-converter']
 

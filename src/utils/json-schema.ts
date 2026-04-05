@@ -1,15 +1,5 @@
 import Ajv from 'ajv'
-
-export type ValidationError = {
-  keyword: string
-  message: string
-  path: string
-}
-
-export type ValidationResult = {
-  errors: Array<ValidationError> | null
-  valid: boolean
-}
+import type { ValidationError, ValidationResult } from "@/types/utils/json-schema";
 
 export function validateJsonSchema(data: string, schema: string): ValidationResult {
   let parsedData: unknown
@@ -46,3 +36,5 @@ export function validateJsonSchema(data: string, schema: string): ValidationResu
     return { errors: [{ keyword: 'schema', message: 'Invalid JSON Schema', path: '/' }], valid: false }
   }
 }
+
+export type { ValidationError, ValidationResult } from "@/types/utils/json-schema";

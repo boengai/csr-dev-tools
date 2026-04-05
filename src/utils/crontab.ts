@@ -1,22 +1,5 @@
 import { parseCron } from './cron-parser'
-
-export type CronFieldMode = 'every' | 'interval' | 'range' | 'specific'
-
-export type CronFieldConfig = {
-  interval?: number
-  mode: CronFieldMode
-  rangeEnd?: number
-  rangeStart?: number
-  values?: Array<number>
-}
-
-export type CrontabConfig = {
-  dayOfMonth: CronFieldConfig
-  dayOfWeek: CronFieldConfig
-  hour: CronFieldConfig
-  minute: CronFieldConfig
-  month: CronFieldConfig
-}
+import type { CronFieldConfig, CrontabConfig } from "@/types/utils/crontab";
 
 const buildField = (config: CronFieldConfig): string => {
   switch (config.mode) {
@@ -54,3 +37,5 @@ export function getNextRuns(expr: string, count: number): Array<string> {
   const result = parseCron(expr, count)
   return result.valid ? result.nextRuns : []
 }
+
+export type { CronFieldMode, CronFieldConfig, CrontabConfig } from "@/types/utils/crontab";

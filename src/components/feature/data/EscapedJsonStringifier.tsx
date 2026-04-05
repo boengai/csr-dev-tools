@@ -5,8 +5,7 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { parseStringifiedJson, stringifyJson } from '@/utils'
-
-type ConvertMode = 'stringify' | 'parse'
+import type { ConvertMode } from "@/types/components/feature/data/escapedJsonStringifier";
 
 const toolEntry = TOOL_REGISTRY_MAP['escaped-json-stringifier']
 

@@ -5,9 +5,7 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { decodeHtmlEntities, encodeHtmlEntities } from '@/utils'
-
-type ConvertMode = 'encode' | 'decode'
-type EntityMode = 'named' | 'numeric'
+import type { ConvertMode, EntityMode } from "@/types/components/feature/data/htmlEntityConverter";
 
 const toolEntry = TOOL_REGISTRY_MAP['html-entity-converter']
 

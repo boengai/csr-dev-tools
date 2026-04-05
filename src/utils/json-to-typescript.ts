@@ -1,8 +1,4 @@
-type JsonToTsOptions = {
-  optionalProperties: boolean
-  rootName: string
-  useInterface: boolean
-}
+import type { JsonToTsOptions, CollectedType } from "@/types/utils/json-to-typescript";
 
 const DEFAULT_OPTIONS: JsonToTsOptions = {
   optionalProperties: false,
@@ -16,12 +12,6 @@ const toPascalCase = (str: string): string => {
     .replace(/^./, (c) => c.toUpperCase())
   return /^\d/.test(result) ? `_${result}` : result
 }
-
-type CollectedType = {
-  body: string
-  name: string
-}
-
 const inferType = (value: unknown, key: string, collected: Array<CollectedType>): string => {
   if (value === null) return 'null'
   if (Array.isArray(value)) return inferArrayType(value, key, collected)

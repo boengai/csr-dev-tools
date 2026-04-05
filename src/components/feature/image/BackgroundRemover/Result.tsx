@@ -1,16 +1,5 @@
 import { Button, ColorInput, RadioGroupInput } from '@/components/common'
-
-type BgOption = 'custom' | 'transparent' | 'white'
-
-type BackgroundRemoverResultProps = {
-  bgOption: BgOption
-  customColor: string
-  displayUrl: string
-  onBgChange: (option: BgOption) => void
-  onColorChange: (color: string) => void
-  onConfirm: () => void
-  sourcePreview: string
-}
+import type { BgOption, BackgroundRemoverResultProps } from "@/types/components/feature/image/BackgroundRemover/result";
 
 export const BackgroundRemoverResult = ({
   bgOption,

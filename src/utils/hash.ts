@@ -1,4 +1,4 @@
-export type HashAlgorithm = 'MD5' | 'SHA-1' | 'SHA-256' | 'SHA-512'
+import type { HashAlgorithm } from "@/types/utils/hash";
 
 export const HASH_ALGORITHMS: Array<HashAlgorithm> = ['MD5', 'SHA-1', 'SHA-256', 'SHA-512']
 
@@ -21,3 +21,5 @@ export async function computeHash(text: string, algorithm: HashAlgorithm): Promi
   const hashBuffer = await crypto.subtle.digest(algorithm, data)
   return bufferToHex(hashBuffer)
 }
+
+export type { HashAlgorithm } from "@/types/utils/hash";

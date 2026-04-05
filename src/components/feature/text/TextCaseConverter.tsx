@@ -17,14 +17,9 @@ import {
   toTitleCase,
   toUpperCase,
 } from '@/utils'
+import type { CaseResult } from "@/types/components/feature/text/textCaseConverter";
 
 const toolEntry = TOOL_REGISTRY_MAP['text-case-converter']
-
-type CaseResult = {
-  fn: (input: string) => string
-  label: string
-}
-
 const CASES: Array<CaseResult> = [
   { fn: toCamelCase, label: 'camelCase' },
   { fn: toPascalCase, label: 'PascalCase' },

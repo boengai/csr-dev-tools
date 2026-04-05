@@ -3,14 +3,7 @@ import type { SqlDialect } from '@/types'
 
 import { CloseButton } from './CloseButton'
 import { DIALECT_OPTIONS } from './constants'
-
-type ExportSqlPanelProps = {
-  generatedSql: string
-  onClose: () => void
-  onDownload: () => void
-  setSqlDialect: (value: SqlDialect) => void
-  sqlDialect: SqlDialect
-}
+import type { ExportSqlPanelProps } from "@/types/components/feature/data/db-diagram/exportSqlPanel";
 
 export const ExportSqlPanel = ({
   generatedSql,

@@ -13,6 +13,8 @@ import {
   generateFlexboxCss,
   type JustifyContent,
 } from '@/utils'
+import type { FlexItemEntry } from "@/types/components/feature/css/flexboxPlayground";
+
 const toolEntry = TOOL_REGISTRY_MAP['css-flexbox-playground']
 
 const ITEM_COLORS = [
@@ -39,9 +41,6 @@ const JUSTIFY_OPTIONS: Array<JustifyContent> = [
 ]
 const ALIGN_OPTIONS: Array<AlignItems> = ['flex-start', 'center', 'flex-end', 'stretch', 'baseline']
 const WRAP_OPTIONS: Array<FlexWrap> = ['nowrap', 'wrap', 'wrap-reverse']
-
-type FlexItemEntry = FlexboxItemProps & { _id: number }
-
 export const FlexboxPlayground = () => {
   const [container, setContainer] = useState<FlexboxContainerProps>(DEFAULT_CONTAINER)
   const nextItemId = useRef(3)

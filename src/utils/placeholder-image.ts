@@ -1,16 +1,4 @@
-export type PlaceholderOptions = {
-  bgColor: string
-  height: number
-  text: string
-  textColor: string
-  width: number
-}
-
-type PlaceholderPreset = {
-  height: number
-  label: string
-  width: number
-}
+import type { PlaceholderOptions, PlaceholderPreset } from "@/types/utils/placeholder-image";
 
 export const PLACEHOLDER_PRESETS: Array<PlaceholderPreset> = [
   { height: 150, label: 'Thumbnail', width: 150 },
@@ -107,3 +95,5 @@ export const downloadSvg = (svgString: string, filename: string) => {
   const blob = new Blob([svgString], { type: 'image/svg+xml' })
   downloadBlob(blob, filename)
 }
+
+export type { PlaceholderOptions } from "@/types/utils/placeholder-image";

@@ -11,6 +11,7 @@ import {
   describeCron,
   getNextRuns,
 } from '@/utils'
+import type { FieldEditorProps } from "@/types/components/feature/time/crontabGenerator";
 
 const toolEntry = TOOL_REGISTRY_MAP['crontab-generator']
 
@@ -39,16 +40,6 @@ const modeButtonClass = (active: boolean) =>
   `rounded border px-1.5 py-0.5 text-[11px] font-mono ${
     active ? 'border-primary bg-primary/20 text-primary font-bold' : 'border-gray-700 bg-transparent text-gray-500'
   }`
-
-type FieldEditorProps = {
-  config: CronFieldConfig
-  fieldIndex: number
-  label: string
-  max: number
-  min: number
-  onChange: (config: CronFieldConfig) => void
-}
-
 const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEditorProps) => {
   const handleModeChange = (mode: CronFieldMode) => {
     if (mode === 'specific') {

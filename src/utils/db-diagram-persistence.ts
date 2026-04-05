@@ -1,29 +1,5 @@
-import type { DiagramSchema, RelationshipType, TableColumn } from '@/types'
-
-type ReactFlowNode = {
-  data: {
-    columns: Array<TableColumn>
-    tableName: string
-    [key: string]: unknown
-  }
-  id: string
-  position: { x: number; y: number }
-  type?: string
-}
-
-type ReactFlowEdge = {
-  data?: {
-    relationType: RelationshipType
-    sourceColumnId: string
-    targetColumnId: string
-  }
-  id: string
-  source: string
-  sourceHandle?: string | null
-  target: string
-  targetHandle?: string | null
-  type?: string
-}
+import type { DiagramSchema } from '@/types'
+import type { ReactFlowNode, ReactFlowEdge } from "@/types/utils/db-diagram-persistence";
 
 export function serializeDiagram(nodes: Array<ReactFlowNode>, edges: Array<ReactFlowEdge>): DiagramSchema {
   const tables = nodes.map((node) => ({

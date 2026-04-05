@@ -1,14 +1,7 @@
 import { Button, CodeInput, CopyButton } from '@/components/common'
 
 import { CloseButton } from './CloseButton'
-
-type DbmlEditorPanelProps = {
-  dbmlErrors: Array<{ line: number; message: string }>
-  dbmlText: string
-  onClose: () => void
-  onDbmlChange: (text: string) => void
-  onSyncFromDiagram: () => void
-}
+import type { DbmlEditorPanelProps } from "@/types/components/feature/data/db-diagram/dbmlEditorPanel";
 
 export const DbmlEditorPanel = ({
   dbmlErrors,

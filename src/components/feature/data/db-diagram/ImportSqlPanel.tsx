@@ -1,23 +1,9 @@
-import type { Extension } from '@codemirror/state'
-
 import { CheckboxInput, CodeInput, SelectInput } from '@/components/common'
 import type { SqlDialect } from '@/types'
 
 import { CloseButton } from './CloseButton'
 import { DIALECT_OPTIONS } from './constants'
-
-type ImportSqlPanelProps = {
-  importSqlDialect: SqlDialect
-  importSqlErrors: Array<{ line: number; message: string }>
-  importSqlMerge: boolean
-  importSqlText: string
-  onClose: () => void
-  onImport: () => void
-  setImportSqlDialect: (value: SqlDialect) => void
-  setImportSqlMerge: (value: boolean) => void
-  setImportSqlText: (value: string) => void
-  sqlExtensions: Array<Extension>
-}
+import type { ImportSqlPanelProps } from "@/types/components/feature/data/db-diagram/importSqlPanel";
 
 export const ImportSqlPanel = ({
   importSqlDialect,

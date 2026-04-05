@@ -5,6 +5,7 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { formatYaml, getYamlParseError } from '@/utils'
+import type { State, Action } from "@/types/components/feature/data/yamlFormatter";
 
 const toolEntry = TOOL_REGISTRY_MAP['yaml-formatter']
 
@@ -12,23 +13,6 @@ const INDENT_OPTIONS = [
   { label: '2 spaces', value: 2 },
   { label: '4 spaces', value: 4 },
 ]
-
-type State = {
-  dialogOpen: boolean
-  indent: number
-  result: string
-  sortKeys: boolean
-  source: string
-}
-
-type Action =
-  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
-  | { type: 'SET_INDENT'; payload: number }
-  | { type: 'SET_RESULT'; payload: string }
-  | { type: 'SET_SORT_KEYS'; payload: boolean }
-  | { type: 'SET_SOURCE'; payload: string }
-  | { type: 'RESET' }
-
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {
     case 'SET_DIALOG_OPEN':

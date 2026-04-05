@@ -5,11 +5,9 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { cnMerge, type ProtobufEnumInfo, type ProtobufMessageInfo, type ProtobufSchemaInfo } from '@/utils'
+import type { EntryKind, BrowsableEntry } from "@/types/components/feature/code/protobufToJson";
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-to-json']
-
-type EntryKind = 'enum' | 'message'
-
 const KIND_STYLES: Record<EntryKind, { badge: string; label: string }> = {
   enum: { badge: 'border-green-700 bg-green-900/50 text-green-300', label: 'E' },
   message: { badge: 'border-blue-700 bg-blue-900/50 text-blue-300', label: 'M' },
@@ -78,10 +76,6 @@ enum PaymentMethod {
   PAYPAL = 2;
   CRYPTO = 3;
 }`
-
-type BrowsableEntry =
-  | { enumInfo: ProtobufEnumInfo; fullName: string; kind: 'enum'; name: string }
-  | { fullName: string; kind: 'message'; messageInfo: ProtobufMessageInfo; name: string }
 
 function buildBrowsableEntries(schema: ProtobufSchemaInfo): Array<BrowsableEntry> {
   const entries: Array<BrowsableEntry> = []

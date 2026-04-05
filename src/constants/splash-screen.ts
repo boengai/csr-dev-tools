@@ -1,10 +1,4 @@
-export type SplashScreenDevice = {
-  category: 'ipad' | 'iphone'
-  height: number
-  name: string
-  scaleFactor: number
-  width: number
-}
+import type { SplashScreenDevice } from "@/types/constants/splash-screen";
 
 export const IOS_DEVICES: Array<SplashScreenDevice> = [
   // iPhones
@@ -42,3 +36,5 @@ export const PWA_ICON_SIZES = [48, 72, 96, 128, 144, 192, 384, 512] as const
 export const MASKABLE_ICON_SIZES = [192, 512] as const
 
 export const MASKABLE_SAFE_ZONE_RATIO = 0.8
+
+export type { SplashScreenDevice } from "@/types/constants/splash-screen";

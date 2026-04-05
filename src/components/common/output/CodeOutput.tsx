@@ -1,10 +1,4 @@
-import type { ReactNode } from 'react'
-
-type CodeOutputProps = {
-  label?: ReactNode
-  placeholder?: string
-  value: string
-}
+import type { CodeOutputProps } from "@/types/components/common/output/codeOutput";
 
 export const CodeOutput = ({ label, placeholder, value }: CodeOutputProps) => {
   return (

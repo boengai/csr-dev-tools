@@ -5,10 +5,7 @@ import { ROUTE_PATH } from '@/constants'
 import { useSidebarStore } from '@/hooks'
 import type { CompVariant, SidebarToolItemProps } from '@/types'
 import { tv } from '@/utils'
-
-type SidebarToolItemVariants = {
-  active: boolean
-}
+import type { SidebarToolItemVariants } from "@/types/components/common/sidebar/sidebarToolItem";
 
 const sidebarToolItemVariants: CompVariant<SidebarToolItemVariants> = tv({
   base: 'flex w-full cursor-pointer items-center gap-2 rounded-l border-r-2 border-r-transparent py-2 pl-3 text-gray-300 transition-colors',

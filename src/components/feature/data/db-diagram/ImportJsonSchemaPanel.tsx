@@ -1,19 +1,7 @@
-import type { Extension } from '@codemirror/state'
-
 import { Button, CheckboxInput, CodeInput } from '@/components/common'
 
 import { CloseButton } from './CloseButton'
-
-type ImportJsonSchemaPanelProps = {
-  importJsonSchemaErrors: Array<string>
-  importJsonSchemaMerge: boolean
-  importJsonSchemaText: string
-  jsonExtensions: Array<Extension>
-  onClose: () => void
-  onImport: () => void
-  setImportJsonSchemaMerge: (value: boolean) => void
-  setImportJsonSchemaText: (value: string) => void
-}
+import type { ImportJsonSchemaPanelProps } from "@/types/components/feature/data/db-diagram/importJsonSchemaPanel";
 
 export const ImportJsonSchemaPanel = ({
   importJsonSchemaErrors,

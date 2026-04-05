@@ -1,22 +1,4 @@
-export type SshKeyInfo = {
-  bits: number
-  comment: string
-  keyType: string
-  md5Fingerprint: string
-  rawBase64: string
-  sha256Fingerprint: string
-}
-
-type ParsedKeyLine = {
-  comment: string
-  keyBlob: string
-  keyType: string
-}
-
-type ParsedKeyBlob = {
-  bits: number
-  keyType: string
-}
+import type { SshKeyInfo, ParsedKeyLine, ParsedKeyBlob } from "@/types/utils/ssh-fingerprint";
 
 const KNOWN_KEY_TYPES = new Set([
   'ecdsa-sha2-nistp256',
@@ -290,3 +272,5 @@ export const isValidSshPublicKey = (input: string): boolean => {
 
   return false
 }
+
+export type { SshKeyInfo } from "@/types/utils/ssh-fingerprint";

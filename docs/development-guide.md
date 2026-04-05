@@ -138,18 +138,47 @@ pnpm test:e2e:ui
 pnpm test:e2e:headed
 ```
 
+## Type Declarations
+
+**All type declarations must live in `src/types/`** — never declare types inline in component, utility, or constant files.
+
+### Rules
+
+- **No inline types**: Do not declare `type` aliases in `src/components/`, `src/utils/`, `src/constants/`, or `src/hooks/`
+- **Utils types**: Create `src/types/utils/<name>.ts`, import in the util file, and re-export for consumers
+  ```ts
+  // src/types/utils/hash.ts
+  export type HashAlgorithm = 'MD5' | 'SHA-1' | 'SHA-256' | 'SHA-512'
+
+  // src/utils/hash.ts
+  import type { HashAlgorithm } from '@/types/utils/hash'
+  export type { HashAlgorithm } from '@/types/utils/hash'
+  ```
+- **Component types**: Create `src/types/components/feature/<category>/<name>.ts`, import from the specific path
+  ```ts
+  // src/types/components/feature/code/javaScriptMinifier.ts
+  export type State = { ... }
+  export type Action = { ... }
+
+  // src/components/feature/code/JavaScriptMinifier.tsx
+  import type { State, Action } from '@/types/components/feature/code/javaScriptMinifier'
+  ```
+- **Barrel exports**: Utils types are re-exported through `src/types/utils/index.ts`. Component types are **not** barrel-exported (to avoid name collisions like `State`, `Action`, `ConvertMode`)
+- **Use `type` not `interface`** and `Array<T>` not `T[]` (enforced by oxlint)
+
 ## Adding a New Tool
 
 1. **Create utility** in `src/utils/<name>.ts` with pure logic functions
-2. **Create tests** in `src/utils/<name>.spec.ts` (co-located)
-3. **Create feature component** in `src/components/feature/<category>/<Name>.tsx`
-4. **Add types** in `src/types/` mirroring the component path (if needed)
-5. **Add barrel exports** up the chain (`index.ts` files)
-6. **Register in tool registry** in `src/constants/tool-registry.ts`:
+2. **Create types** in `src/types/utils/<name>.ts` for any types the utility needs
+3. **Create tests** in `src/utils/<name>.spec.ts` (co-located)
+4. **Create feature component** in `src/components/feature/<category>/<Name>.tsx`
+5. **Add component types** in `src/types/components/feature/<category>/<name>.ts` (if needed)
+6. **Add barrel exports** up the chain (`index.ts` files) for utils types
+7. **Register in tool registry** in `src/constants/tool-registry.ts`:
    - Key, category, emoji, title, description
    - Lazy-loaded component import
    - SEO metadata (title, description)
-7. **Add E2E test** in `e2e/<name>.spec.ts`
+8. **Add E2E test** in `e2e/<name>.spec.ts`
 
 ## Responsive Breakpoints
 

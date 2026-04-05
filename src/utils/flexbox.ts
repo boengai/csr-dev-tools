@@ -1,21 +1,4 @@
-export type FlexDirection = 'column' | 'column-reverse' | 'row' | 'row-reverse'
-export type JustifyContent = 'center' | 'flex-end' | 'flex-start' | 'space-around' | 'space-between' | 'space-evenly'
-export type AlignItems = 'baseline' | 'center' | 'flex-end' | 'flex-start' | 'stretch'
-export type FlexWrap = 'nowrap' | 'wrap' | 'wrap-reverse'
-
-export type FlexboxContainerProps = {
-  alignItems: AlignItems
-  direction: FlexDirection
-  gap: number
-  justifyContent: JustifyContent
-  wrap: FlexWrap
-}
-
-export type FlexboxItemProps = {
-  flexGrow: number
-  flexShrink: number
-  order: number
-}
+import type { FlexboxContainerProps, FlexboxItemProps } from "@/types/utils/flexbox";
 
 export const DEFAULT_CONTAINER: FlexboxContainerProps = {
   alignItems: 'stretch',
@@ -50,3 +33,5 @@ export function generateFlexboxCss(
 
   return { containerCss, itemsCss }
 }
+
+export type { FlexDirection, JustifyContent, AlignItems, FlexWrap, FlexboxContainerProps, FlexboxItemProps } from "@/types/utils/flexbox";

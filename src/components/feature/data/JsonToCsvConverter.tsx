@@ -4,8 +4,7 @@ import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import { csvToJson, getCsvParseError, getJsonParseError, jsonToCsv } from '@/utils'
-
-type ConvertMode = 'csv-to-json' | 'json-to-csv'
+import type { ConvertMode } from "@/types/components/feature/data/jsonToCsvConverter";
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-csv-converter']
 

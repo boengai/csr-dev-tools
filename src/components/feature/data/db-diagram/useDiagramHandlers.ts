@@ -1,13 +1,10 @@
 import type { Connection } from '@xyflow/react'
 import { addEdge, useReactFlow, useUpdateNodeInternals } from '@xyflow/react'
-import type { Dispatch, RefObject, SetStateAction } from 'react'
 import { useCallback, useEffect, useMemo } from 'react'
 
 import { useDebounceCallback, useToast } from '@/hooks'
 import type {
-  DiagramAction,
   DiagramIndexEntry,
-  DiagramState,
   RelationshipEdge,
   RelationshipEdgeData,
   RelationshipType,
@@ -39,21 +36,9 @@ import {
   serializeDiagram,
   validateDiagramSchema,
 } from '@/utils'
-
+import type { UseDiagramHandlersArgs } from "@/types/components/feature/data/db-diagram/useDiagramHandlers";
 
 const MERMAID_PREFILL_KEY = 'csr-dev-tools-mermaid-renderer-prefill'
-
-type UseDiagramHandlersArgs = {
-  dispatch: Dispatch<DiagramAction>
-  edges: Array<RelationshipEdge>
-  nameInputRef: RefObject<HTMLInputElement | null>
-  nodes: Array<TableNode>
-  renameInputRef: RefObject<HTMLInputElement | null>
-  setEdges: Dispatch<SetStateAction<Array<RelationshipEdge>>>
-  setNodes: Dispatch<SetStateAction<Array<TableNode>>>
-  state: DiagramState
-}
-
 export const useDiagramHandlers = ({
   dispatch,
   edges,

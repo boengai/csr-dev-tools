@@ -5,18 +5,13 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import {
   DEFAULT_GRADIENT,
   generateGradientCss,
-  type GradientConfig,
-  type GradientStop,
   type GradientType,
 } from '@/utils'
+import type { LocalConfig } from "@/types/components/feature/css/gradientGenerator";
 
 const toolEntry = TOOL_REGISTRY_MAP['css-gradient-generator']
 
 const ITEM_COLORS = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe', '#43e97b', '#fa709a']
-
-type GradientStopWithId = GradientStop & { _id: number }
-type LocalConfig = Omit<GradientConfig, 'stops'> & { stops: Array<GradientStopWithId> }
-
 export const GradientGenerator = () => {
   const nextStopId = useRef(DEFAULT_GRADIENT.stops.length)
   const [config, setConfig] = useState<LocalConfig>(() => ({

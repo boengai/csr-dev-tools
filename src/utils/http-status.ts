@@ -1,17 +1,4 @@
-export type HttpStatusCategory =
-  | '1xx Informational'
-  | '2xx Success'
-  | '3xx Redirection'
-  | '4xx Client Error'
-  | '5xx Server Error'
-
-type HttpStatusCode = {
-  category: HttpStatusCategory
-  code: number
-  description: string
-  name: string
-  useCase: string
-}
+import type { HttpStatusCategory, HttpStatusCode } from "@/types/utils/http-status";
 
 export const HTTP_STATUS_CODES: Array<HttpStatusCode> = [
   // 1xx Informational
@@ -481,3 +468,5 @@ export const filterHttpStatusCodes = (
   }
   return filtered
 }
+
+export type { HttpStatusCategory } from "@/types/utils/http-status";

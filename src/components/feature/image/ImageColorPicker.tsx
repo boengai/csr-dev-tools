@@ -4,6 +4,7 @@ import { Button, CopyButton, Dialog, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
 import { type PickedColor, pixelToColor } from '@/utils'
+import type { PickedColorWithId } from "@/types/components/feature/image/imageColorPicker";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const rafThrottle = <T extends (...args: Array<any>) => void>(fn: T): T => {
@@ -18,9 +19,6 @@ const rafThrottle = <T extends (...args: Array<any>) => void>(fn: T): T => {
 }
 
 const toolEntry = TOOL_REGISTRY_MAP['image-color-picker']
-
-type PickedColorWithId = PickedColor & { _id: number }
-
 export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [imageUrl, setImageUrl] = useState('')

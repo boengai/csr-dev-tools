@@ -1,26 +1,4 @@
-export type KeyframeStep = {
-  backgroundColor: string
-  opacity: number
-  percent: number
-  rotate: number
-  scale: number
-  translateX: number
-  translateY: number
-}
-
-export type AnimationDirection = 'alternate' | 'alternate-reverse' | 'normal' | 'reverse'
-export type AnimationFillMode = 'backwards' | 'both' | 'forwards' | 'none'
-export type AnimationTimingFunction = 'ease' | 'ease-in' | 'ease-in-out' | 'ease-out' | 'linear'
-
-export type AnimationConfig = {
-  direction: AnimationDirection
-  duration: number
-  fillMode: AnimationFillMode
-  iterationCount: string
-  keyframes: Array<KeyframeStep>
-  name: string
-  timingFunction: AnimationTimingFunction
-}
+import type { KeyframeStep, AnimationConfig } from "@/types/utils/css-animation";
 
 export const DEFAULT_ANIMATION_CONFIG: AnimationConfig = {
   direction: 'normal',
@@ -63,3 +41,5 @@ export const generateAnimationCss = (config: AnimationConfig): string => {
   const selector = `.animated-element {\n  ${shorthand}\n}`
   return `${keyframesRule}\n\n${selector}`
 }
+
+export type { KeyframeStep, AnimationDirection, AnimationFillMode, AnimationTimingFunction, AnimationConfig } from "@/types/utils/css-animation";

@@ -1,10 +1,8 @@
-import type { RefObject } from 'react'
-
 import { Button, TextInput } from '@/components/common'
-import type { DiagramIndexEntry } from '@/types'
 import { formatRelativeTime, tv } from '@/utils'
 
 import { CloseButton } from './CloseButton'
+import type { DiagramListPanelProps } from "@/types/components/feature/data/db-diagram/diagramListPanel";
 
 const diagramItemStyles = tv({
   base: 'flex items-center gap-2 border-b border-gray-800 px-3 py-2 transition-colors hover:bg-gray-900',
@@ -15,23 +13,6 @@ const diagramItemStyles = tv({
     },
   },
 })
-
-type DiagramListPanelProps = {
-  activeDiagramId: string | null
-  diagramIndex: Array<DiagramIndexEntry>
-  onClose: () => void
-  onDeleteDiagram: (id: string) => void
-  onLoadDiagram: (id: string) => void
-  onNewDiagram: () => void
-  onRenameDiagram: (id: string, newName: string) => void
-  onStartRenaming: (id: string, name: string) => void
-  renameInputRef: RefObject<HTMLInputElement | null>
-  renameValue: string
-  renamingId: string | null
-  setRenameValue: (value: string) => void
-  setRenamingId: (id: string | null) => void
-}
-
 export const DiagramListPanel = ({
   activeDiagramId,
   diagramIndex,

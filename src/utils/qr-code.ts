@@ -1,13 +1,5 @@
 import QRCode from 'qrcode'
-
-export type QrErrorCorrectionLevel = 'H' | 'L' | 'M' | 'Q'
-
-type QrCodeOptions = {
-  background?: string
-  errorCorrectionLevel?: QrErrorCorrectionLevel
-  foreground?: string
-  size?: number
-}
+import type { QrCodeOptions } from "@/types/utils/qr-code";
 
 export const generateQrCodeDataUrl = async (text: string, options: QrCodeOptions = {}): Promise<string> => {
   const { background = '#ffffff', errorCorrectionLevel = 'M', foreground = '#000000', size = 256 } = options
@@ -31,3 +23,5 @@ export const generateQrCodeSvgString = async (text: string, options: QrCodeOptio
     width: size,
   })
 }
+
+export type { QrErrorCorrectionLevel } from "@/types/utils/qr-code";

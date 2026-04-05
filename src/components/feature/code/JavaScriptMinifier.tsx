@@ -5,22 +5,7 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { formatJs, minifyJs } from '@/utils'
-
-type State = {
-  dialogOpen: boolean
-  indent: number | 'tab'
-  mode: 'beautify' | 'minify'
-  result: string
-  source: string
-}
-
-type Action =
-  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
-  | { type: 'SET_INDENT'; payload: number | 'tab' }
-  | { type: 'SET_MODE'; payload: 'beautify' | 'minify' }
-  | { type: 'SET_RESULT'; payload: string }
-  | { type: 'SET_SOURCE'; payload: string }
-  | { type: 'RESET' }
+import type { State, Action } from "@/types/components/feature/code/javaScriptMinifier";
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {

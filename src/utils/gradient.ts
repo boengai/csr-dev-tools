@@ -1,15 +1,4 @@
-export type GradientStop = {
-  color: string
-  position: number
-}
-
-export type GradientType = 'linear' | 'radial'
-
-export type GradientConfig = {
-  angle: number
-  stops: Array<GradientStop>
-  type: GradientType
-}
+import type { GradientStop, GradientType, GradientConfig } from "@/types/utils/gradient";
 
 export const DEFAULT_GRADIENT: GradientConfig = {
   angle: 135,
@@ -34,3 +23,5 @@ export function generateGradientCss(type: GradientType, angle: number, stops: Ar
   }
   return `linear-gradient(${clampedAngle}deg, ${stopsStr})`
 }
+
+export type { GradientStop, GradientType, GradientConfig } from "@/types/utils/gradient";

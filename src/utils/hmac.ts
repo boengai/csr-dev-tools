@@ -1,6 +1,4 @@
-export type HmacAlgorithm = 'SHA-256' | 'SHA-384' | 'SHA-512'
-
-export type HmacEncoding = 'base64' | 'hex'
+import type { HmacAlgorithm, HmacEncoding } from "@/types/utils/hmac";
 
 export const HMAC_ALGORITHMS: Array<HmacAlgorithm> = ['SHA-256', 'SHA-384', 'SHA-512']
 
@@ -39,3 +37,5 @@ export async function generateHmac(
 
   return encoding === 'hex' ? bufferToHex(signature) : bufferToBase64(signature)
 }
+
+export type { HmacAlgorithm, HmacEncoding } from "@/types/utils/hmac";

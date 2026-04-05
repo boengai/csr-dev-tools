@@ -1,13 +1,4 @@
-export type GridJustifyItems = 'center' | 'end' | 'start' | 'stretch'
-export type GridAlignItems = 'center' | 'end' | 'start' | 'stretch'
-
-export type GridContainerProps = {
-  alignItems: GridAlignItems
-  columns: string
-  gap: number
-  justifyItems: GridJustifyItems
-  rows: string
-}
+import type { GridContainerProps } from "@/types/utils/css-grid";
 
 export const DEFAULT_GRID_CONTAINER: GridContainerProps = {
   alignItems: 'stretch',
@@ -31,3 +22,5 @@ export const generateGridCss = (container: GridContainerProps): string => {
 
   return lines.join('\n')
 }
+
+export type { GridJustifyItems, GridAlignItems, GridContainerProps } from "@/types/utils/css-grid";

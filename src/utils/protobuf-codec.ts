@@ -1,8 +1,5 @@
 import * as protobuf from 'protobufjs'
-
-export type OutputFormat = 'base64' | 'hex' | 'raw'
-
-type CodecResult = { error: string; success: false } | { output: string; success: true }
+import type { OutputFormat, CodecResult } from "@/types/utils/protobuf-codec";
 
 function binaryToBase64(bytes: Uint8Array): string {
   return btoa(binaryToRaw(bytes))
@@ -169,3 +166,5 @@ export function decodeProtobuf(
     return { error: message, success: false }
   }
 }
+
+export type { OutputFormat } from "@/types/utils/protobuf-codec";

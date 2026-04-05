@@ -1,22 +1,8 @@
-import type { ImgHTMLAttributes } from 'react'
-
 import { NotoEmoji } from '@/components/common'
-import type { ImageFormat } from '@/types'
 import { formatFileSize } from '@/utils'
+import type { ImagePreviewProps } from "@/types/components/feature/image/imagePreview";
 
 export const EMPTY_IMAGE = 'data:,'
-
-type ImagePreviewMetadata = {
-  format?: ImageFormat
-  height?: number
-  size?: number
-  width?: number
-}
-
-type ImagePreviewProps = Pick<ImgHTMLAttributes<HTMLImageElement>, 'src'> & {
-  metadata?: ImagePreviewMetadata
-}
-
 export const ImagePreview = ({ metadata, src }: ImagePreviewProps) => {
   return (
     <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">

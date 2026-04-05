@@ -4,11 +4,9 @@ import { Button, CheckboxInput, CopyButton, FieldForm } from '@/components/commo
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import { generateLoremIpsum } from '@/utils'
+import type { LoremUnit } from "@/types/components/feature/text/loremIpsumGenerator";
 
 const toolEntry = TOOL_REGISTRY_MAP['lorem-ipsum-generator']
-
-type LoremUnit = 'paragraphs' | 'sentences' | 'words'
-
 const UNIT_OPTIONS = [
   { label: 'Paragraphs', value: 'paragraphs' },
   { label: 'Sentences', value: 'sentences' },

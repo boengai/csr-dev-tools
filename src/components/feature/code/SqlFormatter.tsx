@@ -4,19 +4,19 @@ import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { formatSql, type SqlDialect } from '@/utils'
+import { formatSql, type SqlFormatDialect } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['sql-formatter']
 
 export const SqlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
   const [result, setResult] = useState('')
-  const [dialect, setDialect] = useState<SqlDialect>('sql')
+  const [dialect, setDialect] = useState<SqlFormatDialect>('sql')
   const [indent, setIndent] = useState(2)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
-  const process = (val: string, d: SqlDialect, ind: number) => {
+  const process = (val: string, d: SqlFormatDialect, ind: number) => {
     if (val.trim().length === 0) {
       setResult('')
       return
@@ -39,7 +39,7 @@ export const SqlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
   }
 
   const handleDialectChange = (val: string) => {
-    const d = val as SqlDialect
+    const d = val as SqlFormatDialect
     setDialect(d)
     if (source.trim().length > 0) {
       process(source, d, indent)

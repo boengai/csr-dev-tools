@@ -1,8 +1,4 @@
-export type PickedColor = {
-  hex: string
-  hsl: string
-  rgb: string
-}
+import type { PickedColor } from "@/types/utils/color-picker";
 
 export const rgbToHex = (r: number, g: number, b: number): string => {
   return `#${[r, g, b].map((v) => v.toString(16).padStart(2, '0')).join('')}`
@@ -42,3 +38,5 @@ export const pixelToColor = (r: number, g: number, b: number): PickedColor => ({
   hsl: rgbToHsl(r, g, b),
   rgb: `rgb(${r}, ${g}, ${b})`,
 })
+
+export type { PickedColor } from "@/types/utils/color-picker";

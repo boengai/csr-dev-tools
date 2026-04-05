@@ -1,4 +1,4 @@
-export type ColumnAlignment = 'center' | 'left' | 'right'
+import type { ColumnAlignment } from "@/types/utils/markdown-table";
 
 const escapeCell = (text: string): string => text.replace(/\|/g, '\\|')
 
@@ -33,3 +33,5 @@ export const generateMarkdownTable = (data: Array<Array<string>>, alignments: Ar
 
   return [headerRow, separator, ...dataRows].join('\n')
 }
+
+export type { ColumnAlignment } from "@/types/utils/markdown-table";

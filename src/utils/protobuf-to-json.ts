@@ -1,41 +1,5 @@
 import * as protobuf from 'protobufjs'
-
-type ProtobufFieldInfo = {
-  description: string | null
-  id: number
-  isMap: boolean
-  name: string
-  resolvedKind: 'enum' | 'message' | 'scalar'
-  resolvedTypeName: string | null
-  rule: 'optional' | 'repeated' | 'required' | undefined
-  type: string
-}
-
-export type ProtobufEnumInfo = {
-  fullName: string
-  name: string
-  values: Record<string, number>
-}
-
-export type ProtobufMessageInfo = {
-  fields: Array<ProtobufFieldInfo>
-  fullName: string
-  name: string
-  nestedEnums: Array<ProtobufEnumInfo>
-  nestedMessages: Array<ProtobufMessageInfo>
-  oneofs: Array<{ fieldNames: Array<string>; name: string }>
-}
-
-export type ProtobufSchemaInfo = {
-  enums: Array<ProtobufEnumInfo>
-  messages: Array<ProtobufMessageInfo>
-  package: string | null
-  syntax: string | null
-}
-
-type ProtobufParseResult =
-  | { error: string; line: number | null; success: false }
-  | { schema: ProtobufSchemaInfo; success: true }
+import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufFieldInfo, ProtobufParseResult } from "@/types/utils/protobuf-to-json";
 
 const SCALAR_DEFAULTS: Record<string, unknown> = {
   bool: false,
@@ -232,3 +196,5 @@ export function generateSampleJson(
 
   return result
 }
+
+export type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufSchemaInfo } from "@/types/utils/protobuf-to-json";
