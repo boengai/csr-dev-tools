@@ -1,0 +1,13 @@
+[workspace]
+members = ["crates/*"]
+resolver = "2"
+
+[workspace.package]
+edition = "2024"
+license = "MIT"
+
+[profile.release]
+lto = true
+opt-level = 3
+strip = "debuginfo"
+codegen-units = 1
