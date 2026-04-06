@@ -20,14 +20,14 @@ export const NumberBaseConverter = (_props: ToolComponentProps) => {
   const [error, setError] = useState('')
   const { toast } = useToast()
 
-  const updateAllFromField = (val: string, fromBase: number, fromName: string) => {
+  const updateAllFromField = async (val: string, fromBase: number, fromName: string) => {
     if (val.trim().length === 0) {
       setValues({ binary: '', decimal: '', hex: '', octal: '' })
       setError('')
       return
     }
 
-    if (!isValidForBase(val, fromBase)) {
+    if (!await isValidForBase(val, fromBase)) {
       setError(`Invalid character for base ${fromBase.toString()}`)
       return
     }
@@ -40,7 +40,7 @@ export const NumberBaseConverter = (_props: ToolComponentProps) => {
         if (field.name === fromName) {
           newValues[field.name] = val
         } else {
-          newValues[field.name] = convertBase(val, fromBase, field.base)
+          newValues[field.name] = await convertBase(val, fromBase, field.base)
         }
       }
       setValues(newValues)
@@ -53,7 +53,7 @@ export const NumberBaseConverter = (_props: ToolComponentProps) => {
   }
 
   const debouncedUpdate = useDebounceCallback((val: string, fromBase: number, fromName: string) => {
-    updateAllFromField(val, fromBase, fromName)
+    void updateAllFromField(val, fromBase, fromName)
   }, 300)
 
   const handleChange = (val: string, field: BaseField) => {
