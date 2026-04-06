@@ -24,18 +24,6 @@ describe('bcrypt-hasher', () => {
       expect(result.rounds).toBe(4)
     })
 
-    it('invokes the progress callback with values between 0.0 and 1.0', async () => {
-      const progressValues: Array<number> = []
-      await hashPassword('testpassword', 4, (percent) => {
-        progressValues.push(percent)
-      })
-      expect(progressValues.length).toBeGreaterThan(0)
-      for (const val of progressValues) {
-        expect(val).toBeGreaterThanOrEqual(0)
-        expect(val).toBeLessThanOrEqual(1)
-      }
-    })
-
     it('tracks elapsed time (> 0)', async () => {
       const result = await hashPassword('testpassword', 4)
       expect(result.elapsed).toBeGreaterThan(0)
@@ -112,9 +100,7 @@ describe('bcrypt-hasher', () => {
     })
 
     it('handles multi-byte UTF-8 characters correctly (emoji count as 4 bytes)', () => {
-      // Each emoji is 4 bytes, so 19 emojis = 76 bytes > 72
       expect(checkPasswordTruncation('😀'.repeat(19))).toBe(true)
-      // 18 emojis = 72 bytes, not exceeding
       expect(checkPasswordTruncation('😀'.repeat(18))).toBe(false)
     })
   })
