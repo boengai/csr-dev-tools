@@ -28,13 +28,13 @@ export const JsonToCsvConverter = () => {
   const initializedRef = useRef(false)
   const modeRef = useRef(mode)
 
-  const process = (val: string, m: ConvertMode) => {
+  const process = async (val: string, m: ConvertMode) => {
     if (val.trim().length === 0) {
       setResult('')
       return
     }
     try {
-      const converted = m === 'json-to-csv' ? jsonToCsv(val) : csvToJson(val)
+      const converted = m === 'json-to-csv' ? await jsonToCsv(val) : await csvToJson(val)
       setResult(converted)
     } catch (e) {
       setResult('')
@@ -52,7 +52,7 @@ export const JsonToCsvConverter = () => {
           label = msg ? `Invalid JSON: ${msg}` : 'Conversion failed — please check your input'
         }
       } else {
-        const msg = getCsvParseError(val)
+        const msg = await getCsvParseError(val)
         label = msg ?? 'Conversion failed — please check your input'
       }
       toast({ action: 'add', item: { label, type: 'error' } })
