@@ -1,38 +1,11 @@
-import { js as beautifyJs } from 'js-beautify'
+import { formatJs as wasmFormatJs, minifyJs as wasmMinifyJs } from '@/wasm/csr-formatter'
 
-export const formatJs = (js: string, indent: number | 'tab' = 2): string => {
+export const formatJs = async (js: string, indent: number | 'tab' = 2): Promise<string> => {
   if (js.trim().length === 0) return ''
-
-  return beautifyJs(js, {
-    indent_size: indent === 'tab' ? 1 : indent,
-    indent_char: indent === 'tab' ? '\t' : ' ',
-    preserve_newlines: true,
-    max_preserve_newlines: 2,
-  })
+  return wasmFormatJs(js, indent)
 }
 
-export const minifyJs = (js: string): string => {
+export const minifyJs = async (js: string): Promise<string> => {
   if (js.trim().length === 0) return ''
-
-  // Preserve string literals before stripping comments
-  const strings: Array<string> = []
-  let result = js.replace(/(["'])(?:(?!\1)[^\\]|\\.)*\1/g, (match) => {
-    const idx = strings.length
-    strings.push(match)
-    return `\x00S${idx}\x00`
-  })
-
-  result = result
-    .replace(/\/\*[\s\S]*?\*\//g, '')
-    .replace(/\/\/.*$/gm, '')
-    .replace(/\n\s*/g, ' ')
-    .replace(/\s{2,}/g, ' ')
-    .trim()
-
-  // Restore string literals
-  for (let i = 0; i < strings.length; i++) {
-    result = result.replace(`\x00S${i}\x00`, strings[i])
-  }
-
-  return result
+  return wasmMinifyJs(js)
 }

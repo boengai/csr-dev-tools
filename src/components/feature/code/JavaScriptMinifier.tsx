@@ -37,13 +37,13 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
   const { dialogOpen, indent, mode, result, source } = state
   const { toast } = useToast()
 
-  const process = (val: string, m: 'beautify' | 'minify', ind: number | 'tab') => {
+  const process = async (val: string, m: 'beautify' | 'minify', ind: number | 'tab') => {
     if (val.trim().length === 0) {
       dispatch({ type: 'SET_RESULT', payload: '' })
       return
     }
     try {
-      dispatch({ type: 'SET_RESULT', payload: m === 'beautify' ? formatJs(val, ind) : minifyJs(val) })
+      dispatch({ type: 'SET_RESULT', payload: await (m === 'beautify' ? formatJs(val, ind) : minifyJs(val)) })
     } catch {
       dispatch({ type: 'SET_RESULT', payload: '' })
       toast({ action: 'add', item: { label: 'Unable to process JavaScript', type: 'error' } })

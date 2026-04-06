@@ -1,15 +1,10 @@
-import { format } from 'sql-formatter'
-import type { SqlFormatDialect } from "@/types/utils/sql-format";
+import type { SqlFormatDialect } from '@/types/utils/sql-format'
 
-export const formatSql = (sql: string, dialect: SqlFormatDialect = 'sql', indent: number = 2): string => {
+import { formatSql as wasmFormatSql } from '@/wasm/csr-formatter'
+
+export const formatSql = async (sql: string, dialect: SqlFormatDialect = 'sql', indent: number = 2): Promise<string> => {
   if (sql.trim().length === 0) return ''
-
-  return format(sql, {
-    language: dialect,
-    tabWidth: indent,
-    useTabs: false,
-    keywordCase: 'upper',
-  })
+  return wasmFormatSql(sql, dialect, indent)
 }
 
-export type { SqlFormatDialect } from "@/types/utils/sql-format";
+export type { SqlFormatDialect } from '@/types/utils/sql-format'

@@ -17,13 +17,13 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   const { toast } = useToast()
   const initializedRef = useRef(false)
 
-  const process = (val: string, m: 'beautify' | 'minify', ind: number | 'tab') => {
+  const process = async (val: string, m: 'beautify' | 'minify', ind: number | 'tab') => {
     if (val.trim().length === 0) {
       setResult('')
       return
     }
     try {
-      setResult(m === 'beautify' ? formatHtml(val, ind) : minifyHtml(val))
+      setResult(await (m === 'beautify' ? formatHtml(val, ind) : minifyHtml(val)))
     } catch {
       setResult('')
       toast({ action: 'add', item: { label: 'Unable to format HTML', type: 'error' } })

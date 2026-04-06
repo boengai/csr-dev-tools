@@ -16,13 +16,13 @@ export const CssFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
-  const process = (val: string, m: 'beautify' | 'minify', ind: number | 'tab') => {
+  const process = async (val: string, m: 'beautify' | 'minify', ind: number | 'tab') => {
     if (val.trim().length === 0) {
       setResult('')
       return
     }
     try {
-      setResult(m === 'beautify' ? formatCss(val, ind) : minifyCss(val))
+      setResult(await (m === 'beautify' ? formatCss(val, ind) : minifyCss(val)))
     } catch {
       setResult('')
       toast({ action: 'add', item: { label: 'Unable to format CSS', type: 'error' } })

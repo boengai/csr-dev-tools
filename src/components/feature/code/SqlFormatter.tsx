@@ -16,13 +16,13 @@ export const SqlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
-  const process = (val: string, d: SqlFormatDialect, ind: number) => {
+  const process = async (val: string, d: SqlFormatDialect, ind: number) => {
     if (val.trim().length === 0) {
       setResult('')
       return
     }
     try {
-      setResult(formatSql(val, d, ind))
+      setResult(await formatSql(val, d, ind))
     } catch {
       setResult('')
       toast({ action: 'add', item: { label: 'Unable to format SQL', type: 'error' } })
