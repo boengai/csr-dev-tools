@@ -1,27 +1,17 @@
-export const xmlToJson = async (input: string): Promise<string> => {
-  if (input.trim().length === 0) throw new Error('Empty input')
-  const { XMLParser } = await import('fast-xml-parser')
-  const parser = new XMLParser({ ignoreAttributes: false, attributeNamePrefix: '@_' })
-  const parsed = parser.parse(input)
-  return JSON.stringify(parsed, null, 2)
+import {
+  getXmlParseError as wasmGetXmlParseError,
+  jsonToXml as wasmJsonToXml,
+  xmlToJson as wasmXmlToJson,
+} from '@/wasm/csr-parsers'
+
+export async function xmlToJson(input: string): Promise<string> {
+  return wasmXmlToJson(input)
 }
 
-export const jsonToXml = async (input: string): Promise<string> => {
-  if (input.trim().length === 0) throw new Error('Empty input')
-  const { XMLBuilder } = await import('fast-xml-parser')
-  const builder = new XMLBuilder({ ignoreAttributes: false, attributeNamePrefix: '@_', format: true })
-  const obj = JSON.parse(input)
-  return builder.build(obj) as string
+export async function jsonToXml(input: string): Promise<string> {
+  return wasmJsonToXml(input)
 }
 
-export const getXmlParseError = async (input: string): Promise<string | null> => {
-  if (input.trim().length === 0) return 'Empty input'
-  try {
-    const { XMLValidator } = await import('fast-xml-parser')
-    const result = XMLValidator.validate(input)
-    if (result !== true) return result.err.msg
-    return null
-  } catch (e) {
-    return e instanceof Error ? e.message : 'Invalid XML'
-  }
+export async function getXmlParseError(input: string): Promise<string | null> {
+  return wasmGetXmlParseError(input)
 }

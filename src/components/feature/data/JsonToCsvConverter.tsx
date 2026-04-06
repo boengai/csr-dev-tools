@@ -48,7 +48,7 @@ export const JsonToCsvConverter = () => {
         ) {
           label = message
         } else {
-          const msg = getJsonParseError(val)
+          const msg = await getJsonParseError(val)
           label = msg ? `Invalid JSON: ${msg}` : 'Conversion failed — please check your input'
         }
       } else {

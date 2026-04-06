@@ -150,7 +150,7 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
     }
     try {
       const { parseProtobufSchema } = await import('@/utils/protobuf-to-json')
-      const result = parseProtobufSchema(value)
+      const result = await parseProtobufSchema(value)
       if (result.success) {
         setSchemaInfo(result.schema)
         setError(null)
@@ -191,7 +191,7 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
       if (entry.kind === 'message' && schemaInfo) {
         try {
           const { generateSampleJson } = await import('@/utils/protobuf-to-json')
-          const json = generateSampleJson(entry.messageInfo, schemaInfo.messages, schemaInfo.enums)
+          const json = await generateSampleJson(entry.messageInfo, schemaInfo.messages, schemaInfo.enums)
           const jsonStr = JSON.stringify(json, null, 2)
           const allEnums = collectAllEnumsFlat(schemaInfo)
           const annotatedLines = annotateJsonWithEnums(jsonStr, allEnums)

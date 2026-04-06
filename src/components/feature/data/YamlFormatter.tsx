@@ -41,13 +41,13 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   const { dialogOpen, indent, result, sortKeys, source } = state
   const { toast } = useToast()
 
-  const process = (val: string, currentIndent: number, currentSortKeys: boolean) => {
+  const process = async (val: string, currentIndent: number, currentSortKeys: boolean) => {
     if (val.trim().length === 0) {
       dispatch({ type: 'SET_RESULT', payload: '' })
       return
     }
 
-    const parseError = getYamlParseError(val)
+    const parseError = await getYamlParseError(val)
     if (parseError != null) {
       dispatch({ type: 'SET_RESULT', payload: '' })
       toast({ action: 'add', item: { label: `Invalid YAML: ${parseError}`, type: 'error' } })
@@ -55,7 +55,7 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     }
 
     try {
-      dispatch({ type: 'SET_RESULT', payload: formatYaml(val, { indent: currentIndent, sortKeys: currentSortKeys }) })
+      dispatch({ type: 'SET_RESULT', payload: await formatYaml(val, { indent: currentIndent, sortKeys: currentSortKeys }) })
     } catch {
       dispatch({ type: 'SET_RESULT', payload: '' })
       toast({ action: 'add', item: { label: 'Unable to format YAML', type: 'error' } })

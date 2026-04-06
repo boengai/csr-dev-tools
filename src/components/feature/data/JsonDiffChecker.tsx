@@ -90,8 +90,8 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
       return
     }
 
-    const origError = getJsonDiffError(orig, 'Original')
-    const modError = getJsonDiffError(mod, 'Modified')
+    const origError = await getJsonDiffError(orig, 'Original')
+    const modError = await getJsonDiffError(mod, 'Modified')
     if (origError || modError) {
       dispatch({ type: 'SET_ERROR', payload: (origError ?? modError) as string })
       dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
@@ -99,8 +99,8 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     }
 
     try {
-      const normalizedOrig = orig.trim().length === 0 ? '' : normalizeJson(orig)
-      const normalizedMod = mod.trim().length === 0 ? '' : normalizeJson(mod)
+      const normalizedOrig = orig.trim().length === 0 ? '' : await normalizeJson(orig)
+      const normalizedMod = mod.trim().length === 0 ? '' : await normalizeJson(mod)
 
       const [sideBySide, patch] = await Promise.all([
         computeSideBySideDiff(normalizedOrig, normalizedMod),

@@ -43,7 +43,7 @@ export const JsonToYamlConverter = () => {
       if (session !== sessionRef.current) return
       setResult('')
       if (m === 'json-to-yaml') {
-        const msg = getJsonParseError(val)
+        const msg = await getJsonParseError(val)
         toast({
           action: 'add',
           item: { label: msg ? `Invalid JSON: ${msg}` : 'Conversion failed — please check your input', type: 'error' },

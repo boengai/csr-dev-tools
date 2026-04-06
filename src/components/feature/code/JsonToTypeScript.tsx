@@ -18,25 +18,25 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
   const { toast } = useToast()
   const initializedRef = useRef(false)
 
-  const generate = useDebounceCallback((json: string, root: string, iface: boolean, optional: boolean) => {
+  const generate = useDebounceCallback(async (json: string, root: string, iface: boolean, optional: boolean) => {
     if (!json.trim()) {
       setOutput('')
       return
     }
     try {
-      setOutput(jsonToTypeScript(json, { optionalProperties: optional, rootName: root, useInterface: iface }))
+      setOutput(await jsonToTypeScript(json, { optionalProperties: optional, rootName: root, useInterface: iface }))
     } catch {
       setOutput('')
     }
   }, 300)
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     if (!source.trim()) {
       toast({ action: 'add', item: { label: 'Please enter JSON input', type: 'error' } })
       return
     }
     try {
-      setOutput(jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }))
+      setOutput(await jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }))
       toast({ action: 'add', item: { label: 'TypeScript generated successfully', type: 'success' } })
     } catch {
       toast({ action: 'add', item: { label: 'Invalid JSON input', type: 'error' } })
@@ -47,11 +47,13 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
     if (!initializedRef.current) {
       initializedRef.current = true
       if (source) {
-        try {
-          setOutput(jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }))
-        } catch {
-          // invalid persisted JSON — ignore
-        }
+        void (async () => {
+          try {
+            setOutput(await jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }))
+          } catch {
+            // invalid persisted JSON — ignore
+          }
+        })()
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
@@ -93,11 +95,11 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button
             block
-            onClick={() => {
+            onClick={async () => {
               setDialogOpen(true)
               if (source.trim()) {
                 try {
-                  setOutput(jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }))
+                  setOutput(await jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }))
                 } catch {
                   // invalid JSON — ignore
                 }

@@ -67,7 +67,7 @@ const EncodeContent = ({
       }
       try {
         const { encodeProtobuf } = await import('@/utils/protobuf-codec')
-        const codecResult = encodeProtobuf(schemaVal, msgType, sourceVal, fmt)
+        const codecResult = await encodeProtobuf(schemaVal, msgType, sourceVal, fmt)
         if (codecResult.success) {
           setResult(codecResult.output)
         } else {
@@ -235,7 +235,7 @@ const DecodeContent = ({
       }
       try {
         const { decodeProtobuf } = await import('@/utils/protobuf-codec')
-        const codecResult = decodeProtobuf(schemaVal, msgType, sourceVal, fmt)
+        const codecResult = await decodeProtobuf(schemaVal, msgType, sourceVal, fmt)
         if (codecResult.success) {
           setResult(codecResult.output)
         } else {
@@ -286,7 +286,7 @@ const DecodeContent = ({
       const file = files[0]
       if (!file) return
       const reader = new FileReader()
-      reader.onload = () => {
+      reader.onload = async () => {
         const buffer = reader.result as ArrayBuffer
         const bytes = new Uint8Array(buffer)
         // Convert to latin1 string (preserves all byte values, unlike UTF-8)
@@ -297,7 +297,7 @@ const DecodeContent = ({
         // Try to detect if the content is base64 or hex text
         const textDecoder = new TextDecoder()
         const text = textDecoder.decode(bytes)
-        const detected = detectProtobufFormat(text)
+        const detected = await detectProtobufFormat(text)
         const value = detected === 'raw' ? raw : text
         onFormatChange(detected)
         onSourceChange(value)
@@ -413,7 +413,7 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
     }
     try {
       const { parseProtobufSchema } = await import('@/utils/protobuf-to-json')
-      const parsed = parseProtobufSchema(value)
+      const parsed = await parseProtobufSchema(value)
       if (parsed.success) {
         const names = parsed.schema.messages.map((m) => m.name)
         setMessageTypes(names)

@@ -15,13 +15,13 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   const { toast } = useToast()
   const initializedRef = useRef(false)
 
-  const process = (val: string) => {
+  const process = async (val: string) => {
     if (val.trim().length === 0) {
       setResult('')
       return
     }
 
-    const parseError = getJsonParseError(val)
+    const parseError = await getJsonParseError(val)
     if (parseError != null) {
       setResult('')
       toast({ action: 'add', item: { label: `Invalid JSON: ${parseError}`, type: 'error' } })
@@ -29,7 +29,7 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     }
 
     try {
-      setResult(formatJson(val))
+      setResult(await formatJson(val))
     } catch {
       setResult('')
       toast({ action: 'add', item: { label: 'Unable to format JSON', type: 'error' } })

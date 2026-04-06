@@ -1,31 +1,25 @@
-import { parse, stringify } from 'yaml'
+import {
+  formatYaml as wasmFormatYaml,
+  getYamlParseError as wasmGetYamlParseError,
+  jsonToYaml as wasmJsonToYaml,
+  yamlToJson as wasmYamlToJson,
+} from '@/wasm/csr-parsers'
 
-export const formatYaml = (input: string, options?: { indent?: number; sortKeys?: boolean }): string => {
-  if (input.trim().length === 0) throw new Error('Empty input')
-  const parsed = parse(input)
-  return stringify(parsed, {
-    indent: options?.indent ?? 2,
-    sortMapEntries: options?.sortKeys ?? false,
-  })
+export async function formatYaml(
+  input: string,
+  options?: { indent?: number; sortKeys?: boolean },
+): Promise<string> {
+  return wasmFormatYaml(input, options)
 }
 
-export const getYamlParseError = (input: string): string | null => {
-  if (input.trim().length === 0) return 'Empty input'
-  try {
-    parse(input)
-    return null
-  } catch (e) {
-    return e instanceof Error ? e.message : 'Invalid YAML'
-  }
+export async function getYamlParseError(input: string): Promise<string | null> {
+  return wasmGetYamlParseError(input)
 }
 
-export const jsonToYaml = (input: string): string => {
-  if (input.trim().length === 0) throw new Error('Empty input')
-  return stringify(JSON.parse(input), { indent: 2 })
+export async function jsonToYaml(input: string): Promise<string> {
+  return wasmJsonToYaml(input)
 }
 
-export const yamlToJson = (input: string, indent = 2): string => {
-  if (input.trim().length === 0) throw new Error('Empty input')
-  const parsed = parse(input)
-  return JSON.stringify(parsed, null, indent)
+export async function yamlToJson(input: string, indent = 2): Promise<string> {
+  return wasmYamlToJson(input, indent)
 }
