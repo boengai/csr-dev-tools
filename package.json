@@ -17,7 +17,8 @@
     "test:e2e:headed": "playwright test --headed",
     "wasm:build": "cd wasm && ./scripts/build.sh",
     "wasm:build:dev": "cd wasm && ./scripts/build.sh --dev",
-    "wasm:test": "cd wasm && cargo test"
+    "wasm:test": "cd wasm && cargo test",
+    "bench": "pnpm wasm:build:dev && vitest bench"
   },
   "dependencies": {
     "@codemirror/lang-json": "6.0.2",
