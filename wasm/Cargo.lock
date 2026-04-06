@@ -65,6 +65,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "csr-json-tools"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "serde_json",
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "csr-number-base"
 version = "0.1.0"
 dependencies = [
