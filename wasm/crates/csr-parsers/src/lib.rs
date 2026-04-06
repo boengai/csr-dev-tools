@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 
+mod proto_codec;
 mod proto_schema;
 mod toml_parser;
 mod xml;
@@ -180,6 +181,299 @@ fn collect_all_flat_messages(
     for msg in messages {
         result.push(msg);
         result.extend(collect_all_flat_messages(&msg.nested_messages));
+    }
+    result
+}
+
+// ── Protobuf Codec ──
+
+#[wasm_bindgen]
+pub fn encode_protobuf(
+    schema_input: &str,
+    message_type_name: &str,
+    json_string: &str,
+    output_format: &str,
+) -> JsValue {
+    let result =
+        encode_protobuf_inner(schema_input, message_type_name, json_string, output_format);
+    serde_wasm_bindgen::to_value(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn decode_protobuf(
+    schema_input: &str,
+    message_type_name: &str,
+    input: &str,
+    input_format: &str,
+) -> JsValue {
+    let result = decode_protobuf_inner(schema_input, message_type_name, input, input_format);
+    serde_wasm_bindgen::to_value(&result).unwrap()
+}
+
+#[wasm_bindgen]
+pub fn detect_protobuf_format(input: &str) -> String {
+    let trimmed = input.trim();
+    if trimmed.is_empty() {
+        return "raw".to_string();
+    }
+
+    // Check hex: even-length, all hex chars
+    let stripped: String = trimmed.chars().filter(|c| !c.is_whitespace()).collect();
+    if stripped.len() >= 2
+        && stripped.len() % 2 == 0
+        && stripped.chars().all(|c| c.is_ascii_hexdigit())
+    {
+        return "hex".to_string();
+    }
+
+    // Check base64
+    if trimmed.len() >= 4
+        && trimmed
+            .trim_end_matches('=')
+            .chars()
+            .all(|c| c.is_ascii_alphanumeric() || c == '+' || c == '/')
+    {
+        return "base64".to_string();
+    }
+
+    "raw".to_string()
+}
+
+fn encode_protobuf_inner(
+    schema_input: &str,
+    message_type_name: &str,
+    json_string: &str,
+    output_format: &str,
+) -> CodecResultInternal {
+    if schema_input.trim().is_empty() {
+        return CodecResultInternal::err("Empty schema".into());
+    }
+
+    // Parse schema
+    let mut lexer = proto_schema::lexer::Lexer::new(schema_input.trim());
+    let tokens = match lexer.tokenize() {
+        Ok(t) => t,
+        Err(e) => return CodecResultInternal::err(e),
+    };
+    let mut parser = proto_schema::parser::ProtoParser::new(tokens);
+    let schema = match parser.parse() {
+        Ok(s) => s,
+        Err(e) => return CodecResultInternal::err(e),
+    };
+
+    // Find message type
+    let all_msgs = collect_all_flat_messages_owned(&schema.messages);
+    let msg = match all_msgs.iter().find(|m| m.name == message_type_name) {
+        Some(m) => m,
+        None => {
+            return CodecResultInternal::err(format!("no such type: {}", message_type_name))
+        }
+    };
+
+    // Parse JSON
+    let json_value: serde_json::Value = match serde_json::from_str(json_string) {
+        Ok(v) => v,
+        Err(e) => return CodecResultInternal::err(e.to_string()),
+    };
+
+    // Encode
+    let all_enums = collect_all_flat_enums(&schema.messages, &schema.enums);
+    match proto_codec::encode::encode_message(&json_value, msg, &schema.messages, &all_enums) {
+        Ok(bytes) => {
+            let output = format_binary_output(&bytes, output_format);
+            CodecResultInternal::ok(output)
+        }
+        Err(e) => CodecResultInternal::err(e),
+    }
+}
+
+fn decode_protobuf_inner(
+    schema_input: &str,
+    message_type_name: &str,
+    input: &str,
+    input_format: &str,
+) -> CodecResultInternal {
+    if schema_input.trim().is_empty() {
+        return CodecResultInternal::err("Empty schema".into());
+    }
+
+    // Parse schema
+    let mut lexer = proto_schema::lexer::Lexer::new(schema_input.trim());
+    let tokens = match lexer.tokenize() {
+        Ok(t) => t,
+        Err(e) => return CodecResultInternal::err(e),
+    };
+    let mut parser = proto_schema::parser::ProtoParser::new(tokens);
+    let schema = match parser.parse() {
+        Ok(s) => s,
+        Err(e) => return CodecResultInternal::err(e),
+    };
+
+    // Find message type
+    let all_msgs = collect_all_flat_messages_owned(&schema.messages);
+    let msg = match all_msgs.iter().find(|m| m.name == message_type_name) {
+        Some(m) => m,
+        None => {
+            return CodecResultInternal::err(format!("no such type: {}", message_type_name))
+        }
+    };
+
+    // Decode binary input
+    let bytes = match parse_binary_input(input, input_format) {
+        Ok(b) => b,
+        Err(e) => return CodecResultInternal::err(e),
+    };
+
+    let all_enums = collect_all_flat_enums(&schema.messages, &schema.enums);
+    match proto_codec::decode::decode_message(&bytes, msg, &schema.messages, &all_enums) {
+        Ok(value) => match serde_json::to_string_pretty(&value) {
+            Ok(s) => CodecResultInternal::ok(s),
+            Err(e) => CodecResultInternal::err(e.to_string()),
+        },
+        Err(e) => CodecResultInternal::err(e),
+    }
+}
+
+#[derive(serde::Serialize)]
+struct CodecResultInternal {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    output: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    error: Option<String>,
+    success: bool,
+}
+
+impl CodecResultInternal {
+    fn ok(output: String) -> Self {
+        Self {
+            output: Some(output),
+            error: None,
+            success: true,
+        }
+    }
+    fn err(error: String) -> Self {
+        Self {
+            output: None,
+            error: Some(error),
+            success: false,
+        }
+    }
+}
+
+fn format_binary_output(bytes: &[u8], format: &str) -> String {
+    match format {
+        "hex" => bytes.iter().map(|b| format!("{:02x}", b)).collect(),
+        "base64" => proto_codec::decode::base64_encode(bytes),
+        "raw" => bytes.iter().map(|b| *b as char).collect(),
+        _ => String::new(),
+    }
+}
+
+fn parse_binary_input(input: &str, format: &str) -> Result<Vec<u8>, String> {
+    match format {
+        "base64" => base64_decode(input),
+        "hex" => hex_decode(input),
+        "raw" => Ok(input.bytes().collect()),
+        _ => Err(format!("Unknown format: {}", format)),
+    }
+}
+
+fn base64_decode(input: &str) -> Result<Vec<u8>, String> {
+    const DECODE: [i8; 128] = {
+        let mut table = [-1i8; 128];
+        let chars = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        let mut i = 0;
+        while i < 64 {
+            table[chars[i] as usize] = i as i8;
+            i += 1;
+        }
+        table
+    };
+
+    let input = input.trim();
+    let mut bytes = Vec::new();
+    let chars: Vec<u8> = input.bytes().filter(|b| *b != b'=').collect();
+
+    let mut i = 0;
+    while i < chars.len() {
+        let a = *DECODE
+            .get(chars[i] as usize)
+            .ok_or("Invalid base64")? as u32;
+        let b = if i + 1 < chars.len() {
+            *DECODE
+                .get(chars[i + 1] as usize)
+                .ok_or("Invalid base64")? as u32
+        } else {
+            0
+        };
+        let c = if i + 2 < chars.len() {
+            *DECODE
+                .get(chars[i + 2] as usize)
+                .ok_or("Invalid base64")? as u32
+        } else {
+            0
+        };
+        let d = if i + 3 < chars.len() {
+            *DECODE
+                .get(chars[i + 3] as usize)
+                .ok_or("Invalid base64")? as u32
+        } else {
+            0
+        };
+
+        if a as i8 == -1 || b as i8 == -1 {
+            return Err("Invalid base64 character".into());
+        }
+
+        let n = (a << 18) | (b << 12) | (c << 6) | d;
+        bytes.push((n >> 16) as u8);
+        if i + 2 < chars.len() {
+            bytes.push((n >> 8) as u8);
+        }
+        if i + 3 < chars.len() {
+            bytes.push(n as u8);
+        }
+        i += 4;
+    }
+    Ok(bytes)
+}
+
+fn hex_decode(input: &str) -> Result<Vec<u8>, String> {
+    let stripped: String = input.chars().filter(|c| !c.is_whitespace()).collect();
+    if stripped.len() % 2 != 0 {
+        return Err("Invalid hex string: odd length".into());
+    }
+    if !stripped.chars().all(|c| c.is_ascii_hexdigit()) {
+        return Err("Invalid hex string: non-hex characters".into());
+    }
+    (0..stripped.len())
+        .step_by(2)
+        .map(|i| {
+            u8::from_str_radix(&stripped[i..i + 2], 16)
+                .map_err(|e| format!("Invalid hex: {}", e))
+        })
+        .collect()
+}
+
+fn collect_all_flat_messages_owned(
+    messages: &[proto_schema::types::ProtobufMessageInfo],
+) -> Vec<proto_schema::types::ProtobufMessageInfo> {
+    let mut result = Vec::new();
+    for msg in messages {
+        result.push(msg.clone());
+        result.extend(collect_all_flat_messages_owned(&msg.nested_messages));
+    }
+    result
+}
+
+fn collect_all_flat_enums(
+    messages: &[proto_schema::types::ProtobufMessageInfo],
+    top_enums: &[proto_schema::types::ProtobufEnumInfo],
+) -> Vec<proto_schema::types::ProtobufEnumInfo> {
+    let mut result = top_enums.to_vec();
+    for msg in messages {
+        result.extend(msg.nested_enums.clone());
+        result.extend(collect_all_flat_enums(&msg.nested_messages, &[]));
     }
     result
 }
