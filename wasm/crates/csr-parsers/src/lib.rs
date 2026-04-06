@@ -1,6 +1,8 @@
 use wasm_bindgen::prelude::*;
 
+mod toml_parser;
 mod xml;
+mod yaml;
 
 // -- XML --
 
@@ -18,4 +20,86 @@ pub fn json_to_xml(input: &str) -> Result<String, JsError> {
 #[wasm_bindgen]
 pub fn get_xml_parse_error(input: &str) -> Option<String> {
     xml::parser::validate_xml(input)
+}
+
+// -- TOML --
+
+#[wasm_bindgen]
+pub fn toml_to_json(input: &str) -> Result<String, JsError> {
+    let value = toml_parser::parser::toml_to_value(input).map_err(|e| JsError::new(&e))?;
+    serde_json::to_string_pretty(&value).map_err(|e| JsError::new(&e.to_string()))
+}
+
+#[wasm_bindgen]
+pub fn json_to_toml(input: &str) -> Result<String, JsError> {
+    let trimmed = input.trim();
+    if trimmed.is_empty() {
+        return Err(JsError::new("Empty input"));
+    }
+    let value: serde_json::Value =
+        serde_json::from_str(trimmed).map_err(|e| JsError::new(&e.to_string()))?;
+    toml_parser::emitter::value_to_toml(&value).map_err(|e| JsError::new(&e))
+}
+
+#[wasm_bindgen]
+pub fn get_toml_parse_error(input: &str) -> Option<String> {
+    let trimmed = input.trim();
+    if trimmed.is_empty() {
+        return Some("Empty input".into());
+    }
+    match toml_parser::parser::toml_to_value(input) {
+        Ok(_) => None,
+        Err(e) => Some(e),
+    }
+}
+
+// ── YAML ──
+
+#[wasm_bindgen]
+pub fn yaml_to_json(input: &str, indent: u32) -> Result<String, JsError> {
+    let value = yaml::parser::yaml_to_value(input).map_err(|e| JsError::new(&e))?;
+    let indent_str = " ".repeat(indent as usize);
+    let formatter = serde_json::ser::PrettyFormatter::with_indent(indent_str.as_bytes());
+    let mut buf = Vec::new();
+    let mut ser = serde_json::Serializer::with_formatter(&mut buf, formatter);
+    serde::Serialize::serialize(&value, &mut ser).map_err(|e| JsError::new(&e.to_string()))?;
+    String::from_utf8(buf).map_err(|e| JsError::new(&e.to_string()))
+}
+
+#[wasm_bindgen]
+pub fn json_to_yaml(input: &str) -> Result<String, JsError> {
+    let trimmed = input.trim();
+    if trimmed.is_empty() {
+        return Err(JsError::new("Empty input"));
+    }
+    let value: serde_json::Value =
+        serde_json::from_str(trimmed).map_err(|e| JsError::new(&e.to_string()))?;
+    Ok(yaml::emitter::value_to_yaml(
+        &value,
+        &yaml::emitter::EmitOptions::default(),
+    ))
+}
+
+#[wasm_bindgen]
+pub fn format_yaml(input: &str, indent: u32, sort_keys: bool) -> Result<String, JsError> {
+    let value = yaml::parser::yaml_to_value(input).map_err(|e| JsError::new(&e))?;
+    Ok(yaml::emitter::value_to_yaml(
+        &value,
+        &yaml::emitter::EmitOptions {
+            indent: indent as usize,
+            sort_keys,
+        },
+    ))
+}
+
+#[wasm_bindgen]
+pub fn get_yaml_parse_error(input: &str) -> Option<String> {
+    let trimmed = input.trim();
+    if trimmed.is_empty() {
+        return Some("Empty input".into());
+    }
+    match yaml::parser::yaml_to_value(input) {
+        Ok(_) => None,
+        Err(e) => Some(e),
+    }
 }
