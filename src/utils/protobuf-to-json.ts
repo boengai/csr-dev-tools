@@ -1,4 +1,4 @@
-import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufParseResult, ProtobufSchemaInfo } from '@/types/utils/protobuf-to-json'
+import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufParseResult } from '@/types/utils/protobuf-to-json'
 
 import {
   generateSampleJsonFromSchema,
