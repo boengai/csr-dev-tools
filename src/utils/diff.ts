@@ -1,19 +1,14 @@
 import type { DiffChange, InlineSpan, SideBySideRow } from '@/types'
+import { createUnifiedDiffWasm, diffLines, diffWords } from '@/wasm/csr-diff'
 
 export const computeLineDiff = async (original: string, modified: string): Promise<Array<DiffChange>> => {
   if (original === '' && modified === '') return []
-  const { diffLines } = await import('diff')
-  return diffLines(original, modified).map((change) => ({
-    added: change.added ?? false,
-    removed: change.removed ?? false,
-    value: change.value,
-  }))
+  return diffLines(original, modified)
 }
 
 export const createUnifiedDiff = async (original: string, modified: string): Promise<string> => {
   if (original === '' && modified === '') return ''
-  const { createPatch } = await import('diff')
-  return createPatch('text', original, modified, '', '', { context: 3 })
+  return createUnifiedDiffWasm(original, modified, 3)
 }
 
 const splitLines = (value: string): Array<string> => {
@@ -26,8 +21,7 @@ const computeInlineSpans = async (
   oldLine: string,
   newLine: string,
 ): Promise<{ left: Array<InlineSpan>; right: Array<InlineSpan> }> => {
-  const { diffWords } = await import('diff')
-  const parts = diffWords(oldLine, newLine)
+  const parts = await diffWords(oldLine, newLine)
   const left: Array<InlineSpan> = []
   const right: Array<InlineSpan> = []
   for (const part of parts) {
@@ -45,8 +39,7 @@ const computeInlineSpans = async (
 
 export const computeSideBySideDiff = async (original: string, modified: string): Promise<Array<SideBySideRow>> => {
   if (original === '' && modified === '') return []
-  const { diffLines } = await import('diff')
-  const changes = diffLines(original, modified)
+  const changes = await diffLines(original, modified)
 
   const rows: Array<SideBySideRow> = []
   let leftNum = 1
