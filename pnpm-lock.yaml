@@ -86,9 +86,6 @@ importers:
       ajv:
         specifier: 8.18.0
         version: 8.18.0
-      diff:
-        specifier: 8.0.4
-        version: 8.0.4
       dompurify:
         specifier: 3.3.3
         version: 3.3.3
@@ -2305,10 +2302,6 @@ packages:
 
   detect-node@2.1.0:
     resolution: {integrity: sha512-T0NIuQpnTvFDATNuHN5roPwSBG83rFsuO+MXXH9/3N1eFbn4wcPjttvjMLEPWJ0RGUYgQE7cGgS3tNxbqCGM7g==}
-
-  diff@8.0.4:
-    resolution: {integrity: sha512-DPi0FmjiSU5EvQV0++GFDOJ9ASQUVFh5kD+OzOnYdi7n3Wpm9hWWGfB/O2blfHcMVTL5WkQXSnRiK9makhrcnw==}
-    engines: {node: '>=0.3.1'}
 
   dijkstrajs@1.0.3:
     resolution: {integrity: sha512-qiSlmBq9+BCdCA/L46dw8Uy93mloxsPSbwnm5yrKn2vMPiy8KyAskTF6zuV/j5BMsmOGZDPs7KjU+mjb670kfA==}
@@ -5382,8 +5375,6 @@ snapshots:
   detect-node-es@1.1.0: {}
 
   detect-node@2.1.0: {}
-
-  diff@8.0.4: {}
 
   dijkstrajs@1.0.3: {}
 
