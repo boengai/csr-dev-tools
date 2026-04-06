@@ -1,5 +1,5 @@
 import { m } from 'motion/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Button, ColorInput, CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
@@ -28,21 +28,25 @@ const toolEntry = TOOL_REGISTRY_MAP['color-palette-generator']
 export const ColorPaletteGenerator = () => {
   const [hexInput, setHexInput] = useState(DEFAULT_COLOR)
   const [harmonyType, setHarmonyType] = useState<HarmonyType>(DEFAULT_HARMONY)
-  const [palette, setPalette] = useState<Array<PaletteColor>>(() => generatePalette(DEFAULT_COLOR, DEFAULT_HARMONY))
+  const [palette, setPalette] = useState<Array<PaletteColor>>([])
   const { toast } = useToast()
   const copyToClipboard = useCopyToClipboard()
+
+  useEffect(() => {
+    void generatePalette(DEFAULT_COLOR, DEFAULT_HARMONY).then(setPalette)
+  }, [])
 
   const updatePalette = (hex: string, harmony: HarmonyType) => {
     if (!hex.trim()) {
       setPalette([])
       return
     }
-    try {
-      setPalette(generatePalette(hex, harmony))
-    } catch {
-      toast({ action: 'add', item: { label: 'Enter a valid hex color (e.g., #3B82F6)', type: 'error' } })
-      setPalette([])
-    }
+    void generatePalette(hex, harmony)
+      .then(setPalette)
+      .catch(() => {
+        toast({ action: 'add', item: { label: 'Enter a valid hex color (e.g., #3B82F6)', type: 'error' } })
+        setPalette([])
+      })
   }
 
   const debouncedUpdatePalette = useDebounceCallback((hex: string, harmony: HarmonyType) => {

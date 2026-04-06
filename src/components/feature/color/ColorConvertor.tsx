@@ -1,5 +1,5 @@
 import { m } from 'motion/react'
-import { type PropsWithChildren, useState } from 'react'
+import { type PropsWithChildren, useEffect, useState } from 'react'
 
 import { ColorInput, CopyButton, FieldForm, NotoEmoji } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
@@ -59,10 +59,12 @@ const InputWrapper = ({ children, color }: PropsWithChildren<{ color: string }>)
 const toolEntry = TOOL_REGISTRY_MAP['color-converter']
 
 export const ColorConvertor = () => {
-  const [color, setColor] = useState<Record<ColorFormat, string>>(() =>
-    convertColor(`rgb(${randomByte()}, ${randomByte()}, ${randomByte()})`, 'rgb'),
-  )
+  const [color, setColor] = useState<Record<ColorFormat, string>>(emptyColors)
   const { toast } = useToast()
+
+  useEffect(() => {
+    void convertColor(`rgb(${randomByte()}, ${randomByte()}, ${randomByte()})`, 'rgb').then(setColor)
+  }, [])
 
   const dbConvertColor = useDebounceCallback((source: Record<ColorFormat, string>, format: ColorFormat) => {
     const value = source[format]
@@ -70,13 +72,14 @@ export const ColorConvertor = () => {
       return
     }
 
-    try {
-      const convertedColors = convertColor(value, format)
-      setColor(convertedColors)
-    } catch {
-      toast({ action: 'add', item: { label: ERROR_MESSAGES[format], type: 'error' } })
-      setColor({ ...emptyColors, [format]: value })
-    }
+    void convertColor(value, format)
+      .then((convertedColors) => {
+        setColor(convertedColors)
+      })
+      .catch(() => {
+        toast({ action: 'add', item: { label: ERROR_MESSAGES[format], type: 'error' } })
+        setColor({ ...emptyColors, [format]: value })
+      })
   }, 300)
 
   const handleColorChange = (format: ColorFormat, value: string) => {
@@ -85,12 +88,13 @@ export const ColorConvertor = () => {
   }
 
   const handlePickerChange = (hex: string) => {
-    try {
-      const converted = convertColor(hex, 'hex')
-      setColor(converted)
-    } catch {
-      toast({ action: 'add', item: { label: ERROR_MESSAGES.hex, type: 'error' } })
-    }
+    void convertColor(hex, 'hex')
+      .then((converted) => {
+        setColor(converted)
+      })
+      .catch(() => {
+        toast({ action: 'add', item: { label: ERROR_MESSAGES.hex, type: 'error' } })
+      })
   }
 
   return (
