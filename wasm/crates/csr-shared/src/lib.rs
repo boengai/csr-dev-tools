@@ -1,4 +1,5 @@
 pub mod sha256;
+pub mod sha512;
 
 /// Convert a byte slice to a lowercase hex string.
 pub fn bytes_to_hex(bytes: &[u8]) -> String {
