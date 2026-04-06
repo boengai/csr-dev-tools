@@ -1,26 +1,12 @@
-import type { BcryptHashResult, BcryptVerifyResult, BcryptHashComponents } from "@/types/utils/bcrypt-hasher";
+import type { BcryptHashComponents, BcryptHashResult, BcryptVerifyResult } from '@/types/utils/bcrypt-hasher'
 
 export const hashPassword = async (
   password: string,
   rounds: number,
-  onProgress?: (percent: number) => void,
 ): Promise<BcryptHashResult> => {
-  const bcrypt = (await import('bcryptjs')).default
+  const { hashPassword: wasmHash } = await import('@/wasm/csr-bcrypt')
   const start = performance.now()
-
-  const hash = await new Promise<string>((resolve, reject) => {
-    bcrypt.hash(
-      password,
-      rounds,
-      (err: Error | null, hash?: string) => {
-        if (err) reject(err)
-        else resolve(hash!)
-      },
-      (percent: number) => {
-        onProgress?.(percent)
-      },
-    )
-  })
+  const hash = await wasmHash(password, rounds)
 
   return {
     elapsed: performance.now() - start,
@@ -30,9 +16,9 @@ export const hashPassword = async (
 }
 
 export const verifyPassword = async (password: string, hash: string): Promise<BcryptVerifyResult> => {
-  const bcrypt = (await import('bcryptjs')).default
+  const { verifyPassword: wasmVerify } = await import('@/wasm/csr-bcrypt')
   const start = performance.now()
-  const match = await bcrypt.compare(password, hash)
+  const match = await wasmVerify(password, hash)
 
   return {
     elapsed: performance.now() - start,
@@ -58,4 +44,4 @@ export const checkPasswordTruncation = (password: string): boolean => {
   return new TextEncoder().encode(password).length > 72
 }
 
-export type { BcryptHashResult, BcryptVerifyResult, BcryptHashComponents } from "@/types/utils/bcrypt-hasher";
+export type { BcryptHashComponents, BcryptHashResult, BcryptVerifyResult } from '@/types/utils/bcrypt-hasher'
