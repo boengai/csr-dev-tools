@@ -466,12 +466,20 @@ fn resolve_field_type(
         return;
     }
 
-    // Try resolving as nested type first (parent.Type), then as top-level
-    let candidates = vec![
-        format!("{}.{}", parent_full_name, ft),
-        format!(".{}", ft),
-        ft.clone(),
-    ];
+    // Try resolving as nested type first (parent.Type), then walk up scopes
+    let mut candidates = vec![format!("{}.{}", parent_full_name, ft)];
+
+    // Walk up parent scopes: .example.Person → .example → .
+    let mut scope = parent_full_name.to_string();
+    while let Some(dot_pos) = scope.rfind('.') {
+        scope.truncate(dot_pos);
+        if scope.is_empty() {
+            candidates.push(format!(".{}", ft));
+        } else {
+            candidates.push(format!("{}.{}", scope, ft));
+        }
+    }
+    candidates.push(ft.clone());
 
     for candidate in &candidates {
         if all_messages.iter().any(|m| m == candidate) {

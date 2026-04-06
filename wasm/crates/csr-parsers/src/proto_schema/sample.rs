@@ -59,9 +59,14 @@ fn generate_sample_inner(
                 .iter()
                 .find(|e| Some(&e.full_name) == field.resolved_type_name.as_ref())
             {
-                let first_key = enum_info.values.keys().next();
-                match first_key {
-                    Some(k) => Value::String(k.clone()),
+                // Find the enum variant with the lowest numeric value (typically 0 = default)
+                let default_key = enum_info
+                    .values
+                    .iter()
+                    .min_by_key(|(_k, v)| *v)
+                    .map(|(k, _v)| k.clone());
+                match default_key {
+                    Some(k) => Value::String(k),
                     None => Value::String(String::new()),
                 }
             } else {

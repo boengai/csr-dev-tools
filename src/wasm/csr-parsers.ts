@@ -9,9 +9,9 @@ import type {
 import { loadWasm } from './init'
 
 type CsrParsers = {
-  decode_protobuf: (schema: string, messageType: string, input: string, format: string) => CodecResult
+  decode_protobuf: (schema: string, messageType: string, input: string, format: string) => string
   detect_protobuf_format: (input: string) => string
-  encode_protobuf: (schema: string, messageType: string, json: string, format: string) => CodecResult
+  encode_protobuf: (schema: string, messageType: string, json: string, format: string) => string
   format_yaml: (input: string, indent: number, sortKeys: boolean) => string
   generate_sample_json_from_schema: (schemaJson: string, messageName: string) => string
   get_toml_parse_error: (input: string) => string | undefined
@@ -20,7 +20,7 @@ type CsrParsers = {
   json_to_toml: (input: string) => string
   json_to_xml: (input: string) => string
   json_to_yaml: (input: string) => string
-  parse_protobuf_schema: (input: string) => ProtobufParseResult
+  parse_protobuf_schema: (input: string) => string
   toml_to_json: (input: string) => string
   xml_to_json: (input: string) => string
   yaml_to_json: (input: string, indent: number) => string
@@ -89,7 +89,7 @@ export async function getTomlParseError(input: string): Promise<string | null> {
 
 export async function parseProtobufSchema(input: string): Promise<ProtobufParseResult> {
   const wasm = await loadWasm<CsrParsers>('csr-parsers')
-  return wasm.parse_protobuf_schema(input)
+  return JSON.parse(wasm.parse_protobuf_schema(input)) as ProtobufParseResult
 }
 
 export async function generateSampleJsonFromSchema(
@@ -109,7 +109,7 @@ export async function encodeProtobuf(
   outputFormat: OutputFormat,
 ): Promise<CodecResult> {
   const wasm = await loadWasm<CsrParsers>('csr-parsers')
-  return wasm.encode_protobuf(schema, messageTypeName, jsonString, outputFormat)
+  return JSON.parse(wasm.encode_protobuf(schema, messageTypeName, jsonString, outputFormat)) as CodecResult
 }
 
 export async function decodeProtobuf(
@@ -119,7 +119,7 @@ export async function decodeProtobuf(
   inputFormat: OutputFormat,
 ): Promise<CodecResult> {
   const wasm = await loadWasm<CsrParsers>('csr-parsers')
-  return wasm.decode_protobuf(schema, messageTypeName, input, inputFormat)
+  return JSON.parse(wasm.decode_protobuf(schema, messageTypeName, input, inputFormat)) as CodecResult
 }
 
 export async function detectProtobufFormat(input: string): Promise<OutputFormat> {

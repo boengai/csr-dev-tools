@@ -43,9 +43,9 @@ enum Status {
 
 describe('protobuf-codec', () => {
   describe('encodeProtobuf', () => {
-    it('encodes simple message to base64', () => {
+    it('encodes simple message to base64', async () => {
       const json = { name: 'Alice', age: 30, active: true }
-      const result = encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'base64')
+      const result = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'base64')
 
       expect(result.success).toBe(true)
       if (result.success) {
@@ -54,9 +54,9 @@ describe('protobuf-codec', () => {
       }
     })
 
-    it('encodes simple message to hex', () => {
+    it('encodes simple message to hex', async () => {
       const json = { name: 'Alice', age: 30, active: true }
-      const result = encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'hex')
+      const result = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'hex')
 
       expect(result.success).toBe(true)
       if (result.success) {
@@ -64,9 +64,9 @@ describe('protobuf-codec', () => {
       }
     })
 
-    it('encodes simple message to raw binary', () => {
+    it('encodes simple message to raw binary', async () => {
       const json = { name: 'Alice', age: 30, active: true }
-      const result = encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'raw')
+      const result = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'raw')
 
       expect(result.success).toBe(true)
       if (result.success) {
@@ -75,29 +75,29 @@ describe('protobuf-codec', () => {
       }
     })
 
-    it('encodes nested message', () => {
+    it('encodes nested message', async () => {
       const json = { label: 'test', inner: { value: 42, text: 'hello' } }
-      const result = encodeProtobuf(NESTED_PROTO, 'Outer', JSON.stringify(json), 'base64')
+      const result = await encodeProtobuf(NESTED_PROTO, 'Outer', JSON.stringify(json), 'base64')
 
       expect(result.success).toBe(true)
     })
 
-    it('encodes message with enum', () => {
+    it('encodes message with enum', async () => {
       const json = { name: 'Bob', status: 1 }
-      const result = encodeProtobuf(ENUM_PROTO, 'WithEnum', JSON.stringify(json), 'base64')
+      const result = await encodeProtobuf(ENUM_PROTO, 'WithEnum', JSON.stringify(json), 'base64')
 
       expect(result.success).toBe(true)
     })
   })
 
   describe('decodeProtobuf', () => {
-    it('decodes base64 to JSON for simple message', () => {
+    it('decodes base64 to JSON for simple message', async () => {
       const json = { name: 'Alice', age: 30, active: true }
-      const encoded = encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'base64')
+      const encoded = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'base64')
       expect(encoded.success).toBe(true)
       if (!encoded.success) return
 
-      const decoded = decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', encoded.output, 'base64')
+      const decoded = await decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', encoded.output, 'base64')
       expect(decoded.success).toBe(true)
       if (decoded.success) {
         const parsed = JSON.parse(decoded.output)
@@ -107,13 +107,13 @@ describe('protobuf-codec', () => {
       }
     })
 
-    it('decodes hex to JSON for simple message', () => {
+    it('decodes hex to JSON for simple message', async () => {
       const json = { name: 'Alice', age: 30, active: true }
-      const encoded = encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'hex')
+      const encoded = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'hex')
       expect(encoded.success).toBe(true)
       if (!encoded.success) return
 
-      const decoded = decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', encoded.output, 'hex')
+      const decoded = await decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', encoded.output, 'hex')
       expect(decoded.success).toBe(true)
       if (decoded.success) {
         const parsed = JSON.parse(decoded.output)
@@ -121,13 +121,13 @@ describe('protobuf-codec', () => {
       }
     })
 
-    it('decodes text to JSON for simple message', () => {
+    it('decodes text to JSON for simple message', async () => {
       const json = { name: 'Alice', age: 30, active: true }
-      const encoded = encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'raw')
+      const encoded = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'raw')
       expect(encoded.success).toBe(true)
       if (!encoded.success) return
 
-      const decoded = decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', encoded.output, 'raw')
+      const decoded = await decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', encoded.output, 'raw')
       expect(decoded.success).toBe(true)
       if (decoded.success) {
         const parsed = JSON.parse(decoded.output)
@@ -135,13 +135,13 @@ describe('protobuf-codec', () => {
       }
     })
 
-    it('decodes nested message', () => {
+    it('decodes nested message', async () => {
       const json = { label: 'test', inner: { value: 42, text: 'hello' } }
-      const encoded = encodeProtobuf(NESTED_PROTO, 'Outer', JSON.stringify(json), 'base64')
+      const encoded = await encodeProtobuf(NESTED_PROTO, 'Outer', JSON.stringify(json), 'base64')
       expect(encoded.success).toBe(true)
       if (!encoded.success) return
 
-      const decoded = decodeProtobuf(NESTED_PROTO, 'Outer', encoded.output, 'base64')
+      const decoded = await decodeProtobuf(NESTED_PROTO, 'Outer', encoded.output, 'base64')
       expect(decoded.success).toBe(true)
       if (decoded.success) {
         const parsed = JSON.parse(decoded.output)
@@ -153,15 +153,15 @@ describe('protobuf-codec', () => {
   })
 
   describe('round-trip', () => {
-    it('encode then decode produces original JSON (simple)', () => {
+    it('encode then decode produces original JSON (simple)', async () => {
       const json = { name: 'Charlie', age: 25, active: false }
 
       for (const format of ['base64', 'hex', 'raw'] as const) {
-        const encoded = encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), format)
+        const encoded = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), format)
         expect(encoded.success).toBe(true)
         if (!encoded.success) continue
 
-        const decoded = decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', encoded.output, format)
+        const decoded = await decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', encoded.output, format)
         expect(decoded.success).toBe(true)
         if (!decoded.success) continue
 
@@ -172,14 +172,14 @@ describe('protobuf-codec', () => {
       }
     })
 
-    it('encode then decode produces original JSON (nested)', () => {
+    it('encode then decode produces original JSON (nested)', async () => {
       const json = { label: 'round-trip', inner: { value: 99, text: 'data' } }
 
-      const encoded = encodeProtobuf(NESTED_PROTO, 'Outer', JSON.stringify(json), 'base64')
+      const encoded = await encodeProtobuf(NESTED_PROTO, 'Outer', JSON.stringify(json), 'base64')
       expect(encoded.success).toBe(true)
       if (!encoded.success) return
 
-      const decoded = decodeProtobuf(NESTED_PROTO, 'Outer', encoded.output, 'base64')
+      const decoded = await decodeProtobuf(NESTED_PROTO, 'Outer', encoded.output, 'base64')
       expect(decoded.success).toBe(true)
       if (!decoded.success) return
 
@@ -189,66 +189,66 @@ describe('protobuf-codec', () => {
   })
 
   describe('detectProtobufFormat', () => {
-    it('detects valid base64 string', () => {
+    it('detects valid base64 string', async () => {
       const input = btoa('hello world')
-      const result = detectProtobufFormat(input)
+      const result = await detectProtobufFormat(input)
       expect(result).toBe('base64')
     })
 
-    it('detects valid hex string', () => {
-      const result = detectProtobufFormat('0a05416c69636510011801')
+    it('detects valid hex string', async () => {
+      const result = await detectProtobufFormat('0a05416c69636510011801')
       expect(result).toBe('hex')
     })
 
-    it('detects raw binary (non-text bytes)', () => {
+    it('detects raw binary (non-text bytes)', async () => {
       const raw = String.fromCharCode(0x0a, 0x05, 0x41, 0x6c, 0x69, 0x63, 0x65, 0x10, 0x1e, 0x18, 0x01)
-      const result = detectProtobufFormat(raw)
+      const result = await detectProtobufFormat(raw)
       expect(result).toBe('raw')
     })
 
-    it('detects base64 with padding', () => {
-      const result = detectProtobufFormat('SGVsbG8gV29ybGQ=')
+    it('detects base64 with padding', async () => {
+      const result = await detectProtobufFormat('SGVsbG8gV29ybGQ=')
       expect(result).toBe('base64')
     })
 
-    it('detects base64 without padding', () => {
-      const result = detectProtobufFormat('SGVsbG8gV29ybGQ')
+    it('detects base64 without padding', async () => {
+      const result = await detectProtobufFormat('SGVsbG8gV29ybGQ')
       expect(result).toBe('base64')
     })
 
-    it('returns raw for empty string', () => {
-      const result = detectProtobufFormat('')
+    it('returns raw for empty string', async () => {
+      const result = await detectProtobufFormat('')
       expect(result).toBe('raw')
     })
   })
 
   describe('error cases', () => {
-    it('returns error for invalid schema', () => {
-      const result = encodeProtobuf('not valid proto', 'Foo', '{}', 'base64')
+    it('returns error for invalid schema', async () => {
+      const result = await encodeProtobuf('not valid proto', 'Foo', '{}', 'base64')
       expect(result.success).toBe(false)
       if (!result.success) {
         expect(result.error).toBeTruthy()
       }
     })
 
-    it('returns error for non-existent message type', () => {
-      const result = encodeProtobuf(SIMPLE_PROTO, 'NonExistent', '{}', 'base64')
+    it('returns error for non-existent message type', async () => {
+      const result = await encodeProtobuf(SIMPLE_PROTO, 'NonExistent', '{}', 'base64')
       expect(result.success).toBe(false)
       if (!result.success) {
         expect(result.error).toContain('NonExistent')
       }
     })
 
-    it('returns error for invalid JSON in encode', () => {
-      const result = encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', 'not json', 'base64')
+    it('returns error for invalid JSON in encode', async () => {
+      const result = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', 'not json', 'base64')
       expect(result.success).toBe(false)
       if (!result.success) {
         expect(result.error).toBeTruthy()
       }
     })
 
-    it('handles JSON/schema mismatch without crashing', () => {
-      const result = encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify({ name: 123 }), 'base64')
+    it('handles JSON/schema mismatch without crashing', async () => {
+      const result = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify({ name: 123 }), 'base64')
       // protobufjs coerces number→string for string fields, so this succeeds
       // Verify it produces a result either way (coerced success or validation error)
       if (result.success) {
@@ -258,18 +258,18 @@ describe('protobuf-codec', () => {
       }
     })
 
-    it('returns error for malformed base64 in decode', () => {
-      const result = decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', '!!!not-base64!!!', 'base64')
+    it('returns error for malformed base64 in decode', async () => {
+      const result = await decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', '!!!not-base64!!!', 'base64')
       expect(result.success).toBe(false)
     })
 
-    it('returns error for malformed hex in decode', () => {
-      const result = decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', 'ZZZZ', 'hex')
+    it('returns error for malformed hex in decode', async () => {
+      const result = await decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', 'ZZZZ', 'hex')
       expect(result.success).toBe(false)
     })
 
-    it('returns error for empty schema', () => {
-      const result = encodeProtobuf('', 'Foo', '{}', 'base64')
+    it('returns error for empty schema', async () => {
+      const result = await encodeProtobuf('', 'Foo', '{}', 'base64')
       expect(result.success).toBe(false)
     })
   })

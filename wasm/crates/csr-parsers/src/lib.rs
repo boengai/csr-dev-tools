@@ -109,14 +109,14 @@ pub fn get_yaml_parse_error(input: &str) -> Option<String> {
 // ── Protobuf Schema ──
 
 #[wasm_bindgen]
-pub fn parse_protobuf_schema(input: &str) -> JsValue {
+pub fn parse_protobuf_schema(input: &str) -> Result<String, JsError> {
     let trimmed = input.trim();
     if trimmed.is_empty() {
         let result = proto_schema::types::ProtobufParseResult::err(
             "Empty input \u{2014} paste a .proto definition to parse".into(),
             None,
         );
-        return serde_wasm_bindgen::to_value(&result).unwrap();
+        return serde_json::to_string(&result).map_err(|e| JsError::new(&e.to_string()));
     }
 
     let mut lexer = proto_schema::lexer::Lexer::new(trimmed);
@@ -125,7 +125,7 @@ pub fn parse_protobuf_schema(input: &str) -> JsValue {
         Err(e) => {
             let line_match = extract_line_number(&e);
             let result = proto_schema::types::ProtobufParseResult::err(e, line_match);
-            return serde_wasm_bindgen::to_value(&result).unwrap();
+            return serde_json::to_string(&result).map_err(|e| JsError::new(&e.to_string()));
         }
     };
 
@@ -133,12 +133,12 @@ pub fn parse_protobuf_schema(input: &str) -> JsValue {
     match parser.parse() {
         Ok(schema) => {
             let result = proto_schema::types::ProtobufParseResult::ok(schema);
-            serde_wasm_bindgen::to_value(&result).unwrap()
+            serde_json::to_string(&result).map_err(|e| JsError::new(&e.to_string()))
         }
         Err(e) => {
             let line_match = extract_line_number(&e);
             let result = proto_schema::types::ProtobufParseResult::err(e, line_match);
-            serde_wasm_bindgen::to_value(&result).unwrap()
+            serde_json::to_string(&result).map_err(|e| JsError::new(&e.to_string()))
         }
     }
 }
@@ -193,10 +193,10 @@ pub fn encode_protobuf(
     message_type_name: &str,
     json_string: &str,
     output_format: &str,
-) -> JsValue {
+) -> String {
     let result =
         encode_protobuf_inner(schema_input, message_type_name, json_string, output_format);
-    serde_wasm_bindgen::to_value(&result).unwrap()
+    serde_json::to_string(&result).unwrap()
 }
 
 #[wasm_bindgen]
@@ -205,9 +205,9 @@ pub fn decode_protobuf(
     message_type_name: &str,
     input: &str,
     input_format: &str,
-) -> JsValue {
+) -> String {
     let result = decode_protobuf_inner(schema_input, message_type_name, input, input_format);
-    serde_wasm_bindgen::to_value(&result).unwrap()
+    serde_json::to_string(&result).unwrap()
 }
 
 #[wasm_bindgen]

@@ -14,7 +14,7 @@ describe('xml conversion utilities', () => {
     it('should handle XML attributes', async () => {
       const result = await xmlToJson('<item id="1">test</item>')
       const parsed = JSON.parse(result)
-      expect(parsed.item['@_id']).toBe('1')
+      expect(parsed.item['@_id']).toBe(1)
     })
 
     it('should throw on empty string', async () => {

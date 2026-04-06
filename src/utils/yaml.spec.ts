@@ -4,186 +4,186 @@ import { formatYaml, getYamlParseError, jsonToYaml, yamlToJson } from '@/utils'
 
 describe('yaml utilities', () => {
   describe('formatYaml', () => {
-    it('should format valid YAML with default indent (2 spaces)', () => {
-      const result = formatYaml('a:\n    b: 1')
+    it('should format valid YAML with default indent (2 spaces)', async () => {
+      const result = await formatYaml('a:\n    b: 1')
       expect(result).toContain('a:')
       expect(result).toContain('  b: 1')
     })
 
-    it('should format with 4-space indent', () => {
-      const result = formatYaml('a:\n  b: 1', { indent: 4 })
+    it('should format with 4-space indent', async () => {
+      const result = await formatYaml('a:\n  b: 1', { indent: 4 })
       expect(result).toContain('    b: 1')
     })
 
-    it('should sort keys alphabetically when sortKeys is true', () => {
-      const result = formatYaml('z: 1\na: 2\nm: 3', { sortKeys: true })
+    it('should sort keys alphabetically when sortKeys is true', async () => {
+      const result = await formatYaml('z: 1\na: 2\nm: 3', { sortKeys: true })
       const lines = result.trim().split('\n')
       expect(lines[0]).toBe('a: 2')
       expect(lines[1]).toBe('m: 3')
       expect(lines[2]).toBe('z: 1')
     })
 
-    it('should not sort keys when sortKeys is false', () => {
-      const result = formatYaml('z: 1\na: 2\nm: 3', { sortKeys: false })
+    it('should not sort keys when sortKeys is false', async () => {
+      const result = await formatYaml('z: 1\na: 2\nm: 3', { sortKeys: false })
       const lines = result.trim().split('\n')
       expect(lines[0]).toBe('z: 1')
       expect(lines[1]).toBe('a: 2')
       expect(lines[2]).toBe('m: 3')
     })
 
-    it('should handle nested objects', () => {
-      const result = formatYaml('a:\n  b:\n    c: 1')
+    it('should handle nested objects', async () => {
+      const result = await formatYaml('a:\n  b:\n    c: 1')
       expect(result).toContain('a:')
       expect(result).toContain('  b:')
       expect(result).toContain('    c: 1')
     })
 
-    it('should handle arrays', () => {
-      const result = formatYaml('items:\n  - 1\n  - 2\n  - 3')
+    it('should handle arrays', async () => {
+      const result = await formatYaml('items:\n  - 1\n  - 2\n  - 3')
       expect(result).toContain('items:')
       expect(result).toContain('  - 1')
     })
 
-    it('should throw on empty string', () => {
-      expect(() => formatYaml('')).toThrow('Empty input')
+    it('should throw on empty string', async () => {
+      await expect(formatYaml('')).rejects.toThrow('Empty input')
     })
 
-    it('should throw on whitespace-only string', () => {
-      expect(() => formatYaml('   ')).toThrow('Empty input')
+    it('should throw on whitespace-only string', async () => {
+      await expect(formatYaml('   ')).rejects.toThrow('Empty input')
     })
 
-    it('should throw on invalid YAML', () => {
-      expect(() => formatYaml('key: [unclosed')).toThrow()
+    it('should throw on invalid YAML', async () => {
+      await expect(formatYaml('key: [unclosed')).rejects.toThrow()
     })
   })
 
   describe('jsonToYaml', () => {
-    it('should convert simple object to YAML', () => {
-      const result = jsonToYaml('{"name":"John","age":30}')
+    it('should convert simple object to YAML', async () => {
+      const result = await jsonToYaml('{"name":"John","age":30}')
       expect(result).toContain('name: John')
       expect(result).toContain('age: 30')
     })
 
-    it('should convert nested objects to indented YAML', () => {
-      const result = jsonToYaml('{"a":{"b":{"c":1}}}')
+    it('should convert nested objects to indented YAML', async () => {
+      const result = await jsonToYaml('{"a":{"b":{"c":1}}}')
       expect(result).toContain('a:')
       expect(result).toContain('  b:')
       expect(result).toContain('    c: 1')
     })
 
-    it('should convert arrays to YAML list syntax', () => {
-      const result = jsonToYaml('{"items":[1,2,3]}')
+    it('should convert arrays to YAML list syntax', async () => {
+      const result = await jsonToYaml('{"items":[1,2,3]}')
       expect(result).toContain('items:')
       expect(result).toContain('  - 1')
     })
 
-    it('should handle primitive JSON values', () => {
-      expect(jsonToYaml('"hello"')).toContain('hello')
-      expect(jsonToYaml('42')).toContain('42')
-      expect(jsonToYaml('true')).toContain('true')
-      expect(jsonToYaml('null')).toContain('null')
+    it('should handle primitive JSON values', async () => {
+      expect(await jsonToYaml('"hello"')).toContain('hello')
+      expect(await jsonToYaml('42')).toContain('42')
+      expect(await jsonToYaml('true')).toContain('true')
+      expect(await jsonToYaml('null')).toContain('null')
     })
 
-    it('should handle special characters in strings', () => {
-      const result = jsonToYaml('{"msg":"hello\\nworld"}')
+    it('should handle special characters in strings', async () => {
+      const result = await jsonToYaml('{"msg":"hello\\nworld"}')
       expect(result).toBeTruthy()
     })
 
-    it('should handle Unicode content', () => {
-      const result = jsonToYaml('{"emoji":"🎉","cjk":"日本語"}')
+    it('should handle Unicode content', async () => {
+      const result = await jsonToYaml('{"emoji":"🎉","cjk":"日本語"}')
       expect(result).toContain('🎉')
       expect(result).toContain('日本語')
     })
 
-    it('should throw on empty string', () => {
-      expect(() => jsonToYaml('')).toThrow('Empty input')
+    it('should throw on empty string', async () => {
+      await expect(jsonToYaml('')).rejects.toThrow('Empty input')
     })
 
-    it('should throw on whitespace-only string', () => {
-      expect(() => jsonToYaml('   ')).toThrow('Empty input')
+    it('should throw on whitespace-only string', async () => {
+      await expect(jsonToYaml('   ')).rejects.toThrow('Empty input')
     })
 
-    it('should throw on invalid JSON', () => {
-      expect(() => jsonToYaml('{invalid}')).toThrow()
+    it('should throw on invalid JSON', async () => {
+      await expect(jsonToYaml('{invalid}')).rejects.toThrow()
     })
 
-    it('should handle large JSON objects', () => {
+    it('should handle large JSON objects', async () => {
       const obj: Record<string, number> = {}
       for (let i = 0; i < 100; i++) obj[`key${i}`] = i
-      const result = jsonToYaml(JSON.stringify(obj))
+      const result = await jsonToYaml(JSON.stringify(obj))
       expect(result).toContain('key0: 0')
       expect(result).toContain('key99: 99')
     })
   })
 
   describe('yamlToJson', () => {
-    it('should convert simple YAML to formatted JSON', () => {
-      const result = yamlToJson('name: John\nage: 30')
+    it('should convert simple YAML to formatted JSON', async () => {
+      const result = await yamlToJson('name: John\nage: 30')
       expect(result).toBe('{\n  "name": "John",\n  "age": 30\n}')
     })
 
-    it('should convert nested YAML to JSON', () => {
-      const result = yamlToJson('a:\n  b:\n    c: 1')
+    it('should convert nested YAML to JSON', async () => {
+      const result = await yamlToJson('a:\n  b:\n    c: 1')
       const parsed = JSON.parse(result)
       expect(parsed.a.b.c).toBe(1)
     })
 
-    it('should convert YAML arrays to JSON', () => {
-      const result = yamlToJson('items:\n  - 1\n  - 2\n  - 3')
+    it('should convert YAML arrays to JSON', async () => {
+      const result = await yamlToJson('items:\n  - 1\n  - 2\n  - 3')
       const parsed = JSON.parse(result)
       expect(parsed.items).toEqual([1, 2, 3])
     })
 
-    it('should handle multiline YAML strings (block scalar)', () => {
-      const result = yamlToJson('text: |\n  line one\n  line two')
+    it('should handle multiline YAML strings (block scalar)', async () => {
+      const result = await yamlToJson('text: |\n  line one\n  line two')
       const parsed = JSON.parse(result)
       expect(parsed.text).toContain('line one')
       expect(parsed.text).toContain('line two')
     })
 
-    it('should throw on empty string', () => {
-      expect(() => yamlToJson('')).toThrow('Empty input')
+    it('should throw on empty string', async () => {
+      await expect(yamlToJson('')).rejects.toThrow('Empty input')
     })
 
-    it('should throw on whitespace-only string', () => {
-      expect(() => yamlToJson('   ')).toThrow('Empty input')
+    it('should throw on whitespace-only string', async () => {
+      await expect(yamlToJson('   ')).rejects.toThrow('Empty input')
     })
 
-    it('should throw on invalid YAML', () => {
-      expect(() => yamlToJson('key: [unclosed')).toThrow()
+    it('should throw on invalid YAML', async () => {
+      await expect(yamlToJson('key: [unclosed')).rejects.toThrow()
     })
 
-    it('should support custom indent', () => {
-      const result = yamlToJson('a: 1', 4)
+    it('should support custom indent', async () => {
+      const result = await yamlToJson('a: 1', 4)
       expect(result).toBe('{\n    "a": 1\n}')
     })
   })
 
   describe('getYamlParseError', () => {
-    it('should return null for valid YAML', () => {
-      expect(getYamlParseError('name: John')).toBeNull()
+    it('should return null for valid YAML', async () => {
+      expect(await getYamlParseError('name: John')).toBeNull()
     })
 
-    it('should return error message for invalid YAML', () => {
-      const error = getYamlParseError('key: [unclosed')
+    it('should return error message for invalid YAML', async () => {
+      const error = await getYamlParseError('key: [unclosed')
       expect(error).toBeTruthy()
       expect(typeof error).toBe('string')
     })
 
-    it('should return error for empty input', () => {
-      expect(getYamlParseError('')).toBe('Empty input')
+    it('should return error for empty input', async () => {
+      expect(await getYamlParseError('')).toBe('Empty input')
     })
 
-    it('should return error for whitespace-only input', () => {
-      expect(getYamlParseError('   ')).toBe('Empty input')
+    it('should return error for whitespace-only input', async () => {
+      expect(await getYamlParseError('   ')).toBe('Empty input')
     })
   })
 
   describe('round-trip consistency', () => {
-    it('should preserve data through JSON→YAML→JSON round-trip', () => {
+    it('should preserve data through JSON→YAML→JSON round-trip', async () => {
       const original = '{"name":"John","age":30,"tags":["dev","tools"],"nested":{"key":"value"}}'
-      const yaml = jsonToYaml(original)
-      const roundTripped = yamlToJson(yaml)
+      const yaml = await jsonToYaml(original)
+      const roundTripped = await yamlToJson(yaml)
       expect(JSON.parse(roundTripped)).toEqual(JSON.parse(original))
     })
   })

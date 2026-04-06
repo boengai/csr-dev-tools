@@ -54,8 +54,8 @@ enum PaymentMethod {
 
 describe('protobuf-to-json', () => {
   describe('parseProtobufSchema', () => {
-    it('parses valid proto3 schema with messages, enums, and nested types', () => {
-      const result = parseProtobufSchema(SAMPLE_PROTO)
+    it('parses valid proto3 schema with messages, enums, and nested types', async () => {
+      const result = await parseProtobufSchema(SAMPLE_PROTO)
 
       expect(result.success).toBe(true)
       if (!result.success) return
@@ -66,8 +66,8 @@ describe('protobuf-to-json', () => {
       expect(result.schema.enums).toHaveLength(1)
     })
 
-    it('returns error for invalid proto syntax', () => {
-      const result = parseProtobufSchema('message { invalid }')
+    it('returns error for invalid proto syntax', async () => {
+      const result = await parseProtobufSchema('message { invalid }')
 
       expect(result.success).toBe(false)
       if (result.success) return
@@ -75,14 +75,14 @@ describe('protobuf-to-json', () => {
       expect(result.error).toBeTruthy()
     })
 
-    it('returns error with line number for syntax errors', () => {
+    it('returns error with line number for syntax errors', async () => {
       const invalidProto = `syntax = "proto3";
 
 message Test {
   string name = 1;
   invalid_syntax here;
 }`
-      const result = parseProtobufSchema(invalidProto)
+      const result = await parseProtobufSchema(invalidProto)
 
       expect(result.success).toBe(false)
       if (result.success) return
@@ -91,8 +91,8 @@ message Test {
       expect(result.line).toBeTypeOf('number')
     })
 
-    it('returns error for empty string', () => {
-      const result = parseProtobufSchema('')
+    it('returns error for empty string', async () => {
+      const result = await parseProtobufSchema('')
 
       expect(result.success).toBe(false)
       if (result.success) return
@@ -101,8 +101,8 @@ message Test {
       expect(result.line).toBeNull()
     })
 
-    it('returns error for whitespace-only string', () => {
-      const result = parseProtobufSchema('   \n\n  ')
+    it('returns error for whitespace-only string', async () => {
+      const result = await parseProtobufSchema('   \n\n  ')
 
       expect(result.success).toBe(false)
       if (result.success) return
@@ -110,8 +110,8 @@ message Test {
       expect(result.error).toContain('Empty input')
     })
 
-    it('extracts fields with correct types, rules, and ids', () => {
-      const result = parseProtobufSchema(SAMPLE_PROTO)
+    it('extracts fields with correct types, rules, and ids', async () => {
+      const result = await parseProtobufSchema(SAMPLE_PROTO)
 
       expect(result.success).toBe(true)
       if (!result.success) return
@@ -144,8 +144,8 @@ message Test {
       })
     })
 
-    it('extracts enum values correctly', () => {
-      const result = parseProtobufSchema(SAMPLE_PROTO)
+    it('extracts enum values correctly', async () => {
+      const result = await parseProtobufSchema(SAMPLE_PROTO)
 
       expect(result.success).toBe(true)
       if (!result.success) return
@@ -162,8 +162,8 @@ message Test {
       })
     })
 
-    it('handles nested messages within messages', () => {
-      const result = parseProtobufSchema(SAMPLE_PROTO)
+    it('handles nested messages within messages', async () => {
+      const result = await parseProtobufSchema(SAMPLE_PROTO)
 
       expect(result.success).toBe(true)
       if (!result.success) return
@@ -176,7 +176,7 @@ message Test {
       expect(person.nestedEnums[0].name).toBe('Status')
     })
 
-    it('handles oneof groups', () => {
+    it('handles oneof groups', async () => {
       const protoWithOneof = `
 syntax = "proto3";
 message TestMessage {
@@ -187,7 +187,7 @@ message TestMessage {
   string other = 3;
 }
 `
-      const result = parseProtobufSchema(protoWithOneof)
+      const result = await parseProtobufSchema(protoWithOneof)
 
       expect(result.success).toBe(true)
       if (!result.success) return
@@ -199,7 +199,7 @@ message TestMessage {
       expect(msg.oneofs[0].fieldNames).toContain('id')
     })
 
-    it('handles map fields', () => {
+    it('handles map fields', async () => {
       const protoWithMap = `
 syntax = "proto3";
 message TestMessage {
@@ -207,7 +207,7 @@ message TestMessage {
   map<int32, string> labels = 2;
 }
 `
-      const result = parseProtobufSchema(protoWithMap)
+      const result = await parseProtobufSchema(protoWithMap)
 
       expect(result.success).toBe(true)
       if (!result.success) return
@@ -220,7 +220,7 @@ message TestMessage {
       expect(labelsField?.isMap).toBe(true)
     })
 
-    it('parses proto2 syntax correctly', () => {
+    it('parses proto2 syntax correctly', async () => {
       const proto2 = `
 syntax = "proto2";
 message LegacyMessage {
@@ -229,7 +229,7 @@ message LegacyMessage {
   repeated string tags = 3;
 }
 `
-      const result = parseProtobufSchema(proto2)
+      const result = await parseProtobufSchema(proto2)
 
       expect(result.success).toBe(true)
       if (!result.success) return
@@ -245,8 +245,8 @@ message LegacyMessage {
       expect(ageField?.rule).toBe('optional')
     })
 
-    it('extracts package name', () => {
-      const result = parseProtobufSchema(SAMPLE_PROTO)
+    it('extracts package name', async () => {
+      const result = await parseProtobufSchema(SAMPLE_PROTO)
 
       expect(result.success).toBe(true)
       if (!result.success) return
@@ -254,14 +254,14 @@ message LegacyMessage {
       expect(result.schema.package).toBe('example')
     })
 
-    it('handles proto without package', () => {
+    it('handles proto without package', async () => {
       const noPackage = `
 syntax = "proto3";
 message Simple {
   string value = 1;
 }
 `
-      const result = parseProtobufSchema(noPackage)
+      const result = await parseProtobufSchema(noPackage)
 
       expect(result.success).toBe(true)
       if (!result.success) return
@@ -271,13 +271,13 @@ message Simple {
   })
 
   describe('generateSampleJson', () => {
-    function getParsedSchema() {
-      const result = parseProtobufSchema(SAMPLE_PROTO)
+    async function getParsedSchema() {
+      const result = await parseProtobufSchema(SAMPLE_PROTO)
       if (!result.success) throw new Error('Failed to parse sample proto')
       return result.schema
     }
 
-    it('generates correct defaults for all scalar types', () => {
+    it('generates correct defaults for all scalar types', async () => {
       const allScalars = `
 syntax = "proto3";
 message AllScalars {
@@ -298,11 +298,11 @@ message AllScalars {
   bytes bt = 15;
 }
 `
-      const result = parseProtobufSchema(allScalars)
+      const result = await parseProtobufSchema(allScalars)
       if (!result.success) throw new Error('Parse failed')
 
       const msg = result.schema.messages[0]
-      const json = generateSampleJson(msg, result.schema.messages, result.schema.enums)
+      const json = await generateSampleJson(msg, result.schema.messages, result.schema.enums)
 
       expect(json).toEqual({
         b: false,
@@ -323,10 +323,10 @@ message AllScalars {
       })
     })
 
-    it('generates nested object for message field', () => {
-      const schema = getParsedSchema()
+    it('generates nested object for message field', async () => {
+      const schema = await getParsedSchema()
       const order = schema.messages.find((m) => m.name === 'Order')!
-      const json = generateSampleJson(order, schema.messages, schema.enums)
+      const json = await generateSampleJson(order, schema.messages, schema.enums)
 
       expect(json.customer).toEqual(
         expect.objectContaining({
@@ -344,18 +344,18 @@ message AllScalars {
       )
     })
 
-    it('generates array for repeated field', () => {
-      const schema = getParsedSchema()
+    it('generates array for repeated field', async () => {
+      const schema = await getParsedSchema()
       const person = schema.messages.find((m) => m.name === 'Person')!
-      const json = generateSampleJson(person, schema.messages, schema.enums)
+      const json = await generateSampleJson(person, schema.messages, schema.enums)
 
       expect(json.tags).toEqual([''])
     })
 
-    it('generates array of objects for repeated message field', () => {
-      const schema = getParsedSchema()
+    it('generates array of objects for repeated message field', async () => {
+      const schema = await getParsedSchema()
       const order = schema.messages.find((m) => m.name === 'Order')!
-      const json = generateSampleJson(order, schema.messages, schema.enums)
+      const json = await generateSampleJson(order, schema.messages, schema.enums)
 
       expect(json.items).toEqual([
         {
@@ -366,15 +366,15 @@ message AllScalars {
       ])
     })
 
-    it('uses first enum value name for enum fields', () => {
-      const schema = getParsedSchema()
+    it('uses first enum value name for enum fields', async () => {
+      const schema = await getParsedSchema()
       const person = schema.messages.find((m) => m.name === 'Person')!
-      const json = generateSampleJson(person, schema.messages, schema.enums)
+      const json = await generateSampleJson(person, schema.messages, schema.enums)
 
       expect(json.status).toBe('UNKNOWN')
     })
 
-    it('handles self-referencing message with cycle detection', () => {
+    it('handles self-referencing message with cycle detection', async () => {
       const selfRef = `
 syntax = "proto3";
 message TreeNode {
@@ -383,29 +383,29 @@ message TreeNode {
   TreeNode right = 3;
 }
 `
-      const result = parseProtobufSchema(selfRef)
+      const result = await parseProtobufSchema(selfRef)
       if (!result.success) throw new Error('Parse failed')
 
       const msg = result.schema.messages[0]
-      const json = generateSampleJson(msg, result.schema.messages, result.schema.enums)
+      const json = await generateSampleJson(msg, result.schema.messages, result.schema.enums)
 
       expect(json.value).toBe('')
       expect(json.left).toEqual({})
       expect(json.right).toEqual({})
     })
 
-    it('generates empty object for map fields', () => {
-      const schema = getParsedSchema()
+    it('generates empty object for map fields', async () => {
+      const schema = await getParsedSchema()
       const person = schema.messages.find((m) => m.name === 'Person')!
-      const json = generateSampleJson(person, schema.messages, schema.enums)
+      const json = await generateSampleJson(person, schema.messages, schema.enums)
 
       expect(json.metadata).toEqual({})
     })
 
-    it('generates correct JSON for Person message', () => {
-      const schema = getParsedSchema()
+    it('generates correct JSON for Person message', async () => {
+      const schema = await getParsedSchema()
       const person = schema.messages.find((m) => m.name === 'Person')!
-      const json = generateSampleJson(person, schema.messages, schema.enums)
+      const json = await generateSampleJson(person, schema.messages, schema.enums)
 
       expect(json).toEqual({
         active: false,
@@ -423,10 +423,10 @@ message TreeNode {
       })
     })
 
-    it('generates correct JSON for Order message', () => {
-      const schema = getParsedSchema()
+    it('generates correct JSON for Order message', async () => {
+      const schema = await getParsedSchema()
       const order = schema.messages.find((m) => m.name === 'Order')!
-      const json = generateSampleJson(order, schema.messages, schema.enums)
+      const json = await generateSampleJson(order, schema.messages, schema.enums)
 
       expect(json).toEqual({
         createdAt: '0',
