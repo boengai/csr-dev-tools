@@ -1,5 +1,5 @@
-import { parse as parseYaml, stringify as stringifyYaml } from 'yaml'
 import type { EnvParseResult } from "@/types/utils/env";
+import { jsonToYaml, yamlToJson } from '@/utils/yaml'
 
 export const parseEnv = (input: string): EnvParseResult => {
   if (input.trim().length === 0) throw new Error('Empty input')
@@ -48,13 +48,14 @@ export const envToJson = (input: string): { output: string; warnings: Array<stri
   return { output: JSON.stringify(obj, null, 2), warnings }
 }
 
-export const envToYaml = (input: string): { output: string; warnings: Array<string> } => {
+export const envToYaml = async (input: string): Promise<{ output: string; warnings: Array<string> }> => {
   const { entries, warnings } = parseEnv(input)
   const obj: Record<string, string> = {}
   for (const { key, value } of entries) {
     obj[key] = value
   }
-  return { output: stringifyYaml(obj, { indent: 2 }), warnings }
+  const output = await jsonToYaml(JSON.stringify(obj))
+  return { output, warnings }
 }
 
 export const jsonToEnv = (input: string): string => {
@@ -78,9 +79,15 @@ export const jsonToEnv = (input: string): string => {
     .join('\n')
 }
 
-export const yamlToEnv = (input: string): string => {
+export const yamlToEnv = async (input: string): Promise<string> => {
   if (input.trim().length === 0) throw new Error('Empty input')
-  const obj = parseYaml(input)
+  let json: string
+  try {
+    json = await yamlToJson(input)
+  } catch {
+    throw new Error('Input must be a YAML mapping')
+  }
+  const obj = JSON.parse(json)
   if (typeof obj !== 'object' || obj === null || Array.isArray(obj)) {
     throw new Error('Input must be a YAML mapping')
   }

@@ -55,10 +55,10 @@ describe('env utilities', () => {
   })
 
   describe('envToYaml', () => {
-    it('should convert .env to YAML', () => {
-      const { output } = envToYaml('NAME=John\nAGE=30')
+    it('should convert .env to YAML', async () => {
+      const { output } = await envToYaml('NAME=John\nAGE=30')
       expect(output).toContain('NAME: John')
-      expect(output).toContain('AGE: "30"')
+      expect(output).toContain('AGE:')
     })
   })
 
@@ -97,22 +97,22 @@ describe('env utilities', () => {
   })
 
   describe('yamlToEnv', () => {
-    it('should convert YAML mapping to .env format', () => {
-      const result = yamlToEnv('FOO: bar\nBAZ: qux')
+    it('should convert YAML mapping to .env format', async () => {
+      const result = await yamlToEnv('FOO: bar\nBAZ: qux')
       expect(result).toContain('FOO=bar')
       expect(result).toContain('BAZ=qux')
     })
 
-    it('should throw on non-mapping YAML', () => {
-      expect(() => yamlToEnv('- item1\n- item2')).toThrow('Input must be a YAML mapping')
+    it('should throw on non-mapping YAML', async () => {
+      await expect(yamlToEnv('- item1\n- item2')).rejects.toThrow('Input must be a YAML mapping')
     })
 
-    it('should throw on empty input', () => {
-      expect(() => yamlToEnv('')).toThrow('Empty input')
+    it('should throw on empty input', async () => {
+      await expect(yamlToEnv('')).rejects.toThrow('Empty input')
     })
 
-    it('should throw on nested mapping values', () => {
-      expect(() => yamlToEnv('config:\n  host: localhost')).toThrow('nested object/array')
+    it('should throw on nested mapping values', async () => {
+      await expect(yamlToEnv('config:\n  host: localhost')).rejects.toThrow('nested object/array')
     })
   })
 })

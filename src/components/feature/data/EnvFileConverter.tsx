@@ -57,7 +57,7 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
   const { toast } = useToast()
   const sessionRef = useRef(0)
 
-  const process = (val: string, m: ConvertMode) => {
+  const process = async (val: string, m: ConvertMode) => {
     const session = ++sessionRef.current
     if (val.trim().length === 0) {
       setResult('')
@@ -74,7 +74,7 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
           break
         }
         case 'env-to-yaml': {
-          const r = envToYaml(val)
+          const r = await envToYaml(val)
           output = r.output
           warnings = r.warnings
           break
@@ -83,7 +83,7 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
           output = jsonToEnv(val)
           break
         case 'yaml-to-env':
-          output = yamlToEnv(val)
+          output = await yamlToEnv(val)
           break
       }
       if (session !== sessionRef.current) return
