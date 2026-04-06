@@ -1,3 +1,5 @@
+pub mod sha256;
+
 /// Convert a byte slice to a lowercase hex string.
 pub fn bytes_to_hex(bytes: &[u8]) -> String {
     let mut hex = String::with_capacity(bytes.len() * 2);
