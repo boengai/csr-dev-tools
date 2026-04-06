@@ -27,7 +27,26 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install
-      
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            wasm/target
+          key: rust-${{ runner.os }}-${{ hashFiles('wasm/Cargo.lock') }}
+          restore-keys: |
+            rust-${{ runner.os }}-
+
+      - name: Install wasm-pack
+        run: cargo install wasm-pack --locked
+
       - name: Parse environment
         env: 
           ENV: ${{ vars.ENV_BASE64 }}
