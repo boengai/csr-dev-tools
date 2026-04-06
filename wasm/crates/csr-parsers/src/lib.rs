@@ -1,5 +1,6 @@
 use wasm_bindgen::prelude::*;
 
+mod proto_schema;
 mod toml_parser;
 mod xml;
 mod yaml;
@@ -102,4 +103,83 @@ pub fn get_yaml_parse_error(input: &str) -> Option<String> {
         Ok(_) => None,
         Err(e) => Some(e),
     }
+}
+
+// ── Protobuf Schema ──
+
+#[wasm_bindgen]
+pub fn parse_protobuf_schema(input: &str) -> JsValue {
+    let trimmed = input.trim();
+    if trimmed.is_empty() {
+        let result = proto_schema::types::ProtobufParseResult::err(
+            "Empty input \u{2014} paste a .proto definition to parse".into(),
+            None,
+        );
+        return serde_wasm_bindgen::to_value(&result).unwrap();
+    }
+
+    let mut lexer = proto_schema::lexer::Lexer::new(trimmed);
+    let tokens = match lexer.tokenize() {
+        Ok(t) => t,
+        Err(e) => {
+            let line_match = extract_line_number(&e);
+            let result = proto_schema::types::ProtobufParseResult::err(e, line_match);
+            return serde_wasm_bindgen::to_value(&result).unwrap();
+        }
+    };
+
+    let mut parser = proto_schema::parser::ProtoParser::new(tokens);
+    match parser.parse() {
+        Ok(schema) => {
+            let result = proto_schema::types::ProtobufParseResult::ok(schema);
+            serde_wasm_bindgen::to_value(&result).unwrap()
+        }
+        Err(e) => {
+            let line_match = extract_line_number(&e);
+            let result = proto_schema::types::ProtobufParseResult::err(e, line_match);
+            serde_wasm_bindgen::to_value(&result).unwrap()
+        }
+    }
+}
+
+#[wasm_bindgen]
+pub fn generate_sample_json_from_schema(
+    schema_json: &str,
+    message_name: &str,
+) -> Result<String, JsError> {
+    let schema: proto_schema::types::ProtobufSchemaInfo =
+        serde_json::from_str(schema_json).map_err(|e| JsError::new(&e.to_string()))?;
+
+    let all_messages = collect_all_flat_messages(&schema.messages);
+    let msg = all_messages
+        .iter()
+        .find(|m| m.name == message_name)
+        .ok_or_else(|| JsError::new(&format!("Message '{}' not found", message_name)))?;
+
+    let sample =
+        proto_schema::sample::generate_sample_json(msg, &schema.messages, &schema.enums);
+    serde_json::to_string_pretty(&sample).map_err(|e| JsError::new(&e.to_string()))
+}
+
+fn extract_line_number(error: &str) -> Option<u32> {
+    // Extract "line N" from error message
+    let re_like = error.find("line ");
+    if let Some(pos) = re_like {
+        let after = &error[pos + 5..];
+        let num_str: String = after.chars().take_while(|c| c.is_ascii_digit()).collect();
+        num_str.parse().ok()
+    } else {
+        None
+    }
+}
+
+fn collect_all_flat_messages(
+    messages: &[proto_schema::types::ProtobufMessageInfo],
+) -> Vec<&proto_schema::types::ProtobufMessageInfo> {
+    let mut result = Vec::new();
+    for msg in messages {
+        result.push(msg);
+        result.extend(collect_all_flat_messages(&msg.nested_messages));
+    }
+    result
 }
