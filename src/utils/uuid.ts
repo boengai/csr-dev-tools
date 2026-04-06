@@ -1,12 +1,9 @@
-export const generateUuid = (): string => {
-  return crypto.randomUUID()
+export const generateUuid = async (): Promise<string> => {
+  const wasm = await import('@/wasm/csr-uuid')
+  return wasm.generateUuid()
 }
 
-export const generateBulkUuids = (count: number): Array<string> => {
-  const clampedCount = Math.max(1, Math.min(100, Math.floor(count) || 1))
-  const uuids = Array<string>(clampedCount)
-  for (let i = 0; i < clampedCount; i++) {
-    uuids[i] = crypto.randomUUID()
-  }
-  return uuids
+export const generateBulkUuids = async (count: number): Promise<Array<string>> => {
+  const wasm = await import('@/wasm/csr-uuid')
+  return wasm.generateBulkUuids(count)
 }
