@@ -15,15 +15,15 @@ ${Array.from({ length: 5_000 }, (_, i) => `  <user id="${i}"><name>user${i}</nam
 </users>`
 
 describe('XML: xmlToJson (10 nodes)', () => {
-  bench('WASM csr-parsers', async () => {
-    const { xmlToJson } = await import('../src/wasm/csr-parsers')
+  bench('WASM parsers', async () => {
+    const { xmlToJson } = await import('../src/wasm/parsers')
     await xmlToJson(smallXml)
   })
 })
 
 describe('XML: xmlToJson (5,000 nodes)', () => {
-  bench('WASM csr-parsers', async () => {
-    const { xmlToJson } = await import('../src/wasm/csr-parsers')
+  bench('WASM parsers', async () => {
+    const { xmlToJson } = await import('../src/wasm/parsers')
     await xmlToJson(largeXml)
   })
 })
@@ -35,8 +35,8 @@ const smallJsonForXml = JSON.stringify({
 })
 
 describe('XML: jsonToXml (10 nodes)', () => {
-  bench('WASM csr-parsers', async () => {
-    const { jsonToXml } = await import('../src/wasm/csr-parsers')
+  bench('WASM parsers', async () => {
+    const { jsonToXml } = await import('../src/wasm/parsers')
     await jsonToXml(smallJsonForXml)
   })
 })
@@ -56,15 +56,15 @@ const largeYaml = Array.from(
 ).join('\n')
 
 describe('YAML: yamlToJson (10 items)', () => {
-  bench('WASM csr-parsers', async () => {
-    const { yamlToJson } = await import('../src/wasm/csr-parsers')
+  bench('WASM parsers', async () => {
+    const { yamlToJson } = await import('../src/wasm/parsers')
     await yamlToJson(smallYaml)
   })
 })
 
 describe('YAML: yamlToJson (5,000 items)', () => {
-  bench('WASM csr-parsers', async () => {
-    const { yamlToJson } = await import('../src/wasm/csr-parsers')
+  bench('WASM parsers', async () => {
+    const { yamlToJson } = await import('../src/wasm/parsers')
     await yamlToJson(largeYaml)
   })
 })
@@ -74,15 +74,15 @@ const smallJsonForYaml = JSON.stringify(
 )
 
 describe('YAML: jsonToYaml (10 items)', () => {
-  bench('WASM csr-parsers', async () => {
-    const { jsonToYaml } = await import('../src/wasm/csr-parsers')
+  bench('WASM parsers', async () => {
+    const { jsonToYaml } = await import('../src/wasm/parsers')
     await jsonToYaml(smallJsonForYaml)
   })
 })
 
 describe('YAML: formatYaml (5,000 items)', () => {
-  bench('WASM csr-parsers', async () => {
-    const { formatYaml } = await import('../src/wasm/csr-parsers')
+  bench('WASM parsers', async () => {
+    const { formatYaml } = await import('../src/wasm/parsers')
     await formatYaml(largeYaml, { indent: 2, sortKeys: true })
   })
 })
@@ -104,15 +104,15 @@ version = "1.0.0"
 ${Array.from({ length: 1_000 }, (_, i) => `[deps.dep${i}]\nversion = "${i}.0.0"\nfeatures = ["feat${i}"]`).join('\n\n')}`
 
 describe('TOML: tomlToJson (small)', () => {
-  bench('WASM csr-parsers', async () => {
-    const { tomlToJson } = await import('../src/wasm/csr-parsers')
+  bench('WASM parsers', async () => {
+    const { tomlToJson } = await import('../src/wasm/parsers')
     await tomlToJson(smallToml)
   })
 })
 
 describe('TOML: tomlToJson (1,000 sections)', () => {
-  bench('WASM csr-parsers', async () => {
-    const { tomlToJson } = await import('../src/wasm/csr-parsers')
+  bench('WASM parsers', async () => {
+    const { tomlToJson } = await import('../src/wasm/parsers')
     await tomlToJson(largeToml)
   })
 })
@@ -125,8 +125,8 @@ const smallJsonForToml = JSON.stringify({
 })
 
 describe('TOML: jsonToToml (small)', () => {
-  bench('WASM csr-parsers', async () => {
-    const { jsonToToml } = await import('../src/wasm/csr-parsers')
+  bench('WASM parsers', async () => {
+    const { jsonToToml } = await import('../src/wasm/parsers')
     await jsonToToml(smallJsonForToml)
   })
 })
@@ -146,15 +146,15 @@ const largeProtoSchema = `syntax = "proto3";
 ${Array.from({ length: 50 }, (_, i) => `message Message${i} {\n  int32 id = 1;\n  string name = 2;\n  string data = 3;\n  bool active = 4;\n  repeated string tags = 5;\n}`).join('\n\n')}`
 
 describe('Protobuf: parseSchema (small)', () => {
-  bench('WASM csr-parsers', async () => {
-    const { parseProtobufSchema } = await import('../src/wasm/csr-parsers')
+  bench('WASM parsers', async () => {
+    const { parseProtobufSchema } = await import('../src/wasm/parsers')
     await parseProtobufSchema(smallProtoSchema)
   })
 })
 
 describe('Protobuf: parseSchema (50 messages)', () => {
-  bench('WASM csr-parsers', async () => {
-    const { parseProtobufSchema } = await import('../src/wasm/csr-parsers')
+  bench('WASM parsers', async () => {
+    const { parseProtobufSchema } = await import('../src/wasm/parsers')
     await parseProtobufSchema(largeProtoSchema)
   })
 })

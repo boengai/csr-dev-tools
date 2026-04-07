@@ -5,7 +5,7 @@ describe('MD5 Hash', () => {
   const largeInput = 'a'.repeat(1_000_000)
 
   bench('WASM md5 (short)', async () => {
-    const { md5 } = await import('../src/wasm/csr-hash')
+    const { md5 } = await import('../src/wasm/hash')
     await md5(shortInput)
   })
 
@@ -15,7 +15,7 @@ describe('MD5 Hash', () => {
   })
 
   bench('WASM md5 (1MB)', async () => {
-    const { md5 } = await import('../src/wasm/csr-hash')
+    const { md5 } = await import('../src/wasm/hash')
     await md5(largeInput)
   })
 
@@ -29,7 +29,7 @@ describe('Number Base Conversion', () => {
   const large = '9007199254740993'
 
   bench('WASM convertBase (large)', async () => {
-    const { convertBase } = await import('../src/wasm/csr-number-base')
+    const { convertBase } = await import('../src/wasm/number-base')
     await convertBase(large, 10, 16)
   })
 
@@ -52,7 +52,7 @@ describe('Number Base Conversion', () => {
 
 describe('UUID v4 Generation', () => {
   bench('WASM uuid_v4', async () => {
-    const { generateUuid } = await import('../src/wasm/csr-uuid')
+    const { generateUuid } = await import('../src/wasm/uuid')
     await generateUuid()
   })
 
@@ -61,7 +61,7 @@ describe('UUID v4 Generation', () => {
   })
 
   bench('WASM uuid_v4_bulk (50)', async () => {
-    const { generateBulkUuids } = await import('../src/wasm/csr-uuid')
+    const { generateBulkUuids } = await import('../src/wasm/uuid')
     await generateBulkUuids(50)
   })
 

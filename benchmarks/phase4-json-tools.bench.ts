@@ -16,8 +16,8 @@ const largeJson = JSON.stringify(
 )
 
 describe('JSON: formatJson (small)', () => {
-  bench('WASM csr-json-tools', async () => {
-    const { formatJson } = await import('../src/wasm/csr-json-tools')
+  bench('WASM json-tools', async () => {
+    const { formatJson } = await import('../src/wasm/json-tools')
     await formatJson(smallJson)
   })
 
@@ -27,8 +27,8 @@ describe('JSON: formatJson (small)', () => {
 })
 
 describe('JSON: formatJson (10,000 objects)', () => {
-  bench('WASM csr-json-tools', async () => {
-    const { formatJson } = await import('../src/wasm/csr-json-tools')
+  bench('WASM json-tools', async () => {
+    const { formatJson } = await import('../src/wasm/json-tools')
     await formatJson(largeJson)
   })
 
@@ -61,15 +61,15 @@ const complexJsonForTs = JSON.stringify({
 })
 
 describe('JSON-to-TS: simple object', () => {
-  bench('WASM csr-json-tools', async () => {
-    const { jsonToTypeScript } = await import('../src/wasm/csr-json-tools')
+  bench('WASM json-tools', async () => {
+    const { jsonToTypeScript } = await import('../src/wasm/json-tools')
     await jsonToTypeScript(simpleJsonForTs)
   })
 })
 
 describe('JSON-to-TS: complex nested (100 items)', () => {
-  bench('WASM csr-json-tools', async () => {
-    const { jsonToTypeScript } = await import('../src/wasm/csr-json-tools')
+  bench('WASM json-tools', async () => {
+    const { jsonToTypeScript } = await import('../src/wasm/json-tools')
     await jsonToTypeScript(complexJsonForTs)
   })
 })
@@ -89,15 +89,15 @@ const unsortedLarge = JSON.stringify(
 )
 
 describe('JSON: normalizeJson (small)', () => {
-  bench('WASM csr-json-tools', async () => {
-    const { normalizeJson } = await import('../src/wasm/csr-json-tools')
+  bench('WASM json-tools', async () => {
+    const { normalizeJson } = await import('../src/wasm/json-tools')
     await normalizeJson(unsortedSmall)
   })
 })
 
 describe('JSON: normalizeJson (1,000 keys)', () => {
-  bench('WASM csr-json-tools', async () => {
-    const { normalizeJson } = await import('../src/wasm/csr-json-tools')
+  bench('WASM json-tools', async () => {
+    const { normalizeJson } = await import('../src/wasm/json-tools')
     await normalizeJson(unsortedLarge)
   })
 })
@@ -107,15 +107,15 @@ describe('JSON: normalizeJson (1,000 keys)', () => {
 // ---------------------------------------------------------------------------
 
 describe('JSON: deepSortJson (small)', () => {
-  bench('WASM csr-json-tools', async () => {
-    const { deepSortJson } = await import('../src/wasm/csr-json-tools')
+  bench('WASM json-tools', async () => {
+    const { deepSortJson } = await import('../src/wasm/json-tools')
     await deepSortJson(unsortedSmall)
   })
 })
 
 describe('JSON: deepSortJson (1,000 keys)', () => {
-  bench('WASM csr-json-tools', async () => {
-    const { deepSortJson } = await import('../src/wasm/csr-json-tools')
+  bench('WASM json-tools', async () => {
+    const { deepSortJson } = await import('../src/wasm/json-tools')
     await deepSortJson(unsortedLarge)
   })
 })
