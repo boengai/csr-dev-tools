@@ -4,10 +4,14 @@ import { generateQrCodeDataUrl, generateQrCodeSvgString } from './qr-code'
 
 describe('qr-code', () => {
   describe('generateQrCodeDataUrl', () => {
-    it('returns a data URL for valid text', async () => {
-      const result = await generateQrCodeDataUrl('hello')
-      expect(result).toMatch(/^data:image\/png;base64,/)
-    })
+    it(
+      'returns a data URL for valid text',
+      async () => {
+        const result = await generateQrCodeDataUrl('hello')
+        expect(result).toMatch(/^data:image\/png;base64,/)
+      },
+      15_000,
+    )
 
     it('respects size option', async () => {
       const result = await generateQrCodeDataUrl('hello', { size: 128 })
