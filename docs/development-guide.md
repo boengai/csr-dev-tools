@@ -8,6 +8,8 @@
 |-------------|---------|-------|
 | Node.js | >= 24.5.0 | Enforced via `engines` in package.json |
 | pnpm | 10.11.0 | Enforced via `packageManager` field |
+| Rust | stable | With `wasm32-unknown-unknown` target |
+| wasm-pack | latest | `cargo install wasm-pack` |
 
 ## Installation
 
@@ -32,6 +34,9 @@ pnpm install
 | `pnpm format` | Format all source files with oxfmt |
 | `pnpm format:check` | Check formatting without writing |
 | `pnpm test` | Run Vitest unit tests in single-run mode |
+| `pnpm wasm:build` | Build WASM crates (release) |
+| `pnpm wasm:build:dev` | Build WASM crates (dev) |
+| `pnpm wasm:test` | Run Rust unit tests |
 | `pnpm test:e2e` | Run Playwright E2E tests |
 | `pnpm test:e2e:ui` | Run Playwright E2E tests with interactive UI |
 | `pnpm test:e2e:headed` | Run Playwright E2E tests in headed browser |

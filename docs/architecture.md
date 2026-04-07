@@ -26,18 +26,13 @@
 | Code Editor | @monaco-editor/react | 4.7.0 | TypeScript playground with full IntelliSense |
 | Diagrams | @xyflow/react | 12.10.1 | Database diagram flow visualization |
 | Diagrams | mermaid | 11.12.3 | Mermaid diagram rendering |
-| Markdown | marked | 17.0.4 | Markdown to HTML parsing |
 | HTML Sanitize | dompurify | 3.3.2 | XSS-safe HTML rendering |
 | AI/ML | @huggingface/transformers | 3.8.1 | In-browser image background removal |
-| Data Formats | fast-xml-parser, yaml, smol-toml | Various | XML, YAML, TOML parsing/generation |
-| Data Formats | graphql, protobufjs | Various | GraphQL schema viewing, Protobuf decoding |
-| Code Format | js-beautify, sql-formatter | Various | JavaScript, HTML, CSS, SQL formatting |
-| Crypto | bcryptjs, @peculiar/x509 | Various | Bcrypt hashing, X.509 certificate decoding |
-| QR | qrcode | 1.5.4 | QR code generation |
+| Data Formats | graphql | Various | GraphQL schema viewing |
+| WASM | Rust crates (13) | Various | Hashing, bcrypt, HMAC, diff, CSV, color, XML/YAML/TOML parsing, JS/HTML/CSS/SQL formatting, QR codes, Markdown |
+| Crypto | @peculiar/x509 | Various | X.509 certificate decoding |
 | Image | react-image-crop | 11.0.10 | Image cropping UI |
-| HTML Convert | turndown + turndown-plugin-gfm | Various | HTML to Markdown conversion |
 | JSON | ajv, jsonpath-plus | Various | JSON schema validation, JSONPath queries |
-| Diff | diff | 8.0.3 | Text diffing |
 | File Processing | JSZip | 3.10.1 | ZIP generation (dynamic import, lazy-loaded) |
 | Linting | oxlint | 1.51.0 | Fast linter with TypeScript + React plugins |
 | Formatting | oxfmt | 0.36.0 | Fast formatter with Tailwind class sorting |
@@ -146,7 +141,7 @@ Pattern: `create<T>()((set: StoreApi<T>['setState']) => ({...}))`
 
 - **Code splitting** per route via `lazyRouteComponent()`
 - **Feature-level code splitting** -- each tool is its own lazy-loaded chunk via registry
-- **Heavy dependency lazy imports** -- JSZip, Monaco Editor, Mermaid, HuggingFace loaded on demand
+- **Heavy dependency lazy imports** -- WASM modules, JSZip, Monaco Editor, Mermaid, HuggingFace loaded on demand
 - **Entry point**: `src/main.tsx` → mounts React app with router and query provider
 
 ## Testing Strategy

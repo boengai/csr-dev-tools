@@ -159,6 +159,8 @@ CSR Developer Tools is a collection of **78 tools** across **12 categories** tha
 
 - **Node.js** >= 24.5.0
 - **pnpm** 10.11.0 (recommended package manager)
+- **Rust** with `wasm32-unknown-unknown` target (`rustup target add wasm32-unknown-unknown`)
+- **wasm-pack** (`cargo install wasm-pack`)
 
 ### Installation
 
@@ -195,6 +197,14 @@ pnpm preview
 
 ## Tech Stack
 
+### WebAssembly
+
+Performance-critical tools are implemented in Rust and compiled to WebAssembly:
+
+- **13 WASM crates** — Hand-written Rust for hashing, cryptography, parsing, formatting, QR codes, and more
+- **[wasm-pack](https://rustwasm.github.io/wasm-pack/)** — Rust-to-WASM compilation with JS/TS bindings
+- **Lazy-loaded** — Each WASM module loads on demand per tool page
+
 ### Core Technologies
 
 - **[React 19](https://react.dev/)** — Latest React with modern features
@@ -220,12 +230,11 @@ pnpm preview
 - **[Hugging Face Transformers.js](https://huggingface.co/docs/transformers.js)** — On-device AI models (background removal)
 - **[Mermaid](https://mermaid.js.org/)** — Diagram and chart rendering from text
 - **[GraphQL.js](https://graphql.org/graphql-js/)** — GraphQL schema parsing and introspection
-- **[Protobuf.js](https://protobufjs.github.io/protobuf.js/)** — Protocol Buffer definition parsing
 - **[JSZip](https://stuk.github.io/jszip/)** — Client-side ZIP file generation and processing
 
 ### Security & Cryptography
 
-- **[bcryptjs](https://github.com/nicolo-ribaudo/bcryptjs)** — Bcrypt password hashing
+- **[Rust WASM](https://rustwasm.github.io/docs/book/)** — Hand-written bcrypt, HMAC, MD5/SHA hashing
 - **[@peculiar/x509](https://github.com/nicolo-ribaudo/x509)** — X.509 certificate parsing
 
 ### Development Tools
@@ -276,6 +285,10 @@ csr-dev-tools/
 │   ├── main.tsx
 │   ├── routes.tsx
 │   └── index.css
+├── wasm/                    # Rust WASM crates
+│   ├── crates/              # 14 Rust crates (hash, bcrypt, diff, formatter, ...)
+│   ├── pkg/                 # Built WASM output (gitignored)
+│   └── scripts/build.sh     # WASM build script
 ├── e2e/                     # Playwright E2E tests
 ├── CONTRIBUTING.md          # Contributor guide
 ├── package.json
@@ -297,6 +310,9 @@ csr-dev-tools/
 | `pnpm format` | Format source files with oxfmt |
 | `pnpm format:check` | Check formatting without writing |
 | `pnpm test` | Run unit tests (Vitest) |
+| `pnpm wasm:build` | Build WASM crates (release) |
+| `pnpm wasm:build:dev` | Build WASM crates (dev) |
+| `pnpm wasm:test` | Run Rust unit tests |
 | `pnpm test:e2e` | Run E2E tests (Playwright) |
 | `pnpm test:e2e:ui` | Run E2E tests with Playwright UI |
 

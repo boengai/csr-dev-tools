@@ -35,6 +35,11 @@ csr-dev-tools/
 │   └── *.spec.ts           # 37 tool-specific E2E test files
 ├── public/                 # Static assets served as-is
 │   └── fonts/              # Noto Emoji font files
+├── wasm/                   # Rust WASM crates
+│   ├── Cargo.toml          # Workspace manifest
+│   ├── crates/             # 14 Rust crates (hash, bcrypt, diff, formatter, ...)
+│   ├── pkg/                # Built WASM output (gitignored)
+│   └── scripts/build.sh    # WASM build script
 └── src/                    # Application source code (see below)
 ```
 

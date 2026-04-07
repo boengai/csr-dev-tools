@@ -52,6 +52,7 @@ CSR Developer Tools is a **100% client-side** single-page application (SPA) that
 | **Code Editor** | CodeMirror / Monaco Editor | Various |
 | **Diagrams** | Mermaid + React Flow (@xyflow) | 11.12.3 / 12.10.1 |
 | **AI/ML** | @huggingface/transformers | 3.8.1 |
+| **WASM** | Rust crates (13) | Various (hash, bcrypt, diff, formatter, ...) |
 | **File Processing** | JSZip | 3.10.1 (lazy-loaded) |
 | **Linter** | oxlint | 1.51.0 |
 | **Formatter** | oxfmt | 0.36.0 |
