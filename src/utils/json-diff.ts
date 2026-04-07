@@ -2,7 +2,7 @@ import {
   deepSortJson as wasmDeepSortJson,
   getJsonDiffError as wasmGetJsonDiffError,
   normalizeJson as wasmNormalizeJson,
-} from '@/wasm/csr-json-tools'
+} from '@/wasm/json-tools'
 
 export async function deepSortJson(input: string): Promise<string> {
   return wasmDeepSortJson(input)

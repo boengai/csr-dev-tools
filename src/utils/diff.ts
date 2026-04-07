@@ -1,5 +1,5 @@
 import type { DiffChange, InlineSpan, SideBySideRow } from '@/types'
-import { createUnifiedDiffWasm, diffLines, diffWords } from '@/wasm/csr-diff'
+import { createUnifiedDiffWasm, diffLines, diffWords } from '@/wasm/diff'
 
 export const computeLineDiff = async (original: string, modified: string): Promise<Array<DiffChange>> => {
   if (original === '' && modified === '') return []

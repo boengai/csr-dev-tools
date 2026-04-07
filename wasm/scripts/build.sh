@@ -25,11 +25,11 @@ fi
 echo "Building WASM crates ($PROFILE)..."
 
 # Build each crate with wasm-bindgen target
-for crate_dir in "$WORKSPACE_DIR"/crates/csr-*/; do
+for crate_dir in "$WORKSPACE_DIR"/crates/*/; do
   crate_name=$(basename "$crate_dir")
 
-  # Skip csr-shared (it's a library, not a wasm target)
-  if [[ "$crate_name" == "csr-shared" ]]; then
+  # Skip shared (it's a library, not a wasm target)
+  if [[ "$crate_name" == "shared" ]]; then
     continue
   fi
 
@@ -48,7 +48,7 @@ done
 # Optimize release builds with wasm-opt
 if [[ "$PROFILE" == "release" ]] && command -v wasm-opt &>/dev/null; then
   echo "Optimizing with wasm-opt..."
-  for wasm_file in "$PKG_DIR"/csr-*/*_bg.wasm; do
+  for wasm_file in "$PKG_DIR"/*/*_bg.wasm; do
     if [[ -f "$wasm_file" ]]; then
       echo "  Optimizing $(basename "$wasm_file")..."
       wasm-opt -O3 --strip-debug "$wasm_file" -o "$wasm_file"

@@ -1,0 +1,12 @@
+[package]
+name = "csv"
+version = "0.1.0"
+edition.workspace = true
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+serde = "1"
+serde_json = { version = "1", features = ["preserve_order"] }
+wasm-bindgen = "0.2"

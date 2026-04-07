@@ -2,7 +2,7 @@ import {
   getXmlParseError as wasmGetXmlParseError,
   jsonToXml as wasmJsonToXml,
   xmlToJson as wasmXmlToJson,
-} from '@/wasm/csr-parsers'
+} from '@/wasm/parsers'
 
 export async function xmlToJson(input: string): Promise<string> {
   return wasmXmlToJson(input)

@@ -1,4 +1,4 @@
-import { formatJs as wasmFormatJs, minifyJs as wasmMinifyJs } from '@/wasm/csr-formatter'
+import { formatJs as wasmFormatJs, minifyJs as wasmMinifyJs } from '@/wasm/formatter'
 
 export const formatJs = async (js: string, indent: number | 'tab' = 2): Promise<string> => {
   if (js.trim().length === 0) return ''

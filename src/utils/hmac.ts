@@ -12,7 +12,7 @@ export async function generateHmac(
   algorithm: HmacAlgorithm,
   encoding: HmacEncoding,
 ): Promise<string> {
-  const { generateHmac: wasmHmac } = await import('@/wasm/csr-hmac')
+  const { generateHmac: wasmHmac } = await import('@/wasm/hmac')
   return wasmHmac(message, key, algorithm, encoding)
 }
 

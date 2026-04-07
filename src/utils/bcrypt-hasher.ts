@@ -4,7 +4,7 @@ export const hashPassword = async (
   password: string,
   rounds: number,
 ): Promise<BcryptHashResult> => {
-  const { hashPassword: wasmHash } = await import('@/wasm/csr-bcrypt')
+  const { hashPassword: wasmHash } = await import('@/wasm/bcrypt')
   const start = performance.now()
   const hash = await wasmHash(password, rounds)
 
@@ -16,7 +16,7 @@ export const hashPassword = async (
 }
 
 export const verifyPassword = async (password: string, hash: string): Promise<BcryptVerifyResult> => {
-  const { verifyPassword: wasmVerify } = await import('@/wasm/csr-bcrypt')
+  const { verifyPassword: wasmVerify } = await import('@/wasm/bcrypt')
   const start = performance.now()
   const match = await wasmVerify(password, hash)
 

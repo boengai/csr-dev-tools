@@ -2,7 +2,7 @@ import {
   csvToJson as wasmCsvToJson,
   getCsvParseError as wasmGetCsvParseError,
   jsonToCsv as wasmJsonToCsv,
-} from '@/wasm/csr-csv'
+} from '@/wasm/csv'
 
 export async function jsonToCsv(input: string): Promise<string> {
   return wasmJsonToCsv(input)

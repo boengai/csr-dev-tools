@@ -12,7 +12,7 @@ function bufferToHex(buffer: ArrayBuffer): string {
 
 export async function computeHash(text: string, algorithm: HashAlgorithm): Promise<string> {
   if (algorithm === 'MD5') {
-    const { md5 } = await import('@/wasm/csr-hash')
+    const { md5 } = await import('@/wasm/hash')
     return md5(text)
   }
 

@@ -1,3 +1,3 @@
-import { htmlToMarkdown, markdownToHtml } from '@/wasm/csr-markdown'
+import { htmlToMarkdown, markdownToHtml } from '@/wasm/markdown'
 
 export { htmlToMarkdown, markdownToHtml }

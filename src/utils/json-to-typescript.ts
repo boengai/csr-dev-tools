@@ -1,6 +1,6 @@
 import type { JsonToTsOptions } from '@/types/utils/json-to-typescript'
 
-import { jsonToTypeScript as wasmJsonToTypeScript } from '@/wasm/csr-json-tools'
+import { jsonToTypeScript as wasmJsonToTypeScript } from '@/wasm/json-tools'
 
 export async function jsonToTypeScript(
   json: string,

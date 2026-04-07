@@ -4,7 +4,7 @@ import {
   decodeProtobuf as wasmDecodeProtobuf,
   detectProtobufFormat as wasmDetectProtobufFormat,
   encodeProtobuf as wasmEncodeProtobuf,
-} from '@/wasm/csr-parsers'
+} from '@/wasm/parsers'
 
 export async function detectProtobufFormat(input: string): Promise<OutputFormat> {
   return wasmDetectProtobufFormat(input)

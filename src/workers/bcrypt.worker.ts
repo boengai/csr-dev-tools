@@ -1,4 +1,4 @@
-import init, { hash_password, verify_password } from '../../wasm/pkg/csr-bcrypt/csr-bcrypt.js'
+import init, { hash_password, verify_password } from '../../wasm/pkg/bcrypt/bcrypt.js'
 
 let ready: Promise<unknown> | null = null
 

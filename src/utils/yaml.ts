@@ -3,7 +3,7 @@ import {
   getYamlParseError as wasmGetYamlParseError,
   jsonToYaml as wasmJsonToYaml,
   yamlToJson as wasmYamlToJson,
-} from '@/wasm/csr-parsers'
+} from '@/wasm/parsers'
 
 export async function formatYaml(
   input: string,

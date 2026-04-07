@@ -2,7 +2,7 @@ import {
   getTomlParseError as wasmGetTomlParseError,
   jsonToToml as wasmJsonToToml,
   tomlToJson as wasmTomlToJson,
-} from '@/wasm/csr-parsers'
+} from '@/wasm/parsers'
 
 export async function tomlToJson(input: string): Promise<string> {
   return wasmTomlToJson(input)

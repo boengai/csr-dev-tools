@@ -1,3 +1,3 @@
-import { renderMarkdown } from '@/wasm/csr-markdown'
+import { renderMarkdown } from '@/wasm/markdown'
 
 export { renderMarkdown }

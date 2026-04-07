@@ -3,7 +3,7 @@ import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufParseResult } from 
 import {
   generateSampleJsonFromSchema,
   parseProtobufSchema as wasmParseProtobufSchema,
-} from '@/wasm/csr-parsers'
+} from '@/wasm/parsers'
 
 export async function parseProtobufSchema(protoSource: string): Promise<ProtobufParseResult> {
   return wasmParseProtobufSchema(protoSource)

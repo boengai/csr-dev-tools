@@ -1,6 +1,6 @@
 import type { ColorFormat, HSLColor } from '@/types'
 
-import { convertColor as wasmConvertColor } from '@/wasm/csr-color'
+import { convertColor as wasmConvertColor } from '@/wasm/color'
 
 export const normalizeHue = (hue: number): number => ((hue % 360) + 360) % 360
 
