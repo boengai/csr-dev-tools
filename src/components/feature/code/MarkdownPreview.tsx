@@ -21,12 +21,13 @@ export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     }
   }, [htmlOutput])
 
-  const process = (val: string) => {
+  const process = async (val: string) => {
     if (val.trim().length === 0) {
       setHtmlOutput('')
       return
     }
-    setHtmlOutput(renderMarkdown(val))
+    const html = await renderMarkdown(val)
+    setHtmlOutput(html)
   }
 
   const processInput = useDebounceCallback((val: string) => {

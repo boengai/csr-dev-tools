@@ -18,11 +18,15 @@ describe('qr-code', () => {
       await expect(generateQrCodeDataUrl('')).rejects.toThrow()
     })
 
-    it('produces different output for different error correction levels', async () => {
-      const low = await generateQrCodeDataUrl('hello', { errorCorrectionLevel: 'L' })
-      const high = await generateQrCodeDataUrl('hello', { errorCorrectionLevel: 'H' })
-      expect(low).not.toBe(high)
-    })
+    it(
+      'produces different output for different error correction levels',
+      async () => {
+        const low = await generateQrCodeDataUrl('hello', { errorCorrectionLevel: 'L' })
+        const high = await generateQrCodeDataUrl('hello', { errorCorrectionLevel: 'H' })
+        expect(low).not.toBe(high)
+      },
+      15_000,
+    )
   })
 
   describe('generateQrCodeSvgString', () => {

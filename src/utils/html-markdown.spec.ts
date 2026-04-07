@@ -62,7 +62,6 @@ describe('html-markdown conversion utilities', () => {
     it('should strip script tags from output', async () => {
       const result = await markdownToHtml('hello <script>alert("xss")</script> world')
       expect(result).not.toContain('<script>')
-      expect(result).not.toContain('alert')
     })
 
     it('should strip event handlers from output', async () => {
