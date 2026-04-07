@@ -136,7 +136,7 @@ const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => v
             {hashBreakdown && (
               <div className="flex flex-wrap gap-3 text-body-xs text-gray-400">
                 <span>
-                  Version: <span className="font-mono text-gray-300">${hashBreakdown.version}$</span>
+                  Version: <span className="font-mono text-gray-300">{hashBreakdown.version}</span>
                 </span>
                 <span>
                   Rounds: <span className="font-mono text-gray-300">{hashBreakdown.rounds}</span>

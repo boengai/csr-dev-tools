@@ -96,6 +96,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "csr-markdown"
+version = "0.1.0"
+dependencies = [
+ "wasm-bindgen",
+]
+
+[[package]]
 name = "csr-number-base"
 version = "0.1.0"
 dependencies = [
