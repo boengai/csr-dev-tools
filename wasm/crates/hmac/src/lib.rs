@@ -65,7 +65,7 @@ pub fn bytes_to_base64(bytes: &[u8]) -> String {
         let b0 = chunk[0] as usize;
         let b1 = chunk[1] as usize;
         let b2 = chunk[2] as usize;
-        output.push(ALPHABET[(b0 >> 2)] as char);
+        output.push(ALPHABET[b0 >> 2] as char);
         output.push(ALPHABET[((b0 & 0x03) << 4) | (b1 >> 4)] as char);
         output.push(ALPHABET[((b1 & 0x0f) << 2) | (b2 >> 6)] as char);
         output.push(ALPHABET[b2 & 0x3f] as char);

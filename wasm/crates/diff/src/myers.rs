@@ -99,15 +99,11 @@ fn myers_diff_ops<T: PartialEq>(old: &[T], new: &[T]) -> Vec<(char, usize)> {
             new_v[idx] = x;
 
             if x >= n && y >= m {
-                v = new_v;
                 break 'outer;
             }
             k += 2;
         }
-        #[allow(unused_assignments)]
-        {
-            v = new_v;
-        }
+        v = new_v;
     }
 
     // Backtrack to find the actual edit script

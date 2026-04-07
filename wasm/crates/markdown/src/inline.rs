@@ -16,7 +16,6 @@ pub enum Inline {
     },
     LineBreak,
     Strikethrough(Vec<Inline>),
-    Html(String),
 }
 
 /// Parse inline markdown elements from text content.

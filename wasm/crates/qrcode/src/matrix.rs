@@ -249,44 +249,6 @@ impl QrMatrix {
         }
     }
 
-    /// Apply one of 8 mask patterns.
-    fn apply_mask(&mut self, mask_id: u8, size: usize) {
-        for row in 0..size {
-            for col in 0..size {
-                let idx = row * size + col;
-                match self.cells[idx] {
-                    Cell::Dark | Cell::Light => {}
-                    _ => continue,
-                }
-                // Only mask data/ec modules (not function patterns)
-                // Since we placed function patterns as Dark/Light and data as Dark/Light,
-                // we need to track which are "data" modules. But our approach places
-                // everything as Dark/Light. So we need a different approach.
-                // Actually, we apply mask BEFORE writing format info, and only on
-                // modules that were placed during place_data.
-                // Let's just check if it should be masked.
-                let should_mask = match mask_id {
-                    0 => (row + col) % 2 == 0,
-                    1 => row % 2 == 0,
-                    2 => col % 3 == 0,
-                    3 => (row + col) % 3 == 0,
-                    4 => (row / 2 + col / 3) % 2 == 0,
-                    5 => (row * col) % 2 + (row * col) % 3 == 0,
-                    6 => ((row * col) % 2 + (row * col) % 3) % 2 == 0,
-                    7 => ((row + col) % 2 + (row * col) % 3) % 2 == 0,
-                    _ => false,
-                };
-                if should_mask {
-                    self.cells[idx] = match self.cells[idx] {
-                        Cell::Dark => Cell::Light,
-                        Cell::Light => Cell::Dark,
-                        other => other,
-                    };
-                }
-            }
-        }
-    }
-
     /// Compute penalty score (all 4 rules).
     fn penalty(cells: &[bool], size: usize) -> u32 {
         let mut score = 0u32;

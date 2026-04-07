@@ -161,10 +161,6 @@ fn render_inline(inline: &Inline, out: &mut String) {
             render_inlines(children, out);
             out.push_str("</del>");
         }
-        Inline::Html(html) => {
-            let sanitized = sanitize_html(html);
-            out.push_str(&sanitized);
-        }
     }
 }
 
