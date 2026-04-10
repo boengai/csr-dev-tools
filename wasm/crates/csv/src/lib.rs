@@ -20,7 +20,8 @@ pub fn get_csv_parse_error(input: &str) -> Option<String> {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
+    use crate::parser::validate_csv;
+    use crate::writer::{csv_to_json, json_to_csv};
 
     // ── json_to_csv tests ──
 
@@ -66,7 +67,7 @@ mod tests {
     fn json_to_csv_empty_array() {
         let err = json_to_csv("[]").unwrap_err();
         assert_eq!(
-            err.to_string(),
+            err,
             "JSON array must contain at least one object (e.g., [{\"name\": \"Alice\"}])"
         );
     }
@@ -86,20 +87,20 @@ mod tests {
     #[test]
     fn json_to_csv_empty_input() {
         let err = json_to_csv("").unwrap_err();
-        assert_eq!(err.to_string(), "Empty input");
+        assert_eq!(err, "Empty input");
     }
 
     #[test]
     fn json_to_csv_whitespace_input() {
         let err = json_to_csv("   ").unwrap_err();
-        assert_eq!(err.to_string(), "Empty input");
+        assert_eq!(err, "Empty input");
     }
 
     #[test]
     fn json_to_csv_non_array_object() {
         let err = json_to_csv(r#"{"a":1}"#).unwrap_err();
         assert_eq!(
-            err.to_string(),
+            err,
             "JSON must be an array of objects (e.g., [{\"name\": \"Alice\"}])"
         );
     }
@@ -108,7 +109,7 @@ mod tests {
     fn json_to_csv_non_array_string() {
         let err = json_to_csv(r#""hello""#).unwrap_err();
         assert_eq!(
-            err.to_string(),
+            err,
             "JSON must be an array of objects (e.g., [{\"name\": \"Alice\"}])"
         );
     }
@@ -117,7 +118,7 @@ mod tests {
     fn json_to_csv_array_of_non_objects() {
         let err = json_to_csv("[1,2,3]").unwrap_err();
         assert_eq!(
-            err.to_string(),
+            err,
             "All array items must be objects (e.g., [{\"name\": \"Alice\"}])"
         );
     }
@@ -143,8 +144,8 @@ mod tests {
     fn json_to_csv_array_values() {
         let result = json_to_csv(r#"[{"tags":["dev","tools"]}]"#).unwrap();
         assert!(result.contains("tags"));
-        // Array is stringified and quoted (contains commas)
-        assert!(result.contains("[\"dev\",\"tools\"]") || result.contains(r#""["dev","tools"]"#));
+        // Array is JSON-stringified then CSV-escaped (quotes doubled, wrapped in quotes)
+        assert_eq!(result, "tags\n\"[\"\"dev\"\",\"\"tools\"\"]\"");
     }
 
     #[test]
@@ -232,13 +233,13 @@ mod tests {
     #[test]
     fn csv_to_json_empty_input() {
         let err = csv_to_json("", 2).unwrap_err();
-        assert_eq!(err.to_string(), "Empty input");
+        assert_eq!(err, "Empty input");
     }
 
     #[test]
     fn csv_to_json_whitespace_input() {
         let err = csv_to_json("   ", 2).unwrap_err();
-        assert_eq!(err.to_string(), "Empty input");
+        assert_eq!(err, "Empty input");
     }
 
     #[test]
@@ -263,34 +264,34 @@ mod tests {
         assert!(name_pos < age_pos, "name should appear before age in output");
     }
 
-    // ── get_csv_parse_error tests ──
+    // ── validate_csv tests ──
 
     #[test]
     fn validate_csv_valid() {
-        assert!(get_csv_parse_error("name,age\nAlice,30").is_none());
+        assert!(validate_csv("name,age\nAlice,30").is_none());
     }
 
     #[test]
     fn validate_csv_empty() {
-        assert_eq!(get_csv_parse_error("").unwrap(), "Empty input");
+        assert_eq!(validate_csv("").unwrap(), "Empty input");
     }
 
     #[test]
     fn validate_csv_whitespace() {
-        assert_eq!(get_csv_parse_error("   ").unwrap(), "Empty input");
+        assert_eq!(validate_csv("   ").unwrap(), "Empty input");
     }
 
     #[test]
     fn validate_csv_unterminated() {
         assert_eq!(
-            get_csv_parse_error("name\n\"Alice").unwrap(),
+            validate_csv("name\n\"Alice").unwrap(),
             "Unterminated quoted field"
         );
     }
 
     #[test]
     fn validate_csv_mid_field_quotes() {
-        assert!(get_csv_parse_error("name\nfoo\"bar").is_none());
+        assert!(validate_csv("name\nfoo\"bar").is_none());
     }
 
     // ── round-trip tests ──
