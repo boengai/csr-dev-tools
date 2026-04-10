@@ -5,8 +5,8 @@ import { CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { EditorInstance, MarkerData, DiagnosticError } from '@/types/components/feature/code/typescriptPlayground'
 import { tv } from '@/utils'
-import type { EditorInstance, MarkerData, DiagnosticError } from "@/types/components/feature/code/typescriptPlayground";
 
 const Editor = lazy(() => import('@monaco-editor/react'))
 const toolEntry = TOOL_REGISTRY_MAP['typescript-playground']
@@ -130,7 +130,7 @@ export const TypescriptPlayground = (_props: ToolComponentProps) => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <div className="md:flex-row flex flex-col gap-4">
         <div aria-label="TypeScript code editor" className="flex min-w-0 flex-1 flex-col gap-1">

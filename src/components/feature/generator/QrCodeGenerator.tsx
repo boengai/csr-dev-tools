@@ -4,8 +4,8 @@ import { Button, ColorInput, CopyButton, Dialog, DownloadIcon, FieldForm } from 
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { State, Action } from '@/types/components/feature/generator/qrCodeGenerator'
 import { generateQrCodeDataUrl, generateQrCodeSvgString, type QrErrorCorrectionLevel } from '@/utils'
-import type { State, Action } from "@/types/components/feature/generator/qrCodeGenerator";
 
 const toolEntry = TOOL_REGISTRY_MAP['qr-code-generator']
 const initialState: State = {
@@ -135,7 +135,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">

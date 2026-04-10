@@ -3,8 +3,8 @@ import { useCallback, useEffect, useReducer, useRef } from 'react'
 import { Button, DownloadIcon, FieldForm, ProgressBar, UploadInput } from '@/components/common'
 import { COMPRESSIBLE_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import type { State, Action } from '@/types/components/feature/image/imageCompressor'
 import { formatFileSize, processImage, tv } from '@/utils'
-import type { State, Action } from "@/types/components/feature/image/imageCompressor";
 
 const processingWrapperStyles = tv({
   base: 'flex flex-col gap-2',
@@ -148,7 +148,7 @@ export const ImageCompressor = () => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <div className="flex grow flex-col items-center justify-center gap-2">
         <UploadInput

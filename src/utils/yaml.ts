@@ -5,10 +5,7 @@ import {
   yamlToJson as wasmYamlToJson,
 } from '@/wasm/parsers'
 
-export async function formatYaml(
-  input: string,
-  options?: { indent?: number; sortKeys?: boolean },
-): Promise<string> {
+export async function formatYaml(input: string, options?: { indent?: number; sortKeys?: boolean }): Promise<string> {
   return wasmFormatYaml(input, options)
 }
 

@@ -5,7 +5,7 @@ import type { CompVariant, DialogProps, DialogVariants } from '@/types'
 import { tv } from '@/utils'
 
 const contentVariants: CompVariant<DialogVariants> = tv({
-  base: 'fixed top-[50%] left-[50%] z-50 flex -translate-1/2 flex-col overflow-hidden rounded-card border border-gray-800 bg-gray-950 shadow-[0_0_40px_12px] shadow-primary/30',
+  base: 'fixed top-[50%] left-[50%] z-50 flex -translate-1/2 flex-col overflow-hidden rounded-card border border-gray-800 bg-gray-900 shadow-[0_0_40px_12px] shadow-primary/30',
   defaultVariants: {
     size: 'default',
   },

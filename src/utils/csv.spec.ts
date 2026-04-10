@@ -37,7 +37,9 @@ describe('csv conversion utilities', () => {
     })
 
     it('should handle empty array', async () => {
-      await expect(jsonToCsv('[]')).rejects.toThrow('JSON array must contain at least one object (e.g., [{"name": "Alice"}])')
+      await expect(jsonToCsv('[]')).rejects.toThrow(
+        'JSON array must contain at least one object (e.g., [{"name": "Alice"}])',
+      )
     })
 
     it('should handle single-item array', async () => {

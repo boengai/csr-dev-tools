@@ -1,4 +1,4 @@
-import type { RsaKeySize, RsaKeyPair } from "@/types/utils/rsa-key-generator";
+import type { RsaKeySize, RsaKeyPair } from '@/types/utils/rsa-key-generator'
 
 export const arrayBufferToPem = (buffer: ArrayBuffer, label: string): string => {
   const bytes = new Uint8Array(buffer)
@@ -42,4 +42,4 @@ export const downloadPemFile = (content: string, filename: string): void => {
   URL.revokeObjectURL(url)
 }
 
-export type { RsaKeySize, RsaKeyPair } from "@/types/utils/rsa-key-generator";
+export type { RsaKeySize, RsaKeyPair } from '@/types/utils/rsa-key-generator'

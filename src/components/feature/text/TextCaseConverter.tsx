@@ -4,6 +4,7 @@ import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { CaseResult } from '@/types/components/feature/text/textCaseConverter'
 import {
   toCamelCase,
   toConstantCase,
@@ -17,7 +18,6 @@ import {
   toTitleCase,
   toUpperCase,
 } from '@/utils'
-import type { CaseResult } from "@/types/components/feature/text/textCaseConverter";
 
 const toolEntry = TOOL_REGISTRY_MAP['text-case-converter']
 const CASES: Array<CaseResult> = [
@@ -60,7 +60,7 @@ export const TextCaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button block onClick={() => setDialogOpen(true)} variant="default">

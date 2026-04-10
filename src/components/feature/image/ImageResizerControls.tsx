@@ -1,6 +1,7 @@
 import { Button, FieldForm } from '@/components/common'
+import type { ImageResizerControlsProps } from '@/types/components/feature/image/imageResizerControls'
+
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
-import type { ImageResizerControlsProps } from "@/types/components/feature/image/imageResizerControls";
 
 export const ImageResizerControls = ({
   isLossy,

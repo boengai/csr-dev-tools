@@ -1,5 +1,6 @@
 import Ajv from 'ajv'
-import type { ValidationError, ValidationResult } from "@/types/utils/json-schema";
+
+import type { ValidationError, ValidationResult } from '@/types/utils/json-schema'
 
 export function validateJsonSchema(data: string, schema: string): ValidationResult {
   let parsedData: unknown
@@ -37,4 +38,4 @@ export function validateJsonSchema(data: string, schema: string): ValidationResu
   }
 }
 
-export type { ValidationError, ValidationResult } from "@/types/utils/json-schema";
+export type { ValidationError, ValidationResult } from '@/types/utils/json-schema'

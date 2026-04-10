@@ -2,7 +2,7 @@ import type { ErrorInfo } from 'react'
 import { Component } from 'react'
 
 import type { ToolErrorBoundaryProps } from '@/types'
-import type { ToolErrorBoundaryState } from "@/types/components/common/error-boundary/toolErrorBoundary";
+import type { ToolErrorBoundaryState } from '@/types/components/common/error-boundary/toolErrorBoundary'
 
 export class ToolErrorBoundary extends Component<ToolErrorBoundaryProps, ToolErrorBoundaryState> {
   state: ToolErrorBoundaryState = { hasError: false }

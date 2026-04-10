@@ -18,6 +18,8 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { RelationshipEdge, TableNode, ToolComponentProps } from '@/types'
 
 import '@xyflow/react/dist/style.css'
+import type { DiagramFlowCanvasProps, SidePanelRendererProps } from '@/types/components/feature/data/db-diagram/index'
+
 import { DbmlEditorPanel } from './DbmlEditorPanel'
 import { DiagramListPanel } from './DiagramListPanel'
 import { diagramReducer, initialDiagramState } from './diagramReducer'
@@ -30,7 +32,6 @@ import { ImportSqlPanel } from './ImportSqlPanel'
 import { RelationshipEdgeComponent } from './RelationshipEdge'
 import { TableNodeComponent } from './TableNode'
 import { useDiagramHandlers } from './useDiagramHandlers'
-import type { DiagramFlowCanvasProps, SidePanelRendererProps } from "@/types/components/feature/data/db-diagram/index";
 
 const nodeTypes: NodeTypes = { tableNode: TableNodeComponent }
 const edgeTypes: EdgeTypes = { relationship: RelationshipEdgeComponent }
@@ -372,7 +373,7 @@ export const DbDiagram = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <div className="flex grow flex-col items-center justify-center gap-2">
         <Button block onClick={() => setDialogOpen(true)} variant="primary">

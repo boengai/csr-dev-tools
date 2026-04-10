@@ -1,4 +1,4 @@
-import type { ImageBase64Result } from "@/types/utils/image-base64";
+import type { ImageBase64Result } from '@/types/utils/image-base64'
 
 const getImageDimensions = (dataUri: string): Promise<{ height: number; width: number }> =>
   new Promise((resolve, reject) => {
@@ -46,4 +46,4 @@ export const formatBase64Size = (length: number): string => {
   return `${(length / (1024 * 1024)).toFixed(1)} MB`
 }
 
-export type { ImageBase64Result } from "@/types/utils/image-base64";
+export type { ImageBase64Result } from '@/types/utils/image-base64'

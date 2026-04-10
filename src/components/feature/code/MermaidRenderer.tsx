@@ -6,6 +6,7 @@ import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { State, Action } from '@/types/components/feature/code/mermaidRenderer'
 import {
   downloadMermaidSvg,
   downloadPng,
@@ -15,7 +16,6 @@ import {
   svgToPng,
   tv,
 } from '@/utils'
-import type { State, Action } from "@/types/components/feature/code/mermaidRenderer";
 
 const chevronStyles = tv({
   base: 'inline-block transition-transform',
@@ -186,7 +186,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">

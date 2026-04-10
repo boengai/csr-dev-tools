@@ -4,8 +4,8 @@ import { Button, CodeOutput, CopyButton, Dialog, FieldForm, SelectInput } from '
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { ConvertMode, EntityMode } from '@/types/components/feature/data/htmlEntityConverter'
 import { decodeHtmlEntities, encodeHtmlEntities } from '@/utils'
-import type { ConvertMode, EntityMode } from "@/types/components/feature/data/htmlEntityConverter";
 
 const toolEntry = TOOL_REGISTRY_MAP['html-entity-converter']
 
@@ -104,7 +104,7 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button block onClick={() => openDialog('encode')} variant="default">

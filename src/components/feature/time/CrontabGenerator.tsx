@@ -3,6 +3,7 @@ import { useMemo, useState } from 'react'
 import { CopyButton, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
+import type { FieldEditorProps } from '@/types/components/feature/time/crontabGenerator'
 import {
   type CronFieldConfig,
   type CronFieldMode,
@@ -11,7 +12,6 @@ import {
   describeCron,
   getNextRuns,
 } from '@/utils'
-import type { FieldEditorProps } from "@/types/components/feature/time/crontabGenerator";
 
 const toolEntry = TOOL_REGISTRY_MAP['crontab-generator']
 
@@ -187,7 +187,7 @@ export const CrontabGenerator = (_: ToolComponentProps) => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       {FIELD_KEYS.map((key, i) => (
         <FieldEditor

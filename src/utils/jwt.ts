@@ -1,4 +1,4 @@
-import type { DecodedJwt } from "@/types/utils/jwt";
+import type { DecodedJwt } from '@/types/utils/jwt'
 
 const base64UrlDecode = (str: string): string => {
   let base64 = str.replace(/-/g, '+').replace(/_/g, '/')

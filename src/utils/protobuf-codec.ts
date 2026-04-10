@@ -1,5 +1,4 @@
 import type { CodecResult, OutputFormat } from '@/types/utils/protobuf-codec'
-
 import {
   decodeProtobuf as wasmDecodeProtobuf,
   detectProtobufFormat as wasmDetectProtobufFormat,

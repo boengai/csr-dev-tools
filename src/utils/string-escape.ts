@@ -1,4 +1,4 @@
-import type { EscapeMode } from "@/types/utils/string-escape";
+import type { EscapeMode } from '@/types/utils/string-escape'
 
 const HTML_ESCAPE_MAP: Record<string, string> = {
   '&': '&amp;',
@@ -169,4 +169,4 @@ export const unescapeString = (input: string, mode: EscapeMode): string => {
   }
 }
 
-export type { EscapeMode } from "@/types/utils/string-escape";
+export type { EscapeMode } from '@/types/utils/string-escape'

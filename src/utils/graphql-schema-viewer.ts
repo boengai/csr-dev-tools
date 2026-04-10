@@ -9,7 +9,14 @@ import {
   isScalarType,
   isUnionType,
 } from 'graphql'
-import type { GraphqlTypeKind, GraphqlTypeInfo, GraphqlArgInfo, GraphqlFieldInfo, GraphqlParseResult } from "@/types/utils/graphql-schema-viewer";
+
+import type {
+  GraphqlTypeKind,
+  GraphqlTypeInfo,
+  GraphqlArgInfo,
+  GraphqlFieldInfo,
+  GraphqlParseResult,
+} from '@/types/utils/graphql-schema-viewer'
 
 const BUILT_IN_SCALARS = ['Boolean', 'Float', 'ID', 'Int', 'String']
 
@@ -143,4 +150,4 @@ export const parseGraphqlSchema = (sdl: string): GraphqlParseResult => {
   }
 }
 
-export type { GraphqlTypeKind, GraphqlTypeInfo, GraphqlSchemaInfo } from "@/types/utils/graphql-schema-viewer";
+export type { GraphqlTypeKind, GraphqlTypeInfo, GraphqlSchemaInfo } from '@/types/utils/graphql-schema-viewer'

@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import type { ValidityStatus, CertificateExtension, CertificateInfo } from "@/types/utils/certificate-decoder";
+import type { ValidityStatus, CertificateExtension, CertificateInfo } from '@/types/utils/certificate-decoder'
 
 const MAX_INPUT_LENGTH = 32_768
 
@@ -268,4 +268,4 @@ export const parsePemCertificate = async (input: string): Promise<CertificateInf
   }
 }
 
-export type { ValidityStatus, CertificateExtension, CertificateInfo } from "@/types/utils/certificate-decoder";
+export type { ValidityStatus, CertificateExtension, CertificateInfo } from '@/types/utils/certificate-decoder'

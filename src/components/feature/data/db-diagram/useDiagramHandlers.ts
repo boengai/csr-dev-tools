@@ -13,6 +13,7 @@ import type {
   TableColumn,
   TableNode,
 } from '@/types'
+import type { UseDiagramHandlersArgs } from '@/types/components/feature/data/db-diagram/useDiagramHandlers'
 import {
   createDefaultColumn,
   createDefaultTable,
@@ -36,7 +37,6 @@ import {
   serializeDiagram,
   validateDiagramSchema,
 } from '@/utils'
-import type { UseDiagramHandlersArgs } from "@/types/components/feature/data/db-diagram/useDiagramHandlers";
 
 const MERMAID_PREFILL_KEY = 'csr-dev-tools-mermaid-renderer-prefill'
 export const useDiagramHandlers = ({

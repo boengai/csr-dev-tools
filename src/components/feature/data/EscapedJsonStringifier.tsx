@@ -4,8 +4,8 @@ import { Button, CheckboxInput, CodeOutput, CopyButton, Dialog, FieldForm } from
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { ConvertMode } from '@/types/components/feature/data/escapedJsonStringifier'
 import { parseStringifiedJson, stringifyJson } from '@/utils'
-import type { ConvertMode } from "@/types/components/feature/data/escapedJsonStringifier";
 
 const toolEntry = TOOL_REGISTRY_MAP['escaped-json-stringifier']
 
@@ -105,7 +105,7 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button block onClick={() => openDialog('stringify')} variant="default">

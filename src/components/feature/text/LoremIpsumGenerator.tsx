@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Button, CheckboxInput, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
+import type { LoremUnit } from '@/types/components/feature/text/loremIpsumGenerator'
 import { generateLoremIpsum } from '@/utils'
-import type { LoremUnit } from "@/types/components/feature/text/loremIpsumGenerator";
 
 const toolEntry = TOOL_REGISTRY_MAP['lorem-ipsum-generator']
 const UNIT_OPTIONS = [
@@ -36,7 +36,7 @@ export const LoremIpsumGenerator = () => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <div className="flex flex-col gap-3">
         <FieldForm

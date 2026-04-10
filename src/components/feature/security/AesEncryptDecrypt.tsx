@@ -4,8 +4,8 @@ import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { Mode } from '@/types/components/feature/security/aesEncryptDecrypt'
 import { aesDecrypt, aesEncrypt } from '@/utils'
-import type { Mode } from "@/types/components/feature/security/aesEncryptDecrypt";
 
 const toolEntry = TOOL_REGISTRY_MAP['aes-encrypt-decrypt']
 export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
@@ -102,7 +102,7 @@ export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponen
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button block onClick={() => openDialog('encrypt')} variant="default">

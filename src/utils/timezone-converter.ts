@@ -1,4 +1,4 @@
-import type { TimezoneEntry, ConversionResult } from "@/types/utils/timezone-converter";
+import type { TimezoneEntry, ConversionResult } from '@/types/utils/timezone-converter'
 
 let cachedIndex: Array<TimezoneEntry> | null = null
 let cachedRefDate: number | null = null
@@ -199,4 +199,4 @@ export function getLocalTimezone(): string {
   return Intl.DateTimeFormat().resolvedOptions().timeZone
 }
 
-export type { TimezoneEntry, ConversionResult } from "@/types/utils/timezone-converter";
+export type { TimezoneEntry, ConversionResult } from '@/types/utils/timezone-converter'

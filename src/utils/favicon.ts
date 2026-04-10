@@ -1,5 +1,6 @@
 import JSZip from 'jszip'
-import type { FaviconSize, FaviconResult } from "@/types/utils/favicon";
+
+import type { FaviconSize, FaviconResult } from '@/types/utils/favicon'
 
 export const FAVICON_SIZES: Array<FaviconSize> = [
   { height: 16, name: 'favicon-16x16.png', rel: 'icon', width: 16 },
@@ -96,4 +97,4 @@ export const downloadFaviconsAsZip = async (results: Array<FaviconResult>): Prom
   URL.revokeObjectURL(url)
 }
 
-export type { FaviconSize, FaviconResult } from "@/types/utils/favicon";
+export type { FaviconSize, FaviconResult } from '@/types/utils/favicon'

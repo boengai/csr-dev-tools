@@ -2,12 +2,8 @@ import { useRef, useState } from 'react'
 
 import { ColorInput, CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import {
-  DEFAULT_GRADIENT,
-  generateGradientCss,
-  type GradientType,
-} from '@/utils'
-import type { LocalConfig } from "@/types/components/feature/css/gradientGenerator";
+import type { LocalConfig } from '@/types/components/feature/css/gradientGenerator'
+import { DEFAULT_GRADIENT, generateGradientCss, type GradientType } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['css-gradient-generator']
 
@@ -71,7 +67,7 @@ export const GradientGenerator = () => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <div className="flex shrink-0 flex-col gap-3">
         <SelectInput

@@ -18,11 +18,7 @@ export async function diffWords(old: string, new_: string): Promise<Array<DiffCh
   return wasm.diff_words(old, new_)
 }
 
-export async function createUnifiedDiffWasm(
-  old: string,
-  new_: string,
-  context: number,
-): Promise<string> {
+export async function createUnifiedDiffWasm(old: string, new_: string, context: number): Promise<string> {
   const wasm = await loadWasm<CsrDiff>('diff')
   return wasm.create_unified_diff(old, new_, context)
 }

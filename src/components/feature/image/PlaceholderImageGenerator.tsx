@@ -3,6 +3,7 @@ import { useMemo, useReducer } from 'react'
 import { Button, ColorInput, DownloadIcon, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
+import type { State, Action } from '@/types/components/feature/image/placeholderImageGenerator'
 import {
   canvasToBlob,
   downloadBlob,
@@ -12,7 +13,6 @@ import {
   PLACEHOLDER_PRESETS,
   type PlaceholderOptions,
 } from '@/utils'
-import type { State, Action } from "@/types/components/feature/image/placeholderImageGenerator";
 
 const DEFAULT_WIDTH = '800'
 const DEFAULT_HEIGHT = '600'
@@ -181,7 +181,7 @@ export const PlaceholderImageGenerator = () => {
 
   return (
     <div className="flex size-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <div className="flex grow flex-col gap-6 overflow-y-auto tablet:flex-row">
         <div className="flex shrink-0 flex-col gap-3 tablet:flex-1 tablet:shrink tablet:overflow-y-auto">

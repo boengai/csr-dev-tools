@@ -1,9 +1,9 @@
 import { CheckboxInput, CodeInput, SelectInput } from '@/components/common'
 import type { SqlDialect } from '@/types'
+import type { ImportSqlPanelProps } from '@/types/components/feature/data/db-diagram/importSqlPanel'
 
 import { CloseButton } from './CloseButton'
 import { DIALECT_OPTIONS } from './constants'
-import type { ImportSqlPanelProps } from "@/types/components/feature/data/db-diagram/importSqlPanel";
 
 export const ImportSqlPanel = ({
   importSqlDialect,

@@ -1,9 +1,9 @@
 import { Button, CopyButton, SelectInput } from '@/components/common'
 import type { SqlDialect } from '@/types'
+import type { ExportSqlPanelProps } from '@/types/components/feature/data/db-diagram/exportSqlPanel'
 
 import { CloseButton } from './CloseButton'
 import { DIALECT_OPTIONS } from './constants'
-import type { ExportSqlPanelProps } from "@/types/components/feature/data/db-diagram/exportSqlPanel";
 
 export const ExportSqlPanel = ({
   generatedSql,

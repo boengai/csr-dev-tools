@@ -1,4 +1,4 @@
-import type { TextSortResult, TextSortOptions } from "@/types/utils/text-sort";
+import type { TextSortResult, TextSortOptions } from '@/types/utils/text-sort'
 
 export const DEFAULT_SORT_OPTIONS: TextSortOptions = {
   removeDuplicates: false,
@@ -54,4 +54,4 @@ export const sortAndProcessText = (input: string, options: TextSortOptions): Tex
   }
 }
 
-export type { SortMode, TextSortResult } from "@/types/utils/text-sort";
+export type { SortMode, TextSortResult } from '@/types/utils/text-sort'

@@ -1,4 +1,4 @@
-import type { ChmodPermission, ChmodState } from "@/types/utils/chmod-calculator";
+import type { ChmodPermission, ChmodState } from '@/types/utils/chmod-calculator'
 
 const READ_BIT = 4
 const WRITE_BIT = 2
@@ -72,4 +72,4 @@ export const stateToDescription = (state: ChmodState): string => {
   return `Owner: ${describePermission(state.owner)} | Group: ${describePermission(state.group)} | Other: ${describePermission(state.other)}`
 }
 
-export type { ChmodPermission, ChmodState } from "@/types/utils/chmod-calculator";
+export type { ChmodPermission, ChmodState } from '@/types/utils/chmod-calculator'

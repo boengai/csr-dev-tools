@@ -1,4 +1,4 @@
-import type { SubnetResult } from "@/types/utils/ip-subnet";
+import type { SubnetResult } from '@/types/utils/ip-subnet'
 
 export const validateIpv4 = (ip: string): boolean => {
   const parts = ip.split('.')
@@ -126,4 +126,4 @@ export const calculateSubnet = (ip: string, prefixLength: number): SubnetResult 
   }
 }
 
-export type { SubnetResult } from "@/types/utils/ip-subnet";
+export type { SubnetResult } from '@/types/utils/ip-subnet'

@@ -1,4 +1,4 @@
-import type { PlaceholderOptions, PlaceholderPreset } from "@/types/utils/placeholder-image";
+import type { PlaceholderOptions, PlaceholderPreset } from '@/types/utils/placeholder-image'
 
 export const PLACEHOLDER_PRESETS: Array<PlaceholderPreset> = [
   { height: 150, label: 'Thumbnail', width: 150 },
@@ -96,4 +96,4 @@ export const downloadSvg = (svgString: string, filename: string) => {
   downloadBlob(blob, filename)
 }
 
-export type { PlaceholderOptions } from "@/types/utils/placeholder-image";
+export type { PlaceholderOptions } from '@/types/utils/placeholder-image'

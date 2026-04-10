@@ -1,10 +1,5 @@
-import type {
-  CodecResult,
-  OutputFormat,
-} from '@/types/utils/protobuf-codec'
-import type {
-  ProtobufParseResult,
-} from '@/types/utils/protobuf-to-json'
+import type { CodecResult, OutputFormat } from '@/types/utils/protobuf-codec'
+import type { ProtobufParseResult } from '@/types/utils/protobuf-to-json'
 
 import { loadWasm } from './init'
 
@@ -55,10 +50,7 @@ export async function jsonToYaml(input: string): Promise<string> {
   return wasm.json_to_yaml(input)
 }
 
-export async function formatYaml(
-  input: string,
-  options?: { indent?: number; sortKeys?: boolean },
-): Promise<string> {
+export async function formatYaml(input: string, options?: { indent?: number; sortKeys?: boolean }): Promise<string> {
   const wasm = await loadWasm<CsrParsers>('parsers')
   return wasm.format_yaml(input, options?.indent ?? 2, options?.sortKeys ?? false)
 }
@@ -92,10 +84,7 @@ export async function parseProtobufSchema(input: string): Promise<ProtobufParseR
   return JSON.parse(wasm.parse_protobuf_schema(input)) as ProtobufParseResult
 }
 
-export async function generateSampleJsonFromSchema(
-  schemaJson: string,
-  messageName: string,
-): Promise<string> {
+export async function generateSampleJsonFromSchema(schemaJson: string, messageName: string): Promise<string> {
   const wasm = await loadWasm<CsrParsers>('parsers')
   return wasm.generate_sample_json_from_schema(schemaJson, messageName)
 }

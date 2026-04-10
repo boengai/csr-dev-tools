@@ -178,7 +178,7 @@ export const AspectRatioCalculator = () => {
 
   return (
     <div className="flex w-full grow flex-col items-center justify-center gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <div aria-live="polite" className="flex w-full flex-col gap-4">
         <div className="flex w-full items-center gap-2 *:min-w-0 *:flex-1">

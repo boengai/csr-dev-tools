@@ -4,12 +4,12 @@ import { Button, Dialog, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { BgOption, State, Action } from '@/types/components/feature/image/BackgroundRemover/index'
 import { applyBackground, removeBackground } from '@/utils'
 
 import { BackgroundRemoverError } from './Error'
 import { BackgroundRemoverProcessing } from './Processing'
 import { BackgroundRemoverResult } from './Result'
-import type { BgOption, State, Action } from "@/types/components/feature/image/BackgroundRemover/index";
 
 const TABS_VALUES = {
   DOWNLOAD: 'download',
@@ -233,7 +233,7 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <Tabs
           injected={{

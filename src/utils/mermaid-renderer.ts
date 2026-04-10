@@ -1,6 +1,7 @@
 import DOMPurify from 'dompurify'
 import mermaid from 'mermaid'
-import type { MermaidRenderResult } from "@/types/utils/mermaid-renderer";
+
+import type { MermaidRenderResult } from '@/types/utils/mermaid-renderer'
 
 let initialized = false
 
@@ -114,4 +115,4 @@ export function downloadPng(pngDataUrl: string, filename = 'mermaid-diagram.png'
   a.click()
 }
 
-export type { MermaidRenderResult } from "@/types/utils/mermaid-renderer";
+export type { MermaidRenderResult } from '@/types/utils/mermaid-renderer'

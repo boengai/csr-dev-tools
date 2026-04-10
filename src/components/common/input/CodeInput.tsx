@@ -40,7 +40,7 @@ const codeInputBaseTheme = EditorView.theme({
   '&': {
     fontSize: '0.875rem',
     borderRadius: 'var(--radius-sm)',
-    border: '1px solid var(--color-gray-800)',
+    border: '1px solid var(--color-gray-700)',
     transition: 'border-color 0.15s, box-shadow 0.15s',
   },
   '&.cm-focused': {

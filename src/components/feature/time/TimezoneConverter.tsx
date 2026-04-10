@@ -5,6 +5,7 @@ import { Button, CopyButton, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { TargetResult, ConverterState, ConverterAction } from '@/types/components/feature/time/timezoneConverter'
 import {
   buildTimezoneIndex,
   convertTimezone,
@@ -14,7 +15,6 @@ import {
   type TimezoneEntry,
   tv,
 } from '@/utils'
-import type { TargetResult, ConverterState, ConverterAction } from "@/types/components/feature/time/timezoneConverter";
 
 const FAVORITES_KEY = 'csr-dev-tools-timezone-favorites'
 
@@ -322,7 +322,7 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
 
   return (
     <div className="flex grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <div className="md:flex-row flex flex-col gap-4">
         {/* Source Section */}

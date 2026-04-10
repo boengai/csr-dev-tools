@@ -1,7 +1,4 @@
-import {
-  formatJson as wasmFormatJson,
-  getJsonParseError as wasmGetJsonParseError,
-} from '@/wasm/json-tools'
+import { formatJson as wasmFormatJson, getJsonParseError as wasmGetJsonParseError } from '@/wasm/json-tools'
 
 export async function formatJson(input: string, indent = 2): Promise<string> {
   return wasmFormatJson(input, indent)

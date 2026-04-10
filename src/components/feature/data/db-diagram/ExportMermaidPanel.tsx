@@ -1,7 +1,7 @@
 import { Button, CopyButton } from '@/components/common'
+import type { ExportMermaidPanelProps } from '@/types/components/feature/data/db-diagram/exportMermaidPanel'
 
 import { CloseButton } from './CloseButton'
-import type { ExportMermaidPanelProps } from "@/types/components/feature/data/db-diagram/exportMermaidPanel";
 
 export const ExportMermaidPanel = ({ generatedMermaid, onClose, onOpenInRenderer }: ExportMermaidPanelProps) => {
   return (

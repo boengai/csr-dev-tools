@@ -1,8 +1,8 @@
 import { Button, TextInput } from '@/components/common'
+import type { DiagramListPanelProps } from '@/types/components/feature/data/db-diagram/diagramListPanel'
 import { formatRelativeTime, tv } from '@/utils'
 
 import { CloseButton } from './CloseButton'
-import type { DiagramListPanelProps } from "@/types/components/feature/data/db-diagram/diagramListPanel";
 
 const diagramItemStyles = tv({
   base: 'flex items-center gap-2 border-b border-gray-800 px-3 py-2 transition-colors hover:bg-gray-900',

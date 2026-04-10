@@ -1,4 +1,4 @@
-import type { HttpStatusCategory, HttpStatusCode } from "@/types/utils/http-status";
+import type { HttpStatusCategory, HttpStatusCode } from '@/types/utils/http-status'
 
 export const HTTP_STATUS_CODES: Array<HttpStatusCode> = [
   // 1xx Informational
@@ -469,4 +469,4 @@ export const filterHttpStatusCodes = (
   return filtered
 }
 
-export type { HttpStatusCategory } from "@/types/utils/http-status";
+export type { HttpStatusCategory } from '@/types/utils/http-status'

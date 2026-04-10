@@ -4,13 +4,8 @@ import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import {
-  buildHighlightSegments,
-  executeRegex,
-  formatMatchesForCopy,
-  type RegexMatch
-} from '@/utils'
-import type { Flags, State, Action } from "@/types/components/feature/text/regexTester";
+import type { Flags, State, Action } from '@/types/components/feature/text/regexTester'
+import { buildHighlightSegments, executeRegex, formatMatchesForCopy, type RegexMatch } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['regex-tester']
 const DEFAULT_FLAGS: Flags = { g: true, i: false, m: false }
@@ -157,7 +152,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">

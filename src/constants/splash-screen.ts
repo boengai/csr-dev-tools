@@ -1,4 +1,4 @@
-import type { SplashScreenDevice } from "@/types/constants/splash-screen";
+import type { SplashScreenDevice } from '@/types/constants/splash-screen'
 
 export const IOS_DEVICES: Array<SplashScreenDevice> = [
   // iPhones
@@ -37,4 +37,4 @@ export const MASKABLE_ICON_SIZES = [192, 512] as const
 
 export const MASKABLE_SAFE_ZONE_RATIO = 0.8
 
-export type { SplashScreenDevice } from "@/types/constants/splash-screen";
+export type { SplashScreenDevice } from '@/types/constants/splash-screen'

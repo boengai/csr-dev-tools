@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 
 import { CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import type { FlexItemEntry } from '@/types/components/feature/css/flexboxPlayground'
 import {
   type AlignItems,
   DEFAULT_CONTAINER,
@@ -13,7 +14,6 @@ import {
   generateFlexboxCss,
   type JustifyContent,
 } from '@/utils'
-import type { FlexItemEntry } from "@/types/components/feature/css/flexboxPlayground";
 
 const toolEntry = TOOL_REGISTRY_MAP['css-flexbox-playground']
 
@@ -78,7 +78,7 @@ export const FlexboxPlayground = () => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <div className="flex shrink-0 flex-col gap-3">
         <div className="flex flex-wrap gap-4">

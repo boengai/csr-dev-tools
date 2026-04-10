@@ -4,7 +4,7 @@ import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import type { ConvertMode } from "@/types/components/feature/data/htmlToMarkdownConverter";
+import type { ConvertMode } from '@/types/components/feature/data/htmlToMarkdownConverter'
 
 const toolEntry = TOOL_REGISTRY_MAP['html-to-markdown-converter']
 
@@ -101,7 +101,7 @@ export const HtmlToMarkdownConverter = ({ autoOpen, onAfterDialogClose }: ToolCo
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button block onClick={() => openDialog('html-to-markdown')} variant="default">

@@ -1,4 +1,4 @@
-import type { HashAlgorithm } from "@/types/utils/hash";
+import type { HashAlgorithm } from '@/types/utils/hash'
 
 export const HASH_ALGORITHMS: Array<HashAlgorithm> = ['MD5', 'SHA-1', 'SHA-256', 'SHA-512']
 
@@ -22,4 +22,4 @@ export async function computeHash(text: string, algorithm: HashAlgorithm): Promi
   return bufferToHex(hashBuffer)
 }
 
-export type { HashAlgorithm } from "@/types/utils/hash";
+export type { HashAlgorithm } from '@/types/utils/hash'

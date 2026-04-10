@@ -1,5 +1,5 @@
 import type { DiagramSchema } from '@/types'
-import type { ReactFlowNode, ReactFlowEdge } from "@/types/utils/db-diagram-persistence";
+import type { ReactFlowNode, ReactFlowEdge } from '@/types/utils/db-diagram-persistence'
 
 export function serializeDiagram(nodes: Array<ReactFlowNode>, edges: Array<ReactFlowEdge>): DiagramSchema {
   const tables = nodes.map((node) => ({

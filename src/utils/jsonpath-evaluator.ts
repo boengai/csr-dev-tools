@@ -1,5 +1,6 @@
 import { JSONPath } from 'jsonpath-plus'
-import type { JsonPathEvaluation, JsonParseResult } from "@/types/utils/jsonpath-evaluator";
+
+import type { JsonPathEvaluation, JsonParseResult } from '@/types/utils/jsonpath-evaluator'
 
 export function parseJsonInput(input: string): JsonParseResult {
   const trimmed = input.trim()
@@ -45,4 +46,4 @@ export function formatResultValue(value: unknown): string {
   return String(value)
 }
 
-export type { JsonPathResult, JsonPathEvaluation, JsonParseResult } from "@/types/utils/jsonpath-evaluator";
+export type { JsonPathResult, JsonPathEvaluation, JsonParseResult } from '@/types/utils/jsonpath-evaluator'

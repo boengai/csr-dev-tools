@@ -4,7 +4,7 @@ import type { CompVariant, InputVariants, TextInputProps } from '@/types'
 import { tv } from '@/utils'
 
 export const inputVariants: CompVariant<InputVariants> = tv({
-  base: 'data-[disabled=true]:opacity-50; flex cursor-pointer items-center justify-between gap-2 rounded-sm border border-gray-800 bg-gray-950 text-gray-200 transition-colors focus-within:border-primary focus-within:shadow-[0_0_0_2px_oklch(0.55_0.22_310/0.15)] disabled:cursor-not-allowed disabled:opacity-50 data-placeholder:text-gray-400 data-[disabled=true]:cursor-not-allowed data-[state=open]:border-primary',
+  base: 'data-[disabled=true]:opacity-50; flex cursor-pointer items-center justify-between gap-2 rounded-sm border border-gray-700 bg-gray-950 text-gray-200 transition-colors focus-within:border-primary focus-within:shadow-[0_0_0_2px_oklch(0.55_0.22_310/0.15)] disabled:cursor-not-allowed disabled:opacity-50 data-placeholder:text-gray-400 data-[disabled=true]:cursor-not-allowed data-[state=open]:border-primary',
   variants: {
     block: {
       true: 'w-full grow',

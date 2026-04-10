@@ -34,7 +34,7 @@ export const SelectInput = ({
 
   return (
     <Root disabled={disabled} name={name} onValueChange={onChange} value={value}>
-      <Trigger className={cnMerge(wrapperClassName, 'group [&>span]:first:truncate')} onBlur={onBlur}>
+      <Trigger aria-label={name} className={cnMerge(wrapperClassName, 'group [&>span]:first:truncate')} onBlur={onBlur}>
         <Value placeholder={placeholder} />
         <Icon className="text-gray-400 transition-transform duration-500 group-data-[state=open]:rotate-180">
           <ChevronIcon size={size === 'compact' ? 16 : 20} />

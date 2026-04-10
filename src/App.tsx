@@ -84,12 +84,12 @@ export default function App() {
         )}
         <div className="ml-auto flex items-center gap-2">
           <button
-            aria-label="Search tools"
             className="flex items-center gap-2 rounded px-2 py-1 text-gray-400 transition-colors hover:text-white"
             onClick={openCommandPalette}
             type="button"
           >
             <SearchIcon />
+            <span className="text-body-xs">Search</span>
             <kbd className="rounded-sm border border-gray-800 bg-gray-950 px-1.5 py-0.5 text-body-xs">
               {typeof navigator !== 'undefined' && /Mac/i.test(navigator.userAgent) ? '⌘K' : 'Ctrl+K'}
             </kbd>

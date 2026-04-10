@@ -21,10 +21,7 @@ export async function getJsonParseError(input: string): Promise<string | null> {
   return wasm.get_json_parse_error(input) ?? null
 }
 
-export async function jsonToTypeScript(
-  json: string,
-  opts?: Partial<JsonToTsOptions>,
-): Promise<string> {
+export async function jsonToTypeScript(json: string, opts?: Partial<JsonToTsOptions>): Promise<string> {
   const wasm = await loadWasm<CsrJsonTools>('json-tools')
   return wasm.json_to_typescript(
     json,

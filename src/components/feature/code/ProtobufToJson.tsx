@@ -4,8 +4,8 @@ import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { EntryKind, BrowsableEntry } from '@/types/components/feature/code/protobufToJson'
 import { cnMerge, type ProtobufEnumInfo, type ProtobufMessageInfo, type ProtobufSchemaInfo } from '@/utils'
-import type { EntryKind, BrowsableEntry } from "@/types/components/feature/code/protobufToJson";
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-to-json']
 const KIND_STYLES: Record<EntryKind, { badge: string; label: string }> = {
@@ -214,7 +214,7 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <CodeInput
         aria-label="Proto definition input"

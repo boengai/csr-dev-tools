@@ -1,4 +1,4 @@
-import type { KeyframeStep, AnimationConfig } from "@/types/utils/css-animation";
+import type { KeyframeStep, AnimationConfig } from '@/types/utils/css-animation'
 
 export const DEFAULT_ANIMATION_CONFIG: AnimationConfig = {
   direction: 'normal',
@@ -42,4 +42,10 @@ export const generateAnimationCss = (config: AnimationConfig): string => {
   return `${keyframesRule}\n\n${selector}`
 }
 
-export type { KeyframeStep, AnimationDirection, AnimationFillMode, AnimationTimingFunction, AnimationConfig } from "@/types/utils/css-animation";
+export type {
+  KeyframeStep,
+  AnimationDirection,
+  AnimationFillMode,
+  AnimationTimingFunction,
+  AnimationConfig,
+} from '@/types/utils/css-animation'

@@ -4,6 +4,7 @@ import { CopyButton, FieldForm, Tabs } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { InputMode } from '@/types/components/feature/network/ipSubnetCalculator'
 import {
   calculateSubnet,
   maskToPrefix,
@@ -13,7 +14,6 @@ import {
   validateIpv4,
   validateSubnetMask,
 } from '@/utils'
-import type { InputMode } from "@/types/components/feature/network/ipSubnetCalculator";
 
 const toolEntry = TOOL_REGISTRY_MAP['ip-subnet-calculator']
 
@@ -191,7 +191,7 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <div className="md:flex-row flex flex-col gap-4">
         {/* Input Section */}

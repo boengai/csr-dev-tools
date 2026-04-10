@@ -4,8 +4,8 @@ import { Button, CheckboxInput, CodeOutput, CopyButton, Dialog, FieldForm, Selec
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { State, Action } from '@/types/components/feature/data/yamlFormatter'
 import { formatYaml, getYamlParseError } from '@/utils'
-import type { State, Action } from "@/types/components/feature/data/yamlFormatter";
 
 const toolEntry = TOOL_REGISTRY_MAP['yaml-formatter']
 
@@ -55,7 +55,10 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     }
 
     try {
-      dispatch({ type: 'SET_RESULT', payload: await formatYaml(val, { indent: currentIndent, sortKeys: currentSortKeys }) })
+      dispatch({
+        type: 'SET_RESULT',
+        payload: await formatYaml(val, { indent: currentIndent, sortKeys: currentSortKeys }),
+      })
     } catch {
       dispatch({ type: 'SET_RESULT', payload: '' })
       toast({ action: 'add', item: { label: 'Unable to format YAML', type: 'error' } })
@@ -99,7 +102,7 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">

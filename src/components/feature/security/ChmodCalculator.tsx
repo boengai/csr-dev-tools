@@ -102,7 +102,7 @@ export const ChmodCalculator = (_props: ToolComponentProps) => {
 
   return (
     <div className="flex w-full grow flex-col gap-6">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       {/* Preset Buttons */}
       <div className="flex flex-wrap gap-2" role="group" aria-label="Common permission presets">

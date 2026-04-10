@@ -1,9 +1,5 @@
 import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufParseResult } from '@/types/utils/protobuf-to-json'
-
-import {
-  generateSampleJsonFromSchema,
-  parseProtobufSchema as wasmParseProtobufSchema,
-} from '@/wasm/parsers'
+import { generateSampleJsonFromSchema, parseProtobufSchema as wasmParseProtobufSchema } from '@/wasm/parsers'
 
 export async function parseProtobufSchema(protoSource: string): Promise<ProtobufParseResult> {
   return wasmParseProtobufSchema(protoSource)
