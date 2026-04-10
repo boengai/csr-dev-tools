@@ -33,10 +33,11 @@ const FORMAT_OPTIONS = [
   { label: 'Hex', value: 'hex' },
   { label: 'Raw Binary', value: 'raw' },
 ]
-const DownloadButton = (props: { ariaLabel: string; disabled: boolean; onClick: () => void }) => {
+const DownloadButton = ({ ariaLabel, ...props }: { ariaLabel: string; disabled: boolean; onClick: () => void }) => {
   return (
     <button
       {...props}
+      aria-label={ariaLabel}
       className="inline-flex h-8 w-8 shrink-0 cursor-pointer items-center justify-center rounded-md p-1.5 text-body-sm transition-colors hover:bg-gray-800 focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50"
       type="button"
     >

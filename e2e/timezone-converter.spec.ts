@@ -105,15 +105,15 @@ test.describe('Timezone Converter', () => {
     await expect(page.getByText('Tokyo').first()).toBeVisible()
   })
 
-  test('search for "pst" → Pacific timezone results appear', async ({ page }) => {
+  test('search for "los angeles" → Pacific timezone results appear', async ({ page }) => {
     // Click "Add Timezone"
     await page.getByTestId('add-timezone-button').click()
 
-    // Type "pst" in the search
+    // Type "los angeles" in the search (abbreviation PST/PDT changes seasonally)
     const searchInputs = page.locator('input[name="timezone-search"]')
-    await searchInputs.last().fill('pst')
+    await searchInputs.last().fill('los angeles')
 
-    // Should see timezone results with PST
+    // Should see timezone results with Los Angeles
     const results = page.locator('[role="listbox"] [role="option"]')
     await expect(results.first()).toBeVisible({ timeout: 3000 })
   })

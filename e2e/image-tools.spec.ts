@@ -33,7 +33,6 @@ for (const tool of uploadOnPageTools) {
 // Dialog auto-opens on these routes
 const autoOpenDialogTools = [
   { name: 'Image to Base64', route: '/tools/image-to-base64' },
-  { name: 'Favicon Generator', route: '/tools/favicon-generator' },
   { name: 'Image Color Picker', route: '/tools/image-color-picker' },
 ]
 
@@ -45,6 +44,13 @@ for (const tool of autoOpenDialogTools) {
     })
   })
 }
+
+test.describe('Favicon Generator', () => {
+  test('shows upload button for favicon generation', async ({ page }) => {
+    await page.goto('/tools/favicon-generator')
+    await expect(page.getByText('Select image to generate favicons')).toBeVisible({ timeout: 5000 })
+  })
+})
 
 test.describe('Base64 to Image', () => {
   test('shows textarea input in dialog', async ({ page }) => {
