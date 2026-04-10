@@ -4,8 +4,8 @@ import { Button, ColorInput, CopyButton, Dialog, DownloadIcon, FieldForm } from 
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { State, Action } from '@/types/components/feature/generator/qrCodeGenerator'
 import { generateQrCodeDataUrl, generateQrCodeSvgString, type QrErrorCorrectionLevel } from '@/utils'
-import type { State, Action } from "@/types/components/feature/generator/qrCodeGenerator";
 
 const toolEntry = TOOL_REGISTRY_MAP['qr-code-generator']
 const initialState: State = {

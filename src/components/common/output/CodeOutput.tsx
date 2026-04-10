@@ -1,4 +1,4 @@
-import type { CodeOutputProps } from "@/types/components/common/output/codeOutput";
+import type { CodeOutputProps } from '@/types/components/common/output/codeOutput'
 
 export const CodeOutput = ({ label, placeholder, value }: CodeOutputProps) => {
   return (

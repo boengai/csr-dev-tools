@@ -4,8 +4,8 @@ import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { BaseField } from '@/types/components/feature/encoding/numberBaseConverter'
 import { convertBase, isValidForBase } from '@/utils'
-import type { BaseField } from "@/types/components/feature/encoding/numberBaseConverter";
 
 const toolEntry = TOOL_REGISTRY_MAP['number-base-converter']
 const BASE_FIELDS: Array<BaseField> = [
@@ -27,7 +27,7 @@ export const NumberBaseConverter = (_props: ToolComponentProps) => {
       return
     }
 
-    if (!await isValidForBase(val, fromBase)) {
+    if (!(await isValidForBase(val, fromBase))) {
       setError(`Invalid character for base ${fromBase.toString()}`)
       return
     }

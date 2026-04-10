@@ -1,4 +1,4 @@
-import type { DataUriEncodeResult, DataUriDecodeResult } from "@/types/utils/data-uri";
+import type { DataUriEncodeResult, DataUriDecodeResult } from '@/types/utils/data-uri'
 
 export const SIZE_WARNING_THRESHOLD = 30 * 1024
 
@@ -69,4 +69,4 @@ export const parseDataUri = (uri: string): DataUriDecodeResult => {
   }
 }
 
-export type { DataUriEncodeResult, DataUriDecodeResult } from "@/types/utils/data-uri";
+export type { DataUriEncodeResult, DataUriDecodeResult } from '@/types/utils/data-uri'

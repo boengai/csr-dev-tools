@@ -18,6 +18,8 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { RelationshipEdge, TableNode, ToolComponentProps } from '@/types'
 
 import '@xyflow/react/dist/style.css'
+import type { DiagramFlowCanvasProps, SidePanelRendererProps } from '@/types/components/feature/data/db-diagram/index'
+
 import { DbmlEditorPanel } from './DbmlEditorPanel'
 import { DiagramListPanel } from './DiagramListPanel'
 import { diagramReducer, initialDiagramState } from './diagramReducer'
@@ -30,7 +32,6 @@ import { ImportSqlPanel } from './ImportSqlPanel'
 import { RelationshipEdgeComponent } from './RelationshipEdge'
 import { TableNodeComponent } from './TableNode'
 import { useDiagramHandlers } from './useDiagramHandlers'
-import type { DiagramFlowCanvasProps, SidePanelRendererProps } from "@/types/components/feature/data/db-diagram/index";
 
 const nodeTypes: NodeTypes = { tableNode: TableNodeComponent }
 const edgeTypes: EdgeTypes = { relationship: RelationshipEdgeComponent }

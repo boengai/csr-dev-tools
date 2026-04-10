@@ -1,4 +1,5 @@
 import type { Extension } from '@codemirror/state'
+
 import type { SqlDialect } from '@/types'
 
 export type ImportSqlPanelProps = {

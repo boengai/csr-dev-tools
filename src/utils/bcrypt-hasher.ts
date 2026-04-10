@@ -1,9 +1,6 @@
 import type { BcryptHashComponents, BcryptHashResult, BcryptVerifyResult } from '@/types/utils/bcrypt-hasher'
 
-export const hashPassword = async (
-  password: string,
-  rounds: number,
-): Promise<BcryptHashResult> => {
+export const hashPassword = async (password: string, rounds: number): Promise<BcryptHashResult> => {
   const { hashPassword: wasmHash } = await import('@/wasm/bcrypt')
   const start = performance.now()
   const hash = await wasmHash(password, rounds)

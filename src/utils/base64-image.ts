@@ -1,4 +1,4 @@
-import type { Base64ImageInfo } from "@/types/utils/base64-image";
+import type { Base64ImageInfo } from '@/types/utils/base64-image'
 
 const MAGIC_BYTES: Array<{ format: string; prefix: string }> = [
   { format: 'png', prefix: 'iVBOR' },
@@ -49,4 +49,4 @@ export const base64ToImageInfo = async (input: string): Promise<Base64ImageInfo>
   return { dataUri, estimatedSize, format, height, width }
 }
 
-export type { Base64ImageInfo } from "@/types/utils/base64-image";
+export type { Base64ImageInfo } from '@/types/utils/base64-image'

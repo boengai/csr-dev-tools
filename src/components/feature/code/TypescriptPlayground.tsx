@@ -5,8 +5,8 @@ import { CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { EditorInstance, MarkerData, DiagnosticError } from '@/types/components/feature/code/typescriptPlayground'
 import { tv } from '@/utils'
-import type { EditorInstance, MarkerData, DiagnosticError } from "@/types/components/feature/code/typescriptPlayground";
 
 const Editor = lazy(() => import('@monaco-editor/react'))
 const toolEntry = TOOL_REGISTRY_MAP['typescript-playground']

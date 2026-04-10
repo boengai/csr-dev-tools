@@ -3,8 +3,8 @@ import { useCallback, useEffect, useReducer, useRef } from 'react'
 import { Button, DownloadIcon, FieldForm, ProgressBar, UploadInput } from '@/components/common'
 import { COMPRESSIBLE_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
+import type { State, Action } from '@/types/components/feature/image/imageCompressor'
 import { formatFileSize, processImage, tv } from '@/utils'
-import type { State, Action } from "@/types/components/feature/image/imageCompressor";
 
 const processingWrapperStyles = tv({
   base: 'flex flex-col gap-2',

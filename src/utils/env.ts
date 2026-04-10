@@ -1,4 +1,4 @@
-import type { EnvParseResult } from "@/types/utils/env";
+import type { EnvParseResult } from '@/types/utils/env'
 import { jsonToYaml, yamlToJson } from '@/utils/yaml'
 
 export const parseEnv = (input: string): EnvParseResult => {

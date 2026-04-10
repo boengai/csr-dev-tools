@@ -4,13 +4,8 @@ import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import {
-  buildHighlightSegments,
-  executeRegex,
-  formatMatchesForCopy,
-  type RegexMatch
-} from '@/utils'
-import type { Flags, State, Action } from "@/types/components/feature/text/regexTester";
+import type { Flags, State, Action } from '@/types/components/feature/text/regexTester'
+import { buildHighlightSegments, executeRegex, formatMatchesForCopy, type RegexMatch } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['regex-tester']
 const DEFAULT_FLAGS: Flags = { g: true, i: false, m: false }

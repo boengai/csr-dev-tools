@@ -4,8 +4,8 @@ import { Button, CodeOutput, CopyButton, Dialog, FieldForm, SelectInput } from '
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { ConvertMode, EntityMode } from '@/types/components/feature/data/htmlEntityConverter'
 import { decodeHtmlEntities, encodeHtmlEntities } from '@/utils'
-import type { ConvertMode, EntityMode } from "@/types/components/feature/data/htmlEntityConverter";
 
 const toolEntry = TOOL_REGISTRY_MAP['html-entity-converter']
 

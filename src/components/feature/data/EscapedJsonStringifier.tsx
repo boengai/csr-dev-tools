@@ -4,8 +4,8 @@ import { Button, CheckboxInput, CodeOutput, CopyButton, Dialog, FieldForm } from
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { ConvertMode } from '@/types/components/feature/data/escapedJsonStringifier'
 import { parseStringifiedJson, stringifyJson } from '@/utils'
-import type { ConvertMode } from "@/types/components/feature/data/escapedJsonStringifier";
 
 const toolEntry = TOOL_REGISTRY_MAP['escaped-json-stringifier']
 

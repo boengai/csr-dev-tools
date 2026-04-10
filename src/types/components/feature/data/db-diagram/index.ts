@@ -1,4 +1,5 @@
 import type { Connection, EdgeTypes, NodeTypes, OnEdgesChange, OnNodesChange } from '@xyflow/react'
+
 import type { DiagramIndexEntry, RelationshipEdge, SidePanel, SqlDialect, TableNode } from '@/types'
 
 export // ---------------------------------------------------------------------------

@@ -1,4 +1,5 @@
 import type { RefObject } from 'react'
+
 import type { DiagramIndexEntry } from '@/types'
 
 export type DiagramListPanelProps = {

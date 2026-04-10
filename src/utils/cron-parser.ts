@@ -1,4 +1,4 @@
-import type { CronParseResult, CronField } from "@/types/utils/cron-parser";
+import type { CronParseResult, CronField } from '@/types/utils/cron-parser'
 
 const FIELDS: Array<CronField> = [
   { max: 59, min: 0, name: 'minute' },
@@ -175,4 +175,4 @@ export const CRON_PRESETS: Array<{
   { expression: '30 4 * * *', label: 'Daily at 4:30 AM' },
 ]
 
-export type { CronParseResult } from "@/types/utils/cron-parser";
+export type { CronParseResult } from '@/types/utils/cron-parser'

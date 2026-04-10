@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import type { ConvertMode } from '@/types/components/feature/data/jsonToYamlConverter'
 import { getJsonParseError, getYamlParseError, jsonToYaml, yamlToJson } from '@/utils'
-import type { ConvertMode } from "@/types/components/feature/data/jsonToYamlConverter";
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-yaml-converter']
 

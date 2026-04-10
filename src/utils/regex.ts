@@ -1,4 +1,4 @@
-import type { RegexMatch, RegexResult, HighlightSegment } from "@/types/utils/regex";
+import type { RegexMatch, RegexResult, HighlightSegment } from '@/types/utils/regex'
 
 const MAX_MATCHES = 5000
 
@@ -93,4 +93,4 @@ export const formatMatchesForCopy = (matches: Array<RegexMatch>): string => {
     .join('\n\n')
 }
 
-export type { RegexMatch, RegexResult, HighlightSegment } from "@/types/utils/regex";
+export type { RegexMatch, RegexResult, HighlightSegment } from '@/types/utils/regex'

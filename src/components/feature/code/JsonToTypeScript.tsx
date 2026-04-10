@@ -99,7 +99,9 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
               setDialogOpen(true)
               if (source.trim()) {
                 try {
-                  setOutput(await jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }))
+                  setOutput(
+                    await jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }),
+                  )
                 } catch {
                   // invalid JSON — ignore
                 }

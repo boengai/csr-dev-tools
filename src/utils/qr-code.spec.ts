@@ -4,14 +4,10 @@ import { generateQrCodeDataUrl, generateQrCodeSvgString } from './qr-code'
 
 describe('qr-code', () => {
   describe('generateQrCodeDataUrl', () => {
-    it(
-      'returns a data URL for valid text',
-      async () => {
-        const result = await generateQrCodeDataUrl('hello')
-        expect(result).toMatch(/^data:image\/png;base64,/)
-      },
-      15_000,
-    )
+    it('returns a data URL for valid text', async () => {
+      const result = await generateQrCodeDataUrl('hello')
+      expect(result).toMatch(/^data:image\/png;base64,/)
+    }, 15_000)
 
     it('respects size option', async () => {
       const result = await generateQrCodeDataUrl('hello', { size: 128 })
@@ -22,15 +18,11 @@ describe('qr-code', () => {
       await expect(generateQrCodeDataUrl('')).rejects.toThrow()
     })
 
-    it(
-      'produces different output for different error correction levels',
-      async () => {
-        const low = await generateQrCodeDataUrl('hello', { errorCorrectionLevel: 'L' })
-        const high = await generateQrCodeDataUrl('hello', { errorCorrectionLevel: 'H' })
-        expect(low).not.toBe(high)
-      },
-      15_000,
-    )
+    it('produces different output for different error correction levels', async () => {
+      const low = await generateQrCodeDataUrl('hello', { errorCorrectionLevel: 'L' })
+      const high = await generateQrCodeDataUrl('hello', { errorCorrectionLevel: 'H' })
+      expect(low).not.toBe(high)
+    }, 15_000)
   })
 
   describe('generateQrCodeSvgString', () => {

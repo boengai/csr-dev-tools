@@ -1,4 +1,5 @@
 import { useEffect, useReducer, useRef } from 'react'
+
 import 'react-image-crop/dist/ReactCrop.css'
 import ReactCrop from 'react-image-crop'
 
@@ -15,8 +16,8 @@ import {
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { AspectRatioPreset, CropRegion } from '@/types'
+import type { State, Action } from '@/types/components/feature/image/imageCropper'
 import { ASPECT_RATIO_OPTIONS, clampCropRegion, getAspectRatio, getDefaultCrop, scaleCropToNatural, tv } from '@/utils'
-import type { State, Action } from "@/types/components/feature/image/imageCropper";
 
 const cropAreaStyles = tv({
   base: 'bg-grid-texture flex grow items-center justify-center overflow-auto bg-black',

@@ -1,4 +1,4 @@
-import type { TextStats } from "@/types/utils/word-counter";
+import type { TextStats } from '@/types/utils/word-counter'
 
 const formatTime = (minutes: number): string => {
   if (minutes === 0) return '0 min'
@@ -43,4 +43,4 @@ export const countTextStats = (text: string): TextStats => {
   }
 }
 
-export type { TextStats } from "@/types/utils/word-counter";
+export type { TextStats } from '@/types/utils/word-counter'

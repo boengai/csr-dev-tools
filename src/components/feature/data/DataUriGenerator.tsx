@@ -4,14 +4,8 @@ import { Button, CopyButton, Dialog, DownloadIcon, FieldForm, UploadInput } from
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import {
-  fileToDataUri,
-  formatFileSize,
-  isValidDataUri,
-  parseDataUri,
-  parseDataUrlToBlob,
-} from '@/utils'
-import type { State, Action } from "@/types/components/feature/data/dataUriGenerator";
+import type { State, Action } from '@/types/components/feature/data/dataUriGenerator'
+import { fileToDataUri, formatFileSize, isValidDataUri, parseDataUri, parseDataUrlToBlob } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['data-uri-generator']
 

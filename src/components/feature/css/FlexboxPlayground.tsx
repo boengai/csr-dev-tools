@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 
 import { CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import type { FlexItemEntry } from '@/types/components/feature/css/flexboxPlayground'
 import {
   type AlignItems,
   DEFAULT_CONTAINER,
@@ -13,7 +14,6 @@ import {
   generateFlexboxCss,
   type JustifyContent,
 } from '@/utils'
-import type { FlexItemEntry } from "@/types/components/feature/css/flexboxPlayground";
 
 const toolEntry = TOOL_REGISTRY_MAP['css-flexbox-playground']
 

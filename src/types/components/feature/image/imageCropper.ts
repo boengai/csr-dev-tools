@@ -1,4 +1,5 @@
 import type { Crop, PixelCrop } from 'react-image-crop'
+
 import type { AspectRatioPreset } from '@/types'
 
 export type State = {

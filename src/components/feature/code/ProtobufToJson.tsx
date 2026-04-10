@@ -4,8 +4,8 @@ import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { EntryKind, BrowsableEntry } from '@/types/components/feature/code/protobufToJson'
 import { cnMerge, type ProtobufEnumInfo, type ProtobufMessageInfo, type ProtobufSchemaInfo } from '@/utils'
-import type { EntryKind, BrowsableEntry } from "@/types/components/feature/code/protobufToJson";
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-to-json']
 const KIND_STYLES: Record<EntryKind, { badge: string; label: string }> = {

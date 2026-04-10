@@ -4,7 +4,7 @@ import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import type { ConvertMode } from "@/types/components/feature/data/jsonToXmlConverter";
+import type { ConvertMode } from '@/types/components/feature/data/jsonToXmlConverter'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-xml-converter']
 

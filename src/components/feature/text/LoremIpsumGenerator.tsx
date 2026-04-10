@@ -3,8 +3,8 @@ import { useState } from 'react'
 import { Button, CheckboxInput, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
+import type { LoremUnit } from '@/types/components/feature/text/loremIpsumGenerator'
 import { generateLoremIpsum } from '@/utils'
-import type { LoremUnit } from "@/types/components/feature/text/loremIpsumGenerator";
 
 const toolEntry = TOOL_REGISTRY_MAP['lorem-ipsum-generator']
 const UNIT_OPTIONS = [

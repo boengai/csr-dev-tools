@@ -3,8 +3,8 @@ import { useReducer } from 'react'
 import { Button, CopyButton, Dialog, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
+import type { State, Action } from '@/types/components/feature/code/markdownTableGenerator'
 import { type ColumnAlignment, generateMarkdownTable } from '@/utils'
-import type { State, Action } from "@/types/components/feature/code/markdownTableGenerator";
 
 const toolEntry = TOOL_REGISTRY_MAP['markdown-table-generator']
 

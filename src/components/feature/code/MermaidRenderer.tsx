@@ -6,6 +6,7 @@ import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { State, Action } from '@/types/components/feature/code/mermaidRenderer'
 import {
   downloadMermaidSvg,
   downloadPng,
@@ -15,7 +16,6 @@ import {
   svgToPng,
   tv,
 } from '@/utils'
-import type { State, Action } from "@/types/components/feature/code/mermaidRenderer";
 
 const chevronStyles = tv({
   base: 'inline-block transition-transform',

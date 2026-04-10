@@ -10,15 +10,10 @@ describe('json diff utilities', () => {
     })
 
     it('should sort deeply nested object keys', async () => {
-      const result = JSON.parse(
-        await deepSortJson(JSON.stringify({ b: { z: 1, a: 2 }, a: { y: 3, x: 4 } })),
-      )
+      const result = JSON.parse(await deepSortJson(JSON.stringify({ b: { z: 1, a: 2 }, a: { y: 3, x: 4 } })))
       const outer = Object.keys(result as Record<string, unknown>)
       expect(outer).toEqual(['a', 'b'])
-      expect(Object.keys((result as Record<string, Record<string, unknown>>).a)).toEqual([
-        'x',
-        'y',
-      ])
+      expect(Object.keys((result as Record<string, Record<string, unknown>>).a)).toEqual(['x', 'y'])
     })
 
     it('should sort arrays of primitives by value', async () => {
@@ -32,9 +27,7 @@ describe('json diff utilities', () => {
     })
 
     it('should handle mixed arrays (primitives + objects)', async () => {
-      const result = JSON.parse(
-        await deepSortJson(JSON.stringify([{ z: 1 }, 'hello', 42, { a: 2 }])),
-      )
+      const result = JSON.parse(await deepSortJson(JSON.stringify([{ z: 1 }, 'hello', 42, { a: 2 }])))
       expect(result).toEqual(['hello', 42, { a: 2 }, { z: 1 }])
     })
 

@@ -1,6 +1,6 @@
 import type { SplashScreenDevice } from '@/constants'
 import { IOS_DEVICES, MASKABLE_ICON_SIZES, MASKABLE_SAFE_ZONE_RATIO, PWA_ICON_SIZES } from '@/constants'
-import type { SplashScreenResult, PwaIconResult, SplashScreenGeneratorOutput } from "@/types/utils/splash-screen";
+import type { SplashScreenResult, PwaIconResult, SplashScreenGeneratorOutput } from '@/types/utils/splash-screen'
 
 const slugify = (name: string) =>
   name
@@ -210,4 +210,4 @@ export const downloadSplashScreenZip = async (output: SplashScreenGeneratorOutpu
   URL.revokeObjectURL(url)
 }
 
-export type { SplashScreenResult, PwaIconResult, SplashScreenGeneratorOutput } from "@/types/utils/splash-screen";
+export type { SplashScreenResult, PwaIconResult, SplashScreenGeneratorOutput } from '@/types/utils/splash-screen'

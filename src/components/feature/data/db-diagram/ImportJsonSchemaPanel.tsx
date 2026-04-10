@@ -1,7 +1,7 @@
 import { Button, CheckboxInput, CodeInput } from '@/components/common'
+import type { ImportJsonSchemaPanelProps } from '@/types/components/feature/data/db-diagram/importJsonSchemaPanel'
 
 import { CloseButton } from './CloseButton'
-import type { ImportJsonSchemaPanelProps } from "@/types/components/feature/data/db-diagram/importJsonSchemaPanel";
 
 export const ImportJsonSchemaPanel = ({
   importJsonSchemaErrors,

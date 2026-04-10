@@ -1,4 +1,4 @@
-import type { BoxShadowConfig } from "@/types/utils/box-shadow";
+import type { BoxShadowConfig } from '@/types/utils/box-shadow'
 
 export const DEFAULT_BOX_SHADOW: BoxShadowConfig = {
   alpha: 25,
@@ -33,4 +33,4 @@ export function generateBoxShadowCSS(config: BoxShadowConfig): string {
   return `${prefix}${hOffset}px ${vOffset}px ${blur}px ${spread}px ${rgba}`
 }
 
-export type { BoxShadowConfig } from "@/types/utils/box-shadow";
+export type { BoxShadowConfig } from '@/types/utils/box-shadow'

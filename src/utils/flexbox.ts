@@ -1,4 +1,4 @@
-import type { FlexboxContainerProps, FlexboxItemProps } from "@/types/utils/flexbox";
+import type { FlexboxContainerProps, FlexboxItemProps } from '@/types/utils/flexbox'
 
 export const DEFAULT_CONTAINER: FlexboxContainerProps = {
   alignItems: 'stretch',
@@ -34,4 +34,11 @@ export function generateFlexboxCss(
   return { containerCss, itemsCss }
 }
 
-export type { FlexDirection, JustifyContent, AlignItems, FlexWrap, FlexboxContainerProps, FlexboxItemProps } from "@/types/utils/flexbox";
+export type {
+  FlexDirection,
+  JustifyContent,
+  AlignItems,
+  FlexWrap,
+  FlexboxContainerProps,
+  FlexboxItemProps,
+} from '@/types/utils/flexbox'

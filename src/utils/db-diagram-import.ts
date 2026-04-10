@@ -1,7 +1,7 @@
 import type { ColumnType, DiagramSchema, SqlDialect } from '@/types'
+import type { ParseResult, ParsedColumn, FkRef } from '@/types/utils/db-diagram-import'
 
 import { generateId } from './db-diagram'
-import type { ParseResult, ParsedColumn, FkRef } from "@/types/utils/db-diagram-import";
 
 const SQL_TYPE_MAP: Array<{ match: RegExp; type: ColumnType }> = [
   { match: /^BIGSERIAL$/i, type: 'BIGINT' },
@@ -356,4 +356,4 @@ export function parseSqlDdl(sql: string, dialect: SqlDialect): ParseResult {
   return { errors, relationships, tables }
 }
 
-export type { ParseResult } from "@/types/utils/db-diagram-import";
+export type { ParseResult } from '@/types/utils/db-diagram-import'

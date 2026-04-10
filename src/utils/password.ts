@@ -1,4 +1,4 @@
-import type { PasswordOptions } from "@/types/utils/password";
+import type { PasswordOptions } from '@/types/utils/password'
 
 const UPPERCASE_CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const LOWERCASE_CHARS = 'abcdefghijklmnopqrstuvwxyz'
@@ -53,4 +53,4 @@ export const generatePassword = (options: PasswordOptions): string => {
   return fisherYatesShuffle(chars).join('')
 }
 
-export type { PasswordOptions } from "@/types/utils/password";
+export type { PasswordOptions } from '@/types/utils/password'

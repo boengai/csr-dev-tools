@@ -1,4 +1,4 @@
-import type { UserAgentResult } from "@/types/utils/user-agent";
+import type { UserAgentResult } from '@/types/utils/user-agent'
 
 const match = (ua: string, pattern: RegExp): string => {
   const m = ua.match(pattern)
@@ -65,4 +65,4 @@ export const parseUserAgent = (ua: string): UserAgentResult => {
   }
 }
 
-export type { UserAgentResult } from "@/types/utils/user-agent";
+export type { UserAgentResult } from '@/types/utils/user-agent'

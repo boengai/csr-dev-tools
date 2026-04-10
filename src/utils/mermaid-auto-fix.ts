@@ -1,4 +1,4 @@
-import type { MermaidFixSuggestion, MermaidFixRule } from "@/types/utils/mermaid-auto-fix";
+import type { MermaidFixSuggestion, MermaidFixRule } from '@/types/utils/mermaid-auto-fix'
 
 const DIAGRAM_TYPE_CORRECTIONS = new Map<string, string>([
   ['classdiagram', 'classDiagram'],
@@ -203,4 +203,4 @@ export const suggestMermaidFix = (code: string, error: string): MermaidFixSugges
   return null
 }
 
-export type { MermaidFixSuggestion } from "@/types/utils/mermaid-auto-fix";
+export type { MermaidFixSuggestion } from '@/types/utils/mermaid-auto-fix'

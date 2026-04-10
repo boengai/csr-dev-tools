@@ -1,8 +1,8 @@
 import type { ColumnType, DiagramSchema } from '@/types'
+import type { JsonSchemaProperty, JsonSchemaRoot } from '@/types/utils/db-diagram-json-schema'
 
 import { generateId } from './db-diagram'
 import type { ParseResult } from './db-diagram-import'
-import type { JsonSchemaProperty, JsonSchemaRoot } from "@/types/utils/db-diagram-json-schema";
 
 const JSON_TYPE_MAP: Record<string, ColumnType> = {
   array: 'JSON',

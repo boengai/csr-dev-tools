@@ -1,5 +1,5 @@
 import { Button, ChevronIcon, DropdownMenu, ListIcon, TextInput } from '@/components/common'
-import type { DiagramToolbarProps } from "@/types/components/feature/data/db-diagram/diagramToolbar";
+import type { DiagramToolbarProps } from '@/types/components/feature/data/db-diagram/diagramToolbar'
 
 export const DiagramToolbar = ({
   activePanel,

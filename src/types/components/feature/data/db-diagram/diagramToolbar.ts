@@ -1,4 +1,5 @@
 import type { RefObject } from 'react'
+
 import type { SidePanel } from '@/types'
 
 export type DiagramToolbarProps = {

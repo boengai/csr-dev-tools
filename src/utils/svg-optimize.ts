@@ -1,4 +1,4 @@
-import type { SvgOptimizeResult } from "@/types/utils/svg-optimize";
+import type { SvgOptimizeResult } from '@/types/utils/svg-optimize'
 
 export function sanitizeSvg(svg: string): string {
   let result = svg
@@ -54,4 +54,4 @@ export function optimizeSvg(svg: string): SvgOptimizeResult {
   return { optimized, optimizedSize, originalSize, savings }
 }
 
-export type { SvgOptimizeResult } from "@/types/utils/svg-optimize";
+export type { SvgOptimizeResult } from '@/types/utils/svg-optimize'

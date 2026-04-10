@@ -1,4 +1,5 @@
 import type { ImgHTMLAttributes } from 'react'
+
 import type { ImageFormat } from '@/types'
 
 export type ImagePreviewMetadata = {

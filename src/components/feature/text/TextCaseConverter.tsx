@@ -4,6 +4,7 @@ import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { CaseResult } from '@/types/components/feature/text/textCaseConverter'
 import {
   toCamelCase,
   toConstantCase,
@@ -17,7 +18,6 @@ import {
   toTitleCase,
   toUpperCase,
 } from '@/utils'
-import type { CaseResult } from "@/types/components/feature/text/textCaseConverter";
 
 const toolEntry = TOOL_REGISTRY_MAP['text-case-converter']
 const CASES: Array<CaseResult> = [

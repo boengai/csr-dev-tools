@@ -4,8 +4,8 @@ import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { InlineSpan, SideBySideRow, ToolComponentProps } from '@/types'
+import type { State, Action } from '@/types/components/feature/data/jsonDiffChecker'
 import { computeSideBySideDiff, createUnifiedDiff, getJsonDiffError, normalizeJson } from '@/utils'
-import type { State, Action } from "@/types/components/feature/data/jsonDiffChecker";
 
 const toolEntry = TOOL_REGISTRY_MAP['json-diff-checker']
 

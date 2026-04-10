@@ -16,10 +16,10 @@ import {
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { ImageFormat } from '@/types'
+import type { State, Action } from '@/types/components/feature/image/imageConvertor'
 import { convertImageFormat, isValidImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
-import type { State, Action } from "@/types/components/feature/image/imageConvertor";
 
 const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING' | 'SELECT_FORMAT', string> = {
   DOWNLOAD: 'download',

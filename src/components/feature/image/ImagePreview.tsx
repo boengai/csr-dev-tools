@@ -1,6 +1,6 @@
 import { NotoEmoji } from '@/components/common'
+import type { ImagePreviewProps } from '@/types/components/feature/image/imagePreview'
 import { formatFileSize } from '@/utils'
-import type { ImagePreviewProps } from "@/types/components/feature/image/imagePreview";
 
 export const EMPTY_IMAGE = 'data:,'
 export const ImagePreview = ({ metadata, src }: ImagePreviewProps) => {

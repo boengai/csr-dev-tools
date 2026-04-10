@@ -1,5 +1,5 @@
 import { Button, NotoEmoji, RefreshIcon } from '@/components/common'
-import type { BackgroundRemoverErrorProps } from "@/types/components/feature/image/BackgroundRemover/error";
+import type { BackgroundRemoverErrorProps } from '@/types/components/feature/image/BackgroundRemover/error'
 
 export const BackgroundRemoverError = ({ onReset }: BackgroundRemoverErrorProps) => {
   return (

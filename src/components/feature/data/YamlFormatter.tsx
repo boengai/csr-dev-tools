@@ -4,8 +4,8 @@ import { Button, CheckboxInput, CodeOutput, CopyButton, Dialog, FieldForm, Selec
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { State, Action } from '@/types/components/feature/data/yamlFormatter'
 import { formatYaml, getYamlParseError } from '@/utils'
-import type { State, Action } from "@/types/components/feature/data/yamlFormatter";
 
 const toolEntry = TOOL_REGISTRY_MAP['yaml-formatter']
 
@@ -55,7 +55,10 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     }
 
     try {
-      dispatch({ type: 'SET_RESULT', payload: await formatYaml(val, { indent: currentIndent, sortKeys: currentSortKeys }) })
+      dispatch({
+        type: 'SET_RESULT',
+        payload: await formatYaml(val, { indent: currentIndent, sortKeys: currentSortKeys }),
+      })
     } catch {
       dispatch({ type: 'SET_RESULT', payload: '' })
       toast({ action: 'add', item: { label: 'Unable to format YAML', type: 'error' } })

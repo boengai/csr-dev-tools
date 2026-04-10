@@ -4,8 +4,8 @@ import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { State, Action } from '@/types/components/feature/code/javaScriptMinifier'
 import { formatJs, minifyJs } from '@/utils'
-import type { State, Action } from "@/types/components/feature/code/javaScriptMinifier";
 
 const reducer = (state: State, action: Action): State => {
   switch (action.type) {

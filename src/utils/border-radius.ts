@@ -1,4 +1,4 @@
-import type { BorderRadiusConfig } from "@/types/utils/border-radius";
+import type { BorderRadiusConfig } from '@/types/utils/border-radius'
 
 export const DEFAULT_BORDER_RADIUS: BorderRadiusConfig = {
   asymmetric: false,
@@ -41,4 +41,4 @@ export const generateBorderRadiusCss = (config: BorderRadiusConfig): string => {
   return `border-radius: ${collapseValues(h)};`
 }
 
-export type { BorderRadiusConfig } from "@/types/utils/border-radius";
+export type { BorderRadiusConfig } from '@/types/utils/border-radius'

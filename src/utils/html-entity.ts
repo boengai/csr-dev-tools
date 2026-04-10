@@ -1,4 +1,4 @@
-import type { EncodeMode } from "@/types/utils/html-entity";
+import type { EncodeMode } from '@/types/utils/html-entity'
 
 const NAMED_ENTITIES: Record<string, string> = {
   '&': '&amp;',
