@@ -14,10 +14,10 @@ import {
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import type { Action, PersistedState, ContentProps } from '@/types/components/feature/code/protobufCodec'
 import { downloadBinaryFile, downloadTextFile } from '@/utils/file'
 import { detectProtobufFormat } from '@/utils/protobuf-codec'
 import type { OutputFormat } from '@/utils/protobuf-codec'
-import type { Action, PersistedState, ContentProps } from "@/types/components/feature/code/protobufCodec";
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-codec']
 const INITIAL_STATE: PersistedState = {
@@ -31,7 +31,7 @@ const INITIAL_STATE: PersistedState = {
 const FORMAT_OPTIONS = [
   { label: 'Base64', value: 'base64' },
   { label: 'Hex', value: 'hex' },
-  { label: 'Raw Binary', value: 'raw' },
+  { label: 'Binary', value: 'binary' },
 ]
 const DownloadButton = ({ ariaLabel, ...props }: { ariaLabel: string; disabled: boolean; onClick: () => void }) => {
   return (
@@ -133,7 +133,7 @@ const EncodeContent = ({
     if (!result) return
     const timestamp = Date.now()
     const safeName = selectedMessageType.replace(/[^a-zA-Z0-9-_]/g, '_')
-    if (format === 'raw') {
+    if (format === 'binary') {
       const bytes = new Uint8Array(result.length)
       for (let i = 0; i < result.length; i++) {
         bytes[i] = result.charCodeAt(i) & 0xff
@@ -241,6 +241,7 @@ const DecodeContent = ({
           setResult(codecResult.output)
         } else {
           setResult('')
+          console.log('kuy', codecResult)
           toast({ action: 'add', item: { label: codecResult.error, type: 'error' } })
         }
       } catch {
@@ -299,7 +300,7 @@ const DecodeContent = ({
         const textDecoder = new TextDecoder()
         const text = textDecoder.decode(bytes)
         const detected = await detectProtobufFormat(text)
-        const value = detected === 'raw' ? raw : text
+        const value = detected === 'binary' ? raw : text
         onFormatChange(detected)
         onSourceChange(value)
         processDecode(schema, selectedMessageType, value, detected)

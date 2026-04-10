@@ -1,3 +1,3 @@
-export type OutputFormat = 'base64' | 'hex' | 'raw'
+export type OutputFormat = 'base64' | 'binary' | 'hex'
 
 export type CodecResult = { error: string; success: false } | { output: string; success: true }

@@ -66,7 +66,7 @@ describe('protobuf-codec', () => {
 
     it('encodes simple message to raw binary', async () => {
       const json = { name: 'Alice', age: 30, active: true }
-      const result = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'raw')
+      const result = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'binary')
 
       expect(result.success).toBe(true)
       if (result.success) {
@@ -123,11 +123,11 @@ describe('protobuf-codec', () => {
 
     it('decodes text to JSON for simple message', async () => {
       const json = { name: 'Alice', age: 30, active: true }
-      const encoded = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'raw')
+      const encoded = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), 'binary')
       expect(encoded.success).toBe(true)
       if (!encoded.success) return
 
-      const decoded = await decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', encoded.output, 'raw')
+      const decoded = await decodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', encoded.output, 'binary')
       expect(decoded.success).toBe(true)
       if (decoded.success) {
         const parsed = JSON.parse(decoded.output)
@@ -156,7 +156,7 @@ describe('protobuf-codec', () => {
     it('encode then decode produces original JSON (simple)', async () => {
       const json = { name: 'Charlie', age: 25, active: false }
 
-      for (const format of ['base64', 'hex', 'raw'] as const) {
+      for (const format of ['base64', 'hex', 'binary'] as const) {
         const encoded = await encodeProtobuf(SIMPLE_PROTO, 'SimpleMessage', JSON.stringify(json), format)
         expect(encoded.success).toBe(true)
         if (!encoded.success) continue
@@ -203,7 +203,7 @@ describe('protobuf-codec', () => {
     it('detects raw binary (non-text bytes)', async () => {
       const raw = String.fromCharCode(0x0a, 0x05, 0x41, 0x6c, 0x69, 0x63, 0x65, 0x10, 0x1e, 0x18, 0x01)
       const result = await detectProtobufFormat(raw)
-      expect(result).toBe('raw')
+      expect(result).toBe('binary')
     })
 
     it('detects base64 with padding', async () => {
@@ -218,7 +218,7 @@ describe('protobuf-codec', () => {
 
     it('returns raw for empty string', async () => {
       const result = await detectProtobufFormat('')
-      expect(result).toBe('raw')
+      expect(result).toBe('binary')
     })
   })
 

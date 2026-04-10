@@ -214,7 +214,7 @@ pub fn decode_protobuf(
 pub fn detect_protobuf_format(input: &str) -> String {
     let trimmed = input.trim();
     if trimmed.is_empty() {
-        return "raw".to_string();
+        return "binary".to_string();
     }
 
     // Check hex: even-length, all hex chars
@@ -236,7 +236,7 @@ pub fn detect_protobuf_format(input: &str) -> String {
         return "base64".to_string();
     }
 
-    "raw".to_string()
+    "binary".to_string()
 }
 
 fn encode_protobuf_inner(
@@ -364,7 +364,7 @@ fn format_binary_output(bytes: &[u8], format: &str) -> String {
     match format {
         "hex" => bytes.iter().map(|b| format!("{:02x}", b)).collect(),
         "base64" => proto_codec::decode::base64_encode(bytes),
-        "raw" => bytes.iter().map(|b| *b as char).collect(),
+        "binary" => bytes.iter().map(|b| *b as char).collect(),
         _ => String::new(),
     }
 }
@@ -373,7 +373,7 @@ fn parse_binary_input(input: &str, format: &str) -> Result<Vec<u8>, String> {
     match format {
         "base64" => base64_decode(input),
         "hex" => hex_decode(input),
-        "raw" => Ok(input.bytes().collect()),
+        "binary" => Ok(input.chars().map(|c| c as u8).collect()),
         _ => Err(format!("Unknown format: {}", format)),
     }
 }
