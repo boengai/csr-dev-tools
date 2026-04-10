@@ -99,7 +99,7 @@ export const ColorConvertor = () => {
 
   return (
     <div className="flex size-full grow flex-col gap-2">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
       <ColorInput aria-label="Color picker" onChange={handlePickerChange} size="full" value={color.hex || '#000000'} />
       <div aria-live="polite" className="flex flex-wrap gap-4">
         {FORMATS.map(({ format, label, placeholder }) => (

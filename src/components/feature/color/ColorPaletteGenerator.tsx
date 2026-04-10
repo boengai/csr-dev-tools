@@ -85,7 +85,7 @@ export const ColorPaletteGenerator = () => {
 
   return (
     <div className="flex size-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <div className="flex flex-col gap-3">
         <ColorInput aria-label="Color picker" onChange={handlePickerChange} size="full" value={toPickerHex(hexInput)} />

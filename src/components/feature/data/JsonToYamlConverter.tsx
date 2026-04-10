@@ -106,7 +106,7 @@ export const JsonToYamlConverter = () => {
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button block onClick={() => openDialog('json-to-yaml')} variant="default">

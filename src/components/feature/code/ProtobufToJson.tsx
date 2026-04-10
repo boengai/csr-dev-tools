@@ -214,7 +214,7 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
 
   return (
     <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <CodeInput
         aria-label="Proto definition input"

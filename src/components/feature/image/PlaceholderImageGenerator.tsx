@@ -181,7 +181,7 @@ export const PlaceholderImageGenerator = () => {
 
   return (
     <div className="flex size-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <div className="flex grow flex-col gap-6 overflow-y-auto tablet:flex-row">
         <div className="flex shrink-0 flex-col gap-3 tablet:flex-1 tablet:shrink tablet:overflow-y-auto">

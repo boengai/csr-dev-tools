@@ -64,7 +64,7 @@ export const RsaKeyGenerator = (_props: ToolComponentProps) => {
 
   return (
     <div className="flex w-full grow flex-col gap-6">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-500">{toolEntry.description}</p>}
+      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       {/* Security Banner */}
       <div className="border-teal-800 bg-teal-950/50 flex items-center gap-3 rounded border px-4 py-3" role="note">
