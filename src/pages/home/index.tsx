@@ -157,7 +157,20 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
   )
 }
 
+// Keep in sync with the <title> in index.html — used to reset the document
+// title when navigating from a tool route back to home, since useToolSeo's
+// per-tool restore only fires on tool unmount (and HMR/StrictMode would not
+// otherwise restore reliably).
+const HOME_TITLE = 'CSR - Free Web Developer Tools Collection | Color Converter, Base64 Codec, Image Tools'
+
 export default function HomePage() {
+  if (typeof document !== 'undefined' && document.title !== HOME_TITLE) {
+    document.title = HOME_TITLE
+  }
+  useEffect(() => {
+    document.title = HOME_TITLE
+  }, [])
+
   const [selectedWidget, setSelectedWidget] = useState<null | number>(null)
   const handleCloseDialog = () => {
     setSelectedWidget(null)
