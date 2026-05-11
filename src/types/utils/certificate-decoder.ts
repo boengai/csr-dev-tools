@@ -1,4 +1,4 @@
-export type ValidityStatus = 'expired' | 'not-yet-valid' | 'valid'
+export type ValidityStatus = 'expired' | 'malformed-dates' | 'not-yet-valid' | 'valid'
 
 export type CertificateExtension = {
   critical: boolean

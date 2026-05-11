@@ -82,6 +82,13 @@ describe('certificate-decoder', () => {
       const now = new Date('2026-06-15')
       expect(getValidityStatus(notBefore, notAfter, now)).toBe('not-yet-valid')
     })
+
+    it('returns "malformed-dates" when notBefore is after notAfter', () => {
+      const notBefore = new Date('2030-01-01')
+      const notAfter = new Date('2025-01-01')
+      const now = new Date('2026-06-15')
+      expect(getValidityStatus(notBefore, notAfter, now)).toBe('malformed-dates')
+    })
   })
 
   describe('isValidPemCertificate', () => {

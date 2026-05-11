@@ -29,6 +29,10 @@ const EKU_NAMES: Record<string, string> = {
 }
 
 export const getValidityStatus = (notBefore: Date, notAfter: Date, now = new Date()): ValidityStatus => {
+  // A cert with notBefore > notAfter is malformed — neither "valid" nor a
+  // simple time-window mismatch. Surface it as a distinct state so the UI
+  // can flag it instead of misreporting as not-yet-valid.
+  if (notBefore > notAfter) return 'malformed-dates'
   if (now < notBefore) return 'not-yet-valid'
   if (now > notAfter) return 'expired'
   return 'valid'

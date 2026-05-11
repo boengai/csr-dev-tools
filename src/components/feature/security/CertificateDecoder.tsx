@@ -40,6 +40,11 @@ const ResultRow = ({
 
 const VALIDITY_CONFIG: Record<ValidityStatus, { icon: string; label: string; style: string }> = {
   expired: { icon: '✗', label: 'Expired', style: 'border-red-800 bg-red-950 text-red-400' },
+  'malformed-dates': {
+    icon: '⚠',
+    label: 'Malformed dates',
+    style: 'border-red-800 bg-red-950 text-red-400',
+  },
   'not-yet-valid': { icon: '○', label: 'Not yet valid', style: 'border-amber-800 bg-amber-950 text-amber-400' },
   valid: { icon: '✓', label: 'Valid', style: 'border-green-800 bg-green-950 text-green-400' },
 }
@@ -69,7 +74,9 @@ const ValidityBadge = ({
       ? `expired ${formatRelativeTime(notAfter)}`
       : status === 'not-yet-valid'
         ? `starts ${formatRelativeTime(notBefore)}`
-        : `expires ${formatRelativeTime(notAfter)}`
+        : status === 'malformed-dates'
+          ? 'notBefore is after notAfter'
+          : `expires ${formatRelativeTime(notAfter)}`
 
   return (
     <div
