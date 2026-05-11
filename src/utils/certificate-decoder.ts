@@ -187,7 +187,6 @@ export const parsePemCertificate = async (input: string): Promise<CertificateInf
   const notBefore = cert.notBefore
   const notAfter = cert.notAfter
   const validityStatus = getValidityStatus(notBefore, notAfter)
-  const isValid = validityStatus === 'valid'
 
   const sigAlg = cert.signatureAlgorithm as { hash?: { name?: string }; name?: string }
   let signatureAlgorithm = sigAlg.name ?? ''
@@ -255,7 +254,6 @@ export const parsePemCertificate = async (input: string): Promise<CertificateInf
 
   return {
     extensions,
-    isValid,
     issuer: formatDistinguishedName(cert.issuer),
     notAfter,
     notBefore,

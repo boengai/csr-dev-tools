@@ -159,7 +159,6 @@ describe('certificate-decoder', () => {
       try {
         const result = await parsePemCertificate(SHORT_LIVED_CERT_PEM)
         expect(result.validityStatus).toBe('expired')
-        expect(result.isValid).toBe(false)
       } finally {
         vi.useRealTimers()
       }

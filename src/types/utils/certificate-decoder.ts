@@ -9,7 +9,6 @@ export type CertificateExtension = {
 
 export type CertificateInfo = {
   extensions: Array<CertificateExtension>
-  isValid: boolean
   issuer: string
   notAfter: Date
   notBefore: Date
