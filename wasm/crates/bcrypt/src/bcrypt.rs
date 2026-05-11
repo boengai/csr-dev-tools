@@ -157,11 +157,12 @@ pub(crate) fn verify(password: &[u8], hash_str: &str) -> bool {
         Err(_) => return false,
     };
 
-    // Re-hash with the same salt and cost
+    // Re-hash with the same salt and cost. hash_password always emits $2b$,
+    // so compare only the salt+hash portion (bytes 7..60) to accept $2a$ /
+    // $2b$ / $2y$ inputs uniformly — the algorithm is identical across all
+    // three; the version tag is metadata about the producing implementation.
     let candidate = hash_password(password, cost, &salt);
-
-    // Constant-time comparison
-    constant_time_eq(hash_str.as_bytes(), candidate.as_bytes())
+    constant_time_eq(&hash_str.as_bytes()[7..], &candidate.as_bytes()[7..])
 }
 
 /// Constant-time byte slice comparison
@@ -241,6 +242,20 @@ mod tests {
     fn verify_invalid_hash_returns_false() {
         assert!(!verify(b"password", "not-a-hash"));
         assert!(!verify(b"password", "$2b$04$tooshort"));
+    }
+
+    /// $2a$ and $2y$ use the same algorithm as $2b$ — only the version tag
+    /// differs. Real-world hashes from other libraries are usually $2a$;
+    /// verify must accept them.
+    #[test]
+    fn verify_accepts_2a_and_2y_hashes() {
+        let known_2a = "$2a$06$DCq7YPn5Rq63x1Lad4cll.TV4S6ytwfsfvkgY8jIucDrjc8deX1s.";
+        assert!(verify(b"", known_2a), "$2a$ hash with correct password should verify");
+        assert!(!verify(b"wrong", known_2a), "$2a$ hash with wrong password should not verify");
+
+        // Manufacture a $2y$ variant of the same hash (same algorithm, different tag).
+        let known_2y = format!("$2y${}", &known_2a[4..]);
+        assert!(verify(b"", &known_2y), "$2y$ hash with correct password should verify");
     }
 
     /// Test against known bcrypt test vectors.
