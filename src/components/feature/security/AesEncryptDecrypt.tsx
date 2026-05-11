@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback } from '@/hooks'
+import { useDebounceCallback, useStaleSafeAsync } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import type { Mode } from '@/types/components/feature/security/aesEncryptDecrypt'
 import { aesDecrypt, aesEncrypt } from '@/utils'
@@ -16,10 +16,10 @@ export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponen
   const [mode, setMode] = useState<Mode>('encrypt')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [loading, setLoading] = useState(false)
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
 
   const processEncrypt = async (text: string, pass: string) => {
-    const session = ++sessionRef.current
+    const session = newSession()
     if (!text || !pass) {
       setResult('')
       setError('')
@@ -28,20 +28,22 @@ export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponen
     setLoading(true)
     try {
       const encrypted = await aesEncrypt(text, pass)
-      if (session !== sessionRef.current) return
-      setResult(encrypted)
-      setError('')
+      session.ifFresh(() => {
+        setResult(encrypted)
+        setError('')
+      })
     } catch {
-      if (session !== sessionRef.current) return
-      setResult('')
-      setError('Encryption failed')
+      session.ifFresh(() => {
+        setResult('')
+        setError('Encryption failed')
+      })
     } finally {
-      if (session === sessionRef.current) setLoading(false)
+      session.ifFresh(() => setLoading(false))
     }
   }
 
   const processDecrypt = async (text: string, pass: string) => {
-    const session = ++sessionRef.current
+    const session = newSession()
     if (!text || !pass) {
       setResult('')
       setError('')
@@ -50,15 +52,17 @@ export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponen
     setLoading(true)
     try {
       const decrypted = await aesDecrypt(text, pass)
-      if (session !== sessionRef.current) return
-      setResult(decrypted)
-      setError('')
+      session.ifFresh(() => {
+        setResult(decrypted)
+        setError('')
+      })
     } catch {
-      if (session !== sessionRef.current) return
-      setResult('')
-      setError('Decryption failed — incorrect password or corrupted data')
+      session.ifFresh(() => {
+        setResult('')
+        setError('Decryption failed — incorrect password or corrupted data')
+      })
     } finally {
-      if (session === sessionRef.current) setLoading(false)
+      session.ifFresh(() => setLoading(false))
     }
   }
 

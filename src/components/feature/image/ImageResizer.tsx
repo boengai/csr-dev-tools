@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Button, Dialog, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ImageFormat, ImageProcessingResult } from '@/types'
 import { isValidImageFormat, parseFileName, processImage, resizeImage } from '@/utils'
 
@@ -27,7 +27,7 @@ export const ImageResizer = () => {
   const [source, setSource] = useState<[File, ImageProcessingResult] | null>(null)
   const [preview, setPreview] = useState<ImageProcessingResult | null>(null)
 
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
 
   // hooks
   const { toast } = useToast()
@@ -35,7 +35,7 @@ export const ImageResizer = () => {
   const dbSetPreview = useDebounceCallback(async (s: ImageProcessingResult) => {
     if (!source) return
 
-    const currentSession = ++sessionRef.current
+    const currentSession = newSession()
 
     let height = s.height
     let width = s.width
@@ -68,7 +68,7 @@ export const ImageResizer = () => {
         },
       )
 
-      if (currentSession !== sessionRef.current) return
+      if (!currentSession.isFresh()) return
 
       if (result.dataUrl === EMPTY_IMAGE) {
         toast({
@@ -80,7 +80,7 @@ export const ImageResizer = () => {
 
       setPreview(result)
     } catch {
-      if (currentSession !== sessionRef.current) return
+      if (!currentSession.isFresh()) return
       toast({
         action: 'add',
         item: { label: 'Image resize failed — try smaller dimensions or a different format', type: 'error' },
@@ -177,7 +177,7 @@ export const ImageResizer = () => {
   }
 
   const handleReset = () => {
-    sessionRef.current++
+    newSession()
     setTabValue(TABS_VALUES.IMPORT)
     setSource(null)
     setPreview(null)

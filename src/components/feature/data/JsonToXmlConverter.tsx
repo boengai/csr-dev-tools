@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import type { ConvertMode } from '@/types/components/feature/data/jsonToXmlConverter'
 
@@ -25,12 +25,12 @@ export const JsonToXmlConverter = ({ onAfterDialogClose }: ToolComponentProps) =
   const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const { toast } = useToast()
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
   const modeRef = useRef(mode)
 
   const process = async (val: string, m: ConvertMode) => {
-    const session = ++sessionRef.current
+    const session = newSession()
     if (val.trim().length === 0) {
       setResult('')
       return
@@ -38,15 +38,15 @@ export const JsonToXmlConverter = ({ onAfterDialogClose }: ToolComponentProps) =
     try {
       const { xmlToJson, jsonToXml } = await import('@/utils/xml')
       const converted = m === 'xml-to-json' ? await xmlToJson(val) : await jsonToXml(val)
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult(converted)
     } catch {
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult('')
       if (m === 'xml-to-json') {
         const { getXmlParseError } = await import('@/utils/xml')
         const msg = await getXmlParseError(val)
-        if (session !== sessionRef.current) return
+        if (!session.isFresh()) return
         toast({
           action: 'add',
           item: { label: msg ? `Invalid XML: ${msg}` : 'Conversion failed — please check your input', type: 'error' },
@@ -81,7 +81,7 @@ export const JsonToXmlConverter = ({ onAfterDialogClose }: ToolComponentProps) =
   }
 
   const openDialog = (m: ConvertMode) => {
-    sessionRef.current++
+    newSession()
     setMode(m)
     modeRef.current = m
     const restored = readSource(m)
@@ -92,7 +92,7 @@ export const JsonToXmlConverter = ({ onAfterDialogClose }: ToolComponentProps) =
   }
 
   const handleReset = () => {
-    sessionRef.current++
+    newSession()
     setResult('')
   }
 

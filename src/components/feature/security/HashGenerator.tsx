@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react'
 
 import { CopyButton, TextAreaInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
 import { computeHash, DEFAULT_HASH_ALGORITHM, HASH_ALGORITHMS, type HashAlgorithm } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['hash-generator']
@@ -11,7 +11,7 @@ export const HashGenerator = () => {
   const [text, setText] = useState('')
   const [algorithm, setAlgorithm] = useState<HashAlgorithm>(DEFAULT_HASH_ALGORITHM)
   const [hash, setHash] = useState('')
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
   const algorithmRef = useRef(algorithm)
   algorithmRef.current = algorithm
   const textRef = useRef(text)
@@ -24,14 +24,14 @@ export const HashGenerator = () => {
         setHash('')
         return
       }
-      const session = ++sessionRef.current
+      const session = newSession()
       try {
         const result = await computeHash(input, algo)
-        if (session === sessionRef.current && textRef.current === input) {
+        if (session.isFresh() && textRef.current === input) {
           setHash(result)
         }
       } catch {
-        if (session === sessionRef.current && textRef.current === input) {
+        if (session.isFresh() && textRef.current === input) {
           toast({
             action: 'add',
             item: {
@@ -45,7 +45,7 @@ export const HashGenerator = () => {
         }
       }
     },
-    [toast],
+    [newSession, toast],
   )
 
   const debouncedCompute = useDebounceCallback((input: string) => {
@@ -55,7 +55,7 @@ export const HashGenerator = () => {
   const handleTextChange = (value: string) => {
     setText(value)
     if (!value) {
-      ++sessionRef.current
+      newSession()
       setHash('')
       return
     }

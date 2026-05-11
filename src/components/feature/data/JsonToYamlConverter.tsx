@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ConvertMode } from '@/types/components/feature/data/jsonToYamlConverter'
 import { getJsonParseError, getYamlParseError, jsonToYaml, yamlToJson } from '@/utils'
 
@@ -25,22 +25,22 @@ export const JsonToYamlConverter = () => {
   const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const { toast } = useToast()
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
   const modeRef = useRef(mode)
 
   const process = async (val: string, m: ConvertMode) => {
-    const session = ++sessionRef.current
+    const session = newSession()
     if (val.trim().length === 0) {
       setResult('')
       return
     }
     try {
       const converted = m === 'json-to-yaml' ? await jsonToYaml(val) : await yamlToJson(val)
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult(converted)
     } catch {
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult('')
       if (m === 'json-to-yaml') {
         const msg = await getJsonParseError(val)
@@ -50,7 +50,7 @@ export const JsonToYamlConverter = () => {
         })
       } else {
         const msg = await getYamlParseError(val)
-        if (session !== sessionRef.current) return
+        if (!session.isFresh()) return
         toast({
           action: 'add',
           item: { label: msg ? `Invalid YAML: ${msg}` : 'Conversion failed — please check your input', type: 'error' },
@@ -80,7 +80,7 @@ export const JsonToYamlConverter = () => {
   }
 
   const openDialog = (m: ConvertMode) => {
-    sessionRef.current++
+    newSession()
     setMode(m)
     modeRef.current = m
     const restored = readSource(m)
@@ -91,7 +91,7 @@ export const JsonToYamlConverter = () => {
   }
 
   const handleReset = () => {
-    sessionRef.current++
+    newSession()
     setResult('')
   }
 

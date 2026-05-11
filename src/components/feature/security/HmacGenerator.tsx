@@ -2,7 +2,7 @@ import { useCallback, useRef, useState } from 'react'
 
 import { CopyButton, FieldForm, TextAreaInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import {
   DEFAULT_HMAC_ALGORITHM,
@@ -23,7 +23,7 @@ export const HmacGenerator = (_props: ToolComponentProps) => {
   const [algorithm, setAlgorithm] = useState<HmacAlgorithm>(DEFAULT_HMAC_ALGORITHM)
   const [encoding, setEncoding] = useState<HmacEncoding>(DEFAULT_HMAC_ENCODING)
   const [hmac, setHmac] = useState('')
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
   const algorithmRef = useRef(algorithm)
   algorithmRef.current = algorithm
   const encodingRef = useRef(encoding)
@@ -40,14 +40,14 @@ export const HmacGenerator = (_props: ToolComponentProps) => {
         setHmac('')
         return
       }
-      const session = ++sessionRef.current
+      const session = newSession()
       try {
         const result = await generateHmac(msg, key, algo, enc)
-        if (session === sessionRef.current && messageRef.current === msg && secretKeyRef.current === key) {
+        if (session.isFresh() && messageRef.current === msg && secretKeyRef.current === key) {
           setHmac(result)
         }
       } catch {
-        if (session === sessionRef.current) {
+        session.ifFresh(() => {
           toast({
             action: 'add',
             item: {
@@ -55,10 +55,10 @@ export const HmacGenerator = (_props: ToolComponentProps) => {
               type: 'error',
             },
           })
-        }
+        })
       }
     },
-    [toast],
+    [newSession, toast],
   )
 
   const debouncedCompute = useDebounceCallback((msg: string, key: string) => {
@@ -68,7 +68,7 @@ export const HmacGenerator = (_props: ToolComponentProps) => {
   const handleMessageChange = (value: string) => {
     setMessage(value)
     if (!value || !secretKey) {
-      ++sessionRef.current
+      newSession()
       setHmac('')
       return
     }
@@ -78,7 +78,7 @@ export const HmacGenerator = (_props: ToolComponentProps) => {
   const handleKeyChange = (value: string) => {
     setSecretKey(value)
     if (!value || !message) {
-      ++sessionRef.current
+      newSession()
       setHmac('')
       return
     }

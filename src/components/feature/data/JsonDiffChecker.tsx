@@ -2,7 +2,7 @@ import { useEffect, useReducer, useRef } from 'react'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
 import type { InlineSpan, SideBySideRow, ToolComponentProps } from '@/types'
 import type { State, Action } from '@/types/components/feature/data/jsonDiffChecker'
 import { computeSideBySideDiff, createUnifiedDiff, getJsonDiffError, normalizeJson } from '@/utils'
@@ -78,11 +78,11 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   })
   const { rows, unifiedDiff, error, dialogOpen } = state
   const { toast } = useToast()
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
 
   const process = async (orig: string, mod: string) => {
-    const session = ++sessionRef.current
+    const session = newSession()
 
     if (orig.trim().length === 0 && mod.trim().length === 0) {
       dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
@@ -106,11 +106,11 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         computeSideBySideDiff(normalizedOrig, normalizedMod),
         createUnifiedDiff(normalizedOrig, normalizedMod),
       ])
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: sideBySide, unifiedDiff: patch } })
       dispatch({ type: 'SET_ERROR', payload: '' })
     } catch {
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
       toast({ action: 'add', item: { label: 'Unable to compute JSON diff', type: 'error' } })
     }
@@ -139,7 +139,7 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   }
 
   const handleReset = () => {
-    sessionRef.current++
+    newSession()
     setInputs({ original: '', modified: '' })
     dispatch({ type: 'RESET' })
   }

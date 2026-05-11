@@ -2,7 +2,7 @@ import { useCallback, useEffect, useReducer, useRef } from 'react'
 
 import { Button, DownloadIcon, FieldForm, ProgressBar, UploadInput } from '@/components/common'
 import { COMPRESSIBLE_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
 import type { State, Action } from '@/types/components/feature/image/imageCompressor'
 import { formatFileSize, processImage, tv } from '@/utils'
 
@@ -59,7 +59,7 @@ const reducer = (state: State, action: Action): State => {
 export const ImageCompressor = () => {
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const progressTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
 
   const [state, dispatch] = useReducer(reducer, initialState)
   const { compressed, originalInfo, processing, quality, showProgress, source } = state
@@ -78,22 +78,22 @@ export const ImageCompressor = () => {
       dispatch({ type: 'SET_PROCESSING', payload: true })
       progressTimerRef.current = setTimeout(() => dispatch({ type: 'SET_SHOW_PROGRESS', payload: true }), 300)
 
-      const currentSession = ++sessionRef.current
+      const currentSession = newSession()
 
       try {
         const result = await processImage(file, { quality: q / 100, strategy: 'stretch' })
-        if (currentSession !== sessionRef.current) return null
+        if (!currentSession.isFresh()) return null
         dispatch({ type: 'SET_COMPRESSED', payload: result })
         return result
       } catch {
-        if (currentSession !== sessionRef.current) return null
+        if (!currentSession.isFresh()) return null
         toast({ action: 'add', item: { label: 'Compression failed — try a different image', type: 'error' } })
         return null
       } finally {
-        if (currentSession === sessionRef.current) {
+        currentSession.ifFresh(() => {
           clearTimeout(progressTimerRef.current)
           dispatch({ type: 'FINISH_COMPRESS' })
-        }
+        })
       }
     },
     [toast],

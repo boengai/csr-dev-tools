@@ -2,7 +2,7 @@ import { useEffect, useReducer, useRef } from 'react'
 
 import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
 import type { InlineSpan, SideBySideRow, ToolComponentProps } from '@/types'
 import type { State, Action } from '@/types/components/feature/text/textDiffChecker'
 import { computeSideBySideDiff, createUnifiedDiff } from '@/utils'
@@ -75,21 +75,21 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   })
   const { rows, unifiedDiff, dialogOpen } = state
   const { toast } = useToast()
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
 
   const process = async (orig: string, mod: string) => {
-    const session = ++sessionRef.current
+    const session = newSession()
     if (orig.trim().length === 0 && mod.trim().length === 0) {
       dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
       return
     }
     try {
       const [sideBySide, patch] = await Promise.all([computeSideBySideDiff(orig, mod), createUnifiedDiff(orig, mod)])
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: sideBySide, unifiedDiff: patch } })
     } catch {
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
       toast({ action: 'add', item: { label: 'Unable to compute diff', type: 'error' } })
     }
@@ -118,7 +118,7 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   }
 
   const handleReset = () => {
-    sessionRef.current++
+    newSession()
     setInputs({ original: '', modified: '' })
     dispatch({ type: 'RESET' })
   }

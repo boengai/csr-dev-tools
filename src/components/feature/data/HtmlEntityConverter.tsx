@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import type { ConvertMode, EntityMode } from '@/types/components/feature/data/htmlEntityConverter'
 import { decodeHtmlEntities, encodeHtmlEntities } from '@/utils'
@@ -27,22 +27,22 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
   const [entityMode, setEntityMode] = useState<EntityMode>('named')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
   const modeRef = useRef(mode)
 
   const process = (val: string, m: ConvertMode, em: EntityMode) => {
-    const session = ++sessionRef.current
+    const session = newSession()
     if (val.trim().length === 0) {
       setResult('')
       return
     }
     try {
       const output = m === 'encode' ? encodeHtmlEntities(val, em) : decodeHtmlEntities(val)
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult(output)
     } catch (e) {
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult('')
       const msg = e instanceof Error ? e.message : 'Conversion failed'
       toast({ action: 'add', item: { label: msg, type: 'error' } })
@@ -70,7 +70,7 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
   }
 
   const openDialog = (m: ConvertMode) => {
-    sessionRef.current++
+    newSession()
     setMode(m)
     modeRef.current = m
     setEntityMode('named')
@@ -90,7 +90,7 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
   }
 
   const handleReset = () => {
-    sessionRef.current++
+    newSession()
     setResult('')
   }
 

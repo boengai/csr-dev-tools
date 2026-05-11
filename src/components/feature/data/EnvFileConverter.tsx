@@ -1,8 +1,8 @@
-import { useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import type { ConvertMode } from '@/types/components/feature/data/envFileConverter'
 import { envToJson, envToYaml, jsonToEnv, yamlToEnv } from '@/utils'
@@ -55,10 +55,10 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
   const [mode, setMode] = useState<ConvertMode>('env-to-json')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
 
   const process = async (val: string, m: ConvertMode) => {
-    const session = ++sessionRef.current
+    const session = newSession()
     if (val.trim().length === 0) {
       setResult('')
       return
@@ -86,13 +86,13 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
           output = await yamlToEnv(val)
           break
       }
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult(output)
       if (warnings.length > 0) {
         toast({ action: 'add', item: { label: warnings.join('; '), type: 'error' } })
       }
     } catch (e) {
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult('')
       const msg = e instanceof Error ? e.message : 'Conversion failed'
       toast({ action: 'add', item: { label: msg, type: 'error' } })
@@ -109,7 +109,7 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
   }
 
   const openDialog = (m: ConvertMode) => {
-    sessionRef.current++
+    newSession()
     setMode(m)
     setSource('')
     setResult('')
@@ -117,7 +117,7 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
   }
 
   const handleReset = () => {
-    sessionRef.current++
+    newSession()
     setSource('')
     setResult('')
   }

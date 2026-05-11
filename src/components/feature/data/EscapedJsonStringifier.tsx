@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Button, CheckboxInput, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import type { ConvertMode } from '@/types/components/feature/data/escapedJsonStringifier'
 import { parseStringifiedJson, stringifyJson } from '@/utils'
@@ -27,22 +27,22 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
   const [doubleEscape, setDoubleEscape] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
   const modeRef = useRef(mode)
 
   const process = (val: string, m: ConvertMode, dblEscape: boolean) => {
-    const session = ++sessionRef.current
+    const session = newSession()
     if (val.trim().length === 0) {
       setResult('')
       return
     }
     try {
       const output = m === 'stringify' ? stringifyJson(val, dblEscape) : parseStringifiedJson(val)
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult(output)
     } catch (e) {
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult('')
       const msg = e instanceof Error ? e.message : 'Conversion failed'
       toast({ action: 'add', item: { label: msg, type: 'error' } })
@@ -70,7 +70,7 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
   }
 
   const openDialog = (m: ConvertMode) => {
-    sessionRef.current++
+    newSession()
     setMode(m)
     modeRef.current = m
     setDoubleEscape(false)
@@ -90,7 +90,7 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
   }
 
   const handleReset = () => {
-    sessionRef.current++
+    newSession()
     setResult('')
     setDoubleEscape(false)
   }

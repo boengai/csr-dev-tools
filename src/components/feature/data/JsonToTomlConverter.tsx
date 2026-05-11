@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import type { ConvertMode } from '@/types/components/feature/data/jsonToTomlConverter'
 import { getTomlParseError } from '@/utils'
@@ -26,12 +26,12 @@ export const JsonToTomlConverter = ({ onAfterDialogClose }: ToolComponentProps) 
   const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const { toast } = useToast()
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
   const modeRef = useRef(mode)
 
   const process = async (val: string, m: ConvertMode) => {
-    const session = ++sessionRef.current
+    const session = newSession()
     if (val.trim().length === 0) {
       setResult('')
       return
@@ -39,14 +39,14 @@ export const JsonToTomlConverter = ({ onAfterDialogClose }: ToolComponentProps) 
     try {
       const { tomlToJson, jsonToToml } = await import('@/utils/toml')
       const converted = m === 'toml-to-json' ? await tomlToJson(val) : await jsonToToml(val)
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult(converted)
     } catch {
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult('')
       if (m === 'toml-to-json') {
         const msg = await getTomlParseError(val)
-        if (session !== sessionRef.current) return
+        if (!session.isFresh()) return
         toast({
           action: 'add',
           item: {
@@ -84,7 +84,7 @@ export const JsonToTomlConverter = ({ onAfterDialogClose }: ToolComponentProps) 
   }
 
   const openDialog = (m: ConvertMode) => {
-    sessionRef.current++
+    newSession()
     setMode(m)
     modeRef.current = m
     const restored = readSource(m)
@@ -95,7 +95,7 @@ export const JsonToTomlConverter = ({ onAfterDialogClose }: ToolComponentProps) 
   }
 
   const handleReset = () => {
-    sessionRef.current++
+    newSession()
     setResult('')
   }
 

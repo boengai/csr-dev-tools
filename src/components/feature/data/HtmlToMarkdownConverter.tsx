@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import type { ConvertMode } from '@/types/components/feature/data/htmlToMarkdownConverter'
 
@@ -25,12 +25,12 @@ export const HtmlToMarkdownConverter = ({ autoOpen, onAfterDialogClose }: ToolCo
   const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
-  const sessionRef = useRef(0)
+  const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
   const modeRef = useRef(mode)
 
   const process = async (val: string, m: ConvertMode) => {
-    const session = ++sessionRef.current
+    const session = newSession()
     if (val.trim().length === 0) {
       setResult('')
       return
@@ -38,10 +38,10 @@ export const HtmlToMarkdownConverter = ({ autoOpen, onAfterDialogClose }: ToolCo
     try {
       const { htmlToMarkdown, markdownToHtml } = await import('@/utils/html-markdown')
       const converted = m === 'html-to-markdown' ? await htmlToMarkdown(val) : await markdownToHtml(val)
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult(converted)
     } catch {
-      if (session !== sessionRef.current) return
+      if (!session.isFresh()) return
       setResult('')
       toast({
         action: 'add',
@@ -71,7 +71,7 @@ export const HtmlToMarkdownConverter = ({ autoOpen, onAfterDialogClose }: ToolCo
   }
 
   const openDialog = (m: ConvertMode) => {
-    sessionRef.current++
+    newSession()
     setMode(m)
     modeRef.current = m
     const restored = readSource(m)
@@ -82,7 +82,7 @@ export const HtmlToMarkdownConverter = ({ autoOpen, onAfterDialogClose }: ToolCo
   }
 
   const handleReset = () => {
-    sessionRef.current++
+    newSession()
     setResult('')
   }
 
