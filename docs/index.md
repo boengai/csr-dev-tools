@@ -36,7 +36,6 @@
 ## Existing Documentation
 
 - [README.md](../README.md) -- Project overview, features, setup instructions
-- [Project Context (AI Rules)](../_bmad-output/project-context.md) -- Implementation rules for AI agents
 - [LICENSE](../LICENSE) -- MIT License
 
 ## Getting Started

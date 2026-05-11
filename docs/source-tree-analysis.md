@@ -24,9 +24,6 @@ csr-dev-tools/
 ├── playwright.config.ts    # Playwright E2E test configuration
 ├── LICENSE                 # MIT License
 ├── README.md               # Project documentation
-├── _bmad/                  # BMAD workflow tooling (AI agent infrastructure)
-├── _bmad-output/           # BMAD generated artifacts
-│   └── project-context.md  # AI agent implementation rules
 ├── docs/                   # Generated project documentation (this folder)
 ├── dist/                   # Production build output
 ├── e2e/                    # Playwright E2E test specs
