@@ -20,6 +20,9 @@ class SshKeyBlobReader {
   }
 
   readUint32(): number {
+    if (this.offset + 4 > this.view.byteLength) {
+      throw new Error('SSH key blob truncated')
+    }
     const value = this.view.getUint32(this.offset, false)
     this.offset += 4
     return value
@@ -27,6 +30,9 @@ class SshKeyBlobReader {
 
   readBytes(): Uint8Array {
     const length = this.readUint32()
+    if (this.offset + length > this.view.byteLength) {
+      throw new Error('SSH key blob truncated')
+    }
     const bytes = new Uint8Array(this.view.buffer, this.offset, length)
     this.offset += length
     return bytes
@@ -241,7 +247,12 @@ export const analyzeSshKey = async (input: string): Promise<SshKeyInfo> => {
     throw new Error('SSH key format not recognized (e.g., ssh-rsa AAAA... user@host)')
   }
 
-  const blobInfo = parseKeyBlob(blobBuffer)
+  let blobInfo: ParsedKeyBlob
+  try {
+    blobInfo = parseKeyBlob(blobBuffer)
+  } catch {
+    throw new Error('SSH key format not recognized (e.g., ssh-rsa AAAA... user@host)')
+  }
 
   if (blobInfo.keyType !== parsed.keyType) {
     throw new Error('SSH key format not recognized (e.g., ssh-rsa AAAA... user@host)')

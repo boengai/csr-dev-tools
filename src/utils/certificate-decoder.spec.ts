@@ -114,6 +114,10 @@ describe('certificate-decoder', () => {
         'CN=test.example.com, O=Test Org, C=US',
       )
     })
+
+    it('preserves RFC 4514 escaped commas inside RDN values', () => {
+      expect(formatDistinguishedName('CN=Acme\\, Inc.,O=Acme,C=US')).toBe('CN=Acme\\, Inc., O=Acme, C=US')
+    })
   })
 
   describe('parsePemCertificate', () => {

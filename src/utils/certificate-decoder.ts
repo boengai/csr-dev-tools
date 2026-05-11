@@ -39,11 +39,26 @@ export const isValidPemCertificate = (input: string): boolean => {
 }
 
 export const formatDistinguishedName = (dn: string): string => {
-  return dn
-    .split(',')
-    .map((part) => part.trim())
-    .filter(Boolean)
-    .join(', ')
+  // RFC 4514: commas inside RDN values are escaped as `\,`; splitting naively
+  // on `,` would corrupt DNs like `CN=Acme\, Inc.,O=Acme`.
+  const parts: Array<string> = []
+  let current = ''
+  for (let i = 0; i < dn.length; i++) {
+    const c = dn[i]
+    if (c === '\\' && i + 1 < dn.length) {
+      current += c + dn[i + 1]
+      i++
+      continue
+    }
+    if (c === ',') {
+      parts.push(current.trim())
+      current = ''
+      continue
+    }
+    current += c
+  }
+  parts.push(current.trim())
+  return parts.filter(Boolean).join(', ')
 }
 
 const formatSerialNumber = (hex: string): string => {
