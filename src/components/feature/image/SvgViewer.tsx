@@ -5,9 +5,11 @@ import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { optimizeSvg, sanitizeSvg, type SvgOptimizeResult } from '@/utils'
+import { optimizeSvg, type SvgOptimizeResult } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['svg-viewer']
+
+const sanitize = (svg: string): string => DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true } })
 
 export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
@@ -18,12 +20,12 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
 
   useEffect(() => {
     if (previewRef.current) {
-      previewRef.current.innerHTML = DOMPurify.sanitize(safeSvg, { USE_PROFILES: { svg: true } })
+      previewRef.current.innerHTML = safeSvg
     }
   }, [safeSvg])
 
   const updatePreview = useDebounceCallback((val: string) => {
-    setSafeSvg(val ? sanitizeSvg(val) : '')
+    setSafeSvg(val ? sanitize(val) : '')
   }, 300)
 
   const handleSourceChange = (val: string) => {
@@ -37,11 +39,11 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
     const result = optimizeSvg(source)
     setOptimizeResult(result)
     setSource(result.optimized)
-    setSafeSvg(sanitizeSvg(result.optimized))
+    setSafeSvg(sanitize(result.optimized))
   }
 
   const handleDownload = () => {
-    const content = sanitizeSvg(optimizeResult?.optimized ?? source)
+    const content = sanitize(optimizeResult?.optimized ?? source)
     if (!content) return
     const blob = new Blob([content], { type: 'image/svg+xml' })
     const url = URL.createObjectURL(blob)
@@ -124,7 +126,7 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
             <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <div className="flex items-center gap-2">
                 <span className="text-body-sm font-medium text-gray-400">Preview</span>
-                {displaySvg && <CopyButton label="SVG" value={displaySvg} />}
+                {displaySvg && <CopyButton label="SVG" value={sanitize(displaySvg)} />}
               </div>
               <div
                 className="flex flex-1 items-center justify-center rounded-lg border border-gray-800 bg-white p-4"

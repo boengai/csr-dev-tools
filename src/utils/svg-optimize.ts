@@ -1,29 +1,5 @@
 import type { SvgOptimizeResult } from '@/types/utils/svg-optimize'
 
-export function sanitizeSvg(svg: string): string {
-  let result = svg
-  // Remove script tags
-  result = result.replace(/<script[\s\S]*?<\/script>/gi, '')
-  result = result.replace(/<script[\s\S]*?\/>/gi, '')
-  // Remove event handler attributes
-  result = result.replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '')
-  // Remove javascript: URIs from href/xlink:href
-  result = result.replace(/\s(?:xlink:)?href\s*=\s*(?:"javascript:[^"]*"|'javascript:[^']*')/gi, '')
-  // Remove <set>/<animate> targeting event handlers
-  result = result.replace(/<(?:set|animate)\s[^>]*attributeName\s*=\s*(?:"on\w+"|'on\w+')/gi, '<!-- removed -->')
-  // Remove <set>/<animate> targeting href/xlink:href (can inject javascript: URIs dynamically)
-  result = result.replace(
-    /<(?:set|animate)\s[^>]*attributeName\s*=\s*(?:"(?:xlink:)?href"|'(?:xlink:)?href')[^>]*\/?>/gi,
-    '',
-  )
-  // Remove foreignObject elements
-  result = result.replace(/<foreignObject[\s\S]*?<\/foreignObject>/gi, '')
-  result = result.replace(/<foreignObject[\s\S]*?\/>/gi, '')
-  // Remove <use> with external references (potential SSRF/XSS)
-  result = result.replace(/<use\s[^>]*href\s*=\s*(?:"(?!#)[^"]*"|'(?!#)[^']*')[^>]*\/?>/gi, '')
-  return result
-}
-
 export function optimizeSvg(svg: string): SvgOptimizeResult {
   const originalSize = new Blob([svg]).size
   let optimized = svg
