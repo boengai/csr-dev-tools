@@ -1,9 +1,7 @@
 # .graphifyignore
 node_modules/
 dist/
+wasm/
+playwright-report/
+public/
 *.generated.py
-
-# only index src/, ignore everything else
-*
-!src/
-!src/**

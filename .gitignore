@@ -32,6 +32,7 @@ test-results/
 playwright-report/
 blob-report/
 playwright/.cache/
+.playwright-mcp/
 
 # Claude Cli
 .claude/settings.local.json
