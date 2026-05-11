@@ -13,8 +13,14 @@ export const DEFAULT_PASSWORD_OPTIONS: PasswordOptions = {
 }
 
 const randomIndex = (max: number): number => {
+  // Rejection sampling: discard values in the unrepresentative tail of 2^32
+  // so every index in [0, max) is equally likely. Plain `% max` introduces
+  // bias when max does not divide 2^32.
+  const limit = Math.floor(0x1_0000_0000 / max) * max
   const array = new Uint32Array(1)
-  crypto.getRandomValues(array)
+  do {
+    crypto.getRandomValues(array)
+  } while (array[0] >= limit)
   return array[0] % max
 }
 
