@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import type { UseToolSeoParams } from '@/types'
 
@@ -17,9 +17,24 @@ const getOrCreateMeta = (property: string, isOg = false): HTMLMetaElement => {
 }
 
 export const useToolSeo = ({ description, title, url }: UseToolSeoParams) => {
-  useEffect(() => {
-    const previousTitle = document.title
+  // Mirror the tool's title onto document.title synchronously during render
+  // so the browser tab updates from the very first commit. The previous
+  // effect-only implementation lagged visibly when the lazy ToolComponent
+  // inside Suspense delayed the surrounding commit. The effect below also
+  // re-applies the title — required because in StrictMode the render body
+  // is not re-run during the dev-mode mount/unmount/remount cycle, but the
+  // effect is, so we need both to land on the right title.
+  const initialTitleRef = useRef<string | null>(null)
+  if (typeof document !== 'undefined') {
+    if (initialTitleRef.current === null) {
+      initialTitleRef.current = document.title
+    }
+    if (document.title !== title) {
+      document.title = title
+    }
+  }
 
+  useEffect(() => {
     const descriptionMeta = getOrCreateMeta('description')
     const previousDescription = descriptionMeta.content
 
@@ -41,11 +56,13 @@ export const useToolSeo = ({ description, title, url }: UseToolSeoParams) => {
     }
 
     return () => {
-      document.title = previousTitle
       descriptionMeta.content = previousDescription
       ogTitleMeta.content = previousOgTitle
       ogDescriptionMeta.content = previousOgDescription
       ogUrlMeta.content = previousOgUrl
+      if (initialTitleRef.current !== null) {
+        document.title = initialTitleRef.current
+      }
     }
   }, [description, title, url])
 }
