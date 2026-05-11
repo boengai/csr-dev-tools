@@ -1,13 +1,20 @@
-import { useCallback, useRef } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 
 /**
- * A hook that debounces a callback function by delaying its execution until after a specified delay
- * @param callback - The function to debounce
- * @param delay - The delay in milliseconds
- * @returns A debounced version of the callback function
+ * Debounces `callback` so it runs only after `delay` ms of inactivity since
+ * the last call. The pending invocation is cancelled when the consuming
+ * component unmounts to prevent state updates on unmounted components.
  */
 export function useDebounceCallback<T extends (...args: Array<never>) => unknown>(callback: T, delay: number = 800): T {
   const timeoutRef = useRef<number | undefined>(undefined)
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current !== undefined) {
+        clearTimeout(timeoutRef.current)
+      }
+    }
+  }, [])
 
   const debouncedCallback = useCallback(
     (...args: Parameters<T>) => {
