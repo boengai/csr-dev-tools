@@ -241,7 +241,6 @@ const DecodeContent = ({
           setResult(codecResult.output)
         } else {
           setResult('')
-          console.log('kuy', codecResult)
           toast({ action: 'add', item: { label: codecResult.error, type: 'error' } })
         }
       } catch {

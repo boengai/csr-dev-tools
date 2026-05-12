@@ -96,7 +96,7 @@ export const ImageCompressor = () => {
         })
       }
     },
-    [toast],
+    [newSession, toast],
   )
 
   const debouncedCompress = useDebounceCallback(compress, 300)

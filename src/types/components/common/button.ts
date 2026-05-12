@@ -1,8 +1,10 @@
 import type { ButtonHTMLAttributes, ReactElement } from 'react'
 
 export type ButtonProps = Partial<ButtonVariants> &
-  Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'disabled' | 'onBlur' | 'onClick' | 'type'> & {
-    'aria-label'?: string
+  Pick<
+    ButtonHTMLAttributes<HTMLButtonElement>,
+    'aria-expanded' | 'aria-label' | 'aria-pressed' | 'disabled' | 'onBlur' | 'onClick' | 'type'
+  > & {
     children?: ReactElement<HTMLSpanElement> | string
     'data-testid'?: string
     icon?: ReactElement<SVGElement>
