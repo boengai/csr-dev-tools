@@ -1,6 +1,6 @@
 import { useReducer } from 'react'
 
-import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CopyButton, Dialog, FieldForm, ToggleButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -17,16 +17,14 @@ const flagsToString = (flags: Flags) =>
     .join('')
 
 const FlagToggle = ({ active, flag, onToggle }: { active: boolean; flag: string; onToggle: () => void }) => (
-  <button
+  <ToggleButton
     aria-label={`Toggle ${flag} flag`}
-    aria-pressed={active}
-    className="text-xs min-w-8 rounded border px-2 font-mono leading-7 data-[state=active]:border-primary data-[state=active]:bg-primary/20 data-[state=active]:font-bold data-[state=active]:text-primary data-[state=inactive]:border-gray-700 data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
-    data-state={active ? 'active' : 'inactive'}
+    className="min-w-8 px-2"
     onClick={onToggle}
-    type="button"
+    pressed={active}
   >
     {flag}
-  </button>
+  </ToggleButton>
 )
 
 const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (

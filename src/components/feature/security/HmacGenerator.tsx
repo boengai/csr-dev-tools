@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 
-import { CopyButton, FieldForm, TextAreaInput } from '@/components/common'
+import { CopyButton, FieldForm, TextAreaInput, ToggleButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -120,17 +120,14 @@ export const HmacGenerator = (_props: ToolComponentProps) => {
       <div className="flex shrink-0 flex-wrap items-center gap-4">
         <div className="flex flex-wrap gap-2">
           {HMAC_ALGORITHMS.map((algo) => (
-            <button
+            <ToggleButton
               aria-label={`Select ${algo} algorithm`}
-              aria-pressed={algo === algorithm}
-              className="text-xs rounded border px-3 font-mono leading-7 data-[state=active]:border-primary data-[state=active]:bg-primary/20 data-[state=active]:font-bold data-[state=active]:text-primary data-[state=inactive]:border-gray-700 data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
-              data-state={algo === algorithm ? 'active' : 'inactive'}
               key={algo}
               onClick={() => handleAlgorithmChange(algo)}
-              type="button"
+              pressed={algo === algorithm}
             >
               {algo}
-            </button>
+            </ToggleButton>
           ))}
         </div>
 
@@ -138,17 +135,14 @@ export const HmacGenerator = (_props: ToolComponentProps) => {
 
         <div className="flex flex-wrap gap-2">
           {ENCODINGS.map((enc) => (
-            <button
+            <ToggleButton
               aria-label={`Select ${enc} encoding`}
-              aria-pressed={enc === encoding}
-              className="text-xs rounded border px-3 font-mono leading-7 data-[state=active]:border-primary data-[state=active]:bg-primary/20 data-[state=active]:font-bold data-[state=active]:text-primary data-[state=inactive]:border-gray-700 data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
-              data-state={enc === encoding ? 'active' : 'inactive'}
               key={enc}
               onClick={() => handleEncodingChange(enc)}
-              type="button"
+              pressed={enc === encoding}
             >
               {enc}
-            </button>
+            </ToggleButton>
           ))}
         </div>
       </div>

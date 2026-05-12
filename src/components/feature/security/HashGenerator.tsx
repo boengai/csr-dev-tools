@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from 'react'
 
-import { CopyButton, TextAreaInput } from '@/components/common'
+import { CopyButton, TextAreaInput, ToggleButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
 import { computeHash, DEFAULT_HASH_ALGORITHM, HASH_ALGORITHMS, type HashAlgorithm } from '@/utils'
@@ -81,17 +81,14 @@ export const HashGenerator = () => {
 
       <div className="flex shrink-0 flex-wrap gap-2">
         {HASH_ALGORITHMS.map((algo) => (
-          <button
+          <ToggleButton
             aria-label={`Select ${algo} algorithm`}
-            aria-pressed={algo === algorithm}
-            className="text-xs rounded border px-3 font-mono leading-7 data-[state=active]:border-primary data-[state=active]:bg-primary/20 data-[state=active]:font-bold data-[state=active]:text-primary data-[state=inactive]:border-gray-700 data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
-            data-state={algo === algorithm ? 'active' : 'inactive'}
             key={algo}
             onClick={() => handleAlgorithmChange(algo)}
-            type="button"
+            pressed={algo === algorithm}
           >
             {algo}
-          </button>
+          </ToggleButton>
         ))}
       </div>
 

@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 
-import { Button, CopyButton, FieldForm } from '@/components/common'
+import { Button, CopyButton, FieldForm, ToggleButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import { DEFAULT_PASSWORD_OPTIONS, generatePassword, type PasswordOptions } from '@/utils'
@@ -78,17 +78,15 @@ export const PasswordGenerator = () => {
         <div className="flex w-2/5 flex-col gap-3">
           <div className="flex flex-wrap gap-2">
             {CHAR_TOGGLES.map(({ key, label }) => (
-              <button
+              <ToggleButton
                 aria-label={`Toggle ${label}`}
-                aria-pressed={options[key]}
-                className="text-xs w-[calc(50%-0.25rem)] rounded border px-3 font-mono leading-7 data-[state=active]:border-primary data-[state=active]:bg-primary/20 data-[state=active]:font-bold data-[state=active]:text-primary data-[state=inactive]:border-gray-700 data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
-                data-state={options[key] ? 'active' : 'inactive'}
+                className="w-[calc(50%-0.25rem)]"
                 key={key}
                 onClick={() => handleToggle(key)}
-                type="button"
+                pressed={options[key]}
               >
                 {label}
-              </button>
+              </ToggleButton>
             ))}
           </div>
           <Button block onClick={handleGenerate} variant="default">

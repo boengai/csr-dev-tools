@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { ColorInput, CopyButton, FieldForm } from '@/components/common'
+import { ColorInput, CopyButton, FieldForm, ToggleButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { type BoxShadowConfig, DEFAULT_BOX_SHADOW, generateBoxShadowCSS } from '@/utils'
 
@@ -81,16 +81,13 @@ export const BoxShadowGenerator = () => {
               value={config.color}
             />
           </div>
-          <button
+          <ToggleButton
             aria-label="Toggle inset shadow"
-            aria-pressed={config.inset}
-            className="text-xs rounded border px-3 font-mono leading-7 data-[state=active]:border-primary data-[state=active]:bg-primary/20 data-[state=active]:font-bold data-[state=active]:text-primary data-[state=inactive]:border-gray-700 data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-500"
-            data-state={config.inset ? 'active' : 'inactive'}
             onClick={() => setConfig((prev) => ({ ...prev, inset: !prev.inset }))}
-            type="button"
+            pressed={config.inset}
           >
             Inset
-          </button>
+          </ToggleButton>
         </div>
       </div>
 
