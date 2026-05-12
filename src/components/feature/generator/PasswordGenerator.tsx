@@ -76,11 +76,10 @@ export const PasswordGenerator = () => {
           />
         </div>
         <div className="flex w-2/5 flex-col gap-3">
-          <div className="flex flex-wrap gap-2">
+          <div className="grid grid-cols-2 gap-2">
             {CHAR_TOGGLES.map(({ key, label }) => (
               <ToggleButton
                 aria-label={`Toggle ${label}`}
-                className="w-[calc(50%-0.25rem)]"
                 key={key}
                 onClick={() => handleToggle(key)}
                 pressed={options[key]}

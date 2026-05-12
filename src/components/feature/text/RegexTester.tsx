@@ -17,12 +17,7 @@ const flagsToString = (flags: Flags) =>
     .join('')
 
 const FlagToggle = ({ active, flag, onToggle }: { active: boolean; flag: string; onToggle: () => void }) => (
-  <ToggleButton
-    aria-label={`Toggle ${flag} flag`}
-    className="min-w-8 px-2"
-    onClick={onToggle}
-    pressed={active}
-  >
+  <ToggleButton aria-label={`Toggle ${flag} flag`} onClick={onToggle} pressed={active} size="compact">
     {flag}
   </ToggleButton>
 )

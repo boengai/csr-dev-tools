@@ -32,6 +32,6 @@ export type ToggleButtonProps = Pick<
   'aria-label' | 'disabled' | 'onClick'
 > & {
   children: ReactElement<HTMLSpanElement> | string
-  className?: string
   pressed: boolean
+  size?: 'compact' | 'default'
 }

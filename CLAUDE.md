@@ -18,6 +18,10 @@ To add a tool:
 
 `pnpm build` emits a prerendered `dist/tools/<route>/index.html` for every entry — if it's missing, the tool isn't in `TOOL_ROUTES`.
 
+## Common component API rule
+
+Common components (`Button`, `CopyButton`, `ToggleButton`, future `Badge`, etc.) **do not accept `className` or `style` overrides**. If a call site needs a layout tweak (width, min-width, grid placement), do it on a wrapper element or via a parent `grid`/`flex` container. If a true visual variant is needed, add a named prop on the component (e.g. `size: 'default' | 'compact'`) — never a freeform class prop. Keeps the design system enforceable and prevents per-call drift.
+
 ## Common hook patterns
 
 - **`useStaleSafeAsync`** (`src/hooks/useStaleSafeAsync.ts`): consolidates the "drop stale async results when input changes" pattern. After calling `const session = newSession()`, guard post-`await` state mutations with `session.isFresh()` (early-return) or `session.ifFresh(() => ...)` (commit). Use it instead of hand-rolled `sessionRef` counters.
