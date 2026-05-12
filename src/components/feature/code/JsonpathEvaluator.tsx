@@ -266,7 +266,7 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
           <div className="flex flex-col gap-2">
             <button
               aria-expanded={cheatsheetOpen}
-              className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400 hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+              className="relative flex cursor-pointer items-center gap-2 text-body-xs text-gray-400 before:absolute before:inset-x-0 before:inset-y-[-8px] before:content-[''] hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
               onClick={() => setCheatsheetOpen((prev) => !prev)}
               type="button"
             >

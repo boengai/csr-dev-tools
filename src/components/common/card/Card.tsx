@@ -18,7 +18,7 @@ export const Card = ({ children, onClose, title }: CardProps) => {
       <div className="flex w-full shrink-0 items-center gap-3 border-b border-gray-800 px-4 py-2">
         {onClose && (
           <m.button
-            className="size-3 shrink-0 rounded-full bg-error"
+            className="relative size-3 shrink-0 rounded-full bg-error before:absolute before:inset-[-12px] before:content-['']"
             onClick={onClose}
             transition={{ duration: 0.15, ease: 'easeOut' }}
             whileHover={{ opacity: 0.8, scale: 1.15 }}

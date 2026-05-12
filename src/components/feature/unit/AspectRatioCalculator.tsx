@@ -6,7 +6,7 @@ import { useDebounceCallback, useToast } from '@/hooks'
 import { calculateDimension, parseRatio, simplifyRatio, tv } from '@/utils'
 
 const lockIndicatorStyles = tv({
-  base: 'ml-1 text-body-xs',
+  base: "relative ml-1 text-body-xs before:absolute before:inset-[-10px] before:content-['']",
   variants: {
     locked: {
       true: 'text-blue-400',

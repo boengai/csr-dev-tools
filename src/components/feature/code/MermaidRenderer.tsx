@@ -247,7 +247,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                 <button
                   aria-expanded={referenceOpen}
                   aria-label="Syntax Reference"
-                  className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400 hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                  className="relative flex cursor-pointer items-center gap-2 text-body-xs text-gray-400 before:absolute before:inset-x-0 before:inset-y-[-8px] before:content-[''] hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
                   onClick={() => dispatch({ type: 'SET_REFERENCE_OPEN', payload: !referenceOpen })}
                   type="button"
                 >
