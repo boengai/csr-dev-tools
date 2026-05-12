@@ -17,7 +17,7 @@ const canvasToBlob = (canvas: HTMLCanvasElement): Promise<Blob> =>
     }, 'image/png')
   })
 
-export const generateSplashScreen = async (
+const generateSplashScreen = async (
   image: HTMLImageElement,
   device: SplashScreenDevice,
   orientation: 'landscape' | 'portrait',
@@ -51,7 +51,7 @@ export const generateSplashScreen = async (
   return { blob, dataUrl, device, fileName, orientation }
 }
 
-export const generatePwaIcon = async (
+const generatePwaIcon = async (
   image: HTMLImageElement,
   size: number,
   maskable: boolean,

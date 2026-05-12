@@ -60,9 +60,7 @@ export * from './mermaid-auto-fix'
 export {
   type MermaidRenderResult,
   initializeMermaid,
-  sanitizeMermaidInput,
   renderMermaid,
-  parseMermaid,
   svgToPng,
   downloadSvg as downloadMermaidSvg,
   downloadPng,

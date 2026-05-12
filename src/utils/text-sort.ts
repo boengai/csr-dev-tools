@@ -1,11 +1,5 @@
 import type { TextSortResult, TextSortOptions } from '@/types/utils/text-sort'
 
-export const DEFAULT_SORT_OPTIONS: TextSortOptions = {
-  removeDuplicates: false,
-  removeEmpty: false,
-  sortMode: 'az',
-  trimLines: false,
-}
 export const sortAndProcessText = (input: string, options: TextSortOptions): TextSortResult => {
   let lines = input.replace(/\r\n/g, '\n').split('\n')
   const lineCountBefore = lines.length

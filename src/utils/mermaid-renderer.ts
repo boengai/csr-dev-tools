@@ -18,7 +18,7 @@ export function initializeMermaid(): void {
   initialized = true
 }
 
-export function sanitizeMermaidInput(code: string): string {
+function sanitizeMermaidInput(code: string): string {
   return code.replace(/%%\{.*?\}%%/gs, '').trim()
 }
 
@@ -30,14 +30,6 @@ export async function renderMermaid(code: string, id: string): Promise<MermaidRe
   const { svg, diagramType } = await mermaid.render(id, sanitizedCode)
   const cleanSvg = DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true, svgFilters: true } })
   return { diagramType, svg: cleanSvg }
-}
-
-export async function parseMermaid(code: string): Promise<{ diagramType: string } | null> {
-  const sanitizedCode = sanitizeMermaidInput(code)
-  if (!sanitizedCode) return null
-  const result = await mermaid.parse(sanitizedCode, { suppressErrors: true })
-  if (!result) return null
-  return { diagramType: result.diagramType }
 }
 
 export async function svgToPng(svgString: string, scale = 2): Promise<string> {

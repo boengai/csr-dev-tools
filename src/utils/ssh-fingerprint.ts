@@ -271,17 +271,5 @@ export const analyzeSshKey = async (input: string): Promise<SshKeyInfo> => {
   }
 }
 
-export const isValidSshPublicKey = (input: string): boolean => {
-  const trimmed = input.trim()
-  if (!trimmed) return false
-
-  const parts = trimmed.split(/\s+/)
-  if (parts.length < 2) return false
-
-  if (KNOWN_KEY_TYPES.has(parts[0])) return true
-  if (parts.length >= 3 && KNOWN_KEY_TYPES.has(parts[1])) return true
-
-  return false
-}
 
 export type { SshKeyInfo } from '@/types/utils/ssh-fingerprint'
