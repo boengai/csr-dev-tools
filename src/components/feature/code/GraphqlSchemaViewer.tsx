@@ -342,6 +342,7 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
             </label>
             <TextInput
               aria-label="Filter types"
+              id="graphql-type-filter"
               name="graphql-type-filter"
               onChange={setFilter}
               placeholder="Filter types..."

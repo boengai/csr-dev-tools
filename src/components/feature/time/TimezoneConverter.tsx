@@ -75,11 +75,13 @@ const favoriteButtonStyles = tv({
 })
 const TimezoneSearchPicker = ({
   favorites,
+  id,
   index,
   onSelect,
   placeholder,
 }: {
   favorites: Array<string>
+  id?: string
   index: Array<TimezoneEntry>
   onSelect: (id: string) => void
   placeholder: string
@@ -164,6 +166,7 @@ const TimezoneSearchPicker = ({
     >
       <TextInput
         aria-label="Search timezones"
+        id={id}
         name="timezone-search"
         onChange={(val) => {
           setQuery(val)
@@ -343,6 +346,7 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
             )}
             <TimezoneSearchPicker
               favorites={favorites}
+              id="source-timezone-search"
               index={index}
               onSelect={handleSourceSelect}
               placeholder="Search timezones..."

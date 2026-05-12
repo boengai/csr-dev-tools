@@ -3,7 +3,7 @@ import type { ChangeEvent } from 'react'
 
 import type { RangeInputProps } from '@/types'
 
-export const RangeInput = ({ disabled, max, min, name, onBlur, onChange, step = 1, value }: RangeInputProps) => {
+export const RangeInput = ({ disabled, id, max, min, name, onBlur, onChange, step = 1, value }: RangeInputProps) => {
   const numValue = Number(value)
   const clampedValue = Math.max(min, Math.min(max, Number.isNaN(numValue) ? min : numValue))
 
@@ -51,6 +51,7 @@ export const RangeInput = ({ disabled, max, min, name, onBlur, onChange, step = 
         aria-label={name}
         className="text-sm w-16 rounded border border-gray-700 bg-gray-950 px-2 py-1 text-center font-mono text-gray-300"
         disabled={disabled}
+        id={id}
         max={max}
         min={min}
         onBlur={handleNumberBlur}

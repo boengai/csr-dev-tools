@@ -325,6 +325,7 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
                   Image Scale ({imageScale}%)
                 </label>
                 <RangeInput
+                  id="image-scale"
                   max={100}
                   min={10}
                   name="image-scale"
