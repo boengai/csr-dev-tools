@@ -61,7 +61,12 @@ export const BackgroundRemoverResult = ({
             ]}
             value={bgOption}
           />
-          <ColorInput disabled={bgOption !== 'custom'} onChange={onColorChange} value={customColor} />
+          <ColorInput
+            aria-label="Custom background color"
+            disabled={bgOption !== 'custom'}
+            onChange={onColorChange}
+            value={customColor}
+          />
         </div>
         <div className="w-full desktop:w-2/5">
           <Button block onClick={onConfirm} variant="primary">

@@ -106,7 +106,11 @@ export const GradientGenerator = () => {
 
           {config.stops.map((stop, index) => (
             <div className="flex items-center gap-3" key={stop._id}>
-              <ColorInput onChange={(color) => handleStopColorChange(index, color)} value={stop.color} />
+              <ColorInput
+                aria-label={`Gradient stop ${index + 1} color`}
+                onChange={(color) => handleStopColorChange(index, color)}
+                value={stop.color}
+              />
               <div className="flex-1">
                 <FieldForm
                   label={`Position ${index + 1}`}

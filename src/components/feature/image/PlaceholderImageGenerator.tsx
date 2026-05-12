@@ -216,12 +216,9 @@ export const PlaceholderImageGenerator = () => {
               Background Color
             </label>
             <div className="flex items-center gap-2">
-              <ColorInput
-                aria-label="Background color picker"
-                onChange={handleBgPickerChange}
-                value={toPickerHex(bgColor)}
-              />
+              <ColorInput id="placeholder-bg-color" onChange={handleBgPickerChange} value={toPickerHex(bgColor)} />
               <FieldForm
+                aria-label="Background hex value"
                 label=""
                 name="placeholder-bg-hex"
                 onChange={handleBgHexChange}
@@ -237,8 +234,13 @@ export const PlaceholderImageGenerator = () => {
               Text Color
             </label>
             <div className="flex items-center gap-2">
-              <ColorInput onChange={handleTextColorPickerChange} value={toPickerHex(textColor)} />
+              <ColorInput
+                id="placeholder-text-color"
+                onChange={handleTextColorPickerChange}
+                value={toPickerHex(textColor)}
+              />
               <FieldForm
+                aria-label="Text color hex value"
                 label=""
                 name="placeholder-text-color-hex"
                 onChange={handleTextColorHexChange}

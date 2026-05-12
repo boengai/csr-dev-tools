@@ -195,6 +195,7 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
             <h3 className="text-body-sm font-semibold text-gray-100">JSONPath Expression</h3>
             <div aria-label="JSONPath expression" className="font-mono">
               <TextInput
+                aria-label="JSONPath expression"
                 name="jsonpath-expression"
                 onChange={handleExpressionChange}
                 placeholder="Enter JSONPath expression (e.g., $.store.book[*].author)"

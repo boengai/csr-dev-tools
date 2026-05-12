@@ -71,7 +71,13 @@ export const HashGenerator = () => {
     <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
-      <TextAreaInput name="hash-input" onChange={handleTextChange} placeholder="Enter text to hash..." value={text} />
+      <TextAreaInput
+        aria-label="Text to hash"
+        name="hash-input"
+        onChange={handleTextChange}
+        placeholder="Enter text to hash..."
+        value={text}
+      />
 
       <div className="flex shrink-0 flex-wrap gap-2">
         {HASH_ALGORITHMS.map((algo) => (

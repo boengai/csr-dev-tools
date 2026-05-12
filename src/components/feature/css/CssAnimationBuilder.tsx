@@ -180,6 +180,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
                         BG Color
                       </label>
                       <ColorInput
+                        id={`kf-${i}-bg`}
                         onChange={(val) => updateKeyframe(i, { backgroundColor: val })}
                         value={kf.backgroundColor}
                       />

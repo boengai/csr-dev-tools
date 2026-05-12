@@ -22,6 +22,7 @@ export const DiagramToolbar = ({
   return (
     <div className="flex shrink-0 flex-wrap items-center gap-2 border-b border-gray-800 bg-gray-950 px-3 py-2">
       <Button
+        aria-label="Toggle diagram list"
         data-testid="diagrams-btn"
         icon={<ListIcon size={16} />}
         onClick={() => togglePanel('diagram-list')}

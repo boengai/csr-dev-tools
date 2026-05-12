@@ -9,6 +9,7 @@ export type CodeInputProps = {
   disabled?: boolean
   extensions?: Array<Extension>
   height?: string
+  id?: string
   maxHeight?: string
   minHeight?: string
   name: string
@@ -43,6 +44,7 @@ export type SwitchInputProps = {
 export type ColorInputProps = {
   'aria-label'?: string
   disabled?: boolean
+  id?: string
   name?: string
   onBlur?: () => void
   onChange?: (value: string) => void
@@ -98,7 +100,9 @@ export type InputVariants = {
 }
 
 type BaseInputProps = {
+  'aria-label'?: string
   disabled?: boolean
+  id?: string
   name: string
   onBlur?: () => void
   onChange?: (value: string) => void

@@ -163,6 +163,7 @@ const TimezoneSearchPicker = ({
       role="combobox"
     >
       <TextInput
+        aria-label="Search timezones"
         name="timezone-search"
         onChange={(val) => {
           setQuery(val)

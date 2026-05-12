@@ -197,13 +197,13 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                   <label className="text-body-sm font-medium text-gray-400" htmlFor="qr-fg">
                     Foreground
                   </label>
-                  <ColorInput onChange={handleFgChange} value={foreground} />
+                  <ColorInput id="qr-fg" onChange={handleFgChange} value={foreground} />
                 </div>
                 <div className="flex flex-col gap-1">
                   <label className="text-body-sm font-medium text-gray-400" htmlFor="qr-bg">
                     Background
                   </label>
-                  <ColorInput onChange={handleBgChange} value={background} />
+                  <ColorInput id="qr-bg" onChange={handleBgChange} value={background} />
                 </div>
               </div>
             </div>

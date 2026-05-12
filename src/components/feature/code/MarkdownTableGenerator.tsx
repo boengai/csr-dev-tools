@@ -187,6 +187,7 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
                         key={c}
                       >
                         <TextInput
+                          aria-label={r === 0 ? `Header column ${c + 1}` : `Row ${r}, column ${c + 1}`}
                           name={`cell-${r}-${c}`}
                           onChange={(value) => updateCell(r, c, value)}
                           placeholder={r === 0 ? `Header ${c + 1}` : ''}

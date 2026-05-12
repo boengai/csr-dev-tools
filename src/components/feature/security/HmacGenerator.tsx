@@ -100,6 +100,7 @@ export const HmacGenerator = (_props: ToolComponentProps) => {
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
       <TextAreaInput
+        aria-label="Message to sign"
         name="hmac-message"
         onChange={handleMessageChange}
         placeholder="Enter message to sign..."
@@ -107,6 +108,7 @@ export const HmacGenerator = (_props: ToolComponentProps) => {
       />
 
       <FieldForm
+        aria-label="Secret key"
         label=""
         name="hmac-secret-key"
         onChange={handleKeyChange}

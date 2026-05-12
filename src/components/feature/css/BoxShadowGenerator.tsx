@@ -75,7 +75,11 @@ export const BoxShadowGenerator = () => {
             <label className="text-gray-100" htmlFor="bs-color">
               Color
             </label>
-            <ColorInput onChange={(val) => setConfig((prev) => ({ ...prev, color: val }))} value={config.color} />
+            <ColorInput
+              id="bs-color"
+              onChange={(val) => setConfig((prev) => ({ ...prev, color: val }))}
+              value={config.color}
+            />
           </div>
           <button
             aria-label="Toggle inset shadow"
@@ -100,7 +104,7 @@ export const BoxShadowGenerator = () => {
           <label className="text-body-xs text-gray-500" htmlFor="bs-preview-bg">
             BG
           </label>
-          <ColorInput onChange={setPreviewBg} value={previewBg} />
+          <ColorInput id="bs-preview-bg" onChange={setPreviewBg} value={previewBg} />
         </div>
         <div className="h-32 w-48 rounded-lg border border-gray-200 bg-white" style={{ boxShadow: cssString }} />
       </div>

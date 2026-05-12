@@ -91,6 +91,7 @@ const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => v
   return (
     <div className="flex w-full flex-col gap-4">
       <TextInput
+        aria-label="Password to hash"
         disabled={hashing}
         name="hash-password"
         onChange={handlePasswordChange}

@@ -87,7 +87,7 @@ export const BorderRadiusGenerator = (_props: ToolComponentProps) => {
           <label className="text-body-xs text-gray-500" htmlFor="br-preview-bg">
             BG
           </label>
-          <ColorInput onChange={setPreviewBg} value={previewBg} />
+          <ColorInput id="br-preview-bg" onChange={setPreviewBg} value={previewBg} />
         </div>
         <div className="h-32 w-48 border border-gray-200 bg-white" style={{ borderRadius: cssValue }} />
       </div>

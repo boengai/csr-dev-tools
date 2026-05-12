@@ -1,3 +1,5 @@
+import { useId } from 'react'
+
 import type { FieldFormProps, InputControllerProps } from '@/types'
 import { tv } from '@/utils'
 
@@ -53,10 +55,16 @@ const InputController = (props: InputControllerProps) => {
 }
 
 export const FieldForm = ({ label, ...props }: FieldFormProps) => {
+  const generatedId = useId()
+  const inputId = props.id ?? generatedId
   return (
     <fieldset className={fieldsetStyles({ grow: props.type === 'textarea' || props.type === 'code' })}>
-      {label && <label className="shrink-0 pl-2 text-gray-100">{label}</label>}
-      <InputController {...props} />
+      {label && (
+        <label className="shrink-0 pl-2 text-gray-100" htmlFor={inputId}>
+          {label}
+        </label>
+      )}
+      <InputController {...props} id={inputId} />
     </fieldset>
   )
 }

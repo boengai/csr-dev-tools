@@ -19,6 +19,7 @@ const colorInputStyles = tv({
 export const ColorInput = ({
   'aria-label': ariaLabel,
   disabled,
+  id,
   name,
   onBlur,
   onChange,
@@ -36,6 +37,7 @@ export const ColorInput = ({
       aria-label={ariaLabel}
       className={className}
       disabled={disabled}
+      id={id}
       name={name}
       onBlur={onBlur}
       onChange={handleChange}
