@@ -95,7 +95,7 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
               {info ? (
                 <>
                   <img
-                    alt="Decoded image"
+                    alt="Decoded Base64 content"
                     className="max-h-80 max-w-full rounded-lg object-contain"
                     src={info.dataUri}
                   />

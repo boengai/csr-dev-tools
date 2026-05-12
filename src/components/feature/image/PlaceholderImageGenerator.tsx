@@ -266,7 +266,7 @@ export const PlaceholderImageGenerator = () => {
         <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center gap-4">
           {previewUri ? (
             <img
-              alt={`Placeholder image preview: ${displayText}, background ${bgColor}, text ${textColor}`}
+              alt={`Placeholder preview: ${displayText}, background ${bgColor}, text ${textColor}`}
               className="max-h-full max-w-full border border-gray-700 object-contain"
               src={previewUri}
             />
