@@ -6,7 +6,7 @@ import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { optimizeSvg, type SvgOptimizeResult } from '@/utils'
+import { downloadBlob, optimizeSvg, type SvgOptimizeResult } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['svg-viewer']
 
@@ -47,12 +47,7 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
     const content = sanitize(optimizeResult?.optimized ?? source)
     if (!content) return
     const blob = new Blob([content], { type: 'image/svg+xml' })
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = 'optimized.svg'
-    a.click()
-    setTimeout(() => URL.revokeObjectURL(url), 100)
+    downloadBlob(blob, 'optimized.svg')
   }
 
   const handleReset = () => {
