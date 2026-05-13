@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { detectProtobufFormat, decodeProtobuf, encodeProtobuf } from './protobuf-codec'
+import { decodeProtobuf, detectProtobufFormat, encodeProtobuf } from '@/wasm/parsers'
 
 const SIMPLE_PROTO = `
 syntax = "proto3";

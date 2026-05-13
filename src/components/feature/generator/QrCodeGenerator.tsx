@@ -3,8 +3,8 @@ import { useReducer, useRef } from 'react'
 import { Button, ColorInput, CopyButton, DownloadIcon, FieldForm, ToolDialogShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
-import type { QrCodeAction, QrCodeState, QrInput, QrResult, ToolComponentProps } from '@/types'
-import { generateQrCodeDataUrl, generateQrCodeSvgString, type QrErrorCorrectionLevel } from '@/utils'
+import type { QrCodeAction, QrCodeState, QrErrorCorrectionLevel, QrInput, QrResult, ToolComponentProps } from '@/types'
+import { generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['qr-code-generator']
 const initialState: QrCodeState = {

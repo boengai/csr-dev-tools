@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { deepSortJson, getJsonDiffError, normalizeJson } from '@/utils/json-diff'
+import { deepSortJson, getJsonDiffError, normalizeJson } from '@/wasm/json-tools'
 
 describe('json diff utilities', () => {
   describe('deepSortJson', () => {

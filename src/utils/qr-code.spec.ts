@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { generateQrCodeDataUrl, generateQrCodeSvgString } from './qr-code'
+import { generateQrCodeDataUrl, generateQrCodeSvgString } from '@/wasm/qrcode'
 
 describe('qr-code', () => {
   describe('generateQrCodeDataUrl', () => {

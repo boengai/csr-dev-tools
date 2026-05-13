@@ -23,8 +23,8 @@ import type {
   ToolComponentProps,
 } from '@/types'
 import { downloadBinaryFile, downloadTextFile } from '@/utils/file'
-import { detectProtobufFormat } from '@/utils/protobuf-codec'
-import type { OutputFormat } from '@/utils/protobuf-codec'
+import type { OutputFormat } from '@/types/utils/protobuf-codec'
+import { detectProtobufFormat } from '@/wasm/parsers'
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-codec']
 const INITIAL_STATE: PersistedState = {

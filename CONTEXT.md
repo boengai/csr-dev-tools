@@ -38,3 +38,18 @@ The pipeline owns its result, error, and pending state. The two lower-level
 primitives it composes — `useDebounceCallback` and `useStaleSafeAsync` — remain
 public for cases that need only one half of the pipeline (non-async debounce;
 one-shot async without debounce).
+
+## Bidirectional converter
+
+A Tool that converts between two formats with mode-swap support — JSON ↔ CSV,
+HTML ↔ Markdown, encode/decode, etc. Implemented by `<BidirectionalConverter>`
+(`src/components/common/converter/BidirectionalConverter.tsx`).
+
+The shell owns: the per-direction mode button pair, the dialog, per-mode source
+persistence (localStorage), mount-time hydration, mode switching, and the
+two-column source-input / result-output layout. The Tool's role narrows to
+its per-direction `compute` function plus per-direction labels/placeholders.
+
+Tools with extras (entity-mode select, double-escape checkbox) plug into the
+`sourceToolbarSlot` render-prop, which receives `{ mode, recompute }` — the
+caller renders its extras and calls `recompute()` after their value changes.

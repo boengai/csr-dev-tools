@@ -1,4 +1,4 @@
-import type { QrErrorCorrectionLevel } from '@/utils'
+import type { QrErrorCorrectionLevel } from '@/types/utils/qr-code'
 
 export type QrCodeState = {
   background: string

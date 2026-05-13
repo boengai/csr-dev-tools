@@ -1,5 +1,5 @@
 import type { EnvParseResult } from '@/types/utils/env'
-import { jsonToYaml, yamlToJson } from '@/utils/yaml'
+import { jsonToYaml, yamlToJson } from '@/wasm/parsers'
 
 export const parseEnv = (input: string): EnvParseResult => {
   if (input.trim().length === 0) throw new Error('Empty input')

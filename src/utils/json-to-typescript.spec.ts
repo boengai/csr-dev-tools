@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { jsonToTypeScript } from './json-to-typescript'
+import { jsonToTypeScript } from '@/wasm/json-tools'
 
 describe('jsonToTypeScript', () => {
   it('converts basic object with primitives', async () => {

@@ -1,4 +1,4 @@
-import type { OutputFormat } from '@/utils/protobuf-codec'
+import type { OutputFormat } from '@/types/utils/protobuf-codec'
 
 export type ProtobufCodecAction = 'decode' | 'encode'
 
