@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { addColumn } from './columns'
-import { documentToSchema, toDbml, toMermaid, toSql, toTypeScript, toJsonSchema } from './export'
+import { documentToSchema, toDbml, toMermaid, toSql, toTypeScript } from './export'
 import { addRelation } from './relations'
 import { addTable } from './tables'
 import { createDefaultColumn } from '@/utils/db-diagram'
@@ -39,10 +39,9 @@ describe('exports', () => {
     expect(toSql(doc, 'postgresql')).toMatch(/CREATE TABLE/)
     expect(toSql(doc, 'mysql')).toMatch(/CREATE TABLE/)
   })
-  it('toMermaid, toTypeScript, toJsonSchema return non-empty strings', () => {
+  it('toMermaid and toTypeScript return non-empty strings', () => {
     const doc = seed()
     expect(toMermaid(doc).length).toBeGreaterThan(0)
     expect(toTypeScript(doc).length).toBeGreaterThan(0)
-    expect(toJsonSchema(doc).length).toBeGreaterThan(0)
   })
 })

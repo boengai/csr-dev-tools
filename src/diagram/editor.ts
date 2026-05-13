@@ -134,10 +134,6 @@ export class DiagramEditor {
     return exportOps.toTypeScript(this.document)
   }
 
-  toJsonSchema(): string {
-    return exportOps.toJsonSchema(this.document)
-  }
-
   private notify(): void {
     for (const listener of this.listeners) listener(this.document)
   }
