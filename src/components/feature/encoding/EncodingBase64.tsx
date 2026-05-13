@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import { decodeBase64, encodeBase64, isValidBase64 } from '@/utils'
@@ -77,9 +78,10 @@ export const EncodingBase64 = () => {
           </Button>
         </div>
       </div>
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleReset}
+      <ToolDialogShell
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title={action === 'encode' ? 'Base64 Encode' : 'Base64 Decode'}
       >
@@ -113,7 +115,7 @@ export const EncodingBase64 = () => {
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
