@@ -1,6 +1,7 @@
 import { type ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
 
-import { Button, CopyButton, Dialog, DownloadIcon, RefreshIcon, UploadInput } from '@/components/common'
+import { Button, CopyButton, DownloadIcon, RefreshIcon, UploadInput } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -125,12 +126,11 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
         type="file"
       />
 
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={() => {
-          resetState()
-          onAfterDialogClose?.()
-        }}
+      <ToolDialogShell
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onAfterDialogClose={onAfterDialogClose}
+        onReset={resetState}
         size="screen"
         title="Favicon Generator"
       >
@@ -201,7 +201,7 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
             </div>
           )}
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
