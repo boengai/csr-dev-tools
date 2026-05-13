@@ -1,6 +1,7 @@
-import type { ColumnId, ColumnRef, DiagramDocument, EditorRelation, RelationId, RelationKind, SqlDialect, TableColumn, TableId } from '@/types'
+import type { ColumnId, ColumnRef, DiagramDocument, EditorRelation, ImportResult, RelationId, RelationKind, SqlDialect, TableColumn, TableId } from '@/types'
 import { cloneDocument, createInitialDocument } from './state'
 import * as columnOps from './operations/columns'
+import * as dbmlOps from './operations/dbml'
 import * as exportOps from './operations/export'
 import * as lifecycleOps from './operations/lifecycle'
 import * as relationOps from './operations/relations'
@@ -54,7 +55,7 @@ export class DiagramEditor {
   }
 
   protected afterStructuralChange(doc: DiagramDocument): DiagramDocument {
-    return doc // Task 9 wires DBML regen here
+    return dbmlOps.regenerateDbmlFromDocument(doc)
   }
 
   addTable(input: { name: string; position?: { x: number; y: number } }): TableId {
@@ -141,6 +142,20 @@ export class DiagramEditor {
 
   setDiagramName(name: string): void {
     this.commit(lifecycleOps.setDiagramName(this.document, name))
+  }
+
+  setDbmlText(text: string): void {
+    this.commit(dbmlOps.setDbmlText(this.document, text))
+  }
+
+  applyDbmlNow(): ImportResult {
+    const { document, result } = dbmlOps.applyDbmlNow(this.document)
+    this.commit(document)
+    return result
+  }
+
+  getDbmlSource(): 'diagram' | 'editor' {
+    return this.document.dbmlSource
   }
 
   private notify(): void {

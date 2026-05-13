@@ -51,3 +51,31 @@ describe('DiagramEditor table ops', () => {
     expect(listener).not.toHaveBeenCalled()
   })
 })
+
+describe('DiagramEditor DBML latch', () => {
+  it('structural ops regenerate DBML text when source is diagram', () => {
+    const editor = new DiagramEditor()
+    editor.addTable({ name: 'users' })
+    const doc = editor.getDocument()
+    expect(doc.dbmlSource).toBe('diagram')
+    expect(doc.dbmlText).toMatch(/users/)
+  })
+
+  it('setDbmlText followed by addTable flips latch back to diagram and regenerates', () => {
+    const editor = new DiagramEditor()
+    editor.setDbmlText('typed text')
+    expect(editor.getDocument().dbmlSource).toBe('editor')
+    editor.addTable({ name: 'orders' })
+    expect(editor.getDocument().dbmlSource).toBe('diagram')
+    expect(editor.getDocument().dbmlText).toMatch(/orders/)
+  })
+
+  it('applyDbmlNow keeps typed text intact', () => {
+    const editor = new DiagramEditor()
+    const typed = 'Table users {\n  id uuid [pk]\n}'
+    editor.setDbmlText(typed)
+    const result = editor.applyDbmlNow()
+    expect(result.tableCount).toBeGreaterThan(0)
+    expect(editor.getDocument().dbmlText).toBe(typed)
+  })
+})
