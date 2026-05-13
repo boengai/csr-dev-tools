@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Button, CodeOutput, CopyButton, Dialog, FieldForm, SelectInput } from '@/components/common'
+import { Button, CodeOutput, CopyButton, FieldForm, SelectInput } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -94,11 +95,6 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
     setResult('')
   }
 
-  const handleAfterClose = () => {
-    handleReset()
-    onAfterDialogClose?.()
-  }
-
   const isEncode = mode === 'encode'
 
   return (
@@ -116,9 +112,11 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
         </div>
       </div>
 
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleAfterClose}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title={isEncode ? 'Encode HTML Entities' : 'Decode HTML Entities'}
       >
@@ -168,7 +166,7 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
