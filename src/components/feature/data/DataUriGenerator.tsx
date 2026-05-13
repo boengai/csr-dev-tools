@@ -1,6 +1,7 @@
 import { useReducer, useRef } from 'react'
 
-import { Button, CopyButton, Dialog, DownloadIcon, FieldForm, UploadInput } from '@/components/common'
+import { Button, CopyButton, DownloadIcon, FieldForm, UploadInput } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -165,15 +166,11 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
       </div>
 
       {/* Encode Dialog */}
-      <Dialog
-        injected={{
-          open: encodeOpen,
-          setOpen: (open: boolean) => dispatch({ type: 'SET_ENCODE_OPEN', payload: open }),
-        }}
-        onAfterClose={() => {
-          handleEncodeReset()
-          onAfterDialogClose?.()
-        }}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={(open) => dispatch({ type: 'SET_ENCODE_OPEN', payload: open })}
+        onReset={handleEncodeReset}
+        open={encodeOpen}
         size="screen"
         title="File to Data URI"
       >
@@ -263,18 +260,14 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
             </div>
           </div>
         )}
-      </Dialog>
+      </ToolDialogShell>
 
       {/* Decode Dialog */}
-      <Dialog
-        injected={{
-          open: decodeOpen,
-          setOpen: (open: boolean) => dispatch({ type: 'SET_DECODE_OPEN', payload: open }),
-        }}
-        onAfterClose={() => {
-          handleDecodeReset()
-          onAfterDialogClose?.()
-        }}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={(open) => dispatch({ type: 'SET_DECODE_OPEN', payload: open })}
+        onReset={handleDecodeReset}
+        open={decodeOpen}
         size="screen"
         title="Decode Data URI"
       >
@@ -326,7 +319,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
 
       <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
     </>
