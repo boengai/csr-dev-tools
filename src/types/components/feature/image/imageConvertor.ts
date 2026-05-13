@@ -1,5 +1,7 @@
 import type { ImageFormat } from '@/types'
 
+export type DownloadTarget = { filename: string; blob: Blob } | { filename: string; dataUrl: string }
+
 export type State = {
   previews: Array<{ height: number; url: string; width: number }>
   processing: number

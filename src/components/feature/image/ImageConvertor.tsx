@@ -16,7 +16,8 @@ import {
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { ImageFormat } from '@/types'
-import type { State, Action } from '@/types/components/feature/image/imageConvertor'
+import type { DownloadTarget, State, Action } from '@/types/components/feature/image/imageConvertor'
+import { downloadBlob } from '@/utils/download'
 import { convertImageFormat, isValidImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
@@ -61,8 +62,7 @@ const reducer = (state: State, action: Action): State => {
 }
 
 export const ImageConvertor = () => {
-  // ref
-  const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
+  const downloadTargetRef = useRef<DownloadTarget | null>(null)
 
   // hooks
   const { toast } = useToast()
@@ -78,18 +78,21 @@ export const ImageConvertor = () => {
     }
 
     let cancelled = false
-    const urls: Array<string> = []
 
     Promise.all(
       sources.map(
         (file) =>
           new Promise<{ height: number; url: string; width: number }>((resolve) => {
-            const url = URL.createObjectURL(file)
-            urls.push(url)
-            const img = new Image()
-            img.onload = () => resolve({ height: img.naturalHeight, url, width: img.naturalWidth })
-            img.onerror = () => resolve({ height: 0, url, width: 0 })
-            img.src = url
+            const reader = new FileReader()
+            reader.onload = () => {
+              const url = typeof reader.result === 'string' ? reader.result : ''
+              const img = new Image()
+              img.onload = () => resolve({ height: img.naturalHeight, url, width: img.naturalWidth })
+              img.onerror = () => resolve({ height: 0, url, width: 0 })
+              img.src = url
+            }
+            reader.onerror = () => resolve({ height: 0, url: '', width: 0 })
+            reader.readAsDataURL(file)
           }),
       ),
     ).then((data) => {
@@ -98,9 +101,6 @@ export const ImageConvertor = () => {
 
     return () => {
       cancelled = true
-      for (const url of urls) {
-        URL.revokeObjectURL(url)
-      }
     }
   }, [sources])
 
@@ -138,17 +138,11 @@ export const ImageConvertor = () => {
   }
 
   const handleConvert = async () => {
-    const anchor = downloadAnchorRef.current
-    if (!anchor) return
-
     try {
       // go to processing tab
       dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.PROCESSING })
-
-      // reset state
       dispatch({ type: 'SET_PROCESSING', payload: 0 })
-      anchor.href = ''
-      anchor.download = ''
+      downloadTargetRef.current = null
 
       const formattedImages: Record<string, string> = {}
       const processTick = 100 / sources.length
@@ -168,6 +162,7 @@ export const ImageConvertor = () => {
       await fakeWait(450)
 
       // save
+      let fileName: string
       if (Object.keys(formattedImages).length > 1) {
         const { default: JSZip } = await import('jszip')
         const zip = new JSZip()
@@ -175,16 +170,17 @@ export const ImageConvertor = () => {
           zip.file(key, await parseDataUrlToBlob(value))
         }
         const blob = await zip.generateAsync({ type: 'blob' })
-        anchor.href = URL.createObjectURL(blob)
-        anchor.download = `csr-dev-tools_converted_${Date.now()}.zip`
+        fileName = `csr-dev-tools_converted_${Date.now()}.zip`
+        downloadTargetRef.current = { blob, filename: fileName }
+        downloadBlob(blob, fileName)
       } else {
-        for (const [key, value] of Object.entries(formattedImages)) {
-          anchor.href = value
-          anchor.download = key
-        }
+        const [[key, dataUrl]] = Object.entries(formattedImages)
+        fileName = key
+        downloadTargetRef.current = { dataUrl, filename: fileName }
+        const blob = await parseDataUrlToBlob(dataUrl)
+        downloadBlob(blob, fileName)
       }
 
-      const fileName = anchor.download
       toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
 
       // go to download tab
@@ -196,6 +192,19 @@ export const ImageConvertor = () => {
       })
       dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.SELECT_FORMAT })
     }
+  }
+
+  const handleRedownload = async () => {
+    const dt = downloadTargetRef.current
+    if (!dt) return
+    let blob: Blob
+    if ('blob' in dt) {
+      blob = dt.blob
+    } else {
+      blob = await parseDataUrlToBlob(dt.dataUrl)
+    }
+    downloadBlob(blob, dt.filename)
+    toast({ action: 'add', item: { label: `Downloaded ${dt.filename}`, type: 'success' } })
   }
 
   const isLossy = LOSSY_FORMATS.has(target.format)
@@ -306,7 +315,7 @@ export const ImageConvertor = () => {
                   <Button
                     block
                     icon={<DownloadIcon />}
-                    onClick={() => downloadAnchorRef.current?.click()}
+                    onClick={handleRedownload}
                     variant="primary"
                   >
                     Download
@@ -321,7 +330,6 @@ export const ImageConvertor = () => {
           },
         ]}
       />
-      <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
     </div>
   )
 }
