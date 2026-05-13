@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { CopyButton, Dialog, FieldForm, UploadInput } from '@/components/common'
+import { CopyButton, FieldForm, UploadInput } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -56,12 +57,11 @@ export const ImageToBase64 = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
           />
         </div>
       </div>
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={() => {
-          handleReset()
-          onAfterDialogClose?.()
-        }}
+      <ToolDialogShell
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onAfterDialogClose={onAfterDialogClose}
+        onReset={handleReset}
         size="screen"
         title="Image to Base64"
       >
@@ -137,7 +137,7 @@ export const ImageToBase64 = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             </div>
           </div>
         )}
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
