@@ -99,20 +99,8 @@ const DiagramFlowCanvas = ({
 // ---------------------------------------------------------------------------
 const SidePanelRenderer = ({
   activePanel,
-  activeDiagramId,
-  diagramIndex,
   handleClosePanel,
   handleDbmlClose,
-  handleDeleteDiagram,
-  handleLoadDiagram,
-  handleNewDiagram,
-  handleRenameDiagram,
-  handleStartRenaming,
-  renameInputRef,
-  renameValue,
-  renamingId,
-  setRenameValue,
-  setRenamingId,
 }: SidePanelRendererProps) => {
   switch (activePanel) {
     case 'import-sql':
@@ -150,19 +138,7 @@ const SidePanelRenderer = ({
     case 'diagram-list':
       return (
         <DiagramListPanel
-          activeDiagramId={activeDiagramId}
-          diagramIndex={diagramIndex}
           onClose={handleClosePanel}
-          onDeleteDiagram={handleDeleteDiagram}
-          onLoadDiagram={handleLoadDiagram}
-          onNewDiagram={handleNewDiagram}
-          onRenameDiagram={handleRenameDiagram}
-          onStartRenaming={handleStartRenaming}
-          renameInputRef={renameInputRef}
-          renameValue={renameValue}
-          renamingId={renamingId}
-          setRenameValue={setRenameValue}
-          setRenamingId={setRenamingId}
         />
       )
     default:
@@ -268,20 +244,8 @@ const DiagramCanvas = () => {
 
         <SidePanelRenderer
           activePanel={state.activePanel}
-          activeDiagramId={state.activeDiagramId}
-          diagramIndex={state.diagramIndex}
           handleClosePanel={handleClosePanel}
           handleDbmlClose={handleDbmlClose}
-          handleDeleteDiagram={handleDeleteDiagram}
-          handleLoadDiagram={handleLoadDiagram}
-          handleNewDiagram={handleNewDiagram}
-          handleRenameDiagram={handleRenameDiagram}
-          handleStartRenaming={handleStartRenaming}
-          renameInputRef={renameInputRef}
-          renameValue={state.renameValue}
-          renamingId={state.renamingId}
-          setRenameValue={setRenameValue}
-          setRenamingId={setRenamingId}
         />
       </div>
     </div>
