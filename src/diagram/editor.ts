@@ -3,6 +3,7 @@ import { cloneDocument, createInitialDocument } from './state'
 import * as columnOps from './operations/columns'
 import * as dbmlOps from './operations/dbml'
 import * as exportOps from './operations/export'
+import * as importOps from './operations/import'
 import * as lifecycleOps from './operations/lifecycle'
 import * as relationOps from './operations/relations'
 import * as tableOps from './operations/tables'
@@ -151,6 +152,18 @@ export class DiagramEditor {
   applyDbmlNow(): ImportResult {
     const { document, result } = dbmlOps.applyDbmlNow(this.document)
     this.commit(document)
+    return result
+  }
+
+  importFromSql(text: string, dialect: SqlDialect): ImportResult {
+    const { document, result } = importOps.importFromSql(this.document, text, dialect)
+    if (document !== this.document) this.commit(this.afterStructuralChange(document))
+    return result
+  }
+
+  importFromJsonSchema(text: string): ImportResult {
+    const { document, result } = importOps.importFromJsonSchema(this.document, text)
+    if (document !== this.document) this.commit(this.afterStructuralChange(document))
     return result
   }
 
