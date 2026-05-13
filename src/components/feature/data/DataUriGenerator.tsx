@@ -1,4 +1,4 @@
-import { useReducer, useRef } from 'react'
+import { useReducer } from 'react'
 
 import { Button, CopyButton, DownloadIcon, FieldForm, UploadInput } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
@@ -6,6 +6,7 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import type { State, Action } from '@/types/components/feature/data/dataUriGenerator'
+import { downloadBlob } from '@/utils/download'
 import { fileToDataUri, formatFileSize, isValidDataUri, parseDataUri, parseDataUrlToBlob } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['data-uri-generator']
@@ -47,7 +48,6 @@ const reducer = (state: State, action: Action): State => {
 export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const { decodeInput, decodeOpen, decodeResult, encodeOpen, encodeResult } = state
-  const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const { toast } = useToast()
 
   const handleFileUpload = async (values: Array<File>) => {
@@ -110,17 +110,11 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
 
   const handleDownload = async () => {
     if (!decodeResult || !decodeInput.trim()) return
-    const anchor = downloadAnchorRef.current
-    if (!anchor) return
 
     try {
       const blob = await parseDataUrlToBlob(decodeInput.trim())
       const ext = getMimeExtension(decodeResult.mimeType)
-      const url = URL.createObjectURL(blob)
-      anchor.href = url
-      anchor.download = `decoded.${ext}`
-      anchor.click()
-      URL.revokeObjectURL(url)
+      downloadBlob(blob, `decoded.${ext}`)
       toast({
         action: 'add',
         item: { label: `Downloaded decoded.${ext}`, type: 'success' },
@@ -320,8 +314,6 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
           </div>
         </div>
       </ToolDialogShell>
-
-      <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
     </>
   )
 }
