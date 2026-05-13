@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Button, CheckboxInput, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CheckboxInput, CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -95,11 +96,6 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
     setDoubleEscape(false)
   }
 
-  const handleAfterClose = () => {
-    handleReset()
-    onAfterDialogClose?.()
-  }
-
   const isStringify = mode === 'stringify'
 
   return (
@@ -117,9 +113,11 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
         </div>
       </div>
 
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleAfterClose}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title={isStringify ? 'Stringify JSON' : 'Parse Escaped JSON'}
       >
@@ -164,7 +162,7 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
