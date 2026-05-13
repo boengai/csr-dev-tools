@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { formatJson, getJsonParseError } from '@/utils'
 
@@ -13,7 +13,6 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   const [source, setSource] = useInputLocalStorage('csr-dev-tools-json-formatter-source', '')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
-  const initializedRef = useRef(false)
 
   const { result, setInput, setInputImmediate } = useToolComputation<string, string>(
     async (val) => {
@@ -38,13 +37,9 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     },
   )
 
-  useEffect(() => {
-    if (!initializedRef.current) {
-      initializedRef.current = true
-      if (source) setInputImmediate(source)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
-  }, [])
+  useMountOnce(() => {
+    if (source) setInputImmediate(source)
+  })
 
   const handleSourceChange = (val: string) => {
     setSource(val)

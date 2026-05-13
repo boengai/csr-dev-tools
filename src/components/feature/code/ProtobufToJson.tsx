@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type { BrowsableEntry, EntryKind, ParseOutput, ToolComponentProps } from '@/types'
 import { cnMerge, type ProtobufEnumInfo, type ProtobufMessageInfo, type ProtobufSchemaInfo } from '@/utils'
 
@@ -135,7 +135,6 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
   const [selectedEntry, setSelectedEntry] = useState<string | null>(null)
   const [generatedJson, setGeneratedJson] = useState<string | null>(null)
   const { toast } = useToast()
-  const initializedRef = useRef(false)
 
   const {
     result: parseResult,
@@ -174,13 +173,9 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
     setParseInput(value)
   }
 
-  useEffect(() => {
-    if (!initializedRef.current) {
-      initializedRef.current = true
-      if (input) setParseInputImmediate(input)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
-  }, [])
+  useMountOnce(() => {
+    if (input) setParseInputImmediate(input)
+  })
 
   const handleLoadExample = useCallback(() => {
     setInput(SAMPLE_PROTO)

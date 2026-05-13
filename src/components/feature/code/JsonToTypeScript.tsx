@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type { JsonTsInput, ToolComponentProps } from '@/types'
 import { jsonToTypeScript } from '@/utils'
 
@@ -16,7 +16,6 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
   const [useInterface, setUseInterface] = useState(true)
   const [optionalProps, setOptionalProps] = useState(false)
   const { toast } = useToast()
-  const initializedRef = useRef(false)
 
   const {
     result: output,
@@ -46,13 +45,9 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
     }
   }
 
-  useEffect(() => {
-    if (!initializedRef.current) {
-      initializedRef.current = true
-      if (source) setInputImmediate({ source, rootName, useInterface, optionalProps })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
-  }, [])
+  useMountOnce(() => {
+    if (source) setInputImmediate({ source, rootName, useInterface, optionalProps })
+  })
 
   const handleSourceChange = (val: string) => {
     setSource(val)

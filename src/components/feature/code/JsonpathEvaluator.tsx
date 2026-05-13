@@ -1,10 +1,10 @@
 import { json } from '@codemirror/lang-json'
 import { AnimatePresence, m } from 'motion/react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useRef, useState } from 'react'
 
 import { CodeInput, CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useMountOnce, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import {
   evaluateJsonPath,
@@ -82,7 +82,6 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false)
   const { toast } = useToast()
 
-  const initializedRef = useRef(false)
   const parsedDataRef = useRef<unknown>(null)
   const expressionRef = useRef(expression)
 
@@ -121,18 +120,14 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
     runEvaluation(parsedDataRef.current, expr)
   }, 300)
 
-  useEffect(() => {
-    if (!initializedRef.current) {
-      initializedRef.current = true
-      const result = parseJsonInput(jsonInput)
-      if (result.success) {
-        setParsedData(result.data)
-        parsedDataRef.current = result.data
-        runEvaluation(result.data, expression)
-      }
+  useMountOnce(() => {
+    const result = parseJsonInput(jsonInput)
+    if (result.success) {
+      setParsedData(result.data)
+      parsedDataRef.current = result.data
+      runEvaluation(result.data, expression)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
-  }, [])
+  })
 
   const handleJsonChange = (value: string) => {
     setInputs((prev) => ({ ...prev, jsonInput: value }))

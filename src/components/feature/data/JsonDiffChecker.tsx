@@ -1,9 +1,9 @@
-import { useEffect, useReducer, useRef } from 'react'
+import { useEffect, useReducer } from 'react'
 
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type {
   InlineSpan,
   JsonDiffCheckerAction,
@@ -88,7 +88,6 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   })
   const { error, dialogOpen } = state
   const { toast } = useToast()
-  const initializedRef = useRef(false)
 
   const { result, setInput, setInputImmediate } = useToolComputation<JsonDiffInput, JsonDiffResult>(
     async ({ original: orig, modified: mod }) => {
@@ -126,13 +125,9 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     dispatch({ type: 'SET_ERROR', payload: validationError })
   }, [validationError])
 
-  useEffect(() => {
-    if (!initializedRef.current) {
-      initializedRef.current = true
-      if (original || modified) setInputImmediate({ original, modified })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
-  }, [])
+  useMountOnce(() => {
+    if (original || modified) setInputImmediate({ original, modified })
+  })
 
   const handleOriginalChange = (val: string) => {
     setInputs((prev) => ({ ...prev, original: val }))

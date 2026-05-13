@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type { HtmlInput, ToolComponentProps } from '@/types'
 import { formatHtml, minifyHtml } from '@/utils'
 
@@ -15,7 +15,6 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   const [indent, setIndent] = useState<number | 'tab'>(2)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
-  const initializedRef = useRef(false)
 
   const { result, setInput, setInputImmediate } = useToolComputation<HtmlInput, string>(
     ({ source: val, mode: m, indent: ind }) => (m === 'beautify' ? formatHtml(val, ind) : minifyHtml(val)),
@@ -29,13 +28,9 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     },
   )
 
-  useEffect(() => {
-    if (!initializedRef.current) {
-      initializedRef.current = true
-      if (source) setInputImmediate({ source, mode, indent })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
-  }, [])
+  useMountOnce(() => {
+    if (source) setInputImmediate({ source, mode, indent })
+  })
 
   const handleSourceChange = (val: string) => {
     setSource(val)

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import {
   Button,
@@ -12,7 +12,7 @@ import {
 } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type {
   ContentProps,
   DecodeInput,
@@ -399,7 +399,6 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
   )
   const [selectedMessageType, setSelectedMessageType] = useState('')
   const { toast } = useToast()
-  const initializedRef = useRef(false)
 
   const update = useCallback(
     (patch: Partial<PersistedState>) => {
@@ -442,13 +441,9 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- toast is stable; intentionally fire only on result change
   }, [schemaResult])
 
-  useEffect(() => {
-    if (!initializedRef.current) {
-      initializedRef.current = true
-      if (persisted.schema) setSchemaInputImmediate(persisted.schema)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
-  }, [])
+  useMountOnce(() => {
+    if (persisted.schema) setSchemaInputImmediate(persisted.schema)
+  })
 
   const handleSchemaChange = useCallback(
     (value: string) => {

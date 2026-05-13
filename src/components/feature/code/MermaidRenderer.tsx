@@ -4,7 +4,7 @@ import { useCallback, useEffect, useReducer, useRef } from 'react'
 
 import { Button, CopyButton, FieldForm, ToolDialogShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useMountOnce, useToast } from '@/hooks'
 import type { MermaidRendererAction, MermaidRendererState, ToolComponentProps } from '@/types'
 import {
   downloadMermaidSvg,
@@ -88,7 +88,6 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const setDialogOpen = (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })
 
   const renderCounterRef = useRef(0)
-  const initializedRef = useRef(false)
   const previewRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -117,23 +116,19 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
 
   const debouncedRender = useDebounceCallback(handleRender, 500)
 
-  useEffect(() => {
-    if (!initializedRef.current) {
-      initializedRef.current = true
-      initializeMermaid()
+  useMountOnce(() => {
+    initializeMermaid()
 
-      // Check for cross-tool prefill from DB Diagram
-      const prefill = localStorage.getItem(MERMAID_PREFILL_KEY)
-      if (prefill) {
-        localStorage.removeItem(MERMAID_PREFILL_KEY)
-        setCode(prefill)
-        handleRender(prefill)
-      } else {
-        handleRender(code)
-      }
+    // Check for cross-tool prefill from DB Diagram
+    const prefill = localStorage.getItem(MERMAID_PREFILL_KEY)
+    if (prefill) {
+      localStorage.removeItem(MERMAID_PREFILL_KEY)
+      setCode(prefill)
+      handleRender(prefill)
+    } else {
+      handleRender(code)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
-  }, [])
+  })
 
   const handleCodeChange = (value: string) => {
     setCode(value)

@@ -1,9 +1,9 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { Button, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage } from '@/hooks'
+import { useDebounceCallback, useInputLocalStorage, useMountOnce } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { type ValidationResult, validateJsonSchema } from '@/utils'
 
@@ -17,7 +17,6 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
   const { jsonData, jsonSchema } = inputs
   const [result, setResult] = useState<ValidationResult | null>(null)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const initializedRef = useRef(false)
 
   const debouncedValidate = useDebounceCallback((data: string, schema: string) => {
     if (data.trim().length === 0 || schema.trim().length === 0) {
@@ -27,15 +26,11 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
     setResult(validateJsonSchema(data, schema))
   }, 300)
 
-  useEffect(() => {
-    if (!initializedRef.current) {
-      initializedRef.current = true
-      if (jsonData && jsonSchema) {
-        setResult(validateJsonSchema(jsonData, jsonSchema))
-      }
+  useMountOnce(() => {
+    if (jsonData && jsonSchema) {
+      setResult(validateJsonSchema(jsonData, jsonSchema))
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
-  }, [])
+  })
 
   const handleDataChange = (val: string) => {
     setInputs((prev) => ({ ...prev, jsonData: val }))

@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { CodeInput, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type { GraphqlParseOutput, ToolComponentProps } from '@/types'
 import { cnMerge, type GraphqlTypeInfo, type GraphqlTypeKind } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['graphql-schema-viewer']
@@ -234,7 +234,6 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
   const [selectedType, setSelectedType] = useState<string | null>(null)
   const [filter, setFilter] = useState('')
   const { toast } = useToast()
-  const initializedRef = useRef(false)
 
   const {
     result: parseResult,
@@ -272,13 +271,9 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
     setParseInput(value)
   }
 
-  useEffect(() => {
-    if (!initializedRef.current) {
-      initializedRef.current = true
-      if (input) setParseInputImmediate(input)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
-  }, [])
+  useMountOnce(() => {
+    if (input) setParseInputImmediate(input)
+  })
 
   const handleLoadExample = useCallback(() => {
     setInput(SAMPLE_SCHEMA)
