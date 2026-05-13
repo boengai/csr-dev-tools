@@ -3,16 +3,15 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { ConvertMode, EntityMode } from '@/types/components/feature/data/htmlEntityConverter'
+import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import type { EntityMode, HtmlEntityConvertMode, HtmlEntityInput, ToolComponentProps } from '@/types'
 import { decodeHtmlEntities, encodeHtmlEntities } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['html-entity-converter']
 
-const sourceKey = (m: ConvertMode) => `csr-dev-tools-html-entity-${m}-source`
+const sourceKey = (m: HtmlEntityConvertMode) => `csr-dev-tools-html-entity-${m}-source`
 
-const readSource = (m: ConvertMode): string => {
+const readSource = (m: HtmlEntityConvertMode): string => {
   try {
     const item = localStorage.getItem(sourceKey(m))
     return item !== null ? (JSON.parse(item) as string) : ''
@@ -22,42 +21,32 @@ const readSource = (m: ConvertMode): string => {
 }
 
 export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [mode, setMode] = useInputLocalStorage<ConvertMode>('csr-dev-tools-html-entity-mode', 'encode')
+  const [mode, setMode] = useInputLocalStorage<HtmlEntityConvertMode>('csr-dev-tools-html-entity-mode', 'encode')
   const [source, setSource] = useState(() => readSource(mode))
-  const [result, setResult] = useState('')
   const [entityMode, setEntityMode] = useState<EntityMode>('named')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
-  const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
   const modeRef = useRef(mode)
 
-  const process = (val: string, m: ConvertMode, em: EntityMode) => {
-    const session = newSession()
-    if (val.trim().length === 0) {
-      setResult('')
-      return
-    }
-    try {
-      const output = m === 'encode' ? encodeHtmlEntities(val, em) : decodeHtmlEntities(val)
-      if (!session.isFresh()) return
-      setResult(output)
-    } catch (e) {
-      if (!session.isFresh()) return
-      setResult('')
-      const msg = e instanceof Error ? e.message : 'Conversion failed'
-      toast({ action: 'add', item: { label: msg, type: 'error' } })
-    }
-  }
-
-  const processInput = useDebounceCallback((val: string) => {
-    process(val, mode, entityMode)
-  }, 300)
+  const { result, setInput, setInputImmediate } = useToolComputation<HtmlEntityInput, string>(
+    ({ source: val, mode: m, entityMode: em }) =>
+      m === 'encode' ? encodeHtmlEntities(val, em) : decodeHtmlEntities(val),
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ source: val }) => val.trim().length === 0,
+      onError: (e) => {
+        const msg = e instanceof Error ? e.message : 'Conversion failed'
+        toast({ action: 'add', item: { label: msg, type: 'error' } })
+      },
+    },
+  )
 
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      if (source) process(source, mode, entityMode)
+      if (source) setInputImmediate({ source, mode, entityMode })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
   }, [])
@@ -67,32 +56,27 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
     try {
       localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val))
     } catch {}
-    processInput(val)
+    setInput({ source: val, mode, entityMode })
   }
 
-  const openDialog = (m: ConvertMode) => {
-    newSession()
+  const openDialog = (m: HtmlEntityConvertMode) => {
     setMode(m)
     modeRef.current = m
     setEntityMode('named')
     const restored = readSource(m)
     setSource(restored)
-    setResult('')
     setDialogOpen(true)
-    if (restored.trim()) process(restored, m, 'named')
+    setInputImmediate({ source: restored, mode: m, entityMode: 'named' })
   }
 
   const handleEntityModeChange = (val: string) => {
     const newMode = val as EntityMode
     setEntityMode(newMode)
-    if (source.trim().length > 0) {
-      process(source, mode, newMode)
-    }
+    setInputImmediate({ source, mode, entityMode: newMode })
   }
 
   const handleReset = () => {
-    newSession()
-    setResult('')
+    setInputImmediate({ source: '', mode, entityMode })
   }
 
   const isEncode = mode === 'encode'

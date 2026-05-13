@@ -3,7 +3,7 @@ import { useRef, useState } from 'react'
 import { Button, DownloadIcon, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useToast, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { type Base64ImageInfo, base64ToImageInfo, formatFileSize } from '@/utils'
 
@@ -11,31 +11,28 @@ const toolEntry = TOOL_REGISTRY_MAP['base64-to-image']
 
 export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const [input, setInput] = useState('')
-  const [info, setInfo] = useState<Base64ImageInfo | null>(null)
+  const [input, setInputValue] = useState('')
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const { toast } = useToast()
 
-  const processInput = useDebounceCallback(async (val: string) => {
-    if (!val.trim()) {
-      setInfo(null)
-      return
-    }
-    try {
-      const result = await base64ToImageInfo(val.trim())
-      setInfo(result)
-    } catch {
-      setInfo(null)
-      toast({
-        action: 'add',
-        item: { label: 'Invalid Base64 image data', type: 'error' },
-      })
-    }
-  }, 500)
+  const { result: info, setInput, setInputImmediate } = useToolComputation<string, Base64ImageInfo | null>(
+    async (val) => base64ToImageInfo(val.trim()),
+    {
+      debounceMs: 500,
+      initial: null,
+      isEmpty: (val) => !val.trim(),
+      onError: () => {
+        toast({
+          action: 'add',
+          item: { label: 'Invalid Base64 image data', type: 'error' },
+        })
+      },
+    },
+  )
 
   const handleInputChange = (val: string) => {
+    setInputValue(val)
     setInput(val)
-    processInput(val)
   }
 
   const handleDownload = () => {
@@ -52,8 +49,8 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   }
 
   const handleReset = () => {
-    setInput('')
-    setInfo(null)
+    setInputValue('')
+    setInputImmediate('')
   }
 
   return (

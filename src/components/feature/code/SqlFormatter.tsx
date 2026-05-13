@@ -3,61 +3,51 @@ import { useState } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
+import { useToast, useToolComputation } from '@/hooks'
+import type { SqlInput, ToolComponentProps } from '@/types'
 import { formatSql, type SqlFormatDialect } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['sql-formatter']
 
 export const SqlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
-  const [result, setResult] = useState('')
   const [dialect, setDialect] = useState<SqlFormatDialect>('sql')
   const [indent, setIndent] = useState(2)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
-  const process = async (val: string, d: SqlFormatDialect, ind: number) => {
-    if (val.trim().length === 0) {
-      setResult('')
-      return
-    }
-    try {
-      setResult(await formatSql(val, d, ind))
-    } catch {
-      setResult('')
-      toast({ action: 'add', item: { label: 'Unable to format SQL', type: 'error' } })
-    }
-  }
-
-  const processInput = useDebounceCallback((val: string) => {
-    process(val, dialect, indent)
-  }, 300)
+  const { result, setInput, setInputImmediate } = useToolComputation<SqlInput, string>(
+    ({ source: val, dialect: d, indent: ind }) => formatSql(val, d, ind),
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ source: val }) => val.trim().length === 0,
+      onError: () => {
+        toast({ action: 'add', item: { label: 'Unable to format SQL', type: 'error' } })
+      },
+    },
+  )
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    processInput(val)
+    setInput({ source: val, dialect, indent })
   }
 
   const handleDialectChange = (val: string) => {
     const d = val as SqlFormatDialect
     setDialect(d)
-    if (source.trim().length > 0) {
-      process(source, d, indent)
-    }
+    setInputImmediate({ source, dialect: d, indent })
   }
 
   const handleIndentChange = (val: string) => {
     const ind = Number(val)
     setIndent(ind)
-    if (source.trim().length > 0) {
-      process(source, dialect, ind)
-    }
+    setInputImmediate({ source, dialect, indent: ind })
   }
 
   const handleReset = () => {
     setSource('')
-    setResult('')
+    setInputImmediate({ source: '', dialect, indent })
   }
 
   return (

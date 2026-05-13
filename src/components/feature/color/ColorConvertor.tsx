@@ -3,8 +3,8 @@ import { type PropsWithChildren, useEffect, useState } from 'react'
 
 import { ColorInput, CopyButton, FieldForm, NotoEmoji } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
-import type { ColorFormat } from '@/types'
+import { useToast, useToolComputation } from '@/hooks'
+import type { ColorFormat, ConvertInput } from '@/types'
 import { convertColor } from '@/utils'
 
 const randomByte = () => Math.floor(Math.random() * 256)
@@ -62,39 +62,40 @@ export const ColorConvertor = () => {
   const [color, setColor] = useState<Record<ColorFormat, string>>(emptyColors)
   const { toast } = useToast()
 
-  useEffect(() => {
-    void convertColor(`rgb(${randomByte()}, ${randomByte()}, ${randomByte()})`, 'rgb').then(setColor)
-  }, [])
-
-  const dbConvertColor = useDebounceCallback((source: Record<ColorFormat, string>, format: ColorFormat) => {
-    const value = source[format]
-    if (!value.trim()) {
-      return
-    }
-
-    void convertColor(value, format)
-      .then((convertedColors) => {
-        setColor(convertedColors)
-      })
-      .catch(() => {
+  const { result: converted, setInput, setInputImmediate } = useToolComputation<
+    ConvertInput,
+    Record<ColorFormat, string> | null
+  >(
+    async ({ value, format }) => convertColor(value, format),
+    {
+      debounceMs: 300,
+      initial: null,
+      isEmpty: ({ value }) => !value.trim(),
+      onError: (_err, { format, value }) => {
         toast({ action: 'add', item: { label: ERROR_MESSAGES[format], type: 'error' } })
         setColor({ ...emptyColors, [format]: value })
-      })
-  }, 300)
+      },
+    },
+  )
+
+  // Adopt computed conversions into the visible state.
+  useEffect(() => {
+    if (converted) setColor(converted)
+  }, [converted])
+
+  // Seed with a random color on mount.
+  useEffect(() => {
+    setInputImmediate({ format: 'rgb', value: `rgb(${randomByte()}, ${randomByte()}, ${randomByte()})` })
+  }, [setInputImmediate])
 
   const handleColorChange = (format: ColorFormat, value: string) => {
     setColor((prev) => ({ ...prev, [format]: value }))
-    dbConvertColor({ ...color, [format]: value }, format)
+    setInput({ format, value })
   }
 
   const handlePickerChange = (hex: string) => {
-    void convertColor(hex, 'hex')
-      .then((converted) => {
-        setColor(converted)
-      })
-      .catch(() => {
-        toast({ action: 'add', item: { label: ERROR_MESSAGES.hex, type: 'error' } })
-      })
+    setColor((prev) => ({ ...prev, hex }))
+    setInputImmediate({ format: 'hex', value: hex })
   }
 
   return (

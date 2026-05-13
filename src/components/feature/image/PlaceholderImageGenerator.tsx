@@ -3,7 +3,7 @@ import { useMemo, useReducer } from 'react'
 import { Button, ColorInput, DownloadIcon, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import type { State, Action } from '@/types/components/feature/image/placeholderImageGenerator'
+import type { PlaceholderImageAction, PlaceholderImageState } from '@/types'
 import { downloadBlob } from '@/utils/download'
 import {
   canvasToBlob,
@@ -51,7 +51,7 @@ const buildPreviewUri = (options: PlaceholderOptions): string => {
 }
 
 const toolEntry = TOOL_REGISTRY_MAP['placeholder-image-generator']
-const initialState: State = {
+const initialState: PlaceholderImageState = {
   bgColor: DEFAULT_BG_COLOR,
   bgHexInput: DEFAULT_BG_COLOR,
   height: DEFAULT_HEIGHT,
@@ -61,7 +61,7 @@ const initialState: State = {
   width: DEFAULT_WIDTH,
 }
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: PlaceholderImageState, action: PlaceholderImageAction): PlaceholderImageState => {
   switch (action.type) {
     case 'SET_WIDTH':
       return { ...state, width: action.value }

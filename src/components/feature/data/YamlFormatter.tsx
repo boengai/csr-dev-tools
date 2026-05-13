@@ -3,9 +3,8 @@ import { useReducer } from 'react'
 import { Button, CheckboxInput, CodeOutput, CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { State, Action } from '@/types/components/feature/data/yamlFormatter'
+import { useToast, useToolComputation } from '@/hooks'
+import type { ToolComponentProps, YamlFormatterAction, YamlFormatterState, YamlInput } from '@/types'
 import { formatYaml, getYamlParseError } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['yaml-formatter']
@@ -14,20 +13,19 @@ const INDENT_OPTIONS = [
   { label: '2 spaces', value: 2 },
   { label: '4 spaces', value: 4 },
 ]
-const reducer = (state: State, action: Action): State => {
+
+const reducer = (state: YamlFormatterState, action: YamlFormatterAction): YamlFormatterState => {
   switch (action.type) {
     case 'SET_DIALOG_OPEN':
       return { ...state, dialogOpen: action.payload }
     case 'SET_INDENT':
       return { ...state, indent: action.payload }
-    case 'SET_RESULT':
-      return { ...state, result: action.payload }
     case 'SET_SORT_KEYS':
       return { ...state, sortKeys: action.payload }
     case 'SET_SOURCE':
       return { ...state, source: action.payload }
     case 'RESET':
-      return { ...state, indent: 2, result: '', sortKeys: false, source: '' }
+      return { ...state, indent: 2, sortKeys: false, source: '' }
   }
 }
 
@@ -35,64 +33,55 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   const [state, dispatch] = useReducer(reducer, {
     dialogOpen: autoOpen ?? false,
     indent: 2,
-    result: '',
     sortKeys: false,
     source: '',
   })
-  const { dialogOpen, indent, result, sortKeys, source } = state
+  const { dialogOpen, indent, sortKeys, source } = state
   const { toast } = useToast()
 
-  const process = async (val: string, currentIndent: number, currentSortKeys: boolean) => {
-    if (val.trim().length === 0) {
-      dispatch({ type: 'SET_RESULT', payload: '' })
-      return
-    }
-
-    const parseError = await getYamlParseError(val)
-    if (parseError != null) {
-      dispatch({ type: 'SET_RESULT', payload: '' })
-      toast({ action: 'add', item: { label: `Invalid YAML: ${parseError}`, type: 'error' } })
-      return
-    }
-
-    try {
-      dispatch({
-        type: 'SET_RESULT',
-        payload: await formatYaml(val, { indent: currentIndent, sortKeys: currentSortKeys }),
-      })
-    } catch {
-      dispatch({ type: 'SET_RESULT', payload: '' })
-      toast({ action: 'add', item: { label: 'Unable to format YAML', type: 'error' } })
-    }
-  }
-
-  const processInput = useDebounceCallback((val: string, currentIndent: number, currentSortKeys: boolean) => {
-    process(val, currentIndent, currentSortKeys)
-  }, 300)
+  const { result, setInput, setInputImmediate } = useToolComputation<YamlInput, string>(
+    async ({ source: val, indent: currentIndent, sortKeys: currentSortKeys }) => {
+      const parseError = await getYamlParseError(val)
+      if (parseError != null) {
+        throw new Error(`Invalid YAML: ${parseError}`)
+      }
+      try {
+        return await formatYaml(val, { indent: currentIndent, sortKeys: currentSortKeys })
+      } catch {
+        throw new Error('Unable to format YAML')
+      }
+    },
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ source: val }) => val.trim().length === 0,
+      onError: (err) => {
+        const label = err instanceof Error ? err.message : 'Unable to format YAML'
+        toast({ action: 'add', item: { label, type: 'error' } })
+      },
+    },
+  )
 
   const handleSourceChange = (val: string) => {
     dispatch({ type: 'SET_SOURCE', payload: val })
-    processInput(val, indent, sortKeys)
+    setInput({ source: val, indent, sortKeys })
   }
 
   const handleIndentChange = (val: string) => {
     const newIndent = Number(val)
     dispatch({ type: 'SET_INDENT', payload: newIndent })
-    if (source.trim().length > 0) {
-      process(source, newIndent, sortKeys)
-    }
+    setInputImmediate({ source, indent: newIndent, sortKeys })
   }
 
   const handleSortKeysChange = () => {
     const newSortKeys = !sortKeys
     dispatch({ type: 'SET_SORT_KEYS', payload: newSortKeys })
-    if (source.trim().length > 0) {
-      process(source, indent, newSortKeys)
-    }
+    setInputImmediate({ source, indent, sortKeys: newSortKeys })
   }
 
   const handleReset = () => {
     dispatch({ type: 'RESET' })
+    setInputImmediate({ source: '', indent: 2, sortKeys: false })
   }
 
   return (

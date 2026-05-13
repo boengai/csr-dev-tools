@@ -4,8 +4,7 @@ import { useCallback, useEffect, useId, useMemo, useReducer, useRef, useState } 
 import { Button, CopyButton, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { TargetResult, ConverterState, ConverterAction } from '@/types/components/feature/time/timezoneConverter'
+import type { ConverterAction, ConverterState, TargetResult, ToolComponentProps } from '@/types'
 import {
   buildTimezoneIndex,
   convertTimezone,

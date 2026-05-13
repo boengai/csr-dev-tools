@@ -2,7 +2,7 @@ import type { ImageFormat } from '@/types'
 
 export type DownloadTarget = { filename: string; blob: Blob } | { filename: string; dataUrl: string }
 
-export type State = {
+export type ImageConvertorState = {
   previews: Array<{ height: number; url: string; width: number }>
   processing: number
   sources: Array<File>
@@ -10,7 +10,7 @@ export type State = {
   target: { format: ImageFormat; quality: string }
 }
 
-export type Action =
+export type ImageConvertorAction =
   | { type: 'SET_TAB_VALUE'; payload: string }
   | { type: 'SET_SOURCES'; payload: Array<File> }
   | { type: 'SET_TARGET'; payload: { format: ImageFormat; quality: string } }

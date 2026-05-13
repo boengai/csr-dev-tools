@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
+import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { formatJson, getJsonParseError } from '@/utils'
 
@@ -11,51 +11,48 @@ const toolEntry = TOOL_REGISTRY_MAP['json-formatter']
 
 export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useInputLocalStorage('csr-dev-tools-json-formatter-source', '')
-  const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
   const initializedRef = useRef(false)
 
-  const process = async (val: string) => {
-    if (val.trim().length === 0) {
-      setResult('')
-      return
-    }
-
-    const parseError = await getJsonParseError(val)
-    if (parseError != null) {
-      setResult('')
-      toast({ action: 'add', item: { label: `Invalid JSON: ${parseError}`, type: 'error' } })
-      return
-    }
-
-    try {
-      setResult(await formatJson(val))
-    } catch {
-      setResult('')
-      toast({ action: 'add', item: { label: 'Unable to format JSON', type: 'error' } })
-    }
-  }
-
-  const processInput = useDebounceCallback((val: string) => {
-    process(val)
-  }, 300)
+  const { result, setInput, setInputImmediate } = useToolComputation<string, string>(
+    async (val) => {
+      const parseError = await getJsonParseError(val)
+      if (parseError != null) {
+        throw new Error(`Invalid JSON: ${parseError}`)
+      }
+      try {
+        return await formatJson(val)
+      } catch {
+        throw new Error('Unable to format JSON')
+      }
+    },
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: (val) => val.trim().length === 0,
+      onError: (err) => {
+        const label = err instanceof Error ? err.message : 'Unable to format JSON'
+        toast({ action: 'add', item: { label, type: 'error' } })
+      },
+    },
+  )
 
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      if (source) process(source)
+      if (source) setInputImmediate(source)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
   }, [])
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    processInput(val)
+    setInput(val)
   }
 
   const handleReset = () => {
-    setResult('')
+    setInputImmediate('')
   }
 
   return (
@@ -68,7 +65,7 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             block
             onClick={() => {
               setDialogOpen(true)
-              if (source.trim()) process(source)
+              if (source.trim()) setInputImmediate(source)
             }}
             variant="default"
           >

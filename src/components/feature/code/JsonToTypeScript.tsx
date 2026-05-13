@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
+import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import type { JsonTsInput, ToolComponentProps } from '@/types'
 import { jsonToTypeScript } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-typescript']
@@ -12,24 +12,25 @@ const toolEntry = TOOL_REGISTRY_MAP['json-to-typescript']
 export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [source, setSource] = useInputLocalStorage('csr-dev-tools-json-to-typescript-source', '')
-  const [output, setOutput] = useState('')
   const [rootName, setRootName] = useState('Root')
   const [useInterface, setUseInterface] = useState(true)
   const [optionalProps, setOptionalProps] = useState(false)
   const { toast } = useToast()
   const initializedRef = useRef(false)
 
-  const generate = useDebounceCallback(async (json: string, root: string, iface: boolean, optional: boolean) => {
-    if (!json.trim()) {
-      setOutput('')
-      return
-    }
-    try {
-      setOutput(await jsonToTypeScript(json, { optionalProperties: optional, rootName: root, useInterface: iface }))
-    } catch {
-      setOutput('')
-    }
-  }, 300)
+  const {
+    result: output,
+    setInput,
+    setInputImmediate,
+  } = useToolComputation<JsonTsInput, string>(
+    ({ source: val, rootName: root, useInterface: iface, optionalProps: optional }) =>
+      jsonToTypeScript(val, { optionalProperties: optional, rootName: root, useInterface: iface }),
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ source: val }) => !val.trim(),
+    },
+  )
 
   const handleGenerate = async () => {
     if (!source.trim()) {
@@ -37,7 +38,8 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
       return
     }
     try {
-      setOutput(await jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }))
+      await jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface })
+      setInputImmediate({ source, rootName, useInterface, optionalProps })
       toast({ action: 'add', item: { label: 'TypeScript generated successfully', type: 'success' } })
     } catch {
       toast({ action: 'add', item: { label: 'Invalid JSON input', type: 'error' } })
@@ -47,46 +49,38 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      if (source) {
-        void (async () => {
-          try {
-            setOutput(await jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }))
-          } catch {
-            // invalid persisted JSON — ignore
-          }
-        })()
-      }
+      if (source) setInputImmediate({ source, rootName, useInterface, optionalProps })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
   }, [])
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    generate(val, rootName, useInterface, optionalProps)
+    setInput({ source: val, rootName, useInterface, optionalProps })
   }
 
   const handleRootNameChange = (val: string) => {
     setRootName(val)
-    generate(source, val, useInterface, optionalProps)
+    setInput({ source, rootName: val, useInterface, optionalProps })
   }
 
   const handleToggleInterface = () => {
     const next = !useInterface
     setUseInterface(next)
-    generate(source, rootName, next, optionalProps)
+    setInputImmediate({ source, rootName, useInterface: next, optionalProps })
   }
 
   const handleToggleOptional = () => {
     const next = !optionalProps
     setOptionalProps(next)
-    generate(source, rootName, useInterface, next)
+    setInputImmediate({ source, rootName, useInterface, optionalProps: next })
   }
 
   const handleReset = () => {
-    setOutput('')
     setRootName('Root')
     setUseInterface(true)
     setOptionalProps(false)
+    setInputImmediate({ source, rootName: 'Root', useInterface: true, optionalProps: false })
   }
 
   return (
@@ -96,16 +90,10 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
         <div className="flex grow flex-col items-center justify-center gap-2">
           <Button
             block
-            onClick={async () => {
+            onClick={() => {
               setDialogOpen(true)
               if (source.trim()) {
-                try {
-                  setOutput(
-                    await jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface }),
-                  )
-                } catch {
-                  // invalid JSON — ignore
-                }
+                setInputImmediate({ source, rootName, useInterface, optionalProps })
               }
             }}
             variant="default"

@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 
 import { CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { FlexItemEntry } from '@/types/components/feature/css/flexboxPlayground'
+import type { FlexItemEntry } from '@/types'
 import {
   type AlignItems,
   DEFAULT_CONTAINER,

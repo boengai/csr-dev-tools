@@ -12,9 +12,16 @@ import {
 } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { Action, PersistedState, ContentProps } from '@/types/components/feature/code/protobufCodec'
+import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import type {
+  ContentProps,
+  DecodeInput,
+  EncodeInput,
+  PersistedState,
+  ProtobufCodecAction,
+  SchemaParseOutput,
+  ToolComponentProps,
+} from '@/types'
 import { downloadBinaryFile, downloadTextFile } from '@/utils/file'
 import { detectProtobufFormat } from '@/utils/protobuf-codec'
 import type { OutputFormat } from '@/utils/protobuf-codec'
@@ -57,35 +64,33 @@ const EncodeContent = ({
   selectedMessageType,
   source,
 }: ContentProps) => {
-  const [result, setResult] = useState('')
   const { toast } = useToast()
 
-  const processEncode = useDebounceCallback(
-    async (schemaVal: string, msgType: string, sourceVal: string, fmt: OutputFormat) => {
-      if (!schemaVal.trim() || !msgType || !sourceVal.trim()) {
-        setResult('')
-        return
-      }
-      try {
-        const { encodeProtobuf } = await import('@/utils/protobuf-codec')
-        const codecResult = await encodeProtobuf(schemaVal, msgType, sourceVal, fmt)
-        if (codecResult.success) {
-          setResult(codecResult.output)
-        } else {
-          setResult('')
-          toast({ action: 'add', item: { label: codecResult.error, type: 'error' } })
-        }
-      } catch {
-        setResult('')
-        toast({ action: 'add', item: { label: 'Failed to encode protobuf', type: 'error' } })
-      }
+  const { result, setInput: setEncodeInput, setInputImmediate: setEncodeInputImmediate } = useToolComputation<
+    EncodeInput,
+    string
+  >(
+    async ({ schema: schemaVal, msgType, source: sourceVal, format: fmt }) => {
+      const { encodeProtobuf } = await import('@/utils/protobuf-codec')
+      const codecResult = await encodeProtobuf(schemaVal, msgType, sourceVal, fmt)
+      if (codecResult.success) return codecResult.output
+      throw new Error(codecResult.error)
     },
-    300,
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ schema: schemaVal, msgType, source: sourceVal }) =>
+        !schemaVal.trim() || !msgType || !sourceVal.trim(),
+      onError: (err) => {
+        const label = err instanceof Error ? err.message : 'Failed to encode protobuf'
+        toast({ action: 'add', item: { label, type: 'error' } })
+      },
+    },
   )
 
   useEffect(() => {
     if (schema && selectedMessageType && source) {
-      processEncode(schema, selectedMessageType, source, format)
+      setEncodeInputImmediate({ schema, msgType: selectedMessageType, source, format })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- run once when messageType becomes available
   }, [selectedMessageType])
@@ -93,25 +98,25 @@ const EncodeContent = ({
   const handleSourceChange = useCallback(
     (value: string) => {
       onSourceChange(value)
-      processEncode(schema, selectedMessageType, value, format)
+      setEncodeInput({ schema, msgType: selectedMessageType, source: value, format })
     },
-    [onSourceChange, schema, selectedMessageType, format, processEncode],
+    [onSourceChange, schema, selectedMessageType, format, setEncodeInput],
   )
 
   const handleFormatChange = useCallback(
     (value: string) => {
       onFormatChange(value)
-      if (source) processEncode(schema, selectedMessageType, source, value as OutputFormat)
+      if (source) setEncodeInputImmediate({ schema, msgType: selectedMessageType, source, format: value as OutputFormat })
     },
-    [onFormatChange, source, schema, selectedMessageType, processEncode],
+    [onFormatChange, source, schema, selectedMessageType, setEncodeInputImmediate],
   )
 
   const handleMessageTypeChange = useCallback(
     (value: string) => {
       onMessageTypeChange(value)
-      if (source) processEncode(schema, value, source, format)
+      if (source) setEncodeInputImmediate({ schema, msgType: value, source, format })
     },
-    [onMessageTypeChange, source, schema, format, processEncode],
+    [onMessageTypeChange, source, schema, format, setEncodeInputImmediate],
   )
 
   const handleUploadJson = useCallback(
@@ -122,11 +127,11 @@ const EncodeContent = ({
       reader.onload = () => {
         const text = reader.result as string
         onSourceChange(text)
-        processEncode(schema, selectedMessageType, text, format)
+        setEncodeInputImmediate({ schema, msgType: selectedMessageType, source: text, format })
       }
       reader.readAsText(file)
     },
-    [onSourceChange, schema, selectedMessageType, format, processEncode],
+    [onSourceChange, schema, selectedMessageType, format, setEncodeInputImmediate],
   )
 
   const handleDownloadEncoded = useCallback(() => {
@@ -225,35 +230,33 @@ const DecodeContent = ({
   selectedMessageType,
   source,
 }: ContentProps) => {
-  const [result, setResult] = useState('')
   const { toast } = useToast()
 
-  const processDecode = useDebounceCallback(
-    async (schemaVal: string, msgType: string, sourceVal: string, fmt: OutputFormat) => {
-      if (!schemaVal.trim() || !msgType || !sourceVal.trim()) {
-        setResult('')
-        return
-      }
-      try {
-        const { decodeProtobuf } = await import('@/utils/protobuf-codec')
-        const codecResult = await decodeProtobuf(schemaVal, msgType, sourceVal, fmt)
-        if (codecResult.success) {
-          setResult(codecResult.output)
-        } else {
-          setResult('')
-          toast({ action: 'add', item: { label: codecResult.error, type: 'error' } })
-        }
-      } catch {
-        setResult('')
-        toast({ action: 'add', item: { label: 'Failed to decode protobuf', type: 'error' } })
-      }
+  const { result, setInput: setDecodeInput, setInputImmediate: setDecodeInputImmediate } = useToolComputation<
+    DecodeInput,
+    string
+  >(
+    async ({ schema: schemaVal, msgType, source: sourceVal, format: fmt }) => {
+      const { decodeProtobuf } = await import('@/utils/protobuf-codec')
+      const codecResult = await decodeProtobuf(schemaVal, msgType, sourceVal, fmt)
+      if (codecResult.success) return codecResult.output
+      throw new Error(codecResult.error)
     },
-    300,
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ schema: schemaVal, msgType, source: sourceVal }) =>
+        !schemaVal.trim() || !msgType || !sourceVal.trim(),
+      onError: (err) => {
+        const label = err instanceof Error ? err.message : 'Failed to decode protobuf'
+        toast({ action: 'add', item: { label, type: 'error' } })
+      },
+    },
   )
 
   useEffect(() => {
     if (schema && selectedMessageType && source) {
-      processDecode(schema, selectedMessageType, source, format)
+      setDecodeInputImmediate({ schema, msgType: selectedMessageType, source, format })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- run once when messageType becomes available
   }, [selectedMessageType])
@@ -261,25 +264,25 @@ const DecodeContent = ({
   const handleSourceChange = useCallback(
     (value: string) => {
       onSourceChange(value)
-      processDecode(schema, selectedMessageType, value, format)
+      setDecodeInput({ schema, msgType: selectedMessageType, source: value, format })
     },
-    [onSourceChange, schema, selectedMessageType, format, processDecode],
+    [onSourceChange, schema, selectedMessageType, format, setDecodeInput],
   )
 
   const handleFormatChange = useCallback(
     (value: string) => {
       onFormatChange(value)
-      if (source) processDecode(schema, selectedMessageType, source, value as OutputFormat)
+      if (source) setDecodeInputImmediate({ schema, msgType: selectedMessageType, source, format: value as OutputFormat })
     },
-    [onFormatChange, source, schema, selectedMessageType, processDecode],
+    [onFormatChange, source, schema, selectedMessageType, setDecodeInputImmediate],
   )
 
   const handleMessageTypeChange = useCallback(
     (value: string) => {
       onMessageTypeChange(value)
-      if (source) processDecode(schema, value, source, format)
+      if (source) setDecodeInputImmediate({ schema, msgType: value, source, format })
     },
-    [onMessageTypeChange, source, schema, format, processDecode],
+    [onMessageTypeChange, source, schema, format, setDecodeInputImmediate],
   )
 
   const handleUploadPb = useCallback(
@@ -302,12 +305,12 @@ const DecodeContent = ({
         const value = detected === 'binary' ? raw : text
         onFormatChange(detected)
         onSourceChange(value)
-        processDecode(schema, selectedMessageType, value, detected)
+        setDecodeInputImmediate({ schema, msgType: selectedMessageType, source: value, format: detected })
         toast({ action: 'add', item: { label: `Auto-detected format: ${detected}`, type: 'success' } })
       }
       reader.readAsArrayBuffer(file)
     },
-    [onFormatChange, onSourceChange, schema, selectedMessageType, processDecode, toast],
+    [onFormatChange, onSourceChange, schema, selectedMessageType, setDecodeInputImmediate, toast],
   )
 
   const handleDownloadJson = useCallback(() => {
@@ -388,13 +391,12 @@ const DecodeContent = ({
 }
 
 export const ProtobufCodec = (_props: ToolComponentProps) => {
-  const [action, setAction] = useState<Action>('encode')
+  const [action, setAction] = useState<ProtobufCodecAction>('encode')
   const [dialogOpen, setDialogOpen] = useState(false)
   const [persisted, setPersisted] = useInputLocalStorage<PersistedState>(
     'csr-dev-tools-protobuf-codec-input',
     INITIAL_STATE,
   )
-  const [messageTypes, setMessageTypes] = useState<Array<string>>([])
   const [selectedMessageType, setSelectedMessageType] = useState('')
   const { toast } = useToast()
   const initializedRef = useRef(false)
@@ -406,49 +408,61 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
     [setPersisted],
   )
 
-  const parseSchema = useDebounceCallback(async (value: string) => {
-    if (!value.trim()) {
-      setMessageTypes([])
-      setSelectedMessageType('')
-      return
-    }
-    try {
+  const {
+    result: schemaResult,
+    setInput: setSchemaInput,
+    setInputImmediate: setSchemaInputImmediate,
+  } = useToolComputation<string, SchemaParseOutput>(
+    async (value) => {
       const { parseProtobufSchema } = await import('@/utils/protobuf-to-json')
       const parsed = await parseProtobufSchema(value)
       if (parsed.success) {
-        const names = parsed.schema.messages.map((m) => m.name)
-        setMessageTypes(names)
-        setSelectedMessageType(names[0] ?? '')
-      } else {
-        setMessageTypes([])
-        setSelectedMessageType('')
-        toast({ action: 'add', item: { label: `Schema error: ${parsed.error}`, type: 'error' } })
+        return { messageTypes: parsed.schema.messages.map((m) => m.name), toastError: null }
       }
-    } catch {
-      toast({ action: 'add', item: { label: 'Failed to parse proto schema', type: 'error' } })
+      return { messageTypes: [], toastError: `Schema error: ${parsed.error}` }
+    },
+    {
+      debounceMs: 300,
+      initial: { messageTypes: [], toastError: null },
+      isEmpty: (value) => !value.trim(),
+      onError: () => {
+        toast({ action: 'add', item: { label: 'Failed to parse proto schema', type: 'error' } })
+      },
+    },
+  )
+
+  const messageTypes = schemaResult.messageTypes
+
+  // Reset selected message type and surface parse-validation toasts on each new parse result.
+  useEffect(() => {
+    setSelectedMessageType(schemaResult.messageTypes[0] ?? '')
+    if (schemaResult.toastError) {
+      toast({ action: 'add', item: { label: schemaResult.toastError, type: 'error' } })
     }
-  }, 300)
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- toast is stable; intentionally fire only on result change
+  }, [schemaResult])
 
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      if (persisted.schema) parseSchema(persisted.schema)
+      if (persisted.schema) setSchemaInputImmediate(persisted.schema)
     }
-  }, [parseSchema, persisted.schema])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
+  }, [])
 
   const handleSchemaChange = useCallback(
     (value: string) => {
       update({ schema: value })
-      parseSchema(value)
+      setSchemaInput(value)
     },
-    [update, parseSchema],
+    [update, setSchemaInput],
   )
 
   const handleMessageTypeChange = useCallback((value: string) => {
     setSelectedMessageType(value)
   }, [])
 
-  const openDialog = (act: Action) => {
+  const openDialog = (act: ProtobufCodecAction) => {
     setAction(act)
     setDialogOpen(true)
   }

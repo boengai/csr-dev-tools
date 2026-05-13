@@ -1,6 +1,6 @@
 import type { OutputFormat } from '@/utils/protobuf-codec'
 
-export type Action = 'decode' | 'encode'
+export type ProtobufCodecAction = 'decode' | 'encode'
 
 export type PersistedState = {
   decodeFormat: OutputFormat
@@ -21,3 +21,7 @@ export type ContentProps = {
   selectedMessageType: string
   source: string
 }
+
+export type EncodeInput = { format: OutputFormat; msgType: string; schema: string; source: string }
+export type DecodeInput = { format: OutputFormat; msgType: string; schema: string; source: string }
+export type SchemaParseOutput = { messageTypes: Array<string>; toastError: string | null }

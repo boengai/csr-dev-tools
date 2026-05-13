@@ -1,16 +1,16 @@
 # Graph Report - csr-dev-tools  (2026-05-13)
 
 ## Corpus Check
-- 606 files · ~254,173 words
+- 632 files · ~256,374 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 3992 nodes · 4355 edges · 673 communities (401 shown, 272 thin omitted)
-- Extraction: 89% EXTRACTED · 11% INFERRED · 0% AMBIGUOUS · INFERRED: 469 edges (avg confidence: 0.84)
+- 4113 nodes · 4520 edges · 688 communities (424 shown, 264 thin omitted)
+- Extraction: 89% EXTRACTED · 11% INFERRED · 0% AMBIGUOUS · INFERRED: 504 edges (avg confidence: 0.84)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `d4aa28a1`
+- Built from commit: `e825e401`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -105,6 +105,7 @@
 - [[_COMMUNITY_Community 87|Community 87]]
 - [[_COMMUNITY_Community 88|Community 88]]
 - [[_COMMUNITY_Community 89|Community 89]]
+- [[_COMMUNITY_Community 90|Community 90]]
 - [[_COMMUNITY_Community 91|Community 91]]
 - [[_COMMUNITY_Community 92|Community 92]]
 - [[_COMMUNITY_Community 93|Community 93]]
@@ -112,7 +113,6 @@
 - [[_COMMUNITY_Community 95|Community 95]]
 - [[_COMMUNITY_Community 96|Community 96]]
 - [[_COMMUNITY_Community 97|Community 97]]
-- [[_COMMUNITY_Community 98|Community 98]]
 - [[_COMMUNITY_Community 99|Community 99]]
 - [[_COMMUNITY_Community 100|Community 100]]
 - [[_COMMUNITY_Community 101|Community 101]]
@@ -268,39 +268,39 @@
 - [[_COMMUNITY_Community 251|Community 251]]
 - [[_COMMUNITY_Community 252|Community 252]]
 - [[_COMMUNITY_Community 253|Community 253]]
+- [[_COMMUNITY_Community 254|Community 254]]
+- [[_COMMUNITY_Community 255|Community 255]]
 - [[_COMMUNITY_Community 256|Community 256]]
 - [[_COMMUNITY_Community 257|Community 257]]
 - [[_COMMUNITY_Community 258|Community 258]]
+- [[_COMMUNITY_Community 259|Community 259]]
 - [[_COMMUNITY_Community 260|Community 260]]
 - [[_COMMUNITY_Community 261|Community 261]]
+- [[_COMMUNITY_Community 262|Community 262]]
 - [[_COMMUNITY_Community 263|Community 263]]
 - [[_COMMUNITY_Community 264|Community 264]]
 - [[_COMMUNITY_Community 265|Community 265]]
 - [[_COMMUNITY_Community 266|Community 266]]
+- [[_COMMUNITY_Community 267|Community 267]]
 - [[_COMMUNITY_Community 268|Community 268]]
 - [[_COMMUNITY_Community 269|Community 269]]
 - [[_COMMUNITY_Community 270|Community 270]]
+- [[_COMMUNITY_Community 271|Community 271]]
 - [[_COMMUNITY_Community 272|Community 272]]
 - [[_COMMUNITY_Community 273|Community 273]]
 - [[_COMMUNITY_Community 274|Community 274]]
 - [[_COMMUNITY_Community 275|Community 275]]
-- [[_COMMUNITY_Community 276|Community 276]]
-- [[_COMMUNITY_Community 277|Community 277]]
 - [[_COMMUNITY_Community 278|Community 278]]
 - [[_COMMUNITY_Community 279|Community 279]]
 - [[_COMMUNITY_Community 280|Community 280]]
-- [[_COMMUNITY_Community 281|Community 281]]
 - [[_COMMUNITY_Community 282|Community 282]]
 - [[_COMMUNITY_Community 283|Community 283]]
-- [[_COMMUNITY_Community 284|Community 284]]
 - [[_COMMUNITY_Community 285|Community 285]]
 - [[_COMMUNITY_Community 286|Community 286]]
 - [[_COMMUNITY_Community 287|Community 287]]
 - [[_COMMUNITY_Community 288|Community 288]]
-- [[_COMMUNITY_Community 289|Community 289]]
 - [[_COMMUNITY_Community 290|Community 290]]
 - [[_COMMUNITY_Community 291|Community 291]]
-- [[_COMMUNITY_Community 292|Community 292]]
 - [[_COMMUNITY_Community 293|Community 293]]
 - [[_COMMUNITY_Community 294|Community 294]]
 - [[_COMMUNITY_Community 295|Community 295]]
@@ -348,23 +348,23 @@
 - [[_COMMUNITY_Community 337|Community 337]]
 - [[_COMMUNITY_Community 338|Community 338]]
 - [[_COMMUNITY_Community 339|Community 339]]
+- [[_COMMUNITY_Community 340|Community 340]]
+- [[_COMMUNITY_Community 341|Community 341]]
+- [[_COMMUNITY_Community 342|Community 342]]
+- [[_COMMUNITY_Community 343|Community 343]]
 - [[_COMMUNITY_Community 344|Community 344]]
 - [[_COMMUNITY_Community 345|Community 345]]
 - [[_COMMUNITY_Community 346|Community 346]]
-- [[_COMMUNITY_Community 351|Community 351]]
+- [[_COMMUNITY_Community 347|Community 347]]
+- [[_COMMUNITY_Community 348|Community 348]]
 - [[_COMMUNITY_Community 353|Community 353]]
+- [[_COMMUNITY_Community 354|Community 354]]
 - [[_COMMUNITY_Community 355|Community 355]]
-- [[_COMMUNITY_Community 356|Community 356]]
-- [[_COMMUNITY_Community 357|Community 357]]
 - [[_COMMUNITY_Community 360|Community 360]]
-- [[_COMMUNITY_Community 361|Community 361]]
 - [[_COMMUNITY_Community 362|Community 362]]
-- [[_COMMUNITY_Community 363|Community 363]]
 - [[_COMMUNITY_Community 364|Community 364]]
 - [[_COMMUNITY_Community 365|Community 365]]
 - [[_COMMUNITY_Community 366|Community 366]]
-- [[_COMMUNITY_Community 367|Community 367]]
-- [[_COMMUNITY_Community 368|Community 368]]
 - [[_COMMUNITY_Community 369|Community 369]]
 - [[_COMMUNITY_Community 370|Community 370]]
 - [[_COMMUNITY_Community 371|Community 371]]
@@ -443,17 +443,17 @@
 - [[_COMMUNITY_Community 444|Community 444]]
 - [[_COMMUNITY_Community 445|Community 445]]
 - [[_COMMUNITY_Community 446|Community 446]]
+- [[_COMMUNITY_Community 447|Community 447]]
 - [[_COMMUNITY_Community 448|Community 448]]
-- [[_COMMUNITY_Community 450|Community 450]]
-- [[_COMMUNITY_Community 479|Community 479]]
-- [[_COMMUNITY_Community 480|Community 480]]
-- [[_COMMUNITY_Community 481|Community 481]]
+- [[_COMMUNITY_Community 449|Community 449]]
+- [[_COMMUNITY_Community 451|Community 451]]
+- [[_COMMUNITY_Community 453|Community 453]]
 - [[_COMMUNITY_Community 482|Community 482]]
 - [[_COMMUNITY_Community 483|Community 483]]
 - [[_COMMUNITY_Community 484|Community 484]]
+- [[_COMMUNITY_Community 485|Community 485]]
+- [[_COMMUNITY_Community 486|Community 486]]
 - [[_COMMUNITY_Community 487|Community 487]]
-- [[_COMMUNITY_Community 488|Community 488]]
-- [[_COMMUNITY_Community 489|Community 489]]
 - [[_COMMUNITY_Community 490|Community 490]]
 - [[_COMMUNITY_Community 491|Community 491]]
 - [[_COMMUNITY_Community 492|Community 492]]
@@ -478,21 +478,9 @@
 - [[_COMMUNITY_Community 511|Community 511]]
 - [[_COMMUNITY_Community 512|Community 512]]
 - [[_COMMUNITY_Community 513|Community 513]]
-- [[_COMMUNITY_Community 579|Community 579]]
-- [[_COMMUNITY_Community 580|Community 580]]
-- [[_COMMUNITY_Community 581|Community 581]]
-- [[_COMMUNITY_Community 582|Community 582]]
-- [[_COMMUNITY_Community 583|Community 583]]
-- [[_COMMUNITY_Community 584|Community 584]]
-- [[_COMMUNITY_Community 585|Community 585]]
-- [[_COMMUNITY_Community 586|Community 586]]
-- [[_COMMUNITY_Community 587|Community 587]]
-- [[_COMMUNITY_Community 588|Community 588]]
-- [[_COMMUNITY_Community 589|Community 589]]
-- [[_COMMUNITY_Community 590|Community 590]]
-- [[_COMMUNITY_Community 591|Community 591]]
-- [[_COMMUNITY_Community 592|Community 592]]
-- [[_COMMUNITY_Community 593|Community 593]]
+- [[_COMMUNITY_Community 514|Community 514]]
+- [[_COMMUNITY_Community 515|Community 515]]
+- [[_COMMUNITY_Community 516|Community 516]]
 - [[_COMMUNITY_Community 594|Community 594]]
 - [[_COMMUNITY_Community 595|Community 595]]
 - [[_COMMUNITY_Community 596|Community 596]]
@@ -572,18 +560,33 @@
 - [[_COMMUNITY_Community 670|Community 670]]
 - [[_COMMUNITY_Community 671|Community 671]]
 - [[_COMMUNITY_Community 672|Community 672]]
+- [[_COMMUNITY_Community 673|Community 673]]
+- [[_COMMUNITY_Community 674|Community 674]]
+- [[_COMMUNITY_Community 675|Community 675]]
+- [[_COMMUNITY_Community 676|Community 676]]
+- [[_COMMUNITY_Community 677|Community 677]]
+- [[_COMMUNITY_Community 678|Community 678]]
+- [[_COMMUNITY_Community 679|Community 679]]
+- [[_COMMUNITY_Community 680|Community 680]]
+- [[_COMMUNITY_Community 681|Community 681]]
+- [[_COMMUNITY_Community 682|Community 682]]
+- [[_COMMUNITY_Community 683|Community 683]]
+- [[_COMMUNITY_Community 684|Community 684]]
+- [[_COMMUNITY_Community 685|Community 685]]
+- [[_COMMUNITY_Community 686|Community 686]]
+- [[_COMMUNITY_Community 687|Community 687]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `useDebounceCallback()` - 62 edges
-2. `DiagramEditor` - 30 edges
-3. `utils barrel index` - 24 edges
-4. `createInitialDocument()` - 21 edges
-5. `useInputLocalStorage()` - 19 edges
-6. `File Structure` - 17 edges
-7. `icon barrel export` - 16 edges
-8. `useStaleSafeAsync()` - 15 edges
-9. `CSR Developer Tools - Development Guide` - 15 edges
-10. `Phase 2 — WASM Crypto Migration Implementation Plan` - 15 edges
+2. `useToolComputation()` - 37 edges
+3. `DiagramEditor` - 30 edges
+4. `utils barrel index` - 24 edges
+5. `createInitialDocument()` - 21 edges
+6. `useInputLocalStorage()` - 19 edges
+7. `File Structure` - 17 edges
+8. `icon barrel export` - 16 edges
+9. `useStaleSafeAsync()` - 15 edges
+10. `CSR Developer Tools - Development Guide` - 15 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `Component Inventory` --references--> `ToolRegistryKey`  [INFERRED]
@@ -637,15 +640,15 @@
 - **Phase 6a WASM crates ecosystem** —  [INFERRED 0.95]
 - **Static SEO pipeline** —  [INFERRED 0.75]
 
-## Communities (673 total, 272 thin omitted)
+## Communities (688 total, 264 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.05
-Nodes (65): AesEncryptDecrypt, AspectRatioCalculator, BackgroundRemoverError, BackgroundRemover, BackgroundRemoverProcessing, BackgroundRemoverResult, Base64ToImage, BcryptHasher (+57 more)
+Nodes (45): getTypeKindLabel(), GraphqlParseOutput, KIND_STYLES, KindBadge(), TypeDetailPanel(), KindBadge(), CloseButton(), DIALECT_OPTIONS (+37 more)
 
 ### Community 1 - "Community 1"
-Cohesion: 0.07
-Nodes (32): CloseButton(), DIALECT_OPTIONS, DbmlEditorPanel(), DiagramCanvas(), edgeTypes, nodeTypes, ContextValue, Ctx (+24 more)
+Cohesion: 0.05
+Nodes (65): AesEncryptDecrypt, AspectRatioCalculator, BackgroundRemoverError, BackgroundRemover, BackgroundRemoverProcessing, BackgroundRemoverResult, Base64ToImage, BcryptHasher (+57 more)
 
 ### Community 2 - "Community 2"
 Cohesion: 0.05
@@ -660,20 +663,20 @@ Cohesion: 0.05
 Nodes (46): Architecture, BorderRadiusGenerator, BoxShadowGenerator, CLAUDE.md graphify rules, ColorFormat, HSLColor, LABColor, LCHColor (+38 more)
 
 ### Community 5 - "Community 5"
-Cohesion: 0.05
-Nodes (26): CssFormatter(), JavaScriptMinifier(), MarkdownPreview(), DecodeContent(), EncodeContent(), FORMAT_OPTIONS, INITIAL_STATE, ProtobufCodec() (+18 more)
-
-### Community 6 - "Community 6"
 Cohesion: 0.04
 Nodes (44): code:block1 (wasm/crates/csr-formatter/), code:rust (pub fn format(input: &str, indent: u32, use_tabs: bool) -> S), code:rust (pub fn minify(input: &str) -> String {), code:bash (git add wasm/crates/csr-formatter/src/css.rs), code:rust (#[cfg(test)]), code:rust (const VOID_ELEMENTS: &[&str] = &[), code:rust (pub fn minify(input: &str) -> String {), code:bash (git add wasm/crates/csr-formatter/src/html.rs) (+36 more)
 
-### Community 7 - "Community 7"
+### Community 6 - "Community 6"
 Cohesion: 0.07
 Nodes (45): BoxShadowConfig, ChmodPermission / ChmodState, e2e: aspect-ratio-calculator, e2e: bcrypt-hasher, e2e: certificate-decoder, e2e: chmod-calculator, e2e: code-tools, e2e: code-tools-extended (+37 more)
 
-### Community 8 - "Community 8"
+### Community 7 - "Community 7"
 Cohesion: 0.05
 Nodes (43): code:block1 (wasm/crates/csr-qrcode/), code:toml ([package]), code:rust (/// Block-level AST node.), code:bash (git add wasm/crates/csr-markdown/), code:rust (/// Inline-level AST node.), code:rust (use crate::block::{Block, ListItem};), code:bash (git add wasm/crates/csr-markdown/src/inline.rs wasm/crates/c), code:rust (/// Simple HTML DOM node.) (+35 more)
+
+### Community 8 - "Community 8"
+Cohesion: 0.06
+Nodes (21): CopyButton(), copyButtonVariants, classes, iconOnly, labeled, propsWithLabel, propsWithVariant, validProps (+13 more)
 
 ### Community 9 - "Community 9"
 Cohesion: 0.05
@@ -681,19 +684,19 @@ Nodes (42): Blob URL Lifecycle — Implementation Plan, code:tsx (// src/hooks/u
 
 ### Community 10 - "Community 10"
 Cohesion: 0.05
-Nodes (41): code:tsx (// src/components/feature/data/db-diagram/DiagramContext.tsx), code:bash (git add src/components/feature/data/db-diagram/DiagramContex), code:tsx (// src/components/feature/data/db-diagram/DiagramCanvas.tsx), code:bash (git add src/components/feature/data/db-diagram/DiagramCanvas), code:tsx (import { useDiagram } from './DiagramContext'), code:bash (git add src/components/feature/data/db-diagram/TableNode.tsx), code:tsx (// Inside DbmlEditorPanel.tsx), code:bash (git add src/components/feature/data/db-diagram/DbmlEditorPan) (+33 more)
+Nodes (41): Architecture, Benchmark Inputs, Build Toolchain, code:block1 (wasm/), code:rust (#[cfg(test)]), code:block11 (benchmarks/), code:json ({), code:block3 (src/wasm/) (+33 more)
 
 ### Community 11 - "Community 11"
 Cohesion: 0.05
-Nodes (41): Architecture, Benchmark Inputs, Build Toolchain, code:block1 (wasm/), code:rust (#[cfg(test)]), code:block11 (benchmarks/), code:json ({), code:block3 (src/wasm/) (+33 more)
-
-### Community 12 - "Community 12"
-Cohesion: 0.05
 Nodes (37): Adding a New Tool, Available Scripts, CI/CD Quality Gates, Code Conventions, code:bash (# Clone the repository), code:ts (export const isValidHash = (value: string): boolean => {), code:block11 (src/utils/hash.spec.ts), code:ts (import { generateHash } from '@/utils') (+29 more)
 
-### Community 13 - "Community 13"
+### Community 12 - "Community 12"
 Cohesion: 0.06
 Nodes (38): CSS border-radius shorthand collapser, CSS format WASM facade (format/minify), csv tests (json↔csv roundtrip via WASM), CSV WASM adapter (jsonToCsv/csvToJson), Diff Facade (line/word/unified/side-by-side), Side-by-side diff row pairing algorithm, diff tests, generateHmac (+30 more)
+
+### Community 13 - "Community 13"
+Cohesion: 0.13
+Nodes (32): GraphqlSchemaViewer(), HtmlFormatter(), JavaScriptMinifier(), JsonSchemaValidator(), JsonToTypeScript(), MarkdownPreview(), DecodeContent(), EncodeContent() (+24 more)
 
 ### Community 14 - "Community 14"
 Cohesion: 0.06
@@ -719,141 +722,141 @@ Nodes (31): App, Button, CATEGORY_ORDER, CopyButton, CopyButton spec, copyButton
 Cohesion: 0.07
 Nodes (29): Adding a New Tool, Available Scripts, Build Process, Code Style & Linting, code:bash (# Clone the repository), code:block2 (pnpm build), code:tsx (// ❌ BANNED), code:bash (# Run unit tests) (+21 more)
 
-### Community 20 - "Community 20"
-Cohesion: 0.11
-Nodes (20): hashOutput, checkboxes, octalInput, symbolicInput, detailPanel, editor, roleRef, editor (+12 more)
+### Community 21 - "Community 21"
+Cohesion: 0.1
+Nodes (19): dialog, editors, output, trigger, dialog, output, dialog, input (+11 more)
 
 ### Community 22 - "Community 22"
-Cohesion: 0.09
-Nodes (17): EnvFileConverter(), MODE_CONFIG, HtmlToMarkdownConverter(), readSource(), sourceKey(), JsonToTomlConverter(), readSource(), sourceKey() (+9 more)
-
-### Community 23 - "Community 23"
-Cohesion: 0.1
-Nodes (19): dialog, output, dialog, input, secretInput, textInput, decimalInput, dialog (+11 more)
-
-### Community 24 - "Community 24"
 Cohesion: 0.12
 Nodes (21): generateOgMetaTags(), OgConfig, fullConfig, lines, result, escapeHtml(), escapeJavaScript(), escapeJson() (+13 more)
 
-### Community 25 - "Community 25"
+### Community 23 - "Community 23"
 Cohesion: 0.1
 Nodes (15): createInitialConverterState(), DEFAULT_TARGETS, favoriteButtonStyles, formatNowDate(), formatNowTime(), getInitialTargets(), loadFavorites(), pickerItemStyles (+7 more)
 
-### Community 26 - "Community 26"
+### Community 24 - "Community 24"
 Cohesion: 0.12
 Nodes (20): CRON_PRESETS, describeCron(), describeField(), FIELDS, getNextRuns(), parseCron(), parseField(), result (+12 more)
 
-### Community 27 - "Community 27"
-Cohesion: 0.11
-Nodes (21): setDiagramName(), a, b, doc, fk, rel, round, schema (+13 more)
-
-### Community 28 - "Community 28"
+### Community 25 - "Community 25"
 Cohesion: 0.14
 Nodes (24): DBML <-> Diagram bidirectional sync, DB diagram window CustomEvent bus, localStorage diagram persistence with debounced autosave, Mermaid renderer cross-tool prefill via localStorage, CloseButton, DIALECT_OPTIONS, DbDiagram, DiagramCanvas (+16 more)
 
-### Community 29 - "Community 29"
-Cohesion: 0.14
-Nodes (15): isValidDocument(), Listener, doc, editor, id, listener, next, result (+7 more)
+### Community 26 - "Community 26"
+Cohesion: 0.1
+Nodes (17): hashOutput, checkboxes, octalInput, symbolicInput, button2048, generateButton, privateKeyCm, publicKeyCm (+9 more)
 
-### Community 30 - "Community 30"
+### Community 27 - "Community 27"
 Cohesion: 0.11
 Nodes (17): buildPreviewUri(), initialState, PlaceholderImageGenerator(), PRESET_OPTIONS, reducer(), toPickerHex(), blob, clickSpy (+9 more)
 
-### Community 31 - "Community 31"
-Cohesion: 0.1
-Nodes (15): HtmlFormatter(), CHEATSHEET_ENTRIES, chevronStyles, JsonpathEvaluator(), SAMPLE_JSON, JsonSchemaValidator(), JsonToTypeScript(), EscapedJsonStringifier() (+7 more)
-
-### Community 32 - "Community 32"
+### Community 28 - "Community 28"
 Cohesion: 0.09
 Nodes (22): Code Tools (`code/`) — 14 components, Color Tools (`color/`) — 2 components, Common Components (`src/components/common/`), Component Patterns, CSR Developer Tools - Component Inventory, CSS Tools (`css/`) — 6 components, Data Tools (`data/`) — 15 components, Encoding Tools (`encoding/`) — 5 components (+14 more)
 
-### Community 33 - "Community 33"
+### Community 29 - "Community 29"
 Cohesion: 0.16
 Nodes (18): applyDbmlNow(), regenerateDbmlFromDocument(), setDbmlText(), doc, { document, result }, next, withGarbage, withText (+10 more)
 
-### Community 34 - "Community 34"
+### Community 30 - "Community 30"
 Cohesion: 0.15
 Nodes (17): deleteDiagram(), generateDiagramId(), loadDiagram(), loadDiagramIndex(), loadStore(), saveDiagram(), saveDiagramIndex(), saveStore() (+9 more)
 
-### Community 35 - "Community 35"
+### Community 31 - "Community 31"
 Cohesion: 0.12
 Nodes (18): canvasToBlob(), downloadFaviconsAsZip(), FAVICON_SIZES, FaviconResult, FaviconSize, generateFaviconLinkTags(), generateFavicons(), resizeToCanvas() (+10 more)
 
-### Community 36 - "Community 36"
+### Community 32 - "Community 32"
 Cohesion: 0.11
 Nodes (22): Base64 image types, Color palette types (HarmonyType, PaletteColor), PickedColor type, Image crop types, DB diagram type cluster, DBML parser types (ParsedTable, ParsedRef), DB diagram import types (ParseResult, ParsedColumn, FkRef), DB diagram JSON Schema types (+14 more)
 
-### Community 37 - "Community 37"
+### Community 33 - "Community 33"
 Cohesion: 0.12
 Nodes (14): CATEGORY_ORDER, COMPONENT_LOADERS, TOOL_REGISTRY, TOOL_REGISTRY_MAP, ToolCategory, ToolComponentProps, ToolRegistryEntry, ToolRegistryKey (+6 more)
 
-### Community 38 - "Community 38"
+### Community 34 - "Community 34"
 Cohesion: 0.19
 Nodes (19): EKU_NAMES, formatDistinguishedName(), formatHexId(), formatSerialNumber(), getPublicKeyAlgorithmInfo(), getValidityStatus(), isValidPemCertificate(), KEY_USAGE_FLAGS (+11 more)
 
-### Community 39 - "Community 39"
+### Community 35 - "Community 35"
 Cohesion: 0.14
 Nodes (18): canvasToBlob(), generateAllAssets(), generateManifestIcons(), generatePwaIcon(), generateSplashMetaTags(), generateSplashScreen(), slugify(), icons (+10 more)
 
-### Community 40 - "Community 40"
-Cohesion: 0.1
-Nodes (7): DataUriGenerator(), initialState, Base64ToImage(), ImageToBase64(), FILE_EXTENSIONS, formatFileSize(), formatBase64Size()
+### Community 36 - "Community 36"
+Cohesion: 0.15
+Nodes (13): isValidDocument(), Listener, documentToFlow(), doc, docWithOneTable(), { edges }, { nodes }, { nodes, edges } (+5 more)
 
-### Community 41 - "Community 41"
+### Community 37 - "Community 37"
 Cohesion: 0.16
 Nodes (16): generateCreateTable(), generateForeignKeys(), generateInlineForeignKeys(), generateJunctionTable(), generateSql(), mapColumnType(), postsBlock, postsIdx (+8 more)
 
-### Community 42 - "Community 42"
+### Community 38 - "Community 38"
 Cohesion: 0.1
 Nodes (19): archivedValue, byName, idField, inputType, limitArg, nameField, postsField, postStatusType (+11 more)
 
-### Community 43 - "Community 43"
+### Community 39 - "Community 39"
 Cohesion: 0.19
 Nodes (17): ChmodCalculator(), GROUPS, PERMS, PRESETS, describePermission(), digitToPermission(), isValidOctal(), isValidSymbolic() (+9 more)
 
-### Community 44 - "Community 44"
+### Community 40 - "Community 40"
+Cohesion: 0.1
+Nodes (20): code:tsx (// src/components/feature/data/db-diagram/DiagramContext.tsx), code:bash (git add src/components/feature/data/db-diagram/DiagramContex), code:tsx (// src/components/feature/data/db-diagram/DiagramCanvas.tsx), code:bash (git add src/components/feature/data/db-diagram/DiagramCanvas), code:tsx (import { useDiagram } from './DiagramContext'), code:bash (git add src/components/feature/data/db-diagram/TableNode.tsx), code:tsx (// src/components/feature/data/db-diagram/index.tsx), code:bash (git add src/components/feature/data/db-diagram/index.tsx) (+12 more)
+
+### Community 41 - "Community 41"
 Cohesion: 0.1
 Nodes (18): Architecture, code:block1 (src/components/common/dialog/), code:ts (// src/types/components/common/dialog/toolDialogShell.ts), code:tsx (const [open, setOpen] = useState(autoOpen ?? false)), code:tsx (export const ToolDialogShell = ({), code:tsx (// BackgroundRemover), Goals, Internals (implementation sketch) (+10 more)
 
-### Community 45 - "Community 45"
+### Community 42 - "Community 42"
 Cohesion: 0.18
 Nodes (20): AlertIcon, ArrowIcon, CheckIcon, ChevronIcon, CopyIcon, DownloadIcon, GearIcon, GitHubIcon (+12 more)
 
-### Community 46 - "Community 46"
+### Community 43 - "Community 43"
+Cohesion: 0.15
+Nodes (15): importFromJsonSchema(), importFromSql(), { document, result }, initial, JSON_SCHEMA_FIXTURE, newDiagram(), schemaToDocument(), setDiagramName() (+7 more)
+
+### Community 44 - "Community 44"
 Cohesion: 0.17
 Nodes (12): analyzeSshKey(), CURVE_BITS, getRsaBitLength(), KNOWN_KEY_TYPES, MD5_K, MD5_S, md5Fingerprint(), md5Raw() (+4 more)
 
-### Community 47 - "Community 47"
+### Community 45 - "Community 45"
 Cohesion: 0.14
 Nodes (16): AnimationConfig, AnimationDirection, AnimationFillMode, AnimationTimingFunction, buildTransformString(), DEFAULT_ANIMATION_CONFIG, formatKeyframeBlock(), generateAnimationCss() (+8 more)
 
-### Community 48 - "Community 48"
+### Community 46 - "Community 46"
+Cohesion: 0.14
+Nodes (13): detailPanel, editor, roleRef, cmContent, copyButtons, editor, expressionInput, resultsPanel (+5 more)
+
+### Community 47 - "Community 47"
 Cohesion: 0.17
 Nodes (12): heightInput, ratioInput, widthInput, hexInput, picker, colors, commandPalette, errorMessage (+4 more)
 
-### Community 49 - "Community 49"
+### Community 48 - "Community 48"
 Cohesion: 0.3
 Nodes (13): convertColor(), hexToHsl(), normalizeHue(), clampLightness(), createLightnessVariant(), createPaletteColor(), generateAnalogousPalette(), generateComplementaryPalette() (+5 more)
 
-### Community 50 - "Community 50"
+### Community 49 - "Community 49"
 Cohesion: 0.12
 Nodes (15): ColumnConstraint, ColumnType, DiagramAction, DiagramIndexEntry, DiagramSchema, DiagramState, DiagramStore, RelationshipEdge (+7 more)
 
-### Community 51 - "Community 51"
+### Community 50 - "Community 50"
 Cohesion: 0.16
 Nodes (14): addColumn(), colIdSeq, deleteColumn(), a, { doc }, { doc: initial, tableId: aId }, { doc, tableId }, docAfterB (+6 more)
 
-### Community 52 - "Community 52"
+### Community 51 - "Community 51"
 Cohesion: 0.12
 Nodes (15): allTimezones, date, entry, index, list, ny, result, results (+7 more)
 
-### Community 53 - "Community 53"
+### Community 52 - "Community 52"
 Cohesion: 0.3
 Nodes (12): aesDecrypt(), aesEncrypt(), arrayBufferToBase64(), base64ToArrayBuffer(), decryptWithLayout(), deriveKey(), ciphertext, encoder (+4 more)
 
-### Community 54 - "Community 54"
+### Community 53 - "Community 53"
 Cohesion: 0.15
 Nodes (14): seed(), COLUMN_TYPES, createDefaultColumn(), createDefaultTable(), col, col1, col2, id (+6 more)
+
+### Community 54 - "Community 54"
+Cohesion: 0.15
+Nodes (13): FkRef, ParsedColumn, ParseResult, JSON_TYPE_MAP, mapJsonType(), parseJsonSchema(), resolveRefName(), authorCol (+5 more)
 
 ### Community 55 - "Community 55"
 Cohesion: 0.12
@@ -872,912 +875,956 @@ Cohesion: 0.19
 Nodes (13): addTable(), defaultPosition(), deleteTable(), moveTable(), renameTable(), a, b, doc (+5 more)
 
 ### Community 59 - "Community 59"
+Cohesion: 0.18
+Nodes (13): addRelation(), columnExists(), deleteRelation(), relIdSeq, created, { doc }, { doc, aId, bId, aCol }, { doc, aId, bId, aCol, bCol } (+5 more)
+
+### Community 60 - "Community 60"
 Cohesion: 0.13
 Nodes (10): blob, callArgs, foreground, mock, mockFromBlob, MockImageData, mockPipeline, mockSegmenter (+2 more)
 
-### Community 60 - "Community 60"
+### Community 61 - "Community 61"
 Cohesion: 0.16
 Nodes (10): ALIGN_ICON, createGrid(), createInitialState(), MarkdownTableGenerator(), NEXT_ALIGN, reducer(), generateMarkdownTable(), data (+2 more)
 
-### Community 61 - "Community 61"
+### Community 62 - "Community 62"
+Cohesion: 0.15
+Nodes (6): initialState, TABS_VALUES, ImagePreview(), ResizeInput, TABS_VALUES, ImageResizerControls()
+
+### Community 63 - "Community 63"
 Cohesion: 0.13
 Nodes (15): code:bash (git add src/components/feature/encoding/<Tool>.tsx), code:block16 (pnpm tsc --noEmit), code:block17 (pnpm tsc --noEmit), code:block18 (pnpm tsc --noEmit), Phase 2 — Pattern-A migration by category, Task 10: CSS category (6 tools), Task 11: Time category (4 tools), Task 12: Generator + Unit + Color + Network (8 tools combined) (+7 more)
 
-### Community 62 - "Community 62"
+### Community 64 - "Community 64"
+Cohesion: 0.14
+Nodes (5): DataUriGenerator(), initialState, Base64ToImage(), FILE_EXTENSIONS, formatFileSize()
+
+### Community 65 - "Community 65"
 Cohesion: 0.27
 Nodes (13): calculateDimensions(), canvasToDataUrl(), cleanupCanvas(), cleanupImage(), convertImageFormat(), createCanvasContext(), getSafeImageFormat(), isValidImageFormat() (+5 more)
 
-### Community 63 - "Community 63"
+### Community 66 - "Community 66"
 Cohesion: 0.35
 Nodes (12): calculateSubnet(), ipToBinary(), ipToNumber(), maskToPrefix(), numberToIp(), parseCidr(), prefixToMask(), cases (+4 more)
 
-### Community 64 - "Community 64"
-Cohesion: 0.16
-Nodes (6): initialState, TABS_VALUES, ImagePreview(), ImageResizer(), TABS_VALUES, ImageResizerControls()
-
-### Community 65 - "Community 65"
+### Community 67 - "Community 67"
 Cohesion: 0.14
 Nodes (14): Code, Color, CSS, Data, Encoding, Features, Generator, Image (+6 more)
 
-### Community 66 - "Community 66"
+### Community 68 - "Community 68"
 Cohesion: 0.14
 Nodes (13): Architecture, Blob URL Lifecycle — Design, code:block1 (src/hooks/), code:ts (// src/hooks/useBlobUrl.ts), code:ts (// src/utils/download.ts), Goals, Migration plan, Motivation (+5 more)
 
-### Community 67 - "Community 67"
-Cohesion: 0.15
-Nodes (10): dialog, editors, output, trigger, dialog, output, dialog, output (+2 more)
-
-### Community 68 - "Community 68"
+### Community 69 - "Community 69"
 Cohesion: 0.27
 Nodes (10): splitWords(), toCamelCase(), toConstantCase(), toDotCase(), toKebabCase(), toPascalCase(), toPathCase(), toSentenceCase() (+2 more)
 
-### Community 69 - "Community 69"
+### Community 70 - "Community 70"
 Cohesion: 0.15
 Nodes (10): parseProtobufSchema(), ageField, getParsedSchema(), labelsField, metadataField, nameField, paymentMethod, person (+2 more)
 
-### Community 70 - "Community 70"
+### Community 71 - "Community 71"
 Cohesion: 0.15
 Nodes (12): added, addedRows, leftNums, leftRemoved, lines, paired, pairedRow, removed (+4 more)
 
-### Community 71 - "Community 71"
+### Community 72 - "Community 72"
 Cohesion: 0.19
 Nodes (10): deserializeDiagram(), serializeDiagram(), edges, { edges, nodes }, json, nodes, { nodes: restoredNodes }, originalNodes (+2 more)
-
-### Community 72 - "Community 72"
-Cohesion: 0.21
-Nodes (11): generateId(), JSON_TYPE_MAP, mapJsonType(), parseJsonSchema(), resolveRefName(), authorCol, idCol, postTable (+3 more)
 
 ### Community 73 - "Community 73"
 Cohesion: 0.15
 Nodes (7): useKeyboardShortcuts(), App(), CommandPalette, SettingsDialog, Sidebar, ToastProvider, TwinkleStarsAnimate
 
 ### Community 74 - "Community 74"
-Cohesion: 0.3
-Nodes (11): buildRelationships(), extractType(), layoutTables(), mapSqlType(), parseColumnDef(), parseCreateTable(), parseSqlDdl(), splitColumnDefs() (+3 more)
+Cohesion: 0.15
+Nodes (12): code:bash (git add src/types/utils/db-diagram.ts), code:bash (git add graphify-out/), code:bash (pnpm tsc --noEmit), DB Diagram Editor Extraction — Implementation Plan, File map, Naming adjustment from the spec, Phase 3 — Tidy, Self-review (+4 more)
 
 ### Community 75 - "Community 75"
-Cohesion: 0.21
-Nodes (6): envToJson(), envToYaml(), parseEnv(), yamlToEnv(), jsonToYaml(), yamlToJson()
+Cohesion: 0.15
+Nodes (13): code:ts (// src/diagram/operations/columns.spec.ts), code:ts (// src/diagram/operations/columns.ts), code:ts (import * as columnOps from './operations/columns'), code:ts (addColumn(tableId: TableId, column: Omit<TableColumn, 'id'>)), code:bash (git add src/diagram/operations/columns.ts src/diagram/operat), code:ts (// src/diagram/state.spec.ts), code:ts (// src/diagram/state.ts), code:bash (git add -A) (+5 more)
 
 ### Community 76 - "Community 76"
 Cohesion: 0.17
-Nodes (12): code:toml (# wasm/crates/csr-color/Cargo.toml), code:rust (// wasm/crates/csr-color/src/parse.rs), code:rust (// wasm/crates/csr-color/src/convert.rs), code:rust (// wasm/crates/csr-color/src/format.rs), code:rust (// wasm/crates/csr-color/src/lib.rs), code:toml (# wasm/crates/csr-color/Cargo.toml (revised)), code:typescript (// src/wasm/csr-color.ts), code:typescript (// src/utils/color.ts) (+4 more)
+Nodes (9): dialog, output, dialog, output, dialog, editors, input, jwtData (+1 more)
 
 ### Community 77 - "Community 77"
+Cohesion: 0.2
+Nodes (9): Action, ContentProps, DecodeInput, EncodeInput, FORMAT_OPTIONS, INITIAL_STATE, PersistedState, ProtobufCodecAction (+1 more)
+
+### Community 78 - "Community 78"
+Cohesion: 0.18
+Nodes (9): Action, CompressInput, ImageCompressor(), ImageCompressorAction, ImageCompressorState, initialState, OriginalInfo, processingWrapperStyles (+1 more)
+
+### Community 79 - "Community 79"
+Cohesion: 0.21
+Nodes (6): envToJson(), envToYaml(), parseEnv(), yamlToEnv(), jsonToYaml(), yamlToJson()
+
+### Community 80 - "Community 80"
+Cohesion: 0.3
+Nodes (11): buildRelationships(), extractType(), layoutTables(), mapSqlType(), parseColumnDef(), parseCreateTable(), parseSqlDdl(), splitColumnDefs() (+3 more)
+
+### Community 81 - "Community 81"
+Cohesion: 0.17
+Nodes (12): Behavior Contract, code:typescript (await expect(jsonToCsv('')).rejects.toThrow('Empty input')), code:bash (git add wasm/crates/csr-csv/ src/wasm/csr-csv.ts src/utils/c), code:toml (# wasm/crates/csr-csv/Cargo.toml), code:rust (// wasm/crates/csr-csv/src/parser.rs), code:rust (// wasm/crates/csr-csv/src/writer.rs), code:rust (// wasm/crates/csr-csv/src/lib.rs), code:typescript (// src/wasm/csr-csv.ts) (+4 more)
+
+### Community 82 - "Community 82"
+Cohesion: 0.17
+Nodes (12): code:toml (# wasm/crates/csr-color/Cargo.toml), code:rust (// wasm/crates/csr-color/src/parse.rs), code:rust (// wasm/crates/csr-color/src/convert.rs), code:rust (// wasm/crates/csr-color/src/format.rs), code:rust (// wasm/crates/csr-color/src/lib.rs), code:toml (# wasm/crates/csr-color/Cargo.toml (revised)), code:typescript (// src/wasm/csr-color.ts), code:typescript (// src/utils/color.ts) (+4 more)
+
+### Community 83 - "Community 83"
 Cohesion: 0.21
 Nodes (12): generateId, gridLayoutPositions, formatConstraints, generateDbml, parseColumnLine, parseConstraintBrackets, parseDbml, parseRefLine (+4 more)
 
-### Community 78 - "Community 78"
+### Community 84 - "Community 84"
 Cohesion: 0.2
 Nodes (12): CheckboxInput, CodeInput (CodeMirror wrapper), ColorInput, common/input barrel index, RadioGroupInput, RangeInput, SelectInput, SwitchInput (+4 more)
 
-### Community 79 - "Community 79"
-Cohesion: 0.18
-Nodes (10): ColumnId, ColumnRef, DbmlError, DiagramDocument, EditorRelation, EditorTable, ImportResult, RelationId (+2 more)
-
-### Community 80 - "Community 80"
-Cohesion: 0.18
-Nodes (9): ALIGN_OPTIONS, DIRECTION_OPTIONS, FlexboxPlayground(), ITEM_COLORS, JUSTIFY_OPTIONS, WRAP_OPTIONS, DEFAULT_CONTAINER, DEFAULT_ITEM (+1 more)
-
-### Community 81 - "Community 81"
-Cohesion: 0.24
-Nodes (8): ALIGN_OPTIONS, GridPlayground(), ITEM_COLORS, JUSTIFY_OPTIONS, DEFAULT_GRID_CONTAINER, generateGridCss(), sanitizeGridTrack(), css
-
-### Community 82 - "Community 82"
-Cohesion: 0.25
-Nodes (7): SelectInput(), TextAreaInput(), inputVariants, TextInput(), cnMerge(), tv, twMergeConfig
-
-### Community 83 - "Community 83"
-Cohesion: 0.24
-Nodes (9): CopyButton(), copyButtonVariants, classes, iconOnly, labeled, propsWithLabel, propsWithVariant, validProps (+1 more)
-
-### Community 84 - "Community 84"
-Cohesion: 0.18
-Nodes (3): DEFAULT_FLAGS, RegexTester(), formatMatchesForCopy()
-
 ### Community 85 - "Community 85"
-Cohesion: 0.2
-Nodes (8): CrontabGenerator(), defaultField(), DOW_NAMES, FIELD_KEYS, FIELD_LABELS, FIELD_RANGES, MODES, MONTH_NAMES
+Cohesion: 0.16
+Nodes (9): firstSwatch, hexInput, picker, swatches, dialog, downloadPromise, fileChooserPromise, largeBuffer (+1 more)
 
 ### Community 86 - "Community 86"
 Cohesion: 0.18
-Nodes (10): Available Scripts, Bug Reports, code:text (csr-dev-tools/), Contributing, CSR - Developer Tools, Feature Requests, License, Privacy & Security (+2 more)
+Nodes (10): ColumnId, ColumnRef, DbmlError, DiagramDocument, EditorRelation, EditorTable, ImportResult, RelationId (+2 more)
 
 ### Community 87 - "Community 87"
 Cohesion: 0.18
-Nodes (11): code:ts (export const convertBase = async (value: string, fromBase: n), code:ts (if (!isValidForBase(val, fromBase)) { ... }), code:ts (if (!(await isValidForBase(val, fromBase))) { ... }), code:ts (it('should convert decimal to binary', () => {), code:ts (it('should convert decimal to binary', async () => {), code:ts (expect(() => convertBase('', 10, 2)).toThrow('Empty input')), code:ts (await expect(convertBase('', 10, 2)).rejects.toThrow('Empty ), code:ts (it('should validate binary input', async () => {) (+3 more)
+Nodes (3): DEFAULT_FLAGS, RegexTester(), formatMatchesForCopy()
 
 ### Community 88 - "Community 88"
-Cohesion: 0.2
-Nodes (9): copyButtons, dateInput, removeButtons, results, searchInputs, starButtons, stored, targetResults (+1 more)
+Cohesion: 0.24
+Nodes (8): ALIGN_OPTIONS, GridPlayground(), ITEM_COLORS, JUSTIFY_OPTIONS, DEFAULT_GRID_CONTAINER, generateGridCss(), sanitizeGridTrack(), css
 
 ### Community 89 - "Community 89"
-Cohesion: 0.2
-Nodes (6): columnInputs, diagramNameInput, fileChooserPromise, nameInput, restoredNode, tableNode
+Cohesion: 0.29
+Nodes (10): DBML_TYPE_MAP, DBML_TYPE_REVERSE, parseColumnLine(), parseConstraintBrackets(), parseDbml(), parseRefLine(), REL_SYMBOL, REL_SYMBOL_REVERSE (+2 more)
+
+### Community 90 - "Community 90"
+Cohesion: 0.18
+Nodes (9): ALIGN_OPTIONS, DIRECTION_OPTIONS, FlexboxPlayground(), ITEM_COLORS, JUSTIFY_OPTIONS, WRAP_OPTIONS, DEFAULT_CONTAINER, DEFAULT_ITEM (+1 more)
 
 ### Community 91 - "Community 91"
 Cohesion: 0.2
-Nodes (9): banner, card, defaultOptions, fontSize, hero, labels, match, svg (+1 more)
+Nodes (8): CrontabGenerator(), defaultField(), DOW_NAMES, FIELD_KEYS, FIELD_LABELS, FIELD_RANGES, MODES, MONTH_NAMES
 
 ### Community 92 - "Community 92"
-Cohesion: 0.22
-Nodes (8): data, invalidSchema, reqError, result, schema, simpleSchema, typeError, validateJsonSchema()
+Cohesion: 0.2
+Nodes (8): Action, EMPTY_RESULT, initialState, QrCodeAction, QrCodeState, QrInput, QrResult, State
 
 ### Community 93 - "Community 93"
-Cohesion: 0.2
-Nodes (9): baseHsl, black, blue, css, green, lines, nearMax, red (+1 more)
+Cohesion: 0.18
+Nodes (10): Available Scripts, Bug Reports, code:text (csr-dev-tools/), Contributing, CSR - Developer Tools, Feature Requests, License, Privacy & Security (+2 more)
 
 ### Community 94 - "Community 94"
-Cohesion: 0.2
-Nodes (9): activeCol, emailCol, fkCol, idCol, nameCol, postsTable, result, typeTests (+1 more)
+Cohesion: 0.18
+Nodes (11): code:ts (export const convertBase = async (value: string, fromBase: n), code:ts (if (!isValidForBase(val, fromBase)) { ... }), code:ts (if (!(await isValidForBase(val, fromBase))) { ... }), code:ts (it('should convert decimal to binary', () => {), code:ts (it('should convert decimal to binary', async () => {), code:ts (expect(() => convertBase('', 10, 2)).toThrow('Empty input')), code:ts (await expect(convertBase('', 10, 2)).rejects.toThrow('Empty ), code:ts (it('should validate binary input', async () => {) (+3 more)
 
 ### Community 95 - "Community 95"
 Cohesion: 0.2
-Nodes (9): dbml, original, parsed, positions, regenerated, result, schema, sourceTable (+1 more)
+Nodes (9): copyButtons, dateInput, removeButtons, results, searchInputs, starButtons, stored, targetResults (+1 more)
 
 ### Community 96 - "Community 96"
-Cohesion: 0.29
-Nodes (9): DBML_TYPE_MAP, DBML_TYPE_REVERSE, parseColumnLine(), parseConstraintBrackets(), parseDbml(), parseRefLine(), REL_SYMBOL, REL_SYMBOL_REVERSE (+1 more)
+Cohesion: 0.2
+Nodes (6): columnInputs, diagramNameInput, fileChooserPromise, nameInput, restoredNode, tableNode
 
 ### Community 97 - "Community 97"
-Cohesion: 0.27
-Nodes (7): contentVariants, Dialog(), onAfter, onOpenChange, onReset, { rerender }, ToolDialogShell()
-
-### Community 98 - "Community 98"
-Cohesion: 0.2
-Nodes (10): code:typescript (await expect(jsonToCsv('')).rejects.toThrow('Empty input')), code:bash (git add wasm/crates/csr-csv/ src/wasm/csr-csv.ts src/utils/c), code:toml (# wasm/crates/csr-csv/Cargo.toml), code:rust (// wasm/crates/csr-csv/src/parser.rs), code:rust (// wasm/crates/csr-csv/src/writer.rs), code:rust (// wasm/crates/csr-csv/src/lib.rs), code:typescript (// src/wasm/csr-csv.ts), code:typescript (// src/utils/csv.ts) (+2 more)
+Cohesion: 0.22
+Nodes (6): BrowsableEntry, buildBrowsableEntries(), EntryKind, KIND_STYLES, ParseOutput, ProtobufToJson()
 
 ### Community 99 - "Community 99"
 Cohesion: 0.2
-Nodes (10): code:tsx (<ToolDialogShell), code:bash (git add src/components/feature/security/AesEncryptDecrypt.ts), code:tsx (<ToolDialogShell), code:bash (git add <path>), code:bash (git add src/components/feature/code/MermaidRenderer.tsx), Phase 3 — Pattern-B tools, Task 14: AesEncryptDecrypt migration, Task 15: QrCodeGenerator migration (+2 more)
+Nodes (9): banner, card, defaultOptions, fontSize, hero, labels, match, svg (+1 more)
 
 ### Community 100 - "Community 100"
 Cohesion: 0.2
-Nodes (10): code:ts (export const generateUuid = async (): Promise<string> => {), code:tsx (const [uuids, setUuids] = useState(() => [generateUuid()])), code:tsx (const [uuids, setUuids] = useState<Array<string>>([])), code:tsx (const handleGenerate = async () => {), code:ts (it('should return a valid UUID v4 format', () => {), code:ts (it('should return a valid UUID v4 format', async () => {), code:ts (it('should generate 1 UUID when count is 1', async () => {), code:bash (pnpm test -- --reporter verbose src/utils/uuid.spec.ts) (+2 more)
+Nodes (9): baseHsl, black, blue, css, green, lines, nearMax, red (+1 more)
 
 ### Community 101 - "Community 101"
 Cohesion: 0.2
-Nodes (9): code:bash (git add -A), code:bash (git add package.json pnpm-lock.yaml), code:typescript (// benchmarks/parsers.bench.ts), code:typescript (// benchmarks/json-tools.bench.ts), code:bash (git add benchmarks/parsers.bench.ts benchmarks/json-tools.be), Phase 4: Parsers — WASM Migration Implementation Plan, Task 10: Remove replaced JS dependencies, Task 11: Add Phase 4 benchmarks (+1 more)
+Nodes (9): dbml, original, parsed, positions, regenerated, result, schema, sourceTable (+1 more)
 
 ### Community 102 - "Community 102"
 Cohesion: 0.2
-Nodes (10): code:typescript (import {), code:typescript (import {), code:typescript (import {), code:typescript (import {), code:typescript (import type { JsonToTsOptions } from '@/types/utils/json-to-), code:typescript (import {), code:typescript (import type { ProtobufEnumInfo, ProtobufMessageInfo, Protobu), code:typescript (import type { CodecResult, OutputFormat } from '@/types/util) (+2 more)
+Nodes (9): activeCol, emailCol, fkCol, idCol, nameCol, postsTable, result, typeTests (+1 more)
 
 ### Community 103 - "Community 103"
-Cohesion: 0.2
-Nodes (10): splitWords, toCamelCase, toConstantCase, toDotCase, toKebabCase, toPascalCase, toPathCase, toSentenceCase (+2 more)
+Cohesion: 0.22
+Nodes (8): data, invalidSchema, reqError, result, schema, simpleSchema, typeError, validateJsonSchema()
 
 ### Community 104 - "Community 104"
-Cohesion: 0.2
-Nodes (10): calculateSubnet, ipToBinary, ipToNumber, maskToPrefix, numberToIp, parseCidr, prefixToMask, validateIpv4 (+2 more)
+Cohesion: 0.27
+Nodes (7): contentVariants, Dialog(), onAfter, onOpenChange, onReset, { rerender }, ToolDialogShell()
 
 ### Community 105 - "Community 105"
 Cohesion: 0.2
-Nodes (10): db-diagram types barrel, dbmlEditorPanel types, diagramListPanel types, diagramToolbar types, exportMermaidPanel types, exportSqlPanel types, exportTypescriptPanel types, importJsonSchemaPanel types (+2 more)
+Nodes (10): code:tsx (<ToolDialogShell), code:bash (git add src/components/feature/security/AesEncryptDecrypt.ts), code:tsx (<ToolDialogShell), code:bash (git add <path>), code:bash (git add src/components/feature/code/MermaidRenderer.tsx), Phase 3 — Pattern-B tools, Task 14: AesEncryptDecrypt migration, Task 15: QrCodeGenerator migration (+2 more)
 
 ### Community 106 - "Community 106"
+Cohesion: 0.2
+Nodes (10): code:ts (export const generateUuid = async (): Promise<string> => {), code:tsx (const [uuids, setUuids] = useState(() => [generateUuid()])), code:tsx (const [uuids, setUuids] = useState<Array<string>>([])), code:tsx (const handleGenerate = async () => {), code:ts (it('should return a valid UUID v4 format', () => {), code:ts (it('should return a valid UUID v4 format', async () => {), code:ts (it('should generate 1 UUID when count is 1', async () => {), code:bash (pnpm test -- --reporter verbose src/utils/uuid.spec.ts) (+2 more)
+
+### Community 107 - "Community 107"
+Cohesion: 0.2
+Nodes (9): code:typescript (import type {), code:typescript (import type { JsonToTsOptions } from '@/types/utils/json-to-), code:bash (git add src/wasm/csr-parsers.ts src/wasm/csr-json-tools.ts), code:bash (git add -A), code:bash (git add package.json pnpm-lock.yaml), Phase 4: Parsers — WASM Migration Implementation Plan, Task 10: Remove replaced JS dependencies, Task 7: Build WASM and create TypeScript wrappers (+1 more)
+
+### Community 108 - "Community 108"
+Cohesion: 0.2
+Nodes (10): code:typescript (import {), code:typescript (import {), code:typescript (import {), code:typescript (import {), code:typescript (import type { JsonToTsOptions } from '@/types/utils/json-to-), code:typescript (import {), code:typescript (import type { ProtobufEnumInfo, ProtobufMessageInfo, Protobu), code:typescript (import type { CodecResult, OutputFormat } from '@/types/util) (+2 more)
+
+### Community 109 - "Community 109"
+Cohesion: 0.2
+Nodes (10): splitWords, toCamelCase, toConstantCase, toDotCase, toKebabCase, toPascalCase, toPathCase, toSentenceCase (+2 more)
+
+### Community 110 - "Community 110"
+Cohesion: 0.2
+Nodes (10): calculateSubnet, ipToBinary, ipToNumber, maskToPrefix, numberToIp, parseCidr, prefixToMask, validateIpv4 (+2 more)
+
+### Community 111 - "Community 111"
+Cohesion: 0.2
+Nodes (10): db-diagram types barrel, dbmlEditorPanel types, diagramListPanel types, diagramToolbar types, exportMermaidPanel types, exportSqlPanel types, exportTypescriptPanel types, importJsonSchemaPanel types (+2 more)
+
+### Community 112 - "Community 112"
 Cohesion: 0.22
 Nodes (10): Dialog (Radix wrapper), DropdownMenu, AddButton (empty slot), AppContainer (widget slot), HomePage, SelectAppDialog, NotoEmoji, EMOJI_MAP (Noto codepoints) (+2 more)
 
-### Community 107 - "Community 107"
-Cohesion: 0.31
-Nodes (7): decodeProtobuf(), detectProtobufFormat(), encodeProtobuf(), input, json, parsed, raw
-
-### Community 108 - "Community 108"
-Cohesion: 0.31
-Nodes (6): BorderRadiusGenerator(), CORNERS, toggleButtonStyles, DEFAULT_BORDER_RADIUS, generateBorderRadiusCss(), config
-
-### Community 109 - "Community 109"
-Cohesion: 0.44
-Nodes (7): detectBrowser(), detectDevice(), detectEngine(), detectOs(), match(), parseUserAgent(), result
-
-### Community 110 - "Community 110"
-Cohesion: 0.31
-Nodes (7): generateTypeScript(), snakeToCamel(), columns, result, schema, toPascalCase(), TS_TYPE_MAP
-
-### Community 111 - "Community 111"
-Cohesion: 0.33
-Nodes (5): Sidebar(), sidebarNavStyles, SidebarCategory(), SidebarToolItem(), sidebarToolItemVariants
-
-### Community 112 - "Community 112"
-Cohesion: 0.28
-Nodes (5): getTypeKindLabel(), GraphqlSchemaViewer(), KIND_STYLES, KindBadge(), TypeDetailPanel()
+### Community 113 - "Community 113"
+Cohesion: 0.22
+Nodes (6): compute, errorSpy, onError, resolvers, { result }, { result, unmount }
 
 ### Community 114 - "Community 114"
 Cohesion: 0.28
 Nodes (7): DateSection(), HOUR_OPTIONS, MIN_SEC_OPTIONS, MONTH_LABELS, MONTH_OPTIONS, renderWithCopy(), UnixTimestampSection()
 
 ### Community 115 - "Community 115"
-Cohesion: 0.22
-Nodes (9): Building for Production, code:bash (git clone https://github.com/boengai/csr-dev-tools.git), code:bash (pnpm install), code:bash (pnpm dev), code:text (http://localhost:5173), code:bash (# Build the application), Installation, Prerequisites (+1 more)
+Cohesion: 0.25
+Nodes (7): Action, BackgroundRemoverAction, BackgroundRemoverState, BgOption, State, BackgroundRemoverResultProps, BgOption
 
 ### Community 116 - "Community 116"
 Cohesion: 0.22
-Nodes (8): 1. JSON to TypeScript (`json-to-typescript`), 2. Cron Expression Parser (`cron-expression-parser`), 3. CSS Grid Playground (`css-grid-playground`), 4. Color Picker from Image (`image-color-picker`), 5. Text Sort & Dedupe (`text-sort-dedupe`), Architecture Pattern, Epic: 5 New Developer Tools — Requirements, Tools
+Nodes (6): Action, INDENT_OPTIONS, State, YamlFormatterAction, YamlFormatterState, YamlInput
 
 ### Community 117 - "Community 117"
-Cohesion: 0.22
-Nodes (8): code:bash (# Prerequisites: Node.js >= 24.5.0, pnpm 10.11.0), CSR Developer Tools - Documentation Index, Existing Documentation, Generated Documentation, Getting Started, Project Overview, Quick Reference, Tools (80 across 12 categories)
+Cohesion: 0.31
+Nodes (7): decodeProtobuf(), detectProtobufFormat(), encodeProtobuf(), input, json, parsed, raw
 
 ### Community 118 - "Community 118"
-Cohesion: 0.22
-Nodes (8): Architecture Type, CSR Developer Tools - Project Overview, Executive Summary, Key Architectural Constraints, Project Identity, Related Documentation, Technology Stack Summary, Tool Categories (80 tools)
+Cohesion: 0.31
+Nodes (6): BorderRadiusGenerator(), CORNERS, toggleButtonStyles, DEFAULT_BORDER_RADIUS, generateBorderRadiusCss(), config
 
 ### Community 119 - "Community 119"
-Cohesion: 0.22
-Nodes (9): code:toml (# wasm/crates/csr-diff/Cargo.toml), code:rust (// wasm/crates/csr-diff/src/types.rs), code:rust (// wasm/crates/csr-diff/src/myers.rs), code:rust (// wasm/crates/csr-diff/src/lib.rs), code:toml (# wasm/crates/csr-diff/Cargo.toml), code:typescript (// src/wasm/csr-diff.ts), code:typescript (// src/utils/diff.ts), code:bash (git add wasm/crates/csr-diff/ src/wasm/csr-diff.ts src/utils) (+1 more)
+Cohesion: 0.31
+Nodes (7): generateTypeScript(), snakeToCamel(), columns, result, schema, toPascalCase(), TS_TYPE_MAP
 
 ### Community 120 - "Community 120"
-Cohesion: 0.22
-Nodes (9): code:ts (// src/diagram/operations/dbml.spec.ts), code:ts (// src/diagram/operations/dbml.ts), code:ts (import * as dbmlOps from './operations/dbml'), code:ts (protected afterStructuralChange(doc: DiagramDocument): Diagr), code:ts (setDbmlText(text: string): void {), code:ts (import type { DbmlError, ImportResult } from '@/types'), code:ts (describe('DiagramEditor DBML latch', () => {), code:bash (git add src/diagram/operations/dbml.ts src/diagram/operation) (+1 more)
+Cohesion: 0.44
+Nodes (7): detectBrowser(), detectDevice(), detectEngine(), detectOs(), match(), parseUserAgent(), result
 
 ### Community 121 - "Community 121"
 Cohesion: 0.22
-Nodes (8): code:block1 (wasm/), code:block2 (src/wasm/), code:block3 (vite.config.ts                          # Add WASM plugins), File Structure, Modified files, New files (Rust workspace), New files (TypeScript glue), WASM Phase 1 — Foundation Implementation Plan
+Nodes (9): Building for Production, code:bash (git clone https://github.com/boengai/csr-dev-tools.git), code:bash (pnpm install), code:bash (pnpm dev), code:text (http://localhost:5173), code:bash (# Build the application), Installation, Prerequisites (+1 more)
 
 ### Community 122 - "Community 122"
 Cohesion: 0.22
-Nodes (9): code:block1 (wasm/crates/csr-parsers/), code:block2 (wasm/crates/csr-json-tools/), code:block3 (src/wasm/), code:block4 (src/utils/xml.ts            # Swap fast-xml-parser -> @/wasm), Crate: `csr-json-tools`, Crate: `csr-parsers`, File Structure, Modified Files (import swap) (+1 more)
+Nodes (8): 1. JSON to TypeScript (`json-to-typescript`), 2. Cron Expression Parser (`cron-expression-parser`), 3. CSS Grid Playground (`css-grid-playground`), 4. Color Picker from Image (`image-color-picker`), 5. Text Sort & Dedupe (`text-sort-dedupe`), Architecture Pattern, Epic: 5 New Developer Tools — Requirements, Tools
 
 ### Community 123 - "Community 123"
 Cohesion: 0.22
-Nodes (9): code:rust (// wasm/crates/csr-parsers/src/proto_schema/types.rs), code:rust (// wasm/crates/csr-parsers/src/proto_schema/lexer.rs), code:rust (// wasm/crates/csr-parsers/src/proto_schema/parser.rs), code:rust (// wasm/crates/csr-parsers/src/proto_schema/sample.rs), code:rust (// wasm/crates/csr-parsers/src/proto_schema/mod.rs), code:rust (mod proto_schema;), code:rust (use serde::{Deserialize, Serialize};), code:bash (git add wasm/crates/csr-parsers/src/proto_schema/ wasm/crate) (+1 more)
+Nodes (8): code:bash (# Prerequisites: Node.js >= 24.5.0, pnpm 10.11.0), CSR Developer Tools - Documentation Index, Existing Documentation, Generated Documentation, Getting Started, Project Overview, Quick Reference, Tools (80 across 12 categories)
 
 ### Community 124 - "Community 124"
-Cohesion: 0.25
-Nodes (7): binaryIpRow, cidrInput, copyButtons, errorAlert, ipInput, maskInput, totalHostsRow
+Cohesion: 0.22
+Nodes (8): Architecture Type, CSR Developer Tools - Project Overview, Executive Summary, Key Architectural Constraints, Project Identity, Related Documentation, Technology Stack Summary, Tool Categories (80 tools)
 
 ### Community 125 - "Community 125"
-Cohesion: 0.25
-Nodes (7): copyButtons, editor, errorAlert, exportPngButton, exportSvgButton, previewContainer, toggle
+Cohesion: 0.22
+Nodes (9): code:toml (# wasm/crates/csr-diff/Cargo.toml), code:rust (// wasm/crates/csr-diff/src/types.rs), code:rust (// wasm/crates/csr-diff/src/myers.rs), code:rust (// wasm/crates/csr-diff/src/lib.rs), code:toml (# wasm/crates/csr-diff/Cargo.toml), code:typescript (// src/wasm/csr-diff.ts), code:typescript (// src/utils/diff.ts), code:bash (git add wasm/crates/csr-diff/ src/wasm/csr-diff.ts src/utils) (+1 more)
 
 ### Community 126 - "Community 126"
+Cohesion: 0.22
+Nodes (8): Behavior Contract, Behavior Contract, code:bash (git add benchmarks/), Steps, Task 2: csr-diff — Myers Diff Algorithm WASM Crate, Task 3: csr-color — 6 Color Space Conversion WASM Crate, Task 5: Phase 3 Benchmarks, WASM Phase 3 — Text Processing Implementation Plan
+
+### Community 127 - "Community 127"
+Cohesion: 0.22
+Nodes (9): code:ts (// src/diagram/operations/dbml.spec.ts), code:ts (// src/diagram/operations/dbml.ts), code:ts (import * as dbmlOps from './operations/dbml'), code:ts (protected afterStructuralChange(doc: DiagramDocument): Diagr), code:ts (setDbmlText(text: string): void {), code:ts (import type { DbmlError, ImportResult } from '@/types'), code:ts (describe('DiagramEditor DBML latch', () => {), code:bash (git add src/diagram/operations/dbml.ts src/diagram/operation) (+1 more)
+
+### Community 128 - "Community 128"
+Cohesion: 0.22
+Nodes (9): code:tsx (// Inside DbmlEditorPanel.tsx), code:bash (git add src/components/feature/data/db-diagram/DbmlEditorPan), code:bash (git add src/components/feature/data/db-diagram/ImportSqlPane), code:bash (git add src/components/feature/data/db-diagram/ImportJsonSch), code:bash (git add src/components/feature/data/db-diagram/ExportSqlPane), code:ts (// in src/diagram/editor.ts), code:bash (git add src/diagram/editor.ts src/components/feature/data/db), code:bash (git add src/components/feature/data/db-diagram/DiagramToolba) (+1 more)
+
+### Community 129 - "Community 129"
+Cohesion: 0.22
+Nodes (8): code:block1 (wasm/), code:block2 (src/wasm/), code:block3 (vite.config.ts                          # Add WASM plugins), File Structure, Modified files, New files (Rust workspace), New files (TypeScript glue), WASM Phase 1 — Foundation Implementation Plan
+
+### Community 130 - "Community 130"
+Cohesion: 0.22
+Nodes (9): code:rust (// wasm/crates/csr-parsers/src/proto_schema/types.rs), code:rust (// wasm/crates/csr-parsers/src/proto_schema/lexer.rs), code:rust (// wasm/crates/csr-parsers/src/proto_schema/parser.rs), code:rust (// wasm/crates/csr-parsers/src/proto_schema/sample.rs), code:rust (// wasm/crates/csr-parsers/src/proto_schema/mod.rs), code:rust (mod proto_schema;), code:rust (use serde::{Deserialize, Serialize};), code:bash (git add wasm/crates/csr-parsers/src/proto_schema/ wasm/crate) (+1 more)
+
+### Community 131 - "Community 131"
+Cohesion: 0.22
+Nodes (9): code:block1 (wasm/crates/csr-parsers/), code:block2 (wasm/crates/csr-json-tools/), code:block3 (src/wasm/), code:block4 (src/utils/xml.ts            # Swap fast-xml-parser -> @/wasm), Crate: `csr-json-tools`, Crate: `csr-parsers`, File Structure, Modified Files (import swap) (+1 more)
+
+### Community 132 - "Community 132"
 Cohesion: 0.25
 Nodes (7): decodeOutput, decodeSourceInput, downloadBtn, dropdown, output, sourceInput, toast
 
-### Community 127 - "Community 127"
+### Community 133 - "Community 133"
+Cohesion: 0.25
+Nodes (7): copyButtons, editor, errorAlert, exportPngButton, exportSvgButton, previewContainer, toggle
+
+### Community 134 - "Community 134"
+Cohesion: 0.25
+Nodes (7): binaryIpRow, cidrInput, copyButtons, errorAlert, ipInput, maskInput, totalHostsRow
+
+### Community 135 - "Community 135"
 Cohesion: 0.25
 Nodes (7): GraphqlArgInfo, GraphqlEnumValue, GraphqlFieldInfo, GraphqlParseResult, GraphqlSchemaInfo, GraphqlTypeInfo, GraphqlTypeKind
 
-### Community 128 - "Community 128"
-Cohesion: 0.39
-Nodes (6): importFromJsonSchema(), importFromSql(), { document, result }, initial, JSON_SCHEMA_FIXTURE, schemaToDocument()
+### Community 136 - "Community 136"
+Cohesion: 0.25
+Nodes (4): ConvertInput, emptyColors, ERROR_MESSAGES, FORMATS
 
-### Community 129 - "Community 129"
-Cohesion: 0.29
-Nodes (6): documentToFlow(), doc, docWithOneTable(), { edges }, { nodes }, { nodes, edges }
-
-### Community 130 - "Community 130"
-Cohesion: 0.32
-Nodes (4): BUILT_IN_SCALARS, extractFields(), extractTypeInfo(), getTypeKind()
-
-### Community 131 - "Community 131"
-Cohesion: 0.43
-Nodes (5): isCssCompatibleMimeType(), isImageMimeType(), isValidDataUri(), parseDataUri(), result
-
-### Community 132 - "Community 132"
-Cohesion: 0.43
-Nodes (6): checkPasswordTruncation(), hashPassword(), isValidBcryptHash(), parseBcryptHash(), result, verifyPassword()
-
-### Community 133 - "Community 133"
-Cohesion: 0.32
-Nodes (3): parseMermaid(), renderMermaid(), sanitizeMermaidInput()
-
-### Community 135 - "Community 135"
+### Community 137 - "Community 137"
 Cohesion: 0.36
 Nodes (6): CertificateDecoder(), formatRelativeTime(), ResultRow(), resultValueStyles, VALIDITY_CONFIG, ValidityBadge()
 
-### Community 136 - "Community 136"
-Cohesion: 0.32
-Nodes (4): DEFAULT_CONFIG, FacebookCard(), getDomain(), TwitterCard()
-
-### Community 137 - "Community 137"
-Cohesion: 0.25
-Nodes (8): AI & Processing, Core Technologies, Development Tools, Security & Cryptography, State Management, Tech Stack, UI & Styling, WebAssembly
-
 ### Community 138 - "Community 138"
-Cohesion: 0.25
-Nodes (7): code:block1 (csr-dev-tools/), code:block2 (src/), Critical Folders, CSR Developer Tools - Source Tree Analysis, Entry Points, Project Root, Source Directory (`src/`)
+Cohesion: 0.29
+Nodes (6): ConvertMode, EMPTY_RESULT, EnvConvertMode, EnvInput, EnvResult, MODE_CONFIG
 
 ### Community 139 - "Community 139"
 Cohesion: 0.25
-Nodes (7): Behavior Contract, Behavior Contract, Behavior Contract, Task 1: csr-csv — CSV Parse/Stringify WASM Crate, Task 2: csr-diff — Myers Diff Algorithm WASM Crate, Task 3: csr-color — 6 Color Space Conversion WASM Crate, WASM Phase 3 — Text Processing Implementation Plan
+Nodes (7): doc, editor, id, listener, next, result, unsubscribe
 
 ### Community 140 - "Community 140"
-Cohesion: 0.25
-Nodes (8): code:ts (// src/diagram/operations/tables.spec.ts), code:ts (// src/diagram/operations/tables.ts), code:ts (addTable(input: { name: string; position?: { x: number; y: n), code:ts (import * as tableOps from './operations/tables'), code:ts (protected afterStructuralChange(doc: DiagramDocument): Diagr), code:ts (describe('DiagramEditor table ops', () => {), code:bash (git add src/diagram/operations/tables.ts src/diagram/operati), Task 5: Table operations
+Cohesion: 0.32
+Nodes (4): BUILT_IN_SCALARS, extractFields(), extractTypeInfo(), getTypeKind()
 
 ### Community 141 - "Community 141"
-Cohesion: 0.25
-Nodes (8): code:ts (export async function computeHash(text: string, algorithm: H), code:ts (export async function computeHash(text: string, algorithm: H), code:bash (pnpm wasm:build:dev && pnpm test -- --reporter verbose src/u), code:bash (pnpm remove js-md5), code:bash (grep -r "js-md5" src/ --include="*.ts" --include="*.tsx"), code:bash (pnpm test), code:bash (git add src/utils/hash.ts package.json pnpm-lock.yaml), Task 9: Migrate hash.ts to WASM
+Cohesion: 0.43
+Nodes (5): isCssCompatibleMimeType(), isImageMimeType(), isValidDataUri(), parseDataUri(), result
 
 ### Community 142 - "Community 142"
-Cohesion: 0.25
-Nodes (8): code:bash (pnpm add -D vite-plugin-wasm vite-plugin-top-level-await), code:json ({), code:json ({), code:ts (import wasm from 'vite-plugin-wasm'), code:ts (plugins: [wasm(), topLevelAwait(), react(), tailwindcss(), p), code:bash (pnpm dev), code:bash (git add package.json pnpm-lock.yaml vite.config.ts), Task 7: Add Vite WASM Plugins
+Cohesion: 0.43
+Nodes (6): checkPasswordTruncation(), hashPassword(), isValidBcryptHash(), parseBcryptHash(), result, verifyPassword()
 
 ### Community 143 - "Community 143"
-Cohesion: 0.25
-Nodes (8): code:bash (cd wasm && cargo test), code:bash (pnpm wasm:build), code:bash (pnpm test), code:bash (ls -lh wasm/pkg/csr-hash/*_bg.wasm wasm/pkg/csr-number-base/), code:bash (pnpm dev), code:bash (grep -r "js-md5" . --include="*.ts" --include="*.json" --exc), code:bash (git add -A), Task 13: Final Validation
+Cohesion: 0.32
+Nodes (3): parseMermaid(), renderMermaid(), sanitizeMermaidInput()
 
 ### Community 144 - "Community 144"
 Cohesion: 0.25
-Nodes (8): SVG XSS sanitization, parseMermaid, renderMermaid, sanitizeMermaidInput, generatePlaceholderCanvas, canvasToBlob, generatePlaceholderSvg, svg-optimize test suite
+Nodes (5): Action, JsInput, JsMinifierAction, JsMinifierState, State
 
 ### Community 145 - "Community 145"
-Cohesion: 0.25
-Nodes (8): bcrypt.worker (Web Worker), csr-markdown Rust crate, csr-qrcode Rust crate, HTML sanitization (built into Markdown emitter), loadWasm lazy-load helper, Reed-Solomon GF(256) EC, Phase 6a Spec: csr-qrcode + csr-markdown, WASM Migration Design
+Cohesion: 0.29
+Nodes (6): BASE_FIELDS, BaseField, BaseInput, BaseResult, EMPTY_VALUES, INITIAL_RESULT
 
 ### Community 146 - "Community 146"
-Cohesion: 0.29
-Nodes (5): editors, errorList, jsEditor, jsViewLines, tsEditor
+Cohesion: 0.32
+Nodes (4): DEFAULT_CONFIG, FacebookCard(), getDomain(), TwitterCard()
 
 ### Community 147 - "Community 147"
 Cohesion: 0.29
-Nodes (6): bgPicker, downloadPromise, heightInput, preview, textInput, widthInput
+Nodes (6): ConvertMode, EntityMode, HtmlEntityConvertMode, HtmlEntityInput, readSource(), sourceKey()
 
 ### Community 148 - "Community 148"
-Cohesion: 0.29
-Nodes (6): ColorFormat, HSLColor, LABColor, LCHColor, OKLCHColor, RGBColor
+Cohesion: 0.25
+Nodes (8): AI & Processing, Core Technologies, Development Tools, Security & Cryptography, State Management, Tech Stack, UI & Styling, WebAssembly
 
 ### Community 149 - "Community 149"
-Cohesion: 0.29
-Nodes (6): ImageProcessingOptions, ImageProcessingResult, ImageProcessingStrategyContainOption, ImageProcessingStrategyCoverOption, ImageProcessingStrategyOption, ImageProcessingStrategyStretchOption
+Cohesion: 0.25
+Nodes (7): code:block1 (csr-dev-tools/), code:block2 (src/), Critical Folders, CSR Developer Tools - Source Tree Analysis, Entry Points, Project Root, Source Directory (`src/`)
 
 ### Community 150 - "Community 150"
-Cohesion: 0.29
-Nodes (6): AlignItems, FlexboxContainerProps, FlexboxItemProps, FlexDirection, FlexWrap, JustifyContent
+Cohesion: 0.25
+Nodes (8): code:ts (// src/diagram/operations/tables.spec.ts), code:ts (// src/diagram/operations/tables.ts), code:ts (addTable(input: { name: string; position?: { x: number; y: n), code:ts (import * as tableOps from './operations/tables'), code:ts (protected afterStructuralChange(doc: DiagramDocument): Diagr), code:ts (describe('DiagramEditor table ops', () => {), code:bash (git add src/diagram/operations/tables.ts src/diagram/operati), Task 5: Table operations
 
 ### Community 151 - "Community 151"
-Cohesion: 0.38
-Nodes (5): columnMarker(), generateMermaidER(), RELATION_MAP, result, schema
+Cohesion: 0.25
+Nodes (8): code:bash (cd wasm && cargo test), code:bash (pnpm wasm:build), code:bash (pnpm test), code:bash (ls -lh wasm/pkg/csr-hash/*_bg.wasm wasm/pkg/csr-number-base/), code:bash (pnpm dev), code:bash (grep -r "js-md5" . --include="*.ts" --include="*.json" --exc), code:bash (git add -A), Task 13: Final Validation
 
 ### Community 152 - "Community 152"
-Cohesion: 0.38
-Nodes (4): base64UrlDecode(), decodeJwt(), isPlainObject(), TIMESTAMP_CLAIMS
+Cohesion: 0.25
+Nodes (8): code:bash (pnpm add -D vite-plugin-wasm vite-plugin-top-level-await), code:json ({), code:json ({), code:ts (import wasm from 'vite-plugin-wasm'), code:ts (plugins: [wasm(), topLevelAwait(), react(), tailwindcss(), p), code:bash (pnpm dev), code:bash (git add package.json pnpm-lock.yaml vite.config.ts), Task 7: Add Vite WASM Plugins
 
 ### Community 153 - "Community 153"
-Cohesion: 0.29
-Nodes (6): { entries }, { entries, warnings }, { output }, parsed, result, { warnings }
+Cohesion: 0.25
+Nodes (8): code:ts (export async function computeHash(text: string, algorithm: H), code:ts (export async function computeHash(text: string, algorithm: H), code:bash (pnpm wasm:build:dev && pnpm test -- --reporter verbose src/u), code:bash (pnpm remove js-md5), code:bash (grep -r "js-md5" src/ --include="*.ts" --include="*.tsx"), code:bash (pnpm test), code:bash (git add src/utils/hash.ts package.json pnpm-lock.yaml), Task 9: Migrate hash.ts to WASM
 
 ### Community 154 - "Community 154"
-Cohesion: 0.29
-Nodes (6): corrupted, current, old, result, validKeys, value
+Cohesion: 0.25
+Nodes (8): SVG XSS sanitization, parseMermaid, renderMermaid, sanitizeMermaidInput, generatePlaceholderCanvas, canvasToBlob, generatePlaceholderSvg, svg-optimize test suite
 
 ### Community 155 - "Community 155"
-Cohesion: 0.29
-Nodes (6): after, before, ratio, result, timestamp, timestampMatch
+Cohesion: 0.25
+Nodes (8): bcrypt.worker (Web Worker), csr-markdown Rust crate, csr-qrcode Rust crate, HTML sanitization (built into Markdown emitter), loadWasm lazy-load helper, Reed-Solomon GF(256) EC, Phase 6a Spec: csr-qrcode + csr-markdown, WASM Migration Design
 
 ### Community 156 - "Community 156"
 Cohesion: 0.29
-Nodes (4): AVAILABLE_PERCENTS, DIRECTIONS, FILL_MODES, TIMING_FUNCTIONS
+Nodes (6): bgPicker, downloadPromise, heightInput, preview, textInput, widthInput
 
 ### Community 157 - "Community 157"
 Cohesion: 0.29
-Nodes (4): ColorConvertor(), emptyColors, ERROR_MESSAGES, FORMATS
+Nodes (6): ColorFormat, HSLColor, LABColor, LCHColor, OKLCHColor, RGBColor
 
 ### Community 158 - "Community 158"
-Cohesion: 0.33
-Nodes (4): buildBrowsableEntries(), KIND_STYLES, KindBadge(), ProtobufToJson()
+Cohesion: 0.29
+Nodes (6): ImageProcessingOptions, ImageProcessingResult, ImageProcessingStrategyContainOption, ImageProcessingStrategyCoverOption, ImageProcessingStrategyOption, ImageProcessingStrategyStretchOption
 
 ### Community 159 - "Community 159"
 Cohesion: 0.29
-Nodes (5): Editor, EDITOR_OPTIONS, READONLY_EDITOR_OPTIONS, severityStyles, TypescriptPlayground()
+Nodes (6): AlignItems, FlexboxContainerProps, FlexboxItemProps, FlexDirection, FlexWrap, JustifyContent
 
 ### Community 160 - "Community 160"
-Cohesion: 0.29
-Nodes (6): code:bash (git commit --allow-empty -m "chore: verify Phase 2 WASM buil), code:bash (git add package.json pnpm-lock.yaml), Phase 2 — WASM Crypto Migration Implementation Plan, Task 11: Remove bcryptjs dependency, Task 13: Final verification, Task 7: Build WASM and verify
+Cohesion: 0.33
+Nodes (5): DiffCell(), DiffInput, DiffResult, EMPTY_DIFF, renderSpans()
 
 ### Community 161 - "Community 161"
-Cohesion: 0.29
-Nodes (7): code:bash (git add -A), code:ts (// src/diagram/editor.spec.ts), code:ts (// src/diagram/editor.ts), code:bash (git add src/diagram/editor.ts src/diagram/editor.spec.ts), Phase 1 — Build the editor (no UI change), Task 12: Verify the editor module compiles and full test suite passes, Task 3: Editor skeleton — `getDocument`, `subscribe`, `replaceDocument`
+Cohesion: 0.33
+Nodes (5): ConvertMode, JsonTomlConvertMode, readSource(), sourceKey(), TomlJsonInput
 
 ### Community 162 - "Community 162"
 Cohesion: 0.29
-Nodes (7): code:bash (pnpm add -D @testing-library/react @testing-library/jest-dom), code:ts (test: {), code:ts (import '@testing-library/jest-dom/vitest'), code:ts (test: {), code:block5 (pnpm test), code:bash (git add vitest.config.ts package.json pnpm-lock.yaml vitest.), Task 1: Wire jsdom into vitest + install testing library
+Nodes (5): Editor, EDITOR_OPTIONS, READONLY_EDITOR_OPTIONS, severityStyles, TypescriptPlayground()
 
 ### Community 163 - "Community 163"
 Cohesion: 0.29
-Nodes (7): code:toml ([package]), code:rust (use wasm_bindgen::prelude::*;), code:bash (cd wasm && cargo test -p csr-hash), code:rust (/// MD5 implementation following RFC 1321.), code:bash (cd wasm && cargo test -p csr-hash), code:bash (git add wasm/crates/csr-hash/), Task 3: Implement csr-hash (MD5)
+Nodes (6): Action, State, TextDiffAction, TextDiffInput, TextDiffResult, TextDiffState
 
 ### Community 164 - "Community 164"
 Cohesion: 0.29
-Nodes (7): code:bash (rustc --version || curl --proto '=https' --tlsv1.2 -sSf http), code:bash (rustup target add wasm32-unknown-unknown), code:bash (cargo install wasm-pack), code:bash (brew install binaryen), code:toml ([toolchain]), code:bash (git add wasm/rust-toolchain.toml), Task 1: Install Rust Toolchain Prerequisites
+Nodes (6): Action, JsonDiffCheckerAction, JsonDiffCheckerState, JsonDiffInput, JsonDiffResult, State
 
 ### Community 165 - "Community 165"
-Cohesion: 0.29
-Nodes (7): code:bash (git add wasm/crates/csr-parsers/), code:toml ([package]), code:rust (// wasm/crates/csr-parsers/src/xml/parser.rs), code:rust (// wasm/crates/csr-parsers/src/xml/builder.rs), code:rust (// wasm/crates/csr-parsers/src/xml/mod.rs), code:rust (// wasm/crates/csr-parsers/src/lib.rs), Task 1: Scaffold `csr-parsers` crate with XML module
+Cohesion: 0.33
+Nodes (5): ConvertMode, JsonYamlConvertMode, JsonYamlInput, readSource(), sourceKey()
 
 ### Community 166 - "Community 166"
-Cohesion: 0.29
-Nodes (7): code:toml ([package]), code:rust (// wasm/crates/csr-json-tools/src/format.rs), code:rust (// wasm/crates/csr-json-tools/src/json_to_ts.rs), code:rust (// wasm/crates/csr-json-tools/src/deep_sort.rs), code:rust (// wasm/crates/csr-json-tools/src/lib.rs), code:bash (git add wasm/crates/csr-json-tools/), Task 6: Scaffold `csr-json-tools` crate
+Cohesion: 0.33
+Nodes (5): ConvertMode, EscapedJsonConvertMode, EscapedJsonInput, readSource(), sourceKey()
 
 ### Community 167 - "Community 167"
-Cohesion: 0.29
-Nodes (7): code:rust (// wasm/crates/csr-parsers/src/proto_codec/wire.rs), code:rust (// wasm/crates/csr-parsers/src/proto_codec/encode.rs), code:rust (// wasm/crates/csr-parsers/src/proto_codec/decode.rs), code:rust (// wasm/crates/csr-parsers/src/proto_codec/mod.rs), code:rust (mod proto_codec;), code:bash (git add wasm/crates/csr-parsers/src/proto_codec/ wasm/crates), Task 5: Add Protobuf Codec module to `csr-parsers`
+Cohesion: 0.38
+Nodes (4): base64UrlDecode(), decodeJwt(), isPlainObject(), TIMESTAMP_CLAIMS
 
 ### Community 168 - "Community 168"
 Cohesion: 0.29
-Nodes (7): MermaidFixRule: box-with-messages, MermaidFixRule: diagram-type-typo, MermaidFixRule: graph-to-flowchart, MermaidFixRule: missing-diagram-type, MermaidFixRule: semicolon-line-separator, MermaidFixRule: wrong-arrow-in-sequence, suggestMermaidFix
+Nodes (6): { entries }, { entries, warnings }, { output }, parsed, result, { warnings }
 
 ### Community 169 - "Community 169"
-Cohesion: 0.33
-Nodes (7): canvas-to-blob download pattern, createMockCanvas, favicon utils test suite, downloadPng, downloadSvg (mermaid), downloadBlob, downloadSvg (placeholder)
+Cohesion: 0.29
+Nodes (6): corrupted, current, old, result, validKeys, value
 
 ### Community 170 - "Community 170"
 Cohesion: 0.29
-Nodes (7): WASM Migration Initiative, Phase 5 csr-formatter Plan, Phase 6a qrcode+markdown Plan, WASM Phase 1 Foundation Plan, WASM Phase 2 Crypto Plan, WASM Phase 3 Text Processing Plan, WASM Phase 4 Parsers Plan
-
-### Community 171 - "Community 171"
-Cohesion: 0.33
-Nodes (5): cmContent, copyButtons, editor, expressionInput, resultsPanel
+Nodes (6): after, before, ratio, result, timestamp, timestampMatch
 
 ### Community 172 - "Community 172"
-Cohesion: 0.33
-Nodes (5): dialog, downloadPromise, fileChooserPromise, largeBuffer, textarea
+Cohesion: 0.38
+Nodes (5): columnMarker(), generateMermaidER(), RELATION_MAP, result, schema
 
 ### Community 173 - "Community 173"
-Cohesion: 0.33
-Nodes (5): autoOpenDialogTools, dialog, input, nonDialogImageTools, uploadOnPageTools
+Cohesion: 0.29
+Nodes (4): AVAILABLE_PERCENTS, DIRECTIONS, FILL_MODES, TIMING_FUNCTIONS
 
 ### Community 174 - "Community 174"
-Cohesion: 0.4
-Nodes (4): queryClient, rootRoute, router, routeTree
+Cohesion: 0.33
+Nodes (5): ConvertMode, HtmlMdConvertMode, HtmlMdInput, readSource(), sourceKey()
 
 ### Community 175 - "Community 175"
 Cohesion: 0.33
-Nodes (5): ProtobufEnumInfo, ProtobufFieldInfo, ProtobufMessageInfo, ProtobufParseResult, ProtobufSchemaInfo
+Nodes (5): ConvertMode, JsonXmlConvertMode, readSource(), sourceKey(), XmlJsonInput
 
 ### Community 176 - "Community 176"
-Cohesion: 0.6
-Nodes (4): base64ToImageInfo(), detectFormatFromBase64(), getImageDimensions(), MAGIC_BYTES
+Cohesion: 0.33
+Nodes (5): DiffCell(), DiffInput, DiffResult, EMPTY_DIFF, renderSpans()
+
+### Community 177 - "Community 177"
+Cohesion: 0.33
+Nodes (5): ConvertMode, JsonCsvConvertMode, JsonCsvInput, readSource(), sourceKey()
 
 ### Community 178 - "Community 178"
-Cohesion: 0.47
-Nodes (4): filterHttpStatusCodes(), HTTP_STATUS_CODES, codes, result
+Cohesion: 0.29
+Nodes (6): code:bash (git commit --allow-empty -m "chore: verify Phase 2 WASM buil), code:bash (git add package.json pnpm-lock.yaml), Phase 2 — WASM Crypto Migration Implementation Plan, Task 11: Remove bcryptjs dependency, Task 13: Final verification, Task 7: Build WASM and verify
 
 ### Community 179 - "Community 179"
-Cohesion: 0.67
-Nodes (4): pixelToColor(), rgbToHex(), rgbToHsl(), color
+Cohesion: 0.29
+Nodes (7): code:bash (pnpm add -D @testing-library/react @testing-library/jest-dom), code:ts (test: {), code:ts (import '@testing-library/jest-dom/vitest'), code:ts (test: {), code:block5 (pnpm test), code:bash (git add vitest.config.ts package.json pnpm-lock.yaml vitest.), Task 1: Wire jsdom into vitest + install testing library
 
 ### Community 180 - "Community 180"
-Cohesion: 0.33
-Nodes (5): deepJson, prices, result, sampleData, titles
+Cohesion: 0.29
+Nodes (7): code:bash (rustc --version || curl --proto '=https' --tlsv1.2 -sSf http), code:bash (rustup target add wasm32-unknown-unknown), code:bash (cargo install wasm-pack), code:bash (brew install binaryen), code:toml ([toolchain]), code:bash (git add wasm/rust-toolchain.toml), Task 1: Install Rust Toolchain Prerequisites
 
 ### Community 181 - "Community 181"
-Cohesion: 0.33
-Nodes (5): matches, output, result, segments, text
+Cohesion: 0.29
+Nodes (7): code:toml ([package]), code:rust (use wasm_bindgen::prelude::*;), code:bash (cd wasm && cargo test -p csr-hash), code:rust (/// MD5 implementation following RFC 1321.), code:bash (cd wasm && cargo test -p csr-hash), code:bash (git add wasm/crates/csr-hash/), Task 3: Implement csr-hash (MD5)
 
 ### Community 182 - "Community 182"
-Cohesion: 0.33
-Nodes (4): GradientGenerator(), ITEM_COLORS, DEFAULT_GRADIENT, generateGradientCss()
+Cohesion: 0.29
+Nodes (7): code:rust (// wasm/crates/csr-parsers/src/proto_codec/wire.rs), code:rust (// wasm/crates/csr-parsers/src/proto_codec/encode.rs), code:rust (// wasm/crates/csr-parsers/src/proto_codec/decode.rs), code:rust (// wasm/crates/csr-parsers/src/proto_codec/mod.rs), code:rust (mod proto_codec;), code:bash (git add wasm/crates/csr-parsers/src/proto_codec/ wasm/crates), Task 5: Add Protobuf Codec module to `csr-parsers`
 
 ### Community 183 - "Community 183"
-Cohesion: 0.4
-Nodes (5): CodeInput(), codeInputBaseTheme, codeInputCompactTheme, codeInputTheme, wrapperVariants
+Cohesion: 0.29
+Nodes (7): code:bash (git add wasm/crates/csr-parsers/), code:toml ([package]), code:rust (// wasm/crates/csr-parsers/src/xml/parser.rs), code:rust (// wasm/crates/csr-parsers/src/xml/builder.rs), code:rust (// wasm/crates/csr-parsers/src/xml/mod.rs), code:rust (// wasm/crates/csr-parsers/src/lib.rs), Task 1: Scaffold `csr-parsers` crate with XML module
 
 ### Community 184 - "Community 184"
-Cohesion: 0.4
-Nodes (4): BoxShadowGenerator(), DEFAULT_BOX_SHADOW, generateBoxShadowCSS(), hexToRgba()
+Cohesion: 0.29
+Nodes (7): code:toml ([package]), code:rust (// wasm/crates/csr-json-tools/src/format.rs), code:rust (// wasm/crates/csr-json-tools/src/json_to_ts.rs), code:rust (// wasm/crates/csr-json-tools/src/deep_sort.rs), code:rust (// wasm/crates/csr-json-tools/src/lib.rs), code:bash (git add wasm/crates/csr-json-tools/), Task 6: Scaffold `csr-json-tools` crate
 
 ### Community 185 - "Community 185"
-Cohesion: 0.4
-Nodes (3): defaultDuration, iconVariants, ToastItem()
+Cohesion: 0.29
+Nodes (7): MermaidFixRule: box-with-messages, MermaidFixRule: diagram-type-typo, MermaidFixRule: graph-to-flowchart, MermaidFixRule: missing-diagram-type, MermaidFixRule: semicolon-line-separator, MermaidFixRule: wrong-arrow-in-sequence, suggestMermaidFix
 
 ### Community 186 - "Community 186"
-Cohesion: 0.4
-Nodes (5): BinaryDisplay(), DEFAULT_RESULT, formatBinarySegment(), IpSubnetCalculator(), PRESET_PREFIXES
+Cohesion: 0.33
+Nodes (7): canvas-to-blob download pattern, createMockCanvas, favicon utils test suite, downloadPng, downloadSvg (mermaid), downloadBlob, downloadSvg (placeholder)
+
+### Community 187 - "Community 187"
+Cohesion: 0.29
+Nodes (7): WASM Migration Initiative, Phase 5 csr-formatter Plan, Phase 6a qrcode+markdown Plan, WASM Phase 1 Foundation Plan, WASM Phase 2 Crypto Plan, WASM Phase 3 Text Processing Plan, WASM Phase 4 Parsers Plan
 
 ### Community 188 - "Community 188"
-Cohesion: 0.4
-Nodes (4): chevronStyles, initialState, MermaidRenderer(), SYNTAX_EXAMPLES
+Cohesion: 0.33
+Nodes (5): decimalInput, dialog, hexInput, output, dataConversionData
 
 ### Community 189 - "Community 189"
 Cohesion: 0.33
-Nodes (4): CATEGORIES, CATEGORY_COLORS, categoryFilterStyles, sectionHeaderStyles
+Nodes (5): autoOpenDialogTools, dialog, input, nonDialogImageTools, uploadOnPageTools
+
+### Community 190 - "Community 190"
+Cohesion: 0.4
+Nodes (4): queryClient, rootRoute, router, routeTree
 
 ### Community 191 - "Community 191"
 Cohesion: 0.33
-Nodes (5): Adding a new tool, AES blob format, Common component API rule, Common hook patterns, graphify
+Nodes (5): ProtobufEnumInfo, ProtobufFieldInfo, ProtobufMessageInfo, ProtobufParseResult, ProtobufSchemaInfo
 
 ### Community 192 - "Community 192"
-Cohesion: 0.33
-Nodes (6): code:toml ([package]), code:rust (mod blowfish;), code:rust (/// Blowfish cipher for bcrypt (Eksblowfish variant).), code:rust (// bcrypt implementation — next task), code:bash (git add wasm/crates/csr-bcrypt/), Task 5: csr-bcrypt crate — Blowfish cipher
-
-### Community 193 - "Community 193"
-Cohesion: 0.33
-Nodes (6): code:ts (// src/diagram/operations/columns.spec.ts), code:ts (// src/diagram/operations/columns.ts), code:ts (import * as columnOps from './operations/columns'), code:ts (addColumn(tableId: TableId, column: Omit<TableColumn, 'id'>)), code:bash (git add src/diagram/operations/columns.ts src/diagram/operat), Task 6: Column operations
+Cohesion: 0.4
+Nodes (5): BinaryDisplay(), DEFAULT_RESULT, formatBinarySegment(), IpSubnetCalculator(), PRESET_PREFIXES
 
 ### Community 194 - "Community 194"
-Cohesion: 0.33
-Nodes (6): code:ts (// src/diagram/operations/export.spec.ts), code:ts (// src/diagram/operations/export.ts), code:ts (import * as exportOps from './operations/export'), code:ts (toDbml(): string { return exportOps.toDbml(this.document) }), code:bash (git add src/diagram/operations/export.ts src/diagram/operati), Task 8: Export operations
+Cohesion: 0.4
+Nodes (4): chevronStyles, initialState, MermaidRenderer(), SYNTAX_EXAMPLES
 
 ### Community 195 - "Community 195"
-Cohesion: 0.33
-Nodes (6): code:ts (// src/diagram/operations/relations.spec.ts), code:ts (// src/diagram/operations/relations.ts), code:ts (import * as relationOps from './operations/relations'), code:ts (addRelation(input: { from: ColumnRef; to: ColumnRef; kind: R), code:bash (git add src/diagram/operations/relations.ts src/diagram/oper), Task 7: Relation operations
+Cohesion: 0.4
+Nodes (4): ColorPaletteGenerator(), HARMONY_OPTIONS, PaletteInput, toPickerHex()
 
 ### Community 196 - "Community 196"
 Cohesion: 0.33
-Nodes (6): code:ts (// src/diagram/operations/import.spec.ts), code:ts (// src/diagram/operations/import.ts), code:ts (import * as importOps from './operations/import'), code:ts (importFromSql(text: string, dialect: SqlDialect): ImportResu), code:bash (git add src/diagram/operations/import.ts src/diagram/operati), Task 11: Import operations (SQL, JSON Schema)
+Nodes (5): Action, DownloadTarget, ImageConvertorAction, ImageConvertorState, State
 
 ### Community 197 - "Community 197"
 Cohesion: 0.33
-Nodes (6): code:ts (// src/diagram/operations/lifecycle.spec.ts), code:ts (// src/diagram/operations/lifecycle.ts), code:ts (import * as lifecycleOps from './operations/lifecycle'), code:ts (newDiagram(): void {), code:bash (git add src/diagram/operations/lifecycle.ts src/diagram/oper), Task 10: Lifecycle & schema-to-document helper
+Nodes (5): Action, Flags, RegexTesterAction, RegexTesterState, State
 
 ### Community 198 - "Community 198"
-Cohesion: 0.33
-Nodes (6): code:block10 (pnpm tsc --noEmit), code:bash (git add src/types/components/common/dialog/toolDialogShell.t), code:ts (// src/types/components/common/dialog/toolDialogShell.ts), code:tsx (// src/components/common/dialog/ToolDialogShell.dom.spec.tsx), code:tsx (// src/components/common/dialog/ToolDialogShell.tsx), Task 2: ToolDialogShell type + component
-
-### Community 199 - "Community 199"
-Cohesion: 0.33
-Nodes (5): Playwright MCP verification protocol, Self-review, Spec reference, Tool Dialog Shell — Implementation Plan, Tool inventory (from `TOOL_ROUTES`)
+Cohesion: 0.6
+Nodes (4): base64ToImageInfo(), detectFormatFromBase64(), getImageDimensions(), MAGIC_BYTES
 
 ### Community 200 - "Community 200"
-Cohesion: 0.33
-Nodes (6): code:bash (#!/usr/bin/env bash), code:bash (chmod +x wasm/scripts/build.sh), code:block31 (# WASM build output), code:bash (cd wasm && ./scripts/build.sh --dev), code:bash (git add wasm/scripts/build.sh .gitignore), Task 6: Create Build Script
+Cohesion: 0.47
+Nodes (4): filterHttpStatusCodes(), HTTP_STATUS_CODES, codes, result
 
 ### Community 201 - "Community 201"
-Cohesion: 0.33
-Nodes (6): code:ts (const cache = new Map<string, unknown>()), code:ts (import { loadWasm } from './init'), code:ts (import { loadWasm } from './init'), code:ts (import { loadWasm } from './init'), code:bash (git add src/wasm/), Task 8: Create TypeScript WASM Wrappers
+Cohesion: 0.67
+Nodes (4): pixelToColor(), rgbToHex(), rgbToHsl(), color
 
 ### Community 202 - "Community 202"
 Cohesion: 0.33
-Nodes (6): code:toml ([workspace]), code:toml ([package]), code:rust (/// Convert a byte slice to a lowercase hex string.), code:bash (cd wasm && cargo test), code:bash (git add wasm/Cargo.toml wasm/crates/csr-shared/), Task 2: Create Cargo Workspace
+Nodes (5): deepJson, prices, result, sampleData, titles
 
 ### Community 203 - "Community 203"
 Cohesion: 0.33
-Nodes (6): code:rust (// wasm/crates/csr-parsers/src/toml_parser/parser.rs), code:rust (// wasm/crates/csr-parsers/src/toml_parser/emitter.rs), code:rust (// wasm/crates/csr-parsers/src/toml_parser/mod.rs), code:rust (mod toml_parser;), code:bash (git add wasm/crates/csr-parsers/src/toml_parser/ wasm/crates), Task 3: Add TOML module to `csr-parsers`
+Nodes (5): matches, output, result, segments, text
 
 ### Community 204 - "Community 204"
 Cohesion: 0.33
-Nodes (6): code:rust (// wasm/crates/csr-parsers/src/yaml/parser.rs), code:rust (// wasm/crates/csr-parsers/src/yaml/emitter.rs), code:rust (// wasm/crates/csr-parsers/src/yaml/mod.rs), code:rust (mod yaml;), code:bash (git add wasm/crates/csr-parsers/src/yaml/ wasm/crates/csr-pa), Task 2: Add YAML module to `csr-parsers`
+Nodes (4): GradientGenerator(), ITEM_COLORS, DEFAULT_GRADIENT, generateGradientCss()
 
 ### Community 205 - "Community 205"
 Cohesion: 0.4
 Nodes (4): DEFAULT_SORT_OPTIONS, sortAndProcessText(), DEFAULT_SORT_OPTIONS, result
 
 ### Community 206 - "Community 206"
-Cohesion: 0.47
-Nodes (6): extractArgs, extractFields, extractTypeInfo, getTypeKind, parseGraphqlSchema, unwrapType
+Cohesion: 0.4
+Nodes (4): BoxShadowGenerator(), DEFAULT_BOX_SHADOW, generateBoxShadowCSS(), hexToRgba()
 
 ### Community 207 - "Community 207"
-Cohesion: 0.6
-Nodes (6): ColumnType cross-target mapping (SQL ↔ TS ↔ Mermaid), DB Diagram Factory (defaults + id gen + grid), DB Diagram → Mermaid ER, db-diagram-storage tests (CRUD + index), DB Diagram → TypeScript types, DiagramSchema (tables + relationships)
+Cohesion: 0.4
+Nodes (5): CodeInput(), codeInputBaseTheme, codeInputCompactTheme, codeInputTheme, wrapperVariants
 
 ### Community 208 - "Community 208"
 Cohesion: 0.33
-Nodes (6): Hash dispatcher (MD5 WASM vs SubtleCrypto), SSH Public Key Fingerprint Analyzer, Inline MD5 (binary-safe) vs blueimp-md5 (UTF-8 corrupts binary), Private-key paste guard (security), Web Crypto SubtleCrypto API, @/wasm/hash module
-
-### Community 209 - "Community 209"
-Cohesion: 0.4
-Nodes (4): dialog, editors, input, jwtData
+Nodes (4): CATEGORIES, CATEGORY_COLORS, categoryFilterStyles, sectionHeaderStyles
 
 ### Community 210 - "Community 210"
-Cohesion: 0.4
-Nodes (4): firstSwatch, hexInput, picker, swatches
+Cohesion: 0.33
+Nodes (5): Adding a new tool, AES blob format, Common component API rule, Common hook patterns, graphify
 
 ### Community 211 - "Community 211"
-Cohesion: 0.4
-Nodes (4): DiffChange, DiffLineType, InlineSpan, SideBySideRow
+Cohesion: 0.33
+Nodes (6): code:toml ([package]), code:rust (mod blowfish;), code:rust (/// Blowfish cipher for bcrypt (Eksblowfish variant).), code:rust (// bcrypt implementation — next task), code:bash (git add wasm/crates/csr-bcrypt/), Task 5: csr-bcrypt crate — Blowfish cipher
 
 ### Community 212 - "Community 212"
-Cohesion: 0.4
-Nodes (4): COMPRESSIBLE_FORMATS, IMAGE_LABEL, IMAGE_VALUE, LOSSY_FORMATS
+Cohesion: 0.33
+Nodes (6): code:ts (// src/diagram/operations/export.spec.ts), code:ts (// src/diagram/operations/export.ts), code:ts (import * as exportOps from './operations/export'), code:ts (toDbml(): string { return exportOps.toDbml(this.document) }), code:bash (git add src/diagram/operations/export.ts src/diagram/operati), Task 8: Export operations
+
+### Community 213 - "Community 213"
+Cohesion: 0.33
+Nodes (6): code:ts (// src/diagram/operations/import.spec.ts), code:ts (// src/diagram/operations/import.ts), code:ts (import * as importOps from './operations/import'), code:ts (importFromSql(text: string, dialect: SqlDialect): ImportResu), code:bash (git add src/diagram/operations/import.ts src/diagram/operati), Task 11: Import operations (SQL, JSON Schema)
+
+### Community 214 - "Community 214"
+Cohesion: 0.33
+Nodes (6): code:ts (// src/diagram/operations/relations.spec.ts), code:ts (// src/diagram/operations/relations.ts), code:ts (import * as relationOps from './operations/relations'), code:ts (addRelation(input: { from: ColumnRef; to: ColumnRef; kind: R), code:bash (git add src/diagram/operations/relations.ts src/diagram/oper), Task 7: Relation operations
 
 ### Community 215 - "Community 215"
-Cohesion: 0.4
-Nodes (4): annotatedLines, lines, payload, result
+Cohesion: 0.33
+Nodes (6): code:ts (// src/diagram/operations/lifecycle.spec.ts), code:ts (// src/diagram/operations/lifecycle.ts), code:ts (import * as lifecycleOps from './operations/lifecycle'), code:ts (newDiagram(): void {), code:bash (git add src/diagram/operations/lifecycle.ts src/diagram/oper), Task 10: Lifecycle & schema-to-document helper
+
+### Community 216 - "Community 216"
+Cohesion: 0.33
+Nodes (6): code:block10 (pnpm tsc --noEmit), code:bash (git add src/types/components/common/dialog/toolDialogShell.t), code:ts (// src/types/components/common/dialog/toolDialogShell.ts), code:tsx (// src/components/common/dialog/ToolDialogShell.dom.spec.tsx), code:tsx (// src/components/common/dialog/ToolDialogShell.tsx), Task 2: ToolDialogShell type + component
 
 ### Community 217 - "Community 217"
-Cohesion: 0.7
-Nodes (4): generateLoremIpsum(), generateSentence(), getRandomWord(), LOREM_WORDS
+Cohesion: 0.33
+Nodes (5): Playwright MCP verification protocol, Self-review, Spec reference, Tool Dialog Shell — Implementation Plan, Tool inventory (from `TOOL_ROUTES`)
+
+### Community 218 - "Community 218"
+Cohesion: 0.33
+Nodes (6): code:ts (const cache = new Map<string, unknown>()), code:ts (import { loadWasm } from './init'), code:ts (import { loadWasm } from './init'), code:ts (import { loadWasm } from './init'), code:bash (git add src/wasm/), Task 8: Create TypeScript WASM Wrappers
 
 ### Community 219 - "Community 219"
-Cohesion: 0.5
-Nodes (3): ImageCompressor(), initialState, processingWrapperStyles
+Cohesion: 0.33
+Nodes (6): code:bash (#!/usr/bin/env bash), code:bash (chmod +x wasm/scripts/build.sh), code:block31 (# WASM build output), code:bash (cd wasm && ./scripts/build.sh --dev), code:bash (git add wasm/scripts/build.sh .gitignore), Task 6: Create Build Script
 
 ### Community 220 - "Community 220"
-Cohesion: 0.5
-Nodes (3): DiffCell(), JsonDiffChecker(), renderSpans()
+Cohesion: 0.33
+Nodes (6): code:toml ([workspace]), code:toml ([package]), code:rust (/// Convert a byte slice to a lowercase hex string.), code:bash (cd wasm && cargo test), code:bash (git add wasm/Cargo.toml wasm/crates/csr-shared/), Task 2: Create Cargo Workspace
 
 ### Community 221 - "Community 221"
-Cohesion: 0.5
-Nodes (4): AspectRatioCalculator(), lockIndicatorStyles, presetButtonStyles, PRESETS
+Cohesion: 0.33
+Nodes (6): code:rust (// wasm/crates/csr-parsers/src/yaml/parser.rs), code:rust (// wasm/crates/csr-parsers/src/yaml/emitter.rs), code:rust (// wasm/crates/csr-parsers/src/yaml/mod.rs), code:rust (mod yaml;), code:bash (git add wasm/crates/csr-parsers/src/yaml/ wasm/crates/csr-pa), Task 2: Add YAML module to `csr-parsers`
 
 ### Community 222 - "Community 222"
-Cohesion: 0.4
-Nodes (5): code:block1 (wasm/crates/csr-csv/), code:block2 (src/utils/csv.ts           # Swap JS implementation to impor), File Structure, Modified Files, New Files
+Cohesion: 0.33
+Nodes (6): code:rust (// wasm/crates/csr-parsers/src/toml_parser/parser.rs), code:rust (// wasm/crates/csr-parsers/src/toml_parser/emitter.rs), code:rust (// wasm/crates/csr-parsers/src/toml_parser/mod.rs), code:rust (mod toml_parser;), code:bash (git add wasm/crates/csr-parsers/src/toml_parser/ wasm/crates), Task 3: Add TOML module to `csr-parsers`
 
 ### Community 223 - "Community 223"
-Cohesion: 0.4
-Nodes (5): code:tsx (import { ToolDialogShell } from '@/components/common/dialog/), code:block13 (pnpm tsc --noEmit), code:bash (git add src/components/feature/encoding/Base64Encoder.tsx), Phase 1 — Build the shell, Task 3: Pilot migration + first Playwright check
+Cohesion: 0.47
+Nodes (6): extractArgs, extractFields, extractTypeInfo, getTypeKind, parseGraphqlSchema, unwrapType
 
 ### Community 224 - "Community 224"
-Cohesion: 0.4
-Nodes (5): code:block26 (pnpm tsc --noEmit), code:block27 (git diff --stat main..HEAD -- 'src/components/feature/**/*.t), code:block28 (graphify update .), Phase 5 — Cleanup, Task 20: Final quality gate + cross-category Playwright sweep
+Cohesion: 0.6
+Nodes (6): ColumnType cross-target mapping (SQL ↔ TS ↔ Mermaid), DB Diagram Factory (defaults + id gen + grid), DB Diagram → Mermaid ER, db-diagram-storage tests (CRUD + index), DB Diagram → TypeScript types, DiagramSchema (tables + relationships)
 
 ### Community 225 - "Community 225"
-Cohesion: 0.4
-Nodes (5): code:tsx (const handleReset = () => {), code:bash (git add src/components/feature/image/BackgroundRemover/index), Phase 4 — Conditional-reset edge cases, Task 18: BackgroundRemover migration, Task 19: Any other conditional-reset tools
+Cohesion: 0.33
+Nodes (6): Hash dispatcher (MD5 WASM vs SubtleCrypto), SSH Public Key Fingerprint Analyzer, Inline MD5 (binary-safe) vs blueimp-md5 (UTF-8 corrupts binary), Private-key paste guard (security), Web Crypto SubtleCrypto API, @/wasm/hash module
 
 ### Community 226 - "Community 226"
 Cohesion: 0.4
-Nodes (5): code:toml ([package]), code:rust (use wasm_bindgen::prelude::*;), code:bash (cd wasm && cargo test -p csr-number-base), code:bash (git add wasm/crates/csr-number-base/), Task 4: Implement csr-number-base
+Nodes (4): DiffChange, DiffLineType, InlineSpan, SideBySideRow
 
 ### Community 227 - "Community 227"
 Cohesion: 0.4
-Nodes (5): code:toml ([package]), code:rust (use wasm_bindgen::prelude::*;), code:bash (cd wasm && cargo test -p csr-uuid), code:bash (git add wasm/crates/csr-uuid/), Task 5: Implement csr-uuid
+Nodes (4): Action, MarkdownTableAction, MarkdownTableState, State
 
 ### Community 228 - "Community 228"
-Cohesion: 0.4
-Nodes (5): code:ts (import { bench, describe } from 'vitest'), code:json ({), code:bash (pnpm bench -- benchmarks/phase1.bench.ts), code:bash (git add benchmarks/phase1.bench.ts package.json), Task 12: Add Benchmark Harness
+Cohesion: 0.5
+Nodes (4): AspectRatioCalculator(), lockIndicatorStyles, presetButtonStyles, PRESETS
+
+### Community 229 - "Community 229"
+Cohesion: 0.5
+Nodes (4): CHEATSHEET_ENTRIES, chevronStyles, JsonpathEvaluator(), SAMPLE_JSON
 
 ### Community 230 - "Community 230"
 Cohesion: 0.4
-Nodes (5): describeCron, describeField, getNextRuns, parseCron, parseField
+Nodes (4): Action, MermaidRendererAction, MermaidRendererState, State
 
 ### Community 231 - "Community 231"
+Cohesion: 0.4
+Nodes (4): Action, ImageCropperAction, ImageCropperState, State
+
+### Community 232 - "Community 232"
+Cohesion: 0.4
+Nodes (4): Action, PlaceholderImageAction, PlaceholderImageState, State
+
+### Community 233 - "Community 233"
+Cohesion: 0.4
+Nodes (4): Action, DataUriAction, DataUriState, State
+
+### Community 234 - "Community 234"
+Cohesion: 0.4
+Nodes (4): COMPRESSIBLE_FORMATS, IMAGE_LABEL, IMAGE_VALUE, LOSSY_FORMATS
+
+### Community 237 - "Community 237"
+Cohesion: 0.4
+Nodes (4): annotatedLines, lines, payload, result
+
+### Community 239 - "Community 239"
+Cohesion: 0.7
+Nodes (4): generateLoremIpsum(), generateSentence(), getRandomWord(), LOREM_WORDS
+
+### Community 241 - "Community 241"
+Cohesion: 0.4
+Nodes (5): code:block1 (wasm/crates/csr-csv/), code:block2 (src/utils/csv.ts           # Swap JS implementation to impor), File Structure, Modified Files, New Files
+
+### Community 242 - "Community 242"
+Cohesion: 0.4
+Nodes (5): code:block26 (pnpm tsc --noEmit), code:block27 (git diff --stat main..HEAD -- 'src/components/feature/**/*.t), code:block28 (graphify update .), Phase 5 — Cleanup, Task 20: Final quality gate + cross-category Playwright sweep
+
+### Community 243 - "Community 243"
+Cohesion: 0.4
+Nodes (5): code:tsx (const handleReset = () => {), code:bash (git add src/components/feature/image/BackgroundRemover/index), Phase 4 — Conditional-reset edge cases, Task 18: BackgroundRemover migration, Task 19: Any other conditional-reset tools
+
+### Community 244 - "Community 244"
+Cohesion: 0.4
+Nodes (5): code:tsx (import { ToolDialogShell } from '@/components/common/dialog/), code:block13 (pnpm tsc --noEmit), code:bash (git add src/components/feature/encoding/Base64Encoder.tsx), Phase 1 — Build the shell, Task 3: Pilot migration + first Playwright check
+
+### Community 245 - "Community 245"
+Cohesion: 0.4
+Nodes (5): code:toml ([package]), code:rust (use wasm_bindgen::prelude::*;), code:bash (cd wasm && cargo test -p csr-uuid), code:bash (git add wasm/crates/csr-uuid/), Task 5: Implement csr-uuid
+
+### Community 246 - "Community 246"
+Cohesion: 0.4
+Nodes (5): code:toml ([package]), code:rust (use wasm_bindgen::prelude::*;), code:bash (cd wasm && cargo test -p csr-number-base), code:bash (git add wasm/crates/csr-number-base/), Task 4: Implement csr-number-base
+
+### Community 247 - "Community 247"
+Cohesion: 0.4
+Nodes (5): code:ts (import { bench, describe } from 'vitest'), code:json ({), code:bash (pnpm bench -- benchmarks/phase1.bench.ts), code:bash (git add benchmarks/phase1.bench.ts package.json), Task 12: Add Benchmark Harness
+
+### Community 249 - "Community 249"
+Cohesion: 0.4
+Nodes (5): describeCron, describeField, getNextRuns, parseCron, parseField
+
+### Community 250 - "Community 250"
 Cohesion: 0.6
 Nodes (5): color WASM facade, WASM facade layer, html-markdown WASM facade, json-diff WASM facade, formatSql WASM facade
 
-### Community 232 - "Community 232"
+### Community 251 - "Community 251"
 Cohesion: 0.5
 Nodes (3): dialog, input, output
 
-### Community 233 - "Community 233"
+### Community 252 - "Community 252"
 Cohesion: 0.5
 Nodes (3): HighlightSegment, RegexMatch, RegexResult
 
-### Community 234 - "Community 234"
+### Community 253 - "Community 253"
 Cohesion: 0.5
 Nodes (3): JsonParseResult, JsonPathEvaluation, JsonPathResult
 
-### Community 235 - "Community 235"
+### Community 254 - "Community 254"
 Cohesion: 0.5
 Nodes (3): JsonSchemaDefinition, JsonSchemaProperty, JsonSchemaRoot
 
-### Community 236 - "Community 236"
+### Community 255 - "Community 255"
 Cohesion: 0.5
 Nodes (3): ParsedKeyBlob, ParsedKeyLine, SshKeyInfo
 
-### Community 237 - "Community 237"
+### Community 256 - "Community 256"
 Cohesion: 0.5
 Nodes (3): AspectRatioOption, AspectRatioPreset, CropRegion
 
-### Community 238 - "Community 238"
+### Community 257 - "Community 257"
 Cohesion: 0.5
 Nodes (3): CertificateExtension, CertificateInfo, ValidityStatus
 
-### Community 239 - "Community 239"
+### Community 258 - "Community 258"
 Cohesion: 0.5
 Nodes (3): BcryptHashComponents, BcryptHashResult, BcryptVerifyResult
 
-### Community 240 - "Community 240"
+### Community 259 - "Community 259"
 Cohesion: 0.5
 Nodes (3): GridAlignItems, GridContainerProps, GridJustifyItems
 
-### Community 241 - "Community 241"
+### Community 260 - "Community 260"
 Cohesion: 0.5
 Nodes (3): GradientConfig, GradientStop, GradientType
 
-### Community 242 - "Community 242"
+### Community 261 - "Community 261"
 Cohesion: 0.5
 Nodes (3): PwaIconResult, SplashScreenGeneratorOutput, SplashScreenResult
 
-### Community 243 - "Community 243"
+### Community 262 - "Community 262"
 Cohesion: 0.5
 Nodes (3): SortMode, TextSortOptions, TextSortResult
 
-### Community 244 - "Community 244"
-Cohesion: 0.5
-Nodes (3): Action, ContentProps, PersistedState
-
-### Community 245 - "Community 245"
-Cohesion: 0.5
-Nodes (3): DiagnosticError, EditorInstance, MarkerData
-
-### Community 246 - "Community 246"
-Cohesion: 0.5
-Nodes (3): Action, OriginalInfo, State
-
-### Community 247 - "Community 247"
-Cohesion: 0.5
-Nodes (3): Action, DownloadTarget, State
-
-### Community 248 - "Community 248"
-Cohesion: 0.5
-Nodes (3): Action, BgOption, State
-
-### Community 249 - "Community 249"
-Cohesion: 0.5
-Nodes (3): ConverterAction, ConverterState, TargetResult
-
-### Community 250 - "Community 250"
-Cohesion: 0.5
-Nodes (3): Action, Flags, State
-
-### Community 251 - "Community 251"
-Cohesion: 0.5
-Nodes (3): UseCommandPaletteStore, UseSidebarStore, UseToast
-
-### Community 252 - "Community 252"
-Cohesion: 0.5
-Nodes (3): UsePersistFeatureLayout, UsePersistSettings, UsePersistSettingsValue
-
-### Community 253 - "Community 253"
-Cohesion: 0.5
-Nodes (3): IOS_DEVICES, MASKABLE_ICON_SIZES, PWA_ICON_SIZES
-
-### Community 256 - "Community 256"
-Cohesion: 0.5
-Nodes (3): crop, result, values
-
-### Community 257 - "Community 257"
-Cohesion: 0.5
-Nodes (3): bodyLines, lines, pem
-
-### Community 261 - "Community 261"
-Cohesion: 0.5
-Nodes (3): lines, obj, parsed
-
-### Community 263 - "Community 263"
-Cohesion: 0.5
-Nodes (3): encoded, large, result
-
-### Community 264 - "Community 264"
-Cohesion: 0.67
-Nodes (3): bufferToHex(), computeHash(), HASH_ALGORITHMS
-
 ### Community 265 - "Community 265"
-Cohesion: 0.5
-Nodes (3): arr, lines, parsed
-
-### Community 268 - "Community 268"
-Cohesion: 0.5
-Nodes (3): obj, outer, result
-
-### Community 269 - "Community 269"
-Cohesion: 0.5
-Nodes (3): FkRef, ParsedColumn, ParseResult
-
-### Community 272 - "Community 272"
-Cohesion: 0.67
-Nodes (3): HtmlEntityConverter(), readSource(), sourceKey()
-
-### Community 273 - "Community 273"
-Cohesion: 0.67
-Nodes (3): JsonToCsvConverter(), readSource(), sourceKey()
-
-### Community 277 - "Community 277"
-Cohesion: 0.67
-Nodes (3): ColorPaletteGenerator(), HARMONY_OPTIONS, toPickerHex()
-
-### Community 278 - "Community 278"
 Cohesion: 0.5
 Nodes (3): SORT_OPTIONS, TextSortDedupe(), toggleButtonStyles
 
-### Community 279 - "Community 279"
-Cohesion: 0.67
-Nodes (3): JsonToXmlConverter(), readSource(), sourceKey()
-
-### Community 282 - "Community 282"
+### Community 268 - "Community 268"
 Cohesion: 0.5
-Nodes (4): Accessible & Responsive, Client-Side Only, Key Features, Modern Development
+Nodes (3): EMPTY_STATS, STAT_LABELS, WordCounter()
+
+### Community 271 - "Community 271"
+Cohesion: 0.5
+Nodes (3): DiagnosticError, EditorInstance, MarkerData
+
+### Community 272 - "Community 272"
+Cohesion: 0.5
+Nodes (3): ConverterAction, ConverterState, TargetResult
+
+### Community 273 - "Community 273"
+Cohesion: 0.5
+Nodes (3): UseCommandPaletteStore, UseSidebarStore, UseToast
+
+### Community 274 - "Community 274"
+Cohesion: 0.5
+Nodes (3): UsePersistFeatureLayout, UsePersistSettings, UsePersistSettingsValue
+
+### Community 275 - "Community 275"
+Cohesion: 0.5
+Nodes (3): IOS_DEVICES, MASKABLE_ICON_SIZES, PWA_ICON_SIZES
+
+### Community 278 - "Community 278"
+Cohesion: 0.5
+Nodes (3): crop, result, values
+
+### Community 279 - "Community 279"
+Cohesion: 0.5
+Nodes (3): bodyLines, lines, pem
 
 ### Community 283 - "Community 283"
 Cohesion: 0.5
-Nodes (4): Code Standards, Component Architecture, Design System, File Naming Conventions
-
-### Community 284 - "Community 284"
-Cohesion: 0.5
-Nodes (4): code:typescript (import { loadWasm } from './init'), code:typescript (import type { HmacAlgorithm, HmacEncoding } from '@/types/ut), code:bash (git add src/wasm/csr-bcrypt.ts src/wasm/csr-hmac.ts), Task 8: TypeScript wrappers
+Nodes (3): lines, obj, parsed
 
 ### Community 285 - "Community 285"
 Cohesion: 0.5
-Nodes (4): code:rust (pub mod sha256;), code:rust (/// SHA-256 implementation following FIPS 180-4.), code:bash (git add wasm/crates/csr-shared/src/sha256.rs wasm/crates/csr), Task 1: SHA-256 in csr-shared
+Nodes (3): encoded, large, result
 
 ### Community 286 - "Community 286"
-Cohesion: 0.5
-Nodes (4): code:typescript (import type { BcryptHashComponents, BcryptHashResult, Bcrypt), code:typescript (import type { HmacAlgorithm, HmacEncoding } from '@/types/ut), code:bash (git add src/utils/bcrypt-hasher.ts src/utils/hmac.ts), Task 9: Integrate into src/utils/
+Cohesion: 0.67
+Nodes (3): bufferToHex(), computeHash(), HASH_ALGORITHMS
 
 ### Community 287 - "Community 287"
 Cohesion: 0.5
-Nodes (4): code:toml ([package]), code:rust (use wasm_bindgen::prelude::*;), code:bash (git add wasm/crates/csr-hmac/), Task 4: csr-hmac crate
-
-### Community 288 - "Community 288"
-Cohesion: 0.5
-Nodes (4): code:rust (pub mod sha512;), code:rust (/// SHA-512 implementation following FIPS 180-4.), code:bash (git add wasm/crates/csr-shared/src/sha512.rs wasm/crates/csr), Task 2: SHA-512 in csr-shared
-
-### Community 289 - "Community 289"
-Cohesion: 0.5
-Nodes (4): code:rust (pub mod sha384;), code:rust (/// SHA-384 implementation — SHA-512 with different IVs, tru), code:bash (git add wasm/crates/csr-shared/src/sha384.rs wasm/crates/csr), Task 3: SHA-384 in csr-shared
+Nodes (3): arr, lines, parsed
 
 ### Community 290 - "Community 290"
 Cohesion: 0.5
-Nodes (4): code:rust (/// bcrypt implementation using Eksblowfish.), code:rust (use wasm_bindgen::prelude::*;), code:bash (git add wasm/crates/csr-bcrypt/src/bcrypt.rs wasm/crates/csr), Task 6: csr-bcrypt — bcrypt hash and verify
-
-### Community 291 - "Community 291"
-Cohesion: 0.5
-Nodes (4): code:ts (// src/diagram/state.spec.ts), code:ts (// src/diagram/state.ts), code:bash (git add src/diagram/state.ts src/diagram/state.spec.ts), Task 2: Initial document factory + clone
-
-### Community 292 - "Community 292"
-Cohesion: 0.5
-Nodes (4): code:ts (// src/types/diagram/document.ts), code:ts (export * from './diagram/document'), code:bash (git add src/types/diagram/document.ts src/types/index.ts), Task 1: Define `DiagramDocument` types
-
-### Community 293 - "Community 293"
-Cohesion: 0.5
-Nodes (4): code:ts (// src/diagram/projections.spec.ts), code:ts (// src/diagram/projections.ts), code:bash (git add src/diagram/projections.ts src/diagram/projections.s), Task 4: Projections — document → ReactFlow nodes/edges
+Nodes (3): obj, outer, result
 
 ### Community 294 - "Community 294"
 Cohesion: 0.5
-Nodes (4): code:typescript (import type {), code:typescript (import type { JsonToTsOptions } from '@/types/utils/json-to-), code:bash (git add src/wasm/csr-parsers.ts src/wasm/csr-json-tools.ts), Task 7: Build WASM and create TypeScript wrappers
+Nodes (3): CSR Dev Tools — Domain Language, Tool, Tool computation pipeline
 
 ### Community 295 - "Community 295"
 Cohesion: 0.5
-Nodes (4): base64UrlDecode, decodeJwt, isPlainObject, isValidJwt
+Nodes (4): Accessible & Responsive, Client-Side Only, Key Features, Modern Development
 
 ### Community 296 - "Community 296"
 Cohesion: 0.5
-Nodes (4): buildTransformString, formatKeyframeBlock, generateAnimationCss, sanitizeIterationCount
+Nodes (4): Code Standards, Component Architecture, Design System, File Naming Conventions
 
 ### Community 297 - "Community 297"
 Cohesion: 0.5
-Nodes (4): HTML entity escape/unescape, Open Graph + Twitter Card meta tag generator, String Escape Facade (HTML/JS/JSON/URL/XML), URL encode/decode (URIComponent wrapper)
+Nodes (4): code:rust (/// bcrypt implementation using Eksblowfish.), code:rust (use wasm_bindgen::prelude::*;), code:bash (git add wasm/crates/csr-bcrypt/src/bcrypt.rs wasm/crates/csr), Task 6: csr-bcrypt — bcrypt hash and verify
 
 ### Community 298 - "Community 298"
 Cohesion: 0.5
-Nodes (4): SettingsDialog, useInputLocalStorage, usePersistFeatureLayout, usePersistSettings
+Nodes (4): code:rust (pub mod sha256;), code:rust (/// SHA-256 implementation following FIPS 180-4.), code:bash (git add wasm/crates/csr-shared/src/sha256.rs wasm/crates/csr), Task 1: SHA-256 in csr-shared
 
 ### Community 299 - "Community 299"
 Cohesion: 0.5
+Nodes (4): code:rust (pub mod sha384;), code:rust (/// SHA-384 implementation — SHA-512 with different IVs, tru), code:bash (git add wasm/crates/csr-shared/src/sha384.rs wasm/crates/csr), Task 3: SHA-384 in csr-shared
+
+### Community 300 - "Community 300"
+Cohesion: 0.5
+Nodes (4): code:rust (pub mod sha512;), code:rust (/// SHA-512 implementation following FIPS 180-4.), code:bash (git add wasm/crates/csr-shared/src/sha512.rs wasm/crates/csr), Task 2: SHA-512 in csr-shared
+
+### Community 301 - "Community 301"
+Cohesion: 0.5
+Nodes (4): code:toml ([package]), code:rust (use wasm_bindgen::prelude::*;), code:bash (git add wasm/crates/csr-hmac/), Task 4: csr-hmac crate
+
+### Community 302 - "Community 302"
+Cohesion: 0.5
+Nodes (4): code:typescript (import { loadWasm } from './init'), code:typescript (import type { HmacAlgorithm, HmacEncoding } from '@/types/ut), code:bash (git add src/wasm/csr-bcrypt.ts src/wasm/csr-hmac.ts), Task 8: TypeScript wrappers
+
+### Community 303 - "Community 303"
+Cohesion: 0.5
+Nodes (4): code:typescript (import type { BcryptHashComponents, BcryptHashResult, Bcrypt), code:typescript (import type { HmacAlgorithm, HmacEncoding } from '@/types/ut), code:bash (git add src/utils/bcrypt-hasher.ts src/utils/hmac.ts), Task 9: Integrate into src/utils/
+
+### Community 304 - "Community 304"
+Cohesion: 0.5
+Nodes (4): code:ts (// src/diagram/editor.spec.ts), code:ts (// src/diagram/editor.ts), code:bash (git add src/diagram/editor.ts src/diagram/editor.spec.ts), Task 3: Editor skeleton — `getDocument`, `subscribe`, `replaceDocument`
+
+### Community 305 - "Community 305"
+Cohesion: 0.5
+Nodes (4): code:ts (// src/types/diagram/document.ts), code:ts (export * from './diagram/document'), code:bash (git add src/types/diagram/document.ts src/types/index.ts), Task 1: Define `DiagramDocument` types
+
+### Community 306 - "Community 306"
+Cohesion: 0.5
+Nodes (4): code:ts (// src/diagram/projections.spec.ts), code:ts (// src/diagram/projections.ts), code:bash (git add src/diagram/projections.ts src/diagram/projections.s), Task 4: Projections — document → ReactFlow nodes/edges
+
+### Community 307 - "Community 307"
+Cohesion: 0.5
+Nodes (4): code:typescript (// benchmarks/parsers.bench.ts), code:typescript (// benchmarks/json-tools.bench.ts), code:bash (git add benchmarks/parsers.bench.ts benchmarks/json-tools.be), Task 11: Add Phase 4 benchmarks
+
+### Community 308 - "Community 308"
+Cohesion: 0.5
+Nodes (4): base64UrlDecode, decodeJwt, isPlainObject, isValidJwt
+
+### Community 309 - "Community 309"
+Cohesion: 0.5
+Nodes (4): buildTransformString, formatKeyframeBlock, generateAnimationCss, sanitizeIterationCount
+
+### Community 310 - "Community 310"
+Cohesion: 0.5
+Nodes (4): HTML entity escape/unescape, Open Graph + Twitter Card meta tag generator, String Escape Facade (HTML/JS/JSON/URL/XML), URL encode/decode (URIComponent wrapper)
+
+### Community 311 - "Community 311"
+Cohesion: 0.5
+Nodes (4): SettingsDialog, useInputLocalStorage, usePersistFeatureLayout, usePersistSettings
+
+### Community 312 - "Community 312"
+Cohesion: 0.5
 Nodes (4): CodeOutput, DataCellTable, BinaryDisplay (subcomponent), IpSubnetCalculator
-
-### Community 371 - "Community 371"
-Cohesion: 0.67
-Nodes (3): code:bash (git add package.json pnpm-lock.yaml), Steps, Task 4: Integration — Build, Full Test Suite, Remove `diff` Dependency
-
-### Community 372 - "Community 372"
-Cohesion: 0.67
-Nodes (3): code:bash (git add benchmarks/), Steps, Task 5: Phase 3 Benchmarks
-
-### Community 373 - "Community 373"
-Cohesion: 0.67
-Nodes (3): File Structure, Modified files, New files
-
-### Community 374 - "Community 374"
-Cohesion: 0.67
-Nodes (3): code:typescript (import { describe, expect, it } from 'vitest'), code:bash (git add src/utils/bcrypt-hasher.spec.ts), Task 10: Update tests
-
-### Community 375 - "Community 375"
-Cohesion: 0.67
-Nodes (3): code:typescript (import { bench, describe } from 'vitest'), code:bash (git add benchmarks/phase2.bench.ts), Task 12: Phase 2 benchmarks
-
-### Community 376 - "Community 376"
-Cohesion: 0.67
-Nodes (3): base64ToImageInfo, detectFormatFromBase64, getImageDimensions
-
-### Community 377 - "Community 377"
-Cohesion: 0.67
-Nodes (3): permissionToDigit, stateToOctal, stateToSymbolic
-
-### Community 378 - "Community 378"
-Cohesion: 0.67
-Nodes (3): DEFAULT_BOX_SHADOW, generateBoxShadowCSS, hexToRgba
 
 ### Community 379 - "Community 379"
 Cohesion: 0.67
-Nodes (3): Bcrypt hasher types, Hash types (empty), HMAC types
+Nodes (3): code:bash (git add package.json pnpm-lock.yaml), Steps, Task 4: Integration — Build, Full Test Suite, Remove `diff` Dependency
 
 ### Community 380 - "Community 380"
 Cohesion: 0.67
-Nodes (3): CSS animation config / keyframes, CSS grid types, Flexbox container/item types
+Nodes (3): code:typescript (import { describe, expect, it } from 'vitest'), code:bash (git add src/utils/bcrypt-hasher.spec.ts), Task 10: Update tests
 
 ### Community 381 - "Community 381"
 Cohesion: 0.67
-Nodes (3): javaScriptMinifier state, markdownTableGenerator state, mermaidRenderer state
+Nodes (3): code:typescript (import { bench, describe } from 'vitest'), code:bash (git add benchmarks/phase2.bench.ts), Task 12: Phase 2 benchmarks
 
 ### Community 382 - "Community 382"
 Cohesion: 0.67
+Nodes (3): File Structure, Modified files, New files
+
+### Community 383 - "Community 383"
+Cohesion: 0.67
+Nodes (3): base64ToImageInfo, detectFormatFromBase64, getImageDimensions
+
+### Community 384 - "Community 384"
+Cohesion: 0.67
+Nodes (3): permissionToDigit, stateToOctal, stateToSymbolic
+
+### Community 385 - "Community 385"
+Cohesion: 0.67
+Nodes (3): DEFAULT_BOX_SHADOW, generateBoxShadowCSS, hexToRgba
+
+### Community 386 - "Community 386"
+Cohesion: 0.67
+Nodes (3): CSS animation config / keyframes, CSS grid types, Flexbox container/item types
+
+### Community 387 - "Community 387"
+Cohesion: 0.67
+Nodes (3): Bcrypt hasher types, Hash types (empty), HMAC types
+
+### Community 388 - "Community 388"
+Cohesion: 0.67
 Nodes (3): Protobuf Codec File IO Plan, protobufCodec persisted state, protobufToJson BrowsableEntry
+
+### Community 389 - "Community 389"
+Cohesion: 0.67
+Nodes (3): javaScriptMinifier state, markdownTableGenerator state, mermaidRenderer state
 
 ## Ambiguous Edges - Review These
 - `Dashboard layout key migration (legacy → registry keys)` → `Dashboard layout key migration (legacy → registry keys)`  [AMBIGUOUS]
@@ -1786,9 +1833,9 @@ Nodes (3): Protobuf Codec File IO Plan, protobufCodec persisted state, protobufT
   src/utils/user-agent.ts · relation: implements
 
 ## Knowledge Gaps
-- **1952 isolated node(s):** `toolRoutes`, `PreRenderRoute`, `dialog`, `input`, `editors` (+1947 more)
+- **2012 isolated node(s):** `toolRoutes`, `PreRenderRoute`, `dialog`, `input`, `editors` (+2007 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **272 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **264 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -1797,13 +1844,13 @@ _Questions this graph is uniquely positioned to answer:_
   _Edge tagged AMBIGUOUS (relation: implements) - confidence is low._
 - **What is the exact relationship between `User-Agent parser (browser/os/engine/device)` and `User-Agent parser (browser/os/engine/device)`?**
   _Edge tagged AMBIGUOUS (relation: implements) - confidence is low._
-- **Why does `useDebounceCallback()` connect `Community 5` to `Community 1`, `Community 135`, `Community 272`, `Community 273`, `Community 274`, `Community 275`, `Community 276`, `Community 277`, `Community 22`, `Community 278`, `Community 280`, `Community 25`, `Community 279`, `Community 157`, `Community 158`, `Community 159`, `Community 31`, `Community 40`, `Community 186`, `Community 187`, `Community 188`, `Community 64`, `Community 84`, `Community 219`, `Community 220`, `Community 221`, `Community 366`, `Community 112`, `Community 114`?**
-  _High betweenness centrality (0.006) - this node is a cross-community bridge._
-- **Why does `cnMerge()` connect `Community 82` to `Community 112`, `Community 1`, `Community 158`, `Community 135`?**
-  _High betweenness centrality (0.003) - this node is a cross-community bridge._
+- **Why does `useDebounceCallback()` connect `Community 13` to `Community 0`, `Community 263`, `Community 265`, `Community 266`, `Community 137`, `Community 268`, `Community 269`, `Community 270`, `Community 23`, `Community 162`, `Community 423`, `Community 424`, `Community 426`, `Community 427`, `Community 192`, `Community 64`, `Community 194`, `Community 193`, `Community 195`, `Community 78`, `Community 338`, `Community 339`, `Community 341`, `Community 342`, `Community 87`, `Community 345`, `Community 97`, `Community 228`, `Community 229`, `Community 114`?**
+  _High betweenness centrality (0.019) - this node is a cross-community bridge._
+- **Why does `useToolComputation()` connect `Community 13` to `Community 64`, `Community 97`, `Community 195`, `Community 137`, `Community 269`, `Community 270`, `Community 78`, `Community 113`, `Community 345`?**
+  _High betweenness centrality (0.005) - this node is a cross-community bridge._
+- **Why does `cnMerge()` connect `Community 0` to `Community 137`?**
+  _High betweenness centrality (0.005) - this node is a cross-community bridge._
 - **Are the 61 inferred relationships involving `useDebounceCallback()` (e.g. with `UnitPxToRem()` and `AspectRatioCalculator()`) actually correct?**
   _`useDebounceCallback()` has 61 INFERRED edges - model-reasoned connections that need verification._
-- **Are the 28 inferred relationships involving `Tool Component Pattern` (e.g. with `JsonpathEvaluator` and `MarkdownTableGenerator`) actually correct?**
-  _`Tool Component Pattern` has 28 INFERRED edges - model-reasoned connections that need verification._
-- **What connects `toolRoutes`, `PreRenderRoute`, `dialog` to the rest of the system?**
-  _1952 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Are the 35 inferred relationships involving `useToolComputation()` (e.g. with `CertificateDecoder()` and `AesEncryptDecrypt()`) actually correct?**
+  _`useToolComputation()` has 35 INFERRED edges - model-reasoned connections that need verification._

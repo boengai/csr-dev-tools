@@ -4,8 +4,7 @@ import { Button, CopyButton, FieldForm, ToggleButton } from '@/components/common
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { Flags, State, Action } from '@/types/components/feature/text/regexTester'
+import type { Flags, RegexTesterAction, RegexTesterState, ToolComponentProps } from '@/types'
 import { buildHighlightSegments, executeRegex, formatMatchesForCopy, type RegexMatch } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['regex-tester']
@@ -62,7 +61,7 @@ const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
   </div>
 )
 
-function reducer(state: State, action: Action): State {
+function reducer(state: RegexTesterState, action: RegexTesterAction): RegexTesterState {
   switch (action.type) {
     case 'SET_PATTERN':
       return { ...state, pattern: action.payload }

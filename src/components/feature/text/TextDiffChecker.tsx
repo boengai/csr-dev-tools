@@ -1,14 +1,15 @@
-import { useEffect, useReducer, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
-import type { InlineSpan, SideBySideRow, ToolComponentProps } from '@/types'
-import type { State, Action } from '@/types/components/feature/text/textDiffChecker'
+import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import type { InlineSpan, SideBySideRow, TextDiffInput, TextDiffResult, ToolComponentProps } from '@/types'
 import { computeSideBySideDiff, createUnifiedDiff } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['text-diff-checker']
+
+const EMPTY_DIFF: TextDiffResult = { rows: [], unifiedDiff: '' }
 
 const renderSpans = (spans: Array<InlineSpan>, side: 'left' | 'right') => {
   let offset = 0
@@ -55,71 +56,51 @@ const DiffCell = ({
   )
 }
 
-function reducer(state: State, action: Action): State {
-  switch (action.type) {
-    case 'SET_DIFF_RESULT':
-      return { ...state, rows: action.payload.rows, unifiedDiff: action.payload.unifiedDiff }
-    case 'RESET':
-      return { ...state, rows: [], unifiedDiff: '' }
-  }
-}
-
 export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [inputs, setInputs] = useInputLocalStorage('csr-dev-tools-text-diff', { original: '', modified: '' })
   const { original, modified } = inputs
-  const [state, dispatch] = useReducer(reducer, {
-    rows: [],
-    unifiedDiff: '',
-  })
-  const { rows, unifiedDiff } = state
   const { toast } = useToast()
-  const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
 
-  const process = async (orig: string, mod: string) => {
-    const session = newSession()
-    if (orig.trim().length === 0 && mod.trim().length === 0) {
-      dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
-      return
-    }
-    try {
+  const { result, setInput, setInputImmediate } = useToolComputation<TextDiffInput, TextDiffResult>(
+    async ({ original: orig, modified: mod }) => {
       const [sideBySide, patch] = await Promise.all([computeSideBySideDiff(orig, mod), createUnifiedDiff(orig, mod)])
-      if (!session.isFresh()) return
-      dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: sideBySide, unifiedDiff: patch } })
-    } catch {
-      if (!session.isFresh()) return
-      dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
-      toast({ action: 'add', item: { label: 'Unable to compute diff', type: 'error' } })
-    }
-  }
+      return { rows: sideBySide, unifiedDiff: patch }
+    },
+    {
+      debounceMs: 300,
+      initial: EMPTY_DIFF,
+      isEmpty: ({ original: orig, modified: mod }) => orig.trim().length === 0 && mod.trim().length === 0,
+      onError: () => {
+        toast({ action: 'add', item: { label: 'Unable to compute diff', type: 'error' } })
+      },
+    },
+  )
 
-  const debouncedProcess = useDebounceCallback((orig: string, mod: string) => {
-    process(orig, mod)
-  }, 300)
+  const { rows, unifiedDiff } = result
 
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      if (original || modified) process(original, modified)
+      if (original || modified) setInputImmediate({ original, modified })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
   }, [])
 
   const handleOriginalChange = (val: string) => {
     setInputs((prev) => ({ ...prev, original: val }))
-    debouncedProcess(val, modified)
+    setInput({ original: val, modified })
   }
 
   const handleModifiedChange = (val: string) => {
     setInputs((prev) => ({ ...prev, modified: val }))
-    debouncedProcess(original, val)
+    setInput({ original, modified: val })
   }
 
   const handleReset = () => {
-    newSession()
     setInputs({ original: '', modified: '' })
-    dispatch({ type: 'RESET' })
+    setInputImmediate({ original: '', modified: '' })
   }
 
   return (

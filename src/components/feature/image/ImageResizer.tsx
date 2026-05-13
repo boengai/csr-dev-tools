@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
-import type { ImageFormat, ImageProcessingResult } from '@/types'
+import { useToast, useToolComputation } from '@/hooks'
+import type { ImageFormat, ImageProcessingResult, ResizeInput } from '@/types'
 import { isValidImageFormat, parseFileName, processImage, resizeImage } from '@/utils'
 
 import { EMPTY_IMAGE, ImagePreview } from './ImagePreview'
@@ -28,66 +28,75 @@ export const ImageResizer = () => {
   const [source, setSource] = useState<[File, ImageProcessingResult] | null>(null)
   const [preview, setPreview] = useState<ImageProcessingResult | null>(null)
 
-  const newSession = useStaleSafeAsync()
-
   // hooks
   const { toast } = useToast()
 
-  const dbSetPreview = useDebounceCallback(async (s: ImageProcessingResult) => {
-    if (!source) return
+  const {
+    result: computedPreview,
+    setInput,
+  } = useToolComputation<ResizeInput, ImageProcessingResult | null>(
+    async ({ source: src, preview: p }) => {
+      if (!src || !p) return null
 
-    const currentSession = newSession()
+      let height = p.height
+      let width = p.width
 
-    let height = s.height
-    let width = s.width
+      // Validate dimensions before processing
+      if (Number.isNaN(height) || Number.isNaN(width) || height <= 0 || width <= 0) {
+        toast({ action: 'add', item: { label: 'Enter valid dimensions (e.g., 800 x 600)', type: 'error' } })
+        return null
+      }
 
-    // Validate dimensions before processing
-    if (Number.isNaN(height) || Number.isNaN(width) || height <= 0 || width <= 0) {
-      toast({ action: 'add', item: { label: 'Enter valid dimensions (e.g., 800 x 600)', type: 'error' } })
-      return
-    }
+      // find possible minimum
+      if (height * src[1].ratio <= 1) {
+        height = 1 * 10
+        width = Math.round(1 * src[1].ratio * 10)
+      } else if (width / src[1].ratio <= 1) {
+        width = 1 * 10
+        height = Math.round((1 / src[1].ratio) * 10)
+      }
 
-    // find possible minimum
-    if (height * source[1].ratio <= 1) {
-      height = 1 * 10
-      width = Math.round(1 * source[1].ratio * 10)
-    } else if (width / source[1].ratio <= 1) {
-      width = 1 * 10
-      height = Math.round((1 / source[1].ratio) * 10)
-    }
-
-    try {
       const result = await resizeImage(
-        source[0],
+        src[0],
         {
           height,
           width,
         },
         {
-          format: s.format,
-          quality: s.quality || 0.05,
+          format: p.format,
+          quality: p.quality || 0.05,
         },
       )
-
-      if (!currentSession.isFresh()) return
 
       if (result.dataUrl === EMPTY_IMAGE) {
         toast({
           action: 'add',
           item: { label: 'Image resize failed — file may be too large for browser memory', type: 'error' },
         })
-        return
+        return null
       }
 
-      setPreview(result)
-    } catch {
-      if (!currentSession.isFresh()) return
-      toast({
-        action: 'add',
-        item: { label: 'Image resize failed — try smaller dimensions or a different format', type: 'error' },
-      })
+      return result
+    },
+    {
+      initial: null,
+      isEmpty: ({ source: src, preview: p }) => !src || !p,
+      onError: () => {
+        toast({
+          action: 'add',
+          item: { label: 'Image resize failed — try smaller dimensions or a different format', type: 'error' },
+        })
+      },
+    },
+  )
+
+  // Mirror computed preview into local preview state so the UI's existing
+  // controls (which read/write `preview`) keep working unchanged.
+  useEffect(() => {
+    if (computedPreview) {
+      setPreview(computedPreview)
     }
-  })
+  }, [computedPreview])
 
   const handleUploadChange = async (values: Array<File>) => {
     const file = values[0]
@@ -178,17 +187,18 @@ export const ImageResizer = () => {
   }
 
   const handleReset = () => {
-    newSession()
     setTabValue(TABS_VALUES.IMPORT)
     setSource(null)
     setPreview(null)
+    setInput({ source: null, preview: null })
   }
 
+  // Trigger compute whenever the user has invalidated the preview (empty dataUrl).
   useEffect(() => {
     if (!preview?.dataUrl && preview?.format) {
-      dbSetPreview(preview)
+      setInput({ source, preview })
     }
-  }, [preview, dbSetPreview])
+  }, [preview, source, setInput])
 
   const isLossy = preview?.format ? LOSSY_FORMATS.has(preview.format) : false
 

@@ -2,9 +2,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { CodeInput, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import { cnMerge, type GraphqlSchemaInfo, type GraphqlTypeInfo, type GraphqlTypeKind } from '@/utils'
+import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import type { GraphqlParseOutput, ToolComponentProps } from '@/types'
+import { cnMerge, type GraphqlTypeInfo, type GraphqlTypeKind } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['graphql-schema-viewer']
 
 const getTypeKindLabel = (kind: GraphqlTypeKind): string => {
@@ -231,53 +231,59 @@ scalar DateTime`
 
 export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
   const [input, setInput] = useInputLocalStorage('csr-dev-tools-graphql-schema-viewer-input', '')
-  const [schemaInfo, setSchemaInfo] = useState<GraphqlSchemaInfo | null>(null)
-  const [error, setError] = useState<string | null>(null)
   const [selectedType, setSelectedType] = useState<string | null>(null)
   const [filter, setFilter] = useState('')
   const { toast } = useToast()
   const initializedRef = useRef(false)
 
-  const handleParse = useDebounceCallback(async (value: string) => {
-    if (!value.trim()) {
-      setSchemaInfo(null)
-      setError(null)
-      setSelectedType(null)
-      return
-    }
-    try {
+  const {
+    result: parseResult,
+    setInput: setParseInput,
+    setInputImmediate: setParseInputImmediate,
+  } = useToolComputation<string, GraphqlParseOutput>(
+    async (value) => {
       const { parseGraphqlSchema } = await import('@/utils/graphql-schema-viewer')
       const result = parseGraphqlSchema(value)
       if (result.success) {
-        setSchemaInfo(result.schema)
-        setError(null)
-        setSelectedType(null)
-      } else {
-        setSchemaInfo(null)
-        setError(result.error)
-        setSelectedType(null)
+        return { schema: result.schema, parseError: null }
       }
-    } catch {
-      toast({ action: 'add', item: { label: 'Failed to parse schema', type: 'error' } })
-    }
-  }, 300)
+      return { schema: null, parseError: result.error }
+    },
+    {
+      debounceMs: 300,
+      initial: { schema: null, parseError: null },
+      isEmpty: (value) => !value.trim(),
+      onError: () => {
+        toast({ action: 'add', item: { label: 'Failed to parse schema', type: 'error' } })
+      },
+    },
+  )
+
+  const schemaInfo = parseResult.schema
+  const error = parseResult.parseError
+
+  // When the parse result changes (new schema or error), clear the user's selection.
+  useEffect(() => {
+    setSelectedType(null)
+  }, [parseResult])
 
   const handleChange = (value: string) => {
     setInput(value)
-    handleParse(value)
+    setParseInput(value)
   }
 
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      if (input) handleParse(input)
+      if (input) setParseInputImmediate(input)
     }
-  }, [handleParse, input])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
+  }, [])
 
   const handleLoadExample = useCallback(() => {
     setInput(SAMPLE_SCHEMA)
-    handleParse(SAMPLE_SCHEMA)
-  }, [handleParse, setInput])
+    setParseInputImmediate(SAMPLE_SCHEMA)
+  }, [setInput, setParseInputImmediate])
 
   const handleNavigateToType = useCallback(
     (typeName: string) => {

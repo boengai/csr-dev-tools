@@ -3,7 +3,7 @@ import { useCallback } from 'react'
 import { Button, CodeInput, CopyButton } from '@/components/common'
 import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
 import { useDebounceCallback } from '@/hooks'
-import type { DbmlEditorPanelProps } from '@/types/components/feature/data/db-diagram/dbmlEditorPanel'
+import type { DbmlEditorPanelProps } from '@/types'
 
 import { CloseButton } from './CloseButton'
 

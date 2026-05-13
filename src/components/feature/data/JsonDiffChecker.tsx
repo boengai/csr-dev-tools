@@ -3,9 +3,16 @@ import { useEffect, useReducer, useRef } from 'react'
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
-import type { InlineSpan, SideBySideRow, ToolComponentProps } from '@/types'
-import type { State, Action } from '@/types/components/feature/data/jsonDiffChecker'
+import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import type {
+  InlineSpan,
+  JsonDiffCheckerAction,
+  JsonDiffCheckerState,
+  JsonDiffInput,
+  JsonDiffResult,
+  SideBySideRow,
+  ToolComponentProps,
+} from '@/types'
 import { computeSideBySideDiff, createUnifiedDiff, getJsonDiffError, normalizeJson } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-diff-checker']
@@ -55,7 +62,7 @@ const DiffCell = ({
   )
 }
 
-function reducer(state: State, action: Action): State {
+function reducer(state: JsonDiffCheckerState, action: JsonDiffCheckerAction): JsonDiffCheckerState {
   switch (action.type) {
     case 'SET_DIFF_RESULT':
       return { ...state, rows: action.payload.rows, unifiedDiff: action.payload.unifiedDiff }
@@ -68,6 +75,8 @@ function reducer(state: State, action: Action): State {
   }
 }
 
+const EMPTY_DIFF: JsonDiffResult = { rows: [], unifiedDiff: '', validationError: '' }
+
 export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [inputs, setInputs] = useInputLocalStorage('csr-dev-tools-json-diff', { original: '', modified: '' })
   const { original, modified } = inputs
@@ -77,29 +86,18 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     error: '',
     dialogOpen: autoOpen ?? false,
   })
-  const { rows, unifiedDiff, error, dialogOpen } = state
+  const { error, dialogOpen } = state
   const { toast } = useToast()
-  const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
 
-  const process = async (orig: string, mod: string) => {
-    const session = newSession()
+  const { result, setInput, setInputImmediate } = useToolComputation<JsonDiffInput, JsonDiffResult>(
+    async ({ original: orig, modified: mod }) => {
+      const origError = await getJsonDiffError(orig, 'Original')
+      const modError = await getJsonDiffError(mod, 'Modified')
+      if (origError || modError) {
+        return { rows: [], unifiedDiff: '', validationError: (origError ?? modError) as string }
+      }
 
-    if (orig.trim().length === 0 && mod.trim().length === 0) {
-      dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
-      dispatch({ type: 'SET_ERROR', payload: '' })
-      return
-    }
-
-    const origError = await getJsonDiffError(orig, 'Original')
-    const modError = await getJsonDiffError(mod, 'Modified')
-    if (origError || modError) {
-      dispatch({ type: 'SET_ERROR', payload: (origError ?? modError) as string })
-      dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
-      return
-    }
-
-    try {
       const normalizedOrig = orig.trim().length === 0 ? '' : await normalizeJson(orig)
       const normalizedMod = mod.trim().length === 0 ? '' : await normalizeJson(mod)
 
@@ -107,42 +105,49 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         computeSideBySideDiff(normalizedOrig, normalizedMod),
         createUnifiedDiff(normalizedOrig, normalizedMod),
       ])
-      if (!session.isFresh()) return
-      dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: sideBySide, unifiedDiff: patch } })
-      dispatch({ type: 'SET_ERROR', payload: '' })
-    } catch {
-      if (!session.isFresh()) return
-      dispatch({ type: 'SET_DIFF_RESULT', payload: { rows: [], unifiedDiff: '' } })
-      toast({ action: 'add', item: { label: 'Unable to compute JSON diff', type: 'error' } })
-    }
-  }
+      return { rows: sideBySide, unifiedDiff: patch, validationError: '' }
+    },
+    {
+      debounceMs: 300,
+      initial: EMPTY_DIFF,
+      isEmpty: ({ original: orig, modified: mod }) => orig.trim().length === 0 && mod.trim().length === 0,
+      onError: () => {
+        toast({ action: 'add', item: { label: 'Unable to compute JSON diff', type: 'error' } })
+      },
+    },
+  )
 
-  const debouncedProcess = useDebounceCallback((orig: string, mod: string) => {
-    process(orig, mod)
-  }, 300)
+  const { rows, unifiedDiff, validationError } = result
+
+  // Sync the result's validationError into the reducer-managed error field.
+  // Reducer error is retained because legacy non-result state (dialogOpen) lives
+  // alongside it; lifting it would mean a second reducer.
+  useEffect(() => {
+    dispatch({ type: 'SET_ERROR', payload: validationError })
+  }, [validationError])
 
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      if (original || modified) process(original, modified)
+      if (original || modified) setInputImmediate({ original, modified })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
   }, [])
 
   const handleOriginalChange = (val: string) => {
     setInputs((prev) => ({ ...prev, original: val }))
-    debouncedProcess(val, modified)
+    setInput({ original: val, modified })
   }
 
   const handleModifiedChange = (val: string) => {
     setInputs((prev) => ({ ...prev, modified: val }))
-    debouncedProcess(original, val)
+    setInput({ original, modified: val })
   }
 
   const handleReset = () => {
-    newSession()
     setInputs({ original: '', modified: '' })
     dispatch({ type: 'RESET' })
+    setInputImmediate({ original: '', modified: '' })
   }
 
   return (

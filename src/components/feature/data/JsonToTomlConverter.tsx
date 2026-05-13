@@ -3,16 +3,15 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { ConvertMode } from '@/types/components/feature/data/jsonToTomlConverter'
+import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import type { JsonTomlConvertMode, TomlJsonInput, ToolComponentProps } from '@/types'
 import { getTomlParseError } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-toml-converter']
 
-const sourceKey = (m: ConvertMode) => `csr-dev-tools-${m}-source`
+const sourceKey = (m: JsonTomlConvertMode) => `csr-dev-tools-${m}-source`
 
-const readSource = (m: ConvertMode): string => {
+const readSource = (m: JsonTomlConvertMode): string => {
   try {
     const item = localStorage.getItem(sourceKey(m))
     return item !== null ? (JSON.parse(item) as string) : ''
@@ -22,56 +21,41 @@ const readSource = (m: ConvertMode): string => {
 }
 
 export const JsonToTomlConverter = ({ onAfterDialogClose }: ToolComponentProps) => {
-  const [mode, setMode] = useInputLocalStorage<ConvertMode>('csr-dev-tools-json-to-toml-mode', 'toml-to-json')
+  const [mode, setMode] = useInputLocalStorage<JsonTomlConvertMode>('csr-dev-tools-json-to-toml-mode', 'toml-to-json')
   const [source, setSource] = useState(() => readSource(mode))
-  const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const { toast } = useToast()
-  const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
   const modeRef = useRef(mode)
 
-  const process = async (val: string, m: ConvertMode) => {
-    const session = newSession()
-    if (val.trim().length === 0) {
-      setResult('')
-      return
-    }
-    try {
+  const { result, setInput, setInputImmediate } = useToolComputation<TomlJsonInput, string>(
+    async ({ source: val, mode: m }) => {
       const { tomlToJson, jsonToToml } = await import('@/utils/toml')
-      const converted = m === 'toml-to-json' ? await tomlToJson(val) : await jsonToToml(val)
-      if (!session.isFresh()) return
-      setResult(converted)
-    } catch {
-      if (!session.isFresh()) return
-      setResult('')
-      if (m === 'toml-to-json') {
-        const msg = await getTomlParseError(val)
-        if (!session.isFresh()) return
-        toast({
-          action: 'add',
-          item: {
-            label: msg ? `Invalid TOML: ${msg}` : 'Conversion failed — please check your input',
-            type: 'error',
-          },
-        })
-      } else {
-        toast({
-          action: 'add',
-          item: { label: 'Invalid JSON — please check your input', type: 'error' },
-        })
+      try {
+        return m === 'toml-to-json' ? await tomlToJson(val) : await jsonToToml(val)
+      } catch {
+        if (m === 'toml-to-json') {
+          const msg = await getTomlParseError(val)
+          throw new Error(msg ? `Invalid TOML: ${msg}` : 'Conversion failed — please check your input')
+        }
+        throw new Error('Invalid JSON — please check your input')
       }
-    }
-  }
-
-  const processInput = useDebounceCallback((val: string) => {
-    process(val, mode)
-  }, 300)
+    },
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ source: val }) => val.trim().length === 0,
+      onError: (err) => {
+        const label = err instanceof Error ? err.message : 'Conversion failed — please check your input'
+        toast({ action: 'add', item: { label, type: 'error' } })
+      },
+    },
+  )
 
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      if (source) process(source, mode)
+      if (source) setInputImmediate({ source, mode })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
   }, [])
@@ -81,23 +65,20 @@ export const JsonToTomlConverter = ({ onAfterDialogClose }: ToolComponentProps) 
     try {
       localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val))
     } catch {}
-    processInput(val)
+    setInput({ source: val, mode })
   }
 
-  const openDialog = (m: ConvertMode) => {
-    newSession()
+  const openDialog = (m: JsonTomlConvertMode) => {
     setMode(m)
     modeRef.current = m
     const restored = readSource(m)
     setSource(restored)
-    setResult('')
     setDialogOpen(true)
-    if (restored.trim()) process(restored, m)
+    setInputImmediate({ source: restored, mode: m })
   }
 
   const handleReset = () => {
-    newSession()
-    setResult('')
+    setInputImmediate({ source: '', mode })
   }
 
   const isTomlMode = mode === 'toml-to-json'

@@ -1,6 +1,10 @@
-export type BgOption = 'custom' | 'transparent' | 'white'
+import type { BgOption } from './result'
 
-export type State = {
+export * from './error'
+export * from './processing'
+export * from './result'
+
+export type BackgroundRemoverState = {
   bgOption: BgOption
   customColor: string
   dialogOpen: boolean
@@ -14,7 +18,7 @@ export type State = {
   tabValue: string
 }
 
-export type Action =
+export type BackgroundRemoverAction =
   | { type: 'SET_BG_OPTION'; payload: BgOption }
   | { type: 'SET_CUSTOM_COLOR'; payload: string }
   | { type: 'SET_DIALOG_OPEN'; payload: boolean }

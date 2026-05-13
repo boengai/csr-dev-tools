@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback } from '@/hooks'
+import { useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { renderMarkdown } from '@/utils'
 
@@ -12,9 +12,14 @@ const toolEntry = TOOL_REGISTRY_MAP['markdown-preview']
 
 export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
-  const [htmlOutput, setHtmlOutput] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const previewRef = useRef<HTMLDivElement>(null)
+
+  const { result: htmlOutput, setInput, setInputImmediate } = useToolComputation<string, string>(renderMarkdown, {
+    debounceMs: 300,
+    initial: '',
+    isEmpty: (val) => val.trim().length === 0,
+  })
 
   useEffect(() => {
     if (previewRef.current) {
@@ -22,27 +27,14 @@ export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     }
   }, [htmlOutput])
 
-  const process = async (val: string) => {
-    if (val.trim().length === 0) {
-      setHtmlOutput('')
-      return
-    }
-    const html = await renderMarkdown(val)
-    setHtmlOutput(html)
-  }
-
-  const processInput = useDebounceCallback((val: string) => {
-    process(val)
-  }, 300)
-
   const handleSourceChange = (val: string) => {
     setSource(val)
-    processInput(val)
+    setInput(val)
   }
 
   const handleReset = () => {
     setSource('')
-    setHtmlOutput('')
+    setInputImmediate('')
   }
 
   return (

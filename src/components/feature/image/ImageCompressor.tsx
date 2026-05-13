@@ -1,9 +1,9 @@
-import { useCallback, useEffect, useReducer, useRef } from 'react'
+import { useEffect, useReducer, useRef } from 'react'
 
 import { Button, DownloadIcon, FieldForm, ProgressBar, UploadInput } from '@/components/common'
 import { COMPRESSIBLE_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
-import type { State, Action } from '@/types/components/feature/image/imageCompressor'
+import { useToast, useToolComputation } from '@/hooks'
+import type { CompressInput, ImageCompressorAction, ImageCompressorState, ImageProcessingResult } from '@/types'
 import { formatFileSize, processImage, tv } from '@/utils'
 
 const processingWrapperStyles = tv({
@@ -17,7 +17,7 @@ const processingWrapperStyles = tv({
 })
 
 const toolEntry = TOOL_REGISTRY_MAP['image-compressor']
-const initialState: State = {
+const initialState: ImageCompressorState = {
   compressed: null,
   originalInfo: null,
   processing: false,
@@ -26,7 +26,7 @@ const initialState: State = {
   source: null,
 }
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: ImageCompressorState, action: ImageCompressorAction): ImageCompressorState => {
   switch (action.type) {
     case 'SET_COMPRESSED':
       return { ...state, compressed: action.payload }
@@ -59,10 +59,9 @@ const reducer = (state: State, action: Action): State => {
 export const ImageCompressor = () => {
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const progressTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const newSession = useStaleSafeAsync()
 
   const [state, dispatch] = useReducer(reducer, initialState)
-  const { compressed, originalInfo, processing, quality, showProgress, source } = state
+  const { originalInfo, processing, quality, showProgress, source } = state
 
   const { toast } = useToast()
 
@@ -73,35 +72,48 @@ export const ImageCompressor = () => {
     }
   }, [])
 
-  const compress = useCallback(
-    async (file: File, q: number) => {
+  const {
+    result: compressed,
+    setInput,
+    setInputImmediate,
+  } = useToolComputation<CompressInput, ImageProcessingResult | null>(
+    async ({ file, quality: q }) => {
+      if (!file) return null
       dispatch({ type: 'SET_PROCESSING', payload: true })
+      clearTimeout(progressTimerRef.current)
       progressTimerRef.current = setTimeout(() => dispatch({ type: 'SET_SHOW_PROGRESS', payload: true }), 300)
-
-      const currentSession = newSession()
-
       try {
         const result = await processImage(file, { quality: q / 100, strategy: 'stretch' })
-        if (!currentSession.isFresh()) return null
-        dispatch({ type: 'SET_COMPRESSED', payload: result })
+        clearTimeout(progressTimerRef.current)
+        dispatch({ type: 'FINISH_COMPRESS' })
         return result
-      } catch {
-        if (!currentSession.isFresh()) return null
-        toast({ action: 'add', item: { label: 'Compression failed — try a different image', type: 'error' } })
-        return null
-      } finally {
-        currentSession.ifFresh(() => {
-          clearTimeout(progressTimerRef.current)
-          dispatch({ type: 'FINISH_COMPRESS' })
-        })
+      } catch (err) {
+        clearTimeout(progressTimerRef.current)
+        dispatch({ type: 'FINISH_COMPRESS' })
+        throw err
       }
     },
-    [newSession, toast],
+    {
+      debounceMs: 300,
+      initial: null,
+      isEmpty: ({ file }) => !file,
+      onError: () => {
+        toast({ action: 'add', item: { label: 'Compression failed — try a different image', type: 'error' } })
+      },
+    },
   )
 
-  const debouncedCompress = useDebounceCallback(compress, 300)
+  // Backfill originalInfo dimensions once the first compress for a given source resolves.
+  useEffect(() => {
+    if (compressed && source && originalInfo && originalInfo.width === 0) {
+      dispatch({
+        type: 'SET_ORIGINAL_INFO',
+        payload: { height: compressed.height, name: source.name, size: source.size, width: compressed.width },
+      })
+    }
+  }, [compressed, source, originalInfo])
 
-  const handleInputChange = async (values: Array<File>) => {
+  const handleInputChange = (values: Array<File>) => {
     const file = values[0]
     if (!file) return
 
@@ -109,25 +121,20 @@ export const ImageCompressor = () => {
     if (!COMPRESSIBLE_FORMATS.has(file.type)) {
       toast({ action: 'add', item: { label: 'Image compression supports JPEG and WebP formats', type: 'error' } })
       dispatch({ type: 'CLEAR_ON_REJECT' })
+      setInputImmediate({ file: null, quality })
       return
     }
 
     dispatch({ type: 'START_COMPRESS', payload: { source: file } })
-
-    // M1 fix: single processImage call — get dimensions AND compressed result
-    const result = await compress(file, quality)
-    if (result) {
-      dispatch({
-        type: 'SET_ORIGINAL_INFO',
-        payload: { height: result.height, name: file.name, size: file.size, width: result.width },
-      })
-    }
+    // Upload click is not part of a keystroke stream → immediate.
+    setInputImmediate({ file, quality })
   }
 
   const handleQualityChange = (newQuality: number) => {
     dispatch({ type: 'SET_QUALITY', payload: newQuality })
     if (source) {
-      debouncedCompress(source, newQuality)
+      // Quality slider drag is keystroke-like → debounced.
+      setInput({ file: source, quality: newQuality })
     }
   }
 

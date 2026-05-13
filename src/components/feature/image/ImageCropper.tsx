@@ -16,8 +16,7 @@ import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useBlobUrl } from '@/hooks/useBlobUrl'
 import { useToast } from '@/hooks'
-import type { AspectRatioPreset, CropRegion } from '@/types'
-import type { State, Action } from '@/types/components/feature/image/imageCropper'
+import type { AspectRatioPreset, CropRegion, ImageCropperAction, ImageCropperState } from '@/types'
 import { downloadBlob } from '@/utils/download'
 import { ASPECT_RATIO_OPTIONS, clampCropRegion, getAspectRatio, getDefaultCrop, scaleCropToNatural, tv } from '@/utils'
 
@@ -78,7 +77,7 @@ const cropImageCanvas = (
       quality,
     )
   })
-const initialState: State = {
+const initialState: ImageCropperState = {
   aspectPreset: 'free',
   completedCrop: null,
   crop: undefined,
@@ -89,7 +88,7 @@ const initialState: State = {
   tabValue: TABS_VALUES.IMPORT,
 }
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: ImageCropperState, action: ImageCropperAction): ImageCropperState => {
   switch (action.type) {
     case 'SET_ASPECT_PRESET':
       return { ...state, aspectPreset: action.payload }

@@ -3,69 +3,59 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
+import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import type { HtmlInput, ToolComponentProps } from '@/types'
 import { formatHtml, minifyHtml } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['html-formatter']
 
 export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useInputLocalStorage('csr-dev-tools-html-formatter-source', '')
-  const [result, setResult] = useState('')
   const [mode, setMode] = useState<'beautify' | 'minify'>('beautify')
   const [indent, setIndent] = useState<number | 'tab'>(2)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
   const initializedRef = useRef(false)
 
-  const process = async (val: string, m: 'beautify' | 'minify', ind: number | 'tab') => {
-    if (val.trim().length === 0) {
-      setResult('')
-      return
-    }
-    try {
-      setResult(await (m === 'beautify' ? formatHtml(val, ind) : minifyHtml(val)))
-    } catch {
-      setResult('')
-      toast({ action: 'add', item: { label: 'Unable to format HTML', type: 'error' } })
-    }
-  }
-
-  const processInput = useDebounceCallback((val: string) => {
-    process(val, mode, indent)
-  }, 300)
+  const { result, setInput, setInputImmediate } = useToolComputation<HtmlInput, string>(
+    ({ source: val, mode: m, indent: ind }) => (m === 'beautify' ? formatHtml(val, ind) : minifyHtml(val)),
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ source: val }) => val.trim().length === 0,
+      onError: () => {
+        toast({ action: 'add', item: { label: 'Unable to format HTML', type: 'error' } })
+      },
+    },
+  )
 
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      if (source) process(source, mode, indent)
+      if (source) setInputImmediate({ source, mode, indent })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
   }, [])
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    processInput(val)
+    setInput({ source: val, mode, indent })
   }
 
   const handleModeChange = (val: string) => {
     const m = val as 'beautify' | 'minify'
     setMode(m)
-    if (source.trim().length > 0) {
-      process(source, m, indent)
-    }
+    setInputImmediate({ source, mode: m, indent })
   }
 
   const handleIndentChange = (val: string) => {
     const ind = val === 'tab' ? 'tab' : Number(val)
     setIndent(ind)
-    if (source.trim().length > 0) {
-      process(source, mode, ind)
-    }
+    setInputImmediate({ source, mode, indent: ind })
   }
 
   const handleReset = () => {
-    setResult('')
+    setInputImmediate({ source: '', mode, indent })
   }
 
   return (
@@ -78,7 +68,7 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             block
             onClick={() => {
               setDialogOpen(true)
-              if (source.trim()) process(source, mode, indent)
+              if (source.trim()) setInputImmediate({ source, mode, indent })
             }}
             variant="default"
           >

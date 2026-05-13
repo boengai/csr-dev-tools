@@ -1,5 +1,5 @@
 import { Button, ColorInput, RadioGroupInput } from '@/components/common'
-import type { BgOption, BackgroundRemoverResultProps } from '@/types/components/feature/image/BackgroundRemover/result'
+import type { BackgroundRemoverResultProps, BgOption } from '@/types'
 
 export const BackgroundRemoverResult = ({
   bgOption,

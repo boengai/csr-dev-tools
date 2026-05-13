@@ -1,10 +1,10 @@
-import { useCallback, useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { Button, CopyButton, TextAreaInput, ToggleButton } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
+import { useToast, useToolComputation } from '@/hooks'
+import type { HashInput, ToolComponentProps } from '@/types'
 import { computeHash, DEFAULT_HASH_ALGORITHM, HASH_ALGORITHMS, type HashAlgorithm } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['hash-generator']
@@ -12,69 +12,44 @@ const toolEntry = TOOL_REGISTRY_MAP['hash-generator']
 export const HashGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [text, setText] = useState('')
   const [algorithm, setAlgorithm] = useState<HashAlgorithm>(DEFAULT_HASH_ALGORITHM)
-  const [hash, setHash] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const newSession = useStaleSafeAsync()
-  const algorithmRef = useRef(algorithm)
-  algorithmRef.current = algorithm
-  const textRef = useRef(text)
-  textRef.current = text
   const { toast } = useToast()
 
-  const handleCompute = useCallback(
-    async (input: string, algo: HashAlgorithm) => {
-      if (!input) {
-        setHash('')
-        return
-      }
-      const session = newSession()
-      try {
-        const result = await computeHash(input, algo)
-        if (session.isFresh() && textRef.current === input) {
-          setHash(result)
-        }
-      } catch {
-        if (session.isFresh() && textRef.current === input) {
-          toast({
-            action: 'add',
-            item: {
-              label:
-                algo === 'MD5'
-                  ? 'MD5 library failed to load — try refreshing the page'
-                  : 'Hash computation failed — your browser may not support this feature',
-              type: 'error',
-            },
-          })
-        }
-      }
+  const { result: hash, setInput, setInputImmediate } = useToolComputation<HashInput, string>(
+    ({ algo, text: input }) => computeHash(input, algo),
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ text: input }) => !input,
+      onError: (_err, { algo }) => {
+        toast({
+          action: 'add',
+          item: {
+            label:
+              algo === 'MD5'
+                ? 'MD5 library failed to load — try refreshing the page'
+                : 'Hash computation failed — your browser may not support this feature',
+            type: 'error',
+          },
+        })
+      },
     },
-    [newSession, toast],
   )
-
-  const debouncedCompute = useDebounceCallback((input: string) => {
-    handleCompute(input, algorithmRef.current)
-  }, 300)
 
   const handleTextChange = (value: string) => {
     setText(value)
-    if (!value) {
-      newSession()
-      setHash('')
-      return
-    }
-    debouncedCompute(value)
+    setInput({ algo: algorithm, text: value })
   }
 
   const handleAlgorithmChange = (algo: HashAlgorithm) => {
     setAlgorithm(algo)
-    handleCompute(text, algo)
+    setInputImmediate({ algo, text })
   }
 
   const handleReset = () => {
-    newSession()
     setText('')
-    setHash('')
     setAlgorithm(DEFAULT_HASH_ALGORITHM)
+    setInput({ algo: DEFAULT_HASH_ALGORITHM, text: '' })
   }
 
   return (

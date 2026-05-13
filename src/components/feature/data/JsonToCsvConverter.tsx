@@ -3,15 +3,15 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
-import type { ConvertMode } from '@/types/components/feature/data/jsonToCsvConverter'
+import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import type { JsonCsvConvertMode, JsonCsvInput } from '@/types'
 import { csvToJson, getCsvParseError, getJsonParseError, jsonToCsv } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-csv-converter']
 
-const sourceKey = (m: ConvertMode) => `csr-dev-tools-${m}-source`
+const sourceKey = (m: JsonCsvConvertMode) => `csr-dev-tools-${m}-source`
 
-const readSource = (m: ConvertMode): string => {
+const readSource = (m: JsonCsvConvertMode): string => {
   try {
     const item = localStorage.getItem(sourceKey(m))
     return item !== null ? (JSON.parse(item) as string) : ''
@@ -21,53 +21,49 @@ const readSource = (m: ConvertMode): string => {
 }
 
 export const JsonToCsvConverter = () => {
-  const [mode, setMode] = useInputLocalStorage<ConvertMode>('csr-dev-tools-json-to-csv-mode', 'json-to-csv')
+  const [mode, setMode] = useInputLocalStorage<JsonCsvConvertMode>('csr-dev-tools-json-to-csv-mode', 'json-to-csv')
   const [source, setSource] = useState(() => readSource(mode))
-  const [result, setResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(false)
   const { toast } = useToast()
   const initializedRef = useRef(false)
   const modeRef = useRef(mode)
 
-  const process = async (val: string, m: ConvertMode) => {
-    if (val.trim().length === 0) {
-      setResult('')
-      return
-    }
-    try {
-      const converted = m === 'json-to-csv' ? await jsonToCsv(val) : await csvToJson(val)
-      setResult(converted)
-    } catch (e) {
-      setResult('')
-      let label: string
-      if (m === 'json-to-csv') {
-        const message = e instanceof Error ? e.message : ''
-        if (
-          message.startsWith('JSON must be an array of objects') ||
-          message.startsWith('JSON array must contain at least one object') ||
-          message.startsWith('All array items must be objects')
-        ) {
-          label = message
-        } else {
+  const { result, setInput, setInputImmediate } = useToolComputation<JsonCsvInput, string>(
+    async ({ source: val, mode: m }) => {
+      try {
+        return m === 'json-to-csv' ? await jsonToCsv(val) : await csvToJson(val)
+      } catch (e) {
+        if (m === 'json-to-csv') {
+          const message = e instanceof Error ? e.message : ''
+          if (
+            message.startsWith('JSON must be an array of objects') ||
+            message.startsWith('JSON array must contain at least one object') ||
+            message.startsWith('All array items must be objects')
+          ) {
+            throw new Error(message)
+          }
           const msg = await getJsonParseError(val)
-          label = msg ? `Invalid JSON: ${msg}` : 'Conversion failed — please check your input'
+          throw new Error(msg ? `Invalid JSON: ${msg}` : 'Conversion failed — please check your input')
         }
-      } else {
         const msg = await getCsvParseError(val)
-        label = msg ?? 'Conversion failed — please check your input'
+        throw new Error(msg ?? 'Conversion failed — please check your input')
       }
-      toast({ action: 'add', item: { label, type: 'error' } })
-    }
-  }
-
-  const processInput = useDebounceCallback((val: string) => {
-    process(val, mode)
-  }, 300)
+    },
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ source: val }) => val.trim().length === 0,
+      onError: (err) => {
+        const label = err instanceof Error ? err.message : 'Conversion failed — please check your input'
+        toast({ action: 'add', item: { label, type: 'error' } })
+      },
+    },
+  )
 
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      if (source) process(source, mode)
+      if (source) setInputImmediate({ source, mode })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
   }, [])
@@ -77,21 +73,20 @@ export const JsonToCsvConverter = () => {
     try {
       localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val))
     } catch {}
-    processInput(val)
+    setInput({ source: val, mode })
   }
 
-  const openDialog = (m: ConvertMode) => {
+  const openDialog = (m: JsonCsvConvertMode) => {
     setMode(m)
     modeRef.current = m
     const restored = readSource(m)
     setSource(restored)
-    setResult('')
     setDialogOpen(true)
-    if (restored.trim()) process(restored, m)
+    setInputImmediate({ source: restored, mode: m })
   }
 
   const handleReset = () => {
-    setResult('')
+    setInputImmediate({ source: '', mode })
   }
 
   const isJsonMode = mode === 'json-to-csv'

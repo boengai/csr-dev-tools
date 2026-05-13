@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 
 import { Button, CheckboxInput, CodeInput } from '@/components/common'
 import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
-import type { ImportJsonSchemaPanelProps } from '@/types/components/feature/data/db-diagram/importJsonSchemaPanel'
+import type { ImportJsonSchemaPanelProps } from '@/types'
 
 import { CloseButton } from './CloseButton'
 

@@ -7,7 +7,7 @@ export type OriginalInfo = {
   width: number
 }
 
-export type State = {
+export type ImageCompressorState = {
   compressed: ImageProcessingResult | null
   originalInfo: OriginalInfo | null
   processing: boolean
@@ -16,7 +16,7 @@ export type State = {
   source: File | null
 }
 
-export type Action =
+export type ImageCompressorAction =
   | { type: 'SET_COMPRESSED'; payload: ImageProcessingResult | null }
   | { type: 'SET_ORIGINAL_INFO'; payload: OriginalInfo | null }
   | { type: 'SET_PROCESSING'; payload: boolean }
@@ -26,3 +26,5 @@ export type Action =
   | { type: 'CLEAR_ON_REJECT' }
   | { type: 'START_COMPRESS'; payload: { source: File } }
   | { type: 'FINISH_COMPRESS' }
+
+export type CompressInput = { file: File | null; quality: number }

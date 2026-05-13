@@ -1,6 +1,6 @@
 import type { DataUriDecodeResult, DataUriEncodeResult } from '@/utils'
 
-export type State = {
+export type DataUriState = {
   decodeInput: string
   decodeOpen: boolean
   decodeResult: DataUriDecodeResult | null
@@ -8,7 +8,7 @@ export type State = {
   encodeResult: DataUriEncodeResult | null
 }
 
-export type Action =
+export type DataUriAction =
   | { type: 'SET_DECODE_INPUT'; payload: string }
   | { type: 'SET_DECODE_OPEN'; payload: boolean }
   | { type: 'SET_DECODE_RESULT'; payload: DataUriDecodeResult | null }

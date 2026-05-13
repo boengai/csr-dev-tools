@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button, CodeInput, CopyButton } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useToast, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { type CertificateExtension, type CertificateInfo, cnMerge, tv, type ValidityStatus } from '@/utils'
 
@@ -107,53 +107,44 @@ const ExtensionItem = ({ ext }: { ext: CertificateExtension }) => (
 )
 
 export const CertificateDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [input, setInput] = useState('')
-  const [result, setResult] = useState<CertificateInfo | null>(null)
-  const [loading, setLoading] = useState(false)
+  const [input, setInputValue] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
-  const process = useDebounceCallback(async (val: string) => {
-    if (!val.trim()) {
-      setResult(null)
-      setLoading(false)
-      return
-    }
-
-    try {
-      setLoading(true)
+  const {
+    result,
+    isPending: loading,
+    setInput,
+    setInputImmediate,
+  } = useToolComputation<string, CertificateInfo | null>(
+    async (val) => {
       const { parsePemCertificate } = await import('@/utils/certificate-decoder')
-      const info = await parsePemCertificate(val.trim())
-      setResult(info)
-    } catch (error) {
-      setResult(null)
-      toast({
-        action: 'add',
-        item: {
-          label: error instanceof Error ? error.message : 'Certificate format not recognized',
-          type: 'error',
-        },
-      })
-    } finally {
-      setLoading(false)
-    }
-  }, 300)
+      return parsePemCertificate(val.trim())
+    },
+    {
+      debounceMs: 300,
+      initial: null,
+      isEmpty: (val) => !val.trim(),
+      onError: (error) => {
+        toast({
+          action: 'add',
+          item: {
+            label: error instanceof Error ? error.message : 'Certificate format not recognized',
+            type: 'error',
+          },
+        })
+      },
+    },
+  )
 
   const handleChange = (val: string) => {
+    setInputValue(val)
     setInput(val)
-    if (!val.trim()) {
-      setResult(null)
-      setLoading(false)
-    } else {
-      setLoading(true)
-    }
-    process(val)
   }
 
   const handleReset = () => {
-    setInput('')
-    setResult(null)
-    setLoading(false)
+    setInputValue('')
+    setInputImmediate('')
   }
 
   return (

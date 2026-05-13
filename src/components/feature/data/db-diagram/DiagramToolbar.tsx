@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { Button, ChevronIcon, DropdownMenu, ListIcon, TextInput } from '@/components/common'
 import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
-import type { DiagramToolbarProps } from '@/types/components/feature/data/db-diagram/diagramToolbar'
+import type { DiagramToolbarProps } from '@/types'
 
 export const DiagramToolbar = ({
   activePanel,

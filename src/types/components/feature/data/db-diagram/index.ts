@@ -2,11 +2,20 @@ import type { Connection, EdgeTypes, NodeTypes, OnEdgesChange, OnNodesChange } f
 
 import type { RelationshipEdge, SidePanel, TableNode } from '@/types'
 
-export // ---------------------------------------------------------------------------
+export * from './dbmlEditorPanel'
+export * from './diagramListPanel'
+export * from './diagramToolbar'
+export * from './exportMermaidPanel'
+export * from './exportSqlPanel'
+export * from './exportTypescriptPanel'
+export * from './importJsonSchemaPanel'
+export * from './importSqlPanel'
+
+// ---------------------------------------------------------------------------
 // DiagramFlowCanvas - extracted ReactFlow rendering
 // ---------------------------------------------------------------------------
 
-type DiagramFlowCanvasProps = {
+export type DiagramFlowCanvasProps = {
   edgeTypes: EdgeTypes
   edges: Array<RelationshipEdge>
   nodeTypes: NodeTypes
@@ -16,11 +25,11 @@ type DiagramFlowCanvasProps = {
   onNodesChange: OnNodesChange<TableNode>
 }
 
-export // ---------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
 // SidePanelRenderer - extracted conditional side panel rendering
 // ---------------------------------------------------------------------------
 
-type SidePanelRendererProps = {
+export type SidePanelRendererProps = {
   activePanel: SidePanel
   handleClosePanel: () => void
   handleDbmlClose: () => void

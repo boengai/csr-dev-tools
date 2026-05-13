@@ -1,4 +1,4 @@
-export type State = {
+export type PlaceholderImageState = {
   bgColor: string
   bgHexInput: string
   height: string
@@ -8,7 +8,7 @@ export type State = {
   width: string
 }
 
-export type Action =
+export type PlaceholderImageAction =
   | { type: 'SET_BG_HEX'; value: string }
   | { type: 'SET_BG_PICKER'; hex: string }
   | { type: 'SET_HEIGHT'; value: string }

@@ -2,8 +2,7 @@ import { useMemo, useState } from 'react'
 
 import { CopyButton, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ToolComponentProps } from '@/types'
-import type { FieldEditorProps } from '@/types/components/feature/time/crontabGenerator'
+import type { FieldEditorProps, ToolComponentProps } from '@/types'
 import {
   type CronFieldConfig,
   type CronFieldMode,

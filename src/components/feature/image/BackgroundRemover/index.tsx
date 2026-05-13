@@ -4,8 +4,7 @@ import { Button, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, ToolDialogShell, Up
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useBlobUrl } from '@/hooks/useBlobUrl'
 import { useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { BgOption, State, Action } from '@/types/components/feature/image/BackgroundRemover/index'
+import type { BackgroundRemoverAction, BackgroundRemoverState, BgOption, ToolComponentProps } from '@/types'
 import { applyBackground, removeBackground } from '@/utils'
 import { downloadBlob } from '@/utils/download'
 
@@ -20,7 +19,7 @@ const TABS_VALUES = {
 } as const
 
 const toolEntry = TOOL_REGISTRY_MAP['background-remover']
-const initialState: State = {
+const initialState: BackgroundRemoverState = {
   bgOption: 'transparent',
   customColor: '#ff0000',
   dialogOpen: false,
@@ -34,7 +33,7 @@ const initialState: State = {
   tabValue: TABS_VALUES.IMPORT,
 }
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: BackgroundRemoverState, action: BackgroundRemoverAction): BackgroundRemoverState => {
   switch (action.type) {
     case 'SET_BG_OPTION':
       return { ...state, bgOption: action.payload }

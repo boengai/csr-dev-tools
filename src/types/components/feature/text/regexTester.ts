@@ -2,7 +2,7 @@ import type { HighlightSegment, RegexResult } from '@/utils'
 
 export type Flags = { g: boolean; i: boolean; m: boolean }
 
-export type State = {
+export type RegexTesterState = {
   flags: Flags
   pattern: string
   result: RegexResult | null
@@ -10,7 +10,7 @@ export type State = {
   testString: string
 }
 
-export type Action =
+export type RegexTesterAction =
   | { type: 'SET_PATTERN'; payload: string }
   | { type: 'SET_TEST_STRING'; payload: string }
   | { type: 'SET_FLAGS'; payload: Flags }

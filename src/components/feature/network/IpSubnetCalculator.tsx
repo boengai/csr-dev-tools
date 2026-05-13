@@ -3,8 +3,7 @@ import { useCallback, useMemo, useRef, useState } from 'react'
 import { CopyButton, FieldForm, Tabs } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { InputMode } from '@/types/components/feature/network/ipSubnetCalculator'
+import type { InputMode, ToolComponentProps } from '@/types'
 import {
   calculateSubnet,
   maskToPrefix,

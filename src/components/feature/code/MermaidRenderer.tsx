@@ -5,8 +5,7 @@ import { useCallback, useEffect, useReducer, useRef } from 'react'
 import { Button, CopyButton, FieldForm, ToolDialogShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { State, Action } from '@/types/components/feature/code/mermaidRenderer'
+import type { MermaidRendererAction, MermaidRendererState, ToolComponentProps } from '@/types'
 import {
   downloadMermaidSvg,
   downloadPng,
@@ -46,7 +45,7 @@ const SYNTAX_EXAMPLES = [
   { code: 'gantt\n    title Project\n    section A\n    Task 1: a1, 2024-01-01, 30d', label: 'Gantt' },
   { code: 'pie\n    title Distribution\n    "A": 40\n    "B": 30\n    "C": 30', label: 'Pie' },
 ]
-const initialState: State = {
+const initialState: MermaidRendererState = {
   dialogOpen: false,
   error: null,
   exportingPng: false,
@@ -55,7 +54,7 @@ const initialState: State = {
   svg: '',
 }
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: MermaidRendererState, action: MermaidRendererAction): MermaidRendererState => {
   switch (action.type) {
     case 'SET_DIALOG_OPEN':
       return { ...state, dialogOpen: action.payload }

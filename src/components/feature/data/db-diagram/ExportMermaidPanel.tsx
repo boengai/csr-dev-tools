@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { Button, CopyButton } from '@/components/common'
 import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
-import type { ExportMermaidPanelProps } from '@/types/components/feature/data/db-diagram/exportMermaidPanel'
+import type { ExportMermaidPanelProps } from '@/types'
 
 import { CloseButton } from './CloseButton'
 

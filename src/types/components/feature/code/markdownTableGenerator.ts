@@ -1,6 +1,6 @@
 import type { ColumnAlignment } from '@/utils'
 
-export type State = {
+export type MarkdownTableState = {
   alignments: Array<ColumnAlignment>
   cols: number
   data: Array<Array<string>>
@@ -8,7 +8,7 @@ export type State = {
   rows: number
 }
 
-export type Action =
+export type MarkdownTableAction =
   | { type: 'SET_DIALOG_OPEN'; payload: boolean }
   | { type: 'SET_ROWS'; payload: number }
   | { type: 'SET_COLS'; payload: number }

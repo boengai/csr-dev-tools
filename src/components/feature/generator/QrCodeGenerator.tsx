@@ -1,30 +1,25 @@
-import { useCallback, useReducer, useRef } from 'react'
+import { useReducer, useRef } from 'react'
 
 import { Button, ColorInput, CopyButton, DownloadIcon, FieldForm, ToolDialogShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { State, Action } from '@/types/components/feature/generator/qrCodeGenerator'
+import { useToast, useToolComputation } from '@/hooks'
+import type { QrCodeAction, QrCodeState, QrInput, QrResult, ToolComponentProps } from '@/types'
 import { generateQrCodeDataUrl, generateQrCodeSvgString, type QrErrorCorrectionLevel } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['qr-code-generator']
-const initialState: State = {
+const initialState: QrCodeState = {
   background: '#ffffff',
-  dataUrl: '',
   dialogOpen: false,
   errorCorrection: 'M',
   foreground: '#000000',
   size: 256,
-  svgString: '',
   text: '',
 }
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: QrCodeState, action: QrCodeAction): QrCodeState => {
   switch (action.type) {
     case 'SET_BACKGROUND':
       return { ...state, background: action.payload }
-    case 'SET_DATA_URL':
-      return { ...state, dataUrl: action.payload }
     case 'SET_DIALOG_OPEN':
       return { ...state, dialogOpen: action.payload }
     case 'SET_ERROR_CORRECTION':
@@ -33,14 +28,8 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, foreground: action.payload }
     case 'SET_SIZE':
       return { ...state, size: action.payload }
-    case 'SET_SVG_STRING':
-      return { ...state, svgString: action.payload }
     case 'SET_TEXT':
       return { ...state, text: action.payload }
-    case 'GENERATE_SUCCESS':
-      return { ...state, dataUrl: action.payload.dataUrl, svgString: action.payload.svgString }
-    case 'CLEAR_OUTPUT':
-      return { ...state, dataUrl: '', svgString: '' }
     case 'RESET':
       return { ...initialState, dialogOpen: state.dialogOpen }
     default:
@@ -48,71 +37,72 @@ const reducer = (state: State, action: Action): State => {
   }
 }
 
+const EMPTY_RESULT: QrResult = { dataUrl: '', svgString: '' }
+
 export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [state, dispatch] = useReducer(reducer, { ...initialState, dialogOpen: autoOpen ?? false })
-  const { background, dataUrl, dialogOpen, errorCorrection, foreground, size, svgString, text } = state
+  const { background, dialogOpen, errorCorrection, foreground, size, text } = state
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const { toast } = useToast()
 
-  const generate = useCallback(
-    async (t: string, s: number, ec: QrErrorCorrectionLevel, fg: string, bg: string) => {
-      if (!t) {
-        dispatch({ type: 'CLEAR_OUTPUT' })
-        return
-      }
-      try {
-        const [url, svg] = await Promise.all([
-          generateQrCodeDataUrl(t, {
-            background: bg,
-            errorCorrectionLevel: ec,
-            foreground: fg,
-            size: s,
-          }),
-          generateQrCodeSvgString(t, {
-            background: bg,
-            errorCorrectionLevel: ec,
-            foreground: fg,
-            size: s,
-          }),
-        ])
-        dispatch({ type: 'GENERATE_SUCCESS', payload: { dataUrl: url, svgString: svg } })
-      } catch {
+  const { result, setInput, setInputImmediate } = useToolComputation<QrInput, QrResult>(
+    async ({ text: t, size: s, errorCorrection: ec, foreground: fg, background: bg }) => {
+      const [url, svg] = await Promise.all([
+        generateQrCodeDataUrl(t, {
+          background: bg,
+          errorCorrectionLevel: ec,
+          foreground: fg,
+          size: s,
+        }),
+        generateQrCodeSvgString(t, {
+          background: bg,
+          errorCorrectionLevel: ec,
+          foreground: fg,
+          size: s,
+        }),
+      ])
+      return { dataUrl: url, svgString: svg }
+    },
+    {
+      debounceMs: 300,
+      initial: EMPTY_RESULT,
+      isEmpty: ({ text: t }) => !t,
+      onError: () => {
         toast({
           action: 'add',
           item: { label: 'Failed to generate QR code', type: 'error' },
         })
-      }
+      },
     },
-    [toast],
   )
 
-  const debouncedGenerate = useDebounceCallback(generate, 300)
+  const { dataUrl, svgString } = result
 
   const handleTextChange = (val: string) => {
     dispatch({ type: 'SET_TEXT', payload: val })
-    debouncedGenerate(val, size, errorCorrection, foreground, background)
+    setInput({ text: val, size, errorCorrection, foreground, background })
   }
 
   const handleSizeChange = (val: string) => {
     const n = Number(val)
     dispatch({ type: 'SET_SIZE', payload: n })
-    debouncedGenerate(text, n, errorCorrection, foreground, background)
+    setInputImmediate({ text, size: n, errorCorrection, foreground, background })
   }
 
   const handleEcChange = (val: string) => {
     const ec = val as QrErrorCorrectionLevel
     dispatch({ type: 'SET_ERROR_CORRECTION', payload: ec })
-    debouncedGenerate(text, size, ec, foreground, background)
+    setInputImmediate({ text, size, errorCorrection: ec, foreground, background })
   }
 
   const handleFgChange = (val: string) => {
     dispatch({ type: 'SET_FOREGROUND', payload: val })
-    debouncedGenerate(text, size, errorCorrection, val, background)
+    setInputImmediate({ text, size, errorCorrection, foreground: val, background })
   }
 
   const handleBgChange = (val: string) => {
     dispatch({ type: 'SET_BACKGROUND', payload: val })
-    debouncedGenerate(text, size, errorCorrection, foreground, val)
+    setInputImmediate({ text, size, errorCorrection, foreground, background: val })
   }
 
   const handleDownload = () => {
@@ -130,6 +120,13 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
 
   const handleReset = () => {
     dispatch({ type: 'RESET' })
+    setInputImmediate({
+      text: '',
+      size: initialState.size,
+      errorCorrection: initialState.errorCorrection,
+      foreground: initialState.foreground,
+      background: initialState.background,
+    })
   }
 
   return (

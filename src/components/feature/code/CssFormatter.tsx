@@ -3,61 +3,51 @@ import { useState } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
+import { useToast, useToolComputation } from '@/hooks'
+import type { CssInput, ToolComponentProps } from '@/types'
 import { formatCss, minifyCss } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['css-formatter']
 
 export const CssFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
-  const [result, setResult] = useState('')
   const [mode, setMode] = useState<'beautify' | 'minify'>('beautify')
   const [indent, setIndent] = useState<number | 'tab'>(2)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
-  const process = async (val: string, m: 'beautify' | 'minify', ind: number | 'tab') => {
-    if (val.trim().length === 0) {
-      setResult('')
-      return
-    }
-    try {
-      setResult(await (m === 'beautify' ? formatCss(val, ind) : minifyCss(val)))
-    } catch {
-      setResult('')
-      toast({ action: 'add', item: { label: 'Unable to format CSS', type: 'error' } })
-    }
-  }
-
-  const processInput = useDebounceCallback((val: string) => {
-    process(val, mode, indent)
-  }, 300)
+  const { result, setInput, setInputImmediate } = useToolComputation<CssInput, string>(
+    ({ source: val, mode: m, indent: ind }) => (m === 'beautify' ? formatCss(val, ind) : minifyCss(val)),
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ source: val }) => val.trim().length === 0,
+      onError: () => {
+        toast({ action: 'add', item: { label: 'Unable to format CSS', type: 'error' } })
+      },
+    },
+  )
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    processInput(val)
+    setInput({ source: val, mode, indent })
   }
 
   const handleModeChange = (val: string) => {
     const m = val as 'beautify' | 'minify'
     setMode(m)
-    if (source.trim().length > 0) {
-      process(source, m, indent)
-    }
+    setInputImmediate({ source, mode: m, indent })
   }
 
   const handleIndentChange = (val: string) => {
     const ind = val === 'tab' ? 'tab' : Number(val)
     setIndent(ind)
-    if (source.trim().length > 0) {
-      process(source, mode, ind)
-    }
+    setInputImmediate({ source, mode, indent: ind })
   }
 
   const handleReset = () => {
     setSource('')
-    setResult('')
+    setInputImmediate({ source: '', mode, indent })
   }
 
   return (

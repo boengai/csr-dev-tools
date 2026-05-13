@@ -4,8 +4,7 @@ import { Button, CopyButton, DownloadIcon, FieldForm, UploadInput } from '@/comp
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { State, Action } from '@/types/components/feature/data/dataUriGenerator'
+import type { DataUriAction, DataUriState, ToolComponentProps } from '@/types'
 import { downloadBlob } from '@/utils/download'
 import { fileToDataUri, formatFileSize, isValidDataUri, parseDataUri, parseDataUrlToBlob } from '@/utils'
 
@@ -18,7 +17,7 @@ const getMimeExtension = (mimeType: string): string => {
   if (sub === 'plain') return 'txt'
   return sub
 }
-const initialState: State = {
+const initialState: DataUriState = {
   decodeInput: '',
   decodeOpen: false,
   decodeResult: null,
@@ -26,7 +25,7 @@ const initialState: State = {
   encodeResult: null,
 }
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: DataUriState, action: DataUriAction): DataUriState => {
   switch (action.type) {
     case 'SET_DECODE_INPUT':
       return { ...state, decodeInput: action.payload }

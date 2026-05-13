@@ -3,8 +3,7 @@ import { useReducer } from 'react'
 import { Button, CopyButton, FieldForm, TextInput } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ToolComponentProps } from '@/types'
-import type { State, Action } from '@/types/components/feature/code/markdownTableGenerator'
+import type { MarkdownTableAction, MarkdownTableState, ToolComponentProps } from '@/types'
 import { type ColumnAlignment, generateMarkdownTable } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['markdown-table-generator']
@@ -23,7 +22,7 @@ const ALIGN_ICON: Record<ColumnAlignment, string> = {
 
 const createGrid = (rows: number, cols: number): Array<Array<string>> =>
   Array.from({ length: rows }, (_, r) => Array.from({ length: cols }, (_, c) => (r === 0 ? `Header ${c + 1}` : '')))
-const createInitialState = (): State => ({
+const createInitialState = (): MarkdownTableState => ({
   alignments: Array(3).fill('left') as Array<ColumnAlignment>,
   cols: 3,
   data: createGrid(3, 3),
@@ -31,7 +30,7 @@ const createInitialState = (): State => ({
   rows: 3,
 })
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: MarkdownTableState, action: MarkdownTableAction): MarkdownTableState => {
   switch (action.type) {
     case 'SET_DIALOG_OPEN':
       return { ...state, dialogOpen: action.payload }

@@ -1,10 +1,9 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { BaseField } from '@/types/components/feature/encoding/numberBaseConverter'
+import { useToast, useToolComputation } from '@/hooks'
+import type { BaseField, BaseInput, BaseResult, ToolComponentProps } from '@/types'
 import { convertBase, isValidForBase } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['number-base-converter']
@@ -15,26 +14,20 @@ const BASE_FIELDS: Array<BaseField> = [
   { base: 16, label: 'Hexadecimal', name: 'hex', placeholder: '2a' },
 ]
 
+const EMPTY_VALUES: Record<string, string> = { binary: '', decimal: '', hex: '', octal: '' }
+
+const INITIAL_RESULT: BaseResult = { values: null, error: '' }
+
 export const NumberBaseConverter = (_props: ToolComponentProps) => {
-  const [values, setValues] = useState<Record<string, string>>({ binary: '', decimal: '', hex: '', octal: '' })
-  const [error, setError] = useState('')
+  const [values, setValues] = useState<Record<string, string>>(EMPTY_VALUES)
   const { toast } = useToast()
 
-  const updateAllFromField = async (val: string, fromBase: number, fromName: string) => {
-    if (val.trim().length === 0) {
-      setValues({ binary: '', decimal: '', hex: '', octal: '' })
-      setError('')
-      return
-    }
+  const { result, setInput } = useToolComputation<BaseInput, BaseResult>(
+    async ({ val, fromBase, fromName }) => {
+      if (!(await isValidForBase(val, fromBase))) {
+        return { values: null, error: `Invalid character for base ${fromBase.toString()}` }
+      }
 
-    if (!(await isValidForBase(val, fromBase))) {
-      setError(`Invalid character for base ${fromBase.toString()}`)
-      return
-    }
-
-    setError('')
-
-    try {
       const newValues: Record<string, string> = {}
       for (const field of BASE_FIELDS) {
         if (field.name === fromName) {
@@ -43,23 +36,38 @@ export const NumberBaseConverter = (_props: ToolComponentProps) => {
           newValues[field.name] = await convertBase(val, fromBase, field.base)
         }
       }
-      setValues(newValues)
-    } catch {
-      toast({
-        action: 'add',
-        item: { label: 'Conversion failed — please check your input', type: 'error' },
-      })
-    }
-  }
+      return { values: newValues, error: '' }
+    },
+    {
+      debounceMs: 300,
+      initial: INITIAL_RESULT,
+      isEmpty: ({ val }) => val.trim().length === 0,
+      onError: () => {
+        toast({
+          action: 'add',
+          item: { label: 'Conversion failed — please check your input', type: 'error' },
+        })
+      },
+    },
+  )
 
-  const debouncedUpdate = useDebounceCallback((val: string, fromBase: number, fromName: string) => {
-    void updateAllFromField(val, fromBase, fromName)
-  }, 300)
+  // Sync converted values down into local `values` so the non-typed fields
+  // update after each compute resolves. The typed field stays in sync because
+  // `handleChange` echoes the keystroke immediately.
+  useEffect(() => {
+    if (result.values) setValues(result.values)
+  }, [result.values])
 
   const handleChange = (val: string, field: BaseField) => {
-    setValues((prev) => ({ ...prev, [field.name]: val }))
-    debouncedUpdate(val, field.base, field.name)
+    if (val.trim().length === 0) {
+      setValues(EMPTY_VALUES)
+    } else {
+      setValues((prev) => ({ ...prev, [field.name]: val }))
+    }
+    setInput({ val, fromBase: field.base, fromName: field.name })
   }
+
+  const error = result.error
 
   return (
     <div className="flex w-full grow flex-col gap-4">

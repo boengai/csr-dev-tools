@@ -2,7 +2,7 @@ import { useMemo } from 'react'
 
 import { CopyButton } from '@/components/common'
 import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
-import type { ExportTypescriptPanelProps } from '@/types/components/feature/data/db-diagram/exportTypescriptPanel'
+import type { ExportTypescriptPanelProps } from '@/types'
 
 import { CloseButton } from './CloseButton'
 

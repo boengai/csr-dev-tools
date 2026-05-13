@@ -2,9 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { EntryKind, BrowsableEntry } from '@/types/components/feature/code/protobufToJson'
+import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import type { BrowsableEntry, EntryKind, ParseOutput, ToolComponentProps } from '@/types'
 import { cnMerge, type ProtobufEnumInfo, type ProtobufMessageInfo, type ProtobufSchemaInfo } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-to-json']
@@ -133,56 +132,60 @@ function annotateJsonWithEnums(jsonStr: string, allEnums: Array<ProtobufEnumInfo
 
 export const ProtobufToJson = (_props: ToolComponentProps) => {
   const [input, setInput] = useInputLocalStorage('csr-dev-tools-protobuf-to-json-input', '')
-  const [schemaInfo, setSchemaInfo] = useState<ProtobufSchemaInfo | null>(null)
-  const [error, setError] = useState<{ line: number | null; message: string } | null>(null)
   const [selectedEntry, setSelectedEntry] = useState<string | null>(null)
   const [generatedJson, setGeneratedJson] = useState<string | null>(null)
   const { toast } = useToast()
   const initializedRef = useRef(false)
 
-  const handleParse = useDebounceCallback(async (value: string) => {
-    if (!value.trim()) {
-      setSchemaInfo(null)
-      setError(null)
-      setSelectedEntry(null)
-      setGeneratedJson(null)
-      return
-    }
-    try {
+  const {
+    result: parseResult,
+    setInput: setParseInput,
+    setInputImmediate: setParseInputImmediate,
+  } = useToolComputation<string, ParseOutput>(
+    async (value) => {
       const { parseProtobufSchema } = await import('@/utils/protobuf-to-json')
       const result = await parseProtobufSchema(value)
       if (result.success) {
-        setSchemaInfo(result.schema)
-        setError(null)
-        setSelectedEntry(null)
-        setGeneratedJson(null)
-      } else {
-        setSchemaInfo(null)
-        setError({ line: result.line, message: result.error })
-        setSelectedEntry(null)
-        setGeneratedJson(null)
+        return { schema: result.schema, parseError: null }
       }
-    } catch {
-      toast({ action: 'add', item: { label: 'Failed to parse proto definition', type: 'error' } })
-    }
-  }, 300)
+      return { schema: null, parseError: { line: result.line, message: result.error } }
+    },
+    {
+      debounceMs: 300,
+      initial: { schema: null, parseError: null },
+      isEmpty: (value) => !value.trim(),
+      onError: () => {
+        toast({ action: 'add', item: { label: 'Failed to parse proto definition', type: 'error' } })
+      },
+    },
+  )
+
+  const schemaInfo = parseResult.schema
+  const error = parseResult.parseError
+
+  // When the parse result changes (new schema or error), clear the user's selection.
+  useEffect(() => {
+    setSelectedEntry(null)
+    setGeneratedJson(null)
+  }, [parseResult])
 
   const handleChange = (value: string) => {
     setInput(value)
-    handleParse(value)
+    setParseInput(value)
   }
 
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      if (input) handleParse(input)
+      if (input) setParseInputImmediate(input)
     }
-  }, [handleParse, input])
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
+  }, [])
 
   const handleLoadExample = useCallback(() => {
     setInput(SAMPLE_PROTO)
-    handleParse(SAMPLE_PROTO)
-  }, [handleParse, setInput])
+    setParseInputImmediate(SAMPLE_PROTO)
+  }, [setInput, setParseInputImmediate])
 
   const handleSelectEntry = useCallback(
     async (entry: BrowsableEntry) => {

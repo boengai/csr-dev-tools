@@ -1,5 +1,5 @@
 import { Button, FieldForm } from '@/components/common'
-import type { ImageResizerControlsProps } from '@/types/components/feature/image/imageResizerControls'
+import type { ImageResizerControlsProps } from '@/types'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
 

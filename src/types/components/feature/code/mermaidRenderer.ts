@@ -1,6 +1,6 @@
 import type { MermaidFixSuggestion } from '@/utils'
 
-export type State = {
+export type MermaidRendererState = {
   dialogOpen: boolean
   error: string | null
   exportingPng: boolean
@@ -9,7 +9,7 @@ export type State = {
   svg: string
 }
 
-export type Action =
+export type MermaidRendererAction =
   | { type: 'SET_DIALOG_OPEN'; payload: boolean }
   | { type: 'SET_ERROR'; payload: string | null }
   | { type: 'SET_EXPORTING_PNG'; payload: boolean }

@@ -3,12 +3,11 @@ import { useReducer } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { State, Action } from '@/types/components/feature/code/javaScriptMinifier'
+import { useToast, useToolComputation } from '@/hooks'
+import type { JsInput, JsMinifierAction, JsMinifierState, ToolComponentProps } from '@/types'
 import { formatJs, minifyJs } from '@/utils'
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: JsMinifierState, action: JsMinifierAction): JsMinifierState => {
   switch (action.type) {
     case 'SET_DIALOG_OPEN':
       return { ...state, dialogOpen: action.payload }
@@ -16,12 +15,10 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, indent: action.payload }
     case 'SET_MODE':
       return { ...state, mode: action.payload }
-    case 'SET_RESULT':
-      return { ...state, result: action.payload }
     case 'SET_SOURCE':
       return { ...state, source: action.payload }
     case 'RESET':
-      return { ...state, result: '', source: '' }
+      return { ...state, source: '' }
   }
 }
 
@@ -32,52 +29,43 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
     dialogOpen: autoOpen ?? false,
     indent: 2,
     mode: 'minify',
-    result: '',
     source: '',
   })
-  const { dialogOpen, indent, mode, result, source } = state
+  const { dialogOpen, indent, mode, source } = state
   const { toast } = useToast()
 
-  const process = async (val: string, m: 'beautify' | 'minify', ind: number | 'tab') => {
-    if (val.trim().length === 0) {
-      dispatch({ type: 'SET_RESULT', payload: '' })
-      return
-    }
-    try {
-      dispatch({ type: 'SET_RESULT', payload: await (m === 'beautify' ? formatJs(val, ind) : minifyJs(val)) })
-    } catch {
-      dispatch({ type: 'SET_RESULT', payload: '' })
-      toast({ action: 'add', item: { label: 'Unable to process JavaScript', type: 'error' } })
-    }
-  }
-
-  const processInput = useDebounceCallback((val: string) => {
-    process(val, mode, indent)
-  }, 300)
+  const { result, setInput, setInputImmediate } = useToolComputation<JsInput, string>(
+    ({ source: val, mode: m, indent: ind }) => (m === 'beautify' ? formatJs(val, ind) : minifyJs(val)),
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ source: val }) => val.trim().length === 0,
+      onError: () => {
+        toast({ action: 'add', item: { label: 'Unable to process JavaScript', type: 'error' } })
+      },
+    },
+  )
 
   const handleSourceChange = (val: string) => {
     dispatch({ type: 'SET_SOURCE', payload: val })
-    processInput(val)
+    setInput({ source: val, mode, indent })
   }
 
   const handleModeChange = (val: string) => {
     const m = val as 'beautify' | 'minify'
     dispatch({ type: 'SET_MODE', payload: m })
-    if (source.trim().length > 0) {
-      process(source, m, indent)
-    }
+    setInputImmediate({ source, mode: m, indent })
   }
 
   const handleIndentChange = (val: string) => {
     const ind = val === 'tab' ? 'tab' : Number(val)
     dispatch({ type: 'SET_INDENT', payload: ind })
-    if (source.trim().length > 0) {
-      process(source, mode, ind)
-    }
+    setInputImmediate({ source, mode, indent: ind })
   }
 
   const handleReset = () => {
     dispatch({ type: 'RESET' })
+    setInputImmediate({ source: '', mode, indent })
   }
 
   const originalSize = new Blob([source]).size

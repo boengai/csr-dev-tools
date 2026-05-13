@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 
 import { ColorInput, CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { LocalConfig } from '@/types/components/feature/css/gradientGenerator'
+import type { LocalConfig } from '@/types'
 import { DEFAULT_GRADIENT, generateGradientCss, type GradientType } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['css-gradient-generator']

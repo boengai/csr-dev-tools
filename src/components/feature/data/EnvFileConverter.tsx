@@ -1,17 +1,16 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { ConvertMode } from '@/types/components/feature/data/envFileConverter'
+import { useToast, useToolComputation } from '@/hooks'
+import type { EnvConvertMode, EnvInput, EnvResult, ToolComponentProps } from '@/types'
 import { envToJson, envToYaml, jsonToEnv, yamlToEnv } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['env-file-converter']
 
 const MODE_CONFIG: Record<
-  ConvertMode,
+  EnvConvertMode,
   {
     dialogTitle: string
     sourceLabel: string
@@ -50,77 +49,64 @@ const MODE_CONFIG: Record<
   },
 }
 
+const EMPTY_RESULT: EnvResult = { output: '', warnings: [] }
+
 export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
-  const [result, setResult] = useState('')
-  const [mode, setMode] = useState<ConvertMode>('env-to-json')
+  const [mode, setMode] = useState<EnvConvertMode>('env-to-json')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
-  const newSession = useStaleSafeAsync()
 
-  const process = async (val: string, m: ConvertMode) => {
-    const session = newSession()
-    if (val.trim().length === 0) {
-      setResult('')
-      return
-    }
-    try {
-      let output: string
-      let warnings: Array<string> = []
+  const { result, setInput, setInputImmediate } = useToolComputation<EnvInput, EnvResult>(
+    async ({ source: val, mode: m }) => {
       switch (m) {
         case 'env-to-json': {
           const r = envToJson(val)
-          output = r.output
-          warnings = r.warnings
-          break
+          return { output: r.output, warnings: r.warnings }
         }
         case 'env-to-yaml': {
           const r = await envToYaml(val)
-          output = r.output
-          warnings = r.warnings
-          break
+          return { output: r.output, warnings: r.warnings }
         }
         case 'json-to-env':
-          output = jsonToEnv(val)
-          break
+          return { output: jsonToEnv(val), warnings: [] }
         case 'yaml-to-env':
-          output = await yamlToEnv(val)
-          break
+          return { output: await yamlToEnv(val), warnings: [] }
       }
-      if (!session.isFresh()) return
-      setResult(output)
-      if (warnings.length > 0) {
-        toast({ action: 'add', item: { label: warnings.join('; '), type: 'error' } })
-      }
-    } catch (e) {
-      if (!session.isFresh()) return
-      setResult('')
-      const msg = e instanceof Error ? e.message : 'Conversion failed'
-      toast({ action: 'add', item: { label: msg, type: 'error' } })
-    }
-  }
+    },
+    {
+      debounceMs: 300,
+      initial: EMPTY_RESULT,
+      isEmpty: ({ source: val }) => val.trim().length === 0,
+      onError: (e) => {
+        const msg = e instanceof Error ? e.message : 'Conversion failed'
+        toast({ action: 'add', item: { label: msg, type: 'error' } })
+      },
+    },
+  )
 
-  const processInput = useDebounceCallback((val: string) => {
-    process(val, mode)
-  }, 300)
+  useEffect(() => {
+    if (result.warnings.length > 0) {
+      toast({ action: 'add', item: { label: result.warnings.join('; '), type: 'error' } })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- toast identity stable; fire only on warnings change
+  }, [result.warnings])
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    processInput(val)
+    setInput({ source: val, mode })
   }
 
-  const openDialog = (m: ConvertMode) => {
-    newSession()
+  const openDialog = (m: EnvConvertMode) => {
     setMode(m)
     setSource('')
-    setResult('')
     setDialogOpen(true)
+    setInputImmediate({ source: '', mode: m })
   }
 
   const handleReset = () => {
-    newSession()
     setSource('')
-    setResult('')
+    setInputImmediate({ source: '', mode })
   }
 
   const config = MODE_CONFIG[mode]
@@ -174,11 +160,11 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
                 label={
                   <span className="flex items-center gap-1">
                     <span>{config.resultLabel}</span>
-                    <CopyButton label="result" value={result} />
+                    <CopyButton label="result" value={result.output} />
                   </span>
                 }
                 placeholder={config.resultPlaceholder}
-                value={result}
+                value={result.output}
               />
             </div>
           </div>

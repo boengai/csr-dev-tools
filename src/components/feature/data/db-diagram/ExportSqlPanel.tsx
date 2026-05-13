@@ -2,8 +2,7 @@ import { useMemo, useState } from 'react'
 
 import { Button, CopyButton, SelectInput } from '@/components/common'
 import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
-import type { SqlDialect } from '@/types'
-import type { ExportSqlPanelProps } from '@/types/components/feature/data/db-diagram/exportSqlPanel'
+import type { ExportSqlPanelProps, SqlDialect } from '@/types'
 import { downloadTextFile } from '@/utils'
 
 import { CloseButton } from './CloseButton'

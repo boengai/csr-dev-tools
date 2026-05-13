@@ -4,3 +4,7 @@ export type BaseField = {
   name: string
   placeholder: string
 }
+
+export type BaseInput = { fromBase: number; fromName: string; val: string }
+
+export type BaseResult = { error: string; values: Record<string, string> | null }

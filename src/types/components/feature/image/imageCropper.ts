@@ -2,7 +2,7 @@ import type { Crop, PixelCrop } from 'react-image-crop'
 
 import type { AspectRatioPreset } from '@/types'
 
-export type State = {
+export type ImageCropperState = {
   aspectPreset: AspectRatioPreset
   completedCrop: PixelCrop | null
   crop: Crop | undefined
@@ -13,7 +13,7 @@ export type State = {
   tabValue: string
 }
 
-export type Action =
+export type ImageCropperAction =
   | { type: 'SET_ASPECT_PRESET'; payload: AspectRatioPreset }
   | { type: 'SET_COMPLETED_CROP'; payload: PixelCrop | null }
   | { type: 'SET_CROP'; payload: Crop | undefined }

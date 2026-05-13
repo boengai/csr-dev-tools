@@ -3,8 +3,7 @@ import { useMemo, useState } from 'react'
 
 import { CheckboxInput, CodeInput, SelectInput } from '@/components/common'
 import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
-import type { DbmlError, SqlDialect } from '@/types'
-import type { ImportSqlPanelProps } from '@/types/components/feature/data/db-diagram/importSqlPanel'
+import type { DbmlError, ImportSqlPanelProps, SqlDialect } from '@/types'
 
 import { CloseButton } from './CloseButton'
 import { DIALECT_OPTIONS } from './constants'

@@ -3,16 +3,15 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, CheckboxInput, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { ConvertMode } from '@/types/components/feature/data/escapedJsonStringifier'
+import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import type { EscapedJsonConvertMode, EscapedJsonInput, ToolComponentProps } from '@/types'
 import { parseStringifiedJson, stringifyJson } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['escaped-json-stringifier']
 
-const sourceKey = (m: ConvertMode) => `csr-dev-tools-escaped-json-${m}-source`
+const sourceKey = (m: EscapedJsonConvertMode) => `csr-dev-tools-escaped-json-${m}-source`
 
-const readSource = (m: ConvertMode): string => {
+const readSource = (m: EscapedJsonConvertMode): string => {
   try {
     const item = localStorage.getItem(sourceKey(m))
     return item !== null ? (JSON.parse(item) as string) : ''
@@ -22,42 +21,32 @@ const readSource = (m: ConvertMode): string => {
 }
 
 export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [mode, setMode] = useInputLocalStorage<ConvertMode>('csr-dev-tools-escaped-json-mode', 'stringify')
+  const [mode, setMode] = useInputLocalStorage<EscapedJsonConvertMode>('csr-dev-tools-escaped-json-mode', 'stringify')
   const [source, setSource] = useState(() => readSource(mode))
-  const [result, setResult] = useState('')
   const [doubleEscape, setDoubleEscape] = useState(false)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
-  const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
   const modeRef = useRef(mode)
 
-  const process = (val: string, m: ConvertMode, dblEscape: boolean) => {
-    const session = newSession()
-    if (val.trim().length === 0) {
-      setResult('')
-      return
-    }
-    try {
-      const output = m === 'stringify' ? stringifyJson(val, dblEscape) : parseStringifiedJson(val)
-      if (!session.isFresh()) return
-      setResult(output)
-    } catch (e) {
-      if (!session.isFresh()) return
-      setResult('')
-      const msg = e instanceof Error ? e.message : 'Conversion failed'
-      toast({ action: 'add', item: { label: msg, type: 'error' } })
-    }
-  }
-
-  const processInput = useDebounceCallback((val: string) => {
-    process(val, mode, doubleEscape)
-  }, 300)
+  const { result, setInput, setInputImmediate } = useToolComputation<EscapedJsonInput, string>(
+    ({ source: val, mode: m, doubleEscape: dblEscape }) =>
+      m === 'stringify' ? stringifyJson(val, dblEscape) : parseStringifiedJson(val),
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ source: val }) => val.trim().length === 0,
+      onError: (e) => {
+        const msg = e instanceof Error ? e.message : 'Conversion failed'
+        toast({ action: 'add', item: { label: msg, type: 'error' } })
+      },
+    },
+  )
 
   useEffect(() => {
     if (!initializedRef.current) {
       initializedRef.current = true
-      if (source) process(source, mode, doubleEscape)
+      if (source) setInputImmediate({ source, mode, doubleEscape })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
   }, [])
@@ -67,33 +56,28 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
     try {
       localStorage.setItem(sourceKey(modeRef.current), JSON.stringify(val))
     } catch {}
-    processInput(val)
+    setInput({ source: val, mode, doubleEscape })
   }
 
-  const openDialog = (m: ConvertMode) => {
-    newSession()
+  const openDialog = (m: EscapedJsonConvertMode) => {
     setMode(m)
     modeRef.current = m
     setDoubleEscape(false)
     const restored = readSource(m)
     setSource(restored)
-    setResult('')
     setDialogOpen(true)
-    if (restored.trim()) process(restored, m, false)
+    setInputImmediate({ source: restored, mode: m, doubleEscape: false })
   }
 
   const handleDoubleEscapeChange = () => {
     const newVal = !doubleEscape
     setDoubleEscape(newVal)
-    if (source.trim().length > 0) {
-      process(source, mode, newVal)
-    }
+    setInputImmediate({ source, mode, doubleEscape: newVal })
   }
 
   const handleReset = () => {
-    newSession()
-    setResult('')
     setDoubleEscape(false)
+    setInputImmediate({ source: '', mode, doubleEscape: false })
   }
 
   const isStringify = mode === 'stringify'

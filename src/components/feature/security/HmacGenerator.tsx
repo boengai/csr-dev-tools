@@ -1,10 +1,10 @@
-import { useCallback, useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { Button, CopyButton, FieldForm, TextAreaInput, ToggleButton } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
+import { useToast, useToolComputation } from '@/hooks'
+import type { HmacInput, ToolComponentProps } from '@/types'
 import {
   DEFAULT_HMAC_ALGORITHM,
   DEFAULT_HMAC_ENCODING,
@@ -23,87 +23,58 @@ export const HmacGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   const [secretKey, setSecretKey] = useState('')
   const [algorithm, setAlgorithm] = useState<HmacAlgorithm>(DEFAULT_HMAC_ALGORITHM)
   const [encoding, setEncoding] = useState<HmacEncoding>(DEFAULT_HMAC_ENCODING)
-  const [hmac, setHmac] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const newSession = useStaleSafeAsync()
-  const algorithmRef = useRef(algorithm)
-  algorithmRef.current = algorithm
-  const encodingRef = useRef(encoding)
-  encodingRef.current = encoding
-  const messageRef = useRef(message)
-  messageRef.current = message
-  const secretKeyRef = useRef(secretKey)
-  secretKeyRef.current = secretKey
   const { toast } = useToast()
 
-  const handleCompute = useCallback(
-    async (msg: string, key: string, algo: HmacAlgorithm, enc: HmacEncoding) => {
-      if (!msg || !key) {
-        setHmac('')
-        return
-      }
-      const session = newSession()
-      try {
-        const result = await generateHmac(msg, key, algo, enc)
-        if (session.isFresh() && messageRef.current === msg && secretKeyRef.current === key) {
-          setHmac(result)
-        }
-      } catch {
-        session.ifFresh(() => {
-          toast({
-            action: 'add',
-            item: {
-              label: 'HMAC computation failed — your browser may not support this feature',
-              type: 'error',
-            },
-          })
+  const { result: hmac, setInput, setInputImmediate } = useToolComputation<HmacInput, string>(
+    ({ message: msg, secretKey: key, algorithm: algo, encoding: enc }) => generateHmac(msg, key, algo, enc),
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ message: msg, secretKey: key }) => !msg || !key,
+      onError: () => {
+        toast({
+          action: 'add',
+          item: {
+            label: 'HMAC computation failed — your browser may not support this feature',
+            type: 'error',
+          },
         })
-      }
+      },
     },
-    [newSession, toast],
   )
-
-  const debouncedCompute = useDebounceCallback((msg: string, key: string) => {
-    handleCompute(msg, key, algorithmRef.current, encodingRef.current)
-  }, 300)
 
   const handleMessageChange = (value: string) => {
     setMessage(value)
-    if (!value || !secretKey) {
-      newSession()
-      setHmac('')
-      return
-    }
-    debouncedCompute(value, secretKey)
+    setInput({ message: value, secretKey, algorithm, encoding })
   }
 
   const handleKeyChange = (value: string) => {
     setSecretKey(value)
-    if (!value || !message) {
-      newSession()
-      setHmac('')
-      return
-    }
-    debouncedCompute(message, value)
+    setInput({ message, secretKey: value, algorithm, encoding })
   }
 
   const handleAlgorithmChange = (algo: HmacAlgorithm) => {
     setAlgorithm(algo)
-    handleCompute(message, secretKey, algo, encoding)
+    setInputImmediate({ message, secretKey, algorithm: algo, encoding })
   }
 
   const handleEncodingChange = (enc: HmacEncoding) => {
     setEncoding(enc)
-    handleCompute(message, secretKey, algorithm, enc)
+    setInputImmediate({ message, secretKey, algorithm, encoding: enc })
   }
 
   const handleReset = () => {
-    newSession()
     setMessage('')
     setSecretKey('')
-    setHmac('')
     setAlgorithm(DEFAULT_HMAC_ALGORITHM)
     setEncoding(DEFAULT_HMAC_ENCODING)
+    setInputImmediate({
+      message: '',
+      secretKey: '',
+      algorithm: DEFAULT_HMAC_ALGORITHM,
+      encoding: DEFAULT_HMAC_ENCODING,
+    })
   }
 
   return (

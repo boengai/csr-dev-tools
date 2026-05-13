@@ -4,8 +4,7 @@ import { Button, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { CaseResult } from '@/types/components/feature/text/textCaseConverter'
+import type { CaseResult, ToolComponentProps } from '@/types'
 import {
   toCamelCase,
   toConstantCase,

@@ -3,103 +3,63 @@ import { useState } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useStaleSafeAsync } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import type { Mode } from '@/types/components/feature/security/aesEncryptDecrypt'
+import { useToolComputation } from '@/hooks'
+import type { AesInput, Mode, ToolComponentProps } from '@/types'
 import { aesDecrypt, aesEncrypt } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['aes-encrypt-decrypt']
+
 export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
   const [password, setPassword] = useState('')
-  const [result, setResult] = useState('')
-  const [error, setError] = useState('')
   const [mode, setMode] = useState<Mode>('encrypt')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const [loading, setLoading] = useState(false)
-  const newSession = useStaleSafeAsync()
 
-  const processEncrypt = async (text: string, pass: string) => {
-    const session = newSession()
-    if (!text || !pass) {
-      setResult('')
-      setError('')
-      return
-    }
-    setLoading(true)
-    try {
-      const encrypted = await aesEncrypt(text, pass)
-      session.ifFresh(() => {
-        setResult(encrypted)
-        setError('')
-      })
-    } catch {
-      session.ifFresh(() => {
-        setResult('')
-        setError('Encryption failed')
-      })
-    } finally {
-      session.ifFresh(() => setLoading(false))
-    }
-  }
-
-  const processDecrypt = async (text: string, pass: string) => {
-    const session = newSession()
-    if (!text || !pass) {
-      setResult('')
-      setError('')
-      return
-    }
-    setLoading(true)
-    try {
-      const decrypted = await aesDecrypt(text, pass)
-      session.ifFresh(() => {
-        setResult(decrypted)
-        setError('')
-      })
-    } catch {
-      session.ifFresh(() => {
-        setResult('')
-        setError('Decryption failed — incorrect password or corrupted data')
-      })
-    } finally {
-      session.ifFresh(() => setLoading(false))
-    }
-  }
-
-  const debouncedProcess = useDebounceCallback((text: string, pass: string, m: Mode) => {
-    if (m === 'encrypt') {
-      processEncrypt(text, pass)
-    } else {
-      processDecrypt(text, pass)
-    }
-  }, 300)
+  const {
+    error,
+    isPending: loading,
+    result,
+    setInput,
+    setInputImmediate,
+  } = useToolComputation<AesInput, string>(
+    ({ source: text, password: pass, mode: m }) =>
+      m === 'encrypt' ? aesEncrypt(text, pass) : aesDecrypt(text, pass),
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ source: text, password: pass }) => !text || !pass,
+    },
+  )
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    debouncedProcess(val, password, mode)
+    setInput({ source: val, password, mode })
   }
 
   const handlePasswordChange = (val: string) => {
     setPassword(val)
-    debouncedProcess(source, val, mode)
+    setInput({ source, password: val, mode })
   }
 
   const openDialog = (m: Mode) => {
     setMode(m)
     setSource('')
     setPassword('')
-    setResult('')
-    setError('')
+    setInputImmediate({ source: '', password: '', mode: m })
     setDialogOpen(true)
   }
 
   const handleReset = () => {
     setSource('')
     setPassword('')
-    setResult('')
-    setError('')
+    setInputImmediate({ source: '', password: '', mode })
   }
+
+  const displayError = error
+    ? mode === 'encrypt'
+      ? 'Encryption failed'
+      : 'Decryption failed — incorrect password or corrupted data'
+    : ''
 
   const sourcePlaceholder = mode === 'encrypt' ? 'Enter plaintext to encrypt...' : 'Paste encrypted Base64 string...'
   const resultLabel = mode === 'encrypt' ? 'Encrypted Output' : 'Decrypted Output'
@@ -155,13 +115,13 @@ export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponen
                 label={
                   <span className="flex items-center gap-1">
                     <span>{resultLabel}</span>
-                    {result && <CopyButton label="result" value={result} />}
+                    {result && !error && <CopyButton label="result" value={result} />}
                   </span>
                 }
-                placeholder={loading ? 'Processing...' : '\u2014'}
-                value={result}
+                placeholder={loading ? 'Processing...' : '—'}
+                value={error ? '' : result}
               />
-              {error && <p className="text-red-400 text-body-xs">{error}</p>}
+              {displayError && <p className="text-red-400 text-body-xs">{displayError}</p>}
             </div>
           </div>
         </div>

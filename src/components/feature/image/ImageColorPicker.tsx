@@ -4,8 +4,7 @@ import { Button, CopyButton, UploadInput } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useBlobUrl } from '@/hooks/useBlobUrl'
-import type { ToolComponentProps } from '@/types'
-import type { PickedColorWithId } from '@/types/components/feature/image/imageColorPicker'
+import type { PickedColorWithId, ToolComponentProps } from '@/types'
 import { type PickedColor, pixelToColor } from '@/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any

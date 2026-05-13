@@ -15,8 +15,7 @@ import {
 } from '@/components/common'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import type { ImageFormat } from '@/types'
-import type { DownloadTarget, State, Action } from '@/types/components/feature/image/imageConvertor'
+import type { DownloadTarget, ImageConvertorAction, ImageConvertorState, ImageFormat } from '@/types'
 import { downloadBlob } from '@/utils/download'
 import { convertImageFormat, isValidImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
 
@@ -32,7 +31,7 @@ const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING' | 'SELECT_FORMAT'
 const fakeWait = (ms: number = 500) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const toolEntry = TOOL_REGISTRY_MAP['image-converter']
-const initialState: State = {
+const initialState: ImageConvertorState = {
   previews: [],
   processing: 0,
   sources: [],
@@ -40,7 +39,7 @@ const initialState: State = {
   target: { format: 'image/webp', quality: '0.8' },
 }
 
-const reducer = (state: State, action: Action): State => {
+const reducer = (state: ImageConvertorState, action: ImageConvertorAction): ImageConvertorState => {
   switch (action.type) {
     case 'SET_TAB_VALUE':
       return { ...state, tabValue: action.payload }
