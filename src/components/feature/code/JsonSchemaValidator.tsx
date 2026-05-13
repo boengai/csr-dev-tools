@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Button, Dialog, FieldForm } from '@/components/common'
+import { Button, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -50,11 +51,6 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
     setResult(null)
   }
 
-  const handleAfterClose = () => {
-    handleReset()
-    onAfterDialogClose?.()
-  }
-
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
@@ -76,9 +72,11 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
         </div>
       </div>
 
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleAfterClose}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title="JSON Schema Validator"
       >
@@ -140,7 +138,7 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
             )}
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
