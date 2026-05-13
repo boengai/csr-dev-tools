@@ -1,18 +1,26 @@
+import { json } from '@codemirror/lang-json'
+import { useMemo, useState } from 'react'
+
 import { Button, CheckboxInput, CodeInput } from '@/components/common'
+import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
 import type { ImportJsonSchemaPanelProps } from '@/types/components/feature/data/db-diagram/importJsonSchemaPanel'
 
 import { CloseButton } from './CloseButton'
 
-export const ImportJsonSchemaPanel = ({
-  importJsonSchemaErrors,
-  importJsonSchemaMerge,
-  importJsonSchemaText,
-  jsonExtensions,
-  onClose,
-  onImport,
-  setImportJsonSchemaMerge,
-  setImportJsonSchemaText,
-}: ImportJsonSchemaPanelProps) => {
+export const ImportJsonSchemaPanel = ({ onClose }: ImportJsonSchemaPanelProps) => {
+  const { editor } = useDiagram()
+  const [text, setText] = useState('')
+  const [merge, setMerge] = useState(false)
+  const [errors, setErrors] = useState<Array<string>>([])
+
+  const jsonExtensions = useMemo(() => [json()], [])
+
+  const handleImport = () => {
+    if (!text.trim()) return
+    const result = editor.importFromJsonSchema(text)
+    setErrors(result.errors.map((e) => e.message))
+  }
+
   return (
     <div
       className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950"
@@ -28,15 +36,15 @@ export const ImportJsonSchemaPanel = ({
           extensions={jsonExtensions}
           height="192px"
           name="import-json-schema-input"
-          onChange={setImportJsonSchemaText}
+          onChange={setText}
           placeholder="Paste JSON Schema..."
           size="compact"
-          value={importJsonSchemaText}
+          value={text}
         />
 
-        {importJsonSchemaErrors.length > 0 && (
+        {errors.length > 0 && (
           <div className="mt-2 space-y-1" data-testid="import-json-schema-errors">
-            {importJsonSchemaErrors.map((err) => (
+            {errors.map((err) => (
               <p className="text-[10px] text-error" key={err}>
                 {err}
               </p>
@@ -48,18 +56,18 @@ export const ImportJsonSchemaPanel = ({
       <div className="flex flex-col gap-2 border-t border-gray-800 px-3 py-2">
         <label className="flex items-center gap-2 text-[10px] text-gray-400" htmlFor="import-json-schema-merge">
           <CheckboxInput
-            checked={importJsonSchemaMerge}
+            checked={merge}
             id="import-json-schema-merge"
             name="import-json-schema-merge"
-            onChange={setImportJsonSchemaMerge}
+            onChange={setMerge}
           />
           Merge with existing (otherwise replaces)
         </label>
         <Button
           block
           data-testid="import-json-schema-submit"
-          disabled={!importJsonSchemaText.trim()}
-          onClick={onImport}
+          disabled={!text.trim()}
+          onClick={handleImport}
           size="small"
           variant="primary"
         >

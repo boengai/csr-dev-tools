@@ -30,21 +30,14 @@ type SidePanelRendererProps = {
   handleDbmlChange: (text: string) => void
   handleDbmlClose: () => void
   handleDeleteDiagram: (id: string) => void
-  handleImportJsonSchema: () => void
   handleLoadDiagram: (id: string) => void
   handleNewDiagram: () => void
   handleRenameDiagram: (id: string, newName: string) => void
   handleStartRenaming: (id: string, name: string) => void
   handleSyncFromDiagram: () => void
-  importJsonSchemaErrors: Array<string>
-  importJsonSchemaMerge: boolean
-  importJsonSchemaText: string
-  jsonExtensions: Array<import('@codemirror/state').Extension>
   renameInputRef: React.RefObject<HTMLInputElement | null>
   renameValue: string
   renamingId: string | null
-  setImportJsonSchemaMerge: (value: boolean) => void
-  setImportJsonSchemaText: (value: string) => void
   setRenameValue: (value: string) => void
   setRenamingId: (id: string | null) => void
 }

@@ -107,21 +107,14 @@ const SidePanelRenderer = ({
   handleDbmlChange,
   handleDbmlClose,
   handleDeleteDiagram,
-  handleImportJsonSchema,
   handleLoadDiagram,
   handleNewDiagram,
   handleRenameDiagram,
   handleStartRenaming,
   handleSyncFromDiagram,
-  importJsonSchemaErrors,
-  importJsonSchemaMerge,
-  importJsonSchemaText,
-  jsonExtensions,
   renameInputRef,
   renameValue,
   renamingId,
-  setImportJsonSchemaMerge,
-  setImportJsonSchemaText,
   setRenameValue,
   setRenamingId,
 }: SidePanelRendererProps) => {
@@ -135,14 +128,7 @@ const SidePanelRenderer = ({
     case 'import-json-schema':
       return (
         <ImportJsonSchemaPanel
-          importJsonSchemaErrors={importJsonSchemaErrors}
-          importJsonSchemaMerge={importJsonSchemaMerge}
-          importJsonSchemaText={importJsonSchemaText}
-          jsonExtensions={jsonExtensions}
           onClose={handleClosePanel}
-          onImport={handleImportJsonSchema}
-          setImportJsonSchemaMerge={setImportJsonSchemaMerge}
-          setImportJsonSchemaText={setImportJsonSchemaText}
         />
       )
     case 'export-sql':
@@ -298,21 +284,14 @@ const DiagramCanvas = () => {
           handleDbmlChange={handleDbmlChange}
           handleDbmlClose={handleDbmlClose}
           handleDeleteDiagram={handleDeleteDiagram}
-          handleImportJsonSchema={handleImportJsonSchema}
           handleLoadDiagram={handleLoadDiagram}
           handleNewDiagram={handleNewDiagram}
           handleRenameDiagram={handleRenameDiagram}
           handleStartRenaming={handleStartRenaming}
           handleSyncFromDiagram={handleSyncFromDiagram}
-          importJsonSchemaErrors={state.importJsonSchemaErrors}
-          importJsonSchemaMerge={state.importJsonSchemaMerge}
-          importJsonSchemaText={state.importJsonSchemaText}
-          jsonExtensions={jsonExtensions}
           renameInputRef={renameInputRef}
           renameValue={state.renameValue}
           renamingId={state.renamingId}
-          setImportJsonSchemaMerge={setImportJsonSchemaMerge}
-          setImportJsonSchemaText={setImportJsonSchemaText}
           setRenameValue={setRenameValue}
           setRenamingId={setRenamingId}
         />
