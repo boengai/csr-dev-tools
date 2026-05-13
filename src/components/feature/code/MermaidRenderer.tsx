@@ -178,7 +178,6 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const handleReset = () => {
     setCode(DEFAULT_CODE)
     dispatch({ type: 'RESET' })
-    onAfterDialogClose?.()
   }
 
   return (
