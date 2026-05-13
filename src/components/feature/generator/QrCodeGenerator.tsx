@@ -1,6 +1,6 @@
 import { useCallback, useReducer, useRef } from 'react'
 
-import { Button, ColorInput, CopyButton, Dialog, DownloadIcon, FieldForm } from '@/components/common'
+import { Button, ColorInput, CopyButton, DownloadIcon, FieldForm, ToolDialogShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -143,17 +143,13 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
           </Button>
         </div>
       </div>
-      <Dialog
-        injected={{
-          open: dialogOpen,
-          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
-        }}
-        onAfterClose={() => {
-          handleReset()
-          onAfterDialogClose?.()
-        }}
-        size="screen"
+      <ToolDialogShell
+        open={dialogOpen}
+        onOpenChange={(open) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })}
+        onAfterDialogClose={onAfterDialogClose}
+        onReset={handleReset}
         title="QR Code Generator"
+        size="screen"
       >
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
@@ -230,7 +226,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
       <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
     </>
   )
