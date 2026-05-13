@@ -1,6 +1,7 @@
 import { useReducer } from 'react'
 
-import { Button, CheckboxInput, CodeOutput, CopyButton, Dialog, FieldForm, SelectInput } from '@/components/common'
+import { Button, CheckboxInput, CodeOutput, CopyButton, FieldForm, SelectInput } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -94,11 +95,6 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     dispatch({ type: 'RESET' })
   }
 
-  const handleAfterClose = () => {
-    handleReset()
-    onAfterDialogClose?.()
-  }
-
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
@@ -111,12 +107,11 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         </div>
       </div>
 
-      <Dialog
-        injected={{
-          open: dialogOpen,
-          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
-        }}
-        onAfterClose={handleAfterClose}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={(open) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title="YAML Format"
       >
@@ -166,7 +161,7 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
