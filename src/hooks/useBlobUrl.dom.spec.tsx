@@ -53,7 +53,8 @@ describe('useBlobUrl', () => {
 
   it('returns null when transitioning from blob to null', () => {
     const blob = new Blob(['x'])
-    const { result, rerender } = renderHook(({ b }: { b: Blob | null }) => useBlobUrl(b), { initialProps: { b: blob } })
+    const initialProps: { b: Blob | null } = { b: blob }
+    const { result, rerender } = renderHook(({ b }: { b: Blob | null }) => useBlobUrl(b), { initialProps })
     expect(result.current).not.toBeNull()
     rerender({ b: null })
     expect(result.current).toBeNull()
