@@ -3,13 +3,13 @@ import { type ChangeEvent, useCallback, useEffect, useRef, useState } from 'reac
 import {
   Button,
   CopyButton,
-  Dialog,
   DownloadIcon,
   RangeInput,
   RefreshIcon,
   Tabs,
   UploadInput,
 } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -228,12 +228,11 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
         type="file"
       />
 
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={() => {
-          resetState()
-          onAfterDialogClose?.()
-        }}
+      <ToolDialogShell
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onAfterDialogClose={onAfterDialogClose}
+        onReset={resetState}
         size="screen"
         title="Splash Screen Generator"
       >
@@ -378,7 +377,7 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
             </>
           )}
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
