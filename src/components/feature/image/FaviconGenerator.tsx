@@ -1,11 +1,13 @@
-import { type ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { type ChangeEvent, useCallback, useRef, useState } from 'react'
 
 import { Button, CopyButton, DownloadIcon, RefreshIcon, UploadInput } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { useBlobUrl } from '@/hooks/useBlobUrl'
 import { useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { downloadFaviconsAsZip, type FaviconResult, generateFaviconLinkTags, generateFavicons } from '@/utils'
+import { downloadBlob } from '@/utils/download'
+import { downloadFaviconsAsZip, type FaviconResult, generateFaviconLinkTags, generateFavicons, loadImageFromFile } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['favicon-generator']
 const linkTags = generateFaviconLinkTags()
@@ -13,7 +15,8 @@ const linkTags = generateFaviconLinkTags()
 export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [results, setResults] = useState<Array<FaviconResult>>([])
-  const [sourcePreview, setSourcePreview] = useState<string>('')
+  const [sourceFile, setSourceFile] = useState<File | null>(null)
+  const sourcePreview = useBlobUrl(sourceFile)
   const [processing, setProcessing] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
@@ -31,17 +34,9 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
       try {
         setProcessing(true)
         setDialogOpen(true)
+        setSourceFile(file)
 
-        const url = URL.createObjectURL(file)
-        setSourcePreview(url)
-
-        const img = new Image()
-        await new Promise<void>((resolve, reject) => {
-          img.onload = () => resolve()
-          img.onerror = () => reject(new Error('Failed to load image'))
-          img.src = url
-        })
-
+        const img = await loadImageFromFile(file)
         const faviconResults = await generateFavicons(img)
         setResults(faviconResults)
         toast({ action: 'add', item: { label: 'Favicons generated successfully', type: 'success' } })
@@ -64,20 +59,12 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
   }
 
   const handleDownloadSingle = (result: FaviconResult) => {
-    const url = URL.createObjectURL(result.blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = result.size.name
-    a.click()
-    URL.revokeObjectURL(url)
+    downloadBlob(result.blob, result.size.name)
   }
 
   const resetState = () => {
-    if (sourcePreview) {
-      URL.revokeObjectURL(sourcePreview)
-    }
     setResults([])
-    setSourcePreview('')
+    setSourceFile(null)
     setProcessing(false)
   }
 
@@ -93,15 +80,6 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
       e.target.value = ''
     }
   }
-
-  // Cleanup object URL on unmount
-  useEffect(() => {
-    return () => {
-      if (sourcePreview) {
-        URL.revokeObjectURL(sourcePreview)
-      }
-    }
-  }, [sourcePreview])
 
   return (
     <>

@@ -50,7 +50,7 @@ const cleanupCanvas = (canvas: HTMLCanvasElement): void => {
 /**
  * Load image from File and return HTMLImageElement
  */
-const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
+export const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.crossOrigin = 'anonymous'
