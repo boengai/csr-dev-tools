@@ -2,6 +2,7 @@ import type { ColumnId, ColumnRef, DiagramDocument, EditorRelation, RelationId, 
 import { cloneDocument, createInitialDocument } from './state'
 import * as columnOps from './operations/columns'
 import * as exportOps from './operations/export'
+import * as lifecycleOps from './operations/lifecycle'
 import * as relationOps from './operations/relations'
 import * as tableOps from './operations/tables'
 
@@ -132,6 +133,14 @@ export class DiagramEditor {
 
   toTypeScript(): string {
     return exportOps.toTypeScript(this.document)
+  }
+
+  newDiagram(): void {
+    this.commit(lifecycleOps.newDiagram())
+  }
+
+  setDiagramName(name: string): void {
+    this.commit(lifecycleOps.setDiagramName(this.document, name))
   }
 
   private notify(): void {
