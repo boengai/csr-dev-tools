@@ -56,6 +56,11 @@ export class DiagramEditor {
   }
 
   protected afterStructuralChange(doc: DiagramDocument): DiagramDocument {
+    // When the user is hand-editing DBML (source='editor'), preserve their draft.
+    // Re-syncing the generated DBML happens explicitly via the "Sync from Diagram"
+    // button (which calls setDbmlText(editor.toDbml())). Without this guard, every
+    // structural mutation silently overwrites in-progress DBML edits.
+    if (doc.dbmlSource === 'editor') return doc
     return dbmlOps.regenerateDbmlFromDocument(doc)
   }
 

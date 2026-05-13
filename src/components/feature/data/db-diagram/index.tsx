@@ -130,19 +130,21 @@ const DiagramWorkspace = () => {
   const performSave = useCallback(() => {
     const doc = editor.getDocument()
 
-    // Assign a diagram ID if the document doesn't have one yet
+    // Skip empty unsaved diagrams.
     if (!doc.diagramId && doc.tableOrder.length === 0) return
 
+    // If the diagram has no ID yet, mint one and thread it through the editor.
+    // Important: save inline below rather than deferring to the re-notify; otherwise
+    // first-save latency doubles (3s wait → replaceDocument notify → another 3s wait).
     let id = doc.diagramId
+    let docToSave = doc
     if (!id) {
       id = generateDiagramId()
-      editor.setDiagramName(doc.diagramName) // trigger a re-notify with same name
-      // We need to set diagramId — use replaceDocument to thread it through
-      editor.replaceDocument({ ...doc, diagramId: id })
-      return // replaceDocument will re-notify → performSave fires again with id set
+      docToSave = { ...doc, diagramId: id }
+      editor.replaceDocument(docToSave)
     }
 
-    const schema = documentToSchema(doc)
+    const schema = documentToSchema(docToSave)
     try {
       saveDiagram(id, schema)
     } catch {
@@ -156,8 +158,8 @@ const DiagramWorkspace = () => {
     const entry = {
       createdAt: existing >= 0 ? idx[existing].createdAt : now,
       id: id!,
-      name: doc.diagramName,
-      tableCount: doc.tableOrder.length,
+      name: docToSave.diagramName,
+      tableCount: docToSave.tableOrder.length,
       updatedAt: now,
     }
     if (existing >= 0) {

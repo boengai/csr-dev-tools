@@ -61,13 +61,18 @@ describe('DiagramEditor DBML latch', () => {
     expect(doc.dbmlText).toMatch(/users/)
   })
 
-  it('setDbmlText followed by addTable flips latch back to diagram and regenerates', () => {
+  it('structural ops preserve user DBML draft when source is editor', () => {
     const editor = new DiagramEditor()
-    editor.setDbmlText('typed text')
+    editor.setDbmlText('user draft DBML — work in progress')
     expect(editor.getDocument().dbmlSource).toBe('editor')
-    editor.addTable({ name: 'orders' })
-    expect(editor.getDocument().dbmlSource).toBe('diagram')
-    expect(editor.getDocument().dbmlText).toMatch(/orders/)
+
+    const tableId = editor.addTable({ name: 'orders' })
+
+    // The structural change applied (table is in the document)
+    expect(editor.getDocument().tables[tableId]?.name).toBe('orders')
+    // But the user's DBML draft is NOT overwritten
+    expect(editor.getDocument().dbmlText).toBe('user draft DBML — work in progress')
+    expect(editor.getDocument().dbmlSource).toBe('editor')
   })
 
   it('applyDbmlNow keeps typed text intact', () => {
