@@ -214,21 +214,12 @@ const DiagramCanvas = () => {
     <div className="flex h-full flex-col">
       <DiagramToolbar
         activePanel={state.activePanel}
-        diagramName={state.diagramName}
-        editNameValue={state.editNameValue}
-        editingName={state.editingName}
         fileInputRef={fileInputRef}
         fitView={fitView}
-        handleAddTable={handleAddTable}
-        handleDiagramNameCommit={handleDiagramNameCommit}
         handleExportJson={handleExportJson}
         handleImportJson={handleImportJson}
         handleRearrange={handleRearrange}
-        nameInputRef={nameInputRef}
-        setEditNameValue={setEditNameValue}
-        setEditingName={handleStartEditingName}
-        stopEditingName={handleStopEditingName}
-        togglePanel={togglePanel}
+        onSelectPanel={togglePanel}
       />
 
       <div className="flex flex-1 overflow-hidden">
