@@ -1,6 +1,7 @@
 import { useReducer } from 'react'
 
-import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -79,11 +80,6 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
     dispatch({ type: 'RESET' })
   }
 
-  const handleAfterClose = () => {
-    handleReset()
-    onAfterDialogClose?.()
-  }
-
   const originalSize = new Blob([source]).size
   const resultSize = new Blob([result]).size
   const savings = originalSize > 0 ? ((1 - resultSize / originalSize) * 100).toFixed(1) : '0'
@@ -100,12 +96,11 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
         </div>
       </div>
 
-      <Dialog
-        injected={{
-          open: dialogOpen,
-          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
-        }}
-        onAfterClose={handleAfterClose}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={(open) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title="JavaScript Minifier"
       >
@@ -171,7 +166,7 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
