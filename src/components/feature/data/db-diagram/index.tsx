@@ -100,18 +100,14 @@ const DiagramFlowCanvas = ({
 const SidePanelRenderer = ({
   activePanel,
   activeDiagramId,
-  dbmlErrors,
-  dbmlText,
   diagramIndex,
   handleClosePanel,
-  handleDbmlChange,
   handleDbmlClose,
   handleDeleteDiagram,
   handleLoadDiagram,
   handleNewDiagram,
   handleRenameDiagram,
   handleStartRenaming,
-  handleSyncFromDiagram,
   renameInputRef,
   renameValue,
   renamingId,
@@ -148,11 +144,7 @@ const SidePanelRenderer = ({
     case 'dbml':
       return (
         <DbmlEditorPanel
-          dbmlErrors={dbmlErrors}
-          dbmlText={dbmlText}
           onClose={handleDbmlClose}
-          onDbmlChange={handleDbmlChange}
-          onSyncFromDiagram={handleSyncFromDiagram}
         />
       )
     case 'diagram-list':
@@ -277,18 +269,14 @@ const DiagramCanvas = () => {
         <SidePanelRenderer
           activePanel={state.activePanel}
           activeDiagramId={state.activeDiagramId}
-          dbmlErrors={state.dbmlErrors}
-          dbmlText={state.dbmlText}
           diagramIndex={state.diagramIndex}
           handleClosePanel={handleClosePanel}
-          handleDbmlChange={handleDbmlChange}
           handleDbmlClose={handleDbmlClose}
           handleDeleteDiagram={handleDeleteDiagram}
           handleLoadDiagram={handleLoadDiagram}
           handleNewDiagram={handleNewDiagram}
           handleRenameDiagram={handleRenameDiagram}
           handleStartRenaming={handleStartRenaming}
-          handleSyncFromDiagram={handleSyncFromDiagram}
           renameInputRef={renameInputRef}
           renameValue={state.renameValue}
           renamingId={state.renamingId}

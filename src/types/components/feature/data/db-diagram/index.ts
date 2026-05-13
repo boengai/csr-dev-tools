@@ -23,18 +23,14 @@ export // ----------------------------------------------------------------------
 type SidePanelRendererProps = {
   activePanel: SidePanel
   activeDiagramId: string | null
-  dbmlErrors: Array<{ line: number; message: string }>
-  dbmlText: string
   diagramIndex: Array<DiagramIndexEntry>
   handleClosePanel: () => void
-  handleDbmlChange: (text: string) => void
   handleDbmlClose: () => void
   handleDeleteDiagram: (id: string) => void
   handleLoadDiagram: (id: string) => void
   handleNewDiagram: () => void
   handleRenameDiagram: (id: string, newName: string) => void
   handleStartRenaming: (id: string, name: string) => void
-  handleSyncFromDiagram: () => void
   renameInputRef: React.RefObject<HTMLInputElement | null>
   renameValue: string
   renamingId: string | null
