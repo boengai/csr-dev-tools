@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 
-import { Button, ColorInput, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, ColorInput, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
 import {
@@ -13,6 +14,7 @@ import {
   generateAnimationCss,
   type KeyframeStep,
 } from '@/utils'
+
 const toolEntry = TOOL_REGISTRY_MAP['css-animation-builder']
 
 const TIMING_FUNCTIONS: Array<AnimationTimingFunction> = ['ease', 'linear', 'ease-in', 'ease-out', 'ease-in-out']
@@ -90,21 +92,22 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
   }, [config])
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <>
+      <div className="flex w-full grow flex-col gap-4">
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
-      <div className="flex grow flex-col items-center justify-center gap-2">
-        <Button block onClick={() => setDialogOpen(true)} variant="primary">
-          Build Animation
-        </Button>
+        <div className="flex grow flex-col items-center justify-center gap-2">
+          <Button block onClick={() => setDialogOpen(true)} variant="primary">
+            Build Animation
+          </Button>
+        </div>
       </div>
 
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={() => {
-          handleReset()
-          onAfterDialogClose?.()
-        }}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title="CSS Animation Builder"
       >
@@ -279,7 +282,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
             </div>
           </div>
         </div>
-      </Dialog>
-    </div>
+      </ToolDialogShell>
+    </>
   )
 }
