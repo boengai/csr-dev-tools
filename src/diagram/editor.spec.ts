@@ -1,0 +1,33 @@
+import { describe, expect, it, vi } from 'vitest'
+import { DiagramEditor } from './editor'
+import { createInitialDocument } from './state'
+
+describe('DiagramEditor skeleton', () => {
+  it('starts with an empty document', () => {
+    const editor = new DiagramEditor()
+    expect(editor.getDocument()).toEqual(createInitialDocument())
+  })
+
+  it('notifies subscribers on replaceDocument and not before', () => {
+    const editor = new DiagramEditor()
+    const listener = vi.fn()
+    const unsubscribe = editor.subscribe(listener)
+    expect(listener).not.toHaveBeenCalled()
+
+    const next = { ...editor.getDocument(), diagramName: 'Renamed' }
+    editor.replaceDocument(next)
+    expect(listener).toHaveBeenCalledTimes(1)
+    expect(listener).toHaveBeenLastCalledWith(expect.objectContaining({ diagramName: 'Renamed' }))
+
+    unsubscribe()
+    editor.replaceDocument({ ...next, diagramName: 'Again' })
+    expect(listener).toHaveBeenCalledTimes(1)
+  })
+
+  it('replaceDocument validates basic shape and falls back to fresh document on failure', () => {
+    const editor = new DiagramEditor()
+    // @ts-expect-error intentional bad shape
+    editor.replaceDocument({ not: 'a document' })
+    expect(editor.getDocument()).toEqual(createInitialDocument())
+  })
+})
