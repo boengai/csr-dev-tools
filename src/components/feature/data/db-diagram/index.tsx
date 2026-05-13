@@ -1,248 +1,281 @@
-import { json } from '@codemirror/lang-json'
-import { sql as sqlLang } from '@codemirror/lang-sql'
-import type { EdgeTypes, NodeTypes } from '@xyflow/react'
-import {
-  Background,
-  BackgroundVariant,
-  Controls,
-  MiniMap,
-  ReactFlow,
-  ReactFlowProvider,
-  useEdgesState,
-  useNodesState,
-} from '@xyflow/react'
-import { useMemo, useReducer, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { ReactFlowProvider, useReactFlow } from '@xyflow/react'
 
 import { Button, Dialog } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { RelationshipEdge, TableNode, ToolComponentProps } from '@/types'
-
-import '@xyflow/react/dist/style.css'
-import type { DiagramFlowCanvasProps, SidePanelRendererProps } from '@/types/components/feature/data/db-diagram/index'
+import { DiagramEditor } from '@/diagram/editor'
+import { documentToSchema } from '@/diagram/operations/export'
+import { schemaToDocument } from '@/diagram/operations/lifecycle'
+import { createInitialDocument } from '@/diagram/state'
+import { useDebounceCallback } from '@/hooks/useDebounceCallback'
+import { useToast } from '@/hooks/state'
+import type { SidePanel, ToolComponentProps } from '@/types'
+import { gridLayoutPositions } from '@/utils/db-diagram'
+import { validateDiagramSchema } from '@/utils/db-diagram-persistence'
+import {
+  generateDiagramId,
+  loadDiagram,
+  loadDiagramIndex,
+  saveDiagram,
+  saveDiagramIndex,
+} from '@/utils/db-diagram-storage'
+import { downloadTextFile } from '@/utils/file'
 
 import { DbmlEditorPanel } from './DbmlEditorPanel'
+import { DiagramCanvas } from './DiagramCanvas'
+import { DiagramProvider } from './DiagramContext'
 import { DiagramListPanel } from './DiagramListPanel'
-import { diagramReducer, initialDiagramState } from './diagramReducer'
 import { DiagramToolbar } from './DiagramToolbar'
 import { ExportMermaidPanel } from './ExportMermaidPanel'
 import { ExportSqlPanel } from './ExportSqlPanel'
 import { ExportTypescriptPanel } from './ExportTypescriptPanel'
 import { ImportJsonSchemaPanel } from './ImportJsonSchemaPanel'
 import { ImportSqlPanel } from './ImportSqlPanel'
-import { RelationshipEdgeComponent } from './RelationshipEdge'
-import { TableNodeComponent } from './TableNode'
-import { useDiagramHandlers } from './useDiagramHandlers'
 
-const nodeTypes: NodeTypes = { tableNode: TableNodeComponent }
-const edgeTypes: EdgeTypes = { relationship: RelationshipEdgeComponent }
+import '@xyflow/react/dist/style.css'
 
 const toolEntry = TOOL_REGISTRY_MAP['db-diagram']
 
 // ---------------------------------------------------------------------------
-// DiagramFlowCanvas - extracted ReactFlow rendering
+// Panel switcher
 // ---------------------------------------------------------------------------
-const DiagramFlowCanvas = ({
-  edgeTypes: edgeTypesProp,
-  edges,
-  nodeTypes: nodeTypesProp,
-  nodesWithCallbacks,
-  onConnect,
-  onEdgesChange,
-  onNodesChange,
-}: DiagramFlowCanvasProps) => (
-  <div className="flex-1">
-    <ReactFlow
-      colorMode="dark"
-      edgeTypes={edgeTypesProp}
-      edges={edges}
-      fitView
-      nodeTypes={nodeTypesProp}
-      nodes={nodesWithCallbacks}
-      onConnect={onConnect}
-      onEdgesChange={onEdgesChange}
-      onNodesChange={onNodesChange}
-      proOptions={{ hideAttribution: true }}
-    >
-      <Controls />
-      <MiniMap
-        bgColor="oklch(0.12 0.008 270)"
-        maskColor="rgba(0, 0, 0, 0.6)"
-        maskStrokeColor="oklch(0.55 0.22 310)"
-        maskStrokeWidth={2}
-        nodeColor={(node) => {
-          const palette = [
-            'oklch(0.55 0.22 310)',
-            'oklch(0.65 0.12 260)',
-            'oklch(0.6 0.15 240)',
-            'oklch(0.65 0.18 165)',
-            'oklch(0.75 0.15 85)',
-            'oklch(0.6 0.2 15)',
-            'oklch(0.7 0.15 30)',
-            'oklch(0.6 0.18 200)',
-          ]
-          const idx = nodesWithCallbacks.findIndex((n) => n.id === node.id)
-          return palette[idx % palette.length]
-        }}
-        nodeStrokeColor="oklch(0.25 0.008 270)"
-        nodeStrokeWidth={2}
-        pannable
-        style={{ borderRadius: 8, border: '1px solid oklch(0.25 0.008 270)' }}
-        zoomable
-      />
-      <Background gap={16} variant={BackgroundVariant.Dots} />
-    </ReactFlow>
-  </div>
-)
+type PanelProps = {
+  which: Exclude<SidePanel, null>
+  onClose: () => void
+}
 
-// ---------------------------------------------------------------------------
-// SidePanelRenderer - extracted conditional side panel rendering
-// ---------------------------------------------------------------------------
-const SidePanelRenderer = ({
-  activePanel,
-  handleClosePanel,
-  handleDbmlClose,
-}: SidePanelRendererProps) => {
-  switch (activePanel) {
-    case 'import-sql':
-      return (
-        <ImportSqlPanel
-          onClose={handleClosePanel}
-        />
-      )
-    case 'import-json-schema':
-      return (
-        <ImportJsonSchemaPanel
-          onClose={handleClosePanel}
-        />
-      )
-    case 'export-sql':
-      return (
-        <ExportSqlPanel
-          onClose={handleClosePanel}
-        />
-      )
-    case 'export-mermaid':
-      return (
-        <ExportMermaidPanel
-          onClose={handleClosePanel}
-        />
-      )
-    case 'export-typescript':
-      return <ExportTypescriptPanel onClose={handleClosePanel} />
+const Panel = ({ which, onClose }: PanelProps) => {
+  switch (which) {
     case 'dbml':
-      return (
-        <DbmlEditorPanel
-          onClose={handleDbmlClose}
-        />
-      )
+      return <DbmlEditorPanel onClose={onClose} />
     case 'diagram-list':
-      return (
-        <DiagramListPanel
-          onClose={handleClosePanel}
-        />
-      )
-    default:
-      return null
+      return <DiagramListPanel onClose={onClose} />
+    case 'import-sql':
+      return <ImportSqlPanel onClose={onClose} />
+    case 'import-json-schema':
+      return <ImportJsonSchemaPanel onClose={onClose} />
+    case 'export-sql':
+      return <ExportSqlPanel onClose={onClose} />
+    case 'export-mermaid':
+      return <ExportMermaidPanel onClose={onClose} />
+    case 'export-typescript':
+      return <ExportTypescriptPanel onClose={onClose} />
   }
 }
 
 // ---------------------------------------------------------------------------
-// DiagramCanvas (main component)
+// DiagramInner — must be a child of ReactFlowProvider to call useReactFlow()
 // ---------------------------------------------------------------------------
+type DiagramInnerProps = {
+  editor: DiagramEditor
+  activePanel: SidePanel
+  onSelectPanel: (panel: SidePanel) => void
+  fileInputRef: React.RefObject<HTMLInputElement | null>
+  handleExportJson: () => void
+  handleImportJson: (e: React.ChangeEvent<HTMLInputElement>) => void
+  handleRearrange: () => void
+}
 
-const DiagramCanvas = () => {
-  const [nodes, setNodes, onNodesChange] = useNodesState<TableNode>([])
-  const [edges, setEdges, onEdgesChange] = useEdgesState<RelationshipEdge>([])
-  const sqlExtensions = useMemo(() => [sqlLang()], [])
-  const jsonExtensions = useMemo(() => [json()], [])
+const DiagramInner = ({
+  editor,
+  activePanel,
+  onSelectPanel,
+  fileInputRef,
+  handleExportJson,
+  handleImportJson,
+  handleRearrange,
+}: DiagramInnerProps) => {
+  const { fitView } = useReactFlow()
 
-  const [state, dispatch] = useReducer(diagramReducer, initialDiagramState)
-
-  const nameInputRef = useRef<HTMLInputElement>(null)
-  const renameInputRef = useRef<HTMLInputElement>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
-
-  const {
-    fitView,
-    generatedMermaid,
-    generatedSql,
-    generatedTypescript,
-    handleAddTable,
-    handleClosePanel,
-    handleDbmlChange,
-    handleDbmlClose,
-    handleDeleteDiagram,
-    handleDiagramNameCommit,
-    handleDownloadSql,
-    handleExportJson,
-    handleImportJson,
-    handleImportJsonSchema,
-    handleImportSql,
-    handleLoadDiagram,
-    handleNewDiagram,
-    handleOpenInMermaidRenderer,
-    handleRearrange,
-    handleRenameDiagram,
-    handleStartEditingName,
-    handleStartRenaming,
-    handleStopEditingName,
-    handleSyncFromDiagram,
-    nodesWithCallbacks,
-    onConnect,
-    setEditNameValue,
-    setImportJsonSchemaMerge,
-    setImportJsonSchemaText,
-    setImportSqlDialect,
-    setImportSqlMerge,
-    setImportSqlText,
-    setRenameValue,
-    setRenamingId,
-    setSqlDialect,
-    togglePanel,
-  } = useDiagramHandlers({
-    dispatch,
-    edges,
-    nameInputRef,
-    nodes,
-    renameInputRef,
-    setEdges,
-    setNodes,
-    state,
-  })
+  const handleClosePanel = useCallback(() => onSelectPanel(null), [onSelectPanel])
 
   return (
-    <div className="flex h-full flex-col">
-      <DiagramToolbar
-        activePanel={state.activePanel}
-        fileInputRef={fileInputRef}
-        fitView={fitView}
-        handleExportJson={handleExportJson}
-        handleImportJson={handleImportJson}
-        handleRearrange={handleRearrange}
-        onSelectPanel={togglePanel}
-      />
-
-      <div className="flex flex-1 overflow-hidden">
-        <DiagramFlowCanvas
-          edgeTypes={edgeTypes}
-          edges={edges}
-          nodeTypes={nodeTypes}
-          nodesWithCallbacks={nodesWithCallbacks}
-          onConnect={onConnect}
-          onEdgesChange={onEdgesChange}
-          onNodesChange={onNodesChange}
+    <DiagramProvider editor={editor}>
+      <div className="flex h-full flex-col">
+        <DiagramToolbar
+          activePanel={activePanel}
+          fileInputRef={fileInputRef}
+          fitView={fitView}
+          handleExportJson={handleExportJson}
+          handleImportJson={handleImportJson}
+          handleRearrange={handleRearrange}
+          onSelectPanel={onSelectPanel}
         />
 
-        <SidePanelRenderer
-          activePanel={state.activePanel}
-          handleClosePanel={handleClosePanel}
-          handleDbmlClose={handleDbmlClose}
-        />
+        <div className="flex flex-1 overflow-hidden">
+          <DiagramCanvas />
+
+          {activePanel !== null && (
+            <Panel which={activePanel} onClose={handleClosePanel} />
+          )}
+        </div>
       </div>
-    </div>
+    </DiagramProvider>
   )
 }
 
+// ---------------------------------------------------------------------------
+// DiagramWorkspace — owns editor, persistence, and UI state
+// ---------------------------------------------------------------------------
+const DiagramWorkspace = () => {
+  const editor = useMemo(() => new DiagramEditor(), [])
+  const [activePanel, setActivePanel] = useState<SidePanel>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const { toast } = useToast()
+
+  // -------------------------------------------------------------------------
+  // Autosave: debounced, fires on every document change
+  // -------------------------------------------------------------------------
+  const performSave = useCallback(() => {
+    const doc = editor.getDocument()
+
+    // Assign a diagram ID if the document doesn't have one yet
+    if (!doc.diagramId && doc.tableOrder.length === 0) return
+
+    let id = doc.diagramId
+    if (!id) {
+      id = generateDiagramId()
+      editor.setDiagramName(doc.diagramName) // trigger a re-notify with same name
+      // We need to set diagramId — use replaceDocument to thread it through
+      editor.replaceDocument({ ...doc, diagramId: id })
+      return // replaceDocument will re-notify → performSave fires again with id set
+    }
+
+    const schema = documentToSchema(doc)
+    try {
+      saveDiagram(id, schema)
+    } catch {
+      toast({ action: 'add', item: { label: 'Failed to save diagram. localStorage may be full.', type: 'error' } })
+      return
+    }
+
+    const now = new Date().toISOString()
+    const idx = loadDiagramIndex()
+    const existing = idx.findIndex((e) => e.id === id)
+    const entry = {
+      createdAt: existing >= 0 ? idx[existing].createdAt : now,
+      id: id!,
+      name: doc.diagramName,
+      tableCount: doc.tableOrder.length,
+      updatedAt: now,
+    }
+    if (existing >= 0) {
+      idx[existing] = entry
+    } else {
+      idx.push(entry)
+    }
+    saveDiagramIndex(idx)
+  }, [editor, toast])
+
+  const debouncedSave = useDebounceCallback(performSave, 3000)
+
+  useEffect(() => {
+    return editor.subscribe(() => debouncedSave())
+  }, [editor, debouncedSave])
+
+  // -------------------------------------------------------------------------
+  // Rehydration: on mount, load the most-recently-updated stored diagram
+  // -------------------------------------------------------------------------
+  useEffect(() => {
+    const idx = loadDiagramIndex()
+    if (idx.length === 0) return
+
+    const latest = [...idx].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0]
+    const schema = loadDiagram(latest.id)
+    if (!schema) return
+
+    const base = createInitialDocument()
+    const doc = schemaToDocument(schema, base)
+    editor.replaceDocument({ ...doc, diagramId: latest.id, diagramName: latest.name })
+  }, [editor]) // eslint-disable-line react-hooks/exhaustive-deps
+
+  // -------------------------------------------------------------------------
+  // File I/O: export JSON
+  // -------------------------------------------------------------------------
+  const handleExportJson = useCallback(() => {
+    const doc = editor.getDocument()
+    if (doc.tableOrder.length === 0) return
+    const schema = documentToSchema(doc)
+    const jsonStr = JSON.stringify(schema, null, 2)
+    const safeName = doc.diagramName.replace(/[^a-zA-Z0-9-_]/g, '_').toLowerCase()
+    downloadTextFile(jsonStr, `${safeName}.json`, 'application/json')
+  }, [editor])
+
+  // -------------------------------------------------------------------------
+  // File I/O: import JSON file
+  // -------------------------------------------------------------------------
+  const handleImportJson = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0]
+      if (!file) return
+
+      const reader = new FileReader()
+      reader.onload = (event) => {
+        try {
+          const parsed = JSON.parse(event.target?.result as string)
+          if (!validateDiagramSchema(parsed)) {
+            toast({
+              action: 'add',
+              item: { label: 'Invalid diagram file. Expected a CSR Dev Tools diagram JSON.', type: 'error' },
+            })
+            return
+          }
+          const name = file.name.replace(/\.json$/i, '')
+          const base = { ...createInitialDocument(), diagramName: name }
+          const doc = schemaToDocument(parsed, base)
+          editor.replaceDocument({ ...doc, diagramId: null, diagramName: name })
+        } catch {
+          toast({
+            action: 'add',
+            item: { label: 'Invalid diagram file. Expected a CSR Dev Tools diagram JSON.', type: 'error' },
+          })
+        }
+      }
+      reader.readAsText(file)
+      e.target.value = ''
+    },
+    [editor, toast],
+  )
+
+  // -------------------------------------------------------------------------
+  // Rearrange: grid-layout all tables, then persist positions
+  // -------------------------------------------------------------------------
+  const handleRearrange = useCallback(() => {
+    const doc = editor.getDocument()
+    const positions = gridLayoutPositions(doc.tableOrder.length)
+    for (let i = 0; i < doc.tableOrder.length; i++) {
+      editor.moveTable(doc.tableOrder[i], positions[i])
+    }
+  }, [editor])
+
+  // -------------------------------------------------------------------------
+  // Panel toggle: same toggle-or-open logic as the old togglePanel
+  // -------------------------------------------------------------------------
+  const handleSelectPanel = useCallback(
+    (panel: SidePanel) => {
+      setActivePanel((prev) => (prev === panel ? null : panel))
+    },
+    [],
+  )
+
+  return (
+    <ReactFlowProvider>
+      <DiagramInner
+        activePanel={activePanel}
+        editor={editor}
+        fileInputRef={fileInputRef}
+        handleExportJson={handleExportJson}
+        handleImportJson={handleImportJson}
+        handleRearrange={handleRearrange}
+        onSelectPanel={handleSelectPanel}
+      />
+    </ReactFlowProvider>
+  )
+}
+
+// ---------------------------------------------------------------------------
+// DbDiagram — public export, owns the Dialog shell
+// ---------------------------------------------------------------------------
 export const DbDiagram = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
 
@@ -262,9 +295,7 @@ export const DbDiagram = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
         size="screen"
         title="DB Diagram"
       >
-        <ReactFlowProvider>
-          <DiagramCanvas />
-        </ReactFlowProvider>
+        <DiagramWorkspace />
       </Dialog>
     </div>
   )
