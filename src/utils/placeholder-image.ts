@@ -1,3 +1,4 @@
+import { downloadBlob } from '@/utils/download'
 import type { PlaceholderOptions, PlaceholderPreset } from '@/types/utils/placeholder-image'
 
 export const PLACEHOLDER_PRESETS: Array<PlaceholderPreset> = [
@@ -81,15 +82,6 @@ export const canvasToBlob = (canvas: HTMLCanvasElement): Promise<Blob> =>
       }
     }, 'image/png')
   })
-
-export const downloadBlob = (blob: Blob, filename: string) => {
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  a.click()
-  URL.revokeObjectURL(url)
-}
 
 export const downloadSvg = (svgString: string, filename: string) => {
   const blob = new Blob([svgString], { type: 'image/svg+xml' })

@@ -4,9 +4,9 @@ import { Button, ColorInput, DownloadIcon, FieldForm, SelectInput } from '@/comp
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { State, Action } from '@/types/components/feature/image/placeholderImageGenerator'
+import { downloadBlob } from '@/utils/download'
 import {
   canvasToBlob,
-  downloadBlob,
   downloadSvg,
   generatePlaceholderCanvas,
   generatePlaceholderSvg,
