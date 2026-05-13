@@ -1,4 +1,4 @@
-import type { ColumnType, RelationshipType, SqlDialect, TableColumn } from '@/types'
+import type { RelationshipType, TableColumn } from '@/types'
 
 export type TableId = string
 export type ColumnId = string
@@ -40,5 +40,3 @@ export type DiagramDocument = {
   dbmlSource: 'diagram' | 'editor'
   dbmlErrors: Array<DbmlError>
 }
-
-export type { ColumnType, SqlDialect, TableColumn }
