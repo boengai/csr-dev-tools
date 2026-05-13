@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useReducer, useRef } from 'react'
 
-import { Button, Dialog, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
+import { Button, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, ToolDialogShell, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -202,7 +202,7 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
     dispatch({ type: 'CONFIRM', payload: { tabValue: TABS_VALUES.DOWNLOAD } })
   }, [displayUrl])
 
-  const handleReset = useCallback(() => {
+  const resetState = useCallback(() => {
     if (sourcePreview) URL.revokeObjectURL(sourcePreview)
     if (resultUrl) URL.revokeObjectURL(resultUrl)
     if (displayUrl && displayUrl !== resultUrl) URL.revokeObjectURL(displayUrl)
@@ -215,6 +215,16 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
       anchor.download = ''
     }
   }, [sourcePreview, resultUrl, displayUrl])
+
+  // Called by ToolDialogShell's onReset unconditionally; we short-circuit when
+  // the user already confirmed (so their downloaded result isn't destroyed).
+  const handleReset = useCallback(() => {
+    if (confirmedRef.current) {
+      confirmedRef.current = false
+      return
+    }
+    resetState()
+  }, [resetState])
 
   // Track URLs in refs for unmount-only cleanup
   const sourcePreviewCleanupRef = useRef(sourcePreview)
@@ -289,7 +299,7 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
                     >
                       Download
                     </Button>
-                    <Button block icon={<RefreshIcon />} onClick={handleReset}>
+                    <Button block icon={<RefreshIcon />} onClick={resetState}>
                       Start Over
                     </Button>
                   </div>
@@ -302,29 +312,20 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
         <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
       </div>
 
-      <Dialog
-        injected={{
-          open: dialogOpen,
-          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
-        }}
-        onAfterClose={() => {
-          // Only reset if user dismissed (not confirmed)
-          if (confirmedRef.current) {
-            confirmedRef.current = false
-          } else {
-            handleReset()
-          }
-          onAfterDialogClose?.()
-        }}
-        size="screen"
+      <ToolDialogShell
+        open={dialogOpen}
+        onOpenChange={(open) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })}
+        onAfterDialogClose={onAfterDialogClose}
+        onReset={handleReset}
         title="Background Remover"
+        size="screen"
       >
         <div className="flex grow flex-col gap-4 tablet:min-h-0">
           {/* Loading states */}
           {processing && <BackgroundRemoverProcessing downloading={downloading} progress={progress} />}
 
           {/* Error state */}
-          {!processing && error && <BackgroundRemoverError onReset={handleReset} />}
+          {!processing && error && <BackgroundRemoverError onReset={resetState} />}
 
           {/* Done state - before/after */}
           {!processing && !error && displayUrl && (
@@ -339,7 +340,7 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
             />
           )}
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
