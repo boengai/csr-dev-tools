@@ -1,11 +1,13 @@
-import { useCallback, useEffect, useReducer, useRef } from 'react'
+import { useCallback, useMemo, useReducer, useRef } from 'react'
 
 import { Button, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, ToolDialogShell, UploadInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { useBlobUrl } from '@/hooks/useBlobUrl'
 import { useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import type { BgOption, State, Action } from '@/types/components/feature/image/BackgroundRemover/index'
 import { applyBackground, removeBackground } from '@/utils'
+import { downloadBlob } from '@/utils/download'
 
 import { BackgroundRemoverError } from './Error'
 import { BackgroundRemoverProcessing } from './Processing'
@@ -22,13 +24,13 @@ const initialState: State = {
   bgOption: 'transparent',
   customColor: '#ff0000',
   dialogOpen: false,
-  displayUrl: '',
+  displayBlob: null,
   downloading: false,
   error: false,
   processing: false,
   progress: 0,
-  resultUrl: '',
-  sourcePreview: '',
+  resultBlob: null,
+  sourceBlob: null,
   tabValue: TABS_VALUES.IMPORT,
 }
 
@@ -40,8 +42,8 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, customColor: action.payload }
     case 'SET_DIALOG_OPEN':
       return { ...state, dialogOpen: action.payload }
-    case 'SET_DISPLAY_URL':
-      return { ...state, displayUrl: action.payload }
+    case 'SET_DISPLAY_BLOB':
+      return { ...state, displayBlob: action.payload }
     case 'SET_DOWNLOADING':
       return { ...state, downloading: action.payload }
     case 'SET_ERROR':
@@ -50,10 +52,10 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, processing: action.payload }
     case 'SET_PROGRESS':
       return { ...state, progress: action.payload }
-    case 'SET_RESULT_URL':
-      return { ...state, resultUrl: action.payload }
-    case 'SET_SOURCE_PREVIEW':
-      return { ...state, sourcePreview: action.payload }
+    case 'SET_RESULT_BLOB':
+      return { ...state, resultBlob: action.payload }
+    case 'SET_SOURCE_BLOB':
+      return { ...state, sourceBlob: action.payload }
     case 'SET_TAB_VALUE':
       return { ...state, tabValue: action.payload }
     case 'START_UPLOAD':
@@ -63,13 +65,13 @@ const reducer = (state: State, action: Action): State => {
         dialogOpen: true,
         tabValue: TABS_VALUES.PROCESSING,
         progress: 0,
-        sourcePreview: action.payload.sourcePreview,
+        sourceBlob: action.payload.sourceBlob,
       }
     case 'UPLOAD_SUCCESS':
       return {
         ...state,
-        resultUrl: action.payload.resultUrl,
-        displayUrl: action.payload.displayUrl,
+        resultBlob: action.payload.resultBlob,
+        displayBlob: action.payload.displayBlob,
         bgOption: 'transparent',
         processing: false,
         downloading: false,
@@ -91,41 +93,41 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
     bgOption,
     customColor,
     dialogOpen,
-    displayUrl,
+    displayBlob,
     downloading,
     error,
     processing,
     progress,
-    resultUrl,
-    sourcePreview,
+    resultBlob,
+    sourceBlob,
     tabValue,
   } = state
   const { toast } = useToast()
-  const resultBlobRef = useRef<Blob | null>(null)
-  const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   // Track whether dialog was closed via Confirm (so onAfterClose doesn't reset)
   const confirmedRef = useRef(false)
-  // Track resultUrl in a ref for stable closure in updateDisplay
-  const resultUrlRef = useRef(resultUrl)
-  resultUrlRef.current = resultUrl
+
+  // Derive render-bound URLs — useBlobUrl owns lifecycle (auto-revoke)
+  const sourcePreviewUrl = useBlobUrl(sourceBlob)
+  const displayUrl = useBlobUrl(displayBlob)
+
+  // resultBlob ref for stable closure in updateDisplay
+  const resultBlobRef = useRef<Blob | null>(null)
+  resultBlobRef.current = resultBlob
 
   const updateDisplay = useCallback(
     async (option: BgOption, color: string, blob: Blob | null) => {
       if (!blob) return
 
-      // Revoke previous composited display URL (use ref for stable comparison)
-      dispatch({ type: 'SET_DISPLAY_URL', payload: '' })
+      dispatch({ type: 'SET_DISPLAY_BLOB', payload: null })
 
       if (option === 'transparent') {
-        const url = URL.createObjectURL(blob)
-        dispatch({ type: 'SET_DISPLAY_URL', payload: url })
+        dispatch({ type: 'SET_DISPLAY_BLOB', payload: blob })
         return
       }
       try {
         const bgColor = option === 'white' ? '#ffffff' : color
         const composited = await applyBackground(blob, bgColor)
-        const url = URL.createObjectURL(composited)
-        dispatch({ type: 'SET_DISPLAY_URL', payload: url })
+        dispatch({ type: 'SET_DISPLAY_BLOB', payload: composited })
       } catch {
         toast({ action: 'add', item: { label: 'Failed to apply background color', type: 'error' } })
       }
@@ -144,8 +146,7 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
       }
 
       try {
-        const url = URL.createObjectURL(file)
-        dispatch({ type: 'START_UPLOAD', payload: { sourcePreview: url } })
+        dispatch({ type: 'START_UPLOAD', payload: { sourceBlob: file } })
 
         let receivedProgress = false
         const onProgress = (p: number) => {
@@ -159,10 +160,8 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
 
         dispatch({ type: 'SET_PROCESSING', payload: true })
         const result = await removeBackground(file, onProgress)
-        resultBlobRef.current = result
 
-        const resultObjUrl = URL.createObjectURL(result)
-        dispatch({ type: 'UPLOAD_SUCCESS', payload: { resultUrl: resultObjUrl, displayUrl: resultObjUrl } })
+        dispatch({ type: 'UPLOAD_SUCCESS', payload: { resultBlob: result, displayBlob: result } })
         toast({ action: 'add', item: { label: 'Background removed successfully', type: 'success' } })
       } catch {
         dispatch({ type: 'UPLOAD_FAILURE' })
@@ -191,30 +190,14 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
   )
 
   const handleConfirm = useCallback(() => {
-    if (!displayUrl) return
-    const anchor = downloadAnchorRef.current
-    if (!anchor) return
-
-    anchor.href = displayUrl
-    anchor.download = 'background-removed.png'
-
+    if (!displayBlob) return
     confirmedRef.current = true
     dispatch({ type: 'CONFIRM', payload: { tabValue: TABS_VALUES.DOWNLOAD } })
-  }, [displayUrl])
+  }, [displayBlob])
 
   const resetState = useCallback(() => {
-    if (sourcePreview) URL.revokeObjectURL(sourcePreview)
-    if (resultUrl) URL.revokeObjectURL(resultUrl)
-    if (displayUrl && displayUrl !== resultUrl) URL.revokeObjectURL(displayUrl)
-    resultBlobRef.current = null
     dispatch({ type: 'RESET' })
-    // Clear download anchor to prevent stale URL access
-    const anchor = downloadAnchorRef.current
-    if (anchor) {
-      anchor.href = ''
-      anchor.download = ''
-    }
-  }, [sourcePreview, resultUrl, displayUrl])
+  }, [])
 
   // Called by ToolDialogShell's onReset unconditionally; we short-circuit when
   // the user already confirmed (so their downloaded result isn't destroyed).
@@ -226,19 +209,8 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
     resetState()
   }, [resetState])
 
-  // Track URLs in refs for unmount-only cleanup
-  const sourcePreviewCleanupRef = useRef(sourcePreview)
-  sourcePreviewCleanupRef.current = sourcePreview
-  const resultUrlCleanupRef = useRef(resultUrl)
-  resultUrlCleanupRef.current = resultUrl
-
-  // eslint-disable-next-line react-hooks/exhaustive-deps -- unmount-only cleanup using refs
-  useEffect(() => {
-    return () => {
-      if (sourcePreviewCleanupRef.current) URL.revokeObjectURL(sourcePreviewCleanupRef.current)
-      if (resultUrlCleanupRef.current) URL.revokeObjectURL(resultUrlCleanupRef.current)
-    }
-  }, [])
+  // displayUrl is null until useBlobUrl resolves — treat falsy as "not ready"
+  const displayReady = useMemo(() => Boolean(displayUrl), [displayUrl])
 
   return (
     <>
@@ -284,15 +256,14 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
                       block
                       icon={<DownloadIcon />}
                       onClick={() => {
-                        const anchor = downloadAnchorRef.current
-                        if (!anchor?.href || anchor.href === window.location.href) {
+                        if (!displayBlob) {
                           toast({
                             action: 'add',
                             item: { label: 'Download not available. Please try again.', type: 'error' },
                           })
                           return
                         }
-                        anchor.click()
+                        downloadBlob(displayBlob, 'background-removed.png')
                         toast({ action: 'add', item: { label: 'Downloaded background-removed.png', type: 'success' } })
                       }}
                       variant="primary"
@@ -309,7 +280,6 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
             },
           ]}
         />
-        <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
       </div>
 
       <ToolDialogShell
@@ -328,15 +298,15 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
           {!processing && error && <BackgroundRemoverError onReset={resetState} />}
 
           {/* Done state - before/after */}
-          {!processing && !error && displayUrl && (
+          {!processing && !error && displayReady && (
             <BackgroundRemoverResult
               bgOption={bgOption}
               customColor={customColor}
-              displayUrl={displayUrl}
+              displayUrl={displayUrl ?? ''}
               onBgChange={handleBgChange}
               onColorChange={handleColorChange}
               onConfirm={handleConfirm}
-              sourcePreview={sourcePreview}
+              sourcePreview={sourcePreviewUrl ?? ''}
             />
           )}
         </div>
