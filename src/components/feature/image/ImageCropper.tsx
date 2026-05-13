@@ -5,7 +5,6 @@ import ReactCrop from 'react-image-crop'
 
 import {
   Button,
-  Dialog,
   DownloadIcon,
   NotoEmoji,
   ProgressBar,
@@ -13,6 +12,7 @@ import {
   Tabs,
   UploadInput,
 } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { AspectRatioPreset, CropRegion } from '@/types'
@@ -298,13 +298,11 @@ export const ImageCropper = () => {
         />
         <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
       </div>
-      <Dialog
+      <ToolDialogShell
         description="Crop your image using the selection handles"
-        injected={{
-          open: dialogOpen,
-          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
-        }}
-        onAfterClose={() => {
+        open={dialogOpen}
+        onOpenChange={(open) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })}
+        onAfterDialogClose={() => {
           if (tabValue !== TABS_VALUES.DOWNLOAD) handleReset()
         }}
         size="screen"
@@ -363,7 +361,7 @@ export const ImageCropper = () => {
             </Button>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
