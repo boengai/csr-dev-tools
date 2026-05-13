@@ -1,4 +1,4 @@
-import { useEffect, useReducer, useRef } from 'react'
+import { useReducer, useRef, useState } from 'react'
 
 import 'react-image-crop/dist/ReactCrop.css'
 import ReactCrop from 'react-image-crop'
@@ -14,9 +14,11 @@ import {
 } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { useBlobUrl } from '@/hooks/useBlobUrl'
 import { useToast } from '@/hooks'
 import type { AspectRatioPreset, CropRegion } from '@/types'
 import type { State, Action } from '@/types/components/feature/image/imageCropper'
+import { downloadBlob } from '@/utils/download'
 import { ASPECT_RATIO_OPTIONS, clampCropRegion, getAspectRatio, getDefaultCrop, scaleCropToNatural, tv } from '@/utils'
 
 const cropAreaStyles = tv({
@@ -51,7 +53,7 @@ const cropImageCanvas = (
   crop: CropRegion,
   mimeType: string,
   quality?: number,
-): Promise<string> =>
+): Promise<Blob> =>
   new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas')
     canvas.width = crop.width
@@ -70,7 +72,7 @@ const cropImageCanvas = (
           reject(new Error('Failed to create image blob'))
           return
         }
-        resolve(URL.createObjectURL(blob))
+        resolve(blob)
       },
       mimeType,
       quality,
@@ -81,7 +83,6 @@ const initialState: State = {
   completedCrop: null,
   crop: undefined,
   dialogOpen: false,
-  imageUrl: null,
   processing: false,
   showProgress: false,
   source: null,
@@ -98,8 +99,6 @@ const reducer = (state: State, action: Action): State => {
       return { ...state, crop: action.payload }
     case 'SET_DIALOG_OPEN':
       return { ...state, dialogOpen: action.payload }
-    case 'SET_IMAGE_URL':
-      return { ...state, imageUrl: action.payload }
     case 'SET_PROCESSING':
       return { ...state, processing: action.payload }
     case 'SET_SHOW_PROGRESS':
@@ -127,32 +126,17 @@ const reducer = (state: State, action: Action): State => {
 }
 
 export const ImageCropper = () => {
-  const croppedUrlRef = useRef<string | null>(null)
-  const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const imgRef = useRef<HTMLImageElement>(null)
   const progressTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
+  const croppedFilenameRef = useRef<string>('')
 
   const [state, dispatch] = useReducer(reducer, initialState)
-  const { aspectPreset, completedCrop, crop, dialogOpen, imageUrl, processing, showProgress, source, tabValue } = state
+  const { aspectPreset, completedCrop, crop, dialogOpen, processing, showProgress, source, tabValue } = state
+
+  const [croppedBlob, setCroppedBlob] = useState<Blob | null>(null)
+  const imageUrl = useBlobUrl(source)
 
   const { toast } = useToast()
-
-  useEffect(() => {
-    return () => {
-      clearTimeout(progressTimerRef.current)
-      if (croppedUrlRef.current) URL.revokeObjectURL(croppedUrlRef.current)
-    }
-  }, [])
-
-  useEffect(() => {
-    if (!source) {
-      dispatch({ type: 'SET_IMAGE_URL', payload: null })
-      return
-    }
-    const url = URL.createObjectURL(source)
-    dispatch({ type: 'SET_IMAGE_URL', payload: url })
-    return () => URL.revokeObjectURL(url)
-  }, [source])
 
   const handleInputChange = (values: Array<File>) => {
     const file = values[0]
@@ -162,10 +146,8 @@ export const ImageCropper = () => {
   }
 
   const handleReset = () => {
-    if (croppedUrlRef.current) {
-      URL.revokeObjectURL(croppedUrlRef.current)
-      croppedUrlRef.current = null
-    }
+    setCroppedBlob(null)
+    croppedFilenameRef.current = ''
     dispatch({ type: 'RESET' })
   }
 
@@ -204,19 +186,15 @@ export const ImageCropper = () => {
       )
       const clamped = clampCropRegion(naturalCrop, imgRef.current.naturalWidth, imgRef.current.naturalHeight)
       const mimeType = source.type || 'image/png'
-      const blobUrl = await cropImageCanvas(imgRef.current, clamped, mimeType)
+      const blob = await cropImageCanvas(imgRef.current, clamped, mimeType)
 
-      if (croppedUrlRef.current) URL.revokeObjectURL(croppedUrlRef.current)
-      croppedUrlRef.current = blobUrl
-
-      const anchor = downloadAnchorRef.current
-      if (!anchor) return
       const baseName = source.name.replace(/\.[^.]+$/, '')
       const ext = source.name.split('.').pop() || 'png'
       const fileName = `cropped-${baseName}.${ext}`
-      anchor.href = blobUrl
-      anchor.download = fileName
-      anchor.click()
+
+      setCroppedBlob(blob)
+      croppedFilenameRef.current = fileName
+      downloadBlob(blob, fileName)
 
       toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
       dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.DOWNLOAD })
@@ -274,10 +252,12 @@ export const ImageCropper = () => {
                   <div className="flex w-full flex-col gap-4 desktop:w-8/10">
                     <Button
                       block
+                      disabled={!croppedBlob}
                       icon={<DownloadIcon />}
                       onClick={() => {
-                        downloadAnchorRef.current?.click()
-                        const fileName = downloadAnchorRef.current?.download
+                        if (!croppedBlob) return
+                        const fileName = croppedFilenameRef.current
+                        downloadBlob(croppedBlob, fileName)
                         if (fileName) {
                           toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
                         }
@@ -296,7 +276,6 @@ export const ImageCropper = () => {
             },
           ]}
         />
-        <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
       </div>
       <ToolDialogShell
         description="Crop your image using the selection handles"

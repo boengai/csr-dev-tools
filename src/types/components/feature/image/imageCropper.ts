@@ -7,7 +7,6 @@ export type State = {
   completedCrop: PixelCrop | null
   crop: Crop | undefined
   dialogOpen: boolean
-  imageUrl: string | null
   processing: boolean
   showProgress: boolean
   source: File | null
@@ -19,7 +18,6 @@ export type Action =
   | { type: 'SET_COMPLETED_CROP'; payload: PixelCrop | null }
   | { type: 'SET_CROP'; payload: Crop | undefined }
   | { type: 'SET_DIALOG_OPEN'; payload: boolean }
-  | { type: 'SET_IMAGE_URL'; payload: string | null }
   | { type: 'SET_PROCESSING'; payload: boolean }
   | { type: 'SET_SHOW_PROGRESS'; payload: boolean }
   | { type: 'SET_SOURCE'; payload: File | null }
