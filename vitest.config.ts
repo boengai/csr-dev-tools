@@ -5,12 +5,12 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   test: {
-    environment: 'node',
     environmentMatchGlobs: [
-      ['**/*.dom.spec.{ts,tsx}', 'jsdom'],
+      ['**/*.dom.spec.ts', 'jsdom'],
+      ['**/*.dom.spec.tsx', 'jsdom'],
     ],
+    environment: 'node',
     exclude: ['e2e/**', 'node_modules/**'],
     globals: true,
-    setupFiles: ['./vitest.setup.dom.ts'],
   },
 })
