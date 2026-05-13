@@ -1,7 +1,8 @@
 import DOMPurify from 'dompurify'
 import { useEffect, useRef, useState } from 'react'
 
-import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -73,12 +74,11 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
           </Button>
         </div>
       </div>
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={() => {
-          handleReset()
-          onAfterDialogClose?.()
-        }}
+      <ToolDialogShell
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onAfterDialogClose={onAfterDialogClose}
+        onReset={handleReset}
         size="screen"
         title="SVG Viewer &amp; Optimizer"
       >
@@ -137,7 +137,7 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
