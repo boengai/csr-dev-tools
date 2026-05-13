@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { CodeInput, CopyButton } from '@/components/common'
+import { Button, CodeInput, CopyButton } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -105,10 +106,11 @@ const ExtensionItem = ({ ext }: { ext: CertificateExtension }) => (
   </div>
 )
 
-export const CertificateDecoder = (_props: ToolComponentProps) => {
+export const CertificateDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [input, setInput] = useState('')
   const [result, setResult] = useState<CertificateInfo | null>(null)
   const [loading, setLoading] = useState(false)
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
   const process = useDebounceCallback(async (val: string) => {
@@ -148,69 +150,94 @@ export const CertificateDecoder = (_props: ToolComponentProps) => {
     process(val)
   }
 
+  const handleReset = () => {
+    setInput('')
+    setResult(null)
+    setLoading(false)
+  }
+
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <>
+      <div className="flex w-full grow flex-col gap-4">
+        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
-      <CodeInput
-        aria-label="PEM certificate input"
-        minHeight="200px"
-        name="certificate-input"
-        onChange={handleChange}
-        placeholder="Paste PEM-encoded certificate here..."
-        value={input}
-      />
-
-      {loading && input.trim() && (
-        <p className="text-body-xs text-gray-400" role="status">
-          Decoding...
-        </p>
-      )}
-
-      <div aria-live="polite" className="flex flex-col gap-3">
-        {result && !loading && (
-          <>
-            <ValidityBadge notAfter={result.notAfter} notBefore={result.notBefore} status={result.validityStatus} />
-
-            <div className="flex flex-col gap-2">
-              <ResultRow label="Subject" mono={false} value={result.subject} />
-              <ResultRow label="Issuer" mono={false} value={result.issuer} />
-              <ResultRow label="Serial Number" value={result.serialNumber} />
-              <ResultRow
-                copyValue={result.notBefore.toISOString().slice(0, 10)}
-                label="Not Before"
-                mono={false}
-                value={`${result.notBefore.toISOString().slice(0, 10)} (${formatRelativeTime(result.notBefore)})`}
-              />
-              <ResultRow
-                copyValue={result.notAfter.toISOString().slice(0, 10)}
-                label="Not After"
-                mono={false}
-                value={`${result.notAfter.toISOString().slice(0, 10)} (${formatRelativeTime(result.notAfter)})`}
-              />
-              <ResultRow
-                label="Public Key"
-                mono={false}
-                value={
-                  result.publicKeySize > 0
-                    ? `${result.publicKeyAlgorithm} ${result.publicKeySize} bits`
-                    : result.publicKeyAlgorithm
-                }
-              />
-              <ResultRow label="Signature Algorithm" mono={false} value={result.signatureAlgorithm} />
-            </div>
-
-            {result.extensions.length > 0 && (
-              <div className="flex flex-col gap-2">
-                <h3 className="text-body-xs font-medium text-gray-300">Extensions</h3>
-                {result.extensions.map((ext) => (
-                  <ExtensionItem ext={ext} key={`${ext.oid}-${ext.name}`} />
-                ))}
-              </div>
-            )}
-          </>
-        )}
+        <div className="flex grow flex-col items-center justify-center gap-2">
+          <Button block onClick={() => setDialogOpen(true)} variant="default">
+            Decode Certificate
+          </Button>
+        </div>
       </div>
-    </div>
+
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
+        size="screen"
+        title="Certificate Decoder"
+      >
+        <div className="flex w-full grow flex-col gap-4">
+          <CodeInput
+            aria-label="PEM certificate input"
+            minHeight="200px"
+            name="certificate-input"
+            onChange={handleChange}
+            placeholder="Paste PEM-encoded certificate here..."
+            value={input}
+          />
+
+          {loading && input.trim() && (
+            <p className="text-body-xs text-gray-400" role="status">
+              Decoding...
+            </p>
+          )}
+
+          <div aria-live="polite" className="flex flex-col gap-3">
+            {result && !loading && (
+              <>
+                <ValidityBadge notAfter={result.notAfter} notBefore={result.notBefore} status={result.validityStatus} />
+
+                <div className="flex flex-col gap-2">
+                  <ResultRow label="Subject" mono={false} value={result.subject} />
+                  <ResultRow label="Issuer" mono={false} value={result.issuer} />
+                  <ResultRow label="Serial Number" value={result.serialNumber} />
+                  <ResultRow
+                    copyValue={result.notBefore.toISOString().slice(0, 10)}
+                    label="Not Before"
+                    mono={false}
+                    value={`${result.notBefore.toISOString().slice(0, 10)} (${formatRelativeTime(result.notBefore)})`}
+                  />
+                  <ResultRow
+                    copyValue={result.notAfter.toISOString().slice(0, 10)}
+                    label="Not After"
+                    mono={false}
+                    value={`${result.notAfter.toISOString().slice(0, 10)} (${formatRelativeTime(result.notAfter)})`}
+                  />
+                  <ResultRow
+                    label="Public Key"
+                    mono={false}
+                    value={
+                      result.publicKeySize > 0
+                        ? `${result.publicKeyAlgorithm} ${result.publicKeySize} bits`
+                        : result.publicKeyAlgorithm
+                    }
+                  />
+                  <ResultRow label="Signature Algorithm" mono={false} value={result.signatureAlgorithm} />
+                </div>
+
+                {result.extensions.length > 0 && (
+                  <div className="flex flex-col gap-2">
+                    <h3 className="text-body-xs font-medium text-gray-300">Extensions</h3>
+                    {result.extensions.map((ext) => (
+                      <ExtensionItem ext={ext} key={`${ext.oid}-${ext.name}`} />
+                    ))}
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+        </div>
+      </ToolDialogShell>
+    </>
   )
 }
