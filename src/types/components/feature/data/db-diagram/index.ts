@@ -1,6 +1,6 @@
 import type { Connection, EdgeTypes, NodeTypes, OnEdgesChange, OnNodesChange } from '@xyflow/react'
 
-import type { DiagramIndexEntry, RelationshipEdge, SidePanel, SqlDialect, TableNode } from '@/types'
+import type { DiagramIndexEntry, RelationshipEdge, SidePanel, TableNode } from '@/types'
 
 export // ---------------------------------------------------------------------------
 // DiagramFlowCanvas - extracted ReactFlow rendering
@@ -31,7 +31,6 @@ type SidePanelRendererProps = {
   handleDbmlClose: () => void
   handleDeleteDiagram: (id: string) => void
   handleImportJsonSchema: () => void
-  handleImportSql: () => void
   handleLoadDiagram: (id: string) => void
   handleNewDiagram: () => void
   handleRenameDiagram: (id: string, newName: string) => void
@@ -40,20 +39,12 @@ type SidePanelRendererProps = {
   importJsonSchemaErrors: Array<string>
   importJsonSchemaMerge: boolean
   importJsonSchemaText: string
-  importSqlDialect: SqlDialect
-  importSqlErrors: Array<{ line: number; message: string }>
-  importSqlMerge: boolean
-  importSqlText: string
   jsonExtensions: Array<import('@codemirror/state').Extension>
   renameInputRef: React.RefObject<HTMLInputElement | null>
   renameValue: string
   renamingId: string | null
   setImportJsonSchemaMerge: (value: boolean) => void
   setImportJsonSchemaText: (value: string) => void
-  setImportSqlDialect: (value: SqlDialect) => void
-  setImportSqlMerge: (value: boolean) => void
-  setImportSqlText: (value: string) => void
   setRenameValue: (value: string) => void
   setRenamingId: (id: string | null) => void
-  sqlExtensions: Array<import('@codemirror/state').Extension>
 }

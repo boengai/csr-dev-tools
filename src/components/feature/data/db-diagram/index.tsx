@@ -108,7 +108,6 @@ const SidePanelRenderer = ({
   handleDbmlClose,
   handleDeleteDiagram,
   handleImportJsonSchema,
-  handleImportSql,
   handleLoadDiagram,
   handleNewDiagram,
   handleRenameDiagram,
@@ -117,37 +116,20 @@ const SidePanelRenderer = ({
   importJsonSchemaErrors,
   importJsonSchemaMerge,
   importJsonSchemaText,
-  importSqlDialect,
-  importSqlErrors,
-  importSqlMerge,
-  importSqlText,
   jsonExtensions,
   renameInputRef,
   renameValue,
   renamingId,
   setImportJsonSchemaMerge,
   setImportJsonSchemaText,
-  setImportSqlDialect,
-  setImportSqlMerge,
-  setImportSqlText,
   setRenameValue,
   setRenamingId,
-  sqlExtensions,
 }: SidePanelRendererProps) => {
   switch (activePanel) {
     case 'import-sql':
       return (
         <ImportSqlPanel
-          importSqlDialect={importSqlDialect}
-          importSqlErrors={importSqlErrors}
-          importSqlMerge={importSqlMerge}
-          importSqlText={importSqlText}
           onClose={handleClosePanel}
-          onImport={handleImportSql}
-          setImportSqlDialect={setImportSqlDialect}
-          setImportSqlMerge={setImportSqlMerge}
-          setImportSqlText={setImportSqlText}
-          sqlExtensions={sqlExtensions}
         />
       )
     case 'import-json-schema':
@@ -317,7 +299,6 @@ const DiagramCanvas = () => {
           handleDbmlClose={handleDbmlClose}
           handleDeleteDiagram={handleDeleteDiagram}
           handleImportJsonSchema={handleImportJsonSchema}
-          handleImportSql={handleImportSql}
           handleLoadDiagram={handleLoadDiagram}
           handleNewDiagram={handleNewDiagram}
           handleRenameDiagram={handleRenameDiagram}
@@ -326,22 +307,14 @@ const DiagramCanvas = () => {
           importJsonSchemaErrors={state.importJsonSchemaErrors}
           importJsonSchemaMerge={state.importJsonSchemaMerge}
           importJsonSchemaText={state.importJsonSchemaText}
-          importSqlDialect={state.importSqlDialect}
-          importSqlErrors={state.importSqlErrors}
-          importSqlMerge={state.importSqlMerge}
-          importSqlText={state.importSqlText}
           jsonExtensions={jsonExtensions}
           renameInputRef={renameInputRef}
           renameValue={state.renameValue}
           renamingId={state.renamingId}
           setImportJsonSchemaMerge={setImportJsonSchemaMerge}
           setImportJsonSchemaText={setImportJsonSchemaText}
-          setImportSqlDialect={setImportSqlDialect}
-          setImportSqlMerge={setImportSqlMerge}
-          setImportSqlText={setImportSqlText}
           setRenameValue={setRenameValue}
           setRenamingId={setRenamingId}
-          sqlExtensions={sqlExtensions}
         />
       </div>
     </div>
