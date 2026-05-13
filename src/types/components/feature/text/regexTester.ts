@@ -3,7 +3,6 @@ import type { HighlightSegment, RegexResult } from '@/utils'
 export type Flags = { g: boolean; i: boolean; m: boolean }
 
 export type State = {
-  dialogOpen: boolean
   flags: Flags
   pattern: string
   result: RegexResult | null
@@ -16,5 +15,4 @@ export type Action =
   | { type: 'SET_TEST_STRING'; payload: string }
   | { type: 'SET_FLAGS'; payload: Flags }
   | { type: 'SET_RESULT'; payload: { result: RegexResult | null; segments: Array<HighlightSegment> } }
-  | { type: 'SET_DIALOG_OPEN'; payload: boolean }
   | { type: 'RESET' }

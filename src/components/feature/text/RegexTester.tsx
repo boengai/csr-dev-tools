@@ -1,6 +1,7 @@
-import { useReducer } from 'react'
+import { useReducer, useState } from 'react'
 
-import { Button, CopyButton, Dialog, FieldForm, ToggleButton } from '@/components/common'
+import { Button, CopyButton, FieldForm, ToggleButton } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -71,23 +72,21 @@ function reducer(state: State, action: Action): State {
       return { ...state, flags: action.payload }
     case 'SET_RESULT':
       return { ...state, result: action.payload.result, segments: action.payload.segments }
-    case 'SET_DIALOG_OPEN':
-      return { ...state, dialogOpen: action.payload }
     case 'RESET':
       return { ...state, pattern: '', testString: '', flags: DEFAULT_FLAGS, result: null, segments: [] }
   }
 }
 
 export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [state, dispatch] = useReducer(reducer, {
     pattern: '',
     testString: '',
     flags: DEFAULT_FLAGS,
     result: null,
     segments: [],
-    dialogOpen: autoOpen ?? false,
   })
-  const { pattern, testString, flags, result, segments, dialogOpen } = state
+  const { pattern, testString, flags, result, segments } = state
   const { toast } = useToast()
 
   const process = (pat: string, text: string, fl: Flags) => {
@@ -134,11 +133,6 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
     dispatch({ type: 'RESET' })
   }
 
-  const handleAfterClose = () => {
-    handleReset()
-    onAfterDialogClose?.()
-  }
-
   const matchCount = result?.matches.length ?? 0
   const copyText = result ? formatMatchesForCopy(result.matches) : ''
 
@@ -148,17 +142,16 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">
+          <Button block onClick={() => setDialogOpen(true)} variant="default">
             Test Regex
           </Button>
         </div>
       </div>
-      <Dialog
-        injected={{
-          open: dialogOpen,
-          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
-        }}
-        onAfterClose={handleAfterClose}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title="Regex Tester"
       >
@@ -229,7 +222,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
             {result != null && result.matches.length > 0 && <MatchDetails matches={result.matches} />}
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
