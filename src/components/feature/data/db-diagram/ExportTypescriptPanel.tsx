@@ -1,9 +1,18 @@
+import { useMemo } from 'react'
+
 import { CopyButton } from '@/components/common'
+import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
 import type { ExportTypescriptPanelProps } from '@/types/components/feature/data/db-diagram/exportTypescriptPanel'
 
 import { CloseButton } from './CloseButton'
 
-export const ExportTypescriptPanel = ({ generatedTypescript, onClose }: ExportTypescriptPanelProps) => {
+export const ExportTypescriptPanel = ({ onClose }: ExportTypescriptPanelProps) => {
+  const { document, editor } = useDiagram()
+
+  // document is an intentional reactive dep: re-runs when the diagram changes (editor state is external)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const generatedTypescript = useMemo(() => editor.toTypeScript(), [document, editor])
+
   return (
     <div className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950" data-testid="typescript-panel">
       <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">

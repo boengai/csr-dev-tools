@@ -103,7 +103,6 @@ const SidePanelRenderer = ({
   dbmlErrors,
   dbmlText,
   diagramIndex,
-  generatedTypescript,
   handleClosePanel,
   handleDbmlChange,
   handleDbmlClose,
@@ -177,7 +176,7 @@ const SidePanelRenderer = ({
         />
       )
     case 'export-typescript':
-      return <ExportTypescriptPanel generatedTypescript={generatedTypescript} onClose={handleClosePanel} />
+      return <ExportTypescriptPanel onClose={handleClosePanel} />
     case 'dbml':
       return (
         <DbmlEditorPanel
@@ -313,7 +312,6 @@ const DiagramCanvas = () => {
           dbmlErrors={state.dbmlErrors}
           dbmlText={state.dbmlText}
           diagramIndex={state.diagramIndex}
-          generatedTypescript={generatedTypescript}
           handleClosePanel={handleClosePanel}
           handleDbmlChange={handleDbmlChange}
           handleDbmlClose={handleDbmlClose}

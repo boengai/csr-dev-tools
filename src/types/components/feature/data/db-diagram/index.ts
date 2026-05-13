@@ -26,7 +26,6 @@ type SidePanelRendererProps = {
   dbmlErrors: Array<{ line: number; message: string }>
   dbmlText: string
   diagramIndex: Array<DiagramIndexEntry>
-  generatedTypescript: string
   handleClosePanel: () => void
   handleDbmlChange: (text: string) => void
   handleDbmlClose: () => void
