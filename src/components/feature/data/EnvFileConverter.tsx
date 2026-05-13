@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -122,11 +123,6 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
     setResult('')
   }
 
-  const handleAfterClose = () => {
-    handleReset()
-    onAfterDialogClose?.()
-  }
-
   const config = MODE_CONFIG[mode]
 
   return (
@@ -150,9 +146,11 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
         </div>
       </div>
 
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleAfterClose}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title={config.dialogTitle}
       >
@@ -185,7 +183,7 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
