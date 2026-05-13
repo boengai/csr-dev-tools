@@ -1,6 +1,7 @@
 import { useRef, useState } from 'react'
 
-import { Button, Dialog, DownloadIcon, FieldForm } from '@/components/common'
+import { Button, DownloadIcon, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -66,12 +67,11 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
           </Button>
         </div>
       </div>
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={() => {
-          handleReset()
-          onAfterDialogClose?.()
-        }}
+      <ToolDialogShell
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onAfterDialogClose={onAfterDialogClose}
+        onReset={handleReset}
         size="screen"
         title="Base64 to Image"
       >
@@ -115,7 +115,7 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
       <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
     </>
   )
