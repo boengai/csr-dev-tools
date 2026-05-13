@@ -1,6 +1,7 @@
 import { useReducer } from 'react'
 
-import { Button, CopyButton, Dialog, FieldForm, TextInput } from '@/components/common'
+import { Button, CopyButton, FieldForm, TextInput } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
 import type { State, Action } from '@/types/components/feature/code/markdownTableGenerator'
@@ -121,15 +122,11 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
           </Button>
         </div>
       </div>
-      <Dialog
-        injected={{
-          open: dialogOpen,
-          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
-        }}
-        onAfterClose={() => {
-          handleReset()
-          onAfterDialogClose?.()
-        }}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={(open) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title="Markdown Table Generator"
       >
@@ -215,7 +212,7 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
             </pre>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
