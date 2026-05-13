@@ -1,5 +1,6 @@
-import type { DiagramDocument, TableId } from '@/types'
+import type { ColumnId, DiagramDocument, TableColumn, TableId } from '@/types'
 import { cloneDocument, createInitialDocument } from './state'
+import * as columnOps from './operations/columns'
 import * as tableOps from './operations/tables'
 
 type Listener = (document: DiagramDocument) => void
@@ -73,6 +74,25 @@ export class DiagramEditor {
 
   deleteTable(id: TableId): void {
     const next = tableOps.deleteTable(this.document, id)
+    if (next === this.document) return
+    this.commit(this.afterStructuralChange(next))
+  }
+
+  addColumn(tableId: TableId, column: Omit<TableColumn, 'id'>): ColumnId | null {
+    const { document, id } = columnOps.addColumn(this.document, tableId, column)
+    if (document === this.document) return null
+    this.commit(this.afterStructuralChange(document))
+    return id
+  }
+
+  updateColumn(tableId: TableId, columnId: ColumnId, patch: Partial<TableColumn>): void {
+    const next = columnOps.updateColumn(this.document, tableId, columnId, patch)
+    if (next === this.document) return
+    this.commit(this.afterStructuralChange(next))
+  }
+
+  deleteColumn(tableId: TableId, columnId: ColumnId): void {
+    const next = columnOps.deleteColumn(this.document, tableId, columnId)
     if (next === this.document) return
     this.commit(this.afterStructuralChange(next))
   }
