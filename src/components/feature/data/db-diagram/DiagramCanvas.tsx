@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import type { Connection, NodeChange } from '@xyflow/react'
 import { Background, BackgroundVariant, Controls, MiniMap, ReactFlow, applyNodeChanges } from '@xyflow/react'
 
-import type { RelationshipType, TableNode } from '@/types'
+import type { TableNode } from '@/types'
 
 import { documentToFlow } from '@/diagram/projections'
 
@@ -66,26 +66,6 @@ export const DiagramCanvas = () => {
       kind: '1:N',
     })
   }
-
-  // RelationshipEdgeComponent communicates via window custom events (not ReactFlow
-  // callbacks) to avoid prop-drilling through the edge type registry.
-  useEffect(() => {
-    const handleRelationChange = (e: Event) => {
-      const { edgeId, relationType } = (e as CustomEvent<{ edgeId: string; relationType: RelationshipType }>).detail
-      editor.updateRelation(edgeId, { kind: relationType })
-    }
-    window.addEventListener('db-diagram-relation-change', handleRelationChange)
-    return () => window.removeEventListener('db-diagram-relation-change', handleRelationChange)
-  }, [editor])
-
-  useEffect(() => {
-    const handleEdgeDelete = (e: Event) => {
-      const { edgeId } = (e as CustomEvent<{ edgeId: string }>).detail
-      editor.deleteRelation(edgeId)
-    }
-    window.addEventListener('db-diagram-edge-delete', handleEdgeDelete)
-    return () => window.removeEventListener('db-diagram-edge-delete', handleEdgeDelete)
-  }, [editor])
 
   return (
     <div className="flex-1">

@@ -4,6 +4,8 @@ import { useCallback, useState } from 'react'
 
 import type { RelationshipEdge, RelationshipType } from '@/types'
 
+import { useDiagram } from './DiagramContext'
+
 const RELATION_OPTIONS: Array<RelationshipType> = ['1:1', '1:N', 'N:M']
 
 // Handle CSS size is 10px. React Flow connects edges to the handle's outer
@@ -21,6 +23,7 @@ export const RelationshipEdgeComponent = ({
   targetX,
   targetY,
 }: EdgeProps<RelationshipEdge>) => {
+  const { editor } = useDiagram()
   const [showDropdown, setShowDropdown] = useState(false)
   const [isHovered, setIsHovered] = useState(false)
 
@@ -36,19 +39,15 @@ export const RelationshipEdgeComponent = ({
   const handleRelationChange = useCallback(
     (newType: RelationshipType) => {
       setShowDropdown(false)
-      window.dispatchEvent(
-        new CustomEvent('db-diagram-relation-change', {
-          detail: { edgeId: id, relationType: newType },
-        }),
-      )
+      editor.updateRelation(id, { kind: newType })
     },
-    [id],
+    [editor, id],
   )
 
   const handleDelete = useCallback(() => {
     setShowDropdown(false)
-    window.dispatchEvent(new CustomEvent('db-diagram-edge-delete', { detail: { edgeId: id } }))
-  }, [id])
+    editor.deleteRelation(id)
+  }, [editor, id])
 
   return (
     <>
