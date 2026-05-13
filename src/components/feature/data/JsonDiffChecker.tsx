@@ -1,6 +1,7 @@
 import { useEffect, useReducer, useRef } from 'react'
 
-import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
 import type { InlineSpan, SideBySideRow, ToolComponentProps } from '@/types'
@@ -144,11 +145,6 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     dispatch({ type: 'RESET' })
   }
 
-  const handleAfterClose = () => {
-    handleReset()
-    onAfterDialogClose?.()
-  }
-
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
@@ -160,12 +156,11 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
           </Button>
         </div>
       </div>
-      <Dialog
-        injected={{
-          open: dialogOpen,
-          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
-        }}
-        onAfterClose={handleAfterClose}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={(open) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title="JSON Diff Checker"
       >
@@ -253,7 +248,7 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
