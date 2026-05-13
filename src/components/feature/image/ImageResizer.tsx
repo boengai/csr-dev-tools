@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Button, Dialog, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
+import { Button, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useStaleSafeAsync, useToast } from '@/hooks'
 import type { ImageFormat, ImageProcessingResult } from '@/types'
@@ -257,9 +258,10 @@ export const ImageResizer = () => {
         />
         <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
       </div>
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleReset}
+      <ToolDialogShell
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
         size="screen"
         title="Adjust the size of your image"
       >
@@ -296,7 +298,7 @@ export const ImageResizer = () => {
             source={source}
           />
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
