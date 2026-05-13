@@ -1,4 +1,4 @@
-import { type ChangeEvent, useCallback, useEffect, useRef, useState } from 'react'
+import { type ChangeEvent, useCallback, useRef, useState } from 'react'
 
 import {
   Button,
@@ -11,11 +11,14 @@ import {
 } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { useBlobUrl } from '@/hooks/useBlobUrl'
 import { useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
+import { downloadBlob } from '@/utils/download'
 import {
   downloadSplashScreenZip,
   generateAllAssets,
+  loadImageFromFile,
   type PwaIconResult,
   type SplashScreenGeneratorOutput,
   type SplashScreenResult,
@@ -26,7 +29,8 @@ const toolEntry = TOOL_REGISTRY_MAP['splash-screen-generator']
 export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(false)
   const [results, setResults] = useState<SplashScreenGeneratorOutput | null>(null)
-  const [sourcePreview, setSourcePreview] = useState('')
+  const [sourceFile, setSourceFile] = useState<File | null>(null)
+  const sourcePreview = useBlobUrl(sourceFile)
   const [sourceImage, setSourceImage] = useState<HTMLImageElement | null>(null)
   const [backgroundColor, setBackgroundColor] = useState('#ffffff')
   const [processing, setProcessing] = useState(false)
@@ -47,17 +51,10 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
         return
       }
 
-      const url = URL.createObjectURL(file)
-      setSourcePreview(url)
+      setSourceFile(file)
       setResults(null)
 
-      const img = new Image()
-      await new Promise<void>((resolve, reject) => {
-        img.onload = () => resolve()
-        img.onerror = () => reject(new Error('Failed to load image'))
-        img.src = url
-      })
-
+      const img = await loadImageFromFile(file)
       setSourceImage(img)
       setDimensionWarning(img.width < 512 || img.height < 512)
       setDialogOpen(true)
@@ -96,18 +93,12 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
   }, [results, toast])
 
   const handleDownloadSingle = (blob: Blob, fileName: string) => {
-    const url = URL.createObjectURL(blob)
-    const a = document.createElement('a')
-    a.href = url
-    a.download = fileName
-    a.click()
-    URL.revokeObjectURL(url)
+    downloadBlob(blob, fileName)
   }
 
   const resetState = () => {
-    if (sourcePreview) URL.revokeObjectURL(sourcePreview)
     setResults(null)
-    setSourcePreview('')
+    setSourceFile(null)
     setSourceImage(null)
     setProcessing(false)
     setProgress(null)
@@ -128,12 +119,6 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
       e.target.value = ''
     }
   }
-
-  useEffect(() => {
-    return () => {
-      if (sourcePreview) URL.revokeObjectURL(sourcePreview)
-    }
-  }, [sourcePreview])
 
   // Compute contrasting border color for safe zone overlay
   const safeZoneBorderColor = (() => {
