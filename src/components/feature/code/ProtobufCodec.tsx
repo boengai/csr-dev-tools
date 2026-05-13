@@ -5,12 +5,12 @@ import {
   CodeInput,
   CodeOutput,
   CopyButton,
-  Dialog,
   DownloadIcon,
   FieldForm,
   SelectInput,
   UploadInput,
 } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -492,13 +492,14 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
         </div>
       </div>
 
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
+      <ToolDialogShell
+        onOpenChange={setDialogOpen}
+        open={dialogOpen}
         size="screen"
         title={action === 'encode' ? 'Protobuf Encode' : 'Protobuf Decode'}
       >
         {action === 'encode' ? <EncodeContent {...encodeProps} /> : <DecodeContent {...decodeProps} />}
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
