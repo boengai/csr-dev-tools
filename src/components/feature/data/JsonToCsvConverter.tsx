@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ConvertMode } from '@/types/components/feature/data/jsonToCsvConverter'
@@ -115,9 +116,10 @@ export const JsonToCsvConverter = () => {
           </Button>
         </div>
       </div>
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleReset}
+      <ToolDialogShell
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title={dialogTitle}
       >
@@ -150,7 +152,7 @@ export const JsonToCsvConverter = () => {
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
