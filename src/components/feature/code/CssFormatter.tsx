@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -59,11 +60,6 @@ export const CssFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
     setResult('')
   }
 
-  const handleAfterClose = () => {
-    handleReset()
-    onAfterDialogClose?.()
-  }
-
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
@@ -76,9 +72,11 @@ export const CssFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
         </div>
       </div>
 
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleAfterClose}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title="CSS Formatter"
       >
@@ -139,7 +137,7 @@ export const CssFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
