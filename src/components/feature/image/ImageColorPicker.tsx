@@ -1,6 +1,7 @@
 import { useCallback, useRef, useState } from 'react'
 
-import { Button, CopyButton, Dialog, UploadInput } from '@/components/common'
+import { Button, CopyButton, UploadInput } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
 import type { PickedColorWithId } from '@/types/components/feature/image/imageColorPicker'
@@ -100,12 +101,11 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
           </Button>
         </div>
       </div>
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={() => {
-          handleReset()
-          onAfterDialogClose?.()
-        }}
+      <ToolDialogShell
+        open={dialogOpen}
+        onOpenChange={setDialogOpen}
+        onAfterDialogClose={onAfterDialogClose}
+        onReset={handleReset}
         size="screen"
         title="Color Picker from Image"
       >
@@ -177,7 +177,7 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
