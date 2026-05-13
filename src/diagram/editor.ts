@@ -1,6 +1,7 @@
-import type { ColumnId, DiagramDocument, TableColumn, TableId } from '@/types'
+import type { ColumnId, ColumnRef, DiagramDocument, EditorRelation, RelationId, RelationKind, TableColumn, TableId } from '@/types'
 import { cloneDocument, createInitialDocument } from './state'
 import * as columnOps from './operations/columns'
+import * as relationOps from './operations/relations'
 import * as tableOps from './operations/tables'
 
 type Listener = (document: DiagramDocument) => void
@@ -93,6 +94,25 @@ export class DiagramEditor {
 
   deleteColumn(tableId: TableId, columnId: ColumnId): void {
     const next = columnOps.deleteColumn(this.document, tableId, columnId)
+    if (next === this.document) return
+    this.commit(this.afterStructuralChange(next))
+  }
+
+  addRelation(input: { from: ColumnRef; to: ColumnRef; kind: RelationKind }): RelationId | null {
+    const { document, id } = relationOps.addRelation(this.document, input)
+    if (document === this.document) return null
+    this.commit(this.afterStructuralChange(document))
+    return id
+  }
+
+  updateRelation(id: RelationId, patch: Partial<Omit<EditorRelation, 'id'>>): void {
+    const next = relationOps.updateRelation(this.document, id, patch)
+    if (next === this.document) return
+    this.commit(this.afterStructuralChange(next))
+  }
+
+  deleteRelation(id: RelationId): void {
+    const next = relationOps.deleteRelation(this.document, id)
     if (next === this.document) return
     this.commit(this.afterStructuralChange(next))
   }
