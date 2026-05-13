@@ -1,8 +1,9 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Button, CopyButton, UploadInput } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { useBlobUrl } from '@/hooks/useBlobUrl'
 import type { ToolComponentProps } from '@/types'
 import type { PickedColorWithId } from '@/types/components/feature/image/imageColorPicker'
 import { type PickedColor, pixelToColor } from '@/utils'
@@ -22,34 +23,36 @@ const rafThrottle = <T extends (...args: Array<any>) => void>(fn: T): T => {
 const toolEntry = TOOL_REGISTRY_MAP['image-color-picker']
 export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const [imageUrl, setImageUrl] = useState('')
+  const [imageFile, setImageFile] = useState<File | null>(null)
+  const imageUrl = useBlobUrl(imageFile)
   const nextColorId = useRef(0)
   const [palette, setPalette] = useState<Array<PickedColorWithId>>([])
   const [hoverColor, setHoverColor] = useState<PickedColor | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
+  useEffect(() => {
+    if (!imageUrl) return
+    const img = new Image()
+    img.onload = () => {
+      const canvas = canvasRef.current
+      if (!canvas) return
+      canvas.width = img.naturalWidth
+      canvas.height = img.naturalHeight
+      const ctx = canvas.getContext('2d')
+      if (!ctx) return
+      ctx.drawImage(img, 0, 0)
+    }
+    img.src = imageUrl
+  }, [imageUrl])
+
   const handleFileChange = useCallback(
     (files: Array<File>) => {
       const file = files[0]
       if (!file) return
-      if (imageUrl) URL.revokeObjectURL(imageUrl)
-      const url = URL.createObjectURL(file)
-      setImageUrl(url)
+      setImageFile(file)
       setPalette([])
-
-      const img = new Image()
-      img.onload = () => {
-        const canvas = canvasRef.current
-        if (!canvas) return
-        canvas.width = img.naturalWidth
-        canvas.height = img.naturalHeight
-        const ctx = canvas.getContext('2d')
-        if (!ctx) return
-        ctx.drawImage(img, 0, 0)
-      }
-      img.src = url
     },
-    [imageUrl],
+    [],
   )
 
   const getColorAt = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
@@ -85,8 +88,7 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
   )
 
   const handleReset = () => {
-    if (imageUrl) URL.revokeObjectURL(imageUrl)
-    setImageUrl('')
+    setImageFile(null)
     setPalette([])
     setHoverColor(null)
   }
