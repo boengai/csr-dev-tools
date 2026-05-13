@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ReactFlowProvider, useReactFlow } from '@xyflow/react'
 
-import { Button, Dialog } from '@/components/common'
+import { Button } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { DiagramEditor } from '@/diagram/editor'
 import { documentToSchema } from '@/diagram/operations/export'
@@ -289,14 +290,15 @@ export const DbDiagram = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
         </Button>
       </div>
 
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={onAfterDialogClose}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={setDialogOpen}
+        open={dialogOpen}
         size="screen"
         title="DB Diagram"
       >
         <DiagramWorkspace />
-      </Dialog>
+      </ToolDialogShell>
     </div>
   )
 }
