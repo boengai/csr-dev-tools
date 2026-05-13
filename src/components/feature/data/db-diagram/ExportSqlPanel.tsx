@@ -1,17 +1,28 @@
+import { useMemo, useState } from 'react'
+
 import { Button, CopyButton, SelectInput } from '@/components/common'
+import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
 import type { SqlDialect } from '@/types'
 import type { ExportSqlPanelProps } from '@/types/components/feature/data/db-diagram/exportSqlPanel'
+import { downloadTextFile } from '@/utils'
 
 import { CloseButton } from './CloseButton'
 import { DIALECT_OPTIONS } from './constants'
 
-export const ExportSqlPanel = ({
-  generatedSql,
-  onClose,
-  onDownload,
-  setSqlDialect,
-  sqlDialect,
-}: ExportSqlPanelProps) => {
+export const ExportSqlPanel = ({ onClose }: ExportSqlPanelProps) => {
+  const { document, editor } = useDiagram()
+  const [dialect, setDialect] = useState<SqlDialect>('postgresql')
+
+  // document is an intentional reactive dep: re-runs when the diagram changes (editor state is external)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const generatedSql = useMemo(() => editor.toSql(dialect), [document, editor, dialect])
+
+  const handleDownload = () => {
+    if (!generatedSql) return
+    const safeName = document.diagramName.replace(/[^a-zA-Z0-9-_]/g, '_').toLowerCase()
+    downloadTextFile(generatedSql, `${safeName}-${dialect}.sql`, 'application/sql')
+  }
+
   return (
     <div className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950" data-testid="sql-panel">
       <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
@@ -24,10 +35,10 @@ export const ExportSqlPanel = ({
         <SelectInput
           block={false}
           name="dialect-select"
-          onChange={(value) => setSqlDialect(value as SqlDialect)}
+          onChange={(value) => setDialect(value as SqlDialect)}
           options={DIALECT_OPTIONS}
           size="compact"
-          value={sqlDialect}
+          value={dialect}
         />
       </div>
 
@@ -44,7 +55,7 @@ export const ExportSqlPanel = ({
             block
             data-testid="download-sql-btn"
             disabled={!generatedSql}
-            onClick={onDownload}
+            onClick={handleDownload}
             size="small"
             variant="primary"
           >

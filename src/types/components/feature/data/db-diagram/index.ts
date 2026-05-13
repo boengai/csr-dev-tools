@@ -27,13 +27,11 @@ type SidePanelRendererProps = {
   dbmlText: string
   diagramIndex: Array<DiagramIndexEntry>
   generatedMermaid: string
-  generatedSql: string
   generatedTypescript: string
   handleClosePanel: () => void
   handleDbmlChange: (text: string) => void
   handleDbmlClose: () => void
   handleDeleteDiagram: (id: string) => void
-  handleDownloadSql: () => void
   handleImportJsonSchema: () => void
   handleImportSql: () => void
   handleLoadDiagram: (id: string) => void
@@ -60,7 +58,5 @@ type SidePanelRendererProps = {
   setImportSqlText: (value: string) => void
   setRenameValue: (value: string) => void
   setRenamingId: (id: string | null) => void
-  setSqlDialect: (value: SqlDialect) => void
-  sqlDialect: SqlDialect
   sqlExtensions: Array<import('@codemirror/state').Extension>
 }

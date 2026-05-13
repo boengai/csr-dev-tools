@@ -104,13 +104,11 @@ const SidePanelRenderer = ({
   dbmlText,
   diagramIndex,
   generatedMermaid,
-  generatedSql,
   generatedTypescript,
   handleClosePanel,
   handleDbmlChange,
   handleDbmlClose,
   handleDeleteDiagram,
-  handleDownloadSql,
   handleImportJsonSchema,
   handleImportSql,
   handleLoadDiagram,
@@ -137,8 +135,6 @@ const SidePanelRenderer = ({
   setImportSqlText,
   setRenameValue,
   setRenamingId,
-  setSqlDialect,
-  sqlDialect,
   sqlExtensions,
 }: SidePanelRendererProps) => {
   switch (activePanel) {
@@ -173,11 +169,7 @@ const SidePanelRenderer = ({
     case 'export-sql':
       return (
         <ExportSqlPanel
-          generatedSql={generatedSql}
           onClose={handleClosePanel}
-          onDownload={handleDownloadSql}
-          setSqlDialect={setSqlDialect}
-          sqlDialect={sqlDialect}
         />
       )
     case 'export-mermaid':
@@ -326,13 +318,11 @@ const DiagramCanvas = () => {
           dbmlText={state.dbmlText}
           diagramIndex={state.diagramIndex}
           generatedMermaid={generatedMermaid}
-          generatedSql={generatedSql}
           generatedTypescript={generatedTypescript}
           handleClosePanel={handleClosePanel}
           handleDbmlChange={handleDbmlChange}
           handleDbmlClose={handleDbmlClose}
           handleDeleteDiagram={handleDeleteDiagram}
-          handleDownloadSql={handleDownloadSql}
           handleImportJsonSchema={handleImportJsonSchema}
           handleImportSql={handleImportSql}
           handleLoadDiagram={handleLoadDiagram}
@@ -359,8 +349,6 @@ const DiagramCanvas = () => {
           setImportSqlText={setImportSqlText}
           setRenameValue={setRenameValue}
           setRenamingId={setRenamingId}
-          setSqlDialect={setSqlDialect}
-          sqlDialect={state.sqlDialect}
           sqlExtensions={sqlExtensions}
         />
       </div>
