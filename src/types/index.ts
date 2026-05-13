@@ -1,4 +1,5 @@
 export * from './components'
 export * from './constants'
+export * from './diagram/document'
 export * from './hooks'
 export * from './utils'
