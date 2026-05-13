@@ -1,6 +1,7 @@
-import type { ColumnId, ColumnRef, DiagramDocument, EditorRelation, RelationId, RelationKind, TableColumn, TableId } from '@/types'
+import type { ColumnId, ColumnRef, DiagramDocument, EditorRelation, RelationId, RelationKind, SqlDialect, TableColumn, TableId } from '@/types'
 import { cloneDocument, createInitialDocument } from './state'
 import * as columnOps from './operations/columns'
+import * as exportOps from './operations/export'
 import * as relationOps from './operations/relations'
 import * as tableOps from './operations/tables'
 
@@ -115,6 +116,26 @@ export class DiagramEditor {
     const next = relationOps.deleteRelation(this.document, id)
     if (next === this.document) return
     this.commit(this.afterStructuralChange(next))
+  }
+
+  toDbml(): string {
+    return exportOps.toDbml(this.document)
+  }
+
+  toSql(dialect: SqlDialect): string {
+    return exportOps.toSql(this.document, dialect)
+  }
+
+  toMermaid(): string {
+    return exportOps.toMermaid(this.document)
+  }
+
+  toTypeScript(): string {
+    return exportOps.toTypeScript(this.document)
+  }
+
+  toJsonSchema(): string {
+    return exportOps.toJsonSchema(this.document)
   }
 
   private notify(): void {
