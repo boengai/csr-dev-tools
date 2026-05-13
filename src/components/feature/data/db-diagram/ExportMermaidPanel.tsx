@@ -1,9 +1,26 @@
+import { useMemo } from 'react'
+
 import { Button, CopyButton } from '@/components/common'
+import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
 import type { ExportMermaidPanelProps } from '@/types/components/feature/data/db-diagram/exportMermaidPanel'
 
 import { CloseButton } from './CloseButton'
 
-export const ExportMermaidPanel = ({ generatedMermaid, onClose, onOpenInRenderer }: ExportMermaidPanelProps) => {
+const MERMAID_PREFILL_KEY = 'csr-dev-tools-mermaid-renderer-prefill'
+
+export const ExportMermaidPanel = ({ onClose }: ExportMermaidPanelProps) => {
+  const { document, editor } = useDiagram()
+
+  // document is an intentional reactive dep: re-runs when the diagram changes (editor state is external)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const generatedMermaid = useMemo(() => editor.toMermaid(), [document, editor])
+
+  const handleOpenInRenderer = () => {
+    if (!generatedMermaid) return
+    localStorage.setItem(MERMAID_PREFILL_KEY, generatedMermaid)
+    window.open('/tools/mermaid-renderer', '_blank')
+  }
+
   return (
     <div className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950" data-testid="mermaid-panel">
       <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
@@ -24,7 +41,7 @@ export const ExportMermaidPanel = ({ generatedMermaid, onClose, onOpenInRenderer
             block
             data-testid="open-mermaid-renderer-btn"
             disabled={!generatedMermaid}
-            onClick={onOpenInRenderer}
+            onClick={handleOpenInRenderer}
             size="small"
             variant="primary"
           >

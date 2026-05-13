@@ -26,7 +26,6 @@ type SidePanelRendererProps = {
   dbmlErrors: Array<{ line: number; message: string }>
   dbmlText: string
   diagramIndex: Array<DiagramIndexEntry>
-  generatedMermaid: string
   generatedTypescript: string
   handleClosePanel: () => void
   handleDbmlChange: (text: string) => void
@@ -36,7 +35,6 @@ type SidePanelRendererProps = {
   handleImportSql: () => void
   handleLoadDiagram: (id: string) => void
   handleNewDiagram: () => void
-  handleOpenInMermaidRenderer: () => void
   handleRenameDiagram: (id: string, newName: string) => void
   handleStartRenaming: (id: string, name: string) => void
   handleSyncFromDiagram: () => void

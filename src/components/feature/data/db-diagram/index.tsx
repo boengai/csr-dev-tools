@@ -103,7 +103,6 @@ const SidePanelRenderer = ({
   dbmlErrors,
   dbmlText,
   diagramIndex,
-  generatedMermaid,
   generatedTypescript,
   handleClosePanel,
   handleDbmlChange,
@@ -113,7 +112,6 @@ const SidePanelRenderer = ({
   handleImportSql,
   handleLoadDiagram,
   handleNewDiagram,
-  handleOpenInMermaidRenderer,
   handleRenameDiagram,
   handleStartRenaming,
   handleSyncFromDiagram,
@@ -175,9 +173,7 @@ const SidePanelRenderer = ({
     case 'export-mermaid':
       return (
         <ExportMermaidPanel
-          generatedMermaid={generatedMermaid}
           onClose={handleClosePanel}
-          onOpenInRenderer={handleOpenInMermaidRenderer}
         />
       )
     case 'export-typescript':
@@ -317,7 +313,6 @@ const DiagramCanvas = () => {
           dbmlErrors={state.dbmlErrors}
           dbmlText={state.dbmlText}
           diagramIndex={state.diagramIndex}
-          generatedMermaid={generatedMermaid}
           generatedTypescript={generatedTypescript}
           handleClosePanel={handleClosePanel}
           handleDbmlChange={handleDbmlChange}
@@ -327,7 +322,6 @@ const DiagramCanvas = () => {
           handleImportSql={handleImportSql}
           handleLoadDiagram={handleLoadDiagram}
           handleNewDiagram={handleNewDiagram}
-          handleOpenInMermaidRenderer={handleOpenInMermaidRenderer}
           handleRenameDiagram={handleRenameDiagram}
           handleStartRenaming={handleStartRenaming}
           handleSyncFromDiagram={handleSyncFromDiagram}
