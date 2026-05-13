@@ -3,7 +3,9 @@ import type { Connection, EdgeTypes, NodeTypes, OnEdgesChange, OnNodesChange } f
 import type { RelationshipEdge, SidePanel, TableNode } from '@/types'
 
 export * from './dbmlEditorPanel'
+export * from './diagramContext'
 export * from './diagramListPanel'
+export * from './diagramWorkspace'
 export * from './diagramToolbar'
 export * from './exportMermaidPanel'
 export * from './exportSqlPanel'

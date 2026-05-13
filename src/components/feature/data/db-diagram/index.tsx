@@ -10,7 +10,7 @@ import { schemaToDocument } from '@/diagram/operations/lifecycle'
 import { createInitialDocument } from '@/diagram/state'
 import { useDebounceCallback } from '@/hooks/useDebounceCallback'
 import { useToast } from '@/hooks/state'
-import type { SidePanel, ToolComponentProps } from '@/types'
+import type { DiagramInnerProps, DiagramSidePanelProps, SidePanel, ToolComponentProps } from '@/types'
 import { gridLayoutPositions } from '@/utils/db-diagram'
 import { validateDiagramSchema } from '@/utils/db-diagram-persistence'
 import {
@@ -40,12 +40,7 @@ const toolEntry = TOOL_REGISTRY_MAP['db-diagram']
 // ---------------------------------------------------------------------------
 // Panel switcher
 // ---------------------------------------------------------------------------
-type PanelProps = {
-  which: Exclude<SidePanel, null>
-  onClose: () => void
-}
-
-const Panel = ({ which, onClose }: PanelProps) => {
+const Panel = ({ which, onClose }: DiagramSidePanelProps) => {
   switch (which) {
     case 'dbml':
       return <DbmlEditorPanel onClose={onClose} />
@@ -67,16 +62,6 @@ const Panel = ({ which, onClose }: PanelProps) => {
 // ---------------------------------------------------------------------------
 // DiagramInner — must be a child of ReactFlowProvider to call useReactFlow()
 // ---------------------------------------------------------------------------
-type DiagramInnerProps = {
-  editor: DiagramEditor
-  activePanel: SidePanel
-  onSelectPanel: (panel: SidePanel) => void
-  fileInputRef: React.RefObject<HTMLInputElement | null>
-  handleExportJson: () => void
-  handleImportJson: (e: React.ChangeEvent<HTMLInputElement>) => void
-  handleRearrange: () => void
-}
-
 const DiagramInner = ({
   editor,
   activePanel,

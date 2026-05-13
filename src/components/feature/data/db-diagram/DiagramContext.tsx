@@ -1,13 +1,9 @@
 import { createContext, useContext, useSyncExternalStore, type ReactNode } from 'react'
-import type { DiagramDocument } from '@/types'
+
 import { DiagramEditor } from '@/diagram/editor'
+import type { DiagramContextValue } from '@/types'
 
-type ContextValue = {
-  editor: DiagramEditor
-  document: DiagramDocument
-}
-
-const Ctx = createContext<ContextValue | null>(null)
+const Ctx = createContext<DiagramContextValue | null>(null)
 
 export const DiagramProvider = ({ editor, children }: { editor: DiagramEditor; children: ReactNode }) => {
   const document = useSyncExternalStore(
@@ -18,7 +14,7 @@ export const DiagramProvider = ({ editor, children }: { editor: DiagramEditor; c
   return <Ctx.Provider value={{ editor, document }}>{children}</Ctx.Provider>
 }
 
-export const useDiagram = (): ContextValue => {
+export const useDiagram = (): DiagramContextValue => {
   const value = useContext(Ctx)
   if (!value) throw new Error('useDiagram must be used inside <DiagramProvider>')
   return value
