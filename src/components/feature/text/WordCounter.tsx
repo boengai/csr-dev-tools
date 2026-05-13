@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
-import { Button, Dialog, FieldForm } from '@/components/common'
+import { Button, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -60,9 +61,11 @@ export const WordCounter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
           </Button>
         </div>
       </div>
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={onAfterDialogClose ?? handleReset}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title="Word Counter"
       >
@@ -95,7 +98,7 @@ export const WordCounter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
