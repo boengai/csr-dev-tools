@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Button, CodeOutput, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -67,11 +68,6 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     setResult('')
   }
 
-  const handleAfterClose = () => {
-    handleReset()
-    onAfterDialogClose?.()
-  }
-
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
@@ -91,9 +87,11 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         </div>
       </div>
 
-      <Dialog
-        injected={{ open: dialogOpen, setOpen: setDialogOpen }}
-        onAfterClose={handleAfterClose}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title="HTML Formatter"
       >
@@ -154,7 +152,7 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
