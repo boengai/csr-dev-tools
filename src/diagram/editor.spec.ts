@@ -31,3 +31,23 @@ describe('DiagramEditor skeleton', () => {
     expect(editor.getDocument()).toEqual(createInitialDocument())
   })
 })
+
+describe('DiagramEditor table ops', () => {
+  it('addTable returns an ID and notifies', () => {
+    const editor = new DiagramEditor()
+    const listener = vi.fn()
+    editor.subscribe(listener)
+    const id = editor.addTable({ name: 'users' })
+    expect(id).toBeTruthy()
+    expect(listener).toHaveBeenCalledTimes(1)
+    expect(editor.getDocument().tables[id].name).toBe('users')
+  })
+
+  it('renameTable is a no-op on unknown id (no notify)', () => {
+    const editor = new DiagramEditor()
+    const listener = vi.fn()
+    editor.subscribe(listener)
+    editor.renameTable('missing', 'x')
+    expect(listener).not.toHaveBeenCalled()
+  })
+})

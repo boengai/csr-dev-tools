@@ -1,5 +1,6 @@
-import type { DiagramDocument } from '@/types'
+import type { DiagramDocument, TableId } from '@/types'
 import { cloneDocument, createInitialDocument } from './state'
+import * as tableOps from './operations/tables'
 
 type Listener = (document: DiagramDocument) => void
 
@@ -46,6 +47,34 @@ export class DiagramEditor {
   protected commit(next: DiagramDocument): void {
     this.document = next
     this.notify()
+  }
+
+  protected afterStructuralChange(doc: DiagramDocument): DiagramDocument {
+    return doc // Task 9 wires DBML regen here
+  }
+
+  addTable(input: { name: string; position?: { x: number; y: number } }): TableId {
+    const { document, id } = tableOps.addTable(this.document, input)
+    this.commit(this.afterStructuralChange(document))
+    return id
+  }
+
+  renameTable(id: TableId, name: string): void {
+    const next = tableOps.renameTable(this.document, id, name)
+    if (next === this.document) return
+    this.commit(this.afterStructuralChange(next))
+  }
+
+  moveTable(id: TableId, position: { x: number; y: number }): void {
+    const next = tableOps.moveTable(this.document, id, position)
+    if (next === this.document) return
+    this.commit(this.afterStructuralChange(next))
+  }
+
+  deleteTable(id: TableId): void {
+    const next = tableOps.deleteTable(this.document, id)
+    if (next === this.document) return
+    this.commit(this.afterStructuralChange(next))
   }
 
   private notify(): void {
