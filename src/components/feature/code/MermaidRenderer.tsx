@@ -2,7 +2,7 @@ import DOMPurify from 'dompurify'
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useReducer, useRef } from 'react'
 
-import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CopyButton, FieldForm, ToolDialogShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -85,6 +85,8 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const [state, dispatch] = useReducer(reducer, { ...initialState, dialogOpen: autoOpen ?? false })
   const { dialogOpen, error, exportingPng, fixSuggestion, referenceOpen, svg } = state
   const { toast } = useToast()
+
+  const setDialogOpen = (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })
 
   const renderCounterRef = useRef(0)
   const initializedRef = useRef(false)
@@ -176,10 +178,6 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const handleReset = () => {
     setCode(DEFAULT_CODE)
     dispatch({ type: 'RESET' })
-  }
-
-  const handleAfterClose = () => {
-    handleReset()
     onAfterDialogClose?.()
   }
 
@@ -189,18 +187,17 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">
+          <Button block onClick={() => setDialogOpen(true)} variant="default">
             Render
           </Button>
         </div>
       </div>
 
-      <Dialog
-        injected={{
-          open: dialogOpen,
-          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
-        }}
-        onAfterClose={handleAfterClose}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title="Mermaid Renderer"
       >
@@ -317,7 +314,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
