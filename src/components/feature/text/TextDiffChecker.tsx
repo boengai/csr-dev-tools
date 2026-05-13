@@ -1,6 +1,7 @@
-import { useEffect, useReducer, useRef } from 'react'
+import { useEffect, useReducer, useRef, useState } from 'react'
 
-import { Button, CopyButton, Dialog, FieldForm } from '@/components/common'
+import { Button, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useStaleSafeAsync, useToast } from '@/hooks'
 import type { InlineSpan, SideBySideRow, ToolComponentProps } from '@/types'
@@ -58,22 +59,20 @@ function reducer(state: State, action: Action): State {
   switch (action.type) {
     case 'SET_DIFF_RESULT':
       return { ...state, rows: action.payload.rows, unifiedDiff: action.payload.unifiedDiff }
-    case 'SET_DIALOG_OPEN':
-      return { ...state, dialogOpen: action.payload }
     case 'RESET':
       return { ...state, rows: [], unifiedDiff: '' }
   }
 }
 
 export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [inputs, setInputs] = useInputLocalStorage('csr-dev-tools-text-diff', { original: '', modified: '' })
   const { original, modified } = inputs
   const [state, dispatch] = useReducer(reducer, {
     rows: [],
     unifiedDiff: '',
-    dialogOpen: autoOpen ?? false,
   })
-  const { rows, unifiedDiff, dialogOpen } = state
+  const { rows, unifiedDiff } = state
   const { toast } = useToast()
   const newSession = useStaleSafeAsync()
   const initializedRef = useRef(false)
@@ -123,28 +122,22 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     dispatch({ type: 'RESET' })
   }
 
-  const handleAfterClose = () => {
-    handleReset()
-    onAfterDialogClose?.()
-  }
-
   return (
     <>
       <div className="flex w-full grow flex-col gap-4">
         {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
         <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">
+          <Button block onClick={() => setDialogOpen(true)} variant="default">
             Compare
           </Button>
         </div>
       </div>
-      <Dialog
-        injected={{
-          open: dialogOpen,
-          setOpen: (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open }),
-        }}
-        onAfterClose={handleAfterClose}
+      <ToolDialogShell
+        onAfterDialogClose={onAfterDialogClose}
+        onOpenChange={setDialogOpen}
+        onReset={handleReset}
+        open={dialogOpen}
         size="screen"
         title="Text Diff Checker"
       >
@@ -226,7 +219,7 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             </div>
           </div>
         </div>
-      </Dialog>
+      </ToolDialogShell>
     </>
   )
 }
