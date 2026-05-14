@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { ColorInput, CopyButton, FieldForm, ToggleButton } from '@/components/common'
+import { ColorInput, CssOutputCell, FieldForm, ToggleButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { type BoxShadowConfig, DEFAULT_BOX_SHADOW, generateBoxShadowCSS } from '@/utils'
 
@@ -106,15 +106,7 @@ export const BoxShadowGenerator = () => {
         <div className="h-32 w-48 rounded-lg border border-gray-200 bg-white" style={{ boxShadow: cssString }} />
       </div>
 
-      <div aria-live="polite" className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <span className="text-body-sm font-medium text-gray-400">CSS Output</span>
-          <CopyButton label="CSS box-shadow" value={`box-shadow: ${cssString};`} />
-        </div>
-        <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
-          <code className="text-sm font-mono text-gray-300">box-shadow: {cssString};</code>
-        </div>
-      </div>
+      <CssOutputCell copyLabel="CSS box-shadow" value={`box-shadow: ${cssString};`} />
     </div>
   )
 }

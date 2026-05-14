@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 
-import { CopyButton, FieldForm, SelectInput } from '@/components/common'
+import { CssOutputCell, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { FlexItemEntry } from '@/types'
 import {
@@ -212,15 +212,7 @@ export const FlexboxPlayground = () => {
         ))}
       </div>
 
-      <div aria-live="polite" className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <span className="text-body-sm font-medium text-gray-400">CSS Output</span>
-          <CopyButton label="CSS flexbox" value={fullCss} />
-        </div>
-        <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
-          <pre className="text-sm font-mono whitespace-pre-wrap text-gray-300">{fullCss}</pre>
-        </div>
-      </div>
+      <CssOutputCell copyLabel="CSS flexbox" value={fullCss} />
     </div>
   )
 }

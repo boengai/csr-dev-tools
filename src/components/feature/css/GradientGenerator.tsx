@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 
-import { ColorInput, CopyButton, FieldForm, SelectInput } from '@/components/common'
+import { ColorInput, CssOutputCell, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { LocalConfig } from '@/types'
 import { DEFAULT_GRADIENT, generateGradientCss, type GradientType } from '@/utils'
@@ -144,15 +144,7 @@ export const GradientGenerator = () => {
         style={{ background: cssValue }}
       />
 
-      <div aria-live="polite" className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <span className="text-body-sm font-medium text-gray-400">CSS Output</span>
-          <CopyButton label="CSS gradient" value={`background: ${cssValue};`} />
-        </div>
-        <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
-          <code className="text-sm font-mono text-gray-300">background: {cssValue};</code>
-        </div>
-      </div>
+      <CssOutputCell copyLabel="CSS gradient" value={`background: ${cssValue};`} />
     </div>
   )
 }

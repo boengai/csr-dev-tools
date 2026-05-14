@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 
-import { Button, ColorInput, CopyButton, FieldForm } from '@/components/common'
+import { Button, ColorInput, CssOutputCell, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
@@ -271,15 +271,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
               </div>
             </div>
 
-            <div aria-live="polite" className="flex flex-col gap-2">
-              <div className="flex items-center gap-2">
-                <span className="text-body-sm font-medium text-gray-400">CSS Output</span>
-                <CopyButton label="CSS animation" value={cssOutput} />
-              </div>
-              <div className="max-h-64 overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3">
-                <pre className="text-sm font-mono whitespace-pre-wrap text-gray-300">{cssOutput}</pre>
-              </div>
-            </div>
+            <CssOutputCell copyLabel="CSS animation" scrollable value={cssOutput} />
           </div>
         </div>
       </ToolDialogShell>

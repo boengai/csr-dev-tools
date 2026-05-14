@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { CopyButton, FieldForm } from '@/components/common'
+import { CssOutputCell, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
 import {
@@ -131,15 +131,7 @@ export const GridPlayground = (_props: ToolComponentProps) => {
         ))}
       </div>
 
-      <div className="flex flex-col gap-1">
-        <div className="flex items-center gap-1">
-          <span className="text-body-xs font-medium text-gray-400">CSS</span>
-          <CopyButton label="CSS" value={css} />
-        </div>
-        <pre className="overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono text-body-xs text-gray-300">
-          {css}
-        </pre>
-      </div>
+      <CssOutputCell copyLabel="CSS" size="compact" value={css} />
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { ColorInput, CopyButton, FieldForm } from '@/components/common'
+import { ColorInput, CssOutputCell, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
 import { type BorderRadiusConfig, DEFAULT_BORDER_RADIUS, generateBorderRadiusCss, tv } from '@/utils'
@@ -92,15 +92,7 @@ export const BorderRadiusGenerator = (_props: ToolComponentProps) => {
         <div className="h-32 w-48 border border-gray-200 bg-white" style={{ borderRadius: cssValue }} />
       </div>
 
-      <div aria-live="polite" className="flex flex-col gap-1">
-        <div className="flex items-center gap-1">
-          <span className="text-body-xs font-medium text-gray-400">CSS</span>
-          <CopyButton label="CSS" value={css} />
-        </div>
-        <pre className="overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono text-body-xs text-gray-300">
-          {css}
-        </pre>
-      </div>
+      <CssOutputCell copyLabel="CSS" size="compact" value={css} />
     </div>
   )
 }
