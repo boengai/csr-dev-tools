@@ -1,4 +1,4 @@
-import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufSchemaInfo } from '@/utils'
+import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufSchemaInfo } from '@/wasm/parsers'
 
 export type EntryKind = 'enum' | 'message'
 
