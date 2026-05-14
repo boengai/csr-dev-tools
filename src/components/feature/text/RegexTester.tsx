@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button, CopyButton, FieldForm, ToggleButton } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolFields } from '@/hooks'
 import type { Flags, ToolComponentProps } from '@/types'
 import {
   buildHighlightSegments,
@@ -19,6 +19,7 @@ const DEFAULT_FLAGS: Flags = { g: true, i: false, m: false }
 
 type RegexInput = { flags: Flags; pattern: string; testString: string }
 type RegexComputed = { regex: RegexResult | null; segments: Array<HighlightSegment> }
+const INITIAL_INPUT: RegexInput = { flags: DEFAULT_FLAGS, pattern: '', testString: '' }
 const INITIAL_COMPUTED: RegexComputed = { regex: null, segments: [] }
 
 const flagsToString = (flags: Flags) =>
@@ -74,56 +75,31 @@ const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
 
 export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const [pattern, setPattern] = useState('')
-  const [testString, setTestString] = useState('')
-  const [flags, setFlags] = useState<Flags>(DEFAULT_FLAGS)
   const { toast } = useToast()
 
   const {
+    inputs,
     isPending: loading,
+    reset,
     result: computed,
-    setInput,
-    setInputImmediate,
-  } = useToolComputation<RegexInput, RegexComputed>(
-    ({ flags: fl, pattern: pat, testString: text }) => {
+    setFields,
+  } = useToolFields<RegexInput, RegexComputed>({
+    compute: ({ flags: fl, pattern: pat, testString: text }) => {
       const r = executeRegex(pat, flagsToString(fl), text)
       if (r.error != null) throw new Error(r.error)
       return { regex: r, segments: buildHighlightSegments(text, r.matches) }
     },
-    {
-      debounceMs: 300,
-      initial: INITIAL_COMPUTED,
-      isEmpty: ({ pattern: pat, testString: text }) => pat.trim() === '' || text.trim() === '',
-      onError: (err) => {
-        const message = err instanceof Error ? err.message : 'Invalid regex'
-        toast({ action: 'add', item: { label: message, type: 'error' } })
-      },
+    debounceMs: 300,
+    initial: INITIAL_INPUT,
+    initialResult: INITIAL_COMPUTED,
+    isEmpty: ({ pattern: pat, testString: text }) => pat.trim() === '' || text.trim() === '',
+    onError: (err) => {
+      const message = err instanceof Error ? err.message : 'Invalid regex'
+      toast({ action: 'add', item: { label: message, type: 'error' } })
     },
-  )
+  })
 
-  const handlePatternChange = (val: string) => {
-    setPattern(val)
-    setInput({ flags, pattern: val, testString })
-  }
-
-  const handleTestStringChange = (val: string) => {
-    setTestString(val)
-    setInput({ flags, pattern, testString: val })
-  }
-
-  const handleFlagToggle = (flag: keyof Flags) => {
-    const updated = { ...flags, [flag]: !flags[flag] }
-    setFlags(updated)
-    setInput({ flags: updated, pattern, testString })
-  }
-
-  const handleReset = () => {
-    setPattern('')
-    setTestString('')
-    setFlags(DEFAULT_FLAGS)
-    setInputImmediate({ flags: DEFAULT_FLAGS, pattern: '', testString: '' })
-  }
-
+  const { flags, pattern, testString } = inputs
   const matches = computed.regex?.matches ?? []
   const matchCount = matches.length
   const copyText = computed.regex ? formatMatchesForCopy(matches) : ''
@@ -142,7 +118,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
       <ToolDialogShell
         onAfterDialogClose={onAfterDialogClose}
         onOpenChange={setDialogOpen}
-        onReset={handleReset}
+        onReset={reset}
         open={dialogOpen}
         size="screen"
         title="Regex Tester"
@@ -154,14 +130,26 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
                 <span className="flex items-center gap-2">
                   <span>Pattern</span>
                   <span className="flex gap-1">
-                    <FlagToggle active={flags.g} flag="g" onToggle={() => handleFlagToggle('g')} />
-                    <FlagToggle active={flags.i} flag="i" onToggle={() => handleFlagToggle('i')} />
-                    <FlagToggle active={flags.m} flag="m" onToggle={() => handleFlagToggle('m')} />
+                    <FlagToggle
+                      active={flags.g}
+                      flag="g"
+                      onToggle={() => setFields({ flags: { ...flags, g: !flags.g } })}
+                    />
+                    <FlagToggle
+                      active={flags.i}
+                      flag="i"
+                      onToggle={() => setFields({ flags: { ...flags, i: !flags.i } })}
+                    />
+                    <FlagToggle
+                      active={flags.m}
+                      flag="m"
+                      onToggle={() => setFields({ flags: { ...flags, m: !flags.m } })}
+                    />
                   </span>
                 </span>
               }
               name="pattern"
-              onChange={handlePatternChange}
+              onChange={(val) => setFields({ pattern: val })}
               placeholder="\d+"
               type="text"
               value={pattern}
@@ -170,7 +158,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
             <FieldForm
               label="Test String"
               name="test-string"
-              onChange={handleTestStringChange}
+              onChange={(val) => setFields({ testString: val })}
               placeholder="Enter text to test against..."
               type="code"
               value={testString}

@@ -39,6 +39,38 @@ primitives it composes — `useDebounceCallback` and `useStaleSafeAsync` — rem
 public for cases that need only one half of the pipeline (non-async debounce;
 one-shot async without debounce).
 
+## Tool field bag
+
+The variant of the [[Tool computation pipeline]] that owns its inputs.
+Implemented by `useToolFields` (`src/hooks/useToolFields.ts`).
+
+`useToolComputation` takes a single `Input` value; multi-field Tools that use
+it are forced to keep one `useState` per field plus a per-handler bag rebuild
+(`setInput({ ...all-other-fields, X: val })`). That double bookkeeping was the
+bug surface: forget a field in one handler and the pipeline silently computes
+on stale data.
+
+`useToolFields` collapses both. The hook owns a record of fields, exposes
+`inputs` for reads, and accepts `setFields(partial)` for writes. The pipeline's
+four invariants (debounced, stale-safe, empty-bypass, unmount-safe) carry over
+unchanged — `useToolFields` is implemented as a thin layer over
+`useToolComputation` so the invariants stay defined in one place.
+
+Pick this when a Tool has more than one input field. Keep `useToolComputation`
+for single-value Tools (one `string` in, one result out) — forcing them
+through `setFields({ value: x })` is worse than what they have.
+
+Carries one extra invariant beyond the pipeline:
+
+1. **Same-tick partial updates compose** — back-to-back `setFields(partial)`
+   calls in one event handler chain through an internal ref so each call sees
+   the previous call's update. The final bag is the union of all partials,
+   not just the last one. Compute fires once with the merged bag.
+
+`reset()` restores `inputs` to `options.initial` and routes through
+`setFieldsImmediate` so any pending compute is cancelled and `isEmpty`-driven
+short-circuits fire synchronously.
+
 ## Bidirectional converter
 
 A Tool that converts between two formats with mode-swap support — JSON ↔ CSV,

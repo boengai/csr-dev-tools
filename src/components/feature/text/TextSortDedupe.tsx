@@ -1,8 +1,6 @@
-import { useState } from 'react'
-
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolComputation } from '@/hooks'
+import { useToolFields } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { sortAndProcessText, type SortMode, type TextSortResult, tv } from '@/utils'
 
@@ -34,50 +32,25 @@ type SortInput = {
   trimLines: boolean
 }
 
+const INITIAL_INPUT: SortInput = {
+  input: '',
+  removeDuplicates: false,
+  removeEmpty: false,
+  sortMode: 'az',
+  trimLines: false,
+}
+
 export const TextSortDedupe = (_props: ToolComponentProps) => {
-  const [input, setInput] = useState('')
-  const [sortMode, setSortMode] = useState<SortMode>('az')
-  const [removeDuplicates, setRemoveDuplicates] = useState(false)
-  const [removeEmpty, setRemoveEmpty] = useState(false)
-  const [trimLines, setTrimLines] = useState(false)
-
-  const { result, setInput: setComputeInput } = useToolComputation<SortInput, TextSortResult | null>(
-    ({ input: text, removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }) =>
+  const { inputs, result, setFields } = useToolFields<SortInput, TextSortResult | null>({
+    compute: ({ input: text, removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }) =>
       sortAndProcessText(text, { removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }),
-    {
-      debounceMs: 300,
-      initial: null,
-      isEmpty: ({ input: text }) => !text.trim(),
-    },
-  )
+    debounceMs: 300,
+    initial: INITIAL_INPUT,
+    initialResult: null,
+    isEmpty: ({ input: text }) => !text.trim(),
+  })
 
-  const handleInputChange = (val: string) => {
-    setInput(val)
-    setComputeInput({ input: val, removeDuplicates, removeEmpty, sortMode, trimLines })
-  }
-
-  const handleSortChange = (val: string) => {
-    const mode = val as SortMode
-    setSortMode(mode)
-    setComputeInput({ input, removeDuplicates, removeEmpty, sortMode: mode, trimLines })
-  }
-
-  const toggle = (
-    setter: React.Dispatch<React.SetStateAction<boolean>>,
-    current: boolean,
-    field: 'dedup' | 'empty' | 'trim',
-  ) => {
-    const next = !current
-    setter(next)
-    const opts = { dedup: removeDuplicates, empty: removeEmpty, trim: trimLines, [field]: next }
-    setComputeInput({
-      input,
-      removeDuplicates: opts.dedup,
-      removeEmpty: opts.empty,
-      sortMode,
-      trimLines: opts.trim,
-    })
-  }
+  const { input, removeDuplicates, removeEmpty, sortMode, trimLines } = inputs
 
   return (
     <div className="flex w-full grow flex-col gap-4">
@@ -86,7 +59,7 @@ export const TextSortDedupe = (_props: ToolComponentProps) => {
       <FieldForm
         label="Input (one item per line)"
         name="sort-input"
-        onChange={handleInputChange}
+        onChange={(val) => setFields({ input: val })}
         placeholder="banana\napple\ncherry\napple"
         rows={8}
         type="textarea"
@@ -97,20 +70,20 @@ export const TextSortDedupe = (_props: ToolComponentProps) => {
         <FieldForm
           label="Sort"
           name="sort-mode"
-          onChange={handleSortChange}
+          onChange={(val) => setFields({ sortMode: val as SortMode })}
           options={SORT_OPTIONS}
           type="select"
           value={sortMode}
         />
         {[
-          { current: removeDuplicates, field: 'dedup' as const, label: 'Dedupe', setter: setRemoveDuplicates },
-          { current: removeEmpty, field: 'empty' as const, label: 'No Empty', setter: setRemoveEmpty },
-          { current: trimLines, field: 'trim' as const, label: 'Trim', setter: setTrimLines },
-        ].map(({ current, field, label, setter }) => (
+          { current: removeDuplicates, field: 'removeDuplicates' as const, label: 'Dedupe' },
+          { current: removeEmpty, field: 'removeEmpty' as const, label: 'No Empty' },
+          { current: trimLines, field: 'trimLines' as const, label: 'Trim' },
+        ].map(({ current, field, label }) => (
           <button
             className={toggleButtonStyles({ active: current })}
             key={field}
-            onClick={() => toggle(setter, current, field)}
+            onClick={() => setFields({ [field]: !current } as Partial<SortInput>)}
             type="button"
           >
             {label}

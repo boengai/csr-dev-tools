@@ -3,56 +3,39 @@ import { useState } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolComputation } from '@/hooks'
+import { useToolFields } from '@/hooks'
 import type { AesInput, Mode, ToolComponentProps } from '@/types'
 import { aesDecrypt, aesEncrypt } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['aes-encrypt-decrypt']
 
+const INITIAL_INPUT: AesInput = { mode: 'encrypt', password: '', source: '' }
+
 export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useState('')
-  const [password, setPassword] = useState('')
-  const [mode, setMode] = useState<Mode>('encrypt')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
 
   const {
     error,
+    inputs,
     isPending: loading,
+    reset,
     result,
-    setInput,
-    setInputImmediate,
-  } = useToolComputation<AesInput, string>(
-    ({ source: text, password: pass, mode: m }) =>
+    setFields,
+    setFieldsImmediate,
+  } = useToolFields<AesInput, string>({
+    compute: ({ mode: m, password: pass, source: text }) =>
       m === 'encrypt' ? aesEncrypt(text, pass) : aesDecrypt(text, pass),
-    {
-      debounceMs: 300,
-      initial: '',
-      isEmpty: ({ source: text, password: pass }) => !text || !pass,
-    },
-  )
+    debounceMs: 300,
+    initial: INITIAL_INPUT,
+    initialResult: '',
+    isEmpty: ({ password: pass, source: text }) => !text || !pass,
+  })
 
-  const handleSourceChange = (val: string) => {
-    setSource(val)
-    setInput({ source: val, password, mode })
-  }
-
-  const handlePasswordChange = (val: string) => {
-    setPassword(val)
-    setInput({ source, password: val, mode })
-  }
+  const { mode, password, source } = inputs
 
   const openDialog = (m: Mode) => {
-    setMode(m)
-    setSource('')
-    setPassword('')
-    setInputImmediate({ source: '', password: '', mode: m })
+    setFieldsImmediate({ mode: m, password: '', source: '' })
     setDialogOpen(true)
-  }
-
-  const handleReset = () => {
-    setSource('')
-    setPassword('')
-    setInputImmediate({ source: '', password: '', mode })
   }
 
   const displayError = error
@@ -81,7 +64,7 @@ export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponen
       <ToolDialogShell
         onAfterDialogClose={onAfterDialogClose}
         onOpenChange={setDialogOpen}
-        onReset={handleReset}
+        onReset={reset}
         open={dialogOpen}
         size="screen"
         title={mode === 'encrypt' ? 'AES-256-GCM Encrypt' : 'AES-256-GCM Decrypt'}
@@ -92,7 +75,7 @@ export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponen
               <FieldForm
                 label="Source"
                 name="dialog-source"
-                onChange={handleSourceChange}
+                onChange={(val) => setFields({ source: val })}
                 placeholder={sourcePlaceholder}
                 rows={10}
                 type="textarea"
@@ -101,7 +84,7 @@ export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponen
               <FieldForm
                 label="Password"
                 name="dialog-password"
-                onChange={handlePasswordChange}
+                onChange={(val) => setFields({ password: val })}
                 placeholder="Enter password..."
                 type="text"
                 value={password}

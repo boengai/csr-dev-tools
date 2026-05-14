@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolFields } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { type EscapeMode, escapeString, unescapeString } from '@/utils'
 
@@ -19,59 +19,35 @@ const MODE_OPTIONS = [
 
 type Direction = 'escape' | 'unescape'
 type EscapeInput = { direction: Direction; mode: EscapeMode; source: string }
+const INITIAL_INPUT: EscapeInput = { direction: 'escape', mode: 'html', source: '' }
 
 export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useState('')
-  const [mode, setMode] = useState<EscapeMode>('html')
-  const [direction, setDirection] = useState<Direction>('escape')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
-  const { result, setInput, setInputImmediate } = useToolComputation<EscapeInput, string>(
-    ({ direction: dir, mode: m, source: val }) =>
+  const { inputs, reset, result, setFields, setFieldsImmediate } = useToolFields<EscapeInput, string>({
+    compute: ({ direction: dir, mode: m, source: val }) =>
       dir === 'escape' ? escapeString(val, m) : unescapeString(val, m),
-    {
-      debounceMs: 300,
-      initial: '',
-      isEmpty: ({ source: val }) => val.length === 0,
-      onError: (_err, { direction: dir }) => {
-        toast({
-          action: 'add',
-          item: {
-            label: `Unable to ${dir} — input contains invalid sequences`,
-            type: 'error',
-          },
-        })
-      },
+    debounceMs: 300,
+    initial: INITIAL_INPUT,
+    initialResult: '',
+    isEmpty: ({ source: val }) => val.length === 0,
+    onError: (_err, { direction: dir }) => {
+      toast({
+        action: 'add',
+        item: {
+          label: `Unable to ${dir} — input contains invalid sequences`,
+          type: 'error',
+        },
+      })
     },
-  )
+  })
 
-  const handleSourceChange = (val: string) => {
-    setSource(val)
-    setInput({ direction, mode, source: val })
-  }
-
-  const handleModeChange = (val: string) => {
-    const newMode = val as EscapeMode
-    setMode(newMode)
-    setInput({ direction, mode: newMode, source })
-  }
-
-  const handleDirectionChange = (dir: Direction) => {
-    setDirection(dir)
-    setInput({ direction: dir, mode, source })
-  }
+  const { direction, mode, source } = inputs
 
   const openDialog = (dir: Direction) => {
-    setDirection(dir)
-    setSource('')
-    setInputImmediate({ direction: dir, mode, source: '' })
+    setFieldsImmediate({ direction: dir, source: '' })
     setDialogOpen(true)
-  }
-
-  const handleReset = () => {
-    setSource('')
-    setInputImmediate({ direction, mode, source: '' })
   }
 
   return (
@@ -91,7 +67,7 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
       <ToolDialogShell
         onAfterDialogClose={onAfterDialogClose}
         onOpenChange={setDialogOpen}
-        onReset={handleReset}
+        onReset={reset}
         open={dialogOpen}
         size="screen"
         title={direction === 'escape' ? 'String Escape' : 'String Unescape'}
@@ -101,20 +77,20 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
             <FieldForm
               label="Mode"
               name="mode"
-              onChange={handleModeChange}
+              onChange={(val) => setFields({ mode: val as EscapeMode })}
               options={MODE_OPTIONS}
               type="select"
               value={mode}
             />
             <div className="flex items-center gap-2">
               <Button
-                onClick={() => handleDirectionChange('escape')}
+                onClick={() => setFields({ direction: 'escape' })}
                 variant={direction === 'escape' ? 'default' : 'primary'}
               >
                 Escape
               </Button>
               <Button
-                onClick={() => handleDirectionChange('unescape')}
+                onClick={() => setFields({ direction: 'unescape' })}
                 variant={direction === 'unescape' ? 'default' : 'primary'}
               >
                 Unescape
@@ -127,7 +103,7 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
               <FieldForm
                 label="Source"
                 name="dialog-source"
-                onChange={handleSourceChange}
+                onChange={(val) => setFields({ source: val })}
                 placeholder="Enter text to escape or unescape..."
                 type="code"
                 value={source}

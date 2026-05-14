@@ -1,8 +1,8 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useMemo } from 'react'
 
 import { CopyButton, FieldForm, Tabs } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolComputation } from '@/hooks'
+import { useToolFields } from '@/hooks'
 import type { InputMode, ToolComponentProps } from '@/types'
 import {
   calculateSubnet,
@@ -24,6 +24,13 @@ const PRESET_PREFIXES = [8, 16, 24, 25, 26, 27, 28, 29, 30, 31, 32] as const
 
 type SubnetInput = { cidrInput: string; ipInput: string; maskInput: string; mode: InputMode }
 type SubnetBag = { error: string; result: SubnetResult | null }
+
+const INITIAL_INPUT: SubnetInput = {
+  cidrInput: DEFAULT_CIDR,
+  ipInput: '',
+  maskInput: '',
+  mode: 'cidr',
+}
 
 const computeSubnet = ({ cidrInput, ipInput, maskInput, mode }: SubnetInput): SubnetBag => {
   if (mode === 'cidr') {
@@ -69,55 +76,27 @@ const BinaryDisplay = ({ binary, prefixLength }: { binary: string; prefixLength:
 }
 
 export const IpSubnetCalculator = (_props: ToolComponentProps) => {
-  const [mode, setMode] = useState<InputMode>('cidr')
-  const [cidrInput, setCidrInput] = useState(DEFAULT_CIDR)
-  const [ipInput, setIpInput] = useState('')
-  const [maskInput, setMaskInput] = useState('')
+  const { inputs, result: bag, setFields, setFieldsImmediate } = useToolFields<SubnetInput, SubnetBag>({
+    compute: computeSubnet,
+    debounceMs: 300,
+    initial: INITIAL_INPUT,
+    initialResult: INITIAL_BAG,
+  })
 
-  const { result: bag, setInput, setInputImmediate } = useToolComputation<SubnetInput, SubnetBag>(
-    computeSubnet,
-    { debounceMs: 300, initial: INITIAL_BAG },
-  )
-
-  const { result, error } = bag
-
-  const handleCidrChange = useCallback(
-    (value: string) => {
-      setCidrInput(value)
-      setInput({ cidrInput: value, ipInput: '', maskInput: '', mode: 'cidr' })
-    },
-    [setInput],
-  )
-
-  const handleIpChange = useCallback(
-    (value: string) => {
-      setIpInput(value)
-      setInput({ cidrInput: '', ipInput: value, maskInput, mode: 'ip-mask' })
-    },
-    [maskInput, setInput],
-  )
-
-  const handleMaskChange = useCallback(
-    (value: string) => {
-      setMaskInput(value)
-      setInput({ cidrInput: '', ipInput, maskInput: value, mode: 'ip-mask' })
-    },
-    [ipInput, setInput],
-  )
+  const { cidrInput, ipInput, maskInput, mode } = inputs
+  const { error, result } = bag
 
   const handleModeChange = useCallback(
     (newMode: InputMode) => {
-      setMode(newMode)
       if (newMode === 'cidr') {
-        if (result) setCidrInput(result.cidr)
+        setFields({ cidrInput: result?.cidr ?? cidrInput, mode: newMode })
+      } else if (result) {
+        setFields({ ipInput: result.networkAddress, maskInput: result.subnetMask, mode: newMode })
       } else {
-        if (result) {
-          setIpInput(result.networkAddress)
-          setMaskInput(result.subnetMask)
-        }
+        setFields({ mode: newMode })
       }
     },
-    [result],
+    [cidrInput, result, setFields],
   )
 
   const handlePreset = useCallback(
@@ -125,19 +104,18 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
       if (mode === 'cidr') {
         const parsed = parseCidr(cidrInput)
         const ip = parsed ? parsed.ip : '192.168.1.0'
-        const newCidr = `${ip}/${prefix}`
-        setCidrInput(newCidr)
-        setInputImmediate({ cidrInput: newCidr, ipInput: '', maskInput: '', mode: 'cidr' })
+        setFieldsImmediate({ cidrInput: `${ip}/${prefix}` })
       } else {
         const ip = ipInput || '192.168.1.0'
         const mask = prefixToMask(prefix)
-        setMaskInput(mask)
         if (validateIpv4(ip)) {
-          setInputImmediate({ cidrInput: '', ipInput: ip, maskInput: mask, mode: 'ip-mask' })
+          setFieldsImmediate({ ipInput: ip, maskInput: mask })
+        } else {
+          setFields({ maskInput: mask })
         }
       }
     },
-    [cidrInput, ipInput, mode, setInputImmediate],
+    [cidrInput, ipInput, mode, setFields, setFieldsImmediate],
   )
 
   const resultRows = useMemo(() => {
@@ -169,7 +147,7 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
                   <FieldForm
                     label="CIDR Notation"
                     name="cidr-input"
-                    onChange={handleCidrChange}
+                    onChange={(val) => setFields({ cidrInput: val })}
                     placeholder="192.168.1.0/24"
                     type="text"
                     value={cidrInput}
@@ -184,7 +162,7 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
                     <FieldForm
                       label="IP Address"
                       name="ip-input"
-                      onChange={handleIpChange}
+                      onChange={(val) => setFields({ ipInput: val })}
                       placeholder="192.168.1.0"
                       type="text"
                       value={ipInput}
@@ -192,7 +170,7 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
                     <FieldForm
                       label="Subnet Mask"
                       name="mask-input"
-                      onChange={handleMaskChange}
+                      onChange={(val) => setFields({ maskInput: val })}
                       placeholder="255.255.255.0"
                       type="text"
                       value={maskInput}
