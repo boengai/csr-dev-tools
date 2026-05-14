@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { generateSampleJson, parseProtobufSchema } from '@/utils'
+import { generateSampleJson, parseProtobufSchema } from '@/wasm/parsers'
 
 const SAMPLE_PROTO = `
 syntax = "proto3";
