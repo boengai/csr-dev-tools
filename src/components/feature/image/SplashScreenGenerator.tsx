@@ -7,9 +7,8 @@ import {
   RangeInput,
   RefreshIcon,
   Tabs,
-  UploadInput,
 } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { UploadDialogFrame } from '@/components/common/dialog/UploadDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useBlobUrl } from '@/hooks/useBlobUrl'
 import { useToast } from '@/hooks'
@@ -27,7 +26,6 @@ import {
 const toolEntry = TOOL_REGISTRY_MAP['splash-screen-generator']
 
 export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
-  const [dialogOpen, setDialogOpen] = useState(false)
   const [results, setResults] = useState<SplashScreenGeneratorOutput | null>(null)
   const [sourceFile, setSourceFile] = useState<File | null>(null)
   const sourcePreview = useBlobUrl(sourceFile)
@@ -42,7 +40,7 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
   const { toast } = useToast()
 
   const handleUpload = useCallback(
-    async (files: Array<File>) => {
+    async (files: Array<File>, openDialog: () => void) => {
       const file = files[0]
       if (!file) return
 
@@ -57,7 +55,7 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
       const img = await loadImageFromFile(file)
       setSourceImage(img)
       setDimensionWarning(img.width < 512 || img.height < 512)
-      setDialogOpen(true)
+      openDialog()
     },
     [toast],
   )
@@ -115,7 +113,7 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
     const files = e.target.files
     if (files?.length) {
       resetState()
-      handleUpload(Array.from(files))
+      void handleUpload(Array.from(files), () => undefined)
       e.target.value = ''
     }
   }
@@ -192,34 +190,15 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
 
   return (
     <>
-      <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <UploadInput
-            accept="image/png,image/jpeg,image/webp,image/svg+xml"
-            button={{ block: true, children: 'Select image to generate splash screens' }}
-            multiple={false}
-            name="splash-source"
-            onChange={handleUpload}
-          />
-        </div>
-      </div>
-
-      <input
+      <UploadDialogFrame
         accept="image/png,image/jpeg,image/webp,image/svg+xml"
-        className="hidden"
-        onChange={handleFileInputChange}
-        ref={fileInputRef}
-        type="file"
-      />
-
-      <ToolDialogShell
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        onAfterDialogClose={onAfterDialogClose}
+        buttonLabel="Select image to generate splash screens"
+        description={toolEntry?.description}
+        onAfterClose={onAfterDialogClose}
         onReset={resetState}
-        size="screen"
+        onUpload={handleUpload}
         title="Splash Screen Generator"
+        uploadInputName="splash-source"
       >
         <div className="flex grow flex-col gap-6 overflow-y-auto">
           {/* Source preview + controls */}
@@ -362,7 +341,15 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
             </>
           )}
         </div>
-      </ToolDialogShell>
+      </UploadDialogFrame>
+
+      <input
+        accept="image/png,image/jpeg,image/webp,image/svg+xml"
+        className="hidden"
+        onChange={handleFileInputChange}
+        ref={fileInputRef}
+        type="file"
+      />
     </>
   )
 }

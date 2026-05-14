@@ -2,6 +2,7 @@ import type { ReactElement, ReactNode } from 'react'
 
 export * from './toolDialogFrame'
 export * from './toolDialogShell'
+export * from './uploadDialogFrame'
 
 export type DialogProps = Partial<DialogVariants> & {
   children: ReactNode

@@ -90,9 +90,29 @@ collapse their bespoke `openDialog(mode)` helper into one trigger entry per
 button.
 
 `<ToolDialogShell>` remains the lower-level escape hatch — use it directly
-when the tile shape doesn't fit (custom upload tile, multi-dialog Tools).
-`<ImageToolShell>` and `<BidirectionalConverter>` are unaffected; their tile
-shapes have their own concerns.
+when the tile shape doesn't fit (multi-dialog Tools, etc.). `<ImageToolShell>`
+and `<BidirectionalConverter>` are unaffected; their tile shapes have their
+own concerns.
+
+## Upload dialog frame
+
+Sibling of [[Tool dialog frame]] for Tools whose tile IS a file-upload
+trigger rather than a button that opens an empty dialog. Implemented by
+`<UploadDialogFrame>` (`src/components/common/dialog/UploadDialogFrame.tsx`).
+
+The frame owns: tile (description + `<UploadInput>`), dialog open state,
+forwarding to `<ToolDialogShell>`. The Tool's `onUpload(files, openDialog)`
+runs when files are selected; the Tool decides when to invoke `openDialog()`
+— before async processing (to show a loading state) or after (to open with
+results ready). Skipping the call keeps the dialog closed (e.g. on a
+validation rejection).
+
+Today's consumers: `FaviconGenerator`, `ImageToBase64`, `SplashScreenGenerator`.
+
+Pick this when the Tool's "first interaction" is a file upload. Pick
+[[Tool dialog frame]] when the tile has button trigger(s). Pick
+[[Image tool shell]] when the Tool is single-File-in / single-Blob-out (per
+its own four invariants).
 
 ## Tool handoff
 

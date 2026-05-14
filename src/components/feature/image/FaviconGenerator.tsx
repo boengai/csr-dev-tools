@@ -1,7 +1,7 @@
 import { type ChangeEvent, useCallback, useRef, useState } from 'react'
 
-import { Button, CopyButton, DownloadIcon, RefreshIcon, UploadInput } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { Button, CopyButton, DownloadIcon, RefreshIcon } from '@/components/common'
+import { UploadDialogFrame } from '@/components/common/dialog/UploadDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useBlobUrl } from '@/hooks/useBlobUrl'
 import { useToast } from '@/hooks'
@@ -13,7 +13,6 @@ const toolEntry = TOOL_REGISTRY_MAP['favicon-generator']
 const linkTags = generateFaviconLinkTags()
 
 export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
-  const [dialogOpen, setDialogOpen] = useState(false)
   const [results, setResults] = useState<Array<FaviconResult>>([])
   const [sourceFile, setSourceFile] = useState<File | null>(null)
   const sourcePreview = useBlobUrl(sourceFile)
@@ -22,7 +21,7 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
   const { toast } = useToast()
 
   const handleUpload = useCallback(
-    async (files: Array<File>) => {
+    async (files: Array<File>, openDialog: () => void) => {
       const file = files[0]
       if (!file) return
 
@@ -33,7 +32,7 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
 
       try {
         setProcessing(true)
-        setDialogOpen(true)
+        openDialog()
         setSourceFile(file)
 
         const img = await loadImageFromFile(file)
@@ -76,41 +75,23 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
     const files = e.target.files
     if (files?.length) {
       resetState()
-      handleUpload(Array.from(files))
+      // Re-upload from inside the open dialog: openDialog noop is fine.
+      void handleUpload(Array.from(files), () => undefined)
       e.target.value = ''
     }
   }
 
   return (
     <>
-      <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <UploadInput
-            accept="image/png,image/jpeg,image/webp,image/svg+xml"
-            button={{ block: true, children: 'Select image to generate favicons' }}
-            multiple={false}
-            name="favicon-source"
-            onChange={handleUpload}
-          />
-        </div>
-      </div>
-
-      <input
+      <UploadDialogFrame
         accept="image/png,image/jpeg,image/webp,image/svg+xml"
-        className="hidden"
-        onChange={handleFileInputChange}
-        ref={fileInputRef}
-        type="file"
-      />
-
-      <ToolDialogShell
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        onAfterDialogClose={onAfterDialogClose}
+        buttonLabel="Select image to generate favicons"
+        description={toolEntry?.description}
+        onAfterClose={onAfterDialogClose}
         onReset={resetState}
-        size="screen"
+        onUpload={handleUpload}
         title="Favicon Generator"
+        uploadInputName="favicon-source"
       >
         <div className="flex grow flex-col gap-6 overflow-y-auto">
           {/* Source + Generated grid */}
@@ -179,7 +160,15 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
             </div>
           )}
         </div>
-      </ToolDialogShell>
+      </UploadDialogFrame>
+
+      <input
+        accept="image/png,image/jpeg,image/webp,image/svg+xml"
+        className="hidden"
+        onChange={handleFileInputChange}
+        ref={fileInputRef}
+        type="file"
+      />
     </>
   )
 }
