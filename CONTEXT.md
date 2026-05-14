@@ -94,6 +94,33 @@ when the tile shape doesn't fit (custom upload tile, multi-dialog Tools).
 `<ImageToolShell>` and `<BidirectionalConverter>` are unaffected; their tile
 shapes have their own concerns.
 
+## Tool handoff
+
+A typed cross-tool channel: one Tool publishes a payload that another Tool
+consumes on its next mount. Implemented by `publishHandoff` / `consumeHandoff`
+(`src/utils/tool-handoff.ts`).
+
+Today's only channel: DB Diagram's "Open in Mermaid Renderer" button publishes
+the generated Mermaid syntax under the `'mermaid-renderer'` channel; the
+Mermaid Renderer Tool's mount calls `consumeHandoff('mermaid-renderer')` and
+seeds its editor.
+
+Carries two invariants:
+
+1. **Channel keys are typed** (`HandoffChannel` union). A typo at the producer
+   or consumer fails to compile rather than silently dropping the handoff.
+2. **`consume` is read-once** — it returns the payload AND clears it. A second
+   call returns null. Stops a stale prefill from leaking into a later mount of
+   the same Tool.
+
+Transport is `localStorage`. Producers typically `publishHandoff` then
+`window.open` the consumer route — the consumer mounts and `consumeHandoff`
+fires within the same tick.
+
+To add a channel: extend `HandoffChannel` in `src/utils/tool-handoff.ts`. The
+type-checker will flag any producer or consumer that uses a name not in the
+union.
+
 ## Bidirectional converter
 
 A Tool that converts between two formats with mode-swap support — JSON ↔ CSV,

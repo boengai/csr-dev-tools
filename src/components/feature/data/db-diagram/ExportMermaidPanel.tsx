@@ -3,10 +3,9 @@ import { useMemo } from 'react'
 import { Button, CopyButton } from '@/components/common'
 import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
 import type { ExportMermaidPanelProps } from '@/types'
+import { publishHandoff } from '@/utils'
 
 import { CloseButton } from './CloseButton'
-
-const MERMAID_PREFILL_KEY = 'csr-dev-tools-mermaid-renderer-prefill'
 
 export const ExportMermaidPanel = ({ onClose }: ExportMermaidPanelProps) => {
   const { document, editor } = useDiagram()
@@ -17,7 +16,7 @@ export const ExportMermaidPanel = ({ onClose }: ExportMermaidPanelProps) => {
 
   const handleOpenInRenderer = () => {
     if (!generatedMermaid) return
-    localStorage.setItem(MERMAID_PREFILL_KEY, generatedMermaid)
+    publishHandoff('mermaid-renderer', generatedMermaid)
     window.open('/tools/mermaid-renderer', '_blank')
   }
 

@@ -7,6 +7,7 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useInputLocalStorage, useMountOnce, useToast } from '@/hooks'
 import type { MermaidRendererAction, MermaidRendererState, ToolComponentProps } from '@/types'
 import {
+  consumeHandoff,
   downloadMermaidSvg,
   downloadPng,
   initializeMermaid,
@@ -27,8 +28,6 @@ const chevronStyles = tv({
 })
 
 const toolEntry = TOOL_REGISTRY_MAP['mermaid-renderer']
-
-const MERMAID_PREFILL_KEY = 'csr-dev-tools-mermaid-renderer-prefill'
 
 const DEFAULT_CODE = `flowchart TD
     A[Start] --> B{Decision}
@@ -119,10 +118,8 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   useMountOnce(() => {
     initializeMermaid()
 
-    // Check for cross-tool prefill from DB Diagram
-    const prefill = localStorage.getItem(MERMAID_PREFILL_KEY)
+    const prefill = consumeHandoff('mermaid-renderer')
     if (prefill) {
-      localStorage.removeItem(MERMAID_PREFILL_KEY)
       setCode(prefill)
       handleRender(prefill)
     } else {
