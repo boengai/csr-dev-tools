@@ -24,7 +24,7 @@ const MODES: [ConverterMode<HtmlMdConvertMode>, ConverterMode<HtmlMdConvertMode>
 ]
 
 const compute = async ({ mode, source }: { mode: HtmlMdConvertMode; source: string }): Promise<string> => {
-  const { htmlToMarkdown, markdownToHtml } = await import('@/utils/html-markdown')
+  const { htmlToMarkdown, markdownToHtml } = await import('@/wasm/markdown')
   return mode === 'html-to-markdown' ? await htmlToMarkdown(source) : await markdownToHtml(source)
 }
 

@@ -71,7 +71,7 @@ const EncodeContent = ({
     string
   >(
     async ({ schema: schemaVal, msgType, source: sourceVal, format: fmt }) => {
-      const { encodeProtobuf } = await import('@/utils/protobuf-codec')
+      const { encodeProtobuf } = await import('@/wasm/parsers')
       const codecResult = await encodeProtobuf(schemaVal, msgType, sourceVal, fmt)
       if (codecResult.success) return codecResult.output
       throw new Error(codecResult.error)
@@ -237,7 +237,7 @@ const DecodeContent = ({
     string
   >(
     async ({ schema: schemaVal, msgType, source: sourceVal, format: fmt }) => {
-      const { decodeProtobuf } = await import('@/utils/protobuf-codec')
+      const { decodeProtobuf } = await import('@/wasm/parsers')
       const codecResult = await decodeProtobuf(schemaVal, msgType, sourceVal, fmt)
       if (codecResult.success) return codecResult.output
       throw new Error(codecResult.error)
