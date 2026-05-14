@@ -5,7 +5,7 @@ import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type { HtmlInput, ToolComponentProps } from '@/types'
-import { formatHtml, minifyHtml } from '@/utils'
+import { formatHtml, minifyHtml } from '@/wasm/formatter'
 
 const toolEntry = TOOL_REGISTRY_MAP['html-formatter']
 

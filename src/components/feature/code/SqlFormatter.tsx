@@ -5,7 +5,7 @@ import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
 import type { SqlInput, ToolComponentProps } from '@/types'
-import { formatSql, type SqlFormatDialect } from '@/utils'
+import { formatSql, type SqlFormatDialect } from '@/wasm/formatter'
 
 const toolEntry = TOOL_REGISTRY_MAP['sql-formatter']
 

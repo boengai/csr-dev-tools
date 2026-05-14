@@ -5,7 +5,7 @@ import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
 import type { JsInput, JsMinifierAction, JsMinifierState, ToolComponentProps } from '@/types'
-import { formatJs, minifyJs } from '@/utils'
+import { formatJs, minifyJs } from '@/wasm/formatter'
 
 const reducer = (state: JsMinifierState, action: JsMinifierAction): JsMinifierState => {
   switch (action.type) {

@@ -1,7 +1,18 @@
 import type { CodecResult, OutputFormat } from '@/types/utils/protobuf-codec'
-import type { ProtobufParseResult } from '@/types/utils/protobuf-to-json'
+import type {
+  ProtobufEnumInfo,
+  ProtobufMessageInfo,
+  ProtobufParseResult,
+} from '@/types/utils/protobuf-to-json'
 
 import { loadWasm } from './init'
+
+export type {
+  ProtobufEnumInfo,
+  ProtobufMessageInfo,
+  ProtobufParseResult,
+  ProtobufSchemaInfo,
+} from '@/types/utils/protobuf-to-json'
 
 type CsrParsers = {
   decode_protobuf: (schema: string, messageType: string, input: string, format: string) => string
@@ -87,6 +98,22 @@ export async function parseProtobufSchema(input: string): Promise<ProtobufParseR
 export async function generateSampleJsonFromSchema(schemaJson: string, messageName: string): Promise<string> {
   const wasm = await loadWasm<CsrParsers>('parsers')
   return wasm.generate_sample_json_from_schema(schemaJson, messageName)
+}
+
+/**
+ * Convenience wrapper around `generateSampleJsonFromSchema` that takes the
+ * already-parsed message + enum lists (the shape Tools have on hand) and
+ * returns a parsed JSON object instead of a string. The lower-level function
+ * stays available for callers that need the raw schema JSON pipeline.
+ */
+export async function generateSampleJson(
+  message: ProtobufMessageInfo,
+  allMessages: Array<ProtobufMessageInfo>,
+  allEnums: Array<ProtobufEnumInfo>,
+): Promise<Record<string, unknown>> {
+  const schemaJson = JSON.stringify({ enums: allEnums, messages: allMessages, package: null, syntax: null })
+  const result = await generateSampleJsonFromSchema(schemaJson, message.name)
+  return JSON.parse(result) as Record<string, unknown>
 }
 
 // ── Protobuf Codec ──

@@ -1,3 +1,5 @@
+import type { SqlFormatDialect } from '@/types/utils/sql-format'
+
 import { loadWasm } from './init'
 
 type CsrFormatter = {
@@ -10,14 +12,22 @@ type CsrFormatter = {
   minify_js: (input: string) => string
 }
 
+export type { SqlFormatDialect }
+
+const isEmpty = (input: string) => input.trim().length === 0
+const indentArgs = (indent: number | 'tab') => [indent === 'tab' ? 1 : indent, indent === 'tab'] as const
+
 // -- CSS --
 
 export async function formatCss(input: string, indent: number | 'tab' = 2): Promise<string> {
+  if (isEmpty(input)) return ''
   const wasm = await loadWasm<CsrFormatter>('formatter')
-  return wasm.format_css(input, indent === 'tab' ? 1 : indent, indent === 'tab')
+  const [n, useTabs] = indentArgs(indent)
+  return wasm.format_css(input, n, useTabs)
 }
 
 export async function minifyCss(input: string): Promise<string> {
+  if (isEmpty(input)) return ''
   const wasm = await loadWasm<CsrFormatter>('formatter')
   return wasm.minify_css(input)
 }
@@ -25,11 +35,14 @@ export async function minifyCss(input: string): Promise<string> {
 // -- HTML --
 
 export async function formatHtml(input: string, indent: number | 'tab' = 2): Promise<string> {
+  if (isEmpty(input)) return ''
   const wasm = await loadWasm<CsrFormatter>('formatter')
-  return wasm.format_html(input, indent === 'tab' ? 1 : indent, indent === 'tab')
+  const [n, useTabs] = indentArgs(indent)
+  return wasm.format_html(input, n, useTabs)
 }
 
 export async function minifyHtml(input: string): Promise<string> {
+  if (isEmpty(input)) return ''
   const wasm = await loadWasm<CsrFormatter>('formatter')
   return wasm.minify_html(input)
 }
@@ -37,18 +50,26 @@ export async function minifyHtml(input: string): Promise<string> {
 // -- JS --
 
 export async function formatJs(input: string, indent: number | 'tab' = 2): Promise<string> {
+  if (isEmpty(input)) return ''
   const wasm = await loadWasm<CsrFormatter>('formatter')
-  return wasm.format_js(input, indent === 'tab' ? 1 : indent, indent === 'tab')
+  const [n, useTabs] = indentArgs(indent)
+  return wasm.format_js(input, n, useTabs)
 }
 
 export async function minifyJs(input: string): Promise<string> {
+  if (isEmpty(input)) return ''
   const wasm = await loadWasm<CsrFormatter>('formatter')
   return wasm.minify_js(input)
 }
 
 // -- SQL --
 
-export async function formatSql(input: string, dialect = 'sql', indent = 2): Promise<string> {
+export async function formatSql(
+  input: string,
+  dialect: SqlFormatDialect = 'sql',
+  indent: number = 2,
+): Promise<string> {
+  if (isEmpty(input)) return ''
   const wasm = await loadWasm<CsrFormatter>('formatter')
   return wasm.format_sql(input, dialect, indent)
 }

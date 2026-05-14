@@ -1,7 +1,9 @@
 import type { HSLColor } from '@/types'
 import type { HarmonyType, PaletteColor } from '@/types/utils/color-palette'
 
-import { convertColor, hexToHsl, normalizeHue } from './color'
+import { convertColor } from '@/wasm/color'
+
+import { hexToHsl, normalizeHue } from './color'
 
 const createPaletteColor = async (hsl: HSLColor): Promise<PaletteColor> => {
   const hslString = `hsl(${hsl.h.toFixed(2)} ${hsl.s.toFixed(2)}% ${hsl.l.toFixed(2)}%)`

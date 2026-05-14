@@ -413,7 +413,7 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
     setInputImmediate: setSchemaInputImmediate,
   } = useToolComputation<string, SchemaParseOutput>(
     async (value) => {
-      const { parseProtobufSchema } = await import('@/utils/protobuf-to-json')
+      const { parseProtobufSchema } = await import('@/wasm/parsers')
       const parsed = await parseProtobufSchema(value)
       if (parsed.success) {
         return { messageTypes: parsed.schema.messages.map((m) => m.name), toastError: null }

@@ -4,7 +4,8 @@ import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type { BrowsableEntry, EntryKind, ParseOutput, ToolComponentProps } from '@/types'
-import { cnMerge, type ProtobufEnumInfo, type ProtobufMessageInfo, type ProtobufSchemaInfo } from '@/utils'
+import { cnMerge } from '@/utils'
+import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufSchemaInfo } from '@/wasm/parsers'
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-to-json']
 const KIND_STYLES: Record<EntryKind, { badge: string; label: string }> = {
@@ -142,7 +143,7 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
     setInputImmediate: setParseInputImmediate,
   } = useToolComputation<string, ParseOutput>(
     async (value) => {
-      const { parseProtobufSchema } = await import('@/utils/protobuf-to-json')
+      const { parseProtobufSchema } = await import('@/wasm/parsers')
       const result = await parseProtobufSchema(value)
       if (result.success) {
         return { schema: result.schema, parseError: null }
@@ -188,7 +189,7 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
 
       if (entry.kind === 'message' && schemaInfo) {
         try {
-          const { generateSampleJson } = await import('@/utils/protobuf-to-json')
+          const { generateSampleJson } = await import('@/wasm/parsers')
           const json = await generateSampleJson(entry.messageInfo, schemaInfo.messages, schemaInfo.enums)
           const jsonStr = JSON.stringify(json, null, 2)
           const allEnums = collectAllEnumsFlat(schemaInfo)

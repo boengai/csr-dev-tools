@@ -5,7 +5,7 @@ import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
 import type { CssInput, ToolComponentProps } from '@/types'
-import { formatCss, minifyCss } from '@/utils'
+import { formatCss, minifyCss } from '@/wasm/formatter'
 
 const toolEntry = TOOL_REGISTRY_MAP['css-formatter']
 
