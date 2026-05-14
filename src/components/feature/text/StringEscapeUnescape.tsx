@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useToast, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { type EscapeMode, escapeString, unescapeString } from '@/utils'
 
@@ -17,67 +17,61 @@ const MODE_OPTIONS = [
   { label: 'XML', value: 'xml' },
 ]
 
+type Direction = 'escape' | 'unescape'
+type EscapeInput = { direction: Direction; mode: EscapeMode; source: string }
+
 export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
-  const [result, setResult] = useState('')
   const [mode, setMode] = useState<EscapeMode>('html')
-  const [direction, setDirection] = useState<'escape' | 'unescape'>('escape')
+  const [direction, setDirection] = useState<Direction>('escape')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
-  const process = (val: string, m: EscapeMode, dir: 'escape' | 'unescape') => {
-    if (val.length === 0) {
-      setResult('')
-      return
-    }
-    try {
-      setResult(dir === 'escape' ? escapeString(val, m) : unescapeString(val, m))
-    } catch {
-      setResult('')
-      toast({
-        action: 'add',
-        item: {
-          label: `Unable to ${dir} — input contains invalid sequences`,
-          type: 'error',
-        },
-      })
-    }
-  }
-
-  const processInput = useDebounceCallback((val: string) => {
-    process(val, mode, direction)
-  }, 300)
+  const { result, setInput, setInputImmediate } = useToolComputation<EscapeInput, string>(
+    ({ direction: dir, mode: m, source: val }) =>
+      dir === 'escape' ? escapeString(val, m) : unescapeString(val, m),
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: ({ source: val }) => val.length === 0,
+      onError: (_err, { direction: dir }) => {
+        toast({
+          action: 'add',
+          item: {
+            label: `Unable to ${dir} — input contains invalid sequences`,
+            type: 'error',
+          },
+        })
+      },
+    },
+  )
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    processInput(val)
+    setInput({ direction, mode, source: val })
   }
 
   const handleModeChange = (val: string) => {
     const newMode = val as EscapeMode
     setMode(newMode)
-    if (source.length > 0) {
-      process(source, newMode, direction)
-    }
+    setInput({ direction, mode: newMode, source })
   }
 
-  const handleDirectionChange = (dir: 'escape' | 'unescape') => {
+  const handleDirectionChange = (dir: Direction) => {
     setDirection(dir)
-    if (source.length > 0) {
-      process(source, mode, dir)
-    }
+    setInput({ direction: dir, mode, source })
   }
 
-  const openDialog = (dir: 'escape' | 'unescape') => {
+  const openDialog = (dir: Direction) => {
     setDirection(dir)
     setSource('')
-    setResult('')
+    setInputImmediate({ direction: dir, mode, source: '' })
     setDialogOpen(true)
   }
 
   const handleReset = () => {
     setSource('')
-    setResult('')
+    setInputImmediate({ direction, mode, source: '' })
   }
 
   return (

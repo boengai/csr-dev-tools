@@ -1,15 +1,14 @@
 import { json } from '@codemirror/lang-json'
 import { AnimatePresence, m } from 'motion/react'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { CodeInput, CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useMountOnce, useToast } from '@/hooks'
+import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import {
   evaluateJsonPath,
   formatResultValue,
-  type JsonParseResult,
   type JsonPathEvaluation,
   parseJsonInput,
   tv,
@@ -70,80 +69,55 @@ const CHEATSHEET_ENTRIES = [
   { description: 'All authors in store', expression: '$.store.book[*].author' },
 ]
 
+type EvalInput = { expression: string; jsonInput: string }
+type EvalResult = { evaluation: JsonPathEvaluation | null; parseError: string | null; parsedData: unknown }
+
+const INITIAL_RESULT: EvalResult = { evaluation: null, parseError: null, parsedData: null }
+
 export const JsonpathEvaluator = (_props: ToolComponentProps) => {
   const [inputs, setInputs] = useInputLocalStorage('csr-dev-tools-jsonpath-evaluator', {
     jsonInput: SAMPLE_JSON,
     expression: DEFAULT_EXPRESSION,
   })
   const { jsonInput, expression } = inputs
-  const [parsedData, setParsedData] = useState<unknown>(null)
-  const [parseError, setParseError] = useState<string | null>(null)
-  const [evaluation, setEvaluation] = useState<JsonPathEvaluation | null>(null)
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false)
   const { toast } = useToast()
 
-  const parsedDataRef = useRef<unknown>(null)
-  const expressionRef = useRef(expression)
-
-  const runEvaluation = useCallback(
-    (data: unknown, expr: string) => {
-      if (data == null || !expr.trim()) {
-        setEvaluation(null)
-        return
-      }
-      try {
-        const result = evaluateJsonPath(data, expr)
-        setEvaluation(result)
-      } catch {
-        toast({ action: 'add', item: { label: 'Unexpected error during evaluation', type: 'error' } })
-      }
+  const { result, setInput, setInputImmediate } = useToolComputation<EvalInput, EvalResult>(
+    ({ expression: expr, jsonInput: value }) => {
+      const parsed = parseJsonInput(value)
+      if (!parsed.success) return { evaluation: null, parseError: parsed.error, parsedData: null }
+      if (!expr.trim()) return { evaluation: null, parseError: null, parsedData: parsed.data }
+      return { evaluation: evaluateJsonPath(parsed.data, expr), parseError: null, parsedData: parsed.data }
     },
-    [toast],
+    {
+      debounceMs: 300,
+      initial: INITIAL_RESULT,
+      onError: () => {
+        toast({ action: 'add', item: { label: 'Unexpected error during evaluation', type: 'error' } })
+      },
+    },
   )
 
-  const debouncedParseAndEvaluate = useDebounceCallback((value: string) => {
-    const result: JsonParseResult = parseJsonInput(value)
-    if (result.success) {
-      setParsedData(result.data)
-      parsedDataRef.current = result.data
-      setParseError(null)
-      runEvaluation(result.data, expressionRef.current)
-    } else {
-      setParsedData(null)
-      parsedDataRef.current = null
-      setParseError(result.error)
-      setEvaluation(null)
-    }
-  }, 300)
-
-  const debouncedEvaluate = useDebounceCallback((expr: string) => {
-    runEvaluation(parsedDataRef.current, expr)
-  }, 300)
+  const { evaluation, parseError, parsedData } = result
 
   useMountOnce(() => {
-    const result = parseJsonInput(jsonInput)
-    if (result.success) {
-      setParsedData(result.data)
-      parsedDataRef.current = result.data
-      runEvaluation(result.data, expression)
-    }
+    setInputImmediate({ expression, jsonInput })
   })
 
   const handleJsonChange = (value: string) => {
     setInputs((prev) => ({ ...prev, jsonInput: value }))
-    debouncedParseAndEvaluate(value)
+    setInput({ expression, jsonInput: value })
   }
 
   const handleExpressionChange = (value: string) => {
     setInputs((prev) => ({ ...prev, expression: value }))
-    expressionRef.current = value
-    debouncedEvaluate(value)
+    setInput({ expression: value, jsonInput })
   }
 
   const handleCheatsheetClick = (expr: string) => {
     setInputs((prev) => ({ ...prev, expression: expr }))
-    expressionRef.current = expr
-    runEvaluation(parsedDataRef.current, expr)
+    setInputImmediate({ expression: expr, jsonInput })
   }
 
   const jsonExtensions = useMemo(() => [json()], [])
@@ -224,21 +198,21 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
 
                   {evaluation.results.length > 0 && (
                     <div className="flex max-h-96 flex-col gap-2 overflow-y-auto">
-                      {evaluation.results.map((result) => (
+                      {evaluation.results.map((entry) => (
                         <div
                           className="flex flex-col gap-1 rounded border border-gray-800 bg-gray-950 p-3"
-                          key={result.path}
+                          key={entry.path}
                         >
                           <div className="flex items-center justify-between gap-2">
-                            <span className="truncate font-mono text-body-xs text-gray-400">{result.path}</span>
+                            <span className="truncate font-mono text-body-xs text-gray-400">{entry.path}</span>
                             <CopyButton
                               label="result value"
-                              value={formatResultValue(result.value)}
+                              value={formatResultValue(entry.value)}
                               variant="icon-only"
                             />
                           </div>
                           <pre className="overflow-x-auto font-mono text-body-xs whitespace-pre-wrap text-gray-200">
-                            {formatResultValue(result.value)}
+                            {formatResultValue(entry.value)}
                           </pre>
                         </div>
                       ))}

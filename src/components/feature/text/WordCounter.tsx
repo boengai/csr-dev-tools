@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback } from '@/hooks'
+import { useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { countTextStats, type TextStats } from '@/utils'
 
@@ -33,21 +33,26 @@ const STAT_LABELS: Array<{ key: keyof TextStats; label: string }> = [
 
 export const WordCounter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
-  const [stats, setStats] = useState<TextStats>(EMPTY_STATS)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
 
-  const processInput = useDebounceCallback((val: string) => {
-    setStats(val.length === 0 ? EMPTY_STATS : countTextStats(val))
-  }, 300)
+  const {
+    result: stats,
+    setInput,
+    setInputImmediate,
+  } = useToolComputation<string, TextStats>((val) => countTextStats(val), {
+    debounceMs: 300,
+    initial: EMPTY_STATS,
+    isEmpty: (val) => val.length === 0,
+  })
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    processInput(val)
+    setInput(val)
   }
 
   const handleReset = () => {
     setSource('')
-    setStats(EMPTY_STATS)
+    setInputImmediate('')
   }
 
   return (

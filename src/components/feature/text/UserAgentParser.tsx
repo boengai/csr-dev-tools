@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback } from '@/hooks'
+import { useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { parseUserAgent, type UserAgentResult } from '@/utils'
 
@@ -27,26 +27,26 @@ const ResultRow = ({ label, value }: { label: string; value: string }) => (
 
 export const UserAgentParser = (_props: ToolComponentProps) => {
   const [input, setInput] = useState('')
-  const [result, setResult] = useState<UserAgentResult>(EMPTY)
 
-  const process = useDebounceCallback((val: string) => {
-    if (!val.trim()) {
-      setResult(EMPTY)
-      return
-    }
-    setResult(parseUserAgent(val))
-  }, 300)
+  const { result, setInput: setComputeInput, setInputImmediate } = useToolComputation<string, UserAgentResult>(
+    (val) => parseUserAgent(val),
+    {
+      debounceMs: 300,
+      initial: EMPTY,
+      isEmpty: (val) => !val.trim(),
+    },
+  )
 
   const handleChange = (val: string) => {
     setInput(val)
-    process(val)
+    setComputeInput(val)
   }
 
   const handleUseMyUa = () => {
     if (typeof navigator !== 'undefined') {
       const ua = navigator.userAgent
       setInput(ua)
-      setResult(parseUserAgent(ua))
+      setInputImmediate(ua)
     }
   }
 

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback } from '@/hooks'
+import { useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { downloadBlob, optimizeSvg, type SvgOptimizeResult } from '@/utils'
 
@@ -15,9 +15,17 @@ const sanitize = (svg: string): string => DOMPurify.sanitize(svg, { USE_PROFILES
 export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [source, setSource] = useState('')
-  const [safeSvg, setSafeSvg] = useState('')
   const [optimizeResult, setOptimizeResult] = useState<SvgOptimizeResult | null>(null)
   const previewRef = useRef<HTMLDivElement>(null)
+
+  const { result: safeSvg, setInput, setInputImmediate } = useToolComputation<string, string>(
+    (val) => sanitize(val),
+    {
+      debounceMs: 300,
+      initial: '',
+      isEmpty: (val) => !val,
+    },
+  )
 
   useEffect(() => {
     if (previewRef.current) {
@@ -25,14 +33,10 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
     }
   }, [safeSvg])
 
-  const updatePreview = useDebounceCallback((val: string) => {
-    setSafeSvg(val ? sanitize(val) : '')
-  }, 300)
-
   const handleSourceChange = (val: string) => {
     setSource(val)
     setOptimizeResult(null)
-    updatePreview(val)
+    setInput(val)
   }
 
   const handleOptimize = () => {
@@ -40,7 +44,7 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
     const result = optimizeSvg(source)
     setOptimizeResult(result)
     setSource(result.optimized)
-    setSafeSvg(sanitize(result.optimized))
+    setInputImmediate(result.optimized)
   }
 
   const handleDownload = () => {
@@ -52,8 +56,8 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
 
   const handleReset = () => {
     setSource('')
-    setSafeSvg('')
     setOptimizeResult(null)
+    setInputImmediate('')
   }
 
   const displaySvg = optimizeResult?.optimized ?? source

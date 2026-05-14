@@ -1,14 +1,25 @@
-import { useReducer, useState } from 'react'
+import { useState } from 'react'
 
 import { Button, CopyButton, FieldForm, ToggleButton } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
-import type { Flags, RegexTesterAction, RegexTesterState, ToolComponentProps } from '@/types'
-import { buildHighlightSegments, executeRegex, formatMatchesForCopy, type RegexMatch } from '@/utils'
+import { useToast, useToolComputation } from '@/hooks'
+import type { Flags, ToolComponentProps } from '@/types'
+import {
+  buildHighlightSegments,
+  executeRegex,
+  formatMatchesForCopy,
+  type HighlightSegment,
+  type RegexMatch,
+  type RegexResult,
+} from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['regex-tester']
 const DEFAULT_FLAGS: Flags = { g: true, i: false, m: false }
+
+type RegexInput = { flags: Flags; pattern: string; testString: string }
+type RegexComputed = { regex: RegexResult | null; segments: Array<HighlightSegment> }
+const INITIAL_COMPUTED: RegexComputed = { regex: null, segments: [] }
 
 const flagsToString = (flags: Flags) =>
   Object.entries(flags)
@@ -61,79 +72,61 @@ const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
   </div>
 )
 
-function reducer(state: RegexTesterState, action: RegexTesterAction): RegexTesterState {
-  switch (action.type) {
-    case 'SET_PATTERN':
-      return { ...state, pattern: action.payload }
-    case 'SET_TEST_STRING':
-      return { ...state, testString: action.payload }
-    case 'SET_FLAGS':
-      return { ...state, flags: action.payload }
-    case 'SET_RESULT':
-      return { ...state, result: action.payload.result, segments: action.payload.segments }
-    case 'RESET':
-      return { ...state, pattern: '', testString: '', flags: DEFAULT_FLAGS, result: null, segments: [] }
-  }
-}
-
 export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const [state, dispatch] = useReducer(reducer, {
-    pattern: '',
-    testString: '',
-    flags: DEFAULT_FLAGS,
-    result: null,
-    segments: [],
-  })
-  const { pattern, testString, flags, result, segments } = state
+  const [pattern, setPattern] = useState('')
+  const [testString, setTestString] = useState('')
+  const [flags, setFlags] = useState<Flags>(DEFAULT_FLAGS)
   const { toast } = useToast()
 
-  const process = (pat: string, text: string, fl: Flags) => {
-    if (pat.trim().length === 0 || text.trim().length === 0) {
-      dispatch({ type: 'SET_RESULT', payload: { result: null, segments: [] } })
-      return
-    }
-
-    const regexResult = executeRegex(pat, flagsToString(fl), text)
-
-    if (regexResult.error != null) {
-      toast({ action: 'add', item: { label: regexResult.error, type: 'error' } })
-      dispatch({ type: 'SET_RESULT', payload: { result: null, segments: [] } })
-      return
-    }
-
-    dispatch({
-      type: 'SET_RESULT',
-      payload: { result: regexResult, segments: buildHighlightSegments(text, regexResult.matches) },
-    })
-  }
-
-  const debouncedProcess = useDebounceCallback((pat: string, text: string, fl: Flags) => {
-    process(pat, text, fl)
-  }, 300)
+  const {
+    isPending: loading,
+    result: computed,
+    setInput,
+    setInputImmediate,
+  } = useToolComputation<RegexInput, RegexComputed>(
+    ({ flags: fl, pattern: pat, testString: text }) => {
+      const r = executeRegex(pat, flagsToString(fl), text)
+      if (r.error != null) throw new Error(r.error)
+      return { regex: r, segments: buildHighlightSegments(text, r.matches) }
+    },
+    {
+      debounceMs: 300,
+      initial: INITIAL_COMPUTED,
+      isEmpty: ({ pattern: pat, testString: text }) => pat.trim() === '' || text.trim() === '',
+      onError: (err) => {
+        const message = err instanceof Error ? err.message : 'Invalid regex'
+        toast({ action: 'add', item: { label: message, type: 'error' } })
+      },
+    },
+  )
 
   const handlePatternChange = (val: string) => {
-    dispatch({ type: 'SET_PATTERN', payload: val })
-    debouncedProcess(val, testString, flags)
+    setPattern(val)
+    setInput({ flags, pattern: val, testString })
   }
 
   const handleTestStringChange = (val: string) => {
-    dispatch({ type: 'SET_TEST_STRING', payload: val })
-    debouncedProcess(pattern, val, flags)
+    setTestString(val)
+    setInput({ flags, pattern, testString: val })
   }
 
   const handleFlagToggle = (flag: keyof Flags) => {
     const updated = { ...flags, [flag]: !flags[flag] }
-    dispatch({ type: 'SET_FLAGS', payload: updated })
-    debouncedProcess(pattern, testString, updated)
+    setFlags(updated)
+    setInput({ flags: updated, pattern, testString })
   }
 
   const handleReset = () => {
-    dispatch({ type: 'RESET' })
+    setPattern('')
+    setTestString('')
+    setFlags(DEFAULT_FLAGS)
+    setInputImmediate({ flags: DEFAULT_FLAGS, pattern: '', testString: '' })
   }
 
-  const matchCount = result?.matches.length ?? 0
-  const copyText = result ? formatMatchesForCopy(result.matches) : ''
+  const matches = computed.regex?.matches ?? []
+  const matchCount = matches.length
+  const copyText = computed.regex ? formatMatchesForCopy(matches) : ''
 
   return (
     <>
@@ -189,17 +182,21 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
           <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
             <div className="flex items-center gap-2">
               <span className="text-body-sm font-medium text-gray-400">
-                {result != null ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'} found` : 'Output'}
+                {loading
+                  ? 'Computing...'
+                  : computed.regex != null
+                    ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'} found`
+                    : 'Output'}
               </span>
-              {result?.capped && <span className="text-body-xs text-warning">Showing first 5,000 matches</span>}
+              {computed.regex?.capped && <span className="text-body-xs text-warning">Showing first 5,000 matches</span>}
               {copyText && <CopyButton label="matches" value={copyText} />}
             </div>
 
             <div className="text-sm wrap-break-words overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono whitespace-pre-wrap">
-              {segments.length > 0 ? (
+              {computed.segments.length > 0 ? (
                 (() => {
                   let offset = 0
-                  return segments.map((segment) => {
+                  return computed.segments.map((segment) => {
                     const key = `seg-${offset}`
                     offset += segment.text.length
                     return segment.isMatch ? (
@@ -218,7 +215,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
               )}
             </div>
 
-            {result != null && result.matches.length > 0 && <MatchDetails matches={result.matches} />}
+            {matches.length > 0 && <MatchDetails matches={matches} />}
           </div>
         </div>
       </ToolDialogShell>

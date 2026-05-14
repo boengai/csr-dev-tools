@@ -3,11 +3,13 @@ import { useState } from 'react'
 import { Button, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useMountOnce } from '@/hooks'
+import { useInputLocalStorage, useMountOnce, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { type ValidationResult, validateJsonSchema } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-schema-validator']
+
+type ValidatorInput = { jsonData: string; jsonSchema: string }
 
 export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [inputs, setInputs] = useInputLocalStorage('csr-dev-tools-json-schema-validator', {
@@ -15,35 +17,35 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
     jsonSchema: '',
   })
   const { jsonData, jsonSchema } = inputs
-  const [result, setResult] = useState<ValidationResult | null>(null)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
 
-  const debouncedValidate = useDebounceCallback((data: string, schema: string) => {
-    if (data.trim().length === 0 || schema.trim().length === 0) {
-      setResult(null)
-      return
-    }
-    setResult(validateJsonSchema(data, schema))
-  }, 300)
+  const { result, setInput, setInputImmediate } = useToolComputation<ValidatorInput, ValidationResult | null>(
+    ({ jsonData: data, jsonSchema: schema }) => validateJsonSchema(data, schema),
+    {
+      debounceMs: 300,
+      initial: null,
+      isEmpty: ({ jsonData: data, jsonSchema: schema }) => data.trim().length === 0 || schema.trim().length === 0,
+    },
+  )
 
   useMountOnce(() => {
-    if (jsonData && jsonSchema) {
-      setResult(validateJsonSchema(jsonData, jsonSchema))
+    if (jsonData.trim() && jsonSchema.trim()) {
+      setInputImmediate({ jsonData, jsonSchema })
     }
   })
 
   const handleDataChange = (val: string) => {
     setInputs((prev) => ({ ...prev, jsonData: val }))
-    debouncedValidate(val, jsonSchema)
+    setInput({ jsonData: val, jsonSchema })
   }
 
   const handleSchemaChange = (val: string) => {
     setInputs((prev) => ({ ...prev, jsonSchema: val }))
-    debouncedValidate(jsonData, val)
+    setInput({ jsonData, jsonSchema: val })
   }
 
   const handleReset = () => {
-    setResult(null)
+    setInputImmediate({ jsonData, jsonSchema })
   }
 
   return (
@@ -57,7 +59,7 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
             onClick={() => {
               setDialogOpen(true)
               if (jsonData.trim() && jsonSchema.trim()) {
-                setResult(validateJsonSchema(jsonData, jsonSchema))
+                setInputImmediate({ jsonData, jsonSchema })
               }
             }}
             variant="default"

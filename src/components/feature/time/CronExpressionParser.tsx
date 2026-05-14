@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback } from '@/hooks'
+import { useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { type CronParseResult, CRON_PRESETS, parseCron } from '@/utils'
 
@@ -12,24 +12,24 @@ const EMPTY_RESULT: CronParseResult = { description: '', error: null, nextRuns: 
 
 export const CronExpressionParser = (_props: ToolComponentProps) => {
   const [expression, setExpression] = useState('')
-  const [result, setResult] = useState<CronParseResult>(EMPTY_RESULT)
 
-  const process = useDebounceCallback((val: string) => {
-    if (!val.trim()) {
-      setResult(EMPTY_RESULT)
-      return
-    }
-    setResult(parseCron(val, 10))
-  }, 300)
+  const { result, setInput, setInputImmediate } = useToolComputation<string, CronParseResult>(
+    (val) => parseCron(val, 10),
+    {
+      debounceMs: 300,
+      initial: EMPTY_RESULT,
+      isEmpty: (val) => !val.trim(),
+    },
+  )
 
   const handleChange = (val: string) => {
     setExpression(val)
-    process(val)
+    setInput(val)
   }
 
   const handlePreset = (expr: string) => {
     setExpression(expr)
-    setResult(parseCron(expr, 10))
+    setInputImmediate(expr)
   }
 
   return (

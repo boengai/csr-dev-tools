@@ -1,8 +1,8 @@
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { CopyButton, FieldForm, Tabs } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback } from '@/hooks'
+import { useToolComputation } from '@/hooks'
 import type { InputMode, ToolComponentProps } from '@/types'
 import {
   calculateSubnet,
@@ -18,8 +18,25 @@ const toolEntry = TOOL_REGISTRY_MAP['ip-subnet-calculator']
 
 const DEFAULT_CIDR = '192.168.1.0/24'
 const DEFAULT_RESULT = calculateSubnet('192.168.1.0', 24)
+const INITIAL_BAG = { error: '', result: DEFAULT_RESULT as SubnetResult | null }
 
 const PRESET_PREFIXES = [8, 16, 24, 25, 26, 27, 28, 29, 30, 31, 32] as const
+
+type SubnetInput = { cidrInput: string; ipInput: string; maskInput: string; mode: InputMode }
+type SubnetBag = { error: string; result: SubnetResult | null }
+
+const computeSubnet = ({ cidrInput, ipInput, maskInput, mode }: SubnetInput): SubnetBag => {
+  if (mode === 'cidr') {
+    if (cidrInput.trim().length === 0) return { error: '', result: null }
+    const parsed = parseCidr(cidrInput)
+    if (!parsed) return { error: 'Invalid CIDR notation — expected format: x.x.x.x/y', result: null }
+    return { error: '', result: calculateSubnet(parsed.ip, parsed.prefixLength) }
+  }
+  if (ipInput.trim().length === 0 && maskInput.trim().length === 0) return { error: '', result: null }
+  if (!validateIpv4(ipInput)) return { error: 'Invalid IPv4 address', result: null }
+  if (!validateSubnetMask(maskInput)) return { error: 'Invalid subnet mask — mask must be contiguous', result: null }
+  return { error: '', result: calculateSubnet(ipInput, maskToPrefix(maskInput)) }
+}
 
 const formatBinarySegment = (bits: string, startBitIndex: number): string => {
   let result = ''
@@ -56,96 +73,47 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
   const [cidrInput, setCidrInput] = useState(DEFAULT_CIDR)
   const [ipInput, setIpInput] = useState('')
   const [maskInput, setMaskInput] = useState('')
-  const [result, setResult] = useState<SubnetResult | null>(DEFAULT_RESULT)
-  const [error, setError] = useState('')
 
-  const ipInputRef = useRef(ipInput)
-  ipInputRef.current = ipInput
-  const maskInputRef = useRef(maskInput)
-  maskInputRef.current = maskInput
-  const cidrInputRef = useRef(cidrInput)
-  cidrInputRef.current = cidrInput
-
-  const performCalculation = useCallback(
-    (cidrValue: string, ipValue: string, maskValue: string, currentMode: InputMode) => {
-      if (currentMode === 'cidr') {
-        if (cidrValue.trim().length === 0) {
-          setResult(null)
-          setError('')
-          return
-        }
-        const parsed = parseCidr(cidrValue)
-        if (!parsed) {
-          setResult(null)
-          setError('Invalid CIDR notation — expected format: x.x.x.x/y')
-          return
-        }
-        setError('')
-        setResult(calculateSubnet(parsed.ip, parsed.prefixLength))
-      } else {
-        if (ipValue.trim().length === 0 && maskValue.trim().length === 0) {
-          setResult(null)
-          setError('')
-          return
-        }
-        if (!validateIpv4(ipValue)) {
-          setResult(null)
-          setError('Invalid IPv4 address')
-          return
-        }
-        if (!validateSubnetMask(maskValue)) {
-          setResult(null)
-          setError('Invalid subnet mask — mask must be contiguous')
-          return
-        }
-        const prefix = maskToPrefix(maskValue)
-        setError('')
-        setResult(calculateSubnet(ipValue, prefix))
-      }
-    },
-    [],
+  const { result: bag, setInput, setInputImmediate } = useToolComputation<SubnetInput, SubnetBag>(
+    computeSubnet,
+    { debounceMs: 300, initial: INITIAL_BAG },
   )
 
-  const debouncedCalculate = useDebounceCallback(performCalculation, 300)
+  const { result, error } = bag
 
   const handleCidrChange = useCallback(
     (value: string) => {
       setCidrInput(value)
-      debouncedCalculate(value, '', '', 'cidr')
+      setInput({ cidrInput: value, ipInput: '', maskInput: '', mode: 'cidr' })
     },
-    [debouncedCalculate],
+    [setInput],
   )
 
   const handleIpChange = useCallback(
     (value: string) => {
       setIpInput(value)
-      debouncedCalculate('', value, maskInputRef.current, 'ip-mask')
+      setInput({ cidrInput: '', ipInput: value, maskInput, mode: 'ip-mask' })
     },
-    [debouncedCalculate],
+    [maskInput, setInput],
   )
 
   const handleMaskChange = useCallback(
     (value: string) => {
       setMaskInput(value)
-      debouncedCalculate('', ipInputRef.current, value, 'ip-mask')
+      setInput({ cidrInput: '', ipInput, maskInput: value, mode: 'ip-mask' })
     },
-    [debouncedCalculate],
+    [ipInput, setInput],
   )
 
   const handleModeChange = useCallback(
     (newMode: InputMode) => {
       setMode(newMode)
-      setError('')
       if (newMode === 'cidr') {
-        if (result) {
-          setCidrInput(result.cidr)
-        }
+        if (result) setCidrInput(result.cidr)
       } else {
         if (result) {
           setIpInput(result.networkAddress)
           setMaskInput(result.subnetMask)
-          ipInputRef.current = result.networkAddress
-          maskInputRef.current = result.subnetMask
         }
       }
     },
@@ -155,23 +123,21 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
   const handlePreset = useCallback(
     (prefix: number) => {
       if (mode === 'cidr') {
-        const currentCidr = cidrInputRef.current
-        const parsed = parseCidr(currentCidr)
+        const parsed = parseCidr(cidrInput)
         const ip = parsed ? parsed.ip : '192.168.1.0'
         const newCidr = `${ip}/${prefix}`
         setCidrInput(newCidr)
-        performCalculation(newCidr, '', '', 'cidr')
+        setInputImmediate({ cidrInput: newCidr, ipInput: '', maskInput: '', mode: 'cidr' })
       } else {
-        const ip = ipInputRef.current || '192.168.1.0'
+        const ip = ipInput || '192.168.1.0'
         const mask = prefixToMask(prefix)
         setMaskInput(mask)
-        maskInputRef.current = mask
         if (validateIpv4(ip)) {
-          performCalculation('', ip, mask, 'ip-mask')
+          setInputImmediate({ cidrInput: '', ipInput: ip, maskInput: mask, mode: 'ip-mask' })
         }
       }
     },
-    [mode, performCalculation],
+    [cidrInput, ipInput, mode, setInputImmediate],
   )
 
   const resultRows = useMemo(() => {

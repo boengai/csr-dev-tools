@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 
 import { CopyButton, DataCellTable, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useToast, useToolComputation } from '@/hooks'
 import type { DateTime } from '@/types'
 import { getDaysInMonth, isValidTimestamp } from '@/utils'
 
@@ -46,33 +46,29 @@ const renderWithCopy = (label: string) => (val: string) => (
 
 const UnixTimestampSection = ({ showError }: { showError: (label: string) => void }) => {
   const [input, setInput] = useState('')
-  const [result, setResult] = useState<Array<string>>([])
 
-  const dbSetResult = useDebounceCallback((source: string) => {
-    if (source.length === 0) {
-      setResult([])
-      return
-    }
-    if (!isValidTimestamp(source)) {
-      setResult([])
-      showError('Enter a valid Unix timestamp (e.g., 1700000000)')
-      return
-    }
-    const inputNumber = Number(source)
-
-    // Auto-detect if timestamp is in seconds or milliseconds
-    // If the number is > 100 billion, it's very likely milliseconds
-    // since that would represent year 5138 in seconds (unrealistic)
-    const isMilliseconds = inputNumber > 100_000_000_000
-
-    const d = new Date(isMilliseconds ? inputNumber : inputNumber * 1_000)
-
-    setResult([isMilliseconds ? 'Milliseconds' : 'Seconds', d.toUTCString(), d.toString()])
-  }, 300)
+  const { result, setInput: setComputeInput } = useToolComputation<string, Array<string>>(
+    (source) => {
+      if (!isValidTimestamp(source)) throw new Error('Enter a valid Unix timestamp (e.g., 1700000000)')
+      const inputNumber = Number(source)
+      // Auto-detect seconds vs milliseconds: > 100 billion implies ms (year 5138 in seconds is unrealistic).
+      const isMilliseconds = inputNumber > 100_000_000_000
+      const d = new Date(isMilliseconds ? inputNumber : inputNumber * 1_000)
+      return [isMilliseconds ? 'Milliseconds' : 'Seconds', d.toUTCString(), d.toString()]
+    },
+    {
+      debounceMs: 300,
+      initial: [],
+      isEmpty: (source) => source.length === 0,
+      onError: (err) => {
+        showError(err instanceof Error ? err.message : 'Enter a valid Unix timestamp (e.g., 1700000000)')
+      },
+    },
+  )
 
   const handleInputChange = (val: string) => {
     setInput(val)
-    dbSetResult(val)
+    setComputeInput(val)
   }
 
   return (

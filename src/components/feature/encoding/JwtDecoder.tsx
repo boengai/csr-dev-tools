@@ -3,75 +3,67 @@ import { useState } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useToast, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { decodeJwt, formatPayloadWithTimestamps, isValidJwt } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['jwt-decoder']
 
+type JwtDecoded = {
+  header: string
+  payload: string
+  payloadCopy: string
+  signature: string
+}
+
+const EMPTY_DECODED: JwtDecoded = { header: '', payload: '', payloadCopy: '', signature: '' }
+
+const INVALID_JWT_MESSAGE = 'Enter a valid JWT token (e.g., eyJhbGciOiJIUzI1NiJ9...)'
+const DECODE_FAILURE_MESSAGE = 'JWT contains invalid header or payload — could not decode segments'
+
 export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
-  const [headerResult, setHeaderResult] = useState('')
-  const [payloadResult, setPayloadResult] = useState('')
-  const [payloadCopyValue, setPayloadCopyValue] = useState('')
-  const [signatureResult, setSignatureResult] = useState('')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
-  const process = (val: string) => {
-    if (val.length === 0) {
-      setHeaderResult('')
-      setPayloadResult('')
-      setPayloadCopyValue('')
-      setSignatureResult('')
-      return
-    }
-
-    if (!isValidJwt(val)) {
-      setHeaderResult('')
-      setPayloadResult('')
-      setPayloadCopyValue('')
-      setSignatureResult('')
-      toast({
-        action: 'add',
-        item: { label: 'Enter a valid JWT token (e.g., eyJhbGciOiJIUzI1NiJ9...)', type: 'error' },
-      })
-      return
-    }
-
-    try {
-      const { header, payload, signature } = decodeJwt(val)
-      setHeaderResult(JSON.stringify(header, null, 2))
-      setPayloadCopyValue(JSON.stringify(payload, null, 2))
-      setPayloadResult(formatPayloadWithTimestamps(payload))
-      setSignatureResult(signature)
-    } catch {
-      setHeaderResult('')
-      setPayloadResult('')
-      setPayloadCopyValue('')
-      setSignatureResult('')
-      toast({
-        action: 'add',
-        item: { label: 'JWT contains invalid header or payload — could not decode segments', type: 'error' },
-      })
-    }
-  }
-
-  const processInput = useDebounceCallback((val: string) => {
-    process(val)
-  }, 300)
+  const {
+    result: decoded,
+    setInput,
+    setInputImmediate,
+  } = useToolComputation<string, JwtDecoded>(
+    (val) => {
+      if (!isValidJwt(val)) throw new Error(INVALID_JWT_MESSAGE)
+      try {
+        const { header, payload, signature } = decodeJwt(val)
+        return {
+          header: JSON.stringify(header, null, 2),
+          payload: formatPayloadWithTimestamps(payload),
+          payloadCopy: JSON.stringify(payload, null, 2),
+          signature,
+        }
+      } catch {
+        throw new Error(DECODE_FAILURE_MESSAGE)
+      }
+    },
+    {
+      debounceMs: 300,
+      initial: EMPTY_DECODED,
+      isEmpty: (val) => val.length === 0,
+      onError: (err) => {
+        const message = err instanceof Error ? err.message : DECODE_FAILURE_MESSAGE
+        toast({ action: 'add', item: { label: message, type: 'error' } })
+      },
+    },
+  )
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    processInput(val)
+    setInput(val)
   }
 
   const handleReset = () => {
     setSource('')
-    setHeaderResult('')
-    setPayloadResult('')
-    setPayloadCopyValue('')
-    setSignatureResult('')
+    setInputImmediate('')
   }
 
   return (
@@ -113,33 +105,33 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
                 label={
                   <span className="flex items-center gap-1">
                     <span>Header</span>
-                    <CopyButton label="header" value={headerResult} />
+                    <CopyButton label="header" value={decoded.header} />
                   </span>
                 }
                 placeholder='{"alg": "HS256", "typ": "JWT"}'
-                value={headerResult}
+                value={decoded.header}
               />
 
               <CodeOutput
                 label={
                   <span className="flex items-center gap-1">
                     <span>Payload</span>
-                    <CopyButton label="payload" value={payloadCopyValue} />
+                    <CopyButton label="payload" value={decoded.payloadCopy} />
                   </span>
                 }
                 placeholder='{"sub": "1234567890", "name": "John Doe"}'
-                value={payloadResult}
+                value={decoded.payload}
               />
 
               <CodeOutput
                 label={
                   <span className="flex items-center gap-1">
                     <span>Signature (not verified — client-side only)</span>
-                    <CopyButton label="signature" value={signatureResult} />
+                    <CopyButton label="signature" value={decoded.signature} />
                   </span>
                 }
                 placeholder="Base64URL signature string"
-                value={signatureResult}
+                value={decoded.signature}
               />
             </div>
           </div>

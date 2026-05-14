@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback } from '@/hooks'
+import { useToolComputation } from '@/hooks'
 import type { CaseResult, ToolComponentProps } from '@/types'
 import {
   toCamelCase,
@@ -36,25 +36,29 @@ const CASES: Array<CaseResult> = [
 
 export const TextCaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
-  const [results, setResults] = useState<Array<{ label: string; value: string }>>([])
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
 
-  const processInput = useDebounceCallback((val: string) => {
-    if (val.length === 0) {
-      setResults([])
-      return
-    }
-    setResults(CASES.map((c) => ({ label: c.label, value: c.fn(val) })))
-  }, 300)
+  const {
+    result: results,
+    setInput,
+    setInputImmediate,
+  } = useToolComputation<string, Array<{ label: string; value: string }>>(
+    (val) => CASES.map((c) => ({ label: c.label, value: c.fn(val) })),
+    {
+      debounceMs: 300,
+      initial: [],
+      isEmpty: (val) => val.length === 0,
+    },
+  )
 
   const handleSourceChange = (val: string) => {
     setSource(val)
-    processInput(val)
+    setInput(val)
   }
 
   const handleReset = () => {
     setSource('')
-    setResults([])
+    setInputImmediate('')
   }
 
   return (

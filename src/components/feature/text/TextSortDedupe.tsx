@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback } from '@/hooks'
+import { useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { sortAndProcessText, type SortMode, type TextSortResult, tv } from '@/utils'
 
@@ -26,35 +26,40 @@ const SORT_OPTIONS = [
   { label: 'Numeric', value: 'numeric' },
 ]
 
+type SortInput = {
+  input: string
+  removeDuplicates: boolean
+  removeEmpty: boolean
+  sortMode: SortMode
+  trimLines: boolean
+}
+
 export const TextSortDedupe = (_props: ToolComponentProps) => {
   const [input, setInput] = useState('')
   const [sortMode, setSortMode] = useState<SortMode>('az')
   const [removeDuplicates, setRemoveDuplicates] = useState(false)
   const [removeEmpty, setRemoveEmpty] = useState(false)
   const [trimLines, setTrimLines] = useState(false)
-  const [result, setResult] = useState<TextSortResult | null>(null)
 
-  const processImmediate = (text: string, mode: SortMode, dedup: boolean, empty: boolean, trim: boolean) => {
-    if (!text.trim()) {
-      setResult(null)
-      return
-    }
-    setResult(
+  const { result, setInput: setComputeInput } = useToolComputation<SortInput, TextSortResult | null>(
+    ({ input: text, removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }) =>
       sortAndProcessText(text, { removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }),
-    )
-  }
-
-  const processDebounced = useDebounceCallback(processImmediate, 300)
+    {
+      debounceMs: 300,
+      initial: null,
+      isEmpty: ({ input: text }) => !text.trim(),
+    },
+  )
 
   const handleInputChange = (val: string) => {
     setInput(val)
-    processDebounced(val, sortMode, removeDuplicates, removeEmpty, trimLines)
+    setComputeInput({ input: val, removeDuplicates, removeEmpty, sortMode, trimLines })
   }
 
   const handleSortChange = (val: string) => {
     const mode = val as SortMode
     setSortMode(mode)
-    processImmediate(input, mode, removeDuplicates, removeEmpty, trimLines)
+    setComputeInput({ input, removeDuplicates, removeEmpty, sortMode: mode, trimLines })
   }
 
   const toggle = (
@@ -65,7 +70,13 @@ export const TextSortDedupe = (_props: ToolComponentProps) => {
     const next = !current
     setter(next)
     const opts = { dedup: removeDuplicates, empty: removeEmpty, trim: trimLines, [field]: next }
-    processImmediate(input, sortMode, opts.dedup, opts.empty, opts.trim)
+    setComputeInput({
+      input,
+      removeDuplicates: opts.dedup,
+      removeEmpty: opts.empty,
+      sortMode,
+      trimLines: opts.trim,
+    })
   }
 
   return (

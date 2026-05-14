@@ -2,7 +2,7 @@ import { useState } from 'react'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback } from '@/hooks'
+import { useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { parseUrl, type UrlParseResult } from '@/utils'
 
@@ -34,19 +34,19 @@ const ResultRow = ({ label, value, displayValue }: { label: string; value: strin
 
 export const UrlParser = (_props: ToolComponentProps) => {
   const [input, setInput] = useState('')
-  const [result, setResult] = useState<UrlParseResult>(EMPTY)
 
-  const process = useDebounceCallback((val: string) => {
-    if (!val.trim()) {
-      setResult(EMPTY)
-      return
-    }
-    setResult(parseUrl(val))
-  }, 300)
+  const { result, setInput: setComputeInput } = useToolComputation<string, UrlParseResult>(
+    (val) => parseUrl(val),
+    {
+      debounceMs: 300,
+      initial: EMPTY,
+      isEmpty: (val) => !val.trim(),
+    },
+  )
 
   const handleChange = (val: string) => {
     setInput(val)
-    process(val)
+    setComputeInput(val)
   }
 
   return (
