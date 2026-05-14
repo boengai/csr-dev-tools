@@ -80,3 +80,41 @@ same shape `<BidirectionalConverter>` uses for `sourceToolbarSlot`. The
 `renderPreview` ctx carries `{ pending, error, source, sourceUrl, result,
 resultUrl }`; the Tool decides per-phase rendering instead of a separate
 processing slot.
+
+## DiagramEditor
+
+The single seam the DB Diagram Tool owns: a pure-TS module (`src/diagram/`)
+that holds the document state, runs structural ops, manages the DBML
+round-trip, and absorbs autosave + named-diagram persistence behind a
+`DiagramStorage` adapter. Implemented by `DiagramEditor`
+(`src/diagram/editor.ts`).
+
+Callers see a single object — no `loadDiagramIndex`/`saveDiagram`/`generateId`
+calls in React, no debounce wiring, no `setDbmlText(toDbml())` chains. The
+React side observes via `subscribe` (document) and `subscribeToIndex` (saved
+diagrams list).
+
+Carries these invariants:
+
+1. **Autosave is debounced and coalesced** — every user mutation reschedules
+   one pending save (`autosaveMs`, default 3s). Rapid edits collapse into one
+   write. `flush()` forces the pending save; `dispose()` cancels it.
+2. **First save mints an id** — empty unsaved diagrams (no id, no tables) do
+   not save. The first user mutation past that threshold writes an index
+   entry with `createdAt = updatedAt = clock()`; subsequent saves preserve
+   `createdAt` and bump `updatedAt`.
+3. **Lifecycle ops bypass autosave** — `bootstrap`, `loadDiagram`,
+   `newDiagram`, `deleteDiagram`, `renameDiagram` mutate state and storage
+   without scheduling a save (they don't represent user edits).
+4. **DBML source-latch is internal** — `setDbmlText` flips
+   `dbmlSource: 'editor'` so structural ops stop overwriting a typed draft;
+   `syncDbmlFromDiagram()` re-renders the generated DBML in a single call.
+5. **JSON imports are always new** — `loadFromExportedJson(parsed, name)`
+   validates the schema, clears `diagramId`, and lets autosave mint a fresh
+   id. Imported files never overwrite a matching stored diagram.
+
+The `DiagramStorage` adapter (`{ loadIndex, saveIndex, loadDiagram,
+saveDiagram, deleteDiagram, generateId }`) decouples the editor from
+localStorage. `localStorageDiagramStorage` is the production adapter;
+`createInMemoryDiagramStorage()` is the test double — counters on `saves`
+and `deletes` make autosave behavior unit-testable without DOM.

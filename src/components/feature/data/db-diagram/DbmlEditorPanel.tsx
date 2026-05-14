@@ -19,7 +19,7 @@ export const DbmlEditorPanel = ({ onClose }: DbmlEditorPanelProps) => {
   }
 
   const handleSyncFromDiagram = () => {
-    editor.setDbmlText(editor.toDbml())
+    editor.syncDbmlFromDiagram()
   }
 
   return (

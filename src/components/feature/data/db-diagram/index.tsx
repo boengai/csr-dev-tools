@@ -6,20 +6,9 @@ import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { DiagramEditor } from '@/diagram/editor'
 import { documentToSchema } from '@/diagram/operations/export'
-import { schemaToDocument } from '@/diagram/operations/lifecycle'
-import { createInitialDocument } from '@/diagram/state'
-import { useDebounceCallback } from '@/hooks/useDebounceCallback'
 import { useToast } from '@/hooks/state'
 import type { DiagramInnerProps, DiagramSidePanelProps, SidePanel, ToolComponentProps } from '@/types'
 import { gridLayoutPositions } from '@/utils/db-diagram'
-import { validateDiagramSchema } from '@/utils/db-diagram-persistence'
-import {
-  generateDiagramId,
-  loadDiagram,
-  loadDiagramIndex,
-  saveDiagram,
-  saveDiagramIndex,
-} from '@/utils/db-diagram-storage'
 import { downloadTextFile } from '@/utils/file'
 
 import { DbmlEditorPanel } from './DbmlEditorPanel'
@@ -101,7 +90,7 @@ const DiagramInner = ({
 }
 
 // ---------------------------------------------------------------------------
-// DiagramWorkspace — owns editor, persistence, and UI state
+// DiagramWorkspace — owns editor + UI state. Persistence lives in the editor.
 // ---------------------------------------------------------------------------
 const DiagramWorkspace = () => {
   const editor = useMemo(() => new DiagramEditor(), [])
@@ -109,77 +98,14 @@ const DiagramWorkspace = () => {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { toast } = useToast()
 
-  // -------------------------------------------------------------------------
-  // Autosave: debounced, fires on every document change
-  // -------------------------------------------------------------------------
-  const performSave = useCallback(() => {
-    const doc = editor.getDocument()
-
-    // Skip empty unsaved diagrams.
-    if (!doc.diagramId && doc.tableOrder.length === 0) return
-
-    // If the diagram has no ID yet, mint one and thread it through the editor.
-    // Important: save inline below rather than deferring to the re-notify; otherwise
-    // first-save latency doubles (3s wait → replaceDocument notify → another 3s wait).
-    let id = doc.diagramId
-    let docToSave = doc
-    if (!id) {
-      id = generateDiagramId()
-      docToSave = { ...doc, diagramId: id }
-      editor.replaceDocument(docToSave)
-    }
-
-    const schema = documentToSchema(docToSave)
-    try {
-      saveDiagram(id, schema)
-    } catch {
-      toast({ action: 'add', item: { label: 'Failed to save diagram. localStorage may be full.', type: 'error' } })
-      return
-    }
-
-    const now = new Date().toISOString()
-    const idx = loadDiagramIndex()
-    const existing = idx.findIndex((e) => e.id === id)
-    const entry = {
-      createdAt: existing >= 0 ? idx[existing].createdAt : now,
-      id: id!,
-      name: docToSave.diagramName,
-      tableCount: docToSave.tableOrder.length,
-      updatedAt: now,
-    }
-    if (existing >= 0) {
-      idx[existing] = entry
-    } else {
-      idx.push(entry)
-    }
-    saveDiagramIndex(idx)
-  }, [editor, toast])
-
-  const debouncedSave = useDebounceCallback(performSave, 3000)
-
   useEffect(() => {
-    return editor.subscribe(() => debouncedSave())
-  }, [editor, debouncedSave])
+    editor.bootstrap()
+    return () => {
+      editor.flush()
+      editor.dispose()
+    }
+  }, [editor])
 
-  // -------------------------------------------------------------------------
-  // Rehydration: on mount, load the most-recently-updated stored diagram
-  // -------------------------------------------------------------------------
-  useEffect(() => {
-    const idx = loadDiagramIndex()
-    if (idx.length === 0) return
-
-    const latest = [...idx].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0]
-    const schema = loadDiagram(latest.id)
-    if (!schema) return
-
-    const base = createInitialDocument()
-    const doc = schemaToDocument(schema, base)
-    editor.replaceDocument({ ...doc, diagramId: latest.id, diagramName: latest.name })
-  }, [editor]) // eslint-disable-line react-hooks/exhaustive-deps
-
-  // -------------------------------------------------------------------------
-  // File I/O: export JSON
-  // -------------------------------------------------------------------------
   const handleExportJson = useCallback(() => {
     const doc = editor.getDocument()
     if (doc.tableOrder.length === 0) return
@@ -189,9 +115,6 @@ const DiagramWorkspace = () => {
     downloadTextFile(jsonStr, `${safeName}.json`, 'application/json')
   }, [editor])
 
-  // -------------------------------------------------------------------------
-  // File I/O: import JSON file
-  // -------------------------------------------------------------------------
   const handleImportJson = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
@@ -201,17 +124,14 @@ const DiagramWorkspace = () => {
       reader.onload = (event) => {
         try {
           const parsed = JSON.parse(event.target?.result as string)
-          if (!validateDiagramSchema(parsed)) {
+          const name = file.name.replace(/\.json$/i, '')
+          const loaded = editor.loadFromExportedJson(parsed, name)
+          if (!loaded) {
             toast({
               action: 'add',
               item: { label: 'Invalid diagram file. Expected a CSR Dev Tools diagram JSON.', type: 'error' },
             })
-            return
           }
-          const name = file.name.replace(/\.json$/i, '')
-          const base = { ...createInitialDocument(), diagramName: name }
-          const doc = schemaToDocument(parsed, base)
-          editor.replaceDocument({ ...doc, diagramId: null, diagramName: name })
         } catch {
           toast({
             action: 'add',

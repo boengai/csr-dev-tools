@@ -80,7 +80,7 @@ export type TextAreaInputProps = BaseInputProps &
   Partial<InputVariants>
 
 export type TextInputProps = BaseInputProps &
-  Pick<InputHTMLAttributes<HTMLInputElement>, 'autoFocus' | 'autoCorrect' | 'inputMode' | 'onKeyDown' | 'onClick'> &
+  Pick<InputHTMLAttributes<HTMLInputElement>, 'autoFocus' | 'autoCorrect' | 'inputMode' | 'onClick'> &
   RefAttributes<HTMLInputElement> &
   Partial<InputVariants> & {
     suffix?: ReactElement
@@ -107,6 +107,7 @@ type BaseInputProps = {
   onBlur?: () => void
   onChange?: (value: string) => void
   onEnter?: () => void
+  onEscape?: () => void
   placeholder?: string
   value?: string
 }

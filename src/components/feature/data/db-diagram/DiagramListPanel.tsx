@@ -3,9 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, TextInput } from '@/components/common'
 import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
 import type { DiagramIndexEntry, DiagramListPanelProps } from '@/types'
-import { schemaToDocument } from '@/diagram/operations/lifecycle'
-import { createInitialDocument } from '@/diagram/state'
-import { deleteDiagram, formatRelativeTime, loadDiagram, loadDiagramIndex, saveDiagramIndex, tv } from '@/utils'
+import { formatRelativeTime, tv } from '@/utils'
 
 import { CloseButton } from './CloseButton'
 
@@ -21,45 +19,23 @@ const diagramItemStyles = tv({
 
 export const DiagramListPanel = ({ onClose }: DiagramListPanelProps) => {
   const { document, editor } = useDiagram()
-  const [diagramIndex, setDiagramIndex] = useState<Array<DiagramIndexEntry>>(() => loadDiagramIndex())
+  const [diagramIndex, setDiagramIndex] = useState<Array<DiagramIndexEntry>>(() => editor.listDiagrams())
   const [renamingId, setRenamingId] = useState<string | null>(null)
   const [renameValue, setRenameValue] = useState('')
   const renameInputRef = useRef<HTMLInputElement | null>(null)
 
-  // Refresh the index whenever the panel mounts or document changes (saves may update it)
   useEffect(() => {
-    setDiagramIndex(loadDiagramIndex())
-  }, [document.diagramId, document.diagramName])
+    setDiagramIndex(editor.listDiagrams())
+    return editor.subscribeToIndex(setDiagramIndex)
+  }, [editor])
 
-  const handleLoadDiagram = (id: string) => {
-    const schema = loadDiagram(id)
-    if (!schema) return
-    const doc = schemaToDocument(schema, createInitialDocument())
-    // preserve the diagramId and name from the index entry
-    const entry = diagramIndex.find((e) => e.id === id)
-    editor.replaceDocument({ ...doc, diagramId: id, diagramName: entry?.name ?? doc.diagramName })
-  }
+  const handleLoadDiagram = (id: string) => editor.loadDiagram(id)
 
-  const handleNewDiagram = () => {
-    const idx = loadDiagramIndex()
-    let num = 1
-    const baseName = 'Untitled Diagram'
-    const existingNames = new Set(idx.map((e) => e.name))
-    let name = baseName
-    while (existingNames.has(name)) {
-      num++
-      name = `${baseName} ${num}`
-    }
-    editor.replaceDocument({ ...createInitialDocument(), diagramName: name })
-  }
+  const handleNewDiagram = () => editor.newDiagram()
 
   const handleDeleteDiagram = (id: string) => {
     if (!window.confirm('Delete this diagram? This cannot be undone.')) return
-    deleteDiagram(id)
-    setDiagramIndex(loadDiagramIndex())
-    if (document.diagramId === id) {
-      editor.replaceDocument(createInitialDocument())
-    }
+    editor.deleteDiagram(id)
   }
 
   const handleStartRenaming = (id: string, name: string) => {
@@ -69,22 +45,7 @@ export const DiagramListPanel = ({ onClose }: DiagramListPanelProps) => {
   }
 
   const handleRenameDiagram = (id: string, newName: string) => {
-    const trimmed = newName.trim()
-    if (!trimmed) {
-      setRenamingId(null)
-      return
-    }
-    const idx = loadDiagramIndex()
-    const entry = idx.find((e) => e.id === id)
-    if (entry) {
-      entry.name = trimmed
-      saveDiagramIndex(idx)
-      setDiagramIndex([...idx])
-      // If this is the active diagram, update its name in the editor too
-      if (document.diagramId === id) {
-        editor.setDiagramName(trimmed)
-      }
-    }
+    editor.renameDiagram(id, newName)
     setRenamingId(null)
   }
 
@@ -124,10 +85,8 @@ export const DiagramListPanel = ({ onClose }: DiagramListPanelProps) => {
                       onBlur={() => handleRenameDiagram(entry.id, renameValue)}
                       onChange={(value) => setRenameValue(value)}
                       onClick={(e) => e.stopPropagation()}
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') handleRenameDiagram(entry.id, renameValue)
-                        if (e.key === 'Escape') setRenamingId(null)
-                      }}
+                      onEnter={() => handleRenameDiagram(entry.id, renameValue)}
+                      onEscape={() => setRenamingId(null)}
                       name="diagram-name"
                       ref={renameInputRef}
                       size="compact"

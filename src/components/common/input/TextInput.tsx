@@ -26,6 +26,7 @@ export const TextInput = ({
   disabled,
   onChange,
   onEnter,
+  onEscape,
   placeholder = 'Type here...',
   suffix,
   type,
@@ -50,6 +51,8 @@ export const TextInput = ({
   const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
     if (e.key === 'Enter') {
       onEnter?.()
+    } else if (e.key === 'Escape') {
+      onEscape?.()
     }
   }
 

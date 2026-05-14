@@ -56,10 +56,8 @@ export const DiagramToolbar = ({
           name="diagram-name"
           onBlur={handleCommitName}
           onChange={(value) => setEditNameValue(value)}
-          onKeyDown={(e) => {
-            if (e.key === 'Enter') handleCommitName()
-            if (e.key === 'Escape') handleStopEditingName()
-          }}
+          onEnter={handleCommitName}
+          onEscape={handleStopEditingName}
           size="compact"
           type="text"
           value={editNameValue}

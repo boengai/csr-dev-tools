@@ -1,4 +1,4 @@
-import type { ColumnId, ColumnRef, DiagramDocument, EditorRelation, ImportResult, RelationId, RelationKind, SqlDialect, TableColumn, TableId } from '@/types'
+import type { ColumnId, ColumnRef, DiagramDocument, DiagramIndexEntry, DiagramStorage, EditorRelation, ImportResult, RelationId, RelationKind, SqlDialect, TableColumn, TableId } from '@/types'
 import { cloneDocument, createInitialDocument } from './state'
 import * as columnOps from './operations/columns'
 import * as dbmlOps from './operations/dbml'
@@ -7,8 +7,18 @@ import * as importOps from './operations/import'
 import * as lifecycleOps from './operations/lifecycle'
 import * as relationOps from './operations/relations'
 import * as tableOps from './operations/tables'
+import { localStorageDiagramStorage } from './storage'
+import { validateDiagramSchema } from '@/utils/db-diagram-persistence'
 
 type Listener = (document: DiagramDocument) => void
+type IndexListener = (entries: Array<DiagramIndexEntry>) => void
+
+type DiagramEditorOptions = {
+  storage?: DiagramStorage
+  document?: DiagramDocument
+  autosaveMs?: number
+  clock?: () => string
+}
 
 const isValidDocument = (value: unknown): value is DiagramDocument => {
   if (!value || typeof value !== 'object') return false
@@ -25,9 +35,68 @@ const isValidDocument = (value: unknown): value is DiagramDocument => {
 export class DiagramEditor {
   private document: DiagramDocument
   private listeners: Set<Listener> = new Set()
+  private indexListeners: Set<IndexListener> = new Set()
+  private storage: DiagramStorage
+  private autosaveMs: number
+  private clock: () => string
+  private autosaveTimer: ReturnType<typeof setTimeout> | null = null
 
-  constructor(initial?: DiagramDocument) {
-    this.document = initial ? cloneDocument(initial) : createInitialDocument()
+  constructor(options: DiagramEditorOptions = {}) {
+    this.storage = options.storage ?? localStorageDiagramStorage
+    this.document = options.document ? cloneDocument(options.document) : createInitialDocument()
+    this.autosaveMs = options.autosaveMs ?? 3000
+    this.clock = options.clock ?? (() => new Date().toISOString())
+  }
+
+  listDiagrams(): Array<DiagramIndexEntry> {
+    return this.storage.loadIndex()
+  }
+
+  subscribeToIndex(listener: IndexListener): () => void {
+    this.indexListeners.add(listener)
+    return () => {
+      this.indexListeners.delete(listener)
+    }
+  }
+
+  loadDiagram(id: string): void {
+    const schema = this.storage.loadDiagram(id)
+    if (!schema) return
+    const entry = this.storage.loadIndex().find((e) => e.id === id)
+    const next = lifecycleOps.schemaToDocument(schema, createInitialDocument())
+    this.document = { ...next, diagramId: id, diagramName: entry?.name ?? next.diagramName }
+    this.notify()
+  }
+
+  deleteDiagram(id: string): void {
+    this.storage.deleteDiagram(id)
+    if (this.document.diagramId === id) {
+      this.document = createInitialDocument()
+      this.notify()
+    }
+    this.notifyIndex()
+  }
+
+  renameDiagram(id: string, name: string): void {
+    const trimmed = name.trim()
+    if (!trimmed) return
+    const idx = this.storage.loadIndex()
+    const entry = idx.find((e) => e.id === id)
+    if (!entry) return
+    entry.name = trimmed
+    this.storage.saveIndex(idx)
+    if (this.document.diagramId === id) {
+      this.document = { ...this.document, diagramName: trimmed }
+      this.notify()
+    }
+    this.notifyIndex()
+  }
+
+  bootstrap(): void {
+    const idx = this.storage.loadIndex()
+    if (idx.length === 0) return
+    const latest = [...idx].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0]
+    this.loadDiagram(latest.id)
   }
 
   getDocument(): DiagramDocument {
@@ -53,6 +122,61 @@ export class DiagramEditor {
   protected commit(next: DiagramDocument): void {
     this.document = next
     this.notify()
+    this.scheduleAutosave()
+  }
+
+  flush(): void {
+    if (this.autosaveTimer === null) return
+    clearTimeout(this.autosaveTimer)
+    this.autosaveTimer = null
+    this.performAutosave()
+  }
+
+  dispose(): void {
+    if (this.autosaveTimer !== null) {
+      clearTimeout(this.autosaveTimer)
+      this.autosaveTimer = null
+    }
+    this.listeners.clear()
+    this.indexListeners.clear()
+  }
+
+  private scheduleAutosave(): void {
+    if (this.autosaveTimer !== null) clearTimeout(this.autosaveTimer)
+    this.autosaveTimer = setTimeout(() => {
+      this.autosaveTimer = null
+      this.performAutosave()
+    }, this.autosaveMs)
+  }
+
+  private performAutosave(): void {
+    const doc = this.document
+    if (!doc.diagramId && doc.tableOrder.length === 0) return
+
+    let id = doc.diagramId
+    if (!id) {
+      id = this.storage.generateId()
+      this.document = { ...doc, diagramId: id }
+      this.notify()
+    }
+
+    const schema = exportOps.documentToSchema(this.document)
+    this.storage.saveDiagram(id, schema)
+
+    const now = this.clock()
+    const idx = this.storage.loadIndex()
+    const existing = idx.findIndex((e) => e.id === id)
+    const entry: DiagramIndexEntry = {
+      id,
+      name: this.document.diagramName,
+      tableCount: this.document.tableOrder.length,
+      createdAt: existing >= 0 ? idx[existing].createdAt : now,
+      updatedAt: now,
+    }
+    if (existing >= 0) idx[existing] = entry
+    else idx.push(entry)
+    this.storage.saveIndex(idx)
+    this.notifyIndex()
   }
 
   protected afterStructuralChange(doc: DiagramDocument): DiagramDocument {
@@ -143,7 +267,16 @@ export class DiagramEditor {
   }
 
   newDiagram(): void {
-    this.commit(lifecycleOps.newDiagram())
+    const existing = new Set(this.storage.loadIndex().map((entry) => entry.name))
+    const base = 'Untitled Diagram'
+    let name = base
+    let n = 1
+    while (existing.has(name)) {
+      n++
+      name = `${base} ${n}`
+    }
+    this.document = { ...lifecycleOps.newDiagram(), diagramName: name }
+    this.notify()
   }
 
   setDiagramName(name: string): void {
@@ -152,6 +285,19 @@ export class DiagramEditor {
 
   setDbmlText(text: string): void {
     this.commit(dbmlOps.setDbmlText(this.document, text))
+  }
+
+  syncDbmlFromDiagram(): void {
+    const dbml = exportOps.toDbml(this.document)
+    this.commit(dbmlOps.setDbmlText(this.document, dbml))
+  }
+
+  loadFromExportedJson(parsed: unknown, name: string): boolean {
+    if (!validateDiagramSchema(parsed)) return false
+    const base = { ...createInitialDocument(), diagramName: name }
+    const doc = lifecycleOps.schemaToDocument(parsed, base)
+    this.commit({ ...doc, diagramId: null, diagramName: name })
+    return true
   }
 
   applyDbmlNow(): ImportResult {
@@ -178,5 +324,10 @@ export class DiagramEditor {
 
   private notify(): void {
     for (const listener of this.listeners) listener(this.document)
+  }
+
+  private notifyIndex(): void {
+    const snapshot = this.storage.loadIndex()
+    for (const listener of this.indexListeners) listener(snapshot)
   }
 }

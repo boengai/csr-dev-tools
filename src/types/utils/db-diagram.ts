@@ -79,6 +79,15 @@ export type DiagramStore = {
   index: Array<DiagramIndexEntry>
 }
 
+export type DiagramStorage = {
+  loadIndex(): Array<DiagramIndexEntry>
+  saveIndex(index: Array<DiagramIndexEntry>): void
+  loadDiagram(id: string): DiagramSchema | null
+  saveDiagram(id: string, schema: DiagramSchema): void
+  deleteDiagram(id: string): void
+  generateId(): string
+}
+
 export type SidePanel =
   | 'dbml'
   | 'diagram-list'

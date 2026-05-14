@@ -90,12 +90,10 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
             name="table-name"
             onBlur={commitName}
             onChange={(value) => setEditName(value)}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') commitName()
-              if (e.key === 'Escape') {
-                setEditName(data.tableName)
-                setEditing(false)
-              }
+            onEnter={commitName}
+            onEscape={() => {
+              setEditName(data.tableName)
+              setEditing(false)
             }}
             ref={inputRef}
             size="compact"
