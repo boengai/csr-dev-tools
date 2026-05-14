@@ -2,6 +2,7 @@ import type { SplashScreenDevice } from '@/constants'
 import { IOS_DEVICES, MASKABLE_ICON_SIZES, MASKABLE_SAFE_ZONE_RATIO, PWA_ICON_SIZES } from '@/constants'
 import type { SplashScreenResult, PwaIconResult, SplashScreenGeneratorOutput } from '@/types/utils/splash-screen'
 import { canvasToBlob } from './canvas'
+import { downloadBlobsAsZip } from './download'
 
 const slugify = (name: string) =>
   name
@@ -176,31 +177,18 @@ export const generateManifestIcons = (): string => {
 }
 
 export const downloadSplashScreenZip = async (output: SplashScreenGeneratorOutput): Promise<void> => {
-  const { default: JSZip } = await import('jszip')
-  const zip = new JSZip()
-
+  const files: Record<string, Blob | string> = {
+    'apple-splash-meta.html': output.metaTags,
+    'manifest-icons.json': output.manifestJson,
+  }
   for (const splash of output.splashScreens) {
-    zip.file(`ios-splash/${splash.fileName}`, splash.blob)
+    files[`ios-splash/${splash.fileName}`] = splash.blob
   }
-
   for (const icon of output.icons) {
-    if (icon.maskable) {
-      zip.file(`icons/maskable/${icon.fileName}`, icon.blob)
-    } else {
-      zip.file(`icons/${icon.fileName}`, icon.blob)
-    }
+    const dir = icon.maskable ? 'icons/maskable' : 'icons'
+    files[`${dir}/${icon.fileName}`] = icon.blob
   }
-
-  zip.file('apple-splash-meta.html', output.metaTags)
-  zip.file('manifest-icons.json', output.manifestJson)
-
-  const content = await zip.generateAsync({ type: 'blob' })
-  const url = URL.createObjectURL(content)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'splash-screen-assets.zip'
-  a.click()
-  URL.revokeObjectURL(url)
+  await downloadBlobsAsZip(files, 'splash-screen-assets.zip')
 }
 
 export type { SplashScreenResult, PwaIconResult, SplashScreenGeneratorOutput } from '@/types/utils/splash-screen'

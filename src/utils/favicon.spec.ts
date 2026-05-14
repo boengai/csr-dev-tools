@@ -101,16 +101,11 @@ describe('favicon utils', () => {
     })
 
     it('triggers download with correct filename', async () => {
-      const mockClick = vi.fn()
-      vi.spyOn(document, 'createElement').mockReturnValue({
-        href: '',
-        download: '',
-        click: mockClick,
-      } as unknown as HTMLAnchorElement)
-
+      const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined)
+      clickSpy.mockClear()
       const mockUrl = 'blob:mock'
       vi.spyOn(URL, 'createObjectURL').mockReturnValue(mockUrl)
-      vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
+      const revokeSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
 
       const mockResults: Array<FaviconResult> = [
         {
@@ -121,9 +116,11 @@ describe('favicon utils', () => {
       ]
 
       await downloadFaviconsAsZip(mockResults)
+      await Promise.resolve() // flush queueMicrotask
 
-      expect(mockClick).toHaveBeenCalledOnce()
-      expect(URL.revokeObjectURL).toHaveBeenCalledWith(mockUrl)
+      expect(clickSpy).toHaveBeenCalledOnce()
+      expect(revokeSpy).toHaveBeenCalledWith(mockUrl)
+      clickSpy.mockRestore()
     })
   })
 })

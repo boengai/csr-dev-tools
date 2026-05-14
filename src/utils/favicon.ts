@@ -1,7 +1,6 @@
-import JSZip from 'jszip'
-
 import type { FaviconSize, FaviconResult } from '@/types/utils/favicon'
 import { canvasToBlob } from './canvas'
+import { downloadBlobsAsZip } from './download'
 
 export const FAVICON_SIZES: Array<FaviconSize> = [
   { height: 16, name: 'favicon-16x16.png', rel: 'icon', width: 16 },
@@ -68,19 +67,11 @@ export const generateFaviconLinkTags = (sizes: Array<FaviconSize> = FAVICON_SIZE
  * Download all favicon results as a ZIP file
  */
 export const downloadFaviconsAsZip = async (results: Array<FaviconResult>): Promise<void> => {
-  const zip = new JSZip()
-
+  const files: Record<string, Blob> = {}
   for (const result of results) {
-    zip.file(result.size.name, result.blob)
+    files[result.size.name] = result.blob
   }
-
-  const content = await zip.generateAsync({ type: 'blob' })
-  const url = URL.createObjectURL(content)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = 'favicons.zip'
-  a.click()
-  URL.revokeObjectURL(url)
+  await downloadBlobsAsZip(files, 'favicons.zip')
 }
 
 export type { FaviconSize, FaviconResult } from '@/types/utils/favicon'
