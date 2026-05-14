@@ -72,17 +72,6 @@ export const generatePlaceholderCanvas = (options: PlaceholderOptions): HTMLCanv
   return canvas
 }
 
-export const canvasToBlob = (canvas: HTMLCanvasElement): Promise<Blob> =>
-  new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (blob) {
-        resolve(blob)
-      } else {
-        reject(new Error('Failed to convert canvas to blob'))
-      }
-    }, 'image/png')
-  })
-
 export const downloadSvg = (svgString: string, filename: string) => {
   const blob = new Blob([svgString], { type: 'image/svg+xml' })
   downloadBlob(blob, filename)

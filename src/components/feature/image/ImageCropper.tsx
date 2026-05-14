@@ -9,6 +9,7 @@ import { useToast } from '@/hooks'
 import type { AspectRatioPreset, CropRegion, ToolComponentProps } from '@/types'
 import {
   ASPECT_RATIO_OPTIONS,
+  canvasToBlob,
   clampCropRegion,
   getAspectRatio,
   getDefaultCrop,
@@ -32,28 +33,15 @@ const cropImageCanvas = (
   image: HTMLImageElement,
   crop: CropRegion,
   mimeType: string,
-): Promise<Blob> =>
-  new Promise((resolve, reject) => {
-    const canvas = document.createElement('canvas')
-    canvas.width = crop.width
-    canvas.height = crop.height
-    const ctx = canvas.getContext('2d')
-    if (!ctx) {
-      reject(new Error('Canvas context not available'))
-      return
-    }
-    ctx.drawImage(image, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height)
-    canvas.toBlob(
-      (blob) => {
-        if (!blob) {
-          reject(new Error('Failed to create image blob'))
-          return
-        }
-        resolve(blob)
-      },
-      mimeType,
-    )
-  })
+): Promise<Blob> => {
+  const canvas = document.createElement('canvas')
+  canvas.width = crop.width
+  canvas.height = crop.height
+  const ctx = canvas.getContext('2d')
+  if (!ctx) return Promise.reject(new Error('Canvas context not available'))
+  ctx.drawImage(image, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height)
+  return canvasToBlob(canvas, mimeType)
+}
 
 type CropControls = {
   aspectPreset: AspectRatioPreset

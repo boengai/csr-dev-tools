@@ -1,6 +1,7 @@
 import JSZip from 'jszip'
 
 import type { FaviconSize, FaviconResult } from '@/types/utils/favicon'
+import { canvasToBlob } from './canvas'
 
 export const FAVICON_SIZES: Array<FaviconSize> = [
   { height: 16, name: 'favicon-16x16.png', rel: 'icon', width: 16 },
@@ -28,21 +29,6 @@ const resizeToCanvas = (img: HTMLImageElement, width: number, height: number): H
   const y = (height - scaledH) / 2
   ctx.drawImage(img, x, y, scaledW, scaledH)
   return canvas
-}
-
-/**
- * Convert a canvas to a Blob
- */
-const canvasToBlob = (canvas: HTMLCanvasElement): Promise<Blob> => {
-  return new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (blob) {
-        resolve(blob)
-      } else {
-        reject(new Error('Failed to convert canvas to blob'))
-      }
-    }, 'image/png')
-  })
 }
 
 /**

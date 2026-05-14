@@ -1,6 +1,7 @@
 import type { SplashScreenDevice } from '@/constants'
 import { IOS_DEVICES, MASKABLE_ICON_SIZES, MASKABLE_SAFE_ZONE_RATIO, PWA_ICON_SIZES } from '@/constants'
 import type { SplashScreenResult, PwaIconResult, SplashScreenGeneratorOutput } from '@/types/utils/splash-screen'
+import { canvasToBlob } from './canvas'
 
 const slugify = (name: string) =>
   name
@@ -8,14 +9,6 @@ const slugify = (name: string) =>
     .replace(/[""]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/(^-|-$)/g, '')
-
-const canvasToBlob = (canvas: HTMLCanvasElement): Promise<Blob> =>
-  new Promise((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (blob) resolve(blob)
-      else reject(new Error('Failed to convert canvas to blob'))
-    }, 'image/png')
-  })
 
 const generateSplashScreen = async (
   image: HTMLImageElement,

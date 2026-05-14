@@ -1,3 +1,5 @@
+import { canvasToBlob } from './canvas'
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let cachedPipeline: Promise<any> | null = null
 
@@ -43,12 +45,7 @@ export async function removeBackground(image: Blob, onProgress?: (progress: numb
   const imageData = new ImageData(pixelArray, width, height)
   ctx.putImageData(imageData, 0, 0)
 
-  return new Promise<Blob>((resolve, reject) => {
-    canvas.toBlob((blob) => {
-      if (blob) resolve(blob)
-      else reject(new Error('Failed to create PNG blob'))
-    }, 'image/png')
-  })
+  return canvasToBlob(canvas)
 }
 
 export async function applyBackground(foreground: Blob, color: string): Promise<Blob> {
@@ -76,12 +73,7 @@ export async function applyBackground(foreground: Blob, color: string): Promise<
     ctx.fillRect(0, 0, canvas.width, canvas.height)
     ctx.drawImage(img, 0, 0)
 
-    return new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob((blob) => {
-        if (blob) resolve(blob)
-        else reject(new Error('Failed to create PNG blob'))
-      }, 'image/png')
-    })
+    return canvasToBlob(canvas)
   } finally {
     URL.revokeObjectURL(url)
   }
