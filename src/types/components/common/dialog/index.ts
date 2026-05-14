@@ -1,5 +1,6 @@
 import type { ReactElement, ReactNode } from 'react'
 
+export * from './toolDialogFrame'
 export * from './toolDialogShell'
 
 export type DialogProps = Partial<DialogVariants> & {

@@ -1,7 +1,5 @@
-import { useState } from 'react'
-
-import { Button, CopyButton, FieldForm, ToggleButton } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { CopyButton, FieldForm, ToggleButton } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolFields } from '@/hooks'
 import type { Flags, ToolComponentProps } from '@/types'
@@ -74,7 +72,6 @@ const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
 )
 
 export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
   const {
@@ -105,108 +102,97 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
   const copyText = computed.regex ? formatMatchesForCopy(matches) : ''
 
   return (
-    <>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={reset}
+      title="Regex Tester"
+      triggers={[{ label: 'Test Regex' }]}
+    >
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+        <div className="flex flex-col gap-4">
+          <FieldForm
+            label={
+              <span className="flex items-center gap-2">
+                <span>Pattern</span>
+                <span className="flex gap-1">
+                  <FlagToggle
+                    active={flags.g}
+                    flag="g"
+                    onToggle={() => setFields({ flags: { ...flags, g: !flags.g } })}
+                  />
+                  <FlagToggle
+                    active={flags.i}
+                    flag="i"
+                    onToggle={() => setFields({ flags: { ...flags, i: !flags.i } })}
+                  />
+                  <FlagToggle
+                    active={flags.m}
+                    flag="m"
+                    onToggle={() => setFields({ flags: { ...flags, m: !flags.m } })}
+                  />
+                </span>
+              </span>
+            }
+            name="pattern"
+            onChange={(val) => setFields({ pattern: val })}
+            placeholder="\d+"
+            type="text"
+            value={pattern}
+          />
 
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
-            Test Regex
-          </Button>
+          <FieldForm
+            label="Test String"
+            name="test-string"
+            onChange={(val) => setFields({ testString: val })}
+            placeholder="Enter text to test against..."
+            type="code"
+            value={testString}
+          />
+        </div>
+
+        <div className="border-t-2 border-dashed border-gray-900" />
+
+        <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <span className="text-body-sm font-medium text-gray-400">
+              {loading
+                ? 'Computing...'
+                : computed.regex != null
+                  ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'} found`
+                  : 'Output'}
+            </span>
+            {computed.regex?.capped && <span className="text-body-xs text-warning">Showing first 5,000 matches</span>}
+            {copyText && <CopyButton label="matches" value={copyText} />}
+          </div>
+
+          <div className="text-sm wrap-break-words overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono whitespace-pre-wrap">
+            {computed.segments.length > 0 ? (
+              (() => {
+                let offset = 0
+                return computed.segments.map((segment) => {
+                  const key = `seg-${offset}`
+                  offset += segment.text.length
+                  return segment.isMatch ? (
+                    <span className="rounded-xs bg-primary/20 text-primary" key={key}>
+                      {segment.text}
+                    </span>
+                  ) : (
+                    <span className="text-gray-400" key={key}>
+                      {segment.text}
+                    </span>
+                  )
+                })
+              })()
+            ) : (
+              <p className="text-gray-600">Highlighted matches will appear here...</p>
+            )}
+          </div>
+
+          {matches.length > 0 && <MatchDetails matches={matches} />}
         </div>
       </div>
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={setDialogOpen}
-        onReset={reset}
-        open={dialogOpen}
-        size="screen"
-        title="Regex Tester"
-      >
-        <div className="flex w-full grow flex-col gap-4">
-          <div className="flex flex-col gap-4">
-            <FieldForm
-              label={
-                <span className="flex items-center gap-2">
-                  <span>Pattern</span>
-                  <span className="flex gap-1">
-                    <FlagToggle
-                      active={flags.g}
-                      flag="g"
-                      onToggle={() => setFields({ flags: { ...flags, g: !flags.g } })}
-                    />
-                    <FlagToggle
-                      active={flags.i}
-                      flag="i"
-                      onToggle={() => setFields({ flags: { ...flags, i: !flags.i } })}
-                    />
-                    <FlagToggle
-                      active={flags.m}
-                      flag="m"
-                      onToggle={() => setFields({ flags: { ...flags, m: !flags.m } })}
-                    />
-                  </span>
-                </span>
-              }
-              name="pattern"
-              onChange={(val) => setFields({ pattern: val })}
-              placeholder="\d+"
-              type="text"
-              value={pattern}
-            />
-
-            <FieldForm
-              label="Test String"
-              name="test-string"
-              onChange={(val) => setFields({ testString: val })}
-              placeholder="Enter text to test against..."
-              type="code"
-              value={testString}
-            />
-          </div>
-
-          <div className="border-t-2 border-dashed border-gray-900" />
-
-          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <span className="text-body-sm font-medium text-gray-400">
-                {loading
-                  ? 'Computing...'
-                  : computed.regex != null
-                    ? `${matchCount} ${matchCount === 1 ? 'match' : 'matches'} found`
-                    : 'Output'}
-              </span>
-              {computed.regex?.capped && <span className="text-body-xs text-warning">Showing first 5,000 matches</span>}
-              {copyText && <CopyButton label="matches" value={copyText} />}
-            </div>
-
-            <div className="text-sm wrap-break-words overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono whitespace-pre-wrap">
-              {computed.segments.length > 0 ? (
-                (() => {
-                  let offset = 0
-                  return computed.segments.map((segment) => {
-                    const key = `seg-${offset}`
-                    offset += segment.text.length
-                    return segment.isMatch ? (
-                      <span className="rounded-xs bg-primary/20 text-primary" key={key}>
-                        {segment.text}
-                      </span>
-                    ) : (
-                      <span className="text-gray-400" key={key}>
-                        {segment.text}
-                      </span>
-                    )
-                  })
-                })()
-              ) : (
-                <p className="text-gray-600">Highlighted matches will appear here...</p>
-              )}
-            </div>
-
-            {matches.length > 0 && <MatchDetails matches={matches} />}
-          </div>
-        </div>
-      </ToolDialogShell>
-    </>
+    </ToolDialogFrame>
   )
 }

@@ -71,6 +71,29 @@ Carries one extra invariant beyond the pipeline:
 `setFieldsImmediate` so any pending compute is cancelled and `isEmpty`-driven
 short-circuits fire synchronously.
 
+## Tool dialog frame
+
+The page-level frame for a Tool whose interior lives in a dialog. Implemented
+by `<ToolDialogFrame>` (`src/components/common/dialog/ToolDialogFrame.tsx`).
+
+Replaces the four-concern boilerplate every dialog Tool used to repeat:
+`useState(dialogOpen)`, the centered tile layout (description + button column),
+the trigger button(s), and the controlled `<ToolDialogShell>` wiring
+(`open`/`onOpenChange`/`onAfterDialogClose`). The Tool's role narrows to
+`triggers`, `title`, `onReset`, and the dialog body.
+
+Each trigger is `{ label, onOpen? }`. `onOpen` fires synchronously in the same
+React event that flips the dialog open, so any state seeded there (e.g.
+`mode: 'encrypt'` from the Encrypt button) is committed before the body
+renders. Two-trigger Tools (AES Encrypt/Decrypt, String Escape/Unescape)
+collapse their bespoke `openDialog(mode)` helper into one trigger entry per
+button.
+
+`<ToolDialogShell>` remains the lower-level escape hatch — use it directly
+when the tile shape doesn't fit (custom upload tile, multi-dialog Tools).
+`<ImageToolShell>` and `<BidirectionalConverter>` are unaffected; their tile
+shapes have their own concerns.
+
 ## Bidirectional converter
 
 A Tool that converts between two formats with mode-swap support — JSON ↔ CSV,

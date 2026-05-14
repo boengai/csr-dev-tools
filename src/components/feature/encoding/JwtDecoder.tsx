@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -23,7 +23,6 @@ const DECODE_FAILURE_MESSAGE = 'JWT contains invalid header or payload — could
 
 export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
   const {
@@ -67,76 +66,65 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
   }
 
   return (
-    <>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleReset}
+      title="JWT Decode"
+      triggers={[{ label: 'Decode' }]}
+    >
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <FieldForm
+              label="JWT Token"
+              name="dialog-source"
+              onChange={handleSourceChange}
+              placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+              type="code"
+              value={source}
+            />
+          </div>
 
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
-            Decode
-          </Button>
-        </div>
-      </div>
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={setDialogOpen}
-        onReset={handleReset}
-        open={dialogOpen}
-        size="screen"
-        title="JWT Decode"
-      >
-        <div className="flex w-full grow flex-col gap-4">
-          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <FieldForm
-                label="JWT Token"
-                name="dialog-source"
-                onChange={handleSourceChange}
-                placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                type="code"
-                value={source}
-              />
-            </div>
+          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
-            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
+          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-y-auto">
+            <CodeOutput
+              label={
+                <span className="flex items-center gap-1">
+                  <span>Header</span>
+                  <CopyButton label="header" value={decoded.header} />
+                </span>
+              }
+              placeholder='{"alg": "HS256", "typ": "JWT"}'
+              value={decoded.header}
+            />
 
-            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-y-auto">
-              <CodeOutput
-                label={
-                  <span className="flex items-center gap-1">
-                    <span>Header</span>
-                    <CopyButton label="header" value={decoded.header} />
-                  </span>
-                }
-                placeholder='{"alg": "HS256", "typ": "JWT"}'
-                value={decoded.header}
-              />
+            <CodeOutput
+              label={
+                <span className="flex items-center gap-1">
+                  <span>Payload</span>
+                  <CopyButton label="payload" value={decoded.payloadCopy} />
+                </span>
+              }
+              placeholder='{"sub": "1234567890", "name": "John Doe"}'
+              value={decoded.payload}
+            />
 
-              <CodeOutput
-                label={
-                  <span className="flex items-center gap-1">
-                    <span>Payload</span>
-                    <CopyButton label="payload" value={decoded.payloadCopy} />
-                  </span>
-                }
-                placeholder='{"sub": "1234567890", "name": "John Doe"}'
-                value={decoded.payload}
-              />
-
-              <CodeOutput
-                label={
-                  <span className="flex items-center gap-1">
-                    <span>Signature (not verified — client-side only)</span>
-                    <CopyButton label="signature" value={decoded.signature} />
-                  </span>
-                }
-                placeholder="Base64URL signature string"
-                value={decoded.signature}
-              />
-            </div>
+            <CodeOutput
+              label={
+                <span className="flex items-center gap-1">
+                  <span>Signature (not verified — client-side only)</span>
+                  <CopyButton label="signature" value={decoded.signature} />
+                </span>
+              }
+              placeholder="Base64URL signature string"
+              value={decoded.signature}
+            />
           </div>
         </div>
-      </ToolDialogShell>
-    </>
+      </div>
+    </ToolDialogFrame>
   )
 }
