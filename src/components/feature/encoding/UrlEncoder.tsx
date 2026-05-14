@@ -1,118 +1,58 @@
-import { useState } from 'react'
+import { useCallback } from 'react'
 
-import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import type { ConverterMode, ToolComponentProps } from '@/types'
 import { decodeUrl, encodeUrl } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['url-encoder-decoder']
 
-export const UrlEncoder = () => {
-  const [source, setSource] = useState('')
-  const [result, setResult] = useState('')
-  const [action, setAction] = useState<'decode' | 'encode'>('encode')
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const { toast } = useToast()
+type UrlMode = 'encode' | 'decode'
 
-  const process = (val: string, act: 'decode' | 'encode') => {
-    if (val.length === 0) {
-      setResult('')
-      return
-    }
-    try {
-      setResult(act === 'encode' ? encodeUrl(val) : decodeUrl(val))
-    } catch {
-      setResult('')
-      toast({
-        action: 'add',
-        item: {
-          label:
-            act === 'encode'
-              ? 'Unable to encode text — input contains invalid characters'
-              : 'Enter a valid URL-encoded string (e.g., hello%20world)',
-          type: 'error',
-        },
-      })
-    }
-  }
+const MODES: [ConverterMode<UrlMode>, ConverterMode<UrlMode>] = [
+  {
+    key: 'encode',
+    label: 'URL Encode',
+    resultLabel: 'Result',
+    resultPlaceholder: 'hello%20world%26foo%3Dbar',
+    sourceLabel: 'Source',
+    sourcePlaceholder: 'hello world&foo=bar',
+  },
+  {
+    key: 'decode',
+    label: 'URL Decode',
+    resultLabel: 'Result',
+    resultPlaceholder: 'hello world&foo=bar',
+    sourceLabel: 'Source',
+    sourcePlaceholder: 'hello%20world%26foo%3Dbar',
+  },
+]
 
-  const processInput = useDebounceCallback((val: string) => {
-    process(val, action)
-  }, 300)
-
-  const handleSourceChange = (val: string) => {
-    setSource(val)
-    processInput(val)
-  }
-
-  const openDialog = (act: 'decode' | 'encode') => {
-    setAction(act)
-    setSource('')
-    setResult('')
-    setDialogOpen(true)
-  }
-
-  const handleReset = () => {
-    setSource('')
-    setResult('')
-  }
-
-  const placeholder = action === 'encode' ? 'hello world&foo=bar' : 'hello%20world%26foo%3Dbar'
-  const resultPlaceholder = action === 'encode' ? 'hello%20world%26foo%3Dbar' : 'hello world&foo=bar'
+export const UrlEncoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+  const compute = useCallback(
+    async ({ mode, source }: { mode: UrlMode; source: string }): Promise<string> => {
+      try {
+        return mode === 'encode' ? encodeUrl(source) : decodeUrl(source)
+      } catch {
+        throw new Error(
+          mode === 'encode'
+            ? 'Unable to encode text — input contains invalid characters'
+            : 'Enter a valid URL-encoded string (e.g., hello%20world)',
+        )
+      }
+    },
+    [],
+  )
 
   return (
-    <>
-      <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => openDialog('encode')} variant="default">
-            Encode
-          </Button>
-          <Button block onClick={() => openDialog('decode')} variant="default">
-            Decode
-          </Button>
-        </div>
-      </div>
-      <ToolDialogShell
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        onReset={handleReset}
-        size="screen"
-        title={action === 'encode' ? 'URL Encode' : 'URL Decode'}
-      >
-        <div className="flex w-full grow flex-col gap-4">
-          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <FieldForm
-                label="Source"
-                name="dialog-source"
-                onChange={handleSourceChange}
-                placeholder={placeholder}
-                rows={12}
-                type="textarea"
-                value={source}
-              />
-            </div>
-
-            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <CodeOutput
-                label={
-                  <span className="flex items-center gap-1">
-                    <span>Result</span>
-                    <CopyButton label="result" value={result} />
-                  </span>
-                }
-                placeholder={resultPlaceholder}
-                value={result}
-              />
-            </div>
-          </div>
-        </div>
-      </ToolDialogShell>
-    </>
+    <BidirectionalConverter
+      autoOpen={autoOpen}
+      compute={compute}
+      description={toolEntry?.description}
+      modeStorageKey="url-encoder"
+      modes={MODES}
+      onAfterDialogClose={onAfterDialogClose}
+      sourceKeyPrefix="url-encoder"
+    />
   )
 }
