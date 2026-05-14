@@ -1,34 +1,20 @@
-import { useReducer, useRef, useState } from 'react'
+import { useRef, useState } from 'react'
 
 import 'react-image-crop/dist/ReactCrop.css'
-import ReactCrop from 'react-image-crop'
+import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop'
 
-import {
-  Button,
-  DownloadIcon,
-  NotoEmoji,
-  ProgressBar,
-  RefreshIcon,
-  Tabs,
-  UploadInput,
-} from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { ImageToolShell } from '@/components/common/image-tool'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useBlobUrl } from '@/hooks/useBlobUrl'
 import { useToast } from '@/hooks'
-import type { AspectRatioPreset, CropRegion, ImageCropperAction, ImageCropperState } from '@/types'
-import { downloadBlob } from '@/utils/download'
-import { ASPECT_RATIO_OPTIONS, clampCropRegion, getAspectRatio, getDefaultCrop, scaleCropToNatural, tv } from '@/utils'
-
-const cropAreaStyles = tv({
-  base: 'bg-grid-texture flex grow items-center justify-center overflow-auto bg-black',
-  variants: {
-    disabled: {
-      true: 'pointer-events-none opacity-70',
-      false: '',
-    },
-  },
-})
+import type { AspectRatioPreset, CropRegion, ToolComponentProps } from '@/types'
+import {
+  ASPECT_RATIO_OPTIONS,
+  clampCropRegion,
+  getAspectRatio,
+  getDefaultCrop,
+  scaleCropToNatural,
+  tv,
+} from '@/utils'
 
 const aspectButtonStyles = tv({
   base: 'rounded-md px-3 py-1.5 text-body-sm transition-colors',
@@ -40,18 +26,12 @@ const aspectButtonStyles = tv({
   },
 })
 
-const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT', string> = {
-  DOWNLOAD: 'download',
-  IMPORT: 'import',
-}
-
 const toolEntry = TOOL_REGISTRY_MAP['image-cropper']
 
 const cropImageCanvas = (
   image: HTMLImageElement,
   crop: CropRegion,
   mimeType: string,
-  quality?: number,
 ): Promise<Blob> =>
   new Promise((resolve, reject) => {
     const canvas = document.createElement('canvas')
@@ -62,9 +42,7 @@ const cropImageCanvas = (
       reject(new Error('Canvas context not available'))
       return
     }
-
     ctx.drawImage(image, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height)
-
     canvas.toBlob(
       (blob) => {
         if (!blob) {
@@ -74,272 +52,152 @@ const cropImageCanvas = (
         resolve(blob)
       },
       mimeType,
-      quality,
     )
   })
-const initialState: ImageCropperState = {
-  aspectPreset: 'free',
-  completedCrop: null,
-  crop: undefined,
-  dialogOpen: false,
-  processing: false,
-  showProgress: false,
-  source: null,
-  tabValue: TABS_VALUES.IMPORT,
+
+type CropControls = {
+  aspectPreset: AspectRatioPreset
+  naturalCrop: CropRegion | null
 }
 
-const reducer = (state: ImageCropperState, action: ImageCropperAction): ImageCropperState => {
-  switch (action.type) {
-    case 'SET_ASPECT_PRESET':
-      return { ...state, aspectPreset: action.payload }
-    case 'SET_COMPLETED_CROP':
-      return { ...state, completedCrop: action.payload }
-    case 'SET_CROP':
-      return { ...state, crop: action.payload }
-    case 'SET_DIALOG_OPEN':
-      return { ...state, dialogOpen: action.payload }
-    case 'SET_PROCESSING':
-      return { ...state, processing: action.payload }
-    case 'SET_SHOW_PROGRESS':
-      return { ...state, showProgress: action.payload }
-    case 'SET_SOURCE':
-      return { ...state, source: action.payload }
-    case 'SET_TAB_VALUE':
-      return { ...state, tabValue: action.payload }
-    case 'INPUT_FILE':
-      return {
-        ...state,
-        source: action.payload,
-        completedCrop: null,
-        crop: undefined,
-        aspectPreset: 'free',
-        dialogOpen: true,
-      }
-    case 'FINISH_PROCESSING':
-      return { ...state, showProgress: false, processing: false }
-    case 'RESET':
-      return { ...initialState }
-    default:
-      return state
-  }
-}
-
-export const ImageCropper = () => {
-  const imgRef = useRef<HTMLImageElement>(null)
-  const progressTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
-  const croppedFilenameRef = useRef<string>('')
-
-  const [state, dispatch] = useReducer(reducer, initialState)
-  const { aspectPreset, completedCrop, crop, dialogOpen, processing, showProgress, source, tabValue } = state
-
-  const [croppedBlob, setCroppedBlob] = useState<Blob | null>(null)
-  const imageUrl = useBlobUrl(source)
-
+export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
+  const imgRef = useRef<HTMLImageElement | null>(null)
+  const [aspectPreset, setAspectPreset] = useState<AspectRatioPreset>('free')
+  const [crop, setCrop] = useState<Crop | undefined>(undefined)
+  const [naturalCrop, setNaturalCrop] = useState<CropRegion | null>(null)
   const { toast } = useToast()
 
-  const handleInputChange = (values: Array<File>) => {
-    const file = values[0]
-    if (!file) return
-
-    dispatch({ type: 'INPUT_FILE', payload: file })
+  const captureNaturalCrop = (displayCrop: PixelCrop) => {
+    const img = imgRef.current
+    if (!img) return null
+    const scaled = scaleCropToNatural(displayCrop, img.width, img.height, img.naturalWidth, img.naturalHeight)
+    return clampCropRegion(scaled, img.naturalWidth, img.naturalHeight)
   }
 
-  const handleReset = () => {
-    setCroppedBlob(null)
-    croppedFilenameRef.current = ''
-    dispatch({ type: 'RESET' })
+  const process = async (file: File, ctrls: CropControls): Promise<Blob | null> => {
+    if (!ctrls.naturalCrop || !imgRef.current) return null
+    return cropImageCanvas(imgRef.current, ctrls.naturalCrop, file.type || 'image/png')
   }
-
-  const handleImageLoad = (e: React.SyntheticEvent<HTMLImageElement>) => {
-    const { height, width } = e.currentTarget
-    const defaultCrop = getDefaultCrop(width, height, getAspectRatio(aspectPreset))
-    const pixelCrop = { ...defaultCrop, unit: 'px' as const }
-    dispatch({ type: 'SET_CROP', payload: pixelCrop })
-    dispatch({ type: 'SET_COMPLETED_CROP', payload: pixelCrop })
-  }
-
-  const handleAspectChange = (preset: AspectRatioPreset) => {
-    dispatch({ type: 'SET_ASPECT_PRESET', payload: preset })
-    if (imgRef.current) {
-      const { height, width } = imgRef.current
-      const defaultCrop = getDefaultCrop(width, height, getAspectRatio(preset))
-      const pixelCrop = { ...defaultCrop, unit: 'px' as const }
-      dispatch({ type: 'SET_CROP', payload: pixelCrop })
-      dispatch({ type: 'SET_COMPLETED_CROP', payload: pixelCrop })
-    }
-  }
-
-  const handleCropAndDownload = async () => {
-    if (!completedCrop || !imgRef.current || !source) return
-
-    dispatch({ type: 'SET_PROCESSING', payload: true })
-    progressTimerRef.current = setTimeout(() => dispatch({ type: 'SET_SHOW_PROGRESS', payload: true }), 300)
-
-    try {
-      const naturalCrop = scaleCropToNatural(
-        completedCrop,
-        imgRef.current.width,
-        imgRef.current.height,
-        imgRef.current.naturalWidth,
-        imgRef.current.naturalHeight,
-      )
-      const clamped = clampCropRegion(naturalCrop, imgRef.current.naturalWidth, imgRef.current.naturalHeight)
-      const mimeType = source.type || 'image/png'
-      const blob = await cropImageCanvas(imgRef.current, clamped, mimeType)
-
-      const baseName = source.name.replace(/\.[^.]+$/, '')
-      const ext = source.name.split('.').pop() || 'png'
-      const fileName = `cropped-${baseName}.${ext}`
-
-      setCroppedBlob(blob)
-      croppedFilenameRef.current = fileName
-      downloadBlob(blob, fileName)
-
-      toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
-      dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.DOWNLOAD })
-      dispatch({ type: 'SET_DIALOG_OPEN', payload: false })
-    } catch {
-      toast({ action: 'add', item: { label: 'Failed to crop image. Please try again.', type: 'error' } })
-    } finally {
-      clearTimeout(progressTimerRef.current)
-      dispatch({ type: 'FINISH_PROCESSING' })
-    }
-  }
-
-  const naturalCrop =
-    completedCrop && imgRef.current
-      ? scaleCropToNatural(
-          completedCrop,
-          imgRef.current.width,
-          imgRef.current.height,
-          imgRef.current.naturalWidth,
-          imgRef.current.naturalHeight,
-        )
-      : null
 
   return (
-    <>
-      <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-        <Tabs
-          injected={{
-            setValue: (val: string) => dispatch({ type: 'SET_TAB_VALUE', payload: val }),
-            value: tabValue,
-          }}
-          items={[
-            {
-              content: (
-                <div className="flex w-full grow flex-col items-center justify-center gap-4">
-                  <div className="w-full desktop:w-8/10">
-                    <UploadInput
-                      accept="image/*"
-                      button={{ block: true, children: 'Select image to crop' }}
-                      multiple={false}
-                      name="image-cropper"
-                      onChange={handleInputChange}
-                    />
-                  </div>
-                </div>
-              ),
-              value: TABS_VALUES.IMPORT,
-            },
-            {
-              content: (
-                <div className="flex w-full grow flex-col items-center justify-center gap-6">
-                  <NotoEmoji emoji="check" size={120} />
-                  <div className="flex w-full flex-col gap-4 desktop:w-8/10">
-                    <Button
-                      block
-                      disabled={!croppedBlob}
-                      icon={<DownloadIcon />}
-                      onClick={() => {
-                        if (!croppedBlob) return
-                        const fileName = croppedFilenameRef.current
-                        downloadBlob(croppedBlob, fileName)
-                        if (fileName) {
-                          toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
-                        }
-                      }}
-                      variant="primary"
-                    >
-                      Download
-                    </Button>
-                    <Button block icon={<RefreshIcon />} onClick={handleReset}>
-                      Start Over
-                    </Button>
-                  </div>
-                </div>
-              ),
-              value: TABS_VALUES.DOWNLOAD,
-            },
-          ]}
-        />
-      </div>
-      <ToolDialogShell
-        description="Crop your image using the selection handles"
-        open={dialogOpen}
-        onOpenChange={(open) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })}
-        onAfterDialogClose={() => {
-          if (tabValue !== TABS_VALUES.DOWNLOAD) handleReset()
-        }}
-        size="screen"
-        title={source?.name ?? 'Crop Image'}
-      >
-        <div className="flex size-full flex-col">
-          <div className={cropAreaStyles({ disabled: processing })}>
-            {imageUrl && (
-              <ReactCrop
-                aspect={getAspectRatio(aspectPreset)}
-                crop={crop}
-                minHeight={10}
-                minWidth={10}
-                onChange={(c) => dispatch({ type: 'SET_CROP', payload: c })}
-                onComplete={(c) => dispatch({ type: 'SET_COMPLETED_CROP', payload: c })}
-                style={{ '--rc-drag-handle-mobile-size': '44px' } as React.CSSProperties}
-              >
-                <img
-                  alt="Crop preview"
-                  onLoad={handleImageLoad}
-                  ref={imgRef}
-                  src={imageUrl}
-                  style={{ maxHeight: '65vh', maxWidth: '100%' }}
-                />
-              </ReactCrop>
-            )}
-          </div>
-
-          <div className="flex shrink-0 flex-col gap-3 border-t border-gray-800 pt-3">
-            <div className="flex flex-wrap items-center justify-center gap-2">
-              {ASPECT_RATIO_OPTIONS.map((option) => (
-                <button
-                  className={aspectButtonStyles({ active: aspectPreset === option.value })}
-                  disabled={processing}
-                  key={option.value}
-                  onClick={() => handleAspectChange(option.value)}
-                  type="button"
-                >
-                  {option.label}
-                </button>
-              ))}
-              {naturalCrop && (
-                <>
-                  <span className="h-5 w-px bg-gray-700" />
-                  <span aria-live="polite" className="text-body-xs text-gray-500">
-                    Size: {naturalCrop.width} x {naturalCrop.height} px
-                  </span>
-                </>
-              )}
-            </div>
-
-            {showProgress && <ProgressBar value={50} />}
-
-            <Button block disabled={!completedCrop || processing} onClick={handleCropAndDownload} variant="primary">
-              Crop & Download
-            </Button>
-          </div>
+    <ImageToolShell<CropControls>
+      accept="image/*"
+      controls={{ aspectPreset, naturalCrop }}
+      description={toolEntry?.description}
+      getDownloadFilename={({ sourceName }) => {
+        const base = sourceName.replace(/\.[^.]+$/, '')
+        const ext = sourceName.split('.').pop() || 'png'
+        return `cropped-${base}.${ext}`
+      }}
+      onAfterDialogClose={() => {
+        // Reset per-Tool state so a re-upload starts clean.
+        imgRef.current = null
+        setAspectPreset('free')
+        setCrop(undefined)
+        setNaturalCrop(null)
+        onAfterDialogClose?.()
+      }}
+      onRejectInvalidFile={() =>
+        toast({ action: 'add', item: { label: 'Please select an image file', type: 'error' } })
+      }
+      process={process}
+      renderControls={({ recompute }) => (
+        <div className="flex shrink-0 flex-wrap items-center justify-center gap-2">
+          {ASPECT_RATIO_OPTIONS.map((option) => (
+            <button
+              className={aspectButtonStyles({ active: aspectPreset === option.value })}
+              key={option.value}
+              onClick={() => {
+                setAspectPreset(option.value)
+                const img = imgRef.current
+                if (!img) return
+                const next = { ...getDefaultCrop(img.width, img.height, getAspectRatio(option.value)), unit: 'px' as const }
+                setCrop(next)
+                const nc = captureNaturalCrop(next)
+                setNaturalCrop(nc)
+                recompute()
+              }}
+              type="button"
+            >
+              {option.label}
+            </button>
+          ))}
+          {naturalCrop && (
+            <>
+              <span className="h-5 w-px bg-gray-700" />
+              <span aria-live="polite" className="text-body-xs text-gray-500">
+                Size: {naturalCrop.width} x {naturalCrop.height} px
+              </span>
+            </>
+          )}
         </div>
-      </ToolDialogShell>
-    </>
+      )}
+      renderPreview={({ recompute, sourceUrl }) => (
+        <CropPreview
+          aspectPreset={aspectPreset}
+          captureNaturalCrop={captureNaturalCrop}
+          crop={crop}
+          imgRef={imgRef}
+          onImageLoad={(e) => {
+            const img = e.currentTarget
+            const next = { ...getDefaultCrop(img.width, img.height, getAspectRatio(aspectPreset)), unit: 'px' as const }
+            setCrop(next)
+            const nc = captureNaturalCrop(next)
+            setNaturalCrop(nc)
+            recompute()
+          }}
+          onCropComplete={(c) => {
+            const nc = captureNaturalCrop(c)
+            setNaturalCrop(nc)
+            recompute()
+          }}
+          setCrop={setCrop}
+          sourceUrl={sourceUrl}
+        />
+      )}
+      title="Image Cropper"
+      uploadLabel="Select image to crop"
+    />
   )
 }
+
+type CropPreviewProps = {
+  aspectPreset: AspectRatioPreset
+  captureNaturalCrop: (displayCrop: PixelCrop) => CropRegion | null
+  crop: Crop | undefined
+  imgRef: React.MutableRefObject<HTMLImageElement | null>
+  onCropComplete: (c: PixelCrop) => void
+  onImageLoad: (e: React.SyntheticEvent<HTMLImageElement>) => void
+  setCrop: (c: Crop) => void
+  sourceUrl: string
+}
+
+const CropPreview = ({
+  aspectPreset,
+  crop,
+  imgRef,
+  onCropComplete,
+  onImageLoad,
+  setCrop,
+  sourceUrl,
+}: CropPreviewProps) => (
+  <div className="bg-grid-texture flex grow items-center justify-center overflow-auto bg-black">
+    <ReactCrop
+      aspect={getAspectRatio(aspectPreset)}
+      crop={crop}
+      minHeight={10}
+      minWidth={10}
+      onChange={(c) => setCrop(c)}
+      onComplete={onCropComplete}
+      style={{ '--rc-drag-handle-mobile-size': '44px' } as React.CSSProperties}
+    >
+      <img
+        alt="Crop preview"
+        onLoad={onImageLoad}
+        ref={imgRef}
+        src={sourceUrl}
+        style={{ maxHeight: '65vh', maxWidth: '100%' }}
+      />
+    </ReactCrop>
+  </div>
+)

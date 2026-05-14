@@ -1,314 +1,179 @@
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 
-import { Button, DownloadIcon, NotoEmoji, RefreshIcon, Tabs, UploadInput } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { FieldForm } from '@/components/common'
+import { ImageToolShell } from '@/components/common/image-tool'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
-import type { ImageFormat, ImageProcessingResult, ResizeInput } from '@/types'
-import { isValidImageFormat, parseFileName, processImage, resizeImage } from '@/utils'
+import { useToast } from '@/hooks'
+import type { ImageFormat, ToolComponentProps } from '@/types'
+import { isValidImageFormat, parseDataUrlToBlob, parseFileName, resizeImage } from '@/utils'
 
-import { EMPTY_IMAGE, ImagePreview } from './ImagePreview'
-import { ImageResizerControls } from './ImageResizerControls'
-
-const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING', string> = {
-  DOWNLOAD: 'download',
-  IMPORT: 'import',
-  PROCESSING: 'processing',
-}
+import { EMPTY_IMAGE } from './ImagePreview'
+import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
 
 const toolEntry = TOOL_REGISTRY_MAP['image-resizer']
 
-export const ImageResizer = () => {
-  // ref
-  const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
+type ResizeControls = {
+  format: ImageFormat | null
+  height: number | null
+  quality: number | null
+  ratio: number | null
+  width: number | null
+}
 
-  // state
-  const [tabValue, setTabValue] = useState(TABS_VALUES.IMPORT)
-  const [dialogOpen, setDialogOpen] = useState(false)
-  const [source, setSource] = useState<[File, ImageProcessingResult] | null>(null)
-  const [preview, setPreview] = useState<ImageProcessingResult | null>(null)
+const initialControls: ResizeControls = {
+  format: null,
+  height: null,
+  quality: null,
+  ratio: null,
+  width: null,
+}
 
-  // hooks
+export const ImageResizer = ({ onAfterDialogClose }: ToolComponentProps) => {
+  const [controls, setControls] = useState<ResizeControls>(initialControls)
   const { toast } = useToast()
 
-  const {
-    result: computedPreview,
-    setInput,
-  } = useToolComputation<ResizeInput, ImageProcessingResult | null>(
-    async ({ source: src, preview: p }) => {
-      if (!src || !p) return null
+  const process = async (file: File, c: ResizeControls): Promise<Blob | null> => {
+    if (!c.width || !c.height || !c.format) return null
 
-      let height = p.height
-      let width = p.width
+    let width = c.width
+    let height = c.height
+    const ratio = c.ratio ?? width / Math.max(height, 1)
 
-      // Validate dimensions before processing
-      if (Number.isNaN(height) || Number.isNaN(width) || height <= 0 || width <= 0) {
-        toast({ action: 'add', item: { label: 'Enter valid dimensions (e.g., 800 x 600)', type: 'error' } })
-        return null
-      }
-
-      // find possible minimum
-      if (height * src[1].ratio <= 1) {
-        height = 1 * 10
-        width = Math.round(1 * src[1].ratio * 10)
-      } else if (width / src[1].ratio <= 1) {
-        width = 1 * 10
-        height = Math.round((1 / src[1].ratio) * 10)
-      }
-
-      const result = await resizeImage(
-        src[0],
-        {
-          height,
-          width,
-        },
-        {
-          format: p.format,
-          quality: p.quality || 0.05,
-        },
-      )
-
-      if (result.dataUrl === EMPTY_IMAGE) {
-        toast({
-          action: 'add',
-          item: { label: 'Image resize failed — file may be too large for browser memory', type: 'error' },
-        })
-        return null
-      }
-
-      return result
-    },
-    {
-      initial: null,
-      isEmpty: ({ source: src, preview: p }) => !src || !p,
-      onError: () => {
-        toast({
-          action: 'add',
-          item: { label: 'Image resize failed — try smaller dimensions or a different format', type: 'error' },
-        })
-      },
-    },
-  )
-
-  // Mirror computed preview into local preview state so the UI's existing
-  // controls (which read/write `preview`) keep working unchanged.
-  useEffect(() => {
-    if (computedPreview) {
-      setPreview(computedPreview)
-    }
-  }, [computedPreview])
-
-  const handleUploadChange = async (values: Array<File>) => {
-    const file = values[0]
-    if (!file) return
-
-    if (!isValidImageFormat(file.type)) {
-      toast({
-        action: 'add',
-        item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' },
-      })
-      return
+    // Preserve the minimum-1px fallback from the original (avoid collapse).
+    if (height * ratio <= 1) {
+      height = 10
+      width = Math.round(1 * ratio * 10)
+    } else if (width / ratio <= 1) {
+      width = 10
+      height = Math.round((1 / ratio) * 10)
     }
 
-    try {
-      setDialogOpen(true)
-      const result = await processImage(file, {
-        format: file.type as ImageFormat,
-        quality: 1,
-        strategy: 'stretch',
-      })
-
-      setSource([file, result])
-      setPreview(result)
-      setTabValue(TABS_VALUES.PROCESSING)
-    } catch {
-      toast({
-        action: 'add',
-        item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' },
-      })
-      handleReset()
-    }
+    const isLossyFormat = LOSSY_FORMATS.has(c.format)
+    const quality = isLossyFormat ? c.quality ?? 0.8 : 1
+    const result = await resizeImage(file, { height, width }, { format: c.format, quality })
+    if (result.dataUrl === EMPTY_IMAGE) return null
+    return parseDataUrlToBlob(result.dataUrl)
   }
 
-  const handleInputChange = (key: keyof ImageProcessingResult, val: unknown) => {
-    setPreview((prev) => {
-      if (!prev) {
-        return null
-      }
+  const setAndRecompute = (next: ResizeControls, recompute: () => void) => {
+    setControls(next)
+    recompute()
+  }
 
-      const newState = {
-        ...prev,
-        dataUrl: '', // unset dataUrl for showing loading state
-      }
-
-      if (key === 'format') {
-        newState.format = val as ImageFormat
-      } else {
-        const newValue = Number(val)
-        newState[key] = newValue as never
-
-        if (!Number.isNaN(newValue) && newValue > 0) {
-          if (key === 'width') {
-            newState.height = Math.round(newValue / (source?.[1].ratio ?? 1))
-          } else if (key === 'height') {
-            newState.width = Math.round(newValue * (source?.[1].ratio ?? 1))
-          }
+  const setNumber = (key: 'height' | 'width', val: string, recompute: () => void) => {
+    const n = Number(val)
+    const next = { ...controls }
+    if (Number.isNaN(n) || n <= 0) {
+      next[key] = null
+    } else {
+      next[key] = n
+      if (next.ratio) {
+        if (key === 'width') {
+          next.height = Math.round(n / next.ratio)
+        } else {
+          next.width = Math.round(n * next.ratio)
         }
       }
-
-      return newState
-    })
-  }
-
-  const handleConvert = async () => {
-    try {
-      const anchor = downloadAnchorRef.current
-      if (!preview?.dataUrl || !anchor || !source) {
-        return
-      }
-
-      // go to processing tab
-      setTabValue(TABS_VALUES.PROCESSING)
-
-      // set to download anchor
-      anchor.href = preview.dataUrl
-      anchor.download = parseFileName(source[0].name, preview.format)
-
-      // go to download tab
-      setTabValue(TABS_VALUES.DOWNLOAD)
-      setDialogOpen(false)
-    } catch {
-      toast({
-        action: 'add',
-        item: { label: 'Image resize failed — try smaller dimensions or a different format', type: 'error' },
-      })
-      setDialogOpen(false)
     }
+    setAndRecompute(next, recompute)
   }
 
-  const handleReset = () => {
-    setTabValue(TABS_VALUES.IMPORT)
-    setSource(null)
-    setPreview(null)
-    setInput({ source: null, preview: null })
-  }
-
-  // Trigger compute whenever the user has invalidated the preview (empty dataUrl).
-  useEffect(() => {
-    if (!preview?.dataUrl && preview?.format) {
-      setInput({ source, preview })
-    }
-  }, [preview, source, setInput])
-
-  const isLossy = preview?.format ? LOSSY_FORMATS.has(preview.format) : false
+  const isLossy = controls.format ? LOSSY_FORMATS.has(controls.format) : false
+  const ready = Boolean(controls.width && controls.height && controls.format)
 
   return (
-    <>
-      <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-        <Tabs
-          injected={{
-            setValue: setTabValue,
-            value: tabValue,
-          }}
-          items={[
-            {
-              content: (
-                <div className="flex w-full grow flex-col items-center justify-center gap-4">
-                  <div className="w-full desktop:w-8/10">
-                    <UploadInput
-                      accept="image/*"
-                      button={{ block: true, children: 'Select images from your device' }}
-                      multiple={false}
-                      name="images"
-                      onChange={handleUploadChange}
-                    />
-                  </div>
-                </div>
-              ),
-              value: TABS_VALUES.IMPORT,
-            },
-            {
-              content: (
-                <div className="flex w-full grow flex-col items-center justify-center gap-6">
-                  <NotoEmoji emoji="robot" size={120} />
-                </div>
-              ),
-              value: TABS_VALUES.PROCESSING,
-            },
-            {
-              content: (
-                <div className="flex w-full grow flex-col items-center justify-center gap-6">
-                  <NotoEmoji emoji="check" size={120} />
-                  <div className="flex w-full flex-col gap-4 desktop:w-8/10">
-                    <Button
-                      block
-                      icon={<DownloadIcon />}
-                      onClick={() => {
-                        downloadAnchorRef.current?.click()
-                        const fileName = downloadAnchorRef.current?.download
-                        if (fileName) {
-                          toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
-                        }
-                      }}
-                      variant="primary"
-                    >
-                      Download
-                    </Button>
-                    <Button block icon={<RefreshIcon />} onClick={handleReset}>
-                      Start Over
-                    </Button>
-                  </div>
-                </div>
-              ),
-              value: TABS_VALUES.DOWNLOAD,
-            },
-          ]}
-        />
-        <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
-      </div>
-      <ToolDialogShell
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        onReset={handleReset}
-        size="screen"
-        title="Adjust the size of your image"
-      >
-        <div className="flex grow flex-col gap-4 tablet:min-h-0">
-          <div
-            aria-live="polite"
-            className="bg-grid-texture flex flex-col items-center justify-center gap-6 bg-black tablet:min-h-0 tablet:grow tablet:flex-row"
-          >
-            <ImagePreview
-              metadata={{
-                format: source?.[1].format,
-                height: source?.[1].height,
-                size: source?.[0].size,
-                width: source?.[1].width,
-              }}
-              src={source ? source[1].dataUrl : undefined}
+    <ImageToolShell<ResizeControls>
+      accept="image/*"
+      controls={controls}
+      description={toolEntry?.description}
+      getDownloadFilename={({ sourceName }) => parseFileName(sourceName, controls.format ?? undefined)}
+      onAfterDialogClose={() => {
+        setControls(initialControls)
+        onAfterDialogClose?.()
+      }}
+      onRejectInvalidFile={() =>
+        toast({
+          action: 'add',
+          item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' },
+        })
+      }
+      process={process}
+      renderControls={({ recompute }) => (
+        <div className="flex w-full shrink-0 flex-col items-end gap-2 tablet:flex-row">
+          <div className="flex w-full gap-2">
+            <FieldForm
+              disabled={!ready}
+              label="Width"
+              name="width"
+              onChange={(val) => setNumber('width', val, recompute)}
+              placeholder="1920"
+              type="number"
+              value={controls.width?.toString() ?? ''}
             />
-            <div className="tablet:border-t-none h-1 w-full border-t-2 border-dashed border-gray-700 tablet:h-full tablet:w-1 tablet:border-l-2" />
-            <ImagePreview
-              metadata={{
-                format: preview?.format,
-                height: preview?.height,
-                size: preview?.size,
-                width: preview?.width,
-              }}
-              src={preview?.dataUrl}
+            <FieldForm
+              disabled={!ready}
+              label="Height"
+              name="height"
+              onChange={(val) => setNumber('height', val, recompute)}
+              placeholder="1080"
+              type="number"
+              value={controls.height?.toString() ?? ''}
             />
           </div>
-          <ImageResizerControls
-            isLossy={isLossy}
-            onConvert={handleConvert}
-            onInputChange={handleInputChange}
-            preview={preview}
-            source={source}
-          />
+          <div className="flex w-full gap-2 *:w-full">
+            <ImageFormatSelectInput
+              disabled={!ready}
+              onChange={(val) => setAndRecompute({ ...controls, format: val as ImageFormat }, recompute)}
+              value={controls.format ?? undefined}
+            />
+            <ImageQualitySelectInput
+              disabled={!ready || !isLossy}
+              onChange={(val) =>
+                setAndRecompute({ ...controls, quality: Number(val) }, recompute)
+              }
+              value={(isLossy ? controls.quality : 1)?.toString() ?? '1'}
+            />
+          </div>
         </div>
-      </ToolDialogShell>
-    </>
+      )}
+      renderPreview={({ recompute, resultUrl, source, sourceUrl }) => (
+        <div className="bg-grid-texture flex flex-col items-center justify-center gap-6 bg-black tablet:min-h-0 tablet:grow tablet:flex-row">
+          <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
+            <p className="shrink-0 text-body-sm font-medium text-gray-300">Original</p>
+            <picture className="flex size-full grow flex-col items-center justify-center gap-4 tablet:max-h-full tablet:overflow-y-auto">
+              <img
+                alt="original"
+                className="w-full max-w-full tablet:max-h-full tablet:w-auto"
+                onLoad={(e) => {
+                  if (controls.width && controls.height) return
+                  const img = e.currentTarget
+                  const fileType = source.type as ImageFormat
+                  setControls({
+                    format: isValidImageFormat(fileType) ? fileType : ('image/jpeg' as ImageFormat),
+                    height: img.naturalHeight,
+                    quality: 1,
+                    ratio: img.naturalWidth / Math.max(img.naturalHeight, 1),
+                    width: img.naturalWidth,
+                  })
+                  recompute()
+                }}
+                src={sourceUrl}
+              />
+            </picture>
+          </div>
+          <div className="tablet:border-t-none h-1 w-full border-t-2 border-dashed border-gray-700 tablet:h-full tablet:w-1 tablet:border-l-2" />
+          <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
+            <p className="shrink-0 text-body-sm font-medium text-gray-300">Resized</p>
+            {resultUrl ? (
+              <picture className="flex size-full grow flex-col items-center justify-center gap-4 tablet:max-h-full tablet:overflow-y-auto">
+                <img alt="resized" className="w-full max-w-full tablet:max-h-full tablet:w-auto" src={resultUrl} />
+              </picture>
+            ) : null}
+          </div>
+        </div>
+      )}
+      title="Adjust the size of your image"
+      uploadLabel="Select images from your device"
+    />
   )
 }

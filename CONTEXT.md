@@ -53,3 +53,30 @@ its per-direction `compute` function plus per-direction labels/placeholders.
 Tools with extras (entity-mode select, double-escape checkbox) plug into the
 `sourceToolbarSlot` render-prop, which receives `{ mode, recompute }` — the
 caller renders its extras and calls `recompute()` after their value changes.
+
+## Image tool shell
+
+A Tool that takes a single uploaded `File` as source, runs a transformation,
+and produces a single `Blob` result for preview and download. Implemented by
+`<ImageToolShell>` (`src/components/common/image-tool/ImageToolShell.tsx`).
+
+Examples: `BackgroundRemover`, `ImageCropper`, `ImageResizer`. Does NOT fit:
+`ImageCompressor`/`ImageConvertor` (inline, no dialog), `PlaceholderImageGenerator`
+(no source File — pure generation), `FaviconGenerator`/`SplashScreenGenerator`
+(produce a batch of results, not a single Blob).
+
+The shell wraps the [[Tool computation pipeline]] internally, so all four of
+its invariants (debounced, stale-safe, empty-bypass, unmount-safe) apply to
+the `process` function. The shell owns: the dialog, the file UploadInput +
+MIME validation, source and result `Blob` URL lifecycles (via [[useBlobUrl]]),
+the Download button + filename. The Tool's role narrows to its
+`process(file, controls)` function, an externally-owned `controls` value, two
+render-props (`renderControls`, `renderPreview`), and a `getDownloadFilename`
+callback. The shell exposes an optional `onRejectInvalidFile` callback for
+the Tool to wire a reject toast.
+
+The Tool fires the pipeline via `recompute()` from `renderControls` — the
+same shape `<BidirectionalConverter>` uses for `sourceToolbarSlot`. The
+`renderPreview` ctx carries `{ pending, error, source, sourceUrl, result,
+resultUrl }`; the Tool decides per-phase rendering instead of a separate
+processing slot.
