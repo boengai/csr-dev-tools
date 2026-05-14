@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
 import type { SqlInput, ToolComponentProps } from '@/types'
@@ -13,7 +13,6 @@ export const SqlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
   const [source, setSource] = useState('')
   const [dialect, setDialect] = useState<SqlFormatDialect>('sql')
   const [indent, setIndent] = useState(2)
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
   const { result, setInput, setInputImmediate } = useToolComputation<SqlInput, string>(
@@ -51,83 +50,71 @@ export const SqlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
   }
 
   return (
-    <>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleReset}
+      title="SQL Formatter"
+      triggers={[{ label: 'Format' }]}
+    >
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+        <div className="flex flex-wrap gap-4">
+          <FieldForm
+            label="Dialect"
+            name="dialect"
+            onChange={handleDialectChange}
+            options={[
+              { label: 'Standard SQL', value: 'sql' },
+              { label: 'PostgreSQL', value: 'postgresql' },
+              { label: 'MySQL', value: 'mysql' },
+              { label: 'SQLite', value: 'sqlite' },
+              { label: 'BigQuery', value: 'bigquery' },
+            ]}
+            type="select"
+            value={dialect}
+          />
+          <FieldForm
+            label="Indent"
+            name="indent"
+            onChange={handleIndentChange}
+            options={[
+              { label: '2 spaces', value: '2' },
+              { label: '4 spaces', value: '4' },
+            ]}
+            type="select"
+            value={String(indent)}
+          />
+        </div>
 
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
-            Format
-          </Button>
+        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <FieldForm
+              label="SQL Input"
+              name="dialog-source"
+              onChange={handleSourceChange}
+              placeholder="SELECT id, name FROM users WHERE active = 1 ORDER BY name"
+              type="code"
+              value={source}
+            />
+          </div>
+
+          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
+
+          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <CodeOutput
+              label={
+                <span className="flex items-center gap-1">
+                  <span>Formatted SQL</span>
+                  <CopyButton label="formatted SQL" value={result} />
+                </span>
+              }
+              placeholder="Formatted SQL will appear here"
+              value={result}
+            />
+          </div>
         </div>
       </div>
-
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={setDialogOpen}
-        onReset={handleReset}
-        open={dialogOpen}
-        size="screen"
-        title="SQL Formatter"
-      >
-        <div className="flex w-full grow flex-col gap-4">
-          <div className="flex flex-wrap gap-4">
-            <FieldForm
-              label="Dialect"
-              name="dialect"
-              onChange={handleDialectChange}
-              options={[
-                { label: 'Standard SQL', value: 'sql' },
-                { label: 'PostgreSQL', value: 'postgresql' },
-                { label: 'MySQL', value: 'mysql' },
-                { label: 'SQLite', value: 'sqlite' },
-                { label: 'BigQuery', value: 'bigquery' },
-              ]}
-              type="select"
-              value={dialect}
-            />
-            <FieldForm
-              label="Indent"
-              name="indent"
-              onChange={handleIndentChange}
-              options={[
-                { label: '2 spaces', value: '2' },
-                { label: '4 spaces', value: '4' },
-              ]}
-              type="select"
-              value={String(indent)}
-            />
-          </div>
-
-          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <FieldForm
-                label="SQL Input"
-                name="dialog-source"
-                onChange={handleSourceChange}
-                placeholder="SELECT id, name FROM users WHERE active = 1 ORDER BY name"
-                type="code"
-                value={source}
-              />
-            </div>
-
-            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <CodeOutput
-                label={
-                  <span className="flex items-center gap-1">
-                    <span>Formatted SQL</span>
-                    <CopyButton label="formatted SQL" value={result} />
-                  </span>
-                }
-                placeholder="Formatted SQL will appear here"
-                value={result}
-              />
-            </div>
-          </div>
-        </div>
-      </ToolDialogShell>
-    </>
+    </ToolDialogFrame>
   )
 }

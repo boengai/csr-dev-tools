@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
 import type { CssInput, ToolComponentProps } from '@/types'
@@ -13,7 +13,6 @@ export const CssFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
   const [source, setSource] = useState('')
   const [mode, setMode] = useState<'beautify' | 'minify'>('beautify')
   const [indent, setIndent] = useState<number | 'tab'>(2)
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
   const { result, setInput, setInputImmediate } = useToolComputation<CssInput, string>(
@@ -51,83 +50,71 @@ export const CssFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
   }
 
   return (
-    <>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleReset}
+      title="CSS Formatter"
+      triggers={[{ label: 'Format' }]}
+    >
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
-            Format
-          </Button>
-        </div>
-      </div>
-
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={setDialogOpen}
-        onReset={handleReset}
-        open={dialogOpen}
-        size="screen"
-        title="CSS Formatter"
-      >
-        <div className="flex w-full grow flex-col gap-4">
-          <div className="flex flex-wrap gap-4">
+        <div className="flex flex-wrap gap-4">
+          <FieldForm
+            label="Mode"
+            name="mode"
+            onChange={handleModeChange}
+            options={[
+              { label: 'Beautify', value: 'beautify' },
+              { label: 'Minify', value: 'minify' },
+            ]}
+            type="select"
+            value={mode}
+          />
+          {mode === 'beautify' && (
             <FieldForm
-              label="Mode"
-              name="mode"
-              onChange={handleModeChange}
+              label="Indent"
+              name="indent"
+              onChange={handleIndentChange}
               options={[
-                { label: 'Beautify', value: 'beautify' },
-                { label: 'Minify', value: 'minify' },
+                { label: '2 spaces', value: '2' },
+                { label: '4 spaces', value: '4' },
+                { label: 'Tab', value: 'tab' },
               ]}
               type="select"
-              value={mode}
+              value={String(indent)}
             />
-            {mode === 'beautify' && (
-              <FieldForm
-                label="Indent"
-                name="indent"
-                onChange={handleIndentChange}
-                options={[
-                  { label: '2 spaces', value: '2' },
-                  { label: '4 spaces', value: '4' },
-                  { label: 'Tab', value: 'tab' },
-                ]}
-                type="select"
-                value={String(indent)}
-              />
-            )}
+          )}
+        </div>
+
+        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <FieldForm
+              label="CSS Input"
+              name="dialog-source"
+              onChange={handleSourceChange}
+              placeholder="body { color: red; margin: 0; }"
+              type="code"
+              value={source}
+            />
           </div>
 
-          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <FieldForm
-                label="CSS Input"
-                name="dialog-source"
-                onChange={handleSourceChange}
-                placeholder="body { color: red; margin: 0; }"
-                type="code"
-                value={source}
-              />
-            </div>
+          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
-            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <CodeOutput
-                label={
-                  <span className="flex items-center gap-1">
-                    <span>Result</span>
-                    <CopyButton label="result" value={result} />
-                  </span>
-                }
-                placeholder="Formatted CSS will appear here"
-                value={result}
-              />
-            </div>
+          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <CodeOutput
+              label={
+                <span className="flex items-center gap-1">
+                  <span>Result</span>
+                  <CopyButton label="result" value={result} />
+                </span>
+              }
+              placeholder="Formatted CSS will appear here"
+              value={result}
+            />
           </div>
         </div>
-      </ToolDialogShell>
-    </>
+      </div>
+    </ToolDialogFrame>
   )
 }

@@ -1,6 +1,7 @@
 import { useReducer, useRef } from 'react'
 
-import { Button, ColorInput, CopyButton, DownloadIcon, FieldForm, ToolDialogShell } from '@/components/common'
+import { Button, ColorInput, CopyButton, DownloadIcon, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
 import type { QrCodeAction, QrCodeState, QrErrorCorrectionLevel, QrInput, QrResult, ToolComponentProps } from '@/types'
@@ -9,7 +10,6 @@ import { generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['qr-code-generator']
 const initialState: QrCodeState = {
   background: '#ffffff',
-  dialogOpen: false,
   errorCorrection: 'M',
   foreground: '#000000',
   size: 256,
@@ -20,8 +20,6 @@ const reducer = (state: QrCodeState, action: QrCodeAction): QrCodeState => {
   switch (action.type) {
     case 'SET_BACKGROUND':
       return { ...state, background: action.payload }
-    case 'SET_DIALOG_OPEN':
-      return { ...state, dialogOpen: action.payload }
     case 'SET_ERROR_CORRECTION':
       return { ...state, errorCorrection: action.payload }
     case 'SET_FOREGROUND':
@@ -31,7 +29,7 @@ const reducer = (state: QrCodeState, action: QrCodeAction): QrCodeState => {
     case 'SET_TEXT':
       return { ...state, text: action.payload }
     case 'RESET':
-      return { ...initialState, dialogOpen: state.dialogOpen }
+      return initialState
     default:
       return state
   }
@@ -40,8 +38,8 @@ const reducer = (state: QrCodeState, action: QrCodeAction): QrCodeState => {
 const EMPTY_RESULT: QrResult = { dataUrl: '', svgString: '' }
 
 export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [state, dispatch] = useReducer(reducer, { ...initialState, dialogOpen: autoOpen ?? false })
-  const { background, dialogOpen, errorCorrection, foreground, size, text } = state
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const { background, errorCorrection, foreground, size, text } = state
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const { toast } = useToast()
 
@@ -131,22 +129,13 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
 
   return (
     <>
-      <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">
-            Generate QR Code
-          </Button>
-        </div>
-      </div>
-      <ToolDialogShell
-        open={dialogOpen}
-        onOpenChange={(open) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })}
-        onAfterDialogClose={onAfterDialogClose}
+      <ToolDialogFrame
+        autoOpen={autoOpen}
+        description={toolEntry?.description}
+        onAfterClose={onAfterDialogClose}
         onReset={handleReset}
         title="QR Code Generator"
-        size="screen"
+        triggers={[{ label: 'Generate QR Code' }]}
       >
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
@@ -223,7 +212,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             </div>
           </div>
         </div>
-      </ToolDialogShell>
+      </ToolDialogFrame>
       <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
     </>
   )

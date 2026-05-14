@@ -1,7 +1,7 @@
 import { useReducer } from 'react'
 
-import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
 import type { JsInput, JsMinifierAction, JsMinifierState, ToolComponentProps } from '@/types'
@@ -9,8 +9,6 @@ import { formatJs, minifyJs } from '@/utils'
 
 const reducer = (state: JsMinifierState, action: JsMinifierAction): JsMinifierState => {
   switch (action.type) {
-    case 'SET_DIALOG_OPEN':
-      return { ...state, dialogOpen: action.payload }
     case 'SET_INDENT':
       return { ...state, indent: action.payload }
     case 'SET_MODE':
@@ -26,12 +24,11 @@ const toolEntry = TOOL_REGISTRY_MAP['javascript-minifier']
 
 export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [state, dispatch] = useReducer(reducer, {
-    dialogOpen: autoOpen ?? false,
     indent: 2,
     mode: 'minify',
     source: '',
   })
-  const { dialogOpen, indent, mode, source } = state
+  const { indent, mode, source } = state
   const { toast } = useToast()
 
   const { result, setInput, setInputImmediate } = useToolComputation<JsInput, string>(
@@ -73,88 +70,76 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
   const savings = originalSize > 0 ? ((1 - resultSize / originalSize) * 100).toFixed(1) : '0'
 
   return (
-    <>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleReset}
+      title="JavaScript Minifier"
+      triggers={[{ label: 'Minify / Beautify' }]}
+    >
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">
-            Minify / Beautify
-          </Button>
-        </div>
-      </div>
-
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={(open) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })}
-        onReset={handleReset}
-        open={dialogOpen}
-        size="screen"
-        title="JavaScript Minifier"
-      >
-        <div className="flex w-full grow flex-col gap-4">
-          <div className="flex flex-wrap items-end gap-4">
+        <div className="flex flex-wrap items-end gap-4">
+          <FieldForm
+            label="Mode"
+            name="mode"
+            onChange={handleModeChange}
+            options={[
+              { label: 'Minify', value: 'minify' },
+              { label: 'Beautify', value: 'beautify' },
+            ]}
+            type="select"
+            value={mode}
+          />
+          {mode === 'beautify' && (
             <FieldForm
-              label="Mode"
-              name="mode"
-              onChange={handleModeChange}
+              label="Indent"
+              name="indent"
+              onChange={handleIndentChange}
               options={[
-                { label: 'Minify', value: 'minify' },
-                { label: 'Beautify', value: 'beautify' },
+                { label: '2 spaces', value: '2' },
+                { label: '4 spaces', value: '4' },
+                { label: 'Tab', value: 'tab' },
               ]}
               type="select"
-              value={mode}
+              value={String(indent)}
             />
-            {mode === 'beautify' && (
-              <FieldForm
-                label="Indent"
-                name="indent"
-                onChange={handleIndentChange}
-                options={[
-                  { label: '2 spaces', value: '2' },
-                  { label: '4 spaces', value: '4' },
-                  { label: 'Tab', value: 'tab' },
-                ]}
-                type="select"
-                value={String(indent)}
-              />
-            )}
-            {result && (
-              <p className="text-body-xs text-gray-500">
-                {originalSize} B → {resultSize} B ({savings}% savings)
-              </p>
-            )}
+          )}
+          {result && (
+            <p className="text-body-xs text-gray-500">
+              {originalSize} B → {resultSize} B ({savings}% savings)
+            </p>
+          )}
+        </div>
+
+        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <FieldForm
+              label="JavaScript Input"
+              name="dialog-source"
+              onChange={handleSourceChange}
+              placeholder="function hello() { return 'world'; }"
+              type="code"
+              value={source}
+            />
           </div>
 
-          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <FieldForm
-                label="JavaScript Input"
-                name="dialog-source"
-                onChange={handleSourceChange}
-                placeholder="function hello() { return 'world'; }"
-                type="code"
-                value={source}
-              />
-            </div>
+          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
-            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <CodeOutput
-                label={
-                  <span className="flex items-center gap-1">
-                    <span>Result</span>
-                    <CopyButton label="result" value={result} />
-                  </span>
-                }
-                placeholder="Processed JavaScript will appear here"
-                value={result}
-              />
-            </div>
+          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <CodeOutput
+              label={
+                <span className="flex items-center gap-1">
+                  <span>Result</span>
+                  <CopyButton label="result" value={result} />
+                </span>
+              }
+              placeholder="Processed JavaScript will appear here"
+              value={result}
+            />
           </div>
         </div>
-      </ToolDialogShell>
-    </>
+      </div>
+    </ToolDialogFrame>
   )
 }

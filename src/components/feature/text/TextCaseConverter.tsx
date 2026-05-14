@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Button, CopyButton, FieldForm } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolComputation } from '@/hooks'
 import type { CaseResult, ToolComponentProps } from '@/types'
@@ -36,7 +36,6 @@ const CASES: Array<CaseResult> = [
 
 export const TextCaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
 
   const {
     result: results,
@@ -62,63 +61,52 @@ export const TextCaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
   }
 
   return (
-    <>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleReset}
+      title="Text Case Converter"
+      triggers={[{ label: 'Convert Text Case' }]}
+    >
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <FieldForm
+              label="Source"
+              name="dialog-source"
+              onChange={handleSourceChange}
+              placeholder="Enter text to convert..."
+              rows={12}
+              type="textarea"
+              value={source}
+            />
+          </div>
 
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
-            Convert Text Case
-          </Button>
-        </div>
-      </div>
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={setDialogOpen}
-        onReset={handleReset}
-        open={dialogOpen}
-        size="screen"
-        title="Text Case Converter"
-      >
-        <div className="flex w-full grow flex-col gap-4">
-          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <FieldForm
-                label="Source"
-                name="dialog-source"
-                onChange={handleSourceChange}
-                placeholder="Enter text to convert..."
-                rows={12}
-                type="textarea"
-                value={source}
-              />
-            </div>
+          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
-            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-auto">
-              <span className="text-body-sm font-medium text-gray-400">Results</span>
-              {results.length > 0 ? (
-                <div className="flex flex-col gap-3">
-                  {results.map((r) => (
-                    <div className="flex flex-col gap-1" key={r.label}>
-                      <span className="flex items-center gap-1">
-                        <span className="text-body-xs font-medium text-gray-500">{r.label}</span>
-                        <CopyButton label={r.label} value={r.value} />
-                      </span>
-                      <span className="text-sm rounded-lg border border-gray-800 bg-gray-950 p-2 font-mono break-all text-gray-300">
-                        {r.value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <span className="text-body-xs text-gray-600">Enter text to see conversions</span>
-              )}
-            </div>
+          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-auto">
+            <span className="text-body-sm font-medium text-gray-400">Results</span>
+            {results.length > 0 ? (
+              <div className="flex flex-col gap-3">
+                {results.map((r) => (
+                  <div className="flex flex-col gap-1" key={r.label}>
+                    <span className="flex items-center gap-1">
+                      <span className="text-body-xs font-medium text-gray-500">{r.label}</span>
+                      <CopyButton label={r.label} value={r.value} />
+                    </span>
+                    <span className="text-sm rounded-lg border border-gray-800 bg-gray-950 p-2 font-mono break-all text-gray-300">
+                      {r.value}
+                    </span>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <span className="text-body-xs text-gray-600">Enter text to see conversions</span>
+            )}
           </div>
         </div>
-      </ToolDialogShell>
-    </>
+      </div>
+    </ToolDialogFrame>
   )
 }

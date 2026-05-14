@@ -1,7 +1,7 @@
 import { useReducer } from 'react'
 
-import { Button, CopyButton, FieldForm, TextInput } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { CopyButton, FieldForm, TextInput } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { MarkdownTableAction, MarkdownTableState, ToolComponentProps } from '@/types'
 import { type ColumnAlignment, generateMarkdownTable } from '@/utils'
@@ -26,14 +26,11 @@ const createInitialState = (): MarkdownTableState => ({
   alignments: Array(3).fill('left') as Array<ColumnAlignment>,
   cols: 3,
   data: createGrid(3, 3),
-  dialogOpen: false,
   rows: 3,
 })
 
 const reducer = (state: MarkdownTableState, action: MarkdownTableAction): MarkdownTableState => {
   switch (action.type) {
-    case 'SET_DIALOG_OPEN':
-      return { ...state, dialogOpen: action.payload }
     case 'SET_ROWS':
       return { ...state, rows: action.payload }
     case 'SET_COLS':
@@ -83,11 +80,8 @@ const reducer = (state: MarkdownTableState, action: MarkdownTableAction): Markdo
 }
 
 export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [state, dispatch] = useReducer(reducer, undefined, () => ({
-    ...createInitialState(),
-    dialogOpen: autoOpen ?? false,
-  }))
-  const { alignments, cols, data, dialogOpen, rows } = state
+  const [state, dispatch] = useReducer(reducer, undefined, createInitialState)
+  const { alignments, cols, data, rows } = state
 
   const output = generateMarkdownTable(data, alignments)
 
@@ -112,106 +106,96 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
   }
 
   return (
-    <>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleReset}
+      title="Markdown Table Generator"
+      triggers={[{ label: 'Build Table' }]}
+    >
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">
-            Build Table
-          </Button>
-        </div>
-      </div>
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={(open) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })}
-        onReset={handleReset}
-        open={dialogOpen}
-        size="screen"
-        title="Markdown Table Generator"
-      >
-        <div className="flex w-full grow flex-col gap-4">
-          <div className="flex items-center gap-4">
-            <div className="w-24">
-              <FieldForm
-                label="Rows"
-                max={20}
-                min={2}
-                name="table-rows"
-                onChange={(val: string) => handleRowsChange(Number(val))}
-                type="number"
-                value={String(rows)}
-              />
-            </div>
-            <div className="w-24">
-              <FieldForm
-                label="Cols"
-                max={10}
-                min={2}
-                name="table-cols"
-                onChange={(val: string) => handleColsChange(Number(val))}
-                type="number"
-                value={String(cols)}
-              />
-            </div>
+        <div className="flex items-center gap-4">
+          <div className="w-24">
+            <FieldForm
+              label="Rows"
+              max={20}
+              min={2}
+              name="table-rows"
+              onChange={(val: string) => handleRowsChange(Number(val))}
+              type="number"
+              value={String(rows)}
+            />
           </div>
+          <div className="w-24">
+            <FieldForm
+              label="Cols"
+              max={10}
+              min={2}
+              name="table-cols"
+              onChange={(val: string) => handleColsChange(Number(val))}
+              type="number"
+              value={String(cols)}
+            />
+          </div>
+        </div>
 
-          <div className="overflow-auto">
-            <table className="w-full border-collapse">
-              <thead>
-                <tr>
-                  {Array.from({ length: cols }).map((_, c) => (
-                    <th className="border border-gray-800 p-1" key={c}>
-                      <button
-                        className="w-full rounded bg-gray-900 px-2 py-1 text-body-xs text-gray-400 hover:text-primary"
-                        onClick={() => toggleAlign(c)}
-                        title={`Align: ${alignments[c]}`}
-                        type="button"
-                      >
-                        {ALIGN_ICON[alignments[c]]}
-                      </button>
-                    </th>
+        <div className="overflow-auto">
+          <table className="w-full border-collapse">
+            <thead>
+              <tr>
+                {Array.from({ length: cols }).map((_, c) => (
+                  <th className="border border-gray-800 p-1" key={c}>
+                    <button
+                      className="w-full rounded bg-gray-900 px-2 py-1 text-body-xs text-gray-400 hover:text-primary"
+                      onClick={() => toggleAlign(c)}
+                      title={`Align: ${alignments[c]}`}
+                      type="button"
+                    >
+                      {ALIGN_ICON[alignments[c]]}
+                    </button>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {data.map((row, r) => (
+                <tr key={r}>
+                  {row.map((cell, c) => (
+                    <td
+                      className="border border-gray-800 p-1 data-[state=header]:[&_input]:font-bold data-[state=header]:[&_input]:text-gray-100"
+                      data-state={r === 0 ? 'header' : 'body'}
+                      key={c}
+                    >
+                      <TextInput
+                        aria-label={r === 0 ? `Header column ${c + 1}` : `Row ${r}, column ${c + 1}`}
+                        name={`cell-${r}-${c}`}
+                        onChange={(value) => updateCell(r, c, value)}
+                        placeholder={r === 0 ? `Header ${c + 1}` : ''}
+                        type="text"
+                        value={cell}
+                        size="compact"
+                      />
+                    </td>
                   ))}
                 </tr>
-              </thead>
-              <tbody>
-                {data.map((row, r) => (
-                  <tr key={r}>
-                    {row.map((cell, c) => (
-                      <td
-                        className="border border-gray-800 p-1 data-[state=header]:[&_input]:font-bold data-[state=header]:[&_input]:text-gray-100"
-                        data-state={r === 0 ? 'header' : 'body'}
-                        key={c}
-                      >
-                        <TextInput
-                          aria-label={r === 0 ? `Header column ${c + 1}` : `Row ${r}, column ${c + 1}`}
-                          name={`cell-${r}-${c}`}
-                          onChange={(value) => updateCell(r, c, value)}
-                          placeholder={r === 0 ? `Header ${c + 1}` : ''}
-                          type="text"
-                          value={cell}
-                          size="compact"
-                        />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <div className="border-t-2 border-dashed border-gray-900" />
-
-          <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-1">
-              <span className="text-body-xs font-medium text-gray-400">Markdown</span>
-              <CopyButton label="Markdown" value={output} />
-            </div>
-            <pre className="max-h-[200px] overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono text-body-xs text-gray-300">
-              {output || 'Fill in cells to generate Markdown...'}
-            </pre>
-          </div>
+              ))}
+            </tbody>
+          </table>
         </div>
-      </ToolDialogShell>
-    </>
+
+        <div className="border-t-2 border-dashed border-gray-900" />
+
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-1">
+            <span className="text-body-xs font-medium text-gray-400">Markdown</span>
+            <CopyButton label="Markdown" value={output} />
+          </div>
+          <pre className="max-h-[200px] overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono text-body-xs text-gray-300">
+            {output || 'Fill in cells to generate Markdown...'}
+          </pre>
+        </div>
+      </div>
+    </ToolDialogFrame>
   )
 }

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react'
 
 import { Button, DownloadIcon, FieldForm } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -10,7 +10,6 @@ import { type Base64ImageInfo, base64ToImageInfo, formatFileSize } from '@/utils
 const toolEntry = TOOL_REGISTRY_MAP['base64-to-image']
 
 export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [input, setInputValue] = useState('')
   const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const { toast } = useToast()
@@ -55,22 +54,13 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
 
   return (
     <>
-      <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
-            Convert Base64 to Image
-          </Button>
-        </div>
-      </div>
-      <ToolDialogShell
-        open={dialogOpen}
-        onOpenChange={setDialogOpen}
-        onAfterDialogClose={onAfterDialogClose}
+      <ToolDialogFrame
+        autoOpen={autoOpen}
+        description={toolEntry?.description}
+        onAfterClose={onAfterDialogClose}
         onReset={handleReset}
-        size="screen"
         title="Base64 to Image"
+        triggers={[{ label: 'Convert Base64 to Image' }]}
       >
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
@@ -112,7 +102,7 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             </div>
           </div>
         </div>
-      </ToolDialogShell>
+      </ToolDialogFrame>
       <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
     </>
   )

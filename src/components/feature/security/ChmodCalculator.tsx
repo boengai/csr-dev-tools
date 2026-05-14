@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react'
 
 import { Button, CheckboxInput, CopyButton, TextInput } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
 import {
@@ -29,7 +29,6 @@ export const ChmodCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const [symbolicInput, setSymbolicInput] = useState('rwxr-xr-x')
   const [octalError, setOctalError] = useState('')
   const [symbolicError, setSymbolicError] = useState('')
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
 
   const updateFromState = useCallback((newState: ChmodState) => {
     setState(newState)
@@ -107,119 +106,108 @@ export const ChmodCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   }, [updateFromState])
 
   return (
-    <>
-      <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleReset}
+      size="default"
+      title="Chmod Calculator"
+      triggers={[{ label: 'Calculate Permissions' }]}
+    >
+      <div className="flex w-full grow flex-col gap-6">
+        {/* Preset Buttons */}
+        <div className="flex flex-wrap gap-2" role="group" aria-label="Common permission presets">
+          {PRESETS.map((preset) => (
+            <Button
+              key={preset}
+              onClick={() => handlePreset(preset)}
+              size="small"
+              variant={octalInput === preset ? 'primary' : 'default'}
+            >
+              {preset}
+            </Button>
+          ))}
+        </div>
 
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
-            Calculate Permissions
-          </Button>
+        {/* Octal and Symbolic Inputs */}
+        <div className="sm:flex-row flex flex-col gap-4">
+          <label className="flex flex-1 flex-col gap-1">
+            <span className="text-body-xs font-medium text-gray-400">Octal</span>
+            <TextInput name="octal-input" onChange={handleOctalChange} placeholder="755" type="text" value={octalInput} />
+            {octalError && (
+              <p className="text-amber-400 text-body-xs" role="alert">
+                {octalError}
+              </p>
+            )}
+          </label>
+
+          <label className="flex flex-1 flex-col gap-1">
+            <span className="text-body-xs font-medium text-gray-400">Symbolic</span>
+            <div className="[&_input]:font-mono">
+              <TextInput
+                name="symbolic-input"
+                onChange={handleSymbolicChange}
+                placeholder="rwxr-xr-x"
+                type="text"
+                value={symbolicInput}
+              />
+            </div>
+            {symbolicError && (
+              <p className="text-amber-400 text-body-xs" role="alert">
+                {symbolicError}
+              </p>
+            )}
+          </label>
+        </div>
+
+        {/* Checkbox Grid */}
+        <div className="overflow-x-auto">
+          <table className="w-full text-body-sm" aria-label="Permission checkboxes">
+            <thead>
+              <tr className="text-gray-400">
+                <th className="py-2 pr-4 text-left font-medium" />
+                <th className="px-4 py-2 text-center font-medium">Read</th>
+                <th className="px-4 py-2 text-center font-medium">Write</th>
+                <th className="px-4 py-2 text-center font-medium">Execute</th>
+              </tr>
+            </thead>
+            <tbody>
+              {GROUPS.map((group) => (
+                <tr key={group} role="group" aria-labelledby={`label-${group}`}>
+                  <td className="py-2 pr-4 font-medium text-gray-300 capitalize" id={`label-${group}`}>
+                    {group}
+                  </td>
+                  {PERMS.map((perm) => (
+                    <td key={perm} className="px-4 py-3 text-center">
+                      <CheckboxInput
+                        aria-label={`${group} ${perm} permission`}
+                        checked={state[group][perm]}
+                        onChange={() => handleCheckboxChange(group, perm)}
+                      />
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        {/* Human-Readable Description */}
+        <div aria-live="polite" className="rounded border border-gray-800 bg-gray-950 px-4 py-3">
+          <p className="text-body-xs text-gray-400">Permission Description</p>
+          <p className="mt-1 text-body-sm text-gray-200">{description}</p>
+        </div>
+
+        {/* Command Preview */}
+        <div
+          aria-live="polite"
+          className="flex items-center justify-between gap-2 rounded border border-gray-800 bg-gray-950 px-4 py-3"
+        >
+          <code className="font-mono text-body-sm text-gray-200">{command}</code>
+          <CopyButton label="chmod command" value={command} />
         </div>
       </div>
-
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={setDialogOpen}
-        onReset={handleReset}
-        open={dialogOpen}
-        size="default"
-        title="Chmod Calculator"
-      >
-        <div className="flex w-full grow flex-col gap-6">
-          {/* Preset Buttons */}
-          <div className="flex flex-wrap gap-2" role="group" aria-label="Common permission presets">
-            {PRESETS.map((preset) => (
-              <Button
-                key={preset}
-                onClick={() => handlePreset(preset)}
-                size="small"
-                variant={octalInput === preset ? 'primary' : 'default'}
-              >
-                {preset}
-              </Button>
-            ))}
-          </div>
-
-          {/* Octal and Symbolic Inputs */}
-          <div className="sm:flex-row flex flex-col gap-4">
-            <label className="flex flex-1 flex-col gap-1">
-              <span className="text-body-xs font-medium text-gray-400">Octal</span>
-              <TextInput name="octal-input" onChange={handleOctalChange} placeholder="755" type="text" value={octalInput} />
-              {octalError && (
-                <p className="text-amber-400 text-body-xs" role="alert">
-                  {octalError}
-                </p>
-              )}
-            </label>
-
-            <label className="flex flex-1 flex-col gap-1">
-              <span className="text-body-xs font-medium text-gray-400">Symbolic</span>
-              <div className="[&_input]:font-mono">
-                <TextInput
-                  name="symbolic-input"
-                  onChange={handleSymbolicChange}
-                  placeholder="rwxr-xr-x"
-                  type="text"
-                  value={symbolicInput}
-                />
-              </div>
-              {symbolicError && (
-                <p className="text-amber-400 text-body-xs" role="alert">
-                  {symbolicError}
-                </p>
-              )}
-            </label>
-          </div>
-
-          {/* Checkbox Grid */}
-          <div className="overflow-x-auto">
-            <table className="w-full text-body-sm" aria-label="Permission checkboxes">
-              <thead>
-                <tr className="text-gray-400">
-                  <th className="py-2 pr-4 text-left font-medium" />
-                  <th className="px-4 py-2 text-center font-medium">Read</th>
-                  <th className="px-4 py-2 text-center font-medium">Write</th>
-                  <th className="px-4 py-2 text-center font-medium">Execute</th>
-                </tr>
-              </thead>
-              <tbody>
-                {GROUPS.map((group) => (
-                  <tr key={group} role="group" aria-labelledby={`label-${group}`}>
-                    <td className="py-2 pr-4 font-medium text-gray-300 capitalize" id={`label-${group}`}>
-                      {group}
-                    </td>
-                    {PERMS.map((perm) => (
-                      <td key={perm} className="px-4 py-3 text-center">
-                        <CheckboxInput
-                          aria-label={`${group} ${perm} permission`}
-                          checked={state[group][perm]}
-                          onChange={() => handleCheckboxChange(group, perm)}
-                        />
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {/* Human-Readable Description */}
-          <div aria-live="polite" className="rounded border border-gray-800 bg-gray-950 px-4 py-3">
-            <p className="text-body-xs text-gray-400">Permission Description</p>
-            <p className="mt-1 text-body-sm text-gray-200">{description}</p>
-          </div>
-
-          {/* Command Preview */}
-          <div
-            aria-live="polite"
-            className="flex items-center justify-between gap-2 rounded border border-gray-800 bg-gray-950 px-4 py-3"
-          >
-            <code className="font-mono text-body-sm text-gray-200">{command}</code>
-            <CopyButton label="chmod command" value={command} />
-          </div>
-        </div>
-      </ToolDialogShell>
-    </>
+    </ToolDialogFrame>
   )
 }

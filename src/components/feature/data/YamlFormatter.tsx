@@ -1,7 +1,7 @@
 import { useReducer } from 'react'
 
-import { Button, CheckboxInput, CodeOutput, CopyButton, FieldForm, SelectInput } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { CheckboxInput, CodeOutput, CopyButton, FieldForm, SelectInput } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
 import type { ToolComponentProps, YamlFormatterAction, YamlFormatterState, YamlInput } from '@/types'
@@ -16,8 +16,6 @@ const INDENT_OPTIONS = [
 
 const reducer = (state: YamlFormatterState, action: YamlFormatterAction): YamlFormatterState => {
   switch (action.type) {
-    case 'SET_DIALOG_OPEN':
-      return { ...state, dialogOpen: action.payload }
     case 'SET_INDENT':
       return { ...state, indent: action.payload }
     case 'SET_SORT_KEYS':
@@ -31,12 +29,11 @@ const reducer = (state: YamlFormatterState, action: YamlFormatterAction): YamlFo
 
 export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [state, dispatch] = useReducer(reducer, {
-    dialogOpen: autoOpen ?? false,
     indent: 2,
     sortKeys: false,
     source: '',
   })
-  const { dialogOpen, indent, sortKeys, source } = state
+  const { indent, sortKeys, source } = state
   const { toast } = useToast()
 
   const { result, setInput, setInputImmediate } = useToolComputation<YamlInput, string>(
@@ -85,72 +82,60 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   }
 
   return (
-    <>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleReset}
+      title="YAML Format"
+      triggers={[{ label: 'Format' }]}
+    >
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+        <div className="flex items-center gap-4">
+          <SelectInput
+            name="indent-select"
+            onChange={handleIndentChange}
+            options={INDENT_OPTIONS.map((opt) => ({ label: opt.label, value: String(opt.value) }))}
+            value={String(indent)}
+          />
 
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => dispatch({ type: 'SET_DIALOG_OPEN', payload: true })} variant="default">
-            Format
-          </Button>
+          <label
+            className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400"
+            htmlFor="yaml-sort-keys"
+          >
+            <CheckboxInput checked={sortKeys} id="yaml-sort-keys" onChange={() => handleSortKeysChange()} />
+            Sort Keys
+          </label>
+        </div>
+
+        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <FieldForm
+              label="YAML Input"
+              name="dialog-source"
+              onChange={handleSourceChange}
+              placeholder={'name: John\nage: 30\ntags:\n  - dev\n  - tools'}
+              type="code"
+              value={source}
+            />
+          </div>
+
+          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
+
+          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <CodeOutput
+              label={
+                <span className="flex items-center gap-1">
+                  <span>Formatted YAML</span>
+                  <CopyButton label="formatted YAML" value={result} />
+                </span>
+              }
+              placeholder={'name: John\nage: 30\ntags:\n  - dev\n  - tools'}
+              value={result}
+            />
+          </div>
         </div>
       </div>
-
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={(open) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })}
-        onReset={handleReset}
-        open={dialogOpen}
-        size="screen"
-        title="YAML Format"
-      >
-        <div className="flex w-full grow flex-col gap-4">
-          <div className="flex items-center gap-4">
-            <SelectInput
-              name="indent-select"
-              onChange={handleIndentChange}
-              options={INDENT_OPTIONS.map((opt) => ({ label: opt.label, value: String(opt.value) }))}
-              value={String(indent)}
-            />
-
-            <label
-              className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400"
-              htmlFor="yaml-sort-keys"
-            >
-              <CheckboxInput checked={sortKeys} id="yaml-sort-keys" onChange={() => handleSortKeysChange()} />
-              Sort Keys
-            </label>
-          </div>
-
-          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <FieldForm
-                label="YAML Input"
-                name="dialog-source"
-                onChange={handleSourceChange}
-                placeholder={'name: John\nage: 30\ntags:\n  - dev\n  - tools'}
-                type="code"
-                value={source}
-              />
-            </div>
-
-            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <CodeOutput
-                label={
-                  <span className="flex items-center gap-1">
-                    <span>Formatted YAML</span>
-                    <CopyButton label="formatted YAML" value={result} />
-                  </span>
-                }
-                placeholder={'name: John\nage: 30\ntags:\n  - dev\n  - tools'}
-                value={result}
-              />
-            </div>
-          </div>
-        </div>
-      </ToolDialogShell>
-    </>
+    </ToolDialogFrame>
   )
 }

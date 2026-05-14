@@ -1,7 +1,5 @@
-import { useState } from 'react'
-
-import { Button, CopyButton, FieldForm } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type { InlineSpan, SideBySideRow, TextDiffInput, TextDiffResult, ToolComponentProps } from '@/types'
@@ -57,7 +55,6 @@ const DiffCell = ({
 }
 
 export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [inputs, setInputs] = useInputLocalStorage('csr-dev-tools-text-diff', { original: '', modified: '' })
   const { original, modified } = inputs
   const { toast } = useToast()
@@ -99,103 +96,92 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   }
 
   return (
-    <>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleReset}
+      title="Text Diff Checker"
+      triggers={[{ label: 'Compare' }]}
+    >
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
-            Compare
-          </Button>
-        </div>
-      </div>
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={setDialogOpen}
-        onReset={handleReset}
-        open={dialogOpen}
-        size="screen"
-        title="Text Diff Checker"
-      >
-        <div className="flex w-full grow flex-col gap-4">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <FieldForm
-                label="Original"
-                name="original"
-                onChange={handleOriginalChange}
-                placeholder="Paste original text here..."
-                type="code"
-                value={original}
-              />
-            </div>
-
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-              <FieldForm
-                label="Modified"
-                name="modified"
-                onChange={handleModifiedChange}
-                placeholder="Paste modified text here..."
-                type="code"
-                value={modified}
-              />
-            </div>
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-6 tablet:flex-row">
+          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <FieldForm
+              label="Original"
+              name="original"
+              onChange={handleOriginalChange}
+              placeholder="Paste original text here..."
+              type="code"
+              value={original}
+            />
           </div>
-
-          <div className="border-t-2 border-dashed border-gray-900" />
 
           <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-            <div className="flex items-center gap-1">
-              <span className="text-body-sm font-medium text-gray-400">Diff Output</span>
-              {unifiedDiff && <CopyButton label="diff" value={unifiedDiff} />}
-            </div>
-            <div
-              aria-label="Diff output"
-              aria-live="polite"
-              className="text-sm overflow-auto rounded-lg border border-gray-800 bg-gray-950 font-mono"
-              role="region"
-            >
-              {rows.length > 0 ? (
-                <>
-                  <div className="sticky top-0 z-10 grid grid-cols-2 border-b border-gray-800 bg-gray-950">
-                    <div className="text-xs px-3 py-1.5 font-medium text-gray-500">Original</div>
-                    <div className="text-xs border-l border-gray-800 px-3 py-1.5 font-medium text-gray-500">
-                      Modified
-                    </div>
-                  </div>
-                  <div className="grid grid-cols-2">
-                    {rows.map((row) => (
-                      <div
-                        className="col-span-2 grid grid-cols-subgrid"
-                        key={`${row.leftLineNum ?? 'e'}-${row.rightLineNum ?? 'e'}-${row.leftType}-${row.rightType}`}
-                      >
-                        <DiffCell
-                          content={row.leftContent}
-                          lineNum={row.leftLineNum}
-                          side="left"
-                          spans={row.leftSpans}
-                          type={row.leftType}
-                        />
-                        <div className="border-l border-gray-800">
-                          <DiffCell
-                            content={row.rightContent}
-                            lineNum={row.rightLineNum}
-                            side="right"
-                            spans={row.rightSpans}
-                            type={row.rightType}
-                          />
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              ) : (
-                <p className="p-3 text-gray-600">Diff output will appear here...</p>
-              )}
-            </div>
+            <FieldForm
+              label="Modified"
+              name="modified"
+              onChange={handleModifiedChange}
+              placeholder="Paste modified text here..."
+              type="code"
+              value={modified}
+            />
           </div>
         </div>
-      </ToolDialogShell>
-    </>
+
+        <div className="border-t-2 border-dashed border-gray-900" />
+
+        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <div className="flex items-center gap-1">
+            <span className="text-body-sm font-medium text-gray-400">Diff Output</span>
+            {unifiedDiff && <CopyButton label="diff" value={unifiedDiff} />}
+          </div>
+          <div
+            aria-label="Diff output"
+            aria-live="polite"
+            className="text-sm overflow-auto rounded-lg border border-gray-800 bg-gray-950 font-mono"
+            role="region"
+          >
+            {rows.length > 0 ? (
+              <>
+                <div className="sticky top-0 z-10 grid grid-cols-2 border-b border-gray-800 bg-gray-950">
+                  <div className="text-xs px-3 py-1.5 font-medium text-gray-500">Original</div>
+                  <div className="text-xs border-l border-gray-800 px-3 py-1.5 font-medium text-gray-500">
+                    Modified
+                  </div>
+                </div>
+                <div className="grid grid-cols-2">
+                  {rows.map((row) => (
+                    <div
+                      className="col-span-2 grid grid-cols-subgrid"
+                      key={`${row.leftLineNum ?? 'e'}-${row.rightLineNum ?? 'e'}-${row.leftType}-${row.rightType}`}
+                    >
+                      <DiffCell
+                        content={row.leftContent}
+                        lineNum={row.leftLineNum}
+                        side="left"
+                        spans={row.leftSpans}
+                        type={row.leftType}
+                      />
+                      <div className="border-l border-gray-800">
+                        <DiffCell
+                          content={row.rightContent}
+                          lineNum={row.rightLineNum}
+                          side="right"
+                          spans={row.rightSpans}
+                          type={row.rightType}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </>
+            ) : (
+              <p className="p-3 text-gray-600">Diff output will appear here...</p>
+            )}
+          </div>
+        </div>
+      </div>
+    </ToolDialogFrame>
   )
 }

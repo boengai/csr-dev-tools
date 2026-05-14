@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
-import { Button, CopyButton, FieldForm, TextAreaInput, ToggleButton } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { CopyButton, FieldForm, TextAreaInput, ToggleButton } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
 import type { HmacInput, ToolComponentProps } from '@/types'
@@ -23,7 +23,6 @@ export const HmacGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   const [secretKey, setSecretKey] = useState('')
   const [algorithm, setAlgorithm] = useState<HmacAlgorithm>(DEFAULT_HMAC_ALGORITHM)
   const [encoding, setEncoding] = useState<HmacEncoding>(DEFAULT_HMAC_ENCODING)
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
 
   const { result: hmac, setInput, setInputImmediate } = useToolComputation<HmacInput, string>(
@@ -78,89 +77,78 @@ export const HmacGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   }
 
   return (
-    <>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleReset}
+      size="default"
+      title="HMAC Generator"
+      triggers={[{ label: 'Generate HMAC' }]}
+    >
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+        <TextAreaInput
+          aria-label="Message to sign"
+          name="hmac-message"
+          onChange={handleMessageChange}
+          placeholder="Enter message to sign..."
+          value={message}
+        />
 
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
-            Generate HMAC
-          </Button>
+        <FieldForm
+          aria-label="Secret key"
+          label=""
+          name="hmac-secret-key"
+          onChange={handleKeyChange}
+          placeholder="Enter secret key..."
+          type="text"
+          value={secretKey}
+        />
+
+        <div className="flex shrink-0 flex-wrap items-center gap-4">
+          <div className="flex flex-wrap gap-2">
+            {HMAC_ALGORITHMS.map((algo) => (
+              <ToggleButton
+                aria-label={`Select ${algo} algorithm`}
+                key={algo}
+                onClick={() => handleAlgorithmChange(algo)}
+                pressed={algo === algorithm}
+              >
+                {algo}
+              </ToggleButton>
+            ))}
+          </div>
+
+          <div className="h-5 w-px bg-gray-800" />
+
+          <div className="flex flex-wrap gap-2">
+            {ENCODINGS.map((enc) => (
+              <ToggleButton
+                aria-label={`Select ${enc} encoding`}
+                key={enc}
+                onClick={() => handleEncodingChange(enc)}
+                pressed={enc === encoding}
+              >
+                {enc}
+              </ToggleButton>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t-2 border-dashed border-gray-900" />
+
+        <div aria-live="polite" className="flex min-h-0 flex-col gap-2">
+          <div className="flex items-center gap-2">
+            <span className="text-body-sm font-medium text-gray-400">
+              HMAC-{algorithm} ({encoding})
+            </span>
+            {hmac && <CopyButton label="HMAC value" value={hmac} />}
+          </div>
+          <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
+            <span className="text-sm font-mono break-all text-gray-300">{hmac || '—'}</span>
+          </div>
         </div>
       </div>
-
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={setDialogOpen}
-        onReset={handleReset}
-        open={dialogOpen}
-        size="default"
-        title="HMAC Generator"
-      >
-        <div className="flex w-full grow flex-col gap-4">
-          <TextAreaInput
-            aria-label="Message to sign"
-            name="hmac-message"
-            onChange={handleMessageChange}
-            placeholder="Enter message to sign..."
-            value={message}
-          />
-
-          <FieldForm
-            aria-label="Secret key"
-            label=""
-            name="hmac-secret-key"
-            onChange={handleKeyChange}
-            placeholder="Enter secret key..."
-            type="text"
-            value={secretKey}
-          />
-
-          <div className="flex shrink-0 flex-wrap items-center gap-4">
-            <div className="flex flex-wrap gap-2">
-              {HMAC_ALGORITHMS.map((algo) => (
-                <ToggleButton
-                  aria-label={`Select ${algo} algorithm`}
-                  key={algo}
-                  onClick={() => handleAlgorithmChange(algo)}
-                  pressed={algo === algorithm}
-                >
-                  {algo}
-                </ToggleButton>
-              ))}
-            </div>
-
-            <div className="h-5 w-px bg-gray-800" />
-
-            <div className="flex flex-wrap gap-2">
-              {ENCODINGS.map((enc) => (
-                <ToggleButton
-                  aria-label={`Select ${enc} encoding`}
-                  key={enc}
-                  onClick={() => handleEncodingChange(enc)}
-                  pressed={enc === encoding}
-                >
-                  {enc}
-                </ToggleButton>
-              ))}
-            </div>
-          </div>
-
-          <div className="border-t-2 border-dashed border-gray-900" />
-
-          <div aria-live="polite" className="flex min-h-0 flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <span className="text-body-sm font-medium text-gray-400">
-                HMAC-{algorithm} ({encoding})
-              </span>
-              {hmac && <CopyButton label="HMAC value" value={hmac} />}
-            </div>
-            <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
-              <span className="text-sm font-mono break-all text-gray-300">{hmac || '—'}</span>
-            </div>
-          </div>
-        </div>
-      </ToolDialogShell>
-    </>
+    </ToolDialogFrame>
   )
 }
