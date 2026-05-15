@@ -1,69 +1,31 @@
-import { useReducer } from 'react'
-
 import { CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
-import type { JsInput, JsMinifierAction, JsMinifierState, ToolComponentProps } from '@/types'
+import { useToast, useToolFields } from '@/hooks'
+import type { JsInput, ToolComponentProps } from '@/types'
 import { formatJs, minifyJs } from '@/wasm/formatter'
-
-const reducer = (state: JsMinifierState, action: JsMinifierAction): JsMinifierState => {
-  switch (action.type) {
-    case 'SET_INDENT':
-      return { ...state, indent: action.payload }
-    case 'SET_MODE':
-      return { ...state, mode: action.payload }
-    case 'SET_SOURCE':
-      return { ...state, source: action.payload }
-    case 'RESET':
-      return { ...state, source: '' }
-  }
-}
 
 const toolEntry = TOOL_REGISTRY_MAP['javascript-minifier']
 
 export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [state, dispatch] = useReducer(reducer, {
-    indent: 2,
-    mode: 'minify',
-    source: '',
-  })
-  const { indent, mode, source } = state
   const { toast } = useToast()
 
-  const { result, setInput, setInputImmediate } = useToolComputation<JsInput, string>(
-    ({ source: val, mode: m, indent: ind }) => (m === 'beautify' ? formatJs(val, ind) : minifyJs(val)),
-    {
-      debounceMs: 300,
-      initial: '',
-      isEmpty: ({ source: val }) => val.trim().length === 0,
-      onError: () => {
-        toast({ action: 'add', item: { label: 'Unable to process JavaScript', type: 'error' } })
-      },
+  const { inputs, result, setFields, setFieldsImmediate } = useToolFields<JsInput, string>({
+    compute: ({ source: val, mode: m, indent: ind }) => (m === 'beautify' ? formatJs(val, ind) : minifyJs(val)),
+    debounceMs: 300,
+    initial: { source: '', mode: 'minify', indent: 2 },
+    initialResult: '',
+    isEmpty: ({ source: val }) => val.trim().length === 0,
+    onError: () => {
+      toast({ action: 'add', item: { label: 'Unable to process JavaScript', type: 'error' } })
     },
-  )
+  })
+  const { indent, mode, source } = inputs
 
-  const handleSourceChange = (val: string) => {
-    dispatch({ type: 'SET_SOURCE', payload: val })
-    setInput({ source: val, mode, indent })
-  }
-
-  const handleModeChange = (val: string) => {
-    const m = val as 'beautify' | 'minify'
-    dispatch({ type: 'SET_MODE', payload: m })
-    setInputImmediate({ source, mode: m, indent })
-  }
-
-  const handleIndentChange = (val: string) => {
-    const ind = val === 'tab' ? 'tab' : Number(val)
-    dispatch({ type: 'SET_INDENT', payload: ind })
-    setInputImmediate({ source, mode, indent: ind })
-  }
-
-  const handleReset = () => {
-    dispatch({ type: 'RESET' })
-    setInputImmediate({ source: '', mode, indent })
-  }
+  const handleSourceChange = (val: string) => setFields({ source: val })
+  const handleModeChange = (val: string) => setFieldsImmediate({ mode: val as 'beautify' | 'minify' })
+  const handleIndentChange = (val: string) => setFieldsImmediate({ indent: val === 'tab' ? 'tab' : Number(val) })
+  const handleReset = () => setFieldsImmediate({ source: '' })
 
   const originalSize = new Blob([source]).size
   const resultSize = new Blob([result]).size
