@@ -8,6 +8,14 @@ Rules:
 - For cross-module "how does X relate to Y" questions, prefer `graphify query "<question>"`, `graphify path "<A>" "<B>"`, or `graphify explain "<concept>"` over grep — these traverse the graph's EXTRACTED + INFERRED edges instead of scanning files
 - After modifying code, run `graphify update .` to keep the graph current (AST-only, no API cost).
 
+## Typecheck command
+
+Run `pnpm typecheck` (NOT `pnpm tsc --noEmit`). The root `tsconfig.json`
+uses project references with `"files": []`, so a bare `tsc --noEmit`
+exits 0 against an empty file set and silently typechecks nothing.
+The `typecheck` script is `tsc -b --noEmit` which respects the
+project references and surfaces real errors.
+
 ## Adding a new tool
 
 Tool metadata lives in `src/constants/tool-routes.ts` — the single source of truth. Both the runtime `TOOL_REGISTRY` (which adds the lazy React component) and the build-time prerenderer in `vite.config.ts` derive from it.
