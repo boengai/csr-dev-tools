@@ -1,26 +1,16 @@
 import { useCallback, useState } from 'react'
 
 import type { SetValue } from '@/types/hooks/persist/useInputLocalStorage'
+import { readJsonStorage, writeJsonStorage } from './jsonStorage'
 
 export function useInputLocalStorage<T>(key: string, initialValue: T): [T, SetValue<T>] {
-  const [storedValue, setStoredValue] = useState<T>(() => {
-    try {
-      const item = localStorage.getItem(key)
-      return item !== null ? (JSON.parse(item) as T) : initialValue
-    } catch {
-      return initialValue
-    }
-  })
+  const [storedValue, setStoredValue] = useState<T>(() => readJsonStorage(key, initialValue))
 
   const setValue: SetValue<T> = useCallback(
     (value) => {
       setStoredValue((prev) => {
         const nextValue = value instanceof Function ? value(prev) : value
-        try {
-          localStorage.setItem(key, JSON.stringify(nextValue))
-        } catch {
-          // storage full — state still updates in memory
-        }
+        writeJsonStorage(key, nextValue)
         return nextValue
       })
     },

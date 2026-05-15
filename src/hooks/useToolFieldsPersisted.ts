@@ -1,25 +1,9 @@
 import { useEffect, useMemo } from 'react'
 
 import type { UseToolFieldsPersistedOptions, UseToolFieldsResult } from '@/types'
+import { readJsonStorage, writeJsonStorage } from './persist/jsonStorage'
 import { useMountOnce } from './useMountOnce'
 import { useToolFields } from './useToolFields'
-
-function readBag<F>(key: string, fallback: F): F {
-  try {
-    const item = localStorage.getItem(key)
-    return item !== null ? (JSON.parse(item) as F) : fallback
-  } catch {
-    return fallback
-  }
-}
-
-function writeBag<F>(key: string, value: F): void {
-  try {
-    localStorage.setItem(key, JSON.stringify(value))
-  } catch {
-    // storage full — accept; the in-memory bag remains the source of truth
-  }
-}
 
 /**
  * Persistent variant of [[useToolFields]]: owns the localStorage round-trip
@@ -37,7 +21,7 @@ export function useToolFieldsPersisted<F, R>(
   const { storageKey, ...fieldsOptions } = options
 
   const initialBag = useMemo(
-    () => readBag(storageKey, fieldsOptions.initial),
+    () => readJsonStorage(storageKey, fieldsOptions.initial),
     // Read-once on mount; bag changes go through useToolFields, not via re-running this memo.
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only seed
     [],
@@ -53,9 +37,9 @@ export function useToolFieldsPersisted<F, R>(
 
   // Fires once on mount with initialBag (re-)persisting the seed, and on
   // every subsequent inputs change. Initial write is intentional: it pins
-  // the in-memory bag to storage even when readBag returned the fallback.
+  // the in-memory bag to storage even when readJsonStorage returned the fallback.
   useEffect(() => {
-    writeBag(storageKey, fields.inputs)
+    writeJsonStorage(storageKey, fields.inputs)
   }, [storageKey, fields.inputs])
 
   return fields

@@ -1,25 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import type { UseToolComputationPersistedOptions, UseToolComputationPersistedResult } from '@/types'
+import { readJsonStorage, writeJsonStorage } from './persist/jsonStorage'
 import { useMountOnce } from './useMountOnce'
 import { useToolComputation } from './useToolComputation'
-
-function readValue<I>(key: string, fallback: I): I {
-  try {
-    const item = localStorage.getItem(key)
-    return item !== null ? (JSON.parse(item) as I) : fallback
-  } catch {
-    return fallback
-  }
-}
-
-function writeValue<I>(key: string, value: I): void {
-  try {
-    localStorage.setItem(key, JSON.stringify(value))
-  } catch {
-    // storage full — accept; the in-memory value remains the source of truth
-  }
-}
 
 /**
  * Persistent variant of [[useToolComputation]] for single-Input Tools: owns the
@@ -37,7 +21,7 @@ export function useToolComputationPersisted<I, R>(
   const { storageKey, initial, initialResult, compute, ...computeOptions } = options
 
   const initialInput = useMemo(
-    () => readValue(storageKey, initial),
+    () => readJsonStorage(storageKey, initial),
     // Read-once on mount; subsequent input changes go through setInput / setInputImmediate.
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only seed
     [],
@@ -80,9 +64,9 @@ export function useToolComputationPersisted<I, R>(
 
   // Fires once on mount with initialInput (re-)persisting the seed, and on
   // every subsequent input change. Initial write is intentional: it pins
-  // the in-memory input to storage even when readValue returned the fallback.
+  // the in-memory input to storage even when readJsonStorage returned the fallback.
   useEffect(() => {
-    writeValue(storageKey, input)
+    writeJsonStorage(storageKey, input)
   }, [storageKey, input])
 
   return { error, input, isPending, result, setInput, setInputImmediate }
