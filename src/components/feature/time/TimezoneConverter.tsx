@@ -3,7 +3,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 
 import { Button, CopyButton, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolFields } from '@/hooks'
+import { readJsonStorage, useToolFields, writeJsonStorage } from '@/hooks'
 import type { TargetResult, ToolComponentProps } from '@/types'
 import {
   buildTimezoneIndex,
@@ -17,18 +17,9 @@ import {
 
 const FAVORITES_KEY = 'csr-dev-tools-timezone-favorites'
 
-function loadFavorites(): Array<string> {
-  try {
-    const stored = localStorage.getItem(FAVORITES_KEY)
-    return stored ? JSON.parse(stored) : []
-  } catch {
-    return []
-  }
-}
+const loadFavorites = (): Array<string> => readJsonStorage<Array<string>>(FAVORITES_KEY, [])
 
-function saveFavorites(favorites: Array<string>): void {
-  localStorage.setItem(FAVORITES_KEY, JSON.stringify(favorites))
-}
+const saveFavorites = (favorites: Array<string>): void => writeJsonStorage(FAVORITES_KEY, favorites)
 
 function formatNowDate(): string {
   const d = new Date()
