@@ -1,5 +1,6 @@
 export * from './persist'
 export * from './state'
+export * from './useBatchAssetPipeline'
 export * from './useBlobUrl'
 export * from './useCopyToClipboard'
 export * from './useDebounceCallback'

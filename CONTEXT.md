@@ -112,7 +112,11 @@ Today's consumers: `FaviconGenerator`, `ImageToBase64`, `SplashScreenGenerator`.
 Pick this when the Tool's "first interaction" is a file upload. Pick
 [[Tool dialog frame]] when the tile has button trigger(s). Pick
 [[Image tool shell]] when the Tool is single-File-in / single-Blob-out (per
-its own four invariants).
+its own four invariants). When the Tool produces a batch of `Blob`s rather
+than a single one (FaviconGenerator, SplashScreenGenerator), compose this
+frame with the [[Batch asset pipeline]] hook — the frame owns the tile and
+dialog wiring; the hook owns the upload → process → results → ZIP/download
+behavior.
 
 ## Tool handoff
 
@@ -182,6 +186,59 @@ same shape `<BidirectionalConverter>` uses for `sourceToolbarSlot`. The
 `renderPreview` ctx carries `{ pending, error, source, sourceUrl, result,
 resultUrl }`; the Tool decides per-phase rendering instead of a separate
 processing slot.
+
+## Batch asset pipeline
+
+The behavior sibling of [[Image tool shell]] for Tools that take a single
+uploaded `File` and produce a **batch** of derived `Blob` results — preview
+grid + per-asset download + ZIP. Implemented by `useBatchAssetPipeline`
+(`src/hooks/useBatchAssetPipeline.ts`).
+
+Today's consumers: `FaviconGenerator`, `SplashScreenGenerator`.
+
+A hook, not a UI shell, because the result-panel UI varies too much across
+consumers to live behind a render-prop (FaviconGenerator's flat grid vs
+SplashScreenGenerator's category tabs + meta-tag/manifest text blocks).
+The hook owns wiring; the Tool owns layout.
+
+The hook owns:
+
+- File upload + `mimePrefix` validation + reject toast (rejected uploads
+  leave state untouched).
+- Source decoding via `loadImageFromFile` → `sourceImage: HTMLImageElement`.
+- The source `Blob` URL (`sourcePreview`), revoked when source changes or
+  on unmount.
+- The `regenerate(process)` lifecycle: stale-safety via `useStaleSafeAsync`
+  (newer call wins; older session's result and progress reports are dropped),
+  unmount-safety, success/failure toasts.
+- A `progress` channel — the `process` callback receives a
+  `report(current, total)` argument; stale-session reports are dropped.
+- `downloadOne(blob, name)` + `downloadAll(zipName, files)` (the caller
+  flattens its generic `results` shape into a `Record<string, Blob | string>`
+  map; strings are written verbatim into the ZIP for cases like meta-tag
+  HTML or manifest JSON).
+- `openFilePicker()` — programmatically opens the OS file picker and routes
+  the selection through `upload()`, replacing the per-Tool hidden
+  `<input>` + `fileInputRef` pattern.
+- `reset()` — bumps the stale-safety session so any in-flight regenerate
+  cannot write back over the cleared state.
+
+The Tool owns: rendering (preview cards, tabs, controls), how to flatten
+generic `results` for ZIP, and any per-Tool extras (Splash's bg color +
+image scale controls + dimension warning + safe-zone overlay).
+
+Does NOT fit:
+
+- Multi-source N-File Tools (e.g. `ImageConvertor`, which has its own
+  workflow state machine).
+- Inline (no-dialog) image Tools (`ImageCompressor`).
+- Single-Blob-out Tools — use [[Image tool shell]].
+
+The `regenerate` lifecycle echoes the [[Tool computation pipeline]] but
+sheds debounce + `isEmpty`-bypass: these Tools fire on a button click
+(or on upload), never on a debounced input. The stale-safety + unmount-safety
+invariants are the same — just composed from `useStaleSafeAsync` directly
+rather than from the full pipeline.
 
 ## DiagramEditor
 

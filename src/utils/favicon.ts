@@ -1,6 +1,5 @@
 import type { FaviconSize, FaviconResult } from '@/types/utils/favicon'
 import { canvasToBlob } from './canvas'
-import { downloadBlobsAsZip } from './download'
 
 export const FAVICON_SIZES: Array<FaviconSize> = [
   { height: 16, name: 'favicon-16x16.png', rel: 'icon', width: 16 },
@@ -61,17 +60,6 @@ export const generateFaviconLinkTags = (sizes: Array<FaviconSize> = FAVICON_SIZE
       return `<link rel="icon" type="image/png" sizes="${size.width}x${size.height}" href="/${size.name}">`
     })
     .join('\n')
-}
-
-/**
- * Download all favicon results as a ZIP file
- */
-export const downloadFaviconsAsZip = async (results: Array<FaviconResult>): Promise<void> => {
-  const files: Record<string, Blob> = {}
-  for (const result of results) {
-    files[result.size.name] = result.blob
-  }
-  await downloadBlobsAsZip(files, 'favicons.zip')
 }
 
 export type { FaviconSize, FaviconResult } from '@/types/utils/favicon'

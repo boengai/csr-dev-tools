@@ -1,8 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import type { FaviconResult } from './favicon'
-import { FAVICON_SIZES, generateFaviconLinkTags, generateFavicons, downloadFaviconsAsZip } from './favicon'
+import { FAVICON_SIZES, generateFaviconLinkTags, generateFavicons } from './favicon'
 
 const createMockCanvas = () => {
   const ctx = {
@@ -95,32 +94,4 @@ describe('favicon utils', () => {
     })
   })
 
-  describe('downloadFaviconsAsZip', () => {
-    afterEach(() => {
-      vi.restoreAllMocks()
-    })
-
-    it('triggers download with correct filename', async () => {
-      const clickSpy = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(() => undefined)
-      clickSpy.mockClear()
-      const mockUrl = 'blob:mock'
-      vi.spyOn(URL, 'createObjectURL').mockReturnValue(mockUrl)
-      const revokeSpy = vi.spyOn(URL, 'revokeObjectURL').mockImplementation(() => {})
-
-      const mockResults: Array<FaviconResult> = [
-        {
-          blob: new Blob(['test'], { type: 'image/png' }),
-          dataUrl: 'data:image/png;base64,test',
-          size: FAVICON_SIZES[0],
-        },
-      ]
-
-      await downloadFaviconsAsZip(mockResults)
-      await Promise.resolve() // flush queueMicrotask
-
-      expect(clickSpy).toHaveBeenCalledOnce()
-      expect(revokeSpy).toHaveBeenCalledWith(mockUrl)
-      clickSpy.mockRestore()
-    })
-  })
 })

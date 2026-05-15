@@ -2,7 +2,6 @@ import type { SplashScreenDevice } from '@/constants'
 import { IOS_DEVICES, MASKABLE_ICON_SIZES, MASKABLE_SAFE_ZONE_RATIO, PWA_ICON_SIZES } from '@/constants'
 import type { SplashScreenResult, PwaIconResult, SplashScreenGeneratorOutput } from '@/types/utils/splash-screen'
 import { canvasToBlob } from './canvas'
-import { downloadBlobsAsZip } from './download'
 
 const slugify = (name: string) =>
   name
@@ -174,21 +173,6 @@ export const generateManifestIcons = (): string => {
   }
 
   return JSON.stringify(icons, null, 2)
-}
-
-export const downloadSplashScreenZip = async (output: SplashScreenGeneratorOutput): Promise<void> => {
-  const files: Record<string, Blob | string> = {
-    'apple-splash-meta.html': output.metaTags,
-    'manifest-icons.json': output.manifestJson,
-  }
-  for (const splash of output.splashScreens) {
-    files[`ios-splash/${splash.fileName}`] = splash.blob
-  }
-  for (const icon of output.icons) {
-    const dir = icon.maskable ? 'icons/maskable' : 'icons'
-    files[`${dir}/${icon.fileName}`] = icon.blob
-  }
-  await downloadBlobsAsZip(files, 'splash-screen-assets.zip')
 }
 
 export type { SplashScreenResult, PwaIconResult, SplashScreenGeneratorOutput } from '@/types/utils/splash-screen'
