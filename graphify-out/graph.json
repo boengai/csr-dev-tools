@@ -7965,7 +7965,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L1",
       "id": "src_diagram_state_ts",
-      "community": 373,
+      "community": 41,
       "norm_label": "state.ts"
     },
     {
@@ -7974,7 +7974,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L3",
       "id": "diagram_state_createinitialdocument",
-      "community": 373,
+      "community": 41,
       "norm_label": "createinitialdocument()"
     },
     {
@@ -7983,7 +7983,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L15",
       "id": "diagram_state_clonedocument",
-      "community": 373,
+      "community": 41,
       "norm_label": "clonedocument()"
     },
     {
@@ -8145,7 +8145,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L23",
       "id": "diagram_editor_isvaliddocument",
-      "community": 373,
+      "community": 41,
       "norm_label": "isvaliddocument()"
     },
     {
@@ -8163,7 +8163,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L44",
       "id": "diagram_editor_diagrameditor_constructor",
-      "community": 373,
+      "community": 41,
       "norm_label": ".constructor()"
     },
     {
@@ -8244,7 +8244,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L113",
       "id": "diagram_editor_diagrameditor_replacedocument",
-      "community": 373,
+      "community": 41,
       "norm_label": ".replacedocument()"
     },
     {
@@ -8469,7 +8469,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L295",
       "id": "diagram_editor_diagrameditor_loadfromexportedjson",
-      "community": 9,
+      "community": 41,
       "norm_label": ".loadfromexportedjson()"
     },
     {
@@ -8640,7 +8640,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_state_spec_ts",
-      "community": 373,
+      "community": 41,
       "norm_label": "state.spec.ts"
     },
     {
@@ -8649,7 +8649,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L6",
       "id": "diagram_state_spec_doc",
-      "community": 373,
+      "community": 41,
       "norm_label": "doc"
     },
     {
@@ -8658,7 +8658,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L21",
       "id": "diagram_state_spec_a",
-      "community": 373,
+      "community": 41,
       "norm_label": "a"
     },
     {
@@ -8667,7 +8667,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L22",
       "id": "diagram_state_spec_b",
-      "community": 373,
+      "community": 41,
       "norm_label": "b"
     },
     {
@@ -8829,7 +8829,7 @@
       "source_file": "src/diagram/operations/dbml.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_operations_dbml_spec_ts",
-      "community": 116,
+      "community": 369,
       "norm_label": "dbml.spec.ts"
     },
     {
@@ -8838,7 +8838,7 @@
       "source_file": "src/diagram/operations/dbml.spec.ts",
       "source_location": "L8",
       "id": "operations_dbml_spec_doc",
-      "community": 116,
+      "community": 369,
       "norm_label": "doc"
     },
     {
@@ -8847,7 +8847,7 @@
       "source_file": "src/diagram/operations/dbml.spec.ts",
       "source_location": "L17",
       "id": "operations_dbml_spec_next",
-      "community": 116,
+      "community": 369,
       "norm_label": "next"
     },
     {
@@ -8856,7 +8856,7 @@
       "source_file": "src/diagram/operations/dbml.spec.ts",
       "source_location": "L30",
       "id": "operations_dbml_spec_withtext",
-      "community": 116,
+      "community": 369,
       "norm_label": "withtext"
     },
     {
@@ -8865,7 +8865,7 @@
       "source_file": "src/diagram/operations/dbml.spec.ts",
       "source_location": "L31",
       "id": "operations_dbml_spec_document_result",
-      "community": 116,
+      "community": 369,
       "norm_label": "{ document, result }"
     },
     {
@@ -8874,7 +8874,7 @@
       "source_file": "src/diagram/operations/dbml.spec.ts",
       "source_location": "L39",
       "id": "operations_dbml_spec_withgarbage",
-      "community": 116,
+      "community": 369,
       "norm_label": "withgarbage"
     },
     {
@@ -9270,7 +9270,7 @@
       "source_file": "src/diagram/operations/dbml.ts",
       "source_location": "L1",
       "id": "src_diagram_operations_dbml_ts",
-      "community": 116,
+      "community": 369,
       "norm_label": "dbml.ts"
     },
     {
@@ -9279,7 +9279,7 @@
       "source_file": "src/diagram/operations/dbml.ts",
       "source_location": "L6",
       "id": "operations_dbml_setdbmltext",
-      "community": 116,
+      "community": 369,
       "norm_label": "setdbmltext()"
     },
     {
@@ -9288,7 +9288,7 @@
       "source_file": "src/diagram/operations/dbml.ts",
       "source_location": "L12",
       "id": "operations_dbml_regeneratedbmlfromdocument",
-      "community": 116,
+      "community": 369,
       "norm_label": "regeneratedbmlfromdocument()"
     },
     {
@@ -9297,7 +9297,7 @@
       "source_file": "src/diagram/operations/dbml.ts",
       "source_location": "L22",
       "id": "operations_dbml_applydbmlnow",
-      "community": 116,
+      "community": 63,
       "norm_label": "applydbmlnow()"
     },
     {
@@ -11799,7 +11799,7 @@
       "source_file": "src/utils/db-diagram.ts",
       "source_location": "L38",
       "id": "utils_db_diagram_gridlayoutpositions",
-      "community": 63,
+      "community": 64,
       "norm_label": "gridlayoutpositions()"
     },
     {
@@ -13959,7 +13959,7 @@
       "source_file": "src/utils/db-diagram-persistence.ts",
       "source_location": "L1",
       "id": "src_utils_db_diagram_persistence_ts",
-      "community": 9,
+      "community": 174,
       "norm_label": "db-diagram-persistence.ts"
     },
     {
@@ -13968,7 +13968,7 @@
       "source_file": "src/utils/db-diagram-persistence.ts",
       "source_location": "L4",
       "id": "utils_db_diagram_persistence_serializediagram",
-      "community": 9,
+      "community": 174,
       "norm_label": "serializediagram()"
     },
     {
@@ -13977,7 +13977,7 @@
       "source_file": "src/utils/db-diagram-persistence.ts",
       "source_location": "L64",
       "id": "utils_db_diagram_persistence_deserializediagram",
-      "community": 9,
+      "community": 174,
       "norm_label": "deserializediagram()"
     },
     {
@@ -13986,7 +13986,7 @@
       "source_file": "src/utils/db-diagram-persistence.ts",
       "source_location": "L106",
       "id": "utils_db_diagram_persistence_validatediagramschema",
-      "community": 9,
+      "community": 174,
       "norm_label": "validatediagramschema()"
     },
     {
@@ -15408,7 +15408,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L1",
       "id": "src_utils_db_diagram_persistence_spec_ts",
-      "community": 9,
+      "community": 174,
       "norm_label": "db-diagram-persistence.spec.ts"
     },
     {
@@ -15417,7 +15417,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L7",
       "id": "utils_db_diagram_persistence_spec_makesampleschema",
-      "community": 9,
+      "community": 174,
       "norm_label": "makesampleschema()"
     },
     {
@@ -15426,7 +15426,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L63",
       "id": "utils_db_diagram_persistence_spec_nodes",
-      "community": 9,
+      "community": 174,
       "norm_label": "nodes"
     },
     {
@@ -15435,7 +15435,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L86",
       "id": "utils_db_diagram_persistence_spec_edges",
-      "community": 9,
+      "community": 174,
       "norm_label": "edges"
     },
     {
@@ -15444,7 +15444,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L102",
       "id": "utils_db_diagram_persistence_spec_schema",
-      "community": 9,
+      "community": 174,
       "norm_label": "schema"
     },
     {
@@ -15453,7 +15453,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L129",
       "id": "utils_db_diagram_persistence_spec_json",
-      "community": 9,
+      "community": 174,
       "norm_label": "json"
     },
     {
@@ -15462,7 +15462,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L137",
       "id": "utils_db_diagram_persistence_spec_edges_nodes",
-      "community": 9,
+      "community": 174,
       "norm_label": "{ edges, nodes }"
     },
     {
@@ -15471,7 +15471,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L162",
       "id": "utils_db_diagram_persistence_spec_originalnodes",
-      "community": 9,
+      "community": 174,
       "norm_label": "originalnodes"
     },
     {
@@ -15480,7 +15480,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L193",
       "id": "utils_db_diagram_persistence_spec_nodes_restorednodes",
-      "community": 9,
+      "community": 174,
       "norm_label": "{ nodes: restorednodes }"
     },
     {
@@ -19953,7 +19953,7 @@
       "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_jsonpathevaluator_tsx",
-      "community": 174,
+      "community": 202,
       "norm_label": "jsonpathevaluator.tsx"
     },
     {
@@ -19962,7 +19962,7 @@
       "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
       "source_location": "L17",
       "id": "code_jsonpathevaluator_chevronstyles",
-      "community": 174,
+      "community": 202,
       "norm_label": "chevronstyles"
     },
     {
@@ -19971,7 +19971,7 @@
       "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
       "source_location": "L29",
       "id": "code_jsonpathevaluator_sample_json",
-      "community": 174,
+      "community": 202,
       "norm_label": "sample_json"
     },
     {
@@ -19980,7 +19980,7 @@
       "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
       "source_location": "L59",
       "id": "code_jsonpathevaluator_cheatsheet_entries",
-      "community": 174,
+      "community": 202,
       "norm_label": "cheatsheet_entries"
     },
     {
@@ -19989,7 +19989,7 @@
       "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
       "source_location": "L72",
       "id": "code_jsonpathevaluator_evalinput",
-      "community": 174,
+      "community": 202,
       "norm_label": "evalinput"
     },
     {
@@ -19998,7 +19998,7 @@
       "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
       "source_location": "L73",
       "id": "code_jsonpathevaluator_evalresult",
-      "community": 174,
+      "community": 202,
       "norm_label": "evalresult"
     },
     {
@@ -20007,7 +20007,7 @@
       "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
       "source_location": "L75",
       "id": "code_jsonpathevaluator_initial_result",
-      "community": 174,
+      "community": 202,
       "norm_label": "initial_result"
     },
     {
@@ -20016,7 +20016,7 @@
       "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
       "source_location": "L77",
       "id": "code_jsonpathevaluator_jsonpathevaluator",
-      "community": 174,
+      "community": 202,
       "norm_label": "jsonpathevaluator()"
     },
     {
@@ -31916,6 +31916,123 @@
       "id": "plans_2026_04_06_wasm_phase4_parsers_codeblock_57",
       "community": 304,
       "norm_label": "code:bash (git add benchmarks/parsers.bench.ts benchmarks/json-tools.be)"
+    },
+    {
+      "label": "2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L1",
+      "id": "docs_superpowers_plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_md",
+      "community": 116,
+      "norm_label": "2026-05-15-jsonpath-evaluator-tool-fields-persisted.md"
+    },
+    {
+      "label": "JsonpathEvaluator \u2192 useToolFieldsPersisted Migration Plan",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L1",
+      "id": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan",
+      "community": 116,
+      "norm_label": "jsonpathevaluator \u2192 usetoolfieldspersisted migration plan"
+    },
+    {
+      "label": "Files",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L18",
+      "id": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_files",
+      "community": 116,
+      "norm_label": "files"
+    },
+    {
+      "label": "Task 1: Migrate JsonpathEvaluator to useToolFieldsPersisted",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L31",
+      "id": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted",
+      "community": 116,
+      "norm_label": "task 1: migrate jsonpathevaluator to usetoolfieldspersisted"
+    },
+    {
+      "label": "code:tsx (import { useInputLocalStorage, useMountOnce, useToast, useTo)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L40",
+      "id": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_1",
+      "community": 116,
+      "norm_label": "code:tsx (import { useinputlocalstorage, usemountonce, usetoast, useto)"
+    },
+    {
+      "label": "code:tsx (import { useMountOnce, useToast, useToolFieldsPersisted } fr)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L46",
+      "id": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_2",
+      "community": 116,
+      "norm_label": "code:tsx (import { usemountonce, usetoast, usetoolfieldspersisted } fr)"
+    },
+    {
+      "label": "code:tsx (export const JsonpathEvaluator = (_props: ToolComponentProps)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L56",
+      "id": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_3",
+      "community": 116,
+      "norm_label": "code:tsx (export const jsonpathevaluator = (_props: toolcomponentprops)"
+    },
+    {
+      "label": "code:tsx (export const JsonpathEvaluator = (_props: ToolComponentProps)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L106",
+      "id": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_4",
+      "community": 116,
+      "norm_label": "code:tsx (export const jsonpathevaluator = (_props: toolcomponentprops)"
+    },
+    {
+      "label": "code:bash (git add src/components/feature/code/JsonpathEvaluator.tsx)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L179",
+      "id": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_5",
+      "community": 116,
+      "norm_label": "code:bash (git add src/components/feature/code/jsonpathevaluator.tsx)"
+    },
+    {
+      "label": "Task 2: graphify refresh",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L205",
+      "id": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_2_graphify_refresh",
+      "community": 116,
+      "norm_label": "task 2: graphify refresh"
+    },
+    {
+      "label": "code:bash (git add graphify-out/)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L216",
+      "id": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_6",
+      "community": 116,
+      "norm_label": "code:bash (git add graphify-out/)"
+    },
+    {
+      "label": "Out of scope (deferred)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L228",
+      "id": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_out_of_scope_deferred",
+      "community": 116,
+      "norm_label": "out of scope (deferred)"
+    },
+    {
+      "label": "Risk register",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L238",
+      "id": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_risk_register",
+      "community": 116,
+      "norm_label": "risk register"
     },
     {
       "label": "2026-05-15-code-formatters-tool-fields-cluster.md",
@@ -71889,6 +72006,28 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "code_jsonpathevaluator_jsonpathevaluator",
+      "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
+      "source_location": "L104",
+      "weight": 1.0,
+      "source": "code_jsonpathevaluator_jsonpathevaluator",
+      "target": "hooks_usemountonce_usemountonce"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
       "source_location": "L78",
       "weight": 1.0,
       "source": "code_jsonpathevaluator_jsonpathevaluator",
@@ -71904,17 +72043,6 @@
       "weight": 1.0,
       "source": "code_jsonpathevaluator_jsonpathevaluator",
       "target": "hooks_usetoolcomputation_usetoolcomputation"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
-      "source_location": "L104",
-      "weight": 1.0,
-      "source": "code_jsonpathevaluator_jsonpathevaluator",
-      "target": "hooks_usemountonce_usemountonce"
     },
     {
       "relation": "calls",
@@ -87390,12 +87518,132 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "docs_superpowers_plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_md",
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan",
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_files",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan",
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L205",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan",
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_2_graphify_refresh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L228",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan",
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_out_of_scope_deferred",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L238",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan",
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_risk_register",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted",
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L46",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted",
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L56",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted",
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L106",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted",
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L179",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted",
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
+      "source_location": "L216",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_2_graphify_refresh",
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_superpowers_plans_2026_05_15_code_formatters_tool_fields_cluster_md",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan"
     },
     {
       "relation": "contains",
@@ -87403,9 +87651,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_files",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_files"
     },
     {
       "relation": "contains",
@@ -87413,9 +87661,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_1_migrate_the_three_formatters_to_usetoolfields",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_1_migrate_the_three_formatters_to_usetoolfields"
     },
     {
       "relation": "contains",
@@ -87423,9 +87671,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L227",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_2_refresh_the_knowledge_graph",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_2_refresh_the_knowledge_graph"
     },
     {
       "relation": "contains",
@@ -87433,9 +87681,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L252",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_out_of_scope_deliberately_deferred",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_out_of_scope_deliberately_deferred"
     },
     {
       "relation": "contains",
@@ -87443,9 +87691,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L261",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_risk_register",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_risk_register"
     },
     {
       "relation": "contains",
@@ -87453,9 +87701,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_1_migrate_the_three_formatters_to_usetoolfields",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_the_migration_template",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_the_migration_template"
     },
     {
       "relation": "contains",
@@ -87463,9 +87711,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L131",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_1_migrate_the_three_formatters_to_usetoolfields",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_steps",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_steps"
     },
     {
       "relation": "contains",
@@ -87473,9 +87721,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_the_migration_template",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_1",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_1"
     },
     {
       "relation": "contains",
@@ -87483,9 +87731,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L60",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_the_migration_template",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_2",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_2"
     },
     {
       "relation": "contains",
@@ -87493,9 +87741,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_the_migration_template",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_3",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_3"
     },
     {
       "relation": "contains",
@@ -87503,9 +87751,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L139",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_steps",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_4",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_4"
     },
     {
       "relation": "contains",
@@ -87513,9 +87761,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L170",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_steps",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_5",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_5"
     },
     {
       "relation": "contains",
@@ -87523,9 +87771,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L198",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_steps",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_6",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_6"
     },
     {
       "relation": "contains",
@@ -87533,9 +87781,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
       "source_location": "L240",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_2_refresh_the_knowledge_graph",
-      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_7",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_7"
     },
     {
       "relation": "contains",
@@ -97222,5 +97470,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "ea27397b1735c28bee88f3c261dabb4ac1a61b88"
+  "built_at_commit": "cda8dfacc005e9aa263743e298dc323ba7d739e1"
 }
