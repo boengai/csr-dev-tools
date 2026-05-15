@@ -1,7 +1,7 @@
 import { CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolFieldsPersisted } from '@/hooks'
 import type { InlineSpan, SideBySideRow, TextDiffInput, TextDiffResult, ToolComponentProps } from '@/types'
 import { computeSideBySideDiff, createUnifiedDiff } from '@/utils'
 
@@ -55,52 +55,34 @@ const DiffCell = ({
 }
 
 export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [inputs, setInputs] = useInputLocalStorage('csr-dev-tools-text-diff', { original: '', modified: '' })
-  const { original, modified } = inputs
   const { toast } = useToast()
 
-  const { result, setInput, setInputImmediate } = useToolComputation<TextDiffInput, TextDiffResult>(
-    async ({ original: orig, modified: mod }) => {
+  const { inputs, result, reset, setFields } = useToolFieldsPersisted<TextDiffInput, TextDiffResult>({
+    compute: async ({ original: orig, modified: mod }) => {
       const [sideBySide, patch] = await Promise.all([computeSideBySideDiff(orig, mod), createUnifiedDiff(orig, mod)])
       return { rows: sideBySide, unifiedDiff: patch }
     },
-    {
-      debounceMs: 300,
-      initial: EMPTY_DIFF,
-      isEmpty: ({ original: orig, modified: mod }) => orig.trim().length === 0 && mod.trim().length === 0,
-      onError: () => {
-        toast({ action: 'add', item: { label: 'Unable to compute diff', type: 'error' } })
-      },
+    debounceMs: 300,
+    initial: { original: '', modified: '' },
+    initialResult: EMPTY_DIFF,
+    isEmpty: ({ original: orig, modified: mod }) => orig.trim().length === 0 && mod.trim().length === 0,
+    onError: () => {
+      toast({ action: 'add', item: { label: 'Unable to compute diff', type: 'error' } })
     },
-  )
-
+    storageKey: 'csr-dev-tools-text-diff',
+  })
+  const { original, modified } = inputs
   const { rows, unifiedDiff } = result
 
-  useMountOnce(() => {
-    if (original || modified) setInputImmediate({ original, modified })
-  })
-
-  const handleOriginalChange = (val: string) => {
-    setInputs((prev) => ({ ...prev, original: val }))
-    setInput({ original: val, modified })
-  }
-
-  const handleModifiedChange = (val: string) => {
-    setInputs((prev) => ({ ...prev, modified: val }))
-    setInput({ original, modified: val })
-  }
-
-  const handleReset = () => {
-    setInputs({ original: '', modified: '' })
-    setInputImmediate({ original: '', modified: '' })
-  }
+  const handleOriginalChange = (val: string) => setFields({ original: val })
+  const handleModifiedChange = (val: string) => setFields({ modified: val })
 
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
       onAfterClose={onAfterDialogClose}
-      onReset={handleReset}
+      onReset={reset}
       title="Text Diff Checker"
       triggers={[{ label: 'Compare' }]}
     >

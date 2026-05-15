@@ -1,10 +1,8 @@
-import { useReducer } from 'react'
-
 import { CheckboxInput, CodeOutput, CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
-import type { ToolComponentProps, YamlFormatterAction, YamlFormatterState, YamlInput } from '@/types'
+import { useToast, useToolFields } from '@/hooks'
+import type { ToolComponentProps, YamlInput } from '@/types'
 import { formatYaml, getYamlParseError } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['yaml-formatter']
@@ -14,30 +12,11 @@ const INDENT_OPTIONS = [
   { label: '4 spaces', value: 4 },
 ]
 
-const reducer = (state: YamlFormatterState, action: YamlFormatterAction): YamlFormatterState => {
-  switch (action.type) {
-    case 'SET_INDENT':
-      return { ...state, indent: action.payload }
-    case 'SET_SORT_KEYS':
-      return { ...state, sortKeys: action.payload }
-    case 'SET_SOURCE':
-      return { ...state, source: action.payload }
-    case 'RESET':
-      return { ...state, indent: 2, sortKeys: false, source: '' }
-  }
-}
-
 export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [state, dispatch] = useReducer(reducer, {
-    indent: 2,
-    sortKeys: false,
-    source: '',
-  })
-  const { indent, sortKeys, source } = state
   const { toast } = useToast()
 
-  const { result, setInput, setInputImmediate } = useToolComputation<YamlInput, string>(
-    async ({ source: val, indent: currentIndent, sortKeys: currentSortKeys }) => {
+  const { inputs, result, reset, setFields, setFieldsImmediate } = useToolFields<YamlInput, string>({
+    compute: async ({ source: val, indent: currentIndent, sortKeys: currentSortKeys }) => {
       const parseError = await getYamlParseError(val)
       if (parseError != null) {
         throw new Error(`Invalid YAML: ${parseError}`)
@@ -48,45 +27,27 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         throw new Error('Unable to format YAML')
       }
     },
-    {
-      debounceMs: 300,
-      initial: '',
-      isEmpty: ({ source: val }) => val.trim().length === 0,
-      onError: (err) => {
-        const label = err instanceof Error ? err.message : 'Unable to format YAML'
-        toast({ action: 'add', item: { label, type: 'error' } })
-      },
+    debounceMs: 300,
+    initial: { source: '', indent: 2, sortKeys: false },
+    initialResult: '',
+    isEmpty: ({ source: val }) => val.trim().length === 0,
+    onError: (err) => {
+      const label = err instanceof Error ? err.message : 'Unable to format YAML'
+      toast({ action: 'add', item: { label, type: 'error' } })
     },
-  )
+  })
+  const { source, indent, sortKeys } = inputs
 
-  const handleSourceChange = (val: string) => {
-    dispatch({ type: 'SET_SOURCE', payload: val })
-    setInput({ source: val, indent, sortKeys })
-  }
-
-  const handleIndentChange = (val: string) => {
-    const newIndent = Number(val)
-    dispatch({ type: 'SET_INDENT', payload: newIndent })
-    setInputImmediate({ source, indent: newIndent, sortKeys })
-  }
-
-  const handleSortKeysChange = () => {
-    const newSortKeys = !sortKeys
-    dispatch({ type: 'SET_SORT_KEYS', payload: newSortKeys })
-    setInputImmediate({ source, indent, sortKeys: newSortKeys })
-  }
-
-  const handleReset = () => {
-    dispatch({ type: 'RESET' })
-    setInputImmediate({ source: '', indent: 2, sortKeys: false })
-  }
+  const handleSourceChange = (val: string) => setFields({ source: val })
+  const handleIndentChange = (val: string) => setFieldsImmediate({ indent: Number(val) })
+  const handleSortKeysChange = () => setFieldsImmediate({ sortKeys: !sortKeys })
 
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
       onAfterClose={onAfterDialogClose}
-      onReset={handleReset}
+      onReset={reset}
       title="YAML Format"
       triggers={[{ label: 'Format' }]}
     >
