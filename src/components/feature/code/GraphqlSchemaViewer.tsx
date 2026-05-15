@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { CodeInput, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolComputationPersisted } from '@/hooks'
 import type { GraphqlParseOutput, ToolComponentProps } from '@/types'
 import { cnMerge, type GraphqlTypeInfo, type GraphqlTypeKind } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['graphql-schema-viewer']
@@ -230,17 +230,17 @@ input CreateUserInput {
 scalar DateTime`
 
 export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
-  const [input, setInput] = useInputLocalStorage('csr-dev-tools-graphql-schema-viewer-input', '')
   const [selectedType, setSelectedType] = useState<string | null>(null)
   const [filter, setFilter] = useState('')
   const { toast } = useToast()
 
   const {
+    input,
     result: parseResult,
-    setInput: setParseInput,
-    setInputImmediate: setParseInputImmediate,
-  } = useToolComputation<string, GraphqlParseOutput>(
-    async (value) => {
+    setInput,
+    setInputImmediate,
+  } = useToolComputationPersisted<string, GraphqlParseOutput>({
+    compute: async (value) => {
       const { parseGraphqlSchema } = await import('@/utils/graphql-schema-viewer')
       const result = parseGraphqlSchema(value)
       if (result.success) {
@@ -248,15 +248,15 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
       }
       return { schema: null, parseError: result.error }
     },
-    {
-      debounceMs: 300,
-      initial: { schema: null, parseError: null },
-      isEmpty: (value) => !value.trim(),
-      onError: () => {
-        toast({ action: 'add', item: { label: 'Failed to parse schema', type: 'error' } })
-      },
+    debounceMs: 300,
+    initial: '',
+    initialResult: { schema: null, parseError: null },
+    isEmpty: (value) => !value.trim(),
+    onError: () => {
+      toast({ action: 'add', item: { label: 'Failed to parse schema', type: 'error' } })
     },
-  )
+    storageKey: 'csr-dev-tools-graphql-schema-viewer-input',
+  })
 
   const schemaInfo = parseResult.schema
   const error = parseResult.parseError
@@ -266,19 +266,11 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
     setSelectedType(null)
   }, [parseResult])
 
-  const handleChange = (value: string) => {
-    setInput(value)
-    setParseInput(value)
-  }
-
-  useMountOnce(() => {
-    if (input) setParseInputImmediate(input)
-  })
+  const handleChange = (value: string) => setInput(value)
 
   const handleLoadExample = useCallback(() => {
-    setInput(SAMPLE_SCHEMA)
-    setParseInputImmediate(SAMPLE_SCHEMA)
-  }, [setInput, setParseInputImmediate])
+    setInputImmediate(SAMPLE_SCHEMA)
+  }, [setInputImmediate])
 
   const handleNavigateToType = useCallback(
     (typeName: string) => {
