@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 
 import { CodeInput, CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
+import { useMountOnce, useToast, useToolFieldsPersisted } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import {
   evaluateJsonPath,
@@ -75,50 +75,36 @@ type EvalResult = { evaluation: JsonPathEvaluation | null; parseError: string | 
 const INITIAL_RESULT: EvalResult = { evaluation: null, parseError: null, parsedData: null }
 
 export const JsonpathEvaluator = (_props: ToolComponentProps) => {
-  const [inputs, setInputs] = useInputLocalStorage('csr-dev-tools-jsonpath-evaluator', {
-    jsonInput: SAMPLE_JSON,
-    expression: DEFAULT_EXPRESSION,
-  })
-  const { jsonInput, expression } = inputs
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false)
   const { toast } = useToast()
 
-  const { result, setInput, setInputImmediate } = useToolComputation<EvalInput, EvalResult>(
-    ({ expression: expr, jsonInput: value }) => {
+  const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<EvalInput, EvalResult>({
+    compute: ({ expression: expr, jsonInput: value }) => {
       const parsed = parseJsonInput(value)
       if (!parsed.success) return { evaluation: null, parseError: parsed.error, parsedData: null }
       if (!expr.trim()) return { evaluation: null, parseError: null, parsedData: parsed.data }
       return { evaluation: evaluateJsonPath(parsed.data, expr), parseError: null, parsedData: parsed.data }
     },
-    {
-      debounceMs: 300,
-      initial: INITIAL_RESULT,
-      onError: () => {
-        toast({ action: 'add', item: { label: 'Unexpected error during evaluation', type: 'error' } })
-      },
+    debounceMs: 300,
+    initial: { jsonInput: SAMPLE_JSON, expression: DEFAULT_EXPRESSION },
+    initialResult: INITIAL_RESULT,
+    onError: () => {
+      toast({ action: 'add', item: { label: 'Unexpected error during evaluation', type: 'error' } })
     },
-  )
-
+    storageKey: 'csr-dev-tools-jsonpath-evaluator',
+  })
+  const { jsonInput, expression } = inputs
   const { evaluation, parseError, parsedData } = result
 
+  // Unconditional mount-time recompute. Tool has no isEmpty, so useToolFieldsPersisted's
+  // autorun-gated-on-isEmpty does NOT fire — we explicitly trigger here.
   useMountOnce(() => {
-    setInputImmediate({ expression, jsonInput })
+    setFieldsImmediate({})
   })
 
-  const handleJsonChange = (value: string) => {
-    setInputs((prev) => ({ ...prev, jsonInput: value }))
-    setInput({ expression, jsonInput: value })
-  }
-
-  const handleExpressionChange = (value: string) => {
-    setInputs((prev) => ({ ...prev, expression: value }))
-    setInput({ expression: value, jsonInput })
-  }
-
-  const handleCheatsheetClick = (expr: string) => {
-    setInputs((prev) => ({ ...prev, expression: expr }))
-    setInputImmediate({ expression: expr, jsonInput })
-  }
+  const handleJsonChange = (value: string) => setFields({ jsonInput: value })
+  const handleExpressionChange = (value: string) => setFields({ expression: value })
+  const handleCheatsheetClick = (expr: string) => setFieldsImmediate({ expression: expr })
 
   const jsonExtensions = useMemo(() => [json()], [])
 
