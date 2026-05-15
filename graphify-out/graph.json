@@ -6264,7 +6264,7 @@
       "source_file": "src/types/components/feature/security/aesEncryptDecrypt.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_security_aesencryptdecrypt_ts",
-      "community": 277,
+      "community": 151,
       "norm_label": "aesencryptdecrypt.ts"
     },
     {
@@ -6273,7 +6273,7 @@
       "source_file": "src/types/components/feature/security/aesEncryptDecrypt.ts",
       "source_location": "L1",
       "id": "security_aesencryptdecrypt_mode",
-      "community": 277,
+      "community": 151,
       "norm_label": "mode"
     },
     {
@@ -6282,7 +6282,7 @@
       "source_file": "src/types/components/feature/security/aesEncryptDecrypt.ts",
       "source_location": "L3",
       "id": "security_aesencryptdecrypt_aesinput",
-      "community": 277,
+      "community": 151,
       "norm_label": "aesinput"
     },
     {
@@ -6588,7 +6588,7 @@
       "source_file": "src/types/components/feature/code/htmlFormatter.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_htmlformatter_ts",
-      "community": 202,
+      "community": 277,
       "norm_label": "htmlformatter.ts"
     },
     {
@@ -6597,7 +6597,7 @@
       "source_file": "src/types/components/feature/code/htmlFormatter.ts",
       "source_location": "L1",
       "id": "code_htmlformatter_htmlinput",
-      "community": 202,
+      "community": 277,
       "norm_label": "htmlinput"
     },
     {
@@ -6615,7 +6615,7 @@
       "source_file": "src/types/components/feature/code/jsonToTypeScript.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_jsontotypescript_ts",
-      "community": 202,
+      "community": 314,
       "norm_label": "jsontotypescript.ts"
     },
     {
@@ -6624,7 +6624,7 @@
       "source_file": "src/types/components/feature/code/jsonToTypeScript.ts",
       "source_location": "L1",
       "id": "code_jsontotypescript_jsontsinput",
-      "community": 202,
+      "community": 314,
       "norm_label": "jsontsinput"
     },
     {
@@ -6732,7 +6732,7 @@
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_image_imagecompressor_ts",
-      "community": 99,
+      "community": 78,
       "norm_label": "imagecompressor.ts"
     },
     {
@@ -6741,7 +6741,7 @@
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L3",
       "id": "image_imagecompressor_originalinfo",
-      "community": 99,
+      "community": 78,
       "norm_label": "originalinfo"
     },
     {
@@ -6750,7 +6750,7 @@
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L10",
       "id": "image_imagecompressor_imagecompressorstate",
-      "community": 99,
+      "community": 78,
       "norm_label": "imagecompressorstate"
     },
     {
@@ -6759,7 +6759,7 @@
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L19",
       "id": "image_imagecompressor_imagecompressoraction",
-      "community": 99,
+      "community": 78,
       "norm_label": "imagecompressoraction"
     },
     {
@@ -6768,7 +6768,7 @@
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L30",
       "id": "image_imagecompressor_compressinput",
-      "community": 99,
+      "community": 78,
       "norm_label": "compressinput"
     },
     {
@@ -8478,7 +8478,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L295",
       "id": "diagram_editor_diagrameditor_loadfromexportedjson",
-      "community": 9,
+      "community": 41,
       "norm_label": ".loadfromexportedjson()"
     },
     {
@@ -8838,7 +8838,7 @@
       "source_file": "src/diagram/operations/dbml.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_operations_dbml_spec_ts",
-      "community": 116,
+      "community": 99,
       "norm_label": "dbml.spec.ts"
     },
     {
@@ -8847,7 +8847,7 @@
       "source_file": "src/diagram/operations/dbml.spec.ts",
       "source_location": "L8",
       "id": "operations_dbml_spec_doc",
-      "community": 116,
+      "community": 99,
       "norm_label": "doc"
     },
     {
@@ -8856,7 +8856,7 @@
       "source_file": "src/diagram/operations/dbml.spec.ts",
       "source_location": "L17",
       "id": "operations_dbml_spec_next",
-      "community": 116,
+      "community": 99,
       "norm_label": "next"
     },
     {
@@ -8865,7 +8865,7 @@
       "source_file": "src/diagram/operations/dbml.spec.ts",
       "source_location": "L30",
       "id": "operations_dbml_spec_withtext",
-      "community": 116,
+      "community": 99,
       "norm_label": "withtext"
     },
     {
@@ -8874,7 +8874,7 @@
       "source_file": "src/diagram/operations/dbml.spec.ts",
       "source_location": "L31",
       "id": "operations_dbml_spec_document_result",
-      "community": 116,
+      "community": 99,
       "norm_label": "{ document, result }"
     },
     {
@@ -8883,7 +8883,7 @@
       "source_file": "src/diagram/operations/dbml.spec.ts",
       "source_location": "L39",
       "id": "operations_dbml_spec_withgarbage",
-      "community": 116,
+      "community": 99,
       "norm_label": "withgarbage"
     },
     {
@@ -9054,7 +9054,7 @@
       "source_file": "src/diagram/operations/lifecycle.ts",
       "source_location": "L11",
       "id": "operations_lifecycle_schematodocument",
-      "community": 41,
+      "community": 99,
       "norm_label": "schematodocument()"
     },
     {
@@ -9189,7 +9189,7 @@
       "source_file": "src/diagram/operations/import.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_operations_import_spec_ts",
-      "community": 41,
+      "community": 99,
       "norm_label": "import.spec.ts"
     },
     {
@@ -9198,7 +9198,7 @@
       "source_file": "src/diagram/operations/import.spec.ts",
       "source_location": "L16",
       "id": "operations_import_spec_json_schema_fixture",
-      "community": 41,
+      "community": 99,
       "norm_label": "json_schema_fixture"
     },
     {
@@ -9207,7 +9207,7 @@
       "source_file": "src/diagram/operations/import.spec.ts",
       "source_location": "L32",
       "id": "operations_import_spec_document_result",
-      "community": 41,
+      "community": 99,
       "norm_label": "{ document, result }"
     },
     {
@@ -9216,7 +9216,7 @@
       "source_file": "src/diagram/operations/import.spec.ts",
       "source_location": "L38",
       "id": "operations_import_spec_initial",
-      "community": 41,
+      "community": 99,
       "norm_label": "initial"
     },
     {
@@ -9279,7 +9279,7 @@
       "source_file": "src/diagram/operations/dbml.ts",
       "source_location": "L1",
       "id": "src_diagram_operations_dbml_ts",
-      "community": 116,
+      "community": 99,
       "norm_label": "dbml.ts"
     },
     {
@@ -9288,7 +9288,7 @@
       "source_file": "src/diagram/operations/dbml.ts",
       "source_location": "L6",
       "id": "operations_dbml_setdbmltext",
-      "community": 116,
+      "community": 99,
       "norm_label": "setdbmltext()"
     },
     {
@@ -9306,7 +9306,7 @@
       "source_file": "src/diagram/operations/dbml.ts",
       "source_location": "L22",
       "id": "operations_dbml_applydbmlnow",
-      "community": 63,
+      "community": 99,
       "norm_label": "applydbmlnow()"
     },
     {
@@ -9414,7 +9414,7 @@
       "source_file": "src/diagram/operations/import.ts",
       "source_location": "L1",
       "id": "src_diagram_operations_import_ts",
-      "community": 41,
+      "community": 99,
       "norm_label": "import.ts"
     },
     {
@@ -9423,7 +9423,7 @@
       "source_file": "src/diagram/operations/import.ts",
       "source_location": "L6",
       "id": "operations_import_importfromsql",
-      "community": 41,
+      "community": 99,
       "norm_label": "importfromsql()"
     },
     {
@@ -9432,7 +9432,7 @@
       "source_file": "src/diagram/operations/import.ts",
       "source_location": "L24",
       "id": "operations_import_importfromjsonschema",
-      "community": 41,
+      "community": 99,
       "norm_label": "importfromjsonschema()"
     },
     {
@@ -10386,7 +10386,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L1",
       "id": "src_utils_regex_ts",
-      "community": 72,
+      "community": 151,
       "norm_label": "regex.ts"
     },
     {
@@ -10395,7 +10395,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L5",
       "id": "utils_regex_executeregex",
-      "community": 72,
+      "community": 151,
       "norm_label": "executeregex()"
     },
     {
@@ -10404,7 +10404,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L45",
       "id": "utils_regex_buildhighlightsegments",
-      "community": 72,
+      "community": 151,
       "norm_label": "buildhighlightsegments()"
     },
     {
@@ -10413,7 +10413,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L74",
       "id": "utils_regex_formatmatchesforcopy",
-      "community": 72,
+      "community": 151,
       "norm_label": "formatmatchesforcopy()"
     },
     {
@@ -10998,7 +10998,7 @@
       "source_file": "src/utils/db-diagram-dbml.ts",
       "source_location": "L31",
       "id": "utils_db_diagram_dbml_formatconstraints",
-      "community": 63,
+      "community": 116,
       "norm_label": "formatconstraints()"
     },
     {
@@ -11007,7 +11007,7 @@
       "source_file": "src/utils/db-diagram-dbml.ts",
       "source_location": "L40",
       "id": "utils_db_diagram_dbml_generatedbml",
-      "community": 63,
+      "community": 116,
       "norm_label": "generatedbml()"
     },
     {
@@ -11808,7 +11808,7 @@
       "source_file": "src/utils/db-diagram.ts",
       "source_location": "L38",
       "id": "utils_db_diagram_gridlayoutpositions",
-      "community": 64,
+      "community": 63,
       "norm_label": "gridlayoutpositions()"
     },
     {
@@ -19611,7 +19611,7 @@
       "source_file": "src/components/feature/security/AesEncryptDecrypt.tsx",
       "source_location": "L1",
       "id": "src_components_feature_security_aesencryptdecrypt_tsx",
-      "community": 277,
+      "community": 151,
       "norm_label": "aesencryptdecrypt.tsx"
     },
     {
@@ -19620,7 +19620,7 @@
       "source_file": "src/components/feature/security/AesEncryptDecrypt.tsx",
       "source_location": "L10",
       "id": "security_aesencryptdecrypt_initial_input",
-      "community": 277,
+      "community": 151,
       "norm_label": "initial_input"
     },
     {
@@ -19629,7 +19629,7 @@
       "source_file": "src/components/feature/security/AesEncryptDecrypt.tsx",
       "source_location": "L12",
       "id": "security_aesencryptdecrypt_aesencryptdecrypt",
-      "community": 277,
+      "community": 151,
       "norm_label": "aesencryptdecrypt()"
     },
     {
@@ -19663,7 +19663,7 @@
       "label": "VerifyTab()",
       "file_type": "code",
       "source_file": "src/components/feature/security/BcryptHasher.tsx",
-      "source_location": "L159",
+      "source_location": "L141",
       "id": "security_bcrypthasher_verifytab",
       "community": 275,
       "norm_label": "verifytab()"
@@ -19672,7 +19672,7 @@
       "label": "BcryptHasher()",
       "file_type": "code",
       "source_file": "src/components/feature/security/BcryptHasher.tsx",
-      "source_location": "L276",
+      "source_location": "L240",
       "id": "security_bcrypthasher_bcrypthasher",
       "community": 275,
       "norm_label": "bcrypthasher()"
@@ -19683,7 +19683,7 @@
       "source_file": "src/components/feature/security/SshKeyFingerprint.tsx",
       "source_location": "L1",
       "id": "src_components_feature_security_sshkeyfingerprint_tsx",
-      "community": 15,
+      "community": 368,
       "norm_label": "sshkeyfingerprint.tsx"
     },
     {
@@ -19692,7 +19692,7 @@
       "source_file": "src/components/feature/security/SshKeyFingerprint.tsx",
       "source_location": "L12",
       "id": "security_sshkeyfingerprint_resultrow",
-      "community": 15,
+      "community": 368,
       "norm_label": "resultrow()"
     },
     {
@@ -19701,7 +19701,7 @@
       "source_file": "src/components/feature/security/SshKeyFingerprint.tsx",
       "source_location": "L22",
       "id": "security_sshkeyfingerprint_sshkeyfingerprint",
-      "community": 15,
+      "community": 368,
       "norm_label": "sshkeyfingerprint()"
     },
     {
@@ -19944,7 +19944,7 @@
       "source_file": "src/components/feature/network/IpSubnetCalculator.tsx",
       "source_location": "L78",
       "id": "network_ipsubnetcalculator_ipsubnetcalculator",
-      "community": 32,
+      "community": 151,
       "norm_label": "ipsubnetcalculator()"
     },
     {
@@ -20196,7 +20196,7 @@
       "source_file": "src/components/feature/code/JsonToTypeScript.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_jsontotypescript_tsx",
-      "community": 202,
+      "community": 314,
       "norm_label": "jsontotypescript.tsx"
     },
     {
@@ -20205,7 +20205,7 @@
       "source_file": "src/components/feature/code/JsonToTypeScript.tsx",
       "source_location": "L12",
       "id": "code_jsontotypescript_jsontotypescript",
-      "community": 202,
+      "community": 15,
       "norm_label": "jsontotypescript()"
     },
     {
@@ -20286,7 +20286,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L16",
       "id": "code_protobuftojson_kindbadge",
-      "community": 107,
+      "community": 84,
       "norm_label": "kindbadge()"
     },
     {
@@ -20511,7 +20511,7 @@
       "source_file": "src/components/feature/code/HtmlFormatter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_htmlformatter_tsx",
-      "community": 202,
+      "community": 277,
       "norm_label": "htmlformatter.tsx"
     },
     {
@@ -20520,7 +20520,7 @@
       "source_file": "src/components/feature/code/HtmlFormatter.tsx",
       "source_location": "L12",
       "id": "code_htmlformatter_htmlformatter",
-      "community": 202,
+      "community": 15,
       "norm_label": "htmlformatter()"
     },
     {
@@ -20529,7 +20529,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_jsonschemavalidator_tsx",
-      "community": 202,
+      "community": 15,
       "norm_label": "jsonschemavalidator.tsx"
     },
     {
@@ -20538,7 +20538,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L12",
       "id": "code_jsonschemavalidator_validatorinput",
-      "community": 202,
+      "community": 15,
       "norm_label": "validatorinput"
     },
     {
@@ -20547,7 +20547,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L14",
       "id": "code_jsonschemavalidator_jsonschemavalidator",
-      "community": 202,
+      "community": 15,
       "norm_label": "jsonschemavalidator()"
     },
     {
@@ -20592,7 +20592,7 @@
       "source_file": "src/components/feature/encoding/UrlParser.tsx",
       "source_location": "L1",
       "id": "src_components_feature_encoding_urlparser_tsx",
-      "community": 15,
+      "community": 32,
       "norm_label": "urlparser.tsx"
     },
     {
@@ -20601,7 +20601,7 @@
       "source_file": "src/components/feature/encoding/UrlParser.tsx",
       "source_location": "L11",
       "id": "encoding_urlparser_empty",
-      "community": 15,
+      "community": 32,
       "norm_label": "empty"
     },
     {
@@ -20610,7 +20610,7 @@
       "source_file": "src/components/feature/encoding/UrlParser.tsx",
       "source_location": "L21",
       "id": "encoding_urlparser_resultrow",
-      "community": 15,
+      "community": 32,
       "norm_label": "resultrow()"
     },
     {
@@ -20619,7 +20619,7 @@
       "source_file": "src/components/feature/encoding/UrlParser.tsx",
       "source_location": "L35",
       "id": "encoding_urlparser_urlparser",
-      "community": 15,
+      "community": 32,
       "norm_label": "urlparser()"
     },
     {
@@ -21096,7 +21096,7 @@
       "source_file": "src/components/feature/image/ImageCompressor.tsx",
       "source_location": "L1",
       "id": "src_components_feature_image_imagecompressor_tsx",
-      "community": 99,
+      "community": 78,
       "norm_label": "imagecompressor.tsx"
     },
     {
@@ -21105,7 +21105,7 @@
       "source_file": "src/components/feature/image/ImageCompressor.tsx",
       "source_location": "L9",
       "id": "image_imagecompressor_processingwrapperstyles",
-      "community": 99,
+      "community": 78,
       "norm_label": "processingwrapperstyles"
     },
     {
@@ -21114,7 +21114,7 @@
       "source_file": "src/components/feature/image/ImageCompressor.tsx",
       "source_location": "L20",
       "id": "image_imagecompressor_initialstate",
-      "community": 99,
+      "community": 78,
       "norm_label": "initialstate"
     },
     {
@@ -21123,7 +21123,7 @@
       "source_file": "src/components/feature/image/ImageCompressor.tsx",
       "source_location": "L29",
       "id": "image_imagecompressor_reducer",
-      "community": 99,
+      "community": 78,
       "norm_label": "reducer()"
     },
     {
@@ -21132,7 +21132,7 @@
       "source_file": "src/components/feature/image/ImageCompressor.tsx",
       "source_location": "L59",
       "id": "image_imagecompressor_imagecompressor",
-      "community": 99,
+      "community": 78,
       "norm_label": "imagecompressor()"
     },
     {
@@ -21483,7 +21483,7 @@
       "source_file": "src/components/feature/time/TimezoneConverter.tsx",
       "source_location": "L241",
       "id": "time_timezoneconverter_timezoneconverter",
-      "community": 32,
+      "community": 151,
       "norm_label": "timezoneconverter()"
     },
     {
@@ -21672,7 +21672,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L1",
       "id": "src_components_feature_time_cronexpressionparser_tsx",
-      "community": 15,
+      "community": 370,
       "norm_label": "cronexpressionparser.tsx"
     },
     {
@@ -21681,7 +21681,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L11",
       "id": "time_cronexpressionparser_empty_result",
-      "community": 15,
+      "community": 370,
       "norm_label": "empty_result"
     },
     {
@@ -21690,7 +21690,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L13",
       "id": "time_cronexpressionparser_cronexpressionparser",
-      "community": 15,
+      "community": 370,
       "norm_label": "cronexpressionparser()"
     },
     {
@@ -21870,7 +21870,7 @@
       "source_file": "src/components/feature/text/RegexTester.tsx",
       "source_location": "L74",
       "id": "text_regextester_regextester",
-      "community": 72,
+      "community": 151,
       "norm_label": "regextester()"
     },
     {
@@ -21942,7 +21942,7 @@
       "source_file": "src/components/feature/text/StringEscapeUnescape.tsx",
       "source_location": "L1",
       "id": "src_components_feature_text_stringescapeunescape_tsx",
-      "community": 32,
+      "community": 151,
       "norm_label": "stringescapeunescape.tsx"
     },
     {
@@ -21951,7 +21951,7 @@
       "source_file": "src/components/feature/text/StringEscapeUnescape.tsx",
       "source_location": "L10",
       "id": "text_stringescapeunescape_mode_options",
-      "community": 32,
+      "community": 151,
       "norm_label": "mode_options"
     },
     {
@@ -21960,7 +21960,7 @@
       "source_file": "src/components/feature/text/StringEscapeUnescape.tsx",
       "source_location": "L18",
       "id": "text_stringescapeunescape_direction",
-      "community": 32,
+      "community": 151,
       "norm_label": "direction"
     },
     {
@@ -21969,7 +21969,7 @@
       "source_file": "src/components/feature/text/StringEscapeUnescape.tsx",
       "source_location": "L19",
       "id": "text_stringescapeunescape_escapeinput",
-      "community": 32,
+      "community": 151,
       "norm_label": "escapeinput"
     },
     {
@@ -21978,7 +21978,7 @@
       "source_file": "src/components/feature/text/StringEscapeUnescape.tsx",
       "source_location": "L20",
       "id": "text_stringescapeunescape_initial_input",
-      "community": 32,
+      "community": 151,
       "norm_label": "initial_input"
     },
     {
@@ -21987,7 +21987,7 @@
       "source_file": "src/components/feature/text/StringEscapeUnescape.tsx",
       "source_location": "L22",
       "id": "text_stringescapeunescape_stringescapeunescape",
-      "community": 32,
+      "community": 151,
       "norm_label": "stringescapeunescape()"
     },
     {
@@ -22050,7 +22050,7 @@
       "source_file": "src/components/feature/text/UserAgentParser.tsx",
       "source_location": "L1",
       "id": "src_components_feature_text_useragentparser_tsx",
-      "community": 314,
+      "community": 32,
       "norm_label": "useragentparser.tsx"
     },
     {
@@ -22059,7 +22059,7 @@
       "source_file": "src/components/feature/text/UserAgentParser.tsx",
       "source_location": "L11",
       "id": "text_useragentparser_empty",
-      "community": 314,
+      "community": 32,
       "norm_label": "empty"
     },
     {
@@ -22068,7 +22068,7 @@
       "source_file": "src/components/feature/text/UserAgentParser.tsx",
       "source_location": "L18",
       "id": "text_useragentparser_resultrow",
-      "community": 314,
+      "community": 32,
       "norm_label": "resultrow()"
     },
     {
@@ -22077,7 +22077,7 @@
       "source_file": "src/components/feature/text/UserAgentParser.tsx",
       "source_location": "L28",
       "id": "text_useragentparser_useragentparser",
-      "community": 314,
+      "community": 32,
       "norm_label": "useragentparser()"
     },
     {
@@ -22779,7 +22779,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L20",
       "id": "db_diagram_tablenode_constrainttoggle",
-      "community": 84,
+      "community": 1,
       "norm_label": "constrainttoggle()"
     },
     {
@@ -23175,8 +23175,53 @@
       "source_file": "src/hooks/useToolFields.ts",
       "source_location": "L15",
       "id": "hooks_usetoolfields_usetoolfields",
-      "community": 32,
+      "community": 151,
       "norm_label": "usetoolfields()"
+    },
+    {
+      "label": "useElapsedTimer.dom.spec.tsx",
+      "file_type": "code",
+      "source_file": "src/hooks/useElapsedTimer.dom.spec.tsx",
+      "source_location": "L1",
+      "id": "src_hooks_useelapsedtimer_dom_spec_tsx",
+      "community": 275,
+      "norm_label": "useelapsedtimer.dom.spec.tsx"
+    },
+    {
+      "label": "{ result }",
+      "file_type": "code",
+      "source_file": "src/hooks/useElapsedTimer.dom.spec.tsx",
+      "source_location": "L18",
+      "id": "hooks_useelapsedtimer_dom_spec_result",
+      "community": 275,
+      "norm_label": "{ result }"
+    },
+    {
+      "label": "nowSpy",
+      "file_type": "code",
+      "source_file": "src/hooks/useElapsedTimer.dom.spec.tsx",
+      "source_location": "L29",
+      "id": "hooks_useelapsedtimer_dom_spec_nowspy",
+      "community": 275,
+      "norm_label": "nowspy"
+    },
+    {
+      "label": "{ result, rerender }",
+      "file_type": "code",
+      "source_file": "src/hooks/useElapsedTimer.dom.spec.tsx",
+      "source_location": "L42",
+      "id": "hooks_useelapsedtimer_dom_spec_result_rerender",
+      "community": 275,
+      "norm_label": "{ result, rerender }"
+    },
+    {
+      "label": "{ unmount }",
+      "file_type": "code",
+      "source_file": "src/hooks/useElapsedTimer.dom.spec.tsx",
+      "source_location": "L57",
+      "id": "hooks_useelapsedtimer_dom_spec_unmount",
+      "community": 275,
+      "norm_label": "{ unmount }"
     },
     {
       "label": "useBatchAssetPipeline.dom.spec.tsx",
@@ -23294,6 +23339,24 @@
       "id": "hooks_usebatchassetpipeline_dom_spec_pending",
       "community": 80,
       "norm_label": "pending"
+    },
+    {
+      "label": "useElapsedTimer.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/useElapsedTimer.ts",
+      "source_location": "L1",
+      "id": "src_hooks_useelapsedtimer_ts",
+      "community": 275,
+      "norm_label": "useelapsedtimer.ts"
+    },
+    {
+      "label": "useElapsedTimer()",
+      "file_type": "code",
+      "source_file": "src/hooks/useElapsedTimer.ts",
+      "source_location": "L5",
+      "id": "hooks_useelapsedtimer_useelapsedtimer",
+      "community": 275,
+      "norm_label": "useelapsedtimer()"
     },
     {
       "label": "useBlobUrl.ts",
@@ -23544,7 +23607,7 @@
       "source_file": "src/hooks/useMountOnce.ts",
       "source_location": "L11",
       "id": "hooks_usemountonce_usemountonce",
-      "community": 202,
+      "community": 15,
       "norm_label": "usemountonce()"
     },
     {
@@ -33740,7 +33803,7 @@
       "file_type": "code",
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L10",
-      "community": 99,
+      "community": 78,
       "norm_label": "state",
       "id": "image_imagecompressor_state"
     },
@@ -33749,7 +33812,7 @@
       "file_type": "code",
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L19",
-      "community": 99,
+      "community": 78,
       "norm_label": "action",
       "id": "image_imagecompressor_action"
     },
@@ -62241,9 +62304,9 @@
       "source_file": "src/utils/zip.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_utils_zip_ts",
-      "target": "utils_zip_buildzipblob",
-      "confidence_score": 1.0
+      "target": "utils_zip_buildzipblob"
     },
     {
       "relation": "imports_from",
@@ -62252,9 +62315,9 @@
       "source_file": "src/utils/zip.dom.spec.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_utils_zip_dom_spec_tsx",
-      "target": "src_utils_zip_ts",
-      "confidence_score": 1.0
+      "target": "src_utils_zip_ts"
     },
     {
       "relation": "imports",
@@ -62263,9 +62326,9 @@
       "source_file": "src/utils/zip.dom.spec.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_utils_zip_dom_spec_tsx",
-      "target": "utils_zip_buildzipblob",
-      "confidence_score": 1.0
+      "target": "utils_zip_buildzipblob"
     },
     {
       "relation": "contains",
@@ -64387,9 +64450,9 @@
       "source_file": "src/utils/zip.dom.spec.tsx",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_utils_zip_dom_spec_tsx",
-      "target": "utils_zip_dom_spec_filepaths",
-      "confidence_score": 1.0
+      "target": "utils_zip_dom_spec_filepaths"
     },
     {
       "relation": "contains",
@@ -70536,6 +70599,28 @@
       "confidence_score": 1.0,
       "source": "src_components_feature_security_bcrypthasher_tsx",
       "target": "security_bcrypthasher_bcrypthasher"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/security/BcryptHasher.tsx",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "security_bcrypthasher_hashtab",
+      "target": "hooks_useelapsedtimer_useelapsedtimer"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/security/BcryptHasher.tsx",
+      "source_location": "L146",
+      "weight": 1.0,
+      "source": "security_bcrypthasher_verifytab",
+      "target": "hooks_useelapsedtimer_useelapsedtimer"
     },
     {
       "relation": "contains",
@@ -77043,6 +77128,68 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useElapsedTimer.dom.spec.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_hooks_useelapsedtimer_dom_spec_tsx",
+      "target": "src_hooks_useelapsedtimer_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useElapsedTimer.dom.spec.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_hooks_useelapsedtimer_dom_spec_tsx",
+      "target": "hooks_useelapsedtimer_useelapsedtimer",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useElapsedTimer.dom.spec.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "src_hooks_useelapsedtimer_dom_spec_tsx",
+      "target": "hooks_useelapsedtimer_dom_spec_result",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useElapsedTimer.dom.spec.tsx",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "src_hooks_useelapsedtimer_dom_spec_tsx",
+      "target": "hooks_useelapsedtimer_dom_spec_nowspy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useElapsedTimer.dom.spec.tsx",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "src_hooks_useelapsedtimer_dom_spec_tsx",
+      "target": "hooks_useelapsedtimer_dom_spec_result_rerender",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useElapsedTimer.dom.spec.tsx",
+      "source_location": "L57",
+      "weight": 1.0,
+      "source": "src_hooks_useelapsedtimer_dom_spec_tsx",
+      "target": "hooks_useelapsedtimer_dom_spec_unmount",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/hooks/useBatchAssetPipeline.dom.spec.tsx",
       "source_location": "L8",
       "weight": 1.0,
@@ -77180,6 +77327,16 @@
       "confidence_score": 1.0,
       "source": "src_hooks_usebatchassetpipeline_dom_spec_tsx",
       "target": "hooks_usebatchassetpipeline_dom_spec_pending"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useElapsedTimer.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_hooks_useelapsedtimer_ts",
+      "target": "hooks_useelapsedtimer_useelapsedtimer",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -95470,5 +95627,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "0d8cefecad09ec500b8581d8a585e577b71bd53f"
+  "built_at_commit": "62de19a7113b59f319e7fe3bb8daec5b1b88b5fc"
 }
