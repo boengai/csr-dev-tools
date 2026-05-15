@@ -154,7 +154,14 @@ describe('BidirectionalConverter — compute pipeline', () => {
     expect(compute).toHaveBeenLastCalledWith({ mode: 'b-to-a', source: 'saved B' })
   })
 
-  it('fires compute exactly once when clicking a mode button (atomic mode + source swap)', async () => {
+  // The mode buttons live outside the dialog (in the tile), so there is no
+  // "in-dialog mode swap" path in this component. The atomic-fire behavior
+  // is exercised by the open path: openDialog(m) does a single
+  // setInputImmediate({ mode, source }) call that should produce exactly
+  // one compute, not two. The pre-existing test at "fires compute with
+  // persisted source when opening a mode" asserts on args but not count;
+  // this one asserts the count.
+  it('calls compute exactly once when opening a mode with seeded source (no double-fire)', async () => {
     localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('hello'))
     const compute = vi.fn(upperCompute)
     render(
@@ -174,8 +181,8 @@ describe('BidirectionalConverter — compute pipeline', () => {
   // handleSourceChange → writeSource(mode, val, sourceKeyPrefix) cannot be exercised
   // in jsdom — CodeMirror (used by FieldForm type="code") renders a contenteditable
   // div and its onChange is not reachable via fireEvent.change or beforeinput dispatch.
-  // Read-side per-mode isolation IS covered by the test at line ~134
-  // ("reads per-mode source from localStorage when switching modes"). Write-side
+  // Read-side per-mode isolation IS covered by the test
+  // "reads per-mode source from localStorage when switching modes". Write-side
   // regressions are gated by manual smoke testing during the upcoming useToolFields
   // migration (Task 2 step 2.6 in docs/superpowers/plans/2026-05-15-bidirectional-converter-tool-fields-migration.md).
 
@@ -291,6 +298,8 @@ describe('BidirectionalConverter — mode persistence', () => {
     // Dialog opens with mode b-to-a — confirms mode is set.
     expect(screen.getByText('B Input')).toBeTruthy()
 
+    // Close before unmount is cleanup hygiene, not a persistence trigger —
+    // useInputLocalStorage writes on mode-set, not on close.
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
     unmount()
 
