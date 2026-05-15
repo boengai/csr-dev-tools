@@ -105,6 +105,41 @@ include the other multi-field code Tools that currently combine
 `JsonpathEvaluator`, `GraphqlSchemaViewer`, `ProtobufCodec`,
 `ProtobufToJson`).
 
+## Persistent tool computation
+
+The single-Input variant of [[Persistent tool field bag]]. Implemented
+by `useToolComputationPersisted`
+(`src/hooks/useToolComputationPersisted.ts`).
+
+Composes `useToolComputation` with the same two concerns
+[[Persistent tool field bag]] adds: read the input from localStorage on
+mount (replacing `options.initial` if a stored value exists) and write
+back on every input change. The hook also fires the pipeline's
+`setInputImmediate(initialInput)` once on mount — when `options.isEmpty`
+is provided AND the restored input is non-empty — so the result
+populates without a per-Tool `useMountOnce`. Without `options.isEmpty`,
+no autorun fires (the caller is explicitly responsible for triggering
+the first compute).
+
+Unlike [[Tool field bag]], the underlying `useToolComputation` is
+stateless w.r.t. input — `useToolComputationPersisted` owns the input
+state via its own `useState<I>` and exposes the current value as
+`input` on the result.
+
+Pick this when a Tool has a single Input value (one `string` in, one
+result out) and persists that input across reloads. Pick
+[[Persistent tool field bag]] for multi-field bag persistence. Pick
+the unwrapped `useToolComputation` when a single-Input Tool does NOT
+persist (still the right choice for the 30+ existing single-Input
+Tools without persistence).
+
+Today's only consumer: `ProtobufToJson`. Future migration targets:
+`MermaidRenderer`, `GraphqlSchemaViewer` — both currently combine
+`useInputLocalStorage` + `useToolComputation` + `useMountOnce` by hand.
+MermaidRenderer's migration also has to handle a tool-handoff override
+(via `consumeHandoff('mermaid-renderer')`) on top of the standard
+persistence flow.
+
 ## Tool dialog frame
 
 The page-level frame for a Tool whose interior lives in a dialog. Implemented
