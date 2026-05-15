@@ -3177,7 +3177,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L1",
       "id": "src_app_tsx",
-      "community": 85,
+      "community": 371,
       "norm_label": "app.tsx"
     },
     {
@@ -3186,7 +3186,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L10",
       "id": "src_app_twinklestarsanimate",
-      "community": 85,
+      "community": 371,
       "norm_label": "twinklestarsanimate"
     },
     {
@@ -3195,7 +3195,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L18",
       "id": "src_app_commandpalette",
-      "community": 85,
+      "community": 371,
       "norm_label": "commandpalette"
     },
     {
@@ -3204,7 +3204,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L26",
       "id": "src_app_sidebar",
-      "community": 85,
+      "community": 371,
       "norm_label": "sidebar"
     },
     {
@@ -3213,7 +3213,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L32",
       "id": "src_app_settingsdialog",
-      "community": 85,
+      "community": 371,
       "norm_label": "settingsdialog"
     },
     {
@@ -3222,7 +3222,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L40",
       "id": "src_app_toastprovider",
-      "community": 85,
+      "community": 371,
       "norm_label": "toastprovider"
     },
     {
@@ -3231,7 +3231,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L46",
       "id": "src_app_pageloading",
-      "community": 85,
+      "community": 371,
       "norm_label": "pageloading()"
     },
     {
@@ -6606,7 +6606,7 @@
       "source_file": "src/types/components/feature/code/jsonToTypeScript.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_jsontotypescript_ts",
-      "community": 174,
+      "community": 239,
       "norm_label": "jsontotypescript.ts"
     },
     {
@@ -6615,7 +6615,7 @@
       "source_file": "src/types/components/feature/code/jsonToTypeScript.ts",
       "source_location": "L1",
       "id": "code_jsontotypescript_jsontsinput",
-      "community": 174,
+      "community": 239,
       "norm_label": "jsontsinput"
     },
     {
@@ -6660,7 +6660,7 @@
       "source_file": "src/types/components/feature/code/graphqlSchemaViewer.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_graphqlschemaviewer_ts",
-      "community": 127,
+      "community": 61,
       "norm_label": "graphqlschemaviewer.ts"
     },
     {
@@ -6669,7 +6669,7 @@
       "source_file": "src/types/components/feature/code/graphqlSchemaViewer.ts",
       "source_location": "L3",
       "id": "code_graphqlschemaviewer_graphqlparseoutput",
-      "community": 127,
+      "community": 61,
       "norm_label": "graphqlparseoutput"
     },
     {
@@ -7974,7 +7974,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L1",
       "id": "src_diagram_state_ts",
-      "community": 41,
+      "community": 370,
       "norm_label": "state.ts"
     },
     {
@@ -7983,7 +7983,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L3",
       "id": "diagram_state_createinitialdocument",
-      "community": 41,
+      "community": 370,
       "norm_label": "createinitialdocument()"
     },
     {
@@ -7992,7 +7992,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L15",
       "id": "diagram_state_clonedocument",
-      "community": 41,
+      "community": 370,
       "norm_label": "clonedocument()"
     },
     {
@@ -8100,7 +8100,7 @@
       "source_file": "src/diagram/projections.ts",
       "source_location": "L1",
       "id": "src_diagram_projections_ts",
-      "community": 52,
+      "community": 370,
       "norm_label": "projections.ts"
     },
     {
@@ -8109,7 +8109,7 @@
       "source_file": "src/diagram/projections.ts",
       "source_location": "L3",
       "id": "diagram_projections_documenttoflow",
-      "community": 52,
+      "community": 370,
       "norm_label": "documenttoflow()"
     },
     {
@@ -8154,7 +8154,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L23",
       "id": "diagram_editor_isvaliddocument",
-      "community": 41,
+      "community": 370,
       "norm_label": "isvaliddocument()"
     },
     {
@@ -8172,7 +8172,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L44",
       "id": "diagram_editor_diagrameditor_constructor",
-      "community": 41,
+      "community": 370,
       "norm_label": ".constructor()"
     },
     {
@@ -8253,7 +8253,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L113",
       "id": "diagram_editor_diagrameditor_replacedocument",
-      "community": 41,
+      "community": 370,
       "norm_label": ".replacedocument()"
     },
     {
@@ -8478,7 +8478,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L295",
       "id": "diagram_editor_diagrameditor_loadfromexportedjson",
-      "community": 41,
+      "community": 370,
       "norm_label": ".loadfromexportedjson()"
     },
     {
@@ -8649,7 +8649,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_state_spec_ts",
-      "community": 41,
+      "community": 370,
       "norm_label": "state.spec.ts"
     },
     {
@@ -8658,7 +8658,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L6",
       "id": "diagram_state_spec_doc",
-      "community": 41,
+      "community": 370,
       "norm_label": "doc"
     },
     {
@@ -8667,7 +8667,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L21",
       "id": "diagram_state_spec_a",
-      "community": 41,
+      "community": 370,
       "norm_label": "a"
     },
     {
@@ -8676,7 +8676,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L22",
       "id": "diagram_state_spec_b",
-      "community": 41,
+      "community": 370,
       "norm_label": "b"
     },
     {
@@ -8685,7 +8685,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_projections_spec_ts",
-      "community": 52,
+      "community": 370,
       "norm_label": "projections.spec.ts"
     },
     {
@@ -8694,7 +8694,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L6",
       "id": "diagram_projections_spec_docwithonetable",
-      "community": 52,
+      "community": 370,
       "norm_label": "docwithonetable()"
     },
     {
@@ -8703,7 +8703,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L23",
       "id": "diagram_projections_spec_nodes_edges",
-      "community": 52,
+      "community": 370,
       "norm_label": "{ nodes, edges }"
     },
     {
@@ -8712,7 +8712,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L35",
       "id": "diagram_projections_spec_doc",
-      "community": 52,
+      "community": 370,
       "norm_label": "doc"
     },
     {
@@ -8721,7 +8721,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L38",
       "id": "diagram_projections_spec_nodes",
-      "community": 52,
+      "community": 370,
       "norm_label": "{ nodes }"
     },
     {
@@ -8730,7 +8730,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L55",
       "id": "diagram_projections_spec_edges",
-      "community": 52,
+      "community": 370,
       "norm_label": "{ edges }"
     },
     {
@@ -9306,7 +9306,7 @@
       "source_file": "src/diagram/operations/dbml.ts",
       "source_location": "L22",
       "id": "operations_dbml_applydbmlnow",
-      "community": 63,
+      "community": 369,
       "norm_label": "applydbmlnow()"
     },
     {
@@ -10386,7 +10386,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L1",
       "id": "src_utils_regex_ts",
-      "community": 151,
+      "community": 485,
       "norm_label": "regex.ts"
     },
     {
@@ -10395,7 +10395,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L5",
       "id": "utils_regex_executeregex",
-      "community": 151,
+      "community": 485,
       "norm_label": "executeregex()"
     },
     {
@@ -10404,7 +10404,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L45",
       "id": "utils_regex_buildhighlightsegments",
-      "community": 151,
+      "community": 485,
       "norm_label": "buildhighlightsegments()"
     },
     {
@@ -10413,7 +10413,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L74",
       "id": "utils_regex_formatmatchesforcopy",
-      "community": 151,
+      "community": 485,
       "norm_label": "formatmatchesforcopy()"
     },
     {
@@ -10998,7 +10998,7 @@
       "source_file": "src/utils/db-diagram-dbml.ts",
       "source_location": "L31",
       "id": "utils_db_diagram_dbml_formatconstraints",
-      "community": 63,
+      "community": 369,
       "norm_label": "formatconstraints()"
     },
     {
@@ -11007,7 +11007,7 @@
       "source_file": "src/utils/db-diagram-dbml.ts",
       "source_location": "L40",
       "id": "utils_db_diagram_dbml_generatedbml",
-      "community": 63,
+      "community": 369,
       "norm_label": "generatedbml()"
     },
     {
@@ -11808,7 +11808,7 @@
       "source_file": "src/utils/db-diagram.ts",
       "source_location": "L38",
       "id": "utils_db_diagram_gridlayoutpositions",
-      "community": 64,
+      "community": 63,
       "norm_label": "gridlayoutpositions()"
     },
     {
@@ -17730,7 +17730,7 @@
       "source_file": "src/components/common/input/UploadInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_input_uploadinput_tsx",
-      "community": 172,
+      "community": 725,
       "norm_label": "uploadinput.tsx"
     },
     {
@@ -17739,7 +17739,7 @@
       "source_file": "src/components/common/input/UploadInput.tsx",
       "source_location": "L8",
       "id": "input_uploadinput_uploadinput",
-      "community": 172,
+      "community": 725,
       "norm_label": "uploadinput()"
     },
     {
@@ -18495,7 +18495,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L1",
       "id": "src_components_common_command_palette_commandpalette_tsx",
-      "community": 172,
+      "community": 85,
       "norm_label": "commandpalette.tsx"
     },
     {
@@ -18504,7 +18504,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L14",
       "id": "command_palette_commandpalette_paletteitemstyles",
-      "community": 172,
+      "community": 85,
       "norm_label": "paletteitemstyles"
     },
     {
@@ -18513,7 +18513,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L24",
       "id": "command_palette_commandpalette_commandpalette",
-      "community": 172,
+      "community": 85,
       "norm_label": "commandpalette()"
     },
     {
@@ -18531,7 +18531,7 @@
       "source_file": "src/components/common/command-palette/SearchInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_command_palette_searchinput_tsx",
-      "community": 172,
+      "community": 85,
       "norm_label": "searchinput.tsx"
     },
     {
@@ -18540,7 +18540,7 @@
       "source_file": "src/components/common/command-palette/SearchInput.tsx",
       "source_location": "L7",
       "id": "command_palette_searchinput_searchinput",
-      "community": 172,
+      "community": 85,
       "norm_label": "searchinput()"
     },
     {
@@ -18603,7 +18603,7 @@
       "source_file": "src/components/common/button/index.ts",
       "source_location": "L1",
       "id": "src_components_common_button_index_ts",
-      "community": 172,
+      "community": 725,
       "norm_label": "index.ts"
     },
     {
@@ -19098,7 +19098,7 @@
       "source_file": "src/components/common/icon/index.ts",
       "source_location": "L1",
       "id": "src_components_common_icon_index_ts",
-      "community": 172,
+      "community": 725,
       "norm_label": "index.ts"
     },
     {
@@ -19161,7 +19161,7 @@
       "source_file": "src/components/feature/unit/UnitPxToRem.tsx",
       "source_location": "L1",
       "id": "src_components_feature_unit_unitpxtorem_tsx",
-      "community": 723,
+      "community": 15,
       "norm_label": "unitpxtorem.tsx"
     },
     {
@@ -19170,7 +19170,7 @@
       "source_file": "src/components/feature/unit/UnitPxToRem.tsx",
       "source_location": "L10",
       "id": "unit_unitpxtorem_unitpxtorem",
-      "community": 723,
+      "community": 15,
       "norm_label": "unitpxtorem()"
     },
     {
@@ -19476,7 +19476,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L1",
       "id": "src_components_feature_security_certificatedecoder_tsx",
-      "community": 173,
+      "community": 61,
       "norm_label": "certificatedecoder.tsx"
     },
     {
@@ -19485,7 +19485,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L12",
       "id": "security_certificatedecoder_resultvaluestyles",
-      "community": 173,
+      "community": 61,
       "norm_label": "resultvaluestyles"
     },
     {
@@ -19494,7 +19494,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L22",
       "id": "security_certificatedecoder_resultrow",
-      "community": 173,
+      "community": 61,
       "norm_label": "resultrow()"
     },
     {
@@ -19503,7 +19503,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L42",
       "id": "security_certificatedecoder_validity_config",
-      "community": 173,
+      "community": 61,
       "norm_label": "validity_config"
     },
     {
@@ -19512,7 +19512,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L53",
       "id": "security_certificatedecoder_formatrelativetime",
-      "community": 173,
+      "community": 61,
       "norm_label": "formatrelativetime()"
     },
     {
@@ -19521,7 +19521,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L63",
       "id": "security_certificatedecoder_validitybadge",
-      "community": 173,
+      "community": 61,
       "norm_label": "validitybadge()"
     },
     {
@@ -19530,7 +19530,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L97",
       "id": "security_certificatedecoder_extensionitem",
-      "community": 173,
+      "community": 61,
       "norm_label": "extensionitem()"
     },
     {
@@ -19539,7 +19539,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L109",
       "id": "security_certificatedecoder_certificatedecoder",
-      "community": 173,
+      "community": 61,
       "norm_label": "certificatedecoder()"
     },
     {
@@ -20196,7 +20196,7 @@
       "source_file": "src/components/feature/code/JsonToTypeScript.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_jsontotypescript_tsx",
-      "community": 174,
+      "community": 239,
       "norm_label": "jsontotypescript.tsx"
     },
     {
@@ -20205,7 +20205,7 @@
       "source_file": "src/components/feature/code/JsonToTypeScript.tsx",
       "source_location": "L10",
       "id": "code_jsontotypescript_jsontotypescript",
-      "community": 15,
+      "community": 239,
       "norm_label": "jsontotypescript()"
     },
     {
@@ -20214,7 +20214,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_mermaidrenderer_tsx",
-      "community": 200,
+      "community": 90,
       "norm_label": "mermaidrenderer.tsx"
     },
     {
@@ -20223,7 +20223,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L19",
       "id": "code_mermaidrenderer_chevronstyles",
-      "community": 200,
+      "community": 90,
       "norm_label": "chevronstyles"
     },
     {
@@ -20232,7 +20232,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L38",
       "id": "code_mermaidrenderer_syntax_examples",
-      "community": 200,
+      "community": 90,
       "norm_label": "syntax_examples"
     },
     {
@@ -20241,7 +20241,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L47",
       "id": "code_mermaidrenderer_initial_result",
-      "community": 200,
+      "community": 90,
       "norm_label": "initial_result"
     },
     {
@@ -20259,7 +20259,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L64",
       "id": "code_mermaidrenderer_mermaidrenderer",
-      "community": 200,
+      "community": 107,
       "norm_label": "mermaidrenderer()"
     },
     {
@@ -20412,7 +20412,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_graphqlschemaviewer_tsx",
-      "community": 127,
+      "community": 61,
       "norm_label": "graphqlschemaviewer.tsx"
     },
     {
@@ -20421,7 +20421,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L10",
       "id": "code_graphqlschemaviewer_gettypekindlabel",
-      "community": 127,
+      "community": 61,
       "norm_label": "gettypekindlabel()"
     },
     {
@@ -20430,7 +20430,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L22",
       "id": "code_graphqlschemaviewer_kind_styles",
-      "community": 127,
+      "community": 61,
       "norm_label": "kind_styles"
     },
     {
@@ -20439,7 +20439,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L31",
       "id": "code_graphqlschemaviewer_kindbadge",
-      "community": 127,
+      "community": 61,
       "norm_label": "kindbadge()"
     },
     {
@@ -20448,7 +20448,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L46",
       "id": "code_graphqlschemaviewer_typereference",
-      "community": 127,
+      "community": 61,
       "norm_label": "typereference()"
     },
     {
@@ -20457,7 +20457,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L57",
       "id": "code_graphqlschemaviewer_fieldstable",
-      "community": 127,
+      "community": 61,
       "norm_label": "fieldstable()"
     },
     {
@@ -20466,7 +20466,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L101",
       "id": "code_graphqlschemaviewer_enumvalueslist",
-      "community": 127,
+      "community": 61,
       "norm_label": "enumvalueslist()"
     },
     {
@@ -20475,7 +20475,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L122",
       "id": "code_graphqlschemaviewer_typedetailpanel",
-      "community": 127,
+      "community": 61,
       "norm_label": "typedetailpanel()"
     },
     {
@@ -20484,7 +20484,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L232",
       "id": "code_graphqlschemaviewer_graphqlschemaviewer",
-      "community": 202,
+      "community": 107,
       "norm_label": "graphqlschemaviewer()"
     },
     {
@@ -21141,7 +21141,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L1",
       "id": "src_components_feature_image_favicongenerator_tsx",
-      "community": 102,
+      "community": 260,
       "norm_label": "favicongenerator.tsx"
     },
     {
@@ -21150,7 +21150,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L9",
       "id": "image_favicongenerator_linktags",
-      "community": 102,
+      "community": 260,
       "norm_label": "linktags"
     },
     {
@@ -21159,7 +21159,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L12",
       "id": "image_favicongenerator_flattenforzip",
-      "community": 102,
+      "community": 260,
       "norm_label": "flattenforzip()"
     },
     {
@@ -21168,7 +21168,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L18",
       "id": "image_favicongenerator_favicongenerator",
-      "community": 102,
+      "community": 260,
       "norm_label": "favicongenerator()"
     },
     {
@@ -21870,7 +21870,7 @@
       "source_file": "src/components/feature/text/RegexTester.tsx",
       "source_location": "L74",
       "id": "text_regextester_regextester",
-      "community": 151,
+      "community": 485,
       "norm_label": "regextester()"
     },
     {
@@ -22158,7 +22158,7 @@
       "source_file": "src/components/feature/data/JsonFormatter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_jsonformatter_tsx",
-      "community": 202,
+      "community": 107,
       "norm_label": "jsonformatter.tsx"
     },
     {
@@ -22167,7 +22167,7 @@
       "source_file": "src/components/feature/data/JsonFormatter.tsx",
       "source_location": "L10",
       "id": "data_jsonformatter_jsonformatter",
-      "community": 202,
+      "community": 107,
       "norm_label": "jsonformatter()"
     },
     {
@@ -23071,24 +23071,6 @@
       "norm_label": "exportsqlpanel()"
     },
     {
-      "label": "useToolComputationPersisted.ts",
-      "file_type": "code",
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L1",
-      "id": "src_hooks_usetoolcomputationpersisted_ts",
-      "community": 202,
-      "norm_label": "usetoolcomputationpersisted.ts"
-    },
-    {
-      "label": "useToolComputationPersisted()",
-      "file_type": "code",
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L18",
-      "id": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted",
-      "community": 202,
-      "norm_label": "usetoolcomputationpersisted()"
-    },
-    {
       "label": "useBlobUrl.dom.spec.tsx",
       "file_type": "code",
       "source_file": "src/hooks/useBlobUrl.dom.spec.tsx",
@@ -23170,39 +23152,12 @@
       "norm_label": "{ result, rerender }"
     },
     {
-      "label": "useToolComputationPersisted.dom.spec.tsx",
-      "file_type": "code",
-      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
-      "source_location": "L1",
-      "id": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
-      "community": 202,
-      "norm_label": "usetoolcomputationpersisted.dom.spec.tsx"
-    },
-    {
-      "label": "{ result }",
-      "file_type": "code",
-      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
-      "source_location": "L22",
-      "id": "hooks_usetoolcomputationpersisted_dom_spec_result",
-      "community": 202,
-      "norm_label": "{ result }"
-    },
-    {
-      "label": "compute",
-      "file_type": "code",
-      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
-      "source_location": "L109",
-      "id": "hooks_usetoolcomputationpersisted_dom_spec_compute",
-      "community": 202,
-      "norm_label": "compute"
-    },
-    {
       "label": "useToolFields.ts",
       "file_type": "code",
       "source_file": "src/hooks/useToolFields.ts",
       "source_location": "L1",
       "id": "src_hooks_usetoolfields_ts",
-      "community": 32,
+      "community": 202,
       "norm_label": "usetoolfields.ts"
     },
     {
@@ -23427,7 +23382,7 @@
       "source_file": "src/hooks/useBatchAssetPipeline.ts",
       "source_location": "L27",
       "id": "hooks_usebatchassetpipeline_usebatchassetpipeline",
-      "community": 102,
+      "community": 260,
       "norm_label": "usebatchassetpipeline()"
     },
     {
@@ -23436,7 +23391,7 @@
       "source_file": "src/hooks/useToolFields.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_usetoolfields_dom_spec_tsx",
-      "community": 32,
+      "community": 151,
       "norm_label": "usetoolfields.dom.spec.tsx"
     },
     {
@@ -23445,7 +23400,7 @@
       "source_file": "src/hooks/useToolFields.dom.spec.tsx",
       "source_location": "L9",
       "id": "hooks_usetoolfields_dom_spec_input",
-      "community": 32,
+      "community": 151,
       "norm_label": "input"
     },
     {
@@ -23454,7 +23409,7 @@
       "source_file": "src/hooks/useToolFields.dom.spec.tsx",
       "source_location": "L11",
       "id": "hooks_usetoolfields_dom_spec_initial",
-      "community": 32,
+      "community": 151,
       "norm_label": "initial"
     },
     {
@@ -23463,7 +23418,7 @@
       "source_file": "src/hooks/useToolFields.dom.spec.tsx",
       "source_location": "L23",
       "id": "hooks_usetoolfields_dom_spec_result",
-      "community": 32,
+      "community": 151,
       "norm_label": "{ result }"
     },
     {
@@ -23472,7 +23427,7 @@
       "source_file": "src/hooks/useToolFields.dom.spec.tsx",
       "source_location": "L37",
       "id": "hooks_usetoolfields_dom_spec_compute",
-      "community": 32,
+      "community": 151,
       "norm_label": "compute"
     },
     {
@@ -23481,7 +23436,7 @@
       "source_file": "src/hooks/useToolFields.dom.spec.tsx",
       "source_location": "L184",
       "id": "hooks_usetoolfields_dom_spec_onerror",
-      "community": 32,
+      "community": 151,
       "norm_label": "onerror"
     },
     {
@@ -23575,30 +23530,12 @@
       "norm_label": "usedebouncecallback()"
     },
     {
-      "label": "useToolFieldsPersisted.ts",
-      "file_type": "code",
-      "source_file": "src/hooks/useToolFieldsPersisted.ts",
-      "source_location": "L1",
-      "id": "src_hooks_usetoolfieldspersisted_ts",
-      "community": 202,
-      "norm_label": "usetoolfieldspersisted.ts"
-    },
-    {
-      "label": "useToolFieldsPersisted()",
-      "file_type": "code",
-      "source_file": "src/hooks/useToolFieldsPersisted.ts",
-      "source_location": "L18",
-      "id": "hooks_usetoolfieldspersisted_usetoolfieldspersisted",
-      "community": 239,
-      "norm_label": "usetoolfieldspersisted()"
-    },
-    {
       "label": "useMountOnce.dom.spec.tsx",
       "file_type": "code",
       "source_file": "src/hooks/useMountOnce.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_usemountonce_dom_spec_tsx",
-      "community": 202,
+      "community": 372,
       "norm_label": "usemountonce.dom.spec.tsx"
     },
     {
@@ -23607,7 +23544,7 @@
       "source_file": "src/hooks/useMountOnce.dom.spec.tsx",
       "source_location": "L12",
       "id": "hooks_usemountonce_dom_spec_fn",
-      "community": 202,
+      "community": 372,
       "norm_label": "fn"
     },
     {
@@ -23616,7 +23553,7 @@
       "source_file": "src/hooks/useMountOnce.dom.spec.tsx",
       "source_location": "L19",
       "id": "hooks_usemountonce_dom_spec_wrapper",
-      "community": 202,
+      "community": 372,
       "norm_label": "wrapper()"
     },
     {
@@ -23625,7 +23562,7 @@
       "source_file": "src/hooks/useMountOnce.dom.spec.tsx",
       "source_location": "L25",
       "id": "hooks_usemountonce_dom_spec_fn1",
-      "community": 202,
+      "community": 372,
       "norm_label": "fn1"
     },
     {
@@ -23634,7 +23571,7 @@
       "source_file": "src/hooks/useMountOnce.dom.spec.tsx",
       "source_location": "L26",
       "id": "hooks_usemountonce_dom_spec_fn2",
-      "community": 202,
+      "community": 372,
       "norm_label": "fn2"
     },
     {
@@ -23643,53 +23580,8 @@
       "source_file": "src/hooks/useMountOnce.dom.spec.tsx",
       "source_location": "L27",
       "id": "hooks_usemountonce_dom_spec_rerender",
-      "community": 202,
+      "community": 372,
       "norm_label": "{ rerender }"
-    },
-    {
-      "label": "useToolFieldsPersisted.dom.spec.tsx",
-      "file_type": "code",
-      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
-      "source_location": "L1",
-      "id": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
-      "community": 239,
-      "norm_label": "usetoolfieldspersisted.dom.spec.tsx"
-    },
-    {
-      "label": "Bag",
-      "file_type": "code",
-      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
-      "source_location": "L9",
-      "id": "hooks_usetoolfieldspersisted_dom_spec_bag",
-      "community": 239,
-      "norm_label": "bag"
-    },
-    {
-      "label": "INITIAL",
-      "file_type": "code",
-      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
-      "source_location": "L11",
-      "id": "hooks_usetoolfieldspersisted_dom_spec_initial",
-      "community": 239,
-      "norm_label": "initial"
-    },
-    {
-      "label": "{ result }",
-      "file_type": "code",
-      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
-      "source_location": "L25",
-      "id": "hooks_usetoolfieldspersisted_dom_spec_result",
-      "community": 239,
-      "norm_label": "{ result }"
-    },
-    {
-      "label": "compute",
-      "file_type": "code",
-      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
-      "source_location": "L118",
-      "id": "hooks_usetoolfieldspersisted_dom_spec_compute",
-      "community": 239,
-      "norm_label": "compute"
     },
     {
       "label": "useMountOnce.ts",
@@ -23706,7 +23598,7 @@
       "source_file": "src/hooks/useMountOnce.ts",
       "source_location": "L11",
       "id": "hooks_usemountonce_usemountonce",
-      "community": 202,
+      "community": 107,
       "norm_label": "usemountonce()"
     },
     {
@@ -23787,7 +23679,7 @@
       "source_file": "src/hooks/useToolComputation.ts",
       "source_location": "L1",
       "id": "src_hooks_usetoolcomputation_ts",
-      "community": 32,
+      "community": 202,
       "norm_label": "usetoolcomputation.ts"
     },
     {
@@ -23944,6 +23836,51 @@
       "norm_label": "index.ts"
     },
     {
+      "label": "useToolComputationPersisted.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
+      "source_location": "L1",
+      "id": "src_hooks_persist_usetoolcomputationpersisted_ts",
+      "community": 202,
+      "norm_label": "usetoolcomputationpersisted.ts"
+    },
+    {
+      "label": "useToolComputationPersisted()",
+      "file_type": "code",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
+      "source_location": "L18",
+      "id": "persist_usetoolcomputationpersisted_usetoolcomputationpersisted",
+      "community": 107,
+      "norm_label": "usetoolcomputationpersisted()"
+    },
+    {
+      "label": "useToolComputationPersisted.dom.spec.tsx",
+      "file_type": "code",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L1",
+      "id": "src_hooks_persist_usetoolcomputationpersisted_dom_spec_tsx",
+      "community": 107,
+      "norm_label": "usetoolcomputationpersisted.dom.spec.tsx"
+    },
+    {
+      "label": "{ result }",
+      "file_type": "code",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L22",
+      "id": "persist_usetoolcomputationpersisted_dom_spec_result",
+      "community": 107,
+      "norm_label": "{ result }"
+    },
+    {
+      "label": "compute",
+      "file_type": "code",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L109",
+      "id": "persist_usetoolcomputationpersisted_dom_spec_compute",
+      "community": 107,
+      "norm_label": "compute"
+    },
+    {
       "label": "useInputLocalStorage.ts",
       "file_type": "code",
       "source_file": "src/hooks/persist/useInputLocalStorage.ts",
@@ -24016,6 +23953,24 @@
       "norm_label": "usepersistfeaturelayout"
     },
     {
+      "label": "useToolFieldsPersisted.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
+      "source_location": "L1",
+      "id": "src_hooks_persist_usetoolfieldspersisted_ts",
+      "community": 202,
+      "norm_label": "usetoolfieldspersisted.ts"
+    },
+    {
+      "label": "useToolFieldsPersisted()",
+      "file_type": "code",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
+      "source_location": "L18",
+      "id": "persist_usetoolfieldspersisted_usetoolfieldspersisted",
+      "community": 239,
+      "norm_label": "usetoolfieldspersisted()"
+    },
+    {
       "label": "jsonStorage.spec.ts",
       "file_type": "code",
       "source_file": "src/hooks/persist/jsonStorage.spec.ts",
@@ -24023,6 +23978,51 @@
       "id": "src_hooks_persist_jsonstorage_spec_ts",
       "community": 202,
       "norm_label": "jsonstorage.spec.ts"
+    },
+    {
+      "label": "useToolFieldsPersisted.dom.spec.tsx",
+      "file_type": "code",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L1",
+      "id": "src_hooks_persist_usetoolfieldspersisted_dom_spec_tsx",
+      "community": 239,
+      "norm_label": "usetoolfieldspersisted.dom.spec.tsx"
+    },
+    {
+      "label": "Bag",
+      "file_type": "code",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L9",
+      "id": "persist_usetoolfieldspersisted_dom_spec_bag",
+      "community": 239,
+      "norm_label": "bag"
+    },
+    {
+      "label": "INITIAL",
+      "file_type": "code",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L11",
+      "id": "persist_usetoolfieldspersisted_dom_spec_initial",
+      "community": 239,
+      "norm_label": "initial"
+    },
+    {
+      "label": "{ result }",
+      "file_type": "code",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L25",
+      "id": "persist_usetoolfieldspersisted_dom_spec_result",
+      "community": 239,
+      "norm_label": "{ result }"
+    },
+    {
+      "label": "compute",
+      "file_type": "code",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L118",
+      "id": "persist_usetoolfieldspersisted_dom_spec_compute",
+      "community": 239,
+      "norm_label": "compute"
     },
     {
       "label": "usePersistSettings.ts",
@@ -27081,7 +27081,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L1",
       "id": "docs_superpowers_plans_2026_05_13_db_diagram_editor_extraction_md",
-      "community": 43,
+      "community": 52,
       "norm_label": "2026-05-13-db-diagram-editor-extraction.md"
     },
     {
@@ -27090,7 +27090,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L1",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_db_diagram_editor_extraction_implementation_plan",
-      "community": 43,
+      "community": 52,
       "norm_label": "db diagram editor extraction \u2014 implementation plan"
     },
     {
@@ -27099,7 +27099,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L13",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_spec_reference",
-      "community": 43,
+      "community": 52,
       "norm_label": "spec reference"
     },
     {
@@ -27108,7 +27108,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L17",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_naming_adjustment_from_the_spec",
-      "community": 43,
+      "community": 52,
       "norm_label": "naming adjustment from the spec"
     },
     {
@@ -27117,7 +27117,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L21",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_file_map",
-      "community": 43,
+      "community": 52,
       "norm_label": "file map"
     },
     {
@@ -27126,7 +27126,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L64",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_phase_1_build_the_editor_no_ui_change",
-      "community": 305,
+      "community": 83,
       "norm_label": "phase 1 \u2014 build the editor (no ui change)"
     },
     {
@@ -27243,7 +27243,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L358",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_task_4_projections_document_reactflow_nodes_edges",
-      "community": 726,
+      "community": 83,
       "norm_label": "task 4: projections \u2014 document \u2192 reactflow nodes/edges"
     },
     {
@@ -27252,7 +27252,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L368",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_10",
-      "community": 726,
+      "community": 83,
       "norm_label": "code:ts (// src/diagram/projections.spec.ts)"
     },
     {
@@ -27261,7 +27261,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L444",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_11",
-      "community": 726,
+      "community": 83,
       "norm_label": "code:ts (// src/diagram/projections.ts)"
     },
     {
@@ -27270,7 +27270,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L496",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_12",
-      "community": 726,
+      "community": 83,
       "norm_label": "code:bash (git add src/diagram/projections.ts src/diagram/projections.s)"
     },
     {
@@ -27702,7 +27702,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L1811",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_task_12_verify_the_editor_module_compiles_and_full_test_suite_passes",
-      "community": 305,
+      "community": 83,
       "norm_label": "task 12: verify the editor module compiles and full test suite passes"
     },
     {
@@ -27711,7 +27711,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L1830",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_53",
-      "community": 305,
+      "community": 83,
       "norm_label": "code:bash (git add -a)"
     },
     {
@@ -27810,7 +27810,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2059",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_task_16_migrate_side_panels_to_usediagram",
-      "community": 43,
+      "community": 308,
       "norm_label": "task 16: migrate side panels to `usediagram()`"
     },
     {
@@ -27819,7 +27819,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2079",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_60",
-      "community": 43,
+      "community": 308,
       "norm_label": "code:tsx (// inside dbmleditorpanel.tsx)"
     },
     {
@@ -27828,7 +27828,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2107",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_61",
-      "community": 43,
+      "community": 308,
       "norm_label": "code:bash (git add src/components/feature/data/db-diagram/dbmleditorpan)"
     },
     {
@@ -27837,7 +27837,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2118",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_62",
-      "community": 43,
+      "community": 308,
       "norm_label": "code:bash (git add src/components/feature/data/db-diagram/importsqlpane)"
     },
     {
@@ -27846,7 +27846,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2127",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_63",
-      "community": 43,
+      "community": 308,
       "norm_label": "code:bash (git add src/components/feature/data/db-diagram/importjsonsch)"
     },
     {
@@ -27855,7 +27855,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2136",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_64",
-      "community": 43,
+      "community": 308,
       "norm_label": "code:bash (git add src/components/feature/data/db-diagram/exportsqlpane)"
     },
     {
@@ -27864,7 +27864,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2151",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_65",
-      "community": 43,
+      "community": 308,
       "norm_label": "code:ts (// in src/diagram/editor.ts)"
     },
     {
@@ -27873,7 +27873,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2168",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_66",
-      "community": 43,
+      "community": 308,
       "norm_label": "code:bash (git add src/diagram/editor.ts src/components/feature/data/db)"
     },
     {
@@ -27882,7 +27882,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2179",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_67",
-      "community": 43,
+      "community": 308,
       "norm_label": "code:bash (git add src/components/feature/data/db-diagram/diagramtoolba)"
     },
     {
@@ -27981,7 +27981,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2356",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_phase_3_tidy",
-      "community": 43,
+      "community": 52,
       "norm_label": "phase 3 \u2014 tidy"
     },
     {
@@ -27990,7 +27990,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2358",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_task_20_remove_dead_types_from_src_types_utils_db_diagram_ts",
-      "community": 43,
+      "community": 52,
       "norm_label": "task 20: remove dead types from `src/types/utils/db-diagram.ts`"
     },
     {
@@ -27999,7 +27999,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2380",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_75",
-      "community": 43,
+      "community": 52,
       "norm_label": "code:bash (git add src/types/utils/db-diagram.ts)"
     },
     {
@@ -28008,7 +28008,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2387",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_task_21_regenerate_the_knowledge_graph",
-      "community": 43,
+      "community": 52,
       "norm_label": "task 21: regenerate the knowledge graph"
     },
     {
@@ -28017,7 +28017,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2396",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_76",
-      "community": 43,
+      "community": 52,
       "norm_label": "code:bash (git add graphify-out/)"
     },
     {
@@ -28026,7 +28026,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2403",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_task_22_final_verification",
-      "community": 43,
+      "community": 52,
       "norm_label": "task 22: final verification"
     },
     {
@@ -28035,7 +28035,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2407",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_77",
-      "community": 43,
+      "community": 52,
       "norm_label": "code:bash (pnpm tsc --noemit)"
     },
     {
@@ -28044,7 +28044,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2432",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_self_review",
-      "community": 43,
+      "community": 52,
       "norm_label": "self-review"
     },
     {
@@ -33799,6 +33799,114 @@
       "norm_label": "code:block1 (error: browsertype.launch: executable doesn't exist at /user)"
     },
     {
+      "label": "useToolComputationPersisted.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L1",
+      "community": 202,
+      "norm_label": "usetoolcomputationpersisted.ts",
+      "id": "src_hooks_usetoolcomputationpersisted_ts"
+    },
+    {
+      "label": "useToolComputationPersisted()",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L18",
+      "community": 107,
+      "norm_label": "usetoolcomputationpersisted()",
+      "id": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
+    },
+    {
+      "label": "useToolComputationPersisted.dom.spec.tsx",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L1",
+      "community": 202,
+      "norm_label": "usetoolcomputationpersisted.dom.spec.tsx",
+      "id": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx"
+    },
+    {
+      "label": "{ result }",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L22",
+      "community": 202,
+      "norm_label": "{ result }",
+      "id": "hooks_usetoolcomputationpersisted_dom_spec_result"
+    },
+    {
+      "label": "compute",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L109",
+      "community": 202,
+      "norm_label": "compute",
+      "id": "hooks_usetoolcomputationpersisted_dom_spec_compute"
+    },
+    {
+      "label": "useToolFieldsPersisted.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolFieldsPersisted.ts",
+      "source_location": "L1",
+      "community": 202,
+      "norm_label": "usetoolfieldspersisted.ts",
+      "id": "src_hooks_usetoolfieldspersisted_ts"
+    },
+    {
+      "label": "useToolFieldsPersisted()",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolFieldsPersisted.ts",
+      "source_location": "L18",
+      "community": 239,
+      "norm_label": "usetoolfieldspersisted()",
+      "id": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
+    },
+    {
+      "label": "useToolFieldsPersisted.dom.spec.tsx",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L1",
+      "community": 239,
+      "norm_label": "usetoolfieldspersisted.dom.spec.tsx",
+      "id": "src_hooks_usetoolfieldspersisted_dom_spec_tsx"
+    },
+    {
+      "label": "Bag",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L9",
+      "community": 239,
+      "norm_label": "bag",
+      "id": "hooks_usetoolfieldspersisted_dom_spec_bag"
+    },
+    {
+      "label": "INITIAL",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L11",
+      "community": 239,
+      "norm_label": "initial",
+      "id": "hooks_usetoolfieldspersisted_dom_spec_initial"
+    },
+    {
+      "label": "{ result }",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L25",
+      "community": 239,
+      "norm_label": "{ result }",
+      "id": "hooks_usetoolfieldspersisted_dom_spec_result"
+    },
+    {
+      "label": "compute",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L118",
+      "community": 239,
+      "norm_label": "compute",
+      "id": "hooks_usetoolfieldspersisted_dom_spec_compute"
+    },
+    {
       "label": "readValue()",
       "file_type": "code",
       "source_file": "src/hooks/useToolComputationPersisted.ts",
@@ -33965,7 +34073,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L47",
-      "community": 200,
+      "community": 90,
       "norm_label": "initialstate",
       "id": "code_mermaidrenderer_initialstate"
     },
@@ -33974,7 +34082,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L56",
-      "community": 200,
+      "community": 90,
       "norm_label": "reducer()",
       "id": "code_mermaidrenderer_reducer"
     },
@@ -34568,7 +34676,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/image/BackgroundRemover/index.tsx",
       "source_location": "L36",
-      "community": 0,
+      "community": 173,
       "norm_label": "reducer()",
       "id": "backgroundremover_index_reducer"
     },
@@ -42237,7 +42345,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 127,
       "norm_label": "session ref token to discard stale async results",
       "id": "concept_session_token_pattern"
     },
@@ -42692,7 +42800,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 127,
       "norm_label": "certificatedecoder",
       "id": "certificatedecoder_component"
     },
@@ -42705,7 +42813,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 127,
       "norm_label": "chmodcalculator",
       "id": "chmodcalculator_component"
     },
@@ -42718,7 +42826,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 127,
       "norm_label": "rsakeygenerator",
       "id": "rsakeygenerator_component"
     },
@@ -42731,7 +42839,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 127,
       "norm_label": "aesencryptdecrypt",
       "id": "aesencryptdecrypt_component"
     },
@@ -42744,7 +42852,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 486,
       "norm_label": "bcrypthasher",
       "id": "bcrypthasher_component"
     },
@@ -42757,7 +42865,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 486,
       "norm_label": "hashtab (inner)",
       "id": "bcrypthasher_hashtab"
     },
@@ -42770,7 +42878,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 486,
       "norm_label": "verifytab (inner)",
       "id": "bcrypthasher_verifytab"
     },
@@ -42783,7 +42891,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 127,
       "norm_label": "feature/security barrel",
       "id": "security_barrel"
     },
@@ -42796,7 +42904,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 127,
       "norm_label": "sshkeyfingerprint",
       "id": "sshkeyfingerprint_component"
     },
@@ -42809,7 +42917,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 127,
       "norm_label": "hashgenerator",
       "id": "hashgenerator_component"
     },
@@ -42822,7 +42930,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 127,
       "norm_label": "hmacgenerator",
       "id": "hmacgenerator_component"
     },
@@ -42835,7 +42943,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 200,
       "norm_label": "regextester",
       "id": "regextester_component"
     },
@@ -42848,7 +42956,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 200,
       "norm_label": "textcaseconverter",
       "id": "textcaseconverter_component"
     },
@@ -42861,7 +42969,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 200,
       "norm_label": "wordcounter",
       "id": "wordcounter_component"
     },
@@ -42874,7 +42982,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 200,
       "norm_label": "stringescapeunescape",
       "id": "stringescapeunescape_component"
     },
@@ -42887,7 +42995,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 200,
       "norm_label": "textsortdedupe",
       "id": "textsortdedupe_component"
     },
@@ -42900,7 +43008,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 200,
       "norm_label": "useragentparser",
       "id": "useragentparser_component"
     },
@@ -42913,7 +43021,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 200,
       "norm_label": "loremipsumgenerator",
       "id": "loremipsumgenerator_component"
     },
@@ -42926,7 +43034,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 200,
       "norm_label": "feature/text barrel",
       "id": "text_barrel"
     },
@@ -42939,7 +43047,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 200,
       "norm_label": "textdiffchecker",
       "id": "textdiffchecker_component"
     },
@@ -42952,7 +43060,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 127,
       "norm_label": "debounced async processing pipeline",
       "id": "concept_debounced_async_pipeline"
     },
@@ -42965,7 +43073,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 172,
       "norm_label": "tool_registry_map[id] description pattern",
       "id": "concept_tool_registry_lookup"
     },
@@ -44201,7 +44309,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 173,
       "norm_label": "backgroundremover",
       "id": "backgroundremover_index_component"
     },
@@ -44253,7 +44361,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 173,
       "norm_label": "backgroundremoverresult",
       "id": "backgroundremover_result_component"
     },
@@ -44266,7 +44374,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 173,
       "norm_label": "backgroundremovererror",
       "id": "backgroundremover_error_component"
     },
@@ -44279,7 +44387,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 173,
       "norm_label": "backgroundremoverprocessing",
       "id": "backgroundremover_processing_component"
     },
@@ -44292,7 +44400,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 172,
       "norm_label": "passwordgenerator",
       "id": "passwordgenerator_component"
     },
@@ -44305,7 +44413,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 173,
       "norm_label": "qrcodegenerator",
       "id": "qrcodegenerator_component"
     },
@@ -44318,7 +44426,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 173,
       "norm_label": "qrcodereducer",
       "id": "qrcodegenerator_reducer"
     },
@@ -44331,7 +44439,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 172,
       "norm_label": "uuidgenerator",
       "id": "uuidgenerator_component"
     },
@@ -44344,7 +44452,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 174,
       "norm_label": "usesidebarstore",
       "id": "usesidebarstore_store"
     },
@@ -44357,7 +44465,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 172,
       "norm_label": "usetoast",
       "id": "usetoast_store"
     },
@@ -44370,7 +44478,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 174,
       "norm_label": "usecommandpalettestore",
       "id": "usecommandpalettestore_store"
     },
@@ -44383,7 +44491,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 174,
       "norm_label": "getpreviouslyfocusedelement",
       "id": "usecommandpalettestore_getpreviouslyfocused"
     },
@@ -44435,7 +44543,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 174,
       "norm_label": "commandpalette",
       "id": "commandpalette_component"
     },
@@ -44448,7 +44556,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 174,
       "norm_label": "searchinput (palette)",
       "id": "commandpalette_searchinput"
     },
@@ -44461,7 +44569,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 172,
       "norm_label": "unitpxtorem",
       "id": "unitpxtorem_component"
     },
@@ -44474,7 +44582,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 172,
       "norm_label": "aspectratiocalculator",
       "id": "aspectratiocalculator_component"
     },
@@ -44487,7 +44595,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 172,
       "norm_label": "colorconvertor",
       "id": "colorconvertor_component"
     },
@@ -44500,7 +44608,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 172,
       "norm_label": "colorpalettegenerator",
       "id": "colorpalettegenerator_component"
     },
@@ -44539,7 +44647,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 174,
       "norm_label": "navigation.spec.ts",
       "id": "navigation_spec_e2e"
     },
@@ -44552,7 +44660,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 174,
       "norm_label": "home.spec.ts",
       "id": "home_spec_e2e"
     },
@@ -44565,7 +44673,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 174,
       "norm_label": "e2e fixtures",
       "id": "e2e_fixtures"
     },
@@ -44578,7 +44686,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 174,
       "norm_label": "e2e selectors",
       "id": "e2e_selectors"
     },
@@ -44591,7 +44699,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 173,
       "norm_label": "tabs",
       "id": "tabs_component"
     },
@@ -44683,7 +44791,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 172,
       "norm_label": "toastprovider",
       "id": "toastprovider_component"
     },
@@ -44696,7 +44804,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 174,
       "norm_label": "zustand store pattern",
       "id": "concept_zustand_store"
     },
@@ -44709,7 +44817,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 173,
       "norm_label": "reducer+dialog tool pattern",
       "id": "concept_reducer_dialog_tool"
     },
@@ -44722,7 +44830,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 172,
       "norm_label": "debounced compute pattern",
       "id": "concept_debounced_compute"
     },
@@ -44735,7 +44843,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 173,
       "norm_label": "blob objecturl lifecycle",
       "id": "concept_objecturl_lifecycle"
     },
@@ -72606,7 +72714,7 @@
       "source_location": "L81",
       "weight": 1.0,
       "source": "code_jsonpathevaluator_jsonpathevaluator",
-      "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
+      "target": "persist_usetoolfieldspersisted_usetoolfieldspersisted"
     },
     {
       "relation": "calls",
@@ -72618,6 +72726,17 @@
       "weight": 1.0,
       "source": "code_jsonpathevaluator_jsonpathevaluator",
       "target": "hooks_usemountonce_usemountonce"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "code_jsonpathevaluator_jsonpathevaluator",
+      "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
     },
     {
       "relation": "calls",
@@ -72909,6 +73028,17 @@
       "source_location": "L13",
       "weight": 1.0,
       "source": "code_jsontotypescript_jsontotypescript",
+      "target": "persist_usetoolfieldspersisted_usetoolfieldspersisted"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/JsonToTypeScript.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "code_jsontotypescript_jsontotypescript",
       "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
     },
     {
@@ -73045,7 +73175,7 @@
       "source_location": "L75",
       "weight": 1.0,
       "source": "code_mermaidrenderer_mermaidrenderer",
-      "target": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
+      "target": "persist_usetoolcomputationpersisted_usetoolcomputationpersisted"
     },
     {
       "relation": "calls",
@@ -73057,6 +73187,17 @@
       "weight": 1.0,
       "source": "code_mermaidrenderer_mermaidrenderer",
       "target": "hooks_usemountonce_usemountonce"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/MermaidRenderer.tsx",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "code_mermaidrenderer_mermaidrenderer",
+      "target": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
     },
     {
       "relation": "calls",
@@ -73161,6 +73302,17 @@
       "confidence_score": 1.0,
       "source": "code_protobuftojson_buildbrowsableentries",
       "target": "code_protobuftojson_protobuftojson"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/ProtobufToJson.tsx",
+      "source_location": "L144",
+      "weight": 1.0,
+      "source": "code_protobuftojson_protobuftojson",
+      "target": "persist_usetoolcomputationpersisted_usetoolcomputationpersisted"
     },
     {
       "relation": "calls",
@@ -73519,6 +73671,17 @@
       "source_location": "L242",
       "weight": 1.0,
       "source": "code_graphqlschemaviewer_graphqlschemaviewer",
+      "target": "persist_usetoolcomputationpersisted_usetoolcomputationpersisted"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
+      "source_location": "L242",
+      "weight": 1.0,
+      "source": "code_graphqlschemaviewer_graphqlschemaviewer",
       "target": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
     },
     {
@@ -73627,6 +73790,17 @@
       "source_location": "L13",
       "weight": 1.0,
       "source": "code_htmlformatter_htmlformatter",
+      "target": "persist_usetoolfieldspersisted_usetoolfieldspersisted"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/HtmlFormatter.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "code_htmlformatter_htmlformatter",
       "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
     },
     {
@@ -73692,6 +73866,17 @@
       "confidence_score": 1.0,
       "source": "src_components_feature_code_jsonschemavalidator_tsx",
       "target": "code_jsonschemavalidator_jsonschemavalidator"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "code_jsonschemavalidator_jsonschemavalidator",
+      "target": "persist_usetoolfieldspersisted_usetoolfieldspersisted"
     },
     {
       "relation": "calls",
@@ -76122,6 +76307,17 @@
       "source_location": "L60",
       "weight": 1.0,
       "source": "text_textdiffchecker_textdiffchecker",
+      "target": "persist_usetoolfieldspersisted_usetoolfieldspersisted"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/text/TextDiffChecker.tsx",
+      "source_location": "L60",
+      "weight": 1.0,
+      "source": "text_textdiffchecker_textdiffchecker",
       "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
     },
     {
@@ -76188,6 +76384,17 @@
       "confidence_score": 1.0,
       "source": "src_components_feature_data_jsonformatter_tsx",
       "target": "data_jsonformatter_jsonformatter"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/data/JsonFormatter.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "data_jsonformatter_jsonformatter",
+      "target": "persist_usetoolcomputationpersisted_usetoolcomputationpersisted"
     },
     {
       "relation": "calls",
@@ -78571,157 +78778,6 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_ts",
-      "target": "src_hooks_persist_jsonstorage_ts",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_ts",
-      "target": "persist_jsonstorage_readjsonstorage",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_ts",
-      "target": "persist_jsonstorage_writejsonstorage",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_ts",
-      "target": "src_hooks_usemountonce_ts"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_ts",
-      "target": "hooks_usemountonce_usemountonce"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_ts",
-      "target": "src_hooks_usetoolcomputation_ts"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_ts",
-      "target": "hooks_usetoolcomputation_usetoolcomputation"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L34",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_ts",
-      "target": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
-      "target": "src_hooks_usetoolcomputationpersisted_ts"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_ts",
-      "target": "hooks_usetoolcomputationpersisted_readvalue"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_ts",
-      "target": "hooks_usetoolcomputationpersisted_writevalue"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
-      "target": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L54",
-      "weight": 1.0,
-      "source": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted",
-      "target": "hooks_usetoolcomputation_usetoolcomputation"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/hooks/useToolComputationPersisted.ts",
-      "source_location": "L75",
-      "weight": 1.0,
-      "source": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted",
-      "target": "hooks_usemountonce_usemountonce"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "src/hooks/useBlobUrl.dom.spec.tsx",
       "source_location": "L6",
       "weight": 1.0,
@@ -78821,26 +78877,6 @@
       "target": "hooks_usebloburl_dom_spec_result_rerender"
     },
     {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
-      "source_location": "L172",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
-      "target": "hooks_usetoolcomputationpersisted_dom_spec_result"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
-      "source_location": "L171",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
-      "target": "hooks_usetoolcomputationpersisted_dom_spec_compute"
-    },
-    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -78887,6 +78923,17 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolfieldspersisted_ts",
+      "target": "src_hooks_usetoolfields_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/hooks/useToolFieldsPersisted.ts",
       "source_location": "L5",
       "weight": 1.0,
@@ -78909,12 +78956,12 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.ts",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
       "source_location": "L5",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "hooks_usetoolfields_usetoolfields"
+      "source": "src_hooks_persist_usetoolfieldspersisted_ts",
+      "target": "hooks_usetoolfields_usetoolfields",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -78926,6 +78973,28 @@
       "weight": 1.0,
       "source": "hooks_usetoolfields_usetoolfields",
       "target": "hooks_usetoolcomputation_usetoolcomputation"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
+      "source_location": "L30",
+      "weight": 1.0,
+      "source": "persist_usetoolfieldspersisted_usetoolfieldspersisted",
+      "target": "hooks_usetoolfields_usetoolfields"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_ts",
+      "target": "hooks_usetoolfields_usetoolfields"
     },
     {
       "relation": "calls",
@@ -79386,124 +79455,6 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "src_hooks_persist_jsonstorage_ts",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "persist_jsonstorage_readjsonstorage",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "persist_jsonstorage_writejsonstorage",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "src_hooks_usemountonce_ts"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "hooks_usemountonce_usemountonce"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.ts",
-      "source_location": "L34",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
-      "target": "src_hooks_usetoolfieldspersisted_ts"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.ts",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "hooks_usetoolfieldspersisted_readbag"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.ts",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "hooks_usetoolfieldspersisted_writebag"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
-      "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/hooks/useToolFieldsPersisted.ts",
-      "source_location": "L48",
-      "weight": 1.0,
-      "source": "hooks_usetoolfieldspersisted_usetoolfieldspersisted",
-      "target": "hooks_usemountonce_usemountonce"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "src/hooks/useMountOnce.dom.spec.tsx",
       "source_location": "L8",
       "weight": 1.0,
@@ -79575,51 +79526,143 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
-      "target": "hooks_usetoolfieldspersisted_dom_spec_bag"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
-      "source_location": "L11",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
-      "target": "hooks_usetoolfieldspersisted_dom_spec_initial"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
-      "source_location": "L181",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
-      "target": "hooks_usetoolfieldspersisted_dom_spec_result"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
-      "source_location": "L180",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
-      "target": "hooks_usetoolfieldspersisted_dom_spec_compute"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
       "source_file": "src/hooks/useMountOnce.ts",
       "source_location": "L11",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_hooks_usemountonce_ts",
+      "target": "hooks_usemountonce_usemountonce"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolcomputationpersisted_ts",
+      "target": "src_hooks_usemountonce_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolfieldspersisted_ts",
+      "target": "src_hooks_usemountonce_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "src_hooks_usemountonce_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_ts",
+      "target": "src_hooks_usemountonce_ts"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolcomputationpersisted_ts",
+      "target": "hooks_usemountonce_usemountonce",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolfieldspersisted_ts",
+      "target": "hooks_usemountonce_usemountonce",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "persist_usetoolcomputationpersisted_usetoolcomputationpersisted",
+      "target": "hooks_usemountonce_usemountonce"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "persist_usetoolfieldspersisted_usetoolfieldspersisted",
+      "target": "hooks_usemountonce_usemountonce"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "hooks_usemountonce_usemountonce"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted",
+      "target": "hooks_usemountonce_usemountonce"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_ts",
+      "target": "hooks_usemountonce_usemountonce"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useToolFieldsPersisted.ts",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "hooks_usetoolfieldspersisted_usetoolfieldspersisted",
       "target": "hooks_usemountonce_usemountonce"
     },
     {
@@ -79722,6 +79765,72 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_hooks_usetoolcomputation_ts",
+      "target": "hooks_usetoolcomputation_usetoolcomputation"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolcomputationpersisted_ts",
+      "target": "src_hooks_usetoolcomputation_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "src_hooks_usetoolcomputation_ts"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolcomputationpersisted_ts",
+      "target": "hooks_usetoolcomputation_usetoolcomputation",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "persist_usetoolcomputationpersisted_usetoolcomputationpersisted",
+      "target": "hooks_usetoolcomputation_usetoolcomputation"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "hooks_usetoolcomputation_usetoolcomputation"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted",
       "target": "hooks_usetoolcomputation_usetoolcomputation"
     },
     {
@@ -79895,10 +80004,10 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/hooks/persist/useInputLocalStorage.ts",
-      "source_location": "L4",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
+      "source_location": "L6",
       "weight": 1.0,
-      "source": "src_hooks_persist_useinputlocalstorage_ts",
+      "source": "src_hooks_persist_usetoolcomputationpersisted_ts",
       "target": "src_hooks_persist_jsonstorage_ts",
       "confidence_score": 1.0
     },
@@ -79906,12 +80015,86 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolcomputationpersisted_ts",
+      "target": "persist_jsonstorage_readjsonstorage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolcomputationpersisted_ts",
+      "target": "persist_jsonstorage_writejsonstorage",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolcomputationpersisted_ts",
+      "target": "persist_usetoolcomputationpersisted_usetoolcomputationpersisted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolcomputationpersisted_dom_spec_tsx",
+      "target": "src_hooks_persist_usetoolcomputationpersisted_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolcomputationpersisted_dom_spec_tsx",
+      "target": "persist_usetoolcomputationpersisted_usetoolcomputationpersisted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L172",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolcomputationpersisted_dom_spec_tsx",
+      "target": "persist_usetoolcomputationpersisted_dom_spec_result",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L171",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolcomputationpersisted_dom_spec_tsx",
+      "target": "persist_usetoolcomputationpersisted_dom_spec_compute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/hooks/persist/useInputLocalStorage.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_persist_useinputlocalstorage_ts",
-      "target": "persist_jsonstorage_readjsonstorage",
-      "confidence_score": 1.0
+      "target": "src_hooks_persist_jsonstorage_ts"
     },
     {
       "relation": "imports",
@@ -79920,9 +80103,20 @@
       "source_file": "src/hooks/persist/useInputLocalStorage.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_persist_useinputlocalstorage_ts",
-      "target": "persist_jsonstorage_writejsonstorage",
-      "confidence_score": 1.0
+      "target": "persist_jsonstorage_readjsonstorage"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useInputLocalStorage.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_persist_useinputlocalstorage_ts",
+      "target": "persist_jsonstorage_writejsonstorage"
     },
     {
       "relation": "contains",
@@ -79940,9 +80134,9 @@
       "source_file": "src/hooks/persist/jsonStorage.ts",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_persist_jsonstorage_ts",
-      "target": "persist_jsonstorage_readjsonstorage",
-      "confidence_score": 1.0
+      "target": "persist_jsonstorage_readjsonstorage"
     },
     {
       "relation": "contains",
@@ -79950,8 +80144,19 @@
       "source_file": "src/hooks/persist/jsonStorage.ts",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_persist_jsonstorage_ts",
-      "target": "persist_jsonstorage_writejsonstorage",
+      "target": "persist_jsonstorage_writejsonstorage"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolfieldspersisted_ts",
+      "target": "src_hooks_persist_jsonstorage_ts",
       "confidence_score": 1.0
     },
     {
@@ -79961,18 +80166,40 @@
       "source_file": "src/hooks/persist/jsonStorage.spec.ts",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_persist_jsonstorage_spec_ts",
-      "target": "src_hooks_persist_jsonstorage_ts",
-      "confidence_score": 1.0
+      "target": "src_hooks_persist_jsonstorage_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "src_hooks_persist_jsonstorage_ts"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_ts",
+      "target": "src_hooks_persist_jsonstorage_ts"
     },
     {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/hooks/persist/jsonStorage.spec.ts",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
       "source_location": "L6",
       "weight": 1.0,
-      "source": "src_hooks_persist_jsonstorage_spec_ts",
+      "source": "src_hooks_persist_usetoolfieldspersisted_ts",
       "target": "persist_jsonstorage_readjsonstorage",
       "confidence_score": 1.0
     },
@@ -79983,9 +80210,75 @@
       "source_file": "src/hooks/persist/jsonStorage.spec.ts",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_persist_jsonstorage_spec_ts",
+      "target": "persist_jsonstorage_readjsonstorage"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "persist_jsonstorage_readjsonstorage"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_ts",
+      "target": "persist_jsonstorage_readjsonstorage"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolfieldspersisted_ts",
       "target": "persist_jsonstorage_writejsonstorage",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/jsonStorage.spec.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_persist_jsonstorage_spec_ts",
+      "target": "persist_jsonstorage_writejsonstorage"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "persist_jsonstorage_writejsonstorage"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_ts",
+      "target": "persist_jsonstorage_writejsonstorage"
     },
     {
       "relation": "contains",
@@ -79996,6 +80289,78 @@
       "confidence_score": 1.0,
       "source": "src_hooks_persist_usepersistfeaturelayout_ts",
       "target": "persist_usepersistfeaturelayout_usepersistfeaturelayout"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolfieldspersisted_ts",
+      "target": "persist_usetoolfieldspersisted_usetoolfieldspersisted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolfieldspersisted_dom_spec_tsx",
+      "target": "src_hooks_persist_usetoolfieldspersisted_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolfieldspersisted_dom_spec_tsx",
+      "target": "persist_usetoolfieldspersisted_usetoolfieldspersisted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolfieldspersisted_dom_spec_tsx",
+      "target": "persist_usetoolfieldspersisted_dom_spec_bag",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolfieldspersisted_dom_spec_tsx",
+      "target": "persist_usetoolfieldspersisted_dom_spec_initial",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L181",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolfieldspersisted_dom_spec_tsx",
+      "target": "persist_usetoolfieldspersisted_dom_spec_result",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L180",
+      "weight": 1.0,
+      "source": "src_hooks_persist_usetoolfieldspersisted_dom_spec_tsx",
+      "target": "persist_usetoolfieldspersisted_dom_spec_compute",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -90468,6 +90833,170 @@
       "target": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_error_context_codeblock_1"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L34",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
+      "target": "src_hooks_usetoolcomputationpersisted_ts"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "hooks_usetoolcomputationpersisted_readvalue"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "hooks_usetoolcomputationpersisted_writevalue"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
+      "target": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L172",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
+      "target": "hooks_usetoolcomputationpersisted_dom_spec_result"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L171",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
+      "target": "hooks_usetoolcomputationpersisted_dom_spec_compute"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.ts",
+      "source_location": "L34",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_ts",
+      "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
+      "target": "src_hooks_usetoolfieldspersisted_ts"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_ts",
+      "target": "hooks_usetoolfieldspersisted_readbag"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_ts",
+      "target": "hooks_usetoolfieldspersisted_writebag"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
+      "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
+      "target": "hooks_usetoolfieldspersisted_dom_spec_bag"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
+      "target": "hooks_usetoolfieldspersisted_dom_spec_initial"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L181",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
+      "target": "hooks_usetoolfieldspersisted_dom_spec_result"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
+      "source_location": "L180",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
+      "target": "hooks_usetoolfieldspersisted_dom_spec_compute"
+    },
+    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -98842,5 +99371,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d917f15b30d8dc264cba7085c56407dedaebe90a"
+  "built_at_commit": "6c293cd884459eaf976a8e892952565ad1bbee9e"
 }
