@@ -170,28 +170,14 @@ describe('BidirectionalConverter — compute pipeline', () => {
     expect(compute).toHaveBeenCalledWith({ mode: 'a-to-b', source: 'hello' })
   })
 
-  it('writes to per-mode localStorage when typing in the source field', async () => {
-    // CodeMirror renders a contenteditable — fireEvent.change does not reach its
-    // onChange prop in jsdom. We characterize the localStorage key isolation
-    // indirectly: seed both keys, open mode A→B, confirm only A's key is read
-    // (compute receives 'saved A') and B's key is untouched by the open action.
-    localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('saved A'))
-    localStorage.setItem('csr-dev-tools-b-to-a-source', JSON.stringify('saved B'))
-
-    const compute = vi.fn(upperCompute)
-    render(
-      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} />,
-    )
-    fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(0)
-    })
-
-    // A→B mode reads from the a-to-b key, not the b-to-a key.
-    expect(compute).toHaveBeenCalledWith({ mode: 'a-to-b', source: 'saved A' })
-    // The b-to-a key is still present and unmodified.
-    expect(JSON.parse(localStorage.getItem('csr-dev-tools-b-to-a-source') ?? '""')).toBe('saved B')
-  })
+  // NOTE: write-path characterization is intentionally absent.
+  // handleSourceChange → writeSource(mode, val, sourceKeyPrefix) cannot be exercised
+  // in jsdom — CodeMirror (used by FieldForm type="code") renders a contenteditable
+  // div and its onChange is not reachable via fireEvent.change or beforeinput dispatch.
+  // Read-side per-mode isolation IS covered by the test at line ~134
+  // ("reads per-mode source from localStorage when switching modes"). Write-side
+  // regressions are gated by manual smoke testing during the upcoming useToolFields
+  // migration (Task 2 step 2.6 in docs/superpowers/plans/2026-05-15-bidirectional-converter-tool-fields-migration.md).
 
   it('calls setInputImmediate with empty source (via onReset) when the dialog is closed', async () => {
     // There is no standalone Reset button in the dialog. ToolDialogShell wires
