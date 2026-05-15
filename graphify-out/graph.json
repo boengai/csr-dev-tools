@@ -6030,7 +6030,7 @@
       "source_file": "src/types/components/common/sidebar/sidebarToolItem.ts",
       "source_location": "L1",
       "id": "src_types_components_common_sidebar_sidebartoolitem_ts",
-      "community": 153,
+      "community": 106,
       "norm_label": "sidebartoolitem.ts"
     },
     {
@@ -6039,7 +6039,7 @@
       "source_file": "src/components/common/sidebar/SidebarToolItem.tsx",
       "source_location": "L10",
       "id": "sidebar_sidebartoolitem_sidebartoolitemvariants",
-      "community": 153,
+      "community": 106,
       "norm_label": "sidebartoolitemvariants"
     },
     {
@@ -7807,6 +7807,24 @@
       "norm_label": "usetoolfieldspersistedoptions"
     },
     {
+      "label": "UseToolComputationPersistedOptions",
+      "file_type": "code",
+      "source_file": "src/types/hooks/computation.ts",
+      "source_location": "L59",
+      "id": "hooks_computation_usetoolcomputationpersistedoptions",
+      "community": 281,
+      "norm_label": "usetoolcomputationpersistedoptions"
+    },
+    {
+      "label": "UseToolComputationPersistedResult",
+      "file_type": "code",
+      "source_file": "src/types/hooks/computation.ts",
+      "source_location": "L70",
+      "id": "hooks_computation_usetoolcomputationpersistedresult",
+      "community": 281,
+      "norm_label": "usetoolcomputationpersistedresult"
+    },
+    {
       "label": "types.ts",
       "file_type": "code",
       "source_file": "src/types/hooks/types.ts",
@@ -7965,7 +7983,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L1",
       "id": "src_diagram_state_ts",
-      "community": 41,
+      "community": 52,
       "norm_label": "state.ts"
     },
     {
@@ -7974,7 +7992,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L3",
       "id": "diagram_state_createinitialdocument",
-      "community": 41,
+      "community": 52,
       "norm_label": "createinitialdocument()"
     },
     {
@@ -7983,7 +8001,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L15",
       "id": "diagram_state_clonedocument",
-      "community": 41,
+      "community": 52,
       "norm_label": "clonedocument()"
     },
     {
@@ -8091,7 +8109,7 @@
       "source_file": "src/diagram/projections.ts",
       "source_location": "L1",
       "id": "src_diagram_projections_ts",
-      "community": 373,
+      "community": 52,
       "norm_label": "projections.ts"
     },
     {
@@ -8100,7 +8118,7 @@
       "source_file": "src/diagram/projections.ts",
       "source_location": "L3",
       "id": "diagram_projections_documenttoflow",
-      "community": 373,
+      "community": 52,
       "norm_label": "documenttoflow()"
     },
     {
@@ -8145,7 +8163,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L23",
       "id": "diagram_editor_isvaliddocument",
-      "community": 41,
+      "community": 52,
       "norm_label": "isvaliddocument()"
     },
     {
@@ -8163,7 +8181,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L44",
       "id": "diagram_editor_diagrameditor_constructor",
-      "community": 41,
+      "community": 52,
       "norm_label": ".constructor()"
     },
     {
@@ -8244,7 +8262,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L113",
       "id": "diagram_editor_diagrameditor_replacedocument",
-      "community": 41,
+      "community": 52,
       "norm_label": ".replacedocument()"
     },
     {
@@ -8469,7 +8487,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L295",
       "id": "diagram_editor_diagrameditor_loadfromexportedjson",
-      "community": 41,
+      "community": 174,
       "norm_label": ".loadfromexportedjson()"
     },
     {
@@ -8640,7 +8658,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_state_spec_ts",
-      "community": 41,
+      "community": 52,
       "norm_label": "state.spec.ts"
     },
     {
@@ -8649,7 +8667,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L6",
       "id": "diagram_state_spec_doc",
-      "community": 41,
+      "community": 52,
       "norm_label": "doc"
     },
     {
@@ -8658,7 +8676,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L21",
       "id": "diagram_state_spec_a",
-      "community": 41,
+      "community": 52,
       "norm_label": "a"
     },
     {
@@ -8667,7 +8685,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L22",
       "id": "diagram_state_spec_b",
-      "community": 41,
+      "community": 52,
       "norm_label": "b"
     },
     {
@@ -8676,7 +8694,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_projections_spec_ts",
-      "community": 373,
+      "community": 52,
       "norm_label": "projections.spec.ts"
     },
     {
@@ -8685,7 +8703,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L6",
       "id": "diagram_projections_spec_docwithonetable",
-      "community": 373,
+      "community": 52,
       "norm_label": "docwithonetable()"
     },
     {
@@ -8694,7 +8712,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L23",
       "id": "diagram_projections_spec_nodes_edges",
-      "community": 373,
+      "community": 52,
       "norm_label": "{ nodes, edges }"
     },
     {
@@ -8703,7 +8721,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L35",
       "id": "diagram_projections_spec_doc",
-      "community": 373,
+      "community": 52,
       "norm_label": "doc"
     },
     {
@@ -8712,7 +8730,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L38",
       "id": "diagram_projections_spec_nodes",
-      "community": 373,
+      "community": 52,
       "norm_label": "{ nodes }"
     },
     {
@@ -8721,7 +8739,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L55",
       "id": "diagram_projections_spec_edges",
-      "community": 373,
+      "community": 52,
       "norm_label": "{ edges }"
     },
     {
@@ -9297,7 +9315,7 @@
       "source_file": "src/diagram/operations/dbml.ts",
       "source_location": "L22",
       "id": "operations_dbml_applydbmlnow",
-      "community": 63,
+      "community": 369,
       "norm_label": "applydbmlnow()"
     },
     {
@@ -10377,7 +10395,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L1",
       "id": "src_utils_regex_ts",
-      "community": 151,
+      "community": 72,
       "norm_label": "regex.ts"
     },
     {
@@ -10386,7 +10404,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L5",
       "id": "utils_regex_executeregex",
-      "community": 151,
+      "community": 72,
       "norm_label": "executeregex()"
     },
     {
@@ -10395,7 +10413,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L45",
       "id": "utils_regex_buildhighlightsegments",
-      "community": 151,
+      "community": 72,
       "norm_label": "buildhighlightsegments()"
     },
     {
@@ -10404,7 +10422,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L74",
       "id": "utils_regex_formatmatchesforcopy",
-      "community": 151,
+      "community": 72,
       "norm_label": "formatmatchesforcopy()"
     },
     {
@@ -11799,7 +11817,7 @@
       "source_file": "src/utils/db-diagram.ts",
       "source_location": "L38",
       "id": "utils_db_diagram_gridlayoutpositions",
-      "community": 64,
+      "community": 63,
       "norm_label": "gridlayoutpositions()"
     },
     {
@@ -16209,7 +16227,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L1",
       "id": "src_utils_tailwind_variants_ts",
-      "community": 308,
+      "community": 61,
       "norm_label": "tailwind-variants.ts"
     },
     {
@@ -16218,7 +16236,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L3",
       "id": "utils_tailwind_variants_twmergeconfig",
-      "community": 308,
+      "community": 61,
       "norm_label": "twmergeconfig"
     },
     {
@@ -16227,7 +16245,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L23",
       "id": "utils_tailwind_variants_cnmerge",
-      "community": 308,
+      "community": 61,
       "norm_label": "cnmerge()"
     },
     {
@@ -16236,7 +16254,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L24",
       "id": "utils_tailwind_variants_tv",
-      "community": 308,
+      "community": 61,
       "norm_label": "tv"
     },
     {
@@ -17172,7 +17190,7 @@
       "source_file": "src/components/common/sidebar/SidebarToolItem.tsx",
       "source_location": "L1",
       "id": "src_components_common_sidebar_sidebartoolitem_tsx",
-      "community": 153,
+      "community": 106,
       "norm_label": "sidebartoolitem.tsx"
     },
     {
@@ -17181,7 +17199,7 @@
       "source_file": "src/components/common/sidebar/SidebarToolItem.tsx",
       "source_location": "L23",
       "id": "sidebar_sidebartoolitem_sidebartoolitem",
-      "community": 153,
+      "community": 106,
       "norm_label": "sidebartoolitem()"
     },
     {
@@ -17190,7 +17208,7 @@
       "source_file": "src/components/common/sidebar/SidebarCategory.tsx",
       "source_location": "L1",
       "id": "src_components_common_sidebar_sidebarcategory_tsx",
-      "community": 153,
+      "community": 106,
       "norm_label": "sidebarcategory.tsx"
     },
     {
@@ -17199,7 +17217,7 @@
       "source_file": "src/components/common/sidebar/SidebarCategory.tsx",
       "source_location": "L3",
       "id": "sidebar_sidebarcategory_sidebarcategory",
-      "community": 153,
+      "community": 106,
       "norm_label": "sidebarcategory()"
     },
     {
@@ -17208,7 +17226,7 @@
       "source_file": "src/components/common/sidebar/Sidebar.tsx",
       "source_location": "L1",
       "id": "src_components_common_sidebar_sidebar_tsx",
-      "community": 153,
+      "community": 106,
       "norm_label": "sidebar.tsx"
     },
     {
@@ -17217,7 +17235,7 @@
       "source_file": "src/components/common/sidebar/Sidebar.tsx",
       "source_location": "L13",
       "id": "sidebar_sidebar_sidebarnavstyles",
-      "community": 153,
+      "community": 106,
       "norm_label": "sidebarnavstyles"
     },
     {
@@ -17226,7 +17244,7 @@
       "source_file": "src/components/common/sidebar/Sidebar.tsx",
       "source_location": "L23",
       "id": "sidebar_sidebar_sidebar",
-      "community": 153,
+      "community": 106,
       "norm_label": "sidebar()"
     },
     {
@@ -17244,7 +17262,7 @@
       "source_file": "src/components/common/settings/SettingsDialog.tsx",
       "source_location": "L1",
       "id": "src_components_common_settings_settingsdialog_tsx",
-      "community": 172,
+      "community": 106,
       "norm_label": "settingsdialog.tsx"
     },
     {
@@ -17253,7 +17271,7 @@
       "source_file": "src/components/common/settings/SettingsDialog.tsx",
       "source_location": "L9",
       "id": "settings_settingsdialog_settingsdialog",
-      "community": 172,
+      "community": 106,
       "norm_label": "settingsdialog()"
     },
     {
@@ -17298,7 +17316,7 @@
       "source_file": "src/components/common/form/FieldForm.tsx",
       "source_location": "L1",
       "id": "src_components_common_form_fieldform_tsx",
-      "community": 172,
+      "community": 106,
       "norm_label": "fieldform.tsx"
     },
     {
@@ -17307,7 +17325,7 @@
       "source_file": "src/components/common/form/FieldForm.tsx",
       "source_location": "L18",
       "id": "form_fieldform_fieldsetstyles",
-      "community": 172,
+      "community": 106,
       "norm_label": "fieldsetstyles"
     },
     {
@@ -17316,7 +17334,7 @@
       "source_file": "src/components/common/form/FieldForm.tsx",
       "source_location": "L28",
       "id": "form_fieldform_inputcontroller",
-      "community": 172,
+      "community": 106,
       "norm_label": "inputcontroller()"
     },
     {
@@ -17325,7 +17343,7 @@
       "source_file": "src/components/common/form/FieldForm.tsx",
       "source_location": "L57",
       "id": "form_fieldform_fieldform",
-      "community": 172,
+      "community": 106,
       "norm_label": "fieldform()"
     },
     {
@@ -17577,7 +17595,7 @@
       "source_file": "src/components/common/input/SelectInput.tsx",
       "source_location": "L22",
       "id": "input_selectinput_selectinput",
-      "community": 308,
+      "community": 61,
       "norm_label": "selectinput()"
     },
     {
@@ -17595,7 +17613,7 @@
       "source_file": "src/components/common/input/TextAreaInput.tsx",
       "source_location": "L8",
       "id": "input_textareainput_textareainput",
-      "community": 308,
+      "community": 61,
       "norm_label": "textareainput()"
     },
     {
@@ -17712,7 +17730,7 @@
       "source_file": "src/components/common/input/index.ts",
       "source_location": "L1",
       "id": "src_components_common_input_index_ts",
-      "community": 172,
+      "community": 106,
       "norm_label": "index.ts"
     },
     {
@@ -17721,7 +17739,7 @@
       "source_file": "src/components/common/input/UploadInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_input_uploadinput_tsx",
-      "community": 152,
+      "community": 106,
       "norm_label": "uploadinput.tsx"
     },
     {
@@ -17730,7 +17748,7 @@
       "source_file": "src/components/common/input/UploadInput.tsx",
       "source_location": "L8",
       "id": "input_uploadinput_uploadinput",
-      "community": 152,
+      "community": 106,
       "norm_label": "uploadinput()"
     },
     {
@@ -17811,7 +17829,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L1",
       "id": "src_components_common_toast_toastprovider_tsx",
-      "community": 239,
+      "community": 106,
       "norm_label": "toastprovider.tsx"
     },
     {
@@ -17820,7 +17838,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L10",
       "id": "toast_toastprovider_iconvariants",
-      "community": 239,
+      "community": 106,
       "norm_label": "iconvariants"
     },
     {
@@ -17829,7 +17847,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L23",
       "id": "toast_toastprovider_toasttypeicon",
-      "community": 239,
+      "community": 106,
       "norm_label": "toasttypeicon()"
     },
     {
@@ -17838,7 +17856,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L34",
       "id": "toast_toastprovider_defaultduration",
-      "community": 239,
+      "community": 106,
       "norm_label": "defaultduration"
     },
     {
@@ -17847,7 +17865,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L39",
       "id": "toast_toastprovider_toastitem",
-      "community": 239,
+      "community": 106,
       "norm_label": "toastitem()"
     },
     {
@@ -17856,7 +17874,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L78",
       "id": "toast_toastprovider_toastprovider",
-      "community": 239,
+      "community": 106,
       "norm_label": "toastprovider()"
     },
     {
@@ -18198,7 +18216,7 @@
       "source_file": "src/components/common/dialog/index.ts",
       "source_location": "L1",
       "id": "src_components_common_dialog_index_ts",
-      "community": 172,
+      "community": 106,
       "norm_label": "index.ts"
     },
     {
@@ -18486,7 +18504,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L1",
       "id": "src_components_common_command_palette_commandpalette_tsx",
-      "community": 152,
+      "community": 106,
       "norm_label": "commandpalette.tsx"
     },
     {
@@ -18495,7 +18513,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L14",
       "id": "command_palette_commandpalette_paletteitemstyles",
-      "community": 152,
+      "community": 106,
       "norm_label": "paletteitemstyles"
     },
     {
@@ -18504,7 +18522,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L24",
       "id": "command_palette_commandpalette_commandpalette",
-      "community": 152,
+      "community": 106,
       "norm_label": "commandpalette()"
     },
     {
@@ -18522,7 +18540,7 @@
       "source_file": "src/components/common/command-palette/SearchInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_command_palette_searchinput_tsx",
-      "community": 152,
+      "community": 106,
       "norm_label": "searchinput.tsx"
     },
     {
@@ -18531,7 +18549,7 @@
       "source_file": "src/components/common/command-palette/SearchInput.tsx",
       "source_location": "L7",
       "id": "command_palette_searchinput_searchinput",
-      "community": 152,
+      "community": 106,
       "norm_label": "searchinput()"
     },
     {
@@ -18594,7 +18612,7 @@
       "source_file": "src/components/common/button/index.ts",
       "source_location": "L1",
       "id": "src_components_common_button_index_ts",
-      "community": 152,
+      "community": 106,
       "norm_label": "index.ts"
     },
     {
@@ -19089,7 +19107,7 @@
       "source_file": "src/components/common/icon/index.ts",
       "source_location": "L1",
       "id": "src_components_common_icon_index_ts",
-      "community": 152,
+      "community": 106,
       "norm_label": "index.ts"
     },
     {
@@ -19152,7 +19170,7 @@
       "source_file": "src/components/feature/unit/UnitPxToRem.tsx",
       "source_location": "L1",
       "id": "src_components_feature_unit_unitpxtorem_tsx",
-      "community": 15,
+      "community": 723,
       "norm_label": "unitpxtorem.tsx"
     },
     {
@@ -19161,7 +19179,7 @@
       "source_file": "src/components/feature/unit/UnitPxToRem.tsx",
       "source_location": "L10",
       "id": "unit_unitpxtorem_unitpxtorem",
-      "community": 15,
+      "community": 723,
       "norm_label": "unitpxtorem()"
     },
     {
@@ -19629,7 +19647,7 @@
       "source_file": "src/components/feature/security/AesEncryptDecrypt.tsx",
       "source_location": "L12",
       "id": "security_aesencryptdecrypt_aesencryptdecrypt",
-      "community": 277,
+      "community": 15,
       "norm_label": "aesencryptdecrypt()"
     },
     {
@@ -19683,7 +19701,7 @@
       "source_file": "src/components/feature/security/SshKeyFingerprint.tsx",
       "source_location": "L1",
       "id": "src_components_feature_security_sshkeyfingerprint_tsx",
-      "community": 15,
+      "community": 371,
       "norm_label": "sshkeyfingerprint.tsx"
     },
     {
@@ -19692,7 +19710,7 @@
       "source_file": "src/components/feature/security/SshKeyFingerprint.tsx",
       "source_location": "L12",
       "id": "security_sshkeyfingerprint_resultrow",
-      "community": 15,
+      "community": 371,
       "norm_label": "resultrow()"
     },
     {
@@ -19701,7 +19719,7 @@
       "source_file": "src/components/feature/security/SshKeyFingerprint.tsx",
       "source_location": "L22",
       "id": "security_sshkeyfingerprint_sshkeyfingerprint",
-      "community": 15,
+      "community": 371,
       "norm_label": "sshkeyfingerprint()"
     },
     {
@@ -19944,7 +19962,7 @@
       "source_file": "src/components/feature/network/IpSubnetCalculator.tsx",
       "source_location": "L78",
       "id": "network_ipsubnetcalculator_ipsubnetcalculator",
-      "community": 151,
+      "community": 15,
       "norm_label": "ipsubnetcalculator()"
     },
     {
@@ -20160,7 +20178,7 @@
       "source_file": "src/components/feature/code/JavaScriptMinifier.tsx",
       "source_location": "L10",
       "id": "code_javascriptminifier_javascriptminifier",
-      "community": 151,
+      "community": 15,
       "norm_label": "javascriptminifier()"
     },
     {
@@ -20277,7 +20295,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L16",
       "id": "code_protobuftojson_kindbadge",
-      "community": 308,
+      "community": 61,
       "norm_label": "kindbadge()"
     },
     {
@@ -20376,7 +20394,7 @@
       "source_file": "src/components/feature/code/ProtobufCodec.tsx",
       "source_location": "L56",
       "id": "code_protobufcodec_encodecontent",
-      "community": 77,
+      "community": 15,
       "norm_label": "encodecontent()"
     },
     {
@@ -20385,7 +20403,7 @@
       "source_file": "src/components/feature/code/ProtobufCodec.tsx",
       "source_location": "L222",
       "id": "code_protobufcodec_decodecontent",
-      "community": 77,
+      "community": 15,
       "norm_label": "decodecontent()"
     },
     {
@@ -20520,7 +20538,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_jsonschemavalidator_tsx",
-      "community": 15,
+      "community": 722,
       "norm_label": "jsonschemavalidator.tsx"
     },
     {
@@ -20529,7 +20547,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L12",
       "id": "code_jsonschemavalidator_validatorinput",
-      "community": 15,
+      "community": 722,
       "norm_label": "validatorinput"
     },
     {
@@ -20583,7 +20601,7 @@
       "source_file": "src/components/feature/encoding/UrlParser.tsx",
       "source_location": "L1",
       "id": "src_components_feature_encoding_urlparser_tsx",
-      "community": 314,
+      "community": 367,
       "norm_label": "urlparser.tsx"
     },
     {
@@ -20592,7 +20610,7 @@
       "source_file": "src/components/feature/encoding/UrlParser.tsx",
       "source_location": "L11",
       "id": "encoding_urlparser_empty",
-      "community": 314,
+      "community": 367,
       "norm_label": "empty"
     },
     {
@@ -20601,7 +20619,7 @@
       "source_file": "src/components/feature/encoding/UrlParser.tsx",
       "source_location": "L21",
       "id": "encoding_urlparser_resultrow",
-      "community": 314,
+      "community": 367,
       "norm_label": "resultrow()"
     },
     {
@@ -20610,7 +20628,7 @@
       "source_file": "src/components/feature/encoding/UrlParser.tsx",
       "source_location": "L35",
       "id": "encoding_urlparser_urlparser",
-      "community": 314,
+      "community": 367,
       "norm_label": "urlparser()"
     },
     {
@@ -21663,7 +21681,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L1",
       "id": "src_components_feature_time_cronexpressionparser_tsx",
-      "community": 314,
+      "community": 485,
       "norm_label": "cronexpressionparser.tsx"
     },
     {
@@ -21672,7 +21690,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L11",
       "id": "time_cronexpressionparser_empty_result",
-      "community": 314,
+      "community": 485,
       "norm_label": "empty_result"
     },
     {
@@ -21681,7 +21699,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L13",
       "id": "time_cronexpressionparser_cronexpressionparser",
-      "community": 314,
+      "community": 485,
       "norm_label": "cronexpressionparser()"
     },
     {
@@ -21861,7 +21879,7 @@
       "source_file": "src/components/feature/text/RegexTester.tsx",
       "source_location": "L74",
       "id": "text_regextester_regextester",
-      "community": 151,
+      "community": 72,
       "norm_label": "regextester()"
     },
     {
@@ -21870,7 +21888,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_text_textcaseconverter_tsx",
-      "community": 15,
+      "community": 373,
       "norm_label": "textcaseconverter.tsx"
     },
     {
@@ -21879,7 +21897,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L23",
       "id": "text_textcaseconverter_cases",
-      "community": 15,
+      "community": 373,
       "norm_label": "cases"
     },
     {
@@ -21888,7 +21906,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L37",
       "id": "text_textcaseconverter_textcaseconverter",
-      "community": 15,
+      "community": 373,
       "norm_label": "textcaseconverter()"
     },
     {
@@ -22041,7 +22059,7 @@
       "source_file": "src/components/feature/text/UserAgentParser.tsx",
       "source_location": "L1",
       "id": "src_components_feature_text_useragentparser_tsx",
-      "community": 314,
+      "community": 368,
       "norm_label": "useragentparser.tsx"
     },
     {
@@ -22050,7 +22068,7 @@
       "source_file": "src/components/feature/text/UserAgentParser.tsx",
       "source_location": "L11",
       "id": "text_useragentparser_empty",
-      "community": 314,
+      "community": 368,
       "norm_label": "empty"
     },
     {
@@ -22059,7 +22077,7 @@
       "source_file": "src/components/feature/text/UserAgentParser.tsx",
       "source_location": "L18",
       "id": "text_useragentparser_resultrow",
-      "community": 314,
+      "community": 368,
       "norm_label": "resultrow()"
     },
     {
@@ -22068,7 +22086,7 @@
       "source_file": "src/components/feature/text/UserAgentParser.tsx",
       "source_location": "L28",
       "id": "text_useragentparser_useragentparser",
-      "community": 314,
+      "community": 368,
       "norm_label": "useragentparser()"
     },
     {
@@ -22752,7 +22770,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_tablenode_tsx",
-      "community": 1,
+      "community": 308,
       "norm_label": "tablenode.tsx"
     },
     {
@@ -22761,7 +22779,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L10",
       "id": "db_diagram_tablenode_constraint_colors",
-      "community": 1,
+      "community": 308,
       "norm_label": "constraint_colors"
     },
     {
@@ -22770,7 +22788,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L20",
       "id": "db_diagram_tablenode_constrainttoggle",
-      "community": 1,
+      "community": 308,
       "norm_label": "constrainttoggle()"
     },
     {
@@ -22779,7 +22797,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L50",
       "id": "db_diagram_tablenode_tablenodecomponent",
-      "community": 1,
+      "community": 308,
       "norm_label": "tablenodecomponent()"
     },
     {
@@ -22788,7 +22806,7 @@
       "source_file": "src/components/feature/data/db-diagram/ImportSqlPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_importsqlpanel_tsx",
-      "community": 1,
+      "community": 239,
       "norm_label": "importsqlpanel.tsx"
     },
     {
@@ -22797,7 +22815,7 @@
       "source_file": "src/components/feature/data/db-diagram/ImportSqlPanel.tsx",
       "source_location": "L11",
       "id": "db_diagram_importsqlpanel_importsqlpanel",
-      "community": 1,
+      "community": 239,
       "norm_label": "importsqlpanel()"
     },
     {
@@ -22824,7 +22842,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportTypescriptPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_exporttypescriptpanel_tsx",
-      "community": 1,
+      "community": 172,
       "norm_label": "exporttypescriptpanel.tsx"
     },
     {
@@ -22833,7 +22851,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportTypescriptPanel.tsx",
       "source_location": "L9",
       "id": "db_diagram_exporttypescriptpanel_exporttypescriptpanel",
-      "community": 1,
+      "community": 153,
       "norm_label": "exporttypescriptpanel()"
     },
     {
@@ -22842,7 +22860,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramCanvas.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_diagramcanvas_tsx",
-      "community": 1,
+      "community": 153,
       "norm_label": "diagramcanvas.tsx"
     },
     {
@@ -22851,7 +22869,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramCanvas.tsx",
       "source_location": "L13",
       "id": "db_diagram_diagramcanvas_nodetypes",
-      "community": 1,
+      "community": 153,
       "norm_label": "nodetypes"
     },
     {
@@ -22860,7 +22878,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramCanvas.tsx",
       "source_location": "L14",
       "id": "db_diagram_diagramcanvas_edgetypes",
-      "community": 1,
+      "community": 153,
       "norm_label": "edgetypes"
     },
     {
@@ -22869,7 +22887,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramCanvas.tsx",
       "source_location": "L16",
       "id": "db_diagram_diagramcanvas_diagramcanvas",
-      "community": 1,
+      "community": 153,
       "norm_label": "diagramcanvas()"
     },
     {
@@ -22878,7 +22896,7 @@
       "source_file": "src/components/feature/data/db-diagram/ImportJsonSchemaPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_importjsonschemapanel_tsx",
-      "community": 1,
+      "community": 172,
       "norm_label": "importjsonschemapanel.tsx"
     },
     {
@@ -22887,7 +22905,7 @@
       "source_file": "src/components/feature/data/db-diagram/ImportJsonSchemaPanel.tsx",
       "source_location": "L10",
       "id": "db_diagram_importjsonschemapanel_importjsonschemapanel",
-      "community": 1,
+      "community": 172,
       "norm_label": "importjsonschemapanel()"
     },
     {
@@ -22896,7 +22914,7 @@
       "source_file": "src/components/feature/data/db-diagram/DbmlEditorPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_dbmleditorpanel_tsx",
-      "community": 1,
+      "community": 172,
       "norm_label": "dbmleditorpanel.tsx"
     },
     {
@@ -22905,7 +22923,7 @@
       "source_file": "src/components/feature/data/db-diagram/DbmlEditorPanel.tsx",
       "source_location": "L10",
       "id": "db_diagram_dbmleditorpanel_dbmleditorpanel",
-      "community": 1,
+      "community": 172,
       "norm_label": "dbmleditorpanel()"
     },
     {
@@ -22914,7 +22932,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramListPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_diagramlistpanel_tsx",
-      "community": 1,
+      "community": 172,
       "norm_label": "diagramlistpanel.tsx"
     },
     {
@@ -22923,7 +22941,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramListPanel.tsx",
       "source_location": "L10",
       "id": "db_diagram_diagramlistpanel_diagramitemstyles",
-      "community": 1,
+      "community": 172,
       "norm_label": "diagramitemstyles"
     },
     {
@@ -22932,7 +22950,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramListPanel.tsx",
       "source_location": "L20",
       "id": "db_diagram_diagramlistpanel_diagramlistpanel",
-      "community": 1,
+      "community": 172,
       "norm_label": "diagramlistpanel()"
     },
     {
@@ -22941,7 +22959,7 @@
       "source_file": "src/components/feature/data/db-diagram/constants.ts",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_constants_ts",
-      "community": 1,
+      "community": 239,
       "norm_label": "constants.ts"
     },
     {
@@ -22950,7 +22968,7 @@
       "source_file": "src/components/feature/data/db-diagram/constants.ts",
       "source_location": "L3",
       "id": "db_diagram_constants_dialect_options",
-      "community": 1,
+      "community": 239,
       "norm_label": "dialect_options"
     },
     {
@@ -22959,7 +22977,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_diagramcontext_tsx",
-      "community": 1,
+      "community": 153,
       "norm_label": "diagramcontext.tsx"
     },
     {
@@ -22968,7 +22986,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L6",
       "id": "db_diagram_diagramcontext_ctx",
-      "community": 1,
+      "community": 153,
       "norm_label": "ctx"
     },
     {
@@ -22977,7 +22995,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L8",
       "id": "db_diagram_diagramcontext_diagramprovider",
-      "community": 1,
+      "community": 153,
       "norm_label": "diagramprovider()"
     },
     {
@@ -22986,7 +23004,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L17",
       "id": "db_diagram_diagramcontext_usediagram",
-      "community": 1,
+      "community": 153,
       "norm_label": "usediagram()"
     },
     {
@@ -22995,7 +23013,7 @@
       "source_file": "src/components/feature/data/db-diagram/RelationshipEdge.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_relationshipedge_tsx",
-      "community": 1,
+      "community": 153,
       "norm_label": "relationshipedge.tsx"
     },
     {
@@ -23004,7 +23022,7 @@
       "source_file": "src/components/feature/data/db-diagram/RelationshipEdge.tsx",
       "source_location": "L9",
       "id": "db_diagram_relationshipedge_relation_options",
-      "community": 1,
+      "community": 153,
       "norm_label": "relation_options"
     },
     {
@@ -23013,7 +23031,7 @@
       "source_file": "src/components/feature/data/db-diagram/RelationshipEdge.tsx",
       "source_location": "L17",
       "id": "db_diagram_relationshipedge_relationshipedgecomponent",
-      "community": 1,
+      "community": 153,
       "norm_label": "relationshipedgecomponent()"
     },
     {
@@ -23022,7 +23040,7 @@
       "source_file": "src/components/feature/data/db-diagram/CloseButton.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_closebutton_tsx",
-      "community": 1,
+      "community": 172,
       "norm_label": "closebutton.tsx"
     },
     {
@@ -23031,7 +23049,7 @@
       "source_file": "src/components/feature/data/db-diagram/CloseButton.tsx",
       "source_location": "L3",
       "id": "db_diagram_closebutton_closebutton",
-      "community": 1,
+      "community": 172,
       "norm_label": "closebutton()"
     },
     {
@@ -23040,7 +23058,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportMermaidPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_exportmermaidpanel_tsx",
-      "community": 1,
+      "community": 172,
       "norm_label": "exportmermaidpanel.tsx"
     },
     {
@@ -23049,7 +23067,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportMermaidPanel.tsx",
       "source_location": "L10",
       "id": "db_diagram_exportmermaidpanel_exportmermaidpanel",
-      "community": 1,
+      "community": 172,
       "norm_label": "exportmermaidpanel()"
     },
     {
@@ -23058,7 +23076,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportSqlPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_exportsqlpanel_tsx",
-      "community": 1,
+      "community": 239,
       "norm_label": "exportsqlpanel.tsx"
     },
     {
@@ -23067,8 +23085,44 @@
       "source_file": "src/components/feature/data/db-diagram/ExportSqlPanel.tsx",
       "source_location": "L11",
       "id": "db_diagram_exportsqlpanel_exportsqlpanel",
-      "community": 1,
+      "community": 239,
       "norm_label": "exportsqlpanel()"
+    },
+    {
+      "label": "useToolComputationPersisted.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L1",
+      "id": "src_hooks_usetoolcomputationpersisted_ts",
+      "community": 107,
+      "norm_label": "usetoolcomputationpersisted.ts"
+    },
+    {
+      "label": "readValue()",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L7",
+      "id": "hooks_usetoolcomputationpersisted_readvalue",
+      "community": 107,
+      "norm_label": "readvalue()"
+    },
+    {
+      "label": "writeValue()",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L16",
+      "id": "hooks_usetoolcomputationpersisted_writevalue",
+      "community": 107,
+      "norm_label": "writevalue()"
+    },
+    {
+      "label": "useToolComputationPersisted()",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L34",
+      "id": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted",
+      "community": 107,
+      "norm_label": "usetoolcomputationpersisted()"
     },
     {
       "label": "useBlobUrl.dom.spec.tsx",
@@ -23150,6 +23204,33 @@
       "id": "hooks_usebloburl_dom_spec_result_rerender",
       "community": 67,
       "norm_label": "{ result, rerender }"
+    },
+    {
+      "label": "useToolComputationPersisted.dom.spec.tsx",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L1",
+      "id": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
+      "community": 107,
+      "norm_label": "usetoolcomputationpersisted.dom.spec.tsx"
+    },
+    {
+      "label": "{ result }",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L22",
+      "id": "hooks_usetoolcomputationpersisted_dom_spec_result",
+      "community": 107,
+      "norm_label": "{ result }"
+    },
+    {
+      "label": "compute",
+      "file_type": "code",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L109",
+      "id": "hooks_usetoolcomputationpersisted_dom_spec_compute",
+      "community": 107,
+      "norm_label": "compute"
     },
     {
       "label": "useToolFields.ts",
@@ -24097,10 +24178,19 @@
       "norm_label": "persistent tool field bag"
     },
     {
-      "label": "Tool dialog frame",
+      "label": "Persistent tool computation",
       "file_type": "document",
       "source_file": "CONTEXT.md",
       "source_location": "L108",
+      "id": "csr_dev_tools_context_persistent_tool_computation",
+      "community": 94,
+      "norm_label": "persistent tool computation"
+    },
+    {
+      "label": "Tool dialog frame",
+      "file_type": "document",
+      "source_file": "CONTEXT.md",
+      "source_location": "L143",
       "id": "csr_dev_tools_context_tool_dialog_frame",
       "community": 94,
       "norm_label": "tool dialog frame"
@@ -24109,7 +24199,7 @@
       "label": "Upload dialog frame",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L131",
+      "source_location": "L166",
       "id": "csr_dev_tools_context_upload_dialog_frame",
       "community": 94,
       "norm_label": "upload dialog frame"
@@ -24118,7 +24208,7 @@
       "label": "Tool handoff",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L155",
+      "source_location": "L190",
       "id": "csr_dev_tools_context_tool_handoff",
       "community": 94,
       "norm_label": "tool handoff"
@@ -24127,7 +24217,7 @@
       "label": "Bidirectional converter",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L182",
+      "source_location": "L217",
       "id": "csr_dev_tools_context_bidirectional_converter",
       "community": 94,
       "norm_label": "bidirectional converter"
@@ -24136,7 +24226,7 @@
       "label": "Image tool shell",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L197",
+      "source_location": "L232",
       "id": "csr_dev_tools_context_image_tool_shell",
       "community": 94,
       "norm_label": "image tool shell"
@@ -24145,7 +24235,7 @@
       "label": "Batch asset pipeline",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L224",
+      "source_location": "L259",
       "id": "csr_dev_tools_context_batch_asset_pipeline",
       "community": 94,
       "norm_label": "batch asset pipeline"
@@ -24154,7 +24244,7 @@
       "label": "DiagramEditor",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L277",
+      "source_location": "L312",
       "id": "csr_dev_tools_context_diagrameditor",
       "community": 94,
       "norm_label": "diagrameditor"
@@ -31918,6 +32008,258 @@
       "norm_label": "code:bash (git add benchmarks/parsers.bench.ts benchmarks/json-tools.be)"
     },
     {
+      "label": "2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L1",
+      "id": "docs_superpowers_plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_md",
+      "community": 152,
+      "norm_label": "2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md"
+    },
+    {
+      "label": "useToolComputationPersisted + ProtobufToJson Migration Plan",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L1",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_usetoolcomputationpersisted_protobuftojson_migration_plan",
+      "community": 152,
+      "norm_label": "usetoolcomputationpersisted + protobuftojson migration plan"
+    },
+    {
+      "label": "code:block1 (useToolComputation              \u2014 single Input, narrow primi)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L9",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_1",
+      "community": 152,
+      "norm_label": "code:block1 (usetoolcomputation              \u2014 single input, narrow primi)"
+    },
+    {
+      "label": "Files",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L27",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_files",
+      "community": 152,
+      "norm_label": "files"
+    },
+    {
+      "label": "Task 1: Add the types, write the spec, implement the hook",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L49",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_1_add_the_types_write_the_spec_implement_the_hook",
+      "community": 152,
+      "norm_label": "task 1: add the types, write the spec, implement the hook"
+    },
+    {
+      "label": "code:tsx (export type UseToolComputationPersistedOptions<I, R> = {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L63",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_2",
+      "community": 152,
+      "norm_label": "code:tsx (export type usetoolcomputationpersistedoptions<i, r> = {)"
+    },
+    {
+      "label": "code:tsx (/**)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L96",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_3",
+      "community": 152,
+      "norm_label": "code:tsx (/**)"
+    },
+    {
+      "label": "code:tsx (import { useCallback, useEffect, useMemo, useState } from 'r)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L168",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_4",
+      "community": 152,
+      "norm_label": "code:tsx (import { usecallback, useeffect, usememo, usestate } from 'r)"
+    },
+    {
+      "label": "code:tsx (export * from './useToolComputation')",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L262",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_5",
+      "community": 152,
+      "norm_label": "code:tsx (export * from './usetoolcomputation')"
+    },
+    {
+      "label": "code:tsx (describe('useToolComputationPersisted \u2014 write-through', () =)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L278",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_6",
+      "community": 152,
+      "norm_label": "code:tsx (describe('usetoolcomputationpersisted \u2014 write-through', () =)"
+    },
+    {
+      "label": "code:tsx (describe('useToolComputationPersisted \u2014 mount-time autorun',)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L335",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_7",
+      "community": 152,
+      "norm_label": "code:tsx (describe('usetoolcomputationpersisted \u2014 mount-time autorun',)"
+    },
+    {
+      "label": "code:tsx (describe('useToolComputationPersisted \u2014 delegation to useToo)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L410",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_8",
+      "community": 152,
+      "norm_label": "code:tsx (describe('usetoolcomputationpersisted \u2014 delegation to usetoo)"
+    },
+    {
+      "label": "code:bash (git add src/types/hooks/computation.ts src/hooks/useToolComp)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L455",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_9",
+      "community": 152,
+      "norm_label": "code:bash (git add src/types/hooks/computation.ts src/hooks/usetoolcomp)"
+    },
+    {
+      "label": "Task 2: Migrate ProtobufToJson to useToolComputationPersisted",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L482",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_2_migrate_protobuftojson_to_usetoolcomputationpersisted",
+      "community": 152,
+      "norm_label": "task 2: migrate protobuftojson to usetoolcomputationpersisted"
+    },
+    {
+      "label": "code:tsx (import { useInputLocalStorage, useMountOnce, useToast, useTo)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L491",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_10",
+      "community": 152,
+      "norm_label": "code:tsx (import { useinputlocalstorage, usemountonce, usetoast, useto)"
+    },
+    {
+      "label": "code:tsx (import { useToast, useToolComputationPersisted } from '@/hoo)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L497",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_11",
+      "community": 152,
+      "norm_label": "code:tsx (import { usetoast, usetoolcomputationpersisted } from '@/hoo)"
+    },
+    {
+      "label": "code:tsx (export const ProtobufToJson = (_props: ToolComponentProps) =)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L507",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_12",
+      "community": 152,
+      "norm_label": "code:tsx (export const protobuftojson = (_props: toolcomponentprops) =)"
+    },
+    {
+      "label": "code:tsx (export const ProtobufToJson = (_props: ToolComponentProps) =)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L558",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_13",
+      "community": 152,
+      "norm_label": "code:tsx (export const protobuftojson = (_props: toolcomponentprops) =)"
+    },
+    {
+      "label": "code:tsx (const handleLoadExample = useCallback(() => {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L620",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_14",
+      "community": 152,
+      "norm_label": "code:tsx (const handleloadexample = usecallback(() => {)"
+    },
+    {
+      "label": "code:tsx (const handleLoadExample = useCallback(() => {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L629",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_15",
+      "community": 152,
+      "norm_label": "code:tsx (const handleloadexample = usecallback(() => {)"
+    },
+    {
+      "label": "code:bash (git add src/components/feature/code/ProtobufToJson.tsx)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L663",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_16",
+      "community": 152,
+      "norm_label": "code:bash (git add src/components/feature/code/protobuftojson.tsx)"
+    },
+    {
+      "label": "Task 3: Add CONTEXT.md \"Persistent tool computation\" entry",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L687",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_3_add_context_md_persistent_tool_computation_entry",
+      "community": 152,
+      "norm_label": "task 3: add context.md \"persistent tool computation\" entry"
+    },
+    {
+      "label": "code:markdown (## Persistent tool computation)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L696",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_17",
+      "community": 152,
+      "norm_label": "code:markdown (## persistent tool computation)"
+    },
+    {
+      "label": "code:bash (git add CONTEXT.md)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L738",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_18",
+      "community": 152,
+      "norm_label": "code:bash (git add context.md)"
+    },
+    {
+      "label": "Task 4: graphify refresh",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L755",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_4_graphify_refresh",
+      "community": 152,
+      "norm_label": "task 4: graphify refresh"
+    },
+    {
+      "label": "code:bash (git add graphify-out/)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L763",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_19",
+      "community": 152,
+      "norm_label": "code:bash (git add graphify-out/)"
+    },
+    {
+      "label": "Out of scope (deferred)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L775",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_out_of_scope_deferred",
+      "community": 152,
+      "norm_label": "out of scope (deferred)"
+    },
+    {
+      "label": "Risk register",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L783",
+      "id": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_risk_register",
+      "community": 152,
+      "norm_label": "risk register"
+    },
+    {
       "label": "2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
       "file_type": "document",
       "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
@@ -34136,7 +34478,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L5",
-      "community": 1,
+      "community": 153,
       "norm_label": "contextvalue",
       "id": "db_diagram_diagramcontext_contextvalue"
     },
@@ -53392,6 +53734,26 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/types/hooks/computation.ts",
+      "source_location": "L59",
+      "weight": 1.0,
+      "source": "src_types_hooks_computation_ts",
+      "target": "hooks_computation_usetoolcomputationpersistedoptions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/types/hooks/computation.ts",
+      "source_location": "L70",
+      "weight": 1.0,
+      "source": "src_types_hooks_computation_ts",
+      "target": "hooks_computation_usetoolcomputationpersistedresult",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/types/hooks/types.ts",
       "source_location": "L1",
       "weight": 1.0,
@@ -72549,6 +72911,17 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
+      "source_location": "L144",
+      "weight": 1.0,
+      "source": "code_protobuftojson_protobuftojson",
+      "target": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L135",
       "weight": 1.0,
       "source": "code_protobuftojson_protobuftojson",
@@ -77886,6 +78259,124 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "src_hooks_usemountonce_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "hooks_usemountonce_usemountonce",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "src_hooks_usetoolcomputation_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "hooks_usetoolcomputation_usetoolcomputation",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "hooks_usetoolcomputationpersisted_readvalue",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "hooks_usetoolcomputationpersisted_writevalue",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_ts",
+      "target": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
+      "target": "src_hooks_usetoolcomputationpersisted_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
+      "target": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L54",
+      "weight": 1.0,
+      "source": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted",
+      "target": "hooks_usetoolcomputation_usetoolcomputation"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useToolComputationPersisted.ts",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted",
+      "target": "hooks_usemountonce_usemountonce"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/hooks/useBlobUrl.dom.spec.tsx",
       "source_location": "L6",
       "weight": 1.0,
@@ -77983,6 +78474,26 @@
       "confidence_score": 1.0,
       "source": "src_hooks_usebloburl_dom_spec_tsx",
       "target": "hooks_usebloburl_dom_spec_result_rerender"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L172",
+      "weight": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
+      "target": "hooks_usetoolcomputationpersisted_dom_spec_result",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
+      "source_location": "L171",
+      "weight": 1.0,
+      "source": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx",
+      "target": "hooks_usetoolcomputationpersisted_dom_spec_compute",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -79064,6 +79575,16 @@
       "confidence_score": 1.0,
       "source": "csr_dev_tools_context_csr_dev_tools_domain_language",
       "target": "csr_dev_tools_context_persistent_tool_field_bag"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CONTEXT.md",
+      "source_location": "L108",
+      "weight": 1.0,
+      "source": "csr_dev_tools_context_csr_dev_tools_domain_language",
+      "target": "csr_dev_tools_context_persistent_tool_computation",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -87518,12 +88039,282 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "docs_superpowers_plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_md",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_usetoolcomputationpersisted_protobuftojson_migration_plan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_usetoolcomputationpersisted_protobuftojson_migration_plan",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_usetoolcomputationpersisted_protobuftojson_migration_plan",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_files",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L49",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_usetoolcomputationpersisted_protobuftojson_migration_plan",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_1_add_the_types_write_the_spec_implement_the_hook",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L482",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_usetoolcomputationpersisted_protobuftojson_migration_plan",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_2_migrate_protobuftojson_to_usetoolcomputationpersisted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L687",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_usetoolcomputationpersisted_protobuftojson_migration_plan",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_3_add_context_md_persistent_tool_computation_entry",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L755",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_usetoolcomputationpersisted_protobuftojson_migration_plan",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_4_graphify_refresh",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L775",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_usetoolcomputationpersisted_protobuftojson_migration_plan",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_out_of_scope_deferred",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L783",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_usetoolcomputationpersisted_protobuftojson_migration_plan",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_risk_register",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L63",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_1_add_the_types_write_the_spec_implement_the_hook",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L96",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_1_add_the_types_write_the_spec_implement_the_hook",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L168",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_1_add_the_types_write_the_spec_implement_the_hook",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L262",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_1_add_the_types_write_the_spec_implement_the_hook",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L278",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_1_add_the_types_write_the_spec_implement_the_hook",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L335",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_1_add_the_types_write_the_spec_implement_the_hook",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L410",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_1_add_the_types_write_the_spec_implement_the_hook",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_8",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L455",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_1_add_the_types_write_the_spec_implement_the_hook",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_9",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L491",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_2_migrate_protobuftojson_to_usetoolcomputationpersisted",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_10",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L497",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_2_migrate_protobuftojson_to_usetoolcomputationpersisted",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_11",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L507",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_2_migrate_protobuftojson_to_usetoolcomputationpersisted",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_12",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L558",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_2_migrate_protobuftojson_to_usetoolcomputationpersisted",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_13",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L620",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_2_migrate_protobuftojson_to_usetoolcomputationpersisted",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_14",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L629",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_2_migrate_protobuftojson_to_usetoolcomputationpersisted",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_15",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L663",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_2_migrate_protobuftojson_to_usetoolcomputationpersisted",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_16",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L696",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_3_add_context_md_persistent_tool_computation_entry",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_17",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L738",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_3_add_context_md_persistent_tool_computation_entry",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_18",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-use-tool-computation-persisted-and-protobuf-to-json.md",
+      "source_location": "L763",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_task_4_graphify_refresh",
+      "target": "plans_2026_05_15_use_tool_computation_persisted_and_protobuf_to_json_codeblock_19",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_superpowers_plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_md",
-      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan"
     },
     {
       "relation": "contains",
@@ -87531,9 +88322,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan",
-      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_files",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_files"
     },
     {
       "relation": "contains",
@@ -87541,9 +88332,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan",
-      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted"
     },
     {
       "relation": "contains",
@@ -87551,9 +88342,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
       "source_location": "L205",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan",
-      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_2_graphify_refresh",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_2_graphify_refresh"
     },
     {
       "relation": "contains",
@@ -87561,9 +88352,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
       "source_location": "L228",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan",
-      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_out_of_scope_deferred",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_out_of_scope_deferred"
     },
     {
       "relation": "contains",
@@ -87571,9 +88362,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
       "source_location": "L238",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_jsonpathevaluator_usetoolfieldspersisted_migration_plan",
-      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_risk_register",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_risk_register"
     },
     {
       "relation": "contains",
@@ -87581,9 +88372,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
       "source_location": "L40",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted",
-      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_1",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_1"
     },
     {
       "relation": "contains",
@@ -87591,9 +88382,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
       "source_location": "L46",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted",
-      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_2",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_2"
     },
     {
       "relation": "contains",
@@ -87601,9 +88392,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted",
-      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_3",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_3"
     },
     {
       "relation": "contains",
@@ -87611,9 +88402,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
       "source_location": "L106",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted",
-      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_4",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_4"
     },
     {
       "relation": "contains",
@@ -87621,9 +88412,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
       "source_location": "L179",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_1_migrate_jsonpathevaluator_to_usetoolfieldspersisted",
-      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_5",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_5"
     },
     {
       "relation": "contains",
@@ -87631,9 +88422,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-jsonpath-evaluator-tool-fields-persisted.md",
       "source_location": "L216",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_task_2_graphify_refresh",
-      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_6",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_jsonpath_evaluator_tool_fields_persisted_codeblock_6"
     },
     {
       "relation": "contains",
@@ -97470,5 +98261,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "cda8dfacc005e9aa263743e298dc323ba7d739e1"
+  "built_at_commit": "987f447c62a6135073816f238234ca78025979cf"
 }

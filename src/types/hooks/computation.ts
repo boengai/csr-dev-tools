@@ -55,3 +55,26 @@ export type UseToolFieldsPersistedOptions<F, R> = UseToolFieldsOptions<F, R> & {
   /** localStorage key holding the persisted input bag (JSON-serialized). */
   storageKey: string
 }
+
+export type UseToolComputationPersistedOptions<I, R> = Omit<UseToolComputationOptions<I, R>, 'initial'> & {
+  /** Compute function — same shape as the parameter to `useToolComputation`. */
+  compute: (input: I) => R | Promise<R>
+  /** Initial input value — also the value persisted on first mount when localStorage is empty. */
+  initial: I
+  /** Initial result, used until the first compute resolves. */
+  initialResult: R
+  /** localStorage key holding the persisted input value (JSON-serialized). */
+  storageKey: string
+}
+
+export type UseToolComputationPersistedResult<I, R> = {
+  error: unknown | null
+  /** Current input value (live; updated by setInput / setInputImmediate). */
+  input: I
+  isPending: boolean
+  result: R
+  /** Debounced input change. Updates state, persists to localStorage, schedules debounced compute. */
+  setInput: (input: I) => void
+  /** Immediate input change. Updates state, persists, fires compute without debounce. */
+  setInputImmediate: (input: I) => void
+}

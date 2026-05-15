@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolComputationPersisted } from '@/hooks'
 import type { BrowsableEntry, EntryKind, ParseOutput, ToolComponentProps } from '@/types'
 import { cnMerge } from '@/utils'
 import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufSchemaInfo } from '@/wasm/parsers'
@@ -132,17 +132,17 @@ function annotateJsonWithEnums(jsonStr: string, allEnums: Array<ProtobufEnumInfo
 }
 
 export const ProtobufToJson = (_props: ToolComponentProps) => {
-  const [input, setInput] = useInputLocalStorage('csr-dev-tools-protobuf-to-json-input', '')
   const [selectedEntry, setSelectedEntry] = useState<string | null>(null)
   const [generatedJson, setGeneratedJson] = useState<string | null>(null)
   const { toast } = useToast()
 
   const {
+    input,
     result: parseResult,
-    setInput: setParseInput,
-    setInputImmediate: setParseInputImmediate,
-  } = useToolComputation<string, ParseOutput>(
-    async (value) => {
+    setInput,
+    setInputImmediate,
+  } = useToolComputationPersisted<string, ParseOutput>({
+    compute: async (value) => {
       const { parseProtobufSchema } = await import('@/wasm/parsers')
       const result = await parseProtobufSchema(value)
       if (result.success) {
@@ -150,15 +150,15 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
       }
       return { schema: null, parseError: { line: result.line, message: result.error } }
     },
-    {
-      debounceMs: 300,
-      initial: { schema: null, parseError: null },
-      isEmpty: (value) => !value.trim(),
-      onError: () => {
-        toast({ action: 'add', item: { label: 'Failed to parse proto definition', type: 'error' } })
-      },
+    debounceMs: 300,
+    initial: '',
+    initialResult: { schema: null, parseError: null },
+    isEmpty: (value) => !value.trim(),
+    onError: () => {
+      toast({ action: 'add', item: { label: 'Failed to parse proto definition', type: 'error' } })
     },
-  )
+    storageKey: 'csr-dev-tools-protobuf-to-json-input',
+  })
 
   const schemaInfo = parseResult.schema
   const error = parseResult.parseError
@@ -169,19 +169,11 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
     setGeneratedJson(null)
   }, [parseResult])
 
-  const handleChange = (value: string) => {
-    setInput(value)
-    setParseInput(value)
-  }
-
-  useMountOnce(() => {
-    if (input) setParseInputImmediate(input)
-  })
+  const handleChange = (value: string) => setInput(value)
 
   const handleLoadExample = useCallback(() => {
-    setInput(SAMPLE_PROTO)
-    setParseInputImmediate(SAMPLE_PROTO)
-  }, [setInput, setParseInputImmediate])
+    setInputImmediate(SAMPLE_PROTO)
+  }, [setInputImmediate])
 
   const handleSelectEntry = useCallback(
     async (entry: BrowsableEntry) => {
