@@ -3,7 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Button, CopyButton, FieldForm, ToolDialogShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
+import { useMountOnce, useToast, useToolComputationPersisted } from '@/hooks'
 import type { MermaidComputeResult, ToolComponentProps } from '@/types'
 import {
   consumeHandoff,
@@ -62,16 +62,23 @@ const computeMermaid = async (input: string): Promise<MermaidComputeResult> => {
 }
 
 export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [code, setCode] = useInputLocalStorage('csr-dev-tools-mermaid-renderer-code', DEFAULT_CODE)
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [exportingPng, setExportingPng] = useState(false)
   const [referenceOpen, setReferenceOpen] = useState(false)
   const { toast } = useToast()
 
-  const { result, setInput, setInputImmediate } = useToolComputation<string, MermaidComputeResult>(computeMermaid, {
+  const {
+    input: code,
+    result,
+    setInput,
+    setInputImmediate,
+  } = useToolComputationPersisted<string, MermaidComputeResult>({
+    compute: computeMermaid,
     debounceMs: 500,
-    initial: INITIAL_RESULT,
+    initial: DEFAULT_CODE,
+    initialResult: INITIAL_RESULT,
     isEmpty: (input) => !input.trim(),
+    storageKey: 'csr-dev-tools-mermaid-renderer-code',
   })
 
   const svg = result.kind === 'svg' ? result.svg : ''
@@ -86,29 +93,22 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     }
   }, [svg])
 
-  const initialInputRef = useRef<string | null>(null)
-
-  // Handoff is read-once — capture the prefill exactly once across StrictMode's
-  // double-mount cycle. The actual compute kickoff is a separate effect below
-  // so it survives StrictMode's interim cleanup (which clears the pipeline's
-  // pending setTimeout).
+  // Mount-time: initialize the mermaid library, then handle the optional handoff
+  // prefill from the DB Diagram tool. If a prefill exists, override the hook's
+  // autorun (which would fire with the persisted code) by calling
+  // setInputImmediate(prefill) — the pipeline cancels the pending autorun timeout
+  // and fires compute with the prefill instead. If no prefill, the hook's own
+  // isEmpty-gated autorun handles the recompute (DEFAULT_CODE is non-empty,
+  // so it fires).
   useMountOnce(() => {
     initializeMermaid()
     const prefill = consumeHandoff('mermaid-renderer')
-    if (prefill) setCode(prefill)
-    initialInputRef.current = prefill ?? code
+    if (prefill) {
+      setInputImmediate(prefill)
+    }
   })
 
-  useEffect(() => {
-    if (initialInputRef.current !== null) {
-      setInputImmediate(initialInputRef.current)
-    }
-  }, [setInputImmediate])
-
-  const handleCodeChange = (value: string) => {
-    setCode(value)
-    setInput(value)
-  }
+  const handleCodeChange = (value: string) => setInput(value)
 
   const handleExportSvg = () => {
     try {
@@ -132,21 +132,14 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     }
   }
 
-  const handleExampleClick = (exampleCode: string) => {
-    setCode(exampleCode)
-    setInputImmediate(exampleCode)
-  }
+  const handleExampleClick = (exampleCode: string) => setInputImmediate(exampleCode)
 
   const handleApplyFix = useCallback(() => {
     if (!fixSuggestion) return
-    setCode(fixSuggestion.fixedCode)
     setInputImmediate(fixSuggestion.fixedCode)
-  }, [fixSuggestion, setCode, setInputImmediate])
+  }, [fixSuggestion, setInputImmediate])
 
-  const handleReset = () => {
-    setCode(DEFAULT_CODE)
-    setInputImmediate(DEFAULT_CODE)
-  }
+  const handleReset = () => setInputImmediate(DEFAULT_CODE)
 
   return (
     <>
