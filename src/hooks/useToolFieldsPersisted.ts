@@ -26,6 +26,10 @@ function writeBag<F>(key: string, value: F): void {
  * for the input bag plus the mount-time recompute trigger. Same invariants
  * as `useToolFields` (debounced, stale-safe, empty-bypass, unmount-safe,
  * same-tick partial merge) — see CONTEXT.md → "Persistent tool field bag".
+ *
+ * Autorun fires on mount only when `options.isEmpty` is provided AND the
+ * restored bag passes `!isEmpty(bag)` — without `isEmpty`, the caller is
+ * explicitly responsible for triggering the first compute.
  */
 export function useToolFieldsPersisted<F, R>(
   options: UseToolFieldsPersistedOptions<F, R>,
@@ -47,6 +51,9 @@ export function useToolFieldsPersisted<F, R>(
     }
   })
 
+  // Fires once on mount with initialBag (re-)persisting the seed, and on
+  // every subsequent inputs change. Initial write is intentional: it pins
+  // the in-memory bag to storage even when readBag returned the fallback.
   useEffect(() => {
     writeBag(storageKey, fields.inputs)
   }, [storageKey, fields.inputs])
