@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useMountOnce, useToolComputation } from '@/hooks'
+import { useToolFieldsPersisted } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { type ValidationResult, validateJsonSchema } from '@/utils'
 
@@ -12,41 +12,22 @@ const toolEntry = TOOL_REGISTRY_MAP['json-schema-validator']
 type ValidatorInput = { jsonData: string; jsonSchema: string }
 
 export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [inputs, setInputs] = useInputLocalStorage('csr-dev-tools-json-schema-validator', {
-    jsonData: '',
-    jsonSchema: '',
-  })
-  const { jsonData, jsonSchema } = inputs
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
 
-  const { result, setInput, setInputImmediate } = useToolComputation<ValidatorInput, ValidationResult | null>(
-    ({ jsonData: data, jsonSchema: schema }) => validateJsonSchema(data, schema),
-    {
-      debounceMs: 300,
-      initial: null,
-      isEmpty: ({ jsonData: data, jsonSchema: schema }) => data.trim().length === 0 || schema.trim().length === 0,
-    },
-  )
-
-  useMountOnce(() => {
-    if (jsonData.trim() && jsonSchema.trim()) {
-      setInputImmediate({ jsonData, jsonSchema })
-    }
+  const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<ValidatorInput, ValidationResult | null>({
+    compute: ({ jsonData: data, jsonSchema: schema }) => validateJsonSchema(data, schema),
+    debounceMs: 300,
+    initial: { jsonData: '', jsonSchema: '' },
+    initialResult: null,
+    isEmpty: ({ jsonData: data, jsonSchema: schema }) => data.trim().length === 0 || schema.trim().length === 0,
+    storageKey: 'csr-dev-tools-json-schema-validator',
   })
+  const { jsonData, jsonSchema } = inputs
 
-  const handleDataChange = (val: string) => {
-    setInputs((prev) => ({ ...prev, jsonData: val }))
-    setInput({ jsonData: val, jsonSchema })
-  }
-
-  const handleSchemaChange = (val: string) => {
-    setInputs((prev) => ({ ...prev, jsonSchema: val }))
-    setInput({ jsonData, jsonSchema: val })
-  }
-
-  const handleReset = () => {
-    setInputImmediate({ jsonData, jsonSchema })
-  }
+  const handleDataChange = (val: string) => setFields({ jsonData: val })
+  const handleSchemaChange = (val: string) => setFields({ jsonSchema: val })
+  // Re-fires compute with the current bag (preserves pre-migration behavior); does NOT clear fields. The hook's `reset()` would clear — intentionally not used here.
+  const handleRevalidate = () => setFieldsImmediate({})
 
   return (
     <>
@@ -59,7 +40,7 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
             onClick={() => {
               setDialogOpen(true)
               if (jsonData.trim() && jsonSchema.trim()) {
-                setInputImmediate({ jsonData, jsonSchema })
+                setFieldsImmediate({})
               }
             }}
             variant="default"
@@ -72,7 +53,7 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
       <ToolDialogShell
         onAfterDialogClose={onAfterDialogClose}
         onOpenChange={setDialogOpen}
-        onReset={handleReset}
+        onReset={handleRevalidate}
         open={dialogOpen}
         size="screen"
         title="JSON Schema Validator"

@@ -71,6 +71,40 @@ Carries one extra invariant beyond the pipeline:
 `setFieldsImmediate` so any pending compute is cancelled and `isEmpty`-driven
 short-circuits fire synchronously.
 
+## Persistent tool field bag
+
+The variant of the [[Tool field bag]] that owns its localStorage
+round-trip. Implemented by `useToolFieldsPersisted`
+(`src/hooks/useToolFieldsPersisted.ts`).
+
+Composes `useToolFields` with two small concerns the standard pattern
+needs every time it persists: read the bag from localStorage on mount
+(replacing `options.initial` if a stored value exists) and write back
+on every `inputs` change. The hook also fires `setFieldsImmediate({})`
+once on mount — the closure-safe empty-partial pattern — when
+`options.isEmpty` is provided AND the restored bag is non-empty, so
+the result populates without a per-Tool `useMountOnce`. Without
+`options.isEmpty`, no autorun fires (the caller is explicitly
+responsible for triggering the first compute).
+
+The four pipeline invariants (debounced, stale-safe, empty-bypass,
+unmount-safe) plus the same-tick partial-merge invariant carry over
+unchanged — they're defined inside `useToolComputation` /
+`useToolFields`, and `useToolFieldsPersisted` does not touch them.
+
+Pick this when a multi-field Tool persists its inputs as a single bag
+under one localStorage key. Pick [[Tool field bag]] (`useToolFields`)
+when persistence is bespoke or absent (e.g. `<BidirectionalConverter>`'s
+per-mode source-keying, or `AesEncryptDecrypt` which doesn't persist).
+
+Today's only consumer: `JsonSchemaValidator`. Future migration targets
+include the other multi-field code Tools that currently combine
+`useInputLocalStorage` + `useToolComputation` + `useMountOnce` by hand
+(`HtmlFormatter`, `MermaidRenderer`, `JsonToTypeScript`,
+`SqlFormatter`, `JavaScriptMinifier`, `CssFormatter`, `MarkdownPreview`,
+`JsonpathEvaluator`, `GraphqlSchemaViewer`, `ProtobufCodec`,
+`ProtobufToJson`).
+
 ## Tool dialog frame
 
 The page-level frame for a Tool whose interior lives in a dialog. Implemented

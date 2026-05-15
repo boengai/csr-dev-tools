@@ -50,3 +50,8 @@ export type UseToolFieldsResult<F, R> = {
   /** Same as `setFields` but bypasses the debounce wait. */
   setFieldsImmediate: (partial: Partial<F>) => void
 }
+
+export type UseToolFieldsPersistedOptions<F, R> = UseToolFieldsOptions<F, R> & {
+  /** localStorage key holding the persisted input bag (JSON-serialized). */
+  storageKey: string
+}
