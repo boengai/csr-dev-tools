@@ -1,9 +1,7 @@
-import { useState } from 'react'
-
 import { CopyButton, FieldForm, TextAreaInput, ToggleButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolFields } from '@/hooks'
 import type { HmacInput, ToolComponentProps } from '@/types'
 import {
   DEFAULT_HMAC_ALGORITHM,
@@ -19,69 +17,37 @@ const toolEntry = TOOL_REGISTRY_MAP['hmac-generator']
 const ENCODINGS: Array<HmacEncoding> = ['hex', 'base64']
 
 export const HmacGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [message, setMessage] = useState('')
-  const [secretKey, setSecretKey] = useState('')
-  const [algorithm, setAlgorithm] = useState<HmacAlgorithm>(DEFAULT_HMAC_ALGORITHM)
-  const [encoding, setEncoding] = useState<HmacEncoding>(DEFAULT_HMAC_ENCODING)
   const { toast } = useToast()
 
-  const { result: hmac, setInput, setInputImmediate } = useToolComputation<HmacInput, string>(
-    ({ message: msg, secretKey: key, algorithm: algo, encoding: enc }) => generateHmac(msg, key, algo, enc),
-    {
-      debounceMs: 300,
-      initial: '',
-      isEmpty: ({ message: msg, secretKey: key }) => !msg || !key,
-      onError: () => {
-        toast({
-          action: 'add',
-          item: {
-            label: 'HMAC computation failed — your browser may not support this feature',
-            type: 'error',
-          },
-        })
-      },
+  const { inputs, result: hmac, reset, setFields, setFieldsImmediate } = useToolFields<HmacInput, string>({
+    compute: ({ message: msg, secretKey: key, algorithm: algo, encoding: enc }) => generateHmac(msg, key, algo, enc),
+    debounceMs: 300,
+    initial: { message: '', secretKey: '', algorithm: DEFAULT_HMAC_ALGORITHM, encoding: DEFAULT_HMAC_ENCODING },
+    initialResult: '',
+    isEmpty: ({ message: msg, secretKey: key }) => !msg || !key,
+    onError: () => {
+      toast({
+        action: 'add',
+        item: {
+          label: 'HMAC computation failed — your browser may not support this feature',
+          type: 'error',
+        },
+      })
     },
-  )
+  })
+  const { message, secretKey, algorithm, encoding } = inputs
 
-  const handleMessageChange = (value: string) => {
-    setMessage(value)
-    setInput({ message: value, secretKey, algorithm, encoding })
-  }
-
-  const handleKeyChange = (value: string) => {
-    setSecretKey(value)
-    setInput({ message, secretKey: value, algorithm, encoding })
-  }
-
-  const handleAlgorithmChange = (algo: HmacAlgorithm) => {
-    setAlgorithm(algo)
-    setInputImmediate({ message, secretKey, algorithm: algo, encoding })
-  }
-
-  const handleEncodingChange = (enc: HmacEncoding) => {
-    setEncoding(enc)
-    setInputImmediate({ message, secretKey, algorithm, encoding: enc })
-  }
-
-  const handleReset = () => {
-    setMessage('')
-    setSecretKey('')
-    setAlgorithm(DEFAULT_HMAC_ALGORITHM)
-    setEncoding(DEFAULT_HMAC_ENCODING)
-    setInputImmediate({
-      message: '',
-      secretKey: '',
-      algorithm: DEFAULT_HMAC_ALGORITHM,
-      encoding: DEFAULT_HMAC_ENCODING,
-    })
-  }
+  const handleMessageChange = (value: string) => setFields({ message: value })
+  const handleKeyChange = (value: string) => setFields({ secretKey: value })
+  const handleAlgorithmChange = (algo: HmacAlgorithm) => setFieldsImmediate({ algorithm: algo })
+  const handleEncodingChange = (enc: HmacEncoding) => setFieldsImmediate({ encoding: enc })
 
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
       onAfterClose={onAfterDialogClose}
-      onReset={handleReset}
+      onReset={reset}
       size="default"
       title="HMAC Generator"
       triggers={[{ label: 'Generate HMAC' }]}

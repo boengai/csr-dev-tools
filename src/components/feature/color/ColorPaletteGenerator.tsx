@@ -1,9 +1,8 @@
 import { m } from 'motion/react'
-import { useEffect, useState } from 'react'
 
 import { Button, ColorInput, CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useCopyToClipboard, useToast, useToolComputation } from '@/hooks'
+import { useCopyToClipboard, useMountOnce, useToast, useToolFields } from '@/hooks'
 import type { PaletteInput } from '@/types'
 import { formatPaletteAsCss, generatePalette, type HarmonyType, type PaletteColor } from '@/utils'
 
@@ -27,46 +26,30 @@ const toPickerHex = (hex: string): string => {
 const toolEntry = TOOL_REGISTRY_MAP['color-palette-generator']
 
 export const ColorPaletteGenerator = () => {
-  const [hexInput, setHexInput] = useState(DEFAULT_COLOR)
-  const [harmonyType, setHarmonyType] = useState<HarmonyType>(DEFAULT_HARMONY)
   const { toast } = useToast()
   const copyToClipboard = useCopyToClipboard()
 
-  const {
-    result: palette,
-    setInput,
-    setInputImmediate,
-  } = useToolComputation<PaletteInput, Array<PaletteColor>>(
-    ({ hex, harmony }) => generatePalette(hex, harmony),
-    {
-      debounceMs: 300,
-      initial: [],
-      isEmpty: ({ hex }) => !hex.trim(),
-      onError: () => {
-        toast({ action: 'add', item: { label: 'Enter a valid hex color (e.g., #3B82F6)', type: 'error' } })
-      },
+  const { inputs, result: palette, setFields, setFieldsImmediate } = useToolFields<
+    PaletteInput,
+    Array<PaletteColor>
+  >({
+    compute: ({ hex, harmony }) => generatePalette(hex, harmony),
+    debounceMs: 300,
+    initial: { hex: DEFAULT_COLOR, harmony: DEFAULT_HARMONY },
+    initialResult: [],
+    isEmpty: ({ hex }) => !hex.trim(),
+    onError: () => {
+      toast({ action: 'add', item: { label: 'Enter a valid hex color (e.g., #3B82F6)', type: 'error' } })
     },
-  )
+  })
+  const { hex: hexInput, harmony: harmonyType } = inputs
 
-  useEffect(() => {
-    setInputImmediate({ hex: DEFAULT_COLOR, harmony: DEFAULT_HARMONY })
-  }, [setInputImmediate])
+  // Fire compute once on mount with the initial bag (default color + harmony).
+  useMountOnce(() => setFieldsImmediate({}))
 
-  const handleHexChange = (value: string) => {
-    setHexInput(value)
-    setInput({ harmony: harmonyType, hex: value })
-  }
-
-  const handlePickerChange = (hex: string) => {
-    setHexInput(hex)
-    setInput({ harmony: harmonyType, hex })
-  }
-
-  const handleHarmonyChange = (value: string) => {
-    const harmony = value as HarmonyType
-    setHarmonyType(harmony)
-    setInputImmediate({ harmony, hex: hexInput })
-  }
+  const handleHexChange = (value: string) => setFields({ hex: value })
+  const handlePickerChange = (hex: string) => setFields({ hex })
+  const handleHarmonyChange = (value: string) => setFieldsImmediate({ harmony: value as HarmonyType })
 
   const handleCopyCss = async () => {
     if (palette.length === 0) return
