@@ -96,7 +96,7 @@ export function BidirectionalConverter<M extends string>({
   }
 
   const recompute = () => {
-    setFieldsImmediate(inputs)
+    setFieldsImmediate({})
   }
 
   return (
