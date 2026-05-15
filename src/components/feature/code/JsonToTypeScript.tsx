@@ -1,34 +1,25 @@
-import { useState } from 'react'
-
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolFieldsPersisted } from '@/hooks'
 import type { JsonTsInput, ToolComponentProps } from '@/types'
 import { jsonToTypeScript } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-typescript']
 
 export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useInputLocalStorage('csr-dev-tools-json-to-typescript-source', '')
-  const [rootName, setRootName] = useState('Root')
-  const [useInterface, setUseInterface] = useState(true)
-  const [optionalProps, setOptionalProps] = useState(false)
   const { toast } = useToast()
 
-  const {
-    result: output,
-    setInput,
-    setInputImmediate,
-  } = useToolComputation<JsonTsInput, string>(
-    ({ source: val, rootName: root, useInterface: iface, optionalProps: optional }) =>
+  const { inputs, result: output, setFields, setFieldsImmediate } = useToolFieldsPersisted<JsonTsInput, string>({
+    compute: ({ source: val, rootName: root, useInterface: iface, optionalProps: optional }) =>
       jsonToTypeScript(val, { optionalProperties: optional, rootName: root, useInterface: iface }),
-    {
-      debounceMs: 300,
-      initial: '',
-      isEmpty: ({ source: val }) => !val.trim(),
-    },
-  )
+    debounceMs: 300,
+    initial: { source: '', rootName: 'Root', useInterface: true, optionalProps: false },
+    initialResult: '',
+    isEmpty: ({ source: val }) => !val.trim(),
+    storageKey: 'csr-dev-tools-json-to-typescript',
+  })
+  const { source, rootName, useInterface, optionalProps } = inputs
 
   const handleGenerate = async () => {
     if (!source.trim()) {
@@ -37,45 +28,22 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
     }
     try {
       await jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface })
-      setInputImmediate({ source, rootName, useInterface, optionalProps })
+      setFieldsImmediate({})
       toast({ action: 'add', item: { label: 'TypeScript generated successfully', type: 'success' } })
     } catch {
       toast({ action: 'add', item: { label: 'Invalid JSON input', type: 'error' } })
     }
   }
 
-  useMountOnce(() => {
-    if (source) setInputImmediate({ source, rootName, useInterface, optionalProps })
-  })
+  const handleSourceChange = (val: string) => setFields({ source: val })
+  const handleRootNameChange = (val: string) => setFields({ rootName: val })
+  const handleToggleInterface = () => setFieldsImmediate({ useInterface: !useInterface })
+  const handleToggleOptional = () => setFieldsImmediate({ optionalProps: !optionalProps })
 
-  const handleSourceChange = (val: string) => {
-    setSource(val)
-    setInput({ source: val, rootName, useInterface, optionalProps })
-  }
-
-  const handleRootNameChange = (val: string) => {
-    setRootName(val)
-    setInput({ source, rootName: val, useInterface, optionalProps })
-  }
-
-  const handleToggleInterface = () => {
-    const next = !useInterface
-    setUseInterface(next)
-    setInputImmediate({ source, rootName, useInterface: next, optionalProps })
-  }
-
-  const handleToggleOptional = () => {
-    const next = !optionalProps
-    setOptionalProps(next)
-    setInputImmediate({ source, rootName, useInterface, optionalProps: next })
-  }
-
-  const handleReset = () => {
-    setRootName('Root')
-    setUseInterface(true)
-    setOptionalProps(false)
-    setInputImmediate({ source, rootName: 'Root', useInterface: true, optionalProps: false })
-  }
+  // Partial reset: clears the option fields back to defaults, preserves source.
+  // The hook's reset() would also clear source, which is not the original behavior.
+  const handleReset = () =>
+    setFieldsImmediate({ rootName: 'Root', useInterface: true, optionalProps: false })
 
   return (
     <ToolDialogFrame
@@ -88,7 +56,7 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
         {
           label: 'Convert JSON to TypeScript',
           onOpen: () => {
-            if (source.trim()) setInputImmediate({ source, rootName, useInterface, optionalProps })
+            if (source.trim()) setFieldsImmediate({})
           },
         },
       ]}
