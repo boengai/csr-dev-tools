@@ -6030,7 +6030,7 @@
       "source_file": "src/types/components/common/sidebar/sidebarToolItem.ts",
       "source_location": "L1",
       "id": "src_types_components_common_sidebar_sidebartoolitem_ts",
-      "community": 172,
+      "community": 106,
       "norm_label": "sidebartoolitem.ts"
     },
     {
@@ -6039,7 +6039,7 @@
       "source_file": "src/components/common/sidebar/SidebarToolItem.tsx",
       "source_location": "L10",
       "id": "sidebar_sidebartoolitem_sidebartoolitemvariants",
-      "community": 172,
+      "community": 106,
       "norm_label": "sidebartoolitemvariants"
     },
     {
@@ -8010,7 +8010,7 @@
       "source_file": "src/diagram/editor.persistence.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_editor_persistence_spec_ts",
-      "community": 52,
+      "community": 370,
       "norm_label": "editor.persistence.spec.ts"
     },
     {
@@ -8019,7 +8019,7 @@
       "source_file": "src/diagram/editor.persistence.spec.ts",
       "source_location": "L7",
       "id": "diagram_editor_persistence_spec_createtestdoc",
-      "community": 52,
+      "community": 370,
       "norm_label": "createtestdoc()"
     },
     {
@@ -8028,7 +8028,7 @@
       "source_file": "src/diagram/editor.persistence.spec.ts",
       "source_location": "L9",
       "id": "diagram_editor_persistence_spec_usersschema",
-      "community": 52,
+      "community": 370,
       "norm_label": "usersschema()"
     },
     {
@@ -8037,7 +8037,7 @@
       "source_file": "src/diagram/editor.persistence.spec.ts",
       "source_location": "L30",
       "id": "diagram_editor_persistence_spec_storage",
-      "community": 52,
+      "community": 370,
       "norm_label": "storage"
     },
     {
@@ -8046,7 +8046,7 @@
       "source_file": "src/diagram/editor.persistence.spec.ts",
       "source_location": "L34",
       "id": "diagram_editor_persistence_spec_editor",
-      "community": 52,
+      "community": 370,
       "norm_label": "editor"
     },
     {
@@ -8055,7 +8055,7 @@
       "source_file": "src/diagram/editor.persistence.spec.ts",
       "source_location": "L144",
       "id": "diagram_editor_persistence_spec_listener",
-      "community": 52,
+      "community": 370,
       "norm_label": "listener"
     },
     {
@@ -8064,7 +8064,7 @@
       "source_file": "src/diagram/editor.persistence.spec.ts",
       "source_location": "L157",
       "id": "diagram_editor_persistence_spec_off",
-      "community": 52,
+      "community": 370,
       "norm_label": "off"
     },
     {
@@ -8073,7 +8073,7 @@
       "source_file": "src/diagram/editor.persistence.spec.ts",
       "source_location": "L212",
       "id": "diagram_editor_persistence_spec_idx",
-      "community": 52,
+      "community": 370,
       "norm_label": "idx"
     },
     {
@@ -8082,7 +8082,7 @@
       "source_file": "src/diagram/editor.persistence.spec.ts",
       "source_location": "L310",
       "id": "diagram_editor_persistence_spec_ok",
-      "community": 52,
+      "community": 370,
       "norm_label": "ok"
     },
     {
@@ -8091,7 +8091,7 @@
       "source_file": "src/diagram/editor.persistence.spec.ts",
       "source_location": "L320",
       "id": "diagram_editor_persistence_spec_before",
-      "community": 52,
+      "community": 370,
       "norm_label": "before"
     },
     {
@@ -8100,7 +8100,7 @@
       "source_file": "src/diagram/editor.persistence.spec.ts",
       "source_location": "L374",
       "id": "diagram_editor_persistence_spec_doc",
-      "community": 52,
+      "community": 370,
       "norm_label": "doc"
     },
     {
@@ -8127,7 +8127,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L1",
       "id": "src_diagram_editor_ts",
-      "community": 52,
+      "community": 370,
       "norm_label": "editor.ts"
     },
     {
@@ -8145,7 +8145,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L14",
       "id": "diagram_editor_indexlistener",
-      "community": 52,
+      "community": 370,
       "norm_label": "indexlistener"
     },
     {
@@ -8154,7 +8154,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L16",
       "id": "diagram_editor_diagrameditoroptions",
-      "community": 52,
+      "community": 370,
       "norm_label": "diagrameditoroptions"
     },
     {
@@ -8631,7 +8631,7 @@
       "source_file": "src/diagram/storage.ts",
       "source_location": "L1",
       "id": "src_diagram_storage_ts",
-      "community": 52,
+      "community": 370,
       "norm_label": "storage.ts"
     },
     {
@@ -8640,7 +8640,7 @@
       "source_file": "src/diagram/storage.ts",
       "source_location": "L11",
       "id": "diagram_storage_localstoragediagramstorage",
-      "community": 52,
+      "community": 370,
       "norm_label": "localstoragediagramstorage"
     },
     {
@@ -8649,7 +8649,7 @@
       "source_file": "src/diagram/storage.ts",
       "source_location": "L20",
       "id": "diagram_storage_createinmemorydiagramstorage",
-      "community": 52,
+      "community": 370,
       "norm_label": "createinmemorydiagramstorage()"
     },
     {
@@ -9036,7 +9036,7 @@
       "source_file": "src/diagram/operations/lifecycle.ts",
       "source_location": "L1",
       "id": "src_diagram_operations_lifecycle_ts",
-      "community": 41,
+      "community": 52,
       "norm_label": "lifecycle.ts"
     },
     {
@@ -9045,7 +9045,7 @@
       "source_file": "src/diagram/operations/lifecycle.ts",
       "source_location": "L4",
       "id": "operations_lifecycle_newdiagram",
-      "community": 41,
+      "community": 52,
       "norm_label": "newdiagram()"
     },
     {
@@ -9054,7 +9054,7 @@
       "source_file": "src/diagram/operations/lifecycle.ts",
       "source_location": "L6",
       "id": "operations_lifecycle_setdiagramname",
-      "community": 41,
+      "community": 52,
       "norm_label": "setdiagramname()"
     },
     {
@@ -9450,7 +9450,7 @@
       "source_file": "src/diagram/operations/lifecycle.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_operations_lifecycle_spec_ts",
-      "community": 41,
+      "community": 52,
       "norm_label": "lifecycle.spec.ts"
     },
     {
@@ -9459,7 +9459,7 @@
       "source_file": "src/diagram/operations/lifecycle.spec.ts",
       "source_location": "L13",
       "id": "operations_lifecycle_spec_doc",
-      "community": 41,
+      "community": 52,
       "norm_label": "doc"
     },
     {
@@ -9468,7 +9468,7 @@
       "source_file": "src/diagram/operations/lifecycle.spec.ts",
       "source_location": "L28",
       "id": "operations_lifecycle_spec_a",
-      "community": 41,
+      "community": 52,
       "norm_label": "a"
     },
     {
@@ -9477,7 +9477,7 @@
       "source_file": "src/diagram/operations/lifecycle.spec.ts",
       "source_location": "L30",
       "id": "operations_lifecycle_spec_b",
-      "community": 41,
+      "community": 52,
       "norm_label": "b"
     },
     {
@@ -9486,7 +9486,7 @@
       "source_file": "src/diagram/operations/lifecycle.spec.ts",
       "source_location": "L32",
       "id": "operations_lifecycle_spec_fk",
-      "community": 41,
+      "community": 52,
       "norm_label": "fk"
     },
     {
@@ -9495,7 +9495,7 @@
       "source_file": "src/diagram/operations/lifecycle.spec.ts",
       "source_location": "L34",
       "id": "operations_lifecycle_spec_rel",
-      "community": 41,
+      "community": 52,
       "norm_label": "rel"
     },
     {
@@ -9504,7 +9504,7 @@
       "source_file": "src/diagram/operations/lifecycle.spec.ts",
       "source_location": "L40",
       "id": "operations_lifecycle_spec_schema",
-      "community": 41,
+      "community": 52,
       "norm_label": "schema"
     },
     {
@@ -9513,7 +9513,7 @@
       "source_file": "src/diagram/operations/lifecycle.spec.ts",
       "source_location": "L41",
       "id": "operations_lifecycle_spec_round",
-      "community": 41,
+      "community": 52,
       "norm_label": "round"
     },
     {
@@ -16227,7 +16227,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L1",
       "id": "src_utils_tailwind_variants_ts",
-      "community": 239,
+      "community": 61,
       "norm_label": "tailwind-variants.ts"
     },
     {
@@ -16236,7 +16236,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L3",
       "id": "utils_tailwind_variants_twmergeconfig",
-      "community": 239,
+      "community": 61,
       "norm_label": "twmergeconfig"
     },
     {
@@ -16245,7 +16245,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L23",
       "id": "utils_tailwind_variants_cnmerge",
-      "community": 239,
+      "community": 61,
       "norm_label": "cnmerge()"
     },
     {
@@ -16254,7 +16254,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L24",
       "id": "utils_tailwind_variants_tv",
-      "community": 239,
+      "community": 61,
       "norm_label": "tv"
     },
     {
@@ -17190,7 +17190,7 @@
       "source_file": "src/components/common/sidebar/SidebarToolItem.tsx",
       "source_location": "L1",
       "id": "src_components_common_sidebar_sidebartoolitem_tsx",
-      "community": 172,
+      "community": 106,
       "norm_label": "sidebartoolitem.tsx"
     },
     {
@@ -17199,7 +17199,7 @@
       "source_file": "src/components/common/sidebar/SidebarToolItem.tsx",
       "source_location": "L23",
       "id": "sidebar_sidebartoolitem_sidebartoolitem",
-      "community": 172,
+      "community": 106,
       "norm_label": "sidebartoolitem()"
     },
     {
@@ -17208,7 +17208,7 @@
       "source_file": "src/components/common/sidebar/SidebarCategory.tsx",
       "source_location": "L1",
       "id": "src_components_common_sidebar_sidebarcategory_tsx",
-      "community": 172,
+      "community": 106,
       "norm_label": "sidebarcategory.tsx"
     },
     {
@@ -17217,7 +17217,7 @@
       "source_file": "src/components/common/sidebar/SidebarCategory.tsx",
       "source_location": "L3",
       "id": "sidebar_sidebarcategory_sidebarcategory",
-      "community": 172,
+      "community": 106,
       "norm_label": "sidebarcategory()"
     },
     {
@@ -17226,7 +17226,7 @@
       "source_file": "src/components/common/sidebar/Sidebar.tsx",
       "source_location": "L1",
       "id": "src_components_common_sidebar_sidebar_tsx",
-      "community": 172,
+      "community": 106,
       "norm_label": "sidebar.tsx"
     },
     {
@@ -17235,7 +17235,7 @@
       "source_file": "src/components/common/sidebar/Sidebar.tsx",
       "source_location": "L13",
       "id": "sidebar_sidebar_sidebarnavstyles",
-      "community": 172,
+      "community": 106,
       "norm_label": "sidebarnavstyles"
     },
     {
@@ -17244,7 +17244,7 @@
       "source_file": "src/components/common/sidebar/Sidebar.tsx",
       "source_location": "L23",
       "id": "sidebar_sidebar_sidebar",
-      "community": 172,
+      "community": 106,
       "norm_label": "sidebar()"
     },
     {
@@ -17262,7 +17262,7 @@
       "source_file": "src/components/common/settings/SettingsDialog.tsx",
       "source_location": "L1",
       "id": "src_components_common_settings_settingsdialog_tsx",
-      "community": 174,
+      "community": 106,
       "norm_label": "settingsdialog.tsx"
     },
     {
@@ -17271,7 +17271,7 @@
       "source_file": "src/components/common/settings/SettingsDialog.tsx",
       "source_location": "L9",
       "id": "settings_settingsdialog_settingsdialog",
-      "community": 174,
+      "community": 106,
       "norm_label": "settingsdialog()"
     },
     {
@@ -17316,7 +17316,7 @@
       "source_file": "src/components/common/form/FieldForm.tsx",
       "source_location": "L1",
       "id": "src_components_common_form_fieldform_tsx",
-      "community": 174,
+      "community": 106,
       "norm_label": "fieldform.tsx"
     },
     {
@@ -17325,7 +17325,7 @@
       "source_file": "src/components/common/form/FieldForm.tsx",
       "source_location": "L18",
       "id": "form_fieldform_fieldsetstyles",
-      "community": 174,
+      "community": 106,
       "norm_label": "fieldsetstyles"
     },
     {
@@ -17334,7 +17334,7 @@
       "source_file": "src/components/common/form/FieldForm.tsx",
       "source_location": "L28",
       "id": "form_fieldform_inputcontroller",
-      "community": 174,
+      "community": 106,
       "norm_label": "inputcontroller()"
     },
     {
@@ -17343,7 +17343,7 @@
       "source_file": "src/components/common/form/FieldForm.tsx",
       "source_location": "L57",
       "id": "form_fieldform_fieldform",
-      "community": 174,
+      "community": 106,
       "norm_label": "fieldform()"
     },
     {
@@ -17595,7 +17595,7 @@
       "source_file": "src/components/common/input/SelectInput.tsx",
       "source_location": "L22",
       "id": "input_selectinput_selectinput",
-      "community": 239,
+      "community": 61,
       "norm_label": "selectinput()"
     },
     {
@@ -17613,7 +17613,7 @@
       "source_file": "src/components/common/input/TextAreaInput.tsx",
       "source_location": "L8",
       "id": "input_textareainput_textareainput",
-      "community": 239,
+      "community": 61,
       "norm_label": "textareainput()"
     },
     {
@@ -17730,7 +17730,7 @@
       "source_file": "src/components/common/input/index.ts",
       "source_location": "L1",
       "id": "src_components_common_input_index_ts",
-      "community": 174,
+      "community": 106,
       "norm_label": "index.ts"
     },
     {
@@ -17739,7 +17739,7 @@
       "source_file": "src/components/common/input/UploadInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_input_uploadinput_tsx",
-      "community": 153,
+      "community": 106,
       "norm_label": "uploadinput.tsx"
     },
     {
@@ -17748,7 +17748,7 @@
       "source_file": "src/components/common/input/UploadInput.tsx",
       "source_location": "L8",
       "id": "input_uploadinput_uploadinput",
-      "community": 153,
+      "community": 106,
       "norm_label": "uploadinput()"
     },
     {
@@ -17829,7 +17829,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L1",
       "id": "src_components_common_toast_toastprovider_tsx",
-      "community": 308,
+      "community": 106,
       "norm_label": "toastprovider.tsx"
     },
     {
@@ -17838,7 +17838,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L10",
       "id": "toast_toastprovider_iconvariants",
-      "community": 308,
+      "community": 106,
       "norm_label": "iconvariants"
     },
     {
@@ -17847,7 +17847,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L23",
       "id": "toast_toastprovider_toasttypeicon",
-      "community": 308,
+      "community": 106,
       "norm_label": "toasttypeicon()"
     },
     {
@@ -17856,7 +17856,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L34",
       "id": "toast_toastprovider_defaultduration",
-      "community": 308,
+      "community": 106,
       "norm_label": "defaultduration"
     },
     {
@@ -17865,7 +17865,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L39",
       "id": "toast_toastprovider_toastitem",
-      "community": 308,
+      "community": 106,
       "norm_label": "toastitem()"
     },
     {
@@ -17874,7 +17874,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L78",
       "id": "toast_toastprovider_toastprovider",
-      "community": 308,
+      "community": 106,
       "norm_label": "toastprovider()"
     },
     {
@@ -18216,7 +18216,7 @@
       "source_file": "src/components/common/dialog/index.ts",
       "source_location": "L1",
       "id": "src_components_common_dialog_index_ts",
-      "community": 174,
+      "community": 106,
       "norm_label": "index.ts"
     },
     {
@@ -18504,7 +18504,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L1",
       "id": "src_components_common_command_palette_commandpalette_tsx",
-      "community": 153,
+      "community": 106,
       "norm_label": "commandpalette.tsx"
     },
     {
@@ -18513,7 +18513,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L14",
       "id": "command_palette_commandpalette_paletteitemstyles",
-      "community": 153,
+      "community": 106,
       "norm_label": "paletteitemstyles"
     },
     {
@@ -18522,7 +18522,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L24",
       "id": "command_palette_commandpalette_commandpalette",
-      "community": 153,
+      "community": 106,
       "norm_label": "commandpalette()"
     },
     {
@@ -18540,7 +18540,7 @@
       "source_file": "src/components/common/command-palette/SearchInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_command_palette_searchinput_tsx",
-      "community": 153,
+      "community": 106,
       "norm_label": "searchinput.tsx"
     },
     {
@@ -18549,7 +18549,7 @@
       "source_file": "src/components/common/command-palette/SearchInput.tsx",
       "source_location": "L7",
       "id": "command_palette_searchinput_searchinput",
-      "community": 153,
+      "community": 106,
       "norm_label": "searchinput()"
     },
     {
@@ -18612,7 +18612,7 @@
       "source_file": "src/components/common/button/index.ts",
       "source_location": "L1",
       "id": "src_components_common_button_index_ts",
-      "community": 153,
+      "community": 106,
       "norm_label": "index.ts"
     },
     {
@@ -19107,7 +19107,7 @@
       "source_file": "src/components/common/icon/index.ts",
       "source_location": "L1",
       "id": "src_components_common_icon_index_ts",
-      "community": 153,
+      "community": 106,
       "norm_label": "index.ts"
     },
     {
@@ -20295,7 +20295,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L16",
       "id": "code_protobuftojson_kindbadge",
-      "community": 239,
+      "community": 61,
       "norm_label": "kindbadge()"
     },
     {
@@ -20592,7 +20592,7 @@
       "source_file": "src/components/feature/encoding/JwtDecoder.tsx",
       "source_location": "L24",
       "id": "encoding_jwtdecoder_jwtdecoder",
-      "community": 314,
+      "community": 15,
       "norm_label": "jwtdecoder()"
     },
     {
@@ -21906,7 +21906,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L37",
       "id": "text_textcaseconverter_textcaseconverter",
-      "community": 15,
+      "community": 373,
       "norm_label": "textcaseconverter()"
     },
     {
@@ -22770,7 +22770,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_tablenode_tsx",
-      "community": 1,
+      "community": 239,
       "norm_label": "tablenode.tsx"
     },
     {
@@ -22779,7 +22779,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L10",
       "id": "db_diagram_tablenode_constraint_colors",
-      "community": 1,
+      "community": 239,
       "norm_label": "constraint_colors"
     },
     {
@@ -22788,7 +22788,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L20",
       "id": "db_diagram_tablenode_constrainttoggle",
-      "community": 1,
+      "community": 239,
       "norm_label": "constrainttoggle()"
     },
     {
@@ -22797,7 +22797,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L50",
       "id": "db_diagram_tablenode_tablenodecomponent",
-      "community": 1,
+      "community": 239,
       "norm_label": "tablenodecomponent()"
     },
     {
@@ -22806,7 +22806,7 @@
       "source_file": "src/components/feature/data/db-diagram/ImportSqlPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_importsqlpanel_tsx",
-      "community": 1,
+      "community": 174,
       "norm_label": "importsqlpanel.tsx"
     },
     {
@@ -22815,7 +22815,7 @@
       "source_file": "src/components/feature/data/db-diagram/ImportSqlPanel.tsx",
       "source_location": "L11",
       "id": "db_diagram_importsqlpanel_importsqlpanel",
-      "community": 1,
+      "community": 174,
       "norm_label": "importsqlpanel()"
     },
     {
@@ -22842,7 +22842,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportTypescriptPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_exporttypescriptpanel_tsx",
-      "community": 1,
+      "community": 172,
       "norm_label": "exporttypescriptpanel.tsx"
     },
     {
@@ -22851,7 +22851,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportTypescriptPanel.tsx",
       "source_location": "L9",
       "id": "db_diagram_exporttypescriptpanel_exporttypescriptpanel",
-      "community": 1,
+      "community": 153,
       "norm_label": "exporttypescriptpanel()"
     },
     {
@@ -22860,7 +22860,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramCanvas.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_diagramcanvas_tsx",
-      "community": 1,
+      "community": 153,
       "norm_label": "diagramcanvas.tsx"
     },
     {
@@ -22869,7 +22869,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramCanvas.tsx",
       "source_location": "L13",
       "id": "db_diagram_diagramcanvas_nodetypes",
-      "community": 1,
+      "community": 153,
       "norm_label": "nodetypes"
     },
     {
@@ -22878,7 +22878,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramCanvas.tsx",
       "source_location": "L14",
       "id": "db_diagram_diagramcanvas_edgetypes",
-      "community": 1,
+      "community": 153,
       "norm_label": "edgetypes"
     },
     {
@@ -22887,7 +22887,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramCanvas.tsx",
       "source_location": "L16",
       "id": "db_diagram_diagramcanvas_diagramcanvas",
-      "community": 1,
+      "community": 153,
       "norm_label": "diagramcanvas()"
     },
     {
@@ -22896,7 +22896,7 @@
       "source_file": "src/components/feature/data/db-diagram/ImportJsonSchemaPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_importjsonschemapanel_tsx",
-      "community": 1,
+      "community": 172,
       "norm_label": "importjsonschemapanel.tsx"
     },
     {
@@ -22905,7 +22905,7 @@
       "source_file": "src/components/feature/data/db-diagram/ImportJsonSchemaPanel.tsx",
       "source_location": "L10",
       "id": "db_diagram_importjsonschemapanel_importjsonschemapanel",
-      "community": 1,
+      "community": 172,
       "norm_label": "importjsonschemapanel()"
     },
     {
@@ -22914,7 +22914,7 @@
       "source_file": "src/components/feature/data/db-diagram/DbmlEditorPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_dbmleditorpanel_tsx",
-      "community": 1,
+      "community": 172,
       "norm_label": "dbmleditorpanel.tsx"
     },
     {
@@ -22923,7 +22923,7 @@
       "source_file": "src/components/feature/data/db-diagram/DbmlEditorPanel.tsx",
       "source_location": "L10",
       "id": "db_diagram_dbmleditorpanel_dbmleditorpanel",
-      "community": 1,
+      "community": 172,
       "norm_label": "dbmleditorpanel()"
     },
     {
@@ -22932,7 +22932,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramListPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_diagramlistpanel_tsx",
-      "community": 1,
+      "community": 172,
       "norm_label": "diagramlistpanel.tsx"
     },
     {
@@ -22941,7 +22941,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramListPanel.tsx",
       "source_location": "L10",
       "id": "db_diagram_diagramlistpanel_diagramitemstyles",
-      "community": 1,
+      "community": 172,
       "norm_label": "diagramitemstyles"
     },
     {
@@ -22950,7 +22950,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramListPanel.tsx",
       "source_location": "L20",
       "id": "db_diagram_diagramlistpanel_diagramlistpanel",
-      "community": 1,
+      "community": 172,
       "norm_label": "diagramlistpanel()"
     },
     {
@@ -22959,7 +22959,7 @@
       "source_file": "src/components/feature/data/db-diagram/constants.ts",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_constants_ts",
-      "community": 1,
+      "community": 174,
       "norm_label": "constants.ts"
     },
     {
@@ -22968,7 +22968,7 @@
       "source_file": "src/components/feature/data/db-diagram/constants.ts",
       "source_location": "L3",
       "id": "db_diagram_constants_dialect_options",
-      "community": 1,
+      "community": 174,
       "norm_label": "dialect_options"
     },
     {
@@ -22977,7 +22977,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_diagramcontext_tsx",
-      "community": 1,
+      "community": 153,
       "norm_label": "diagramcontext.tsx"
     },
     {
@@ -22986,7 +22986,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L6",
       "id": "db_diagram_diagramcontext_ctx",
-      "community": 1,
+      "community": 153,
       "norm_label": "ctx"
     },
     {
@@ -22995,7 +22995,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L8",
       "id": "db_diagram_diagramcontext_diagramprovider",
-      "community": 1,
+      "community": 153,
       "norm_label": "diagramprovider()"
     },
     {
@@ -23004,7 +23004,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L17",
       "id": "db_diagram_diagramcontext_usediagram",
-      "community": 1,
+      "community": 153,
       "norm_label": "usediagram()"
     },
     {
@@ -23013,7 +23013,7 @@
       "source_file": "src/components/feature/data/db-diagram/RelationshipEdge.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_relationshipedge_tsx",
-      "community": 1,
+      "community": 153,
       "norm_label": "relationshipedge.tsx"
     },
     {
@@ -23022,7 +23022,7 @@
       "source_file": "src/components/feature/data/db-diagram/RelationshipEdge.tsx",
       "source_location": "L9",
       "id": "db_diagram_relationshipedge_relation_options",
-      "community": 1,
+      "community": 153,
       "norm_label": "relation_options"
     },
     {
@@ -23031,7 +23031,7 @@
       "source_file": "src/components/feature/data/db-diagram/RelationshipEdge.tsx",
       "source_location": "L17",
       "id": "db_diagram_relationshipedge_relationshipedgecomponent",
-      "community": 1,
+      "community": 153,
       "norm_label": "relationshipedgecomponent()"
     },
     {
@@ -23040,7 +23040,7 @@
       "source_file": "src/components/feature/data/db-diagram/CloseButton.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_closebutton_tsx",
-      "community": 1,
+      "community": 172,
       "norm_label": "closebutton.tsx"
     },
     {
@@ -23049,7 +23049,7 @@
       "source_file": "src/components/feature/data/db-diagram/CloseButton.tsx",
       "source_location": "L3",
       "id": "db_diagram_closebutton_closebutton",
-      "community": 1,
+      "community": 172,
       "norm_label": "closebutton()"
     },
     {
@@ -23058,7 +23058,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportMermaidPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_exportmermaidpanel_tsx",
-      "community": 1,
+      "community": 172,
       "norm_label": "exportmermaidpanel.tsx"
     },
     {
@@ -23067,7 +23067,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportMermaidPanel.tsx",
       "source_location": "L10",
       "id": "db_diagram_exportmermaidpanel_exportmermaidpanel",
-      "community": 1,
+      "community": 172,
       "norm_label": "exportmermaidpanel()"
     },
     {
@@ -23076,7 +23076,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportSqlPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_exportsqlpanel_tsx",
-      "community": 1,
+      "community": 174,
       "norm_label": "exportsqlpanel.tsx"
     },
     {
@@ -23085,7 +23085,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportSqlPanel.tsx",
       "source_location": "L11",
       "id": "db_diagram_exportsqlpanel_exportsqlpanel",
-      "community": 1,
+      "community": 174,
       "norm_label": "exportsqlpanel()"
     },
     {
@@ -34478,7 +34478,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L5",
-      "community": 1,
+      "community": 153,
       "norm_label": "contextvalue",
       "id": "db_diagram_diagramcontext_contextvalue"
     },
@@ -72829,6 +72829,28 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "code_mermaidrenderer_mermaidrenderer",
+      "target": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/MermaidRenderer.tsx",
+      "source_location": "L95",
+      "weight": 1.0,
+      "source": "code_mermaidrenderer_mermaidrenderer",
+      "target": "hooks_usemountonce_usemountonce"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L65",
       "weight": 1.0,
       "source": "code_mermaidrenderer_mermaidrenderer",
@@ -72844,17 +72866,6 @@
       "weight": 1.0,
       "source": "code_mermaidrenderer_mermaidrenderer",
       "target": "hooks_usetoolcomputation_usetoolcomputation"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "src/components/feature/code/MermaidRenderer.tsx",
-      "source_location": "L95",
-      "weight": 1.0,
-      "source": "code_mermaidrenderer_mermaidrenderer",
-      "target": "hooks_usemountonce_usemountonce"
     },
     {
       "relation": "calls",
@@ -98305,5 +98316,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "96c839edc0987bc1b63229c1e03f29f16ef61f0a"
+  "built_at_commit": "55788085da18a8cd470ccd4764c4431aa1653ce0"
 }
