@@ -9,7 +9,7 @@ import { documentToSchema } from '@/diagram/operations/export'
 import { useToast } from '@/hooks/state'
 import type { DiagramInnerProps, DiagramSidePanelProps, SidePanel, ToolComponentProps } from '@/types'
 import { gridLayoutPositions } from '@/utils/db-diagram'
-import { downloadTextFile } from '@/utils/file'
+import { downloadBlob } from '@/utils/download'
 
 import { DbmlEditorPanel } from './DbmlEditorPanel'
 import { DiagramCanvas } from './DiagramCanvas'
@@ -112,7 +112,7 @@ const DiagramWorkspace = () => {
     const schema = documentToSchema(doc)
     const jsonStr = JSON.stringify(schema, null, 2)
     const safeName = doc.diagramName.replace(/[^a-zA-Z0-9-_]/g, '_').toLowerCase()
-    downloadTextFile(jsonStr, `${safeName}.json`, 'application/json')
+    downloadBlob(new Blob([jsonStr], { type: 'application/json' }), `${safeName}.json`)
   }, [editor])
 
   const handleImportJson = useCallback(

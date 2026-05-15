@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import { Button, CopyButton, SelectInput } from '@/components/common'
 import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
 import type { ExportSqlPanelProps, SqlDialect } from '@/types'
-import { downloadTextFile } from '@/utils'
+import { downloadBlob } from '@/utils'
 
 import { CloseButton } from './CloseButton'
 import { DIALECT_OPTIONS } from './constants'
@@ -19,7 +19,7 @@ export const ExportSqlPanel = ({ onClose }: ExportSqlPanelProps) => {
   const handleDownload = () => {
     if (!generatedSql) return
     const safeName = document.diagramName.replace(/[^a-zA-Z0-9-_]/g, '_').toLowerCase()
-    downloadTextFile(generatedSql, `${safeName}-${dialect}.sql`, 'application/sql')
+    downloadBlob(new Blob([generatedSql], { type: 'application/sql' }), `${safeName}-${dialect}.sql`)
   }
 
   return (

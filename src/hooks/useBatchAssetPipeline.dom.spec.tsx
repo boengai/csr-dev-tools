@@ -23,7 +23,10 @@ vi.mock('@/utils/image', async () => {
 
 vi.mock('@/utils/download', () => ({
   downloadBlob: vi.fn(),
-  downloadBlobsAsZip: vi.fn(async () => new Blob()),
+}))
+
+vi.mock('@/utils/zip', () => ({
+  buildZipBlob: vi.fn(async () => new Blob()),
 }))
 
 const ORIG_CREATE = URL.createObjectURL
@@ -283,8 +286,9 @@ describe('useBatchAssetPipeline', () => {
     expect(downloadModule.downloadBlob).toHaveBeenCalledWith(blob, 'one.png')
   })
 
-  it('downloadAll forwards to downloadBlobsAsZip', async () => {
+  it('downloadAll builds a zip via buildZipBlob and forwards the result to downloadBlob', async () => {
     const downloadModule = await import('@/utils/download')
+    const zipModule = await import('@/utils/zip')
     const { result } = renderHook(() => useBatchAssetPipeline<string>(OPTIONS))
     const blobs = { 'a.png': new Blob(['a']), 'b.png': new Blob(['b']) }
 
@@ -292,7 +296,8 @@ describe('useBatchAssetPipeline', () => {
       await result.current.downloadAll('assets.zip', blobs)
     })
 
-    expect(downloadModule.downloadBlobsAsZip).toHaveBeenCalledWith(blobs, 'assets.zip')
+    expect(zipModule.buildZipBlob).toHaveBeenCalledWith(blobs)
+    expect(downloadModule.downloadBlob).toHaveBeenCalledWith(expect.any(Blob), 'assets.zip')
   })
 
   it('reset() clears all state', async () => {

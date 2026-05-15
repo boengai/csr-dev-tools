@@ -22,7 +22,7 @@ import type {
   SchemaParseOutput,
   ToolComponentProps,
 } from '@/types'
-import { downloadBinaryFile, downloadTextFile } from '@/utils/file'
+import { downloadBlob } from '@/utils/download'
 import type { OutputFormat } from '@/types/utils/protobuf-codec'
 import { detectProtobufFormat } from '@/wasm/parsers'
 
@@ -143,9 +143,9 @@ const EncodeContent = ({
       for (let i = 0; i < result.length; i++) {
         bytes[i] = result.charCodeAt(i) & 0xff
       }
-      downloadBinaryFile(bytes, `encoded_${safeName}_${timestamp}.pb`)
+      downloadBlob(new Blob([bytes], { type: 'application/octet-stream' }), `encoded_${safeName}_${timestamp}.pb`)
     } else {
-      downloadTextFile(result, `encoded_${safeName}_${timestamp}.pb.txt`, 'text/plain')
+      downloadBlob(new Blob([result], { type: 'text/plain' }), `encoded_${safeName}_${timestamp}.pb.txt`)
     }
   }, [result, format, selectedMessageType])
 
@@ -317,7 +317,7 @@ const DecodeContent = ({
     if (!result) return
     const timestamp = Date.now()
     const safeName = selectedMessageType.replace(/[^a-zA-Z0-9-_]/g, '_')
-    downloadTextFile(result, `decoded_${safeName}_${timestamp}.json`, 'application/json')
+    downloadBlob(new Blob([result], { type: 'application/json' }), `decoded_${safeName}_${timestamp}.json`)
   }, [result, selectedMessageType])
 
   return (

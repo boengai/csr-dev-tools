@@ -16,7 +16,8 @@ import {
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { DownloadTarget, ImageConvertorAction, ImageConvertorState, ImageFormat } from '@/types'
-import { downloadBlob, downloadBlobsAsZip } from '@/utils/download'
+import { downloadBlob } from '@/utils/download'
+import { buildZipBlob } from '@/utils/zip'
 import { convertImageFormat, isValidImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
@@ -168,7 +169,8 @@ export const ImageConvertor = () => {
           files[key] = await parseDataUrlToBlob(value)
         }
         fileName = `csr-dev-tools_converted_${Date.now()}.zip`
-        const blob = await downloadBlobsAsZip(files, fileName)
+        const blob = await buildZipBlob(files)
+        downloadBlob(blob, fileName)
         downloadTargetRef.current = { blob, filename: fileName }
       } else {
         const [[key, dataUrl]] = Object.entries(formattedImages)

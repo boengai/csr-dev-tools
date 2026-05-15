@@ -6,8 +6,9 @@ import type {
   UseBatchAssetPipelineOptions,
   UseBatchAssetPipelineResult,
 } from '@/types'
-import { downloadBlob, downloadBlobsAsZip } from '@/utils/download'
+import { downloadBlob } from '@/utils/download'
 import { loadImageFromFile } from '@/utils/image'
+import { buildZipBlob } from '@/utils/zip'
 import { useToast } from './state/useToast'
 import { useStaleSafeAsync } from './useStaleSafeAsync'
 
@@ -18,7 +19,7 @@ import { useStaleSafeAsync } from './useStaleSafeAsync'
  *
  *   - `useStaleSafeAsync` for race-free `regenerate()`
  *   - `loadImageFromFile` for source decoding
- *   - `downloadBlob` / `downloadBlobsAsZip` for output
+ *   - `downloadBlob` / `buildZipBlob` for output
  *   - `useToast` for the reject / success / failure messages
  *
  * See CONTEXT.md → "Batch asset pipeline".
@@ -136,7 +137,8 @@ export function useBatchAssetPipeline<TResults>(
   }, [])
 
   const downloadAll = useCallback(async (zipName: string, files: Record<string, Blob | string>) => {
-    await downloadBlobsAsZip(files, zipName)
+    const blob = await buildZipBlob(files)
+    downloadBlob(blob, zipName)
   }, [])
 
   const openFilePicker = useCallback(() => {
