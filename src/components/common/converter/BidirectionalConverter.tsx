@@ -1,8 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useMemo, useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
-import { useInputLocalStorage, useToast, useToolComputation } from '@/hooks'
+import { useInputLocalStorage, useMountOnce, useToast, useToolFields } from '@/hooks'
 import type { BidirectionalConverterProps } from '@/types'
 
 const sourceKey = (mode: string, prefix?: string) =>
@@ -34,24 +34,31 @@ export function BidirectionalConverter<M extends string>({
   sourceKeyPrefix,
   sourceToolbarSlot,
 }: BidirectionalConverterProps<M>) {
-  const [mode, setMode] = useInputLocalStorage<M>(
+  const [persistedMode, setPersistedMode] = useInputLocalStorage<M>(
     `csr-dev-tools-${modeStorageKey}-mode`,
     modes[0].key,
   )
-  const [source, setSource] = useState(() => readSource(mode, sourceKeyPrefix))
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { toast } = useToast()
-  const initializedRef = useRef(false)
-  const modeRef = useRef(mode)
 
-  const modeConfig = modes.find((m) => m.key === mode) ?? modes[0]
+  const initialBag = useMemo(
+    () => ({ mode: persistedMode, source: readSource(persistedMode, sourceKeyPrefix) }),
+    // Initial bag is captured once on mount; mode changes after that are
+    // routed through setFieldsImmediate, not via re-running this memo.
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only seed
+    [],
+  )
 
-  const { result, setInput, setInputImmediate } = useToolComputation<
-    { mode: M; source: string },
-    string
-  >(compute, {
+  const {
+    inputs,
+    result,
+    setFields,
+    setFieldsImmediate,
+  } = useToolFields<{ mode: M; source: string }, string>({
+    compute,
     debounceMs: 300,
-    initial: '',
+    initial: initialBag,
+    initialResult: '',
     isEmpty: ({ source: val }) => val.trim().length === 0,
     onError: (err, input) => {
       if (onError) {
@@ -63,35 +70,33 @@ export function BidirectionalConverter<M extends string>({
     },
   })
 
-  useEffect(() => {
-    if (!initializedRef.current) {
-      initializedRef.current = true
-      if (source) setInputImmediate({ source, mode })
+  const { mode, source } = inputs
+  const modeConfig = modes.find((m) => m.key === mode) ?? modes[0]
+
+  useMountOnce(() => {
+    if (initialBag.source) {
+      setFieldsImmediate(initialBag)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- only on mount
-  }, [])
+  })
 
   const handleSourceChange = (val: string) => {
-    setSource(val)
-    writeSource(modeRef.current, val, sourceKeyPrefix)
-    setInput({ source: val, mode })
+    writeSource(mode, val, sourceKeyPrefix)
+    setFields({ source: val })
   }
 
   const openDialog = (m: M) => {
-    setMode(m)
-    modeRef.current = m
     const restored = readSource(m, sourceKeyPrefix)
-    setSource(restored)
+    setPersistedMode(m)
     setDialogOpen(true)
-    setInputImmediate({ source: restored, mode: m })
+    setFieldsImmediate({ mode: m, source: restored })
   }
 
   const handleReset = () => {
-    setInputImmediate({ source: '', mode })
+    setFieldsImmediate({ source: '' })
   }
 
   const recompute = () => {
-    setInputImmediate({ source, mode })
+    setFieldsImmediate({})
   }
 
   return (

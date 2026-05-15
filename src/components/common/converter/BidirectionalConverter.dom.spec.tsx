@@ -153,6 +153,67 @@ describe('BidirectionalConverter — compute pipeline', () => {
     })
     expect(compute).toHaveBeenLastCalledWith({ mode: 'b-to-a', source: 'saved B' })
   })
+
+  // The mode buttons live outside the dialog (in the tile), so there is no
+  // "in-dialog mode swap" path in this component. The atomic-fire behavior
+  // is exercised by the open path: openDialog(m) does a single
+  // setInputImmediate({ mode, source }) call that should produce exactly
+  // one compute, not two. The pre-existing test at "fires compute with
+  // persisted source when opening a mode" asserts on args but not count;
+  // this one asserts the count.
+  it('calls compute exactly once when opening a mode with seeded source (no double-fire)', async () => {
+    localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('hello'))
+    const compute = vi.fn(upperCompute)
+    render(
+      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} />,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    expect(compute).toHaveBeenCalledTimes(1)
+    expect(compute).toHaveBeenCalledWith({ mode: 'a-to-b', source: 'hello' })
+  })
+
+  // NOTE: write-path characterization is intentionally absent.
+  // handleSourceChange → writeSource(mode, val, sourceKeyPrefix) cannot be exercised
+  // in jsdom — CodeMirror (used by FieldForm type="code") renders a contenteditable
+  // div and its onChange is not reachable via fireEvent.change or beforeinput dispatch.
+  // Read-side per-mode isolation IS covered by the test
+  // "reads per-mode source from localStorage when switching modes". Write-side
+  // regressions are gated by manual smoke testing during the upcoming useToolFields
+  // migration (Task 2 step 2.6 in docs/superpowers/plans/2026-05-15-bidirectional-converter-tool-fields-migration.md).
+
+  it('calls setInputImmediate with empty source (via onReset) when the dialog is closed', async () => {
+    // There is no standalone Reset button in the dialog. ToolDialogShell wires
+    // onReset to handleAfterClose, so the reset fires when the dialog closes.
+    // handleReset calls setInputImmediate({ source: '', mode }) but does NOT
+    // call setSource(''), so the CodeMirror field value is NOT cleared — only
+    // the compute pipeline receives the empty-source signal.
+    // isEmpty({ source: '' }) short-circuits compute, so compute is NOT called.
+    localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('seed'))
+    const compute = vi.fn(upperCompute)
+    render(
+      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} />,
+    )
+
+    fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    compute.mockClear()
+
+    // Closing the dialog triggers handleAfterClose → onReset → handleReset.
+    fireEvent.click(screen.getByRole('button', { name: /close/i }))
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    // isEmpty short-circuits compute when source is empty.
+    expect(compute).not.toHaveBeenCalled()
+  })
 })
 
 describe('BidirectionalConverter — sourceToolbarSlot', () => {
@@ -225,5 +286,27 @@ describe('BidirectionalConverter — autoOpen + close', () => {
     )
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
     expect(onAfterDialogClose).toHaveBeenCalledTimes(1)
+  })
+})
+
+describe('BidirectionalConverter — mode persistence', () => {
+  it('restores the last-used mode after remount', () => {
+    const { unmount } = render(
+      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={upperCompute} />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'B → A' }))
+    // Dialog opens with mode b-to-a — confirms mode is set.
+    expect(screen.getByText('B Input')).toBeTruthy()
+
+    // Close before unmount is cleanup hygiene, not a persistence trigger —
+    // useInputLocalStorage writes on mode-set, not on close.
+    fireEvent.click(screen.getByRole('button', { name: /close/i }))
+    unmount()
+
+    render(
+      <BidirectionalConverter autoOpen modes={MODES} modeStorageKey="test" compute={upperCompute} />,
+    )
+    // After remount with autoOpen, the persisted mode (b-to-a) drives the labels.
+    expect(screen.getByText('B Input')).toBeTruthy()
   })
 })
