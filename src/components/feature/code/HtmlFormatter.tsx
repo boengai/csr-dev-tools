@@ -26,6 +26,8 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   const handleSourceChange = (val: string) => setFields({ source: val })
   const handleModeChange = (val: string) => setFieldsImmediate({ mode: val as 'beautify' | 'minify' })
   const handleIndentChange = (val: string) => setFieldsImmediate({ indent: val === 'tab' ? 'tab' : Number(val) })
+  // Partial reset: clears source only, preserves mode + indent. The hook's
+  // reset() would also clear those, which is not the original behavior.
   const handleReset = () => setFieldsImmediate({ source: '' })
 
   return (

@@ -25,6 +25,8 @@ export const SqlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
   const handleSourceChange = (val: string) => setFields({ source: val })
   const handleDialectChange = (val: string) => setFieldsImmediate({ dialect: val as SqlFormatDialect })
   const handleIndentChange = (val: string) => setFieldsImmediate({ indent: Number(val) })
+  // Partial reset: clears source only, preserves dialect + indent. The hook's
+  // reset() would also clear those, which is not the original behavior.
   const handleReset = () => setFieldsImmediate({ source: '' })
 
   return (
