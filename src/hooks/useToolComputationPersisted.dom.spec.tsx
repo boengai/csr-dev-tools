@@ -59,7 +59,7 @@ describe('useToolComputationPersisted — initialization', () => {
 })
 
 describe('useToolComputationPersisted — write-through', () => {
-  it('writes to localStorage on setInput (after debounce settles state)', async () => {
+  it('writes to localStorage on setInput (after React state commits)', async () => {
     const { result } = renderHook(() =>
       useToolComputationPersisted<string, string>({
         compute: () => 'never',

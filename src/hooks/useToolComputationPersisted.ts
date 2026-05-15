@@ -34,7 +34,7 @@ function writeValue<I>(key: string, value: I): void {
 export function useToolComputationPersisted<I, R>(
   options: UseToolComputationPersistedOptions<I, R>,
 ): UseToolComputationPersistedResult<I, R> {
-  const { storageKey, initial, initialResult, ...computeOptions } = options
+  const { storageKey, initial, initialResult, compute, ...computeOptions } = options
 
   const initialInput = useMemo(
     () => readValue(storageKey, initial),
@@ -51,7 +51,7 @@ export function useToolComputationPersisted<I, R>(
     result,
     setInput: pipelineSetInput,
     setInputImmediate: pipelineSetInputImmediate,
-  } = useToolComputation<I, R>(options.compute, {
+  } = useToolComputation<I, R>(compute, {
     ...computeOptions,
     initial: initialResult,
   })
