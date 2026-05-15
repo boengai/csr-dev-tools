@@ -1,9 +1,9 @@
 import { useEffect, useMemo } from 'react'
 
 import type { UseToolFieldsPersistedOptions, UseToolFieldsResult } from '@/types'
-import { readJsonStorage, writeJsonStorage } from './persist/jsonStorage'
-import { useMountOnce } from './useMountOnce'
-import { useToolFields } from './useToolFields'
+import { useMountOnce } from '../useMountOnce'
+import { useToolFields } from '../useToolFields'
+import { readJsonStorage, writeJsonStorage } from './jsonStorage'
 
 /**
  * Persistent variant of [[useToolFields]]: owns the localStorage round-trip

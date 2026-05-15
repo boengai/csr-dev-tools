@@ -75,7 +75,7 @@ short-circuits fire synchronously.
 
 The variant of the [[Tool field bag]] that owns its localStorage
 round-trip. Implemented by `useToolFieldsPersisted`
-(`src/hooks/useToolFieldsPersisted.ts`).
+(`src/hooks/persist/useToolFieldsPersisted.ts`).
 
 Composes `useToolFields` with two small concerns the standard pattern
 needs every time it persists: read the bag from localStorage on mount
@@ -109,7 +109,7 @@ include the other multi-field code Tools that currently combine
 
 The single-Input variant of [[Persistent tool field bag]]. Implemented
 by `useToolComputationPersisted`
-(`src/hooks/useToolComputationPersisted.ts`).
+(`src/hooks/persist/useToolComputationPersisted.ts`).
 
 Composes `useToolComputation` with the same two concerns
 [[Persistent tool field bag]] adds: read the input from localStorage on

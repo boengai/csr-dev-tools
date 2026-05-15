@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import type { UseToolComputationPersistedOptions, UseToolComputationPersistedResult } from '@/types'
-import { readJsonStorage, writeJsonStorage } from './persist/jsonStorage'
-import { useMountOnce } from './useMountOnce'
-import { useToolComputation } from './useToolComputation'
+import { useMountOnce } from '../useMountOnce'
+import { useToolComputation } from '../useToolComputation'
+import { readJsonStorage, writeJsonStorage } from './jsonStorage'
 
 /**
  * Persistent variant of [[useToolComputation]] for single-Input Tools: owns the
