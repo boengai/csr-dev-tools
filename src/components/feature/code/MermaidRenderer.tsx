@@ -1,11 +1,10 @@
-import DOMPurify from 'dompurify'
 import { AnimatePresence, m } from 'motion/react'
-import { useCallback, useEffect, useReducer, useRef } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
 import { Button, CopyButton, FieldForm, ToolDialogShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useInputLocalStorage, useMountOnce, useToast } from '@/hooks'
-import type { MermaidRendererAction, MermaidRendererState, ToolComponentProps } from '@/types'
+import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
+import type { MermaidComputeResult, ToolComponentProps } from '@/types'
 import {
   consumeHandoff,
   downloadMermaidSvg,
@@ -44,92 +43,71 @@ const SYNTAX_EXAMPLES = [
   { code: 'gantt\n    title Project\n    section A\n    Task 1: a1, 2024-01-01, 30d', label: 'Gantt' },
   { code: 'pie\n    title Distribution\n    "A": 40\n    "B": 30\n    "C": 30', label: 'Pie' },
 ]
-const initialState: MermaidRendererState = {
-  dialogOpen: false,
-  error: null,
-  exportingPng: false,
-  fixSuggestion: null,
-  referenceOpen: false,
-  svg: '',
-}
 
-const reducer = (state: MermaidRendererState, action: MermaidRendererAction): MermaidRendererState => {
-  switch (action.type) {
-    case 'SET_DIALOG_OPEN':
-      return { ...state, dialogOpen: action.payload }
-    case 'SET_ERROR':
-      return { ...state, error: action.payload }
-    case 'SET_EXPORTING_PNG':
-      return { ...state, exportingPng: action.payload }
-    case 'SET_FIX_SUGGESTION':
-      return { ...state, fixSuggestion: action.payload }
-    case 'SET_REFERENCE_OPEN':
-      return { ...state, referenceOpen: action.payload }
-    case 'SET_SVG':
-      return { ...state, svg: action.payload }
-    case 'RENDER_SUCCESS':
-      return { ...state, svg: action.payload, error: null, fixSuggestion: null }
-    case 'RENDER_ERROR':
-      return { ...state, error: action.payload.error, svg: '', fixSuggestion: action.payload.fixSuggestion }
-    case 'RESET':
-      return { ...initialState, dialogOpen: state.dialogOpen }
-    default:
-      return state
+const INITIAL_RESULT: MermaidComputeResult = { kind: 'svg', svg: '' }
+
+// Unique-id source for mermaid.render — the id only needs to be unique across
+// concurrent renders to avoid DOM collisions inside mermaid itself.
+let mermaidRenderSeq = 0
+
+const computeMermaid = async (input: string): Promise<MermaidComputeResult> => {
+  try {
+    const id = `mermaid-render-${++mermaidRenderSeq}`
+    const { svg } = await renderMermaid(input, id)
+    return { kind: 'svg', svg }
+  } catch (err) {
+    const message = err instanceof Error ? err.message : 'Invalid Mermaid syntax'
+    return { kind: 'error', message, fixSuggestion: suggestMermaidFix(input, message) }
   }
 }
 
 export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [code, setCode] = useInputLocalStorage('csr-dev-tools-mermaid-renderer-code', DEFAULT_CODE)
-  const [state, dispatch] = useReducer(reducer, { ...initialState, dialogOpen: autoOpen ?? false })
-  const { dialogOpen, error, exportingPng, fixSuggestion, referenceOpen, svg } = state
+  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
+  const [exportingPng, setExportingPng] = useState(false)
+  const [referenceOpen, setReferenceOpen] = useState(false)
   const { toast } = useToast()
 
-  const setDialogOpen = (open: boolean) => dispatch({ type: 'SET_DIALOG_OPEN', payload: open })
+  const { result, setInput, setInputImmediate } = useToolComputation<string, MermaidComputeResult>(computeMermaid, {
+    debounceMs: 500,
+    initial: INITIAL_RESULT,
+    isEmpty: (input) => !input.trim(),
+  })
 
-  const renderCounterRef = useRef(0)
+  const svg = result.kind === 'svg' ? result.svg : ''
+  const errorMessage = result.kind === 'error' ? result.message : null
+  const fixSuggestion = result.kind === 'error' ? result.fixSuggestion : null
+
   const previewRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (previewRef.current) {
-      previewRef.current.innerHTML = DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true } })
+      previewRef.current.innerHTML = svg
     }
   }, [svg])
 
-  const handleRender = useCallback(async (input: string) => {
-    const currentRender = ++renderCounterRef.current
-    try {
-      const result = await renderMermaid(input, `mermaid-render-${currentRender}`)
-      if (currentRender === renderCounterRef.current) {
-        dispatch({ type: 'RENDER_SUCCESS', payload: result.svg })
-      }
-    } catch (err) {
-      if (currentRender === renderCounterRef.current) {
-        const errorMessage = err instanceof Error ? err.message : 'Invalid Mermaid syntax'
-        dispatch({
-          type: 'RENDER_ERROR',
-          payload: { error: errorMessage, fixSuggestion: suggestMermaidFix(input, errorMessage) },
-        })
-      }
-    }
-  }, [])
+  const initialInputRef = useRef<string | null>(null)
 
-  const debouncedRender = useDebounceCallback(handleRender, 500)
-
+  // Handoff is read-once — capture the prefill exactly once across StrictMode's
+  // double-mount cycle. The actual compute kickoff is a separate effect below
+  // so it survives StrictMode's interim cleanup (which clears the pipeline's
+  // pending setTimeout).
   useMountOnce(() => {
     initializeMermaid()
-
     const prefill = consumeHandoff('mermaid-renderer')
-    if (prefill) {
-      setCode(prefill)
-      handleRender(prefill)
-    } else {
-      handleRender(code)
-    }
+    if (prefill) setCode(prefill)
+    initialInputRef.current = prefill ?? code
   })
+
+  useEffect(() => {
+    if (initialInputRef.current !== null) {
+      setInputImmediate(initialInputRef.current)
+    }
+  }, [setInputImmediate])
 
   const handleCodeChange = (value: string) => {
     setCode(value)
-    debouncedRender(value)
+    setInput(value)
   }
 
   const handleExportSvg = () => {
@@ -142,7 +120,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   }
 
   const handleExportPng = async () => {
-    dispatch({ type: 'SET_EXPORTING_PNG', payload: true })
+    setExportingPng(true)
     try {
       const dataUrl = await svgToPng(svg)
       downloadPng(dataUrl)
@@ -150,25 +128,24 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     } catch {
       toast({ action: 'add', item: { label: 'Failed to export PNG', type: 'error' } })
     } finally {
-      dispatch({ type: 'SET_EXPORTING_PNG', payload: false })
+      setExportingPng(false)
     }
   }
 
   const handleExampleClick = (exampleCode: string) => {
     setCode(exampleCode)
-    handleRender(exampleCode)
+    setInputImmediate(exampleCode)
   }
 
   const handleApplyFix = useCallback(() => {
     if (!fixSuggestion) return
     setCode(fixSuggestion.fixedCode)
-    dispatch({ type: 'SET_FIX_SUGGESTION', payload: null })
-    handleRender(fixSuggestion.fixedCode)
-  }, [fixSuggestion, handleRender, setCode])
+    setInputImmediate(fixSuggestion.fixedCode)
+  }, [fixSuggestion, setCode, setInputImmediate])
 
   const handleReset = () => {
     setCode(DEFAULT_CODE)
-    dispatch({ type: 'RESET' })
+    setInputImmediate(DEFAULT_CODE)
   }
 
   return (
@@ -205,7 +182,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
               />
 
               <AnimatePresence>
-                {error && (
+                {errorMessage && (
                   <m.div
                     animate={{ height: 'auto', opacity: 1 }}
                     className="flex flex-col gap-2 overflow-hidden"
@@ -214,7 +191,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                     transition={{ duration: 0.2 }}
                   >
                     <p className="text-body-xs text-error" role="alert">
-                      {error}
+                      {errorMessage}
                     </p>
 
                     {fixSuggestion && (
@@ -235,7 +212,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                   aria-expanded={referenceOpen}
                   aria-label="Syntax Reference"
                   className="relative flex cursor-pointer items-center gap-2 text-body-xs text-gray-400 before:absolute before:inset-x-0 before:inset-y-[-8px] before:content-[''] hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-                  onClick={() => dispatch({ type: 'SET_REFERENCE_OPEN', payload: !referenceOpen })}
+                  onClick={() => setReferenceOpen((v) => !v)}
                   type="button"
                 >
                   <span className={chevronStyles({ open: referenceOpen })}>▶</span>
@@ -298,7 +275,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                 {svg ? (
                   <div className="w-full [&_svg]:h-auto [&_svg]:w-full" ref={previewRef} />
                 ) : (
-                  !error && <p className="text-body-xs text-gray-500">Enter Mermaid syntax to see a preview</p>
+                  !errorMessage && <p className="text-body-xs text-gray-500">Enter Mermaid syntax to see a preview</p>
                 )}
               </div>
             </div>
