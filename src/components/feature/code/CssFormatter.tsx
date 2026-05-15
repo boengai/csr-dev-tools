@@ -1,53 +1,31 @@
-import { useState } from 'react'
-
 import { CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolFields } from '@/hooks'
 import type { CssInput, ToolComponentProps } from '@/types'
 import { formatCss, minifyCss } from '@/wasm/formatter'
 
 const toolEntry = TOOL_REGISTRY_MAP['css-formatter']
 
 export const CssFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useState('')
-  const [mode, setMode] = useState<'beautify' | 'minify'>('beautify')
-  const [indent, setIndent] = useState<number | 'tab'>(2)
   const { toast } = useToast()
 
-  const { result, setInput, setInputImmediate } = useToolComputation<CssInput, string>(
-    ({ source: val, mode: m, indent: ind }) => (m === 'beautify' ? formatCss(val, ind) : minifyCss(val)),
-    {
-      debounceMs: 300,
-      initial: '',
-      isEmpty: ({ source: val }) => val.trim().length === 0,
-      onError: () => {
-        toast({ action: 'add', item: { label: 'Unable to format CSS', type: 'error' } })
-      },
+  const { inputs, result, setFields, setFieldsImmediate } = useToolFields<CssInput, string>({
+    compute: ({ source: val, mode: m, indent: ind }) => (m === 'beautify' ? formatCss(val, ind) : minifyCss(val)),
+    debounceMs: 300,
+    initial: { source: '', mode: 'beautify', indent: 2 },
+    initialResult: '',
+    isEmpty: ({ source: val }) => val.trim().length === 0,
+    onError: () => {
+      toast({ action: 'add', item: { label: 'Unable to format CSS', type: 'error' } })
     },
-  )
+  })
+  const { source, mode, indent } = inputs
 
-  const handleSourceChange = (val: string) => {
-    setSource(val)
-    setInput({ source: val, mode, indent })
-  }
-
-  const handleModeChange = (val: string) => {
-    const m = val as 'beautify' | 'minify'
-    setMode(m)
-    setInputImmediate({ source, mode: m, indent })
-  }
-
-  const handleIndentChange = (val: string) => {
-    const ind = val === 'tab' ? 'tab' : Number(val)
-    setIndent(ind)
-    setInputImmediate({ source, mode, indent: ind })
-  }
-
-  const handleReset = () => {
-    setSource('')
-    setInputImmediate({ source: '', mode, indent })
-  }
+  const handleSourceChange = (val: string) => setFields({ source: val })
+  const handleModeChange = (val: string) => setFieldsImmediate({ mode: val as 'beautify' | 'minify' })
+  const handleIndentChange = (val: string) => setFieldsImmediate({ indent: val === 'tab' ? 'tab' : Number(val) })
+  const handleReset = () => setFieldsImmediate({ source: '' })
 
   return (
     <ToolDialogFrame
