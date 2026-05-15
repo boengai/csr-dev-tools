@@ -1,18 +1,17 @@
 import { CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolComputationPersisted } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { formatJson, getJsonParseError } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-formatter']
 
 export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useInputLocalStorage('csr-dev-tools-json-formatter-source', '')
   const { toast } = useToast()
 
-  const { result, setInput, setInputImmediate } = useToolComputation<string, string>(
-    async (val) => {
+  const { input: source, result, setInput, setInputImmediate } = useToolComputationPersisted<string, string>({
+    compute: async (val) => {
       const parseError = await getJsonParseError(val)
       if (parseError != null) {
         throw new Error(`Invalid JSON: ${parseError}`)
@@ -23,29 +22,20 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         throw new Error('Unable to format JSON')
       }
     },
-    {
-      debounceMs: 300,
-      initial: '',
-      isEmpty: (val) => val.trim().length === 0,
-      onError: (err) => {
-        const label = err instanceof Error ? err.message : 'Unable to format JSON'
-        toast({ action: 'add', item: { label, type: 'error' } })
-      },
+    debounceMs: 300,
+    initial: '',
+    initialResult: '',
+    isEmpty: (val) => val.trim().length === 0,
+    onError: (err) => {
+      const label = err instanceof Error ? err.message : 'Unable to format JSON'
+      toast({ action: 'add', item: { label, type: 'error' } })
     },
-  )
-
-  useMountOnce(() => {
-    if (source) setInputImmediate(source)
+    storageKey: 'csr-dev-tools-json-formatter-source',
   })
 
-  const handleSourceChange = (val: string) => {
-    setSource(val)
-    setInput(val)
-  }
+  const handleSourceChange = (val: string) => setInput(val)
 
-  const handleReset = () => {
-    setInputImmediate('')
-  }
+  const handleReset = () => setInputImmediate('')
 
   return (
     <ToolDialogFrame
