@@ -6372,7 +6372,7 @@
       "source_file": "src/types/components/feature/code/sqlFormatter.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_sqlformatter_ts",
-      "community": 308,
+      "community": 151,
       "norm_label": "sqlformatter.ts"
     },
     {
@@ -6381,7 +6381,7 @@
       "source_file": "src/types/components/feature/code/sqlFormatter.ts",
       "source_location": "L3",
       "id": "code_sqlformatter_sqlinput",
-      "community": 308,
+      "community": 151,
       "norm_label": "sqlinput"
     },
     {
@@ -6390,7 +6390,7 @@
       "source_file": "src/types/components/feature/code/cssFormatter.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_cssformatter_ts",
-      "community": 311,
+      "community": 151,
       "norm_label": "cssformatter.ts"
     },
     {
@@ -6399,7 +6399,7 @@
       "source_file": "src/types/components/feature/code/cssFormatter.ts",
       "source_location": "L1",
       "id": "code_cssformatter_cssinput",
-      "community": 311,
+      "community": 151,
       "norm_label": "cssinput"
     },
     {
@@ -6439,28 +6439,10 @@
       "norm_label": "javascriptminifier.ts"
     },
     {
-      "label": "JsMinifierState",
-      "file_type": "code",
-      "source_file": "src/types/components/feature/code/javaScriptMinifier.ts",
-      "source_location": "L1",
-      "id": "code_javascriptminifier_jsminifierstate",
-      "community": 178,
-      "norm_label": "jsminifierstate"
-    },
-    {
-      "label": "JsMinifierAction",
-      "file_type": "code",
-      "source_file": "src/types/components/feature/code/javaScriptMinifier.ts",
-      "source_location": "L7",
-      "id": "code_javascriptminifier_jsminifieraction",
-      "community": 178,
-      "norm_label": "jsminifieraction"
-    },
-    {
       "label": "JsInput",
       "file_type": "code",
       "source_file": "src/types/components/feature/code/javaScriptMinifier.ts",
-      "source_location": "L13",
+      "source_location": "L1",
       "id": "code_javascriptminifier_jsinput",
       "community": 178,
       "norm_label": "jsinput"
@@ -6615,7 +6597,7 @@
       "source_file": "src/types/components/feature/code/jsonToTypeScript.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_jsontotypescript_ts",
-      "community": 202,
+      "community": 312,
       "norm_label": "jsontotypescript.ts"
     },
     {
@@ -6624,7 +6606,7 @@
       "source_file": "src/types/components/feature/code/jsonToTypeScript.ts",
       "source_location": "L1",
       "id": "code_jsontotypescript_jsontsinput",
-      "community": 202,
+      "community": 312,
       "norm_label": "jsontsinput"
     },
     {
@@ -7983,7 +7965,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L1",
       "id": "src_diagram_state_ts",
-      "community": 41,
+      "community": 373,
       "norm_label": "state.ts"
     },
     {
@@ -7992,7 +7974,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L3",
       "id": "diagram_state_createinitialdocument",
-      "community": 41,
+      "community": 373,
       "norm_label": "createinitialdocument()"
     },
     {
@@ -8001,7 +7983,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L15",
       "id": "diagram_state_clonedocument",
-      "community": 41,
+      "community": 373,
       "norm_label": "clonedocument()"
     },
     {
@@ -8163,7 +8145,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L23",
       "id": "diagram_editor_isvaliddocument",
-      "community": 41,
+      "community": 373,
       "norm_label": "isvaliddocument()"
     },
     {
@@ -8181,7 +8163,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L44",
       "id": "diagram_editor_diagrameditor_constructor",
-      "community": 41,
+      "community": 373,
       "norm_label": ".constructor()"
     },
     {
@@ -8262,7 +8244,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L113",
       "id": "diagram_editor_diagrameditor_replacedocument",
-      "community": 41,
+      "community": 373,
       "norm_label": ".replacedocument()"
     },
     {
@@ -8487,7 +8469,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L295",
       "id": "diagram_editor_diagrameditor_loadfromexportedjson",
-      "community": 41,
+      "community": 9,
       "norm_label": ".loadfromexportedjson()"
     },
     {
@@ -8658,7 +8640,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_state_spec_ts",
-      "community": 41,
+      "community": 373,
       "norm_label": "state.spec.ts"
     },
     {
@@ -8667,7 +8649,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L6",
       "id": "diagram_state_spec_doc",
-      "community": 41,
+      "community": 373,
       "norm_label": "doc"
     },
     {
@@ -8676,7 +8658,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L21",
       "id": "diagram_state_spec_a",
-      "community": 41,
+      "community": 373,
       "norm_label": "a"
     },
     {
@@ -8685,7 +8667,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L22",
       "id": "diagram_state_spec_b",
-      "community": 41,
+      "community": 373,
       "norm_label": "b"
     },
     {
@@ -9063,7 +9045,7 @@
       "source_file": "src/diagram/operations/lifecycle.ts",
       "source_location": "L11",
       "id": "operations_lifecycle_schematodocument",
-      "community": 116,
+      "community": 41,
       "norm_label": "schematodocument()"
     },
     {
@@ -9198,7 +9180,7 @@
       "source_file": "src/diagram/operations/import.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_operations_import_spec_ts",
-      "community": 116,
+      "community": 41,
       "norm_label": "import.spec.ts"
     },
     {
@@ -9207,7 +9189,7 @@
       "source_file": "src/diagram/operations/import.spec.ts",
       "source_location": "L16",
       "id": "operations_import_spec_json_schema_fixture",
-      "community": 116,
+      "community": 41,
       "norm_label": "json_schema_fixture"
     },
     {
@@ -9216,7 +9198,7 @@
       "source_file": "src/diagram/operations/import.spec.ts",
       "source_location": "L32",
       "id": "operations_import_spec_document_result",
-      "community": 116,
+      "community": 41,
       "norm_label": "{ document, result }"
     },
     {
@@ -9225,7 +9207,7 @@
       "source_file": "src/diagram/operations/import.spec.ts",
       "source_location": "L38",
       "id": "operations_import_spec_initial",
-      "community": 116,
+      "community": 41,
       "norm_label": "initial"
     },
     {
@@ -9423,7 +9405,7 @@
       "source_file": "src/diagram/operations/import.ts",
       "source_location": "L1",
       "id": "src_diagram_operations_import_ts",
-      "community": 116,
+      "community": 41,
       "norm_label": "import.ts"
     },
     {
@@ -9432,7 +9414,7 @@
       "source_file": "src/diagram/operations/import.ts",
       "source_location": "L6",
       "id": "operations_import_importfromsql",
-      "community": 116,
+      "community": 41,
       "norm_label": "importfromsql()"
     },
     {
@@ -9441,7 +9423,7 @@
       "source_file": "src/diagram/operations/import.ts",
       "source_location": "L24",
       "id": "operations_import_importfromjsonschema",
-      "community": 116,
+      "community": 41,
       "norm_label": "importfromjsonschema()"
     },
     {
@@ -13977,7 +13959,7 @@
       "source_file": "src/utils/db-diagram-persistence.ts",
       "source_location": "L1",
       "id": "src_utils_db_diagram_persistence_ts",
-      "community": 87,
+      "community": 9,
       "norm_label": "db-diagram-persistence.ts"
     },
     {
@@ -13986,7 +13968,7 @@
       "source_file": "src/utils/db-diagram-persistence.ts",
       "source_location": "L4",
       "id": "utils_db_diagram_persistence_serializediagram",
-      "community": 87,
+      "community": 9,
       "norm_label": "serializediagram()"
     },
     {
@@ -13995,7 +13977,7 @@
       "source_file": "src/utils/db-diagram-persistence.ts",
       "source_location": "L64",
       "id": "utils_db_diagram_persistence_deserializediagram",
-      "community": 87,
+      "community": 9,
       "norm_label": "deserializediagram()"
     },
     {
@@ -14004,7 +13986,7 @@
       "source_file": "src/utils/db-diagram-persistence.ts",
       "source_location": "L106",
       "id": "utils_db_diagram_persistence_validatediagramschema",
-      "community": 87,
+      "community": 9,
       "norm_label": "validatediagramschema()"
     },
     {
@@ -15426,7 +15408,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L1",
       "id": "src_utils_db_diagram_persistence_spec_ts",
-      "community": 87,
+      "community": 9,
       "norm_label": "db-diagram-persistence.spec.ts"
     },
     {
@@ -15435,7 +15417,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L7",
       "id": "utils_db_diagram_persistence_spec_makesampleschema",
-      "community": 87,
+      "community": 9,
       "norm_label": "makesampleschema()"
     },
     {
@@ -15444,7 +15426,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L63",
       "id": "utils_db_diagram_persistence_spec_nodes",
-      "community": 87,
+      "community": 9,
       "norm_label": "nodes"
     },
     {
@@ -15453,7 +15435,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L86",
       "id": "utils_db_diagram_persistence_spec_edges",
-      "community": 87,
+      "community": 9,
       "norm_label": "edges"
     },
     {
@@ -15462,7 +15444,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L102",
       "id": "utils_db_diagram_persistence_spec_schema",
-      "community": 87,
+      "community": 9,
       "norm_label": "schema"
     },
     {
@@ -15471,7 +15453,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L129",
       "id": "utils_db_diagram_persistence_spec_json",
-      "community": 87,
+      "community": 9,
       "norm_label": "json"
     },
     {
@@ -15480,7 +15462,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L137",
       "id": "utils_db_diagram_persistence_spec_edges_nodes",
-      "community": 87,
+      "community": 9,
       "norm_label": "{ edges, nodes }"
     },
     {
@@ -15489,7 +15471,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L162",
       "id": "utils_db_diagram_persistence_spec_originalnodes",
-      "community": 87,
+      "community": 9,
       "norm_label": "originalnodes"
     },
     {
@@ -15498,7 +15480,7 @@
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L193",
       "id": "utils_db_diagram_persistence_spec_nodes_restorednodes",
-      "community": 87,
+      "community": 9,
       "norm_label": "{ nodes: restorednodes }"
     },
     {
@@ -16227,7 +16209,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L1",
       "id": "src_utils_tailwind_variants_ts",
-      "community": 61,
+      "community": 308,
       "norm_label": "tailwind-variants.ts"
     },
     {
@@ -16236,7 +16218,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L3",
       "id": "utils_tailwind_variants_twmergeconfig",
-      "community": 61,
+      "community": 308,
       "norm_label": "twmergeconfig"
     },
     {
@@ -16245,7 +16227,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L23",
       "id": "utils_tailwind_variants_cnmerge",
-      "community": 61,
+      "community": 308,
       "norm_label": "cnmerge()"
     },
     {
@@ -16254,7 +16236,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L24",
       "id": "utils_tailwind_variants_tv",
-      "community": 61,
+      "community": 308,
       "norm_label": "tv"
     },
     {
@@ -17595,7 +17577,7 @@
       "source_file": "src/components/common/input/SelectInput.tsx",
       "source_location": "L22",
       "id": "input_selectinput_selectinput",
-      "community": 61,
+      "community": 308,
       "norm_label": "selectinput()"
     },
     {
@@ -17613,7 +17595,7 @@
       "source_file": "src/components/common/input/TextAreaInput.tsx",
       "source_location": "L8",
       "id": "input_textareainput_textareainput",
-      "community": 61,
+      "community": 308,
       "norm_label": "textareainput()"
     },
     {
@@ -19548,7 +19530,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L109",
       "id": "security_certificatedecoder_certificatedecoder",
-      "community": 173,
+      "community": 15,
       "norm_label": "certificatedecoder()"
     },
     {
@@ -19647,7 +19629,7 @@
       "source_file": "src/components/feature/security/AesEncryptDecrypt.tsx",
       "source_location": "L12",
       "id": "security_aesencryptdecrypt_aesencryptdecrypt",
-      "community": 15,
+      "community": 277,
       "norm_label": "aesencryptdecrypt()"
     },
     {
@@ -20173,21 +20155,12 @@
       "norm_label": "javascriptminifier.tsx"
     },
     {
-      "label": "reducer()",
-      "file_type": "code",
-      "source_file": "src/components/feature/code/JavaScriptMinifier.tsx",
-      "source_location": "L10",
-      "id": "code_javascriptminifier_reducer",
-      "community": 178,
-      "norm_label": "reducer()"
-    },
-    {
       "label": "JavaScriptMinifier()",
       "file_type": "code",
       "source_file": "src/components/feature/code/JavaScriptMinifier.tsx",
-      "source_location": "L25",
+      "source_location": "L10",
       "id": "code_javascriptminifier_javascriptminifier",
-      "community": 15,
+      "community": 151,
       "norm_label": "javascriptminifier()"
     },
     {
@@ -20214,7 +20187,7 @@
       "source_file": "src/components/feature/code/JsonToTypeScript.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_jsontotypescript_tsx",
-      "community": 202,
+      "community": 312,
       "norm_label": "jsontotypescript.tsx"
     },
     {
@@ -20223,7 +20196,7 @@
       "source_file": "src/components/feature/code/JsonToTypeScript.tsx",
       "source_location": "L12",
       "id": "code_jsontotypescript_jsontotypescript",
-      "community": 202,
+      "community": 15,
       "norm_label": "jsontotypescript()"
     },
     {
@@ -20304,7 +20277,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L16",
       "id": "code_protobuftojson_kindbadge",
-      "community": 61,
+      "community": 308,
       "norm_label": "kindbadge()"
     },
     {
@@ -20349,16 +20322,16 @@
       "source_file": "src/components/feature/code/CssFormatter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_cssformatter_tsx",
-      "community": 311,
+      "community": 151,
       "norm_label": "cssformatter.tsx"
     },
     {
       "label": "CssFormatter()",
       "file_type": "code",
       "source_file": "src/components/feature/code/CssFormatter.tsx",
-      "source_location": "L12",
+      "source_location": "L10",
       "id": "code_cssformatter_cssformatter",
-      "community": 311,
+      "community": 151,
       "norm_label": "cssformatter()"
     },
     {
@@ -20511,16 +20484,16 @@
       "source_file": "src/components/feature/code/SqlFormatter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_sqlformatter_tsx",
-      "community": 308,
+      "community": 151,
       "norm_label": "sqlformatter.tsx"
     },
     {
       "label": "SqlFormatter()",
       "file_type": "code",
       "source_file": "src/components/feature/code/SqlFormatter.tsx",
-      "source_location": "L12",
+      "source_location": "L10",
       "id": "code_sqlformatter_sqlformatter",
-      "community": 308,
+      "community": 151,
       "norm_label": "sqlformatter()"
     },
     {
@@ -20547,7 +20520,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_jsonschemavalidator_tsx",
-      "community": 202,
+      "community": 15,
       "norm_label": "jsonschemavalidator.tsx"
     },
     {
@@ -20556,7 +20529,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L12",
       "id": "code_jsonschemavalidator_validatorinput",
-      "community": 202,
+      "community": 15,
       "norm_label": "validatorinput"
     },
     {
@@ -20565,7 +20538,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L14",
       "id": "code_jsonschemavalidator_jsonschemavalidator",
-      "community": 202,
+      "community": 15,
       "norm_label": "jsonschemavalidator()"
     },
     {
@@ -20574,7 +20547,7 @@
       "source_file": "src/components/feature/encoding/JwtDecoder.tsx",
       "source_location": "L1",
       "id": "src_components_feature_encoding_jwtdecoder_tsx",
-      "community": 15,
+      "community": 314,
       "norm_label": "jwtdecoder.tsx"
     },
     {
@@ -20583,7 +20556,7 @@
       "source_file": "src/components/feature/encoding/JwtDecoder.tsx",
       "source_location": "L12",
       "id": "encoding_jwtdecoder_jwtdecoded",
-      "community": 15,
+      "community": 314,
       "norm_label": "jwtdecoded"
     },
     {
@@ -20592,7 +20565,7 @@
       "source_file": "src/components/feature/encoding/JwtDecoder.tsx",
       "source_location": "L19",
       "id": "encoding_jwtdecoder_empty_decoded",
-      "community": 15,
+      "community": 314,
       "norm_label": "empty_decoded"
     },
     {
@@ -20601,7 +20574,7 @@
       "source_file": "src/components/feature/encoding/JwtDecoder.tsx",
       "source_location": "L24",
       "id": "encoding_jwtdecoder_jwtdecoder",
-      "community": 15,
+      "community": 314,
       "norm_label": "jwtdecoder()"
     },
     {
@@ -20790,7 +20763,7 @@
       "source_file": "src/components/feature/image/SvgViewer.tsx",
       "source_location": "L1",
       "id": "src_components_feature_image_svgviewer_tsx",
-      "community": 15,
+      "community": 315,
       "norm_label": "svgviewer.tsx"
     },
     {
@@ -20799,7 +20772,7 @@
       "source_file": "src/components/feature/image/SvgViewer.tsx",
       "source_location": "L13",
       "id": "image_svgviewer_sanitize",
-      "community": 15,
+      "community": 315,
       "norm_label": "sanitize()"
     },
     {
@@ -20808,7 +20781,7 @@
       "source_file": "src/components/feature/image/SvgViewer.tsx",
       "source_location": "L15",
       "id": "image_svgviewer_svgviewer",
-      "community": 15,
+      "community": 315,
       "norm_label": "svgviewer()"
     },
     {
@@ -21159,7 +21132,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L1",
       "id": "src_components_feature_image_favicongenerator_tsx",
-      "community": 260,
+      "community": 102,
       "norm_label": "favicongenerator.tsx"
     },
     {
@@ -21168,7 +21141,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L9",
       "id": "image_favicongenerator_linktags",
-      "community": 260,
+      "community": 102,
       "norm_label": "linktags"
     },
     {
@@ -21177,7 +21150,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L12",
       "id": "image_favicongenerator_flattenforzip",
-      "community": 260,
+      "community": 102,
       "norm_label": "flattenforzip()"
     },
     {
@@ -21186,7 +21159,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L18",
       "id": "image_favicongenerator_favicongenerator",
-      "community": 260,
+      "community": 102,
       "norm_label": "favicongenerator()"
     },
     {
@@ -21690,7 +21663,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L1",
       "id": "src_components_feature_time_cronexpressionparser_tsx",
-      "community": 15,
+      "community": 314,
       "norm_label": "cronexpressionparser.tsx"
     },
     {
@@ -21699,7 +21672,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L11",
       "id": "time_cronexpressionparser_empty_result",
-      "community": 15,
+      "community": 314,
       "norm_label": "empty_result"
     },
     {
@@ -21708,7 +21681,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L13",
       "id": "time_cronexpressionparser_cronexpressionparser",
-      "community": 15,
+      "community": 314,
       "norm_label": "cronexpressionparser()"
     },
     {
@@ -21897,7 +21870,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_text_textcaseconverter_tsx",
-      "community": 722,
+      "community": 15,
       "norm_label": "textcaseconverter.tsx"
     },
     {
@@ -21906,7 +21879,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L23",
       "id": "text_textcaseconverter_cases",
-      "community": 722,
+      "community": 15,
       "norm_label": "cases"
     },
     {
@@ -21915,7 +21888,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L37",
       "id": "text_textcaseconverter_textcaseconverter",
-      "community": 722,
+      "community": 15,
       "norm_label": "textcaseconverter()"
     },
     {
@@ -21924,7 +21897,7 @@
       "source_file": "src/components/feature/text/WordCounter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_text_wordcounter_tsx",
-      "community": 15,
+      "community": 311,
       "norm_label": "wordcounter.tsx"
     },
     {
@@ -21933,7 +21906,7 @@
       "source_file": "src/components/feature/text/WordCounter.tsx",
       "source_location": "L12",
       "id": "text_wordcounter_empty_stats",
-      "community": 15,
+      "community": 311,
       "norm_label": "empty_stats"
     },
     {
@@ -21942,7 +21915,7 @@
       "source_file": "src/components/feature/text/WordCounter.tsx",
       "source_location": "L23",
       "id": "text_wordcounter_stat_labels",
-      "community": 15,
+      "community": 311,
       "norm_label": "stat_labels"
     },
     {
@@ -21951,7 +21924,7 @@
       "source_file": "src/components/feature/text/WordCounter.tsx",
       "source_location": "L34",
       "id": "text_wordcounter_wordcounter",
-      "community": 15,
+      "community": 311,
       "norm_label": "wordcounter()"
     },
     {
@@ -22068,7 +22041,7 @@
       "source_file": "src/components/feature/text/UserAgentParser.tsx",
       "source_location": "L1",
       "id": "src_components_feature_text_useragentparser_tsx",
-      "community": 15,
+      "community": 314,
       "norm_label": "useragentparser.tsx"
     },
     {
@@ -22077,7 +22050,7 @@
       "source_file": "src/components/feature/text/UserAgentParser.tsx",
       "source_location": "L11",
       "id": "text_useragentparser_empty",
-      "community": 15,
+      "community": 314,
       "norm_label": "empty"
     },
     {
@@ -22086,7 +22059,7 @@
       "source_file": "src/components/feature/text/UserAgentParser.tsx",
       "source_location": "L18",
       "id": "text_useragentparser_resultrow",
-      "community": 15,
+      "community": 314,
       "norm_label": "resultrow()"
     },
     {
@@ -22095,7 +22068,7 @@
       "source_file": "src/components/feature/text/UserAgentParser.tsx",
       "source_location": "L28",
       "id": "text_useragentparser_useragentparser",
-      "community": 15,
+      "community": 314,
       "norm_label": "useragentparser()"
     },
     {
@@ -23184,7 +23157,7 @@
       "source_file": "src/hooks/useToolFields.ts",
       "source_location": "L1",
       "id": "src_hooks_usetoolfields_ts",
-      "community": 151,
+      "community": 32,
       "norm_label": "usetoolfields.ts"
     },
     {
@@ -23409,7 +23382,7 @@
       "source_file": "src/hooks/useBatchAssetPipeline.ts",
       "source_location": "L27",
       "id": "hooks_usebatchassetpipeline_usebatchassetpipeline",
-      "community": 260,
+      "community": 102,
       "norm_label": "usebatchassetpipeline()"
     },
     {
@@ -23418,7 +23391,7 @@
       "source_file": "src/hooks/useToolFields.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_usetoolfields_dom_spec_tsx",
-      "community": 151,
+      "community": 32,
       "norm_label": "usetoolfields.dom.spec.tsx"
     },
     {
@@ -23427,7 +23400,7 @@
       "source_file": "src/hooks/useToolFields.dom.spec.tsx",
       "source_location": "L9",
       "id": "hooks_usetoolfields_dom_spec_input",
-      "community": 151,
+      "community": 32,
       "norm_label": "input"
     },
     {
@@ -23436,7 +23409,7 @@
       "source_file": "src/hooks/useToolFields.dom.spec.tsx",
       "source_location": "L11",
       "id": "hooks_usetoolfields_dom_spec_initial",
-      "community": 151,
+      "community": 32,
       "norm_label": "initial"
     },
     {
@@ -23445,7 +23418,7 @@
       "source_file": "src/hooks/useToolFields.dom.spec.tsx",
       "source_location": "L23",
       "id": "hooks_usetoolfields_dom_spec_result",
-      "community": 151,
+      "community": 32,
       "norm_label": "{ result }"
     },
     {
@@ -23454,7 +23427,7 @@
       "source_file": "src/hooks/useToolFields.dom.spec.tsx",
       "source_location": "L37",
       "id": "hooks_usetoolfields_dom_spec_compute",
-      "community": 151,
+      "community": 32,
       "norm_label": "compute"
     },
     {
@@ -23463,7 +23436,7 @@
       "source_file": "src/hooks/useToolFields.dom.spec.tsx",
       "source_location": "L184",
       "id": "hooks_usetoolfields_dom_spec_onerror",
-      "community": 151,
+      "community": 32,
       "norm_label": "onerror"
     },
     {
@@ -23706,7 +23679,7 @@
       "source_file": "src/hooks/useMountOnce.ts",
       "source_location": "L11",
       "id": "hooks_usemountonce_usemountonce",
-      "community": 202,
+      "community": 15,
       "norm_label": "usemountonce()"
     },
     {
@@ -23787,7 +23760,7 @@
       "source_file": "src/hooks/useToolComputation.ts",
       "source_location": "L1",
       "id": "src_hooks_usetoolcomputation_ts",
-      "community": 151,
+      "community": 32,
       "norm_label": "usetoolcomputation.ts"
     },
     {
@@ -31945,6 +31918,150 @@
       "norm_label": "code:bash (git add benchmarks/parsers.bench.ts benchmarks/json-tools.be)"
     },
     {
+      "label": "2026-05-15-code-formatters-tool-fields-cluster.md",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L1",
+      "id": "docs_superpowers_plans_2026_05_15_code_formatters_tool_fields_cluster_md",
+      "community": 87,
+      "norm_label": "2026-05-15-code-formatters-tool-fields-cluster.md"
+    },
+    {
+      "label": "Code Formatters \u2192 useToolFields Cluster Migration Plan",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L1",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan",
+      "community": 87,
+      "norm_label": "code formatters \u2192 usetoolfields cluster migration plan"
+    },
+    {
+      "label": "Files",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L15",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_files",
+      "community": 87,
+      "norm_label": "files"
+    },
+    {
+      "label": "Task 1: Migrate the three formatters to `useToolFields`",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L33",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_1_migrate_the_three_formatters_to_usetoolfields",
+      "community": 87,
+      "norm_label": "task 1: migrate the three formatters to `usetoolfields`"
+    },
+    {
+      "label": "The migration template",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L42",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_the_migration_template",
+      "community": 87,
+      "norm_label": "the migration template"
+    },
+    {
+      "label": "code:tsx (// Before)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L48",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_1",
+      "community": 87,
+      "norm_label": "code:tsx (// before)"
+    },
+    {
+      "label": "code:tsx (// Before (CssFormatter / SqlFormatter shape))",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L60",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_2",
+      "community": 87,
+      "norm_label": "code:tsx (// before (cssformatter / sqlformatter shape))"
+    },
+    {
+      "label": "code:tsx (// Before (every Tool, repeated for every field))",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L90",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_3",
+      "community": 87,
+      "norm_label": "code:tsx (// before (every tool, repeated for every field))"
+    },
+    {
+      "label": "Steps",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L131",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_steps",
+      "community": 87,
+      "norm_label": "steps"
+    },
+    {
+      "label": "code:bash (git add src/components/feature/code/CssFormatter.tsx)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L139",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_4",
+      "community": 87,
+      "norm_label": "code:bash (git add src/components/feature/code/cssformatter.tsx)"
+    },
+    {
+      "label": "code:bash (git add src/components/feature/code/JavaScriptMinifier.tsx s)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L170",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_5",
+      "community": 87,
+      "norm_label": "code:bash (git add src/components/feature/code/javascriptminifier.tsx s)"
+    },
+    {
+      "label": "code:bash (git add src/components/feature/code/SqlFormatter.tsx)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L198",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_6",
+      "community": 87,
+      "norm_label": "code:bash (git add src/components/feature/code/sqlformatter.tsx)"
+    },
+    {
+      "label": "Task 2: Refresh the knowledge graph",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L227",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_2_refresh_the_knowledge_graph",
+      "community": 87,
+      "norm_label": "task 2: refresh the knowledge graph"
+    },
+    {
+      "label": "code:bash (git add graphify-out/)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L240",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_7",
+      "community": 87,
+      "norm_label": "code:bash (git add graphify-out/)"
+    },
+    {
+      "label": "Out of scope (deliberately deferred)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L252",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_out_of_scope_deliberately_deferred",
+      "community": 87,
+      "norm_label": "out of scope (deliberately deferred)"
+    },
+    {
+      "label": "Risk register",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L261",
+      "id": "plans_2026_05_15_code_formatters_tool_fields_cluster_risk_register",
+      "community": 87,
+      "norm_label": "risk register"
+    },
+    {
       "label": "2026-04-07-phase6a-qrcode-markdown-design.md",
       "file_type": "document",
       "source_file": "docs/superpowers/specs/2026-04-07-phase6a-qrcode-markdown-design.md",
@@ -33187,6 +33304,33 @@
       "norm_label": "code:block1 (error: browsertype.launch: executable doesn't exist at /user)"
     },
     {
+      "label": "JsMinifierState",
+      "file_type": "code",
+      "source_file": "src/types/components/feature/code/javaScriptMinifier.ts",
+      "source_location": "L1",
+      "community": 178,
+      "norm_label": "jsminifierstate",
+      "id": "code_javascriptminifier_jsminifierstate"
+    },
+    {
+      "label": "JsMinifierAction",
+      "file_type": "code",
+      "source_file": "src/types/components/feature/code/javaScriptMinifier.ts",
+      "source_location": "L7",
+      "community": 178,
+      "norm_label": "jsminifieraction",
+      "id": "code_javascriptminifier_jsminifieraction"
+    },
+    {
+      "label": "reducer()",
+      "file_type": "code",
+      "source_file": "src/components/feature/code/JavaScriptMinifier.tsx",
+      "source_location": "L10",
+      "community": 178,
+      "norm_label": "reducer()",
+      "id": "code_javascriptminifier_reducer"
+    },
+    {
       "label": "downloadTextFile()",
       "file_type": "code",
       "source_file": "src/utils/file.ts",
@@ -33848,7 +33992,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/image/BackgroundRemover/index.tsx",
       "source_location": "L36",
-      "community": 367,
+      "community": 0,
       "norm_label": "reducer()",
       "id": "backgroundremover_index_reducer"
     },
@@ -41517,7 +41661,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 312,
+      "community": 0,
       "norm_label": "session ref token to discard stale async results",
       "id": "concept_session_token_pattern"
     },
@@ -41972,7 +42116,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 312,
+      "community": 0,
       "norm_label": "certificatedecoder",
       "id": "certificatedecoder_component"
     },
@@ -41985,7 +42129,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 312,
+      "community": 0,
       "norm_label": "chmodcalculator",
       "id": "chmodcalculator_component"
     },
@@ -41998,7 +42142,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 312,
+      "community": 0,
       "norm_label": "rsakeygenerator",
       "id": "rsakeygenerator_component"
     },
@@ -42011,7 +42155,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 312,
+      "community": 0,
       "norm_label": "aesencryptdecrypt",
       "id": "aesencryptdecrypt_component"
     },
@@ -42024,7 +42168,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 485,
+      "community": 0,
       "norm_label": "bcrypthasher",
       "id": "bcrypthasher_component"
     },
@@ -42037,7 +42181,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 485,
+      "community": 0,
       "norm_label": "hashtab (inner)",
       "id": "bcrypthasher_hashtab"
     },
@@ -42050,7 +42194,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 485,
+      "community": 0,
       "norm_label": "verifytab (inner)",
       "id": "bcrypthasher_verifytab"
     },
@@ -42063,7 +42207,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 312,
+      "community": 0,
       "norm_label": "feature/security barrel",
       "id": "security_barrel"
     },
@@ -42076,7 +42220,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 312,
+      "community": 0,
       "norm_label": "sshkeyfingerprint",
       "id": "sshkeyfingerprint_component"
     },
@@ -42089,7 +42233,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 312,
+      "community": 0,
       "norm_label": "hashgenerator",
       "id": "hashgenerator_component"
     },
@@ -42102,7 +42246,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 312,
+      "community": 0,
       "norm_label": "hmacgenerator",
       "id": "hmacgenerator_component"
     },
@@ -42115,7 +42259,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 371,
+      "community": 0,
       "norm_label": "regextester",
       "id": "regextester_component"
     },
@@ -42128,7 +42272,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 371,
+      "community": 0,
       "norm_label": "textcaseconverter",
       "id": "textcaseconverter_component"
     },
@@ -42141,7 +42285,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 371,
+      "community": 0,
       "norm_label": "wordcounter",
       "id": "wordcounter_component"
     },
@@ -42154,7 +42298,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 371,
+      "community": 0,
       "norm_label": "stringescapeunescape",
       "id": "stringescapeunescape_component"
     },
@@ -42167,7 +42311,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 371,
+      "community": 0,
       "norm_label": "textsortdedupe",
       "id": "textsortdedupe_component"
     },
@@ -42180,7 +42324,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 371,
+      "community": 0,
       "norm_label": "useragentparser",
       "id": "useragentparser_component"
     },
@@ -42193,7 +42337,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 371,
+      "community": 0,
       "norm_label": "loremipsumgenerator",
       "id": "loremipsumgenerator_component"
     },
@@ -42206,7 +42350,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 371,
+      "community": 0,
       "norm_label": "feature/text barrel",
       "id": "text_barrel"
     },
@@ -42219,7 +42363,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 371,
+      "community": 0,
       "norm_label": "textdiffchecker",
       "id": "textdiffchecker_component"
     },
@@ -42232,7 +42376,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 312,
+      "community": 0,
       "norm_label": "debounced async processing pipeline",
       "id": "concept_debounced_async_pipeline"
     },
@@ -42245,7 +42389,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 315,
+      "community": 0,
       "norm_label": "tool_registry_map[id] description pattern",
       "id": "concept_tool_registry_lookup"
     },
@@ -43481,7 +43625,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 367,
+      "community": 0,
       "norm_label": "backgroundremover",
       "id": "backgroundremover_index_component"
     },
@@ -43533,7 +43677,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 367,
+      "community": 0,
       "norm_label": "backgroundremoverresult",
       "id": "backgroundremover_result_component"
     },
@@ -43546,7 +43690,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 367,
+      "community": 0,
       "norm_label": "backgroundremovererror",
       "id": "backgroundremover_error_component"
     },
@@ -43559,7 +43703,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 367,
+      "community": 0,
       "norm_label": "backgroundremoverprocessing",
       "id": "backgroundremover_processing_component"
     },
@@ -43572,7 +43716,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 315,
+      "community": 0,
       "norm_label": "passwordgenerator",
       "id": "passwordgenerator_component"
     },
@@ -43585,7 +43729,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 367,
+      "community": 0,
       "norm_label": "qrcodegenerator",
       "id": "qrcodegenerator_component"
     },
@@ -43598,7 +43742,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 367,
+      "community": 0,
       "norm_label": "qrcodereducer",
       "id": "qrcodegenerator_reducer"
     },
@@ -43611,7 +43755,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 315,
+      "community": 0,
       "norm_label": "uuidgenerator",
       "id": "uuidgenerator_component"
     },
@@ -43624,7 +43768,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "usesidebarstore",
       "id": "usesidebarstore_store"
     },
@@ -43637,7 +43781,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 315,
+      "community": 0,
       "norm_label": "usetoast",
       "id": "usetoast_store"
     },
@@ -43650,7 +43794,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "usecommandpalettestore",
       "id": "usecommandpalettestore_store"
     },
@@ -43663,7 +43807,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "getpreviouslyfocusedelement",
       "id": "usecommandpalettestore_getpreviouslyfocused"
     },
@@ -43715,7 +43859,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "commandpalette",
       "id": "commandpalette_component"
     },
@@ -43728,7 +43872,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "searchinput (palette)",
       "id": "commandpalette_searchinput"
     },
@@ -43741,7 +43885,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 315,
+      "community": 0,
       "norm_label": "unitpxtorem",
       "id": "unitpxtorem_component"
     },
@@ -43754,7 +43898,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 315,
+      "community": 0,
       "norm_label": "aspectratiocalculator",
       "id": "aspectratiocalculator_component"
     },
@@ -43767,7 +43911,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 315,
+      "community": 0,
       "norm_label": "colorconvertor",
       "id": "colorconvertor_component"
     },
@@ -43780,7 +43924,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 315,
+      "community": 0,
       "norm_label": "colorpalettegenerator",
       "id": "colorpalettegenerator_component"
     },
@@ -43819,7 +43963,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "navigation.spec.ts",
       "id": "navigation_spec_e2e"
     },
@@ -43832,7 +43976,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "home.spec.ts",
       "id": "home_spec_e2e"
     },
@@ -43845,7 +43989,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "e2e fixtures",
       "id": "e2e_fixtures"
     },
@@ -43858,7 +44002,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "e2e selectors",
       "id": "e2e_selectors"
     },
@@ -43871,7 +44015,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 367,
+      "community": 0,
       "norm_label": "tabs",
       "id": "tabs_component"
     },
@@ -43963,7 +44107,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 315,
+      "community": 0,
       "norm_label": "toastprovider",
       "id": "toastprovider_component"
     },
@@ -43976,7 +44120,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "zustand store pattern",
       "id": "concept_zustand_store"
     },
@@ -43989,7 +44133,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 367,
+      "community": 0,
       "norm_label": "reducer+dialog tool pattern",
       "id": "concept_reducer_dialog_tool"
     },
@@ -44002,7 +44146,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 315,
+      "community": 0,
       "norm_label": "debounced compute pattern",
       "id": "concept_debounced_compute"
     },
@@ -44015,7 +44159,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 367,
+      "community": 0,
       "norm_label": "blob objecturl lifecycle",
       "id": "concept_objecturl_lifecycle"
     },
@@ -51470,6 +51614,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/types/components/feature/code/javaScriptMinifier.ts",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_types_components_feature_code_javascriptminifier_ts",
+      "target": "code_javascriptminifier_jsinput"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/types/components/feature/code/javaScriptMinifier.ts",
       "source_location": "L1",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -51485,16 +51639,6 @@
       "confidence_score": 1.0,
       "source": "src_types_components_feature_code_javascriptminifier_ts",
       "target": "code_javascriptminifier_jsminifieraction"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/types/components/feature/code/javaScriptMinifier.ts",
-      "source_location": "L13",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_types_components_feature_code_javascriptminifier_ts",
-      "target": "code_javascriptminifier_jsinput"
     },
     {
       "relation": "contains",
@@ -53124,9 +53268,9 @@
       "source_file": "src/types/hooks/computation.ts",
       "source_location": "L54",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_hooks_computation_ts",
-      "target": "hooks_computation_usetoolfieldspersistedoptions",
-      "confidence_score": 1.0
+      "target": "hooks_computation_usetoolfieldspersistedoptions"
     },
     {
       "relation": "contains",
@@ -71940,6 +72084,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/feature/code/JavaScriptMinifier.tsx",
+      "source_location": "L25",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_components_feature_code_javascriptminifier_tsx",
+      "target": "code_javascriptminifier_javascriptminifier"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/feature/code/JavaScriptMinifier.tsx",
       "source_location": "L10",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -71947,14 +72101,15 @@
       "target": "code_javascriptminifier_reducer"
     },
     {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
       "source_file": "src/components/feature/code/JavaScriptMinifier.tsx",
-      "source_location": "L25",
+      "source_location": "L13",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_components_feature_code_javascriptminifier_tsx",
-      "target": "code_javascriptminifier_javascriptminifier"
+      "source": "code_javascriptminifier_javascriptminifier",
+      "target": "hooks_usetoolfields_usetoolfields"
     },
     {
       "relation": "calls",
@@ -72320,6 +72475,17 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src/components/feature/code/CssFormatter.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "code_cssformatter_cssformatter",
+      "target": "hooks_usetoolfields_usetoolfields"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/CssFormatter.tsx",
       "source_location": "L18",
       "weight": 1.0,
       "source": "code_cssformatter_cssformatter",
@@ -72639,6 +72805,17 @@
       "confidence_score": 1.0,
       "source": "src_components_feature_code_sqlformatter_tsx",
       "target": "code_sqlformatter_sqlformatter"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/code/SqlFormatter.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "code_sqlformatter_sqlformatter",
+      "target": "hooks_usetoolfields_usetoolfields"
     },
     {
       "relation": "calls",
@@ -77729,9 +77906,9 @@
       "source_file": "src/hooks/useToolFieldsPersisted.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "src_hooks_usetoolfields_ts",
-      "confidence_score": 1.0
+      "target": "src_hooks_usetoolfields_ts"
     },
     {
       "relation": "imports",
@@ -77751,9 +77928,9 @@
       "source_file": "src/hooks/useToolFieldsPersisted.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "hooks_usetoolfields_usetoolfields",
-      "confidence_score": 1.0
+      "target": "hooks_usetoolfields_usetoolfields"
     },
     {
       "relation": "calls",
@@ -78217,9 +78394,9 @@
       "source_file": "src/hooks/useToolFieldsPersisted.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "src_hooks_usemountonce_ts",
-      "confidence_score": 1.0
+      "target": "src_hooks_usemountonce_ts"
     },
     {
       "relation": "imports",
@@ -78228,9 +78405,9 @@
       "source_file": "src/hooks/useToolFieldsPersisted.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "hooks_usemountonce_usemountonce",
-      "confidence_score": 1.0
+      "target": "hooks_usemountonce_usemountonce"
     },
     {
       "relation": "contains",
@@ -78238,9 +78415,9 @@
       "source_file": "src/hooks/useToolFieldsPersisted.ts",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "hooks_usetoolfieldspersisted_readbag",
-      "confidence_score": 1.0
+      "target": "hooks_usetoolfieldspersisted_readbag"
     },
     {
       "relation": "contains",
@@ -78248,9 +78425,9 @@
       "source_file": "src/hooks/useToolFieldsPersisted.ts",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "hooks_usetoolfieldspersisted_writebag",
-      "confidence_score": 1.0
+      "target": "hooks_usetoolfieldspersisted_writebag"
     },
     {
       "relation": "contains",
@@ -78258,9 +78435,9 @@
       "source_file": "src/hooks/useToolFieldsPersisted.ts",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetoolfieldspersisted_ts",
-      "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted",
-      "confidence_score": 1.0
+      "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
     },
     {
       "relation": "imports_from",
@@ -78269,9 +78446,9 @@
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
-      "target": "src_hooks_usetoolfieldspersisted_ts",
-      "confidence_score": 1.0
+      "target": "src_hooks_usetoolfieldspersisted_ts"
     },
     {
       "relation": "imports",
@@ -78280,9 +78457,9 @@
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
-      "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted",
-      "confidence_score": 1.0
+      "target": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
     },
     {
       "relation": "calls",
@@ -78373,9 +78550,9 @@
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
-      "target": "hooks_usetoolfieldspersisted_dom_spec_bag",
-      "confidence_score": 1.0
+      "target": "hooks_usetoolfieldspersisted_dom_spec_bag"
     },
     {
       "relation": "contains",
@@ -78383,9 +78560,9 @@
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
-      "target": "hooks_usetoolfieldspersisted_dom_spec_initial",
-      "confidence_score": 1.0
+      "target": "hooks_usetoolfieldspersisted_dom_spec_initial"
     },
     {
       "relation": "contains",
@@ -78393,9 +78570,9 @@
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L181",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
-      "target": "hooks_usetoolfieldspersisted_dom_spec_result",
-      "confidence_score": 1.0
+      "target": "hooks_usetoolfieldspersisted_dom_spec_result"
     },
     {
       "relation": "contains",
@@ -78403,9 +78580,9 @@
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L180",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetoolfieldspersisted_dom_spec_tsx",
-      "target": "hooks_usetoolfieldspersisted_dom_spec_compute",
-      "confidence_score": 1.0
+      "target": "hooks_usetoolfieldspersisted_dom_spec_compute"
     },
     {
       "relation": "contains",
@@ -78756,9 +78933,9 @@
       "source_file": "CONTEXT.md",
       "source_location": "L74",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "csr_dev_tools_context_csr_dev_tools_domain_language",
-      "target": "csr_dev_tools_context_persistent_tool_field_bag",
-      "confidence_score": 1.0
+      "target": "csr_dev_tools_context_persistent_tool_field_bag"
     },
     {
       "relation": "contains",
@@ -86216,9 +86393,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_superpowers_plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_md",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_usetoolfieldspersisted_jsonschemavalidator_migration_plan",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_usetoolfieldspersisted_jsonschemavalidator_migration_plan"
     },
     {
       "relation": "contains",
@@ -86226,9 +86403,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_usetoolfieldspersisted_jsonschemavalidator_migration_plan",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_files",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_files"
     },
     {
       "relation": "contains",
@@ -86236,9 +86413,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_usetoolfieldspersisted_jsonschemavalidator_migration_plan",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_1_add_the_type_write_the_spec_implement_the_hook",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_1_add_the_type_write_the_spec_implement_the_hook"
     },
     {
       "relation": "contains",
@@ -86246,9 +86423,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L439",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_usetoolfieldspersisted_jsonschemavalidator_migration_plan",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_2_migrate_jsonschemavalidator_to_usetoolfieldspersisted",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_2_migrate_jsonschemavalidator_to_usetoolfieldspersisted"
     },
     {
       "relation": "contains",
@@ -86256,9 +86433,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L624",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_usetoolfieldspersisted_jsonschemavalidator_migration_plan",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_3_update_context_md_with_the_new_domain_term",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_3_update_context_md_with_the_new_domain_term"
     },
     {
       "relation": "contains",
@@ -86266,9 +86443,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L694",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_usetoolfieldspersisted_jsonschemavalidator_migration_plan",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_4_refresh_the_knowledge_graph",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_4_refresh_the_knowledge_graph"
     },
     {
       "relation": "contains",
@@ -86276,9 +86453,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L721",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_usetoolfieldspersisted_jsonschemavalidator_migration_plan",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_out_of_scope_deliberately_deferred",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_out_of_scope_deliberately_deferred"
     },
     {
       "relation": "contains",
@@ -86286,9 +86463,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L733",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_usetoolfieldspersisted_jsonschemavalidator_migration_plan",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_risk_register",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_risk_register"
     },
     {
       "relation": "contains",
@@ -86296,9 +86473,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L57",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_1_add_the_type_write_the_spec_implement_the_hook",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_1",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_1"
     },
     {
       "relation": "contains",
@@ -86306,9 +86483,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L70",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_1_add_the_type_write_the_spec_implement_the_hook",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_2",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_2"
     },
     {
       "relation": "contains",
@@ -86316,9 +86493,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L145",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_1_add_the_type_write_the_spec_implement_the_hook",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_3",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_3"
     },
     {
       "relation": "contains",
@@ -86326,9 +86503,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L205",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_1_add_the_type_write_the_spec_implement_the_hook",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_4",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_4"
     },
     {
       "relation": "contains",
@@ -86336,9 +86513,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L224",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_1_add_the_type_write_the_spec_implement_the_hook",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_5",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_5"
     },
     {
       "relation": "contains",
@@ -86346,9 +86523,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L289",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_1_add_the_type_write_the_spec_implement_the_hook",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_6",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_6"
     },
     {
       "relation": "contains",
@@ -86356,9 +86533,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L364",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_1_add_the_type_write_the_spec_implement_the_hook",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_7",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_7"
     },
     {
       "relation": "contains",
@@ -86366,9 +86543,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L412",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_1_add_the_type_write_the_spec_implement_the_hook",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_8",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_8"
     },
     {
       "relation": "contains",
@@ -86376,9 +86553,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L450",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_2_migrate_jsonschemavalidator_to_usetoolfieldspersisted",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_9",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_9"
     },
     {
       "relation": "contains",
@@ -86386,9 +86563,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L456",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_2_migrate_jsonschemavalidator_to_usetoolfieldspersisted",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_10",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_10"
     },
     {
       "relation": "contains",
@@ -86396,9 +86573,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L466",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_2_migrate_jsonschemavalidator_to_usetoolfieldspersisted",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_11",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_11"
     },
     {
       "relation": "contains",
@@ -86406,9 +86583,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L507",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_2_migrate_jsonschemavalidator_to_usetoolfieldspersisted",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_12",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_12"
     },
     {
       "relation": "contains",
@@ -86416,9 +86593,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L544",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_2_migrate_jsonschemavalidator_to_usetoolfieldspersisted",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_13",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_13"
     },
     {
       "relation": "contains",
@@ -86426,9 +86603,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L555",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_2_migrate_jsonschemavalidator_to_usetoolfieldspersisted",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_14",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_14"
     },
     {
       "relation": "contains",
@@ -86436,9 +86613,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L599",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_2_migrate_jsonschemavalidator_to_usetoolfieldspersisted",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_15",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_15"
     },
     {
       "relation": "contains",
@@ -86446,9 +86623,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L635",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_3_update_context_md_with_the_new_domain_term",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_16",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_16"
     },
     {
       "relation": "contains",
@@ -86456,9 +86633,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L676",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_3_update_context_md_with_the_new_domain_term",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_17",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_17"
     },
     {
       "relation": "contains",
@@ -86466,9 +86643,9 @@
       "source_file": "docs/superpowers/plans/2026-05-15-use-tool-fields-persisted-and-json-schema-validator.md",
       "source_location": "L709",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_4_refresh_the_knowledge_graph",
-      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_18",
-      "confidence_score": 1.0
+      "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_18"
     },
     {
       "relation": "contains",
@@ -87209,6 +87386,156 @@
       "confidence_score": 1.0,
       "source": "plans_2026_04_06_wasm_phase4_parsers_task_11_add_phase_4_benchmarks",
       "target": "plans_2026_04_06_wasm_phase4_parsers_codeblock_57"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "docs_superpowers_plans_2026_05_15_code_formatters_tool_fields_cluster_md",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_files",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L33",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_1_migrate_the_three_formatters_to_usetoolfields",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L227",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_2_refresh_the_knowledge_graph",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L252",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_out_of_scope_deliberately_deferred",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L261",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_code_formatters_usetoolfields_cluster_migration_plan",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_risk_register",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L42",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_1_migrate_the_three_formatters_to_usetoolfields",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_the_migration_template",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L131",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_1_migrate_the_three_formatters_to_usetoolfields",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_steps",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L48",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_the_migration_template",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L60",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_the_migration_template",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L90",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_the_migration_template",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L139",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_steps",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L170",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_steps",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L198",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_steps",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-15-code-formatters-tool-fields-cluster.md",
+      "source_location": "L240",
+      "weight": 1.0,
+      "source": "plans_2026_05_15_code_formatters_tool_fields_cluster_task_2_refresh_the_knowledge_graph",
+      "target": "plans_2026_05_15_code_formatters_tool_fields_cluster_codeblock_7",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -96895,5 +97222,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "6428aee1bfc910077a5bd3f3ad08d2d2bed3d71d"
+  "built_at_commit": "ea27397b1735c28bee88f3c261dabb4ac1a61b88"
 }
