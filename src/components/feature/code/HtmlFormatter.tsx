@@ -1,56 +1,32 @@
-import { useState } from 'react'
-
 import { CodeOutput, CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolFieldsPersisted } from '@/hooks'
 import type { HtmlInput, ToolComponentProps } from '@/types'
 import { formatHtml, minifyHtml } from '@/wasm/formatter'
 
 const toolEntry = TOOL_REGISTRY_MAP['html-formatter']
 
 export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useInputLocalStorage('csr-dev-tools-html-formatter-source', '')
-  const [mode, setMode] = useState<'beautify' | 'minify'>('beautify')
-  const [indent, setIndent] = useState<number | 'tab'>(2)
   const { toast } = useToast()
 
-  const { result, setInput, setInputImmediate } = useToolComputation<HtmlInput, string>(
-    ({ source: val, mode: m, indent: ind }) => (m === 'beautify' ? formatHtml(val, ind) : minifyHtml(val)),
-    {
-      debounceMs: 300,
-      initial: '',
-      isEmpty: ({ source: val }) => val.trim().length === 0,
-      onError: () => {
-        toast({ action: 'add', item: { label: 'Unable to format HTML', type: 'error' } })
-      },
+  const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<HtmlInput, string>({
+    compute: ({ source: val, mode: m, indent: ind }) => (m === 'beautify' ? formatHtml(val, ind) : minifyHtml(val)),
+    debounceMs: 300,
+    initial: { source: '', mode: 'beautify', indent: 2 },
+    initialResult: '',
+    isEmpty: ({ source: val }) => val.trim().length === 0,
+    onError: () => {
+      toast({ action: 'add', item: { label: 'Unable to format HTML', type: 'error' } })
     },
-  )
-
-  useMountOnce(() => {
-    if (source) setInputImmediate({ source, mode, indent })
+    storageKey: 'csr-dev-tools-html-formatter',
   })
+  const { source, mode, indent } = inputs
 
-  const handleSourceChange = (val: string) => {
-    setSource(val)
-    setInput({ source: val, mode, indent })
-  }
-
-  const handleModeChange = (val: string) => {
-    const m = val as 'beautify' | 'minify'
-    setMode(m)
-    setInputImmediate({ source, mode: m, indent })
-  }
-
-  const handleIndentChange = (val: string) => {
-    const ind = val === 'tab' ? 'tab' : Number(val)
-    setIndent(ind)
-    setInputImmediate({ source, mode, indent: ind })
-  }
-
-  const handleReset = () => {
-    setInputImmediate({ source: '', mode, indent })
-  }
+  const handleSourceChange = (val: string) => setFields({ source: val })
+  const handleModeChange = (val: string) => setFieldsImmediate({ mode: val as 'beautify' | 'minify' })
+  const handleIndentChange = (val: string) => setFieldsImmediate({ indent: val === 'tab' ? 'tab' : Number(val) })
+  const handleReset = () => setFieldsImmediate({ source: '' })
 
   return (
     <ToolDialogFrame
@@ -63,7 +39,7 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         {
           label: 'Format',
           onOpen: () => {
-            if (source.trim()) setInputImmediate({ source, mode, indent })
+            if (source.trim()) setFieldsImmediate({})
           },
         },
       ]}
