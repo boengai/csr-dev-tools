@@ -26,7 +26,8 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
 
   const handleDataChange = (val: string) => setFields({ jsonData: val })
   const handleSchemaChange = (val: string) => setFields({ jsonSchema: val })
-  const handleReset = () => setFieldsImmediate({})
+  // Re-fires compute with the current bag (preserves pre-migration behavior); does NOT clear fields. The hook's `reset()` would clear — intentionally not used here.
+  const handleRevalidate = () => setFieldsImmediate({})
 
   return (
     <>
@@ -52,7 +53,7 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
       <ToolDialogShell
         onAfterDialogClose={onAfterDialogClose}
         onOpenChange={setDialogOpen}
-        onReset={handleReset}
+        onReset={handleRevalidate}
         open={dialogOpen}
         size="screen"
         title="JSON Schema Validator"
