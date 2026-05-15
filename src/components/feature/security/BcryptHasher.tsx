@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { Button, CodeInput, CopyButton, SelectInput, Tabs, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast } from '@/hooks'
+import { useElapsedTimer, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import {
   type BcryptHashComponents,
@@ -39,19 +39,8 @@ const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => v
   const [result, setResult] = useState<BcryptHashResult | null>(null)
   const [hashBreakdown, setHashBreakdown] = useState<BcryptHashComponents | null>(null)
   const [truncationWarning, setTruncationWarning] = useState(false)
-  const [elapsedDisplay, setElapsedDisplay] = useState(0)
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const startTimeRef = useRef(0)
+  const elapsedDisplay = useElapsedTimer(hashing)
   const { toast } = useToast()
-
-  const clearTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current)
-      timerRef.current = null
-    }
-  }, [])
-
-  useEffect(() => () => clearTimer(), [clearTimer])
 
   const handlePasswordChange = useCallback((val: string) => {
     setPassword(val)
@@ -65,12 +54,6 @@ const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => v
     onProcessingChange(true)
     setResult(null)
     setHashBreakdown(null)
-    startTimeRef.current = performance.now()
-    setElapsedDisplay(0)
-
-    timerRef.current = setInterval(() => {
-      setElapsedDisplay((performance.now() - startTimeRef.current) / 1000)
-    }, 100)
 
     try {
       const hashResult = await hashPassword(password, Number(rounds))
@@ -82,11 +65,10 @@ const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => v
         item: { label: 'Hashing failed. Please try again.', type: 'error' },
       })
     } finally {
-      clearTimer()
       setHashing(false)
       onProcessingChange(false)
     }
-  }, [password, rounds, clearTimer, toast, onProcessingChange])
+  }, [password, rounds, toast, onProcessingChange])
 
   return (
     <div className="flex w-full flex-col gap-4">
@@ -161,19 +143,8 @@ const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) =>
   const [hashInput, setHashInput] = useState('')
   const [verifying, setVerifying] = useState(false)
   const [result, setResult] = useState<BcryptVerifyResult | null>(null)
-  const [elapsedDisplay, setElapsedDisplay] = useState(0)
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const startTimeRef = useRef(0)
+  const elapsedDisplay = useElapsedTimer(verifying)
   const { toast } = useToast()
-
-  const clearTimer = useCallback(() => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current)
-      timerRef.current = null
-    }
-  }, [])
-
-  useEffect(() => () => clearTimer(), [clearTimer])
 
   const handlePasswordChange = useCallback((val: string) => {
     setPassword(val)
@@ -197,12 +168,6 @@ const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) =>
     setVerifying(true)
     onProcessingChange(true)
     setResult(null)
-    startTimeRef.current = performance.now()
-    setElapsedDisplay(0)
-
-    timerRef.current = setInterval(() => {
-      setElapsedDisplay((performance.now() - startTimeRef.current) / 1000)
-    }, 100)
 
     try {
       const verifyResult = await verifyPassword(password, hashInput.trim())
@@ -213,11 +178,10 @@ const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) =>
         item: { label: 'Verification failed. Please check inputs.', type: 'error' },
       })
     } finally {
-      clearTimer()
       setVerifying(false)
       onProcessingChange(false)
     }
-  }, [password, hashInput, clearTimer, toast, onProcessingChange])
+  }, [password, hashInput, toast, onProcessingChange])
 
   return (
     <div className="flex w-full flex-col gap-4">
