@@ -3240,7 +3240,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L54",
       "id": "src_app_app",
-      "community": 151,
+      "community": 175,
       "norm_label": "app()"
     },
     {
@@ -6768,7 +6768,7 @@
       "source_file": "src/types/components/feature/code/graphqlSchemaViewer.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_graphqlschemaviewer_ts",
-      "community": 61,
+      "community": 173,
       "norm_label": "graphqlschemaviewer.ts"
     },
     {
@@ -6777,7 +6777,7 @@
       "source_file": "src/types/components/feature/code/graphqlSchemaViewer.ts",
       "source_location": "L3",
       "id": "code_graphqlschemaviewer_graphqlparseoutput",
-      "community": 61,
+      "community": 173,
       "norm_label": "graphqlparseoutput"
     },
     {
@@ -14274,7 +14274,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L198",
       "id": "utils_timezone_converter_getlocaltimezone",
-      "community": 172,
+      "community": 22,
       "norm_label": "getlocaltimezone()"
     },
     {
@@ -18720,7 +18720,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L24",
       "id": "command_palette_commandpalette_commandpalette",
-      "community": 731,
+      "community": 746,
       "norm_label": "commandpalette()"
     },
     {
@@ -19710,7 +19710,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L1",
       "id": "src_components_feature_security_certificatedecoder_tsx",
-      "community": 61,
+      "community": 174,
       "norm_label": "certificatedecoder.tsx"
     },
     {
@@ -19719,7 +19719,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L12",
       "id": "security_certificatedecoder_resultvaluestyles",
-      "community": 61,
+      "community": 174,
       "norm_label": "resultvaluestyles"
     },
     {
@@ -19728,7 +19728,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L22",
       "id": "security_certificatedecoder_resultrow",
-      "community": 61,
+      "community": 174,
       "norm_label": "resultrow()"
     },
     {
@@ -19737,7 +19737,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L42",
       "id": "security_certificatedecoder_validity_config",
-      "community": 61,
+      "community": 174,
       "norm_label": "validity_config"
     },
     {
@@ -19746,7 +19746,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L53",
       "id": "security_certificatedecoder_formatrelativetime",
-      "community": 61,
+      "community": 174,
       "norm_label": "formatrelativetime()"
     },
     {
@@ -19755,7 +19755,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L63",
       "id": "security_certificatedecoder_validitybadge",
-      "community": 61,
+      "community": 174,
       "norm_label": "validitybadge()"
     },
     {
@@ -19764,7 +19764,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L97",
       "id": "security_certificatedecoder_extensionitem",
-      "community": 61,
+      "community": 174,
       "norm_label": "extensionitem()"
     },
     {
@@ -19773,7 +19773,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L109",
       "id": "security_certificatedecoder_certificatedecoder",
-      "community": 61,
+      "community": 174,
       "norm_label": "certificatedecoder()"
     },
     {
@@ -20673,7 +20673,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_graphqlschemaviewer_tsx",
-      "community": 61,
+      "community": 173,
       "norm_label": "graphqlschemaviewer.tsx"
     },
     {
@@ -20682,7 +20682,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L10",
       "id": "code_graphqlschemaviewer_gettypekindlabel",
-      "community": 61,
+      "community": 173,
       "norm_label": "gettypekindlabel()"
     },
     {
@@ -20691,7 +20691,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L22",
       "id": "code_graphqlschemaviewer_kind_styles",
-      "community": 61,
+      "community": 173,
       "norm_label": "kind_styles"
     },
     {
@@ -20700,7 +20700,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L31",
       "id": "code_graphqlschemaviewer_kindbadge",
-      "community": 61,
+      "community": 173,
       "norm_label": "kindbadge()"
     },
     {
@@ -20709,7 +20709,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L46",
       "id": "code_graphqlschemaviewer_typereference",
-      "community": 61,
+      "community": 173,
       "norm_label": "typereference()"
     },
     {
@@ -20718,7 +20718,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L57",
       "id": "code_graphqlschemaviewer_fieldstable",
-      "community": 61,
+      "community": 173,
       "norm_label": "fieldstable()"
     },
     {
@@ -20727,7 +20727,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L101",
       "id": "code_graphqlschemaviewer_enumvalueslist",
-      "community": 61,
+      "community": 173,
       "norm_label": "enumvalueslist()"
     },
     {
@@ -20736,7 +20736,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L122",
       "id": "code_graphqlschemaviewer_typedetailpanel",
-      "community": 61,
+      "community": 173,
       "norm_label": "typedetailpanel()"
     },
     {
@@ -21157,7 +21157,7 @@
       "label": "CropPreviewProps",
       "file_type": "code",
       "source_file": "src/components/feature/image/ImageCropper.tsx",
-      "source_location": "L152",
+      "source_location": "L150",
       "id": "image_imagecropper_croppreviewprops",
       "community": 51,
       "norm_label": "croppreviewprops"
@@ -21166,7 +21166,7 @@
       "label": "CropPreview()",
       "file_type": "code",
       "source_file": "src/components/feature/image/ImageCropper.tsx",
-      "source_location": "L163",
+      "source_location": "L161",
       "id": "image_imagecropper_croppreview",
       "community": 51,
       "norm_label": "croppreview()"
@@ -21420,7 +21420,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L1",
       "id": "src_components_feature_image_favicongenerator_tsx",
-      "community": 260,
+      "community": 102,
       "norm_label": "favicongenerator.tsx"
     },
     {
@@ -21429,7 +21429,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L9",
       "id": "image_favicongenerator_linktags",
-      "community": 260,
+      "community": 102,
       "norm_label": "linktags"
     },
     {
@@ -21438,7 +21438,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L12",
       "id": "image_favicongenerator_flattenforzip",
-      "community": 260,
+      "community": 102,
       "norm_label": "flattenforzip()"
     },
     {
@@ -21447,7 +21447,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L18",
       "id": "image_favicongenerator_favicongenerator",
-      "community": 260,
+      "community": 102,
       "norm_label": "favicongenerator()"
     },
     {
@@ -21573,7 +21573,7 @@
       "source_file": "src/components/feature/image/BackgroundRemover/index.tsx",
       "source_location": "L20",
       "id": "backgroundremover_index_backgroundremover",
-      "community": 114,
+      "community": 67,
       "norm_label": "backgroundremover()"
     },
     {
@@ -23634,7 +23634,7 @@
       "source_file": "src/hooks/useBatchAssetPipeline.ts",
       "source_location": "L27",
       "id": "hooks_usebatchassetpipeline_usebatchassetpipeline",
-      "community": 260,
+      "community": 102,
       "norm_label": "usebatchassetpipeline()"
     },
     {
@@ -23949,7 +23949,7 @@
       "source_file": "src/hooks/useKeyboardShortcuts.ts",
       "source_location": "L1",
       "id": "src_hooks_usekeyboardshortcuts_ts",
-      "community": 151,
+      "community": 746,
       "norm_label": "usekeyboardshortcuts.ts"
     },
     {
@@ -23958,7 +23958,7 @@
       "source_file": "src/hooks/useKeyboardShortcuts.ts",
       "source_location": "L5",
       "id": "hooks_usekeyboardshortcuts_usekeyboardshortcuts",
-      "community": 151,
+      "community": 746,
       "norm_label": "usekeyboardshortcuts()"
     },
     {
@@ -24322,6 +24322,24 @@
       "norm_label": "usetoast"
     },
     {
+      "label": "useToast.spec.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/state/useToast.spec.ts",
+      "source_location": "L1",
+      "id": "src_hooks_state_usetoast_spec_ts",
+      "community": 260,
+      "norm_label": "usetoast.spec.ts"
+    },
+    {
+      "label": "id",
+      "file_type": "code",
+      "source_file": "src/hooks/state/useToast.spec.ts",
+      "source_location": "L11",
+      "id": "state_usetoast_spec_id",
+      "community": 260,
+      "norm_label": "id"
+    },
+    {
       "label": "useCommandPaletteStore.ts",
       "file_type": "code",
       "source_file": "src/hooks/state/useCommandPaletteStore.ts",
@@ -24345,7 +24363,7 @@
       "source_file": "src/hooks/state/useCommandPaletteStore.ts",
       "source_location": "L7",
       "id": "state_usecommandpalettestore_usecommandpalettestore",
-      "community": 151,
+      "community": 746,
       "norm_label": "usecommandpalettestore"
     },
     {
@@ -35612,7 +35630,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/image/BackgroundRemover/index.tsx",
       "source_location": "L36",
-      "community": 200,
+      "community": 114,
       "norm_label": "reducer()",
       "id": "backgroundremover_index_reducer"
     },
@@ -43281,7 +43299,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 173,
+      "community": 0,
       "norm_label": "session ref token to discard stale async results",
       "id": "concept_session_token_pattern"
     },
@@ -43736,7 +43754,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 173,
+      "community": 0,
       "norm_label": "certificatedecoder",
       "id": "certificatedecoder_component"
     },
@@ -43749,7 +43767,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 173,
+      "community": 0,
       "norm_label": "chmodcalculator",
       "id": "chmodcalculator_component"
     },
@@ -43762,7 +43780,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 173,
+      "community": 0,
       "norm_label": "rsakeygenerator",
       "id": "rsakeygenerator_component"
     },
@@ -43775,7 +43793,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 173,
+      "community": 0,
       "norm_label": "aesencryptdecrypt",
       "id": "aesencryptdecrypt_component"
     },
@@ -43788,7 +43806,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 173,
+      "community": 0,
       "norm_label": "bcrypthasher",
       "id": "bcrypthasher_component"
     },
@@ -43801,7 +43819,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 173,
+      "community": 0,
       "norm_label": "hashtab (inner)",
       "id": "bcrypthasher_hashtab"
     },
@@ -43814,7 +43832,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 173,
+      "community": 0,
       "norm_label": "verifytab (inner)",
       "id": "bcrypthasher_verifytab"
     },
@@ -43827,7 +43845,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 173,
+      "community": 0,
       "norm_label": "feature/security barrel",
       "id": "security_barrel"
     },
@@ -43840,7 +43858,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 173,
+      "community": 0,
       "norm_label": "sshkeyfingerprint",
       "id": "sshkeyfingerprint_component"
     },
@@ -43853,7 +43871,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 173,
+      "community": 0,
       "norm_label": "hashgenerator",
       "id": "hashgenerator_component"
     },
@@ -43866,7 +43884,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 173,
+      "community": 0,
       "norm_label": "hmacgenerator",
       "id": "hmacgenerator_component"
     },
@@ -43879,7 +43897,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 492,
+      "community": 0,
       "norm_label": "regextester",
       "id": "regextester_component"
     },
@@ -43892,7 +43910,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 492,
+      "community": 0,
       "norm_label": "textcaseconverter",
       "id": "textcaseconverter_component"
     },
@@ -43905,7 +43923,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 492,
+      "community": 0,
       "norm_label": "wordcounter",
       "id": "wordcounter_component"
     },
@@ -43918,7 +43936,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 492,
+      "community": 0,
       "norm_label": "stringescapeunescape",
       "id": "stringescapeunescape_component"
     },
@@ -43931,7 +43949,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 492,
+      "community": 0,
       "norm_label": "textsortdedupe",
       "id": "textsortdedupe_component"
     },
@@ -43944,7 +43962,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 492,
+      "community": 0,
       "norm_label": "useragentparser",
       "id": "useragentparser_component"
     },
@@ -43957,7 +43975,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 492,
+      "community": 0,
       "norm_label": "loremipsumgenerator",
       "id": "loremipsumgenerator_component"
     },
@@ -43970,7 +43988,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 492,
+      "community": 0,
       "norm_label": "feature/text barrel",
       "id": "text_barrel"
     },
@@ -43983,7 +44001,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 492,
+      "community": 0,
       "norm_label": "textdiffchecker",
       "id": "textdiffchecker_component"
     },
@@ -43996,7 +44014,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 173,
+      "community": 0,
       "norm_label": "debounced async processing pipeline",
       "id": "concept_debounced_async_pipeline"
     },
@@ -44009,7 +44027,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 174,
+      "community": 0,
       "norm_label": "tool_registry_map[id] description pattern",
       "id": "concept_tool_registry_lookup"
     },
@@ -45245,7 +45263,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 200,
+      "community": 0,
       "norm_label": "backgroundremover",
       "id": "backgroundremover_index_component"
     },
@@ -45297,7 +45315,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 200,
+      "community": 0,
       "norm_label": "backgroundremoverresult",
       "id": "backgroundremover_result_component"
     },
@@ -45310,7 +45328,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 200,
+      "community": 0,
       "norm_label": "backgroundremovererror",
       "id": "backgroundremover_error_component"
     },
@@ -45323,7 +45341,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 200,
+      "community": 0,
       "norm_label": "backgroundremoverprocessing",
       "id": "backgroundremover_processing_component"
     },
@@ -45336,7 +45354,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 174,
+      "community": 0,
       "norm_label": "passwordgenerator",
       "id": "passwordgenerator_component"
     },
@@ -45349,7 +45367,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 200,
+      "community": 0,
       "norm_label": "qrcodegenerator",
       "id": "qrcodegenerator_component"
     },
@@ -45362,7 +45380,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 200,
+      "community": 0,
       "norm_label": "qrcodereducer",
       "id": "qrcodegenerator_reducer"
     },
@@ -45375,7 +45393,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 174,
+      "community": 0,
       "norm_label": "uuidgenerator",
       "id": "uuidgenerator_component"
     },
@@ -45388,7 +45406,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "usesidebarstore",
       "id": "usesidebarstore_store"
     },
@@ -45401,7 +45419,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 174,
+      "community": 0,
       "norm_label": "usetoast",
       "id": "usetoast_store"
     },
@@ -45414,7 +45432,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "usecommandpalettestore",
       "id": "usecommandpalettestore_store"
     },
@@ -45427,7 +45445,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "getpreviouslyfocusedelement",
       "id": "usecommandpalettestore_getpreviouslyfocused"
     },
@@ -45479,7 +45497,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "commandpalette",
       "id": "commandpalette_component"
     },
@@ -45492,7 +45510,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "searchinput (palette)",
       "id": "commandpalette_searchinput"
     },
@@ -45505,7 +45523,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 174,
+      "community": 0,
       "norm_label": "unitpxtorem",
       "id": "unitpxtorem_component"
     },
@@ -45518,7 +45536,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 174,
+      "community": 0,
       "norm_label": "aspectratiocalculator",
       "id": "aspectratiocalculator_component"
     },
@@ -45531,7 +45549,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 174,
+      "community": 0,
       "norm_label": "colorconvertor",
       "id": "colorconvertor_component"
     },
@@ -45544,7 +45562,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 174,
+      "community": 0,
       "norm_label": "colorpalettegenerator",
       "id": "colorpalettegenerator_component"
     },
@@ -45583,7 +45601,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "navigation.spec.ts",
       "id": "navigation_spec_e2e"
     },
@@ -45596,7 +45614,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "home.spec.ts",
       "id": "home_spec_e2e"
     },
@@ -45609,7 +45627,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "e2e fixtures",
       "id": "e2e_fixtures"
     },
@@ -45622,7 +45640,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "e2e selectors",
       "id": "e2e_selectors"
     },
@@ -45635,7 +45653,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 200,
+      "community": 0,
       "norm_label": "tabs",
       "id": "tabs_component"
     },
@@ -45727,7 +45745,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 174,
+      "community": 0,
       "norm_label": "toastprovider",
       "id": "toastprovider_component"
     },
@@ -45740,7 +45758,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 368,
+      "community": 0,
       "norm_label": "zustand store pattern",
       "id": "concept_zustand_store"
     },
@@ -45753,7 +45771,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 200,
+      "community": 0,
       "norm_label": "reducer+dialog tool pattern",
       "id": "concept_reducer_dialog_tool"
     },
@@ -45766,7 +45784,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 174,
+      "community": 0,
       "norm_label": "debounced compute pattern",
       "id": "concept_debounced_compute"
     },
@@ -45779,7 +45797,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 200,
+      "community": 0,
       "norm_label": "blob objecturl lifecycle",
       "id": "concept_objecturl_lifecycle"
     },
@@ -55050,9 +55068,9 @@
       "source_file": "src/types/hooks/keyboard-list-nav.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_hooks_keyboard_list_nav_ts",
-      "target": "hooks_keyboard_list_nav_usekeyboardlistnavoptions",
-      "confidence_score": 1.0
+      "target": "hooks_keyboard_list_nav_usekeyboardlistnavoptions"
     },
     {
       "relation": "contains",
@@ -55060,9 +55078,9 @@
       "source_file": "src/types/hooks/keyboard-list-nav.ts",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_hooks_keyboard_list_nav_ts",
-      "target": "hooks_keyboard_list_nav_usekeyboardlistnavresult",
-      "confidence_score": 1.0
+      "target": "hooks_keyboard_list_nav_usekeyboardlistnavresult"
     },
     {
       "relation": "contains",
@@ -80141,9 +80159,9 @@
       "source_file": "src/hooks/useKeyboardListNav.ts",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usekeyboardlistnav_ts",
-      "target": "hooks_usekeyboardlistnav_usekeyboardlistnav",
-      "confidence_score": 1.0
+      "target": "hooks_usekeyboardlistnav_usekeyboardlistnav"
     },
     {
       "relation": "imports_from",
@@ -80152,9 +80170,9 @@
       "source_file": "src/hooks/useKeyboardListNav.dom.spec.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usekeyboardlistnav_dom_spec_tsx",
-      "target": "src_hooks_usekeyboardlistnav_ts",
-      "confidence_score": 1.0
+      "target": "src_hooks_usekeyboardlistnav_ts"
     },
     {
       "relation": "imports",
@@ -80163,9 +80181,9 @@
       "source_file": "src/hooks/useKeyboardListNav.dom.spec.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usekeyboardlistnav_dom_spec_tsx",
-      "target": "hooks_usekeyboardlistnav_usekeyboardlistnav",
-      "confidence_score": 1.0
+      "target": "hooks_usekeyboardlistnav_usekeyboardlistnav"
     },
     {
       "relation": "imports_from",
@@ -80949,9 +80967,9 @@
       "source_file": "src/hooks/useKeyboardListNav.dom.spec.tsx",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usekeyboardlistnav_dom_spec_tsx",
-      "target": "hooks_usekeyboardlistnav_dom_spec_makeevent",
-      "confidence_score": 1.0
+      "target": "hooks_usekeyboardlistnav_dom_spec_makeevent"
     },
     {
       "relation": "contains",
@@ -80959,9 +80977,9 @@
       "source_file": "src/hooks/useKeyboardListNav.dom.spec.tsx",
       "source_location": "L160",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usekeyboardlistnav_dom_spec_tsx",
-      "target": "hooks_usekeyboardlistnav_dom_spec_result",
-      "confidence_score": 1.0
+      "target": "hooks_usekeyboardlistnav_dom_spec_result"
     },
     {
       "relation": "contains",
@@ -80969,9 +80987,9 @@
       "source_file": "src/hooks/useKeyboardListNav.dom.spec.tsx",
       "source_location": "L123",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usekeyboardlistnav_dom_spec_tsx",
-      "target": "hooks_usekeyboardlistnav_dom_spec_onenter",
-      "confidence_score": 1.0
+      "target": "hooks_usekeyboardlistnav_dom_spec_onenter"
     },
     {
       "relation": "contains",
@@ -80979,9 +80997,9 @@
       "source_file": "src/hooks/useKeyboardListNav.dom.spec.tsx",
       "source_location": "L140",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usekeyboardlistnav_dom_spec_tsx",
-      "target": "hooks_usekeyboardlistnav_dom_spec_down",
-      "confidence_score": 1.0
+      "target": "hooks_usekeyboardlistnav_dom_spec_down"
     },
     {
       "relation": "contains",
@@ -80989,9 +81007,9 @@
       "source_file": "src/hooks/useKeyboardListNav.dom.spec.tsx",
       "source_location": "L146",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usekeyboardlistnav_dom_spec_tsx",
-      "target": "hooks_usekeyboardlistnav_dom_spec_up",
-      "confidence_score": 1.0
+      "target": "hooks_usekeyboardlistnav_dom_spec_up"
     },
     {
       "relation": "contains",
@@ -80999,9 +81017,9 @@
       "source_file": "src/hooks/useKeyboardListNav.dom.spec.tsx",
       "source_location": "L152",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usekeyboardlistnav_dom_spec_tsx",
-      "target": "hooks_usekeyboardlistnav_dom_spec_enter",
-      "confidence_score": 1.0
+      "target": "hooks_usekeyboardlistnav_dom_spec_enter"
     },
     {
       "relation": "imports_from",
@@ -81697,6 +81715,38 @@
       "confidence_score": 1.0,
       "source": "src_hooks_state_usetoast_ts",
       "target": "state_usetoast_usetoast"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/state/useToast.spec.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_hooks_state_usetoast_spec_ts",
+      "target": "src_hooks_state_usetoast_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/state/useToast.spec.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "src_hooks_state_usetoast_spec_ts",
+      "target": "state_usetoast_usetoast",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/state/useToast.spec.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "src_hooks_state_usetoast_spec_ts",
+      "target": "state_usetoast_spec_id",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -82410,9 +82460,9 @@
       "source_file": "CONTEXT.md",
       "source_location": "L426",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "csr_dev_tools_context_csr_dev_tools_domain_language",
-      "target": "csr_dev_tools_context_keyboard_list_navigation",
-      "confidence_score": 1.0
+      "target": "csr_dev_tools_context_keyboard_list_navigation"
     },
     {
       "relation": "contains",
@@ -101414,5 +101464,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "bdedc9d2591fb9bcdbf6591a875d93ca09c2b0e3"
+  "built_at_commit": "6dee9e4132558dfc4e3061db6bd1d4520bceff55"
 }
