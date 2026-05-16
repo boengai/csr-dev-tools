@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import { Button, CodeInput, CopyButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast } from '@/hooks'
+import { useAsyncAction, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { downloadPemFile, generateRsaKeyPair, type RsaKeyPair, type RsaKeySize } from '@/utils'
 
@@ -17,36 +17,27 @@ const KEY_SIZES: Array<{ label: string; value: RsaKeySize }> = [
 
 export const RsaKeyGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [keySize, setKeySize] = useState<RsaKeySize>(2048)
-  const [generating, setGenerating] = useState(false)
-  const [keyPair, setKeyPair] = useState<RsaKeyPair | null>(null)
-  const { toast } = useToast()
+  const { showError, showSuccess } = useToast()
+
+  const {
+    pending: generating,
+    reset,
+    result: keyPair,
+    run,
+  } = useAsyncAction<RsaKeyPair>(() => generateRsaKeyPair(keySize), {
+    onError: () => showError('Key generation failed. Please try again.'),
+  })
 
   const handleGenerate = useCallback(async () => {
     if (!crypto.subtle) {
-      toast({
-        action: 'add',
-        item: { label: 'RSA key generation requires a secure context (HTTPS)', type: 'error' },
-      })
+      showError('RSA key generation requires a secure context (HTTPS)')
       return
     }
-
-    setGenerating(true)
-    try {
-      const result = await generateRsaKeyPair(keySize)
-      setKeyPair(result)
-      toast({
-        action: 'add',
-        item: { label: `Generated ${keySize}-bit RSA key pair`, type: 'success' },
-      })
-    } catch {
-      toast({
-        action: 'add',
-        item: { label: 'Key generation failed. Please try again.', type: 'error' },
-      })
-    } finally {
-      setGenerating(false)
+    const result = await run()
+    if (result) {
+      showSuccess(`Generated ${keySize}-bit RSA key pair`)
     }
-  }, [keySize, toast])
+  }, [keySize, run, showError, showSuccess])
 
   const handleDownloadPublic = useCallback(() => {
     if (keyPair) downloadPemFile(keyPair.publicKey, 'public.pem')
@@ -65,8 +56,8 @@ export const RsaKeyGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
 
   const handleReset = useCallback(() => {
     setKeySize(2048)
-    setKeyPair(null)
-  }, [])
+    reset()
+  }, [reset])
 
   return (
     <ToolDialogFrame

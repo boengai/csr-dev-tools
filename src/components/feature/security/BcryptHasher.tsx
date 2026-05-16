@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Button, CodeInput, CopyButton, SelectInput, Tabs, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useElapsedTimer, useStaleSafeAsync, useToast } from '@/hooks'
+import { useAsyncAction, useElapsedTimer, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import {
   type BcryptHashComponents,
@@ -35,10 +35,21 @@ const INVALID_HASH_MESSAGE =
 const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => void }) => {
   const [password, setPassword] = useState('')
   const [rounds, setRounds] = useState('10')
-  const [hashing, setHashing] = useState(false)
-  const [result, setResult] = useState<BcryptHashResult | null>(null)
-  const elapsedDisplay = useElapsedTimer(hashing)
   const { showError } = useToast()
+
+  const {
+    pending: hashing,
+    reset,
+    result,
+    run: handleHash,
+  } = useAsyncAction<BcryptHashResult>(() => hashPassword(password, Number(rounds)), {
+    onError: () => showError('Hashing failed. Please try again.'),
+  })
+  const elapsedDisplay = useElapsedTimer(hashing)
+
+  useEffect(() => {
+    onProcessingChange(hashing)
+  }, [hashing, onProcessingChange])
 
   const truncationWarning = useMemo(() => checkPasswordTruncation(password), [password])
   const hashBreakdown = useMemo<BcryptHashComponents | null>(
@@ -46,40 +57,13 @@ const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => v
     [result],
   )
 
-  const newSession = useStaleSafeAsync()
-  const mountedRef = useRef(true)
-  useEffect(() => {
-    mountedRef.current = true
-    return () => {
-      mountedRef.current = false
-    }
-  }, [])
-
-  const handlePasswordChange = useCallback((val: string) => {
-    setPassword(val)
-    setResult(null)
-  }, [])
-
-  const handleHash = useCallback(async () => {
-    const session = newSession()
-    setHashing(true)
-    onProcessingChange(true)
-    setResult(null)
-
-    try {
-      const hashResult = await hashPassword(password, Number(rounds))
-      if (!session.isFresh() || !mountedRef.current) return
-      setResult(hashResult)
-    } catch {
-      if (!session.isFresh() || !mountedRef.current) return
-      showError('Hashing failed. Please try again.')
-    } finally {
-      if (session.isFresh() && mountedRef.current) {
-        setHashing(false)
-        onProcessingChange(false)
-      }
-    }
-  }, [password, rounds, showError, onProcessingChange, newSession])
+  const handlePasswordChange = useCallback(
+    (val: string) => {
+      setPassword(val)
+      reset()
+    },
+    [reset],
+  )
 
   return (
     <div className="flex w-full flex-col gap-4">
@@ -152,55 +136,45 @@ const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => v
 const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => void }) => {
   const [password, setPassword] = useState('')
   const [hashInput, setHashInput] = useState('')
-  const [verifying, setVerifying] = useState(false)
-  const [result, setResult] = useState<BcryptVerifyResult | null>(null)
-  const elapsedDisplay = useElapsedTimer(verifying)
   const { showError } = useToast()
 
-  const newSession = useStaleSafeAsync()
-  const mountedRef = useRef(true)
+  const {
+    pending: verifying,
+    reset,
+    result,
+    run,
+  } = useAsyncAction<BcryptVerifyResult>(() => verifyPassword(password, hashInput.trim()), {
+    onError: () => showError('Verification failed. Please check inputs.'),
+  })
+  const elapsedDisplay = useElapsedTimer(verifying)
+
   useEffect(() => {
-    mountedRef.current = true
-    return () => {
-      mountedRef.current = false
-    }
-  }, [])
+    onProcessingChange(verifying)
+  }, [verifying, onProcessingChange])
 
-  const handlePasswordChange = useCallback((val: string) => {
-    setPassword(val)
-    setResult(null)
-  }, [])
+  const handlePasswordChange = useCallback(
+    (val: string) => {
+      setPassword(val)
+      reset()
+    },
+    [reset],
+  )
 
-  const handleHashChange = useCallback((val: string) => {
-    setHashInput(val)
-    setResult(null)
-  }, [])
+  const handleHashChange = useCallback(
+    (val: string) => {
+      setHashInput(val)
+      reset()
+    },
+    [reset],
+  )
 
   const handleVerify = useCallback(async () => {
     if (!isValidBcryptHash(hashInput.trim())) {
       showError(INVALID_HASH_MESSAGE)
       return
     }
-
-    const session = newSession()
-    setVerifying(true)
-    onProcessingChange(true)
-    setResult(null)
-
-    try {
-      const verifyResult = await verifyPassword(password, hashInput.trim())
-      if (!session.isFresh() || !mountedRef.current) return
-      setResult(verifyResult)
-    } catch {
-      if (!session.isFresh() || !mountedRef.current) return
-      showError('Verification failed. Please check inputs.')
-    } finally {
-      if (session.isFresh() && mountedRef.current) {
-        setVerifying(false)
-        onProcessingChange(false)
-      }
-    }
-  }, [password, hashInput, showError, onProcessingChange, newSession])
+    await run()
+  }, [hashInput, run, showError])
 
   return (
     <div className="flex w-full flex-col gap-4">

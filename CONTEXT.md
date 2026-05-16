@@ -423,6 +423,43 @@ localStorage. `localStorageDiagramStorage` is the production adapter;
 `createInMemoryDiagramStorage()` is the test double — counters on `saves`
 and `deletes` make autosave behavior unit-testable without DOM.
 
+## Async action
+
+Button-fired (or one-shot) async work with stale-safety + unmount-safety.
+Implemented by `useAsyncAction` (`src/hooks/useAsyncAction.ts`).
+
+Wraps an async function so the latest invocation always wins (older
+resolutions are dropped) and `setState`-after-`await` on an unmounted
+component cannot fire. Per-call-site concerns — input state, validation
+early-returns, success messaging — stay at the call site.
+
+Today's consumers: `BcryptHasher` (both `HashTab.handleHash` and
+`VerifyTab.handleVerify` — two button-fired async paths in one Tool),
+`RsaKeyGenerator.handleGenerate`, and `TypescriptPlayground`'s debounced
+transpile. All four previously hand-rolled the
+`setPending(true)/await/setResult/finally setPending(false)` dance and
+none had stale-safety; the `transpile` and RSA-generate paths also
+lacked unmount-safety guards.
+
+Carries two invariants:
+
+1. **Stale-safety** — every `run()` bumps an internal session via
+   [[useStaleSafeAsync]]. If a newer `run()` starts before the previous
+   one resolves, the older session is marked stale; its `setResult` and
+   `onError` are both suppressed. `run()` returns `T | undefined` —
+   `undefined` when the call was superseded so callers can short-circuit
+   any follow-up logic (e.g., a success toast).
+2. **Unmount-safety** — a `mountedRef` cleared in the unmount effect
+   gates every post-`await` commit. `setResult` / `onError` / the
+   `finally` reset of `pending` all check `mountedRef.current` first.
+
+The hook is for button-fired (or one-shot mount-fired) work — not
+debounced input-driven compute. For debounced input → result transforms,
+use the [[Tool computation pipeline]]; for image upload → batch outputs,
+use the [[Batch asset pipeline]]. The action closure is captured fresh on
+every render via a ref, so callers don't need to memoize their input
+state or wrap the action in `useCallback`.
+
 ## Keyboard list navigation
 
 The shared keyboard navigation behavior for any "searchable list of items

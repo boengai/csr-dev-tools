@@ -3,7 +3,7 @@ import { lazy, Suspense, useRef, useState } from 'react'
 
 import { CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
+import { useAsyncAction, useDebounceCallback, useToast } from '@/hooks'
 import type { DiagnosticError, EditorInstance, MarkerData, ToolComponentProps } from '@/types'
 import { tv } from '@/utils'
 
@@ -59,29 +59,28 @@ const EditorSkeleton = () => (
 )
 
 export const TypescriptPlayground = (_props: ToolComponentProps) => {
-  const [transpiledJs, setTranspiledJs] = useState('')
   const [errors, setErrors] = useState<Array<DiagnosticError>>([])
   const editorRef = useRef<EditorInstance | null>(null)
   const monacoRef = useRef<Monaco | null>(null)
   const { showError } = useToast()
 
-  const transpileCode = async (editorInstance: EditorInstance, monaco: Monaco) => {
-    const model = editorInstance.getModel()
-    if (!model) return
-    try {
+  const { result: transpiledJs, run: transpile } = useAsyncAction<string>(
+    async () => {
+      const editor = editorRef.current
+      const monaco = monacoRef.current
+      if (!editor || !monaco) return ''
+      const model = editor.getModel()
+      if (!model) return ''
       const worker = await monaco.languages.typescript.getTypeScriptWorker()
       const client = await worker(model.uri)
-      const result = await client.getEmitOutput(model.uri.toString())
-      setTranspiledJs(result.outputFiles[0]?.text ?? '')
-    } catch {
-      showError('Failed to transpile TypeScript')
-    }
-  }
+      const out = await client.getEmitOutput(model.uri.toString())
+      return out.outputFiles[0]?.text ?? ''
+    },
+    { onError: () => showError('Failed to transpile TypeScript') },
+  )
 
   const debouncedTranspile = useDebounceCallback(() => {
-    if (editorRef.current && monacoRef.current) {
-      transpileCode(editorRef.current, monacoRef.current)
-    }
+    transpile()
   }, 500)
 
   const handleBeforeMount = (monaco: Monaco) => {
@@ -102,7 +101,7 @@ export const TypescriptPlayground = (_props: ToolComponentProps) => {
   const handleEditorMount = (editorInstance: EditorInstance, monaco: Monaco) => {
     editorRef.current = editorInstance
     monacoRef.current = monaco
-    transpileCode(editorInstance, monaco)
+    transpile()
   }
 
   const handleEditorChange = () => {
@@ -155,7 +154,7 @@ export const TypescriptPlayground = (_props: ToolComponentProps) => {
         <div aria-label="JavaScript output (read-only)" className="flex min-w-0 flex-1 flex-col gap-1">
           <div className="flex items-center justify-between">
             <h3 className="text-body-sm font-semibold text-gray-100">JavaScript</h3>
-            <CopyButton label="Copy JS" value={transpiledJs} />
+            <CopyButton label="Copy JS" value={transpiledJs ?? ''} />
           </div>
           <div className="md:h-[400px] h-[300px] overflow-hidden rounded border border-gray-800">
             <Suspense fallback={<EditorSkeleton />}>
@@ -165,7 +164,7 @@ export const TypescriptPlayground = (_props: ToolComponentProps) => {
                 loading={<EditorSkeleton />}
                 options={READONLY_EDITOR_OPTIONS}
                 theme="vs-dark"
-                value={transpiledJs}
+                value={transpiledJs ?? ''}
               />
             </Suspense>
           </div>
