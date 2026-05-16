@@ -1,88 +1,79 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
-import { pxToRem, remToPx } from '@/utils'
+import { useToast, useToolComputation } from '@/hooks'
+import type { PxRemInput, PxRemLastEdited, PxRemOutput } from '@/types'
+import { solvePxRem } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['px-to-rem']
 
+const INITIAL_BAG = { base: '16', lastEdited: 'px' as PxRemLastEdited, px: '', rem: '' }
+
+const INVALID_BASE_MSG = 'Base font size must be a positive number (e.g., 16)'
+
 export const UnitPxToRem = () => {
-  const [pxValue, setPxValue] = useState('')
-  const [remValue, setRemValue] = useState('')
-  const [baseValue, setBaseValue] = useState('16')
-  const [lastEdited, setLastEdited] = useState<'px' | 'rem'>('px')
   const { showError } = useToast()
+  const [fields, setFields] = useState(INITIAL_BAG)
 
-  const dbConvertPxToRem = useDebounceCallback((px: string, base: string) => {
-    if (px.trim() === '') {
-      setRemValue('')
-      return
-    }
-    const pxNum = Number(px)
-    const baseNum = Number(base)
-    if (Number.isNaN(pxNum)) {
-      showError('Enter a valid PX value (e.g., 16)')
-      return
-    }
-    if (Number.isNaN(baseNum) || baseNum <= 0) {
-      showError('Base font size must be a positive number (e.g., 16)')
-      return
-    }
-    setRemValue(pxToRem(pxNum, baseNum).toString())
-  }, 300)
+  const { result, setInput, setInputImmediate } = useToolComputation<PxRemInput, PxRemOutput | null>(solvePxRem, {
+    debounceMs: 300,
+    initial: null,
+    isEmpty: ({ px, rem, source }) => {
+      if (source === 'px') return !px.trim()
+      if (source === 'rem') return !rem.trim()
+      return false
+    },
+    onError: (err) => showError(err instanceof Error ? err.message : 'Invalid input'),
+  })
 
-  const dbConvertRemToPx = useDebounceCallback((rem: string, base: string) => {
-    if (rem.trim() === '') {
-      setPxValue('')
-      return
+  useEffect(() => {
+    if (result) {
+      setFields((prev) => ({ ...prev, ...result }))
     }
-    const remNum = Number(rem)
-    const baseNum = Number(base)
-    if (Number.isNaN(remNum)) {
-      showError('Enter a valid REM value (e.g., 1)')
-      return
-    }
-    if (Number.isNaN(baseNum) || baseNum <= 0) {
-      showError('Base font size must be a positive number (e.g., 16)')
-      return
-    }
-    setPxValue(remToPx(remNum, baseNum).toString())
-  }, 300)
+  }, [result])
 
   const handlePxChange = (val: string) => {
-    setPxValue(val)
-    setLastEdited('px')
+    setFields((prev) => ({
+      ...prev,
+      lastEdited: 'px',
+      px: val,
+      rem: val.trim() === '' ? '' : prev.rem,
+    }))
+    const input: PxRemInput = { base: fields.base, lastEdited: 'px', px: val, rem: fields.rem, source: 'px' }
     if (val.trim() === '') {
-      setRemValue('')
+      setInputImmediate(input)
       return
     }
-    dbConvertPxToRem(val, baseValue)
+    setInput(input)
   }
 
   const handleRemChange = (val: string) => {
-    setRemValue(val)
-    setLastEdited('rem')
+    setFields((prev) => ({
+      ...prev,
+      lastEdited: 'rem',
+      px: val.trim() === '' ? '' : prev.px,
+      rem: val,
+    }))
+    const input: PxRemInput = { base: fields.base, lastEdited: 'rem', px: fields.px, rem: val, source: 'rem' }
     if (val.trim() === '') {
-      setPxValue('')
+      setInputImmediate(input)
       return
     }
-    dbConvertRemToPx(val, baseValue)
+    setInput(input)
   }
 
   const handleBaseChange = (val: string) => {
-    setBaseValue(val)
+    setFields((prev) => ({ ...prev, base: val }))
     const baseNum = Number(val)
     if (val.trim() === '' || Number.isNaN(baseNum) || baseNum <= 0) {
-      showError('Base font size must be a positive number (e.g., 16)')
+      showError(INVALID_BASE_MSG)
       return
     }
-    if (lastEdited === 'px' && pxValue.trim() !== '') {
-      dbConvertPxToRem(pxValue, val)
-    } else if (lastEdited === 'rem' && remValue.trim() !== '') {
-      dbConvertRemToPx(remValue, val)
-    }
+    setInput({ base: val, lastEdited: fields.lastEdited, px: fields.px, rem: fields.rem, source: 'base' })
   }
+
+  const { base, px, rem } = fields
 
   return (
     <div className="flex w-full grow flex-col items-center justify-center gap-4">
@@ -93,18 +84,18 @@ export const UnitPxToRem = () => {
           name="px"
           onChange={handlePxChange}
           placeholder="16"
-          suffix={<CopyButton label="PX" value={pxValue} />}
+          suffix={<CopyButton label="PX" value={px} />}
           type="text"
-          value={pxValue}
+          value={px}
         />
         <FieldForm
           label="REM"
           name="rem"
           onChange={handleRemChange}
           placeholder="1"
-          suffix={<CopyButton label="REM" value={remValue} />}
+          suffix={<CopyButton label="REM" value={rem} />}
           type="text"
-          value={remValue}
+          value={rem}
         />
       </div>
       <FieldForm
@@ -113,11 +104,11 @@ export const UnitPxToRem = () => {
         onChange={handleBaseChange}
         placeholder="16"
         type="text"
-        value={baseValue}
+        value={base}
       />
-      {Number(baseValue) > 0 && (
+      {Number(base) > 0 && (
         <p className="text-center text-body-sm text-gray-400">
-          Calculation based on a root font-size of {baseValue} pixel.
+          Calculation based on a root font-size of {base} pixel.
         </p>
       )}
     </div>

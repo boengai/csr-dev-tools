@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { pxToRem, remToPx } from '@/utils'
+import { pxToRem, remToPx, solvePxRem } from '@/utils'
 
 describe('unit utilities', () => {
   describe('pxToRem', () => {
@@ -88,6 +88,90 @@ describe('unit utilities', () => {
     // Large values
     it('should convert 100rem to 1600px with base 16', () => {
       expect(remToPx(100, 16)).toBe(1600)
+    })
+  })
+
+  describe('solvePxRem', () => {
+    const baseInput = { base: '16', lastEdited: 'px' as const, px: '', rem: '' }
+
+    describe('source = "px"', () => {
+      it('converts typed px to rem and preserves px', () => {
+        expect(solvePxRem({ ...baseInput, px: '32', source: 'px' })).toEqual({ base: '16', px: '32', rem: '2' })
+      })
+
+      it('throws INVALID_PX_MSG when px is not a number', () => {
+        expect(() => solvePxRem({ ...baseInput, px: 'abc', source: 'px' })).toThrow(/PX value/)
+      })
+
+      it('uses a custom base', () => {
+        expect(solvePxRem({ ...baseInput, base: '20', px: '20', source: 'px' })).toEqual({
+          base: '20',
+          px: '20',
+          rem: '1',
+        })
+      })
+    })
+
+    describe('source = "rem"', () => {
+      it('converts typed rem to px and preserves rem', () => {
+        expect(solvePxRem({ ...baseInput, rem: '0.5', source: 'rem' })).toEqual({ base: '16', px: '8', rem: '0.5' })
+      })
+
+      it('throws INVALID_REM_MSG when rem is not a number', () => {
+        expect(() => solvePxRem({ ...baseInput, rem: 'xyz', source: 'rem' })).toThrow(/REM value/)
+      })
+    })
+
+    describe('source = "base"', () => {
+      it('recomputes rem when lastEdited = px and px is non-empty', () => {
+        expect(solvePxRem({ base: '20', lastEdited: 'px', px: '20', rem: '1', source: 'base' })).toEqual({
+          base: '20',
+          px: '20',
+          rem: '1',
+        })
+      })
+
+      it('recomputes px when lastEdited = rem and rem is non-empty', () => {
+        expect(solvePxRem({ base: '10', lastEdited: 'rem', px: '16', rem: '1', source: 'base' })).toEqual({
+          base: '10',
+          px: '10',
+          rem: '1',
+        })
+      })
+
+      it('leaves px and rem alone when both are empty', () => {
+        expect(solvePxRem({ base: '20', lastEdited: 'px', px: '', rem: '', source: 'base' })).toEqual({
+          base: '20',
+          px: '',
+          rem: '',
+        })
+      })
+
+      it('leaves the non-lastEdited side alone when it is empty', () => {
+        expect(solvePxRem({ base: '20', lastEdited: 'rem', px: '', rem: '', source: 'base' })).toEqual({
+          base: '20',
+          px: '',
+          rem: '',
+        })
+      })
+    })
+
+    describe('invalid base', () => {
+      it('throws when base is empty', () => {
+        expect(() => solvePxRem({ ...baseInput, base: '', px: '16', source: 'px' })).toThrow(/Base font size/)
+      })
+
+      it('throws when base is not a number', () => {
+        expect(() => solvePxRem({ ...baseInput, base: 'foo', px: '16', source: 'px' })).toThrow(/Base font size/)
+      })
+
+      it('throws when base is zero', () => {
+        expect(() => solvePxRem({ ...baseInput, base: '0', px: '16', source: 'px' })).toThrow(/Base font size/)
+      })
+
+      it('throws when base is negative', () => {
+        expect(() => solvePxRem({ ...baseInput, base: '-16', px: '16', source: 'px' })).toThrow(/Base font size/)
+      })
     })
   })
 })
