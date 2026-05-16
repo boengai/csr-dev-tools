@@ -47,7 +47,7 @@ const reducer = (state: DataUriState, action: DataUriAction): DataUriState => {
 export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const { decodeInput, decodeOpen, decodeResult, encodeOpen, encodeResult } = state
-  const { toast } = useToast()
+  const { showError, showSuccess } = useToast()
 
   const handleFileUpload = async (values: Array<File>) => {
     const file = values[0]
@@ -59,19 +59,10 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
       dispatch({ type: 'SET_ENCODE_OPEN', payload: true })
 
       if (result.isLargeFile) {
-        toast({
-          action: 'add',
-          item: {
-            label: 'File exceeds 30 KB — consider using a regular file reference for better performance',
-            type: 'error',
-          },
-        })
+        showError('File exceeds 30 KB — consider using a regular file reference for better performance')
       }
     } catch {
-      toast({
-        action: 'add',
-        item: { label: 'Failed to read file', type: 'error' },
-      })
+      showError('Failed to read file')
     }
   }
 
@@ -83,10 +74,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
 
     if (!isValidDataUri(val.trim())) {
       dispatch({ type: 'SET_DECODE_RESULT', payload: null })
-      toast({
-        action: 'add',
-        item: { label: 'Invalid data URI format (e.g., data:image/png;base64,...)', type: 'error' },
-      })
+      showError('Invalid data URI format (e.g., data:image/png;base64,...)')
       return
     }
 
@@ -95,10 +83,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
       dispatch({ type: 'SET_DECODE_RESULT', payload: result })
     } catch {
       dispatch({ type: 'SET_DECODE_RESULT', payload: null })
-      toast({
-        action: 'add',
-        item: { label: 'Invalid data URI format (e.g., data:image/png;base64,...)', type: 'error' },
-      })
+      showError('Invalid data URI format (e.g., data:image/png;base64,...)')
     }
   }, 300)
 
@@ -114,15 +99,9 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
       const blob = await parseDataUrlToBlob(decodeInput.trim())
       const ext = getMimeExtension(decodeResult.mimeType)
       downloadBlob(blob, `decoded.${ext}`)
-      toast({
-        action: 'add',
-        item: { label: `Downloaded decoded.${ext}`, type: 'success' },
-      })
+      showSuccess(`Downloaded decoded.${ext}`)
     } catch {
-      toast({
-        action: 'add',
-        item: { label: 'Failed to download file', type: 'error' },
-      })
+      showError('Failed to download file')
     }
   }
 

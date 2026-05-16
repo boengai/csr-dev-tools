@@ -18,14 +18,11 @@ export const LoremIpsumGenerator = () => {
   const [unit, setUnit] = useState<LoremUnit>('paragraphs')
   const [startWithLorem, setStartWithLorem] = useState(true)
   const [output, setOutput] = useState(() => generateLoremIpsum(3, 'paragraphs', true))
-  const { toast } = useToast()
+  const { showSuccess } = useToast()
 
   const handleGenerate = () => {
     setOutput(generateLoremIpsum(count, unit, startWithLorem))
-    toast({
-      action: 'add',
-      item: { label: `Generated ${count} ${unit}`, type: 'success' },
-    })
+    showSuccess(`Generated ${count} ${unit}`)
   }
 
   const handleCountChange = (val: string) => {

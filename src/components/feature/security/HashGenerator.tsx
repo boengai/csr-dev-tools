@@ -10,7 +10,7 @@ const toolEntry = TOOL_REGISTRY_MAP['hash-generator']
 const INITIAL: HashInput = { algo: DEFAULT_HASH_ALGORITHM, text: '' }
 
 export const HashGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const {
     inputs,
@@ -25,16 +25,11 @@ export const HashGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     initialResult: '',
     isEmpty: ({ text }) => !text,
     onError: (_err, { algo }) => {
-      toast({
-        action: 'add',
-        item: {
-          label:
-            algo === 'MD5'
-              ? 'MD5 library failed to load — try refreshing the page'
-              : 'Hash computation failed — your browser may not support this feature',
-          type: 'error',
-        },
-      })
+      showError(
+        algo === 'MD5'
+          ? 'MD5 library failed to load — try refreshing the page'
+          : 'Hash computation failed — your browser may not support this feature',
+      )
     },
   })
   const { algo, text } = inputs

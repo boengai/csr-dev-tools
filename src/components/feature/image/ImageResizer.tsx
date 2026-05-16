@@ -30,7 +30,7 @@ const initialControls: ResizeControls = {
 
 export const ImageResizer = ({ onAfterDialogClose }: ToolComponentProps) => {
   const [controls, setControls] = useState<ResizeControls>(initialControls)
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const process = async (file: File, c: ResizeControls): Promise<Blob | null> => {
     if (!c.width || !c.height || !c.format) return null
@@ -91,12 +91,7 @@ export const ImageResizer = ({ onAfterDialogClose }: ToolComponentProps) => {
         setControls(initialControls)
         onAfterDialogClose?.()
       }}
-      onRejectInvalidFile={() =>
-        toast({
-          action: 'add',
-          item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' },
-        })
-      }
+      onRejectInvalidFile={() => showError('Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)')}
       process={process}
       renderControls={({ recompute }) => (
         <div className="flex w-full shrink-0 flex-col items-end gap-2 tablet:flex-row">

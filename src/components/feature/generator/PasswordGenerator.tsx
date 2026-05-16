@@ -22,14 +22,11 @@ export const PasswordGenerator = () => {
   const [count, setCount] = useState(1)
   const nextPwId = useRef(1)
   const [passwords, setPasswords] = useState(() => [{ _id: 0, value: generatePassword(DEFAULT_PASSWORD_OPTIONS) }])
-  const { toast } = useToast()
+  const { showSuccess } = useToast()
 
   const handleGenerate = () => {
     setPasswords(Array.from({ length: count }, () => ({ _id: nextPwId.current++, value: generatePassword(options) })))
-    toast({
-      action: 'add',
-      item: { label: `Generated ${count} password${count > 1 ? 's' : ''}`, type: 'success' },
-    })
+    showSuccess(`Generated ${count} password${count > 1 ? 's' : ''}`)
   }
 
   const handleLengthChange = (value: string) => {

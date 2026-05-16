@@ -20,7 +20,7 @@ type EscapeInput = { direction: Direction; mode: EscapeMode; source: string }
 const INITIAL_INPUT: EscapeInput = { direction: 'escape', mode: 'html', source: '' }
 
 export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const { inputs, reset, result, setFields, setFieldsImmediate } = useToolFields<EscapeInput, string>({
     compute: ({ direction: dir, mode: m, source: val }) =>
@@ -30,13 +30,7 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
     initialResult: '',
     isEmpty: ({ source: val }) => val.length === 0,
     onError: (_err, { direction: dir }) => {
-      toast({
-        action: 'add',
-        item: {
-          label: `Unable to ${dir} — input contains invalid sequences`,
-          type: 'error',
-        },
-      })
+      showError(`Unable to ${dir} — input contains invalid sequences`)
     },
   })
 

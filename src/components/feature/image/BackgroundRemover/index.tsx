@@ -21,7 +21,7 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
   const [bgOption, setBgOption] = useState<BgOption>('transparent')
   const [customColor, setCustomColor] = useState('#ff0000')
   const strippedCacheRef = useRef<{ file: File; stripped: Blob } | null>(null)
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const process = useCallback(async (file: File, { bgOption: bg, customColor: c }: BgControls) => {
     let stripped = strippedCacheRef.current?.file === file ? strippedCacheRef.current.stripped : null
@@ -41,12 +41,7 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
       description={toolEntry?.description}
       getDownloadFilename={() => 'background-removed.png'}
       onAfterDialogClose={onAfterDialogClose}
-      onRejectInvalidFile={() =>
-        toast({
-          action: 'add',
-          item: { label: 'Please select an image file (PNG, JPG, or WEBP)', type: 'error' },
-        })
-      }
+      onRejectInvalidFile={() => showError('Please select an image file (PNG, JPG, or WEBP)')}
       process={process}
       renderControls={({ recompute }) => (
         <BackgroundRemoverResult

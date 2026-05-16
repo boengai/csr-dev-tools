@@ -94,7 +94,7 @@ const DiagramWorkspace = () => {
   const editor = useMemo(() => new DiagramEditor(), [])
   const [activePanel, setActivePanel] = useState<SidePanel>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   useEffect(() => {
     editor.bootstrap()
@@ -125,22 +125,16 @@ const DiagramWorkspace = () => {
           const name = file.name.replace(/\.json$/i, '')
           const loaded = editor.loadFromExportedJson(parsed, name)
           if (!loaded) {
-            toast({
-              action: 'add',
-              item: { label: 'Invalid diagram file. Expected a CSR Dev Tools diagram JSON.', type: 'error' },
-            })
+            showError('Invalid diagram file. Expected a CSR Dev Tools diagram JSON.')
           }
         } catch {
-          toast({
-            action: 'add',
-            item: { label: 'Invalid diagram file. Expected a CSR Dev Tools diagram JSON.', type: 'error' },
-          })
+          showError('Invalid diagram file. Expected a CSR Dev Tools diagram JSON.')
         }
       }
       reader.readAsText(file)
       e.target.value = ''
     },
-    [editor, toast],
+    [editor, showError],
   )
 
   // -------------------------------------------------------------------------

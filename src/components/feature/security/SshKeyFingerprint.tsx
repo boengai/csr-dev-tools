@@ -21,7 +21,7 @@ const ResultRow = ({ label, value }: { label: string; value: string }) => (
 
 export const SshKeyFingerprint = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [input, setInputValue] = useState('')
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const {
     result,
@@ -33,13 +33,7 @@ export const SshKeyFingerprint = ({ autoOpen, onAfterDialogClose }: ToolComponen
     initial: null,
     isEmpty: (val) => !val.trim(),
     onError: (error) => {
-      toast({
-        action: 'add',
-        item: {
-          label: error instanceof Error ? error.message : 'SSH key format not recognized',
-          type: 'error',
-        },
-      })
+      showError(error instanceof Error ? error.message : 'SSH key format not recognized')
     },
   })
 

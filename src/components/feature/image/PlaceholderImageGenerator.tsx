@@ -95,7 +95,7 @@ const reducer = (state: PlaceholderImageState, action: PlaceholderImageAction): 
 export const PlaceholderImageGenerator = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const { bgColor, bgHexInput, height, text, textColor, textHexInput, width } = state
-  const { toast } = useToast()
+  const { showError, showSuccess } = useToast()
 
   const previewUri = useMemo(() => {
     const opts = buildOptions(width, height, bgColor, textColor, text)
@@ -119,23 +119,11 @@ export const PlaceholderImageGenerator = () => {
     const w = Math.round(Number(width))
     const h = Math.round(Number(height))
     if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) {
-      toast({
-        action: 'add',
-        item: {
-          label: 'Enter valid dimensions (e.g., 800 x 600)',
-          type: 'error',
-        },
-      })
+      showError('Enter valid dimensions (e.g., 800 x 600)')
       return null
     }
     if (w > MAX_DIMENSION || h > MAX_DIMENSION) {
-      toast({
-        action: 'add',
-        item: {
-          label: `Maximum dimension is ${MAX_DIMENSION}x${MAX_DIMENSION}`,
-          type: 'error',
-        },
-      })
+      showError(`Maximum dimension is ${MAX_DIMENSION}x${MAX_DIMENSION}`)
       return null
     }
     return { bgColor, height: h, text, textColor, width: w }
@@ -148,18 +136,9 @@ export const PlaceholderImageGenerator = () => {
       const canvas = generatePlaceholderCanvas(opts)
       const blob = await canvasToBlob(canvas)
       downloadBlob(blob, `placeholder-${opts.width}x${opts.height}.png`)
-      toast({
-        action: 'add',
-        item: {
-          label: `Downloaded placeholder-${opts.width}x${opts.height}.png`,
-          type: 'success',
-        },
-      })
+      showSuccess(`Downloaded placeholder-${opts.width}x${opts.height}.png`)
     } catch {
-      toast({
-        action: 'add',
-        item: { label: 'Failed to generate PNG', type: 'error' },
-      })
+      showError('Failed to generate PNG')
     }
   }
 
@@ -168,13 +147,7 @@ export const PlaceholderImageGenerator = () => {
     if (!opts) return
     const svg = generatePlaceholderSvg(opts)
     downloadSvg(svg, `placeholder-${opts.width}x${opts.height}.svg`)
-    toast({
-      action: 'add',
-      item: {
-        label: `Downloaded placeholder-${opts.width}x${opts.height}.svg`,
-        type: 'success',
-      },
-    })
+    showSuccess(`Downloaded placeholder-${opts.width}x${opts.height}.svg`)
   }
 
   const displayText = text || `${width || '0'}x${height || '0'}`

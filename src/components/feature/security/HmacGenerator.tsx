@@ -17,7 +17,7 @@ const toolEntry = TOOL_REGISTRY_MAP['hmac-generator']
 const ENCODINGS: Array<HmacEncoding> = ['hex', 'base64']
 
 export const HmacGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const {
     inputs,
@@ -32,13 +32,7 @@ export const HmacGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     initialResult: '',
     isEmpty: ({ message: msg, secretKey: key }) => !msg || !key,
     onError: () => {
-      toast({
-        action: 'add',
-        item: {
-          label: 'HMAC computation failed — your browser may not support this feature',
-          type: 'error',
-        },
-      })
+      showError('HMAC computation failed — your browser may not support this feature')
     },
   })
   const { message, secretKey, algorithm, encoding } = inputs

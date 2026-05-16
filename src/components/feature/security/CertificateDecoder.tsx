@@ -108,7 +108,7 @@ const ExtensionItem = ({ ext }: { ext: CertificateExtension }) => (
 
 export const CertificateDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [input, setInputValue] = useState('')
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const {
     result,
@@ -125,13 +125,7 @@ export const CertificateDecoder = ({ autoOpen, onAfterDialogClose }: ToolCompone
       initial: null,
       isEmpty: (val) => !val.trim(),
       onError: (error) => {
-        toast({
-          action: 'add',
-          item: {
-            label: error instanceof Error ? error.message : 'Certificate format not recognized',
-            type: 'error',
-          },
-        })
+        showError(error instanceof Error ? error.message : 'Certificate format not recognized')
       },
     },
   )

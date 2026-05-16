@@ -20,7 +20,7 @@ const INITIAL_RESULT: BaseResult = { values: null, error: '' }
 
 export const NumberBaseConverter = (_props: ToolComponentProps) => {
   const [values, setValues] = useState<Record<string, string>>(EMPTY_VALUES)
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const { result, setInput } = useToolComputation<BaseInput, BaseResult>(
     async ({ val, fromBase, fromName }) => {
@@ -43,10 +43,7 @@ export const NumberBaseConverter = (_props: ToolComponentProps) => {
       initial: INITIAL_RESULT,
       isEmpty: ({ val }) => val.trim().length === 0,
       onError: () => {
-        toast({
-          action: 'add',
-          item: { label: 'Conversion failed — please check your input', type: 'error' },
-        })
+        showError('Conversion failed — please check your input')
       },
     },
   )
