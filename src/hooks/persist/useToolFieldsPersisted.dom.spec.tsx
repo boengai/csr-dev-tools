@@ -126,8 +126,10 @@ describe('useToolFieldsPersisted — mount-time autorun', () => {
       }),
     )
 
+    // Two timer flushes: one for useMountOnce's deferred autorun-fire, a second
+    // for the compute pipeline's own setTimeout(0) scheduled by setFieldsImmediate.
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(0)
+      await vi.runAllTimersAsync()
     })
 
     expect(compute).toHaveBeenCalledTimes(1)
