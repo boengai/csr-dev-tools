@@ -50,6 +50,23 @@ to make the conversion + download orchestration unit-testable — is
 also declined for the same reason: one adapter, and the conversion
 primitive `convertImageFormat` is already extracted.
 
+### Scope
+
+This ADR is about reducers that model a coherent multi-step workflow
+(state transitions, intermediate phases, mutually-exclusive tabs).
+
+A reducer that multiplexes **independent** flows — e.g. one Tool's
+encode + decode dialogs sharing a single `useReducer` purely as a
+`useState` collapse — is a different shape. Each flow has a natural
+home in an existing seam ([[Tool computation pipeline]] for debounced
+input→result, [[Async action]] for one-shot button work), and the
+migration concentrates rather than scatters complexity.
+`DataUriGenerator` was such a Tool and was migrated on 2026-05-16:
+decode adopted `useToolComputation`, encode kept its inline `await`,
+the `DataUriState`/`DataUriAction` union was deleted. The
+`useDebounceCallback` for decode also went away (the pipeline owns
+debounce).
+
 ## Consequences
 
 **Positive**
