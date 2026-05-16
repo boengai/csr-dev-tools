@@ -12,6 +12,7 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
 
   const {
     inputs,
+    recompute,
     result: output,
     setFields,
     setFieldsImmediate,
@@ -33,7 +34,7 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
     }
     try {
       await jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface })
-      setFieldsImmediate({})
+      recompute()
       showSuccess('TypeScript generated successfully')
     } catch {
       showError('Invalid JSON input')
@@ -60,7 +61,7 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
         {
           label: 'Convert JSON to TypeScript',
           onOpen: () => {
-            if (source.trim()) setFieldsImmediate({})
+            if (source.trim()) recompute()
           },
         },
       ]}
