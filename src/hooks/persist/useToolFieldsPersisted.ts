@@ -30,7 +30,7 @@ export function useToolFieldsPersisted<F, R>(options: UseToolFieldsPersistedOpti
 
   useMountOnce(() => {
     if (fieldsOptions.isEmpty && !fieldsOptions.isEmpty(initialBag)) {
-      fields.setFieldsImmediate({})
+      fields.recompute()
     }
   })
 
