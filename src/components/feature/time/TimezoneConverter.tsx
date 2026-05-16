@@ -3,7 +3,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 
 import { Button, CopyButton, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { readJsonStorage, useToolFields, writeJsonStorage } from '@/hooks'
+import { readJsonStorage, useToolFieldsPersisted, writeJsonStorage } from '@/hooks'
 import type { TargetResult, ToolComponentProps } from '@/types'
 import {
   buildTimezoneIndex,
@@ -240,20 +240,24 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
     }
   }, [])
 
-  const { inputs, result, setFields, setFieldsImmediate } = useToolFields<ConverterInput, ConverterOutput>({
+  const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<ConverterInput, ConverterOutput>({
     compute: computeConversion,
     debounceMs: 300,
     initial: initialInput,
     initialResult: INITIAL_OUTPUT,
+    storageKey: 'csr-dev-tools-timezone-converter',
   })
 
   const { dateInput, sourceTz, targetTzIds, timeInput } = inputs
   const { error, results } = result
 
-  // useToolFields doesn't auto-compute its initial inputs; kick the pipeline
-  // once on mount so the default targets render without requiring user input.
+  // Persisted bag may hold stale date/time from last session. Override them with
+  // "now" on mount; sourceTz + targetTzIds keep their persisted values. This
+  // setFieldsImmediate also kicks the compute (the hook doesn't autorun without
+  // an `isEmpty` gate, which doesn't fit this Tool's defaults-from-`getLocalTimezone`
+  // initial bag).
   useEffect(() => {
-    setFieldsImmediate(initialInput)
+    setFieldsImmediate({ dateInput: formatNowDate(), timeInput: formatNowTime() })
     // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only
   }, [])
 

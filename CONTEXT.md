@@ -97,7 +97,14 @@ under one localStorage key. Pick [[Tool field bag]] (`useToolFields`)
 when persistence is bespoke or absent (e.g. `<BidirectionalConverter>`'s
 per-mode source-keying, or `AesEncryptDecrypt` which doesn't persist).
 
-Today's consumers: `JsonSchemaValidator`, `JsonDiffChecker`.
+Today's consumers: `JsonSchemaValidator`, `JsonDiffChecker`,
+`TimezoneConverter`. `TimezoneConverter` is the partial-persistence
+shape: its persisted bag holds the converter inputs (sourceTz,
+targetTzIds, dateInput, timeInput), but `dateInput`/`timeInput` are
+overridden with "now" on mount via a follow-up
+`setFieldsImmediate({ dateInput, timeInput })`. The hook does not
+need a per-field opt-out — the override is the documented pattern for
+"persist some fields, recompute others on each mount."
 
 Today's remaining migration target is `ProtobufCodec`, which still
 hand-rolls `useInputLocalStorage` + `useToolComputation` + `useMountOnce`
