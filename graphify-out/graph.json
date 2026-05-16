@@ -3240,7 +3240,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L54",
       "id": "src_app_app",
-      "community": 85,
+      "community": 151,
       "norm_label": "app()"
     },
     {
@@ -6687,7 +6687,7 @@
       "source_file": "src/types/components/feature/code/htmlFormatter.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_htmlformatter_ts",
-      "community": 492,
+      "community": 369,
       "norm_label": "htmlformatter.ts"
     },
     {
@@ -6696,7 +6696,7 @@
       "source_file": "src/types/components/feature/code/htmlFormatter.ts",
       "source_location": "L1",
       "id": "code_htmlformatter_htmlinput",
-      "community": 492,
+      "community": 369,
       "norm_label": "htmlinput"
     },
     {
@@ -6714,7 +6714,7 @@
       "source_file": "src/types/components/feature/code/jsonToTypeScript.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_jsontotypescript_ts",
-      "community": 202,
+      "community": 369,
       "norm_label": "jsontotypescript.ts"
     },
     {
@@ -6723,7 +6723,7 @@
       "source_file": "src/types/components/feature/code/jsonToTypeScript.ts",
       "source_location": "L1",
       "id": "code_jsontotypescript_jsontsinput",
-      "community": 202,
+      "community": 369,
       "norm_label": "jsontsinput"
     },
     {
@@ -6732,7 +6732,7 @@
       "source_file": "src/types/components/feature/code/protobufToJson.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_protobuftojson_ts",
-      "community": 61,
+      "community": 239,
       "norm_label": "protobuftojson.ts"
     },
     {
@@ -6741,7 +6741,7 @@
       "source_file": "src/types/components/feature/code/protobufToJson.ts",
       "source_location": "L3",
       "id": "code_protobuftojson_entrykind",
-      "community": 61,
+      "community": 239,
       "norm_label": "entrykind"
     },
     {
@@ -6750,7 +6750,7 @@
       "source_file": "src/types/components/feature/code/protobufToJson.ts",
       "source_location": "L5",
       "id": "code_protobuftojson_browsableentry",
-      "community": 61,
+      "community": 239,
       "norm_label": "browsableentry"
     },
     {
@@ -6759,7 +6759,7 @@
       "source_file": "src/types/components/feature/code/protobufToJson.ts",
       "source_location": "L9",
       "id": "code_protobuftojson_parseoutput",
-      "community": 61,
+      "community": 239,
       "norm_label": "parseoutput"
     },
     {
@@ -6831,7 +6831,7 @@
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_image_imagecompressor_ts",
-      "community": 78,
+      "community": 202,
       "norm_label": "imagecompressor.ts"
     },
     {
@@ -6840,7 +6840,7 @@
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L3",
       "id": "image_imagecompressor_originalinfo",
-      "community": 78,
+      "community": 202,
       "norm_label": "originalinfo"
     },
     {
@@ -6849,7 +6849,7 @@
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L10",
       "id": "image_imagecompressor_imagecompressorstate",
-      "community": 78,
+      "community": 202,
       "norm_label": "imagecompressorstate"
     },
     {
@@ -6858,7 +6858,7 @@
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L19",
       "id": "image_imagecompressor_imagecompressoraction",
-      "community": 78,
+      "community": 202,
       "norm_label": "imagecompressoraction"
     },
     {
@@ -6867,7 +6867,7 @@
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L30",
       "id": "image_imagecompressor_compressinput",
-      "community": 78,
+      "community": 202,
       "norm_label": "compressinput"
     },
     {
@@ -8082,7 +8082,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L1",
       "id": "src_diagram_state_ts",
-      "community": 173,
+      "community": 107,
       "norm_label": "state.ts"
     },
     {
@@ -8091,7 +8091,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L3",
       "id": "diagram_state_createinitialdocument",
-      "community": 173,
+      "community": 107,
       "norm_label": "createinitialdocument()"
     },
     {
@@ -8100,7 +8100,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L15",
       "id": "diagram_state_clonedocument",
-      "community": 173,
+      "community": 107,
       "norm_label": "clonedocument()"
     },
     {
@@ -8208,7 +8208,7 @@
       "source_file": "src/diagram/projections.ts",
       "source_location": "L1",
       "id": "src_diagram_projections_ts",
-      "community": 368,
+      "community": 107,
       "norm_label": "projections.ts"
     },
     {
@@ -8217,7 +8217,7 @@
       "source_file": "src/diagram/projections.ts",
       "source_location": "L3",
       "id": "diagram_projections_documenttoflow",
-      "community": 368,
+      "community": 107,
       "norm_label": "documenttoflow()"
     },
     {
@@ -8262,7 +8262,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L37",
       "id": "diagram_editor_isvaliddocument",
-      "community": 173,
+      "community": 107,
       "norm_label": "isvaliddocument()"
     },
     {
@@ -8280,7 +8280,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L58",
       "id": "diagram_editor_diagrameditor_constructor",
-      "community": 173,
+      "community": 107,
       "norm_label": ".constructor()"
     },
     {
@@ -8361,7 +8361,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L127",
       "id": "diagram_editor_diagrameditor_replacedocument",
-      "community": 173,
+      "community": 107,
       "norm_label": ".replacedocument()"
     },
     {
@@ -8586,7 +8586,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L309",
       "id": "diagram_editor_diagrameditor_loadfromexportedjson",
-      "community": 173,
+      "community": 107,
       "norm_label": ".loadfromexportedjson()"
     },
     {
@@ -8757,7 +8757,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_state_spec_ts",
-      "community": 173,
+      "community": 107,
       "norm_label": "state.spec.ts"
     },
     {
@@ -8766,7 +8766,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L7",
       "id": "diagram_state_spec_doc",
-      "community": 173,
+      "community": 107,
       "norm_label": "doc"
     },
     {
@@ -8775,7 +8775,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L22",
       "id": "diagram_state_spec_a",
-      "community": 173,
+      "community": 107,
       "norm_label": "a"
     },
     {
@@ -8784,7 +8784,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L23",
       "id": "diagram_state_spec_b",
-      "community": 173,
+      "community": 107,
       "norm_label": "b"
     },
     {
@@ -8793,7 +8793,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_projections_spec_ts",
-      "community": 368,
+      "community": 107,
       "norm_label": "projections.spec.ts"
     },
     {
@@ -8802,7 +8802,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L8",
       "id": "diagram_projections_spec_docwithonetable",
-      "community": 368,
+      "community": 107,
       "norm_label": "docwithonetable()"
     },
     {
@@ -8811,7 +8811,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L30",
       "id": "diagram_projections_spec_nodes_edges",
-      "community": 368,
+      "community": 107,
       "norm_label": "{ nodes, edges }"
     },
     {
@@ -8820,7 +8820,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L42",
       "id": "diagram_projections_spec_doc",
-      "community": 368,
+      "community": 107,
       "norm_label": "doc"
     },
     {
@@ -8829,7 +8829,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L45",
       "id": "diagram_projections_spec_nodes",
-      "community": 368,
+      "community": 107,
       "norm_label": "{ nodes }"
     },
     {
@@ -8838,7 +8838,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L74",
       "id": "diagram_projections_spec_edges",
-      "community": 368,
+      "community": 107,
       "norm_label": "{ edges }"
     },
     {
@@ -9414,7 +9414,7 @@
       "source_file": "src/diagram/operations/dbml.ts",
       "source_location": "L23",
       "id": "operations_dbml_applydbmlnow",
-      "community": 63,
+      "community": 729,
       "norm_label": "applydbmlnow()"
     },
     {
@@ -11106,7 +11106,7 @@
       "source_file": "src/utils/db-diagram-dbml.ts",
       "source_location": "L31",
       "id": "utils_db_diagram_dbml_formatconstraints",
-      "community": 63,
+      "community": 729,
       "norm_label": "formatconstraints()"
     },
     {
@@ -11115,7 +11115,7 @@
       "source_file": "src/utils/db-diagram-dbml.ts",
       "source_location": "L40",
       "id": "utils_db_diagram_dbml_generatedbml",
-      "community": 63,
+      "community": 729,
       "norm_label": "generatedbml()"
     },
     {
@@ -11916,7 +11916,7 @@
       "source_file": "src/utils/db-diagram.ts",
       "source_location": "L38",
       "id": "utils_db_diagram_gridlayoutpositions",
-      "community": 64,
+      "community": 63,
       "norm_label": "gridlayoutpositions()"
     },
     {
@@ -14211,7 +14211,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L1",
       "id": "src_utils_timezone_converter_ts",
-      "community": 172,
+      "community": 22,
       "norm_label": "timezone-converter.ts"
     },
     {
@@ -14220,7 +14220,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L6",
       "id": "utils_timezone_converter_gettimezonelist",
-      "community": 172,
+      "community": 22,
       "norm_label": "gettimezonelist()"
     },
     {
@@ -14229,7 +14229,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L14",
       "id": "utils_timezone_converter_parseoffsettominutes",
-      "community": 172,
+      "community": 22,
       "norm_label": "parseoffsettominutes()"
     },
     {
@@ -14238,7 +14238,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L24",
       "id": "utils_timezone_converter_getabbreviation",
-      "community": 172,
+      "community": 22,
       "norm_label": "getabbreviation()"
     },
     {
@@ -14247,7 +14247,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L33",
       "id": "utils_timezone_converter_getoffset",
-      "community": 172,
+      "community": 22,
       "norm_label": "getoffset()"
     },
     {
@@ -14256,7 +14256,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L42",
       "id": "utils_timezone_converter_extractcity",
-      "community": 172,
+      "community": 22,
       "norm_label": "extractcity()"
     },
     {
@@ -14265,7 +14265,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L48",
       "id": "utils_timezone_converter_extractregion",
-      "community": 172,
+      "community": 22,
       "norm_label": "extractregion()"
     },
     {
@@ -14274,7 +14274,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L52",
       "id": "utils_timezone_converter_buildtimezoneindex",
-      "community": 172,
+      "community": 22,
       "norm_label": "buildtimezoneindex()"
     },
     {
@@ -14283,7 +14283,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L95",
       "id": "utils_timezone_converter_searchtimezones",
-      "community": 172,
+      "community": 22,
       "norm_label": "searchtimezones()"
     },
     {
@@ -14292,7 +14292,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L104",
       "id": "utils_timezone_converter_converttimezone",
-      "community": 172,
+      "community": 22,
       "norm_label": "converttimezone()"
     },
     {
@@ -14301,7 +14301,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L133",
       "id": "utils_timezone_converter_parsedatetimeinput",
-      "community": 172,
+      "community": 22,
       "norm_label": "parsedatetimeinput()"
     },
     {
@@ -14310,7 +14310,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L198",
       "id": "utils_timezone_converter_getlocaltimezone",
-      "community": 172,
+      "community": 22,
       "norm_label": "getlocaltimezone()"
     },
     {
@@ -17901,7 +17901,7 @@
       "source_file": "src/components/common/input/UploadInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_input_uploadinput_tsx",
-      "community": 312,
+      "community": 85,
       "norm_label": "uploadinput.tsx"
     },
     {
@@ -17910,7 +17910,7 @@
       "source_file": "src/components/common/input/UploadInput.tsx",
       "source_location": "L8",
       "id": "input_uploadinput_uploadinput",
-      "community": 312,
+      "community": 85,
       "norm_label": "uploadinput()"
     },
     {
@@ -18171,7 +18171,7 @@
       "source_file": "src/components/common/diff/DiffCheckerShell.tsx",
       "source_location": "L1",
       "id": "src_components_common_diff_diffcheckershell_tsx",
-      "community": 726,
+      "community": 369,
       "norm_label": "diffcheckershell.tsx"
     },
     {
@@ -18180,7 +18180,7 @@
       "source_file": "src/components/common/diff/DiffCheckerShell.tsx",
       "source_location": "L6",
       "id": "diff_diffcheckershell_renderspans",
-      "community": 726,
+      "community": 369,
       "norm_label": "renderspans()"
     },
     {
@@ -18189,7 +18189,7 @@
       "source_file": "src/components/common/diff/DiffCheckerShell.tsx",
       "source_location": "L21",
       "id": "diff_diffcheckershell_diffcell",
-      "community": 726,
+      "community": 369,
       "norm_label": "diffcell()"
     },
     {
@@ -18198,7 +18198,7 @@
       "source_file": "src/components/common/diff/DiffCheckerShell.tsx",
       "source_location": "L51",
       "id": "diff_diffcheckershell_diffcheckershell",
-      "community": 726,
+      "community": 369,
       "norm_label": "diffcheckershell()"
     },
     {
@@ -18774,7 +18774,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L24",
       "id": "command_palette_commandpalette_commandpalette",
-      "community": 85,
+      "community": 731,
       "norm_label": "commandpalette()"
     },
     {
@@ -18864,7 +18864,7 @@
       "source_file": "src/components/common/button/index.ts",
       "source_location": "L1",
       "id": "src_components_common_button_index_ts",
-      "community": 312,
+      "community": 85,
       "norm_label": "index.ts"
     },
     {
@@ -19386,7 +19386,7 @@
       "source_file": "src/components/common/icon/index.ts",
       "source_location": "L1",
       "id": "src_components_common_icon_index_ts",
-      "community": 312,
+      "community": 85,
       "norm_label": "index.ts"
     },
     {
@@ -19449,7 +19449,7 @@
       "source_file": "src/components/feature/unit/UnitPxToRem.tsx",
       "source_location": "L1",
       "id": "src_components_feature_unit_unitpxtorem_tsx",
-      "community": 743,
+      "community": 15,
       "norm_label": "unitpxtorem.tsx"
     },
     {
@@ -19458,7 +19458,7 @@
       "source_file": "src/components/feature/unit/UnitPxToRem.tsx",
       "source_location": "L10",
       "id": "unit_unitpxtorem_unitpxtorem",
-      "community": 743,
+      "community": 15,
       "norm_label": "unitpxtorem()"
     },
     {
@@ -19980,7 +19980,7 @@
       "source_file": "src/components/feature/security/SshKeyFingerprint.tsx",
       "source_location": "L1",
       "id": "src_components_feature_security_sshkeyfingerprint_tsx",
-      "community": 370,
+      "community": 15,
       "norm_label": "sshkeyfingerprint.tsx"
     },
     {
@@ -19989,7 +19989,7 @@
       "source_file": "src/components/feature/security/SshKeyFingerprint.tsx",
       "source_location": "L12",
       "id": "security_sshkeyfingerprint_resultrow",
-      "community": 370,
+      "community": 15,
       "norm_label": "resultrow()"
     },
     {
@@ -19998,7 +19998,7 @@
       "source_file": "src/components/feature/security/SshKeyFingerprint.tsx",
       "source_location": "L22",
       "id": "security_sshkeyfingerprint_sshkeyfingerprint",
-      "community": 370,
+      "community": 15,
       "norm_label": "sshkeyfingerprint()"
     },
     {
@@ -20322,7 +20322,7 @@
       "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
       "source_location": "L71",
       "id": "code_jsonpathevaluator_jsonpathevaluator",
-      "community": 15,
+      "community": 369,
       "norm_label": "jsonpathevaluator()"
     },
     {
@@ -20502,7 +20502,7 @@
       "source_file": "src/components/feature/code/JsonToTypeScript.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_jsontotypescript_tsx",
-      "community": 202,
+      "community": 369,
       "norm_label": "jsontotypescript.tsx"
     },
     {
@@ -20511,7 +20511,7 @@
       "source_file": "src/components/feature/code/JsonToTypeScript.tsx",
       "source_location": "L10",
       "id": "code_jsontotypescript_jsontotypescript",
-      "community": 15,
+      "community": 369,
       "norm_label": "jsontotypescript()"
     },
     {
@@ -20574,7 +20574,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_protobuftojson_tsx",
-      "community": 61,
+      "community": 239,
       "norm_label": "protobuftojson.tsx"
     },
     {
@@ -20583,7 +20583,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L11",
       "id": "code_protobuftojson_kind_styles",
-      "community": 61,
+      "community": 239,
       "norm_label": "kind_styles"
     },
     {
@@ -20592,7 +20592,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L16",
       "id": "code_protobuftojson_kindbadge",
-      "community": 61,
+      "community": 239,
       "norm_label": "kindbadge()"
     },
     {
@@ -20601,7 +20601,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L80",
       "id": "code_protobuftojson_buildbrowsableentries",
-      "community": 61,
+      "community": 239,
       "norm_label": "buildbrowsableentries()"
     },
     {
@@ -20610,7 +20610,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L101",
       "id": "code_protobuftojson_collectallenumsflat",
-      "community": 61,
+      "community": 239,
       "norm_label": "collectallenumsflat()"
     },
     {
@@ -20619,7 +20619,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L113",
       "id": "code_protobuftojson_annotatejsonwithenums",
-      "community": 61,
+      "community": 239,
       "norm_label": "annotatejsonwithenums()"
     },
     {
@@ -20835,7 +20835,7 @@
       "source_file": "src/components/feature/code/HtmlFormatter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_htmlformatter_tsx",
-      "community": 492,
+      "community": 369,
       "norm_label": "htmlformatter.tsx"
     },
     {
@@ -20844,7 +20844,7 @@
       "source_file": "src/components/feature/code/HtmlFormatter.tsx",
       "source_location": "L8",
       "id": "code_htmlformatter_initial",
-      "community": 492,
+      "community": 369,
       "norm_label": "initial"
     },
     {
@@ -20853,7 +20853,7 @@
       "source_file": "src/components/feature/code/HtmlFormatter.tsx",
       "source_location": "L10",
       "id": "code_htmlformatter_htmlformatter",
-      "community": 15,
+      "community": 369,
       "norm_label": "htmlformatter()"
     },
     {
@@ -20862,7 +20862,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_jsonschemavalidator_tsx",
-      "community": 742,
+      "community": 369,
       "norm_label": "jsonschemavalidator.tsx"
     },
     {
@@ -20871,7 +20871,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L12",
       "id": "code_jsonschemavalidator_validatorinput",
-      "community": 742,
+      "community": 369,
       "norm_label": "validatorinput"
     },
     {
@@ -20880,7 +20880,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L14",
       "id": "code_jsonschemavalidator_jsonschemavalidator",
-      "community": 15,
+      "community": 369,
       "norm_label": "jsonschemavalidator()"
     },
     {
@@ -21429,7 +21429,7 @@
       "source_file": "src/components/feature/image/ImageCompressor.tsx",
       "source_location": "L1",
       "id": "src_components_feature_image_imagecompressor_tsx",
-      "community": 78,
+      "community": 202,
       "norm_label": "imagecompressor.tsx"
     },
     {
@@ -21438,7 +21438,7 @@
       "source_file": "src/components/feature/image/ImageCompressor.tsx",
       "source_location": "L9",
       "id": "image_imagecompressor_processingwrapperstyles",
-      "community": 78,
+      "community": 202,
       "norm_label": "processingwrapperstyles"
     },
     {
@@ -21447,7 +21447,7 @@
       "source_file": "src/components/feature/image/ImageCompressor.tsx",
       "source_location": "L20",
       "id": "image_imagecompressor_initialstate",
-      "community": 78,
+      "community": 202,
       "norm_label": "initialstate"
     },
     {
@@ -21456,7 +21456,7 @@
       "source_file": "src/components/feature/image/ImageCompressor.tsx",
       "source_location": "L29",
       "id": "image_imagecompressor_reducer",
-      "community": 78,
+      "community": 202,
       "norm_label": "reducer()"
     },
     {
@@ -21465,7 +21465,7 @@
       "source_file": "src/components/feature/image/ImageCompressor.tsx",
       "source_location": "L59",
       "id": "image_imagecompressor_imagecompressor",
-      "community": 78,
+      "community": 202,
       "norm_label": "imagecompressor()"
     },
     {
@@ -21807,7 +21807,7 @@
       "source_file": "src/components/feature/time/TimezoneConverter.tsx",
       "source_location": "L207",
       "id": "time_timezoneconverter_computeconversion",
-      "community": 172,
+      "community": 22,
       "norm_label": "computeconversion()"
     },
     {
@@ -21816,7 +21816,7 @@
       "source_file": "src/components/feature/time/TimezoneConverter.tsx",
       "source_location": "L222",
       "id": "time_timezoneconverter_timezoneconverter",
-      "community": 15,
+      "community": 369,
       "norm_label": "timezoneconverter()"
     },
     {
@@ -22005,7 +22005,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L1",
       "id": "src_components_feature_time_cronexpressionparser_tsx",
-      "community": 741,
+      "community": 15,
       "norm_label": "cronexpressionparser.tsx"
     },
     {
@@ -22014,7 +22014,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L11",
       "id": "time_cronexpressionparser_empty_result",
-      "community": 741,
+      "community": 15,
       "norm_label": "empty_result"
     },
     {
@@ -22023,7 +22023,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L13",
       "id": "time_cronexpressionparser_cronexpressionparser",
-      "community": 741,
+      "community": 15,
       "norm_label": "cronexpressionparser()"
     },
     {
@@ -22212,7 +22212,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_text_textcaseconverter_tsx",
-      "community": 487,
+      "community": 15,
       "norm_label": "textcaseconverter.tsx"
     },
     {
@@ -22221,7 +22221,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L23",
       "id": "text_textcaseconverter_cases",
-      "community": 487,
+      "community": 15,
       "norm_label": "cases"
     },
     {
@@ -22230,7 +22230,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L37",
       "id": "text_textcaseconverter_textcaseconverter",
-      "community": 487,
+      "community": 15,
       "norm_label": "textcaseconverter()"
     },
     {
@@ -23782,6 +23782,69 @@
       "norm_label": "usebatchassetpipeline()"
     },
     {
+      "label": "useTimeoutRef.dom.spec.tsx",
+      "file_type": "code",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L1",
+      "id": "src_hooks_usetimeoutref_dom_spec_tsx",
+      "community": 368,
+      "norm_label": "usetimeoutref.dom.spec.tsx"
+    },
+    {
+      "label": "cb",
+      "file_type": "code",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L19",
+      "id": "hooks_usetimeoutref_dom_spec_cb",
+      "community": 368,
+      "norm_label": "cb"
+    },
+    {
+      "label": "{ result }",
+      "file_type": "code",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L20",
+      "id": "hooks_usetimeoutref_dom_spec_result",
+      "community": 368,
+      "norm_label": "{ result }"
+    },
+    {
+      "label": "first",
+      "file_type": "code",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L34",
+      "id": "hooks_usetimeoutref_dom_spec_first",
+      "community": 368,
+      "norm_label": "first"
+    },
+    {
+      "label": "second",
+      "file_type": "code",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L35",
+      "id": "hooks_usetimeoutref_dom_spec_second",
+      "community": 368,
+      "norm_label": "second"
+    },
+    {
+      "label": "{ result, unmount }",
+      "file_type": "code",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L84",
+      "id": "hooks_usetimeoutref_dom_spec_result_unmount",
+      "community": 368,
+      "norm_label": "{ result, unmount }"
+    },
+    {
+      "label": "{ result, rerender }",
+      "file_type": "code",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L98",
+      "id": "hooks_usetimeoutref_dom_spec_result_rerender",
+      "community": 368,
+      "norm_label": "{ result, rerender }"
+    },
+    {
       "label": "useDebounceCallback.dom.spec.tsx",
       "file_type": "code",
       "source_file": "src/hooks/useDebounceCallback.dom.spec.tsx",
@@ -23850,7 +23913,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_usestalesafeasync_dom_spec_tsx",
-      "community": 275,
+      "community": 172,
       "norm_label": "usestalesafeasync.dom.spec.tsx"
     },
     {
@@ -23859,7 +23922,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L11",
       "id": "hooks_usestalesafeasync_dom_spec_result",
-      "community": 275,
+      "community": 172,
       "norm_label": "{ result }"
     },
     {
@@ -23868,7 +23931,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L14",
       "id": "hooks_usestalesafeasync_dom_spec_a",
-      "community": 275,
+      "community": 172,
       "norm_label": "a"
     },
     {
@@ -23877,7 +23940,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L17",
       "id": "hooks_usestalesafeasync_dom_spec_b",
-      "community": 275,
+      "community": 172,
       "norm_label": "b"
     },
     {
@@ -23886,7 +23949,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L21",
       "id": "hooks_usestalesafeasync_dom_spec_c",
-      "community": 275,
+      "community": 172,
       "norm_label": "c"
     },
     {
@@ -23895,7 +23958,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L29",
       "id": "hooks_usestalesafeasync_dom_spec_session",
-      "community": 275,
+      "community": 172,
       "norm_label": "session"
     },
     {
@@ -23904,7 +23967,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L30",
       "id": "hooks_usestalesafeasync_dom_spec_fn",
-      "community": 275,
+      "community": 172,
       "norm_label": "fn"
     },
     {
@@ -23913,7 +23976,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L39",
       "id": "hooks_usestalesafeasync_dom_spec_stale",
-      "community": 275,
+      "community": 172,
       "norm_label": "stale"
     },
     {
@@ -23922,7 +23985,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L48",
       "id": "hooks_usestalesafeasync_dom_spec_result_rerender",
-      "community": 275,
+      "community": 172,
       "norm_label": "{ result, rerender }"
     },
     {
@@ -23985,7 +24048,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.ts",
       "source_location": "L1",
       "id": "src_hooks_usestalesafeasync_ts",
-      "community": 275,
+      "community": 172,
       "norm_label": "usestalesafeasync.ts"
     },
     {
@@ -23994,7 +24057,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.ts",
       "source_location": "L3",
       "id": "hooks_usestalesafeasync_stalesafesession",
-      "community": 275,
+      "community": 172,
       "norm_label": "stalesafesession"
     },
     {
@@ -24093,7 +24156,7 @@
       "source_file": "src/hooks/useKeyboardShortcuts.ts",
       "source_location": "L1",
       "id": "src_hooks_usekeyboardshortcuts_ts",
-      "community": 85,
+      "community": 746,
       "norm_label": "usekeyboardshortcuts.ts"
     },
     {
@@ -24102,7 +24165,7 @@
       "source_file": "src/hooks/useKeyboardShortcuts.ts",
       "source_location": "L5",
       "id": "hooks_usekeyboardshortcuts_usekeyboardshortcuts",
-      "community": 85,
+      "community": 151,
       "norm_label": "usekeyboardshortcuts()"
     },
     {
@@ -24131,6 +24194,24 @@
       "id": "hooks_usedebouncecallback_usedebouncecallback",
       "community": 15,
       "norm_label": "usedebouncecallback()"
+    },
+    {
+      "label": "useTimeoutRef.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/useTimeoutRef.ts",
+      "source_location": "L1",
+      "id": "src_hooks_usetimeoutref_ts",
+      "community": 368,
+      "norm_label": "usetimeoutref.ts"
+    },
+    {
+      "label": "useTimeoutRef()",
+      "file_type": "code",
+      "source_file": "src/hooks/useTimeoutRef.ts",
+      "source_location": "L14",
+      "id": "hooks_usetimeoutref_usetimeoutref",
+      "community": 368,
+      "norm_label": "usetimeoutref()"
     },
     {
       "label": "useCopyToClipboard.dom.spec.tsx",
@@ -24390,7 +24471,7 @@
       "source_file": "src/hooks/useAsyncAction.ts",
       "source_location": "L1",
       "id": "src_hooks_useasyncaction_ts",
-      "community": 275,
+      "community": 172,
       "norm_label": "useasyncaction.ts"
     },
     {
@@ -24525,7 +24606,7 @@
       "source_file": "src/hooks/state/useCommandPaletteStore.ts",
       "source_location": "L7",
       "id": "state_usecommandpalettestore_usecommandpalettestore",
-      "community": 85,
+      "community": 151,
       "norm_label": "usecommandpalettestore"
     },
     {
@@ -24714,7 +24795,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
       "source_location": "L19",
       "id": "persist_usetoolfieldspersisted_usetoolfieldspersisted",
-      "community": 15,
+      "community": 369,
       "norm_label": "usetoolfieldspersisted()"
     },
     {
@@ -24732,7 +24813,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_persist_usetoolfieldspersisted_dom_spec_tsx",
-      "community": 239,
+      "community": 369,
       "norm_label": "usetoolfieldspersisted.dom.spec.tsx"
     },
     {
@@ -24741,7 +24822,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L9",
       "id": "persist_usetoolfieldspersisted_dom_spec_bag",
-      "community": 239,
+      "community": 369,
       "norm_label": "bag"
     },
     {
@@ -24750,7 +24831,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L11",
       "id": "persist_usetoolfieldspersisted_dom_spec_initial",
-      "community": 239,
+      "community": 369,
       "norm_label": "initial"
     },
     {
@@ -24759,7 +24840,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L25",
       "id": "persist_usetoolfieldspersisted_dom_spec_result",
-      "community": 239,
+      "community": 369,
       "norm_label": "{ result }"
     },
     {
@@ -24768,7 +24849,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L118",
       "id": "persist_usetoolfieldspersisted_dom_spec_compute",
-      "community": 239,
+      "community": 369,
       "norm_label": "compute"
     },
     {
@@ -34991,7 +35072,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.ts",
       "source_location": "L18",
-      "community": 15,
+      "community": 369,
       "norm_label": "usetoolfieldspersisted()",
       "id": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
     },
@@ -35000,7 +35081,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L1",
-      "community": 374,
+      "community": 369,
       "norm_label": "usetoolfieldspersisted.dom.spec.tsx",
       "id": "src_hooks_usetoolfieldspersisted_dom_spec_tsx"
     },
@@ -35009,7 +35090,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L9",
-      "community": 374,
+      "community": 369,
       "norm_label": "bag",
       "id": "hooks_usetoolfieldspersisted_dom_spec_bag"
     },
@@ -35018,7 +35099,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L11",
-      "community": 374,
+      "community": 369,
       "norm_label": "initial",
       "id": "hooks_usetoolfieldspersisted_dom_spec_initial"
     },
@@ -35027,7 +35108,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L25",
-      "community": 374,
+      "community": 369,
       "norm_label": "{ result }",
       "id": "hooks_usetoolfieldspersisted_dom_spec_result"
     },
@@ -35036,7 +35117,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L118",
-      "community": 374,
+      "community": 369,
       "norm_label": "compute",
       "id": "hooks_usetoolfieldspersisted_dom_spec_compute"
     },
@@ -36323,7 +36404,7 @@
       "file_type": "code",
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L10",
-      "community": 78,
+      "community": 202,
       "norm_label": "state",
       "id": "image_imagecompressor_state"
     },
@@ -36332,7 +36413,7 @@
       "file_type": "code",
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
       "source_location": "L19",
-      "community": 78,
+      "community": 202,
       "norm_label": "action",
       "id": "image_imagecompressor_action"
     },
@@ -72624,6 +72705,17 @@
       "target": "src_components_common_button_copybutton_spec_ts"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/common/button/CopyButton.tsx",
+      "source_location": "L26",
+      "weight": 1.0,
+      "source": "button_copybutton_copybutton",
+      "target": "hooks_usetimeoutref_usetimeoutref"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/common/button/copyButton.spec.ts",
@@ -76393,6 +76485,17 @@
       "confidence_score": 1.0,
       "source": "image_imagecompressor_processingwrapperstyles",
       "target": "image_imagecompressor_imagecompressor"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/feature/image/ImageCompressor.tsx",
+      "source_location": "L64",
+      "weight": 1.0,
+      "source": "image_imagecompressor_imagecompressor",
+      "target": "hooks_usetimeoutref_usetimeoutref"
     },
     {
       "relation": "calls",
@@ -81165,6 +81268,88 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_hooks_usetimeoutref_dom_spec_tsx",
+      "target": "src_hooks_usetimeoutref_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_hooks_usetimeoutref_dom_spec_tsx",
+      "target": "hooks_usetimeoutref_usetimeoutref",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "src_hooks_usetimeoutref_dom_spec_tsx",
+      "target": "hooks_usetimeoutref_dom_spec_cb",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "src_hooks_usetimeoutref_dom_spec_tsx",
+      "target": "hooks_usetimeoutref_dom_spec_result",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "src_hooks_usetimeoutref_dom_spec_tsx",
+      "target": "hooks_usetimeoutref_dom_spec_first",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "src_hooks_usetimeoutref_dom_spec_tsx",
+      "target": "hooks_usetimeoutref_dom_spec_second",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "src_hooks_usetimeoutref_dom_spec_tsx",
+      "target": "hooks_usetimeoutref_dom_spec_result_unmount",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
+      "source_location": "L98",
+      "weight": 1.0,
+      "source": "src_hooks_usetimeoutref_dom_spec_tsx",
+      "target": "hooks_usetimeoutref_dom_spec_result_rerender",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/hooks/useDebounceCallback.dom.spec.tsx",
       "source_location": "L7",
       "weight": 1.0,
@@ -81614,6 +81799,16 @@
       "weight": 1.0,
       "source": "hooks_usedebouncecallback_usedebouncecallback",
       "target": "db_diagram_usediagramhandlers_usediagramhandlers"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useTimeoutRef.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "src_hooks_usetimeoutref_ts",
+      "target": "hooks_usetimeoutref_usetimeoutref",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -101971,5 +102166,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "e09e94dbaa05470ac0936e9c9a8829d6887849b7"
+  "built_at_commit": "0b075db9da53ec44faba75d3e552c2d67f63dbc4"
 }
