@@ -1,7 +1,7 @@
 import { AnimatePresence, m } from 'motion/react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-import { useCopyToClipboard } from '@/hooks'
+import { useCopyToClipboard, useTimeoutRef } from '@/hooks'
 import type { CompVariant, CopyButtonProps, CopyButtonVariants } from '@/types'
 import { tv } from '@/utils'
 
@@ -23,28 +23,14 @@ export const copyButtonVariants: CompVariant<CopyButtonVariants> = tv({
 export const CopyButton = ({ label, value, variant = 'icon-only' }: CopyButtonProps) => {
   const copyToClipboard = useCopyToClipboard()
   const [isCopied, setIsCopied] = useState(false)
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  useEffect(() => {
-    return () => {
-      if (timeoutRef.current !== null) {
-        clearTimeout(timeoutRef.current)
-      }
-    }
-  }, [])
+  const { schedule } = useTimeoutRef()
 
   const handleCopy = useCallback(() => {
     if (!value) return
     copyToClipboard(value)
     setIsCopied(true)
-    if (timeoutRef.current !== null) {
-      clearTimeout(timeoutRef.current)
-    }
-    timeoutRef.current = setTimeout(() => {
-      setIsCopied(false)
-      timeoutRef.current = null
-    }, 2000)
-  }, [copyToClipboard, value])
+    schedule(() => setIsCopied(false), 2000)
+  }, [copyToClipboard, schedule, value])
 
   const ariaLabel = label ? `Copy ${label} to clipboard` : 'Copy to clipboard'
   const className = copyButtonVariants({ variant })

@@ -1,8 +1,8 @@
-import { useEffect, useReducer, useRef } from 'react'
+import { useEffect, useReducer } from 'react'
 
 import { Button, DownloadIcon, FieldForm, ProgressBar, UploadInput } from '@/components/common'
 import { COMPRESSIBLE_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useTimeoutRef, useToast, useToolComputation } from '@/hooks'
 import type { CompressInput, ImageCompressorAction, ImageCompressorState, ImageProcessingResult } from '@/types'
 import { downloadDataUrl, formatFileSize, processImage, tv } from '@/utils'
 
@@ -57,19 +57,11 @@ const reducer = (state: ImageCompressorState, action: ImageCompressorAction): Im
 }
 
 export const ImageCompressor = () => {
-  const progressTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
-
   const [state, dispatch] = useReducer(reducer, initialState)
   const { originalInfo, processing, quality, showProgress, source } = state
 
   const { showError, showSuccess } = useToast()
-
-  // M3 fix: cleanup progress timer on unmount
-  useEffect(() => {
-    return () => {
-      clearTimeout(progressTimerRef.current)
-    }
-  }, [])
+  const progressTimer = useTimeoutRef()
 
   const {
     result: compressed,
@@ -79,15 +71,14 @@ export const ImageCompressor = () => {
     async ({ file, quality: q }) => {
       if (!file) return null
       dispatch({ type: 'SET_PROCESSING', payload: true })
-      clearTimeout(progressTimerRef.current)
-      progressTimerRef.current = setTimeout(() => dispatch({ type: 'SET_SHOW_PROGRESS', payload: true }), 300)
+      progressTimer.schedule(() => dispatch({ type: 'SET_SHOW_PROGRESS', payload: true }), 300)
       try {
         const result = await processImage(file, { quality: q / 100, strategy: 'stretch' })
-        clearTimeout(progressTimerRef.current)
+        progressTimer.cancel()
         dispatch({ type: 'FINISH_COMPRESS' })
         return result
       } catch (err) {
-        clearTimeout(progressTimerRef.current)
+        progressTimer.cancel()
         dispatch({ type: 'FINISH_COMPRESS' })
         throw err
       }
