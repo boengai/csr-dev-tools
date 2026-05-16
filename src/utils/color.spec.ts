@@ -44,6 +44,9 @@ describe('hexToHsl', () => {
     mockedConvertColor.mockResolvedValueOnce({
       hex: '#33cc66',
       hsl: 'hsl(140 60% 50%)',
+      lab: 'lab(72 -56 39)',
+      lch: 'lch(72 68 145)',
+      oklch: 'oklch(0.76 0.18 145)',
       rgb: 'rgb(51 204 102)',
     })
 
@@ -56,6 +59,9 @@ describe('hexToHsl', () => {
     mockedConvertColor.mockResolvedValueOnce({
       hex: '#000',
       hsl: 'unparseable',
+      lab: 'lab(0 0 0)',
+      lch: 'lch(0 0 0)',
+      oklch: 'oklch(0 0 0)',
       rgb: 'rgb(0 0 0)',
     })
 
