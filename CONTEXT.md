@@ -239,6 +239,34 @@ Tools with extras (entity-mode select, double-escape checkbox) plug into the
 `sourceToolbarSlot` render-prop, which receives `{ mode, recompute }` — the
 caller renders its extras and calls `recompute()` after their value changes.
 
+## Diff checker shell
+
+A Tool that compares two text-shaped inputs (`original`, `modified`) and
+renders the result as a side-by-side row grid plus a copyable unified
+diff. Implemented by `<DiffCheckerShell>`
+(`src/components/common/diff/DiffCheckerShell.tsx`).
+
+Today's consumers: `TextDiffChecker` (plain text), `JsonDiffChecker`
+(validates + normalizes JSON before diffing).
+
+The shell wraps the [[Persistent tool field bag]] internally, so all
+five of its invariants (debounced, stale-safe, empty-bypass,
+unmount-safe, same-tick partial merge) apply to the `compute` function.
+The shell owns: the [[Tool dialog frame]] wiring, the two-column
+input layout, the diff-row rendering (`DiffCell` + `renderSpans` for
+inline-span highlighting), the unified-diff CopyButton, and the
+sticky-header column labels.
+
+The Tool's role narrows to its `compute` function, its labels (title,
+placeholders, error toast), its `storageKey`, and an optional
+`renderBanner` render-prop that receives the current `result` — Tools
+whose compute can return a validation error (e.g. invalid JSON) surface
+it through this slot; Tools without validation pass nothing.
+
+The result type is generic (`<R extends DiffOutput>`) so Tools may
+extend the minimum `{ rows, unifiedDiff }` shape with extra fields
+(`JsonDiffResult` adds `validationError`).
+
 ## Image tool shell
 
 A Tool that takes a single uploaded `File` as source, runs a transformation,
