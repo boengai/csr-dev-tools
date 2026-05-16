@@ -1,11 +1,11 @@
-import { useReducer } from 'react'
+import { useState } from 'react'
 
 import { Button, CopyButton, DownloadIcon, FieldForm, UploadInput } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
-import type { DataUriAction, DataUriState, ToolComponentProps } from '@/types'
-import { fileToDataUri, formatFileSize, isValidDataUri, parseDataUri, parseDataUrlToBlob } from '@/utils'
+import { useToast, useToolComputation } from '@/hooks'
+import type { DataUriDecodeResult, DataUriEncodeResult, ToolComponentProps } from '@/types'
+import { fileToDataUri, formatFileSize, parseDataUri, parseDataUrlToBlob } from '@/utils'
 import { downloadBlob } from '@/utils/download'
 
 const toolEntry = TOOL_REGISTRY_MAP['data-uri-generator']
@@ -17,37 +17,25 @@ const getMimeExtension = (mimeType: string): string => {
   if (sub === 'plain') return 'txt'
   return sub
 }
-const initialState: DataUriState = {
-  decodeInput: '',
-  decodeOpen: false,
-  decodeResult: null,
-  encodeOpen: false,
-  encodeResult: null,
-}
-
-const reducer = (state: DataUriState, action: DataUriAction): DataUriState => {
-  switch (action.type) {
-    case 'SET_DECODE_INPUT':
-      return { ...state, decodeInput: action.payload }
-    case 'SET_DECODE_OPEN':
-      return { ...state, decodeOpen: action.payload }
-    case 'SET_DECODE_RESULT':
-      return { ...state, decodeResult: action.payload }
-    case 'SET_ENCODE_OPEN':
-      return { ...state, encodeOpen: action.payload }
-    case 'SET_ENCODE_RESULT':
-      return { ...state, encodeResult: action.payload }
-    case 'RESET_ENCODE':
-      return { ...state, encodeResult: null }
-    case 'RESET_DECODE':
-      return { ...state, decodeInput: '', decodeResult: null }
-  }
-}
 
 export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
-  const [state, dispatch] = useReducer(reducer, initialState)
-  const { decodeInput, decodeOpen, decodeResult, encodeOpen, encodeResult } = state
   const { showError, showSuccess } = useToast()
+
+  const [encodeOpen, setEncodeOpen] = useState(false)
+  const [decodeOpen, setDecodeOpen] = useState(false)
+  const [encodeResult, setEncodeResult] = useState<DataUriEncodeResult | null>(null)
+  const [decodeInput, setDecodeInputValue] = useState('')
+
+  const {
+    result: decodeResult,
+    setInput: setDecodeInput,
+    setInputImmediate: setDecodeInputImmediate,
+  } = useToolComputation<string, DataUriDecodeResult | null>((val) => parseDataUri(val.trim()), {
+    debounceMs: 300,
+    initial: null,
+    isEmpty: (val) => !val.trim(),
+    onError: () => showError('Invalid data URI format (e.g., data:image/png;base64,...)'),
+  })
 
   const handleFileUpload = async (values: Array<File>) => {
     const file = values[0]
@@ -55,9 +43,8 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
 
     try {
       const result = await fileToDataUri(file)
-      dispatch({ type: 'SET_ENCODE_RESULT', payload: result })
-      dispatch({ type: 'SET_ENCODE_OPEN', payload: true })
-
+      setEncodeResult(result)
+      setEncodeOpen(true)
       if (result.isLargeFile) {
         showError('File exceeds 30 KB — consider using a regular file reference for better performance')
       }
@@ -66,30 +53,9 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
     }
   }
 
-  const processDecodeInput = useDebounceCallback((val: string) => {
-    if (!val.trim()) {
-      dispatch({ type: 'SET_DECODE_RESULT', payload: null })
-      return
-    }
-
-    if (!isValidDataUri(val.trim())) {
-      dispatch({ type: 'SET_DECODE_RESULT', payload: null })
-      showError('Invalid data URI format (e.g., data:image/png;base64,...)')
-      return
-    }
-
-    try {
-      const result = parseDataUri(val.trim())
-      dispatch({ type: 'SET_DECODE_RESULT', payload: result })
-    } catch {
-      dispatch({ type: 'SET_DECODE_RESULT', payload: null })
-      showError('Invalid data URI format (e.g., data:image/png;base64,...)')
-    }
-  }, 300)
-
   const handleDecodeInputChange = (val: string) => {
-    dispatch({ type: 'SET_DECODE_INPUT', payload: val })
-    processDecodeInput(val)
+    setDecodeInputValue(val)
+    setDecodeInput(val)
   }
 
   const handleDownload = async () => {
@@ -106,11 +72,12 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
   }
 
   const handleEncodeReset = () => {
-    dispatch({ type: 'RESET_ENCODE' })
+    setEncodeResult(null)
   }
 
   const handleDecodeReset = () => {
-    dispatch({ type: 'RESET_DECODE' })
+    setDecodeInputValue('')
+    setDecodeInputImmediate('')
   }
 
   return (
@@ -126,12 +93,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
             name="data-uri-encode"
             onChange={handleFileUpload}
           />
-          <Button
-            aria-label="Open decode data URI dialog"
-            block
-            onClick={() => dispatch({ type: 'SET_DECODE_OPEN', payload: true })}
-            variant="default"
-          >
+          <Button aria-label="Open decode data URI dialog" block onClick={() => setDecodeOpen(true)} variant="default">
             Decode Data URI
           </Button>
         </div>
@@ -140,7 +102,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
       {/* Encode Dialog */}
       <ToolDialogShell
         onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={(open) => dispatch({ type: 'SET_ENCODE_OPEN', payload: open })}
+        onOpenChange={setEncodeOpen}
         onReset={handleEncodeReset}
         open={encodeOpen}
         size="screen"
@@ -237,7 +199,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
       {/* Decode Dialog */}
       <ToolDialogShell
         onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={(open) => dispatch({ type: 'SET_DECODE_OPEN', payload: open })}
+        onOpenChange={setDecodeOpen}
         onReset={handleDecodeReset}
         open={decodeOpen}
         size="screen"

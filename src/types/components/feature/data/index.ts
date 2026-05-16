@@ -1,4 +1,3 @@
-export * from './dataUriGenerator'
 export * from './db-diagram'
 export * from './envFileConverter'
 export * from './escapedJsonStringifier'
