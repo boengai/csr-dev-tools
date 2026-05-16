@@ -239,6 +239,44 @@ Tools with extras (entity-mode select, double-escape checkbox) plug into the
 `sourceToolbarSlot` render-prop, which receives `{ mode, recompute }` — the
 caller renders its extras and calls `recompute()` after their value changes.
 
+## Formatter shell
+
+A Tool whose interaction is "paste source code → pick mode (or dialect)
+→ pick indent → see formatted/minified result." Implemented by
+`<FormatterShell>` (`src/components/common/formatter/FormatterShell.tsx`).
+
+Today's consumers: `CssFormatter`, `HtmlFormatter`, `SqlFormatter`,
+`JavaScriptMinifier`. All four route their compute through
+`src/wasm/formatter` (`formatCss`/`minifyCss`, `formatHtml`/`minifyHtml`,
+`formatSql`, `formatJs`/`minifyJs`).
+
+The shell wraps the [[Persistent tool field bag]] internally, so all
+five of its invariants apply to the `compute` function. Persistence is
+required (every consumer gets its own `storageKey`) — a previous
+inconsistency where HtmlFormatter persisted but CSS/SQL/JS did not has
+been resolved by making persistence the default.
+
+The shell owns: the [[Tool dialog frame]] wiring, the source `FieldForm`
+panel, the result `CodeOutput` + `CopyButton` panel, the two-column
+layout, the error toast, and the partial-reset semantic (`reset` clears
+`source` only, preserves the control fields like `mode`/`dialect`/`indent`).
+
+The Tool's role narrows to its `compute` function, its labels/placeholders,
+its `storageKey`, and a `renderControls` render-prop that receives
+`{ inputs, result, setFieldsImmediate }` — the Tool builds whatever
+controls it needs (mode select, dialect select, indent select, size-savings
+stat). The shell hardcodes the layout container around them.
+
+The shell's input type is generic over `<I extends { source: string }>` —
+each Tool has its own typed bag (`CssInput`, `HtmlInput`, `SqlInput`,
+`JsInput`) with different mode/dialect/indent vocabularies. The constraint
+on `source` lets the shell own the input panel + reset/`isEmpty` logic.
+
+Does NOT fit `JsonToTypeScript`: that Tool drives compute from a button
+click rather than debounced input change, plus its control row is
+toggle buttons + a Generate action — a different interaction shape, not
+this family.
+
 ## Diff checker shell
 
 A Tool that compares two text-shaped inputs (`original`, `modified`) and
