@@ -3,6 +3,7 @@
  */
 import { renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
 import { useBlobUrl } from './useBlobUrl'
 
 const ORIG_CREATE = URL.createObjectURL

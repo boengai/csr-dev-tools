@@ -27,10 +27,7 @@ export type CopyButtonVariants = {
   variant: CopyButtonVariant
 }
 
-export type ToggleButtonProps = Pick<
-  ButtonHTMLAttributes<HTMLButtonElement>,
-  'aria-label' | 'disabled' | 'onClick'
-> & {
+export type ToggleButtonProps = Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'aria-label' | 'disabled' | 'onClick'> & {
   children: ReactElement<HTMLSpanElement> | string
   pressed: boolean
   size?: 'compact' | 'default'

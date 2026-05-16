@@ -4,7 +4,6 @@ import { Button, ColorInput, DownloadIcon, FieldForm, SelectInput } from '@/comp
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { PlaceholderImageAction, PlaceholderImageState } from '@/types'
-import { downloadBlob } from '@/utils/download'
 import {
   canvasToBlob,
   downloadSvg,
@@ -13,6 +12,7 @@ import {
   PLACEHOLDER_PRESETS,
   type PlaceholderOptions,
 } from '@/utils'
+import { downloadBlob } from '@/utils/download'
 
 const DEFAULT_WIDTH = '800'
 const DEFAULT_HEIGHT = '600'

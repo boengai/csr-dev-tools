@@ -29,10 +29,7 @@ export function ImageToolShell<TControls>({
   const [source, setSource] = useState<File | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
 
-  const { error, isPending, result, setInputImmediate } = useToolComputation<
-    PipelineInput<TControls>,
-    Blob | null
-  >(
+  const { error, isPending, result, setInputImmediate } = useToolComputation<PipelineInput<TControls>, Blob | null>(
     async ({ file, controls: c }) => {
       if (!file) return null
       return process(file, c)

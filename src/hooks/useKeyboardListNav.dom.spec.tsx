@@ -22,9 +22,7 @@ beforeEach(() => {
 
 describe('useKeyboardListNav', () => {
   it('starts at the configured initialIndex', () => {
-    const { result } = renderHook(() =>
-      useKeyboardListNav(['a', 'b', 'c'], { initialIndex: -1, onEnter: vi.fn() }),
-    )
+    const { result } = renderHook(() => useKeyboardListNav(['a', 'b', 'c'], { initialIndex: -1, onEnter: vi.fn() }))
     expect(result.current.activeIndex).toBe(-1)
   })
 
@@ -54,9 +52,7 @@ describe('useKeyboardListNav', () => {
   })
 
   it('retreats on ArrowUp and clamps at 0 by default', () => {
-    const { result } = renderHook(() =>
-      useKeyboardListNav(['a', 'b', 'c'], { initialIndex: 1, onEnter: vi.fn() }),
-    )
+    const { result } = renderHook(() => useKeyboardListNav(['a', 'b', 'c'], { initialIndex: 1, onEnter: vi.fn() }))
 
     act(() => {
       result.current.handleKeyDown(makeEvent('ArrowUp').event)
@@ -82,9 +78,7 @@ describe('useKeyboardListNav', () => {
   })
 
   it('wraps ArrowUp 0 → last when wraparound is true', () => {
-    const { result } = renderHook(() =>
-      useKeyboardListNav(['a', 'b', 'c'], { onEnter: vi.fn(), wraparound: true }),
-    )
+    const { result } = renderHook(() => useKeyboardListNav(['a', 'b', 'c'], { onEnter: vi.fn(), wraparound: true }))
 
     act(() => {
       result.current.handleKeyDown(makeEvent('ArrowUp').event)
@@ -94,9 +88,7 @@ describe('useKeyboardListNav', () => {
 
   it('Enter calls onEnter with the active item', () => {
     const onEnter = vi.fn()
-    const { result } = renderHook(() =>
-      useKeyboardListNav(['a', 'b', 'c'], { initialIndex: 1, onEnter }),
-    )
+    const { result } = renderHook(() => useKeyboardListNav(['a', 'b', 'c'], { initialIndex: 1, onEnter }))
 
     act(() => {
       result.current.handleKeyDown(makeEvent('Enter').event)
@@ -108,9 +100,7 @@ describe('useKeyboardListNav', () => {
 
   it('Enter is a no-op when no item is highlighted (activeIndex < 0)', () => {
     const onEnter = vi.fn()
-    const { result } = renderHook(() =>
-      useKeyboardListNav(['a', 'b'], { initialIndex: -1, onEnter }),
-    )
+    const { result } = renderHook(() => useKeyboardListNav(['a', 'b'], { initialIndex: -1, onEnter }))
 
     act(() => {
       result.current.handleKeyDown(makeEvent('Enter').event)

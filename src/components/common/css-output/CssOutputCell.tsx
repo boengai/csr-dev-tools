@@ -21,7 +21,7 @@ const labelStyles = tv({
 })
 
 const preStyles = tv({
-  base: 'rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono text-gray-300 whitespace-pre-wrap',
+  base: 'rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono whitespace-pre-wrap text-gray-300',
   variants: {
     size: {
       compact: 'text-body-xs',

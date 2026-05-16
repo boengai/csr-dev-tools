@@ -134,7 +134,13 @@ export const ChmodCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         <div className="sm:flex-row flex flex-col gap-4">
           <label className="flex flex-1 flex-col gap-1">
             <span className="text-body-xs font-medium text-gray-400">Octal</span>
-            <TextInput name="octal-input" onChange={handleOctalChange} placeholder="755" type="text" value={octalInput} />
+            <TextInput
+              name="octal-input"
+              onChange={handleOctalChange}
+              placeholder="755"
+              type="text"
+              value={octalInput}
+            />
             {octalError && (
               <p className="text-amber-400 text-body-xs" role="alert">
                 {octalError}

@@ -92,13 +92,15 @@ const TimezoneSearchPicker = ({
   const filtered = useMemo(() => searchTimezones(query, sortedIndex), [query, sortedIndex])
   const visibleItems = useMemo(() => filtered.slice(0, 50), [filtered])
 
-  const { activeIndex, handleKeyDown: handleListNavKeyDown, listRef, setActiveIndex } = useKeyboardListNav<TimezoneEntry>(
-    visibleItems,
-    {
-      initialIndex: -1,
-      onEnter: (entry) => selectItem(entry.id),
-    },
-  )
+  const {
+    activeIndex,
+    handleKeyDown: handleListNavKeyDown,
+    listRef,
+    setActiveIndex,
+  } = useKeyboardListNav<TimezoneEntry>(visibleItems, {
+    initialIndex: -1,
+    onEnter: (entry) => selectItem(entry.id),
+  })
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

@@ -1,12 +1,14 @@
 import { describe, expect, it } from 'vitest'
+
 import type { DiagramSchema } from '@/types'
-import { documentToSchema } from './export'
+import { createDefaultColumn } from '@/utils/db-diagram'
+
+import { createInitialDocument } from '../state'
 import { addColumn } from './columns'
+import { documentToSchema } from './export'
+import { newDiagram, schemaToDocument, setDiagramName } from './lifecycle'
 import { addRelation } from './relations'
 import { addTable } from './tables'
-import { newDiagram, schemaToDocument, setDiagramName } from './lifecycle'
-import { createDefaultColumn } from '@/utils/db-diagram'
-import { createInitialDocument } from '../state'
 
 describe('newDiagram', () => {
   it('resets to an empty document with default name', () => {

@@ -29,10 +29,12 @@ export const ColorPaletteGenerator = () => {
   const { showError } = useToast()
   const copyToClipboard = useCopyToClipboard()
 
-  const { inputs, result: palette, setFields, setFieldsImmediate } = useToolFields<
-    PaletteInput,
-    Array<PaletteColor>
-  >({
+  const {
+    inputs,
+    result: palette,
+    setFields,
+    setFieldsImmediate,
+  } = useToolFields<PaletteInput, Array<PaletteColor>>({
     compute: ({ hex, harmony }) => generatePalette(hex, harmony),
     debounceMs: 300,
     initial: { hex: DEFAULT_COLOR, harmony: DEFAULT_HARMONY },

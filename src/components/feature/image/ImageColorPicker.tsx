@@ -43,15 +43,12 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
     img.src = imageUrl
   }, [imageUrl])
 
-  const handleFileChange = useCallback(
-    (files: Array<File>) => {
-      const file = files[0]
-      if (!file) return
-      setImageFile(file)
-      setPalette([])
-    },
-    [],
-  )
+  const handleFileChange = useCallback((files: Array<File>) => {
+    const file = files[0]
+    if (!file) return
+    setImageFile(file)
+    setPalette([])
+  }, [])
 
   const getColorAt = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current

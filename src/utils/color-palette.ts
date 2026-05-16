@@ -1,6 +1,5 @@
 import type { HSLColor } from '@/types'
 import type { HarmonyType, PaletteColor } from '@/types/utils/color-palette'
-
 import { convertColor } from '@/wasm/color'
 
 import { hexToHsl, normalizeHue } from './color'

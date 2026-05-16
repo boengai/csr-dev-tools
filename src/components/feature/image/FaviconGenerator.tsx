@@ -56,7 +56,11 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
           {pipeline.sourcePreview && (
             <div className="flex shrink-0 flex-col items-center gap-2">
               <p className="text-body-sm font-medium text-gray-300">Source Image</p>
-              <img alt="source" className="w-full max-w-40 rounded border border-gray-800" src={pipeline.sourcePreview} />
+              <img
+                alt="source"
+                className="w-full max-w-40 rounded border border-gray-800"
+                src={pipeline.sourcePreview}
+              />
               <Button icon={<RefreshIcon />} onClick={pipeline.openFilePicker} size="small">
                 Upload New
               </Button>

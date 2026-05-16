@@ -5,6 +5,7 @@ import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useToast } from '@/hooks/state/useToast'
+
 import { useBatchAssetPipeline } from './useBatchAssetPipeline'
 
 vi.mock('@/utils/image', async () => {

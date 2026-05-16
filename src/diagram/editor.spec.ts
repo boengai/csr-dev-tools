@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from 'vitest'
+
 import { DiagramEditor } from './editor'
 import { createInitialDocument } from './state'
 

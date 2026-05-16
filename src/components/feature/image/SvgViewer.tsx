@@ -17,14 +17,15 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
   const [optimizeResult, setOptimizeResult] = useState<SvgOptimizeResult | null>(null)
   const previewRef = useRef<HTMLDivElement>(null)
 
-  const { result: safeSvg, setInput, setInputImmediate } = useToolComputation<string, string>(
-    (val) => sanitize(val),
-    {
-      debounceMs: 300,
-      initial: '',
-      isEmpty: (val) => !val,
-    },
-  )
+  const {
+    result: safeSvg,
+    setInput,
+    setInputImmediate,
+  } = useToolComputation<string, string>((val) => sanitize(val), {
+    debounceMs: 300,
+    initial: '',
+    isEmpty: (val) => !val,
+  })
 
   useEffect(() => {
     if (previewRef.current) {

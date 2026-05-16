@@ -1,5 +1,6 @@
 import type { DiagramDocument, ImportResult } from '@/types'
 import { generateDbml, parseDbml } from '@/utils/db-diagram-dbml'
+
 import { documentToSchema } from './export'
 import { schemaToDocument } from './lifecycle'
 
@@ -19,9 +20,7 @@ export const regenerateDbmlFromDocument = (doc: DiagramDocument): DiagramDocumen
   }
 }
 
-export const applyDbmlNow = (
-  doc: DiagramDocument,
-): { document: DiagramDocument; result: ImportResult } => {
+export const applyDbmlNow = (doc: DiagramDocument): { document: DiagramDocument; result: ImportResult } => {
   const parsed = parseDbml(doc.dbmlText)
 
   if (parsed.tables.length === 0) {

@@ -14,7 +14,10 @@ type ValidatorInput = { jsonData: string; jsonSchema: string }
 export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
 
-  const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<ValidatorInput, ValidationResult | null>({
+  const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<
+    ValidatorInput,
+    ValidationResult | null
+  >({
     compute: ({ jsonData: data, jsonSchema: schema }) => validateJsonSchema(data, schema),
     debounceMs: 300,
     initial: { jsonData: '', jsonSchema: '' },

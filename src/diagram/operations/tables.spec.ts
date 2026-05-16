@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
+
 import type { DiagramDocument } from '@/types'
-import { addTable, deleteTable, moveTable, renameTable } from './tables'
+
 import { createInitialDocument } from '../state'
+import { addTable, deleteTable, moveTable, renameTable } from './tables'
 
 const seed = (): DiagramDocument => createInitialDocument()
 
@@ -81,7 +83,14 @@ describe('deleteTable', () => {
     const bCol = doc.tables[b.id].columns[0].id
     doc = {
       ...doc,
-      relations: { r1: { id: 'r1', source: { tableId: a.id, columnId: aCol }, target: { tableId: b.id, columnId: bCol }, kind: '1:N' } },
+      relations: {
+        r1: {
+          id: 'r1',
+          source: { tableId: a.id, columnId: aCol },
+          target: { tableId: b.id, columnId: bCol },
+          kind: '1:N',
+        },
+      },
       relationOrder: ['r1'],
     }
     const next = deleteTable(doc, a.id)

@@ -10,7 +10,12 @@ const toolEntry = TOOL_REGISTRY_MAP['json-to-typescript']
 export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const { showError, showSuccess } = useToast()
 
-  const { inputs, result: output, setFields, setFieldsImmediate } = useToolFieldsPersisted<JsonTsInput, string>({
+  const {
+    inputs,
+    result: output,
+    setFields,
+    setFieldsImmediate,
+  } = useToolFieldsPersisted<JsonTsInput, string>({
     compute: ({ source: val, rootName: root, useInterface: iface, optionalProps: optional }) =>
       jsonToTypeScript(val, { optionalProperties: optional, rootName: root, useInterface: iface }),
     debounceMs: 300,
@@ -42,8 +47,7 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
 
   // Partial reset: clears the option fields back to defaults, preserves source.
   // The hook's reset() would also clear source, which is not the original behavior.
-  const handleReset = () =>
-    setFieldsImmediate({ rootName: 'Root', useInterface: true, optionalProps: false })
+  const handleReset = () => setFieldsImmediate({ rootName: 'Root', useInterface: true, optionalProps: false })
 
   return (
     <ToolDialogFrame
@@ -63,13 +67,7 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
     >
       <div className="flex w-full grow flex-col gap-4">
         <div className="flex items-end gap-4">
-          <FieldForm
-            label="Root Name"
-            name="root-name"
-            onChange={handleRootNameChange}
-            type="text"
-            value={rootName}
-          />
+          <FieldForm label="Root Name" name="root-name" onChange={handleRootNameChange} type="text" value={rootName} />
           <Button onClick={handleToggleInterface} type="button" variant="primary">
             {useInterface ? 'interface' : 'type'}
           </Button>

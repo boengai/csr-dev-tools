@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
+
 import type { DiagramDocument } from '@/types'
+
 import { documentToFlow } from './projections'
 import { createInitialDocument } from './state'
 
@@ -11,7 +13,12 @@ const docWithOneTable = (): DiagramDocument => ({
       name: 'users',
       position: { x: 100, y: 200 },
       columns: [
-        { id: 'c1', name: 'id', type: 'UUID', constraints: { isPrimaryKey: true, isForeignKey: false, isNullable: false, isUnique: true } },
+        {
+          id: 'c1',
+          name: 'id',
+          type: 'UUID',
+          constraints: { isPrimaryKey: true, isForeignKey: false, isNullable: false, isUnique: true },
+        },
       ],
     },
   },
@@ -45,11 +52,23 @@ describe('documentToFlow', () => {
       id: 't2',
       name: 'posts',
       position: { x: 400, y: 200 },
-      columns: [{ id: 'c2', name: 'user_id', type: 'UUID', constraints: { isPrimaryKey: false, isForeignKey: true, isNullable: false, isUnique: false } }],
+      columns: [
+        {
+          id: 'c2',
+          name: 'user_id',
+          type: 'UUID',
+          constraints: { isPrimaryKey: false, isForeignKey: true, isNullable: false, isUnique: false },
+        },
+      ],
     }
     doc.tableOrder = ['t1', 't2']
     doc.relations = {
-      r1: { id: 'r1', source: { tableId: 't1', columnId: 'c1' }, target: { tableId: 't2', columnId: 'c2' }, kind: '1:N' },
+      r1: {
+        id: 'r1',
+        source: { tableId: 't1', columnId: 'c1' },
+        target: { tableId: 't2', columnId: 'c2' },
+        kind: '1:N',
+      },
     }
     doc.relationOrder = ['r1']
     const { edges } = documentToFlow(doc)

@@ -93,5 +93,4 @@ describe('favicon utils', () => {
       expect(results[0].dataUrl).toBe('data:image/png;base64,mockdata')
     })
   })
-
 })

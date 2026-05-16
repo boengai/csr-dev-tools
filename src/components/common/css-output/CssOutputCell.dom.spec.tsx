@@ -1,15 +1,14 @@
+import { render } from '@testing-library/react'
 /**
  * @vitest-environment jsdom
  */
 import { describe, expect, it } from 'vitest'
-import { render } from '@testing-library/react'
+
 import { CssOutputCell } from './CssOutputCell'
 
 describe('CssOutputCell', () => {
   it('renders the value and a label tied to the variant', () => {
-    const { getByText } = render(
-      <CssOutputCell copyLabel="CSS box-shadow" value="box-shadow: 1px 2px 3px;" />,
-    )
+    const { getByText } = render(<CssOutputCell copyLabel="CSS box-shadow" value="box-shadow: 1px 2px 3px;" />)
     expect(getByText('CSS Output')).toBeTruthy()
     expect(getByText('box-shadow: 1px 2px 3px;')).toBeTruthy()
   })
@@ -29,9 +28,7 @@ describe('CssOutputCell', () => {
   })
 
   it('wraps the pre in a scrollable max-height container when scrollable=true', () => {
-    const { container } = render(
-      <CssOutputCell copyLabel="CSS animation" scrollable value="@keyframes fade { ... }" />,
-    )
+    const { container } = render(<CssOutputCell copyLabel="CSS animation" scrollable value="@keyframes fade { ... }" />)
     const scroller = container.querySelector('.max-h-64')
     expect(scroller).toBeTruthy()
   })

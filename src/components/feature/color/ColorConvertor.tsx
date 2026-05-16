@@ -62,10 +62,11 @@ export const ColorConvertor = () => {
   const [color, setColor] = useState<Record<ColorFormat, string>>(emptyColors)
   const { showError } = useToast()
 
-  const { result: converted, setInput, setInputImmediate } = useToolComputation<
-    ConvertInput,
-    Record<ColorFormat, string> | null
-  >(
+  const {
+    result: converted,
+    setInput,
+    setInputImmediate,
+  } = useToolComputation<ConvertInput, Record<ColorFormat, string> | null>(
     async ({ value, format }) => convertColor(value, format),
     {
       debounceMs: 300,

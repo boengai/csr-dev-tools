@@ -3,6 +3,7 @@
  */
 import { render, screen, fireEvent } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
+
 import { ToolDialogShell } from './ToolDialogShell'
 
 describe('ToolDialogShell uncontrolled', () => {

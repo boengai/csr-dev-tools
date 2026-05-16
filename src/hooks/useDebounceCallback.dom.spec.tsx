@@ -66,10 +66,9 @@ describe('useDebounceCallback', () => {
   it('fires the previously-captured callback when `callback` swaps mid-flight without re-invocation', () => {
     const v1 = vi.fn()
     const v2 = vi.fn()
-    const { result, rerender } = renderHook(
-      ({ cb }: { cb: (val: string) => void }) => useDebounceCallback(cb, 300),
-      { initialProps: { cb: v1 } },
-    )
+    const { result, rerender } = renderHook(({ cb }: { cb: (val: string) => void }) => useDebounceCallback(cb, 300), {
+      initialProps: { cb: v1 },
+    })
 
     result.current('x')
     rerender({ cb: v2 })
@@ -85,10 +84,9 @@ describe('useDebounceCallback', () => {
 
   it('does not reschedule an in-flight timer when `delay` changes without re-invocation', () => {
     const cb = vi.fn()
-    const { result, rerender } = renderHook(
-      ({ delay }: { delay: number }) => useDebounceCallback(cb, delay),
-      { initialProps: { delay: 300 } },
-    )
+    const { result, rerender } = renderHook(({ delay }: { delay: number }) => useDebounceCallback(cb, delay), {
+      initialProps: { delay: 300 },
+    })
 
     result.current('x')
     rerender({ delay: 1000 })

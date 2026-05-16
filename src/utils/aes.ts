@@ -44,7 +44,12 @@ async function deriveKey(password: string, salt: ArrayBuffer, iterations: number
   )
 }
 
-async function decryptWithLayout(data: Uint8Array, password: string, payloadOffset: number, iterations: number): Promise<string> {
+async function decryptWithLayout(
+  data: Uint8Array,
+  password: string,
+  payloadOffset: number,
+  iterations: number,
+): Promise<string> {
   const salt = data.slice(payloadOffset, payloadOffset + SALT_LENGTH)
   const iv = data.slice(payloadOffset + SALT_LENGTH, payloadOffset + SALT_LENGTH + IV_LENGTH)
   const ciphertext = data.slice(payloadOffset + SALT_LENGTH + IV_LENGTH)

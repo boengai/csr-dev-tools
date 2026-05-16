@@ -16,9 +16,9 @@ import {
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { DownloadTarget, ImageConvertorAction, ImageConvertorState, ImageFormat } from '@/types'
+import { convertImageFormat, isValidImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
 import { downloadBlob } from '@/utils/download'
 import { buildZipBlob } from '@/utils/zip'
-import { convertImageFormat, isValidImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
 
@@ -305,12 +305,7 @@ export const ImageConvertor = () => {
               <div className="flex w-full grow flex-col items-center justify-center gap-6">
                 <NotoEmoji emoji="check" size={120} />
                 <div className="flex w-full flex-col gap-4 desktop:w-8/10">
-                  <Button
-                    block
-                    icon={<DownloadIcon />}
-                    onClick={handleRedownload}
-                    variant="primary"
-                  >
+                  <Button block icon={<DownloadIcon />} onClick={handleRedownload} variant="primary">
                     Download
                   </Button>
                   <Button block icon={<RefreshIcon />} onClick={handleReset}>

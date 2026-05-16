@@ -28,14 +28,15 @@ const ResultRow = ({ label, value }: { label: string; value: string }) => (
 export const UserAgentParser = (_props: ToolComponentProps) => {
   const [input, setInput] = useState('')
 
-  const { result, setInput: setComputeInput, setInputImmediate } = useToolComputation<string, UserAgentResult>(
-    (val) => parseUserAgent(val),
-    {
-      debounceMs: 300,
-      initial: EMPTY,
-      isEmpty: (val) => !val.trim(),
-    },
-  )
+  const {
+    result,
+    setInput: setComputeInput,
+    setInputImmediate,
+  } = useToolComputation<string, UserAgentResult>((val) => parseUserAgent(val), {
+    debounceMs: 300,
+    initial: EMPTY,
+    isEmpty: (val) => !val.trim(),
+  })
 
   const handleChange = (val: string) => {
     setInput(val)

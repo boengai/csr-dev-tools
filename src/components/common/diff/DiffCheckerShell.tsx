@@ -128,9 +128,7 @@ export const DiffCheckerShell = <R extends DiffOutput>({
               <>
                 <div className="sticky top-0 z-10 grid grid-cols-2 border-b border-gray-800 bg-gray-950">
                   <div className="text-xs px-3 py-1.5 font-medium text-gray-500">Original</div>
-                  <div className="text-xs border-l border-gray-800 px-3 py-1.5 font-medium text-gray-500">
-                    Modified
-                  </div>
+                  <div className="text-xs border-l border-gray-800 px-3 py-1.5 font-medium text-gray-500">Modified</div>
                 </div>
                 <div className="grid grid-cols-2">
                   {rows.map((row) => (

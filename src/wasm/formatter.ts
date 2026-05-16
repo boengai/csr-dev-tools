@@ -64,11 +64,7 @@ export async function minifyJs(input: string): Promise<string> {
 
 // -- SQL --
 
-export async function formatSql(
-  input: string,
-  dialect: SqlFormatDialect = 'sql',
-  indent: number = 2,
-): Promise<string> {
+export async function formatSql(input: string, dialect: SqlFormatDialect = 'sql', indent: number = 2): Promise<string> {
   if (isEmpty(input)) return ''
   const wasm = await loadWasm<CsrFormatter>('formatter')
   return wasm.format_sql(input, dialect, indent)

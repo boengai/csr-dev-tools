@@ -9,8 +9,22 @@ import { BidirectionalConverter } from './BidirectionalConverter'
 type Mode = 'a-to-b' | 'b-to-a'
 
 const MODES: [
-  { key: Mode; label: string; sourceLabel: string; sourcePlaceholder: string; resultLabel: string; resultPlaceholder: string },
-  { key: Mode; label: string; sourceLabel: string; sourcePlaceholder: string; resultLabel: string; resultPlaceholder: string },
+  {
+    key: Mode
+    label: string
+    sourceLabel: string
+    sourcePlaceholder: string
+    resultLabel: string
+    resultPlaceholder: string
+  },
+  {
+    key: Mode
+    label: string
+    sourceLabel: string
+    sourcePlaceholder: string
+    resultLabel: string
+    resultPlaceholder: string
+  },
 ] = [
   {
     key: 'a-to-b',
@@ -43,9 +57,7 @@ afterEach(() => {
 
 describe('BidirectionalConverter — closed state', () => {
   it('renders both mode buttons with labels', () => {
-    render(
-      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={upperCompute} />,
-    )
+    render(<BidirectionalConverter modes={MODES} modeStorageKey="test" compute={upperCompute} />)
     expect(screen.getByRole('button', { name: 'A → B' })).toBeTruthy()
     expect(screen.getByRole('button', { name: 'B → A' })).toBeTruthy()
   })
@@ -63,27 +75,21 @@ describe('BidirectionalConverter — closed state', () => {
   })
 
   it('omits description when not provided', () => {
-    render(
-      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={upperCompute} />,
-    )
+    render(<BidirectionalConverter modes={MODES} modeStorageKey="test" compute={upperCompute} />)
     expect(screen.queryByText('Convert between A and B.')).toBeNull()
   })
 })
 
 describe('BidirectionalConverter — opening + switching modes', () => {
   it('opens dialog with mode 1 labels when mode 1 button clicked', () => {
-    render(
-      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={upperCompute} />,
-    )
+    render(<BidirectionalConverter modes={MODES} modeStorageKey="test" compute={upperCompute} />)
     fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
     expect(screen.getByText('A Input')).toBeTruthy()
     expect(screen.getByText('B Output')).toBeTruthy()
   })
 
   it('opens dialog with mode 2 labels when mode 2 button clicked', () => {
-    render(
-      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={upperCompute} />,
-    )
+    render(<BidirectionalConverter modes={MODES} modeStorageKey="test" compute={upperCompute} />)
     fireEvent.click(screen.getByRole('button', { name: 'B → A' }))
     expect(screen.getByText('B Input')).toBeTruthy()
     expect(screen.getByText('A Output')).toBeTruthy()
@@ -94,9 +100,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
   it('fires compute with persisted source when opening a mode', async () => {
     localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('hello'))
     const compute = vi.fn(upperCompute)
-    render(
-      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} />,
-    )
+    render(<BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} />)
     fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
 
     await act(async () => {
@@ -112,14 +116,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
     const compute = async () => {
       throw new Error('boom')
     }
-    render(
-      <BidirectionalConverter
-        modes={MODES}
-        modeStorageKey="test"
-        compute={compute}
-        onError={onError}
-      />,
-    )
+    render(<BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} onError={onError} />)
     fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
 
     await act(async () => {
@@ -136,9 +133,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
     localStorage.setItem('csr-dev-tools-b-to-a-source', JSON.stringify('saved B'))
 
     const compute = vi.fn(upperCompute)
-    render(
-      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} />,
-    )
+    render(<BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} />)
 
     fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
     await act(async () => {
@@ -164,9 +159,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
   it('calls compute exactly once when opening a mode with seeded source (no double-fire)', async () => {
     localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('hello'))
     const compute = vi.fn(upperCompute)
-    render(
-      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} />,
-    )
+    render(<BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} />)
 
     fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
     await act(async () => {
@@ -195,9 +188,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
     // isEmpty({ source: '' }) short-circuits compute, so compute is NOT called.
     localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('seed'))
     const compute = vi.fn(upperCompute)
-    render(
-      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} />,
-    )
+    render(<BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} />)
 
     fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
     await act(async () => {
@@ -222,12 +213,7 @@ describe('BidirectionalConverter — sourceToolbarSlot', () => {
       <div data-testid="slot">slot for {mode}</div>
     ))
     render(
-      <BidirectionalConverter
-        modes={MODES}
-        modeStorageKey="test"
-        compute={upperCompute}
-        sourceToolbarSlot={slot}
-      />,
+      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={upperCompute} sourceToolbarSlot={slot} />,
     )
     fireEvent.click(screen.getByRole('button', { name: 'B → A' }))
 
@@ -242,14 +228,7 @@ describe('BidirectionalConverter — sourceToolbarSlot', () => {
         refire
       </button>
     )
-    render(
-      <BidirectionalConverter
-        modes={MODES}
-        modeStorageKey="test"
-        compute={compute}
-        sourceToolbarSlot={slot}
-      />,
-    )
+    render(<BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} sourceToolbarSlot={slot} />)
     fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
     await act(async () => {
       await vi.advanceTimersByTimeAsync(0)
@@ -267,9 +246,7 @@ describe('BidirectionalConverter — sourceToolbarSlot', () => {
 
 describe('BidirectionalConverter — autoOpen + close', () => {
   it('opens with autoOpen=true on mode 1', () => {
-    render(
-      <BidirectionalConverter autoOpen modes={MODES} modeStorageKey="test" compute={upperCompute} />,
-    )
+    render(<BidirectionalConverter autoOpen modes={MODES} modeStorageKey="test" compute={upperCompute} />)
     expect(screen.getByText('A Input')).toBeTruthy()
   })
 
@@ -291,9 +268,7 @@ describe('BidirectionalConverter — autoOpen + close', () => {
 
 describe('BidirectionalConverter — mode persistence', () => {
   it('restores the last-used mode after remount', () => {
-    const { unmount } = render(
-      <BidirectionalConverter modes={MODES} modeStorageKey="test" compute={upperCompute} />,
-    )
+    const { unmount } = render(<BidirectionalConverter modes={MODES} modeStorageKey="test" compute={upperCompute} />)
     fireEvent.click(screen.getByRole('button', { name: 'B → A' }))
     // Dialog opens with mode b-to-a — confirms mode is set.
     expect(screen.getByText('B Input')).toBeTruthy()
@@ -303,9 +278,7 @@ describe('BidirectionalConverter — mode persistence', () => {
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
     unmount()
 
-    render(
-      <BidirectionalConverter autoOpen modes={MODES} modeStorageKey="test" compute={upperCompute} />,
-    )
+    render(<BidirectionalConverter autoOpen modes={MODES} modeStorageKey="test" compute={upperCompute} />)
     // After remount with autoOpen, the persisted mode (b-to-a) drives the labels.
     expect(screen.getByText('B Input')).toBeTruthy()
   })

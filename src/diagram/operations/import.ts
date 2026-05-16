@@ -1,6 +1,7 @@
 import type { DiagramDocument, ImportResult, SqlDialect } from '@/types'
-import { parseJsonSchema } from '@/utils/db-diagram-json-schema'
 import { parseSqlDdl } from '@/utils/db-diagram-import'
+import { parseJsonSchema } from '@/utils/db-diagram-json-schema'
+
 import { schemaToDocument } from './lifecycle'
 
 export const importFromSql = (

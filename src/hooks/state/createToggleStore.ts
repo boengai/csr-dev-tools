@@ -14,9 +14,7 @@ import type { ToggleStore, ToggleStoreOptions } from '@/types'
  * update happens AFTER `onOpen` runs so callers can read pre-open state
  * (like `document.activeElement`) before the open dispatch.
  */
-export function createToggleStore(
-  options: ToggleStoreOptions = {},
-): UseBoundStore<StoreApi<ToggleStore>> {
+export function createToggleStore(options: ToggleStoreOptions = {}): UseBoundStore<StoreApi<ToggleStore>> {
   return create<ToggleStore>()((set) => ({
     close: () => set({ isOpen: false }),
     isOpen: false,

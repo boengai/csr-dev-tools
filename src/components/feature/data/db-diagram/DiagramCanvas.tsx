@@ -1,10 +1,9 @@
-import { useEffect, useMemo, useState } from 'react'
 import type { Connection, NodeChange } from '@xyflow/react'
 import { Background, BackgroundVariant, Controls, MiniMap, ReactFlow, applyNodeChanges } from '@xyflow/react'
-
-import type { TableNode } from '@/types'
+import { useEffect, useMemo, useState } from 'react'
 
 import { documentToFlow } from '@/diagram/projections'
+import type { TableNode } from '@/types'
 
 import { useDiagram } from './DiagramContext'
 import { RelationshipEdgeComponent } from './RelationshipEdge'

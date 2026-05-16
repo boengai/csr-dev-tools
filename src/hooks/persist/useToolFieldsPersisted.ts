@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from 'react'
 
 import type { UseToolFieldsPersistedOptions, UseToolFieldsResult } from '@/types'
+
 import { useMountOnce } from '../useMountOnce'
 import { useToolFields } from '../useToolFields'
 import { readJsonStorage, writeJsonStorage } from './jsonStorage'
@@ -15,9 +16,7 @@ import { readJsonStorage, writeJsonStorage } from './jsonStorage'
  * restored bag passes `!isEmpty(bag)` — without `isEmpty`, the caller is
  * explicitly responsible for triggering the first compute.
  */
-export function useToolFieldsPersisted<F, R>(
-  options: UseToolFieldsPersistedOptions<F, R>,
-): UseToolFieldsResult<F, R> {
+export function useToolFieldsPersisted<F, R>(options: UseToolFieldsPersistedOptions<F, R>): UseToolFieldsResult<F, R> {
   const { storageKey, ...fieldsOptions } = options
 
   const initialBag = useMemo(

@@ -19,7 +19,13 @@ const ENCODINGS: Array<HmacEncoding> = ['hex', 'base64']
 export const HmacGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const { toast } = useToast()
 
-  const { inputs, result: hmac, reset, setFields, setFieldsImmediate } = useToolFields<HmacInput, string>({
+  const {
+    inputs,
+    result: hmac,
+    reset,
+    setFields,
+    setFieldsImmediate,
+  } = useToolFields<HmacInput, string>({
     compute: ({ message: msg, secretKey: key, algorithm: algo, encoding: enc }) => generateHmac(msg, key, algo, enc),
     debounceMs: 300,
     initial: { message: '', secretKey: '', algorithm: DEFAULT_HMAC_ALGORITHM, encoding: DEFAULT_HMAC_ENCODING },

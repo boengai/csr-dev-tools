@@ -1,4 +1,5 @@
 import type { FaviconSize, FaviconResult } from '@/types/utils/favicon'
+
 import { canvasToBlob } from './canvas'
 
 export const FAVICON_SIZES: Array<FaviconSize> = [

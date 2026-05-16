@@ -5,8 +5,8 @@ import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDebounceCallback, useToast } from '@/hooks'
 import type { DataUriAction, DataUriState, ToolComponentProps } from '@/types'
-import { downloadBlob } from '@/utils/download'
 import { fileToDataUri, formatFileSize, isValidDataUri, parseDataUri, parseDataUrlToBlob } from '@/utils'
+import { downloadBlob } from '@/utils/download'
 
 const toolEntry = TOOL_REGISTRY_MAP['data-uri-generator']
 

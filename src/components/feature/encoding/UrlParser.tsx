@@ -35,14 +35,11 @@ const ResultRow = ({ label, value, displayValue }: { label: string; value: strin
 export const UrlParser = (_props: ToolComponentProps) => {
   const [input, setInput] = useState('')
 
-  const { result, setInput: setComputeInput } = useToolComputation<string, UrlParseResult>(
-    (val) => parseUrl(val),
-    {
-      debounceMs: 300,
-      initial: EMPTY,
-      isEmpty: (val) => !val.trim(),
-    },
-  )
+  const { result, setInput: setComputeInput } = useToolComputation<string, UrlParseResult>((val) => parseUrl(val), {
+    debounceMs: 300,
+    initial: EMPTY,
+    isEmpty: (val) => !val.trim(),
+  })
 
   const handleChange = (val: string) => {
     setInput(val)

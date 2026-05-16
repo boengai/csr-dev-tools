@@ -2,10 +2,11 @@
  * @vitest-environment jsdom
  */
 import { describe, expect, it, vi } from 'vitest'
+
 import { canvasToBlob } from './canvas'
 
 const fakeCanvas = (handler: (cb: (blob: Blob | null) => void, type?: string) => void): HTMLCanvasElement =>
-  ({ toBlob: handler } as unknown as HTMLCanvasElement)
+  ({ toBlob: handler }) as unknown as HTMLCanvasElement
 
 describe('canvasToBlob', () => {
   it('resolves with the blob produced by canvas.toBlob', async () => {

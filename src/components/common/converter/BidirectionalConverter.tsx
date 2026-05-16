@@ -49,12 +49,7 @@ export function BidirectionalConverter<M extends string>({
     [],
   )
 
-  const {
-    inputs,
-    result,
-    setFields,
-    setFieldsImmediate,
-  } = useToolFields<{ mode: M; source: string }, string>({
+  const { inputs, result, setFields, setFieldsImmediate } = useToolFields<{ mode: M; source: string }, string>({
     compute,
     debounceMs: 300,
     initial: initialBag,

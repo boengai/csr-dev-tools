@@ -1,8 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import type { DiagramSchema } from '@/types'
+
 import { DiagramEditor } from './editor'
 import { createInitialDocument } from './state'
 import { createInMemoryDiagramStorage } from './storage'
-import type { DiagramSchema } from '@/types'
 
 const createTestDoc = () => createInitialDocument()
 
@@ -367,7 +369,13 @@ describe('DiagramEditor.loadDiagram', () => {
     const storage = createInMemoryDiagramStorage()
     storage.saveDiagram('d1', usersSchema())
     storage.saveIndex([
-      { id: 'd1', name: 'My Schema', tableCount: 1, createdAt: '2026-05-13T00:00:00Z', updatedAt: '2026-05-13T00:00:00Z' },
+      {
+        id: 'd1',
+        name: 'My Schema',
+        tableCount: 1,
+        createdAt: '2026-05-13T00:00:00Z',
+        updatedAt: '2026-05-13T00:00:00Z',
+      },
     ])
     const editor = new DiagramEditor({ storage })
     editor.loadDiagram('d1')

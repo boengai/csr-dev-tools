@@ -1,10 +1,12 @@
 import { describe, expect, it } from 'vitest'
+
+import { createDefaultColumn } from '@/utils/db-diagram'
+
+import { createInitialDocument } from '../state'
 import { addColumn } from './columns'
 import { documentToSchema, toDbml, toMermaid, toSql, toTypeScript } from './export'
 import { addRelation } from './relations'
 import { addTable } from './tables'
-import { createDefaultColumn } from '@/utils/db-diagram'
-import { createInitialDocument } from '../state'
 
 const seed = () => {
   const a = addTable(createInitialDocument(), { name: 'users' })

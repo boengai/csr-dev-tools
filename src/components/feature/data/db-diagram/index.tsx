@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { ReactFlowProvider, useReactFlow } from '@xyflow/react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Button } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
@@ -80,9 +80,7 @@ const DiagramInner = ({
         <div className="flex flex-1 overflow-hidden">
           <DiagramCanvas />
 
-          {activePanel !== null && (
-            <Panel which={activePanel} onClose={handleClosePanel} />
-          )}
+          {activePanel !== null && <Panel which={activePanel} onClose={handleClosePanel} />}
         </div>
       </div>
     </DiagramProvider>
@@ -159,12 +157,9 @@ const DiagramWorkspace = () => {
   // -------------------------------------------------------------------------
   // Panel toggle: same toggle-or-open logic as the old togglePanel
   // -------------------------------------------------------------------------
-  const handleSelectPanel = useCallback(
-    (panel: SidePanel) => {
-      setActivePanel((prev) => (prev === panel ? null : panel))
-    },
-    [],
-  )
+  const handleSelectPanel = useCallback((panel: SidePanel) => {
+    setActivePanel((prev) => (prev === panel ? null : panel))
+  }, [])
 
   return (
     <ReactFlowProvider>

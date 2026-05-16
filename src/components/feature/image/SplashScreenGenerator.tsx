@@ -1,22 +1,10 @@
 import { useState } from 'react'
 
-import {
-  Button,
-  CopyButton,
-  DownloadIcon,
-  RangeInput,
-  RefreshIcon,
-  Tabs,
-} from '@/components/common'
+import { Button, CopyButton, DownloadIcon, RangeInput, RefreshIcon, Tabs } from '@/components/common'
 import { UploadDialogFrame } from '@/components/common/dialog/UploadDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useBatchAssetPipeline } from '@/hooks'
-import type {
-  PwaIconResult,
-  SplashScreenGeneratorOutput,
-  SplashScreenResult,
-  ToolComponentProps,
-} from '@/types'
+import type { PwaIconResult, SplashScreenGeneratorOutput, SplashScreenResult, ToolComponentProps } from '@/types'
 import { generateAllAssets } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['splash-screen-generator']

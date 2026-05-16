@@ -16,9 +16,7 @@ afterEach(() => {
 
 describe('useToolComputation', () => {
   it('exposes initial result, no error, not pending', () => {
-    const { result } = renderHook(() =>
-      useToolComputation(async (s: string) => s, { initial: 'init' }),
-    )
+    const { result } = renderHook(() => useToolComputation(async (s: string) => s, { initial: 'init' }))
     expect(result.current.result).toBe('init')
     expect(result.current.error).toBeNull()
     expect(result.current.isPending).toBe(false)
@@ -26,9 +24,7 @@ describe('useToolComputation', () => {
 
   it('debounces input then commits the compute result', async () => {
     const compute = vi.fn(async (s: string) => s.toUpperCase())
-    const { result } = renderHook(() =>
-      useToolComputation(compute, { initial: '', debounceMs: 300 }),
-    )
+    const { result } = renderHook(() => useToolComputation(compute, { initial: '', debounceMs: 300 }))
 
     act(() => {
       result.current.setInput('abc')
@@ -47,9 +43,7 @@ describe('useToolComputation', () => {
 
   it('coalesces rapid inputs — only the latest value computes', async () => {
     const compute = vi.fn(async (s: string) => s.toUpperCase())
-    const { result } = renderHook(() =>
-      useToolComputation(compute, { initial: '', debounceMs: 300 }),
-    )
+    const { result } = renderHook(() => useToolComputation(compute, { initial: '', debounceMs: 300 }))
 
     act(() => {
       result.current.setInput('a')
@@ -83,9 +77,7 @@ describe('useToolComputation', () => {
           resolvers.push(resolve)
         }),
     )
-    const { result } = renderHook(() =>
-      useToolComputation(compute, { initial: '', debounceMs: 0 }),
-    )
+    const { result } = renderHook(() => useToolComputation(compute, { initial: '', debounceMs: 0 }))
 
     act(() => {
       result.current.setInput('first')
@@ -181,9 +173,7 @@ describe('useToolComputation', () => {
           resolveCompute = resolve
         }),
     )
-    const { result } = renderHook(() =>
-      useToolComputation(compute, { initial: '', debounceMs: 100 }),
-    )
+    const { result } = renderHook(() => useToolComputation(compute, { initial: '', debounceMs: 100 }))
 
     act(() => {
       result.current.setInput('x')
@@ -211,9 +201,7 @@ describe('useToolComputation', () => {
       if (attempt === 2) throw new Error('boom')
       return `r${attempt}`
     })
-    const { result } = renderHook(() =>
-      useToolComputation(compute, { initial: 'INIT', debounceMs: 0 }),
-    )
+    const { result } = renderHook(() => useToolComputation(compute, { initial: 'INIT', debounceMs: 0 }))
 
     act(() => {
       result.current.setInput('a')
@@ -244,9 +232,7 @@ describe('useToolComputation', () => {
       }
       return s
     })
-    const { result } = renderHook(() =>
-      useToolComputation(compute, { initial: '', debounceMs: 0 }),
-    )
+    const { result } = renderHook(() => useToolComputation(compute, { initial: '', debounceMs: 0 }))
 
     act(() => {
       result.current.setInput('a')
@@ -271,9 +257,7 @@ describe('useToolComputation', () => {
       throw new Error('boom')
     })
     const onError = vi.fn()
-    const { result } = renderHook(() =>
-      useToolComputation(compute, { initial: '', debounceMs: 0, onError }),
-    )
+    const { result } = renderHook(() => useToolComputation(compute, { initial: '', debounceMs: 0, onError }))
 
     act(() => {
       result.current.setInput('hello')
@@ -296,9 +280,7 @@ describe('useToolComputation', () => {
         }),
     )
     const errorSpy = vi.spyOn(console, 'error').mockImplementation(() => {})
-    const { result, unmount } = renderHook(() =>
-      useToolComputation(compute, { initial: '', debounceMs: 0 }),
-    )
+    const { result, unmount } = renderHook(() => useToolComputation(compute, { initial: '', debounceMs: 0 }))
 
     act(() => {
       result.current.setInput('x')
@@ -319,9 +301,7 @@ describe('useToolComputation', () => {
 
   it('setInputImmediate skips the debounce wait and cancels any pending debounced compute', async () => {
     const compute = vi.fn(async (s: string) => s.toUpperCase())
-    const { result } = renderHook(() =>
-      useToolComputation(compute, { initial: '', debounceMs: 300 }),
-    )
+    const { result } = renderHook(() => useToolComputation(compute, { initial: '', debounceMs: 300 }))
 
     act(() => {
       result.current.setInput('slow')
@@ -365,9 +345,7 @@ describe('useToolComputation', () => {
 
   it('debounceMs: 0 fires on the next tick', async () => {
     const compute = vi.fn(async (s: string) => s)
-    const { result } = renderHook(() =>
-      useToolComputation(compute, { initial: '', debounceMs: 0 }),
-    )
+    const { result } = renderHook(() => useToolComputation(compute, { initial: '', debounceMs: 0 }))
 
     act(() => {
       result.current.setInput('go')

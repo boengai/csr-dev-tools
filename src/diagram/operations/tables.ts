@@ -45,11 +45,7 @@ export const renameTable = (doc: DiagramDocument, id: TableId, name: string): Di
   }
 }
 
-export const moveTable = (
-  doc: DiagramDocument,
-  id: TableId,
-  position: { x: number; y: number },
-): DiagramDocument => {
+export const moveTable = (doc: DiagramDocument, id: TableId, position: { x: number; y: number }): DiagramDocument => {
   const table = doc.tables[id]
   if (!table) return doc
   return {

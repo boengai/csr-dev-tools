@@ -22,8 +22,8 @@ import type {
   SchemaParseOutput,
   ToolComponentProps,
 } from '@/types'
-import { downloadBlob } from '@/utils/download'
 import type { OutputFormat } from '@/types/utils/protobuf-codec'
+import { downloadBlob } from '@/utils/download'
 import { detectProtobufFormat } from '@/wasm/parsers'
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-codec']
@@ -66,10 +66,11 @@ const EncodeContent = ({
 }: ContentProps) => {
   const { showError } = useToast()
 
-  const { result, setInput: setEncodeInput, setInputImmediate: setEncodeInputImmediate } = useToolComputation<
-    EncodeInput,
-    string
-  >(
+  const {
+    result,
+    setInput: setEncodeInput,
+    setInputImmediate: setEncodeInputImmediate,
+  } = useToolComputation<EncodeInput, string>(
     async ({ schema: schemaVal, msgType, source: sourceVal, format: fmt }) => {
       const { encodeProtobuf } = await import('@/wasm/parsers')
       const codecResult = await encodeProtobuf(schemaVal, msgType, sourceVal, fmt)
@@ -106,7 +107,8 @@ const EncodeContent = ({
   const handleFormatChange = useCallback(
     (value: string) => {
       onFormatChange(value)
-      if (source) setEncodeInputImmediate({ schema, msgType: selectedMessageType, source, format: value as OutputFormat })
+      if (source)
+        setEncodeInputImmediate({ schema, msgType: selectedMessageType, source, format: value as OutputFormat })
     },
     [onFormatChange, source, schema, selectedMessageType, setEncodeInputImmediate],
   )
@@ -232,10 +234,11 @@ const DecodeContent = ({
 }: ContentProps) => {
   const { showError, showSuccess } = useToast()
 
-  const { result, setInput: setDecodeInput, setInputImmediate: setDecodeInputImmediate } = useToolComputation<
-    DecodeInput,
-    string
-  >(
+  const {
+    result,
+    setInput: setDecodeInput,
+    setInputImmediate: setDecodeInputImmediate,
+  } = useToolComputation<DecodeInput, string>(
     async ({ schema: schemaVal, msgType, source: sourceVal, format: fmt }) => {
       const { decodeProtobuf } = await import('@/wasm/parsers')
       const codecResult = await decodeProtobuf(schemaVal, msgType, sourceVal, fmt)
@@ -272,7 +275,8 @@ const DecodeContent = ({
   const handleFormatChange = useCallback(
     (value: string) => {
       onFormatChange(value)
-      if (source) setDecodeInputImmediate({ schema, msgType: selectedMessageType, source, format: value as OutputFormat })
+      if (source)
+        setDecodeInputImmediate({ schema, msgType: selectedMessageType, source, format: value as OutputFormat })
     },
     [onFormatChange, source, schema, selectedMessageType, setDecodeInputImmediate],
   )

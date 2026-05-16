@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { importFromJsonSchema, importFromSql } from './import'
+
 import { createInitialDocument } from '../state'
+import { importFromJsonSchema, importFromSql } from './import'
 
 const SQL_FIXTURE = `
 CREATE TABLE users (

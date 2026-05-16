@@ -9,11 +9,7 @@ import { ToolDialogFrame } from './ToolDialogFrame'
 describe('ToolDialogFrame', () => {
   it('renders the description and trigger labels in the tile; dialog body hidden until open', () => {
     render(
-      <ToolDialogFrame
-        description="The thing this tool does"
-        title="Hashes"
-        triggers={[{ label: 'Hash It' }]}
-      >
+      <ToolDialogFrame description="The thing this tool does" title="Hashes" triggers={[{ label: 'Hash It' }]}>
         <p>dialog body</p>
       </ToolDialogFrame>,
     )
@@ -90,7 +86,13 @@ describe('ToolDialogFrame', () => {
     const onAfterClose = vi.fn()
 
     render(
-      <ToolDialogFrame autoOpen onAfterClose={onAfterClose} onReset={onReset} title="Hashes" triggers={[{ label: 'X' }]}>
+      <ToolDialogFrame
+        autoOpen
+        onAfterClose={onAfterClose}
+        onReset={onReset}
+        title="Hashes"
+        triggers={[{ label: 'X' }]}
+      >
         <p>body</p>
       </ToolDialogFrame>,
     )

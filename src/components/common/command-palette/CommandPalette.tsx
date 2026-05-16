@@ -37,15 +37,12 @@ export const CommandPalette = () => {
     )
   }, [query])
 
-  const { activeIndex, handleKeyDown, listRef, setActiveIndex } = useKeyboardListNav<ToolRegistryEntry>(
-    filteredTools,
-    {
-      initialIndex: 0,
-      // Late binding — handleSelectTool is defined below; the arrow body resolves it at call time.
-      onEnter: (tool) => handleSelectTool(tool),
-      wraparound: true,
-    },
-  )
+  const { activeIndex, handleKeyDown, listRef, setActiveIndex } = useKeyboardListNav<ToolRegistryEntry>(filteredTools, {
+    initialIndex: 0,
+    // Late binding — handleSelectTool is defined below; the arrow body resolves it at call time.
+    onEnter: (tool) => handleSelectTool(tool),
+    wraparound: true,
+  })
 
   const handleClose = useCallback(() => {
     close()

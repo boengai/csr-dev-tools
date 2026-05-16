@@ -1,4 +1,5 @@
 import type { DiagramDocument, DiagramSchema, EditorRelation, EditorTable } from '@/types'
+
 import { createInitialDocument } from '../state'
 
 export const newDiagram = (): DiagramDocument => createInitialDocument()

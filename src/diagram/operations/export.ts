@@ -23,7 +23,6 @@ export const documentToSchema = (doc: DiagramDocument): DiagramSchema => ({
 })
 
 export const toDbml = (doc: DiagramDocument): string => generateDbml(documentToSchema(doc))
-export const toSql = (doc: DiagramDocument, dialect: SqlDialect): string =>
-  generateSql(documentToSchema(doc), dialect)
+export const toSql = (doc: DiagramDocument, dialect: SqlDialect): string => generateSql(documentToSchema(doc), dialect)
 export const toMermaid = (doc: DiagramDocument): string => generateMermaidER(documentToSchema(doc))
 export const toTypeScript = (doc: DiagramDocument): string => generateTypeScript(documentToSchema(doc))

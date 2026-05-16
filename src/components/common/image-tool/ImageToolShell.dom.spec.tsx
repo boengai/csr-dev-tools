@@ -4,19 +4,17 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { ImageToolShell } from './ImageToolShell'
 import type {
   ImageToolShellControlsContext,
   ImageToolShellDownloadContext,
   ImageToolShellPreviewContext,
 } from '@/types'
 
-const PNG_BYTES = new Uint8Array([
-  0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a,
-])
+import { ImageToolShell } from './ImageToolShell'
 
-const pngFile = (name = 'photo.png'): File =>
-  new File([PNG_BYTES], name, { type: 'image/png' })
+const PNG_BYTES = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a])
+
+const pngFile = (name = 'photo.png'): File => new File([PNG_BYTES], name, { type: 'image/png' })
 
 const echoProcess = async (file: File, _controls: unknown): Promise<Blob> => file
 
@@ -152,9 +150,7 @@ describe('ImageToolShell — process pipeline', () => {
   it('passes result and resultUrl to renderPreview after process resolves', async () => {
     const resultBlob = new Blob(['xx'], { type: 'image/png' })
     const renderPreview = vi.fn((_: ImageToolShellPreviewContext) => null)
-    const { container } = render(
-      <RenderShell process={async () => resultBlob} renderPreview={renderPreview} />,
-    )
+    const { container } = render(<RenderShell process={async () => resultBlob} renderPreview={renderPreview} />)
     uploadFile(container, pngFile())
     await act(async () => {
       await vi.advanceTimersByTimeAsync(0)
@@ -167,9 +163,7 @@ describe('ImageToolShell — process pipeline', () => {
   })
 
   it('renders Download button when result is ready', async () => {
-    const { container } = render(
-      <RenderShell process={async () => new Blob(['x'], { type: 'image/png' })} />,
-    )
+    const { container } = render(<RenderShell process={async () => new Blob(['x'], { type: 'image/png' })} />)
     uploadFile(container, pngFile())
     await act(async () => {
       await vi.advanceTimersByTimeAsync(0)
@@ -193,9 +187,7 @@ describe('ImageToolShell — process pipeline', () => {
   })
 
   it('clicking Download invokes getDownloadFilename and triggers download anchor', async () => {
-    const getDownloadFilename = vi.fn(
-      ({ sourceName }: ImageToolShellDownloadContext) => `out-${sourceName}`,
-    )
+    const getDownloadFilename = vi.fn(({ sourceName }: ImageToolShellDownloadContext) => `out-${sourceName}`)
     const { container } = render(
       <RenderShell
         getDownloadFilename={getDownloadFilename}

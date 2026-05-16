@@ -1,5 +1,5 @@
-import { downloadBlob } from '@/utils/download'
 import type { PlaceholderOptions, PlaceholderPreset } from '@/types/utils/placeholder-image'
+import { downloadBlob } from '@/utils/download'
 
 export const PLACEHOLDER_PRESETS: Array<PlaceholderPreset> = [
   { height: 150, label: 'Thumbnail', width: 150 },

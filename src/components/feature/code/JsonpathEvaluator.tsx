@@ -6,13 +6,7 @@ import { CodeInput, CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useMountOnce, useToast, useToolFieldsPersisted } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import {
-  evaluateJsonPath,
-  formatResultValue,
-  type JsonPathEvaluation,
-  parseJsonInput,
-  tv,
-} from '@/utils'
+import { evaluateJsonPath, formatResultValue, type JsonPathEvaluation, parseJsonInput, tv } from '@/utils'
 
 const chevronStyles = tv({
   base: 'inline-block transition-transform',

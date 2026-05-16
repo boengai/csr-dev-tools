@@ -29,11 +29,7 @@ const aspectButtonStyles = tv({
 
 const toolEntry = TOOL_REGISTRY_MAP['image-cropper']
 
-const cropImageCanvas = (
-  image: HTMLImageElement,
-  crop: CropRegion,
-  mimeType: string,
-): Promise<Blob> => {
+const cropImageCanvas = (image: HTMLImageElement, crop: CropRegion, mimeType: string): Promise<Blob> => {
   const canvas = document.createElement('canvas')
   canvas.width = crop.width
   canvas.height = crop.height
@@ -97,7 +93,10 @@ export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
                 setAspectPreset(option.value)
                 const img = imgRef.current
                 if (!img) return
-                const next = { ...getDefaultCrop(img.width, img.height, getAspectRatio(option.value)), unit: 'px' as const }
+                const next = {
+                  ...getDefaultCrop(img.width, img.height, getAspectRatio(option.value)),
+                  unit: 'px' as const,
+                }
                 setCrop(next)
                 const nc = captureNaturalCrop(next)
                 setNaturalCrop(nc)

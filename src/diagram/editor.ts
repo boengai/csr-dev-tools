@@ -1,5 +1,19 @@
-import type { ColumnId, ColumnRef, DiagramDocument, DiagramIndexEntry, DiagramStorage, EditorRelation, ImportResult, RelationId, RelationKind, SqlDialect, TableColumn, TableId } from '@/types'
-import { cloneDocument, createInitialDocument } from './state'
+import type {
+  ColumnId,
+  ColumnRef,
+  DiagramDocument,
+  DiagramIndexEntry,
+  DiagramStorage,
+  EditorRelation,
+  ImportResult,
+  RelationId,
+  RelationKind,
+  SqlDialect,
+  TableColumn,
+  TableId,
+} from '@/types'
+import { validateDiagramSchema } from '@/utils/db-diagram-persistence'
+
 import * as columnOps from './operations/columns'
 import * as dbmlOps from './operations/dbml'
 import * as exportOps from './operations/export'
@@ -7,8 +21,8 @@ import * as importOps from './operations/import'
 import * as lifecycleOps from './operations/lifecycle'
 import * as relationOps from './operations/relations'
 import * as tableOps from './operations/tables'
+import { cloneDocument, createInitialDocument } from './state'
 import { localStorageDiagramStorage } from './storage'
-import { validateDiagramSchema } from '@/utils/db-diagram-persistence'
 
 type Listener = (document: DiagramDocument) => void
 type IndexListener = (entries: Array<DiagramIndexEntry>) => void

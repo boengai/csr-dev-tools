@@ -14,7 +14,11 @@ export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const [source, setSource] = useState('')
   const previewRef = useRef<HTMLDivElement>(null)
 
-  const { result: htmlOutput, setInput, setInputImmediate } = useToolComputation<string, string>(renderMarkdown, {
+  const {
+    result: htmlOutput,
+    setInput,
+    setInputImmediate,
+  } = useToolComputation<string, string>(renderMarkdown, {
     debounceMs: 300,
     initial: '',
     isEmpty: (val) => val.trim().length === 0,

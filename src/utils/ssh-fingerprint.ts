@@ -271,5 +271,4 @@ export const analyzeSshKey = async (input: string): Promise<SshKeyInfo> => {
   }
 }
 
-
 export type { SshKeyInfo } from '@/types/utils/ssh-fingerprint'

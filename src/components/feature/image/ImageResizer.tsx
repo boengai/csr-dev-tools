@@ -49,7 +49,7 @@ export const ImageResizer = ({ onAfterDialogClose }: ToolComponentProps) => {
     }
 
     const isLossyFormat = LOSSY_FORMATS.has(c.format)
-    const quality = isLossyFormat ? c.quality ?? 0.8 : 1
+    const quality = isLossyFormat ? (c.quality ?? 0.8) : 1
     const result = await resizeImage(file, { height, width }, { format: c.format, quality })
     if (result.dataUrl === EMPTY_IMAGE) return null
     return parseDataUrlToBlob(result.dataUrl)
@@ -128,9 +128,7 @@ export const ImageResizer = ({ onAfterDialogClose }: ToolComponentProps) => {
             />
             <ImageQualitySelectInput
               disabled={!ready || !isLossy}
-              onChange={(val) =>
-                setAndRecompute({ ...controls, quality: Number(val) }, recompute)
-              }
+              onChange={(val) => setAndRecompute({ ...controls, quality: Number(val) }, recompute)}
               value={(isLossy ? controls.quality : 1)?.toString() ?? '1'}
             />
           </div>

@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { addTable } from './tables'
-import { applyDbmlNow, regenerateDbmlFromDocument, setDbmlText } from './dbml'
+
 import { createInitialDocument } from '../state'
+import { applyDbmlNow, regenerateDbmlFromDocument, setDbmlText } from './dbml'
+import { addTable } from './tables'
 
 describe('setDbmlText', () => {
   it('stores text verbatim and sets source to editor', () => {

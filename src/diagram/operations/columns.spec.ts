@@ -1,8 +1,10 @@
 import { describe, expect, it } from 'vitest'
+
 import { createDefaultColumn } from '@/utils/db-diagram'
+
+import { createInitialDocument } from '../state'
 import { addColumn, deleteColumn, updateColumn } from './columns'
 import { addTable } from './tables'
-import { createInitialDocument } from '../state'
 
 const seedWithTable = () => {
   const { document, id } = addTable(createInitialDocument(), { name: 'users' })
@@ -52,7 +54,14 @@ describe('deleteColumn', () => {
     const sourceColId = a.id!
     const docWithRel = {
       ...docAfterB.document,
-      relations: { r1: { id: 'r1', source: { tableId: aId, columnId: sourceColId }, target: { tableId: bId, columnId: targetColId }, kind: '1:N' as const } },
+      relations: {
+        r1: {
+          id: 'r1',
+          source: { tableId: aId, columnId: sourceColId },
+          target: { tableId: bId, columnId: targetColId },
+          kind: '1:N' as const,
+        },
+      },
       relationOrder: ['r1'],
     }
     const next = deleteColumn(docWithRel, aId, sourceColId)

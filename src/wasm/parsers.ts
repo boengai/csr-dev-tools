@@ -1,9 +1,5 @@
 import type { CodecResult, OutputFormat } from '@/types/utils/protobuf-codec'
-import type {
-  ProtobufEnumInfo,
-  ProtobufMessageInfo,
-  ProtobufParseResult,
-} from '@/types/utils/protobuf-to-json'
+import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufParseResult } from '@/types/utils/protobuf-to-json'
 
 import { loadWasm } from './init'
 

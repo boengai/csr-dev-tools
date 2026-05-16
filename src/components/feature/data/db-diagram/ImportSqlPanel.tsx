@@ -66,12 +66,7 @@ export const ImportSqlPanel = ({ onClose }: ImportSqlPanelProps) => {
 
       <div className="flex flex-col gap-2 border-t border-gray-800 px-3 py-2">
         <label className="flex items-center gap-2 text-[10px] text-gray-400" htmlFor="import-sql-merge">
-          <CheckboxInput
-            checked={merge}
-            id="import-sql-merge"
-            name="import-sql-merge"
-            onChange={setMerge}
-          />
+          <CheckboxInput checked={merge} id="import-sql-merge" name="import-sql-merge" onChange={setMerge} />
           Merge with existing (otherwise replaces)
         </label>
         <button

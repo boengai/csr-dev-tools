@@ -10,7 +10,12 @@ const toolEntry = TOOL_REGISTRY_MAP['json-formatter']
 export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const { showError } = useToast()
 
-  const { input: source, result, setInput, setInputImmediate } = useToolComputationPersisted<string, string>({
+  const {
+    input: source,
+    result,
+    setInput,
+    setInputImmediate,
+  } = useToolComputationPersisted<string, string>({
     compute: async (val) => {
       const parseError = await getJsonParseError(val)
       if (parseError != null) {

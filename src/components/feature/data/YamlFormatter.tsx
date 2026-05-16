@@ -60,10 +60,7 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             value={String(indent)}
           />
 
-          <label
-            className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400"
-            htmlFor="yaml-sort-keys"
-          >
+          <label className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-400" htmlFor="yaml-sort-keys">
             <CheckboxInput checked={sortKeys} id="yaml-sort-keys" onChange={() => handleSortKeysChange()} />
             Sort Keys
           </label>

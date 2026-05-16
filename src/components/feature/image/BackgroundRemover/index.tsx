@@ -64,7 +64,7 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
       )}
       renderPreview={({ error, pending, resultUrl, sourceUrl }) => {
         if (pending) return <BackgroundRemoverProcessing downloading={false} progress={0} />
-        if (error) return <BackgroundRemoverError onReset={() => strippedCacheRef.current = null} />
+        if (error) return <BackgroundRemoverError onReset={() => (strippedCacheRef.current = null)} />
         if (!resultUrl) return null
         return (
           <div

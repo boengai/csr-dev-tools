@@ -28,23 +28,20 @@ export const SshKeyFingerprint = ({ autoOpen, onAfterDialogClose }: ToolComponen
     isPending: loading,
     setInput,
     setInputImmediate,
-  } = useToolComputation<string, SshKeyInfo | null>(
-    async (val) => analyzeSshKey(val.trim()),
-    {
-      debounceMs: 300,
-      initial: null,
-      isEmpty: (val) => !val.trim(),
-      onError: (error) => {
-        toast({
-          action: 'add',
-          item: {
-            label: error instanceof Error ? error.message : 'SSH key format not recognized',
-            type: 'error',
-          },
-        })
-      },
+  } = useToolComputation<string, SshKeyInfo | null>(async (val) => analyzeSshKey(val.trim()), {
+    debounceMs: 300,
+    initial: null,
+    isEmpty: (val) => !val.trim(),
+    onError: (error) => {
+      toast({
+        action: 'add',
+        item: {
+          label: error instanceof Error ? error.message : 'SSH key format not recognized',
+          type: 'error',
+        },
+      })
     },
-  )
+  })
 
   const handleChange = (val: string) => {
     setInputValue(val)

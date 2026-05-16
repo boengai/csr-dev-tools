@@ -12,7 +12,13 @@ const INITIAL: HashInput = { algo: DEFAULT_HASH_ALGORITHM, text: '' }
 export const HashGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const { toast } = useToast()
 
-  const { inputs, result: hash, reset, setFields, setFieldsImmediate } = useToolFields<HashInput, string>({
+  const {
+    inputs,
+    result: hash,
+    reset,
+    setFields,
+    setFieldsImmediate,
+  } = useToolFields<HashInput, string>({
     compute: ({ algo, text }) => computeHash(text, algo),
     debounceMs: 300,
     initial: INITIAL,

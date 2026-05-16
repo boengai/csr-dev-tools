@@ -76,7 +76,12 @@ const BinaryDisplay = ({ binary, prefixLength }: { binary: string; prefixLength:
 }
 
 export const IpSubnetCalculator = (_props: ToolComponentProps) => {
-  const { inputs, result: bag, setFields, setFieldsImmediate } = useToolFields<SubnetInput, SubnetBag>({
+  const {
+    inputs,
+    result: bag,
+    setFields,
+    setFieldsImmediate,
+  } = useToolFields<SubnetInput, SubnetBag>({
     compute: computeSubnet,
     debounceMs: 300,
     initial: INITIAL_INPUT,
