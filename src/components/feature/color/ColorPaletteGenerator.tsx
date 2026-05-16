@@ -32,6 +32,7 @@ export const ColorPaletteGenerator = () => {
   const {
     inputs,
     result: palette,
+    recompute,
     setFields,
     setFieldsImmediate,
   } = useToolFields<PaletteInput, Array<PaletteColor>>({
@@ -47,7 +48,7 @@ export const ColorPaletteGenerator = () => {
   const { hex: hexInput, harmony: harmonyType } = inputs
 
   // Fire compute once on mount with the initial bag (default color + harmony).
-  useMountOnce(() => setFieldsImmediate({}))
+  useMountOnce(() => recompute())
 
   const handleHexChange = (value: string) => setFields({ hex: value })
   const handlePickerChange = (hex: string) => setFields({ hex })
