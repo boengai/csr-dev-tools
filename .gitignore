@@ -37,7 +37,6 @@ playwright/.cache/
 # Claude Cli
 .claude/settings.local.json
 docs/superpowers
-docs/adr
 
 # WASM build output
 wasm/pkg/
