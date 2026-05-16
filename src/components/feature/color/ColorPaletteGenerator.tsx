@@ -51,16 +51,7 @@ export const ColorPaletteGenerator = () => {
   const handlePickerChange = (hex: string) => setFields({ hex })
   const handleHarmonyChange = (value: string) => setFieldsImmediate({ harmony: value as HarmonyType })
 
-  const handleCopyCss = async () => {
-    if (palette.length === 0) return
-    const css = formatPaletteAsCss(palette)
-    try {
-      await navigator.clipboard.writeText(css)
-      toast({ action: 'add', item: { label: 'CSS copied to clipboard', type: 'success' } })
-    } catch {
-      toast({ action: 'add', item: { label: 'Failed to copy to clipboard', type: 'error' } })
-    }
-  }
+  const handleCopyCss = () => copyToClipboard(formatPaletteAsCss(palette))
 
   const formatHsl = (hsl: PaletteColor['hsl']) =>
     `hsl(${Math.round(hsl.h)} ${Math.round(hsl.s)}% ${Math.round(hsl.l)}%)`
