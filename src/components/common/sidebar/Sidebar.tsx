@@ -3,7 +3,7 @@ import { AnimatePresence, m } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
 import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY } from '@/constants'
-import { useSidebarStore } from '@/hooks'
+import { useKeyboardShortcut, useSidebarStore } from '@/hooks'
 import { tv } from '@/utils'
 
 import { XIcon } from '../icon'
@@ -36,15 +36,7 @@ export const Sidebar = () => {
     return () => mql.removeEventListener('change', handler)
   }, [])
 
-  // Escape key handler
-  useEffect(() => {
-    if (!isOpen) return
-    const handler = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') close()
-    }
-    document.addEventListener('keydown', handler)
-    return () => document.removeEventListener('keydown', handler)
-  }, [close, isOpen])
+  useKeyboardShortcut((e) => e.key === 'Escape', close, { enabled: isOpen })
 
   // Focus trap for overlay (all viewports)
   useEffect(() => {
