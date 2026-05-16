@@ -36,6 +36,19 @@ Common components (`Button`, `CopyButton`, `ToggleButton`, future `Badge`, etc.)
 - **`useDebounceCallback`** (`src/hooks/useDebounceCallback.ts`): debounces an async-friendly callback and cancels its pending timeout on unmount.
 - **`useToolSeo`** (`src/hooks/useToolSeo.ts`): sets `document.title` synchronously during render plus meta tags via effect. Only the tool route hooks this — the home page sets its title inline.
 
+## Verifying UI changes
+
+After any UI/frontend change, verify it in a browser via the **playwright-mcp** tools before claiming the task is done. Type checking and tests do not prove a feature works — only driving the UI does.
+
+Workflow:
+1. Start the dev server (`pnpm dev`) and note the port.
+2. `mcp__plugin_playwright_playwright__browser_navigate` to the affected tool route (e.g. `http://localhost:5173/tools/<route>`).
+3. `mcp__plugin_playwright_playwright__browser_snapshot` to inspect the rendered DOM, then drive the feature with `browser_click` / `browser_type` / `browser_fill_form`.
+4. `mcp__plugin_playwright_playwright__browser_console_messages` to check for runtime errors and React warnings.
+5. Exercise the golden path **and** at least one edge case; also click into one unrelated tool to catch regressions.
+
+If the dev server can't be started or the route can't be reached, say so explicitly — do not claim UI success without a verified snapshot.
+
 ## AES blob format
 
 `src/utils/aes.ts` emits a versioned blob: byte 0 is the version (`0x01` = v2, 600k PBKDF2 iterations). Decrypt dispatches on the version byte and falls back to the legacy v1 layout (no version byte, 100k iterations) so older user-saved ciphertexts still decrypt. When raising the iteration count, add a new `VERSION_V3` constant rather than mutating v2 — preserves back-compat.
