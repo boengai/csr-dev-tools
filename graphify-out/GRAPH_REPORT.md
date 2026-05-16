@@ -1,16 +1,16 @@
-# Graph Report - csr-dev-tools  (2026-05-16)
+# Graph Report - csr-dev-tools  (2026-05-17)
 
 ## Corpus Check
-- 703 files · ~282,376 words
+- 705 files · ~289,179 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 4884 nodes · 5526 edges · 755 communities (490 shown, 265 thin omitted)
+- 4945 nodes · 5585 edges · 755 communities (496 shown, 259 thin omitted)
 - Extraction: 89% EXTRACTED · 11% INFERRED · 0% AMBIGUOUS · INFERRED: 630 edges (avg confidence: 0.83)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `30a26b26`
+- Built from commit: `de512561`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -668,7 +668,7 @@
 - `GridPlayground` --rationale_for--> `Requirements (5 new tools epic)`  [INFERRED]
   src/components/feature/css/GridPlayground.tsx → docs/requirements.md
 
-## Communities (755 total, 265 thin omitted)
+## Communities (755 total, 259 thin omitted)
 
 ### Community 0 - "Tool Components"
 Cohesion: 0.05
@@ -727,8 +727,8 @@ Cohesion: 0.06
 Nodes (35): Algorithm (all hand-written, no external Rust crates except `wasm-bindgen`), Benchmarks, code:rust (#[wasm_bindgen]), code:rust (#[wasm_bindgen]), code:typescript (import { loadWasm } from './init'), code:typescript (import { loadWasm } from './init'), code:typescript (import type { QrCodeOptions } from '@/types/utils/qr-code'), code:typescript (import { renderMarkdown } from '@/wasm/csr-markdown') (+27 more)
 
 ### Community 15 - "Code Tool Family"
-Cohesion: 0.11
-Nodes (51): CssFormatter(), GraphqlSchemaViewer(), HtmlFormatter(), JavaScriptMinifier(), JsonpathEvaluator(), JsonSchemaValidator(), JsonToTypeScript(), MarkdownPreview() (+43 more)
+Cohesion: 0.1
+Nodes (41): CssFormatter(), JavaScriptMinifier(), MarkdownPreview(), ProtobufCodec(), SqlFormatter(), ColorConvertor(), BidirectionalConverter(), EnvFileConverter() (+33 more)
 
 ### Community 16 - "Common Button API"
 Cohesion: 0.07
@@ -755,8 +755,8 @@ Cohesion: 0.09
 Nodes (20): contentVariants, Dialog(), calls, { container }, decryptOpen, encryptOpen, onAfterClose, onOpen (+12 more)
 
 ### Community 22 - "Timezone Converter"
-Cohesion: 0.19
-Nodes (12): ConverterInput, ConverterOutput, createInitialConverterState(), DEFAULT_TARGETS, favoriteButtonStyles, formatNowDate(), formatNowTime(), getInitialTargets() (+4 more)
+Cohesion: 0.17
+Nodes (13): ConverterInput, ConverterOutput, createInitialConverterState(), DEFAULT_TARGETS, favoriteButtonStyles, formatNowDate(), formatNowTime(), getInitialTargets() (+5 more)
 
 ### Community 23 - "Image Tool Shell"
 Cohesion: 0.08
@@ -1007,8 +1007,8 @@ Cohesion: 0.19
 Nodes (10): deserializeDiagram(), serializeDiagram(), edges, { edges, nodes }, json, nodes, { nodes: restoredNodes }, originalNodes (+2 more)
 
 ### Community 85 - "Community 85"
-Cohesion: 0.24
-Nodes (5): getTypeKindLabel(), GraphqlParseOutput, KIND_STYLES, KindBadge(), TypeDetailPanel()
+Cohesion: 0.08
+Nodes (21): getTypeKindLabel(), GraphqlParseOutput, KIND_STYLES, KindBadge(), TypeDetailPanel(), KindBadge(), SelectInput(), TextAreaInput() (+13 more)
 
 ### Community 86 - "Community 86"
 Cohesion: 0.21
@@ -1087,12 +1087,12 @@ Cohesion: 0.18
 Nodes (11): code:ts (export const convertBase = async (value: string, fromBase: n), code:ts (if (!isValidForBase(val, fromBase)) { ... }), code:ts (if (!(await isValidForBase(val, fromBase))) { ... }), code:ts (it('should convert decimal to binary', () => {), code:ts (it('should convert decimal to binary', async () => {), code:ts (expect(() => convertBase('', 10, 2)).toThrow('Empty input')), code:ts (await expect(convertBase('', 10, 2)).rejects.toThrow('Empty ), code:ts (it('should validate binary input', async () => {) (+3 more)
 
 ### Community 106 - "Community 106"
-Cohesion: 0.24
-Nodes (9): CopyButton(), copyButtonVariants, classes, iconOnly, labeled, propsWithLabel, propsWithVariant, validProps (+1 more)
+Cohesion: 0.12
+Nodes (16): CopyButton(), copyButtonVariants, classes, iconOnly, labeled, propsWithLabel, propsWithVariant, validProps (+8 more)
 
 ### Community 107 - "Community 107"
-Cohesion: 0.25
-Nodes (7): cb, first, { result }, { result, rerender }, { result, unmount }, second, useTimeoutRef()
+Cohesion: 0.22
+Nodes (8): code:ts (const recompute = () => {), code:bash (git add src/components/common/converter/BidirectionalConvert), code:bash (git status), Files, `recompute()` Pipeline Primitive Implementation Plan, Self-review checklist (already applied), Task 12: Final verification, Task 6: Migrate `<BidirectionalConverter>` to pipeline-owned `recompute`
 
 ### Community 108 - "Community 108"
 Cohesion: 0.24
@@ -1264,7 +1264,7 @@ Nodes (9): code:ts (// src/diagram/operations/dbml.spec.ts), code:ts (// src/dia
 
 ### Community 151 - "Community 151"
 Cohesion: 0.33
-Nodes (5): { getByRole }, onEnter, onEscape, inputVariants, TextInput()
+Nodes (5): ADR 0008 — PlaceholderImageGenerator's reducer stays, Consequences, Context, Decision, Revisit when
 
 ### Community 152 - "Community 152"
 Cohesion: 0.07
@@ -1463,8 +1463,8 @@ Cohesion: 0.22
 Nodes (9): code:tsx (// Inside DbmlEditorPanel.tsx), code:bash (git add src/components/feature/data/db-diagram/DbmlEditorPan), code:bash (git add src/components/feature/data/db-diagram/ImportSqlPane), code:bash (git add src/components/feature/data/db-diagram/ImportJsonSch), code:bash (git add src/components/feature/data/db-diagram/ExportSqlPane), code:ts (// in src/diagram/editor.ts), code:bash (git add src/diagram/editor.ts src/components/feature/data/db), code:bash (git add src/components/feature/data/db-diagram/DiagramToolba) (+1 more)
 
 ### Community 202 - "Community 202"
-Cohesion: 0.38
-Nodes (5): formatRelativeTime(), ResultRow(), resultValueStyles, VALIDITY_CONFIG, ValidityBadge()
+Cohesion: 0.33
+Nodes (6): code:ts (// Re-fires compute with the current bag (preserves pre-migr), code:ts (// Re-fires compute with the current bag (preserves pre-migr), code:ts (if (jsonData.trim() && jsonSchema.trim()) {), code:ts (if (jsonData.trim() && jsonSchema.trim()) {), code:bash (git add src/components/feature/code/JsonSchemaValidator.tsx), Task 9: Migrate `JsonSchemaValidator` revalidate/validate sites to `recompute()`
 
 ### Community 203 - "Community 203"
 Cohesion: 0.29
@@ -1519,8 +1519,8 @@ Cohesion: 0.33
 Nodes (5): ADR 0001 — Tool computation pipeline does not carry progress, Consequences, Context, Decision, Revisit when
 
 ### Community 217 - "Community 217"
-Cohesion: 0.29
-Nodes (6): Adding a new tool, AES blob format, Common component API rule, Common hook patterns, graphify, Typecheck command
+Cohesion: 0.25
+Nodes (7): Adding a new tool, AES blob format, Common component API rule, Common hook patterns, graphify, Typecheck command, Verifying UI changes
 
 ### Community 218 - "Community 218"
 Cohesion: 0.6
@@ -1739,8 +1739,8 @@ Cohesion: 0.4
 Nodes (5): code:block26 (pnpm tsc --noEmit), code:block27 (git diff --stat main..HEAD -- 'src/components/feature/**/*.t), code:block28 (graphify update .), Phase 5 — Cleanup, Task 20: Final quality gate + cross-category Playwright sweep
 
 ### Community 275 - "Community 275"
-Cohesion: 0.19
-Nodes (8): computeConversion(), buildTimezoneIndex(), convertTimezone(), getAbbreviation(), getLocalTimezone(), getOffset(), getTimezoneList(), parseDateTimeInput()
+Cohesion: 0.21
+Nodes (7): computeConversion(), buildTimezoneIndex(), convertTimezone(), getAbbreviation(), getOffset(), getTimezoneList(), parseDateTimeInput()
 
 ### Community 276 - "Community 276"
 Cohesion: 0.6
@@ -2031,8 +2031,8 @@ Cohesion: 0.33
 Nodes (5): ADR 0007 — Horizontal labeled value cell stays unshelled, Consequences, Context, Decision, Revisit when
 
 ### Community 369 - "Community 369"
-Cohesion: 0.13
-Nodes (10): compute, { result }, readJsonStorage(), writeJsonStorage(), compute, { result }, Bag, compute (+2 more)
+Cohesion: 0.14
+Nodes (13): GraphqlSchemaViewer(), MermaidRenderer(), ProtobufToJson(), JsonFormatter(), useMountOnce(), compute, { result }, useToolComputationPersisted() (+5 more)
 
 ### Community 370 - "Community 370"
 Cohesion: 0.29
@@ -2047,8 +2047,8 @@ Cohesion: 0.4
 Nodes (4): INITIAL_INPUT, SORT_OPTIONS, SortInput, toggleButtonStyles
 
 ### Community 373 - "Community 373"
-Cohesion: 0.29
-Nodes (6): KindBadge(), SelectInput(), TextAreaInput(), cnMerge(), tv, twMergeConfig
+Cohesion: 0.33
+Nodes (6): code:ts (await jsonToTypeScript(source, { optionalProperties: optiona), code:ts (await jsonToTypeScript(source, { optionalProperties: optiona), code:ts (onOpen: () => {), code:ts (onOpen: () => {), code:bash (git add src/components/feature/code/JsonToTypeScript.tsx), Task 10: Migrate `JsonToTypeScript` Convert-trigger to `recompute()`
 
 ### Community 380 - "Community 380"
 Cohesion: 0.5
@@ -2069,6 +2069,10 @@ Nodes (9): a, b, c, fn, { result }, { result, rerender }, session, stale (+1 mor
 ### Community 725 - "Community 725"
 Cohesion: 0.2
 Nodes (8): CommandPalette(), down, enter, onEnter, { result }, up, useKeyboardListNav(), TimezoneSearchPicker()
+
+### Community 726 - "Community 726"
+Cohesion: 0.4
+Nodes (5): code:ts (const { error, isPending, result, setInputImmediate } = useT), code:ts (const { error, isPending, recompute, result, setInputImmedia), code:ts (const recompute = () => {), code:bash (git add src/components/common/image-tool/ImageToolShell.tsx), Task 5: ~~Migrate `<ImageToolShell>` to pipeline-owned `recompute`~~ — **SKIPPED**
 
 ### Community 727 - "Community 727"
 Cohesion: 0.25
@@ -2094,21 +2098,29 @@ Nodes (8): doc, editor, id, listener, next, result, tableId, unsubscribe
 Cohesion: 0.06
 Nodes (25): Editor, EDITOR_OPTIONS, READONLY_EDITOR_OPTIONS, severityStyles, TypescriptPlayground(), UuidGenerator(), d, d1 (+17 more)
 
+### Community 742 - "Community 742"
+Cohesion: 0.16
+Nodes (5): paletteItemStyles, SearchInput(), defaultDuration, iconVariants, ToastItem()
+
 ### Community 743 - "Community 743"
-Cohesion: 0.29
-Nodes (6): CHEATSHEET_ENTRIES, chevronStyles, EvalInput, EvalResult, INITIAL_RESULT, SAMPLE_JSON
+Cohesion: 0.06
+Nodes (28): HtmlFormatter(), HtmlInput, INITIAL, CHEATSHEET_ENTRIES, chevronStyles, EvalInput, EvalResult, INITIAL_RESULT (+20 more)
 
 ### Community 744 - "Community 744"
-Cohesion: 0.4
-Nodes (3): defaultDuration, iconVariants, ToastItem()
+Cohesion: 0.5
+Nodes (4): code:ts (export type UseToolComputationResult<I, R> = {), code:ts (export type UseToolFieldsResult<F, R> = {), code:ts (export type UseToolComputationPersistedResult<I, R> = {), Task 1: Add `recompute` to the three result types
 
 ### Community 745 - "Community 745"
 Cohesion: 0.4
 Nodes (4): PxRemInput, PxRemLastEdited, PxRemOutput, PxRemSource
 
+### Community 746 - "Community 746"
+Cohesion: 0.5
+Nodes (4): code:ts (const {), code:ts (return { error, input, isPending, recompute, result, setInpu), code:bash (git add src/hooks/persist/useToolComputationPersisted.ts), Task 4: Pass `recompute` through `useToolComputationPersisted`
+
 ### Community 747 - "Community 747"
-Cohesion: 0.67
-Nodes (3): DiffCell(), DiffCheckerShell(), renderSpans()
+Cohesion: 0.5
+Nodes (4): code:ts (// Unconditional mount-time recompute. Tool has no isEmpty, ), code:ts (// Unconditional mount-time recompute. Tool has no isEmpty, ), code:bash (git add src/components/feature/code/JsonpathEvaluator.tsx), Task 7: Migrate `JsonpathEvaluator` mount-autorun to `recompute()`
 
 ### Community 748 - "Community 748"
 Cohesion: 0.36
@@ -2119,8 +2131,20 @@ Cohesion: 0.29
 Nodes (5): CommandPalette, SettingsDialog, Sidebar, ToastProvider, TwinkleStarsAnimate
 
 ### Community 751 - "Community 751"
-Cohesion: 0.4
-Nodes (4): Bag, compute, INITIAL, { result }
+Cohesion: 0.5
+Nodes (4): code:ts (useMountOnce(() => setFieldsImmediate({}))), code:ts (useMountOnce(() => recompute())), code:bash (git add src/components/feature/color/ColorPaletteGenerator.t), Task 8: Migrate `ColorPaletteGenerator` mount-autorun to `recompute()`
+
+### Community 752 - "Community 752"
+Cohesion: 0.5
+Nodes (4): code:markdown (The pipeline owns its result, error, and pending state, plus), code:markdown (Also exposes `recompute()` — fire compute with the current b), code:bash (git add CONTEXT.md), Task 11: Document `recompute()` in CONTEXT.md
+
+### Community 753 - "Community 753"
+Cohesion: 0.5
+Nodes (4): code:tsx (it('recompute: fires compute with the last input passed to s), code:ts (import { useCallback, useEffect, useRef, useState } from 're), code:bash (git add src/types/hooks/computation.ts src/hooks/useToolComp), Task 2: Add `recompute` to `useToolComputation` (TDD)
+
+### Community 754 - "Community 754"
+Cohesion: 0.5
+Nodes (4): code:tsx (it('recompute: fires compute with the current bag', async ()), code:ts (import { useCallback, useRef, useState } from 'react'), code:bash (git add src/hooks/useToolFields.ts src/hooks/useToolFields.d), Task 3: Add `recompute` to `useToolFields` (TDD)
 
 ## Ambiguous Edges - Review These
 - `Dashboard layout key migration (legacy → registry keys)` → `Dashboard layout key migration (legacy → registry keys)`  [AMBIGUOUS]
@@ -2129,9 +2153,9 @@ Nodes (4): Bag, compute, INITIAL, { result }
   src/utils/user-agent.ts · relation: implements
 
 ## Knowledge Gaps
-- **2534 isolated node(s):** `tsBuildInfoFile`, `target`, `lib`, `module`, `skipLibCheck` (+2529 more)
+- **2579 isolated node(s):** `tsBuildInfoFile`, `target`, `lib`, `module`, `skipLibCheck` (+2574 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **265 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **259 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -2140,12 +2164,12 @@ _Questions this graph is uniquely positioned to answer:_
   _Edge tagged AMBIGUOUS (relation: implements) - confidence is low._
 - **What is the exact relationship between `User-Agent parser (browser/os/engine/device)` and `User-Agent parser (browser/os/engine/device)`?**
   _Edge tagged AMBIGUOUS (relation: implements) - confidence is low._
-- **Why does `useToolComputation()` connect `Code Tool Family` to `Community 32`, `Community 154`, `Community 77`, `Community 78`, `Community 752`, `Community 369`, `Community 753`, `Community 722`, `Community 723`, `Community 240`, `Community 278`, `Image Tool Shell`, `Community 61`, `Community 314`, `Community 315`, `Community 311`?**
+- **Why does `useToolComputation()` connect `Code Tool Family` to `Community 32`, `Community 154`, `Community 743`, `Community 77`, `Community 78`, `Community 240`, `Community 369`, `Community 722`, `Community 723`, `Community 61`, `Community 278`, `Image Tool Shell`, `Community 314`, `Community 315`, `Community 311`?**
   _High betweenness centrality (0.020) - this node is a cross-community bridge._
-- **Why does `useDebounceCallback()` connect `Code Tool Family` to `DB Diagram Editor`, `Community 278`, `Community 154`, `Community 309`, `Community 310`, `Community 311`, `Community 314`, `Community 315`, `Community 61`, `Community 77`, `Community 78`, `Community 722`, `Community 723`, `Community 727`, `Community 741`, `Community 240`, `Community 241`, `Community 753`, `Community 752`?**
-  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+- **Why does `useDebounceCallback()` connect `Code Tool Family` to `DB Diagram Editor`, `Community 278`, `Community 154`, `Community 309`, `Community 310`, `Community 311`, `Community 314`, `Community 315`, `Community 61`, `Community 77`, `Community 78`, `Community 722`, `Community 723`, `Community 727`, `Community 741`, `Community 743`, `Community 240`, `Community 241`, `Community 369`?**
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
 - **Why does `useBlobUrl()` connect `Community 67` to `Community 260`, `Community 102`, `Community 114`, `Community 51`, `Image Tool Shell`?**
-  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
 - **Are the 61 inferred relationships involving `useDebounceCallback()` (e.g. with `TypescriptPlayground()` and `DbmlEditorPanel()`) actually correct?**
   _`useDebounceCallback()` has 61 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 55 inferred relationships involving `useToolComputation()` (e.g. with `ImageToolShell()` and `UnitPxToRem()`) actually correct?**

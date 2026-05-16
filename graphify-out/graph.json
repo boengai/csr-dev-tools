@@ -6786,7 +6786,7 @@
       "source_file": "src/types/components/feature/code/htmlFormatter.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_htmlformatter_ts",
-      "community": 746,
+      "community": 743,
       "norm_label": "htmlformatter.ts"
     },
     {
@@ -6795,7 +6795,7 @@
       "source_file": "src/types/components/feature/code/htmlFormatter.ts",
       "source_location": "L1",
       "id": "code_htmlformatter_htmlinput",
-      "community": 746,
+      "community": 743,
       "norm_label": "htmlinput"
     },
     {
@@ -6813,7 +6813,7 @@
       "source_file": "src/types/components/feature/code/jsonToTypeScript.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_jsontotypescript_ts",
-      "community": 726,
+      "community": 743,
       "norm_label": "jsontotypescript.ts"
     },
     {
@@ -6822,7 +6822,7 @@
       "source_file": "src/types/components/feature/code/jsonToTypeScript.ts",
       "source_location": "L1",
       "id": "code_jsontotypescript_jsontsinput",
-      "community": 726,
+      "community": 743,
       "norm_label": "jsontsinput"
     },
     {
@@ -7891,7 +7891,7 @@
       "label": "UseToolFieldsOptions",
       "file_type": "code",
       "source_file": "src/types/hooks/computation.ts",
-      "source_location": "L22",
+      "source_location": "L29",
       "id": "hooks_computation_usetoolfieldsoptions",
       "community": 281,
       "norm_label": "usetoolfieldsoptions"
@@ -7900,7 +7900,7 @@
       "label": "UseToolFieldsResult",
       "file_type": "code",
       "source_file": "src/types/hooks/computation.ts",
-      "source_location": "L33",
+      "source_location": "L40",
       "id": "hooks_computation_usetoolfieldsresult",
       "community": 281,
       "norm_label": "usetoolfieldsresult"
@@ -7909,7 +7909,7 @@
       "label": "UseToolFieldsPersistedOptions",
       "file_type": "code",
       "source_file": "src/types/hooks/computation.ts",
-      "source_location": "L54",
+      "source_location": "L68",
       "id": "hooks_computation_usetoolfieldspersistedoptions",
       "community": 281,
       "norm_label": "usetoolfieldspersistedoptions"
@@ -7918,7 +7918,7 @@
       "label": "UseToolComputationPersistedOptions",
       "file_type": "code",
       "source_file": "src/types/hooks/computation.ts",
-      "source_location": "L59",
+      "source_location": "L73",
       "id": "hooks_computation_usetoolcomputationpersistedoptions",
       "community": 281,
       "norm_label": "usetoolcomputationpersistedoptions"
@@ -7927,7 +7927,7 @@
       "label": "UseToolComputationPersistedResult",
       "file_type": "code",
       "source_file": "src/types/hooks/computation.ts",
-      "source_location": "L70",
+      "source_location": "L84",
       "id": "hooks_computation_usetoolcomputationpersistedresult",
       "community": 281,
       "norm_label": "usetoolcomputationpersistedresult"
@@ -8649,7 +8649,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L309",
       "id": "diagram_editor_diagrameditor_loadfromexportedjson",
-      "community": 173,
+      "community": 9,
       "norm_label": ".loadfromexportedjson()"
     },
     {
@@ -14409,7 +14409,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L198",
       "id": "utils_timezone_converter_getlocaltimezone",
-      "community": 275,
+      "community": 22,
       "norm_label": "getlocaltimezone()"
     },
     {
@@ -16488,7 +16488,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L1",
       "id": "src_utils_tailwind_variants_ts",
-      "community": 373,
+      "community": 85,
       "norm_label": "tailwind-variants.ts"
     },
     {
@@ -16497,7 +16497,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L3",
       "id": "utils_tailwind_variants_twmergeconfig",
-      "community": 373,
+      "community": 85,
       "norm_label": "twmergeconfig"
     },
     {
@@ -16506,7 +16506,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L23",
       "id": "utils_tailwind_variants_cnmerge",
-      "community": 373,
+      "community": 85,
       "norm_label": "cnmerge()"
     },
     {
@@ -16515,7 +16515,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L24",
       "id": "utils_tailwind_variants_tv",
-      "community": 373,
+      "community": 85,
       "norm_label": "tv"
     },
     {
@@ -17802,7 +17802,7 @@
       "source_file": "src/components/common/input/TextInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_input_textinput_tsx",
-      "community": 151,
+      "community": 85,
       "norm_label": "textinput.tsx"
     },
     {
@@ -17811,7 +17811,7 @@
       "source_file": "src/components/common/input/TextInput.tsx",
       "source_location": "L6",
       "id": "input_textinput_inputvariants",
-      "community": 151,
+      "community": 85,
       "norm_label": "inputvariants"
     },
     {
@@ -17820,7 +17820,7 @@
       "source_file": "src/components/common/input/TextInput.tsx",
       "source_location": "L24",
       "id": "input_textinput_textinput",
-      "community": 151,
+      "community": 85,
       "norm_label": "textinput()"
     },
     {
@@ -17847,7 +17847,7 @@
       "source_file": "src/components/common/input/SelectInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_input_selectinput_tsx",
-      "community": 151,
+      "community": 85,
       "norm_label": "selectinput.tsx"
     },
     {
@@ -17856,7 +17856,7 @@
       "source_file": "src/components/common/input/SelectInput.tsx",
       "source_location": "L22",
       "id": "input_selectinput_selectinput",
-      "community": 373,
+      "community": 85,
       "norm_label": "selectinput()"
     },
     {
@@ -17865,7 +17865,7 @@
       "source_file": "src/components/common/input/TextAreaInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_input_textareainput_tsx",
-      "community": 151,
+      "community": 85,
       "norm_label": "textareainput.tsx"
     },
     {
@@ -17874,7 +17874,7 @@
       "source_file": "src/components/common/input/TextAreaInput.tsx",
       "source_location": "L8",
       "id": "input_textareainput_textareainput",
-      "community": 373,
+      "community": 85,
       "norm_label": "textareainput()"
     },
     {
@@ -17883,7 +17883,7 @@
       "source_file": "src/components/common/input/TextInput.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_components_common_input_textinput_dom_spec_tsx",
-      "community": 151,
+      "community": 85,
       "norm_label": "textinput.dom.spec.tsx"
     },
     {
@@ -17892,7 +17892,7 @@
       "source_file": "src/components/common/input/TextInput.dom.spec.tsx",
       "source_location": "L11",
       "id": "input_textinput_dom_spec_onenter",
-      "community": 151,
+      "community": 85,
       "norm_label": "onenter"
     },
     {
@@ -17901,7 +17901,7 @@
       "source_file": "src/components/common/input/TextInput.dom.spec.tsx",
       "source_location": "L12",
       "id": "input_textinput_dom_spec_getbyrole",
-      "community": 151,
+      "community": 85,
       "norm_label": "{ getbyrole }"
     },
     {
@@ -17910,7 +17910,7 @@
       "source_file": "src/components/common/input/TextInput.dom.spec.tsx",
       "source_location": "L18",
       "id": "input_textinput_dom_spec_onescape",
-      "community": 151,
+      "community": 85,
       "norm_label": "onescape"
     },
     {
@@ -18090,7 +18090,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L1",
       "id": "src_components_common_toast_toastprovider_tsx",
-      "community": 744,
+      "community": 742,
       "norm_label": "toastprovider.tsx"
     },
     {
@@ -18099,7 +18099,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L10",
       "id": "toast_toastprovider_iconvariants",
-      "community": 744,
+      "community": 742,
       "norm_label": "iconvariants"
     },
     {
@@ -18108,7 +18108,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L23",
       "id": "toast_toastprovider_toasttypeicon",
-      "community": 744,
+      "community": 742,
       "norm_label": "toasttypeicon()"
     },
     {
@@ -18117,7 +18117,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L34",
       "id": "toast_toastprovider_defaultduration",
-      "community": 744,
+      "community": 742,
       "norm_label": "defaultduration"
     },
     {
@@ -18126,7 +18126,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L39",
       "id": "toast_toastprovider_toastitem",
-      "community": 744,
+      "community": 742,
       "norm_label": "toastitem()"
     },
     {
@@ -18135,7 +18135,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L78",
       "id": "toast_toastprovider_toastprovider",
-      "community": 744,
+      "community": 742,
       "norm_label": "toastprovider()"
     },
     {
@@ -18270,7 +18270,7 @@
       "source_file": "src/components/common/diff/DiffCheckerShell.tsx",
       "source_location": "L1",
       "id": "src_components_common_diff_diffcheckershell_tsx",
-      "community": 747,
+      "community": 743,
       "norm_label": "diffcheckershell.tsx"
     },
     {
@@ -18279,7 +18279,7 @@
       "source_file": "src/components/common/diff/DiffCheckerShell.tsx",
       "source_location": "L6",
       "id": "diff_diffcheckershell_renderspans",
-      "community": 747,
+      "community": 743,
       "norm_label": "renderspans()"
     },
     {
@@ -18288,7 +18288,7 @@
       "source_file": "src/components/common/diff/DiffCheckerShell.tsx",
       "source_location": "L21",
       "id": "diff_diffcheckershell_diffcell",
-      "community": 747,
+      "community": 743,
       "norm_label": "diffcell()"
     },
     {
@@ -18297,7 +18297,7 @@
       "source_file": "src/components/common/diff/DiffCheckerShell.tsx",
       "source_location": "L51",
       "id": "diff_diffcheckershell_diffcheckershell",
-      "community": 747,
+      "community": 743,
       "norm_label": "diffcheckershell()"
     },
     {
@@ -19548,7 +19548,7 @@
       "source_file": "src/components/feature/unit/UnitPxToRem.tsx",
       "source_location": "L1",
       "id": "src_components_feature_unit_unitpxtorem_tsx",
-      "community": 753,
+      "community": 15,
       "norm_label": "unitpxtorem.tsx"
     },
     {
@@ -19557,7 +19557,7 @@
       "source_file": "src/components/feature/unit/UnitPxToRem.tsx",
       "source_location": "L11",
       "id": "unit_unitpxtorem_initial_bag",
-      "community": 753,
+      "community": 15,
       "norm_label": "initial_bag"
     },
     {
@@ -19566,7 +19566,7 @@
       "source_file": "src/components/feature/unit/UnitPxToRem.tsx",
       "source_location": "L15",
       "id": "unit_unitpxtorem_unitpxtorem",
-      "community": 753,
+      "community": 15,
       "norm_label": "unitpxtorem()"
     },
     {
@@ -19890,7 +19890,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L1",
       "id": "src_components_feature_security_certificatedecoder_tsx",
-      "community": 202,
+      "community": 85,
       "norm_label": "certificatedecoder.tsx"
     },
     {
@@ -19899,7 +19899,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L12",
       "id": "security_certificatedecoder_resultvaluestyles",
-      "community": 202,
+      "community": 85,
       "norm_label": "resultvaluestyles"
     },
     {
@@ -19908,7 +19908,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L22",
       "id": "security_certificatedecoder_resultrow",
-      "community": 202,
+      "community": 85,
       "norm_label": "resultrow()"
     },
     {
@@ -19917,7 +19917,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L42",
       "id": "security_certificatedecoder_validity_config",
-      "community": 202,
+      "community": 85,
       "norm_label": "validity_config"
     },
     {
@@ -19926,7 +19926,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L53",
       "id": "security_certificatedecoder_formatrelativetime",
-      "community": 202,
+      "community": 85,
       "norm_label": "formatrelativetime()"
     },
     {
@@ -19935,7 +19935,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L63",
       "id": "security_certificatedecoder_validitybadge",
-      "community": 202,
+      "community": 85,
       "norm_label": "validitybadge()"
     },
     {
@@ -19944,7 +19944,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L97",
       "id": "security_certificatedecoder_extensionitem",
-      "community": 202,
+      "community": 85,
       "norm_label": "extensionitem()"
     },
     {
@@ -20448,7 +20448,7 @@
       "source_file": "src/components/feature/code/JsonpathEvaluator.tsx",
       "source_location": "L71",
       "id": "code_jsonpathevaluator_jsonpathevaluator",
-      "community": 15,
+      "community": 743,
       "norm_label": "jsonpathevaluator()"
     },
     {
@@ -20628,7 +20628,7 @@
       "source_file": "src/components/feature/code/JsonToTypeScript.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_jsontotypescript_tsx",
-      "community": 726,
+      "community": 743,
       "norm_label": "jsontotypescript.tsx"
     },
     {
@@ -20637,7 +20637,7 @@
       "source_file": "src/components/feature/code/JsonToTypeScript.tsx",
       "source_location": "L10",
       "id": "code_jsontotypescript_jsontotypescript",
-      "community": 15,
+      "community": 743,
       "norm_label": "jsontotypescript()"
     },
     {
@@ -20691,7 +20691,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L64",
       "id": "code_mermaidrenderer_mermaidrenderer",
-      "community": 15,
+      "community": 369,
       "norm_label": "mermaidrenderer()"
     },
     {
@@ -20718,7 +20718,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L16",
       "id": "code_protobuftojson_kindbadge",
-      "community": 373,
+      "community": 85,
       "norm_label": "kindbadge()"
     },
     {
@@ -20754,7 +20754,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L134",
       "id": "code_protobuftojson_protobuftojson",
-      "community": 15,
+      "community": 369,
       "norm_label": "protobuftojson()"
     },
     {
@@ -20925,7 +20925,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L232",
       "id": "code_graphqlschemaviewer_graphqlschemaviewer",
-      "community": 15,
+      "community": 369,
       "norm_label": "graphqlschemaviewer()"
     },
     {
@@ -20961,7 +20961,7 @@
       "source_file": "src/components/feature/code/HtmlFormatter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_htmlformatter_tsx",
-      "community": 746,
+      "community": 743,
       "norm_label": "htmlformatter.tsx"
     },
     {
@@ -20970,7 +20970,7 @@
       "source_file": "src/components/feature/code/HtmlFormatter.tsx",
       "source_location": "L8",
       "id": "code_htmlformatter_initial",
-      "community": 746,
+      "community": 743,
       "norm_label": "initial"
     },
     {
@@ -20979,7 +20979,7 @@
       "source_file": "src/components/feature/code/HtmlFormatter.tsx",
       "source_location": "L10",
       "id": "code_htmlformatter_htmlformatter",
-      "community": 15,
+      "community": 743,
       "norm_label": "htmlformatter()"
     },
     {
@@ -20988,7 +20988,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_jsonschemavalidator_tsx",
-      "community": 754,
+      "community": 743,
       "norm_label": "jsonschemavalidator.tsx"
     },
     {
@@ -20997,7 +20997,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L12",
       "id": "code_jsonschemavalidator_validatorinput",
-      "community": 754,
+      "community": 743,
       "norm_label": "validatorinput"
     },
     {
@@ -21006,7 +21006,7 @@
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
       "source_location": "L14",
       "id": "code_jsonschemavalidator_jsonschemavalidator",
-      "community": 15,
+      "community": 743,
       "norm_label": "jsonschemavalidator()"
     },
     {
@@ -21933,7 +21933,7 @@
       "source_file": "src/components/feature/time/TimezoneConverter.tsx",
       "source_location": "L222",
       "id": "time_timezoneconverter_timezoneconverter",
-      "community": 15,
+      "community": 743,
       "norm_label": "timezoneconverter()"
     },
     {
@@ -22320,7 +22320,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_text_textcaseconverter_tsx",
-      "community": 752,
+      "community": 15,
       "norm_label": "textcaseconverter.tsx"
     },
     {
@@ -22329,7 +22329,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L23",
       "id": "text_textcaseconverter_cases",
-      "community": 752,
+      "community": 15,
       "norm_label": "cases"
     },
     {
@@ -22338,7 +22338,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L37",
       "id": "text_textcaseconverter_textcaseconverter",
-      "community": 752,
+      "community": 15,
       "norm_label": "textcaseconverter()"
     },
     {
@@ -22581,7 +22581,7 @@
       "source_file": "src/components/feature/data/JsonFormatter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_jsonformatter_tsx",
-      "community": 15,
+      "community": 369,
       "norm_label": "jsonformatter.tsx"
     },
     {
@@ -22590,7 +22590,7 @@
       "source_file": "src/components/feature/data/JsonFormatter.tsx",
       "source_location": "L10",
       "id": "data_jsonformatter_jsonformatter",
-      "community": 15,
+      "community": 369,
       "norm_label": "jsonformatter()"
     },
     {
@@ -23704,7 +23704,7 @@
       "label": "useToolFields()",
       "file_type": "code",
       "source_file": "src/hooks/useToolFields.ts",
-      "source_location": "L16",
+      "source_location": "L19",
       "id": "hooks_usetoolfields_usetoolfields",
       "community": 15,
       "norm_label": "usetoolfields()"
@@ -24003,7 +24003,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_usetimeoutref_dom_spec_tsx",
-      "community": 107,
+      "community": 106,
       "norm_label": "usetimeoutref.dom.spec.tsx"
     },
     {
@@ -24012,7 +24012,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L19",
       "id": "hooks_usetimeoutref_dom_spec_cb",
-      "community": 107,
+      "community": 106,
       "norm_label": "cb"
     },
     {
@@ -24021,7 +24021,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L20",
       "id": "hooks_usetimeoutref_dom_spec_result",
-      "community": 107,
+      "community": 106,
       "norm_label": "{ result }"
     },
     {
@@ -24030,7 +24030,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L34",
       "id": "hooks_usetimeoutref_dom_spec_first",
-      "community": 107,
+      "community": 106,
       "norm_label": "first"
     },
     {
@@ -24039,7 +24039,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L35",
       "id": "hooks_usetimeoutref_dom_spec_second",
-      "community": 107,
+      "community": 106,
       "norm_label": "second"
     },
     {
@@ -24048,7 +24048,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L84",
       "id": "hooks_usetimeoutref_dom_spec_result_unmount",
-      "community": 107,
+      "community": 106,
       "norm_label": "{ result, unmount }"
     },
     {
@@ -24057,7 +24057,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L98",
       "id": "hooks_usetimeoutref_dom_spec_result_rerender",
-      "community": 107,
+      "community": 106,
       "norm_label": "{ result, rerender }"
     },
     {
@@ -24417,7 +24417,7 @@
       "source_file": "src/hooks/useTimeoutRef.ts",
       "source_location": "L1",
       "id": "src_hooks_usetimeoutref_ts",
-      "community": 107,
+      "community": 106,
       "norm_label": "usetimeoutref.ts"
     },
     {
@@ -24426,7 +24426,7 @@
       "source_file": "src/hooks/useTimeoutRef.ts",
       "source_location": "L14",
       "id": "hooks_usetimeoutref_usetimeoutref",
-      "community": 107,
+      "community": 106,
       "norm_label": "usetimeoutref()"
     },
     {
@@ -24552,7 +24552,7 @@
       "source_file": "src/hooks/useMountOnce.ts",
       "source_location": "L20",
       "id": "hooks_usemountonce_usemountonce",
-      "community": 15,
+      "community": 369,
       "norm_label": "usemountonce()"
     },
     {
@@ -24730,7 +24730,7 @@
       "label": "useToolComputation()",
       "file_type": "code",
       "source_file": "src/hooks/useToolComputation.ts",
-      "source_location": "L10",
+      "source_location": "L11",
       "id": "hooks_usetoolcomputation_usetoolcomputation",
       "community": 15,
       "norm_label": "usetoolcomputation()"
@@ -24912,7 +24912,7 @@
       "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
       "source_location": "L19",
       "id": "persist_usetoolcomputationpersisted_usetoolcomputationpersisted",
-      "community": 15,
+      "community": 369,
       "norm_label": "usetoolcomputationpersisted()"
     },
     {
@@ -25029,7 +25029,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.ts",
       "source_location": "L19",
       "id": "persist_usetoolfieldspersisted_usetoolfieldspersisted",
-      "community": 15,
+      "community": 743,
       "norm_label": "usetoolfieldspersisted()"
     },
     {
@@ -25047,7 +25047,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_persist_usetoolfieldspersisted_dom_spec_tsx",
-      "community": 369,
+      "community": 743,
       "norm_label": "usetoolfieldspersisted.dom.spec.tsx"
     },
     {
@@ -25056,7 +25056,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L9",
       "id": "persist_usetoolfieldspersisted_dom_spec_bag",
-      "community": 369,
+      "community": 743,
       "norm_label": "bag"
     },
     {
@@ -25065,7 +25065,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L11",
       "id": "persist_usetoolfieldspersisted_dom_spec_initial",
-      "community": 369,
+      "community": 743,
       "norm_label": "initial"
     },
     {
@@ -25074,7 +25074,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L25",
       "id": "persist_usetoolfieldspersisted_dom_spec_result",
-      "community": 369,
+      "community": 743,
       "norm_label": "{ result }"
     },
     {
@@ -25083,7 +25083,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L118",
       "id": "persist_usetoolfieldspersisted_dom_spec_compute",
-      "community": 369,
+      "community": 743,
       "norm_label": "compute"
     },
     {
@@ -25252,7 +25252,7 @@
       "label": "Tool field bag",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L42",
+      "source_location": "L58",
       "id": "csr_dev_tools_context_tool_field_bag",
       "community": 94,
       "norm_label": "tool field bag"
@@ -25261,7 +25261,7 @@
       "label": "Persistent tool field bag",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L74",
+      "source_location": "L92",
       "id": "csr_dev_tools_context_persistent_tool_field_bag",
       "community": 94,
       "norm_label": "persistent tool field bag"
@@ -25270,7 +25270,7 @@
       "label": "Persistent tool computation",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L118",
+      "source_location": "L136",
       "id": "csr_dev_tools_context_persistent_tool_computation",
       "community": 94,
       "norm_label": "persistent tool computation"
@@ -25279,7 +25279,7 @@
       "label": "Tool dialog frame",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L153",
+      "source_location": "L171",
       "id": "csr_dev_tools_context_tool_dialog_frame",
       "community": 94,
       "norm_label": "tool dialog frame"
@@ -25288,7 +25288,7 @@
       "label": "Upload dialog frame",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L176",
+      "source_location": "L194",
       "id": "csr_dev_tools_context_upload_dialog_frame",
       "community": 94,
       "norm_label": "upload dialog frame"
@@ -25297,7 +25297,7 @@
       "label": "Tool handoff",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L200",
+      "source_location": "L218",
       "id": "csr_dev_tools_context_tool_handoff",
       "community": 94,
       "norm_label": "tool handoff"
@@ -25306,7 +25306,7 @@
       "label": "Bidirectional converter",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L227",
+      "source_location": "L245",
       "id": "csr_dev_tools_context_bidirectional_converter",
       "community": 94,
       "norm_label": "bidirectional converter"
@@ -25315,7 +25315,7 @@
       "label": "Formatter shell",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L242",
+      "source_location": "L260",
       "id": "csr_dev_tools_context_formatter_shell",
       "community": 94,
       "norm_label": "formatter shell"
@@ -25324,7 +25324,7 @@
       "label": "Diff checker shell",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L280",
+      "source_location": "L298",
       "id": "csr_dev_tools_context_diff_checker_shell",
       "community": 94,
       "norm_label": "diff checker shell"
@@ -25333,7 +25333,7 @@
       "label": "Image tool shell",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L308",
+      "source_location": "L326",
       "id": "csr_dev_tools_context_image_tool_shell",
       "community": 94,
       "norm_label": "image tool shell"
@@ -25342,7 +25342,7 @@
       "label": "Batch asset pipeline",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L335",
+      "source_location": "L353",
       "id": "csr_dev_tools_context_batch_asset_pipeline",
       "community": 94,
       "norm_label": "batch asset pipeline"
@@ -25351,7 +25351,7 @@
       "label": "DiagramEditor",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L388",
+      "source_location": "L406",
       "id": "csr_dev_tools_context_diagrameditor",
       "community": 94,
       "norm_label": "diagrameditor"
@@ -25360,7 +25360,7 @@
       "label": "Async action",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L426",
+      "source_location": "L444",
       "id": "csr_dev_tools_context_async_action",
       "community": 94,
       "norm_label": "async action"
@@ -25369,7 +25369,7 @@
       "label": "Keyboard list navigation",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L463",
+      "source_location": "L481",
       "id": "csr_dev_tools_context_keyboard_list_navigation",
       "community": 94,
       "norm_label": "keyboard list navigation"
@@ -25378,7 +25378,7 @@
       "label": "N-mirror broadcast",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L496",
+      "source_location": "L514",
       "id": "csr_dev_tools_context_n_mirror_broadcast",
       "community": 94,
       "norm_label": "n-mirror broadcast"
@@ -26230,10 +26230,19 @@
       "norm_label": "common hook patterns"
     },
     {
-      "label": "AES blob format",
+      "label": "Verifying UI changes",
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L39",
+      "id": "csr_dev_tools_claude_verifying_ui_changes",
+      "community": 217,
+      "norm_label": "verifying ui changes"
+    },
+    {
+      "label": "AES blob format",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L52",
       "id": "csr_dev_tools_claude_aes_blob_format",
       "community": 217,
       "norm_label": "aes blob format"
@@ -27397,6 +27406,60 @@
       "source_location": "L72",
       "id": "adr_0003_tool_handoff_stays_at_one_adapter_revisit_when",
       "community": 127,
+      "norm_label": "revisit when"
+    },
+    {
+      "label": "0008-placeholder-image-generator-reducer-stays.md",
+      "file_type": "document",
+      "source_file": "docs/adr/0008-placeholder-image-generator-reducer-stays.md",
+      "source_location": "L1",
+      "id": "docs_adr_0008_placeholder_image_generator_reducer_stays_md",
+      "community": 151,
+      "norm_label": "0008-placeholder-image-generator-reducer-stays.md"
+    },
+    {
+      "label": "ADR 0008 \u2014 PlaceholderImageGenerator's reducer stays",
+      "file_type": "document",
+      "source_file": "docs/adr/0008-placeholder-image-generator-reducer-stays.md",
+      "source_location": "L1",
+      "id": "adr_0008_placeholder_image_generator_reducer_stays_adr_0008_placeholderimagegenerator_s_reducer_stays",
+      "community": 151,
+      "norm_label": "adr 0008 \u2014 placeholderimagegenerator's reducer stays"
+    },
+    {
+      "label": "Context",
+      "file_type": "document",
+      "source_file": "docs/adr/0008-placeholder-image-generator-reducer-stays.md",
+      "source_location": "L6",
+      "id": "adr_0008_placeholder_image_generator_reducer_stays_context",
+      "community": 151,
+      "norm_label": "context"
+    },
+    {
+      "label": "Decision",
+      "file_type": "document",
+      "source_file": "docs/adr/0008-placeholder-image-generator-reducer-stays.md",
+      "source_location": "L84",
+      "id": "adr_0008_placeholder_image_generator_reducer_stays_decision",
+      "community": 151,
+      "norm_label": "decision"
+    },
+    {
+      "label": "Consequences",
+      "file_type": "document",
+      "source_file": "docs/adr/0008-placeholder-image-generator-reducer-stays.md",
+      "source_location": "L94",
+      "id": "adr_0008_placeholder_image_generator_reducer_stays_consequences",
+      "community": 151,
+      "norm_label": "consequences"
+    },
+    {
+      "label": "Revisit when",
+      "file_type": "document",
+      "source_file": "docs/adr/0008-placeholder-image-generator-reducer-stays.md",
+      "source_location": "L116",
+      "id": "adr_0008_placeholder_image_generator_reducer_stays_revisit_when",
+      "community": 151,
       "norm_label": "revisit when"
     },
     {
@@ -32773,6 +32836,492 @@
       "norm_label": "risk register"
     },
     {
+      "label": "2026-05-16-recompute-pipeline-primitive.md",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1",
+      "id": "docs_superpowers_plans_2026_05_16_recompute_pipeline_primitive_md",
+      "community": 107,
+      "norm_label": "2026-05-16-recompute-pipeline-primitive.md"
+    },
+    {
+      "label": "`recompute()` Pipeline Primitive Implementation Plan",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "community": 107,
+      "norm_label": "`recompute()` pipeline primitive implementation plan"
+    },
+    {
+      "label": "Files",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L15",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_files",
+      "community": 107,
+      "norm_label": "files"
+    },
+    {
+      "label": "Task 1: Add `recompute` to the three result types",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L40",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_task_1_add_recompute_to_the_three_result_types",
+      "community": 744,
+      "norm_label": "task 1: add `recompute` to the three result types"
+    },
+    {
+      "label": "code:ts (export type UseToolComputationResult<I, R> = {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L51",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_1",
+      "community": 744,
+      "norm_label": "code:ts (export type usetoolcomputationresult<i, r> = {)"
+    },
+    {
+      "label": "code:ts (export type UseToolFieldsResult<F, R> = {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L78",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_2",
+      "community": 744,
+      "norm_label": "code:ts (export type usetoolfieldsresult<f, r> = {)"
+    },
+    {
+      "label": "code:ts (export type UseToolComputationPersistedResult<I, R> = {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L112",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_3",
+      "community": 744,
+      "norm_label": "code:ts (export type usetoolcomputationpersistedresult<i, r> = {)"
+    },
+    {
+      "label": "Task 2: Add `recompute` to `useToolComputation` (TDD)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L138",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_task_2_add_recompute_to_usetoolcomputation_tdd",
+      "community": 753,
+      "norm_label": "task 2: add `recompute` to `usetoolcomputation` (tdd)"
+    },
+    {
+      "label": "code:tsx (it('recompute: fires compute with the last input passed to s)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L148",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_4",
+      "community": 753,
+      "norm_label": "code:tsx (it('recompute: fires compute with the last input passed to s)"
+    },
+    {
+      "label": "code:ts (import { useCallback, useEffect, useRef, useState } from 're)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L235",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_5",
+      "community": 753,
+      "norm_label": "code:ts (import { usecallback, useeffect, useref, usestate } from 're)"
+    },
+    {
+      "label": "code:bash (git add src/types/hooks/computation.ts src/hooks/useToolComp)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L351",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_6",
+      "community": 753,
+      "norm_label": "code:bash (git add src/types/hooks/computation.ts src/hooks/usetoolcomp)"
+    },
+    {
+      "label": "Task 3: Add `recompute` to `useToolFields` (TDD)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L368",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_task_3_add_recompute_to_usetoolfields_tdd",
+      "community": 754,
+      "norm_label": "task 3: add `recompute` to `usetoolfields` (tdd)"
+    },
+    {
+      "label": "code:tsx (it('recompute: fires compute with the current bag', async ())",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L378",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_7",
+      "community": 754,
+      "norm_label": "code:tsx (it('recompute: fires compute with the current bag', async ())"
+    },
+    {
+      "label": "code:ts (import { useCallback, useRef, useState } from 'react')",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L485",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_8",
+      "community": 754,
+      "norm_label": "code:ts (import { usecallback, useref, usestate } from 'react')"
+    },
+    {
+      "label": "code:bash (git add src/hooks/useToolFields.ts src/hooks/useToolFields.d)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L560",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_9",
+      "community": 754,
+      "norm_label": "code:bash (git add src/hooks/usetoolfields.ts src/hooks/usetoolfields.d)"
+    },
+    {
+      "label": "Task 4: Pass `recompute` through `useToolComputationPersisted`",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L576",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_task_4_pass_recompute_through_usetoolcomputationpersisted",
+      "community": 746,
+      "norm_label": "task 4: pass `recompute` through `usetoolcomputationpersisted`"
+    },
+    {
+      "label": "code:ts (const {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L591",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_10",
+      "community": 746,
+      "norm_label": "code:ts (const {)"
+    },
+    {
+      "label": "code:ts (return { error, input, isPending, recompute, result, setInpu)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L607",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_11",
+      "community": 746,
+      "norm_label": "code:ts (return { error, input, ispending, recompute, result, setinpu)"
+    },
+    {
+      "label": "code:bash (git add src/hooks/persist/useToolComputationPersisted.ts)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L621",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_12",
+      "community": 746,
+      "norm_label": "code:bash (git add src/hooks/persist/usetoolcomputationpersisted.ts)"
+    },
+    {
+      "label": "Task 5: ~~Migrate `<ImageToolShell>` to pipeline-owned `recompute`~~ \u2014 **SKIPPED**",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L637",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_task_5_migrate_imagetoolshell_to_pipeline_owned_recompute_skipped",
+      "community": 726,
+      "norm_label": "task 5: ~~migrate `<imagetoolshell>` to pipeline-owned `recompute`~~ \u2014 **skipped**"
+    },
+    {
+      "label": "code:ts (const { error, isPending, result, setInputImmediate } = useT)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L659",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_13",
+      "community": 726,
+      "norm_label": "code:ts (const { error, ispending, result, setinputimmediate } = uset)"
+    },
+    {
+      "label": "code:ts (const { error, isPending, recompute, result, setInputImmedia)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L675",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_14",
+      "community": 726,
+      "norm_label": "code:ts (const { error, ispending, recompute, result, setinputimmedia)"
+    },
+    {
+      "label": "code:ts (const recompute = () => {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L691",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_15",
+      "community": 726,
+      "norm_label": "code:ts (const recompute = () => {)"
+    },
+    {
+      "label": "code:bash (git add src/components/common/image-tool/ImageToolShell.tsx)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L712",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_16",
+      "community": 726,
+      "norm_label": "code:bash (git add src/components/common/image-tool/imagetoolshell.tsx)"
+    },
+    {
+      "label": "Task 6: Migrate `<BidirectionalConverter>` to pipeline-owned `recompute`",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L729",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_task_6_migrate_bidirectionalconverter_to_pipeline_owned_recompute",
+      "community": 107,
+      "norm_label": "task 6: migrate `<bidirectionalconverter>` to pipeline-owned `recompute`"
+    },
+    {
+      "label": "code:ts (const recompute = () => {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L740",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_17",
+      "community": 107,
+      "norm_label": "code:ts (const recompute = () => {)"
+    },
+    {
+      "label": "code:bash (git add src/components/common/converter/BidirectionalConvert)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L759",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_18",
+      "community": 107,
+      "norm_label": "code:bash (git add src/components/common/converter/bidirectionalconvert)"
+    },
+    {
+      "label": "Task 7: Migrate `JsonpathEvaluator` mount-autorun to `recompute()`",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L775",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_task_7_migrate_jsonpathevaluator_mount_autorun_to_recompute",
+      "community": 747,
+      "norm_label": "task 7: migrate `jsonpathevaluator` mount-autorun to `recompute()`"
+    },
+    {
+      "label": "code:ts (// Unconditional mount-time recompute. Tool has no isEmpty, )",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L788",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_19",
+      "community": 747,
+      "norm_label": "code:ts (// unconditional mount-time recompute. tool has no isempty, )"
+    },
+    {
+      "label": "code:ts (// Unconditional mount-time recompute. Tool has no isEmpty, )",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L798",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_20",
+      "community": 747,
+      "norm_label": "code:ts (// unconditional mount-time recompute. tool has no isempty, )"
+    },
+    {
+      "label": "code:bash (git add src/components/feature/code/JsonpathEvaluator.tsx)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L826",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_21",
+      "community": 747,
+      "norm_label": "code:bash (git add src/components/feature/code/jsonpathevaluator.tsx)"
+    },
+    {
+      "label": "Task 8: Migrate `ColorPaletteGenerator` mount-autorun to `recompute()`",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L842",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_task_8_migrate_colorpalettegenerator_mount_autorun_to_recompute",
+      "community": 751,
+      "norm_label": "task 8: migrate `colorpalettegenerator` mount-autorun to `recompute()`"
+    },
+    {
+      "label": "code:ts (useMountOnce(() => setFieldsImmediate({})))",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L855",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_22",
+      "community": 751,
+      "norm_label": "code:ts (usemountonce(() => setfieldsimmediate({})))"
+    },
+    {
+      "label": "code:ts (useMountOnce(() => recompute()))",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L861",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_23",
+      "community": 751,
+      "norm_label": "code:ts (usemountonce(() => recompute()))"
+    },
+    {
+      "label": "code:bash (git add src/components/feature/color/ColorPaletteGenerator.t)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L883",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_24",
+      "community": 751,
+      "norm_label": "code:bash (git add src/components/feature/color/colorpalettegenerator.t)"
+    },
+    {
+      "label": "Task 9: Migrate `JsonSchemaValidator` revalidate/validate sites to `recompute()`",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L898",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_task_9_migrate_jsonschemavalidator_revalidate_validate_sites_to_recompute",
+      "community": 202,
+      "norm_label": "task 9: migrate `jsonschemavalidator` revalidate/validate sites to `recompute()`"
+    },
+    {
+      "label": "code:ts (// Re-fires compute with the current bag (preserves pre-migr)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L911",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_25",
+      "community": 202,
+      "norm_label": "code:ts (// re-fires compute with the current bag (preserves pre-migr)"
+    },
+    {
+      "label": "code:ts (// Re-fires compute with the current bag (preserves pre-migr)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L918",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_26",
+      "community": 202,
+      "norm_label": "code:ts (// re-fires compute with the current bag (preserves pre-migr)"
+    },
+    {
+      "label": "code:ts (if (jsonData.trim() && jsonSchema.trim()) {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L925",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_27",
+      "community": 202,
+      "norm_label": "code:ts (if (jsondata.trim() && jsonschema.trim()) {)"
+    },
+    {
+      "label": "code:ts (if (jsonData.trim() && jsonSchema.trim()) {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L933",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_28",
+      "community": 202,
+      "norm_label": "code:ts (if (jsondata.trim() && jsonschema.trim()) {)"
+    },
+    {
+      "label": "code:bash (git add src/components/feature/code/JsonSchemaValidator.tsx)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L953",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_29",
+      "community": 202,
+      "norm_label": "code:bash (git add src/components/feature/code/jsonschemavalidator.tsx)"
+    },
+    {
+      "label": "Task 10: Migrate `JsonToTypeScript` Convert-trigger to `recompute()`",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L969",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_task_10_migrate_jsontotypescript_convert_trigger_to_recompute",
+      "community": 373,
+      "norm_label": "task 10: migrate `jsontotypescript` convert-trigger to `recompute()`"
+    },
+    {
+      "label": "code:ts (await jsonToTypeScript(source, { optionalProperties: optiona)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L984",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_30",
+      "community": 373,
+      "norm_label": "code:ts (await jsontotypescript(source, { optionalproperties: optiona)"
+    },
+    {
+      "label": "code:ts (await jsonToTypeScript(source, { optionalProperties: optiona)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L992",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_31",
+      "community": 373,
+      "norm_label": "code:ts (await jsontotypescript(source, { optionalproperties: optiona)"
+    },
+    {
+      "label": "code:ts (onOpen: () => {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1000",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_32",
+      "community": 373,
+      "norm_label": "code:ts (onopen: () => {)"
+    },
+    {
+      "label": "code:ts (onOpen: () => {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1008",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_33",
+      "community": 373,
+      "norm_label": "code:ts (onopen: () => {)"
+    },
+    {
+      "label": "code:bash (git add src/components/feature/code/JsonToTypeScript.tsx)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1026",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_34",
+      "community": 373,
+      "norm_label": "code:bash (git add src/components/feature/code/jsontotypescript.tsx)"
+    },
+    {
+      "label": "Task 11: Document `recompute()` in CONTEXT.md",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1042",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_task_11_document_recompute_in_context_md",
+      "community": 752,
+      "norm_label": "task 11: document `recompute()` in context.md"
+    },
+    {
+      "label": "code:markdown (The pipeline owns its result, error, and pending state, plus)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1051",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_35",
+      "community": 752,
+      "norm_label": "code:markdown (the pipeline owns its result, error, and pending state, plus)"
+    },
+    {
+      "label": "code:markdown (Also exposes `recompute()` \u2014 fire compute with the current b)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1070",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_36",
+      "community": 752,
+      "norm_label": "code:markdown (also exposes `recompute()` \u2014 fire compute with the current b)"
+    },
+    {
+      "label": "code:bash (git add CONTEXT.md)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1077",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_37",
+      "community": 752,
+      "norm_label": "code:bash (git add context.md)"
+    },
+    {
+      "label": "Task 12: Final verification",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1093",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_task_12_final_verification",
+      "community": 107,
+      "norm_label": "task 12: final verification"
+    },
+    {
+      "label": "code:bash (git status)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1124",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_38",
+      "community": 107,
+      "norm_label": "code:bash (git status)"
+    },
+    {
+      "label": "Self-review checklist (already applied)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1138",
+      "id": "plans_2026_05_16_recompute_pipeline_primitive_self_review_checklist_already_applied",
+      "community": 107,
+      "norm_label": "self-review checklist (already applied)"
+    },
+    {
       "label": "2026-04-06-wasm-phase4-parsers.md",
       "file_type": "document",
       "source_file": "docs/superpowers/plans/2026-04-06-wasm-phase4-parsers.md",
@@ -35459,7 +36008,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolComputationPersisted.ts",
       "source_location": "L18",
-      "community": 15,
+      "community": 369,
       "norm_label": "usetoolcomputationpersisted()",
       "id": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
     },
@@ -35504,7 +36053,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.ts",
       "source_location": "L18",
-      "community": 15,
+      "community": 743,
       "norm_label": "usetoolfieldspersisted()",
       "id": "hooks_usetoolfieldspersisted_usetoolfieldspersisted"
     },
@@ -35513,7 +36062,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L1",
-      "community": 751,
+      "community": 743,
       "norm_label": "usetoolfieldspersisted.dom.spec.tsx",
       "id": "src_hooks_usetoolfieldspersisted_dom_spec_tsx"
     },
@@ -35522,7 +36071,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L9",
-      "community": 751,
+      "community": 743,
       "norm_label": "bag",
       "id": "hooks_usetoolfieldspersisted_dom_spec_bag"
     },
@@ -35531,7 +36080,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L11",
-      "community": 751,
+      "community": 743,
       "norm_label": "initial",
       "id": "hooks_usetoolfieldspersisted_dom_spec_initial"
     },
@@ -35540,7 +36089,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L25",
-      "community": 751,
+      "community": 743,
       "norm_label": "{ result }",
       "id": "hooks_usetoolfieldspersisted_dom_spec_result"
     },
@@ -35549,7 +36098,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L118",
-      "community": 751,
+      "community": 743,
       "norm_label": "compute",
       "id": "hooks_usetoolfieldspersisted_dom_spec_compute"
     },
@@ -77121,9 +77670,9 @@
       "source_file": "src/components/feature/image/ImageCompressor.tsx",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_feature_image_imagecompressor_tsx",
-      "target": "image_imagecompressor_initial_input",
-      "confidence_score": 1.0
+      "target": "image_imagecompressor_initial_input"
     },
     {
       "relation": "contains",
@@ -85175,6 +85724,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CLAUDE.md",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "claude_md",
+      "target": "csr_dev_tools_claude_verifying_ui_changes",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CLAUDE.md",
       "source_location": "L31",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -86360,6 +86919,56 @@
       "confidence_score": 1.0,
       "source": "adr_0003_tool_handoff_stays_at_one_adapter_adr_0003_tool_handoff_stays_as_a_typed_seam_at_one_adapter",
       "target": "adr_0003_tool_handoff_stays_at_one_adapter_revisit_when"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/adr/0008-placeholder-image-generator-reducer-stays.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "docs_adr_0008_placeholder_image_generator_reducer_stays_md",
+      "target": "adr_0008_placeholder_image_generator_reducer_stays_adr_0008_placeholderimagegenerator_s_reducer_stays",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/adr/0008-placeholder-image-generator-reducer-stays.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "adr_0008_placeholder_image_generator_reducer_stays_adr_0008_placeholderimagegenerator_s_reducer_stays",
+      "target": "adr_0008_placeholder_image_generator_reducer_stays_context",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/adr/0008-placeholder-image-generator-reducer-stays.md",
+      "source_location": "L84",
+      "weight": 1.0,
+      "source": "adr_0008_placeholder_image_generator_reducer_stays_adr_0008_placeholderimagegenerator_s_reducer_stays",
+      "target": "adr_0008_placeholder_image_generator_reducer_stays_decision",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/adr/0008-placeholder-image-generator-reducer-stays.md",
+      "source_location": "L94",
+      "weight": 1.0,
+      "source": "adr_0008_placeholder_image_generator_reducer_stays_adr_0008_placeholderimagegenerator_s_reducer_stays",
+      "target": "adr_0008_placeholder_image_generator_reducer_stays_consequences",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/adr/0008-placeholder-image-generator-reducer-stays.md",
+      "source_location": "L116",
+      "weight": 1.0,
+      "source": "adr_0008_placeholder_image_generator_reducer_stays_adr_0008_placeholderimagegenerator_s_reducer_stays",
+      "target": "adr_0008_placeholder_image_generator_reducer_stays_revisit_when",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -92190,6 +92799,536 @@
       "confidence_score": 1.0,
       "source": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_task_4_refresh_the_knowledge_graph",
       "target": "plans_2026_05_15_use_tool_fields_persisted_and_json_schema_validator_codeblock_18"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "docs_superpowers_plans_2026_05_16_recompute_pipeline_primitive_md",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_files",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_task_1_add_recompute_to_the_three_result_types",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L138",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_task_2_add_recompute_to_usetoolcomputation_tdd",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L368",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_task_3_add_recompute_to_usetoolfields_tdd",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L576",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_task_4_pass_recompute_through_usetoolcomputationpersisted",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L637",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_task_5_migrate_imagetoolshell_to_pipeline_owned_recompute_skipped",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L729",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_task_6_migrate_bidirectionalconverter_to_pipeline_owned_recompute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L775",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_task_7_migrate_jsonpathevaluator_mount_autorun_to_recompute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L842",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_task_8_migrate_colorpalettegenerator_mount_autorun_to_recompute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L898",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_task_9_migrate_jsonschemavalidator_revalidate_validate_sites_to_recompute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L969",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_task_10_migrate_jsontotypescript_convert_trigger_to_recompute",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1042",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_task_11_document_recompute_in_context_md",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1093",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_task_12_final_verification",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1138",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_recompute_pipeline_primitive_implementation_plan",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_self_review_checklist_already_applied",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_1_add_recompute_to_the_three_result_types",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_1_add_recompute_to_the_three_result_types",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L112",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_1_add_recompute_to_the_three_result_types",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L148",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_2_add_recompute_to_usetoolcomputation_tdd",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L235",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_2_add_recompute_to_usetoolcomputation_tdd",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L351",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_2_add_recompute_to_usetoolcomputation_tdd",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L378",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_3_add_recompute_to_usetoolfields_tdd",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L485",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_3_add_recompute_to_usetoolfields_tdd",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_8",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L560",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_3_add_recompute_to_usetoolfields_tdd",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_9",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L591",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_4_pass_recompute_through_usetoolcomputationpersisted",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_10",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L607",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_4_pass_recompute_through_usetoolcomputationpersisted",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_11",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L621",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_4_pass_recompute_through_usetoolcomputationpersisted",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_12",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L659",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_5_migrate_imagetoolshell_to_pipeline_owned_recompute_skipped",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_13",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L675",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_5_migrate_imagetoolshell_to_pipeline_owned_recompute_skipped",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_14",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L691",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_5_migrate_imagetoolshell_to_pipeline_owned_recompute_skipped",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_15",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L712",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_5_migrate_imagetoolshell_to_pipeline_owned_recompute_skipped",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_16",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L740",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_6_migrate_bidirectionalconverter_to_pipeline_owned_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_17",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L759",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_6_migrate_bidirectionalconverter_to_pipeline_owned_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_18",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L788",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_7_migrate_jsonpathevaluator_mount_autorun_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_19",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L798",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_7_migrate_jsonpathevaluator_mount_autorun_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_20",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L826",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_7_migrate_jsonpathevaluator_mount_autorun_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_21",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L855",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_8_migrate_colorpalettegenerator_mount_autorun_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_22",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L861",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_8_migrate_colorpalettegenerator_mount_autorun_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_23",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L883",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_8_migrate_colorpalettegenerator_mount_autorun_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_24",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L911",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_9_migrate_jsonschemavalidator_revalidate_validate_sites_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_25",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L918",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_9_migrate_jsonschemavalidator_revalidate_validate_sites_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_26",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L925",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_9_migrate_jsonschemavalidator_revalidate_validate_sites_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_27",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L933",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_9_migrate_jsonschemavalidator_revalidate_validate_sites_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_28",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L953",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_9_migrate_jsonschemavalidator_revalidate_validate_sites_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_29",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L984",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_10_migrate_jsontotypescript_convert_trigger_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_30",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L992",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_10_migrate_jsontotypescript_convert_trigger_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_31",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1000",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_10_migrate_jsontotypescript_convert_trigger_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_32",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1008",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_10_migrate_jsontotypescript_convert_trigger_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_33",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1026",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_10_migrate_jsontotypescript_convert_trigger_to_recompute",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_34",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1051",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_11_document_recompute_in_context_md",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_35",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1070",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_11_document_recompute_in_context_md",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_36",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1077",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_11_document_recompute_in_context_md",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_37",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-16-recompute-pipeline-primitive.md",
+      "source_location": "L1124",
+      "weight": 1.0,
+      "source": "plans_2026_05_16_recompute_pipeline_primitive_task_12_final_verification",
+      "target": "plans_2026_05_16_recompute_pipeline_primitive_codeblock_38",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -103361,5 +104500,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "30a26b264ad193b9f60a06205b6a61018f3f7876"
+  "built_at_commit": "de5125615fa482b5219d04dec043bb9106bcbcc9"
 }
