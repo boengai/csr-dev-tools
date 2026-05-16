@@ -422,3 +422,29 @@ saveDiagram, deleteDiagram, generateId }`) decouples the editor from
 localStorage. `localStorageDiagramStorage` is the production adapter;
 `createInMemoryDiagramStorage()` is the test double — counters on `saves`
 and `deletes` make autosave behavior unit-testable without DOM.
+
+## Keyboard list navigation
+
+The shared keyboard navigation behavior for any "searchable list of items
+the user navigates before picking one." Implemented by `useKeyboardListNav`
+(`src/hooks/useKeyboardListNav.ts`).
+
+Owns three concerns:
+
+1. **`activeIndex` tracking** — the highlighted-item state, exposed via
+   `activeIndex` and `setActiveIndex` (the React setter — callers reset on
+   query change or dropdown close).
+2. **ArrowDown/ArrowUp/Enter handling** — a single `handleKeyDown` to wire
+   onto the wrapper element. Supports `wraparound: true` (Cmd-K palette
+   style) or clamp (default — stays at end / 0).
+3. **Auto-scroll** — when `activeIndex` changes, the active child of
+   `listRef` is scrolled into view via `scrollIntoView({ block: 'nearest' })`.
+
+Today's consumers: `CommandPalette` (Cmd-K modal, wraparound + initialIndex 0)
+and the `TimezoneSearchPicker` sub-component inside `TimezoneConverter`
+(inline dropdown, clamp + initialIndex -1).
+
+Per-call-site concerns stay at the call site: the query state and filtering,
+Escape key behavior, click-outside dismissal, modal vs inline shell, and item
+rendering. Adopters typically chain Escape locally before forwarding the rest
+of the keydown event to the hook's `handleKeyDown`.

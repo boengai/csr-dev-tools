@@ -1,10 +1,10 @@
 import { Content, Overlay, Portal, Root } from '@radix-ui/react-dialog'
 import { useNavigate } from '@tanstack/react-router'
 import { AnimatePresence, m } from 'motion/react'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { TOOL_REGISTRY } from '@/constants'
-import { useCommandPaletteStore } from '@/hooks'
+import { useCommandPaletteStore, useKeyboardListNav } from '@/hooks'
 import { getPreviouslyFocusedElement } from '@/hooks/state/useCommandPaletteStore'
 import type { ToolRegistryEntry } from '@/types'
 import { tv } from '@/utils'
@@ -27,17 +27,6 @@ export const CommandPalette = () => {
 
   const navigate = useNavigate()
   const [query, setQuery] = useState('')
-  const [highlightedIndex, setHighlightedIndex] = useState(0)
-  const listRef = useRef<HTMLUListElement>(null)
-
-  const handleClose = useCallback(() => {
-    close()
-    setQuery('')
-    setHighlightedIndex(0)
-    requestAnimationFrame(() => {
-      getPreviouslyFocusedElement()?.focus()
-    })
-  }, [close])
 
   const filteredTools = useMemo(() => {
     if (!query.trim()) return TOOL_REGISTRY
@@ -48,13 +37,24 @@ export const CommandPalette = () => {
     )
   }, [query])
 
-  // Auto-scroll highlighted item into view
-  useEffect(() => {
-    const list = listRef.current
-    if (!list) return
-    const highlighted = list.children[highlightedIndex] as HTMLElement | undefined
-    highlighted?.scrollIntoView({ block: 'nearest' })
-  }, [highlightedIndex])
+  const { activeIndex, handleKeyDown, listRef, setActiveIndex } = useKeyboardListNav<ToolRegistryEntry>(
+    filteredTools,
+    {
+      initialIndex: 0,
+      // Late binding — handleSelectTool is defined below; the arrow body resolves it at call time.
+      onEnter: (tool) => handleSelectTool(tool),
+      wraparound: true,
+    },
+  )
+
+  const handleClose = useCallback(() => {
+    close()
+    setQuery('')
+    setActiveIndex(0)
+    requestAnimationFrame(() => {
+      getPreviouslyFocusedElement()?.focus()
+    })
+  }, [close, setActiveIndex])
 
   const handleSelectTool = useCallback(
     (tool: ToolRegistryEntry) => {
@@ -64,35 +64,8 @@ export const CommandPalette = () => {
     [handleClose, navigate],
   )
 
-  const handleKeyDown = useCallback(
-    (event: React.KeyboardEvent) => {
-      switch (event.key) {
-        case 'ArrowDown': {
-          event.preventDefault()
-          if (filteredTools.length === 0) break
-          setHighlightedIndex((prev) => (prev < filteredTools.length - 1 ? prev + 1 : 0))
-          break
-        }
-        case 'ArrowUp': {
-          event.preventDefault()
-          if (filteredTools.length === 0) break
-          setHighlightedIndex((prev) => (prev > 0 ? prev - 1 : filteredTools.length - 1))
-          break
-        }
-        case 'Enter': {
-          event.preventDefault()
-          if (filteredTools[highlightedIndex]) {
-            handleSelectTool(filteredTools[highlightedIndex])
-          }
-          break
-        }
-      }
-    },
-    [filteredTools, highlightedIndex, handleSelectTool],
-  )
-
-  const activeDescendantId = filteredTools[highlightedIndex]
-    ? `command-palette-option-${filteredTools[highlightedIndex].key}`
+  const activeDescendantId = filteredTools[activeIndex]
+    ? `command-palette-option-${filteredTools[activeIndex].key}`
     : undefined
 
   return (
@@ -130,7 +103,7 @@ export const CommandPalette = () => {
                   activeDescendantId={activeDescendantId}
                   onChange={(val) => {
                     setQuery(val)
-                    setHighlightedIndex(0)
+                    setActiveIndex(0)
                   }}
                   value={query}
                 />
@@ -144,15 +117,15 @@ export const CommandPalette = () => {
                 >
                   {filteredTools.map((tool, index) => (
                     <li
-                      aria-selected={index === highlightedIndex}
-                      className={paletteItemStyles({ highlighted: index === highlightedIndex })}
+                      aria-selected={index === activeIndex}
+                      className={paletteItemStyles({ highlighted: index === activeIndex })}
                       id={`command-palette-option-${tool.key}`}
                       key={tool.key}
                       onClick={() => handleSelectTool(tool)}
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' || e.key === ' ') handleSelectTool(tool)
                       }}
-                      onMouseEnter={() => setHighlightedIndex(index)}
+                      onMouseEnter={() => setActiveIndex(index)}
                       role="option"
                     >
                       <span className="text-lg">{tool.emoji}</span>

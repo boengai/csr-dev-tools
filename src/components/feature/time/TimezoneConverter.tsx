@@ -3,7 +3,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 
 import { Button, CopyButton, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { readJsonStorage, useToolFieldsPersisted, writeJsonStorage } from '@/hooks'
+import { readJsonStorage, useKeyboardListNav, useToolFieldsPersisted, writeJsonStorage } from '@/hooks'
 import type { TargetResult, ToolComponentProps } from '@/types'
 import {
   buildTimezoneIndex,
@@ -79,9 +79,7 @@ const TimezoneSearchPicker = ({
 }) => {
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
-  const [activeIndex, setActiveIndex] = useState(-1)
   const containerRef = useRef<HTMLDivElement>(null)
-  const listRef = useRef<HTMLUListElement>(null)
   const listboxId = useId()
 
   const sortedIndex = useMemo(() => {
@@ -94,6 +92,14 @@ const TimezoneSearchPicker = ({
   const filtered = useMemo(() => searchTimezones(query, sortedIndex), [query, sortedIndex])
   const visibleItems = useMemo(() => filtered.slice(0, 50), [filtered])
 
+  const { activeIndex, handleKeyDown: handleListNavKeyDown, listRef, setActiveIndex } = useKeyboardListNav<TimezoneEntry>(
+    visibleItems,
+    {
+      initialIndex: -1,
+      onEnter: (entry) => selectItem(entry.id),
+    },
+  )
+
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
@@ -103,7 +109,7 @@ const TimezoneSearchPicker = ({
     }
     document.addEventListener('mousedown', handleClickOutside)
     return () => document.removeEventListener('mousedown', handleClickOutside)
-  }, [])
+  }, [setActiveIndex])
 
   const selectItem = (id: string) => {
     onSelect(id)
@@ -114,37 +120,14 @@ const TimezoneSearchPicker = ({
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (!isOpen) return
-
-    switch (e.key) {
-      case 'ArrowDown':
-        e.preventDefault()
-        setActiveIndex((prev) => (prev < visibleItems.length - 1 ? prev + 1 : prev))
-        break
-      case 'ArrowUp':
-        e.preventDefault()
-        setActiveIndex((prev) => (prev > 0 ? prev - 1 : prev))
-        break
-      case 'Enter':
-        e.preventDefault()
-        if (activeIndex >= 0 && activeIndex < visibleItems.length) {
-          selectItem(visibleItems[activeIndex].id)
-        }
-        break
-      case 'Escape':
-        e.preventDefault()
-        setIsOpen(false)
-        setActiveIndex(-1)
-        break
+    if (e.key === 'Escape') {
+      e.preventDefault()
+      setIsOpen(false)
+      setActiveIndex(-1)
+      return
     }
+    handleListNavKeyDown(e)
   }
-
-  // Scroll active item into view
-  useEffect(() => {
-    if (activeIndex >= 0 && listRef.current) {
-      const items = listRef.current.querySelectorAll('[role="option"]')
-      items[activeIndex]?.scrollIntoView({ block: 'nearest' })
-    }
-  }, [activeIndex])
 
   return (
     <div
