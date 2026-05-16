@@ -27,6 +27,13 @@ export type UseToolComputationResult<I, R> = {
 }
 
 export type UseToolFieldsOptions<F, R> = {
+  /**
+   * Fire `recompute()` once on mount with `options.initial`. Honors the
+   * pipeline's `isEmpty` short-circuit (no compute call if the initial bag
+   * is empty). The named alternative to a per-Tool
+   * `useMountOnce(() => recompute())` ritual.
+   */
+  autorunOnMount?: boolean
   compute: (input: F) => R | Promise<R>
   debounceMs?: number
   /** Initial input bag — also the value `reset()` restores. */

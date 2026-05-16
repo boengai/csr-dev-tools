@@ -177,6 +177,75 @@ describe('useToolFieldsPersisted — mount-time autorun', () => {
   })
 })
 
+describe('useToolFieldsPersisted — autorunOnMount override', () => {
+  it('fires compute on mount when autorunOnMount: true, even with isEmpty undefined', async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ jsonData: 'X', jsonSchema: 'Y' }))
+    const compute = vi.fn(({ jsonData, jsonSchema }: Bag) => `${jsonData}|${jsonSchema}`)
+    renderHook(() =>
+      useToolFieldsPersisted<Bag, string>({
+        autorunOnMount: true,
+        compute,
+        initial: INITIAL,
+        initialResult: '',
+        // no isEmpty — without the option, no autorun fires.
+        storageKey: STORAGE_KEY,
+      }),
+    )
+
+    await act(async () => {
+      await vi.runAllTimersAsync()
+    })
+
+    expect(compute).toHaveBeenCalledTimes(1)
+    expect(compute).toHaveBeenCalledWith({ jsonData: 'X', jsonSchema: 'Y' })
+  })
+
+  it('does NOT double-fire when autorunOnMount: true AND the isEmpty gate would also fire', async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ jsonData: 'X', jsonSchema: 'Y' }))
+    const compute = vi.fn(({ jsonData, jsonSchema }: Bag) => `${jsonData}|${jsonSchema}`)
+    renderHook(() =>
+      useToolFieldsPersisted<Bag, string>({
+        autorunOnMount: true,
+        compute,
+        initial: INITIAL,
+        initialResult: '',
+        // isEmpty defined + restored bag is non-empty → existing gate would fire,
+        // and autorunOnMount would also fire. They must collapse to one call.
+        isEmpty: ({ jsonData, jsonSchema }) => !jsonData.trim() || !jsonSchema.trim(),
+        storageKey: STORAGE_KEY,
+      }),
+    )
+
+    await act(async () => {
+      await vi.runAllTimersAsync()
+    })
+
+    expect(compute).toHaveBeenCalledTimes(1)
+  })
+
+  it('fires compute on mount when autorunOnMount: true overrides an isEmpty-passing restored bag (still short-circuits inside the pipeline)', async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL))
+    const compute = vi.fn()
+    renderHook(() =>
+      useToolFieldsPersisted<Bag, string>({
+        autorunOnMount: true,
+        compute,
+        initial: INITIAL,
+        initialResult: '',
+        isEmpty: ({ jsonData, jsonSchema }) => !jsonData.trim() || !jsonSchema.trim(),
+        storageKey: STORAGE_KEY,
+      }),
+    )
+
+    await act(async () => {
+      await vi.runAllTimersAsync()
+    })
+
+    // autorunOnMount fires recompute(); the pipeline's isEmpty short-circuits compute.
+    expect(compute).not.toHaveBeenCalled()
+  })
+})
+
 describe('useToolFieldsPersisted — delegation to useToolFields', () => {
   it('preserves the full pipeline: setFields → debounce → compute → result', async () => {
     const compute = vi.fn(({ jsonData, jsonSchema }: Bag) => `${jsonData}|${jsonSchema}`)

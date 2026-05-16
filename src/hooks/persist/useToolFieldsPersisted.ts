@@ -2,7 +2,6 @@ import { useEffect, useMemo } from 'react'
 
 import type { UseToolFieldsPersistedOptions, UseToolFieldsResult } from '@/types'
 
-import { useMountOnce } from '../useMountOnce'
 import { useToolFields } from '../useToolFields'
 import { readJsonStorage, writeJsonStorage } from './jsonStorage'
 
@@ -12,9 +11,12 @@ import { readJsonStorage, writeJsonStorage } from './jsonStorage'
  * as `useToolFields` (debounced, stale-safe, empty-bypass, unmount-safe,
  * same-tick partial merge) — see CONTEXT.md → "Persistent tool field bag".
  *
- * Autorun fires on mount only when `options.isEmpty` is provided AND the
- * restored bag passes `!isEmpty(bag)` — without `isEmpty`, the caller is
- * explicitly responsible for triggering the first compute.
+ * Mount autorun fires when EITHER:
+ *   - `options.autorunOnMount === true` (explicit, isEmpty-independent), OR
+ *   - `options.isEmpty` is provided AND the restored bag passes `!isEmpty(bag)`.
+ * Without either, the caller is explicitly responsible for triggering the
+ * first compute. The autorun decision is owned by `useToolFields` via its
+ * own `autorunOnMount` option — this hook just computes the effective flag.
  */
 export function useToolFieldsPersisted<F, R>(options: UseToolFieldsPersistedOptions<F, R>): UseToolFieldsResult<F, R> {
   const { storageKey, ...fieldsOptions } = options
@@ -26,12 +28,14 @@ export function useToolFieldsPersisted<F, R>(options: UseToolFieldsPersistedOpti
     [],
   )
 
-  const fields = useToolFields<F, R>({ ...fieldsOptions, initial: initialBag })
+  const effectiveAutorun =
+    fieldsOptions.autorunOnMount === true ||
+    (fieldsOptions.isEmpty !== undefined && !fieldsOptions.isEmpty(initialBag))
 
-  useMountOnce(() => {
-    if (fieldsOptions.isEmpty && !fieldsOptions.isEmpty(initialBag)) {
-      fields.recompute()
-    }
+  const fields = useToolFields<F, R>({
+    ...fieldsOptions,
+    autorunOnMount: effectiveAutorun,
+    initial: initialBag,
   })
 
   // Fires once on mount with initialBag (re-)persisting the seed, and on

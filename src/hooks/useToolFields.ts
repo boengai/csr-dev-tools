@@ -2,6 +2,7 @@ import { useCallback, useRef, useState } from 'react'
 
 import type { UseToolFieldsOptions, UseToolFieldsResult } from '@/types'
 
+import { useMountOnce } from './useMountOnce'
 import { useToolComputation } from './useToolComputation'
 
 /**
@@ -59,6 +60,11 @@ export function useToolFields<F, R>(options: UseToolFieldsOptions<F, R>): UseToo
     setInputs(init)
     setInputImmediate(init)
   }, [setInputImmediate])
+
+  const autorunOnMount = options.autorunOnMount === true
+  useMountOnce(() => {
+    if (autorunOnMount) setInputImmediate(inputsRef.current)
+  })
 
   return { error, inputs, isPending, recompute, reset, result, setFields, setFieldsImmediate }
 }

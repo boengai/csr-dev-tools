@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react'
 
 import { CodeInput, CopyButton, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useMountOnce, useToast, useToolFieldsPersisted } from '@/hooks'
+import { useToast, useToolFieldsPersisted } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { evaluateJsonPath, formatResultValue, type JsonPathEvaluation, parseJsonInput, tv } from '@/utils'
 
@@ -72,7 +72,8 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false)
   const { showError } = useToast()
 
-  const { inputs, recompute, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<EvalInput, EvalResult>({
+  const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<EvalInput, EvalResult>({
+    autorunOnMount: true,
     compute: ({ expression: expr, jsonInput: value }) => {
       const parsed = parseJsonInput(value)
       if (!parsed.success) return { evaluation: null, parseError: parsed.error, parsedData: null }
@@ -89,12 +90,6 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
   })
   const { jsonInput, expression } = inputs
   const { evaluation, parseError, parsedData } = result
-
-  // Unconditional mount-time recompute. Tool has no isEmpty, so useToolFieldsPersisted's
-  // autorun-gated-on-isEmpty does NOT fire — we explicitly call recompute() here.
-  useMountOnce(() => {
-    recompute()
-  })
 
   const handleJsonChange = (value: string) => setFields({ jsonInput: value })
   const handleExpressionChange = (value: string) => setFields({ expression: value })

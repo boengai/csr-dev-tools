@@ -261,6 +261,83 @@ describe('useToolFields', () => {
     expect(result.current.isPending).toBe(false)
   })
 
+  describe('autorunOnMount', () => {
+    it('fires compute once on mount with the initial bag when autorunOnMount: true', async () => {
+      const compute = vi.fn(({ pattern, testString }: Input) => `${pattern}|${testString}`)
+      renderHook(() =>
+        useToolFields<Input, string>({
+          autorunOnMount: true,
+          compute,
+          debounceMs: 300,
+          initial: { mode: 'a', pattern: 'P', testString: 'T' },
+          initialResult: 'EMPTY',
+        }),
+      )
+
+      // useMountOnce defers via setTimeout(0); the pipeline's setInputImmediate also schedules via setTimeout(0).
+      await act(async () => {
+        await vi.runAllTimersAsync()
+      })
+
+      expect(compute).toHaveBeenCalledTimes(1)
+      expect(compute).toHaveBeenCalledWith({ mode: 'a', pattern: 'P', testString: 'T' })
+    })
+
+    it('does NOT fire compute on mount when autorunOnMount is undefined (existing default)', async () => {
+      const compute = vi.fn()
+      renderHook(() =>
+        useToolFields<Input, string>({
+          compute,
+          initial: { mode: 'a', pattern: 'P', testString: 'T' },
+          initialResult: '',
+        }),
+      )
+
+      await act(async () => {
+        await vi.runAllTimersAsync()
+      })
+
+      expect(compute).not.toHaveBeenCalled()
+    })
+
+    it('does NOT fire compute on mount when autorunOnMount: false (explicit opt-out)', async () => {
+      const compute = vi.fn()
+      renderHook(() =>
+        useToolFields<Input, string>({
+          autorunOnMount: false,
+          compute,
+          initial: { mode: 'a', pattern: 'P', testString: 'T' },
+          initialResult: '',
+        }),
+      )
+
+      await act(async () => {
+        await vi.runAllTimersAsync()
+      })
+
+      expect(compute).not.toHaveBeenCalled()
+    })
+
+    it('autorunOnMount honors isEmpty: short-circuits without calling compute when initial bag is empty', async () => {
+      const compute = vi.fn()
+      renderHook(() =>
+        useToolFields<Input, string>({
+          autorunOnMount: true,
+          compute,
+          initial: INITIAL,
+          initialResult: 'EMPTY',
+          isEmpty: ({ pattern }) => pattern === '',
+        }),
+      )
+
+      await act(async () => {
+        await vi.runAllTimersAsync()
+      })
+
+      expect(compute).not.toHaveBeenCalled()
+    })
+  })
+
   it('recompute: is equivalent to setFieldsImmediate({}) — same pipeline path', async () => {
     const compute = vi.fn(({ pattern, testString }: Input) => `${pattern}|${testString}`)
     const { result } = renderHook(() =>

@@ -89,6 +89,15 @@ Carries one extra invariant beyond the pipeline:
 `setFieldsImmediate` so any pending compute is cancelled and `isEmpty`-driven
 short-circuits fire synchronously.
 
+`autorunOnMount: true` (option, default `false`) fires `recompute()` once
+after mount with `options.initial`. The pipeline's `isEmpty` short-circuit
+still applies — if the initial bag passes `isEmpty`, the compute call is
+skipped but `recompute()` still routes through the pipeline. Picks up
+the seam previously occupied by per-Tool `useMountOnce(() => recompute())`
+rituals — non-persisted adopters that want a "fire on mount with the
+default bag" hook no longer need to import `useMountOnce`. Today's
+adopters: `ColorPaletteGenerator`.
+
 ## Persistent tool field bag
 
 The variant of the [[Tool field bag]] that owns its localStorage
@@ -98,12 +107,21 @@ round-trip. Implemented by `useToolFieldsPersisted`
 Composes `useToolFields` with two small concerns the standard pattern
 needs every time it persists: read the bag from localStorage on mount
 (replacing `options.initial` if a stored value exists) and write back
-on every `inputs` change. The hook also fires `setFieldsImmediate({})`
-once on mount — the closure-safe empty-partial pattern — when
-`options.isEmpty` is provided AND the restored bag is non-empty, so
-the result populates without a per-Tool `useMountOnce`. Without
-`options.isEmpty`, no autorun fires (the caller is explicitly
-responsible for triggering the first compute).
+on every `inputs` change.
+
+Mount autorun fires when EITHER:
+
+- `options.autorunOnMount === true` (explicit, `isEmpty`-independent), OR
+- `options.isEmpty` is provided AND the restored bag passes `!isEmpty(bag)`.
+
+The autorun decision lives entirely inside `useToolFields` via its own
+`autorunOnMount` option — this hook just computes the effective flag
+(`autorunOnMount || isEmpty-gated condition`) and forwards. Without
+either condition met, no autorun fires (the caller is explicitly
+responsible for triggering the first compute). Picks up the seam
+previously occupied by per-Tool `useMountOnce(() => recompute())` rituals
+in adopters that have no `isEmpty` rule but still want a mount-time
+populate (e.g. `JsonpathEvaluator`).
 
 The four pipeline invariants (debounced, stale-safe, empty-bypass,
 unmount-safe) plus the same-tick partial-merge invariant carry over
@@ -116,7 +134,10 @@ when persistence is bespoke or absent (e.g. `<BidirectionalConverter>`'s
 per-mode source-keying, or `AesEncryptDecrypt` which doesn't persist).
 
 Today's consumers: `JsonSchemaValidator`, `JsonDiffChecker`,
-`TimezoneConverter`. `TimezoneConverter` is the partial-persistence
+`JsonpathEvaluator`, `TimezoneConverter`. `JsonpathEvaluator` is the
+`autorunOnMount: true` adopter — it has no `isEmpty` rule but still wants
+the result populated on mount from the persisted bag.
+`TimezoneConverter` is the partial-persistence
 shape: its persisted bag holds the converter inputs (sourceTz,
 targetTzIds, dateInput, timeInput), but `dateInput`/`timeInput` are
 overridden with "now" on mount via a follow-up

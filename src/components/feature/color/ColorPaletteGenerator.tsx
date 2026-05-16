@@ -2,7 +2,7 @@ import { m } from 'motion/react'
 
 import { Button, ColorInput, CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useCopyToClipboard, useMountOnce, useToast, useToolFields } from '@/hooks'
+import { useCopyToClipboard, useToast, useToolFields } from '@/hooks'
 import type { PaletteInput } from '@/types'
 import { formatPaletteAsCss, generatePalette, type HarmonyType, type PaletteColor } from '@/utils'
 
@@ -32,10 +32,10 @@ export const ColorPaletteGenerator = () => {
   const {
     inputs,
     result: palette,
-    recompute,
     setFields,
     setFieldsImmediate,
   } = useToolFields<PaletteInput, Array<PaletteColor>>({
+    autorunOnMount: true,
     compute: ({ hex, harmony }) => generatePalette(hex, harmony),
     debounceMs: 300,
     initial: { hex: DEFAULT_COLOR, harmony: DEFAULT_HARMONY },
@@ -46,9 +46,6 @@ export const ColorPaletteGenerator = () => {
     },
   })
   const { hex: hexInput, harmony: harmonyType } = inputs
-
-  // Fire compute once on mount with the initial bag (default color + harmony).
-  useMountOnce(() => recompute())
 
   const handleHexChange = (value: string) => setFields({ hex: value })
   const handlePickerChange = (hex: string) => setFields({ hex })
