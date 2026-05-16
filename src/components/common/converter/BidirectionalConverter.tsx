@@ -49,7 +49,7 @@ export function BidirectionalConverter<M extends string>({
     [],
   )
 
-  const { inputs, result, setFields, setFieldsImmediate } = useToolFields<{ mode: M; source: string }, string>({
+  const { inputs, recompute, result, setFields, setFieldsImmediate } = useToolFields<{ mode: M; source: string }, string>({
     compute,
     debounceMs: 300,
     initial: initialBag,
@@ -88,10 +88,6 @@ export function BidirectionalConverter<M extends string>({
 
   const handleReset = () => {
     setFieldsImmediate({ source: '' })
-  }
-
-  const recompute = () => {
-    setFieldsImmediate({})
   }
 
   return (
