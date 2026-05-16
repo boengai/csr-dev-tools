@@ -159,4 +159,46 @@ describe('useKeyboardListNav', () => {
     })
     expect(result.current.activeIndex).toBe(1)
   })
+
+  it('activeDescendantId is undefined when getOptionId is not provided', () => {
+    const { result } = renderHook(() => useKeyboardListNav(['a', 'b'], { onEnter: vi.fn() }))
+    expect(result.current.activeDescendantId).toBeUndefined()
+  })
+
+  it('activeDescendantId is derived from getOptionId(items[activeIndex]) when provided', () => {
+    const { result } = renderHook(() =>
+      useKeyboardListNav(['a', 'b', 'c'], {
+        getOptionId: (item) => `opt-${item}`,
+        initialIndex: 1,
+        onEnter: vi.fn(),
+      }),
+    )
+    expect(result.current.activeDescendantId).toBe('opt-b')
+  })
+
+  it('activeDescendantId is undefined when no item is highlighted (activeIndex < 0)', () => {
+    const { result } = renderHook(() =>
+      useKeyboardListNav(['a', 'b'], {
+        getOptionId: (item) => `opt-${item}`,
+        initialIndex: -1,
+        onEnter: vi.fn(),
+      }),
+    )
+    expect(result.current.activeDescendantId).toBeUndefined()
+  })
+
+  it('activeDescendantId tracks activeIndex as the user navigates', () => {
+    const { result } = renderHook(() =>
+      useKeyboardListNav(['a', 'b', 'c'], {
+        getOptionId: (item) => `opt-${item}`,
+        onEnter: vi.fn(),
+      }),
+    )
+    expect(result.current.activeDescendantId).toBe('opt-a')
+
+    act(() => {
+      result.current.handleKeyDown(makeEvent('ArrowDown').event)
+    })
+    expect(result.current.activeDescendantId).toBe('opt-b')
+  })
 })

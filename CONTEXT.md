@@ -429,7 +429,7 @@ The shared keyboard navigation behavior for any "searchable list of items
 the user navigates before picking one." Implemented by `useKeyboardListNav`
 (`src/hooks/useKeyboardListNav.ts`).
 
-Owns three concerns:
+Owns four concerns:
 
 1. **`activeIndex` tracking** — the highlighted-item state, exposed via
    `activeIndex` and `setActiveIndex` (the React setter — callers reset on
@@ -439,6 +439,13 @@ Owns three concerns:
    style) or clamp (default — stays at end / 0).
 3. **Auto-scroll** — when `activeIndex` changes, the active child of
    `listRef` is scrolled into view via `scrollIntoView({ block: 'nearest' })`.
+4. **`aria-activedescendant` derivation** — when `getOptionId(item)` is
+   provided, the hook returns `activeDescendantId` for the search input.
+   Required for screen readers to announce the highlighted item during
+   ArrowDown/Up navigation in a combobox. Each adopter is responsible for
+   setting matching `id={getOptionId(item)}` on its `<li>` items plus
+   `aria-activedescendant={activeDescendantId}` + `aria-autocomplete="list"`
+   on the input.
 
 Today's consumers: `CommandPalette` (Cmd-K modal, wraparound + initialIndex 0)
 and the `TimezoneSearchPicker` sub-component inside `TimezoneConverter`

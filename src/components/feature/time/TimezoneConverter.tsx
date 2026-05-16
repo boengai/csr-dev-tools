@@ -93,11 +93,13 @@ const TimezoneSearchPicker = ({
   const visibleItems = useMemo(() => filtered.slice(0, 50), [filtered])
 
   const {
+    activeDescendantId,
     activeIndex,
     handleKeyDown: handleListNavKeyDown,
     listRef,
     setActiveIndex,
   } = useKeyboardListNav<TimezoneEntry>(visibleItems, {
+    getOptionId: (entry) => `${listboxId}-${entry.id}`,
     initialIndex: -1,
     onEnter: (entry) => selectItem(entry.id),
   })
@@ -141,6 +143,8 @@ const TimezoneSearchPicker = ({
       role="combobox"
     >
       <TextInput
+        aria-activedescendant={activeDescendantId}
+        aria-autocomplete="list"
         aria-label="Search timezones"
         id={id}
         name="timezone-search"
@@ -165,6 +169,7 @@ const TimezoneSearchPicker = ({
             <li
               aria-selected={i === activeIndex}
               className={pickerItemStyles({ active: i === activeIndex })}
+              id={`${listboxId}-${entry.id}`}
               key={entry.id}
               onClick={() => selectItem(entry.id)}
               onKeyDown={(e) => {

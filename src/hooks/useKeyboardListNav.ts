@@ -16,9 +16,12 @@ export function useKeyboardListNav<T, L extends HTMLElement = HTMLUListElement>(
   items: ReadonlyArray<T>,
   options: UseKeyboardListNavOptions<T>,
 ): UseKeyboardListNavResult<L> {
-  const { initialIndex = 0, onEnter, wraparound = false } = options
+  const { getOptionId, initialIndex = 0, onEnter, wraparound = false } = options
   const [activeIndex, setActiveIndex] = useState(initialIndex)
   const listRef = useRef<L | null>(null)
+
+  const activeDescendantId =
+    getOptionId && activeIndex >= 0 && activeIndex < items.length ? getOptionId(items[activeIndex]) : undefined
 
   useEffect(() => {
     if (activeIndex < 0) return
@@ -53,5 +56,5 @@ export function useKeyboardListNav<T, L extends HTMLElement = HTMLUListElement>(
     [activeIndex, items, onEnter, wraparound],
   )
 
-  return { activeIndex, handleKeyDown, listRef, setActiveIndex }
+  return { activeDescendantId, activeIndex, handleKeyDown, listRef, setActiveIndex }
 }
