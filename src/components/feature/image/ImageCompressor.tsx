@@ -4,7 +4,7 @@ import { Button, DownloadIcon, FieldForm, ProgressBar, UploadInput } from '@/com
 import { COMPRESSIBLE_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
 import type { CompressInput, ImageCompressorAction, ImageCompressorState, ImageProcessingResult } from '@/types'
-import { formatFileSize, processImage, tv } from '@/utils'
+import { downloadDataUrl, formatFileSize, processImage, tv } from '@/utils'
 
 const processingWrapperStyles = tv({
   base: 'flex flex-col gap-2',
@@ -57,7 +57,6 @@ const reducer = (state: ImageCompressorState, action: ImageCompressorAction): Im
 }
 
 export const ImageCompressor = () => {
-  const downloadAnchorRef = useRef<HTMLAnchorElement>(null)
   const progressTimerRef = useRef<ReturnType<typeof setTimeout>>(undefined)
 
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -140,14 +139,11 @@ export const ImageCompressor = () => {
 
   const handleDownload = () => {
     if (!compressed?.dataUrl || !source) return
-    const anchor = downloadAnchorRef.current
-    if (!anchor) return
     const ext = source.type === 'image/webp' ? 'webp' : 'jpg'
     const baseName = source.name.replace(/\.[^.]+$/, '')
-    anchor.href = compressed.dataUrl
-    anchor.download = `compressed-${baseName}.${ext}`
-    anchor.click()
-    showSuccess(`Downloaded compressed-${baseName}.${ext}`)
+    const filename = `compressed-${baseName}.${ext}`
+    downloadDataUrl(compressed.dataUrl, filename)
+    showSuccess(`Downloaded ${filename}`)
   }
 
   const compressionRatio =
@@ -213,8 +209,6 @@ export const ImageCompressor = () => {
           </Button>
         </div>
       )}
-
-      <a aria-hidden="true" className="hidden" download href="about:blank" ref={downloadAnchorRef} tabIndex={-1} />
     </div>
   )
 }
