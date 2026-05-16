@@ -72,7 +72,7 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false)
   const { showError } = useToast()
 
-  const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<EvalInput, EvalResult>({
+  const { inputs, recompute, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<EvalInput, EvalResult>({
     compute: ({ expression: expr, jsonInput: value }) => {
       const parsed = parseJsonInput(value)
       if (!parsed.success) return { evaluation: null, parseError: parsed.error, parsedData: null }
@@ -91,9 +91,9 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
   const { evaluation, parseError, parsedData } = result
 
   // Unconditional mount-time recompute. Tool has no isEmpty, so useToolFieldsPersisted's
-  // autorun-gated-on-isEmpty does NOT fire — we explicitly trigger here.
+  // autorun-gated-on-isEmpty does NOT fire — we explicitly call recompute() here.
   useMountOnce(() => {
-    setFieldsImmediate({})
+    recompute()
   })
 
   const handleJsonChange = (value: string) => setFields({ jsonInput: value })
