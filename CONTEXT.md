@@ -97,13 +97,16 @@ under one localStorage key. Pick [[Tool field bag]] (`useToolFields`)
 when persistence is bespoke or absent (e.g. `<BidirectionalConverter>`'s
 per-mode source-keying, or `AesEncryptDecrypt` which doesn't persist).
 
-Today's only consumer: `JsonSchemaValidator`. Future migration targets
-include the other multi-field code Tools that currently combine
-`useInputLocalStorage` + `useToolComputation` + `useMountOnce` by hand
-(`HtmlFormatter`, `MermaidRenderer`, `JsonToTypeScript`,
-`SqlFormatter`, `JavaScriptMinifier`, `CssFormatter`, `MarkdownPreview`,
-`JsonpathEvaluator`, `GraphqlSchemaViewer`, `ProtobufCodec`,
-`ProtobufToJson`).
+Today's consumers: `JsonSchemaValidator`, `JsonDiffChecker`.
+
+Today's remaining migration target is `ProtobufCodec`, which still
+hand-rolls `useInputLocalStorage` + `useToolComputation` + `useMountOnce`
+on top of a multi-pipeline shape (separate encode/decode/schema-parse
+computes around one shared persisted bag). Other multi-field Tools that
+once carried that triad (`MermaidRenderer`, `GraphqlSchemaViewer`,
+`JsonpathEvaluator`, `ProtobufToJson`, and the formatter family) have
+since migrated to this hook or to its single-Input sibling
+[[Persistent tool computation]].
 
 ## Persistent tool computation
 
@@ -133,12 +136,12 @@ the unwrapped `useToolComputation` when a single-Input Tool does NOT
 persist (still the right choice for the 30+ existing single-Input
 Tools without persistence).
 
-Today's only consumer: `ProtobufToJson`. Future migration targets:
-`MermaidRenderer`, `GraphqlSchemaViewer` — both currently combine
-`useInputLocalStorage` + `useToolComputation` + `useMountOnce` by hand.
-MermaidRenderer's migration also has to handle a tool-handoff override
-(via `consumeHandoff('mermaid-renderer')`) on top of the standard
-persistence flow.
+Today's consumers: `ProtobufToJson`, `MermaidRenderer`,
+`GraphqlSchemaViewer`. MermaidRenderer additionally absorbs a
+tool-handoff override (`consumeHandoff('mermaid-renderer')`) on mount via
+its own `useMountOnce`, which overrides the hook's autorun by calling
+`setInputImmediate(prefill)` — the documented pattern for combining a
+[[Tool handoff]] consumer with persisted input.
 
 ## Tool dialog frame
 

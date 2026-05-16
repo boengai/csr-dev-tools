@@ -1,18 +1,8 @@
-import { useEffect, useReducer } from 'react'
-
 import { CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
-import type {
-  InlineSpan,
-  JsonDiffCheckerAction,
-  JsonDiffCheckerState,
-  JsonDiffInput,
-  JsonDiffResult,
-  SideBySideRow,
-  ToolComponentProps,
-} from '@/types'
+import { useToast, useToolFieldsPersisted } from '@/hooks'
+import type { InlineSpan, JsonDiffInput, JsonDiffResult, SideBySideRow, ToolComponentProps } from '@/types'
 import { computeSideBySideDiff, createUnifiedDiff, getJsonDiffError, normalizeJson } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-diff-checker']
@@ -62,32 +52,13 @@ const DiffCell = ({
   )
 }
 
-function reducer(state: JsonDiffCheckerState, action: JsonDiffCheckerAction): JsonDiffCheckerState {
-  switch (action.type) {
-    case 'SET_DIFF_RESULT':
-      return { ...state, rows: action.payload.rows, unifiedDiff: action.payload.unifiedDiff }
-    case 'SET_ERROR':
-      return { ...state, error: action.payload }
-    case 'RESET':
-      return { ...state, rows: [], unifiedDiff: '', error: '' }
-  }
-}
-
 const EMPTY_DIFF: JsonDiffResult = { rows: [], unifiedDiff: '', validationError: '' }
 
 export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [inputs, setInputs] = useInputLocalStorage('csr-dev-tools-json-diff', { original: '', modified: '' })
-  const { original, modified } = inputs
-  const [state, dispatch] = useReducer(reducer, {
-    rows: [],
-    unifiedDiff: '',
-    error: '',
-  })
-  const { error } = state
   const { toast } = useToast()
 
-  const { result, setInput, setInputImmediate } = useToolComputation<JsonDiffInput, JsonDiffResult>(
-    async ({ original: orig, modified: mod }) => {
+  const { inputs, result, reset, setFields } = useToolFieldsPersisted<JsonDiffInput, JsonDiffResult>({
+    compute: async ({ original: orig, modified: mod }) => {
       const origError = await getJsonDiffError(orig, 'Original')
       const modError = await getJsonDiffError(mod, 'Modified')
       if (origError || modError) {
@@ -103,48 +74,27 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
       ])
       return { rows: sideBySide, unifiedDiff: patch, validationError: '' }
     },
-    {
-      debounceMs: 300,
-      initial: EMPTY_DIFF,
-      isEmpty: ({ original: orig, modified: mod }) => orig.trim().length === 0 && mod.trim().length === 0,
-      onError: () => {
-        toast({ action: 'add', item: { label: 'Unable to compute JSON diff', type: 'error' } })
-      },
+    debounceMs: 300,
+    initial: { original: '', modified: '' },
+    initialResult: EMPTY_DIFF,
+    isEmpty: ({ original: orig, modified: mod }) => orig.trim().length === 0 && mod.trim().length === 0,
+    onError: () => {
+      toast({ action: 'add', item: { label: 'Unable to compute JSON diff', type: 'error' } })
     },
-  )
-
+    storageKey: 'csr-dev-tools-json-diff',
+  })
+  const { original, modified } = inputs
   const { rows, unifiedDiff, validationError } = result
 
-  useEffect(() => {
-    dispatch({ type: 'SET_ERROR', payload: validationError })
-  }, [validationError])
-
-  useMountOnce(() => {
-    if (original || modified) setInputImmediate({ original, modified })
-  })
-
-  const handleOriginalChange = (val: string) => {
-    setInputs((prev) => ({ ...prev, original: val }))
-    setInput({ original: val, modified })
-  }
-
-  const handleModifiedChange = (val: string) => {
-    setInputs((prev) => ({ ...prev, modified: val }))
-    setInput({ original, modified: val })
-  }
-
-  const handleReset = () => {
-    setInputs({ original: '', modified: '' })
-    dispatch({ type: 'RESET' })
-    setInputImmediate({ original: '', modified: '' })
-  }
+  const handleOriginalChange = (val: string) => setFields({ original: val })
+  const handleModifiedChange = (val: string) => setFields({ modified: val })
 
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
       onAfterClose={onAfterDialogClose}
-      onReset={handleReset}
+      onReset={reset}
       title="JSON Diff Checker"
       triggers={[{ label: 'Compare' }]}
     >
@@ -175,9 +125,9 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
 
         <div className="border-t-2 border-dashed border-gray-900" />
 
-        {error && (
+        {validationError && (
           <p className="text-body-sm text-error" role="alert">
-            {error}
+            {validationError}
           </p>
         )}
 
