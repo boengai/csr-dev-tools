@@ -104,7 +104,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
     fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
 
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(0)
+      await vi.advanceTimersByTimeAsync(1)
     })
 
     expect(compute).toHaveBeenCalledWith({ mode: 'a-to-b', source: 'hello' })
@@ -120,7 +120,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
     fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
 
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(0)
+      await vi.advanceTimersByTimeAsync(1)
     })
 
     expect(onError).toHaveBeenCalledTimes(1)
@@ -137,14 +137,14 @@ describe('BidirectionalConverter — compute pipeline', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(0)
+      await vi.advanceTimersByTimeAsync(1)
     })
     expect(compute).toHaveBeenLastCalledWith({ mode: 'a-to-b', source: 'saved A' })
 
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
     fireEvent.click(screen.getByRole('button', { name: 'B → A' }))
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(0)
+      await vi.advanceTimersByTimeAsync(1)
     })
     expect(compute).toHaveBeenLastCalledWith({ mode: 'b-to-a', source: 'saved B' })
   })
@@ -163,7 +163,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(0)
+      await vi.advanceTimersByTimeAsync(1)
     })
 
     expect(compute).toHaveBeenCalledTimes(1)
@@ -192,14 +192,14 @@ describe('BidirectionalConverter — compute pipeline', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(0)
+      await vi.advanceTimersByTimeAsync(1)
     })
     compute.mockClear()
 
     // Closing the dialog triggers handleAfterClose → onReset → handleReset.
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(0)
+      await vi.advanceTimersByTimeAsync(1)
     })
 
     // isEmpty short-circuits compute when source is empty.
@@ -231,13 +231,13 @@ describe('BidirectionalConverter — sourceToolbarSlot', () => {
     render(<BidirectionalConverter modes={MODES} modeStorageKey="test" compute={compute} sourceToolbarSlot={slot} />)
     fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(0)
+      await vi.advanceTimersByTimeAsync(1)
     })
     expect(compute).toHaveBeenCalledTimes(1)
 
     fireEvent.click(screen.getByTestId('slot-trigger'))
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(0)
+      await vi.advanceTimersByTimeAsync(1)
     })
     expect(compute).toHaveBeenCalledTimes(2)
     expect(compute).toHaveBeenLastCalledWith({ mode: 'a-to-b', source: 'hi' })
