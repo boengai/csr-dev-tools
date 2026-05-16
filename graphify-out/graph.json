@@ -3177,7 +3177,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L1",
       "id": "src_app_tsx",
-      "community": 371,
+      "community": 85,
       "norm_label": "app.tsx"
     },
     {
@@ -3186,7 +3186,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L10",
       "id": "src_app_twinklestarsanimate",
-      "community": 371,
+      "community": 85,
       "norm_label": "twinklestarsanimate"
     },
     {
@@ -3195,7 +3195,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L18",
       "id": "src_app_commandpalette",
-      "community": 371,
+      "community": 85,
       "norm_label": "commandpalette"
     },
     {
@@ -3204,7 +3204,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L26",
       "id": "src_app_sidebar",
-      "community": 371,
+      "community": 85,
       "norm_label": "sidebar"
     },
     {
@@ -3213,7 +3213,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L32",
       "id": "src_app_settingsdialog",
-      "community": 371,
+      "community": 85,
       "norm_label": "settingsdialog"
     },
     {
@@ -3222,7 +3222,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L40",
       "id": "src_app_toastprovider",
-      "community": 371,
+      "community": 85,
       "norm_label": "toastprovider"
     },
     {
@@ -3231,7 +3231,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L46",
       "id": "src_app_pageloading",
-      "community": 371,
+      "community": 85,
       "norm_label": "pageloading()"
     },
     {
@@ -6007,6 +6007,33 @@
       "norm_label": "index.ts"
     },
     {
+      "label": "formatterShell.ts",
+      "file_type": "code",
+      "source_file": "src/types/components/common/formatterShell.ts",
+      "source_location": "L1",
+      "id": "src_types_components_common_formattershell_ts",
+      "community": 724,
+      "norm_label": "formattershell.ts"
+    },
+    {
+      "label": "FormatterShellControlsCtx",
+      "file_type": "code",
+      "source_file": "src/types/components/common/formatterShell.ts",
+      "source_location": "L8",
+      "id": "common_formattershell_formattershellcontrolsctx",
+      "community": 724,
+      "norm_label": "formattershellcontrolsctx"
+    },
+    {
+      "label": "FormatterShellProps",
+      "file_type": "code",
+      "source_file": "src/types/components/common/formatterShell.ts",
+      "source_location": "L14",
+      "id": "common_formattershell_formattershellprops",
+      "community": 724,
+      "norm_label": "formattershellprops"
+    },
+    {
       "label": "sidebar.ts",
       "file_type": "code",
       "source_file": "src/types/components/common/sidebar.ts",
@@ -7956,7 +7983,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L1",
       "id": "src_diagram_state_ts",
-      "community": 370,
+      "community": 41,
       "norm_label": "state.ts"
     },
     {
@@ -7965,7 +7992,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L3",
       "id": "diagram_state_createinitialdocument",
-      "community": 370,
+      "community": 41,
       "norm_label": "createinitialdocument()"
     },
     {
@@ -7974,7 +8001,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L15",
       "id": "diagram_state_clonedocument",
-      "community": 370,
+      "community": 41,
       "norm_label": "clonedocument()"
     },
     {
@@ -8136,7 +8163,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L23",
       "id": "diagram_editor_isvaliddocument",
-      "community": 370,
+      "community": 41,
       "norm_label": "isvaliddocument()"
     },
     {
@@ -8154,7 +8181,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L44",
       "id": "diagram_editor_diagrameditor_constructor",
-      "community": 370,
+      "community": 41,
       "norm_label": ".constructor()"
     },
     {
@@ -8235,7 +8262,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L113",
       "id": "diagram_editor_diagrameditor_replacedocument",
-      "community": 370,
+      "community": 41,
       "norm_label": ".replacedocument()"
     },
     {
@@ -8460,7 +8487,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L295",
       "id": "diagram_editor_diagrameditor_loadfromexportedjson",
-      "community": 370,
+      "community": 41,
       "norm_label": ".loadfromexportedjson()"
     },
     {
@@ -8523,7 +8550,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_editor_spec_ts",
-      "community": 370,
+      "community": 172,
       "norm_label": "editor.spec.ts"
     },
     {
@@ -8532,7 +8559,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L7",
       "id": "diagram_editor_spec_editor",
-      "community": 370,
+      "community": 172,
       "norm_label": "editor"
     },
     {
@@ -8541,7 +8568,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L13",
       "id": "diagram_editor_spec_listener",
-      "community": 370,
+      "community": 172,
       "norm_label": "listener"
     },
     {
@@ -8550,7 +8577,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L14",
       "id": "diagram_editor_spec_unsubscribe",
-      "community": 370,
+      "community": 172,
       "norm_label": "unsubscribe"
     },
     {
@@ -8559,7 +8586,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L17",
       "id": "diagram_editor_spec_next",
-      "community": 370,
+      "community": 172,
       "norm_label": "next"
     },
     {
@@ -8568,7 +8595,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L40",
       "id": "diagram_editor_spec_id",
-      "community": 370,
+      "community": 172,
       "norm_label": "id"
     },
     {
@@ -8577,7 +8604,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L59",
       "id": "diagram_editor_spec_doc",
-      "community": 370,
+      "community": 172,
       "norm_label": "doc"
     },
     {
@@ -8586,7 +8613,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L69",
       "id": "diagram_editor_spec_tableid",
-      "community": 370,
+      "community": 172,
       "norm_label": "tableid"
     },
     {
@@ -8595,7 +8622,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L82",
       "id": "diagram_editor_spec_result",
-      "community": 370,
+      "community": 172,
       "norm_label": "result"
     },
     {
@@ -8631,7 +8658,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_state_spec_ts",
-      "community": 370,
+      "community": 41,
       "norm_label": "state.spec.ts"
     },
     {
@@ -8640,7 +8667,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L6",
       "id": "diagram_state_spec_doc",
-      "community": 370,
+      "community": 41,
       "norm_label": "doc"
     },
     {
@@ -8649,7 +8676,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L21",
       "id": "diagram_state_spec_a",
-      "community": 370,
+      "community": 41,
       "norm_label": "a"
     },
     {
@@ -8658,7 +8685,7 @@
       "source_file": "src/diagram/state.spec.ts",
       "source_location": "L22",
       "id": "diagram_state_spec_b",
-      "community": 370,
+      "community": 41,
       "norm_label": "b"
     },
     {
@@ -8730,7 +8757,7 @@
       "source_file": "src/diagram/operations/columns.spec.ts",
       "source_location": "L7",
       "id": "operations_columns_spec_seedwithtable",
-      "community": 370,
+      "community": 24,
       "norm_label": "seedwithtable()"
     },
     {
@@ -8883,7 +8910,7 @@
       "source_file": "src/diagram/operations/tables.spec.ts",
       "source_location": "L6",
       "id": "operations_tables_spec_seed",
-      "community": 370,
+      "community": 69,
       "norm_label": "seed()"
     },
     {
@@ -17712,7 +17739,7 @@
       "source_file": "src/components/common/input/UploadInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_input_uploadinput_tsx",
-      "community": 725,
+      "community": 52,
       "norm_label": "uploadinput.tsx"
     },
     {
@@ -17721,7 +17748,7 @@
       "source_file": "src/components/common/input/UploadInput.tsx",
       "source_location": "L8",
       "id": "input_uploadinput_uploadinput",
-      "community": 725,
+      "community": 52,
       "norm_label": "uploadinput()"
     },
     {
@@ -18274,6 +18301,33 @@
       "norm_label": "tooldialogshell()"
     },
     {
+      "label": "FormatterShell.tsx",
+      "file_type": "code",
+      "source_file": "src/components/common/formatter/FormatterShell.tsx",
+      "source_location": "L1",
+      "id": "src_components_common_formatter_formattershell_tsx",
+      "community": 23,
+      "norm_label": "formattershell.tsx"
+    },
+    {
+      "label": "FormatterShell()",
+      "file_type": "code",
+      "source_file": "src/components/common/formatter/FormatterShell.tsx",
+      "source_location": "L6",
+      "id": "formatter_formattershell_formattershell",
+      "community": 23,
+      "norm_label": "formattershell()"
+    },
+    {
+      "label": "index.ts",
+      "file_type": "code",
+      "source_file": "src/components/common/formatter/index.ts",
+      "source_location": "L1",
+      "id": "src_components_common_formatter_index_ts",
+      "community": 737,
+      "norm_label": "index.ts"
+    },
+    {
       "label": "ImageToolShell.dom.spec.tsx",
       "file_type": "code",
       "source_file": "src/components/common/image-tool/ImageToolShell.dom.spec.tsx",
@@ -18522,7 +18576,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L1",
       "id": "src_components_common_command_palette_commandpalette_tsx",
-      "community": 85,
+      "community": 52,
       "norm_label": "commandpalette.tsx"
     },
     {
@@ -18531,7 +18585,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L14",
       "id": "command_palette_commandpalette_paletteitemstyles",
-      "community": 85,
+      "community": 52,
       "norm_label": "paletteitemstyles"
     },
     {
@@ -18540,7 +18594,7 @@
       "source_file": "src/components/common/command-palette/CommandPalette.tsx",
       "source_location": "L24",
       "id": "command_palette_commandpalette_commandpalette",
-      "community": 85,
+      "community": 52,
       "norm_label": "commandpalette()"
     },
     {
@@ -18558,7 +18612,7 @@
       "source_file": "src/components/common/command-palette/SearchInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_command_palette_searchinput_tsx",
-      "community": 85,
+      "community": 52,
       "norm_label": "searchinput.tsx"
     },
     {
@@ -18567,7 +18621,7 @@
       "source_file": "src/components/common/command-palette/SearchInput.tsx",
       "source_location": "L7",
       "id": "command_palette_searchinput_searchinput",
-      "community": 85,
+      "community": 52,
       "norm_label": "searchinput()"
     },
     {
@@ -18630,7 +18684,7 @@
       "source_file": "src/components/common/button/index.ts",
       "source_location": "L1",
       "id": "src_components_common_button_index_ts",
-      "community": 725,
+      "community": 52,
       "norm_label": "index.ts"
     },
     {
@@ -19125,7 +19179,7 @@
       "source_file": "src/components/common/icon/index.ts",
       "source_location": "L1",
       "id": "src_components_common_icon_index_ts",
-      "community": 725,
+      "community": 52,
       "norm_label": "index.ts"
     },
     {
@@ -19188,7 +19242,7 @@
       "source_file": "src/components/feature/unit/UnitPxToRem.tsx",
       "source_location": "L1",
       "id": "src_components_feature_unit_unitpxtorem_tsx",
-      "community": 729,
+      "community": 736,
       "norm_label": "unitpxtorem.tsx"
     },
     {
@@ -19197,7 +19251,7 @@
       "source_file": "src/components/feature/unit/UnitPxToRem.tsx",
       "source_location": "L10",
       "id": "unit_unitpxtorem_unitpxtorem",
-      "community": 729,
+      "community": 736,
       "norm_label": "unitpxtorem()"
     },
     {
@@ -19755,7 +19809,7 @@
       "source_file": "src/components/feature/security/HashGenerator.tsx",
       "source_location": "L12",
       "id": "security_hashgenerator_hashgenerator",
-      "community": 721,
+      "community": 15,
       "norm_label": "hashgenerator()"
     },
     {
@@ -20191,6 +20245,15 @@
       "norm_label": "javascriptminifier.tsx"
     },
     {
+      "label": "INITIAL",
+      "file_type": "code",
+      "source_file": "src/components/feature/code/JavaScriptMinifier.tsx",
+      "source_location": "L8",
+      "id": "code_javascriptminifier_initial",
+      "community": 178,
+      "norm_label": "initial"
+    },
+    {
       "label": "JavaScriptMinifier()",
       "file_type": "code",
       "source_file": "src/components/feature/code/JavaScriptMinifier.tsx",
@@ -20286,7 +20349,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L64",
       "id": "code_mermaidrenderer_mermaidrenderer",
-      "community": 15,
+      "community": 107,
       "norm_label": "mermaidrenderer()"
     },
     {
@@ -20349,7 +20412,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L134",
       "id": "code_protobuftojson_protobuftojson",
-      "community": 15,
+      "community": 107,
       "norm_label": "protobuftojson()"
     },
     {
@@ -20360,6 +20423,15 @@
       "id": "src_components_feature_code_cssformatter_tsx",
       "community": 485,
       "norm_label": "cssformatter.tsx"
+    },
+    {
+      "label": "INITIAL",
+      "file_type": "code",
+      "source_file": "src/components/feature/code/CssFormatter.tsx",
+      "source_location": "L8",
+      "id": "code_cssformatter_initial",
+      "community": 485,
+      "norm_label": "initial"
     },
     {
       "label": "CssFormatter()",
@@ -20511,7 +20583,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L232",
       "id": "code_graphqlschemaviewer_graphqlschemaviewer",
-      "community": 15,
+      "community": 107,
       "norm_label": "graphqlschemaviewer()"
     },
     {
@@ -20522,6 +20594,15 @@
       "id": "src_components_feature_code_sqlformatter_tsx",
       "community": 486,
       "norm_label": "sqlformatter.tsx"
+    },
+    {
+      "label": "INITIAL",
+      "file_type": "code",
+      "source_file": "src/components/feature/code/SqlFormatter.tsx",
+      "source_location": "L8",
+      "id": "code_sqlformatter_initial",
+      "community": 486,
+      "norm_label": "initial"
     },
     {
       "label": "SqlFormatter()",
@@ -20540,6 +20621,15 @@
       "id": "src_components_feature_code_htmlformatter_tsx",
       "community": 200,
       "norm_label": "htmlformatter.tsx"
+    },
+    {
+      "label": "INITIAL",
+      "file_type": "code",
+      "source_file": "src/components/feature/code/HtmlFormatter.tsx",
+      "source_location": "L8",
+      "id": "code_htmlformatter_initial",
+      "community": 200,
+      "norm_label": "initial"
     },
     {
       "label": "HtmlFormatter()",
@@ -21321,7 +21411,7 @@
       "source_file": "src/components/feature/image/BackgroundRemover/index.tsx",
       "source_location": "L20",
       "id": "backgroundremover_index_backgroundremover",
-      "community": 67,
+      "community": 114,
       "norm_label": "backgroundremover()"
     },
     {
@@ -21699,7 +21789,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L1",
       "id": "src_components_feature_time_cronexpressionparser_tsx",
-      "community": 15,
+      "community": 735,
       "norm_label": "cronexpressionparser.tsx"
     },
     {
@@ -21708,7 +21798,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L11",
       "id": "time_cronexpressionparser_empty_result",
-      "community": 15,
+      "community": 735,
       "norm_label": "empty_result"
     },
     {
@@ -21717,7 +21807,7 @@
       "source_file": "src/components/feature/time/CronExpressionParser.tsx",
       "source_location": "L13",
       "id": "time_cronexpressionparser_cronexpressionparser",
-      "community": 15,
+      "community": 735,
       "norm_label": "cronexpressionparser()"
     },
     {
@@ -21906,7 +21996,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_text_textcaseconverter_tsx",
-      "community": 15,
+      "community": 734,
       "norm_label": "textcaseconverter.tsx"
     },
     {
@@ -21915,7 +22005,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L23",
       "id": "text_textcaseconverter_cases",
-      "community": 15,
+      "community": 734,
       "norm_label": "cases"
     },
     {
@@ -21924,7 +22014,7 @@
       "source_file": "src/components/feature/text/TextCaseConverter.tsx",
       "source_location": "L37",
       "id": "text_textcaseconverter_textcaseconverter",
-      "community": 15,
+      "community": 734,
       "norm_label": "textcaseconverter()"
     },
     {
@@ -22167,7 +22257,7 @@
       "source_file": "src/components/feature/data/JsonFormatter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_jsonformatter_tsx",
-      "community": 15,
+      "community": 107,
       "norm_label": "jsonformatter.tsx"
     },
     {
@@ -22176,7 +22266,7 @@
       "source_file": "src/components/feature/data/JsonFormatter.tsx",
       "source_location": "L10",
       "id": "data_jsonformatter_jsonformatter",
-      "community": 15,
+      "community": 107,
       "norm_label": "jsonformatter()"
     },
     {
@@ -22734,7 +22824,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_tablenode_tsx",
-      "community": 52,
+      "community": 1,
       "norm_label": "tablenode.tsx"
     },
     {
@@ -22743,7 +22833,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L10",
       "id": "db_diagram_tablenode_constraint_colors",
-      "community": 52,
+      "community": 1,
       "norm_label": "constraint_colors"
     },
     {
@@ -22752,7 +22842,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L20",
       "id": "db_diagram_tablenode_constrainttoggle",
-      "community": 52,
+      "community": 1,
       "norm_label": "constrainttoggle()"
     },
     {
@@ -22761,7 +22851,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L50",
       "id": "db_diagram_tablenode_tablenodecomponent",
-      "community": 52,
+      "community": 1,
       "norm_label": "tablenodecomponent()"
     },
     {
@@ -22770,7 +22860,7 @@
       "source_file": "src/components/feature/data/db-diagram/ImportSqlPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_importsqlpanel_tsx",
-      "community": 724,
+      "community": 1,
       "norm_label": "importsqlpanel.tsx"
     },
     {
@@ -22779,7 +22869,7 @@
       "source_file": "src/components/feature/data/db-diagram/ImportSqlPanel.tsx",
       "source_location": "L11",
       "id": "db_diagram_importsqlpanel_importsqlpanel",
-      "community": 724,
+      "community": 1,
       "norm_label": "importsqlpanel()"
     },
     {
@@ -22806,7 +22896,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportTypescriptPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_exporttypescriptpanel_tsx",
-      "community": 724,
+      "community": 1,
       "norm_label": "exporttypescriptpanel.tsx"
     },
     {
@@ -22815,7 +22905,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportTypescriptPanel.tsx",
       "source_location": "L9",
       "id": "db_diagram_exporttypescriptpanel_exporttypescriptpanel",
-      "community": 52,
+      "community": 1,
       "norm_label": "exporttypescriptpanel()"
     },
     {
@@ -22824,7 +22914,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramCanvas.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_diagramcanvas_tsx",
-      "community": 52,
+      "community": 1,
       "norm_label": "diagramcanvas.tsx"
     },
     {
@@ -22833,7 +22923,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramCanvas.tsx",
       "source_location": "L13",
       "id": "db_diagram_diagramcanvas_nodetypes",
-      "community": 52,
+      "community": 1,
       "norm_label": "nodetypes"
     },
     {
@@ -22842,7 +22932,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramCanvas.tsx",
       "source_location": "L14",
       "id": "db_diagram_diagramcanvas_edgetypes",
-      "community": 52,
+      "community": 1,
       "norm_label": "edgetypes"
     },
     {
@@ -22851,7 +22941,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramCanvas.tsx",
       "source_location": "L16",
       "id": "db_diagram_diagramcanvas_diagramcanvas",
-      "community": 52,
+      "community": 1,
       "norm_label": "diagramcanvas()"
     },
     {
@@ -22860,7 +22950,7 @@
       "source_file": "src/components/feature/data/db-diagram/ImportJsonSchemaPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_importjsonschemapanel_tsx",
-      "community": 724,
+      "community": 1,
       "norm_label": "importjsonschemapanel.tsx"
     },
     {
@@ -22869,7 +22959,7 @@
       "source_file": "src/components/feature/data/db-diagram/ImportJsonSchemaPanel.tsx",
       "source_location": "L10",
       "id": "db_diagram_importjsonschemapanel_importjsonschemapanel",
-      "community": 52,
+      "community": 1,
       "norm_label": "importjsonschemapanel()"
     },
     {
@@ -22878,7 +22968,7 @@
       "source_file": "src/components/feature/data/db-diagram/DbmlEditorPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_dbmleditorpanel_tsx",
-      "community": 724,
+      "community": 1,
       "norm_label": "dbmleditorpanel.tsx"
     },
     {
@@ -22887,7 +22977,7 @@
       "source_file": "src/components/feature/data/db-diagram/DbmlEditorPanel.tsx",
       "source_location": "L10",
       "id": "db_diagram_dbmleditorpanel_dbmleditorpanel",
-      "community": 724,
+      "community": 1,
       "norm_label": "dbmleditorpanel()"
     },
     {
@@ -22896,7 +22986,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramListPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_diagramlistpanel_tsx",
-      "community": 724,
+      "community": 1,
       "norm_label": "diagramlistpanel.tsx"
     },
     {
@@ -22905,7 +22995,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramListPanel.tsx",
       "source_location": "L10",
       "id": "db_diagram_diagramlistpanel_diagramitemstyles",
-      "community": 724,
+      "community": 1,
       "norm_label": "diagramitemstyles"
     },
     {
@@ -22914,7 +23004,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramListPanel.tsx",
       "source_location": "L20",
       "id": "db_diagram_diagramlistpanel_diagramlistpanel",
-      "community": 724,
+      "community": 1,
       "norm_label": "diagramlistpanel()"
     },
     {
@@ -22923,7 +23013,7 @@
       "source_file": "src/components/feature/data/db-diagram/constants.ts",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_constants_ts",
-      "community": 724,
+      "community": 1,
       "norm_label": "constants.ts"
     },
     {
@@ -22932,7 +23022,7 @@
       "source_file": "src/components/feature/data/db-diagram/constants.ts",
       "source_location": "L3",
       "id": "db_diagram_constants_dialect_options",
-      "community": 724,
+      "community": 1,
       "norm_label": "dialect_options"
     },
     {
@@ -22941,7 +23031,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_diagramcontext_tsx",
-      "community": 52,
+      "community": 1,
       "norm_label": "diagramcontext.tsx"
     },
     {
@@ -22950,7 +23040,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L6",
       "id": "db_diagram_diagramcontext_ctx",
-      "community": 52,
+      "community": 1,
       "norm_label": "ctx"
     },
     {
@@ -22959,7 +23049,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L8",
       "id": "db_diagram_diagramcontext_diagramprovider",
-      "community": 52,
+      "community": 1,
       "norm_label": "diagramprovider()"
     },
     {
@@ -22968,7 +23058,7 @@
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L17",
       "id": "db_diagram_diagramcontext_usediagram",
-      "community": 52,
+      "community": 1,
       "norm_label": "usediagram()"
     },
     {
@@ -22977,7 +23067,7 @@
       "source_file": "src/components/feature/data/db-diagram/RelationshipEdge.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_relationshipedge_tsx",
-      "community": 52,
+      "community": 1,
       "norm_label": "relationshipedge.tsx"
     },
     {
@@ -22986,7 +23076,7 @@
       "source_file": "src/components/feature/data/db-diagram/RelationshipEdge.tsx",
       "source_location": "L9",
       "id": "db_diagram_relationshipedge_relation_options",
-      "community": 52,
+      "community": 1,
       "norm_label": "relation_options"
     },
     {
@@ -22995,7 +23085,7 @@
       "source_file": "src/components/feature/data/db-diagram/RelationshipEdge.tsx",
       "source_location": "L17",
       "id": "db_diagram_relationshipedge_relationshipedgecomponent",
-      "community": 52,
+      "community": 1,
       "norm_label": "relationshipedgecomponent()"
     },
     {
@@ -23004,7 +23094,7 @@
       "source_file": "src/components/feature/data/db-diagram/CloseButton.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_closebutton_tsx",
-      "community": 724,
+      "community": 1,
       "norm_label": "closebutton.tsx"
     },
     {
@@ -23013,7 +23103,7 @@
       "source_file": "src/components/feature/data/db-diagram/CloseButton.tsx",
       "source_location": "L3",
       "id": "db_diagram_closebutton_closebutton",
-      "community": 724,
+      "community": 1,
       "norm_label": "closebutton()"
     },
     {
@@ -23022,7 +23112,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportMermaidPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_exportmermaidpanel_tsx",
-      "community": 724,
+      "community": 1,
       "norm_label": "exportmermaidpanel.tsx"
     },
     {
@@ -23031,7 +23121,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportMermaidPanel.tsx",
       "source_location": "L10",
       "id": "db_diagram_exportmermaidpanel_exportmermaidpanel",
-      "community": 724,
+      "community": 1,
       "norm_label": "exportmermaidpanel()"
     },
     {
@@ -23040,7 +23130,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportSqlPanel.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_db_diagram_exportsqlpanel_tsx",
-      "community": 724,
+      "community": 1,
       "norm_label": "exportsqlpanel.tsx"
     },
     {
@@ -23049,7 +23139,7 @@
       "source_file": "src/components/feature/data/db-diagram/ExportSqlPanel.tsx",
       "source_location": "L11",
       "id": "db_diagram_exportsqlpanel_exportsqlpanel",
-      "community": 724,
+      "community": 1,
       "norm_label": "exportsqlpanel()"
     },
     {
@@ -23580,7 +23670,7 @@
       "source_file": "src/hooks/useMountOnce.ts",
       "source_location": "L11",
       "id": "hooks_usemountonce_usemountonce",
-      "community": 15,
+      "community": 107,
       "norm_label": "usemountonce()"
     },
     {
@@ -23832,7 +23922,7 @@
       "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
       "source_location": "L18",
       "id": "persist_usetoolcomputationpersisted_usetoolcomputationpersisted",
-      "community": 15,
+      "community": 107,
       "norm_label": "usetoolcomputationpersisted()"
     },
     {
@@ -23841,7 +23931,7 @@
       "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_persist_usetoolcomputationpersisted_dom_spec_tsx",
-      "community": 202,
+      "community": 107,
       "norm_label": "usetoolcomputationpersisted.dom.spec.tsx"
     },
     {
@@ -23850,7 +23940,7 @@
       "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L22",
       "id": "persist_usetoolcomputationpersisted_dom_spec_result",
-      "community": 202,
+      "community": 107,
       "norm_label": "{ result }"
     },
     {
@@ -23859,7 +23949,7 @@
       "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L109",
       "id": "persist_usetoolcomputationpersisted_dom_spec_compute",
-      "community": 202,
+      "community": 107,
       "norm_label": "compute"
     },
     {
@@ -23967,7 +24057,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_persist_usetoolfieldspersisted_dom_spec_tsx",
-      "community": 202,
+      "community": 174,
       "norm_label": "usetoolfieldspersisted.dom.spec.tsx"
     },
     {
@@ -23976,7 +24066,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L9",
       "id": "persist_usetoolfieldspersisted_dom_spec_bag",
-      "community": 202,
+      "community": 174,
       "norm_label": "bag"
     },
     {
@@ -23985,7 +24075,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L11",
       "id": "persist_usetoolfieldspersisted_dom_spec_initial",
-      "community": 202,
+      "community": 174,
       "norm_label": "initial"
     },
     {
@@ -23994,7 +24084,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L25",
       "id": "persist_usetoolfieldspersisted_dom_spec_result",
-      "community": 202,
+      "community": 174,
       "norm_label": "{ result }"
     },
     {
@@ -24003,7 +24093,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L118",
       "id": "persist_usetoolfieldspersisted_dom_spec_compute",
-      "community": 202,
+      "community": 174,
       "norm_label": "compute"
     },
     {
@@ -24232,10 +24322,19 @@
       "norm_label": "bidirectional converter"
     },
     {
-      "label": "Diff checker shell",
+      "label": "Formatter shell",
       "file_type": "document",
       "source_file": "CONTEXT.md",
       "source_location": "L242",
+      "id": "csr_dev_tools_context_formatter_shell",
+      "community": 94,
+      "norm_label": "formatter shell"
+    },
+    {
+      "label": "Diff checker shell",
+      "file_type": "document",
+      "source_file": "CONTEXT.md",
+      "source_location": "L280",
       "id": "csr_dev_tools_context_diff_checker_shell",
       "community": 94,
       "norm_label": "diff checker shell"
@@ -24244,7 +24343,7 @@
       "label": "Image tool shell",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L270",
+      "source_location": "L308",
       "id": "csr_dev_tools_context_image_tool_shell",
       "community": 94,
       "norm_label": "image tool shell"
@@ -24253,7 +24352,7 @@
       "label": "Batch asset pipeline",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L297",
+      "source_location": "L335",
       "id": "csr_dev_tools_context_batch_asset_pipeline",
       "community": 94,
       "norm_label": "batch asset pipeline"
@@ -24262,7 +24361,7 @@
       "label": "DiagramEditor",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L350",
+      "source_location": "L388",
       "id": "csr_dev_tools_context_diagrameditor",
       "community": 94,
       "norm_label": "diagrameditor"
@@ -27243,7 +27342,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L1",
       "id": "docs_superpowers_plans_2026_05_13_db_diagram_editor_extraction_md",
-      "community": 172,
+      "community": 43,
       "norm_label": "2026-05-13-db-diagram-editor-extraction.md"
     },
     {
@@ -27252,7 +27351,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L1",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_db_diagram_editor_extraction_implementation_plan",
-      "community": 172,
+      "community": 43,
       "norm_label": "db diagram editor extraction \u2014 implementation plan"
     },
     {
@@ -27261,7 +27360,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L13",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_spec_reference",
-      "community": 172,
+      "community": 43,
       "norm_label": "spec reference"
     },
     {
@@ -27270,7 +27369,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L17",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_naming_adjustment_from_the_spec",
-      "community": 172,
+      "community": 43,
       "norm_label": "naming adjustment from the spec"
     },
     {
@@ -27279,7 +27378,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L21",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_file_map",
-      "community": 172,
+      "community": 43,
       "norm_label": "file map"
     },
     {
@@ -27288,7 +27387,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L64",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_phase_1_build_the_editor_no_ui_change",
-      "community": 83,
+      "community": 305,
       "norm_label": "phase 1 \u2014 build the editor (no ui change)"
     },
     {
@@ -27405,7 +27504,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L358",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_task_4_projections_document_reactflow_nodes_edges",
-      "community": 83,
+      "community": 371,
       "norm_label": "task 4: projections \u2014 document \u2192 reactflow nodes/edges"
     },
     {
@@ -27414,7 +27513,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L368",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_10",
-      "community": 83,
+      "community": 371,
       "norm_label": "code:ts (// src/diagram/projections.spec.ts)"
     },
     {
@@ -27423,7 +27522,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L444",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_11",
-      "community": 83,
+      "community": 371,
       "norm_label": "code:ts (// src/diagram/projections.ts)"
     },
     {
@@ -27432,7 +27531,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L496",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_12",
-      "community": 83,
+      "community": 371,
       "norm_label": "code:bash (git add src/diagram/projections.ts src/diagram/projections.s)"
     },
     {
@@ -27864,7 +27963,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L1811",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_task_12_verify_the_editor_module_compiles_and_full_test_suite_passes",
-      "community": 83,
+      "community": 305,
       "norm_label": "task 12: verify the editor module compiles and full test suite passes"
     },
     {
@@ -27873,7 +27972,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L1830",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_53",
-      "community": 83,
+      "community": 305,
       "norm_label": "code:bash (git add -a)"
     },
     {
@@ -27972,7 +28071,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2059",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_task_16_migrate_side_panels_to_usediagram",
-      "community": 174,
+      "community": 43,
       "norm_label": "task 16: migrate side panels to `usediagram()`"
     },
     {
@@ -27981,7 +28080,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2079",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_60",
-      "community": 174,
+      "community": 43,
       "norm_label": "code:tsx (// inside dbmleditorpanel.tsx)"
     },
     {
@@ -27990,7 +28089,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2107",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_61",
-      "community": 174,
+      "community": 43,
       "norm_label": "code:bash (git add src/components/feature/data/db-diagram/dbmleditorpan)"
     },
     {
@@ -27999,7 +28098,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2118",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_62",
-      "community": 174,
+      "community": 43,
       "norm_label": "code:bash (git add src/components/feature/data/db-diagram/importsqlpane)"
     },
     {
@@ -28008,7 +28107,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2127",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_63",
-      "community": 174,
+      "community": 43,
       "norm_label": "code:bash (git add src/components/feature/data/db-diagram/importjsonsch)"
     },
     {
@@ -28017,7 +28116,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2136",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_64",
-      "community": 174,
+      "community": 43,
       "norm_label": "code:bash (git add src/components/feature/data/db-diagram/exportsqlpane)"
     },
     {
@@ -28026,7 +28125,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2151",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_65",
-      "community": 174,
+      "community": 43,
       "norm_label": "code:ts (// in src/diagram/editor.ts)"
     },
     {
@@ -28035,7 +28134,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2168",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_66",
-      "community": 174,
+      "community": 43,
       "norm_label": "code:bash (git add src/diagram/editor.ts src/components/feature/data/db)"
     },
     {
@@ -28044,7 +28143,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2179",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_67",
-      "community": 174,
+      "community": 43,
       "norm_label": "code:bash (git add src/components/feature/data/db-diagram/diagramtoolba)"
     },
     {
@@ -28143,7 +28242,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2356",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_phase_3_tidy",
-      "community": 172,
+      "community": 43,
       "norm_label": "phase 3 \u2014 tidy"
     },
     {
@@ -28152,7 +28251,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2358",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_task_20_remove_dead_types_from_src_types_utils_db_diagram_ts",
-      "community": 172,
+      "community": 43,
       "norm_label": "task 20: remove dead types from `src/types/utils/db-diagram.ts`"
     },
     {
@@ -28161,7 +28260,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2380",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_75",
-      "community": 172,
+      "community": 43,
       "norm_label": "code:bash (git add src/types/utils/db-diagram.ts)"
     },
     {
@@ -28170,7 +28269,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2387",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_task_21_regenerate_the_knowledge_graph",
-      "community": 172,
+      "community": 43,
       "norm_label": "task 21: regenerate the knowledge graph"
     },
     {
@@ -28179,7 +28278,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2396",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_76",
-      "community": 172,
+      "community": 43,
       "norm_label": "code:bash (git add graphify-out/)"
     },
     {
@@ -28188,7 +28287,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2403",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_task_22_final_verification",
-      "community": 172,
+      "community": 43,
       "norm_label": "task 22: final verification"
     },
     {
@@ -28197,7 +28296,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2407",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_codeblock_77",
-      "community": 172,
+      "community": 43,
       "norm_label": "code:bash (pnpm tsc --noemit)"
     },
     {
@@ -28206,7 +28305,7 @@
       "source_file": "docs/superpowers/plans/2026-05-13-db-diagram-editor-extraction.md",
       "source_location": "L2432",
       "id": "plans_2026_05_13_db_diagram_editor_extraction_self_review",
-      "community": 172,
+      "community": 43,
       "norm_label": "self-review"
     },
     {
@@ -34091,7 +34190,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolComputationPersisted.ts",
       "source_location": "L18",
-      "community": 15,
+      "community": 107,
       "norm_label": "usetoolcomputationpersisted()",
       "id": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
     },
@@ -34955,7 +35054,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/image/BackgroundRemover/index.tsx",
       "source_location": "L36",
-      "community": 114,
+      "community": 0,
       "norm_label": "reducer()",
       "id": "backgroundremover_index_reducer"
     },
@@ -34982,7 +35081,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/data/db-diagram/DiagramContext.tsx",
       "source_location": "L5",
-      "community": 52,
+      "community": 1,
       "norm_label": "contextvalue",
       "id": "db_diagram_diagramcontext_contextvalue"
     },
@@ -52203,6 +52302,26 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/types/components/common/formatterShell.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "src_types_components_common_formattershell_ts",
+      "target": "common_formattershell_formattershellcontrolsctx",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/types/components/common/formatterShell.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "src_types_components_common_formattershell_ts",
+      "target": "common_formattershell_formattershellprops",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/types/components/common/sidebar.ts",
       "source_location": "L3",
       "weight": 1.0,
@@ -52226,9 +52345,9 @@
       "source_file": "src/types/components/common/diffCheckerShell.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_components_common_diffcheckershell_ts",
-      "target": "common_diffcheckershell_diffinput",
-      "confidence_score": 1.0
+      "target": "common_diffcheckershell_diffinput"
     },
     {
       "relation": "contains",
@@ -52236,9 +52355,9 @@
       "source_file": "src/types/components/common/diffCheckerShell.ts",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_components_common_diffcheckershell_ts",
-      "target": "common_diffcheckershell_diffoutput",
-      "confidence_score": 1.0
+      "target": "common_diffcheckershell_diffoutput"
     },
     {
       "relation": "contains",
@@ -52246,9 +52365,9 @@
       "source_file": "src/types/components/common/diffCheckerShell.ts",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_components_common_diffcheckershell_ts",
-      "target": "common_diffcheckershell_diffcheckershellprops",
-      "confidence_score": 1.0
+      "target": "common_diffcheckershell_diffcheckershellprops"
     },
     {
       "relation": "contains",
@@ -70580,9 +70699,9 @@
       "source_file": "src/components/common/diff/DiffCheckerShell.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_common_diff_diffcheckershell_tsx",
-      "target": "diff_diffcheckershell_renderspans",
-      "confidence_score": 1.0
+      "target": "diff_diffcheckershell_renderspans"
     },
     {
       "relation": "contains",
@@ -70590,9 +70709,9 @@
       "source_file": "src/components/common/diff/DiffCheckerShell.tsx",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_common_diff_diffcheckershell_tsx",
-      "target": "diff_diffcheckershell_diffcell",
-      "confidence_score": 1.0
+      "target": "diff_diffcheckershell_diffcell"
     },
     {
       "relation": "contains",
@@ -70600,9 +70719,9 @@
       "source_file": "src/components/common/diff/DiffCheckerShell.tsx",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_common_diff_diffcheckershell_tsx",
-      "target": "diff_diffcheckershell_diffcheckershell",
-      "confidence_score": 1.0
+      "target": "diff_diffcheckershell_diffcheckershell"
     },
     {
       "relation": "calls",
@@ -70611,9 +70730,9 @@
       "source_file": "src/components/common/diff/DiffCheckerShell.tsx",
       "source_location": "L45",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "diff_diffcheckershell_diffcell",
-      "target": "diff_diffcheckershell_renderspans",
-      "confidence_score": 1.0
+      "target": "diff_diffcheckershell_renderspans"
     },
     {
       "relation": "calls",
@@ -70988,6 +71107,38 @@
       "confidence_score": 1.0,
       "source": "src_components_common_dialog_tooldialogshell_tsx",
       "target": "dialog_tooldialogshell_tooldialogshell"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/common/formatter/FormatterShell.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "src_components_common_formatter_formattershell_tsx",
+      "target": "formatter_formattershell_formattershell",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/common/formatter/FormatterShell.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "formatter_formattershell_formattershell",
+      "target": "persist_usetoolfieldspersisted_usetoolfieldspersisted"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/common/formatter/FormatterShell.tsx",
+      "source_location": "L51",
+      "weight": 1.0,
+      "source": "formatter_formattershell_formattershell",
+      "target": "image_tool_imagetoolshell_dom_spec_rendercontrols"
     },
     {
       "relation": "imports_from",
@@ -73289,6 +73440,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/feature/code/JavaScriptMinifier.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "src_components_feature_code_javascriptminifier_tsx",
+      "target": "code_javascriptminifier_initial",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/feature/code/JavaScriptMinifier.tsx",
       "source_location": "L25",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -73734,6 +73895,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/feature/code/CssFormatter.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "src_components_feature_code_cssformatter_tsx",
+      "target": "code_cssformatter_initial",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/feature/code/CssFormatter.tsx",
       "source_location": "L12",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -74093,6 +74264,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/components/feature/code/SqlFormatter.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "src_components_feature_code_sqlformatter_tsx",
+      "target": "code_sqlformatter_initial",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/feature/code/SqlFormatter.tsx",
       "source_location": "L12",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -74131,6 +74312,16 @@
       "weight": 1.0,
       "source": "code_sqlformatter_sqlformatter",
       "target": "hooks_usedebouncecallback_usedebouncecallback"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/components/feature/code/HtmlFormatter.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "src_components_feature_code_htmlformatter_tsx",
+      "target": "code_htmlformatter_initial",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -76617,9 +76808,9 @@
       "source_file": "src/components/feature/text/TextDiffChecker.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_feature_text_textdiffchecker_tsx",
-      "target": "text_textdiffchecker_initial_result",
-      "confidence_score": 1.0
+      "target": "text_textdiffchecker_initial_result"
     },
     {
       "relation": "contains",
@@ -77360,9 +77551,9 @@
       "source_file": "src/components/feature/data/JsonDiffChecker.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_feature_data_jsondiffchecker_tsx",
-      "target": "data_jsondiffchecker_initial_result",
-      "confidence_score": 1.0
+      "target": "data_jsondiffchecker_initial_result"
     },
     {
       "relation": "contains",
@@ -80972,8 +81163,18 @@
       "source_location": "L242",
       "weight": 1.0,
       "source": "csr_dev_tools_context_csr_dev_tools_domain_language",
-      "target": "csr_dev_tools_context_diff_checker_shell",
+      "target": "csr_dev_tools_context_formatter_shell",
       "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CONTEXT.md",
+      "source_location": "L242",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "csr_dev_tools_context_csr_dev_tools_domain_language",
+      "target": "csr_dev_tools_context_diff_checker_shell"
     },
     {
       "relation": "contains",
@@ -99966,5 +100167,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "1a2cc55a367289d9ba765630b010eb0349df12ed"
+  "built_at_commit": "7f9528c2c9324b6c0391ef9d72c00bb4fe0096ee"
 }
