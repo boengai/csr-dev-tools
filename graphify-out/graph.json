@@ -3240,7 +3240,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L54",
       "id": "src_app_app",
-      "community": 151,
+      "community": 172,
       "norm_label": "app()"
     },
     {
@@ -8208,7 +8208,7 @@
       "source_file": "src/diagram/projections.ts",
       "source_location": "L1",
       "id": "src_diagram_projections_ts",
-      "community": 107,
+      "community": 370,
       "norm_label": "projections.ts"
     },
     {
@@ -8217,7 +8217,7 @@
       "source_file": "src/diagram/projections.ts",
       "source_location": "L3",
       "id": "diagram_projections_documenttoflow",
-      "community": 107,
+      "community": 370,
       "norm_label": "documenttoflow()"
     },
     {
@@ -8226,7 +8226,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L1",
       "id": "src_diagram_editor_ts",
-      "community": 41,
+      "community": 107,
       "norm_label": "editor.ts"
     },
     {
@@ -8244,7 +8244,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L28",
       "id": "diagram_editor_indexlistener",
-      "community": 41,
+      "community": 107,
       "norm_label": "indexlistener"
     },
     {
@@ -8253,7 +8253,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L30",
       "id": "diagram_editor_diagrameditoroptions",
-      "community": 41,
+      "community": 107,
       "norm_label": "diagrameditoroptions"
     },
     {
@@ -8793,7 +8793,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_projections_spec_ts",
-      "community": 107,
+      "community": 370,
       "norm_label": "projections.spec.ts"
     },
     {
@@ -8802,7 +8802,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L8",
       "id": "diagram_projections_spec_docwithonetable",
-      "community": 107,
+      "community": 370,
       "norm_label": "docwithonetable()"
     },
     {
@@ -8811,7 +8811,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L30",
       "id": "diagram_projections_spec_nodes_edges",
-      "community": 107,
+      "community": 370,
       "norm_label": "{ nodes, edges }"
     },
     {
@@ -8820,7 +8820,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L42",
       "id": "diagram_projections_spec_doc",
-      "community": 107,
+      "community": 370,
       "norm_label": "doc"
     },
     {
@@ -8829,7 +8829,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L45",
       "id": "diagram_projections_spec_nodes",
-      "community": 107,
+      "community": 370,
       "norm_label": "{ nodes }"
     },
     {
@@ -8838,7 +8838,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L74",
       "id": "diagram_projections_spec_edges",
-      "community": 107,
+      "community": 370,
       "norm_label": "{ edges }"
     },
     {
@@ -9144,7 +9144,7 @@
       "source_file": "src/diagram/operations/lifecycle.ts",
       "source_location": "L5",
       "id": "operations_lifecycle_newdiagram",
-      "community": 173,
+      "community": 107,
       "norm_label": "newdiagram()"
     },
     {
@@ -11106,7 +11106,7 @@
       "source_file": "src/utils/db-diagram-dbml.ts",
       "source_location": "L31",
       "id": "utils_db_diagram_dbml_formatconstraints",
-      "community": 729,
+      "community": 63,
       "norm_label": "formatconstraints()"
     },
     {
@@ -11115,7 +11115,7 @@
       "source_file": "src/utils/db-diagram-dbml.ts",
       "source_location": "L40",
       "id": "utils_db_diagram_dbml_generatedbml",
-      "community": 729,
+      "community": 63,
       "norm_label": "generatedbml()"
     },
     {
@@ -20565,7 +20565,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L64",
       "id": "code_mermaidrenderer_mermaidrenderer",
-      "community": 749,
+      "community": 239,
       "norm_label": "mermaidrenderer()"
     },
     {
@@ -20592,7 +20592,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L16",
       "id": "code_protobuftojson_kindbadge",
-      "community": 239,
+      "community": 61,
       "norm_label": "kindbadge()"
     },
     {
@@ -20628,7 +20628,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L134",
       "id": "code_protobuftojson_protobuftojson",
-      "community": 749,
+      "community": 239,
       "norm_label": "protobuftojson()"
     },
     {
@@ -20799,7 +20799,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L232",
       "id": "code_graphqlschemaviewer_graphqlschemaviewer",
-      "community": 749,
+      "community": 239,
       "norm_label": "graphqlschemaviewer()"
     },
     {
@@ -22473,7 +22473,7 @@
       "source_file": "src/components/feature/data/JsonFormatter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_jsonformatter_tsx",
-      "community": 749,
+      "community": 239,
       "norm_label": "jsonformatter.tsx"
     },
     {
@@ -22482,7 +22482,7 @@
       "source_file": "src/components/feature/data/JsonFormatter.tsx",
       "source_location": "L10",
       "id": "data_jsonformatter_jsonformatter",
-      "community": 749,
+      "community": 239,
       "norm_label": "jsonformatter()"
     },
     {
@@ -23058,7 +23058,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L20",
       "id": "db_diagram_tablenode_constrainttoggle",
-      "community": 61,
+      "community": 1,
       "norm_label": "constrainttoggle()"
     },
     {
@@ -23782,6 +23782,78 @@
       "norm_label": "usebatchassetpipeline()"
     },
     {
+      "label": "useKeyboardShortcut.dom.spec.tsx",
+      "file_type": "code",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L1",
+      "id": "src_hooks_usekeyboardshortcut_dom_spec_tsx",
+      "community": 172,
+      "norm_label": "usekeyboardshortcut.dom.spec.tsx"
+    },
+    {
+      "label": "dispatchKey()",
+      "file_type": "code",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L9",
+      "id": "hooks_usekeyboardshortcut_dom_spec_dispatchkey",
+      "community": 172,
+      "norm_label": "dispatchkey()"
+    },
+    {
+      "label": "handler",
+      "file_type": "code",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L17",
+      "id": "hooks_usekeyboardshortcut_dom_spec_handler",
+      "community": 172,
+      "norm_label": "handler"
+    },
+    {
+      "label": "event",
+      "file_type": "code",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L38",
+      "id": "hooks_usekeyboardshortcut_dom_spec_event",
+      "community": 172,
+      "norm_label": "event"
+    },
+    {
+      "label": "{ rerender }",
+      "file_type": "code",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L53",
+      "id": "hooks_usekeyboardshortcut_dom_spec_rerender",
+      "community": 172,
+      "norm_label": "{ rerender }"
+    },
+    {
+      "label": "{ unmount }",
+      "file_type": "code",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L73",
+      "id": "hooks_usekeyboardshortcut_dom_spec_unmount",
+      "community": 172,
+      "norm_label": "{ unmount }"
+    },
+    {
+      "label": "v1",
+      "file_type": "code",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L81",
+      "id": "hooks_usekeyboardshortcut_dom_spec_v1",
+      "community": 172,
+      "norm_label": "v1"
+    },
+    {
+      "label": "v2",
+      "file_type": "code",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L82",
+      "id": "hooks_usekeyboardshortcut_dom_spec_v2",
+      "community": 172,
+      "norm_label": "v2"
+    },
+    {
       "label": "useTimeoutRef.dom.spec.tsx",
       "file_type": "code",
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
@@ -23913,7 +23985,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_usestalesafeasync_dom_spec_tsx",
-      "community": 172,
+      "community": 275,
       "norm_label": "usestalesafeasync.dom.spec.tsx"
     },
     {
@@ -23922,7 +23994,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L11",
       "id": "hooks_usestalesafeasync_dom_spec_result",
-      "community": 172,
+      "community": 275,
       "norm_label": "{ result }"
     },
     {
@@ -23931,7 +24003,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L14",
       "id": "hooks_usestalesafeasync_dom_spec_a",
-      "community": 172,
+      "community": 275,
       "norm_label": "a"
     },
     {
@@ -23940,7 +24012,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L17",
       "id": "hooks_usestalesafeasync_dom_spec_b",
-      "community": 172,
+      "community": 275,
       "norm_label": "b"
     },
     {
@@ -23949,7 +24021,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L21",
       "id": "hooks_usestalesafeasync_dom_spec_c",
-      "community": 172,
+      "community": 275,
       "norm_label": "c"
     },
     {
@@ -23958,7 +24030,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L29",
       "id": "hooks_usestalesafeasync_dom_spec_session",
-      "community": 172,
+      "community": 275,
       "norm_label": "session"
     },
     {
@@ -23967,7 +24039,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L30",
       "id": "hooks_usestalesafeasync_dom_spec_fn",
-      "community": 172,
+      "community": 275,
       "norm_label": "fn"
     },
     {
@@ -23976,7 +24048,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L39",
       "id": "hooks_usestalesafeasync_dom_spec_stale",
-      "community": 172,
+      "community": 275,
       "norm_label": "stale"
     },
     {
@@ -23985,7 +24057,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L48",
       "id": "hooks_usestalesafeasync_dom_spec_result_rerender",
-      "community": 172,
+      "community": 275,
       "norm_label": "{ result, rerender }"
     },
     {
@@ -24048,7 +24120,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.ts",
       "source_location": "L1",
       "id": "src_hooks_usestalesafeasync_ts",
-      "community": 172,
+      "community": 275,
       "norm_label": "usestalesafeasync.ts"
     },
     {
@@ -24057,7 +24129,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.ts",
       "source_location": "L3",
       "id": "hooks_usestalesafeasync_stalesafesession",
-      "community": 172,
+      "community": 275,
       "norm_label": "stalesafesession"
     },
     {
@@ -24156,16 +24228,16 @@
       "source_file": "src/hooks/useKeyboardShortcuts.ts",
       "source_location": "L1",
       "id": "src_hooks_usekeyboardshortcuts_ts",
-      "community": 746,
+      "community": 172,
       "norm_label": "usekeyboardshortcuts.ts"
     },
     {
       "label": "useKeyboardShortcuts()",
       "file_type": "code",
       "source_file": "src/hooks/useKeyboardShortcuts.ts",
-      "source_location": "L5",
+      "source_location": "L4",
       "id": "hooks_usekeyboardshortcuts_usekeyboardshortcuts",
-      "community": 151,
+      "community": 172,
       "norm_label": "usekeyboardshortcuts()"
     },
     {
@@ -24239,6 +24311,24 @@
       "id": "hooks_usecopytoclipboard_dom_spec_result",
       "community": 746,
       "norm_label": "{ result }"
+    },
+    {
+      "label": "useKeyboardShortcut.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/useKeyboardShortcut.ts",
+      "source_location": "L1",
+      "id": "src_hooks_usekeyboardshortcut_ts",
+      "community": 172,
+      "norm_label": "usekeyboardshortcut.ts"
+    },
+    {
+      "label": "useKeyboardShortcut()",
+      "file_type": "code",
+      "source_file": "src/hooks/useKeyboardShortcut.ts",
+      "source_location": "L13",
+      "id": "hooks_usekeyboardshortcut_usekeyboardshortcut",
+      "community": 172,
+      "norm_label": "usekeyboardshortcut()"
     },
     {
       "label": "useMountOnce.dom.spec.tsx",
@@ -24318,7 +24408,7 @@
       "source_file": "src/hooks/useMountOnce.ts",
       "source_location": "L20",
       "id": "hooks_usemountonce_usemountonce",
-      "community": 749,
+      "community": 239,
       "norm_label": "usemountonce()"
     },
     {
@@ -24471,7 +24561,7 @@
       "source_file": "src/hooks/useAsyncAction.ts",
       "source_location": "L1",
       "id": "src_hooks_useasyncaction_ts",
-      "community": 172,
+      "community": 275,
       "norm_label": "useasyncaction.ts"
     },
     {
@@ -24606,7 +24696,7 @@
       "source_file": "src/hooks/state/useCommandPaletteStore.ts",
       "source_location": "L7",
       "id": "state_usecommandpalettestore_usecommandpalettestore",
-      "community": 151,
+      "community": 172,
       "norm_label": "usecommandpalettestore"
     },
     {
@@ -24678,7 +24768,7 @@
       "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
       "source_location": "L19",
       "id": "persist_usetoolcomputationpersisted_usetoolcomputationpersisted",
-      "community": 749,
+      "community": 239,
       "norm_label": "usetoolcomputationpersisted()"
     },
     {
@@ -24687,7 +24777,7 @@
       "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_persist_usetoolcomputationpersisted_dom_spec_tsx",
-      "community": 749,
+      "community": 239,
       "norm_label": "usetoolcomputationpersisted.dom.spec.tsx"
     },
     {
@@ -24696,7 +24786,7 @@
       "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L22",
       "id": "persist_usetoolcomputationpersisted_dom_spec_result",
-      "community": 749,
+      "community": 239,
       "norm_label": "{ result }"
     },
     {
@@ -24705,7 +24795,7 @@
       "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L109",
       "id": "persist_usetoolcomputationpersisted_dom_spec_compute",
-      "community": 749,
+      "community": 239,
       "norm_label": "compute"
     },
     {
@@ -35027,7 +35117,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolComputationPersisted.ts",
       "source_location": "L18",
-      "community": 749,
+      "community": 239,
       "norm_label": "usetoolcomputationpersisted()",
       "id": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
     },
@@ -35036,7 +35126,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L1",
-      "community": 749,
+      "community": 239,
       "norm_label": "usetoolcomputationpersisted.dom.spec.tsx",
       "id": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx"
     },
@@ -35045,7 +35135,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L22",
-      "community": 749,
+      "community": 239,
       "norm_label": "{ result }",
       "id": "hooks_usetoolcomputationpersisted_dom_spec_result"
     },
@@ -35054,7 +35144,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L109",
-      "community": 749,
+      "community": 239,
       "norm_label": "compute",
       "id": "hooks_usetoolcomputationpersisted_dom_spec_compute"
     },
@@ -35081,7 +35171,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L1",
-      "community": 369,
+      "community": 749,
       "norm_label": "usetoolfieldspersisted.dom.spec.tsx",
       "id": "src_hooks_usetoolfieldspersisted_dom_spec_tsx"
     },
@@ -35090,7 +35180,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L9",
-      "community": 369,
+      "community": 749,
       "norm_label": "bag",
       "id": "hooks_usetoolfieldspersisted_dom_spec_bag"
     },
@@ -35099,7 +35189,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L11",
-      "community": 369,
+      "community": 749,
       "norm_label": "initial",
       "id": "hooks_usetoolfieldspersisted_dom_spec_initial"
     },
@@ -35108,7 +35198,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L25",
-      "community": 369,
+      "community": 749,
       "norm_label": "{ result }",
       "id": "hooks_usetoolfieldspersisted_dom_spec_result"
     },
@@ -35117,7 +35207,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L118",
-      "community": 369,
+      "community": 749,
       "norm_label": "compute",
       "id": "hooks_usetoolfieldspersisted_dom_spec_compute"
     },
@@ -70984,6 +71074,17 @@
       "target": "state_usesidebarstore_usesidebarstore"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/components/common/sidebar/Sidebar.tsx",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "sidebar_sidebar_sidebar",
+      "target": "hooks_usekeyboardshortcut_usekeyboardshortcut"
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -81268,12 +81369,104 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_hooks_usekeyboardshortcut_dom_spec_tsx",
+      "target": "src_hooks_usekeyboardshortcut_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_hooks_usekeyboardshortcut_dom_spec_tsx",
+      "target": "hooks_usekeyboardshortcut_usekeyboardshortcut",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "src_hooks_usekeyboardshortcut_dom_spec_tsx",
+      "target": "hooks_usekeyboardshortcut_dom_spec_dispatchkey",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L72",
+      "weight": 1.0,
+      "source": "src_hooks_usekeyboardshortcut_dom_spec_tsx",
+      "target": "hooks_usekeyboardshortcut_dom_spec_handler",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L38",
+      "weight": 1.0,
+      "source": "src_hooks_usekeyboardshortcut_dom_spec_tsx",
+      "target": "hooks_usekeyboardshortcut_dom_spec_event",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L83",
+      "weight": 1.0,
+      "source": "src_hooks_usekeyboardshortcut_dom_spec_tsx",
+      "target": "hooks_usekeyboardshortcut_dom_spec_rerender",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L73",
+      "weight": 1.0,
+      "source": "src_hooks_usekeyboardshortcut_dom_spec_tsx",
+      "target": "hooks_usekeyboardshortcut_dom_spec_unmount",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L81",
+      "weight": 1.0,
+      "source": "src_hooks_usekeyboardshortcut_dom_spec_tsx",
+      "target": "hooks_usekeyboardshortcut_dom_spec_v1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcut.dom.spec.tsx",
+      "source_location": "L82",
+      "weight": 1.0,
+      "source": "src_hooks_usekeyboardshortcut_dom_spec_tsx",
+      "target": "hooks_usekeyboardshortcut_dom_spec_v2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetimeoutref_dom_spec_tsx",
-      "target": "src_hooks_usetimeoutref_ts",
-      "confidence_score": 1.0
+      "target": "src_hooks_usetimeoutref_ts"
     },
     {
       "relation": "imports",
@@ -81282,9 +81475,9 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetimeoutref_dom_spec_tsx",
-      "target": "hooks_usetimeoutref_usetimeoutref",
-      "confidence_score": 1.0
+      "target": "hooks_usetimeoutref_usetimeoutref"
     },
     {
       "relation": "contains",
@@ -81292,9 +81485,9 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetimeoutref_dom_spec_tsx",
-      "target": "hooks_usetimeoutref_dom_spec_cb",
-      "confidence_score": 1.0
+      "target": "hooks_usetimeoutref_dom_spec_cb"
     },
     {
       "relation": "contains",
@@ -81302,9 +81495,9 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L73",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetimeoutref_dom_spec_tsx",
-      "target": "hooks_usetimeoutref_dom_spec_result",
-      "confidence_score": 1.0
+      "target": "hooks_usetimeoutref_dom_spec_result"
     },
     {
       "relation": "contains",
@@ -81312,9 +81505,9 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetimeoutref_dom_spec_tsx",
-      "target": "hooks_usetimeoutref_dom_spec_first",
-      "confidence_score": 1.0
+      "target": "hooks_usetimeoutref_dom_spec_first"
     },
     {
       "relation": "contains",
@@ -81322,9 +81515,9 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetimeoutref_dom_spec_tsx",
-      "target": "hooks_usetimeoutref_dom_spec_second",
-      "confidence_score": 1.0
+      "target": "hooks_usetimeoutref_dom_spec_second"
     },
     {
       "relation": "contains",
@@ -81332,9 +81525,9 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L84",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetimeoutref_dom_spec_tsx",
-      "target": "hooks_usetimeoutref_dom_spec_result_unmount",
-      "confidence_score": 1.0
+      "target": "hooks_usetimeoutref_dom_spec_result_unmount"
     },
     {
       "relation": "contains",
@@ -81342,9 +81535,9 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetimeoutref_dom_spec_tsx",
-      "target": "hooks_usetimeoutref_dom_spec_result_rerender",
-      "confidence_score": 1.0
+      "target": "hooks_usetimeoutref_dom_spec_result_rerender"
     },
     {
       "relation": "imports_from",
@@ -81748,6 +81941,28 @@
       "target": "src_hooks_state_index_ts"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcuts.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_hooks_usekeyboardshortcuts_ts",
+      "target": "src_hooks_usekeyboardshortcut_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcuts.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "src_hooks_usekeyboardshortcuts_ts",
+      "target": "hooks_usekeyboardshortcut_usekeyboardshortcut",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/hooks/useKeyboardShortcuts.ts",
@@ -81767,6 +81982,17 @@
       "weight": 1.0,
       "source": "hooks_usekeyboardshortcuts_usekeyboardshortcuts",
       "target": "state_usecommandpalettestore_usecommandpalettestore"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useKeyboardShortcuts.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "hooks_usekeyboardshortcuts_usekeyboardshortcuts",
+      "target": "hooks_usekeyboardshortcut_usekeyboardshortcut"
     },
     {
       "relation": "contains",
@@ -81806,9 +82032,9 @@
       "source_file": "src/hooks/useTimeoutRef.ts",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usetimeoutref_ts",
-      "target": "hooks_usetimeoutref_usetimeoutref",
-      "confidence_score": 1.0
+      "target": "hooks_usetimeoutref_usetimeoutref"
     },
     {
       "relation": "imports_from",
@@ -81840,6 +82066,16 @@
       "confidence_score": 1.0,
       "source": "src_hooks_usecopytoclipboard_dom_spec_tsx",
       "target": "hooks_usecopytoclipboard_dom_spec_result"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcut.ts",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "src_hooks_usekeyboardshortcut_ts",
+      "target": "hooks_usekeyboardshortcut_usekeyboardshortcut",
+      "confidence_score": 1.0
     },
     {
       "relation": "imports_from",
@@ -102166,5 +102402,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "0b075db9da53ec44faba75d3e552c2d67f63dbc4"
+  "built_at_commit": "4a03fcd355ea67076a0a509599ee61009f411f57"
 }
