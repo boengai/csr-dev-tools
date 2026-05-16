@@ -17,6 +17,13 @@ export type UseToolComputationResult<I, R> = {
    * toggles, mode pickers) where a 300ms click→result delay would feel broken.
    */
   setInputImmediate: (input: I) => void
+  /**
+   * Fire compute with the current input (the last value passed to `setInput`
+   * or `setInputImmediate`). No-op if neither has been called yet. Runs through
+   * the same path as `setInputImmediate` — all four invariants apply, including
+   * `isEmpty` short-circuit.
+   */
+  recompute: () => void
 }
 
 export type UseToolFieldsOptions<F, R> = {
@@ -49,6 +56,13 @@ export type UseToolFieldsResult<F, R> = {
   setFields: (partial: Partial<F>) => void
   /** Same as `setFields` but bypasses the debounce wait. */
   setFieldsImmediate: (partial: Partial<F>) => void
+  /**
+   * Fire compute with the current bag. Equivalent to `setFieldsImmediate({})`
+   * (the empty-partial idiom) — kept as the canonical, named alternative.
+   * Runs through the same path: all four invariants apply, including
+   * `isEmpty` short-circuit.
+   */
+  recompute: () => void
 }
 
 export type UseToolFieldsPersistedOptions<F, R> = UseToolFieldsOptions<F, R> & {
@@ -77,4 +91,6 @@ export type UseToolComputationPersistedResult<I, R> = {
   setInput: (input: I) => void
   /** Immediate input change. Updates state, persists, fires compute without debounce. */
   setInputImmediate: (input: I) => void
+  /** Fire compute with the current input. See `UseToolComputationResult.recompute`. */
+  recompute: () => void
 }

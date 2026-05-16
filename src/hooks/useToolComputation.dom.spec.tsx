@@ -358,4 +358,79 @@ describe('useToolComputation', () => {
     expect(compute).toHaveBeenCalledTimes(1)
     expect(result.current.result).toBe('go')
   })
+
+  it('recompute: fires compute with the last input passed to setInput', async () => {
+    const compute = vi.fn(async (s: string) => s.toUpperCase())
+    const { result } = renderHook(() => useToolComputation(compute, { initial: '', debounceMs: 0 }))
+
+    act(() => {
+      result.current.setInput('hello')
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    expect(compute).toHaveBeenCalledTimes(1)
+    expect(result.current.result).toBe('HELLO')
+
+    act(() => {
+      result.current.recompute()
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    expect(compute).toHaveBeenCalledTimes(2)
+    expect(compute).toHaveBeenLastCalledWith('hello')
+  })
+
+  it('recompute: is a no-op before any setInput call', async () => {
+    const compute = vi.fn(async (s: string) => s)
+    const { result } = renderHook(() => useToolComputation(compute, { initial: 'INIT', debounceMs: 0 }))
+
+    act(() => {
+      result.current.recompute()
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    expect(compute).not.toHaveBeenCalled()
+    expect(result.current.result).toBe('INIT')
+    expect(result.current.isPending).toBe(false)
+  })
+
+  it('recompute: respects isEmpty short-circuit', async () => {
+    const compute = vi.fn(async (s: string) => s.toUpperCase())
+    const { result } = renderHook(() =>
+      useToolComputation(compute, {
+        initial: 'INIT',
+        debounceMs: 0,
+        isEmpty: (s: string) => s === '',
+      }),
+    )
+
+    act(() => {
+      result.current.setInput('hello')
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    expect(compute).toHaveBeenCalledTimes(1)
+
+    act(() => {
+      result.current.setInputImmediate('')
+    })
+    expect(result.current.result).toBe('INIT')
+
+    act(() => {
+      result.current.recompute()
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    // recompute uses last input ('') — isEmpty short-circuits, no new compute.
+    expect(compute).toHaveBeenCalledTimes(1)
+    expect(result.current.result).toBe('INIT')
+  })
 })

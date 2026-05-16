@@ -4,7 +4,8 @@ import type { UseToolComputationOptions, UseToolComputationResult } from '@/type
 
 /**
  * Tool computation pipeline: debounced + stale-safe async transformation from
- * a Tool's input to its result. Owns `result`, `error`, and `isPending`.
+ * a Tool's input to its result. Owns `result`, `error`, `isPending`, plus a
+ * `recompute()` primitive that re-fires compute with the last input.
  * See CONTEXT.md → "Tool computation pipeline" for the four invariants.
  */
 export function useToolComputation<I, R>(
@@ -23,6 +24,9 @@ export function useToolComputation<I, R>(
   const timeoutRef = useRef<number | undefined>(undefined)
   const sessionRef = useRef(0)
   const mountedRef = useRef(true)
+  // Holds the last input passed to setInput / setInputImmediate. Boxed so
+  // a legitimately-`undefined` input is distinguishable from "never set."
+  const inputRef = useRef<{ value: I } | null>(null)
 
   useEffect(() => {
     mountedRef.current = true
@@ -77,6 +81,7 @@ export function useToolComputation<I, R>(
 
   const setInput = useCallback(
     (input: I) => {
+      inputRef.current = { value: input }
       enqueue(input, optionsRef.current.debounceMs ?? 300)
     },
     [enqueue],
@@ -84,10 +89,17 @@ export function useToolComputation<I, R>(
 
   const setInputImmediate = useCallback(
     (input: I) => {
+      inputRef.current = { value: input }
       enqueue(input, 0)
     },
     [enqueue],
   )
 
-  return { error, isPending, result, setInput, setInputImmediate }
+  const recompute = useCallback(() => {
+    const current = inputRef.current
+    if (current === null) return
+    enqueue(current.value, 0)
+  }, [enqueue])
+
+  return { error, isPending, recompute, result, setInput, setInputImmediate }
 }
