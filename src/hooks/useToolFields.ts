@@ -10,6 +10,9 @@ import { useToolComputation } from './useToolComputation'
  * updates into a complete bag, and routes that bag through the same four
  * invariants (debounced, stale-safe, empty-bypass, unmount-safe).
  *
+ * Exposes `recompute()` to fire compute with the current bag — the documented
+ * canonical alternative to the `setFieldsImmediate({})` empty-partial idiom.
+ *
  * See CONTEXT.md → "Tool computation pipeline" for the invariants and
  * "Tool field bag" for when to pick this over `useToolComputation`.
  */
@@ -46,6 +49,10 @@ export function useToolFields<F, R>(options: UseToolFieldsOptions<F, R>): UseToo
     [setInputImmediate],
   )
 
+  const recompute = useCallback(() => {
+    setInputImmediate(inputsRef.current)
+  }, [setInputImmediate])
+
   const reset = useCallback(() => {
     const init = initialRef.current
     inputsRef.current = init
@@ -53,5 +60,5 @@ export function useToolFields<F, R>(options: UseToolFieldsOptions<F, R>): UseToo
     setInputImmediate(init)
   }, [setInputImmediate])
 
-  return { error, inputs, isPending, reset, result, setFields, setFieldsImmediate }
+  return { error, inputs, isPending, recompute, reset, result, setFields, setFieldsImmediate }
 }

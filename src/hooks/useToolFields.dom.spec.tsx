@@ -203,4 +203,99 @@ describe('useToolFields', () => {
     expect(onError.mock.calls[0][0]).toBeInstanceOf(Error)
     expect(onError.mock.calls[0][1]).toEqual({ mode: 'a', pattern: 'p', testString: 't' })
   })
+
+  it('recompute: fires compute with the current bag', async () => {
+    const compute = vi.fn(({ pattern, testString }: Input) => `${pattern}|${testString}`)
+    const { result } = renderHook(() =>
+      useToolFields<Input, string>({
+        compute,
+        debounceMs: 0,
+        initial: INITIAL,
+        initialResult: 'EMPTY',
+      }),
+    )
+
+    act(() => {
+      result.current.setFieldsImmediate({ pattern: 'p', testString: 't' })
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    expect(compute).toHaveBeenCalledTimes(1)
+    expect(result.current.result).toBe('p|t')
+
+    act(() => {
+      result.current.recompute()
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    expect(compute).toHaveBeenCalledTimes(2)
+    expect(compute).toHaveBeenLastCalledWith({ mode: 'a', pattern: 'p', testString: 't' })
+    expect(result.current.result).toBe('p|t')
+  })
+
+  it('recompute: respects isEmpty short-circuit', async () => {
+    const compute = vi.fn(({ pattern }: Input) => pattern)
+    const { result } = renderHook(() =>
+      useToolFields<Input, string>({
+        compute,
+        debounceMs: 0,
+        initial: INITIAL,
+        initialResult: 'EMPTY',
+        isEmpty: ({ pattern }) => pattern === '',
+      }),
+    )
+
+    // Bag starts as INITIAL (pattern: ''). recompute should short-circuit.
+    act(() => {
+      result.current.recompute()
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    expect(compute).not.toHaveBeenCalled()
+    expect(result.current.result).toBe('EMPTY')
+    expect(result.current.isPending).toBe(false)
+  })
+
+  it('recompute: is equivalent to setFieldsImmediate({}) — same pipeline path', async () => {
+    const compute = vi.fn(({ pattern, testString }: Input) => `${pattern}|${testString}`)
+    const { result } = renderHook(() =>
+      useToolFields<Input, string>({
+        compute,
+        debounceMs: 0,
+        initial: INITIAL,
+        initialResult: 'EMPTY',
+      }),
+    )
+
+    act(() => {
+      result.current.setFieldsImmediate({ pattern: 'p' })
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    act(() => {
+      result.current.recompute()
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    act(() => {
+      result.current.setFieldsImmediate({})
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    // recompute and setFieldsImmediate({}) each fire one additional compute beyond the initial setFields call.
+    expect(compute).toHaveBeenCalledTimes(3)
+    expect(compute).toHaveBeenNthCalledWith(2, { mode: 'a', pattern: 'p', testString: '' })
+    expect(compute).toHaveBeenNthCalledWith(3, { mode: 'a', pattern: 'p', testString: '' })
+  })
 })
