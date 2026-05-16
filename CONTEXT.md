@@ -34,10 +34,26 @@ Carries four invariants the call site must not have to reassemble:
    stale result while debouncing).
 4. **Unmount-safe** — pending computes do not write state after unmount.
 
-The pipeline owns its result, error, and pending state. The two lower-level
+The pipeline owns its result, error, and pending state, plus a `recompute()`
+primitive that re-fires compute with the last input. The two lower-level
 primitives it composes — `useDebounceCallback` and `useStaleSafeAsync` — remain
 public for cases that need only one half of the pipeline (non-async debounce;
 one-shot async without debounce).
+
+`recompute()` is the named, canonical alternative to the `setInputImmediate(currentInput)` /
+empty-partial `setFieldsImmediate({})` idiom — same path, same four
+invariants, just vocabulary. Callers that need "fire compute now" (mount
+autorun, user-gesture revalidate, post-action refresh) should reach for
+`recompute()`; the empty-partial form keeps working but is not the
+documented spelling.
+
+Use `recompute()` when the pipeline holds the input (the [[Tool field bag]]
+shape, or single-Input Tools that don't read external React state inside
+their compute closure). When a wrapper bridges React-side props or local
+state into the pipeline on every call — as `<ImageToolShell>` does with
+`{ file, controls }` — keep the inline `setInputImmediate({...})` wrapper:
+the pipeline's `inputRef` only sees what was last passed in, so a bare
+`recompute()` there would re-fire with stale React-side values.
 
 ## Tool field bag
 
@@ -51,7 +67,9 @@ bug surface: forget a field in one handler and the pipeline silently computes
 on stale data.
 
 `useToolFields` collapses both. The hook owns a record of fields, exposes
-`inputs` for reads, and accepts `setFields(partial)` for writes. The pipeline's
+`inputs` for reads, and accepts `setFields(partial)` for writes. Also exposes
+`recompute()` — fire compute with the current bag, the named alternative to
+the `setFieldsImmediate({})` empty-partial idiom. The pipeline's
 four invariants (debounced, stale-safe, empty-bypass, unmount-safe) carry over
 unchanged — `useToolFields` is implemented as a thin layer over
 `useToolComputation` so the invariants stay defined in one place.
