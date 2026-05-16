@@ -256,8 +256,7 @@ const DateSection = () => {
 const toolEntry = TOOL_REGISTRY_MAP['unix-timestamp']
 
 export const TimeUnixTimestamp = () => {
-  const { toast } = useToast()
-  const showError = (label: string) => toast({ action: 'add', item: { label, type: 'error' } })
+  const { showError } = useToast()
   return (
     <div className="flex grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}

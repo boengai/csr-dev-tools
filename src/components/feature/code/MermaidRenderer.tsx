@@ -65,7 +65,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [exportingPng, setExportingPng] = useState(false)
   const [referenceOpen, setReferenceOpen] = useState(false)
-  const { toast } = useToast()
+  const { showError, showSuccess } = useToast()
 
   const {
     input: code,
@@ -113,9 +113,9 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const handleExportSvg = () => {
     try {
       downloadMermaidSvg(svg)
-      toast({ action: 'add', item: { label: 'Downloaded mermaid-diagram.svg', type: 'success' } })
+      showSuccess('Downloaded mermaid-diagram.svg')
     } catch {
-      toast({ action: 'add', item: { label: 'Failed to export SVG', type: 'error' } })
+      showError('Failed to export SVG')
     }
   }
 
@@ -124,9 +124,9 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     try {
       const dataUrl = await svgToPng(svg)
       downloadPng(dataUrl)
-      toast({ action: 'add', item: { label: 'Downloaded mermaid-diagram.png', type: 'success' } })
+      showSuccess('Downloaded mermaid-diagram.png')
     } catch {
-      toast({ action: 'add', item: { label: 'Failed to export PNG', type: 'error' } })
+      showError('Failed to export PNG')
     } finally {
       setExportingPng(false)
     }

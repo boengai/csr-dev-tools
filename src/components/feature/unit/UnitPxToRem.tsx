@@ -12,9 +12,7 @@ export const UnitPxToRem = () => {
   const [remValue, setRemValue] = useState('')
   const [baseValue, setBaseValue] = useState('16')
   const [lastEdited, setLastEdited] = useState<'px' | 'rem'>('px')
-  const { toast } = useToast()
-
-  const showError = (label: string) => toast({ action: 'add', item: { label, type: 'error' } })
+  const { showError } = useToast()
 
   const dbConvertPxToRem = useDebounceCallback((px: string, base: string) => {
     if (px.trim() === '') {

@@ -39,7 +39,7 @@ export function BidirectionalConverter<M extends string>({
     modes[0].key,
   )
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const initialBag = useMemo(
     () => ({ mode: persistedMode, source: readSource(persistedMode, sourceKeyPrefix) }),
@@ -66,7 +66,7 @@ export function BidirectionalConverter<M extends string>({
         return
       }
       const label = err instanceof Error ? err.message : 'Conversion failed — please check your input'
-      toast({ action: 'add', item: { label, type: 'error' } })
+      showError(label)
     },
   })
 

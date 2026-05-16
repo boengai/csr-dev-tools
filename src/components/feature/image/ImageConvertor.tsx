@@ -65,7 +65,7 @@ export const ImageConvertor = () => {
   const downloadTargetRef = useRef<DownloadTarget | null>(null)
 
   // hooks
-  const { toast } = useToast()
+  const { showError, showSuccess } = useToast()
 
   // state
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -107,10 +107,7 @@ export const ImageConvertor = () => {
   const handleInputChange = (values: Array<File>) => {
     const invalidFiles = values.filter((f) => !isValidImageFormat(f.type))
     if (invalidFiles.length > 0) {
-      toast({
-        action: 'add',
-        item: { label: 'Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)', type: 'error' },
-      })
+      showError('Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)')
       return
     }
     if (values.length > 0) {
@@ -180,15 +177,12 @@ export const ImageConvertor = () => {
         downloadBlob(blob, fileName)
       }
 
-      toast({ action: 'add', item: { label: `Downloaded ${fileName}`, type: 'success' } })
+      showSuccess(`Downloaded ${fileName}`)
 
       // go to download tab
       dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.DOWNLOAD })
     } catch {
-      toast({
-        action: 'add',
-        item: { label: 'Image conversion failed — try a different format or smaller file', type: 'error' },
-      })
+      showError('Image conversion failed — try a different format or smaller file')
       dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.SELECT_FORMAT })
     }
   }
@@ -203,7 +197,7 @@ export const ImageConvertor = () => {
       blob = await parseDataUrlToBlob(dt.dataUrl)
     }
     downloadBlob(blob, dt.filename)
-    toast({ action: 'add', item: { label: `Downloaded ${dt.filename}`, type: 'success' } })
+    showSuccess(`Downloaded ${dt.filename}`)
   }
 
   const isLossy = LOSSY_FORMATS.has(target.format)

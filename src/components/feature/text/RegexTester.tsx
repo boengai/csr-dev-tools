@@ -72,7 +72,7 @@ const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
 )
 
 export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const {
     inputs,
@@ -92,7 +92,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
     isEmpty: ({ pattern: pat, testString: text }) => pat.trim() === '' || text.trim() === '',
     onError: (err) => {
       const message = err instanceof Error ? err.message : 'Invalid regex'
-      toast({ action: 'add', item: { label: message, type: 'error' } })
+      showError(message)
     },
   })
 

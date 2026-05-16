@@ -11,14 +11,14 @@ const toolEntry = TOOL_REGISTRY_MAP['image-to-base64']
 
 export const ImageToBase64 = ({ onAfterDialogClose }: ToolComponentProps) => {
   const [result, setResult] = useState<ImageBase64Result | null>(null)
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const handleUpload = async (files: Array<File>, openDialog: () => void) => {
     const file = files[0]
     if (!file) return
 
     if (!file.type.startsWith('image/')) {
-      toast({ action: 'add', item: { label: 'Please select an image file', type: 'error' } })
+      showError('Please select an image file')
       return
     }
 
@@ -27,7 +27,7 @@ export const ImageToBase64 = ({ onAfterDialogClose }: ToolComponentProps) => {
       setResult(data)
       openDialog()
     } catch {
-      toast({ action: 'add', item: { label: 'Failed to convert image', type: 'error' } })
+      showError('Failed to convert image')
     }
   }
 

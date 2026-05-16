@@ -2,8 +2,10 @@ import { create, type StoreApi, type UseBoundStore } from 'zustand'
 
 import type { UseToast } from '@/types'
 
-export const useToast: UseBoundStore<StoreApi<UseToast>> = create<UseToast>()((set) => ({
+export const useToast: UseBoundStore<StoreApi<UseToast>> = create<UseToast>()((set, get) => ({
   items: [],
+  showError: (label) => get().toast({ action: 'add', item: { label, type: 'error' } }),
+  showSuccess: (label) => get().toast({ action: 'add', item: { label, type: 'success' } }),
   toast: (payload) => {
     switch (payload.action) {
       case 'add': {

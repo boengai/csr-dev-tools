@@ -60,7 +60,7 @@ const toolEntry = TOOL_REGISTRY_MAP['color-converter']
 
 export const ColorConvertor = () => {
   const [color, setColor] = useState<Record<ColorFormat, string>>(emptyColors)
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const { result: converted, setInput, setInputImmediate } = useToolComputation<
     ConvertInput,
@@ -72,7 +72,7 @@ export const ColorConvertor = () => {
       initial: null,
       isEmpty: ({ value }) => !value.trim(),
       onError: (_err, { format, value }) => {
-        toast({ action: 'add', item: { label: ERROR_MESSAGES[format], type: 'error' } })
+        showError(ERROR_MESSAGES[format])
         setColor({ ...emptyColors, [format]: value })
       },
     },

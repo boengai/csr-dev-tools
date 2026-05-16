@@ -23,7 +23,7 @@ const DECODE_FAILURE_MESSAGE = 'JWT contains invalid header or payload — could
 
 export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const {
     result: decoded,
@@ -50,7 +50,7 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       isEmpty: (val) => val.length === 0,
       onError: (err) => {
         const message = err instanceof Error ? err.message : DECODE_FAILURE_MESSAGE
-        toast({ action: 'add', item: { label: message, type: 'error' } })
+        showError(message)
       },
     },
   )

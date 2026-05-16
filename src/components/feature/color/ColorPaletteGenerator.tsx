@@ -26,7 +26,7 @@ const toPickerHex = (hex: string): string => {
 const toolEntry = TOOL_REGISTRY_MAP['color-palette-generator']
 
 export const ColorPaletteGenerator = () => {
-  const { toast } = useToast()
+  const { showError } = useToast()
   const copyToClipboard = useCopyToClipboard()
 
   const { inputs, result: palette, setFields, setFieldsImmediate } = useToolFields<
@@ -39,7 +39,7 @@ export const ColorPaletteGenerator = () => {
     initialResult: [],
     isEmpty: ({ hex }) => !hex.trim(),
     onError: () => {
-      toast({ action: 'add', item: { label: 'Enter a valid hex color (e.g., #3B82F6)', type: 'error' } })
+      showError('Enter a valid hex color (e.g., #3B82F6)')
     },
   })
   const { hex: hexInput, harmony: harmonyType } = inputs

@@ -8,7 +8,7 @@ import { jsonToTypeScript } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['json-to-typescript']
 
 export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { toast } = useToast()
+  const { showError, showSuccess } = useToast()
 
   const { inputs, result: output, setFields, setFieldsImmediate } = useToolFieldsPersisted<JsonTsInput, string>({
     compute: ({ source: val, rootName: root, useInterface: iface, optionalProps: optional }) =>
@@ -23,15 +23,15 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
 
   const handleGenerate = async () => {
     if (!source.trim()) {
-      toast({ action: 'add', item: { label: 'Please enter JSON input', type: 'error' } })
+      showError('Please enter JSON input')
       return
     }
     try {
       await jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface })
       setFieldsImmediate({})
-      toast({ action: 'add', item: { label: 'TypeScript generated successfully', type: 'success' } })
+      showSuccess('TypeScript generated successfully')
     } catch {
-      toast({ action: 'add', item: { label: 'Invalid JSON input', type: 'error' } })
+      showError('Invalid JSON input')
     }
   }
 

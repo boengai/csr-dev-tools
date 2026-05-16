@@ -53,7 +53,7 @@ export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
   const [aspectPreset, setAspectPreset] = useState<AspectRatioPreset>('free')
   const [crop, setCrop] = useState<Crop | undefined>(undefined)
   const [naturalCrop, setNaturalCrop] = useState<CropRegion | null>(null)
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const captureNaturalCrop = (displayCrop: PixelCrop) => {
     const img = imgRef.current
@@ -85,9 +85,7 @@ export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
         setNaturalCrop(null)
         onAfterDialogClose?.()
       }}
-      onRejectInvalidFile={() =>
-        toast({ action: 'add', item: { label: 'Please select an image file', type: 'error' } })
-      }
+      onRejectInvalidFile={() => showError('Please select an image file')}
       process={process}
       renderControls={({ recompute }) => (
         <div className="flex shrink-0 flex-wrap items-center justify-center gap-2">

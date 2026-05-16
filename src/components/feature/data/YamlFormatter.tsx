@@ -13,7 +13,7 @@ const INDENT_OPTIONS = [
 ]
 
 export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const { inputs, result, reset, setFields, setFieldsImmediate } = useToolFields<YamlInput, string>({
     compute: async ({ source: val, indent: currentIndent, sortKeys: currentSortKeys }) => {
@@ -33,7 +33,7 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     isEmpty: ({ source: val }) => val.trim().length === 0,
     onError: (err) => {
       const label = err instanceof Error ? err.message : 'Unable to format YAML'
-      toast({ action: 'add', item: { label, type: 'error' } })
+      showError(label)
     },
   })
   const { source, indent, sortKeys } = inputs

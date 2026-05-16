@@ -41,9 +41,7 @@ export const AspectRatioCalculator = () => {
   const [ratio, setRatio] = useState('')
   const [lastEdited, setLastEdited] = useState<'width' | 'height'>('width')
   const [locked, setLocked] = useState<'width' | 'height' | null>(null)
-  const { toast } = useToast()
-
-  const showError = (label: string) => toast({ action: 'add', item: { label, type: 'error' } })
+  const { showError } = useToast()
 
   // Non-debounced recalculation for preset buttons (immediate response)
   const recalcFromWidthAndRatio = (w: string, ratioStr: string) => {

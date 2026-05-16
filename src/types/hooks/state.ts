@@ -14,6 +14,8 @@ export type ToggleStoreOptions = {
 
 export type UseToast = {
   items: Array<ToastItemProps>
+  showError: (label: string) => string
+  showSuccess: (label: string) => string
   toast: (
     payload:
       | { action: 'add'; item: Omit<ToastItemProps, 'id'> }

@@ -8,7 +8,7 @@ import { formatJson, getJsonParseError } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['json-formatter']
 
 export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const { input: source, result, setInput, setInputImmediate } = useToolComputationPersisted<string, string>({
     compute: async (val) => {
@@ -28,7 +28,7 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     isEmpty: (val) => val.trim().length === 0,
     onError: (err) => {
       const label = err instanceof Error ? err.message : 'Unable to format JSON'
-      toast({ action: 'add', item: { label, type: 'error' } })
+      showError(label)
     },
     storageKey: 'csr-dev-tools-json-formatter-source',
   })

@@ -64,7 +64,7 @@ const EncodeContent = ({
   selectedMessageType,
   source,
 }: ContentProps) => {
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const { result, setInput: setEncodeInput, setInputImmediate: setEncodeInputImmediate } = useToolComputation<
     EncodeInput,
@@ -83,7 +83,7 @@ const EncodeContent = ({
         !schemaVal.trim() || !msgType || !sourceVal.trim(),
       onError: (err) => {
         const label = err instanceof Error ? err.message : 'Failed to encode protobuf'
-        toast({ action: 'add', item: { label, type: 'error' } })
+        showError(label)
       },
     },
   )
@@ -230,7 +230,7 @@ const DecodeContent = ({
   selectedMessageType,
   source,
 }: ContentProps) => {
-  const { toast } = useToast()
+  const { showError, showSuccess } = useToast()
 
   const { result, setInput: setDecodeInput, setInputImmediate: setDecodeInputImmediate } = useToolComputation<
     DecodeInput,
@@ -249,7 +249,7 @@ const DecodeContent = ({
         !schemaVal.trim() || !msgType || !sourceVal.trim(),
       onError: (err) => {
         const label = err instanceof Error ? err.message : 'Failed to decode protobuf'
-        toast({ action: 'add', item: { label, type: 'error' } })
+        showError(label)
       },
     },
   )
@@ -306,11 +306,11 @@ const DecodeContent = ({
         onFormatChange(detected)
         onSourceChange(value)
         setDecodeInputImmediate({ schema, msgType: selectedMessageType, source: value, format: detected })
-        toast({ action: 'add', item: { label: `Auto-detected format: ${detected}`, type: 'success' } })
+        showSuccess(`Auto-detected format: ${detected}`)
       }
       reader.readAsArrayBuffer(file)
     },
-    [onFormatChange, onSourceChange, schema, selectedMessageType, setDecodeInputImmediate, toast],
+    [onFormatChange, onSourceChange, schema, selectedMessageType, setDecodeInputImmediate, showSuccess],
   )
 
   const handleDownloadJson = useCallback(() => {
@@ -398,7 +398,7 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
     INITIAL_STATE,
   )
   const [selectedMessageType, setSelectedMessageType] = useState('')
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const update = useCallback(
     (patch: Partial<PersistedState>) => {
@@ -425,7 +425,7 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
       initial: { messageTypes: [], toastError: null },
       isEmpty: (value) => !value.trim(),
       onError: () => {
-        toast({ action: 'add', item: { label: 'Failed to parse proto schema', type: 'error' } })
+        showError('Failed to parse proto schema')
       },
     },
   )
@@ -436,7 +436,7 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
   useEffect(() => {
     setSelectedMessageType(schemaResult.messageTypes[0] ?? '')
     if (schemaResult.toastError) {
-      toast({ action: 'add', item: { label: schemaResult.toastError, type: 'error' } })
+      showError(schemaResult.toastError)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- toast is stable; intentionally fire only on result change
   }, [schemaResult])

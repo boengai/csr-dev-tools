@@ -61,7 +61,7 @@ export const DiffCheckerShell = <R extends DiffOutput>({
   storageKey,
   title,
 }: DiffCheckerShellProps<R>) => {
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const { inputs, result, reset, setFields } = useToolFieldsPersisted<DiffInput, R>({
     compute,
@@ -69,9 +69,7 @@ export const DiffCheckerShell = <R extends DiffOutput>({
     initial: { original: '', modified: '' },
     initialResult,
     isEmpty: ({ original, modified }) => original.trim().length === 0 && modified.trim().length === 0,
-    onError: () => {
-      toast({ action: 'add', item: { label: errorLabel, type: 'error' } })
-    },
+    onError: () => showError(errorLabel),
     storageKey,
   })
   const { original, modified } = inputs

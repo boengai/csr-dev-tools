@@ -76,7 +76,7 @@ const INITIAL_RESULT: EvalResult = { evaluation: null, parseError: null, parsedD
 
 export const JsonpathEvaluator = (_props: ToolComponentProps) => {
   const [cheatsheetOpen, setCheatsheetOpen] = useState(false)
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<EvalInput, EvalResult>({
     compute: ({ expression: expr, jsonInput: value }) => {
@@ -89,7 +89,7 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
     initial: { jsonInput: SAMPLE_JSON, expression: DEFAULT_EXPRESSION },
     initialResult: INITIAL_RESULT,
     onError: () => {
-      toast({ action: 'add', item: { label: 'Unexpected error during evaluation', type: 'error' } })
+      showError('Unexpected error during evaluation')
     },
     storageKey: 'csr-dev-tools-jsonpath-evaluator',
   })

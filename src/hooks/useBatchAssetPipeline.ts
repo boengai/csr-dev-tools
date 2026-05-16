@@ -51,7 +51,7 @@ export function useBatchAssetPipeline<TResults>(
   }, [])
 
   const newSession = useStaleSafeAsync()
-  const { toast } = useToast()
+  const { showError, showSuccess } = useToast()
 
   // Revoke the previous source preview when it changes or on unmount.
   useEffect(() => {
@@ -67,7 +67,7 @@ export function useBatchAssetPipeline<TResults>(
       if (!file) return
 
       if (mimePrefix && !file.type.startsWith(mimePrefix)) {
-        toast({ action: 'add', item: { label: rejectToastLabel, type: 'error' } })
+        showError(rejectToastLabel)
         return
       }
 
@@ -76,7 +76,7 @@ export function useBatchAssetPipeline<TResults>(
         image = await loadImageFromFile(file)
       } catch {
         if (!mountedRef.current) return
-        toast({ action: 'add', item: { label: rejectToastLabel, type: 'error' } })
+        showError(rejectToastLabel)
         return
       }
       if (!mountedRef.current) return
@@ -89,7 +89,7 @@ export function useBatchAssetPipeline<TResults>(
       setProgress(null)
       setError(null)
     },
-    [mimePrefix, rejectToastLabel, toast],
+    [mimePrefix, rejectToastLabel, showError],
   )
 
   const regenerate = useCallback(
@@ -116,7 +116,7 @@ export function useBatchAssetPipeline<TResults>(
           setProgress(null)
           setPending(false)
           if (successToastLabel) {
-            toast({ action: 'add', item: { label: successToastLabel, type: 'success' } })
+            showSuccess(successToastLabel)
           }
         })
       } catch (err) {
@@ -125,11 +125,11 @@ export function useBatchAssetPipeline<TResults>(
           setError(err)
           setProgress(null)
           setPending(false)
-          toast({ action: 'add', item: { label: failureToastLabel, type: 'error' } })
+          showError(failureToastLabel)
         })
       }
     },
-    [failureToastLabel, newSession, successToastLabel, toast],
+    [failureToastLabel, newSession, successToastLabel, showError, showSuccess],
   )
 
   const downloadOne = useCallback((blob: Blob, filename: string) => {

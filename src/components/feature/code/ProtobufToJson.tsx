@@ -134,7 +134,7 @@ function annotateJsonWithEnums(jsonStr: string, allEnums: Array<ProtobufEnumInfo
 export const ProtobufToJson = (_props: ToolComponentProps) => {
   const [selectedEntry, setSelectedEntry] = useState<string | null>(null)
   const [generatedJson, setGeneratedJson] = useState<string | null>(null)
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const {
     input,
@@ -155,7 +155,7 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
     initialResult: { schema: null, parseError: null },
     isEmpty: (value) => !value.trim(),
     onError: () => {
-      toast({ action: 'add', item: { label: 'Failed to parse proto definition', type: 'error' } })
+      showError('Failed to parse proto definition')
     },
     storageKey: 'csr-dev-tools-protobuf-to-json-input',
   })
@@ -188,7 +188,7 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
           const annotatedLines = annotateJsonWithEnums(jsonStr, allEnums)
           setGeneratedJson(annotatedLines.join('\n'))
         } catch {
-          toast({ action: 'add', item: { label: 'Failed to generate JSON', type: 'error' } })
+          showError('Failed to generate JSON')
         }
       } else if (entry.kind === 'enum') {
         const enumDisplay = {
@@ -198,7 +198,7 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
         setGeneratedJson(JSON.stringify(enumDisplay, null, 2))
       }
     },
-    [schemaInfo, toast],
+    [schemaInfo, showError],
   )
 
   const entries = schemaInfo ? buildBrowsableEntries(schemaInfo) : []

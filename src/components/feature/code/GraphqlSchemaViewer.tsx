@@ -232,7 +232,7 @@ scalar DateTime`
 export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
   const [selectedType, setSelectedType] = useState<string | null>(null)
   const [filter, setFilter] = useState('')
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const {
     input,
@@ -253,7 +253,7 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
     initialResult: { schema: null, parseError: null },
     isEmpty: (value) => !value.trim(),
     onError: () => {
-      toast({ action: 'add', item: { label: 'Failed to parse schema', type: 'error' } })
+      showError('Failed to parse schema')
     },
     storageKey: 'csr-dev-tools-graphql-schema-viewer-input',
   })

@@ -55,7 +55,7 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
   const [source, setSource] = useState('')
   const [mode, setMode] = useState<EnvConvertMode>('env-to-json')
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const { result, setInput, setInputImmediate } = useToolComputation<EnvInput, EnvResult>(
     async ({ source: val, mode: m }) => {
@@ -80,14 +80,14 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
       isEmpty: ({ source: val }) => val.trim().length === 0,
       onError: (e) => {
         const msg = e instanceof Error ? e.message : 'Conversion failed'
-        toast({ action: 'add', item: { label: msg, type: 'error' } })
+        showError(msg)
       },
     },
   )
 
   useEffect(() => {
     if (result.warnings.length > 0) {
-      toast({ action: 'add', item: { label: result.warnings.join('; '), type: 'error' } })
+      showError(result.warnings.join('; '))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- toast identity stable; fire only on warnings change
   }, [result.warnings])

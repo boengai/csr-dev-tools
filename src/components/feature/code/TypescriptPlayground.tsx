@@ -63,7 +63,7 @@ export const TypescriptPlayground = (_props: ToolComponentProps) => {
   const [errors, setErrors] = useState<Array<DiagnosticError>>([])
   const editorRef = useRef<EditorInstance | null>(null)
   const monacoRef = useRef<Monaco | null>(null)
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const transpileCode = async (editorInstance: EditorInstance, monaco: Monaco) => {
     const model = editorInstance.getModel()
@@ -74,7 +74,7 @@ export const TypescriptPlayground = (_props: ToolComponentProps) => {
       const result = await client.getEmitOutput(model.uri.toString())
       setTranspiledJs(result.outputFiles[0]?.text ?? '')
     } catch {
-      toast({ action: 'add', item: { label: 'Failed to transpile TypeScript', type: 'error' } })
+      showError('Failed to transpile TypeScript')
     }
   }
 

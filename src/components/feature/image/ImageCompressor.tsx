@@ -63,7 +63,7 @@ export const ImageCompressor = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const { originalInfo, processing, quality, showProgress, source } = state
 
-  const { toast } = useToast()
+  const { showError, showSuccess } = useToast()
 
   // M3 fix: cleanup progress timer on unmount
   useEffect(() => {
@@ -98,7 +98,7 @@ export const ImageCompressor = () => {
       initial: null,
       isEmpty: ({ file }) => !file,
       onError: () => {
-        toast({ action: 'add', item: { label: 'Compression failed — try a different image', type: 'error' } })
+        showError('Compression failed — try a different image')
       },
     },
   )
@@ -119,7 +119,7 @@ export const ImageCompressor = () => {
 
     // H1 fix: clear stale state on format rejection
     if (!COMPRESSIBLE_FORMATS.has(file.type)) {
-      toast({ action: 'add', item: { label: 'Image compression supports JPEG and WebP formats', type: 'error' } })
+      showError('Image compression supports JPEG and WebP formats')
       dispatch({ type: 'CLEAR_ON_REJECT' })
       setInputImmediate({ file: null, quality })
       return
@@ -147,7 +147,7 @@ export const ImageCompressor = () => {
     anchor.href = compressed.dataUrl
     anchor.download = `compressed-${baseName}.${ext}`
     anchor.click()
-    toast({ action: 'add', item: { label: `Downloaded compressed-${baseName}.${ext}`, type: 'success' } })
+    showSuccess(`Downloaded compressed-${baseName}.${ext}`)
   }
 
   const compressionRatio =

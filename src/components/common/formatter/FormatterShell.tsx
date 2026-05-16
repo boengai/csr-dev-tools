@@ -18,7 +18,7 @@ export const FormatterShell = <I extends { source: string }>({
   title,
   triggerLabel,
 }: FormatterShellProps<I>) => {
-  const { toast } = useToast()
+  const { showError } = useToast()
 
   const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<I, string>({
     compute,
@@ -26,9 +26,7 @@ export const FormatterShell = <I extends { source: string }>({
     initial,
     initialResult: '',
     isEmpty: (input) => input.source.trim().length === 0,
-    onError: () => {
-      toast({ action: 'add', item: { label: errorLabel, type: 'error' } })
-    },
+    onError: () => showError(errorLabel),
     storageKey,
   })
 
