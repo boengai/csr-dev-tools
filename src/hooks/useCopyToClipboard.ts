@@ -6,7 +6,11 @@ export const useCopyToClipboard = (): UseCopyToClipboard => {
   const toast = useToast()
 
   return async (val: string) => {
-    await navigator.clipboard.writeText(val)
-    toast.toast({ action: 'add', item: { label: 'Copied to clipboard', type: 'success' } })
+    try {
+      await navigator.clipboard.writeText(val)
+      toast.toast({ action: 'add', item: { label: 'Copied to clipboard', type: 'success' } })
+    } catch {
+      toast.toast({ action: 'add', item: { label: 'Failed to copy to clipboard', type: 'error' } })
+    }
   }
 }
