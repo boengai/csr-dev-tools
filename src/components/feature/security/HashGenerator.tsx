@@ -1,62 +1,47 @@
-import { useState } from 'react'
-
 import { CopyButton, TextAreaInput, ToggleButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolFields } from '@/hooks'
 import type { HashInput, ToolComponentProps } from '@/types'
 import { computeHash, DEFAULT_HASH_ALGORITHM, HASH_ALGORITHMS, type HashAlgorithm } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['hash-generator']
 
+const INITIAL: HashInput = { algo: DEFAULT_HASH_ALGORITHM, text: '' }
+
 export const HashGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [text, setText] = useState('')
-  const [algorithm, setAlgorithm] = useState<HashAlgorithm>(DEFAULT_HASH_ALGORITHM)
   const { toast } = useToast()
 
-  const { result: hash, setInput } = useToolComputation<HashInput, string>(
-    ({ algo, text: input }) => computeHash(input, algo),
-    {
-      debounceMs: 300,
-      initial: '',
-      isEmpty: ({ text: input }) => !input,
-      onError: (_err, { algo }) => {
-        toast({
-          action: 'add',
-          item: {
-            label:
-              algo === 'MD5'
-                ? 'MD5 library failed to load — try refreshing the page'
-                : 'Hash computation failed — your browser may not support this feature',
-            type: 'error',
-          },
-        })
-      },
+  const { inputs, result: hash, reset, setFields, setFieldsImmediate } = useToolFields<HashInput, string>({
+    compute: ({ algo, text }) => computeHash(text, algo),
+    debounceMs: 300,
+    initial: INITIAL,
+    initialResult: '',
+    isEmpty: ({ text }) => !text,
+    onError: (_err, { algo }) => {
+      toast({
+        action: 'add',
+        item: {
+          label:
+            algo === 'MD5'
+              ? 'MD5 library failed to load — try refreshing the page'
+              : 'Hash computation failed — your browser may not support this feature',
+          type: 'error',
+        },
+      })
     },
-  )
+  })
+  const { algo, text } = inputs
 
-  const handleTextChange = (value: string) => {
-    setText(value)
-    setInput({ algo: algorithm, text: value })
-  }
-
-  const handleAlgorithmChange = (algo: HashAlgorithm) => {
-    setAlgorithm(algo)
-    setInput({ algo, text })
-  }
-
-  const handleReset = () => {
-    setText('')
-    setAlgorithm(DEFAULT_HASH_ALGORITHM)
-    setInput({ algo: DEFAULT_HASH_ALGORITHM, text: '' })
-  }
+  const handleTextChange = (value: string) => setFields({ text: value })
+  const handleAlgorithmChange = (next: HashAlgorithm) => setFieldsImmediate({ algo: next })
 
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
       onAfterClose={onAfterDialogClose}
-      onReset={handleReset}
+      onReset={reset}
       size="default"
       title="Hash Generator"
       triggers={[{ label: 'Generate Hash' }]}
@@ -71,14 +56,14 @@ export const HashGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         />
 
         <div className="flex shrink-0 flex-wrap gap-2">
-          {HASH_ALGORITHMS.map((algo) => (
+          {HASH_ALGORITHMS.map((alg) => (
             <ToggleButton
-              aria-label={`Select ${algo} algorithm`}
-              key={algo}
-              onClick={() => handleAlgorithmChange(algo)}
-              pressed={algo === algorithm}
+              aria-label={`Select ${alg} algorithm`}
+              key={alg}
+              onClick={() => handleAlgorithmChange(alg)}
+              pressed={alg === algo}
             >
-              {algo}
+              {alg}
             </ToggleButton>
           ))}
         </div>
@@ -87,7 +72,7 @@ export const HashGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
 
         <div aria-live="polite" className="flex min-h-0 flex-col gap-2">
           <div className="flex items-center gap-2">
-            <span className="text-body-sm font-medium text-gray-400">{algorithm} Hash</span>
+            <span className="text-body-sm font-medium text-gray-400">{algo} Hash</span>
             {hash && <CopyButton label="hash value" value={hash} />}
           </div>
           <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
