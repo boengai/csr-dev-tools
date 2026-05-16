@@ -3,7 +3,7 @@ import type { ChangeEvent, RefObject } from 'react'
 import type { DiagramEditor } from '@/diagram/editor'
 import type { SidePanel } from '@/types'
 
-export type DiagramSidePanelProps = {
+export type DiagramPanelSwitchProps = {
   onClose: () => void
   which: Exclude<SidePanel, null>
 }

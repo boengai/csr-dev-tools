@@ -7,7 +7,7 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { DiagramEditor } from '@/diagram/editor'
 import { documentToSchema } from '@/diagram/operations/export'
 import { useToast } from '@/hooks/state'
-import type { DiagramInnerProps, DiagramSidePanelProps, SidePanel, ToolComponentProps } from '@/types'
+import type { DiagramInnerProps, DiagramPanelSwitchProps, SidePanel, ToolComponentProps } from '@/types'
 import { gridLayoutPositions } from '@/utils/db-diagram'
 import { downloadBlob } from '@/utils/download'
 
@@ -29,7 +29,7 @@ const toolEntry = TOOL_REGISTRY_MAP['db-diagram']
 // ---------------------------------------------------------------------------
 // Panel switcher
 // ---------------------------------------------------------------------------
-const Panel = ({ which, onClose }: DiagramSidePanelProps) => {
+const Panel = ({ which, onClose }: DiagramPanelSwitchProps) => {
   switch (which) {
     case 'dbml':
       return <DbmlEditorPanel onClose={onClose} />

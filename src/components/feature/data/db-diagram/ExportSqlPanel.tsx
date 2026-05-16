@@ -5,8 +5,8 @@ import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
 import type { ExportSqlPanelProps, SqlDialect } from '@/types'
 import { downloadBlob } from '@/utils'
 
-import { CloseButton } from './CloseButton'
 import { DIALECT_OPTIONS } from './constants'
+import { DiagramSidePanel } from './DiagramSidePanel'
 
 export const ExportSqlPanel = ({ onClose }: ExportSqlPanelProps) => {
   const { document, editor } = useDiagram()
@@ -23,45 +23,44 @@ export const ExportSqlPanel = ({ onClose }: ExportSqlPanelProps) => {
   }
 
   return (
-    <div className="flex w-80 shrink-0 flex-col border-l border-gray-800 bg-gray-950" data-testid="sql-panel">
-      <div className="flex items-center justify-between border-b border-gray-800 px-3 py-2">
-        <span className="text-xs font-bold text-white">SQL Export</span>
-        <CloseButton onClick={onClose} />
-      </div>
-
-      <div className="flex items-center gap-2 border-b border-gray-800 px-3 py-2">
-        <span className="text-xs text-gray-400">Dialect:</span>
-        <SelectInput
-          block={false}
-          name="dialect-select"
-          onChange={(value) => setDialect(value as SqlDialect)}
-          options={DIALECT_OPTIONS}
-          size="compact"
-          value={dialect}
-        />
-      </div>
-
-      <div className="flex-1 overflow-auto p-3">
-        <pre className="text-xs font-mono break-all whitespace-pre-wrap text-gray-300" data-testid="sql-output">
-          {generatedSql || '-- Add tables and relationships to generate SQL'}
-        </pre>
-      </div>
-
-      <div className="flex gap-2 border-t border-gray-800 px-3 py-2">
-        <CopyButton label="SQL" value={generatedSql} />
-        <div className="grow">
-          <Button
-            block
-            data-testid="download-sql-btn"
-            disabled={!generatedSql}
-            onClick={handleDownload}
-            size="small"
-            variant="primary"
-          >
-            Download .sql
-          </Button>
+    <DiagramSidePanel
+      controls={
+        <>
+          <span className="text-xs text-gray-400">Dialect:</span>
+          <SelectInput
+            block={false}
+            name="dialect-select"
+            onChange={(value) => setDialect(value as SqlDialect)}
+            options={DIALECT_OPTIONS}
+            size="compact"
+            value={dialect}
+          />
+        </>
+      }
+      footer={
+        <div className="flex gap-2">
+          <CopyButton label="SQL" value={generatedSql} />
+          <div className="grow">
+            <Button
+              block
+              data-testid="download-sql-btn"
+              disabled={!generatedSql}
+              onClick={handleDownload}
+              size="small"
+              variant="primary"
+            >
+              Download .sql
+            </Button>
+          </div>
         </div>
-      </div>
-    </div>
+      }
+      onClose={onClose}
+      testId="sql-panel"
+      title="SQL Export"
+    >
+      <pre className="text-xs font-mono break-all whitespace-pre-wrap text-gray-300" data-testid="sql-output">
+        {generatedSql || '-- Add tables and relationships to generate SQL'}
+      </pre>
+    </DiagramSidePanel>
   )
 }
