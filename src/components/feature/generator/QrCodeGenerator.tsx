@@ -1,14 +1,13 @@
-import { useReducer } from 'react'
-
 import { Button, ColorInput, CopyButton, DownloadIcon, FieldForm } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
-import type { QrCodeAction, QrCodeState, QrErrorCorrectionLevel, QrInput, QrResult, ToolComponentProps } from '@/types'
+import { useToast, useToolFields } from '@/hooks'
+import type { QrErrorCorrectionLevel, QrInput, QrResult, ToolComponentProps } from '@/types'
 import { downloadDataUrl, generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['qr-code-generator']
-const initialState: QrCodeState = {
+
+const INITIAL_INPUT: QrInput = {
   background: '#ffffff',
   errorCorrection: 'M',
   foreground: '#000000',
@@ -16,34 +15,19 @@ const initialState: QrCodeState = {
   text: '',
 }
 
-const reducer = (state: QrCodeState, action: QrCodeAction): QrCodeState => {
-  switch (action.type) {
-    case 'SET_BACKGROUND':
-      return { ...state, background: action.payload }
-    case 'SET_ERROR_CORRECTION':
-      return { ...state, errorCorrection: action.payload }
-    case 'SET_FOREGROUND':
-      return { ...state, foreground: action.payload }
-    case 'SET_SIZE':
-      return { ...state, size: action.payload }
-    case 'SET_TEXT':
-      return { ...state, text: action.payload }
-    case 'RESET':
-      return initialState
-    default:
-      return state
-  }
-}
-
 const EMPTY_RESULT: QrResult = { dataUrl: '', svgString: '' }
 
 export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [state, dispatch] = useReducer(reducer, initialState)
-  const { background, errorCorrection, foreground, size, text } = state
   const { showError, showSuccess } = useToast()
 
-  const { result, setInput, setInputImmediate } = useToolComputation<QrInput, QrResult>(
-    async ({ text: t, size: s, errorCorrection: ec, foreground: fg, background: bg }) => {
+  const {
+    inputs: { background, errorCorrection, foreground, size, text },
+    reset,
+    result: { dataUrl, svgString },
+    setFields,
+    setFieldsImmediate,
+  } = useToolFields<QrInput, QrResult>({
+    compute: async ({ background: bg, errorCorrection: ec, foreground: fg, size: s, text: t }) => {
       const [url, svg] = await Promise.all([
         generateQrCodeDataUrl(t, {
           background: bg,
@@ -60,41 +44,31 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
       ])
       return { dataUrl: url, svgString: svg }
     },
-    {
-      debounceMs: 300,
-      initial: EMPTY_RESULT,
-      isEmpty: ({ text: t }) => !t,
-      onError: () => showError('Failed to generate QR code'),
-    },
-  )
-
-  const { dataUrl, svgString } = result
+    debounceMs: 300,
+    initial: INITIAL_INPUT,
+    initialResult: EMPTY_RESULT,
+    isEmpty: ({ text: t }) => !t,
+    onError: () => showError('Failed to generate QR code'),
+  })
 
   const handleTextChange = (val: string) => {
-    dispatch({ type: 'SET_TEXT', payload: val })
-    setInput({ text: val, size, errorCorrection, foreground, background })
+    setFields({ text: val })
   }
 
   const handleSizeChange = (val: string) => {
-    const n = Number(val)
-    dispatch({ type: 'SET_SIZE', payload: n })
-    setInputImmediate({ text, size: n, errorCorrection, foreground, background })
+    setFieldsImmediate({ size: Number(val) })
   }
 
   const handleEcChange = (val: string) => {
-    const ec = val as QrErrorCorrectionLevel
-    dispatch({ type: 'SET_ERROR_CORRECTION', payload: ec })
-    setInputImmediate({ text, size, errorCorrection: ec, foreground, background })
+    setFieldsImmediate({ errorCorrection: val as QrErrorCorrectionLevel })
   }
 
   const handleFgChange = (val: string) => {
-    dispatch({ type: 'SET_FOREGROUND', payload: val })
-    setInputImmediate({ text, size, errorCorrection, foreground: val, background })
+    setFieldsImmediate({ foreground: val })
   }
 
   const handleBgChange = (val: string) => {
-    dispatch({ type: 'SET_BACKGROUND', payload: val })
-    setInputImmediate({ text, size, errorCorrection, foreground, background: val })
+    setFieldsImmediate({ background: val })
   }
 
   const handleDownload = () => {
@@ -103,23 +77,12 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     showSuccess('Downloaded qr-code.png')
   }
 
-  const handleReset = () => {
-    dispatch({ type: 'RESET' })
-    setInputImmediate({
-      text: '',
-      size: initialState.size,
-      errorCorrection: initialState.errorCorrection,
-      foreground: initialState.foreground,
-      background: initialState.background,
-    })
-  }
-
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
       onAfterClose={onAfterDialogClose}
-      onReset={handleReset}
+      onReset={reset}
       title="QR Code Generator"
       triggers={[{ label: 'Generate QR Code' }]}
     >
