@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { CodeInput, TextInput } from '@/components/common'
+import { BrowsableItemList, CodeInput, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputationPersisted } from '@/hooks'
 import type { GraphqlParseOutput, ToolComponentProps } from '@/types'
@@ -343,26 +343,17 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
               value={filter}
             />
 
-            <div className="flex max-h-80 flex-col gap-0.5 overflow-y-auto">
-              {filteredTypes && filteredTypes.length > 0 ? (
-                filteredTypes.map((type) => (
-                  <button
-                    aria-current={selectedType === type.name ? 'true' : undefined}
-                    aria-label={`${type.name} - ${getTypeKindLabel(type.kind)} type`}
-                    className="flex cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-left transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none data-[state=active]:bg-gray-800 data-[state=active]:text-gray-100 data-[state=inactive]:text-gray-400 data-[state=inactive]:hover:bg-gray-900 data-[state=inactive]:hover:text-gray-200"
-                    data-state={selectedType === type.name ? 'active' : 'inactive'}
-                    key={type.name}
-                    onClick={() => setSelectedType(type.name)}
-                    type="button"
-                  >
-                    <KindBadge kind={type.kind} />
-                    <span className="truncate text-body-xs">{type.name}</span>
-                  </button>
-                ))
-              ) : (
-                <p className="px-2 py-4 text-body-xs text-gray-500">No types match filter</p>
-              )}
-            </div>
+            <BrowsableItemList
+              emptyMessage="No types match filter"
+              items={(filteredTypes ?? []).map((type) => ({
+                ariaLabel: `${type.name} - ${getTypeKindLabel(type.kind)} type`,
+                badge: <KindBadge kind={type.kind} />,
+                id: type.name,
+                name: type.name,
+              }))}
+              onSelect={(item) => setSelectedType(item.id)}
+              selectedId={selectedType}
+            />
           </div>
 
           <div className="min-w-0 grow">

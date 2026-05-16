@@ -1,4 +1,5 @@
 export * from './bidirectionalConverter'
+export * from './browsableItemList'
 export * from './button'
 export * from './card'
 export * from './command-palette'

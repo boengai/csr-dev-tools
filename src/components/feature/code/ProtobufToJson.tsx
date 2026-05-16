@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { CodeInput, CopyButton } from '@/components/common'
+import { BrowsableItemList, CodeInput, CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputationPersisted } from '@/hooks'
 import type { BrowsableEntry, EntryKind, ParseOutput, ToolComponentProps } from '@/types'
@@ -239,26 +239,20 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
       {schemaInfo && (
         <div className="md:flex-row flex flex-col gap-4">
           <div className="md:w-64 flex w-full shrink-0 flex-col gap-2">
-            <div className="flex max-h-80 flex-col gap-0.5 overflow-y-auto">
-              {entries.length > 0 ? (
-                entries.map((entry) => (
-                  <button
-                    aria-current={selectedEntry === entry.fullName ? 'true' : undefined}
-                    aria-label={`${entry.name} - ${entry.kind === 'message' ? 'Message' : 'Enum'} type`}
-                    className="flex min-h-[44px] cursor-pointer items-center gap-2 rounded px-2 py-1.5 text-left transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none data-[state=active]:bg-gray-800 data-[state=active]:text-gray-100 data-[state=inactive]:text-gray-400 data-[state=inactive]:hover:bg-gray-900 data-[state=inactive]:hover:text-gray-200"
-                    data-state={selectedEntry === entry.fullName ? 'active' : 'inactive'}
-                    key={entry.fullName}
-                    onClick={() => handleSelectEntry(entry)}
-                    type="button"
-                  >
-                    <KindBadge kind={entry.kind} />
-                    <span className="truncate text-body-xs">{entry.name}</span>
-                  </button>
-                ))
-              ) : (
-                <p className="px-2 py-4 text-body-xs text-gray-500">No message types found</p>
-              )}
-            </div>
+            <BrowsableItemList
+              emptyMessage="No message types found"
+              items={entries.map((entry) => ({
+                ariaLabel: `${entry.name} - ${entry.kind === 'message' ? 'Message' : 'Enum'} type`,
+                badge: <KindBadge kind={entry.kind} />,
+                id: entry.fullName,
+                name: entry.name,
+              }))}
+              onSelect={(item) => {
+                const entry = entries.find((e) => e.fullName === item.id)
+                if (entry) handleSelectEntry(entry)
+              }}
+              selectedId={selectedEntry}
+            />
           </div>
 
           <div aria-live="polite" className="min-w-0 grow">
