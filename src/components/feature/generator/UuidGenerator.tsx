@@ -1,28 +1,28 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast } from '@/hooks'
-import { generateBulkUuids, generateUuid } from '@/utils'
+import { useAsyncAction, useMountOnce, useToast } from '@/hooks'
+import { generateBulkUuids } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['uuid-generator']
 
 export const UuidGenerator = () => {
   const [count, setCount] = useState(1)
-  const [uuids, setUuids] = useState<Array<string>>([])
-  const { toast } = useToast()
+  const { showSuccess } = useToast()
 
-  useEffect(() => {
-    generateUuid().then((uuid) => setUuids([uuid]))
-  }, [])
+  const { result, run } = useAsyncAction<Array<string>>(() => generateBulkUuids(count))
+  const uuids = result ?? []
+
+  useMountOnce(() => {
+    run()
+  })
 
   const handleGenerate = async () => {
-    const newUuids = await generateBulkUuids(count)
-    setUuids(newUuids)
-    toast({
-      action: 'add',
-      item: { label: `Generated ${count} UUID${count > 1 ? 's' : ''}`, type: 'success' },
-    })
+    const r = await run()
+    if (r) {
+      showSuccess(`Generated ${count} UUID${count > 1 ? 's' : ''}`)
+    }
   }
 
   const handleCountChange = (val: string) => {
