@@ -33,6 +33,7 @@ export function useToolComputationPersisted<I, R>(
   const {
     error,
     isPending,
+    recompute,
     result,
     setInput: pipelineSetInput,
     setInputImmediate: pipelineSetInputImmediate,
@@ -70,5 +71,5 @@ export function useToolComputationPersisted<I, R>(
     writeJsonStorage(storageKey, input)
   }, [storageKey, input])
 
-  return { error, input, isPending, result, setInput, setInputImmediate }
+  return { error, input, isPending, recompute, result, setInput, setInputImmediate }
 }
