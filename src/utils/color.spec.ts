@@ -1,12 +1,12 @@
 import { describe, expect, it, vi } from 'vitest'
 
-vi.mock('@/wasm/color', () => ({
-  convertColor: vi.fn(),
-}))
-
 import { convertColor } from '@/wasm/color'
 
 import { hexToHsl, normalizeHue } from './color'
+
+vi.mock('@/wasm/color', () => ({
+  convertColor: vi.fn(),
+}))
 
 const mockedConvertColor = vi.mocked(convertColor)
 
