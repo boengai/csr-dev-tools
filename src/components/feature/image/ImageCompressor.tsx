@@ -1,9 +1,9 @@
-import { useEffect, useReducer } from 'react'
+import { useEffect, useState } from 'react'
 
 import { Button, DownloadIcon, FieldForm, ProgressBar, UploadInput } from '@/components/common'
 import { COMPRESSIBLE_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useTimeoutRef, useToast, useToolComputation } from '@/hooks'
-import type { CompressInput, ImageCompressorAction, ImageCompressorState, ImageProcessingResult } from '@/types'
+import { useTimeoutRef, useToast, useToolFields } from '@/hooks'
+import type { CompressInput, ImageProcessingResult, OriginalInfo } from '@/types'
 import { downloadDataUrl, formatFileSize, processImage, tv } from '@/utils'
 
 const processingWrapperStyles = tv({
@@ -17,121 +17,80 @@ const processingWrapperStyles = tv({
 })
 
 const toolEntry = TOOL_REGISTRY_MAP['image-compressor']
-const initialState: ImageCompressorState = {
-  compressed: null,
-  originalInfo: null,
-  processing: false,
-  quality: 80,
-  showProgress: false,
-  source: null,
-}
 
-const reducer = (state: ImageCompressorState, action: ImageCompressorAction): ImageCompressorState => {
-  switch (action.type) {
-    case 'SET_COMPRESSED':
-      return { ...state, compressed: action.payload }
-    case 'SET_ORIGINAL_INFO':
-      return { ...state, originalInfo: action.payload }
-    case 'SET_PROCESSING':
-      return { ...state, processing: action.payload }
-    case 'SET_QUALITY':
-      return { ...state, quality: action.payload }
-    case 'SET_SHOW_PROGRESS':
-      return { ...state, showProgress: action.payload }
-    case 'SET_SOURCE':
-      return { ...state, source: action.payload }
-    case 'CLEAR_ON_REJECT':
-      return { ...state, source: null, compressed: null, originalInfo: null }
-    case 'START_COMPRESS':
-      return {
-        ...state,
-        source: action.payload.source,
-        compressed: null,
-        originalInfo: { height: 0, name: action.payload.source.name, size: action.payload.source.size, width: 0 },
-      }
-    case 'FINISH_COMPRESS':
-      return { ...state, showProgress: false, processing: false }
-    default:
-      return state
-  }
-}
+const INITIAL_INPUT: CompressInput = { file: null, quality: 80 }
+
+const PROGRESS_THRESHOLD_MS = 300
 
 export const ImageCompressor = () => {
-  const [state, dispatch] = useReducer(reducer, initialState)
-  const { originalInfo, processing, quality, showProgress, source } = state
-
   const { showError, showSuccess } = useToast()
   const progressTimer = useTimeoutRef()
+  const [showProgress, setShowProgress] = useState(false)
 
   const {
+    inputs: { file, quality },
+    isPending,
     result: compressed,
-    setInput,
-    setInputImmediate,
-  } = useToolComputation<CompressInput, ImageProcessingResult | null>(
-    async ({ file, quality: q }) => {
-      if (!file) return null
-      dispatch({ type: 'SET_PROCESSING', payload: true })
-      progressTimer.schedule(() => dispatch({ type: 'SET_SHOW_PROGRESS', payload: true }), 300)
-      try {
-        const result = await processImage(file, { quality: q / 100, strategy: 'stretch' })
-        progressTimer.cancel()
-        dispatch({ type: 'FINISH_COMPRESS' })
-        return result
-      } catch (err) {
-        progressTimer.cancel()
-        dispatch({ type: 'FINISH_COMPRESS' })
-        throw err
-      }
+    setFields,
+    setFieldsImmediate,
+  } = useToolFields<CompressInput, ImageProcessingResult | null>({
+    compute: async ({ file: f, quality: q }) => {
+      if (!f) return null
+      return await processImage(f, { quality: q / 100, strategy: 'stretch' })
     },
-    {
-      debounceMs: 300,
-      initial: null,
-      isEmpty: ({ file }) => !file,
-      onError: () => {
-        showError('Compression failed — try a different image')
-      },
-    },
-  )
+    debounceMs: 300,
+    initial: INITIAL_INPUT,
+    initialResult: null,
+    isEmpty: ({ file: f }) => !f,
+    onError: () => showError('Compression failed — try a different image'),
+  })
 
-  // Backfill originalInfo dimensions once the first compress for a given source resolves.
+  // Show the progress bar only when compute outlasts a 300ms threshold —
+  // pipeline-driven, no dispatch-from-inside-compute.
   useEffect(() => {
-    if (compressed && source && originalInfo && originalInfo.width === 0) {
-      dispatch({
-        type: 'SET_ORIGINAL_INFO',
-        payload: { height: compressed.height, name: source.name, size: source.size, width: compressed.width },
-      })
+    if (isPending) {
+      progressTimer.schedule(() => setShowProgress(true), PROGRESS_THRESHOLD_MS)
+    } else {
+      progressTimer.cancel()
+      setShowProgress(false)
     }
-  }, [compressed, source, originalInfo])
+  }, [isPending, progressTimer])
+
+  // `originalInfo` derives from file + compressed; no separate state needed.
+  // Width/height come from the result once it resolves; before then they're 0,
+  // matching the pre-migration "originalInfo.width === 0" gate the JSX checks.
+  const originalInfo: OriginalInfo | null = file
+    ? {
+        height: compressed?.height ?? 0,
+        name: file.name,
+        size: file.size,
+        width: compressed?.width ?? 0,
+      }
+    : null
 
   const handleInputChange = (values: Array<File>) => {
-    const file = values[0]
-    if (!file) return
+    const f = values[0]
+    if (!f) return
 
-    // H1 fix: clear stale state on format rejection
-    if (!COMPRESSIBLE_FORMATS.has(file.type)) {
+    if (!COMPRESSIBLE_FORMATS.has(f.type)) {
       showError('Image compression supports JPEG and WebP formats')
-      dispatch({ type: 'CLEAR_ON_REJECT' })
-      setInputImmediate({ file: null, quality })
+      setFieldsImmediate({ file: null })
       return
     }
 
-    dispatch({ type: 'START_COMPRESS', payload: { source: file } })
     // Upload click is not part of a keystroke stream → immediate.
-    setInputImmediate({ file, quality })
+    setFieldsImmediate({ file: f })
   }
 
   const handleQualityChange = (newQuality: number) => {
-    dispatch({ type: 'SET_QUALITY', payload: newQuality })
-    if (source) {
-      // Quality slider drag is keystroke-like → debounced.
-      setInput({ file: source, quality: newQuality })
-    }
+    // Quality slider drag is keystroke-like → debounced.
+    setFields({ quality: newQuality })
   }
 
   const handleDownload = () => {
-    if (!compressed?.dataUrl || !source) return
-    const ext = source.type === 'image/webp' ? 'webp' : 'jpg'
-    const baseName = source.name.replace(/\.[^.]+$/, '')
+    if (!compressed?.dataUrl || !file) return
+    const ext = file.type === 'image/webp' ? 'webp' : 'jpg'
+    const baseName = file.name.replace(/\.[^.]+$/, '')
     const filename = `compressed-${baseName}.${ext}`
     downloadDataUrl(compressed.dataUrl, filename)
     showSuccess(`Downloaded ${filename}`)
@@ -162,11 +121,10 @@ export const ImageCompressor = () => {
         </div>
       )}
 
-      {/* M2 fix: dim slider during processing */}
-      {source && (
-        <div className={processingWrapperStyles({ disabled: processing })}>
+      {file && (
+        <div className={processingWrapperStyles({ disabled: isPending })}>
           <FieldForm
-            disabled={processing}
+            disabled={isPending}
             label="Quality"
             max={100}
             min={1}
@@ -180,7 +138,7 @@ export const ImageCompressor = () => {
 
       {showProgress && <ProgressBar value={50} />}
 
-      {compressed && originalInfo && !processing && (
+      {compressed && originalInfo && !isPending && (
         <div aria-live="polite" className="flex flex-col gap-2">
           <p className="text-body-sm text-gray-300">
             {formatFileSize(originalInfo.size)} → {formatFileSize(compressed.size)}
@@ -193,7 +151,7 @@ export const ImageCompressor = () => {
         </div>
       )}
 
-      {compressed && !processing && (
+      {compressed && !isPending && (
         <div className="w-full desktop:w-8/10">
           <Button block icon={<DownloadIcon />} onClick={handleDownload} variant="primary">
             Download
