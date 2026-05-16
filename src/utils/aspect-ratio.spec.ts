@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import { calculateDimension, parseRatio, simplifyRatio } from '@/utils'
+import type { AspectRatioInput } from '@/types'
+import { calculateDimension, parseRatio, simplifyRatio, solveAspectRatio } from '@/utils'
 
 describe('aspect-ratio', () => {
   describe('simplifyRatio', () => {
@@ -134,6 +135,145 @@ describe('aspect-ratio', () => {
 
     it('trims whitespace before parsing', () => {
       expect(parseRatio('  16:9  ')).toEqual({ w: 16, h: 9 })
+    })
+  })
+
+  describe('solveAspectRatio', () => {
+    const base: AspectRatioInput = {
+      height: '',
+      lastEdited: 'width',
+      locked: null,
+      ratio: '',
+      source: 'width',
+      width: '',
+    }
+
+    describe('source = "width"', () => {
+      it('uses ratio when set: width=1920, ratio=16:9 → height=1080', () => {
+        expect(solveAspectRatio({ ...base, ratio: '16:9', source: 'width', width: '1920' })).toEqual({
+          height: '1080',
+          ratio: '16:9',
+          width: '1920',
+        })
+      })
+
+      it('derives ratio when height is set and ratio is empty', () => {
+        expect(solveAspectRatio({ ...base, height: '1080', source: 'width', width: '1920' })).toEqual({
+          height: '1080',
+          ratio: '16:9',
+          width: '1920',
+        })
+      })
+
+      it('leaves bag unchanged when neither ratio nor height is set', () => {
+        expect(solveAspectRatio({ ...base, source: 'width', width: '1920' })).toEqual({
+          height: '',
+          ratio: '',
+          width: '1920',
+        })
+      })
+
+      it('throws INVALID_WIDTH_MSG when width is not a number', () => {
+        expect(() => solveAspectRatio({ ...base, source: 'width', width: 'abc' })).toThrow(/width/i)
+      })
+
+      it('throws INVALID_WIDTH_MSG when width is zero', () => {
+        expect(() => solveAspectRatio({ ...base, source: 'width', width: '0' })).toThrow(/width/i)
+      })
+
+      it('leaves height alone when ratio is set but unparseable', () => {
+        expect(solveAspectRatio({ ...base, height: '500', ratio: 'foo', source: 'width', width: '1920' })).toEqual({
+          height: '500',
+          ratio: 'foo',
+          width: '1920',
+        })
+      })
+    })
+
+    describe('source = "height"', () => {
+      it('uses ratio when set: height=1080, ratio=16:9 → width=1920', () => {
+        expect(solveAspectRatio({ ...base, height: '1080', ratio: '16:9', source: 'height' })).toEqual({
+          height: '1080',
+          ratio: '16:9',
+          width: '1920',
+        })
+      })
+
+      it('derives ratio when width is set and ratio is empty', () => {
+        expect(solveAspectRatio({ ...base, height: '1080', source: 'height', width: '1920' })).toEqual({
+          height: '1080',
+          ratio: '16:9',
+          width: '1920',
+        })
+      })
+
+      it('throws INVALID_HEIGHT_MSG when height is not a number', () => {
+        expect(() => solveAspectRatio({ ...base, height: 'xyz', source: 'height' })).toThrow(/height/i)
+      })
+    })
+
+    describe('source = "ratio"', () => {
+      it('throws INVALID_RATIO_MSG for unparseable ratio', () => {
+        expect(() => solveAspectRatio({ ...base, ratio: 'abc:def', source: 'ratio' })).toThrow(/ratio/i)
+      })
+
+      it('locked=width: recomputes height, leaves width', () => {
+        expect(
+          solveAspectRatio({ ...base, locked: 'width', ratio: '4:3', source: 'ratio', width: '1920' }),
+        ).toEqual({
+          height: '1440',
+          ratio: '4:3',
+          width: '1920',
+        })
+      })
+
+      it('locked=height: recomputes width, leaves height', () => {
+        expect(
+          solveAspectRatio({ ...base, height: '1080', locked: 'height', ratio: '4:3', source: 'ratio' }),
+        ).toEqual({
+          height: '1080',
+          ratio: '4:3',
+          width: '1440',
+        })
+      })
+
+      it('no lock, lastEdited=width with width set: recomputes height', () => {
+        expect(
+          solveAspectRatio({ ...base, lastEdited: 'width', ratio: '4:3', source: 'ratio', width: '1920' }),
+        ).toEqual({
+          height: '1440',
+          ratio: '4:3',
+          width: '1920',
+        })
+      })
+
+      it('no lock, lastEdited=height with height set: recomputes width', () => {
+        expect(
+          solveAspectRatio({ ...base, height: '1080', lastEdited: 'height', ratio: '4:3', source: 'ratio' }),
+        ).toEqual({
+          height: '1080',
+          ratio: '4:3',
+          width: '1440',
+        })
+      })
+
+      it('no lock, lastEdited side is empty: leaves both sides alone', () => {
+        expect(solveAspectRatio({ ...base, lastEdited: 'width', ratio: '4:3', source: 'ratio' })).toEqual({
+          height: '',
+          ratio: '4:3',
+          width: '',
+        })
+      })
+
+      it('silently skips recompute when dependent side is invalid (no throw)', () => {
+        expect(
+          solveAspectRatio({ ...base, lastEdited: 'width', ratio: '4:3', source: 'ratio', width: '0' }),
+        ).toEqual({
+          height: '',
+          ratio: '4:3',
+          width: '0',
+        })
+      })
     })
   })
 })

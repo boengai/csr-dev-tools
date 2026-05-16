@@ -1,3 +1,4 @@
+export * from './aspect-ratio'
 export * from './base64-image'
 export * from './bcrypt-hasher'
 export * from './border-radius'

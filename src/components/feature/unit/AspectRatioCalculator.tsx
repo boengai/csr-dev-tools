@@ -1,9 +1,15 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, useToast } from '@/hooks'
-import { calculateDimension, parseRatio, simplifyRatio, tv } from '@/utils'
+import { useToast, useToolComputation } from '@/hooks'
+import type {
+  AspectRatioInput,
+  AspectRatioLastEdited,
+  AspectRatioLocked,
+  AspectRatioOutput,
+} from '@/types'
+import { solveAspectRatio, tv } from '@/utils'
 
 const lockIndicatorStyles = tv({
   base: "relative ml-1 text-body-xs before:absolute before:inset-[-10px] before:content-['']",
@@ -35,144 +41,137 @@ const PRESETS = [
   { label: '9:16', w: 9, h: 16 },
 ]
 
+type Fields = {
+  width: string
+  height: string
+  ratio: string
+  lastEdited: AspectRatioLastEdited
+  locked: AspectRatioLocked
+}
+
+const INITIAL_FIELDS: Fields = {
+  height: '',
+  lastEdited: 'width',
+  locked: null,
+  ratio: '',
+  width: '',
+}
+
 export const AspectRatioCalculator = () => {
-  const [width, setWidth] = useState('')
-  const [height, setHeight] = useState('')
-  const [ratio, setRatio] = useState('')
-  const [lastEdited, setLastEdited] = useState<'width' | 'height'>('width')
-  const [locked, setLocked] = useState<'width' | 'height' | null>(null)
   const { showError } = useToast()
+  const [fields, setFields] = useState<Fields>(INITIAL_FIELDS)
 
-  // Non-debounced recalculation for preset buttons (immediate response)
-  const recalcFromWidthAndRatio = (w: string, ratioStr: string) => {
-    if (w.trim() === '' || ratioStr.trim() === '') return
-    const wNum = Number(w)
-    if (Number.isNaN(wNum) || wNum <= 0) return
-    const parsed = parseRatio(ratioStr)
-    if (!parsed) return
-    setHeight(Math.round(calculateDimension(wNum, parsed.w, parsed.h, 'height')).toString())
-  }
-
-  const recalcFromHeightAndRatio = (h: string, ratioStr: string) => {
-    if (h.trim() === '' || ratioStr.trim() === '') return
-    const hNum = Number(h)
-    if (Number.isNaN(hNum) || hNum <= 0) return
-    const parsed = parseRatio(ratioStr)
-    if (!parsed) return
-    setWidth(Math.round(calculateDimension(hNum, parsed.w, parsed.h, 'width')).toString())
-  }
-
-  // Debounced handlers with validation inside (matching UnitPxToRem pattern)
-  const dbProcessWidth = useDebounceCallback((w: string, ratioStr: string, h: string) => {
-    const wNum = Number(w)
-    if (Number.isNaN(wNum) || wNum <= 0) {
-      showError('Enter a valid width (e.g., 1920)')
-      return
-    }
-    if (ratioStr.trim()) {
-      const parsed = parseRatio(ratioStr)
-      if (!parsed) return
-      setHeight(Math.round(calculateDimension(wNum, parsed.w, parsed.h, 'height')).toString())
-    } else if (h.trim()) {
-      const hNum = Number(h)
-      if (!Number.isNaN(hNum) && hNum > 0) {
-        setRatio(simplifyRatio(wNum, hNum))
-      }
-    }
-  }, 300)
-
-  const dbProcessHeight = useDebounceCallback((h: string, ratioStr: string, w: string) => {
-    const hNum = Number(h)
-    if (Number.isNaN(hNum) || hNum <= 0) {
-      showError('Enter a valid height (e.g., 1080)')
-      return
-    }
-    if (ratioStr.trim()) {
-      const parsed = parseRatio(ratioStr)
-      if (!parsed) return
-      setWidth(Math.round(calculateDimension(hNum, parsed.w, parsed.h, 'width')).toString())
-    } else if (w.trim()) {
-      const wNum = Number(w)
-      if (!Number.isNaN(wNum) && wNum > 0) {
-        setRatio(simplifyRatio(wNum, hNum))
-      }
-    }
-  }, 300)
-
-  const dbProcessRatio = useDebounceCallback(
-    (
-      val: string,
-      w: string,
-      h: string,
-      currentLocked: 'width' | 'height' | null,
-      currentLastEdited: 'width' | 'height',
-    ) => {
-      if (val.trim() === '') return
-      const parsed = parseRatio(val)
-      if (!parsed) {
-        showError('Enter a valid ratio (e.g., 16:9 or 1.778)')
-        return
-      }
-      const ratioStr = `${parsed.w}:${parsed.h}`
-      if (currentLocked === 'width' && w.trim()) {
-        recalcFromWidthAndRatio(w, ratioStr)
-      } else if (currentLocked === 'height' && h.trim()) {
-        recalcFromHeightAndRatio(h, ratioStr)
-      } else if (currentLastEdited === 'width' && w.trim()) {
-        recalcFromWidthAndRatio(w, ratioStr)
-      } else if (currentLastEdited === 'height' && h.trim()) {
-        recalcFromHeightAndRatio(h, ratioStr)
-      }
+  const { result, setInput, setInputImmediate } = useToolComputation<AspectRatioInput, AspectRatioOutput | null>(
+    solveAspectRatio,
+    {
+      debounceMs: 300,
+      initial: null,
+      isEmpty: ({ height, ratio, source, width }) => {
+        if (source === 'width') return !width.trim()
+        if (source === 'height') return !height.trim()
+        return !ratio.trim()
+      },
+      onError: (err) => showError(err instanceof Error ? err.message : 'Invalid input'),
     },
-    300,
   )
 
+  useEffect(() => {
+    if (result) {
+      setFields((prev) => ({ ...prev, ...result }))
+    }
+  }, [result])
+
   const handleWidthChange = (val: string) => {
-    setWidth(val)
-    setLastEdited('width')
+    setFields((prev) => {
+      if (val.trim() === '') {
+        return {
+          ...prev,
+          height: prev.locked === 'height' ? prev.height : '',
+          lastEdited: 'width',
+          ratio: '',
+          width: '',
+        }
+      }
+      return { ...prev, lastEdited: 'width', width: val }
+    })
+    const input: AspectRatioInput = {
+      height: fields.height,
+      lastEdited: 'width',
+      locked: fields.locked,
+      ratio: fields.ratio,
+      source: 'width',
+      width: val,
+    }
     if (val.trim() === '') {
-      if (locked !== 'height') setHeight('')
-      setRatio('')
+      setInputImmediate(input)
       return
     }
-    dbProcessWidth(val, ratio, height)
+    setInput(input)
   }
 
   const handleHeightChange = (val: string) => {
-    setHeight(val)
-    setLastEdited('height')
+    setFields((prev) => {
+      if (val.trim() === '') {
+        return {
+          ...prev,
+          height: '',
+          lastEdited: 'height',
+          ratio: '',
+          width: prev.locked === 'width' ? prev.width : '',
+        }
+      }
+      return { ...prev, height: val, lastEdited: 'height' }
+    })
+    const input: AspectRatioInput = {
+      height: val,
+      lastEdited: 'height',
+      locked: fields.locked,
+      ratio: fields.ratio,
+      source: 'height',
+      width: fields.width,
+    }
     if (val.trim() === '') {
-      if (locked !== 'width') setWidth('')
-      setRatio('')
+      setInputImmediate(input)
       return
     }
-    dbProcessHeight(val, ratio, width)
+    setInput(input)
   }
 
   const handleRatioChange = (val: string) => {
-    setRatio(val)
-    if (val.trim() === '') return
-    dbProcessRatio(val, width, height, locked, lastEdited)
+    setFields((prev) => ({ ...prev, ratio: val }))
+    const input: AspectRatioInput = {
+      height: fields.height,
+      lastEdited: fields.lastEdited,
+      locked: fields.locked,
+      ratio: val,
+      source: 'ratio',
+      width: fields.width,
+    }
+    if (val.trim() === '') {
+      setInputImmediate(input)
+      return
+    }
+    setInput(input)
   }
 
   const applyRatio = (rw: number, rh: number) => {
     const ratioStr = `${rw}:${rh}`
-    setRatio(ratioStr)
-
-    if (locked === 'width' && width.trim()) {
-      recalcFromWidthAndRatio(width, ratioStr)
-    } else if (locked === 'height' && height.trim()) {
-      recalcFromHeightAndRatio(height, ratioStr)
-    } else if (lastEdited === 'width' && width.trim()) {
-      recalcFromWidthAndRatio(width, ratioStr)
-    } else if (lastEdited === 'height' && height.trim()) {
-      recalcFromHeightAndRatio(height, ratioStr)
-    }
+    setFields((prev) => ({ ...prev, ratio: ratioStr }))
+    setInputImmediate({
+      height: fields.height,
+      lastEdited: fields.lastEdited,
+      locked: fields.locked,
+      ratio: ratioStr,
+      source: 'ratio',
+      width: fields.width,
+    })
   }
 
   const toggleLock = (dim: 'width' | 'height') => {
-    setLocked((prev) => (prev === dim ? null : dim))
+    setFields((prev) => ({ ...prev, locked: prev.locked === dim ? null : dim }))
   }
+
+  const { height, locked, ratio, width } = fields
 
   return (
     <div className="flex w-full grow flex-col items-center justify-center gap-4">

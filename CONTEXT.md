@@ -492,3 +492,46 @@ Per-call-site concerns stay at the call site: the query state and filtering,
 Escape key behavior, click-outside dismissal, modal vs inline shell, and item
 rendering. Adopters typically chain Escape locally before forwarding the rest
 of the keydown event to the hook's `handleKeyDown`.
+
+## N-mirror broadcast
+
+A recurring shape on top of [[Tool computation pipeline]] — not a separate
+seam, just a usage pattern with a name so future architecture passes
+recognize it. Tools that display multiple representations of one underlying
+value, where editing any representation rebroadcasts the others, follow
+this layout:
+
+- **Pipeline input** is a discriminated `{ source: <which-field-changed>,
+  ...currentFields, ...uiMemory }`. `uiMemory` carries non-display state
+  the constraint solver needs.
+- **Pipeline output** is the full record of displayed fields.
+- **React side** owns the visible field bag via `useState`; an adoption
+  effect (`if (result) setFields(prev => ({ ...prev, ...result }))`)
+  mirrors the pipeline result back in.
+- **Change handlers** apply an optimistic local update so typing feels
+  instant, then call `setInput` (debounced) or `setInputImmediate`
+  (preset buttons, empty-bypass cancellation).
+- **The pure constraint solver** lives in `src/utils/<tool>.ts` per
+  ADR-0004, with spec coverage of every `source × uiMemory × validity`
+  branch. Errors throw with a typed message; the pipeline's `onError`
+  toasts.
+
+Today's adopters:
+
+| Tool | Source key | UI-memory fields |
+|---|---|---|
+| `ColorConvertor` | `format` (6 options) | — |
+| `UnitPxToRem` | `source: 'px' \| 'rem' \| 'base'` | `lastEdited` |
+| `AspectRatioCalculator` | `source: 'width' \| 'height' \| 'ratio'` | `locked`, `lastEdited` |
+
+No dedicated hook. The glue per adopter is ~10 lines (one `useState` +
+one adoption `useEffect` + the pipeline call); the input shapes vary
+across the three adopters, so a wrapper would either grow knobs or
+lose depth. The pipeline already carries the load-bearing invariants
+(debounced, stale-safe, empty-bypass, unmount-safe); the pattern adds
+discipline about how to compose them for this specific shape, nothing
+more.
+
+Pick this when adding a Tool with ≥2 representations of one value that
+must sync. Don't pick it when the Tool has independent fields that
+don't constrain each other (use plain [[Tool field bag]] instead).
