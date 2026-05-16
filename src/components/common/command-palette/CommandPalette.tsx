@@ -1,4 +1,4 @@
-import { Content, Overlay, Portal, Root } from '@radix-ui/react-dialog'
+import { Content, Overlay, Portal, Root, Title } from '@radix-ui/react-dialog'
 import { useNavigate } from '@tanstack/react-router'
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useMemo, useState } from 'react'
@@ -87,7 +87,6 @@ export const CommandPalette = () => {
             <Content asChild forceMount onOpenAutoFocus={(e) => e.preventDefault()}>
               <m.div
                 animate={{ opacity: 1, scale: 1, y: 0 }}
-                aria-label="Search tools"
                 aria-modal="true"
                 className="fixed top-[20%] left-1/2 z-50 flex w-full max-w-lg -translate-x-1/2 flex-col overflow-hidden rounded-card border border-gray-800 bg-gray-950 shadow-xl"
                 exit={{ opacity: 0, scale: 0.95, y: -8 }}
@@ -96,6 +95,7 @@ export const CommandPalette = () => {
                 role="dialog"
                 transition={{ duration: 0.2, ease: 'easeOut' }}
               >
+                <Title className="sr-only">Search tools</Title>
                 <SearchInput
                   activeDescendantId={activeDescendantId}
                   onChange={(val) => {
