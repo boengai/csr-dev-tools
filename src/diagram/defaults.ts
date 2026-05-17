@@ -1,15 +1,5 @@
 import type { ColumnId, ColumnType, TableColumn } from '@/types'
 
-let counter = 0
-
-// Kept for now: codecs still call generateId() for table/column/relation ids in
-// their parse paths. Task 4 deletes this once all codec call sites have been
-// migrated to the EntityIdMinters seam.
-export const generateId = () => {
-  counter += 1
-  return `${Date.now()}-${counter}-${Math.random().toString(36).slice(2, 8)}`
-}
-
 export const COLUMN_TYPES: Array<ColumnType> = [
   'INT',
   'BIGINT',
