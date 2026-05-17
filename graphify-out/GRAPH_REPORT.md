@@ -1,16 +1,16 @@
 # Graph Report - csr-dev-tools  (2026-05-17)
 
 ## Corpus Check
-- 710 files · ~300,723 words
+- 713 files · ~302,797 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 5477 nodes · 6235 edges · 810 communities (552 shown, 258 thin omitted)
-- Extraction: 89% EXTRACTED · 11% INFERRED · 0% AMBIGUOUS · INFERRED: 656 edges (avg confidence: 0.83)
+- 5525 nodes · 6292 edges · 820 communities (558 shown, 262 thin omitted)
+- Extraction: 90% EXTRACTED · 10% INFERRED · 0% AMBIGUOUS · INFERRED: 657 edges (avg confidence: 0.83)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `11f3680a`
+- Built from commit: `5e98c9bb`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -679,9 +679,11 @@
 - [[_COMMUNITY_Community 789|Community 789]]
 - [[_COMMUNITY_Community 790|Community 790]]
 - [[_COMMUNITY_Community 791|Community 791]]
+- [[_COMMUNITY_Community 792|Community 792]]
 - [[_COMMUNITY_Community 793|Community 793]]
 - [[_COMMUNITY_Community 794|Community 794]]
 - [[_COMMUNITY_Community 795|Community 795]]
+- [[_COMMUNITY_Community 796|Community 796]]
 - [[_COMMUNITY_Community 797|Community 797]]
 - [[_COMMUNITY_Community 798|Community 798]]
 - [[_COMMUNITY_Community 799|Community 799]]
@@ -689,6 +691,7 @@
 - [[_COMMUNITY_Community 801|Community 801]]
 - [[_COMMUNITY_Community 802|Community 802]]
 - [[_COMMUNITY_Community 803|Community 803]]
+- [[_COMMUNITY_Community 804|Community 804]]
 - [[_COMMUNITY_Community 805|Community 805]]
 - [[_COMMUNITY_Community 806|Community 806]]
 - [[_COMMUNITY_Community 807|Community 807]]
@@ -697,6 +700,11 @@
 - [[_COMMUNITY_Community 810|Community 810]]
 - [[_COMMUNITY_Community 811|Community 811]]
 - [[_COMMUNITY_Community 812|Community 812]]
+- [[_COMMUNITY_Community 814|Community 814]]
+- [[_COMMUNITY_Community 815|Community 815]]
+- [[_COMMUNITY_Community 816|Community 816]]
+- [[_COMMUNITY_Community 817|Community 817]]
+- [[_COMMUNITY_Community 818|Community 818]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `useDebounceCallback()` - 63 edges
@@ -722,15 +730,15 @@
 - `GridPlayground` --rationale_for--> `Requirements (5 new tools epic)`  [INFERRED]
   src/components/feature/css/GridPlayground.tsx → docs/requirements.md
 
-## Communities (810 total, 258 thin omitted)
+## Communities (820 total, 262 thin omitted)
 
 ### Community 0 - "Tool Components"
 Cohesion: 0.19
 Nodes (16): Base64ToImage, object URL revoke-on-unmount lifecycle, FaviconGenerator, image components barrel, ImageColorPicker, ImageCompressor, ImageConvertor, ImageCropper (+8 more)
 
 ### Community 1 - "DB Diagram Editor"
-Cohesion: 0.07
-Nodes (36): CloseButton(), DIALECT_OPTIONS, DbmlEditorPanel(), DiagramCanvas(), edgeTypes, nodeTypes, ContextValue, Ctx (+28 more)
+Cohesion: 0.11
+Nodes (13): diagramItemStyles, DiagramListPanel(), diagramReducer(), initialDiagramState, DiagramToolbar(), ExportTypescriptPanel(), DiagramCanvas(), DiagramInnerProps (+5 more)
 
 ### Community 2 - "Crypto & Cert Tools"
 Cohesion: 0.13
@@ -785,8 +793,8 @@ Cohesion: 0.06
 Nodes (35): Algorithm (all hand-written, no external Rust crates except `wasm-bindgen`), Benchmarks, code:rust (#[wasm_bindgen]), code:rust (#[wasm_bindgen]), code:typescript (import { loadWasm } from './init'), code:typescript (import { loadWasm } from './init'), code:typescript (import type { QrCodeOptions } from '@/types/utils/qr-code'), code:typescript (import { renderMarkdown } from '@/wasm/csr-markdown') (+27 more)
 
 ### Community 15 - "Code Tool Family"
-Cohesion: 0.08
-Nodes (49): CssFormatter(), GraphqlSchemaViewer(), JavaScriptMinifier(), MarkdownPreview(), MermaidRenderer(), ProtobufCodec(), ProtobufToJson(), SqlFormatter() (+41 more)
+Cohesion: 0.11
+Nodes (45): CssFormatter(), JavaScriptMinifier(), MarkdownPreview(), DecodeContent(), EncodeContent(), ProtobufCodec(), SqlFormatter(), ColorConvertor() (+37 more)
 
 ### Community 16 - "Common Button API"
 Cohesion: 0.07
@@ -813,8 +821,8 @@ Cohesion: 0.09
 Nodes (20): contentVariants, Dialog(), calls, { container }, decryptOpen, encryptOpen, onAfterClose, onOpen (+12 more)
 
 ### Community 22 - "Timezone Converter"
-Cohesion: 0.1
-Nodes (20): computeConversion(), ConverterInput, ConverterOutput, createInitialConverterState(), DEFAULT_TARGETS, favoriteButtonStyles, formatNowDate(), formatNowTime() (+12 more)
+Cohesion: 0.17
+Nodes (13): ConverterInput, ConverterOutput, createInitialConverterState(), DEFAULT_TARGETS, favoriteButtonStyles, formatNowDate(), formatNowTime(), getInitialTargets() (+5 more)
 
 ### Community 23 - "Image Tool Shell"
 Cohesion: 0.08
@@ -853,8 +861,8 @@ Cohesion: 0.09
 Nodes (22): Code Tools (`code/`) — 14 components, Color Tools (`color/`) — 2 components, Common Components (`src/components/common/`), Component Patterns, CSR Developer Tools - Component Inventory, CSS Tools (`css/`) — 6 components, Data Tools (`data/`) — 15 components, Encoding Tools (`encoding/`) — 5 components (+14 more)
 
 ### Community 32 - "Community 32"
-Cohesion: 0.25
-Nodes (6): compute, errorSpy, onError, resolvers, { result }, { result, unmount }
+Cohesion: 0.29
+Nodes (7): CloseButton(), DIALECT_OPTIONS, DiagramSidePanel(), { container }, onClose, panelStyles, ImportSqlPanel()
 
 ### Community 33 - "Community 33"
 Cohesion: 0.12
@@ -1033,8 +1041,8 @@ Cohesion: 0.14
 Nodes (13): Architecture, Blob URL Lifecycle — Design, code:block1 (src/hooks/), code:ts (// src/hooks/useBlobUrl.ts), code:ts (// src/utils/download.ts), Goals, Migration plan, Motivation (+5 more)
 
 ### Community 77 - "Community 77"
-Cohesion: 0.16
-Nodes (11): Action, ContentProps, DecodeContent(), DecodeInput, EncodeContent(), EncodeInput, FORMAT_OPTIONS, INITIAL_STATE (+3 more)
+Cohesion: 0.2
+Nodes (9): Action, ContentProps, DecodeInput, EncodeInput, FORMAT_OPTIONS, INITIAL_STATE, PersistedState, ProtobufCodecAction (+1 more)
 
 ### Community 78 - "Community 78"
 Cohesion: 0.14
@@ -1065,8 +1073,8 @@ Cohesion: 0.25
 Nodes (7): cb, first, { result }, { result, rerender }, { result, unmount }, second, useTimeoutRef()
 
 ### Community 85 - "Community 85"
-Cohesion: 0.08
-Nodes (22): getTypeKindLabel(), GraphqlParseOutput, KIND_STYLES, KindBadge(), TypeDetailPanel(), KindBadge(), SelectInput(), TextAreaInput() (+14 more)
+Cohesion: 0.17
+Nodes (11): KindBadge(), SelectInput(), TextAreaInput(), { getByRole }, onEnter, onEscape, inputVariants, TextInput() (+3 more)
 
 ### Community 86 - "Community 86"
 Cohesion: 0.21
@@ -1102,7 +1110,7 @@ Nodes (10): compute, Mode, MODES, onAfterDialogClose, onError, slot, { unmount }
 
 ### Community 94 - "Community 94"
 Cohesion: 0.05
-Nodes (42): Async action, Batch asset pipeline, Bidirectional converter, code:ts (type EntityIdMinters = {), CSR Dev Tools — Domain Language, DiagramEditor, Diff checker shell, Entity ID minters (+34 more)
+Nodes (43): Async action, Batch asset pipeline, Bidirectional converter, code:ts (type EntityIdMinters = {), CSR Dev Tools — Domain Language, DiagramEditor, Diff checker shell, Entity ID minters (+35 more)
 
 ### Community 95 - "Community 95"
 Cohesion: 0.21
@@ -1465,8 +1473,8 @@ Cohesion: 0.32
 Nodes (4): BUILT_IN_SCALARS, extractFields(), extractTypeInfo(), getTypeKind()
 
 ### Community 186 - "Community 186"
-Cohesion: 0.16
-Nodes (16): generateCreateTable(), generateForeignKeys(), generateInlineForeignKeys(), generateJunctionTable(), generateSql(), mapColumnType(), postsBlock, postsIdx (+8 more)
+Cohesion: 0.08
+Nodes (36): buildRelationships(), extractType(), generateCreateTable(), generateForeignKeys(), generateInlineForeignKeys(), generateJunctionTable(), generateSql(), layoutTables() (+28 more)
 
 ### Community 187 - "Community 187"
 Cohesion: 0.54
@@ -1489,8 +1497,8 @@ Cohesion: 0.29
 Nodes (7): MermaidFixRule: box-with-messages, MermaidFixRule: diagram-type-typo, MermaidFixRule: graph-to-flowchart, MermaidFixRule: missing-diagram-type, MermaidFixRule: semicolon-line-separator, MermaidFixRule: wrong-arrow-in-sequence, suggestMermaidFix
 
 ### Community 192 - "Community 192"
-Cohesion: 0.38
-Nodes (5): columnMarker(), generateMermaidER(), RELATION_MAP, result, schema
+Cohesion: 0.18
+Nodes (10): columnMarker(), generateMermaidER(), RELATION_MAP, result, schema, columnMarker(), generateMermaidER(), RELATION_MAP (+2 more)
 
 ### Community 193 - "Community 193"
 Cohesion: 0.29
@@ -1940,14 +1948,6 @@ Nodes (5): ADR 0014 — `<ImageToolShell>` owns its controls bag, Consequences, 
 Cohesion: 0.5
 Nodes (3): MODES, UrlEncoder(), UrlMode
 
-### Community 311 - "Community 311"
-Cohesion: 0.5
-Nodes (3): EMPTY_STATS, STAT_LABELS, WordCounter()
-
-### Community 314 - "Community 314"
-Cohesion: 0.5
-Nodes (3): EMPTY_DECODED, JwtDecoded, JwtDecoder()
-
 ### Community 318 - "Community 318"
 Cohesion: 0.5
 Nodes (3): IOS_DEVICES, MASKABLE_ICON_SIZES, PWA_ICON_SIZES
@@ -2101,8 +2101,8 @@ Cohesion: 0.33
 Nodes (5): ADR 0007 — Horizontal labeled value cell stays unshelled, Consequences, Context, Decision, Revisit when
 
 ### Community 369 - "Community 369"
-Cohesion: 0.13
-Nodes (10): compute, { result }, readJsonStorage(), writeJsonStorage(), compute, { result }, Bag, compute (+2 more)
+Cohesion: 0.1
+Nodes (19): GraphqlSchemaViewer(), MermaidRenderer(), ProtobufToJson(), JsonFormatter(), useMountOnce(), compute, errorSpy, onError (+11 more)
 
 ### Community 370 - "Community 370"
 Cohesion: 0.15
@@ -2173,12 +2173,16 @@ Cohesion: 0.06
 Nodes (34): DiagramEditorOptions, IndexListener, isValidDocument(), before, createTestDoc(), doc, editor, idx (+26 more)
 
 ### Community 741 - "Community 741"
-Cohesion: 0.06
-Nodes (26): Editor, EDITOR_OPTIONS, READONLY_EDITOR_OPTIONS, severityStyles, TypescriptPlayground(), UuidGenerator(), d, d1 (+18 more)
+Cohesion: 0.05
+Nodes (34): Editor, EDITOR_OPTIONS, READONLY_EDITOR_OPTIONS, severityStyles, TypescriptPlayground(), UuidGenerator(), d, d1 (+26 more)
+
+### Community 742 - "Community 742"
+Cohesion: 0.16
+Nodes (5): paletteItemStyles, SearchInput(), defaultDuration, iconVariants, ToastItem()
 
 ### Community 743 - "Community 743"
-Cohesion: 0.1
-Nodes (21): HtmlFormatter(), HtmlInput, INITIAL, CHEATSHEET_ENTRIES, chevronStyles, EvalInput, EvalResult, INITIAL_RESULT (+13 more)
+Cohesion: 0.06
+Nodes (27): HtmlFormatter(), HtmlInput, INITIAL, CHEATSHEET_ENTRIES, chevronStyles, EvalInput, EvalResult, INITIAL_RESULT (+19 more)
 
 ### Community 744 - "Community 744"
 Cohesion: 0.5
@@ -2237,12 +2241,12 @@ Cohesion: 0.13
 Nodes (14): ColumnConstraint, ColumnType, DiagramIndexEntry, DiagramSchema, DiagramStorage, DiagramStore, RelationshipEdge, RelationshipEdgeData (+6 more)
 
 ### Community 759 - "Community 759"
-Cohesion: 0.4
-Nodes (3): defaultDuration, iconVariants, ToastItem()
+Cohesion: 0.17
+Nodes (13): DbmlEditorPanel(), DiagramCanvas(), edgeTypes, nodeTypes, ContextValue, Ctx, DiagramProvider(), useDiagram() (+5 more)
 
 ### Community 760 - "Community 760"
-Cohesion: 0.4
-Nodes (4): Bag, compute, INITIAL, { result }
+Cohesion: 0.21
+Nodes (7): computeConversion(), buildTimezoneIndex(), convertTimezone(), getAbbreviation(), getOffset(), getTimezoneList(), parseDateTimeInput()
 
 ### Community 761 - "Community 761"
 Cohesion: 0.2
@@ -2261,8 +2265,8 @@ Cohesion: 0.19
 Nodes (12): createDefaultIdMinters(), createSequentialIdMinters(), makeDefaultMinter(), makeSequentialMinter(), a, b, c1, ids (+4 more)
 
 ### Community 765 - "Community 765"
-Cohesion: 0.13
-Nodes (15): Adding a New Tool, code:ts (export const isValidHash = (value: string): boolean => {), code:ts (import { expect, test } from '@playwright/test'), code:block2 (src/components/feature/generator/HashGenerator.tsx), code:tsx (import { useState } from 'react'), code:ts (export * from './HashGenerator.tsx'), code:ts (export * from './color'), code:ts ({) (+7 more)
+Cohesion: 0.11
+Nodes (18): Adding a New Tool, code:ts (export const isValidHash = (value: string): boolean => {), code:block11 (src/utils/hash.spec.ts), code:ts (import { generateHash } from '@/utils'), code:ts (import { expect, test } from '@playwright/test'), code:block2 (src/components/feature/generator/HashGenerator.tsx), code:tsx (import { useState } from 'react'), code:ts (export * from './HashGenerator.tsx') (+10 more)
 
 ### Community 766 - "Community 766"
 Cohesion: 0.14
@@ -2285,12 +2289,12 @@ Cohesion: 0.17
 Nodes (12): db-diagram-dbml.spec, SQL DDL parser/importer, parseSqlDdl, db-diagram-import.spec, db diagram core (generateId), db diagram persistence (serialize/deserialize), db-diagram-persistence.spec, generateSql (+4 more)
 
 ### Community 771 - "Community 771"
-Cohesion: 0.2
-Nodes (8): nowSpy, { result }, { result, rerender }, { unmount }, useElapsedTimer(), COST_OPTIONS, HashTab(), VerifyTab()
+Cohesion: 0.24
+Nodes (5): getTypeKindLabel(), GraphqlParseOutput, KIND_STYLES, KindBadge(), TypeDetailPanel()
 
 ### Community 772 - "Community 772"
-Cohesion: 0.38
-Nodes (5): columnMarker(), generateMermaidER(), RELATION_MAP, result, schema
+Cohesion: 0.2
+Nodes (9): dbml, original, parsed, positions, regenerated, result, schema, sourceTable (+1 more)
 
 ### Community 774 - "Community 774"
 Cohesion: 0.5
@@ -2299,6 +2303,10 @@ Nodes (3): JsonSchemaDefinition, JsonSchemaProperty, JsonSchemaRoot
 ### Community 775 - "Community 775"
 Cohesion: 0.24
 Nodes (13): AesEncryptDecrypt, BcryptHasher, HashTab (inner), VerifyTab (inner), CertificateDecoder, ChmodCalculator, Debounced async processing pipeline, session ref token to discard stale async results (+5 more)
+
+### Community 778 - "Community 778"
+Cohesion: 0.38
+Nodes (5): Pane(), paneStyles, classes, combos, invariants
 
 ### Community 779 - "Community 779"
 Cohesion: 0.44
@@ -2341,12 +2349,16 @@ Cohesion: 0.47
 Nodes (6): HTMLCanvas 2D API, constants (IOS_DEVICES, PWA sizes), favicon generator, JSZip, generateAllAssets, PWA splash screen + icons
 
 ### Community 790 - "Community 790"
+Cohesion: 0.38
+Nodes (5): formatRelativeTime(), ResultRow(), resultValueStyles, VALIDITY_CONFIG, ValidityBadge()
+
+### Community 791 - "Community 791"
 Cohesion: 0.33
 Nodes (4): chevronStyles, INITIAL_RESULT, initialState, SYNTAX_EXAMPLES
 
-### Community 791 - "Community 791"
-Cohesion: 0.2
-Nodes (9): dbml, original, parsed, positions, regenerated, result, schema, sourceTable (+1 more)
+### Community 792 - "Community 792"
+Cohesion: 0.33
+Nodes (5): ADR 0015 — Diagram operations keep `minters` in their signatures, Consequences, Context, Decision, Revisit when
 
 ### Community 793 - "Community 793"
 Cohesion: 0.67
@@ -2359,6 +2371,10 @@ Nodes (4): pnpm, supportedArchitectures, cpu, os
 ### Community 795 - "Community 795"
 Cohesion: 0.5
 Nodes (4): Accessible & Responsive, Client-Side Only, Key Features, Modern Development
+
+### Community 796 - "Community 796"
+Cohesion: 0.33
+Nodes (5): ADR 0016 — Image-upload prelude stays per-site, Consequences, Context, Decision, Revisit when
 
 ### Community 797 - "Community 797"
 Cohesion: 0.67
@@ -2373,8 +2389,8 @@ Cohesion: 0.67
 Nodes (3): code:ts (export * from './HashGenerator.tsx'), code:ts (export * from './color'), Step 3: Add Barrel Exports
 
 ### Community 800 - "Community 800"
-Cohesion: 0.67
-Nodes (3): code:block11 (src/utils/hash.spec.ts), code:ts (import { generateHash } from '@/utils'), Step 7: Write Unit Tests
+Cohesion: 0.4
+Nodes (4): PaneAlign, PaneGap, PaneProps, SplitPanelProps
 
 ### Community 801 - "Community 801"
 Cohesion: 0.67
@@ -2387,6 +2403,10 @@ Nodes (3): Intl.DateTimeFormat, buildTimezoneIndex (memoized), timezone converte
 ### Community 803 - "Community 803"
 Cohesion: 0.67
 Nodes (3): formatJson, getJsonParseError, wasm/json-tools
+
+### Community 804 - "Community 804"
+Cohesion: 0.5
+Nodes (3): CONSTRAINT_COLORS, ConstraintToggle(), TableNodeComponent()
 
 ### Community 805 - "Community 805"
 Cohesion: 0.25
@@ -2420,6 +2440,10 @@ Nodes (4): code:ts (import { describe, expect, it } from 'vitest'), code:ts (imp
 Cohesion: 0.5
 Nodes (3): FkRef, ParsedColumn, ParseResult
 
+### Community 814 - "Community 814"
+Cohesion: 0.5
+Nodes (3): Base64Mode, EncodingBase64(), MODES
+
 ## Ambiguous Edges - Review These
 - `Dashboard layout key migration (legacy → registry keys)` → `Dashboard layout key migration (legacy → registry keys)`  [AMBIGUOUS]
   src/utils/dashboard.ts · relation: implements
@@ -2427,9 +2451,9 @@ Nodes (3): FkRef, ParsedColumn, ParseResult
   src/utils/user-agent.ts · relation: implements
 
 ## Knowledge Gaps
-- **2959 isolated node(s):** `tsBuildInfoFile`, `target`, `lib`, `module`, `skipLibCheck` (+2954 more)
+- **2985 isolated node(s):** `tsBuildInfoFile`, `target`, `lib`, `module`, `skipLibCheck` (+2980 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **258 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **262 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -2438,12 +2462,12 @@ _Questions this graph is uniquely positioned to answer:_
   _Edge tagged AMBIGUOUS (relation: implements) - confidence is low._
 - **What is the exact relationship between `User-Agent parser (browser/os/engine/device)` and `User-Agent parser (browser/os/engine/device)`?**
   _Edge tagged AMBIGUOUS (relation: implements) - confidence is low._
-- **Why does `useDebounceCallback()` connect `Code Tool Family` to `DB Diagram Editor`, `Community 778`, `Community 278`, `Community 154`, `Community 310`, `Community 311`, `Community 314`, `Community 315`, `Community 61`, `Community 77`, `Community 78`, `Community 722`, `Community 723`, `Community 85`, `Community 727`, `Community 741`, `Community 743`, `Community 240`, `Community 241`?**
-  _High betweenness centrality (0.020) - this node is a cross-community bridge._
-- **Why does `useToolComputation()` connect `Code Tool Family` to `Community 32`, `Community 154`, `Community 743`, `Community 778`, `Community 77`, `Community 78`, `Community 240`, `Community 369`, `Community 722`, `Community 723`, `Community 61`, `Community 85`, `Community 278`, `Image Tool Shell`, `Community 314`, `Community 315`, `Community 311`?**
-  _High betweenness centrality (0.019) - this node is a cross-community bridge._
+- **Why does `useToolComputation()` connect `Code Tool Family` to `Community 743`, `Community 78`, `Community 240`, `Community 369`, `Community 278`, `Image Tool Shell`, `Community 154`, `Community 315`, `Community 61`?**
+  _High betweenness centrality (0.015) - this node is a cross-community bridge._
+- **Why does `useDebounceCallback()` connect `Code Tool Family` to `DB Diagram Editor`, `Community 741`, `Community 743`, `Community 727`, `Community 814`, `Community 78`, `Community 240`, `Community 241`, `Community 369`, `Community 278`, `Community 759`, `Community 310`, `Community 154`, `Community 315`, `Community 61`?**
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
 - **Why does `useBlobUrl()` connect `Community 260` to `Community 51`, `Community 67`, `Community 102`, `Image Tool Shell`?**
-  _High betweenness centrality (0.016) - this node is a cross-community bridge._
+  _High betweenness centrality (0.013) - this node is a cross-community bridge._
 - **Are the 61 inferred relationships involving `useDebounceCallback()` (e.g. with `TypescriptPlayground()` and `DbmlEditorPanel()`) actually correct?**
   _`useDebounceCallback()` has 61 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 55 inferred relationships involving `useToolComputation()` (e.g. with `ImageToolShell()` and `UnitPxToRem()`) actually correct?**
