@@ -472,7 +472,60 @@ Today's adopters:
 
 - [[Image tool shell]] — source `File` URL and result `Blob` URL.
 - [[Batch asset pipeline]] — source `File` URL (`sourcePreview`).
-- `ImageColorPicker` — uploaded image preview URL.
+
+`ImageColorPicker` previously adopted this hook for its preview URL but
+now decodes directly via `loadImageFromBlob` (which owns its own URL
+lifecycle internally), so it no longer needs a separate preview URL.
+
+## Toast channel
+
+The ephemeral notification channel for events that happen *to* a user
+action — not events that are part of the result the user is reading.
+Implemented by `useToast` (`src/hooks/state/useToast.ts`) as a Zustand
+store with exactly two methods: `showError(label)` and
+`showSuccess(label)`. 44 adopters across `feature/` and `common/`, ~122
+call sites.
+
+Carries two invariants:
+
+1. **Ephemeral** — toasts dismiss on their own; consumers never read the
+   toast state back. Fire-and-forget. No "click to acknowledge," no
+   "blocking until dismissed," no "with action" semantics.
+2. **Out-of-band** — a toast does not replace the result. A failed
+   compute that toasts an error still resolves the pipeline's `result`
+   (typically to `initial`); the user sees the empty result panel plus
+   the toast, not a result panel replaced by an error message.
+
+Three categories cover every `showError` adopter:
+
+- **Async-pipeline failures** — wired via the `onError` option on
+  [[Tool computation pipeline]] / [[Tool field bag]] / [[Async action]].
+  The pipeline rejects, the callback toasts. The bulk of adopters.
+- **Inline validation rejections** — synchronous "your input is
+  unusable" rejections in event handlers (`'Maximum dimension is
+  ...'`, `'Please enter JSON input'`, `'Upload a valid image file'`).
+- **Read / parse rejections** — file-read failures (`'Failed to read
+  file'`), schema-parse errors not tied to a pipeline.
+
+`showSuccess` is narrower — exclusively *download confirmations*
+(`'Downloaded mermaid-diagram.png'`), *generation summaries* (`'Generated
+5 UUIDs'`), and *detection notifications* (`'Auto-detected format:
+binary'` from `ProtobufCodec`). It is not used for "compute succeeded" —
+successful pipelines render their result; that IS the success signal.
+
+Does NOT fit: **validation errors that are part of the result the user
+is reading**. When the compute can fail in a way the user must inspect
+alongside their input (e.g., `JsonDiffChecker` showing "Invalid JSON at
+line 3" next to the two text panes), the error belongs inline — not in
+a toast that disappears. [[Diff checker shell]] exposes `renderBanner`
+exactly for this case; today's only consumer is `JsonDiffChecker`'s
+`validationError` field. A toast would lose the context (which input was
+malformed) and dismiss before the user could act on it.
+
+The surface is intentionally minimal — two methods, two colors. No
+`showInfo`, no `showWarning`, no `dismissable` / `persistent` /
+`withAction` options. Anything that needs richer semantics belongs in an
+inline banner or a result-panel state, not stretched onto this channel.
 
 Carries one timing note callers must understand: the URL is set inside a
 `useEffect`, so the first render after a new non-null blob still sees
