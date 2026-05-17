@@ -363,6 +363,19 @@ MIME validation, source and result `Blob` URL lifecycles (via [[useBlobUrl]]),
 and the Download button + filename. The Tool declares `initialControls` and a
 `process(file, controls)` function; the bag's live value lives in the shell.
 
+`process` receives the raw `File`, not a pre-decoded `HTMLImageElement` —
+distinct from the sibling [[Batch asset pipeline]] which decodes once at
+upload and passes the decoded image to its process callback. The asymmetry
+is load-bearing: batch consumers (`FaviconGenerator`,
+`SplashScreenGenerator`) draw the same source to many canvas sizes per
+run, so up-front decode is essential. Single-Blob consumers each own
+decode at the layer that has the right context — `ImageCropper` reads the
+preview `<img>` via `imgRef` (which ReactCrop needs DOM-attached anyway),
+`BackgroundRemover` delegates to `RawImage.fromBlob` inside
+`@huggingface/transformers`, and `ImageResizer` delegates to `resizeImage`
+/ `processImage` in `@/utils/image.ts`. The shell deliberately does not
+pre-decode.
+
 `renderControls` and `renderPreview` ctx both carry `{ controls,
 setControls(partial) }`. `setControls` IS the recompute trigger — every
 partial merges into the live bag (ref-based, same-tick partials compose) and
