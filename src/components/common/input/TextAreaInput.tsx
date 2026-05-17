@@ -29,7 +29,7 @@ export const TextAreaInput = ({
   }
 
   return (
-    <div className={cnMerge(wrapperClassName, 'h-auto flex-col py-2')} data-disabled={disabled}>
+    <div className={cnMerge(wrapperClassName, 'h-auto min-h-0 max-h-[90dvh] flex-col py-2')} data-disabled={disabled}>
       <textarea
         {...props}
         autoComplete="off"
