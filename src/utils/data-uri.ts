@@ -1,5 +1,7 @@
 import type { DataUriEncodeResult, DataUriDecodeResult } from '@/types/utils/data-uri'
 
+import { readFileAsDataUrl } from './file-read'
+
 export const SIZE_WARNING_THRESHOLD = 30 * 1024
 
 export const isImageMimeType = (mimeType: string): boolean => mimeType.startsWith('image/')
@@ -12,41 +14,35 @@ export const isCssCompatibleMimeType = (mimeType: string): boolean =>
 
 export const isValidDataUri = (value: string): boolean => /^data:[^;]+;[^,]+,.+$/.test(value)
 
-export const fileToDataUri = (file: File): Promise<DataUriEncodeResult> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = () => {
-      const dataUri = reader.result as string
-      const base64Only = dataUri.split(',')[1] ?? ''
-      const mimeType = file.type || 'application/octet-stream'
-      const isImage = isImageMimeType(mimeType)
-      const isCssCompatible = isCssCompatibleMimeType(mimeType)
+export const fileToDataUri = async (file: File): Promise<DataUriEncodeResult> => {
+  const dataUri = await readFileAsDataUrl(file)
+  const base64Only = dataUri.split(',')[1] ?? ''
+  const mimeType = file.type || 'application/octet-stream'
+  const isImage = isImageMimeType(mimeType)
+  const isCssCompatible = isCssCompatibleMimeType(mimeType)
 
-      const safeName = file.name.replace(
-        /[&<>"']/g,
-        (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,
-      )
+  const safeName = file.name.replace(
+    /[&<>"']/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,
+  )
 
-      const htmlImgTag = isImage ? `<img src="${dataUri}" alt="${safeName}" />` : null
-      const cssUrl = isCssCompatible ? `url('${dataUri}')` : null
+  const htmlImgTag = isImage ? `<img src="${dataUri}" alt="${safeName}" />` : null
+  const cssUrl = isCssCompatible ? `url('${dataUri}')` : null
 
-      resolve({
-        base64Only,
-        cssUrl,
-        dataUri,
-        encodedSize: dataUri.length,
-        fileName: file.name,
-        htmlImgTag,
-        isCssCompatible,
-        isImage,
-        isLargeFile: file.size > SIZE_WARNING_THRESHOLD,
-        mimeType,
-        originalSize: file.size,
-      })
-    }
-    reader.onerror = () => reject(new Error('Failed to read file'))
-    reader.readAsDataURL(file)
-  })
+  return {
+    base64Only,
+    cssUrl,
+    dataUri,
+    encodedSize: dataUri.length,
+    fileName: file.name,
+    htmlImgTag,
+    isCssCompatible,
+    isImage,
+    isLargeFile: file.size > SIZE_WARNING_THRESHOLD,
+    mimeType,
+    originalSize: file.size,
+  }
+}
 
 export const parseDataUri = (uri: string): DataUriDecodeResult => {
   const match = uri.match(/^data:([^;]+);([^,]+),(.*)$/)

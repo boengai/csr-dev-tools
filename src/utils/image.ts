@@ -1,5 +1,7 @@
 import type { ImageFormat, ImageProcessingOptions, ImageProcessingResult } from '@/types'
 
+import { readFileAsDataUrl } from './file-read'
+
 /**
  * Validate if a string is a valid ImageFormat
  */
@@ -276,29 +278,18 @@ export const processImage = async (
 
     // If no processing needed, return original as data URL
     if (!needsResize && !needsFormatChange && !needsQualityChange) {
-      const reader = new FileReader()
-
-      return new Promise((resolve, reject) => {
-        reader.onload = () => {
-          if (reader.result && typeof reader.result === 'string') {
-            resolve({
-              dataUrl: reader.result,
-              format: targetFormat,
-              height: sourceHeight,
-              quality: options.quality ?? 1,
-              ratio: sourceWidth / sourceHeight,
-              size:
-                Math.ceil((reader.result.length * 3) / 4) -
-                (reader.result.endsWith('==') ? 2 : reader.result.endsWith('=') ? 1 : 0),
-              width: sourceWidth,
-            })
-          } else {
-            reject(new Error('Failed to read file as data URL'))
-          }
-        }
-        reader.onerror = () => reject(new Error('Failed to read file'))
-        reader.readAsDataURL(file)
-      })
+      const dataUrl = await readFileAsDataUrl(file)
+      return {
+        dataUrl,
+        format: targetFormat,
+        height: sourceHeight,
+        quality: options.quality ?? 1,
+        ratio: sourceWidth / sourceHeight,
+        size:
+          Math.ceil((dataUrl.length * 3) / 4) -
+          (dataUrl.endsWith('==') ? 2 : dataUrl.endsWith('=') ? 1 : 0),
+        width: sourceWidth,
+      }
     }
 
     // Calculate target dimensions

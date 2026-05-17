@@ -1,5 +1,7 @@
 import type { ImageBase64Result } from '@/types/utils/image-base64'
 
+import { readFileAsDataUrl } from './file-read'
+
 const getImageDimensions = (dataUri: string): Promise<{ height: number; width: number }> =>
   new Promise((resolve, reject) => {
     const img = new Image()
@@ -8,37 +10,27 @@ const getImageDimensions = (dataUri: string): Promise<{ height: number; width: n
     img.src = dataUri
   })
 
-export const imageFileToBase64 = (file: File): Promise<ImageBase64Result> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader()
-    reader.onload = async () => {
-      try {
-        const dataUri = reader.result as string
-        const base64Only = dataUri.split(',')[1] ?? ''
-        const { height, width } = await getImageDimensions(dataUri)
-        const safeName = file.name.replace(
-          /[&<>"']/g,
-          (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,
-        )
-        const htmlTag = `<img src="${dataUri}" alt="${safeName}" width="${width}" height="${height}" />`
+export const imageFileToBase64 = async (file: File): Promise<ImageBase64Result> => {
+  const dataUri = await readFileAsDataUrl(file)
+  const base64Only = dataUri.split(',')[1] ?? ''
+  const { height, width } = await getImageDimensions(dataUri)
+  const safeName = file.name.replace(
+    /[&<>"']/g,
+    (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,
+  )
+  const htmlTag = `<img src="${dataUri}" alt="${safeName}" width="${width}" height="${height}" />`
 
-        resolve({
-          base64Length: base64Only.length,
-          base64Only,
-          dataUri,
-          fileName: file.name,
-          height,
-          htmlTag,
-          originalSize: file.size,
-          width,
-        })
-      } catch (err) {
-        reject(err)
-      }
-    }
-    reader.onerror = () => reject(new Error('Failed to read file'))
-    reader.readAsDataURL(file)
-  })
+  return {
+    base64Length: base64Only.length,
+    base64Only,
+    dataUri,
+    fileName: file.name,
+    height,
+    htmlTag,
+    originalSize: file.size,
+    width,
+  }
+}
 
 export const formatBase64Size = (length: number): string => {
   if (length < 1024) return `${length} chars`
