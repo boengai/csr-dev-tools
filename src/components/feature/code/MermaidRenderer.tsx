@@ -7,8 +7,8 @@ import { useMountOnce, useToast, useToolComputationPersisted } from '@/hooks'
 import type { MermaidComputeResult, ToolComponentProps } from '@/types'
 import {
   consumeHandoff,
+  downloadDataUrl,
   downloadMermaidSvg,
-  downloadPng,
   initializeMermaid,
   renderMermaid,
   suggestMermaidFix,
@@ -123,7 +123,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     setExportingPng(true)
     try {
       const dataUrl = await svgToPng(svg)
-      downloadPng(dataUrl)
+      downloadDataUrl(dataUrl, 'mermaid-diagram.png')
       showSuccess('Downloaded mermaid-diagram.png')
     } catch {
       showError('Failed to export PNG')

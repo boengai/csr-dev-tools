@@ -62,7 +62,6 @@ export {
   renderMermaid,
   svgToPng,
   downloadSvg as downloadMermaidSvg,
-  downloadPng,
 } from './mermaid-renderer'
 export * from './number-base'
 export * from './og-tags'
