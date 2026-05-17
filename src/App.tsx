@@ -5,7 +5,7 @@ import { type ComponentType, lazy, Suspense } from 'react'
 import { NotoEmoji } from '@/components/common/emoji' // optimized import
 import { ArrowIcon, GitHubIcon, HamburgerIcon, SearchIcon } from '@/components/common/icon' // optimized import
 import { ROUTE_PATH } from '@/constants'
-import { useCommandPaletteStore, useKeyboardShortcuts, usePersistSettings, useSidebarStore } from '@/hooks'
+import { useCommandPaletteStore, useKeyboardShortcut, usePersistSettings, useSidebarStore } from '@/hooks'
 
 const TwinkleStarsAnimate = lazy(() =>
   import('@/components/common/animate/TwinkleStarsAnimate').then(
@@ -52,11 +52,19 @@ const PageLoading = () => {
 }
 
 export default function App() {
-  useKeyboardShortcuts()
   const isOpen = useSidebarStore((state) => state.isOpen)
   const toggle = useSidebarStore((state) => state.toggle)
   const openCommandPalette = useCommandPaletteStore((state) => state.open)
+  const toggleCommandPalette = useCommandPaletteStore((state) => state.toggle)
   const showBackgroundAnimation = usePersistSettings((s) => s.value.showBackgroundAnimation)
+
+  useKeyboardShortcut(
+    (event) => (event.metaKey || event.ctrlKey) && event.key === 'k',
+    (event) => {
+      event.preventDefault()
+      toggleCommandPalette()
+    },
+  )
   const { pathname } = useLocation()
   const isToolPage = pathname.startsWith(ROUTE_PATH.TOOLS + '/')
 
