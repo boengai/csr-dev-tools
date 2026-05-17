@@ -612,10 +612,25 @@ Carries these invariants:
    channel that threads `idMinters`, skips when the op returned the same
    document, runs `afterStructuralChange`, and commits. Ops keep their pure
    `(doc, …, minters) => doc | { document, result }` signature; the editor
-   never threads `this.idMinters` at the call site. Non-structural setters
-   (`setDiagramName`, `setDbmlText`, `syncDbmlFromDiagram`,
-   `loadFromExportedJson`) keep calling `commit` directly — they must not
-   run `afterStructuralChange` (it would overwrite a typed DBML draft).
+   never threads `this.idMinters` at the call site. Mutations sort into
+   exactly three named channels, each owning a distinct invariant set:
+
+   - `commitStructural(op)` — structural mutations (`addTable`,
+     `deleteColumn`, `addRelation`, `applyDbmlNow`, `importFromSql`,
+     `importFromJsonSchema`, …). Autosave ON. `afterStructuralChange` ON.
+     Minters threaded.
+   - `commit(next)` — non-structural content mutations (`setDiagramName`,
+     `setDbmlText`, `syncDbmlFromDiagram`, `loadFromExportedJson`).
+     Autosave ON. `afterStructuralChange` OFF (would overwrite a typed
+     DBML draft). `loadFromExportedJson` belongs here, not in lifecycle,
+     because clearing `diagramId` plus running autosave is what mints
+     a fresh id per invariant 5.
+   - `applyLifecycle(next)` — navigation between diagrams (`loadDiagram`,
+     `newDiagram`, `deleteDiagram`, `renameDiagram`, `replaceDocument`).
+     Autosave OFF. `afterStructuralChange` OFF. These represent the user
+     moving between documents, not editing one — they must not bump
+     `updatedAt` or rewrite generated DBML. The third channel is what
+     prevents a contributor from accidentally autosaving on a load.
 
 The `DiagramStorage` adapter (`{ loadIndex, saveIndex, loadDiagram,
 saveDiagram, deleteDiagram, generateId }`) decouples the editor from

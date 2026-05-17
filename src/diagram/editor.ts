@@ -82,15 +82,13 @@ export class DiagramEditor {
     if (!schema) return
     const entry = this.storage.loadIndex().find((e) => e.id === id)
     const next = lifecycleOps.schemaToDocument(schema, createInitialDocument())
-    this.document = { ...next, diagramId: id, diagramName: entry?.name ?? next.diagramName }
-    this.notify()
+    this.applyLifecycle({ ...next, diagramId: id, diagramName: entry?.name ?? next.diagramName })
   }
 
   deleteDiagram(id: string): void {
     this.storage.deleteDiagram(id)
     if (this.document.diagramId === id) {
-      this.document = createInitialDocument()
-      this.notify()
+      this.applyLifecycle(createInitialDocument())
     }
     this.notifyIndex()
   }
@@ -104,8 +102,7 @@ export class DiagramEditor {
     entry.name = trimmed
     this.storage.saveIndex(idx)
     if (this.document.diagramId === id) {
-      this.document = { ...this.document, diagramName: trimmed }
-      this.notify()
+      this.applyLifecycle({ ...this.document, diagramName: trimmed })
     }
     this.notifyIndex()
   }
@@ -129,18 +126,23 @@ export class DiagramEditor {
   }
 
   replaceDocument(next: DiagramDocument): void {
-    if (!isValidDocument(next)) {
-      this.document = createInitialDocument()
-    } else {
-      this.document = cloneDocument(next)
-    }
-    this.notify()
+    this.applyLifecycle(isValidDocument(next) ? cloneDocument(next) : createInitialDocument())
   }
 
   protected commit(next: DiagramDocument): void {
     this.document = next
     this.notify()
     this.scheduleAutosave()
+  }
+
+  // The lifecycle channel: replace the document and notify, but do not
+  // schedule autosave or run afterStructuralChange. Routed through by
+  // load/new/delete/rename/replace — these represent navigation between
+  // diagrams, not user edits, so they must not bump updatedAt or rewrite
+  // generated DBML.
+  private applyLifecycle(next: DiagramDocument): void {
+    this.document = next
+    this.notify()
   }
 
   flush(): void {
@@ -298,8 +300,7 @@ export class DiagramEditor {
       n++
       name = `${base} ${n}`
     }
-    this.document = { ...lifecycleOps.newDiagram(), diagramName: name }
-    this.notify()
+    this.applyLifecycle({ ...lifecycleOps.newDiagram(), diagramName: name })
   }
 
   setDiagramName(name: string): void {
