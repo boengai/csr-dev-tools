@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { createSequentialIdMinters } from './id-minters'
-import { createDefaultColumn, createDefaultTable, gridLayoutPositions } from './defaults'
+import { createDefaultColumn, gridLayoutPositions } from './defaults'
 
 describe('createDefaultColumn', () => {
   it('should create a column with given name', () => {
@@ -70,23 +70,3 @@ describe('gridLayoutPositions', () => {
   })
 })
 
-describe('createDefaultTable', () => {
-  it('should create table with incrementing name based on count', () => {
-    const { column: mintColumn } = createSequentialIdMinters()
-    const t0 = createDefaultTable(0, mintColumn)
-    expect(t0.tableName).toBe('table_1')
-
-    const t3 = createDefaultTable(3, mintColumn)
-    expect(t3.tableName).toBe('table_4')
-  })
-
-  it('should include one default id column as primary key minted via the column minter', () => {
-    const { column: mintColumn } = createSequentialIdMinters()
-    const table = createDefaultTable(0, mintColumn)
-    expect(table.columns).toHaveLength(1)
-    expect(table.columns[0].name).toBe('id')
-    expect(table.columns[0].type).toBe('INT')
-    expect(table.columns[0].constraints.isPrimaryKey).toBe(true)
-    expect(table.columns[0].id).toBe('c_1')
-  })
-})

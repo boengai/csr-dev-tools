@@ -42,12 +42,3 @@ export function gridLayoutPositions(count: number): Array<{ x: number; y: number
     y: Math.floor(i / GRID_COLS) * V_SPACING,
   }))
 }
-
-export const createDefaultTable = (tableCount: number, mintColumn: () => ColumnId) => {
-  const tableName = `table_${tableCount + 1}`
-  const idColumn = createDefaultColumn('id', true, mintColumn)
-  return {
-    columns: [idColumn],
-    tableName,
-  }
-}
