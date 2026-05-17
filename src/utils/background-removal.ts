@@ -1,4 +1,5 @@
 import { canvasToBlob } from './canvas'
+import { loadImageFromBlob } from './image'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 let cachedPipeline: Promise<any> | null = null
@@ -53,30 +54,19 @@ export async function applyBackground(foreground: Blob, color: string): Promise<
     throw new Error('Invalid foreground image')
   }
 
-  const img = new Image()
-  const url = URL.createObjectURL(foreground)
+  const img = await loadImageFromBlob(foreground)
 
-  try {
-    await new Promise<void>((resolve, reject) => {
-      img.onload = () => resolve()
-      img.onerror = () => reject(new Error('Failed to load foreground image'))
-      img.src = url
-    })
+  const canvas = document.createElement('canvas')
+  canvas.width = img.width
+  canvas.height = img.height
+  const ctx = canvas.getContext('2d')
+  if (!ctx) throw new Error('Failed to create canvas context')
 
-    const canvas = document.createElement('canvas')
-    canvas.width = img.width
-    canvas.height = img.height
-    const ctx = canvas.getContext('2d')
-    if (!ctx) throw new Error('Failed to create canvas context')
+  ctx.fillStyle = color
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  ctx.drawImage(img, 0, 0)
 
-    ctx.fillStyle = color
-    ctx.fillRect(0, 0, canvas.width, canvas.height)
-    ctx.drawImage(img, 0, 0)
-
-    return canvasToBlob(canvas)
-  } finally {
-    URL.revokeObjectURL(url)
-  }
+  return canvasToBlob(canvas)
 }
 
 /** Reset the cached pipeline (useful for testing) */

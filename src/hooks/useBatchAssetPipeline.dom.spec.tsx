@@ -12,7 +12,7 @@ vi.mock('@/utils/image', async () => {
   const actual = await vi.importActual<typeof import('@/utils/image')>('@/utils/image')
   return {
     ...actual,
-    loadImageFromFile: vi.fn(async (file: File) => {
+    loadImageFromBlob: vi.fn(async (file: File) => {
       const img = new Image()
       Object.defineProperty(img, 'width', { value: 1024, configurable: true })
       Object.defineProperty(img, 'height', { value: 1024, configurable: true })

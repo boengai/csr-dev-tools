@@ -7,7 +7,7 @@ import type {
   UseBatchAssetPipelineResult,
 } from '@/types'
 import { downloadBlob } from '@/utils/download'
-import { loadImageFromFile } from '@/utils/image'
+import { loadImageFromBlob } from '@/utils/image'
 import { buildZipBlob } from '@/utils/zip'
 
 import { useToast } from './state/useToast'
@@ -20,7 +20,7 @@ import { useStaleSafeAsync } from './useStaleSafeAsync'
  * FaviconGenerator, SplashScreenGenerator). Composes:
  *
  *   - `useStaleSafeAsync` for race-free `regenerate()`
- *   - `loadImageFromFile` for source decoding
+ *   - `loadImageFromBlob` for source decoding
  *   - `useBlobUrl` for the source preview URL lifecycle
  *   - `downloadBlob` / `buildZipBlob` for output
  *   - `useToast` for the reject / success / failure messages
@@ -68,7 +68,7 @@ export function useBatchAssetPipeline<TResults>(
 
       let image: HTMLImageElement
       try {
-        image = await loadImageFromFile(file)
+        image = await loadImageFromBlob(file)
       } catch {
         if (!mountedRef.current) return
         showError(rejectToastLabel)

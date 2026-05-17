@@ -123,7 +123,7 @@ describe('background-removal utilities', () => {
       const revokeSpy = vi.spyOn(URL, 'revokeObjectURL')
 
       const foreground = new Blob(['fake'], { type: 'image/png' })
-      await expect(applyBackground(foreground, '#fff')).rejects.toThrow('Failed to load foreground image')
+      await expect(applyBackground(foreground, '#fff')).rejects.toThrow(/Image loading failed/)
       expect(revokeSpy).toHaveBeenCalled()
     })
   })

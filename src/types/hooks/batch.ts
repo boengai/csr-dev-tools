@@ -34,7 +34,7 @@ export type UseBatchAssetPipelineResult<TResults> = {
   error: unknown | null
   /**
    * Validate the first file's MIME (if `mimePrefix` is set), decode it via
-   * `loadImageFromFile`, and populate `sourceFile`/`sourcePreview`/
+   * `loadImageFromBlob`, and populate `sourceFile`/`sourcePreview`/
    * `sourceImage`. Clears any previous results. A failed MIME check fires
    * the reject toast and leaves state untouched.
    */

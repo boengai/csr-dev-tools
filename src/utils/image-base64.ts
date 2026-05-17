@@ -1,19 +1,12 @@
 import type { ImageBase64Result } from '@/types/utils/image-base64'
 
 import { readFileAsDataUrl } from './file-read'
-
-const getImageDimensions = (dataUri: string): Promise<{ height: number; width: number }> =>
-  new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => resolve({ height: img.naturalHeight, width: img.naturalWidth })
-    img.onerror = () => reject(new Error('Failed to load image'))
-    img.src = dataUri
-  })
+import { loadImageFromBlob } from './image'
 
 export const imageFileToBase64 = async (file: File): Promise<ImageBase64Result> => {
-  const dataUri = await readFileAsDataUrl(file)
+  const [dataUri, img] = await Promise.all([readFileAsDataUrl(file), loadImageFromBlob(file)])
   const base64Only = dataUri.split(',')[1] ?? ''
-  const { height, width } = await getImageDimensions(dataUri)
+  const { naturalHeight: height, naturalWidth: width } = img
   const safeName = file.name.replace(
     /[&<>"']/g,
     (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] ?? c,

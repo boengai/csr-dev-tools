@@ -413,7 +413,13 @@ The hook owns:
 
 - File upload + `mimePrefix` validation + reject toast (rejected uploads
   leave state untouched).
-- Source decoding via `loadImageFromFile` → `sourceImage: HTMLImageElement`.
+- Source decoding via `loadImageFromBlob` → `sourceImage: HTMLImageElement`.
+  The canonical decode primitive: takes any `Blob` (File, SVG-as-Blob,
+  segmenter-output-Blob), owns its objectURL revoke lifecycle, returns the
+  fully-loaded element. Adopters today: this pipeline, `processImage`,
+  `imageFileToBase64`, `applyBackground` (in `background-removal.ts`),
+  `svgToPng` (in `mermaid-renderer.ts`), and `ImageColorPicker`.
+  ImageConvertor's preview loop deliberately bypasses it — see ADR-0017.
 - The source `Blob` URL (`sourcePreview`) — derived via [[useBlobUrl]] so
   the revoke-previous-then-create-next + revoke-on-unmount lifecycle lives
   in one module shared with the [[Image tool shell]].

@@ -4,9 +4,8 @@ import { Button, CopyButton, Pane, SplitPanel, UploadInput } from '@/components/
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import { useBlobUrl } from '@/hooks/useBlobUrl'
 import type { PickedColorWithId, ToolComponentProps } from '@/types'
-import { type PickedColor, pixelToColor } from '@/utils'
+import { type PickedColor, loadImageFromBlob, pixelToColor } from '@/utils'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const rafThrottle = <T extends (...args: Array<any>) => void>(fn: T): T => {
@@ -24,26 +23,33 @@ const toolEntry = TOOL_REGISTRY_MAP['image-color-picker']
 export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const { showError } = useToast()
   const [imageFile, setImageFile] = useState<File | null>(null)
-  const imageUrl = useBlobUrl(imageFile)
   const nextColorId = useRef(0)
   const [palette, setPalette] = useState<Array<PickedColorWithId>>([])
   const [hoverColor, setHoverColor] = useState<PickedColor | null>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
-    if (!imageUrl) return
-    const img = new Image()
-    img.onload = () => {
-      const canvas = canvasRef.current
-      if (!canvas) return
-      canvas.width = img.naturalWidth
-      canvas.height = img.naturalHeight
-      const ctx = canvas.getContext('2d')
-      if (!ctx) return
-      ctx.drawImage(img, 0, 0)
+    if (!imageFile) return
+    let cancelled = false
+    loadImageFromBlob(imageFile)
+      .then((img) => {
+        if (cancelled) return
+        const canvas = canvasRef.current
+        if (!canvas) return
+        canvas.width = img.naturalWidth
+        canvas.height = img.naturalHeight
+        const ctx = canvas.getContext('2d')
+        if (!ctx) return
+        ctx.drawImage(img, 0, 0)
+      })
+      .catch(() => {
+        if (cancelled) return
+        showError('Failed to load image')
+      })
+    return () => {
+      cancelled = true
     }
-    img.src = imageUrl
-  }, [imageUrl])
+  }, [imageFile, showError])
 
   const handleFileChange = useCallback(
     (files: Array<File>) => {
@@ -116,7 +122,7 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
               name="image-color-picker"
               onChange={handleFileChange}
             />
-            {imageUrl && (
+            {imageFile && (
               <div className="relative overflow-auto rounded-lg border border-gray-800">
                 <canvas
                   className="max-h-[500px] w-full cursor-crosshair object-contain"

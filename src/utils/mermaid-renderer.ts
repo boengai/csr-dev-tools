@@ -3,6 +3,7 @@ import mermaid from 'mermaid'
 
 import type { MermaidRenderResult } from '@/types/utils/mermaid-renderer'
 import { downloadBlob } from '@/utils/download'
+import { loadImageFromBlob } from '@/utils/image'
 
 let initialized = false
 
@@ -34,61 +35,45 @@ export async function renderMermaid(code: string, id: string): Promise<MermaidRe
 }
 
 export async function svgToPng(svgString: string, scale = 2): Promise<string> {
-  return new Promise((resolve, reject) => {
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(svgString, 'image/svg+xml')
-    const svgEl = doc.querySelector('svg')
-    if (!svgEl) {
-      reject(new Error('Invalid SVG'))
-      return
-    }
+  const parser = new DOMParser()
+  const doc = parser.parseFromString(svgString, 'image/svg+xml')
+  const svgEl = doc.querySelector('svg')
+  if (!svgEl) {
+    throw new Error('Invalid SVG')
+  }
 
-    let width = 0
-    let height = 0
-    const viewBox = svgEl.getAttribute('viewBox')
-    const widthAttr = svgEl.getAttribute('width')
-    const heightAttr = svgEl.getAttribute('height')
+  let width = 0
+  let height = 0
+  const viewBox = svgEl.getAttribute('viewBox')
+  const widthAttr = svgEl.getAttribute('width')
+  const heightAttr = svgEl.getAttribute('height')
 
-    if (widthAttr && heightAttr) {
-      width = parseFloat(widthAttr)
-      height = parseFloat(heightAttr)
-    } else if (viewBox) {
-      const parts = viewBox.split(/[\s,]+/)
-      width = parseFloat(parts[2])
-      height = parseFloat(parts[3])
-    }
+  if (widthAttr && heightAttr) {
+    width = parseFloat(widthAttr)
+    height = parseFloat(heightAttr)
+  } else if (viewBox) {
+    const parts = viewBox.split(/[\s,]+/)
+    width = parseFloat(parts[2])
+    height = parseFloat(parts[3])
+  }
 
-    if (!width || !height) {
-      width = 800
-      height = 600
-    }
+  if (!width || !height) {
+    width = 800
+    height = 600
+  }
 
-    const img = new Image()
-    const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' })
-    const url = URL.createObjectURL(svgBlob)
+  const svgBlob = new Blob([svgString], { type: 'image/svg+xml;charset=utf-8' })
+  const img = await loadImageFromBlob(svgBlob)
 
-    img.onload = () => {
-      const canvas = document.createElement('canvas')
-      canvas.width = width * scale
-      canvas.height = height * scale
-      const ctx = canvas.getContext('2d')
-      if (!ctx) {
-        URL.revokeObjectURL(url)
-        reject(new Error('Canvas context unavailable'))
-        return
-      }
-      ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
-      URL.revokeObjectURL(url)
-      resolve(canvas.toDataURL('image/png'))
-    }
-
-    img.onerror = () => {
-      URL.revokeObjectURL(url)
-      reject(new Error('Failed to load SVG for PNG conversion'))
-    }
-
-    img.src = url
-  })
+  const canvas = document.createElement('canvas')
+  canvas.width = width * scale
+  canvas.height = height * scale
+  const ctx = canvas.getContext('2d')
+  if (!ctx) {
+    throw new Error('Canvas context unavailable')
+  }
+  ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
+  return canvas.toDataURL('image/png')
 }
 
 export function downloadSvg(svgString: string, filename = 'mermaid-diagram.svg'): void {

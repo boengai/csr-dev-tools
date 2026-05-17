@@ -50,13 +50,15 @@ const cleanupCanvas = (canvas: HTMLCanvasElement): void => {
 }
 
 /**
- * Load image from File and return HTMLImageElement
+ * Decode a Blob (or File / SVG Blob / any image-shaped Blob) into a
+ * fully-loaded HTMLImageElement. Owns its objectURL lifecycle — the URL
+ * is revoked once the image has decoded (or failed to).
  */
-export const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
+export const loadImageFromBlob = (blob: Blob): Promise<HTMLImageElement> => {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.crossOrigin = 'anonymous'
-    const url = URL.createObjectURL(file)
+    const url = URL.createObjectURL(blob)
 
     img.onload = () => {
       URL.revokeObjectURL(url)
@@ -257,7 +259,7 @@ export const processImage = async (
   let canvas: HTMLCanvasElement | null = null
 
   try {
-    img = await loadImageFromFile(file)
+    img = await loadImageFromBlob(file)
     const sourceWidth = img.naturalWidth || img.width
     const sourceHeight = img.naturalHeight || img.height
 
