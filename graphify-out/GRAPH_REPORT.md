@@ -1,16 +1,16 @@
 # Graph Report - csr-dev-tools  (2026-05-17)
 
 ## Corpus Check
-- 713 files · ~302,364 words
+- 713 files · ~302,349 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 5525 nodes · 6292 edges · 820 communities (558 shown, 262 thin omitted)
+- 5525 nodes · 6292 edges · 821 communities (559 shown, 262 thin omitted)
 - Extraction: 90% EXTRACTED · 10% INFERRED · 0% AMBIGUOUS · INFERRED: 657 edges (avg confidence: 0.83)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9991717c`
+- Built from commit: `027a9f53`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -705,6 +705,7 @@
 - [[_COMMUNITY_Community 816|Community 816]]
 - [[_COMMUNITY_Community 817|Community 817]]
 - [[_COMMUNITY_Community 818|Community 818]]
+- [[_COMMUNITY_Community 820|Community 820]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `useDebounceCallback()` - 63 edges
@@ -730,7 +731,7 @@
 - `GridPlayground` --rationale_for--> `Requirements (5 new tools epic)`  [INFERRED]
   src/components/feature/css/GridPlayground.tsx → docs/requirements.md
 
-## Communities (820 total, 262 thin omitted)
+## Communities (821 total, 262 thin omitted)
 
 ### Community 0 - "Tool Components"
 Cohesion: 0.19
@@ -2325,8 +2326,8 @@ Cohesion: 0.22
 Nodes (9): bcrypt hash/verify (WASM proxy), bcrypt-hasher.spec, jsonToTypeScript (WASM proxy), number base converter (WASM proxy), WASM bcrypt binding, WASM json-tools binding, WASM number-base binding, WASM proxy pattern (rationale) (+1 more)
 
 ### Community 784 - "Community 784"
-Cohesion: 0.12
-Nodes (9): chevronStyles, INITIAL_RESULT, initialState, SYNTAX_EXAMPLES, BrowsableEntry, buildBrowsableEntries(), EntryKind, KIND_STYLES (+1 more)
+Cohesion: 0.22
+Nodes (5): BrowsableEntry, buildBrowsableEntries(), EntryKind, KIND_STYLES, ParseOutput
 
 ### Community 785 - "Community 785"
 Cohesion: 0.22
@@ -2443,6 +2444,10 @@ Nodes (3): FkRef, ParsedColumn, ParseResult
 ### Community 814 - "Community 814"
 Cohesion: 0.5
 Nodes (3): Base64Mode, EncodingBase64(), MODES
+
+### Community 820 - "Community 820"
+Cohesion: 0.33
+Nodes (4): chevronStyles, INITIAL_RESULT, initialState, SYNTAX_EXAMPLES
 
 ## Ambiguous Edges - Review These
 - `Dashboard layout key migration (legacy → registry keys)` → `Dashboard layout key migration (legacy → registry keys)`  [AMBIGUOUS]
