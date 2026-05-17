@@ -789,7 +789,8 @@ across the three adopters, so a wrapper would either grow knobs or
 lose depth. The pipeline already carries the load-bearing invariants
 (debounced, stale-safe, empty-bypass, unmount-safe); the pattern adds
 discipline about how to compose them for this specific shape, nothing
-more.
+more. Recorded as a declined extraction in ADR-0019, which names the
+two adopter-shape triggers that would revisit the decision.
 
 Pick this when adding a Tool with ≥2 representations of one value that
 must sync. Don't pick it when the Tool has independent fields that
