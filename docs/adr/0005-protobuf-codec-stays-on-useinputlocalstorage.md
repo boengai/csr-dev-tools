@@ -110,3 +110,21 @@ is also declined: the net change costs more invariants than it removes.
   encode/decode into a single bidirectional pipeline). At that point
   [[Bidirectional converter]] becomes a real candidate and this ADR is
   superseded.
+
+## 2026-05-17 — Twin content consolidation (reaffirmation)
+
+A second architecture pass examined the same component and confirmed the
+triad decision above. The child UI duplication called out in Context —
+`<EncodeContent>` and `<DecodeContent>` as substantial sibling UIs — was
+collapsed into a single `<ProtobufContent direction="encode" | "decode">`
+parametrized by a static direction profile (compute fn, upload shape,
+source-input variant, format-radio placement, download builder). Net
+delete ~330 lines of twin code, replaced by ~150 lines of one component
+plus a profile table.
+
+The triad (`useInputLocalStorage` + `useToolComputation` for schema +
+`useMountOnce`) was reaffirmed unchanged. The deletion test on the triad
+still holds (nowhere to migrate without growing `useToolFieldsPersisted`
+knobs); the deletion test on the twins flipped from "stays" to
+"consolidates" — they had no genuinely structural divergence, only a
+profile's worth of named variances.

@@ -145,14 +145,21 @@ overridden with "now" on mount via a follow-up
 need a per-field opt-out — the override is the documented pattern for
 "persist some fields, recompute others on each mount."
 
-Today's remaining migration target is `ProtobufCodec`, which still
-hand-rolls `useInputLocalStorage` + `useToolComputation` + `useMountOnce`
-on top of a multi-pipeline shape (separate encode/decode/schema-parse
-computes around one shared persisted bag). Other multi-field Tools that
-once carried that triad (`MermaidRenderer`, `GraphqlSchemaViewer`,
-`JsonpathEvaluator`, `ProtobufToJson`, and the formatter family) have
-since migrated to this hook or to its single-Input sibling
-[[Persistent tool computation]].
+`ProtobufCodec` deliberately does NOT adopt this hook (per ADR-0005). Its
+shape — one persisted 5-field bag in which only `schema` drives compute,
+plus two child pipelines (encode, decode) reading slices of that bag — is
+the "shared persisted bag + multiple pipelines reading slices" pattern.
+`useToolFieldsPersisted` would re-fire `parseProtobufSchema` on every
+`encodeSource` keystroke, since the hook does not gate compute on which
+field changed. The triad (`useInputLocalStorage` + a single
+`useToolComputation` over `schema` + `useMountOnce` priming that parse)
+is load-bearing and stays. A second adopter with this shape would justify
+a new seam (`usePersistedBagWithSlicePipelines`); one adopter does not.
+Other multi-field Tools that once carried a similar-looking triad
+(`MermaidRenderer`, `GraphqlSchemaViewer`, `JsonpathEvaluator`,
+`ProtobufToJson`, and the formatter family) had a different shape — one
+pipeline driven by the bag — and have since migrated to this hook or to
+its single-Input sibling [[Persistent tool computation]].
 
 ## Persistent tool computation
 

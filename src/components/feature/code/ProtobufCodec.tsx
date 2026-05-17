@@ -17,7 +17,6 @@ import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type {
   ContentProps,
-  DecodeInput,
   EncodeInput,
   PersistedState,
   ProtobufCodecAction,
@@ -27,6 +26,160 @@ import type {
 import type { OutputFormat } from '@/types/utils/protobuf-codec'
 import { downloadBlob } from '@/utils/download'
 import { detectProtobufFormat } from '@/wasm/parsers'
+
+// ---------------------------------------------------------------------------
+// File-local types (not exported — kept out of @/types per convention)
+// ---------------------------------------------------------------------------
+
+type Direction = 'encode' | 'decode'
+
+// UploadCtx carries the callbacks and state a profile's upload handler needs
+// from the component without prop-drilling the full ContentProps.
+type UploadCtx = {
+  onFormatChange: (v: string) => void
+  onSourceChange: (v: string) => void
+  schema: string
+  selectedMessageType: string
+  format: OutputFormat
+  setInputImmediate: (input: CodecInput) => void
+  showError: (msg: string) => void
+  showSuccess: (msg: string) => void
+}
+
+type DownloadResult = { blob: Blob; filename: string }
+
+type DirectionProfile = {
+  computeFn: (input: CodecInput) => Promise<string>
+  defaultErrorMsg: string
+  upload: {
+    accept: string
+    buttonLabel: string
+    handle: (file: File, ctx: UploadCtx) => Promise<void>
+  }
+  sourceInput: { kind: 'code' | 'textarea'; placeholder: string }
+  formatRadio: { placement: 'toolbar' | 'belowDivider'; label: string }
+  download: {
+    build: (result: string, msgType: string, format: OutputFormat) => DownloadResult
+    ariaLabel: string
+  }
+  resultPlaceholder: string
+  selectSize?: 'compact'
+}
+
+// Alias — EncodeInput and DecodeInput are structurally identical; both names
+// remain exported from @/types for back-compat.
+type CodecInput = EncodeInput
+
+// ---------------------------------------------------------------------------
+// Direction profiles — static lookup table, defined once at module load.
+// Exported for unit testing only (@internal — not part of the public API).
+// ---------------------------------------------------------------------------
+
+export const DIRECTION_PROFILES: Record<Direction, DirectionProfile> = {
+  encode: {
+    computeFn: async ({ schema, msgType, source, format }) => {
+      const { encodeProtobuf } = await import('@/wasm/parsers')
+      const result = await encodeProtobuf(schema, msgType, source, format)
+      if (result.success) return result.output
+      throw new Error(result.error)
+    },
+    defaultErrorMsg: 'Failed to encode protobuf',
+    upload: {
+      accept: '.json,application/json',
+      buttonLabel: 'Upload JSON',
+      handle: async (file, ctx) => {
+        const text = await file.text()
+        ctx.onSourceChange(text)
+        ctx.setInputImmediate({ schema: ctx.schema, msgType: ctx.selectedMessageType, source: text, format: ctx.format })
+      },
+    },
+    sourceInput: {
+      kind: 'code',
+      placeholder: '{"name": "Alice", "age": 30}',
+    },
+    formatRadio: { placement: 'belowDivider', label: '' },
+    download: {
+      build: (result, msgType, format) => {
+        const timestamp = Date.now()
+        const safeName = msgType.replace(/[^a-zA-Z0-9-_]/g, '_')
+        if (format === 'binary') {
+          const bytes = new Uint8Array(result.length)
+          for (let i = 0; i < result.length; i++) {
+            bytes[i] = result.charCodeAt(i) & 0xff
+          }
+          return {
+            blob: new Blob([bytes], { type: 'application/octet-stream' }),
+            filename: `encoded_${safeName}_${timestamp}.pb`,
+          }
+        }
+        return {
+          blob: new Blob([result], { type: 'text/plain' }),
+          filename: `encoded_${safeName}_${timestamp}.pb.txt`,
+        }
+      },
+      ariaLabel: 'Download encoded result',
+    },
+    resultPlaceholder: 'Encoded output will appear here...',
+  },
+
+  decode: {
+    computeFn: async ({ schema, msgType, source, format }) => {
+      const { decodeProtobuf } = await import('@/wasm/parsers')
+      const result = await decodeProtobuf(schema, msgType, source, format)
+      if (result.success) return result.output
+      throw new Error(result.error)
+    },
+    defaultErrorMsg: 'Failed to decode protobuf',
+    upload: {
+      accept: '.pb,.bin,.txt,.protobuf',
+      buttonLabel: 'Upload .pb',
+      handle: async (file, ctx) => {
+        const bytes = new Uint8Array(await file.arrayBuffer())
+        // Convert to latin1 string (preserves all byte values, unlike UTF-8)
+        let raw = ''
+        for (const byte of bytes) {
+          raw += String.fromCharCode(byte)
+        }
+        // Try to detect if the content is base64 or hex text
+        const textDecoder = new TextDecoder()
+        const text = textDecoder.decode(bytes)
+        const detected = await detectProtobufFormat(text)
+        const value = detected === 'binary' ? raw : text
+        ctx.onFormatChange(detected)
+        ctx.onSourceChange(value)
+        ctx.setInputImmediate({
+          schema: ctx.schema,
+          msgType: ctx.selectedMessageType,
+          source: value,
+          format: detected,
+        })
+        ctx.showSuccess(`Auto-detected format: ${detected}`)
+      },
+    },
+    sourceInput: {
+      kind: 'textarea',
+      placeholder: 'Paste encoded protobuf data...',
+    },
+    formatRadio: { placement: 'toolbar', label: 'Input Format' },
+    download: {
+      build: (result, msgType, _format) => {
+        const timestamp = Date.now()
+        const safeName = msgType.replace(/[^a-zA-Z0-9-_]/g, '_')
+        return {
+          blob: new Blob([result], { type: 'application/json' }),
+          filename: `decoded_${safeName}_${timestamp}.json`,
+        }
+      },
+      ariaLabel: 'Download decoded JSON',
+    },
+    resultPlaceholder: '{ "name": "Alice" }',
+    selectSize: 'compact',
+  },
+}
+
+// ---------------------------------------------------------------------------
+// Module constants
+// ---------------------------------------------------------------------------
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-codec']
 const INITIAL_STATE: PersistedState = {
@@ -42,6 +195,11 @@ const FORMAT_OPTIONS = [
   { label: 'Hex', value: 'hex' },
   { label: 'Binary', value: 'binary' },
 ]
+
+// ---------------------------------------------------------------------------
+// Download button — shared across both directions
+// ---------------------------------------------------------------------------
+
 const DownloadButton = ({ ariaLabel, ...props }: { ariaLabel: string; disabled: boolean; onClick: () => void }) => {
   return (
     <button
@@ -55,7 +213,14 @@ const DownloadButton = ({ ariaLabel, ...props }: { ariaLabel: string; disabled: 
   )
 }
 
-const EncodeContent = ({
+// ---------------------------------------------------------------------------
+// ProtobufContent — single direction-parametrized component
+// ---------------------------------------------------------------------------
+
+type ProtobufContentProps = ContentProps & { direction: Direction }
+
+const ProtobufContent = ({
+  direction,
   format,
   messageTypes,
   onFormatChange,
@@ -65,27 +230,23 @@ const EncodeContent = ({
   schema,
   selectedMessageType,
   source,
-}: ContentProps) => {
-  const { showError } = useToast()
+}: ProtobufContentProps) => {
+  const { showError, showSuccess } = useToast()
+  const profile = DIRECTION_PROFILES[direction]
 
   const {
     result,
-    setInput: setEncodeInput,
-    setInputImmediate: setEncodeInputImmediate,
-  } = useToolComputation<EncodeInput, string>(
-    async ({ schema: schemaVal, msgType, source: sourceVal, format: fmt }) => {
-      const { encodeProtobuf } = await import('@/wasm/parsers')
-      const codecResult = await encodeProtobuf(schemaVal, msgType, sourceVal, fmt)
-      if (codecResult.success) return codecResult.output
-      throw new Error(codecResult.error)
-    },
+    setInput,
+    setInputImmediate,
+  } = useToolComputation<CodecInput, string>(
+    profile.computeFn,
     {
       debounceMs: 300,
       initial: '',
       isEmpty: ({ schema: schemaVal, msgType, source: sourceVal }) =>
         !schemaVal.trim() || !msgType || !sourceVal.trim(),
       onError: (err) => {
-        const label = err instanceof Error ? err.message : 'Failed to encode protobuf'
+        const label = err instanceof Error ? err.message : profile.defaultErrorMsg
         showError(label)
       },
     },
@@ -93,7 +254,7 @@ const EncodeContent = ({
 
   useEffect(() => {
     if (schema && selectedMessageType && source) {
-      setEncodeInputImmediate({ schema, msgType: selectedMessageType, source, format })
+      setInputImmediate({ schema, msgType: selectedMessageType, source, format })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps -- run once when messageType becomes available
   }, [selectedMessageType])
@@ -101,57 +262,59 @@ const EncodeContent = ({
   const handleSourceChange = useCallback(
     (value: string) => {
       onSourceChange(value)
-      setEncodeInput({ schema, msgType: selectedMessageType, source: value, format })
+      setInput({ schema, msgType: selectedMessageType, source: value, format })
     },
-    [onSourceChange, schema, selectedMessageType, format, setEncodeInput],
+    [onSourceChange, schema, selectedMessageType, format, setInput],
   )
 
   const handleFormatChange = useCallback(
     (value: string) => {
       onFormatChange(value)
       if (source)
-        setEncodeInputImmediate({ schema, msgType: selectedMessageType, source, format: value as OutputFormat })
+        setInputImmediate({ schema, msgType: selectedMessageType, source, format: value as OutputFormat })
     },
-    [onFormatChange, source, schema, selectedMessageType, setEncodeInputImmediate],
+    [onFormatChange, source, schema, selectedMessageType, setInputImmediate],
   )
 
   const handleMessageTypeChange = useCallback(
     (value: string) => {
       onMessageTypeChange(value)
-      if (source) setEncodeInputImmediate({ schema, msgType: value, source, format })
+      if (source) setInputImmediate({ schema, msgType: value, source, format })
     },
-    [onMessageTypeChange, source, schema, format, setEncodeInputImmediate],
+    [onMessageTypeChange, source, schema, format, setInputImmediate],
   )
 
-  const handleUploadJson = useCallback(
+  const handleUpload = useCallback(
     async (files: Array<File>) => {
       const file = files[0]
       if (!file) return
       try {
-        const text = await file.text()
-        onSourceChange(text)
-        setEncodeInputImmediate({ schema, msgType: selectedMessageType, source: text, format })
+        const ctx: UploadCtx = {
+          onFormatChange,
+          onSourceChange,
+          schema,
+          selectedMessageType,
+          format,
+          setInputImmediate,
+          showError,
+          showSuccess,
+        }
+        await profile.upload.handle(file, ctx)
       } catch {
         showError('Failed to read file')
       }
     },
-    [onSourceChange, schema, selectedMessageType, format, setEncodeInputImmediate, showError],
+    [onFormatChange, onSourceChange, schema, selectedMessageType, format, setInputImmediate, showError, showSuccess, profile.upload],
   )
 
-  const handleDownloadEncoded = useCallback(() => {
+  const handleDownload = useCallback(() => {
     if (!result) return
-    const timestamp = Date.now()
-    const safeName = selectedMessageType.replace(/[^a-zA-Z0-9-_]/g, '_')
-    if (format === 'binary') {
-      const bytes = new Uint8Array(result.length)
-      for (let i = 0; i < result.length; i++) {
-        bytes[i] = result.charCodeAt(i) & 0xff
-      }
-      downloadBlob(new Blob([bytes], { type: 'application/octet-stream' }), `encoded_${safeName}_${timestamp}.pb`)
-    } else {
-      downloadBlob(new Blob([result], { type: 'text/plain' }), `encoded_${safeName}_${timestamp}.pb.txt`)
-    }
-  }, [result, format, selectedMessageType])
+    const { blob, filename } = profile.download.build(result, selectedMessageType, format)
+    downloadBlob(blob, filename)
+  }, [result, selectedMessageType, format, profile.download])
+
+  const toolbarFormatRadio = profile.formatRadio.placement === 'toolbar'
+  const belowDividerFormatRadio = profile.formatRadio.placement === 'belowDivider'
 
   return (
     <div className="flex w-full grow flex-col gap-4">
@@ -162,17 +325,28 @@ const EncodeContent = ({
             onChange={handleMessageTypeChange}
             options={messageTypes.map((name) => ({ label: name, value: name }))}
             placeholder="Select message type"
+            size={profile.selectSize}
             value={selectedMessageType}
           />
         </div>
         <div className="w-px" />
         <div className="flex flex-1 items-center gap-2">
+          {toolbarFormatRadio && (
+            <FieldForm
+              label={profile.formatRadio.label}
+              name="format"
+              onChange={handleFormatChange}
+              options={FORMAT_OPTIONS}
+              type="radio"
+              value={format}
+            />
+          )}
           <UploadInput
-            accept=".json,application/json"
-            button={{ children: 'Upload JSON' }}
+            accept={profile.upload.accept}
+            button={{ children: profile.upload.buttonLabel }}
             multiple={false}
-            name="upload-json"
-            onChange={handleUploadJson}
+            name={direction === 'encode' ? 'upload-json' : 'upload-pb'}
+            onChange={handleUpload}
           />
         </div>
       </div>
@@ -187,22 +361,36 @@ const EncodeContent = ({
           />
         </Pane>
         <Pane>
-          <CodeInput
-            aria-label="JSON input"
-            name="dialog-source"
-            onChange={handleSourceChange}
-            placeholder='{"name": "Alice", "age": 30}'
-            value={source}
-          />
+          {profile.sourceInput.kind === 'code' ? (
+            <CodeInput
+              aria-label="JSON input"
+              name="dialog-source"
+              onChange={handleSourceChange}
+              placeholder={profile.sourceInput.placeholder}
+              value={source}
+            />
+          ) : (
+            <FieldForm
+              label=""
+              name="dialog-source"
+              onChange={handleSourceChange}
+              placeholder={profile.sourceInput.placeholder}
+              rows={12}
+              type="textarea"
+              value={source}
+            />
+          )}
         </Pane>
       </SplitPanel>
+
       <div className="border-t-2 border-dashed border-gray-900" />
-      {messageTypes.length > 0 && (
+
+      {belowDividerFormatRadio && messageTypes.length > 0 && (
         <div className="flex flex-col gap-2">
           <div className="flex items-center gap-1 pl-2">
             <span>Result</span>
             <CopyButton label="result" value={result} />
-            <DownloadButton ariaLabel="Download encoded result" disabled={!result} onClick={handleDownloadEncoded} />
+            <DownloadButton ariaLabel={profile.download.ariaLabel} disabled={!result} onClick={handleDownload} />
           </div>
           <FieldForm
             label=""
@@ -216,182 +404,22 @@ const EncodeContent = ({
       )}
 
       <div aria-live="polite" className="flex min-h-0 flex-col gap-2">
-        <CodeOutput placeholder="Encoded output will appear here..." value={result} />
+        {!belowDividerFormatRadio && (
+          <div className="flex items-center gap-1">
+            <span>Result</span>
+            <CopyButton label="result" value={result} />
+            <DownloadButton ariaLabel={profile.download.ariaLabel} disabled={!result} onClick={handleDownload} />
+          </div>
+        )}
+        <CodeOutput placeholder={profile.resultPlaceholder} value={result} />
       </div>
     </div>
   )
 }
 
-const DecodeContent = ({
-  format,
-  messageTypes,
-  onFormatChange,
-  onMessageTypeChange,
-  onSchemaChange,
-  onSourceChange,
-  schema,
-  selectedMessageType,
-  source,
-}: ContentProps) => {
-  const { showError, showSuccess } = useToast()
-
-  const {
-    result,
-    setInput: setDecodeInput,
-    setInputImmediate: setDecodeInputImmediate,
-  } = useToolComputation<DecodeInput, string>(
-    async ({ schema: schemaVal, msgType, source: sourceVal, format: fmt }) => {
-      const { decodeProtobuf } = await import('@/wasm/parsers')
-      const codecResult = await decodeProtobuf(schemaVal, msgType, sourceVal, fmt)
-      if (codecResult.success) return codecResult.output
-      throw new Error(codecResult.error)
-    },
-    {
-      debounceMs: 300,
-      initial: '',
-      isEmpty: ({ schema: schemaVal, msgType, source: sourceVal }) =>
-        !schemaVal.trim() || !msgType || !sourceVal.trim(),
-      onError: (err) => {
-        const label = err instanceof Error ? err.message : 'Failed to decode protobuf'
-        showError(label)
-      },
-    },
-  )
-
-  useEffect(() => {
-    if (schema && selectedMessageType && source) {
-      setDecodeInputImmediate({ schema, msgType: selectedMessageType, source, format })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once when messageType becomes available
-  }, [selectedMessageType])
-
-  const handleSourceChange = useCallback(
-    (value: string) => {
-      onSourceChange(value)
-      setDecodeInput({ schema, msgType: selectedMessageType, source: value, format })
-    },
-    [onSourceChange, schema, selectedMessageType, format, setDecodeInput],
-  )
-
-  const handleFormatChange = useCallback(
-    (value: string) => {
-      onFormatChange(value)
-      if (source)
-        setDecodeInputImmediate({ schema, msgType: selectedMessageType, source, format: value as OutputFormat })
-    },
-    [onFormatChange, source, schema, selectedMessageType, setDecodeInputImmediate],
-  )
-
-  const handleMessageTypeChange = useCallback(
-    (value: string) => {
-      onMessageTypeChange(value)
-      if (source) setDecodeInputImmediate({ schema, msgType: value, source, format })
-    },
-    [onMessageTypeChange, source, schema, format, setDecodeInputImmediate],
-  )
-
-  const handleUploadPb = useCallback(
-    async (files: Array<File>) => {
-      const file = files[0]
-      if (!file) return
-      try {
-        const bytes = new Uint8Array(await file.arrayBuffer())
-        // Convert to latin1 string (preserves all byte values, unlike UTF-8)
-        let raw = ''
-        for (const byte of bytes) {
-          raw += String.fromCharCode(byte)
-        }
-        // Try to detect if the content is base64 or hex text
-        const textDecoder = new TextDecoder()
-        const text = textDecoder.decode(bytes)
-        const detected = await detectProtobufFormat(text)
-        const value = detected === 'binary' ? raw : text
-        onFormatChange(detected)
-        onSourceChange(value)
-        setDecodeInputImmediate({ schema, msgType: selectedMessageType, source: value, format: detected })
-        showSuccess(`Auto-detected format: ${detected}`)
-      } catch {
-        showError('Failed to read file')
-      }
-    },
-    [onFormatChange, onSourceChange, schema, selectedMessageType, setDecodeInputImmediate, showError, showSuccess],
-  )
-
-  const handleDownloadJson = useCallback(() => {
-    if (!result) return
-    const timestamp = Date.now()
-    const safeName = selectedMessageType.replace(/[^a-zA-Z0-9-_]/g, '_')
-    downloadBlob(new Blob([result], { type: 'application/json' }), `decoded_${safeName}_${timestamp}.json`)
-  }, [result, selectedMessageType])
-
-  return (
-    <div className="flex w-full grow flex-col gap-4">
-      <div className="flex flex-col gap-6 tablet:flex-row">
-        <div className="flex flex-1 flex-col justify-center gap-2">
-          <SelectInput
-            name="message-type-select"
-            onChange={handleMessageTypeChange}
-            options={messageTypes.map((name) => ({ label: name, value: name }))}
-            placeholder="Select message type"
-            size="compact"
-            value={selectedMessageType}
-          />
-        </div>
-        <div className="w-px" />
-        <div className="flex flex-1 items-center gap-2">
-          <FieldForm
-            label="Input Format"
-            name="format"
-            onChange={handleFormatChange}
-            options={FORMAT_OPTIONS}
-            type="radio"
-            value={format}
-          />
-          <UploadInput
-            accept=".pb,.bin,.txt,.protobuf"
-            button={{ children: 'Upload .pb' }}
-            multiple={false}
-            name="upload-pb"
-            onChange={handleUploadPb}
-          />
-        </div>
-      </div>
-      <SplitPanel>
-        <Pane>
-          <CodeInput
-            aria-label="Proto schema input"
-            name="proto-schema"
-            onChange={onSchemaChange}
-            placeholder="Paste your .proto definition here..."
-            value={schema}
-          />
-        </Pane>
-        <Pane>
-          <FieldForm
-            label=""
-            name="dialog-source"
-            onChange={handleSourceChange}
-            placeholder="Paste encoded protobuf data..."
-            rows={12}
-            type="textarea"
-            value={source}
-          />
-        </Pane>
-      </SplitPanel>
-
-      <div className="border-t-2 border-dashed border-gray-900" />
-
-      <div aria-live="polite" className="flex min-h-0 flex-col gap-2">
-        <div className="flex items-center gap-1">
-          <span>Result</span>
-          <CopyButton label="result" value={result} />
-          <DownloadButton ariaLabel="Download decoded JSON" disabled={!result} onClick={handleDownloadJson} />
-        </div>
-        <CodeOutput placeholder='{ "name": "Alice" }' value={result} />
-      </div>
-    </div>
-  )
-}
+// ---------------------------------------------------------------------------
+// ProtobufCodec — orchestrator. The triad stays untouched.
+// ---------------------------------------------------------------------------
 
 export const ProtobufCodec = (_props: ToolComponentProps) => {
   const [action, setAction] = useState<ProtobufCodecAction>('encode')
@@ -510,7 +538,11 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
         size="screen"
         title={action === 'encode' ? 'Protobuf Encode' : 'Protobuf Decode'}
       >
-        {action === 'encode' ? <EncodeContent {...encodeProps} /> : <DecodeContent {...decodeProps} />}
+        {action === 'encode' ? (
+          <ProtobufContent direction="encode" {...encodeProps} />
+        ) : (
+          <ProtobufContent direction="decode" {...decodeProps} />
+        )}
       </ToolDialogShell>
     </>
   )
