@@ -1,6 +1,8 @@
 import type { ColumnId, DiagramDocument, TableColumn, TableId } from '@/types'
 import type { EntityIdMinters } from '@/diagram/id-minters'
 
+import { cleanupDanglingRelations } from './relations'
+
 export const addColumn = (
   doc: DiagramDocument,
   tableId: TableId,
@@ -46,23 +48,19 @@ export const deleteColumn = (doc: DiagramDocument, tableId: TableId, columnId: C
   const table = doc.tables[tableId]
   if (!table) return doc
   if (!table.columns.some((c) => c.id === columnId)) return doc
-  const remainingRelationOrder = doc.relationOrder.filter((rId) => {
-    const r = doc.relations[rId]
-    if (!r) return false
-    const touchesDeleted =
+  const { relations, relationOrder } = cleanupDanglingRelations(
+    doc,
+    (r) =>
       (r.source.tableId === tableId && r.source.columnId === columnId) ||
-      (r.target.tableId === tableId && r.target.columnId === columnId)
-    return !touchesDeleted
-  })
-  const remainingRelations: typeof doc.relations = {}
-  for (const rId of remainingRelationOrder) remainingRelations[rId] = doc.relations[rId]
+      (r.target.tableId === tableId && r.target.columnId === columnId),
+  )
   return {
     ...doc,
     tables: {
       ...doc.tables,
       [tableId]: { ...table, columns: table.columns.filter((c) => c.id !== columnId) },
     },
-    relations: remainingRelations,
-    relationOrder: remainingRelationOrder,
+    relations,
+    relationOrder,
   }
 }

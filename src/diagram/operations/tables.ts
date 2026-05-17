@@ -3,6 +3,8 @@ import type { EntityIdMinters } from '@/diagram/id-minters'
 
 import { createDefaultColumn } from '@/diagram/defaults'
 
+import { cleanupDanglingRelations } from './relations'
+
 const GRID_X = 300
 const GRID_Y = 250
 const GRID_COLS = 4
@@ -55,17 +57,15 @@ export const moveTable = (doc: DiagramDocument, id: TableId, position: { x: numb
 export const deleteTable = (doc: DiagramDocument, id: TableId): DiagramDocument => {
   if (!doc.tables[id]) return doc
   const { [id]: _removed, ...remainingTables } = doc.tables
-  const remainingRelationOrder = doc.relationOrder.filter((rId) => {
-    const r = doc.relations[rId]
-    return r && r.source.tableId !== id && r.target.tableId !== id
-  })
-  const remainingRelations: typeof doc.relations = {}
-  for (const rId of remainingRelationOrder) remainingRelations[rId] = doc.relations[rId]
+  const { relations, relationOrder } = cleanupDanglingRelations(
+    doc,
+    (r) => r.source.tableId === id || r.target.tableId === id,
+  )
   return {
     ...doc,
     tables: remainingTables,
     tableOrder: doc.tableOrder.filter((t) => t !== id),
-    relations: remainingRelations,
-    relationOrder: remainingRelationOrder,
+    relations,
+    relationOrder,
   }
 }

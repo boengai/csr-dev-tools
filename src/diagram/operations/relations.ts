@@ -6,6 +6,19 @@ const columnExists = (doc: DiagramDocument, ref: ColumnRef): boolean => {
   return !!table && table.columns.some((c) => c.id === ref.columnId)
 }
 
+export const cleanupDanglingRelations = (
+  doc: DiagramDocument,
+  isDangling: (r: EditorRelation) => boolean,
+): { relations: DiagramDocument['relations']; relationOrder: DiagramDocument['relationOrder'] } => {
+  const relationOrder = doc.relationOrder.filter((rId) => {
+    const r = doc.relations[rId]
+    return !!r && !isDangling(r)
+  })
+  const relations: DiagramDocument['relations'] = {}
+  for (const rId of relationOrder) relations[rId] = doc.relations[rId]
+  return { relations, relationOrder }
+}
+
 export const addRelation = (
   doc: DiagramDocument,
   input: { from: ColumnRef; to: ColumnRef; kind: RelationKind },
