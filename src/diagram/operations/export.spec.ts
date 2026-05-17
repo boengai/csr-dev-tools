@@ -13,6 +13,7 @@ const seed = () => {
   const minters = createSequentialIdMinters()
   const a = addTable(createInitialDocument(), { name: 'users' }, minters)
   const b = addTable(a.document, { name: 'posts' }, minters)
+  // Isolated minter for createDefaultColumn's input shape; addColumn() mints the stored id from `minters`.
   const colMinters = createSequentialIdMinters()
   const withFk = addColumn(b.document, b.id, createDefaultColumn('user_id', false, colMinters.column), minters)
   const aCol = a.document.tables[a.id].columns[0].id

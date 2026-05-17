@@ -33,6 +33,7 @@ describe('schemaToDocument', () => {
     doc = a.document
     const b = addTable(doc, { name: 'posts' }, minters)
     doc = b.document
+    // Isolated minter for createDefaultColumn's input shape; addColumn() mints the stored id from `minters`.
     const colMinters = createSequentialIdMinters()
     const fk = addColumn(doc, b.id, createDefaultColumn('user_id', false, colMinters.column), minters)
     doc = fk.document

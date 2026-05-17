@@ -16,6 +16,7 @@ const seedWithTable = () => {
 describe('addColumn', () => {
   it('appends a column to the table', () => {
     const { doc, tableId } = seedWithTable()
+    // Isolated minter for createDefaultColumn's input shape; addColumn() mints the stored id itself.
     const colMinters = createSequentialIdMinters()
     const { document, id } = addColumn(doc, tableId, createDefaultColumn('email', false, colMinters.column), createSequentialIdMinters())
     expect(document.tables[tableId].columns.map((c) => c.id)).toContain(id)
