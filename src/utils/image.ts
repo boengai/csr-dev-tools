@@ -54,40 +54,20 @@ export const loadImageFromFile = (file: File): Promise<HTMLImageElement> => {
   return new Promise((resolve, reject) => {
     const img = new Image()
     img.crossOrigin = 'anonymous'
-
-    const cleanup = () => {
-      img.onload = null
-      img.onerror = null
-    }
+    const url = URL.createObjectURL(file)
 
     img.onload = () => {
-      cleanup()
+      URL.revokeObjectURL(url)
       resolve(img)
     }
 
     img.onerror = (event) => {
-      cleanup()
+      URL.revokeObjectURL(url)
       const errorMsg = event instanceof ErrorEvent ? event.message : 'Failed to load image'
       reject(new Error(`Image loading failed: ${errorMsg}`))
     }
 
-    const reader = new FileReader()
-
-    reader.onerror = (e) => {
-      cleanup()
-      reject(new Error(`File reading failed: ${e.target?.error?.message ?? 'Unknown error'}`))
-    }
-
-    reader.onload = () => {
-      if (reader.result && typeof reader.result === 'string') {
-        img.src = reader.result
-      } else {
-        cleanup()
-        reject(new Error('Failed to read file as data URL'))
-      }
-    }
-
-    reader.readAsDataURL(file)
+    img.src = url
   })
 }
 
