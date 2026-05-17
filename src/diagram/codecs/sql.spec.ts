@@ -643,7 +643,7 @@ describe('db-diagram-sql', () => {
         expect(typeof table.position.y).toBe('number')
       }
       expect(result.tables[0].position.y).toBe(0)
-      expect(result.tables[3].position.y).toBe(250)
+      expect(result.tables[3].position.y).toBe(550)
     })
 
     it('returns empty result for empty input', () => {

@@ -4,7 +4,7 @@ import type { ParsedTable, ParsedRef } from '@/types/diagram/codecs/dbml'
 
 import type { ParseResult } from '@/types/diagram/codecs/import'
 
-import { gridLayoutPositions } from '@/diagram/defaults'
+import { gridLayoutPositions } from '@/diagram/layout'
 
 // ── Generator ──────────────────────────────────────────────────────
 

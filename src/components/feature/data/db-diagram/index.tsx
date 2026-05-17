@@ -8,7 +8,7 @@ import { DiagramEditor } from '@/diagram/editor'
 import { documentToSchema } from '@/diagram/operations/export'
 import { useToast } from '@/hooks/state'
 import type { DiagramInnerProps, DiagramPanelSwitchProps, SidePanel, ToolComponentProps } from '@/types'
-import { gridLayoutPositions } from '@/diagram/defaults'
+import { gridLayoutPositions } from '@/diagram/layout'
 import { downloadBlob } from '@/utils/download'
 
 import { DbmlEditorPanel } from './DbmlEditorPanel'

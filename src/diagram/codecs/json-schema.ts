@@ -3,6 +3,8 @@ import type { EntityIdMinters } from '@/diagram/id-minters'
 import type { ParseResult } from '@/types/diagram/codecs/import'
 import type { JsonSchemaProperty, JsonSchemaRoot } from '@/types/diagram/codecs/json-schema'
 
+import { gridLayoutPositions } from '@/diagram/layout'
+
 const JSON_TYPE_MAP: Record<string, ColumnType> = {
   array: 'JSON',
   boolean: 'BOOLEAN',
@@ -32,9 +34,7 @@ export function parseJsonSchema(schema: object, minters: EntityIdMinters): Parse
     return { errors: [], relationships: [], tables: [] }
   }
 
-  const GRID_COLS = 3
-  const H_SPACING = 300
-  const V_SPACING = 250
+  const positions = gridLayoutPositions(Object.keys(definitions).length)
 
   const tables: DiagramSchema['tables'] = []
   const relationships: DiagramSchema['relationships'] = []
@@ -78,10 +78,7 @@ export function parseJsonSchema(schema: object, minters: EntityIdMinters): Parse
       columns,
       id: minters.table(),
       name: defName,
-      position: {
-        x: (tableIndex % GRID_COLS) * H_SPACING,
-        y: Math.floor(tableIndex / GRID_COLS) * V_SPACING,
-      },
+      position: positions[tableIndex] ?? { x: 0, y: 0 },
     }
 
     tables.push(table)

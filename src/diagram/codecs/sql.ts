@@ -2,6 +2,8 @@ import type { ColumnType, DiagramSchema, SqlDialect } from '@/types'
 import type { EntityIdMinters } from '@/diagram/id-minters'
 import type { FkRef, ParseResult, ParsedColumn } from '@/types/diagram/codecs/import'
 
+import { gridLayoutPositions } from '@/diagram/layout'
+
 const TYPE_MAP: Record<ColumnType, Record<SqlDialect, string>> = {
   BIGINT: { mysql: 'BIGINT', postgresql: 'BIGINT', sqlite: 'INTEGER' },
   BLOB: { mysql: 'BLOB', postgresql: 'BYTEA', sqlite: 'BLOB' },
@@ -477,29 +479,6 @@ function parseCreateTable(statement: string, mintColumn: () => string): {
   return { columns, fkRefs, tableName }
 }
 
-function layoutTables(
-  tables: Array<{ columns: Array<ParsedColumn>; fkRefs: Array<FkRef>; tableName: string }>,
-  mintTable: () => string,
-): Array<DiagramSchema['tables'][number]> {
-  const GRID_COLS = 3
-  const H_SPACING = 300
-  const V_SPACING = 250
-
-  return tables.map((t, index) => ({
-    columns: t.columns.map((c) => ({
-      constraints: { ...c.constraints },
-      id: c.id,
-      name: c.name,
-      type: c.type,
-    })),
-    id: mintTable(),
-    name: t.tableName,
-    position: {
-      x: (index % GRID_COLS) * H_SPACING,
-      y: Math.floor(index / GRID_COLS) * V_SPACING,
-    },
-  }))
-}
 
 function buildRelationships(
   parsedTables: Array<{ columns: Array<ParsedColumn>; fkRefs: Array<FkRef>; tableName: string }>,
@@ -576,7 +555,18 @@ export function parseSqlDdl(sql: string, dialect: SqlDialect, minters: EntityIdM
     }
   }
 
-  const tables = layoutTables(parsedTables, minters.table)
+  const positions = gridLayoutPositions(parsedTables.length)
+  const tables: Array<DiagramSchema['tables'][number]> = parsedTables.map((t, i) => ({
+    columns: t.columns.map((c) => ({
+      constraints: { ...c.constraints },
+      id: c.id,
+      name: c.name,
+      type: c.type,
+    })),
+    id: minters.table(),
+    name: t.tableName,
+    position: positions[i] ?? { x: 0, y: 0 },
+  }))
   const relationships = buildRelationships(parsedTables, tables, minters.relation)
 
   return { errors, relationships, tables }

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { createSequentialIdMinters } from './id-minters'
-import { createDefaultColumn, gridLayoutPositions } from './defaults'
+import { createDefaultColumn } from './defaults'
 
 describe('createDefaultColumn', () => {
   it('should create a column with given name', () => {
@@ -40,33 +40,4 @@ describe('createDefaultColumn', () => {
   })
 })
 
-describe('gridLayoutPositions', () => {
-  it('should return empty array for count 0', () => {
-    expect(gridLayoutPositions(0)).toEqual([])
-  })
-
-  it('should return single position at origin for count 1', () => {
-    expect(gridLayoutPositions(1)).toEqual([{ x: 0, y: 0 }])
-  })
-
-  it('should lay out 4 items in a 3-column grid', () => {
-    const positions = gridLayoutPositions(4)
-    expect(positions).toEqual([
-      { x: 0, y: 0 },
-      { x: 600, y: 0 },
-      { x: 1200, y: 0 },
-      { x: 0, y: 550 },
-    ])
-  })
-
-  it('should wrap to third row for 7 items', () => {
-    const positions = gridLayoutPositions(7)
-    expect(positions).toHaveLength(7)
-    expect(positions[0]).toEqual({ x: 0, y: 0 })
-    expect(positions[2]).toEqual({ x: 1200, y: 0 })
-    expect(positions[3]).toEqual({ x: 0, y: 550 })
-    expect(positions[5]).toEqual({ x: 1200, y: 550 })
-    expect(positions[6]).toEqual({ x: 0, y: 1100 })
-  })
-})
 

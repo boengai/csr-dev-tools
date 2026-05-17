@@ -689,6 +689,45 @@ persistence keys (the localStorage key under which a saved diagram
 lives). Document-internal entity ids and persistence keys are
 different concerns; the seams are separate.
 
+## Grid layout positions
+
+The single seam that owns the initial-position grid used wherever a batch of
+diagram tables is laid out without a user-chosen position. Implemented by
+`gridLayoutPositions` (`src/diagram/layout.ts`).
+
+Adapter shape:
+
+```ts
+gridLayoutPositions(count: number): Array<{ x: number; y: number }>
+```
+
+Three-column grid, 600px horizontal spacing, 550px vertical spacing. The
+function is pure and deterministic: `gridLayoutPositions(N)` always returns
+the same array, no minter / no clock / no adapter slot. Specs assert against
+literal coordinates.
+
+Carries three invariants:
+
+1. **Length matches count** — `result.length === count`.
+2. **Positions are distinct** within the returned array — no two tables
+   land on the same coordinate.
+3. **Index 0 is the origin** — `result[0] === { x: 0, y: 0 }`, so a
+   "first table" lands at the canvas origin without special-casing.
+
+The seam absorbs three previously scattered call sites: the `layoutTables`
+helper inside `codecs/sql.ts`, the inline grid math inside
+`codecs/json-schema.ts`, and the (already-consolidated) call from
+`codecs/dbml.ts`. The React Rearrange button in `<DbDiagram>` calls the
+same module — every batch positioning of tables goes through this one
+function, regardless of how the tables were minted (DBML / SQL /
+JSON-Schema import, or "Rearrange" on an existing diagram).
+
+Distinct from `operations/tables.ts`'s interactive `defaultPosition`,
+which positions *one* new table relative to existing ones with a small
+gutter — a different concern (single insertion vs bulk layout), kept
+separate. If a future "insert N tables at once" op emerges, it would
+use this module; until then, the two stay distinct.
+
 ## Async action
 
 Button-fired (or one-shot) async work with stale-safety + unmount-safety.
