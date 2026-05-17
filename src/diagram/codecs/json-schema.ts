@@ -34,15 +34,12 @@ export function parseJsonSchema(schema: object, minters: EntityIdMinters): Parse
     return { errors: [], relationships: [], tables: [] }
   }
 
-  const positions = gridLayoutPositions(Object.keys(definitions).length)
-
-  const tables: DiagramSchema['tables'] = []
+  const rawTables: DiagramSchema['tables'] = []
   const relationships: DiagramSchema['relationships'] = []
   const errors: ParseResult['errors'] = []
 
-  // First pass: create tables
+  // First pass: build tables with placeholder position
   const tableByDefName = new Map<string, DiagramSchema['tables'][number]>()
-  let tableIndex = 0
 
   for (const [defName, def] of Object.entries(definitions)) {
     if (!def || typeof def !== 'object') {
@@ -78,12 +75,20 @@ export function parseJsonSchema(schema: object, minters: EntityIdMinters): Parse
       columns,
       id: minters.table(),
       name: defName,
-      position: positions[tableIndex] ?? { x: 0, y: 0 },
+      position: { x: 0, y: 0 },
     }
 
-    tables.push(table)
+    rawTables.push(table)
     tableByDefName.set(defName, table)
-    tableIndex++
+  }
+
+  // Compute positions from the actual number of tables that passed the filter
+  const positions = gridLayoutPositions(rawTables.length)
+  const tables: DiagramSchema['tables'] = rawTables.map((t, i) => ({ ...t, position: positions[i] }))
+
+  // Rebuild lookup to point at the final positioned table objects
+  for (const t of tables) {
+    tableByDefName.set(t.name, t)
   }
 
   // Second pass: create relationships from $ref

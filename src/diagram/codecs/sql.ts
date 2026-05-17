@@ -565,7 +565,7 @@ export function parseSqlDdl(sql: string, dialect: SqlDialect, minters: EntityIdM
     })),
     id: minters.table(),
     name: t.tableName,
-    position: positions[i] ?? { x: 0, y: 0 },
+    position: positions[i],
   }))
   const relationships = buildRelationships(parsedTables, tables, minters.relation)
 
