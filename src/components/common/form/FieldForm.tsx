@@ -60,7 +60,7 @@ export const FieldForm = ({ label, ...props }: FieldFormProps) => {
   return (
     <fieldset className={fieldsetStyles({ grow: props.type === 'textarea' || props.type === 'code' })}>
       {label && (
-        <label className="shrink-0 pl-2 text-gray-100" htmlFor={inputId}>
+        <label className="flex min-h-8 shrink-0 items-center pl-2 text-gray-100" htmlFor={inputId}>
           {label}
         </label>
       )}

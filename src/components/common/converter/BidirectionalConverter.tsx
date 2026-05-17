@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 
-import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { Button, CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { useInputLocalStorage, useMountOnce, useToast, useToolFields } from '@/hooks'
 import type { BidirectionalConverterProps } from '@/types'
@@ -112,8 +112,8 @@ export function BidirectionalConverter<M extends string>({
       >
         <div className="flex w-full grow flex-col gap-4">
           {sourceToolbarSlot ? sourceToolbarSlot({ mode, recompute }) : null}
-          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <SplitPanel>
+            <Pane>
               <FieldForm
                 label={modeConfig.sourceLabel}
                 name="dialog-source"
@@ -122,9 +122,8 @@ export function BidirectionalConverter<M extends string>({
                 type="code"
                 value={source}
               />
-            </div>
-            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            </Pane>
+            <Pane live>
               <CodeOutput
                 label={
                   <span className="flex items-center gap-1">
@@ -135,8 +134,8 @@ export function BidirectionalConverter<M extends string>({
                 placeholder={modeConfig.resultPlaceholder}
                 value={result}
               />
-            </div>
-          </div>
+            </Pane>
+          </SplitPanel>
         </div>
       </ToolDialogShell>
     </>

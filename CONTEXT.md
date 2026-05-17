@@ -477,6 +477,47 @@ URL synchronously in the same commit as the blob (e.g. to return it from
 an event handler), it must call `URL.createObjectURL` itself and accept
 the manual revoke responsibility.
 
+## SplitPanel
+
+The responsive two-pane layout primitive used wherever a Tool puts a
+source and a result side-by-side. Implemented by `<SplitPanel>` and its
+`<Pane>` child (`src/components/common/layout/`).
+
+Owns: the outer responsive flex (column on mobile, row at `tablet:`),
+the dashed divider that flips border direction at the same breakpoint,
+and the per-pane envelope. The load-bearing invariant is
+`min-h-0 min-w-0` on every `Pane` — without it, a nested `CodeOutput`
+or `FieldForm` breaks overflow inside `min-h-0` ancestor flex
+containers. Today that contract is enforced by copy-paste across 21
+sites; once migrated it lives in one module with a spec.
+
+`Pane` exposes four named knobs for the real variances seen across
+adopters:
+
+- `live` — adds `aria-live="polite"`. Pick this for the result pane.
+- `gap` — `'sm' | 'md' | 'lg'` → `gap-2` / `gap-3` / `gap-4`. Default `sm`.
+- `align` — `'start' | 'center'`. Pick `center` for image-output panes
+  (e.g. `Base64ToImage`).
+- `scroll` — adds `overflow-y-auto` for panes whose content can grow
+  beyond viewport height (e.g. `JwtDecoder`'s decoded JSON).
+
+`SplitPanel` accepts any number of `Pane` children and interleaves the
+divider between consecutive panes. In practice every adopter is
+two-pane; the N-child handling is defensive, not a feature.
+
+Adoption order: the two shells that own the source→divider→result
+chrome internally ([[Formatter shell]], [[Bidirectional converter]])
+migrate first — indirectly bringing their Tool consumers along — then
+the ~18 unshelled Tools follow in batches. [[Diff checker shell]]
+does NOT fit: its layout is "two inputs side-by-side (no divider) +
+horizontal divider + single full-width diff output." If a future
+refactor wants the `min-h-0 min-w-0` invariant there, `Pane` can be
+used standalone (without `SplitPanel`) — the envelope still applies,
+just no divider interleaved.
+
+Per the common-component rule, future variances must be a new named
+prop on `Pane`, not a `className` override.
+
 ## DiagramEditor
 
 The single seam the DB Diagram Tool owns: a pure-TS module (`src/diagram/`)
