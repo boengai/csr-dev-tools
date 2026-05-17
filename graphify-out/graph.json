@@ -14191,7 +14191,7 @@
       "label": "arrayBufferToPem()",
       "file_type": "code",
       "source_file": "src/utils/rsa-key-generator.ts",
-      "source_location": "L3",
+      "source_location": "L4",
       "id": "utils_rsa_key_generator_arraybuffertopem",
       "community": 345,
       "norm_label": "arraybuffertopem()"
@@ -14200,7 +14200,7 @@
       "label": "generateRsaKeyPair()",
       "file_type": "code",
       "source_file": "src/utils/rsa-key-generator.ts",
-      "source_location": "L14",
+      "source_location": "L15",
       "id": "utils_rsa_key_generator_generatersakeypair",
       "community": 345,
       "norm_label": "generatersakeypair()"
@@ -14209,7 +14209,7 @@
       "label": "downloadPemFile()",
       "file_type": "code",
       "source_file": "src/utils/rsa-key-generator.ts",
-      "source_location": "L33",
+      "source_location": "L34",
       "id": "utils_rsa_key_generator_downloadpemfile",
       "community": 345,
       "norm_label": "downloadpemfile()"
@@ -16999,7 +16999,7 @@
       "label": "initializeMermaid()",
       "file_type": "code",
       "source_file": "src/utils/mermaid-renderer.ts",
-      "source_location": "L8",
+      "source_location": "L9",
       "id": "utils_mermaid_renderer_initializemermaid",
       "community": 90,
       "norm_label": "initializemermaid()"
@@ -17008,7 +17008,7 @@
       "label": "sanitizeMermaidInput()",
       "file_type": "code",
       "source_file": "src/utils/mermaid-renderer.ts",
-      "source_location": "L21",
+      "source_location": "L22",
       "id": "utils_mermaid_renderer_sanitizemermaidinput",
       "community": 90,
       "norm_label": "sanitizemermaidinput()"
@@ -17017,7 +17017,7 @@
       "label": "renderMermaid()",
       "file_type": "code",
       "source_file": "src/utils/mermaid-renderer.ts",
-      "source_location": "L25",
+      "source_location": "L26",
       "id": "utils_mermaid_renderer_rendermermaid",
       "community": 90,
       "norm_label": "rendermermaid()"
@@ -17026,7 +17026,7 @@
       "label": "svgToPng()",
       "file_type": "code",
       "source_file": "src/utils/mermaid-renderer.ts",
-      "source_location": "L35",
+      "source_location": "L36",
       "id": "utils_mermaid_renderer_svgtopng",
       "community": 90,
       "norm_label": "svgtopng()"
@@ -17035,19 +17035,10 @@
       "label": "downloadSvg()",
       "file_type": "code",
       "source_file": "src/utils/mermaid-renderer.ts",
-      "source_location": "L93",
+      "source_location": "L94",
       "id": "utils_mermaid_renderer_downloadsvg",
       "community": 90,
       "norm_label": "downloadsvg()"
-    },
-    {
-      "label": "downloadPng()",
-      "file_type": "code",
-      "source_file": "src/utils/mermaid-renderer.ts",
-      "source_location": "L103",
-      "id": "utils_mermaid_renderer_downloadpng",
-      "community": 90,
-      "norm_label": "downloadpng()"
     },
     {
       "label": "chmod-calculator.ts",
@@ -17685,7 +17676,7 @@
       "source_file": "src/components/common/converter/BidirectionalConverter.tsx",
       "source_location": "L26",
       "id": "converter_bidirectionalconverter_bidirectionalconverter",
-      "community": 762,
+      "community": 15,
       "norm_label": "bidirectionalconverter()"
     },
     {
@@ -21429,7 +21420,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L1",
       "id": "src_components_feature_image_placeholderimagegenerator_tsx",
-      "community": 186,
+      "community": 135,
       "norm_label": "placeholderimagegenerator.tsx"
     },
     {
@@ -21438,7 +21429,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L23",
       "id": "image_placeholderimagegenerator_preset_options",
-      "community": 186,
+      "community": 135,
       "norm_label": "preset_options"
     },
     {
@@ -21447,7 +21438,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L28",
       "id": "image_placeholderimagegenerator_topickerhex",
-      "community": 186,
+      "community": 135,
       "norm_label": "topickerhex()"
     },
     {
@@ -21456,7 +21447,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L34",
       "id": "image_placeholderimagegenerator_buildoptions",
-      "community": 186,
+      "community": 135,
       "norm_label": "buildoptions()"
     },
     {
@@ -21474,7 +21465,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L54",
       "id": "image_placeholderimagegenerator_initialstate",
-      "community": 186,
+      "community": 135,
       "norm_label": "initialstate"
     },
     {
@@ -21483,7 +21474,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L64",
       "id": "image_placeholderimagegenerator_reducer",
-      "community": 186,
+      "community": 135,
       "norm_label": "reducer()"
     },
     {
@@ -21492,7 +21483,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L95",
       "id": "image_placeholderimagegenerator_placeholderimagegenerator",
-      "community": 186,
+      "community": 135,
       "norm_label": "placeholderimagegenerator()"
     },
     {
@@ -21591,7 +21582,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L1",
       "id": "src_components_feature_image_favicongenerator_tsx",
-      "community": 102,
+      "community": 260,
       "norm_label": "favicongenerator.tsx"
     },
     {
@@ -21600,7 +21591,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L9",
       "id": "image_favicongenerator_linktags",
-      "community": 102,
+      "community": 260,
       "norm_label": "linktags"
     },
     {
@@ -21609,7 +21600,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L12",
       "id": "image_favicongenerator_flattenforzip",
-      "community": 102,
+      "community": 260,
       "norm_label": "flattenforzip()"
     },
     {
@@ -21618,7 +21609,7 @@
       "source_file": "src/components/feature/image/FaviconGenerator.tsx",
       "source_location": "L18",
       "id": "image_favicongenerator_favicongenerator",
-      "community": 102,
+      "community": 260,
       "norm_label": "favicongenerator()"
     },
     {
@@ -23508,7 +23499,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_useasyncaction_dom_spec_tsx",
-      "community": 741,
+      "community": 725,
       "norm_label": "useasyncaction.dom.spec.tsx"
     },
     {
@@ -23517,7 +23508,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L11",
       "id": "hooks_useasyncaction_dom_spec_deferred",
-      "community": 741,
+      "community": 725,
       "norm_label": "deferred()"
     },
     {
@@ -23526,7 +23517,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L23",
       "id": "hooks_useasyncaction_dom_spec_result",
-      "community": 741,
+      "community": 725,
       "norm_label": "{ result }"
     },
     {
@@ -23535,7 +23526,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L29",
       "id": "hooks_useasyncaction_dom_spec_d",
-      "community": 741,
+      "community": 725,
       "norm_label": "d"
     },
     {
@@ -23544,7 +23535,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L60",
       "id": "hooks_useasyncaction_dom_spec_onerror",
-      "community": 741,
+      "community": 725,
       "norm_label": "onerror"
     },
     {
@@ -23553,7 +23544,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L87",
       "id": "hooks_useasyncaction_dom_spec_returned",
-      "community": 741,
+      "community": 725,
       "norm_label": "returned"
     },
     {
@@ -23562,7 +23553,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L96",
       "id": "hooks_useasyncaction_dom_spec_d1",
-      "community": 741,
+      "community": 725,
       "norm_label": "d1"
     },
     {
@@ -23571,7 +23562,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L97",
       "id": "hooks_useasyncaction_dom_spec_d2",
-      "community": 741,
+      "community": 725,
       "norm_label": "d2"
     },
     {
@@ -23580,7 +23571,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L162",
       "id": "hooks_useasyncaction_dom_spec_result_unmount",
-      "community": 741,
+      "community": 725,
       "norm_label": "{ result, unmount }"
     },
     {
@@ -23589,7 +23580,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L195",
       "id": "hooks_useasyncaction_dom_spec_result_rerender",
-      "community": 741,
+      "community": 725,
       "norm_label": "{ result, rerender }"
     },
     {
@@ -23922,7 +23913,7 @@
       "source_file": "src/hooks/useBatchAssetPipeline.ts",
       "source_location": "L30",
       "id": "hooks_usebatchassetpipeline_usebatchassetpipeline",
-      "community": 102,
+      "community": 260,
       "norm_label": "usebatchassetpipeline()"
     },
     {
@@ -25047,7 +25038,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_persist_usetoolfieldspersisted_dom_spec_tsx",
-      "community": 369,
+      "community": 768,
       "norm_label": "usetoolfieldspersisted.dom.spec.tsx"
     },
     {
@@ -25056,7 +25047,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L9",
       "id": "persist_usetoolfieldspersisted_dom_spec_bag",
-      "community": 369,
+      "community": 768,
       "norm_label": "bag"
     },
     {
@@ -25065,7 +25056,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L11",
       "id": "persist_usetoolfieldspersisted_dom_spec_initial",
-      "community": 369,
+      "community": 768,
       "norm_label": "initial"
     },
     {
@@ -25074,7 +25065,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L25",
       "id": "persist_usetoolfieldspersisted_dom_spec_result",
-      "community": 369,
+      "community": 768,
       "norm_label": "{ result }"
     },
     {
@@ -25083,7 +25074,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L118",
       "id": "persist_usetoolfieldspersisted_dom_spec_compute",
-      "community": 369,
+      "community": 768,
       "norm_label": "compute"
     },
     {
@@ -35860,6 +35851,15 @@
       "norm_label": "code:block1 (error: browsertype.launch: executable doesn't exist at /user)"
     },
     {
+      "label": "downloadPng()",
+      "file_type": "code",
+      "source_file": "src/utils/mermaid-renderer.ts",
+      "source_location": "L103",
+      "community": 90,
+      "norm_label": "downloadpng()",
+      "id": "utils_mermaid_renderer_downloadpng"
+    },
+    {
       "label": "ImageCompressorState",
       "file_type": "code",
       "source_file": "src/types/components/feature/image/imageCompressor.ts",
@@ -36170,7 +36170,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L1",
-      "community": 757,
+      "community": 369,
       "norm_label": "usetoolfieldspersisted.dom.spec.tsx",
       "id": "src_hooks_usetoolfieldspersisted_dom_spec_tsx"
     },
@@ -36179,7 +36179,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L9",
-      "community": 757,
+      "community": 369,
       "norm_label": "bag",
       "id": "hooks_usetoolfieldspersisted_dom_spec_bag"
     },
@@ -36188,7 +36188,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L11",
-      "community": 757,
+      "community": 369,
       "norm_label": "initial",
       "id": "hooks_usetoolfieldspersisted_dom_spec_initial"
     },
@@ -36197,7 +36197,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L25",
-      "community": 757,
+      "community": 369,
       "norm_label": "{ result }",
       "id": "hooks_usetoolfieldspersisted_dom_spec_result"
     },
@@ -36206,7 +36206,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L118",
-      "community": 757,
+      "community": 369,
       "norm_label": "compute",
       "id": "hooks_usetoolfieldspersisted_dom_spec_compute"
     },
@@ -36395,7 +36395,7 @@
       "file_type": "code",
       "source_file": "src/utils/favicon.ts",
       "source_location": "L69",
-      "community": 158,
+      "community": 33,
       "norm_label": "downloadfaviconsaszip()",
       "id": "utils_favicon_downloadfaviconsaszip"
     },
@@ -36971,7 +36971,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/image/BackgroundRemover/index.tsx",
       "source_location": "L36",
-      "community": 0,
+      "community": 763,
       "norm_label": "reducer()",
       "id": "backgroundremover_index_reducer"
     },
@@ -38569,7 +38569,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 186,
       "norm_label": "formathtml",
       "id": "htmlformat_formathtml"
     },
@@ -38582,7 +38582,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 186,
       "norm_label": "minifyhtml",
       "id": "htmlformat_minifyhtml"
     },
@@ -38595,7 +38595,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 186,
       "norm_label": "wasm/formatter",
       "id": "wasm_formatter_module"
     },
@@ -39076,7 +39076,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 773,
       "norm_label": "formatjson",
       "id": "json_formatjson"
     },
@@ -39089,7 +39089,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 773,
       "norm_label": "getjsonparseerror",
       "id": "json_getjsonparseerror"
     },
@@ -39102,7 +39102,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 773,
       "norm_label": "wasm/json-tools",
       "id": "wasm_jsontools_module"
     },
@@ -39882,7 +39882,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 769,
       "norm_label": "diff facade (line/word/unified/side-by-side)",
       "id": "diff_facade"
     },
@@ -39895,7 +39895,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 769,
       "norm_label": "side-by-side diff row pairing algorithm",
       "id": "diff_side_by_side_algorithm"
     },
@@ -39934,7 +39934,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 186,
       "norm_label": "css border-radius shorthand collapser",
       "id": "border_radius_collapser"
     },
@@ -40012,7 +40012,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 186,
       "norm_label": "csv wasm adapter (jsontocsv/csvtojson)",
       "id": "csv_wasm_adapter"
     },
@@ -40077,7 +40077,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 186,
       "norm_label": "markdown wasm facade (rendermarkdown re-export)",
       "id": "markdown_wasm_facade"
     },
@@ -40090,7 +40090,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 186,
       "norm_label": "yaml wasm facade (format/json\u2194yaml)",
       "id": "yaml_wasm_facade"
     },
@@ -40155,7 +40155,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 186,
       "norm_label": "js format wasm facade (format/minify)",
       "id": "js_format_wasm_facade"
     },
@@ -40168,7 +40168,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 186,
       "norm_label": "css format wasm facade (format/minify)",
       "id": "css_format_wasm_facade"
     },
@@ -40259,7 +40259,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 186,
       "norm_label": "wasm adapter facade pattern (ts wraps wasm/*)",
       "id": "wasm_boundary_pattern"
     },
@@ -40272,7 +40272,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 186,
       "norm_label": "@/wasm/csv module",
       "id": "wasm_csv_module"
     },
@@ -40285,7 +40285,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 769,
       "norm_label": "@/wasm/diff module",
       "id": "wasm_diff_module"
     },
@@ -40298,7 +40298,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 186,
       "norm_label": "@/wasm/markdown module",
       "id": "wasm_markdown_module"
     },
@@ -40350,7 +40350,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 186,
       "norm_label": "csv tests (json\u2194csv roundtrip via wasm)",
       "id": "csv_spec"
     },
@@ -40363,7 +40363,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 11,
+      "community": 769,
       "norm_label": "diff tests",
       "id": "diff_spec"
     },
@@ -40389,7 +40389,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 765,
       "norm_label": "jsontotypescript (wasm proxy)",
       "id": "json_to_typescript_module"
     },
@@ -40415,7 +40415,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 757,
       "norm_label": "db diagram persistence (serialize/deserialize)",
       "id": "db_diagram_persistence_module"
     },
@@ -40467,7 +40467,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 765,
       "norm_label": "number base converter (wasm proxy)",
       "id": "number_base_module"
     },
@@ -40480,7 +40480,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 772,
       "norm_label": "timezone converter",
       "id": "timezone_converter_module"
     },
@@ -40493,7 +40493,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 772,
       "norm_label": "buildtimezoneindex (memoized)",
       "id": "timezone_converter_buildindex"
     },
@@ -40519,7 +40519,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 767,
       "norm_label": "favicon generator",
       "id": "favicon_module"
     },
@@ -40532,7 +40532,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 765,
       "norm_label": "xml<->json (wasm proxy)",
       "id": "xml_module"
     },
@@ -40558,7 +40558,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 771,
       "norm_label": "x.509 certificate decoder",
       "id": "certificate_decoder_module"
     },
@@ -40571,7 +40571,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 765,
       "norm_label": "bcrypt hash/verify (wasm proxy)",
       "id": "bcrypt_hasher_module"
     },
@@ -40636,7 +40636,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 767,
       "norm_label": "pwa splash screen + icons",
       "id": "splash_screen_module"
     },
@@ -40649,7 +40649,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 767,
       "norm_label": "generateallassets",
       "id": "splash_screen_generateallassets"
     },
@@ -40662,7 +40662,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 757,
       "norm_label": "db diagram sql ddl exporter",
       "id": "db_diagram_sql_module"
     },
@@ -40675,7 +40675,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 757,
       "norm_label": "generatesql",
       "id": "db_diagram_sql_generatesql"
     },
@@ -40688,7 +40688,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 757,
       "norm_label": "db diagram localstorage persistence",
       "id": "db_diagram_storage_module"
     },
@@ -40714,7 +40714,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 757,
       "norm_label": "sql ddl parser/importer",
       "id": "db_diagram_import_module"
     },
@@ -40727,7 +40727,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 757,
       "norm_label": "parsesqlddl",
       "id": "db_diagram_import_parsesqlddl"
     },
@@ -40831,7 +40831,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 757,
       "norm_label": "db diagram core (generateid)",
       "id": "db_diagram_module"
     },
@@ -40857,7 +40857,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 767,
       "norm_label": "constants (ios_devices, pwa sizes)",
       "id": "constants_module"
     },
@@ -40870,7 +40870,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 765,
       "norm_label": "wasm json-tools binding",
       "id": "wasm_json_tools_module"
     },
@@ -40883,7 +40883,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 765,
       "norm_label": "wasm number-base binding",
       "id": "wasm_number_base_module"
     },
@@ -40896,7 +40896,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 765,
       "norm_label": "wasm bcrypt binding",
       "id": "wasm_bcrypt_module"
     },
@@ -40909,7 +40909,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 771,
       "norm_label": "@peculiar/x509 (dynamic)",
       "id": "peculiar_x509_lib"
     },
@@ -40922,7 +40922,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 767,
       "norm_label": "jszip",
       "id": "jszip_lib"
     },
@@ -40948,7 +40948,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 767,
       "norm_label": "htmlcanvas 2d api",
       "id": "canvas_2d_api"
     },
@@ -40961,7 +40961,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 772,
       "norm_label": "intl.datetimeformat",
       "id": "intl_datetimeformat"
     },
@@ -40974,7 +40974,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 765,
       "norm_label": "wasm proxy pattern (rationale)",
       "id": "wasm_proxy_pattern"
     },
@@ -40987,7 +40987,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 757,
       "norm_label": "db-diagram-persistence.spec",
       "id": "db_diagram_persistence_test"
     },
@@ -41000,7 +41000,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 757,
       "norm_label": "db-diagram-import.spec",
       "id": "db_diagram_import_test"
     },
@@ -41013,7 +41013,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 757,
       "norm_label": "db-diagram-typescript.spec",
       "id": "db_diagram_typescript_test"
     },
@@ -41026,7 +41026,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 757,
       "norm_label": "db-diagram-dbml.spec",
       "id": "db_diagram_dbml_test"
     },
@@ -41039,7 +41039,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 757,
       "norm_label": "db-diagram.spec",
       "id": "db_diagram_test"
     },
@@ -41052,7 +41052,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 771,
       "norm_label": "certificate-decoder.spec",
       "id": "certificate_decoder_test"
     },
@@ -41065,7 +41065,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 2,
+      "community": 765,
       "norm_label": "bcrypt-hasher.spec",
       "id": "bcrypt_hasher_test"
     },
@@ -44640,7 +44640,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 758,
       "norm_label": "session ref token to discard stale async results",
       "id": "concept_session_token_pattern"
     },
@@ -45095,7 +45095,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 758,
       "norm_label": "certificatedecoder",
       "id": "certificatedecoder_component"
     },
@@ -45108,7 +45108,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 758,
       "norm_label": "chmodcalculator",
       "id": "chmodcalculator_component"
     },
@@ -45121,7 +45121,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 758,
       "norm_label": "rsakeygenerator",
       "id": "rsakeygenerator_component"
     },
@@ -45134,7 +45134,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 758,
       "norm_label": "aesencryptdecrypt",
       "id": "aesencryptdecrypt_component"
     },
@@ -45147,7 +45147,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 770,
       "norm_label": "bcrypthasher",
       "id": "bcrypthasher_component"
     },
@@ -45160,7 +45160,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 770,
       "norm_label": "hashtab (inner)",
       "id": "bcrypthasher_hashtab"
     },
@@ -45173,7 +45173,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 770,
       "norm_label": "verifytab (inner)",
       "id": "bcrypthasher_verifytab"
     },
@@ -45186,7 +45186,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 758,
       "norm_label": "feature/security barrel",
       "id": "security_barrel"
     },
@@ -45199,7 +45199,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 758,
       "norm_label": "sshkeyfingerprint",
       "id": "sshkeyfingerprint_component"
     },
@@ -45212,7 +45212,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 758,
       "norm_label": "hashgenerator",
       "id": "hashgenerator_component"
     },
@@ -45225,7 +45225,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 758,
       "norm_label": "hmacgenerator",
       "id": "hmacgenerator_component"
     },
@@ -45238,7 +45238,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 766,
       "norm_label": "regextester",
       "id": "regextester_component"
     },
@@ -45251,7 +45251,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 766,
       "norm_label": "textcaseconverter",
       "id": "textcaseconverter_component"
     },
@@ -45264,7 +45264,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 766,
       "norm_label": "wordcounter",
       "id": "wordcounter_component"
     },
@@ -45277,7 +45277,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 766,
       "norm_label": "stringescapeunescape",
       "id": "stringescapeunescape_component"
     },
@@ -45290,7 +45290,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 766,
       "norm_label": "textsortdedupe",
       "id": "textsortdedupe_component"
     },
@@ -45303,7 +45303,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 766,
       "norm_label": "useragentparser",
       "id": "useragentparser_component"
     },
@@ -45316,7 +45316,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 766,
       "norm_label": "loremipsumgenerator",
       "id": "loremipsumgenerator_component"
     },
@@ -45329,7 +45329,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 766,
       "norm_label": "feature/text barrel",
       "id": "text_barrel"
     },
@@ -45342,7 +45342,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 766,
       "norm_label": "textdiffchecker",
       "id": "textdiffchecker_component"
     },
@@ -45355,7 +45355,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 758,
       "norm_label": "debounced async processing pipeline",
       "id": "concept_debounced_async_pipeline"
     },
@@ -45368,7 +45368,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 761,
       "norm_label": "tool_registry_map[id] description pattern",
       "id": "concept_tool_registry_lookup"
     },
@@ -46604,7 +46604,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 763,
       "norm_label": "backgroundremover",
       "id": "backgroundremover_index_component"
     },
@@ -46656,7 +46656,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 763,
       "norm_label": "backgroundremoverresult",
       "id": "backgroundremover_result_component"
     },
@@ -46669,7 +46669,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 763,
       "norm_label": "backgroundremovererror",
       "id": "backgroundremover_error_component"
     },
@@ -46682,7 +46682,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 763,
       "norm_label": "backgroundremoverprocessing",
       "id": "backgroundremover_processing_component"
     },
@@ -46695,7 +46695,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 761,
       "norm_label": "passwordgenerator",
       "id": "passwordgenerator_component"
     },
@@ -46708,7 +46708,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 763,
       "norm_label": "qrcodegenerator",
       "id": "qrcodegenerator_component"
     },
@@ -46721,7 +46721,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 763,
       "norm_label": "qrcodereducer",
       "id": "qrcodegenerator_reducer"
     },
@@ -46734,7 +46734,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 761,
       "norm_label": "uuidgenerator",
       "id": "uuidgenerator_component"
     },
@@ -46747,7 +46747,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 764,
       "norm_label": "usesidebarstore",
       "id": "usesidebarstore_store"
     },
@@ -46760,7 +46760,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 761,
       "norm_label": "usetoast",
       "id": "usetoast_store"
     },
@@ -46773,7 +46773,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 764,
       "norm_label": "usecommandpalettestore",
       "id": "usecommandpalettestore_store"
     },
@@ -46786,7 +46786,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 764,
       "norm_label": "getpreviouslyfocusedelement",
       "id": "usecommandpalettestore_getpreviouslyfocused"
     },
@@ -46838,7 +46838,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 764,
       "norm_label": "commandpalette",
       "id": "commandpalette_component"
     },
@@ -46851,7 +46851,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 764,
       "norm_label": "searchinput (palette)",
       "id": "commandpalette_searchinput"
     },
@@ -46864,7 +46864,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 761,
       "norm_label": "unitpxtorem",
       "id": "unitpxtorem_component"
     },
@@ -46877,7 +46877,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 761,
       "norm_label": "aspectratiocalculator",
       "id": "aspectratiocalculator_component"
     },
@@ -46890,7 +46890,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 761,
       "norm_label": "colorconvertor",
       "id": "colorconvertor_component"
     },
@@ -46903,7 +46903,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 761,
       "norm_label": "colorpalettegenerator",
       "id": "colorpalettegenerator_component"
     },
@@ -46942,7 +46942,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 764,
       "norm_label": "navigation.spec.ts",
       "id": "navigation_spec_e2e"
     },
@@ -46955,7 +46955,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 764,
       "norm_label": "home.spec.ts",
       "id": "home_spec_e2e"
     },
@@ -46968,7 +46968,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 764,
       "norm_label": "e2e fixtures",
       "id": "e2e_fixtures"
     },
@@ -46981,7 +46981,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 764,
       "norm_label": "e2e selectors",
       "id": "e2e_selectors"
     },
@@ -46994,7 +46994,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 763,
       "norm_label": "tabs",
       "id": "tabs_component"
     },
@@ -47086,7 +47086,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 761,
       "norm_label": "toastprovider",
       "id": "toastprovider_component"
     },
@@ -47099,7 +47099,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 764,
       "norm_label": "zustand store pattern",
       "id": "concept_zustand_store"
     },
@@ -47112,7 +47112,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 763,
       "norm_label": "reducer+dialog tool pattern",
       "id": "concept_reducer_dialog_tool"
     },
@@ -47125,7 +47125,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 761,
       "norm_label": "debounced compute pattern",
       "id": "concept_debounced_compute"
     },
@@ -47138,7 +47138,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 0,
+      "community": 763,
       "norm_label": "blob objecturl lifecycle",
       "id": "concept_objecturl_lifecycle"
     },
@@ -67215,6 +67215,17 @@
       "target": "utils_rsa_key_generator_generatersakeypair"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/utils/rsa-key-generator.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "utils_rsa_key_generator_downloadpemfile",
+      "target": "utils_download_downloadblob"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/utils/db-diagram-persistence.ts",
@@ -68811,6 +68822,17 @@
       "confidence_score": 1.0,
       "source": "utils_download_downloaddataurl",
       "target": "utils_download_triggerdownload"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/utils/mermaid-renderer.ts",
+      "source_location": "L96",
+      "weight": 1.0,
+      "source": "utils_mermaid_renderer_downloadsvg",
+      "target": "utils_download_downloadblob"
     },
     {
       "relation": "calls",
@@ -82846,9 +82868,9 @@
       "source_file": "src/hooks/useBatchAssetPipeline.ts",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usebatchassetpipeline_ts",
-      "target": "src_hooks_usebloburl_ts",
-      "confidence_score": 1.0
+      "target": "src_hooks_usebloburl_ts"
     },
     {
       "relation": "imports",
@@ -82857,9 +82879,9 @@
       "source_file": "src/hooks/useBatchAssetPipeline.ts",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_hooks_usebatchassetpipeline_ts",
-      "target": "hooks_usebloburl_usebloburl",
-      "confidence_score": 1.0
+      "target": "hooks_usebloburl_usebloburl"
     },
     {
       "relation": "imports_from",
@@ -84939,9 +84961,9 @@
       "source_file": "CONTEXT.md",
       "source_location": "L428",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "csr_dev_tools_context_csr_dev_tools_domain_language",
-      "target": "csr_dev_tools_context_usebloburl",
-      "confidence_score": 1.0
+      "target": "csr_dev_tools_context_usebloburl"
     },
     {
       "relation": "contains",
@@ -104763,5 +104785,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "5b222db79c6476d0e7c57890067fa9f82444ec72"
+  "built_at_commit": "cce0fe322521c4e4fe8b08ddd3e9a88b10e3bec4"
 }
