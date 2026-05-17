@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { DiagramSchema } from '@/types'
 
-import { generateMermaidER } from './db-diagram-mermaid'
+import { generateMermaidER } from './mermaid'
 
 describe('db-diagram-mermaid', () => {
   describe('generateMermaidER', () => {

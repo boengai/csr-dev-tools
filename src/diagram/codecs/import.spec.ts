@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { ColumnType } from '@/types'
 
-import { parseSqlDdl } from './db-diagram-import'
+import { parseSqlDdl } from './import'
 
 describe('db-diagram-import', () => {
   describe('parseSqlDdl', () => {

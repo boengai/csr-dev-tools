@@ -9,7 +9,7 @@ import {
   loadDiagramIndex,
   saveDiagram,
   saveDiagramIndex,
-} from './db-diagram-storage'
+} from './storage'
 
 const STORAGE_KEY = 'csr-dev-tools-db-diagrams'
 

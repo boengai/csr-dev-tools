@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { DiagramSchema } from '@/types'
 
-import { generateDbml, parseDbml } from './db-diagram-dbml'
+import { generateDbml, parseDbml } from './dbml'
 
 describe('generateDbml', () => {
   it('returns empty string for empty schema', () => {

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { DiagramSchema } from '@/types'
 
-import { deserializeDiagram, serializeDiagram, validateDiagramSchema } from './db-diagram-persistence'
+import { deserializeDiagram, serializeDiagram, validateDiagramSchema } from './persistence'
 
 const makeSampleSchema = (): DiagramSchema => ({
   relationships: [

@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { DiagramSchema } from '@/types'
 
-import { generateCreateTable, generateForeignKeys, generateSql, mapColumnType } from './db-diagram-sql'
+import { generateCreateTable, generateForeignKeys, generateSql, mapColumnType } from './sql'
 
 const makeTable = (
   name: string,

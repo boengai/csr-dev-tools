@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { parseJsonSchema } from './db-diagram-json-schema'
+import { parseJsonSchema } from './json-schema'
 
 describe('db-diagram-json-schema', () => {
   describe('parseJsonSchema', () => {

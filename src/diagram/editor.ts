@@ -12,7 +12,7 @@ import type {
   TableColumn,
   TableId,
 } from '@/types'
-import { validateDiagramSchema } from '@/utils/db-diagram-persistence'
+import { validateDiagramSchema } from '@/diagram/codecs/persistence'
 
 import * as columnOps from './operations/columns'
 import * as dbmlOps from './operations/dbml'

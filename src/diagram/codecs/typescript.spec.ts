@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { DiagramSchema } from '@/types'
 
-import { generateTypeScript } from './db-diagram-typescript'
+import { generateTypeScript } from './typescript'
 
 describe('db-diagram-typescript', () => {
   describe('generateTypeScript', () => {

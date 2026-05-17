@@ -1,5 +1,5 @@
 import type { DiagramDocument, ImportResult } from '@/types'
-import { generateDbml, parseDbml } from '@/utils/db-diagram-dbml'
+import { generateDbml, parseDbml } from '@/diagram/codecs/dbml'
 
 import { documentToSchema } from './export'
 import { schemaToDocument } from './lifecycle'

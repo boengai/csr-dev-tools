@@ -1,6 +1,6 @@
 import type { DiagramDocument, ImportResult, SqlDialect } from '@/types'
-import { parseSqlDdl } from '@/utils/db-diagram-import'
-import { parseJsonSchema } from '@/utils/db-diagram-json-schema'
+import { parseSqlDdl } from '@/diagram/codecs/import'
+import { parseJsonSchema } from '@/diagram/codecs/json-schema'
 
 import { schemaToDocument } from './lifecycle'
 

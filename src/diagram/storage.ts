@@ -6,7 +6,7 @@ import {
   loadDiagramIndex,
   saveDiagram,
   saveDiagramIndex,
-} from '@/utils/db-diagram-storage'
+} from '@/diagram/codecs/storage'
 
 export const localStorageDiagramStorage: DiagramStorage = {
   loadIndex: loadDiagramIndex,
