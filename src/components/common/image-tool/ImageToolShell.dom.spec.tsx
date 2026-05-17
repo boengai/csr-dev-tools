@@ -16,13 +16,15 @@ const PNG_BYTES = new Uint8Array([0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a
 
 const pngFile = (name = 'photo.png'): File => new File([PNG_BYTES], name, { type: 'image/png' })
 
-const echoProcess = async (file: File, _controls: unknown): Promise<Blob> => file
+type TestControls = Record<string, unknown>
 
-const RenderShell = (overrides: Partial<React.ComponentProps<typeof ImageToolShell<undefined>>> = {}) => (
-  <ImageToolShell
+const echoProcess = async (file: File, _controls: TestControls): Promise<Blob> => file
+
+const RenderShell = (overrides: Partial<React.ComponentProps<typeof ImageToolShell<TestControls>>> = {}) => (
+  <ImageToolShell<TestControls>
     accept="image/png,image/jpeg,image/webp"
-    controls={undefined}
     getDownloadFilename={() => 'out.png'}
+    initialControls={{}}
     process={echoProcess}
     renderControls={() => null}
     renderPreview={() => null}
@@ -113,7 +115,7 @@ describe('ImageToolShell — MIME validation', () => {
 describe('ImageToolShell — process pipeline', () => {
   it('invokes process with the uploaded file and current controls', async () => {
     const process = vi.fn(echoProcess)
-    const { container } = render(<RenderShell controls={{ k: 7 } as never} process={process} />)
+    const { container } = render(<RenderShell initialControls={{ k: 7 }} process={process} />)
     uploadFile(container, pngFile())
     await act(async () => {
       await vi.advanceTimersByTimeAsync(0)
@@ -133,7 +135,7 @@ describe('ImageToolShell — process pipeline', () => {
   })
 
   it('passes source File and sourceUrl to renderPreview after upload', async () => {
-    const renderPreview = vi.fn((_: ImageToolShellPreviewContext) => null)
+    const renderPreview = vi.fn((_: ImageToolShellPreviewContext<TestControls>) => null)
     const { container } = render(<RenderShell renderPreview={renderPreview} />)
     uploadFile(container, pngFile('cat.png'))
     await act(async () => {
@@ -149,7 +151,7 @@ describe('ImageToolShell — process pipeline', () => {
 
   it('passes result and resultUrl to renderPreview after process resolves', async () => {
     const resultBlob = new Blob(['xx'], { type: 'image/png' })
-    const renderPreview = vi.fn((_: ImageToolShellPreviewContext) => null)
+    const renderPreview = vi.fn((_: ImageToolShellPreviewContext<TestControls>) => null)
     const { container } = render(<RenderShell process={async () => resultBlob} renderPreview={renderPreview} />)
     uploadFile(container, pngFile())
     await act(async () => {
@@ -187,7 +189,9 @@ describe('ImageToolShell — process pipeline', () => {
   })
 
   it('clicking Download invokes getDownloadFilename and triggers download anchor', async () => {
-    const getDownloadFilename = vi.fn(({ sourceName }: ImageToolShellDownloadContext) => `out-${sourceName}`)
+    const getDownloadFilename = vi.fn(
+      ({ sourceName }: ImageToolShellDownloadContext<TestControls>) => `out-${sourceName}`,
+    )
     const { container } = render(
       <RenderShell
         getDownloadFilename={getDownloadFilename}
@@ -239,7 +243,7 @@ describe('ImageToolShell — process pipeline', () => {
   })
 
   it('clears source after dialog closes — next upload starts fresh', async () => {
-    const renderPreview = vi.fn((_: ImageToolShellPreviewContext) => null)
+    const renderPreview = vi.fn((_: ImageToolShellPreviewContext<TestControls>) => null)
     const { container } = render(<RenderShell renderPreview={renderPreview} />)
     uploadFile(container, pngFile('first.png'))
     await act(async () => {
@@ -260,12 +264,12 @@ describe('ImageToolShell — process pipeline', () => {
   it('renderPreview.recompute fires process again with current controls', async () => {
     const process = vi.fn(echoProcess)
     const captured: { recompute: (() => void) | null } = { recompute: null }
-    const renderPreview = ({ recompute }: ImageToolShellPreviewContext) => {
+    const renderPreview = ({ recompute }: ImageToolShellPreviewContext<TestControls>) => {
       captured.recompute = recompute
       return null
     }
     const { container } = render(
-      <RenderShell controls={{ k: 2 } as never} process={process} renderPreview={renderPreview} />,
+      <RenderShell initialControls={{ k: 2 }} process={process} renderPreview={renderPreview} />,
     )
     uploadFile(container, pngFile())
     await act(async () => {
@@ -284,12 +288,12 @@ describe('ImageToolShell — process pipeline', () => {
   it('renderControls.recompute fires process again with current controls', async () => {
     const process = vi.fn(echoProcess)
     const captured: { recompute: (() => void) | null } = { recompute: null }
-    const renderControls = ({ recompute }: ImageToolShellControlsContext) => {
+    const renderControls = ({ recompute }: ImageToolShellControlsContext<TestControls>) => {
       captured.recompute = recompute
       return null
     }
     const { container } = render(
-      <RenderShell controls={{ k: 1 } as never} process={process} renderControls={renderControls} />,
+      <RenderShell initialControls={{ k: 1 }} process={process} renderControls={renderControls} />,
     )
     uploadFile(container, pngFile())
     await act(async () => {
@@ -303,5 +307,112 @@ describe('ImageToolShell — process pipeline', () => {
     })
     expect(process).toHaveBeenCalledTimes(2)
     expect(process.mock.calls[1][1]).toEqual({ k: 1 })
+  })
+
+  it('setControls merges partial into bag, re-fires process with merged controls', async () => {
+    const process = vi.fn(echoProcess)
+    const captured: { setControls: ((p: Partial<{ a: number; b: number }>) => void) | null } = { setControls: null }
+    const renderControls = ({ setControls }: ImageToolShellControlsContext<{ a: number; b: number }>) => {
+      captured.setControls = setControls
+      return null
+    }
+    const { container } = render(
+      <ImageToolShell<{ a: number; b: number }>
+        accept="image/*"
+        getDownloadFilename={() => 'out.png'}
+        initialControls={{ a: 1, b: 2 }}
+        process={process}
+        renderControls={renderControls}
+        renderPreview={() => null}
+        title="setControls Shell"
+        uploadLabel="Upload"
+      />,
+    )
+    uploadFile(container, pngFile())
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    expect(process.mock.calls[0][1]).toEqual({ a: 1, b: 2 })
+
+    await act(async () => {
+      captured.setControls?.({ a: 9 })
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    expect(process).toHaveBeenCalledTimes(2)
+    expect(process.mock.calls[1][1]).toEqual({ a: 9, b: 2 })
+  })
+
+  it('setControls composes same-tick partials before re-firing process once', async () => {
+    const process = vi.fn(echoProcess)
+    const captured: { setControls: ((p: Partial<{ a: number; b: number }>) => void) | null } = { setControls: null }
+    const renderControls = ({ setControls }: ImageToolShellControlsContext<{ a: number; b: number }>) => {
+      captured.setControls = setControls
+      return null
+    }
+    const { container } = render(
+      <ImageToolShell<{ a: number; b: number }>
+        accept="image/*"
+        getDownloadFilename={() => 'out.png'}
+        initialControls={{ a: 1, b: 2 }}
+        process={process}
+        renderControls={renderControls}
+        renderPreview={() => null}
+        title="merge Shell"
+        uploadLabel="Upload"
+      />,
+    )
+    uploadFile(container, pngFile())
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    expect(process).toHaveBeenCalledTimes(1)
+
+    await act(async () => {
+      captured.setControls?.({ a: 9 })
+      captured.setControls?.({ b: 8 })
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    // setInputImmediate fires per call, but the pipeline's stale-safety drops
+    // the older one; the surviving call sees both partials merged.
+    const lastCall = process.mock.calls.at(-1)
+    if (!lastCall) throw new Error('process not invoked')
+    expect(lastCall[1]).toEqual({ a: 9, b: 8 })
+  })
+
+  it('resets controls to initialControls when the dialog closes', async () => {
+    const process = vi.fn(echoProcess)
+    const captured: { setControls: ((p: Partial<{ a: number }>) => void) | null } = { setControls: null }
+    const renderControls = ({ setControls }: ImageToolShellControlsContext<{ a: number }>) => {
+      captured.setControls = setControls
+      return null
+    }
+    const { container } = render(
+      <ImageToolShell<{ a: number }>
+        accept="image/*"
+        getDownloadFilename={() => 'out.png'}
+        initialControls={{ a: 1 }}
+        process={process}
+        renderControls={renderControls}
+        renderPreview={() => null}
+        title="reset Shell"
+        uploadLabel="Upload"
+      />,
+    )
+    uploadFile(container, pngFile())
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    await act(async () => {
+      captured.setControls?.({ a: 42 })
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    fireEvent.click(screen.getByRole('button', { name: /close/i }))
+
+    // Re-upload; process should fire with reset controls
+    uploadFile(container, pngFile('second.png'))
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    expect(process.mock.calls.at(-1)?.[1]).toEqual({ a: 1 })
   })
 })

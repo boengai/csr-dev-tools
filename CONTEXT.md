@@ -357,19 +357,30 @@ Examples: `BackgroundRemover`, `ImageCropper`, `ImageResizer`. Does NOT fit:
 
 The shell wraps the [[Tool computation pipeline]] internally, so all four of
 its invariants (debounced, stale-safe, empty-bypass, unmount-safe) apply to
-the `process` function. The shell owns: the dialog, the file UploadInput +
+the `process` function. The shell **owns the controls bag** — mirroring
+[[Tool field bag]] semantics — alongside the dialog, the file UploadInput +
 MIME validation, source and result `Blob` URL lifecycles (via [[useBlobUrl]]),
-the Download button + filename. The Tool's role narrows to its
-`process(file, controls)` function, an externally-owned `controls` value, two
-render-props (`renderControls`, `renderPreview`), and a `getDownloadFilename`
-callback. The shell exposes an optional `onRejectInvalidFile` callback for
-the Tool to wire a reject toast.
+and the Download button + filename. The Tool declares `initialControls` and a
+`process(file, controls)` function; the bag's live value lives in the shell.
 
-The Tool fires the pipeline via `recompute()` from `renderControls` — the
-same shape `<BidirectionalConverter>` uses for `sourceToolbarSlot`. The
-`renderPreview` ctx carries `{ pending, error, source, sourceUrl, result,
-resultUrl }`; the Tool decides per-phase rendering instead of a separate
-processing slot.
+`renderControls` and `renderPreview` ctx both carry `{ controls,
+setControls(partial) }`. `setControls` IS the recompute trigger — every
+partial merges into the live bag (ref-based, same-tick partials compose) and
+routes through the pipeline. A contributor cannot forget to recompute. ADR-0014
+records the migration from the prior React-side-owned shape (see ADR-0009 for
+the original design and why it was superseded).
+
+The `renderPreview` ctx additionally carries `{ pending, error, source,
+sourceUrl, result, resultUrl }`; the Tool decides per-phase rendering instead
+of a separate processing slot. Both ctxs also expose `recompute()` for the
+escape-hatch case: a Tool whose result depends on non-controls React state
+(`ImageCropper`'s `imgRef`, `BackgroundRemover`'s `strippedCacheRef`) and
+needs to re-fire compute without changing the bag — e.g. after `<img onLoad>`
+populates `imgRef`.
+
+The shell auto-resets controls to `initialControls` on dialog close. The
+Tool's `onAfterDialogClose` callback handles per-Tool non-controls cleanup
+(refs, UI-only state like the live drag `crop` in `ImageCropper`).
 
 ## Batch asset pipeline
 

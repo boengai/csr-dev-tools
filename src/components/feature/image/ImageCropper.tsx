@@ -44,11 +44,11 @@ type CropControls = {
   naturalCrop: CropRegion | null
 }
 
+const INITIAL_CONTROLS: CropControls = { aspectPreset: 'free', naturalCrop: null }
+
 export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
   const imgRef = useRef<HTMLImageElement | null>(null)
-  const [aspectPreset, setAspectPreset] = useState<AspectRatioPreset>('free')
   const [crop, setCrop] = useState<Crop | undefined>(undefined)
-  const [naturalCrop, setNaturalCrop] = useState<CropRegion | null>(null)
   const { showError } = useToast()
 
   const captureNaturalCrop = (displayCrop: PixelCrop) => {
@@ -66,76 +66,72 @@ export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
   return (
     <ImageToolShell<CropControls>
       accept="image/*"
-      controls={{ aspectPreset, naturalCrop }}
       description={toolEntry?.description}
       getDownloadFilename={({ sourceName }) => {
         const base = sourceName.replace(/\.[^.]+$/, '')
         const ext = sourceName.split('.').pop() || 'png'
         return `cropped-${base}.${ext}`
       }}
+      initialControls={INITIAL_CONTROLS}
       onAfterDialogClose={() => {
-        // Reset per-Tool state so a re-upload starts clean.
+        // Shell auto-resets the controls bag. Tool clears its non-controls
+        // state (imgRef, the live drag `crop`) so a re-upload starts clean.
         imgRef.current = null
-        setAspectPreset('free')
         setCrop(undefined)
-        setNaturalCrop(null)
         onAfterDialogClose?.()
       }}
       onRejectInvalidFile={() => showError('Please select an image file')}
       process={process}
-      renderControls={({ recompute }) => (
+      renderControls={({ controls, setControls }) => (
         <div className="flex shrink-0 flex-wrap items-center justify-center gap-2">
           {ASPECT_RATIO_OPTIONS.map((option) => (
             <button
-              className={aspectButtonStyles({ active: aspectPreset === option.value })}
+              className={aspectButtonStyles({ active: controls.aspectPreset === option.value })}
               key={option.value}
               onClick={() => {
-                setAspectPreset(option.value)
                 const img = imgRef.current
-                if (!img) return
+                if (!img) {
+                  setControls({ aspectPreset: option.value })
+                  return
+                }
                 const next = {
                   ...getDefaultCrop(img.width, img.height, getAspectRatio(option.value)),
                   unit: 'px' as const,
                 }
                 setCrop(next)
-                const nc = captureNaturalCrop(next)
-                setNaturalCrop(nc)
-                recompute()
+                setControls({ aspectPreset: option.value, naturalCrop: captureNaturalCrop(next) })
               }}
               type="button"
             >
               {option.label}
             </button>
           ))}
-          {naturalCrop && (
+          {controls.naturalCrop && (
             <>
               <span className="h-5 w-px bg-gray-700" />
               <span aria-live="polite" className="text-body-xs text-gray-500">
-                Size: {naturalCrop.width} x {naturalCrop.height} px
+                Size: {controls.naturalCrop.width} x {controls.naturalCrop.height} px
               </span>
             </>
           )}
         </div>
       )}
-      renderPreview={({ recompute, sourceUrl }) => (
+      renderPreview={({ controls, setControls, sourceUrl }) => (
         <CropPreview
-          aspectPreset={aspectPreset}
+          aspectPreset={controls.aspectPreset}
           captureNaturalCrop={captureNaturalCrop}
           crop={crop}
           imgRef={imgRef}
           onImageLoad={(e) => {
             const img = e.currentTarget
-            const next = { ...getDefaultCrop(img.width, img.height, getAspectRatio(aspectPreset)), unit: 'px' as const }
+            const next = {
+              ...getDefaultCrop(img.width, img.height, getAspectRatio(controls.aspectPreset)),
+              unit: 'px' as const,
+            }
             setCrop(next)
-            const nc = captureNaturalCrop(next)
-            setNaturalCrop(nc)
-            recompute()
+            setControls({ naturalCrop: captureNaturalCrop(next) })
           }}
-          onCropComplete={(c) => {
-            const nc = captureNaturalCrop(c)
-            setNaturalCrop(nc)
-            recompute()
-          }}
+          onCropComplete={(c) => setControls({ naturalCrop: captureNaturalCrop(c) })}
           setCrop={setCrop}
           sourceUrl={sourceUrl}
         />

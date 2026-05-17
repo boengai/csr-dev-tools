@@ -1,5 +1,3 @@
-import { useState } from 'react'
-
 import { FieldForm } from '@/components/common'
 import { ImageToolShell } from '@/components/common/image-tool'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
@@ -20,7 +18,7 @@ type ResizeControls = {
   width: number | null
 }
 
-const initialControls: ResizeControls = {
+const INITIAL_CONTROLS: ResizeControls = {
   format: null,
   height: null,
   quality: null,
@@ -29,7 +27,6 @@ const initialControls: ResizeControls = {
 }
 
 export const ImageResizer = ({ onAfterDialogClose }: ToolComponentProps) => {
-  const [controls, setControls] = useState<ResizeControls>(initialControls)
   const { showError } = useToast()
 
   const process = async (file: File, c: ResizeControls): Promise<Blob | null> => {
@@ -55,81 +52,71 @@ export const ImageResizer = ({ onAfterDialogClose }: ToolComponentProps) => {
     return parseDataUrlToBlob(result.dataUrl)
   }
 
-  const setAndRecompute = (next: ResizeControls, recompute: () => void) => {
-    setControls(next)
-    recompute()
-  }
-
-  const setNumber = (key: 'height' | 'width', val: string, recompute: () => void) => {
-    const n = Number(val)
-    const next = { ...controls }
-    if (Number.isNaN(n) || n <= 0) {
-      next[key] = null
-    } else {
-      next[key] = n
-      if (next.ratio) {
-        if (key === 'width') {
-          next.height = Math.round(n / next.ratio)
-        } else {
-          next.width = Math.round(n * next.ratio)
-        }
-      }
-    }
-    setAndRecompute(next, recompute)
-  }
-
-  const isLossy = controls.format ? LOSSY_FORMATS.has(controls.format) : false
-  const ready = Boolean(controls.width && controls.height && controls.format)
-
   return (
     <ImageToolShell<ResizeControls>
       accept="image/*"
-      controls={controls}
       description={toolEntry?.description}
-      getDownloadFilename={({ sourceName }) => parseFileName(sourceName, controls.format ?? undefined)}
-      onAfterDialogClose={() => {
-        setControls(initialControls)
-        onAfterDialogClose?.()
-      }}
+      getDownloadFilename={({ controls, sourceName }) => parseFileName(sourceName, controls.format ?? undefined)}
+      initialControls={INITIAL_CONTROLS}
+      onAfterDialogClose={onAfterDialogClose}
       onRejectInvalidFile={() => showError('Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)')}
       process={process}
-      renderControls={({ recompute }) => (
-        <div className="flex w-full shrink-0 flex-col items-end gap-2 tablet:flex-row">
-          <div className="flex w-full gap-2">
-            <FieldForm
-              disabled={!ready}
-              label="Width"
-              name="width"
-              onChange={(val) => setNumber('width', val, recompute)}
-              placeholder="1920"
-              type="number"
-              value={controls.width?.toString() ?? ''}
-            />
-            <FieldForm
-              disabled={!ready}
-              label="Height"
-              name="height"
-              onChange={(val) => setNumber('height', val, recompute)}
-              placeholder="1080"
-              type="number"
-              value={controls.height?.toString() ?? ''}
-            />
+      renderControls={({ controls, setControls }) => {
+        const isLossy = controls.format ? LOSSY_FORMATS.has(controls.format) : false
+        const ready = Boolean(controls.width && controls.height && controls.format)
+        const setNumber = (key: 'height' | 'width', val: string) => {
+          const n = Number(val)
+          if (Number.isNaN(n) || n <= 0) {
+            setControls({ [key]: null } as Partial<ResizeControls>)
+            return
+          }
+          if (controls.ratio) {
+            const other = key === 'width' ? Math.round(n / controls.ratio) : Math.round(n * controls.ratio)
+            setControls(
+              key === 'width' ? { height: other, width: n } : { height: n, width: other },
+            )
+            return
+          }
+          setControls({ [key]: n } as Partial<ResizeControls>)
+        }
+        return (
+          <div className="flex w-full shrink-0 flex-col items-end gap-2 tablet:flex-row">
+            <div className="flex w-full gap-2">
+              <FieldForm
+                disabled={!ready}
+                label="Width"
+                name="width"
+                onChange={(val) => setNumber('width', val)}
+                placeholder="1920"
+                type="number"
+                value={controls.width?.toString() ?? ''}
+              />
+              <FieldForm
+                disabled={!ready}
+                label="Height"
+                name="height"
+                onChange={(val) => setNumber('height', val)}
+                placeholder="1080"
+                type="number"
+                value={controls.height?.toString() ?? ''}
+              />
+            </div>
+            <div className="flex w-full gap-2 *:w-full">
+              <ImageFormatSelectInput
+                disabled={!ready}
+                onChange={(val) => setControls({ format: val as ImageFormat })}
+                value={controls.format ?? undefined}
+              />
+              <ImageQualitySelectInput
+                disabled={!ready || !isLossy}
+                onChange={(val) => setControls({ quality: Number(val) })}
+                value={(isLossy ? controls.quality : 1)?.toString() ?? '1'}
+              />
+            </div>
           </div>
-          <div className="flex w-full gap-2 *:w-full">
-            <ImageFormatSelectInput
-              disabled={!ready}
-              onChange={(val) => setAndRecompute({ ...controls, format: val as ImageFormat }, recompute)}
-              value={controls.format ?? undefined}
-            />
-            <ImageQualitySelectInput
-              disabled={!ready || !isLossy}
-              onChange={(val) => setAndRecompute({ ...controls, quality: Number(val) }, recompute)}
-              value={(isLossy ? controls.quality : 1)?.toString() ?? '1'}
-            />
-          </div>
-        </div>
-      )}
-      renderPreview={({ recompute, resultUrl, source, sourceUrl }) => (
+        )
+      }}
+      renderPreview={({ controls, resultUrl, setControls, source, sourceUrl }) => (
         <div className="bg-grid-texture flex flex-col items-center justify-center gap-6 bg-black tablet:min-h-0 tablet:grow tablet:flex-row">
           <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
             <p className="shrink-0 text-body-sm font-medium text-gray-300">Original</p>
@@ -148,7 +135,6 @@ export const ImageResizer = ({ onAfterDialogClose }: ToolComponentProps) => {
                     ratio: img.naturalWidth / Math.max(img.naturalHeight, 1),
                     width: img.naturalWidth,
                   })
-                  recompute()
                 }}
                 src={sourceUrl}
               />

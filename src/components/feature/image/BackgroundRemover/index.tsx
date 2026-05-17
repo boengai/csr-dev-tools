@@ -1,4 +1,4 @@
-import { useCallback, useRef, useState } from 'react'
+import { useCallback, useRef } from 'react'
 
 import { ImageToolShell } from '@/components/common/image-tool'
 import { TOOL_REGISTRY_MAP } from '@/constants'
@@ -17,9 +17,9 @@ type BgControls = {
   customColor: string
 }
 
+const INITIAL_CONTROLS: BgControls = { bgOption: 'transparent', customColor: '#ff0000' }
+
 export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) => {
-  const [bgOption, setBgOption] = useState<BgOption>('transparent')
-  const [customColor, setCustomColor] = useState('#ff0000')
   const strippedCacheRef = useRef<{ file: File; stripped: Blob } | null>(null)
   const { showError } = useToast()
 
@@ -37,27 +37,21 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
   return (
     <ImageToolShell<BgControls>
       accept="image/png,image/jpeg,image/webp"
-      controls={{ bgOption, customColor }}
       description={toolEntry?.description}
       getDownloadFilename={() => 'background-removed.png'}
+      initialControls={INITIAL_CONTROLS}
       onAfterDialogClose={onAfterDialogClose}
       onRejectInvalidFile={() => showError('Please select an image file (PNG, JPG, or WEBP)')}
       process={process}
-      renderControls={({ recompute }) => (
+      renderControls={({ controls, setControls }) => (
         <BackgroundRemoverResult
-          bgOption={bgOption}
-          customColor={customColor}
-          onBgChange={(v) => {
-            setBgOption(v)
-            recompute()
-          }}
-          onColorChange={(v) => {
-            setCustomColor(v)
-            if (bgOption === 'custom') recompute()
-          }}
+          bgOption={controls.bgOption}
+          customColor={controls.customColor}
+          onBgChange={(v) => setControls({ bgOption: v })}
+          onColorChange={(v) => setControls({ customColor: v })}
         />
       )}
-      renderPreview={({ error, pending, resultUrl, sourceUrl }) => {
+      renderPreview={({ controls, error, pending, resultUrl, sourceUrl }) => {
         if (pending) return <BackgroundRemoverProcessing downloading={false} progress={0} />
         if (error) return <BackgroundRemoverError onReset={() => (strippedCacheRef.current = null)} />
         if (!resultUrl) return null
@@ -78,7 +72,7 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
               <picture
                 className="flex size-full grow flex-col items-center justify-center gap-4 rounded tablet:max-h-full tablet:overflow-y-auto"
                 style={
-                  bgOption === 'transparent'
+                  controls.bgOption === 'transparent'
                     ? {
                         backgroundImage: 'repeating-conic-gradient(#808080 0% 25%, transparent 0% 50%)',
                         backgroundSize: '16px 16px',

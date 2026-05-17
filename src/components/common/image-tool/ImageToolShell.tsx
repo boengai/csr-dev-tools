@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useCallback, useRef, useState } from 'react'
 
 import { Button, DownloadIcon } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
@@ -13,11 +13,11 @@ type PipelineInput<TControls> = {
   controls: TControls
 }
 
-export function ImageToolShell<TControls>({
+export function ImageToolShell<TControls extends object>({
   accept,
-  controls,
   description,
   getDownloadFilename,
+  initialControls,
   onAfterDialogClose,
   onRejectInvalidFile,
   process,
@@ -28,6 +28,12 @@ export function ImageToolShell<TControls>({
 }: ImageToolShellProps<TControls>) {
   const [source, setSource] = useState<File | null>(null)
   const [dialogOpen, setDialogOpen] = useState(false)
+  const [controls, setControlsState] = useState<TControls>(initialControls)
+  const controlsRef = useRef(controls)
+  controlsRef.current = controls
+  const sourceRef = useRef(source)
+  sourceRef.current = source
+  const initialRef = useRef(initialControls)
 
   const { error, isPending, result, setInputImmediate } = useToolComputation<PipelineInput<TControls>, Blob | null>(
     async ({ file, controls: c }) => {
@@ -45,13 +51,30 @@ export function ImageToolShell<TControls>({
   const sourceUrl = useBlobUrl(source)
   const resultUrl = useBlobUrl(result)
 
-  const recompute = () => {
-    setInputImmediate({ file: source, controls })
-  }
+  // The recompute escape hatch for non-controls-driven cases: a Tool whose
+  // result depends on React state outside the controls bag (imgRef.current,
+  // cacheRef) and needs to fire compute without changing the bag — e.g. after
+  // <img onLoad> populates imgRef in ImageCropper. See ADR-0014.
+  const recompute = useCallback(() => {
+    setInputImmediate({ controls: controlsRef.current, file: sourceRef.current })
+  }, [setInputImmediate])
+
+  // setControls IS the recompute trigger — every partial merges into the live
+  // bag (ref-based, so same-tick partials compose) and routes through the
+  // pipeline. See [[Tool field bag]] in CONTEXT.md for the merge invariant.
+  const setControls = useCallback(
+    (partial: Partial<TControls>) => {
+      const next = { ...controlsRef.current, ...partial }
+      controlsRef.current = next
+      setControlsState(next)
+      setInputImmediate({ controls: next, file: sourceRef.current })
+    },
+    [setInputImmediate],
+  )
 
   const handleDownload = () => {
     if (!result || !source) return
-    const filename = getDownloadFilename({ result, sourceName: source.name })
+    const filename = getDownloadFilename({ controls, result, sourceName: source.name })
     downloadBlob(result, filename)
   }
 
@@ -63,8 +86,21 @@ export function ImageToolShell<TControls>({
       return
     }
     setSource(file)
+    sourceRef.current = file
     setDialogOpen(true)
-    setInputImmediate({ file, controls })
+    setInputImmediate({ controls: controlsRef.current, file })
+  }
+
+  const handleDialogOpenChange = (open: boolean) => {
+    setDialogOpen(open)
+    if (!open) {
+      // Auto-reset controls to initialControls when the dialog closes — the
+      // shell owns the bag's lifecycle. Consumers handle per-Tool non-controls
+      // cleanup (refs, UI-only state) in onAfterDialogClose.
+      const init = initialRef.current
+      controlsRef.current = init
+      setControlsState(init)
+    }
   }
 
   return (
@@ -83,20 +119,22 @@ export function ImageToolShell<TControls>({
       </div>
       <ToolDialogShell
         onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={setDialogOpen}
+        onOpenChange={handleDialogOpenChange}
         open={dialogOpen}
         size="screen"
         title={title}
       >
         <div className="flex grow flex-col gap-4">
-          {renderControls({ pending: isPending, recompute })}
+          {renderControls({ controls, pending: isPending, recompute, setControls })}
           {source && sourceUrl
             ? renderPreview({
+                controls,
                 error,
                 pending: isPending,
                 recompute,
                 result,
                 resultUrl,
+                setControls,
                 source,
                 sourceUrl,
               })
