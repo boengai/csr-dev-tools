@@ -1,7 +1,8 @@
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Button, CopyButton, FieldForm, ToolDialogShell } from '@/components/common'
+import { Button, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useMountOnce, useToast, useToolComputationPersisted } from '@/hooks'
 import type { MermaidComputeResult, ToolComponentProps } from '@/types'
@@ -62,7 +63,6 @@ const computeMermaid = async (input: string): Promise<MermaidComputeResult> => {
 }
 
 export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const [exportingPng, setExportingPng] = useState(false)
   const [referenceOpen, setReferenceOpen] = useState(false)
   const { showError, showSuccess } = useToast()
@@ -142,25 +142,14 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const handleReset = () => setInputImmediate(DEFAULT_CODE)
 
   return (
-    <>
-      <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => setDialogOpen(true)} variant="default">
-            Render
-          </Button>
-        </div>
-      </div>
-
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={setDialogOpen}
-        onReset={handleReset}
-        open={dialogOpen}
-        size="screen"
-        title="Mermaid Renderer"
-      >
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleReset}
+      title="Mermaid Renderer"
+      triggers={[{ label: 'Render' }]}
+    >
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
             {/* Left Panel: Input */}
@@ -274,7 +263,6 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             </div>
           </div>
         </div>
-      </ToolDialogShell>
-    </>
+    </ToolDialogFrame>
   )
 }

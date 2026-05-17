@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
-import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
 import type { EnvConvertMode, EnvInput, EnvResult, ToolComponentProps } from '@/types'
@@ -54,7 +54,6 @@ const EMPTY_RESULT: EnvResult = { output: '', warnings: [] }
 export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [source, setSource] = useState('')
   const [mode, setMode] = useState<EnvConvertMode>('env-to-json')
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { showError } = useToast()
 
   const { result, setInput, setInputImmediate } = useToolComputation<EnvInput, EnvResult>(
@@ -97,10 +96,9 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
     setInput({ source: val, mode })
   }
 
-  const openDialog = (m: EnvConvertMode) => {
+  const seedMode = (m: EnvConvertMode) => () => {
     setMode(m)
     setSource('')
-    setDialogOpen(true)
     setInputImmediate({ source: '', mode: m })
   }
 
@@ -112,34 +110,19 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
   const config = MODE_CONFIG[mode]
 
   return (
-    <>
-      <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => openDialog('env-to-json')} variant="default">
-            .env → JSON
-          </Button>
-          <Button block onClick={() => openDialog('env-to-yaml')} variant="default">
-            .env → YAML
-          </Button>
-          <Button block onClick={() => openDialog('json-to-env')} variant="default">
-            JSON → .env
-          </Button>
-          <Button block onClick={() => openDialog('yaml-to-env')} variant="default">
-            YAML → .env
-          </Button>
-        </div>
-      </div>
-
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={setDialogOpen}
-        onReset={handleReset}
-        open={dialogOpen}
-        size="screen"
-        title={config.dialogTitle}
-      >
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleReset}
+      title={config.dialogTitle}
+      triggers={[
+        { label: '.env → JSON', onOpen: seedMode('env-to-json') },
+        { label: '.env → YAML', onOpen: seedMode('env-to-yaml') },
+        { label: 'JSON → .env', onOpen: seedMode('json-to-env') },
+        { label: 'YAML → .env', onOpen: seedMode('yaml-to-env') },
+      ]}
+    >
         <div className="flex w-full grow flex-col gap-4">
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
             <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
@@ -169,7 +152,6 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
             </div>
           </div>
         </div>
-      </ToolDialogShell>
-    </>
+    </ToolDialogFrame>
   )
 }

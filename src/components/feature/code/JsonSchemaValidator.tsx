@@ -1,7 +1,5 @@
-import { useState } from 'react'
-
-import { Button, FieldForm } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFieldsPersisted } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -12,8 +10,6 @@ const toolEntry = TOOL_REGISTRY_MAP['json-schema-validator']
 type ValidatorInput = { jsonData: string; jsonSchema: string }
 
 export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-
   const { inputs, recompute, result, setFields } = useToolFieldsPersisted<
     ValidatorInput,
     ValidationResult | null
@@ -33,35 +29,24 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
   const handleRevalidate = () => recompute()
 
   return (
-    <>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleRevalidate}
+      title="JSON Schema Validator"
+      triggers={[
+        {
+          label: 'Validate',
+          onOpen: () => {
+            if (jsonData.trim() && jsonSchema.trim()) {
+              recompute()
+            }
+          },
+        },
+      ]}
+    >
       <div className="flex w-full grow flex-col gap-4">
-        {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button
-            block
-            onClick={() => {
-              setDialogOpen(true)
-              if (jsonData.trim() && jsonSchema.trim()) {
-                recompute()
-              }
-            }}
-            variant="default"
-          >
-            Validate
-          </Button>
-        </div>
-      </div>
-
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={setDialogOpen}
-        onReset={handleRevalidate}
-        open={dialogOpen}
-        size="screen"
-        title="JSON Schema Validator"
-      >
-        <div className="flex w-full grow flex-col gap-4">
           <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
             <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
               <FieldForm
@@ -119,7 +104,6 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
             )}
           </div>
         </div>
-      </ToolDialogShell>
-    </>
+    </ToolDialogFrame>
   )
 }
