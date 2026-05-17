@@ -1,7 +1,7 @@
 import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ConverterMode, JsonTomlConvertMode, ToolComponentProps } from '@/types'
-import { getTomlParseError } from '@/utils'
+import { formatParseError, getTomlParseError } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-toml-converter']
 
@@ -30,10 +30,10 @@ const compute = async ({ mode, source }: { mode: JsonTomlConvertMode; source: st
     return mode === 'toml-to-json' ? await tomlToJson(source) : await jsonToToml(source)
   } catch {
     if (mode === 'toml-to-json') {
-      const msg = await getTomlParseError(source)
-      throw new Error(msg ? `Invalid TOML: ${msg}` : 'Conversion failed — please check your input')
+      throw new Error(formatParseError(await getTomlParseError(source), 'TOML'))
     }
-    throw new Error('Invalid JSON — please check your input')
+    const { getJsonParseError } = await import('@/wasm/json-tools')
+    throw new Error(formatParseError(await getJsonParseError(source), 'JSON'))
   }
 }
 

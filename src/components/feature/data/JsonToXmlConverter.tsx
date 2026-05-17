@@ -1,6 +1,7 @@
 import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ConverterMode, JsonXmlConvertMode, ToolComponentProps } from '@/types'
+import { formatParseError } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-xml-converter']
 
@@ -30,10 +31,10 @@ const compute = async ({ mode, source }: { mode: JsonXmlConvertMode; source: str
   } catch {
     if (mode === 'xml-to-json') {
       const { getXmlParseError } = await import('@/wasm/parsers')
-      const msg = await getXmlParseError(source)
-      throw new Error(msg ? `Invalid XML: ${msg}` : 'Conversion failed — please check your input')
+      throw new Error(formatParseError(await getXmlParseError(source), 'XML'))
     }
-    throw new Error('Invalid JSON — please check your input')
+    const { getJsonParseError } = await import('@/wasm/json-tools')
+    throw new Error(formatParseError(await getJsonParseError(source), 'JSON'))
   }
 }
 

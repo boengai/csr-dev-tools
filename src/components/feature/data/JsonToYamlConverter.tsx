@@ -1,7 +1,7 @@
 import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ConverterMode, JsonYamlConvertMode } from '@/types'
-import { getJsonParseError, getYamlParseError, jsonToYaml, yamlToJson } from '@/utils'
+import { formatParseError, getJsonParseError, getYamlParseError, jsonToYaml, yamlToJson } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-yaml-converter']
 
@@ -29,11 +29,9 @@ const compute = async ({ mode, source }: { mode: JsonYamlConvertMode; source: st
     return mode === 'json-to-yaml' ? await jsonToYaml(source) : await yamlToJson(source)
   } catch {
     if (mode === 'json-to-yaml') {
-      const msg = await getJsonParseError(source)
-      throw new Error(msg ? `Invalid JSON: ${msg}` : 'Conversion failed — please check your input')
+      throw new Error(formatParseError(await getJsonParseError(source), 'JSON'))
     }
-    const msg = await getYamlParseError(source)
-    throw new Error(msg ? `Invalid YAML: ${msg}` : 'Conversion failed — please check your input')
+    throw new Error(formatParseError(await getYamlParseError(source), 'YAML'))
   }
 }
 
