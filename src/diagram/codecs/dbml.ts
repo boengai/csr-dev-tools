@@ -1,7 +1,7 @@
 import type { ColumnType, DiagramSchema, RelationshipType } from '@/types'
 import type { ParsedTable, ParsedRef } from '@/types/diagram/codecs/dbml'
 
-import { generateId, gridLayoutPositions } from '@/utils/db-diagram'
+import { generateId, gridLayoutPositions } from '@/diagram/defaults'
 import type { ParseResult } from './import'
 
 // ── Generator ──────────────────────────────────────────────────────

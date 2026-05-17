@@ -1,4 +1,5 @@
 export * from './document'
+export * from './schema'
 export * from './codecs/dbml'
 export * from './codecs/import'
 export * from './codecs/json-schema'

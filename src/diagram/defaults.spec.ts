@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { createDefaultColumn, createDefaultTable, generateId, gridLayoutPositions } from './db-diagram'
+import { createDefaultColumn, createDefaultTable, generateId, gridLayoutPositions } from './defaults'
 
 describe('db-diagram utils', () => {
   describe('generateId', () => {

@@ -1,5 +1,5 @@
 import type { DiagramDocument, EditorTable, TableId } from '@/types'
-import { createDefaultColumn } from '@/utils/db-diagram'
+import { createDefaultColumn } from '@/diagram/defaults'
 
 const tableIdSeq = (() => {
   let n = 0

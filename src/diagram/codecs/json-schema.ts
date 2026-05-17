@@ -1,7 +1,7 @@
 import type { ColumnType, DiagramSchema } from '@/types'
 import type { JsonSchemaProperty, JsonSchemaRoot } from '@/types/diagram/codecs/json-schema'
 
-import { generateId } from '@/utils/db-diagram'
+import { generateId } from '@/diagram/defaults'
 import type { ParseResult } from './import'
 
 const JSON_TYPE_MAP: Record<string, ColumnType> = {

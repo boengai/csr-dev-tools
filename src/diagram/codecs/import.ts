@@ -1,7 +1,7 @@
 import type { ColumnType, DiagramSchema, SqlDialect } from '@/types'
 import type { ParseResult, ParsedColumn, FkRef } from '@/types/diagram/codecs/import'
 
-import { generateId } from '@/utils/db-diagram'
+import { generateId } from '@/diagram/defaults'
 
 const SQL_TYPE_MAP: Array<{ match: RegExp; type: ColumnType }> = [
   { match: /^BIGSERIAL$/i, type: 'BIGINT' },

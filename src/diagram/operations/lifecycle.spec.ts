@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import type { DiagramSchema } from '@/types'
-import { createDefaultColumn } from '@/utils/db-diagram'
+import { createDefaultColumn } from '@/diagram/defaults'
 
 import { createInitialDocument } from '../state'
 import { addColumn } from './columns'
