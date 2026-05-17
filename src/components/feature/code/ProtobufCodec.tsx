@@ -124,18 +124,18 @@ const EncodeContent = ({
   )
 
   const handleUploadJson = useCallback(
-    (files: Array<File>) => {
+    async (files: Array<File>) => {
       const file = files[0]
       if (!file) return
-      const reader = new FileReader()
-      reader.onload = () => {
-        const text = reader.result as string
+      try {
+        const text = await file.text()
         onSourceChange(text)
         setEncodeInputImmediate({ schema, msgType: selectedMessageType, source: text, format })
+      } catch {
+        showError('Failed to read file')
       }
-      reader.readAsText(file)
     },
-    [onSourceChange, schema, selectedMessageType, format, setEncodeInputImmediate],
+    [onSourceChange, schema, selectedMessageType, format, setEncodeInputImmediate, showError],
   )
 
   const handleDownloadEncoded = useCallback(() => {
@@ -291,13 +291,11 @@ const DecodeContent = ({
   )
 
   const handleUploadPb = useCallback(
-    (files: Array<File>) => {
+    async (files: Array<File>) => {
       const file = files[0]
       if (!file) return
-      const reader = new FileReader()
-      reader.onload = async () => {
-        const buffer = reader.result as ArrayBuffer
-        const bytes = new Uint8Array(buffer)
+      try {
+        const bytes = new Uint8Array(await file.arrayBuffer())
         // Convert to latin1 string (preserves all byte values, unlike UTF-8)
         let raw = ''
         for (const byte of bytes) {
@@ -312,10 +310,11 @@ const DecodeContent = ({
         onSourceChange(value)
         setDecodeInputImmediate({ schema, msgType: selectedMessageType, source: value, format: detected })
         showSuccess(`Auto-detected format: ${detected}`)
+      } catch {
+        showError('Failed to read file')
       }
-      reader.readAsArrayBuffer(file)
     },
-    [onFormatChange, onSourceChange, schema, selectedMessageType, setDecodeInputImmediate, showSuccess],
+    [onFormatChange, onSourceChange, schema, selectedMessageType, setDecodeInputImmediate, showError, showSuccess],
   )
 
   const handleDownloadJson = useCallback(() => {

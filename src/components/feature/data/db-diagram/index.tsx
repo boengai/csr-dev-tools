@@ -114,25 +114,22 @@ const DiagramWorkspace = () => {
   }, [editor])
 
   const handleImportJson = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    async (e: React.ChangeEvent<HTMLInputElement>) => {
       const file = e.target.files?.[0]
+      e.target.value = ''
       if (!file) return
 
-      const reader = new FileReader()
-      reader.onload = (event) => {
-        try {
-          const parsed = JSON.parse(event.target?.result as string)
-          const name = file.name.replace(/\.json$/i, '')
-          const loaded = editor.loadFromExportedJson(parsed, name)
-          if (!loaded) {
-            showError('Invalid diagram file. Expected a CSR Dev Tools diagram JSON.')
-          }
-        } catch {
+      try {
+        const text = await file.text()
+        const parsed = JSON.parse(text)
+        const name = file.name.replace(/\.json$/i, '')
+        const loaded = editor.loadFromExportedJson(parsed, name)
+        if (!loaded) {
           showError('Invalid diagram file. Expected a CSR Dev Tools diagram JSON.')
         }
+      } catch {
+        showError('Invalid diagram file. Expected a CSR Dev Tools diagram JSON.')
       }
-      reader.readAsText(file)
-      e.target.value = ''
     },
     [editor, showError],
   )
