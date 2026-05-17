@@ -8712,7 +8712,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_editor_spec_ts",
-      "community": 731,
+      "community": 275,
       "norm_label": "editor.spec.ts"
     },
     {
@@ -8721,7 +8721,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L8",
       "id": "diagram_editor_spec_editor",
-      "community": 731,
+      "community": 275,
       "norm_label": "editor"
     },
     {
@@ -8730,7 +8730,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L14",
       "id": "diagram_editor_spec_listener",
-      "community": 731,
+      "community": 275,
       "norm_label": "listener"
     },
     {
@@ -8739,7 +8739,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L15",
       "id": "diagram_editor_spec_unsubscribe",
-      "community": 731,
+      "community": 275,
       "norm_label": "unsubscribe"
     },
     {
@@ -8748,7 +8748,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L18",
       "id": "diagram_editor_spec_next",
-      "community": 731,
+      "community": 275,
       "norm_label": "next"
     },
     {
@@ -8757,7 +8757,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L41",
       "id": "diagram_editor_spec_id",
-      "community": 731,
+      "community": 275,
       "norm_label": "id"
     },
     {
@@ -8766,7 +8766,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L60",
       "id": "diagram_editor_spec_doc",
-      "community": 731,
+      "community": 275,
       "norm_label": "doc"
     },
     {
@@ -8775,7 +8775,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L70",
       "id": "diagram_editor_spec_tableid",
-      "community": 731,
+      "community": 275,
       "norm_label": "tableid"
     },
     {
@@ -8784,7 +8784,7 @@
       "source_file": "src/diagram/editor.spec.ts",
       "source_location": "L83",
       "id": "diagram_editor_spec_result",
-      "community": 731,
+      "community": 275,
       "norm_label": "result"
     },
     {
@@ -11187,7 +11187,7 @@
       "source_file": "src/utils/db-diagram-dbml.ts",
       "source_location": "L31",
       "id": "utils_db_diagram_dbml_formatconstraints",
-      "community": 729,
+      "community": 63,
       "norm_label": "formatconstraints()"
     },
     {
@@ -11196,7 +11196,7 @@
       "source_file": "src/utils/db-diagram-dbml.ts",
       "source_location": "L40",
       "id": "utils_db_diagram_dbml_generatedbml",
-      "community": 729,
+      "community": 63,
       "norm_label": "generatedbml()"
     },
     {
@@ -14310,7 +14310,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L1",
       "id": "src_utils_timezone_converter_ts",
-      "community": 22,
+      "community": 186,
       "norm_label": "timezone-converter.ts"
     },
     {
@@ -14319,7 +14319,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L6",
       "id": "utils_timezone_converter_gettimezonelist",
-      "community": 22,
+      "community": 186,
       "norm_label": "gettimezonelist()"
     },
     {
@@ -14328,7 +14328,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L14",
       "id": "utils_timezone_converter_parseoffsettominutes",
-      "community": 22,
+      "community": 186,
       "norm_label": "parseoffsettominutes()"
     },
     {
@@ -14337,7 +14337,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L24",
       "id": "utils_timezone_converter_getabbreviation",
-      "community": 22,
+      "community": 186,
       "norm_label": "getabbreviation()"
     },
     {
@@ -14346,7 +14346,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L33",
       "id": "utils_timezone_converter_getoffset",
-      "community": 22,
+      "community": 186,
       "norm_label": "getoffset()"
     },
     {
@@ -14355,7 +14355,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L42",
       "id": "utils_timezone_converter_extractcity",
-      "community": 22,
+      "community": 186,
       "norm_label": "extractcity()"
     },
     {
@@ -14364,7 +14364,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L48",
       "id": "utils_timezone_converter_extractregion",
-      "community": 22,
+      "community": 186,
       "norm_label": "extractregion()"
     },
     {
@@ -14373,7 +14373,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L52",
       "id": "utils_timezone_converter_buildtimezoneindex",
-      "community": 22,
+      "community": 186,
       "norm_label": "buildtimezoneindex()"
     },
     {
@@ -14382,7 +14382,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L95",
       "id": "utils_timezone_converter_searchtimezones",
-      "community": 22,
+      "community": 186,
       "norm_label": "searchtimezones()"
     },
     {
@@ -14391,7 +14391,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L104",
       "id": "utils_timezone_converter_converttimezone",
-      "community": 22,
+      "community": 186,
       "norm_label": "converttimezone()"
     },
     {
@@ -14400,7 +14400,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L133",
       "id": "utils_timezone_converter_parsedatetimeinput",
-      "community": 22,
+      "community": 186,
       "norm_label": "parsedatetimeinput()"
     },
     {
@@ -18081,7 +18081,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L1",
       "id": "src_components_common_toast_toastprovider_tsx",
-      "community": 728,
+      "community": 742,
       "norm_label": "toastprovider.tsx"
     },
     {
@@ -18090,7 +18090,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L10",
       "id": "toast_toastprovider_iconvariants",
-      "community": 728,
+      "community": 742,
       "norm_label": "iconvariants"
     },
     {
@@ -18099,7 +18099,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L23",
       "id": "toast_toastprovider_toasttypeicon",
-      "community": 728,
+      "community": 742,
       "norm_label": "toasttypeicon()"
     },
     {
@@ -18108,7 +18108,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L34",
       "id": "toast_toastprovider_defaultduration",
-      "community": 728,
+      "community": 742,
       "norm_label": "defaultduration"
     },
     {
@@ -18117,7 +18117,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L39",
       "id": "toast_toastprovider_toastitem",
-      "community": 728,
+      "community": 742,
       "norm_label": "toastitem()"
     },
     {
@@ -18126,7 +18126,7 @@
       "source_file": "src/components/common/toast/ToastProvider.tsx",
       "source_location": "L78",
       "id": "toast_toastprovider_toastprovider",
-      "community": 728,
+      "community": 742,
       "norm_label": "toastprovider()"
     },
     {
@@ -19944,7 +19944,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L109",
       "id": "security_certificatedecoder_certificatedecoder",
-      "community": 15,
+      "community": 85,
       "norm_label": "certificatedecoder()"
     },
     {
@@ -20637,7 +20637,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_mermaidrenderer_tsx",
-      "community": 90,
+      "community": 725,
       "norm_label": "mermaidrenderer.tsx"
     },
     {
@@ -20646,7 +20646,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L19",
       "id": "code_mermaidrenderer_chevronstyles",
-      "community": 90,
+      "community": 725,
       "norm_label": "chevronstyles"
     },
     {
@@ -20655,7 +20655,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L38",
       "id": "code_mermaidrenderer_syntax_examples",
-      "community": 90,
+      "community": 725,
       "norm_label": "syntax_examples"
     },
     {
@@ -20664,7 +20664,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L47",
       "id": "code_mermaidrenderer_initial_result",
-      "community": 90,
+      "community": 725,
       "norm_label": "initial_result"
     },
     {
@@ -20709,7 +20709,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L16",
       "id": "code_protobuftojson_kindbadge",
-      "community": 239,
+      "community": 85,
       "norm_label": "kindbadge()"
     },
     {
@@ -21915,7 +21915,7 @@
       "source_file": "src/components/feature/time/TimezoneConverter.tsx",
       "source_location": "L207",
       "id": "time_timezoneconverter_computeconversion",
-      "community": 22,
+      "community": 186,
       "norm_label": "computeconversion()"
     },
     {
@@ -23166,7 +23166,7 @@
       "source_file": "src/components/feature/data/db-diagram/TableNode.tsx",
       "source_location": "L20",
       "id": "db_diagram_tablenode_constrainttoggle",
-      "community": 85,
+      "community": 1,
       "norm_label": "constrainttoggle()"
     },
     {
@@ -23499,7 +23499,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_useasyncaction_dom_spec_tsx",
-      "community": 725,
+      "community": 741,
       "norm_label": "useasyncaction.dom.spec.tsx"
     },
     {
@@ -23508,7 +23508,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L11",
       "id": "hooks_useasyncaction_dom_spec_deferred",
-      "community": 725,
+      "community": 741,
       "norm_label": "deferred()"
     },
     {
@@ -23517,7 +23517,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L23",
       "id": "hooks_useasyncaction_dom_spec_result",
-      "community": 725,
+      "community": 741,
       "norm_label": "{ result }"
     },
     {
@@ -23526,7 +23526,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L29",
       "id": "hooks_useasyncaction_dom_spec_d",
-      "community": 725,
+      "community": 741,
       "norm_label": "d"
     },
     {
@@ -23535,7 +23535,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L60",
       "id": "hooks_useasyncaction_dom_spec_onerror",
-      "community": 725,
+      "community": 741,
       "norm_label": "onerror"
     },
     {
@@ -23544,7 +23544,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L87",
       "id": "hooks_useasyncaction_dom_spec_returned",
-      "community": 725,
+      "community": 741,
       "norm_label": "returned"
     },
     {
@@ -23553,7 +23553,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L96",
       "id": "hooks_useasyncaction_dom_spec_d1",
-      "community": 725,
+      "community": 741,
       "norm_label": "d1"
     },
     {
@@ -23562,7 +23562,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L97",
       "id": "hooks_useasyncaction_dom_spec_d2",
-      "community": 725,
+      "community": 741,
       "norm_label": "d2"
     },
     {
@@ -23571,7 +23571,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L162",
       "id": "hooks_useasyncaction_dom_spec_result_unmount",
-      "community": 725,
+      "community": 741,
       "norm_label": "{ result, unmount }"
     },
     {
@@ -23580,7 +23580,7 @@
       "source_file": "src/hooks/useAsyncAction.dom.spec.tsx",
       "source_location": "L195",
       "id": "hooks_useasyncaction_dom_spec_result_rerender",
-      "community": 725,
+      "community": 741,
       "norm_label": "{ result, rerender }"
     },
     {
@@ -23994,7 +23994,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_usetimeoutref_dom_spec_tsx",
-      "community": 275,
+      "community": 106,
       "norm_label": "usetimeoutref.dom.spec.tsx"
     },
     {
@@ -24003,7 +24003,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L19",
       "id": "hooks_usetimeoutref_dom_spec_cb",
-      "community": 275,
+      "community": 106,
       "norm_label": "cb"
     },
     {
@@ -24012,7 +24012,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L20",
       "id": "hooks_usetimeoutref_dom_spec_result",
-      "community": 275,
+      "community": 106,
       "norm_label": "{ result }"
     },
     {
@@ -24021,7 +24021,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L34",
       "id": "hooks_usetimeoutref_dom_spec_first",
-      "community": 275,
+      "community": 106,
       "norm_label": "first"
     },
     {
@@ -24030,7 +24030,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L35",
       "id": "hooks_usetimeoutref_dom_spec_second",
-      "community": 275,
+      "community": 106,
       "norm_label": "second"
     },
     {
@@ -24039,7 +24039,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L84",
       "id": "hooks_usetimeoutref_dom_spec_result_unmount",
-      "community": 275,
+      "community": 106,
       "norm_label": "{ result, unmount }"
     },
     {
@@ -24048,7 +24048,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L98",
       "id": "hooks_usetimeoutref_dom_spec_result_rerender",
-      "community": 275,
+      "community": 106,
       "norm_label": "{ result, rerender }"
     },
     {
@@ -24120,7 +24120,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_usestalesafeasync_dom_spec_tsx",
-      "community": 725,
+      "community": 741,
       "norm_label": "usestalesafeasync.dom.spec.tsx"
     },
     {
@@ -24129,7 +24129,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L11",
       "id": "hooks_usestalesafeasync_dom_spec_result",
-      "community": 725,
+      "community": 741,
       "norm_label": "{ result }"
     },
     {
@@ -24138,7 +24138,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L14",
       "id": "hooks_usestalesafeasync_dom_spec_a",
-      "community": 725,
+      "community": 741,
       "norm_label": "a"
     },
     {
@@ -24147,7 +24147,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L17",
       "id": "hooks_usestalesafeasync_dom_spec_b",
-      "community": 725,
+      "community": 741,
       "norm_label": "b"
     },
     {
@@ -24156,7 +24156,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L21",
       "id": "hooks_usestalesafeasync_dom_spec_c",
-      "community": 725,
+      "community": 741,
       "norm_label": "c"
     },
     {
@@ -24165,7 +24165,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L29",
       "id": "hooks_usestalesafeasync_dom_spec_session",
-      "community": 725,
+      "community": 741,
       "norm_label": "session"
     },
     {
@@ -24174,7 +24174,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L30",
       "id": "hooks_usestalesafeasync_dom_spec_fn",
-      "community": 725,
+      "community": 741,
       "norm_label": "fn"
     },
     {
@@ -24183,7 +24183,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L39",
       "id": "hooks_usestalesafeasync_dom_spec_stale",
-      "community": 725,
+      "community": 741,
       "norm_label": "stale"
     },
     {
@@ -24192,7 +24192,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.dom.spec.tsx",
       "source_location": "L48",
       "id": "hooks_usestalesafeasync_dom_spec_result_rerender",
-      "community": 725,
+      "community": 741,
       "norm_label": "{ result, rerender }"
     },
     {
@@ -24255,7 +24255,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.ts",
       "source_location": "L1",
       "id": "src_hooks_usestalesafeasync_ts",
-      "community": 725,
+      "community": 741,
       "norm_label": "usestalesafeasync.ts"
     },
     {
@@ -24264,7 +24264,7 @@
       "source_file": "src/hooks/useStaleSafeAsync.ts",
       "source_location": "L3",
       "id": "hooks_usestalesafeasync_stalesafesession",
-      "community": 725,
+      "community": 741,
       "norm_label": "stalesafesession"
     },
     {
@@ -24358,24 +24358,6 @@
       "norm_label": "usecopytoclipboard()"
     },
     {
-      "label": "useKeyboardShortcuts.ts",
-      "file_type": "code",
-      "source_file": "src/hooks/useKeyboardShortcuts.ts",
-      "source_location": "L1",
-      "id": "src_hooks_usekeyboardshortcuts_ts",
-      "community": 172,
-      "norm_label": "usekeyboardshortcuts.ts"
-    },
-    {
-      "label": "useKeyboardShortcuts()",
-      "file_type": "code",
-      "source_file": "src/hooks/useKeyboardShortcuts.ts",
-      "source_location": "L4",
-      "id": "hooks_usekeyboardshortcuts_usekeyboardshortcuts",
-      "community": 172,
-      "norm_label": "usekeyboardshortcuts()"
-    },
-    {
       "label": "index.ts",
       "file_type": "code",
       "source_file": "src/hooks/index.ts",
@@ -24408,7 +24390,7 @@
       "source_file": "src/hooks/useTimeoutRef.ts",
       "source_location": "L1",
       "id": "src_hooks_usetimeoutref_ts",
-      "community": 275,
+      "community": 106,
       "norm_label": "usetimeoutref.ts"
     },
     {
@@ -24417,7 +24399,7 @@
       "source_file": "src/hooks/useTimeoutRef.ts",
       "source_location": "L14",
       "id": "hooks_usetimeoutref_usetimeoutref",
-      "community": 275,
+      "community": 106,
       "norm_label": "usetimeoutref()"
     },
     {
@@ -24696,7 +24678,7 @@
       "source_file": "src/hooks/useAsyncAction.ts",
       "source_location": "L1",
       "id": "src_hooks_useasyncaction_ts",
-      "community": 725,
+      "community": 741,
       "norm_label": "useasyncaction.ts"
     },
     {
@@ -27182,6 +27164,51 @@
       "id": "docs_project_overview_related_documentation",
       "community": 143,
       "norm_label": "related documentation"
+    },
+    {
+      "label": "0011-use-elapsed-timer-stays.md",
+      "file_type": "document",
+      "source_file": "docs/adr/0011-use-elapsed-timer-stays.md",
+      "source_location": "L1",
+      "id": "docs_adr_0011_use_elapsed_timer_stays_md",
+      "community": 728,
+      "norm_label": "0011-use-elapsed-timer-stays.md"
+    },
+    {
+      "label": "ADR 0011 \u2014 `useElapsedTimer` stays",
+      "file_type": "document",
+      "source_file": "docs/adr/0011-use-elapsed-timer-stays.md",
+      "source_location": "L1",
+      "id": "adr_0011_use_elapsed_timer_stays_adr_0011_useelapsedtimer_stays",
+      "community": 728,
+      "norm_label": "adr 0011 \u2014 `useelapsedtimer` stays"
+    },
+    {
+      "label": "Context",
+      "file_type": "document",
+      "source_file": "docs/adr/0011-use-elapsed-timer-stays.md",
+      "source_location": "L6",
+      "id": "adr_0011_use_elapsed_timer_stays_context",
+      "community": 728,
+      "norm_label": "context"
+    },
+    {
+      "label": "Decision",
+      "file_type": "document",
+      "source_file": "docs/adr/0011-use-elapsed-timer-stays.md",
+      "source_location": "L19",
+      "id": "adr_0011_use_elapsed_timer_stays_decision",
+      "community": 728,
+      "norm_label": "decision"
+    },
+    {
+      "label": "Consequences",
+      "file_type": "document",
+      "source_file": "docs/adr/0011-use-elapsed-timer-stays.md",
+      "source_location": "L41",
+      "id": "adr_0011_use_elapsed_timer_stays_consequences",
+      "community": 728,
+      "norm_label": "consequences"
     },
     {
       "label": "0009-image-tool-shell-recompute-stays-inline.md",
@@ -35851,6 +35878,24 @@
       "norm_label": "code:block1 (error: browsertype.launch: executable doesn't exist at /user)"
     },
     {
+      "label": "useKeyboardShortcuts.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/useKeyboardShortcuts.ts",
+      "source_location": "L1",
+      "community": 172,
+      "norm_label": "usekeyboardshortcuts.ts",
+      "id": "src_hooks_usekeyboardshortcuts_ts"
+    },
+    {
+      "label": "useKeyboardShortcuts()",
+      "file_type": "code",
+      "source_file": "src/hooks/useKeyboardShortcuts.ts",
+      "source_location": "L4",
+      "community": 172,
+      "norm_label": "usekeyboardshortcuts()",
+      "id": "hooks_usekeyboardshortcuts_usekeyboardshortcuts"
+    },
+    {
       "label": "downloadPng()",
       "file_type": "code",
       "source_file": "src/utils/mermaid-renderer.ts",
@@ -36170,7 +36215,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L1",
-      "community": 369,
+      "community": 762,
       "norm_label": "usetoolfieldspersisted.dom.spec.tsx",
       "id": "src_hooks_usetoolfieldspersisted_dom_spec_tsx"
     },
@@ -36179,7 +36224,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L9",
-      "community": 369,
+      "community": 762,
       "norm_label": "bag",
       "id": "hooks_usetoolfieldspersisted_dom_spec_bag"
     },
@@ -36188,7 +36233,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L11",
-      "community": 369,
+      "community": 762,
       "norm_label": "initial",
       "id": "hooks_usetoolfieldspersisted_dom_spec_initial"
     },
@@ -36197,7 +36242,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L25",
-      "community": 369,
+      "community": 762,
       "norm_label": "{ result }",
       "id": "hooks_usetoolfieldspersisted_dom_spec_result"
     },
@@ -36206,7 +36251,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L118",
-      "community": 369,
+      "community": 762,
       "norm_label": "compute",
       "id": "hooks_usetoolfieldspersisted_dom_spec_compute"
     },
@@ -36377,7 +36422,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L47",
-      "community": 90,
+      "community": 725,
       "norm_label": "initialstate",
       "id": "code_mermaidrenderer_initialstate"
     },
@@ -36386,7 +36431,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L56",
-      "community": 90,
+      "community": 725,
       "norm_label": "reducer()",
       "id": "code_mermaidrenderer_reducer"
     },
@@ -36395,7 +36440,7 @@
       "file_type": "code",
       "source_file": "src/utils/favicon.ts",
       "source_location": "L69",
-      "community": 33,
+      "community": 158,
       "norm_label": "downloadfaviconsaszip()",
       "id": "utils_favicon_downloadfaviconsaszip"
     },
@@ -38569,7 +38614,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 186,
+      "community": 11,
       "norm_label": "formathtml",
       "id": "htmlformat_formathtml"
     },
@@ -38582,7 +38627,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 186,
+      "community": 11,
       "norm_label": "minifyhtml",
       "id": "htmlformat_minifyhtml"
     },
@@ -38595,7 +38640,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 186,
+      "community": 11,
       "norm_label": "wasm/formatter",
       "id": "wasm_formatter_module"
     },
@@ -39076,7 +39121,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 773,
+      "community": 11,
       "norm_label": "formatjson",
       "id": "json_formatjson"
     },
@@ -39089,7 +39134,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 773,
+      "community": 11,
       "norm_label": "getjsonparseerror",
       "id": "json_getjsonparseerror"
     },
@@ -39102,7 +39147,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 773,
+      "community": 11,
       "norm_label": "wasm/json-tools",
       "id": "wasm_jsontools_module"
     },
@@ -39882,7 +39927,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 769,
+      "community": 11,
       "norm_label": "diff facade (line/word/unified/side-by-side)",
       "id": "diff_facade"
     },
@@ -39895,7 +39940,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 769,
+      "community": 11,
       "norm_label": "side-by-side diff row pairing algorithm",
       "id": "diff_side_by_side_algorithm"
     },
@@ -39934,7 +39979,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 186,
+      "community": 11,
       "norm_label": "css border-radius shorthand collapser",
       "id": "border_radius_collapser"
     },
@@ -40012,7 +40057,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 186,
+      "community": 11,
       "norm_label": "csv wasm adapter (jsontocsv/csvtojson)",
       "id": "csv_wasm_adapter"
     },
@@ -40077,7 +40122,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 186,
+      "community": 11,
       "norm_label": "markdown wasm facade (rendermarkdown re-export)",
       "id": "markdown_wasm_facade"
     },
@@ -40090,7 +40135,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 186,
+      "community": 11,
       "norm_label": "yaml wasm facade (format/json\u2194yaml)",
       "id": "yaml_wasm_facade"
     },
@@ -40155,7 +40200,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 186,
+      "community": 11,
       "norm_label": "js format wasm facade (format/minify)",
       "id": "js_format_wasm_facade"
     },
@@ -40168,7 +40213,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 186,
+      "community": 11,
       "norm_label": "css format wasm facade (format/minify)",
       "id": "css_format_wasm_facade"
     },
@@ -40259,7 +40304,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 186,
+      "community": 11,
       "norm_label": "wasm adapter facade pattern (ts wraps wasm/*)",
       "id": "wasm_boundary_pattern"
     },
@@ -40272,7 +40317,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 186,
+      "community": 11,
       "norm_label": "@/wasm/csv module",
       "id": "wasm_csv_module"
     },
@@ -40285,7 +40330,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 769,
+      "community": 11,
       "norm_label": "@/wasm/diff module",
       "id": "wasm_diff_module"
     },
@@ -40298,7 +40343,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 186,
+      "community": 11,
       "norm_label": "@/wasm/markdown module",
       "id": "wasm_markdown_module"
     },
@@ -40350,7 +40395,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 186,
+      "community": 11,
       "norm_label": "csv tests (json\u2194csv roundtrip via wasm)",
       "id": "csv_spec"
     },
@@ -40363,7 +40408,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 769,
+      "community": 11,
       "norm_label": "diff tests",
       "id": "diff_spec"
     },
@@ -40389,7 +40434,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 765,
+      "community": 2,
       "norm_label": "jsontotypescript (wasm proxy)",
       "id": "json_to_typescript_module"
     },
@@ -40415,7 +40460,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 757,
+      "community": 2,
       "norm_label": "db diagram persistence (serialize/deserialize)",
       "id": "db_diagram_persistence_module"
     },
@@ -40467,7 +40512,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 765,
+      "community": 2,
       "norm_label": "number base converter (wasm proxy)",
       "id": "number_base_module"
     },
@@ -40480,7 +40525,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 772,
+      "community": 2,
       "norm_label": "timezone converter",
       "id": "timezone_converter_module"
     },
@@ -40493,7 +40538,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 772,
+      "community": 2,
       "norm_label": "buildtimezoneindex (memoized)",
       "id": "timezone_converter_buildindex"
     },
@@ -40519,7 +40564,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 767,
+      "community": 2,
       "norm_label": "favicon generator",
       "id": "favicon_module"
     },
@@ -40532,7 +40577,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 765,
+      "community": 2,
       "norm_label": "xml<->json (wasm proxy)",
       "id": "xml_module"
     },
@@ -40558,7 +40603,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 771,
+      "community": 2,
       "norm_label": "x.509 certificate decoder",
       "id": "certificate_decoder_module"
     },
@@ -40571,7 +40616,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 765,
+      "community": 2,
       "norm_label": "bcrypt hash/verify (wasm proxy)",
       "id": "bcrypt_hasher_module"
     },
@@ -40636,7 +40681,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 767,
+      "community": 2,
       "norm_label": "pwa splash screen + icons",
       "id": "splash_screen_module"
     },
@@ -40649,7 +40694,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 767,
+      "community": 2,
       "norm_label": "generateallassets",
       "id": "splash_screen_generateallassets"
     },
@@ -40662,7 +40707,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 757,
+      "community": 2,
       "norm_label": "db diagram sql ddl exporter",
       "id": "db_diagram_sql_module"
     },
@@ -40675,7 +40720,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 757,
+      "community": 2,
       "norm_label": "generatesql",
       "id": "db_diagram_sql_generatesql"
     },
@@ -40688,7 +40733,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 757,
+      "community": 2,
       "norm_label": "db diagram localstorage persistence",
       "id": "db_diagram_storage_module"
     },
@@ -40714,7 +40759,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 757,
+      "community": 2,
       "norm_label": "sql ddl parser/importer",
       "id": "db_diagram_import_module"
     },
@@ -40727,7 +40772,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 757,
+      "community": 2,
       "norm_label": "parsesqlddl",
       "id": "db_diagram_import_parsesqlddl"
     },
@@ -40831,7 +40876,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 757,
+      "community": 2,
       "norm_label": "db diagram core (generateid)",
       "id": "db_diagram_module"
     },
@@ -40857,7 +40902,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 767,
+      "community": 2,
       "norm_label": "constants (ios_devices, pwa sizes)",
       "id": "constants_module"
     },
@@ -40870,7 +40915,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 765,
+      "community": 2,
       "norm_label": "wasm json-tools binding",
       "id": "wasm_json_tools_module"
     },
@@ -40883,7 +40928,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 765,
+      "community": 2,
       "norm_label": "wasm number-base binding",
       "id": "wasm_number_base_module"
     },
@@ -40896,7 +40941,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 765,
+      "community": 2,
       "norm_label": "wasm bcrypt binding",
       "id": "wasm_bcrypt_module"
     },
@@ -40909,7 +40954,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 771,
+      "community": 2,
       "norm_label": "@peculiar/x509 (dynamic)",
       "id": "peculiar_x509_lib"
     },
@@ -40922,7 +40967,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 767,
+      "community": 2,
       "norm_label": "jszip",
       "id": "jszip_lib"
     },
@@ -40948,7 +40993,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 767,
+      "community": 2,
       "norm_label": "htmlcanvas 2d api",
       "id": "canvas_2d_api"
     },
@@ -40961,7 +41006,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 772,
+      "community": 2,
       "norm_label": "intl.datetimeformat",
       "id": "intl_datetimeformat"
     },
@@ -40974,7 +41019,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 765,
+      "community": 2,
       "norm_label": "wasm proxy pattern (rationale)",
       "id": "wasm_proxy_pattern"
     },
@@ -40987,7 +41032,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 757,
+      "community": 2,
       "norm_label": "db-diagram-persistence.spec",
       "id": "db_diagram_persistence_test"
     },
@@ -41000,7 +41045,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 757,
+      "community": 2,
       "norm_label": "db-diagram-import.spec",
       "id": "db_diagram_import_test"
     },
@@ -41013,7 +41058,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 757,
+      "community": 2,
       "norm_label": "db-diagram-typescript.spec",
       "id": "db_diagram_typescript_test"
     },
@@ -41026,7 +41071,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 757,
+      "community": 2,
       "norm_label": "db-diagram-dbml.spec",
       "id": "db_diagram_dbml_test"
     },
@@ -41039,7 +41084,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 757,
+      "community": 2,
       "norm_label": "db-diagram.spec",
       "id": "db_diagram_test"
     },
@@ -41052,7 +41097,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 771,
+      "community": 2,
       "norm_label": "certificate-decoder.spec",
       "id": "certificate_decoder_test"
     },
@@ -41065,7 +41110,7 @@
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "community": 765,
+      "community": 2,
       "norm_label": "bcrypt-hasher.spec",
       "id": "bcrypt_hasher_test"
     },
@@ -51695,17 +51740,6 @@
       "confidence": "INFERRED",
       "confidence_score": 0.8,
       "source_file": "src/App.tsx",
-      "source_location": "L55",
-      "weight": 1.0,
-      "source": "src_app_app",
-      "target": "hooks_usekeyboardshortcuts_usekeyboardshortcuts"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "src/App.tsx",
       "source_location": "L56",
       "weight": 1.0,
       "source": "src_app_app",
@@ -51721,6 +51755,28 @@
       "weight": 1.0,
       "source": "src_app_app",
       "target": "state_usecommandpalettestore_usecommandpalettestore"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/App.tsx",
+      "source_location": "L61",
+      "weight": 1.0,
+      "source": "src_app_app",
+      "target": "hooks_usekeyboardshortcut_usekeyboardshortcut"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/App.tsx",
+      "source_location": "L55",
+      "weight": 1.0,
+      "source": "src_app_app",
+      "target": "hooks_usekeyboardshortcuts_usekeyboardshortcuts"
     },
     {
       "relation": "imports_from",
@@ -83513,71 +83569,6 @@
       "target": "hooks_usecopytoclipboard_usecopytoclipboard"
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useKeyboardShortcuts.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usekeyboardshortcuts_ts",
-      "target": "src_hooks_state_index_ts"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useKeyboardShortcuts.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usekeyboardshortcuts_ts",
-      "target": "src_hooks_usekeyboardshortcut_ts"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useKeyboardShortcuts.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usekeyboardshortcuts_ts",
-      "target": "hooks_usekeyboardshortcut_usekeyboardshortcut"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useKeyboardShortcuts.ts",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_hooks_usekeyboardshortcuts_ts",
-      "target": "hooks_usekeyboardshortcuts_usekeyboardshortcuts"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "src/hooks/useKeyboardShortcuts.ts",
-      "source_location": "L6",
-      "weight": 1.0,
-      "source": "hooks_usekeyboardshortcuts_usekeyboardshortcuts",
-      "target": "state_usecommandpalettestore_usecommandpalettestore"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/hooks/useKeyboardShortcuts.ts",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "hooks_usekeyboardshortcuts_usekeyboardshortcuts",
-      "target": "hooks_usekeyboardshortcut_usekeyboardshortcut"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/hooks/useDebounceCallback.ts",
@@ -83658,6 +83649,39 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "src_hooks_usekeyboardshortcut_ts",
+      "target": "hooks_usekeyboardshortcut_usekeyboardshortcut"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcuts.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usekeyboardshortcuts_ts",
+      "target": "src_hooks_usekeyboardshortcut_ts"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcuts.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usekeyboardshortcuts_ts",
+      "target": "hooks_usekeyboardshortcut_usekeyboardshortcut"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useKeyboardShortcuts.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "hooks_usekeyboardshortcuts_usekeyboardshortcuts",
       "target": "hooks_usekeyboardshortcut_usekeyboardshortcut"
     },
     {
@@ -84302,6 +84326,17 @@
       "target": "state_usecommandpalettestore_usecommandpalettestore"
     },
     {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/hooks/useKeyboardShortcuts.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "hooks_usekeyboardshortcuts_usekeyboardshortcuts",
+      "target": "state_usecommandpalettestore_usecommandpalettestore"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/hooks/state/createToggleStore.ts",
@@ -84352,6 +84387,17 @@
       "confidence_score": 1.0,
       "source": "src_hooks_state_createtogglestore_spec_ts",
       "target": "state_createtogglestore_spec_onopen"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcuts.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usekeyboardshortcuts_ts",
+      "target": "src_hooks_state_index_ts"
     },
     {
       "relation": "imports_from",
@@ -86904,6 +86950,46 @@
       "confidence_score": 1.0,
       "source": "docs_project_overview_csr_developer_tools_project_overview",
       "target": "docs_project_overview_related_documentation"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/adr/0011-use-elapsed-timer-stays.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "docs_adr_0011_use_elapsed_timer_stays_md",
+      "target": "adr_0011_use_elapsed_timer_stays_adr_0011_useelapsedtimer_stays",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/adr/0011-use-elapsed-timer-stays.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "adr_0011_use_elapsed_timer_stays_adr_0011_useelapsedtimer_stays",
+      "target": "adr_0011_use_elapsed_timer_stays_context",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/adr/0011-use-elapsed-timer-stays.md",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "adr_0011_use_elapsed_timer_stays_adr_0011_useelapsedtimer_stays",
+      "target": "adr_0011_use_elapsed_timer_stays_decision",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/adr/0011-use-elapsed-timer-stays.md",
+      "source_location": "L41",
+      "weight": 1.0,
+      "source": "adr_0011_use_elapsed_timer_stays_adr_0011_useelapsedtimer_stays",
+      "target": "adr_0011_use_elapsed_timer_stays_consequences",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -96208,6 +96294,16 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useKeyboardShortcuts.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_hooks_usekeyboardshortcuts_ts",
+      "target": "hooks_usekeyboardshortcuts_usekeyboardshortcuts"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/types/components/feature/data/dataUriGenerator.ts",
       "source_location": "L3",
       "weight": 1.0,
@@ -104785,5 +104881,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "cce0fe322521c4e4fe8b08ddd3e9a88b10e3bec4"
+  "built_at_commit": "d41545929cedafe68a0fbb137c9e02df9e1ffa2d"
 }
