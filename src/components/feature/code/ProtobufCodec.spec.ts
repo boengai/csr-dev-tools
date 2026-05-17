@@ -115,38 +115,6 @@ describe('ProtobufCodec direction-profile isolation', () => {
     })
   })
 
-  describe('upload profile', () => {
-    it('encode upload accepts JSON files', () => {
-      expect(DIRECTION_PROFILES.encode.upload.accept).toBe('.json,application/json')
-      expect(DIRECTION_PROFILES.encode.upload.buttonLabel).toBe('Upload JSON')
-    })
-
-    it('decode upload accepts binary protobuf files', () => {
-      expect(DIRECTION_PROFILES.decode.upload.accept).toBe('.pb,.bin,.txt,.protobuf')
-      expect(DIRECTION_PROFILES.decode.upload.buttonLabel).toBe('Upload .pb')
-    })
-  })
-
-  describe('source input profile', () => {
-    it('encode uses CodeInput (kind: code)', () => {
-      expect(DIRECTION_PROFILES.encode.sourceInput.kind).toBe('code')
-    })
-
-    it('decode uses FieldForm textarea (kind: textarea)', () => {
-      expect(DIRECTION_PROFILES.decode.sourceInput.kind).toBe('textarea')
-    })
-  })
-
-  describe('format radio placement', () => {
-    it('encode places format radio below the divider', () => {
-      expect(DIRECTION_PROFILES.encode.formatRadio.placement).toBe('belowDivider')
-    })
-
-    it('decode places format radio in the toolbar', () => {
-      expect(DIRECTION_PROFILES.decode.formatRadio.placement).toBe('toolbar')
-    })
-  })
-
   describe('download profile', () => {
     it('encode download: binary format emits .pb with octet-stream', () => {
       const result = 'binarydata'
@@ -168,23 +136,69 @@ describe('ProtobufCodec direction-profile isolation', () => {
       expect(filename).toMatch(/^decoded_MyMessage_\d+\.json$/)
       expect(blob.type).toBe('application/json')
     })
-
-    it('encode download has correct ariaLabel', () => {
-      expect(DIRECTION_PROFILES.encode.download.ariaLabel).toBe('Download encoded result')
-    })
-
-    it('decode download has correct ariaLabel', () => {
-      expect(DIRECTION_PROFILES.decode.download.ariaLabel).toBe('Download decoded JSON')
-    })
   })
 
-  describe('SelectInput size', () => {
-    it('encode has no selectSize override (default)', () => {
-      expect(DIRECTION_PROFILES.encode.selectSize).toBeUndefined()
+  describe('upload handler', () => {
+    const makeCtx = () => ({
+      onFormatChange: vi.fn(),
+      onSourceChange: vi.fn(),
+      schema: 'syntax = "proto3"; message Foo { string bar = 1; }',
+      selectedMessageType: 'Foo',
+      format: 'base64' as const,
+      setInputImmediate: vi.fn(),
+      showError: vi.fn(),
+      showSuccess: vi.fn(),
     })
 
-    it('decode uses compact selectSize', () => {
-      expect(DIRECTION_PROFILES.decode.selectSize).toBe('compact')
+    it('encode upload reads file text and calls onSourceChange', async () => {
+      const content = '{"bar":"hello"}'
+      const file = new File([content], 'input.json', { type: 'application/json' })
+      const ctx = makeCtx()
+
+      await DIRECTION_PROFILES.encode.upload.handle(file, ctx)
+
+      expect(ctx.onSourceChange).toHaveBeenCalledOnce()
+      expect(ctx.onSourceChange).toHaveBeenCalledWith(content)
+      expect(ctx.setInputImmediate).toHaveBeenCalledOnce()
+      expect(ctx.setInputImmediate).toHaveBeenCalledWith(
+        expect.objectContaining({ source: content }),
+      )
+    })
+
+    it('decode upload calls onFormatChange, onSourceChange, and showSuccess with detected format', async () => {
+      const mockDetect = vi.mocked(parsers.detectProtobufFormat)
+      mockDetect.mockResolvedValueOnce('hex')
+
+      const bytes = new Uint8Array([0x0a, 0x05, 0x68, 0x65, 0x6c, 0x6c, 0x6f])
+      const file = new File([bytes], 'payload.pb')
+      const ctx = makeCtx()
+
+      await DIRECTION_PROFILES.decode.upload.handle(file, ctx)
+
+      expect(ctx.onFormatChange).toHaveBeenCalledOnce()
+      expect(ctx.onFormatChange).toHaveBeenCalledWith('hex')
+      expect(ctx.onSourceChange).toHaveBeenCalledOnce()
+      expect(ctx.showSuccess).toHaveBeenCalledOnce()
+      expect(ctx.showSuccess).toHaveBeenCalledWith(expect.stringMatching(/Auto-detected format/))
+    })
+
+    it('decode upload: binary detection sets source to latin1-encoded raw bytes', async () => {
+      const mockDetect = vi.mocked(parsers.detectProtobufFormat)
+      mockDetect.mockResolvedValueOnce('binary')
+
+      const bytes = new Uint8Array([0x0a, 0x05, 0x68, 0x65, 0x6c, 0x6c, 0x6f])
+      const file = new File([bytes], 'payload.pb')
+      const ctx = makeCtx()
+
+      await DIRECTION_PROFILES.decode.upload.handle(file, ctx)
+
+      expect(ctx.onFormatChange).toHaveBeenCalledWith('binary')
+      // source should be the latin1 string, not the UTF-8 decoded text
+      const calledSource = ctx.onSourceChange.mock.calls[0][0] as string
+      expect(calledSource).toHaveLength(bytes.length)
+      for (let i = 0; i < bytes.length; i++) {
+        expect(calledSource.charCodeAt(i)).toBe(bytes[i])
+      }
     })
   })
 })

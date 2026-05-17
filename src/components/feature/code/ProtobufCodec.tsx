@@ -16,8 +16,8 @@ import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type {
+  CodecInput,
   ContentProps,
-  EncodeInput,
   PersistedState,
   ProtobufCodecAction,
   SchemaParseOutput,
@@ -66,13 +66,9 @@ type DirectionProfile = {
   selectSize?: 'compact'
 }
 
-// Alias — EncodeInput and DecodeInput are structurally identical; both names
-// remain exported from @/types for back-compat.
-type CodecInput = EncodeInput
-
 // ---------------------------------------------------------------------------
 // Direction profiles — static lookup table, defined once at module load.
-// Exported for unit testing only (@internal — not part of the public API).
+// Exported for tests; not part of the component's public API.
 // ---------------------------------------------------------------------------
 
 export const DIRECTION_PROFILES: Record<Direction, DirectionProfile> = {
@@ -256,7 +252,7 @@ const ProtobufContent = ({
     if (schema && selectedMessageType && source) {
       setInputImmediate({ schema, msgType: selectedMessageType, source, format })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- run once when messageType becomes available
+    // eslint-disable-next-line react/exhaustive-deps -- run once when messageType becomes available
   }, [selectedMessageType])
 
   const handleSourceChange = useCallback(
@@ -469,7 +465,7 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
     if (schemaResult.toastError) {
       showError(schemaResult.toastError)
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- toast is stable; intentionally fire only on result change
+    // eslint-disable-next-line react/exhaustive-deps -- toast is stable; intentionally fire only on result change
   }, [schemaResult])
 
   useMountOnce(() => {

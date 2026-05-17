@@ -22,6 +22,5 @@ export type ContentProps = {
   source: string
 }
 
-export type EncodeInput = { format: OutputFormat; msgType: string; schema: string; source: string }
-export type DecodeInput = { format: OutputFormat; msgType: string; schema: string; source: string }
+export type CodecInput = { format: OutputFormat; msgType: string; schema: string; source: string }
 export type SchemaParseOutput = { messageTypes: Array<string>; toastError: string | null }
