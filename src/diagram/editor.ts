@@ -328,12 +328,12 @@ export class DiagramEditor {
     return this.commitStructural((doc, m) => dbmlOps.applyDbmlNow(doc, m))
   }
 
-  importFromSql(text: string, dialect: SqlDialect): ImportResult {
-    return this.commitStructural((doc, m) => importOps.importFromSql(doc, text, dialect, m))
+  importFromSql(text: string, dialect: SqlDialect, opts?: { merge?: boolean }): ImportResult {
+    return this.commitStructural((doc, m) => importOps.importFromSql(doc, text, dialect, m, opts))
   }
 
-  importFromJsonSchema(text: string): ImportResult {
-    return this.commitStructural((doc, m) => importOps.importFromJsonSchema(doc, text, m))
+  importFromJsonSchema(text: string, opts?: { merge?: boolean }): ImportResult {
+    return this.commitStructural((doc, m) => importOps.importFromJsonSchema(doc, text, m, opts))
   }
 
   getDbmlSource(): 'diagram' | 'editor' {

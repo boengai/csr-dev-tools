@@ -40,3 +40,35 @@ export const schemaToDocument = (schema: DiagramSchema, base: DiagramDocument): 
     relationOrder,
   }
 }
+
+export const mergeSchemaIntoDocument = (schema: DiagramSchema, base: DiagramDocument): DiagramDocument => {
+  const tables: Record<string, EditorTable> = { ...base.tables }
+  const tableOrder: Array<string> = [...base.tableOrder]
+  for (const t of schema.tables) {
+    if (!tables[t.id]) tableOrder.push(t.id)
+    tables[t.id] = {
+      id: t.id,
+      name: t.name,
+      columns: t.columns.map((c) => ({ ...c, constraints: { ...c.constraints } })),
+      position: { ...t.position },
+    }
+  }
+  const relations: Record<string, EditorRelation> = { ...base.relations }
+  const relationOrder: Array<string> = [...base.relationOrder]
+  for (const r of schema.relationships) {
+    if (!relations[r.id]) relationOrder.push(r.id)
+    relations[r.id] = {
+      id: r.id,
+      source: { tableId: r.sourceTableId, columnId: r.sourceColumnId },
+      target: { tableId: r.targetTableId, columnId: r.targetColumnId },
+      kind: r.relationType,
+    }
+  }
+  return {
+    ...base,
+    tables,
+    tableOrder,
+    relations,
+    relationOrder,
+  }
+}

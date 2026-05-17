@@ -4,13 +4,14 @@ import type { EntityIdMinters } from '@/diagram/id-minters'
 import { parseSqlDdl } from '@/diagram/codecs/sql'
 import { parseJsonSchema } from '@/diagram/codecs/json-schema'
 
-import { schemaToDocument } from './lifecycle'
+import { mergeSchemaIntoDocument, schemaToDocument } from './lifecycle'
 
 export const importFromSql = (
   doc: DiagramDocument,
   text: string,
   dialect: SqlDialect,
   minters: EntityIdMinters,
+  opts?: { merge?: boolean },
 ): { document: DiagramDocument; result: ImportResult } => {
   const parsed = parseSqlDdl(text, dialect, minters)
   if (parsed.tables.length === 0) {
@@ -19,8 +20,9 @@ export const importFromSql = (
       result: { tableCount: 0, errors: parsed.errors },
     }
   }
+  const schema = { tables: parsed.tables, relationships: parsed.relationships }
   return {
-    document: schemaToDocument({ tables: parsed.tables, relationships: parsed.relationships }, doc),
+    document: opts?.merge ? mergeSchemaIntoDocument(schema, doc) : schemaToDocument(schema, doc),
     result: { tableCount: parsed.tables.length, errors: parsed.errors },
   }
 }
@@ -29,6 +31,7 @@ export const importFromJsonSchema = (
   doc: DiagramDocument,
   text: string,
   minters: EntityIdMinters,
+  opts?: { merge?: boolean },
 ): { document: DiagramDocument; result: ImportResult } => {
   try {
     const schema = JSON.parse(text) as unknown
@@ -39,8 +42,9 @@ export const importFromJsonSchema = (
         result: { tableCount: 0, errors: parsed.errors },
       }
     }
+    const merged = { tables: parsed.tables, relationships: parsed.relationships }
     return {
-      document: schemaToDocument({ tables: parsed.tables, relationships: parsed.relationships }, doc),
+      document: opts?.merge ? mergeSchemaIntoDocument(merged, doc) : schemaToDocument(merged, doc),
       result: { tableCount: parsed.tables.length, errors: parsed.errors },
     }
   } catch (err) {

@@ -19,7 +19,7 @@ export const ImportSqlPanel = ({ onClose }: ImportSqlPanelProps) => {
 
   const handleImport = () => {
     if (!text.trim()) return
-    const result = editor.importFromSql(text, dialect)
+    const result = editor.importFromSql(text, dialect, { merge })
     setErrors(result.errors)
   }
 

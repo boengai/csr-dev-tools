@@ -17,7 +17,7 @@ export const ImportJsonSchemaPanel = ({ onClose }: ImportJsonSchemaPanelProps) =
 
   const handleImport = () => {
     if (!text.trim()) return
-    const result = editor.importFromJsonSchema(text)
+    const result = editor.importFromJsonSchema(text, { merge })
     setErrors(result.errors.map((e) => e.message))
   }
 
