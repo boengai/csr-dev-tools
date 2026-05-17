@@ -54,7 +54,7 @@ export {
   svgToPng,
   downloadSvg as downloadMermaidSvg,
 } from './mermaid-renderer'
-export * from './number-base'
+export * from '@/wasm/number-base'
 export * from './og-tags'
 export * from './password'
 export * from './placeholder-image'
@@ -76,7 +76,7 @@ export { getTomlParseError, jsonToToml, tomlToJson } from '@/wasm/parsers'
 export * from './unit'
 export * from './url-parse'
 export * from './user-agent'
-export * from './uuid'
+export * from '@/wasm/uuid'
 export * from './validation'
 export * from './word-counter'
 export { getXmlParseError, jsonToXml, xmlToJson } from '@/wasm/parsers'
