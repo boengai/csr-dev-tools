@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { createInitialDocument } from '../state'
+import { createSequentialIdMinters } from '../id-minters'
 import { importFromJsonSchema, importFromSql } from './import'
 
 const SQL_FIXTURE = `
@@ -30,14 +31,14 @@ const JSON_SCHEMA_FIXTURE = JSON.stringify({
 
 describe('importFromSql', () => {
   it('replaces structural state with parsed tables', () => {
-    const { document, result } = importFromSql(createInitialDocument(), SQL_FIXTURE, 'postgresql')
+    const { document, result } = importFromSql(createInitialDocument(), SQL_FIXTURE, 'postgresql', createSequentialIdMinters())
     expect(result.tableCount).toBeGreaterThan(0)
     expect(Object.keys(document.tables)).toHaveLength(result.tableCount)
   })
 
   it('returns errors and leaves document unchanged on parse failure', () => {
     const initial = createInitialDocument()
-    const { document, result } = importFromSql(initial, 'not sql', 'postgresql')
+    const { document, result } = importFromSql(initial, 'not sql', 'postgresql', createSequentialIdMinters())
     expect(result.tableCount).toBe(0)
     expect(result.errors.length).toBeGreaterThan(0)
     expect(document).toBe(initial)
@@ -46,14 +47,14 @@ describe('importFromSql', () => {
 
 describe('importFromJsonSchema', () => {
   it('replaces structural state with parsed tables', () => {
-    const { document, result } = importFromJsonSchema(createInitialDocument(), JSON_SCHEMA_FIXTURE)
+    const { document, result } = importFromJsonSchema(createInitialDocument(), JSON_SCHEMA_FIXTURE, createSequentialIdMinters())
     expect(result.tableCount).toBeGreaterThan(0)
     expect(Object.keys(document.tables)).toHaveLength(result.tableCount)
   })
 
   it('returns errors and leaves document unchanged on parse failure', () => {
     const initial = createInitialDocument()
-    const { document, result } = importFromJsonSchema(initial, '{ not valid json')
+    const { document, result } = importFromJsonSchema(initial, '{ not valid json', createSequentialIdMinters())
     expect(result.tableCount).toBe(0)
     expect(result.errors.length).toBeGreaterThan(0)
     expect(document).toBe(initial)

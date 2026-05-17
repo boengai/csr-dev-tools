@@ -1,7 +1,8 @@
 import type { ColumnType, DiagramSchema, RelationshipType } from '@/types'
+import type { EntityIdMinters } from '@/diagram/id-minters'
 import type { ParsedTable, ParsedRef } from '@/types/diagram/codecs/dbml'
 
-import { generateId, gridLayoutPositions } from '@/diagram/defaults'
+import { gridLayoutPositions } from '@/diagram/defaults'
 import type { ParseResult } from './import'
 
 // ── Generator ──────────────────────────────────────────────────────
@@ -150,6 +151,7 @@ function parseColumnLine(
   line: string,
   lineNumber: number,
   errors: Array<{ line: number; message: string }>,
+  mintColumn: () => string,
 ): ParsedTable['columns'][number] | null {
   const trimmed = line.trim()
   if (!trimmed || trimmed === '{' || trimmed === '}') return null
@@ -190,7 +192,7 @@ function parseColumnLine(
       isPrimaryKey: constraints.isPrimaryKey,
       isUnique: constraints.isUnique,
     },
-    id: generateId(),
+    id: mintColumn(),
     inlineRef: constraints.inlineRef,
     name,
     type: mappedType,
@@ -224,7 +226,7 @@ function parseRefLine(line: string, lineNumber: number): ParsedRef | null {
   }
 }
 
-export function parseDbml(text: string): ParseResult {
+export function parseDbml(text: string, minters: EntityIdMinters): ParseResult {
   if (!text.trim()) {
     return { errors: [], relationships: [], tables: [] }
   }
@@ -269,7 +271,7 @@ export function parseDbml(text: string): ParseResult {
 
     // Inside a table block
     if (currentTable && braceDepth === 1) {
-      const col = parseColumnLine(trimmed, lineNumber, errors)
+      const col = parseColumnLine(trimmed, lineNumber, errors, minters.column)
       if (col) currentTable.columns.push(col)
       continue
     }
@@ -307,7 +309,7 @@ export function parseDbml(text: string): ParseResult {
       name: c.name,
       type: c.type,
     })),
-    id: generateId(),
+    id: minters.table(),
     name: t.name,
     position: positions[idx] ?? { x: 0, y: 0 },
   }))
@@ -337,7 +339,7 @@ export function parseDbml(text: string): ParseResult {
     }
 
     relationships.push({
-      id: generateId(),
+      id: minters.relation(),
       relationType: ref.relationType,
       sourceColumnId: sourceCol.id,
       sourceTableId: sourceT.id,
@@ -364,7 +366,7 @@ export function parseDbml(text: string): ParseResult {
       const sourceCol = layouted.columns[cIdx]
 
       relationships.push({
-        id: generateId(),
+        id: minters.relation(),
         relationType: '1:N',
         sourceColumnId: refCol.id,
         sourceTableId: refTable.id,

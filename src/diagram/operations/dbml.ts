@@ -1,4 +1,6 @@
 import type { DiagramDocument, ImportResult } from '@/types'
+import type { EntityIdMinters } from '@/diagram/id-minters'
+
 import { generateDbml, parseDbml } from '@/diagram/codecs/dbml'
 
 import { documentToSchema } from './export'
@@ -20,8 +22,11 @@ export const regenerateDbmlFromDocument = (doc: DiagramDocument): DiagramDocumen
   }
 }
 
-export const applyDbmlNow = (doc: DiagramDocument): { document: DiagramDocument; result: ImportResult } => {
-  const parsed = parseDbml(doc.dbmlText)
+export const applyDbmlNow = (
+  doc: DiagramDocument,
+  minters: EntityIdMinters,
+): { document: DiagramDocument; result: ImportResult } => {
+  const parsed = parseDbml(doc.dbmlText, minters)
 
   if (parsed.tables.length === 0) {
     return {

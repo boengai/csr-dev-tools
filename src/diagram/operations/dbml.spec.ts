@@ -30,7 +30,7 @@ describe('regenerateDbmlFromDocument', () => {
 describe('applyDbmlNow', () => {
   it('parses dbmlText into structural state without overwriting the text', () => {
     const withText = setDbmlText(createInitialDocument(), 'Table users {\n  id uuid [pk]\n}')
-    const { document, result } = applyDbmlNow(withText)
+    const { document, result } = applyDbmlNow(withText, createSequentialIdMinters())
     expect(result.tableCount).toBeGreaterThan(0)
     expect(Object.keys(document.tables).length).toBe(result.tableCount)
     expect(document.dbmlText).toBe(withText.dbmlText)
@@ -39,7 +39,7 @@ describe('applyDbmlNow', () => {
 
   it('records errors and clears structural state when no tables parse', () => {
     const withGarbage = setDbmlText(createInitialDocument(), 'not dbml')
-    const { document, result } = applyDbmlNow(withGarbage)
+    const { document, result } = applyDbmlNow(withGarbage, createSequentialIdMinters())
     expect(result.tableCount).toBe(0)
     expect(result.errors.length).toBeGreaterThan(0)
     expect(document.dbmlErrors).toEqual(result.errors)

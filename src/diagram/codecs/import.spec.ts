@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { ColumnType } from '@/types'
 
+import { createSequentialIdMinters } from '../id-minters'
 import { parseSqlDdl } from './import'
 
 describe('db-diagram-import', () => {
@@ -15,9 +16,10 @@ describe('db-diagram-import', () => {
           active BOOLEAN
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
       expect(result.tables[0].name).toBe('users')
+      expect(result.tables[0].id).toBe('t_1')
       expect(result.tables[0].columns).toHaveLength(4)
       expect(result.errors).toHaveLength(0)
 
@@ -52,14 +54,14 @@ describe('db-diagram-import', () => {
           body TEXT
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(3)
       expect(result.tables.map((t) => t.name)).toEqual(['users', 'posts', 'comments'])
     })
 
     it('extracts PRIMARY KEY inline constraint', () => {
       const sql = `CREATE TABLE t (id INT PRIMARY KEY, name TEXT);`
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       const idCol = result.tables[0].columns.find((c) => c.name === 'id')
       expect(idCol?.constraints.isPrimaryKey).toBe(true)
       expect(idCol?.constraints.isNullable).toBe(false)
@@ -73,7 +75,7 @@ describe('db-diagram-import', () => {
           PRIMARY KEY (id)
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       const idCol = result.tables[0].columns.find((c) => c.name === 'id')
       expect(idCol?.constraints.isPrimaryKey).toBe(true)
     })
@@ -89,7 +91,7 @@ describe('db-diagram-import', () => {
           FOREIGN KEY (user_id) REFERENCES users(id)
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.relationships).toHaveLength(1)
       const rel = result.relationships[0]
       expect(rel.relationType).toBe('1:N')
@@ -111,7 +113,7 @@ describe('db-diagram-import', () => {
           FOREIGN KEY (user_id) REFERENCES users(id)
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.relationships).toHaveLength(1)
       expect(result.relationships[0].relationType).toBe('1:1')
     })
@@ -128,7 +130,7 @@ describe('db-diagram-import', () => {
           UNIQUE (user_id)
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.relationships).toHaveLength(1)
       expect(result.relationships[0].relationType).toBe('1:1')
     })
@@ -141,7 +143,7 @@ describe('db-diagram-import', () => {
           PRIMARY KEY (id)
         ) ENGINE=InnoDB;
       `
-      const result = parseSqlDdl(sql, 'mysql')
+      const result = parseSqlDdl(sql, 'mysql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
       const idCol = result.tables[0].columns.find((c) => c.name === 'id')
       expect(idCol?.type).toBe('INT')
@@ -155,7 +157,7 @@ describe('db-diagram-import', () => {
           name VARCHAR(255)
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       const idCol = result.tables[0].columns.find((c) => c.name === 'id')
       expect(idCol?.type).toBe('SERIAL')
       expect(idCol?.constraints.isPrimaryKey).toBe(true)
@@ -167,7 +169,7 @@ describe('db-diagram-import', () => {
           id BIGSERIAL PRIMARY KEY
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       const idCol = result.tables[0].columns.find((c) => c.name === 'id')
       expect(idCol?.type).toBe('BIGINT')
     })
@@ -179,7 +181,7 @@ describe('db-diagram-import', () => {
           name TEXT
         );
       `
-      const result = parseSqlDdl(sql, 'sqlite')
+      const result = parseSqlDdl(sql, 'sqlite', createSequentialIdMinters())
       const idCol = result.tables[0].columns.find((c) => c.name === 'id')
       expect(idCol?.type).toBe('INT')
       expect(idCol?.constraints.isPrimaryKey).toBe(true)
@@ -193,7 +195,7 @@ describe('db-diagram-import', () => {
           name TEXT
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
       expect(result.tables[0].columns).toHaveLength(2)
       expect(result.errors).toHaveLength(0)
@@ -208,14 +210,14 @@ describe('db-diagram-import', () => {
           name TEXT /* inline block comment */
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
       expect(result.tables[0].columns).toHaveLength(2)
     })
 
     it('handles IF NOT EXISTS', () => {
       const sql = `CREATE TABLE IF NOT EXISTS users (id INT PRIMARY KEY);`
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
       expect(result.tables[0].name).toBe('users')
     })
@@ -230,7 +232,7 @@ describe('db-diagram-import', () => {
           id INT PRIMARY KEY
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(2)
       expect(result.errors.length).toBeGreaterThan(0)
     })
@@ -266,20 +268,20 @@ describe('db-diagram-import', () => {
 
       for (const { expected, sqlType } of typeTests) {
         const sql = `CREATE TABLE t (col ${sqlType});`
-        const result = parseSqlDdl(sql, 'postgresql')
+        const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
         expect(result.tables[0].columns[0].type).toBe(expected)
       }
     })
 
     it('handles TINYINT(1) as BOOLEAN in MySQL', () => {
       const sql = `CREATE TABLE t (active TINYINT(1));`
-      const result = parseSqlDdl(sql, 'mysql')
+      const result = parseSqlDdl(sql, 'mysql', createSequentialIdMinters())
       expect(result.tables[0].columns[0].type).toBe('BOOLEAN')
     })
 
     it('handles UNIQUE constraint on columns', () => {
       const sql = `CREATE TABLE t (email VARCHAR(255) UNIQUE);`
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables[0].columns[0].constraints.isUnique).toBe(true)
     })
 
@@ -291,7 +293,7 @@ describe('db-diagram-import', () => {
           user_id INT REFERENCES users(id)
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.relationships).toHaveLength(1)
       expect(result.relationships[0].relationType).toBe('1:N')
     })
@@ -303,7 +305,7 @@ describe('db-diagram-import', () => {
           count INT DEFAULT 0
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables[0].columns).toHaveLength(2)
       expect(result.tables[0].columns[0].name).toBe('status')
       expect(result.tables[0].columns[1].name).toBe('count')
@@ -311,14 +313,14 @@ describe('db-diagram-import', () => {
 
     it('handles quoted table and column names', () => {
       const sql = `CREATE TABLE "my_table" ("my_col" INT PRIMARY KEY);`
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables[0].name).toBe('my_table')
       expect(result.tables[0].columns[0].name).toBe('my_col')
     })
 
     it('handles backtick-quoted names (MySQL)', () => {
       const sql = 'CREATE TABLE `users` (`id` INT PRIMARY KEY);'
-      const result = parseSqlDdl(sql, 'mysql')
+      const result = parseSqlDdl(sql, 'mysql', createSequentialIdMinters())
       expect(result.tables[0].name).toBe('users')
       expect(result.tables[0].columns[0].name).toBe('id')
     })
@@ -330,7 +332,7 @@ describe('db-diagram-import', () => {
         CREATE TABLE c (id INT PRIMARY KEY);
         CREATE TABLE d (id INT PRIMARY KEY);
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       // 3 columns wide, each table should have a position
       for (const table of result.tables) {
         expect(table.position).toBeDefined()
@@ -343,7 +345,7 @@ describe('db-diagram-import', () => {
     })
 
     it('returns empty result for empty input', () => {
-      const result = parseSqlDdl('', 'postgresql')
+      const result = parseSqlDdl('', 'postgresql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(0)
       expect(result.relationships).toHaveLength(0)
       expect(result.errors).toHaveLength(0)
@@ -354,14 +356,14 @@ describe('db-diagram-import', () => {
         -- Just a comment
         /* Another comment */
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(0)
       expect(result.errors).toHaveLength(0)
     })
 
     it('handles CHAR(36) as UUID', () => {
       const sql = `CREATE TABLE t (guid CHAR(36));`
-      const result = parseSqlDdl(sql, 'mysql')
+      const result = parseSqlDdl(sql, 'mysql', createSequentialIdMinters())
       expect(result.tables[0].columns[0].type).toBe('UUID')
     })
 
@@ -374,7 +376,7 @@ describe('db-diagram-import', () => {
           FOREIGN KEY (user_id) REFERENCES users(id)
         );
       `
-      const result = parseSqlDdl(sql, 'postgresql')
+      const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       const postsTable = result.tables.find((t) => t.name === 'posts')
       const fkCol = postsTable?.columns.find((c) => c.name === 'user_id')
       expect(fkCol?.constraints.isForeignKey).toBe(true)

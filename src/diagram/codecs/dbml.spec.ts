@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import type { DiagramSchema } from '@/types'
 
+import { createSequentialIdMinters } from '../id-minters'
 import { generateDbml, parseDbml } from './dbml'
 
 describe('generateDbml', () => {
@@ -189,7 +190,7 @@ describe('generateDbml', () => {
 
 describe('parseDbml', () => {
   it('returns empty result for empty input', () => {
-    const result = parseDbml('')
+    const result = parseDbml('', createSequentialIdMinters())
     expect(result.tables).toHaveLength(0)
     expect(result.relationships).toHaveLength(0)
     expect(result.errors).toHaveLength(0)
@@ -201,16 +202,20 @@ describe('parseDbml', () => {
   name varchar [not null]
   bio text [null]
 }`
-    const result = parseDbml(dbml)
+    const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.errors).toHaveLength(0)
     expect(result.tables).toHaveLength(1)
+    expect(result.tables[0].id).toBe('t_1')
     expect(result.tables[0].name).toBe('users')
     expect(result.tables[0].columns).toHaveLength(3)
+    expect(result.tables[0].columns[0].id).toBe('c_1')
     expect(result.tables[0].columns[0].name).toBe('id')
     expect(result.tables[0].columns[0].type).toBe('SERIAL')
     expect(result.tables[0].columns[0].constraints.isPrimaryKey).toBe(true)
+    expect(result.tables[0].columns[1].id).toBe('c_2')
     expect(result.tables[0].columns[1].name).toBe('name')
     expect(result.tables[0].columns[1].constraints.isNullable).toBe(false)
+    expect(result.tables[0].columns[2].id).toBe('c_3')
     expect(result.tables[0].columns[2].name).toBe('bio')
     expect(result.tables[0].columns[2].constraints.isNullable).toBe(true)
   })
@@ -219,7 +224,7 @@ describe('parseDbml', () => {
     const dbml = `Table users {
   email varchar [unique]
 }`
-    const result = parseDbml(dbml)
+    const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.tables[0].columns[0].constraints.isUnique).toBe(true)
   })
 
@@ -235,10 +240,11 @@ Table posts {
 
 Ref: users.id < posts.user_id`
 
-    const result = parseDbml(dbml)
+    const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.errors).toHaveLength(0)
     expect(result.relationships).toHaveLength(1)
     expect(result.relationships[0].relationType).toBe('1:N')
+    expect(result.relationships[0].id).toBe('r_1')
   })
 
   it('parses 1:1 relationship', () => {
@@ -252,7 +258,7 @@ Table profiles {
 
 Ref: users.id - profiles.user_id`
 
-    const result = parseDbml(dbml)
+    const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.relationships).toHaveLength(1)
     expect(result.relationships[0].relationType).toBe('1:1')
   })
@@ -268,7 +274,7 @@ Table posts {
 
 Ref: tags.id <> posts.id`
 
-    const result = parseDbml(dbml)
+    const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.relationships).toHaveLength(1)
     expect(result.relationships[0].relationType).toBe('N:M')
   })
@@ -284,7 +290,7 @@ Table posts {
 
 Ref: posts.user_id > users.id`
 
-    const result = parseDbml(dbml)
+    const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.relationships).toHaveLength(1)
     expect(result.relationships[0].relationType).toBe('1:N')
     // Source should be users (the "one" side)
@@ -297,7 +303,7 @@ Ref: posts.user_id > users.id`
   id int [pk]
   name varchar`
 
-    const result = parseDbml(dbml)
+    const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.errors.length).toBeGreaterThan(0)
     expect(result.errors.some((e) => e.message.includes('Unclosed'))).toBe(true)
     // Should still parse the table
@@ -309,14 +315,14 @@ Ref: posts.user_id > users.id`
   id serial [pk]
   data unknowntype
 }`
-    const result = parseDbml(dbml)
+    const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.errors.length).toBeGreaterThan(0)
     expect(result.errors.some((e) => e.message.includes('Unknown type'))).toBe(true)
   })
 
   it('reports error for invalid Ref syntax', () => {
     const dbml = `Ref: broken syntax`
-    const result = parseDbml(dbml)
+    const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.errors.length).toBeGreaterThan(0)
     expect(result.errors.some((e) => e.message.includes('Invalid Ref'))).toBe(true)
   })
@@ -328,7 +334,7 @@ Table users {
   // Another comment
   name varchar
 }`
-    const result = parseDbml(dbml)
+    const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.errors).toHaveLength(0)
     expect(result.tables).toHaveLength(1)
     expect(result.tables[0].columns).toHaveLength(2)
@@ -344,10 +350,12 @@ Table posts {
   user_id int [not null]
 }`
 
-    const result = parseDbml(dbml)
+    const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.tables).toHaveLength(2)
     expect(result.tables[0].name).toBe('users')
+    expect(result.tables[0].id).toBe('t_1')
     expect(result.tables[1].name).toBe('posts')
+    expect(result.tables[1].id).toBe('t_2')
   })
 
   it('assigns grid layout positions to tables', () => {
@@ -367,7 +375,7 @@ Table d {
   id int [pk]
 }`
 
-    const result = parseDbml(dbml)
+    const result = parseDbml(dbml, createSequentialIdMinters())
     // All tables should have distinct positions
     const positions = result.tables.map((t) => `${t.position.x},${t.position.y}`)
     const uniquePositions = new Set(positions)
@@ -384,9 +392,10 @@ Table posts {
   user_id int [ref: > users.id]
 }`
 
-    const result = parseDbml(dbml)
+    const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.relationships).toHaveLength(1)
     expect(result.relationships[0].relationType).toBe('1:N')
+    expect(result.relationships[0].id).toBe('r_1')
   })
 })
 
@@ -446,7 +455,7 @@ describe('round-trip', () => {
     }
 
     const dbml = generateDbml(original)
-    const parsed = parseDbml(dbml)
+    const parsed = parseDbml(dbml, createSequentialIdMinters())
 
     expect(parsed.errors).toHaveLength(0)
     expect(parsed.tables).toHaveLength(2)

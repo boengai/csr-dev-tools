@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { createSequentialIdMinters } from '../id-minters'
 import { parseJsonSchema } from './json-schema'
 
 describe('db-diagram-json-schema', () => {
@@ -17,10 +18,12 @@ describe('db-diagram-json-schema', () => {
           },
         },
       }
-      const result = parseJsonSchema(schema)
+      const result = parseJsonSchema(schema, createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
       expect(result.tables[0].name).toBe('User')
+      expect(result.tables[0].id).toBe('t_1')
       expect(result.tables[0].columns).toHaveLength(3)
+      expect(result.tables[0].columns[0].id).toBe('c_1')
     })
 
     it('supports $defs as alternative to definitions', () => {
@@ -35,7 +38,7 @@ describe('db-diagram-json-schema', () => {
           },
         },
       }
-      const result = parseJsonSchema(schema)
+      const result = parseJsonSchema(schema, createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
       expect(result.tables[0].name).toBe('Post')
     })
@@ -56,7 +59,7 @@ describe('db-diagram-json-schema', () => {
           },
         },
       }
-      const result = parseJsonSchema(schema)
+      const result = parseJsonSchema(schema, createSequentialIdMinters())
       const cols = result.tables[0].columns
 
       expect(cols.find((c) => c.name === 'name')?.type).toBe('VARCHAR')
@@ -87,7 +90,7 @@ describe('db-diagram-json-schema', () => {
           },
         },
       }
-      const result = parseJsonSchema(schema)
+      const result = parseJsonSchema(schema, createSequentialIdMinters())
       expect(result.relationships).toHaveLength(1)
 
       const rel = result.relationships[0]
@@ -116,7 +119,7 @@ describe('db-diagram-json-schema', () => {
           },
         },
       }
-      const result = parseJsonSchema(schema)
+      const result = parseJsonSchema(schema, createSequentialIdMinters())
       const cols = result.tables[0].columns
 
       expect(cols.find((c) => c.name === 'id')?.constraints.isNullable).toBe(false)
@@ -125,9 +128,9 @@ describe('db-diagram-json-schema', () => {
     })
 
     it('handles missing or empty schema gracefully', () => {
-      expect(parseJsonSchema({}).tables).toHaveLength(0)
-      expect(parseJsonSchema({ definitions: {} }).tables).toHaveLength(0)
-      expect(parseJsonSchema({ $defs: {} }).tables).toHaveLength(0)
+      expect(parseJsonSchema({}, createSequentialIdMinters()).tables).toHaveLength(0)
+      expect(parseJsonSchema({ definitions: {} }, createSequentialIdMinters()).tables).toHaveLength(0)
+      expect(parseJsonSchema({ $defs: {} }, createSequentialIdMinters()).tables).toHaveLength(0)
     })
 
     it('marks "id" properties as primary key', () => {
@@ -142,7 +145,7 @@ describe('db-diagram-json-schema', () => {
           },
         },
       }
-      const result = parseJsonSchema(schema)
+      const result = parseJsonSchema(schema, createSequentialIdMinters())
       const idCol = result.tables[0].columns.find((c) => c.name === 'id')
       expect(idCol?.constraints.isPrimaryKey).toBe(true)
     })
@@ -164,7 +167,7 @@ describe('db-diagram-json-schema', () => {
           },
         },
       }
-      const result = parseJsonSchema(schema)
+      const result = parseJsonSchema(schema, createSequentialIdMinters())
       expect(result.tables).toHaveLength(3)
     })
 
@@ -177,7 +180,7 @@ describe('db-diagram-json-schema', () => {
           D: { properties: { id: { type: 'integer' } } },
         },
       }
-      const result = parseJsonSchema(schema)
+      const result = parseJsonSchema(schema, createSequentialIdMinters())
       for (const table of result.tables) {
         expect(table.position).toBeDefined()
         expect(typeof table.position.x).toBe('number')

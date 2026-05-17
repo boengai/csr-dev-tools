@@ -319,19 +319,19 @@ export class DiagramEditor {
   }
 
   applyDbmlNow(): ImportResult {
-    const { document, result } = dbmlOps.applyDbmlNow(this.document)
+    const { document, result } = dbmlOps.applyDbmlNow(this.document, this.idMinters)
     this.commit(document)
     return result
   }
 
   importFromSql(text: string, dialect: SqlDialect): ImportResult {
-    const { document, result } = importOps.importFromSql(this.document, text, dialect)
+    const { document, result } = importOps.importFromSql(this.document, text, dialect, this.idMinters)
     if (document !== this.document) this.commit(this.afterStructuralChange(document))
     return result
   }
 
   importFromJsonSchema(text: string): ImportResult {
-    const { document, result } = importOps.importFromJsonSchema(this.document, text)
+    const { document, result } = importOps.importFromJsonSchema(this.document, text, this.idMinters)
     if (document !== this.document) this.commit(this.afterStructuralChange(document))
     return result
   }

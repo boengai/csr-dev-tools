@@ -1,7 +1,7 @@
 import type { ColumnType, DiagramSchema } from '@/types'
+import type { EntityIdMinters } from '@/diagram/id-minters'
 import type { JsonSchemaProperty, JsonSchemaRoot } from '@/types/diagram/codecs/json-schema'
 
-import { generateId } from '@/diagram/defaults'
 import type { ParseResult } from './import'
 
 const JSON_TYPE_MAP: Record<string, ColumnType> = {
@@ -25,7 +25,7 @@ function mapJsonType(prop: JsonSchemaProperty): ColumnType {
   return JSON_TYPE_MAP[prop.type] ?? 'TEXT'
 }
 
-export function parseJsonSchema(schema: object): ParseResult {
+export function parseJsonSchema(schema: object, minters: EntityIdMinters): ParseResult {
   const root = schema as JsonSchemaRoot
   const definitions = root.definitions ?? root.$defs
 
@@ -68,7 +68,7 @@ export function parseJsonSchema(schema: object): ParseResult {
             isPrimaryKey: isPk,
             isUnique: isPk,
           },
-          id: generateId(),
+          id: minters.column(),
           name: propName,
           type: mapJsonType(prop),
         })
@@ -77,7 +77,7 @@ export function parseJsonSchema(schema: object): ParseResult {
 
     const table: DiagramSchema['tables'][number] = {
       columns,
-      id: generateId(),
+      id: minters.table(),
       name: defName,
       position: {
         x: (tableIndex % GRID_COLS) * H_SPACING,
@@ -113,7 +113,7 @@ export function parseJsonSchema(schema: object): ParseResult {
       if (!sourceCol || !targetCol) continue
 
       relationships.push({
-        id: generateId(),
+        id: minters.relation(),
         relationType: '1:N',
         sourceColumnId: targetCol.id,
         sourceTableId: targetTable.id,

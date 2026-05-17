@@ -1,7 +1,6 @@
 import type { ColumnType, DiagramSchema, SqlDialect } from '@/types'
+import type { EntityIdMinters } from '@/diagram/id-minters'
 import type { ParseResult, ParsedColumn, FkRef } from '@/types/diagram/codecs/import'
-
-import { generateId } from '@/diagram/defaults'
 
 const SQL_TYPE_MAP: Array<{ match: RegExp; type: ColumnType }> = [
   { match: /^BIGSERIAL$/i, type: 'BIGINT' },
@@ -96,7 +95,7 @@ function splitColumnDefs(body: string): Array<string> {
   return parts
 }
 
-function parseColumnDef(def: string): {
+function parseColumnDef(def: string, mintColumn: () => string): {
   column: ParsedColumn | null
   fkRef: FkRef | null
   isPkConstraint: string | null
@@ -136,7 +135,7 @@ function parseColumnDef(def: string): {
   if (upper.startsWith('CONSTRAINT')) {
     // CONSTRAINT name PRIMARY KEY / FOREIGN KEY / UNIQUE
     const afterConstraint = trimmed.replace(/^CONSTRAINT\s+\S+\s+/i, '')
-    return parseColumnDef(afterConstraint)
+    return parseColumnDef(afterConstraint, mintColumn)
   }
 
   // Column definition: name TYPE [constraints...]
@@ -178,7 +177,7 @@ function parseColumnDef(def: string): {
       isPrimaryKey,
       isUnique,
     },
-    id: generateId(),
+    id: mintColumn(),
     name,
     type: isAutoIncrement && mappedType === 'INT' ? 'INT' : mappedType,
   }
@@ -186,7 +185,7 @@ function parseColumnDef(def: string): {
   return { column, fkRef: inlineFkRef, isPkConstraint: null, isUniqueConstraint: null }
 }
 
-function parseCreateTable(statement: string): {
+function parseCreateTable(statement: string, mintColumn: () => string): {
   columns: Array<ParsedColumn>
   fkRefs: Array<FkRef>
   tableName: string
@@ -211,7 +210,7 @@ function parseCreateTable(statement: string): {
   const uniqueColumns: Array<string> = []
 
   for (const def of defs) {
-    const parsed = parseColumnDef(def)
+    const parsed = parseColumnDef(def, mintColumn)
 
     if (parsed.column) {
       columns.push(parsed.column)
@@ -250,6 +249,7 @@ function parseCreateTable(statement: string): {
 
 function layoutTables(
   tables: Array<{ columns: Array<ParsedColumn>; fkRefs: Array<FkRef>; tableName: string }>,
+  mintTable: () => string,
 ): Array<DiagramSchema['tables'][number]> {
   const GRID_COLS = 3
   const H_SPACING = 300
@@ -262,7 +262,7 @@ function layoutTables(
       name: c.name,
       type: c.type,
     })),
-    id: generateId(),
+    id: mintTable(),
     name: t.tableName,
     position: {
       x: (index % GRID_COLS) * H_SPACING,
@@ -274,6 +274,7 @@ function layoutTables(
 function buildRelationships(
   parsedTables: Array<{ columns: Array<ParsedColumn>; fkRefs: Array<FkRef>; tableName: string }>,
   layoutedTables: DiagramSchema['tables'],
+  mintRelation: () => string,
 ): DiagramSchema['relationships'] {
   const relationships: DiagramSchema['relationships'] = []
 
@@ -304,7 +305,7 @@ function buildRelationships(
       const relationType = sourceCol.constraints.isUnique ? '1:1' : '1:N'
 
       relationships.push({
-        id: generateId(),
+        id: mintRelation(),
         relationType,
         sourceColumnId: referencedCol.id,
         sourceTableId: referencedTable.id,
@@ -317,7 +318,7 @@ function buildRelationships(
   return relationships
 }
 
-export function parseSqlDdl(sql: string, dialect: SqlDialect): ParseResult {
+export function parseSqlDdl(sql: string, dialect: SqlDialect, minters: EntityIdMinters): ParseResult {
   if (!sql.trim()) {
     return { errors: [], relationships: [], tables: [] }
   }
@@ -333,7 +334,7 @@ export function parseSqlDdl(sql: string, dialect: SqlDialect): ParseResult {
 
   for (const stmt of statements) {
     if (/CREATE\s+TABLE/i.test(stmt)) {
-      const result = parseCreateTable(stmt)
+      const result = parseCreateTable(stmt, minters.column)
       if (result) {
         parsedTables.push(result)
       } else {
@@ -350,8 +351,8 @@ export function parseSqlDdl(sql: string, dialect: SqlDialect): ParseResult {
     }
   }
 
-  const tables = layoutTables(parsedTables)
-  const relationships = buildRelationships(parsedTables, tables)
+  const tables = layoutTables(parsedTables, minters.table)
+  const relationships = buildRelationships(parsedTables, tables, minters.relation)
 
   return { errors, relationships, tables }
 }
