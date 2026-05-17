@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Button, CopyButton, UploadInput } from '@/components/common'
+import { Button, CopyButton, Pane, SplitPanel, UploadInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
@@ -107,8 +107,8 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
       triggers={[{ label: 'Open Color Picker' }]}
     >
       <div className="flex w-full grow flex-col gap-4">
-        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
+        <SplitPanel>
+          <Pane gap="md">
             <UploadInput
               accept="image/*"
               button={{ block: true, children: 'Select Image' }}
@@ -132,11 +132,9 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
                 <span className="font-mono text-body-xs text-gray-400">{hoverColor.hex}</span>
               </div>
             )}
-          </div>
+          </Pane>
 
-          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-3">
+          <Pane gap="md">
             <span className="text-body-xs font-medium text-gray-400">Palette ({palette.length}/10)</span>
             {palette.length === 0 ? (
               <p className="text-body-sm text-gray-500">Click on the image to pick colors</p>
@@ -171,8 +169,8 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
                 Clear Palette
               </Button>
             )}
-          </div>
-        </div>
+          </Pane>
+        </SplitPanel>
       </div>
     </ToolDialogFrame>
   )

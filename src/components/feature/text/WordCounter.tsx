@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { FieldForm } from '@/components/common'
+import { FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolComputation } from '@/hooks'
@@ -64,8 +64,8 @@ export const WordCounter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
       triggers={[{ label: 'Count Words' }]}
     >
       <div className="flex w-full grow flex-col gap-4">
-        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        <SplitPanel>
+          <Pane>
             <FieldForm
               label="Text"
               name="dialog-source"
@@ -75,11 +75,9 @@ export const WordCounter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
               type="textarea"
               value={source}
             />
-          </div>
+          </Pane>
 
-          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <Pane live>
             <span className="text-body-sm font-medium text-gray-400">Statistics</span>
             <div className="grid grid-cols-2 gap-3">
               {STAT_LABELS.map((item) => (
@@ -89,8 +87,8 @@ export const WordCounter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
                 </div>
               ))}
             </div>
-          </div>
-        </div>
+          </Pane>
+        </SplitPanel>
       </div>
     </ToolDialogFrame>
   )

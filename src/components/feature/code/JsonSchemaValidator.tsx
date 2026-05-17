@@ -1,4 +1,4 @@
-import { FieldForm } from '@/components/common'
+import { FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFieldsPersisted } from '@/hooks'
@@ -47,8 +47,8 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
       ]}
     >
       <div className="flex w-full grow flex-col gap-4">
-          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <SplitPanel>
+            <Pane>
               <FieldForm
                 label="JSON Data"
                 name="json-data"
@@ -57,11 +57,9 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
                 type="code"
                 value={jsonData}
               />
-            </div>
+            </Pane>
 
-            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <Pane>
               <FieldForm
                 label="JSON Schema"
                 name="json-schema"
@@ -70,8 +68,8 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
                 type="code"
                 value={jsonSchema}
               />
-            </div>
-          </div>
+            </Pane>
+          </SplitPanel>
 
           <div aria-live="polite">
             {result?.valid && (

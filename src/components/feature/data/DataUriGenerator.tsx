@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Button, CopyButton, DownloadIcon, FieldForm, UploadInput } from '@/components/common'
+import { Button, CopyButton, DownloadIcon, FieldForm, Pane, SplitPanel, UploadInput } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
@@ -206,8 +206,8 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
         title="Decode Data URI"
       >
         <div className="flex w-full grow flex-col gap-4">
-          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <SplitPanel>
+            <Pane>
               <FieldForm
                 label="Data URI"
                 name="decode-input"
@@ -217,11 +217,9 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
                 type="textarea"
                 value={decodeInput}
               />
-            </div>
+            </Pane>
 
-            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col items-center gap-4">
+            <Pane align="center" gap="lg" live>
               {decodeResult ? (
                 <>
                   {decodeResult.isImage && decodeResult.previewUri && (
@@ -250,8 +248,8 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
               ) : (
                 <p className="text-body-sm text-gray-500">Paste a data URI to decode and preview</p>
               )}
-            </div>
-          </div>
+            </Pane>
+          </SplitPanel>
         </div>
       </ToolDialogShell>
     </>

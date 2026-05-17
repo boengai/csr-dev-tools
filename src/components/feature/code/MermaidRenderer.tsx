@@ -1,7 +1,7 @@
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Button, CopyButton, FieldForm } from '@/components/common'
+import { Button, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useMountOnce, useToast, useToolComputationPersisted } from '@/hooks'
@@ -151,9 +151,9 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
       triggers={[{ label: 'Render' }]}
     >
         <div className="flex w-full grow flex-col gap-4">
-          <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
+          <SplitPanel>
             {/* Left Panel: Input */}
-            <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <Pane>
               <FieldForm
                 label="Mermaid Syntax"
                 name="mermaid-input"
@@ -234,13 +234,10 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                   )}
                 </AnimatePresence>
               </div>
-            </div>
-
-            {/* Divider */}
-            <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
+            </Pane>
 
             {/* Right Panel: Preview */}
-            <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+            <Pane live>
               <div className="flex items-center gap-1">
                 <span className="text-body-xs font-medium text-gray-300">Preview</span>
                 <div className="ml-auto flex gap-2">
@@ -260,8 +257,8 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                   !errorMessage && <p className="text-body-xs text-gray-500">Enter Mermaid syntax to see a preview</p>
                 )}
               </div>
-            </div>
-          </div>
+            </Pane>
+          </SplitPanel>
         </div>
     </ToolDialogFrame>
   )

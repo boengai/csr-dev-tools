@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
@@ -75,8 +75,8 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       triggers={[{ label: 'Decode' }]}
     >
       <div className="flex w-full grow flex-col gap-4">
-        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        <SplitPanel>
+          <Pane>
             <FieldForm
               label="JWT Token"
               name="dialog-source"
@@ -85,11 +85,9 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
               type="code"
               value={source}
             />
-          </div>
+          </Pane>
 
-          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-y-auto">
+          <Pane live scroll>
             <CodeOutput
               label={
                 <span className="flex items-center gap-1">
@@ -122,8 +120,8 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
               placeholder="Base64URL signature string"
               value={decoded.signature}
             />
-          </div>
-        </div>
+          </Pane>
+        </SplitPanel>
       </div>
     </ToolDialogFrame>
   )

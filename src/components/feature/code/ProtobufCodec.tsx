@@ -7,7 +7,9 @@ import {
   CopyButton,
   DownloadIcon,
   FieldForm,
+  Pane,
   SelectInput,
+  SplitPanel,
   UploadInput,
 } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
@@ -174,8 +176,8 @@ const EncodeContent = ({
           />
         </div>
       </div>
-      <div className="flex grow flex-col gap-6 tablet:flex-row">
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+      <SplitPanel>
+        <Pane>
           <CodeInput
             aria-label="Proto schema input"
             name="proto-schema"
@@ -183,9 +185,8 @@ const EncodeContent = ({
             placeholder="Paste your .proto definition here..."
             value={schema}
           />
-        </div>
-        <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        </Pane>
+        <Pane>
           <CodeInput
             aria-label="JSON input"
             name="dialog-source"
@@ -193,8 +194,8 @@ const EncodeContent = ({
             placeholder='{"name": "Alice", "age": 30}'
             value={source}
           />
-        </div>
-      </div>
+        </Pane>
+      </SplitPanel>
       <div className="border-t-2 border-dashed border-gray-900" />
       {messageTypes.length > 0 && (
         <div className="flex flex-col gap-2">
@@ -356,8 +357,8 @@ const DecodeContent = ({
           />
         </div>
       </div>
-      <div className="flex grow flex-col gap-6 tablet:flex-row">
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+      <SplitPanel>
+        <Pane>
           <CodeInput
             aria-label="Proto schema input"
             name="proto-schema"
@@ -365,9 +366,8 @@ const DecodeContent = ({
             placeholder="Paste your .proto definition here..."
             value={schema}
           />
-        </div>
-        <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        </Pane>
+        <Pane>
           <FieldForm
             label=""
             name="dialog-source"
@@ -377,8 +377,8 @@ const DecodeContent = ({
             type="textarea"
             value={source}
           />
-        </div>
-      </div>
+        </Pane>
+      </SplitPanel>
 
       <div className="border-t-2 border-dashed border-gray-900" />
 

@@ -1,4 +1,4 @@
-import { Button, ColorInput, CopyButton, DownloadIcon, FieldForm } from '@/components/common'
+import { Button, ColorInput, CopyButton, DownloadIcon, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolFields } from '@/hooks'
@@ -87,8 +87,8 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
       triggers={[{ label: 'Generate QR Code' }]}
     >
       <div className="flex w-full grow flex-col gap-4">
-        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-4">
+        <SplitPanel>
+          <Pane gap="lg">
             <FieldForm
               label="Text or URL"
               name="qr-text"
@@ -137,11 +137,9 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                 <ColorInput id="qr-bg" onChange={handleBgChange} value={background} />
               </div>
             </div>
-          </div>
+          </Pane>
 
-          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col items-center gap-4">
+          <Pane align="center" gap="lg" live>
             {dataUrl ? (
               <>
                 <img alt="QR Code" className="rounded-lg" height={size} src={dataUrl} width={size} />
@@ -158,8 +156,8 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             ) : (
               <p className="text-body-sm text-gray-500">Enter text to generate a QR code</p>
             )}
-          </div>
-        </div>
+          </Pane>
+        </SplitPanel>
       </div>
     </ToolDialogFrame>
   )

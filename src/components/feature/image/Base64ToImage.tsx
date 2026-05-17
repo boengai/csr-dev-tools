@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Button, DownloadIcon, FieldForm } from '@/components/common'
+import { Button, DownloadIcon, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
@@ -51,8 +51,8 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
       triggers={[{ label: 'Convert Base64 to Image' }]}
     >
       <div className="flex w-full grow flex-col gap-4">
-        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        <SplitPanel>
+          <Pane>
             <FieldForm
               label="Base64 or Data URI"
               name="base64-input"
@@ -62,11 +62,9 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
               type="textarea"
               value={input}
             />
-          </div>
+          </Pane>
 
-          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col items-center gap-4">
+          <Pane align="center" gap="lg" live>
             {info ? (
               <>
                 <img
@@ -87,8 +85,8 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             ) : (
               <p className="text-body-sm text-gray-500">Paste Base64 data to preview the image</p>
             )}
-          </div>
-        </div>
+          </Pane>
+        </SplitPanel>
       </div>
     </ToolDialogFrame>
   )

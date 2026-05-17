@@ -1,4 +1,4 @@
-import { Button, CodeOutput, CopyButton, FieldForm } from '@/components/common'
+import { Button, CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolFields } from '@/hooks'
@@ -74,8 +74,8 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
           </div>
         </div>
 
-        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        <SplitPanel>
+          <Pane>
             <FieldForm
               label="Source"
               name="dialog-source"
@@ -84,11 +84,9 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
               type="code"
               value={source}
             />
-          </div>
+          </Pane>
 
-          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <Pane live>
             <CodeOutput
               label={
                 <span className="flex items-center gap-1">
@@ -99,8 +97,8 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
               placeholder="Result will appear here..."
               value={result}
             />
-          </div>
-        </div>
+          </Pane>
+        </SplitPanel>
       </div>
     </ToolDialogFrame>
   )

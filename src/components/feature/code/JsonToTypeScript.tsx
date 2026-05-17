@@ -1,4 +1,4 @@
-import { Button, CopyButton, FieldForm } from '@/components/common'
+import { Button, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolFieldsPersisted } from '@/hooks'
@@ -79,8 +79,8 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
             Generate
           </Button>
         </div>
-        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        <SplitPanel>
+          <Pane>
             <FieldForm
               label="JSON Input"
               name="json-source"
@@ -89,9 +89,8 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
               type="code"
               value={source}
             />
-          </div>
-          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          </Pane>
+          <Pane live>
             <div className="flex items-center gap-1">
               <span className="text-body-xs font-medium text-gray-300">TypeScript Output</span>
               <CopyButton label="TypeScript" value={output} />
@@ -99,8 +98,8 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
             <pre className="min-h-[300px] grow overflow-auto rounded-lg border-2 border-gray-900 bg-gray-950 p-4 font-mono text-body-sm text-gray-200">
               {output || 'Paste JSON to generate TypeScript...'}
             </pre>
-          </div>
-        </div>
+          </Pane>
+        </SplitPanel>
       </div>
     </ToolDialogFrame>
   )

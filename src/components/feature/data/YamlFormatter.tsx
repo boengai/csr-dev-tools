@@ -1,4 +1,4 @@
-import { CheckboxInput, CodeOutput, CopyButton, FieldForm, SelectInput } from '@/components/common'
+import { CheckboxInput, CodeOutput, CopyButton, FieldForm, Pane, SelectInput, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolFields } from '@/hooks'
@@ -66,8 +66,8 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
           </label>
         </div>
 
-        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        <SplitPanel>
+          <Pane>
             <FieldForm
               label="YAML Input"
               name="dialog-source"
@@ -76,11 +76,9 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
               type="code"
               value={source}
             />
-          </div>
+          </Pane>
 
-          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <Pane live>
             <CodeOutput
               label={
                 <span className="flex items-center gap-1">
@@ -91,8 +89,8 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
               placeholder={'name: John\nage: 30\ntags:\n  - dev\n  - tools'}
               value={result}
             />
-          </div>
-        </div>
+          </Pane>
+        </SplitPanel>
       </div>
     </ToolDialogFrame>
   )

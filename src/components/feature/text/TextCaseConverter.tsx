@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { CopyButton, FieldForm } from '@/components/common'
+import { CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolComputation } from '@/hooks'
@@ -70,8 +70,8 @@ export const TextCaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
       triggers={[{ label: 'Convert Text Case' }]}
     >
       <div className="flex w-full grow flex-col gap-4">
-        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        <SplitPanel>
+          <Pane>
             <FieldForm
               label="Source"
               name="dialog-source"
@@ -81,11 +81,9 @@ export const TextCaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
               type="textarea"
               value={source}
             />
-          </div>
+          </Pane>
 
-          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-auto">
+          <Pane live scroll>
             <span className="text-body-sm font-medium text-gray-400">Results</span>
             {results.length > 0 ? (
               <div className="flex flex-col gap-3">
@@ -104,8 +102,8 @@ export const TextCaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
             ) : (
               <span className="text-body-xs text-gray-600">Enter text to see conversions</span>
             )}
-          </div>
-        </div>
+          </Pane>
+        </SplitPanel>
       </div>
     </ToolDialogFrame>
   )

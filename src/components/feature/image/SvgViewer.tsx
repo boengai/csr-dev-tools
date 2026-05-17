@@ -1,7 +1,7 @@
 import DOMPurify from 'dompurify'
 import { useEffect, useRef, useState } from 'react'
 
-import { Button, CopyButton, FieldForm } from '@/components/common'
+import { Button, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolComputation } from '@/hooks'
@@ -72,8 +72,8 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
       triggers={[{ label: 'Open SVG Viewer' }]}
     >
       <div className="flex w-full grow flex-col gap-4">
-        <div className="flex size-full grow flex-col gap-6 tablet:flex-row">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        <SplitPanel>
+          <Pane>
             <FieldForm
               label="SVG Code"
               name="svg-source"
@@ -108,11 +108,9 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
                 </span>
               </div>
             )}
-          </div>
+          </Pane>
 
-          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <Pane>
             <div className="flex items-center gap-2">
               <span className="text-body-sm font-medium text-gray-400">Preview</span>
               {displaySvg && <CopyButton label="SVG" value={sanitize(displaySvg)} />}
@@ -123,8 +121,8 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
               style={{ minHeight: '200px' }}
             />
             {source && <span className="text-body-xs text-gray-500">Size: {new Blob([source]).size} bytes</span>}
-          </div>
-        </div>
+          </Pane>
+        </SplitPanel>
       </div>
     </ToolDialogFrame>
   )
