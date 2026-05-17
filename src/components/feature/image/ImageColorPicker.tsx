@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button, CopyButton, UploadInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { useToast } from '@/hooks'
 import { useBlobUrl } from '@/hooks/useBlobUrl'
 import type { PickedColorWithId, ToolComponentProps } from '@/types'
 import { type PickedColor, pixelToColor } from '@/utils'
@@ -21,6 +22,7 @@ const rafThrottle = <T extends (...args: Array<any>) => void>(fn: T): T => {
 
 const toolEntry = TOOL_REGISTRY_MAP['image-color-picker']
 export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+  const { showError } = useToast()
   const [imageFile, setImageFile] = useState<File | null>(null)
   const imageUrl = useBlobUrl(imageFile)
   const nextColorId = useRef(0)
@@ -43,12 +45,19 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
     img.src = imageUrl
   }, [imageUrl])
 
-  const handleFileChange = useCallback((files: Array<File>) => {
-    const file = files[0]
-    if (!file) return
-    setImageFile(file)
-    setPalette([])
-  }, [])
+  const handleFileChange = useCallback(
+    (files: Array<File>) => {
+      const file = files[0]
+      if (!file) return
+      if (!file.type.startsWith('image/')) {
+        showError('Upload a valid image file')
+        return
+      }
+      setImageFile(file)
+      setPalette([])
+    },
+    [showError],
+  )
 
   const getColorAt = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current
