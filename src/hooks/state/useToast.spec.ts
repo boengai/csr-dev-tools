@@ -27,9 +27,9 @@ describe('useToast helpers', () => {
     expect(items[0].id).toBe(id)
   })
 
-  it('helpers append to the same items array as the legacy toast() dispatcher', () => {
+  it('multiple helper calls accumulate items in call order', () => {
     useToast.getState().showError('one')
-    useToast.getState().toast({ action: 'add', item: { label: 'two', type: 'success' } })
+    useToast.getState().showSuccess('two')
     useToast.getState().showSuccess('three')
 
     const items = useToast.getState().items

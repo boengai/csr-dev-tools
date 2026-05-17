@@ -16,13 +16,4 @@ export type UseToast = {
   items: Array<ToastItemProps>
   showError: (label: string) => string
   showSuccess: (label: string) => string
-  toast: (
-    payload:
-      | { action: 'add'; item: Omit<ToastItemProps, 'id'> }
-      | { action: 'remove'; itemId?: string }
-      | {
-          action: 'update'
-          item: Partial<Omit<ToastItemProps, 'id'>> & Pick<ToastItemProps, 'id'>
-        },
-  ) => string
 }
