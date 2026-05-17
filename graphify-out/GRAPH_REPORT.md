@@ -1,7 +1,7 @@
 # Graph Report - csr-dev-tools  (2026-05-17)
 
 ## Corpus Check
-- 713 files · ~302,797 words
+- 713 files · ~302,364 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `5e98c9bb`
+- Built from commit: `9991717c`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -2265,8 +2265,8 @@ Cohesion: 0.19
 Nodes (12): createDefaultIdMinters(), createSequentialIdMinters(), makeDefaultMinter(), makeSequentialMinter(), a, b, c1, ids (+4 more)
 
 ### Community 765 - "Community 765"
-Cohesion: 0.11
-Nodes (18): Adding a New Tool, code:ts (export const isValidHash = (value: string): boolean => {), code:block11 (src/utils/hash.spec.ts), code:ts (import { generateHash } from '@/utils'), code:ts (import { expect, test } from '@playwright/test'), code:block2 (src/components/feature/generator/HashGenerator.tsx), code:tsx (import { useState } from 'react'), code:ts (export * from './HashGenerator.tsx') (+10 more)
+Cohesion: 0.13
+Nodes (15): Adding a New Tool, code:ts (export const isValidHash = (value: string): boolean => {), code:ts (import { expect, test } from '@playwright/test'), code:block2 (src/components/feature/generator/HashGenerator.tsx), code:tsx (import { useState } from 'react'), code:ts (export * from './HashGenerator.tsx'), code:ts (export * from './color'), code:ts ({) (+7 more)
 
 ### Community 766 - "Community 766"
 Cohesion: 0.14
@@ -2325,8 +2325,8 @@ Cohesion: 0.22
 Nodes (9): bcrypt hash/verify (WASM proxy), bcrypt-hasher.spec, jsonToTypeScript (WASM proxy), number base converter (WASM proxy), WASM bcrypt binding, WASM json-tools binding, WASM number-base binding, WASM proxy pattern (rationale) (+1 more)
 
 ### Community 784 - "Community 784"
-Cohesion: 0.22
-Nodes (5): BrowsableEntry, buildBrowsableEntries(), EntryKind, KIND_STYLES, ParseOutput
+Cohesion: 0.12
+Nodes (9): chevronStyles, INITIAL_RESULT, initialState, SYNTAX_EXAMPLES, BrowsableEntry, buildBrowsableEntries(), EntryKind, KIND_STYLES (+1 more)
 
 ### Community 785 - "Community 785"
 Cohesion: 0.22
@@ -2353,8 +2353,8 @@ Cohesion: 0.38
 Nodes (5): formatRelativeTime(), ResultRow(), resultValueStyles, VALIDITY_CONFIG, ValidityBadge()
 
 ### Community 791 - "Community 791"
-Cohesion: 0.33
-Nodes (4): chevronStyles, INITIAL_RESULT, initialState, SYNTAX_EXAMPLES
+Cohesion: 0.67
+Nodes (3): code:block11 (src/utils/hash.spec.ts), code:ts (import { generateHash } from '@/utils'), Step 7: Write Unit Tests
 
 ### Community 792 - "Community 792"
 Cohesion: 0.33

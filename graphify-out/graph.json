@@ -20673,7 +20673,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_mermaidrenderer_tsx",
-      "community": 791,
+      "community": 784,
       "norm_label": "mermaidrenderer.tsx"
     },
     {
@@ -20682,7 +20682,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L20",
       "id": "code_mermaidrenderer_chevronstyles",
-      "community": 791,
+      "community": 784,
       "norm_label": "chevronstyles"
     },
     {
@@ -20691,7 +20691,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L39",
       "id": "code_mermaidrenderer_syntax_examples",
-      "community": 791,
+      "community": 784,
       "norm_label": "syntax_examples"
     },
     {
@@ -20700,7 +20700,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L48",
       "id": "code_mermaidrenderer_initial_result",
-      "community": 791,
+      "community": 784,
       "norm_label": "initial_result"
     },
     {
@@ -20824,7 +20824,7 @@
       "label": "INITIAL_STATE",
       "file_type": "code",
       "source_file": "src/components/feature/code/ProtobufCodec.tsx",
-      "source_location": "L30",
+      "source_location": "L32",
       "id": "code_protobufcodec_initial_state",
       "community": 77,
       "norm_label": "initial_state"
@@ -20833,7 +20833,7 @@
       "label": "FORMAT_OPTIONS",
       "file_type": "code",
       "source_file": "src/components/feature/code/ProtobufCodec.tsx",
-      "source_location": "L38",
+      "source_location": "L40",
       "id": "code_protobufcodec_format_options",
       "community": 77,
       "norm_label": "format_options"
@@ -20842,7 +20842,7 @@
       "label": "DownloadButton()",
       "file_type": "code",
       "source_file": "src/components/feature/code/ProtobufCodec.tsx",
-      "source_location": "L43",
+      "source_location": "L45",
       "id": "code_protobufcodec_downloadbutton",
       "community": 77,
       "norm_label": "downloadbutton()"
@@ -20851,7 +20851,7 @@
       "label": "EncodeContent()",
       "file_type": "code",
       "source_file": "src/components/feature/code/ProtobufCodec.tsx",
-      "source_location": "L56",
+      "source_location": "L58",
       "id": "code_protobufcodec_encodecontent",
       "community": 15,
       "norm_label": "encodecontent()"
@@ -20860,7 +20860,7 @@
       "label": "DecodeContent()",
       "file_type": "code",
       "source_file": "src/components/feature/code/ProtobufCodec.tsx",
-      "source_location": "L224",
+      "source_location": "L225",
       "id": "code_protobufcodec_decodecontent",
       "community": 15,
       "norm_label": "decodecontent()"
@@ -39059,7 +39059,7 @@
       "file_type": "document",
       "source_file": "CONTRIBUTING.md",
       "source_location": "L227",
-      "community": 765,
+      "community": 791,
       "norm_label": "step 7: write unit tests",
       "id": "entity_id_minters_contributing_step_7_write_unit_tests"
     },
@@ -39068,7 +39068,7 @@
       "file_type": "document",
       "source_file": "CONTRIBUTING.md",
       "source_location": "L231",
-      "community": 765,
+      "community": 791,
       "norm_label": "code:block11 (src/utils/hash.spec.ts)",
       "id": "entity_id_minters_contributing_codeblock_11"
     },
@@ -39077,7 +39077,7 @@
       "file_type": "document",
       "source_file": "CONTRIBUTING.md",
       "source_location": "L235",
-      "community": 765,
+      "community": 791,
       "norm_label": "code:ts (import { generatehash } from '@/utils')",
       "id": "entity_id_minters_contributing_codeblock_12"
     },
@@ -41489,7 +41489,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L47",
-      "community": 791,
+      "community": 784,
       "norm_label": "initialstate",
       "id": "code_mermaidrenderer_initialstate"
     },
@@ -41498,7 +41498,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L56",
-      "community": 791,
+      "community": 784,
       "norm_label": "reducer()",
       "id": "code_mermaidrenderer_reducer"
     },
@@ -59645,9 +59645,9 @@
       "source_file": "src/types/components/common/splitPanel.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_components_common_splitpanel_ts",
-      "target": "common_splitpanel_panegap",
-      "confidence_score": 1.0
+      "target": "common_splitpanel_panegap"
     },
     {
       "relation": "contains",
@@ -59655,9 +59655,9 @@
       "source_file": "src/types/components/common/splitPanel.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_components_common_splitpanel_ts",
-      "target": "common_splitpanel_panealign",
-      "confidence_score": 1.0
+      "target": "common_splitpanel_panealign"
     },
     {
       "relation": "contains",
@@ -59665,9 +59665,9 @@
       "source_file": "src/types/components/common/splitPanel.ts",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_components_common_splitpanel_ts",
-      "target": "common_splitpanel_paneprops",
-      "confidence_score": 1.0
+      "target": "common_splitpanel_paneprops"
     },
     {
       "relation": "contains",
@@ -59675,9 +59675,9 @@
       "source_file": "src/types/components/common/splitPanel.ts",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_types_components_common_splitpanel_ts",
-      "target": "common_splitpanel_splitpanelprops",
-      "confidence_score": 1.0
+      "target": "common_splitpanel_splitpanelprops"
     },
     {
       "relation": "contains",
@@ -79032,9 +79032,9 @@
       "source_file": "src/components/common/layout/Pane.spec.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_common_layout_pane_spec_ts",
-      "target": "src_components_common_layout_pane_tsx",
-      "confidence_score": 1.0
+      "target": "src_components_common_layout_pane_tsx"
     },
     {
       "relation": "imports",
@@ -79043,9 +79043,9 @@
       "source_file": "src/components/common/layout/Pane.spec.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_common_layout_pane_spec_ts",
-      "target": "layout_pane_panestyles",
-      "confidence_score": 1.0
+      "target": "layout_pane_panestyles"
     },
     {
       "relation": "contains",
@@ -79053,9 +79053,9 @@
       "source_file": "src/components/common/layout/Pane.spec.ts",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_common_layout_pane_spec_ts",
-      "target": "layout_pane_spec_invariants",
-      "confidence_score": 1.0
+      "target": "layout_pane_spec_invariants"
     },
     {
       "relation": "contains",
@@ -79063,9 +79063,9 @@
       "source_file": "src/components/common/layout/Pane.spec.ts",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_common_layout_pane_spec_ts",
-      "target": "layout_pane_spec_classes",
-      "confidence_score": 1.0
+      "target": "layout_pane_spec_classes"
     },
     {
       "relation": "contains",
@@ -79073,9 +79073,9 @@
       "source_file": "src/components/common/layout/Pane.spec.ts",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_common_layout_pane_spec_ts",
-      "target": "layout_pane_spec_combos",
-      "confidence_score": 1.0
+      "target": "layout_pane_spec_combos"
     },
     {
       "relation": "contains",
@@ -79083,9 +79083,9 @@
       "source_file": "src/components/common/layout/Pane.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_common_layout_pane_tsx",
-      "target": "layout_pane_panestyles",
-      "confidence_score": 1.0
+      "target": "layout_pane_panestyles"
     },
     {
       "relation": "contains",
@@ -79093,9 +79093,9 @@
       "source_file": "src/components/common/layout/Pane.tsx",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_common_layout_pane_tsx",
-      "target": "layout_pane_pane",
-      "confidence_score": 1.0
+      "target": "layout_pane_pane"
     },
     {
       "relation": "calls",
@@ -79104,9 +79104,9 @@
       "source_file": "src/components/common/layout/Pane.tsx",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "layout_pane_pane",
-      "target": "layout_pane_panestyles",
-      "confidence_score": 1.0
+      "target": "layout_pane_panestyles"
     },
     {
       "relation": "contains",
@@ -79114,9 +79114,9 @@
       "source_file": "src/components/common/layout/SplitPanel.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_components_common_layout_splitpanel_tsx",
-      "target": "layout_splitpanel_splitpanel",
-      "confidence_score": 1.0
+      "target": "layout_splitpanel_splitpanel"
     },
     {
       "relation": "contains",
@@ -91214,9 +91214,9 @@
       "source_file": "CONTEXT.md",
       "source_location": "L480",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "csr_dev_tools_context_csr_dev_tools_domain_language",
-      "target": "csr_dev_tools_context_splitpanel",
-      "confidence_score": 1.0
+      "target": "csr_dev_tools_context_splitpanel"
     },
     {
       "relation": "contains",
@@ -116957,5 +116957,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "5e98c9bb9387d4070c0a7beb684abbfb2e4dc0e0"
+  "built_at_commit": "9991717cef13638083f34a83ce7e5e8d3066fc06"
 }
