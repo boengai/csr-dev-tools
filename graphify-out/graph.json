@@ -20644,7 +20644,7 @@
       "label": "chevronStyles",
       "file_type": "code",
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
-      "source_location": "L19",
+      "source_location": "L20",
       "id": "code_mermaidrenderer_chevronstyles",
       "community": 725,
       "norm_label": "chevronstyles"
@@ -20653,7 +20653,7 @@
       "label": "SYNTAX_EXAMPLES",
       "file_type": "code",
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
-      "source_location": "L38",
+      "source_location": "L39",
       "id": "code_mermaidrenderer_syntax_examples",
       "community": 725,
       "norm_label": "syntax_examples"
@@ -20662,7 +20662,7 @@
       "label": "INITIAL_RESULT",
       "file_type": "code",
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
-      "source_location": "L47",
+      "source_location": "L48",
       "id": "code_mermaidrenderer_initial_result",
       "community": 725,
       "norm_label": "initial_result"
@@ -20671,7 +20671,7 @@
       "label": "computeMermaid()",
       "file_type": "code",
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
-      "source_location": "L53",
+      "source_location": "L54",
       "id": "code_mermaidrenderer_computemermaid",
       "community": 90,
       "norm_label": "computemermaid()"
@@ -20680,7 +20680,7 @@
       "label": "MermaidRenderer()",
       "file_type": "code",
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
-      "source_location": "L64",
+      "source_location": "L65",
       "id": "code_mermaidrenderer_mermaidrenderer",
       "community": 762,
       "norm_label": "mermaidrenderer()"
@@ -20986,7 +20986,7 @@
       "label": "ValidatorInput",
       "file_type": "code",
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
-      "source_location": "L12",
+      "source_location": "L10",
       "id": "code_jsonschemavalidator_validatorinput",
       "community": 762,
       "norm_label": "validatorinput"
@@ -20995,7 +20995,7 @@
       "label": "JsonSchemaValidator()",
       "file_type": "code",
       "source_file": "src/components/feature/code/JsonSchemaValidator.tsx",
-      "source_location": "L14",
+      "source_location": "L12",
       "id": "code_jsonschemavalidator_jsonschemavalidator",
       "community": 762,
       "norm_label": "jsonschemavalidator()"
@@ -86957,9 +86957,9 @@
       "source_file": "docs/adr/0011-use-elapsed-timer-stays.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_adr_0011_use_elapsed_timer_stays_md",
-      "target": "adr_0011_use_elapsed_timer_stays_adr_0011_useelapsedtimer_stays",
-      "confidence_score": 1.0
+      "target": "adr_0011_use_elapsed_timer_stays_adr_0011_useelapsedtimer_stays"
     },
     {
       "relation": "contains",
@@ -86967,9 +86967,9 @@
       "source_file": "docs/adr/0011-use-elapsed-timer-stays.md",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adr_0011_use_elapsed_timer_stays_adr_0011_useelapsedtimer_stays",
-      "target": "adr_0011_use_elapsed_timer_stays_context",
-      "confidence_score": 1.0
+      "target": "adr_0011_use_elapsed_timer_stays_context"
     },
     {
       "relation": "contains",
@@ -86977,9 +86977,9 @@
       "source_file": "docs/adr/0011-use-elapsed-timer-stays.md",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adr_0011_use_elapsed_timer_stays_adr_0011_useelapsedtimer_stays",
-      "target": "adr_0011_use_elapsed_timer_stays_decision",
-      "confidence_score": 1.0
+      "target": "adr_0011_use_elapsed_timer_stays_decision"
     },
     {
       "relation": "contains",
@@ -86987,9 +86987,9 @@
       "source_file": "docs/adr/0011-use-elapsed-timer-stays.md",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adr_0011_use_elapsed_timer_stays_adr_0011_useelapsedtimer_stays",
-      "target": "adr_0011_use_elapsed_timer_stays_consequences",
-      "confidence_score": 1.0
+      "target": "adr_0011_use_elapsed_timer_stays_consequences"
     },
     {
       "relation": "contains",
@@ -104881,5 +104881,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "d41545929cedafe68a0fbb137c9e02df9e1ffa2d"
+  "built_at_commit": "016a74ab3d38187d794f3096f444a3964c9e3be1"
 }
