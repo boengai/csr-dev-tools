@@ -16,7 +16,7 @@ test.describe('Placeholder Image Generator', () => {
   })
 
   test('shows preview image with default dimensions', async ({ page }) => {
-    const preview = page.locator('img[alt*="Placeholder image preview"]')
+    const preview = page.locator('img[alt*="Placeholder preview"]')
     await expect(preview).toBeVisible({ timeout: 3000 })
     await expect(preview).toHaveAttribute('alt', /800x600/)
   })
@@ -30,15 +30,15 @@ test.describe('Placeholder Image Generator', () => {
     await heightInput.clear()
     await heightInput.fill('300')
 
-    const preview = page.locator('img[alt*="Placeholder image preview"]')
+    const preview = page.locator('img[alt*="Placeholder preview"]')
     await expect(preview).toHaveAttribute('alt', /400x300/, { timeout: 3000 })
   })
 
   test('updates preview when background color is changed', async ({ page }) => {
-    const bgPicker = page.getByLabel('Background color picker')
+    const bgPicker = page.getByLabel('Background Color', { exact: true })
     await bgPicker.fill('#ff0000')
 
-    const preview = page.locator('img[alt*="Placeholder image preview"]')
+    const preview = page.locator('img[alt*="Placeholder preview"]')
     await expect(preview).toHaveAttribute('alt', /background #ff0000/, { timeout: 3000 })
   })
 
@@ -46,7 +46,7 @@ test.describe('Placeholder Image Generator', () => {
     const textInput = page.locator('input[name="placeholder-text"]')
     await textInput.fill('Hello World')
 
-    const preview = page.locator('img[alt*="Placeholder image preview"]')
+    const preview = page.locator('img[alt*="Placeholder preview"]')
     await expect(preview).toHaveAttribute('alt', /Hello World/, { timeout: 3000 })
   })
 
@@ -82,7 +82,7 @@ test.describe('Placeholder Image Generator', () => {
   test('mobile viewport shows responsive layout', async ({ page }) => {
     await page.setViewportSize({ height: 812, width: 375 })
 
-    const preview = page.locator('img[alt*="Placeholder image preview"]')
+    const preview = page.locator('img[alt*="Placeholder preview"]')
     await expect(preview).toBeVisible({ timeout: 3000 })
 
     const widthInput = page.locator('input[name="placeholder-width"]')

@@ -49,7 +49,7 @@ test.describe('Color Palette Generator', () => {
   test('copies CSS custom properties when Export CSS is clicked', async ({ page }) => {
     await page.getByRole('button', { name: 'Export CSS' }).click()
 
-    await expect(page.getByText('CSS copied to clipboard', { exact: true })).toBeVisible({ timeout: 3000 })
+    await expect(toast.copied(page)).toBeVisible({ timeout: 3000 })
   })
 
   test('color picker updates hex input and palette', async ({ page }) => {

@@ -1,17 +1,17 @@
 import { expect, test } from '@playwright/test'
 
 import { base64 } from './helpers/fixtures'
+import { codeInputIn } from './helpers/selectors'
 
 test.describe('Base64 Codec', () => {
   test('encodes text to base64', async ({ page }) => {
     await page.goto('/tools/base64-codec')
-    // Open the encode dialog
-    await page.getByRole('button', { name: /^Encode$/ }).click()
 
-    const input = page.locator('[role="dialog"] textarea').first()
-    await input.fill(base64.valid.decoded)
+    const dialog = page.locator('[role="dialog"]')
+    await expect(dialog).toBeVisible({ timeout: 5000 })
+    await codeInputIn.fill(page, dialog, base64.valid.decoded)
 
-    const output = page.locator('[role="dialog"] pre[data-has-value]').first()
+    const output = dialog.locator('pre[data-has-value]').first()
     await expect(output).toBeVisible({ timeout: 3000 })
   })
 })
@@ -19,12 +19,12 @@ test.describe('Base64 Codec', () => {
 test.describe('URL Encoder/Decoder', () => {
   test('encodes URL string', async ({ page }) => {
     await page.goto('/tools/url-encoder-decoder')
-    await page.getByRole('button', { name: /^Encode$/ }).click()
 
-    const input = page.locator('[role="dialog"] textarea').first()
-    await input.fill('hello world & foo=bar')
+    const dialog = page.locator('[role="dialog"]')
+    await expect(dialog).toBeVisible({ timeout: 5000 })
+    await codeInputIn.fill(page, dialog, 'hello world & foo=bar')
 
-    const output = page.locator('[role="dialog"] pre[data-has-value]').first()
+    const output = dialog.locator('pre[data-has-value]').first()
     await expect(output).toBeVisible({ timeout: 3000 })
   })
 })

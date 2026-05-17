@@ -53,7 +53,7 @@ test.describe('DB Diagram', () => {
 
     const tableNode = page.locator('[data-testid^="table-node-"]').first()
     await expect(tableNode).toBeVisible({ timeout: 5000 })
-    await expect(tableNode.getByText('table_1')).toBeVisible()
+    await expect(tableNode.getByText('new_table')).toBeVisible()
   })
 
   test('can edit table name (AC #3)', async ({ page }) => {
@@ -62,7 +62,7 @@ test.describe('DB Diagram', () => {
     await expect(tableNode).toBeVisible({ timeout: 5000 })
 
     // Click table name button to enter editing mode
-    await tableNode.getByText('table_1').click()
+    await tableNode.getByText('new_table').click()
     const nameInput = tableNode.locator('input[name="table-name"]')
     await expect(nameInput).toBeVisible({ timeout: 2000 })
     await nameInput.fill('users')
@@ -151,7 +151,7 @@ test.describe('DB Diagram', () => {
     await expect(tableNode).toBeVisible({ timeout: 5000 })
 
     // Edit table name
-    await tableNode.getByText('table_1').click()
+    await tableNode.getByText('new_table').click()
     const nameInput = tableNode.locator('input[name="table-name"]')
     await expect(nameInput).toBeVisible({ timeout: 2000 })
     await nameInput.fill('persisted_table')
@@ -159,8 +159,13 @@ test.describe('DB Diagram', () => {
     await page.getByTestId('fit-view-btn').click({ force: true })
     await expect(tableNode.getByText('persisted_table')).toBeVisible({ timeout: 3000 })
 
-    // Wait for autosave to complete (3s debounce + confirmation toast)
-    await expect(page.getByText('Diagram saved', { exact: true })).toBeVisible({ timeout: 8000 })
+    // Wait for autosave to complete (editor debounces 3s before writing to localStorage)
+    await expect
+      .poll(
+        () => page.evaluate(() => localStorage.getItem('csr-dev-tools-db-diagrams')?.includes('persisted_table') ?? false),
+        { timeout: 8000 },
+      )
+      .toBe(true)
 
     // Reload page
     await page.reload()
@@ -325,7 +330,7 @@ test.describe('DB Diagram', () => {
     await expect(tableNode).toBeVisible({ timeout: 5000 })
 
     // Rename the table for identification
-    await tableNode.getByText('table_1').click()
+    await tableNode.getByText('new_table').click()
     const nameInput = tableNode.locator('input[name="table-name"]')
     await expect(nameInput).toBeVisible({ timeout: 2000 })
     await nameInput.fill('export_test')

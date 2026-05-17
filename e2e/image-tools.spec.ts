@@ -19,6 +19,7 @@ for (const tool of nonDialogImageTools) {
 const uploadOnPageTools = [
   { name: 'Image Cropper', route: '/tools/image-cropper' },
   { name: 'Image Resizer', route: '/tools/image-resizer' },
+  { name: 'Image to Base64', route: '/tools/image-to-base64' },
 ]
 
 for (const tool of uploadOnPageTools) {
@@ -32,7 +33,6 @@ for (const tool of uploadOnPageTools) {
 
 // Dialog auto-opens on these routes
 const autoOpenDialogTools = [
-  { name: 'Image to Base64', route: '/tools/image-to-base64' },
   { name: 'Image Color Picker', route: '/tools/image-color-picker' },
 ]
 

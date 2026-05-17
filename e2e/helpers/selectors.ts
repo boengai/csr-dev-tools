@@ -87,7 +87,7 @@ export const toast = {
 export const card = {
   byTitle: (page: Page, title: string) =>
     page.locator('article').filter({ has: page.locator(`h3:text-is("${title}")`) }),
-  title: (page: Page, title: string) => page.getByRole('heading', { name: title, level: 3 }),
+  title: (page: Page, title: string) => page.getByRole('heading', { name: title }),
 }
 
 // --- Error Messages (toast-based, Radix Toast uses role="status") ---

@@ -21,7 +21,7 @@ test.describe('Escaped JSON Stringifier', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
     // Dispatch click on mode button behind dialog overlay to switch mode
-    await page.locator('button', { hasText: /^Parse$/ }).first().dispatchEvent('click')
+    await page.locator('button', { hasText: 'Parse Escaped JSON' }).first().dispatchEvent('click')
 
     await codeInputIn.fill(page, dialog, '{\\"name\\":\\"John\\"}')
 

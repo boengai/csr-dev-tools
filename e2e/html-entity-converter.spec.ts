@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { codeInputIn } from './helpers/selectors'
+
 test.describe('HTML Entity Converter', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/tools/html-entity-converter')
@@ -9,8 +11,7 @@ test.describe('HTML Entity Converter', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
-    const input = dialog.locator('textarea').first()
-    await input.fill('<div>')
+    await codeInputIn.fill(page, dialog, '<div>')
 
     const output = dialog.locator('pre[data-has-value]').first()
     await expect(output).toBeVisible({ timeout: 3000 })
@@ -20,10 +21,9 @@ test.describe('HTML Entity Converter', () => {
     const dialog = page.locator('[role="dialog"]')
     await expect(dialog).toBeVisible({ timeout: 5000 })
     // Dispatch click on mode button behind dialog overlay to switch mode
-    await page.locator('button', { hasText: /^Decode$/ }).first().dispatchEvent('click')
+    await page.locator('button', { hasText: 'Decode HTML Entities' }).first().dispatchEvent('click')
 
-    const input = dialog.locator('textarea').first()
-    await input.fill('&lt;div&gt;')
+    await codeInputIn.fill(page, dialog, '&lt;div&gt;')
 
     const output = dialog.locator('pre[data-has-value]').first()
     await expect(output).toBeVisible({ timeout: 3000 })
