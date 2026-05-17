@@ -1,9 +1,5 @@
 import type { ColumnRef, DiagramDocument, EditorRelation, RelationId, RelationKind } from '@/types'
-
-const relIdSeq = (() => {
-  let n = 0
-  return () => `r_${Date.now().toString(36)}_${(++n).toString(36)}`
-})()
+import type { EntityIdMinters } from '@/diagram/id-minters'
 
 const columnExists = (doc: DiagramDocument, ref: ColumnRef): boolean => {
   const table = doc.tables[ref.tableId]
@@ -13,11 +9,12 @@ const columnExists = (doc: DiagramDocument, ref: ColumnRef): boolean => {
 export const addRelation = (
   doc: DiagramDocument,
   input: { from: ColumnRef; to: ColumnRef; kind: RelationKind },
+  minters: EntityIdMinters,
 ): { document: DiagramDocument; id: RelationId | null } => {
   if (!columnExists(doc, input.from) || !columnExists(doc, input.to)) {
     return { document: doc, id: null }
   }
-  const id = relIdSeq()
+  const id = minters.relation()
   const relation: EditorRelation = { id, source: { ...input.from }, target: { ...input.to }, kind: input.kind }
   return {
     document: {

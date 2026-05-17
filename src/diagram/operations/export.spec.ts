@@ -3,22 +3,25 @@ import { describe, expect, it } from 'vitest'
 import { createDefaultColumn } from '@/diagram/defaults'
 
 import { createInitialDocument } from '../state'
+import { createSequentialIdMinters } from '../id-minters'
 import { addColumn } from './columns'
 import { documentToSchema, toDbml, toMermaid, toSql, toTypeScript } from './export'
 import { addRelation } from './relations'
 import { addTable } from './tables'
 
 const seed = () => {
-  const a = addTable(createInitialDocument(), { name: 'users' })
-  const b = addTable(a.document, { name: 'posts' })
-  const withFk = addColumn(b.document, b.id, createDefaultColumn('user_id'))
+  const minters = createSequentialIdMinters()
+  const a = addTable(createInitialDocument(), { name: 'users' }, minters)
+  const b = addTable(a.document, { name: 'posts' }, minters)
+  const colMinters = createSequentialIdMinters()
+  const withFk = addColumn(b.document, b.id, createDefaultColumn('user_id', false, colMinters.column), minters)
   const aCol = a.document.tables[a.id].columns[0].id
   const fkCol = withFk.id!
   const withRel = addRelation(withFk.document, {
     from: { tableId: a.id, columnId: aCol },
     to: { tableId: b.id, columnId: fkCol },
     kind: '1:N',
-  })
+  }, minters)
   return withRel.document
 }
 

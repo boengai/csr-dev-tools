@@ -1,10 +1,7 @@
 import type { DiagramDocument, EditorTable, TableId } from '@/types'
-import { createDefaultColumn } from '@/diagram/defaults'
+import type { EntityIdMinters } from '@/diagram/id-minters'
 
-const tableIdSeq = (() => {
-  let n = 0
-  return () => `t_${Date.now().toString(36)}_${(++n).toString(36)}`
-})()
+import { createDefaultColumn } from '@/diagram/defaults'
 
 const GRID_X = 300
 const GRID_Y = 250
@@ -18,12 +15,13 @@ const defaultPosition = (existingCount: number) => ({
 export const addTable = (
   doc: DiagramDocument,
   input: { name: string; position?: { x: number; y: number } },
+  minters: EntityIdMinters,
 ): { document: DiagramDocument; id: TableId } => {
-  const id = tableIdSeq()
+  const id = minters.table()
   const table: EditorTable = {
     id,
     name: input.name,
-    columns: [createDefaultColumn('id', true)],
+    columns: [createDefaultColumn('id', true, minters.column)],
     position: input.position ?? defaultPosition(doc.tableOrder.length),
   }
   return {

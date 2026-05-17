@@ -1,14 +1,17 @@
 import { describe, expect, it } from 'vitest'
 
 import { createInitialDocument } from '../state'
+import { createSequentialIdMinters } from '../id-minters'
 import { addRelation, deleteRelation, updateRelation } from './relations'
 import { addTable } from './tables'
 
 const seedTwoTables = () => {
-  const a = addTable(createInitialDocument(), { name: 'users' })
-  const b = addTable(a.document, { name: 'posts' })
+  const minters = createSequentialIdMinters()
+  const a = addTable(createInitialDocument(), { name: 'users' }, minters)
+  const b = addTable(a.document, { name: 'posts' }, minters)
   return {
     doc: b.document,
+    minters,
     aId: a.id,
     bId: b.id,
     aCol: a.document.tables[a.id].columns[0].id,
@@ -18,24 +21,24 @@ const seedTwoTables = () => {
 
 describe('addRelation', () => {
   it('inserts a relation and appends to relationOrder', () => {
-    const { doc, aId, bId, aCol, bCol } = seedTwoTables()
+    const { doc, minters, aId, bId, aCol, bCol } = seedTwoTables()
     const { document, id } = addRelation(doc, {
       from: { tableId: aId, columnId: aCol },
       to: { tableId: bId, columnId: bCol },
       kind: '1:N',
-    })
-    expect(id).toBeTruthy()
+    }, minters)
+    expect(id).toBe('r_1')
     expect(document.relations[id!]).toMatchObject({ kind: '1:N' })
     expect(document.relationOrder).toEqual([id])
   })
 
   it('rejects relations referencing unknown columns', () => {
-    const { doc, aId, bId, aCol } = seedTwoTables()
+    const { doc, minters, aId, bId, aCol } = seedTwoTables()
     const out = addRelation(doc, {
       from: { tableId: aId, columnId: aCol },
       to: { tableId: bId, columnId: 'missing' },
       kind: '1:N',
-    })
+    }, minters)
     expect(out.id).toBeNull()
     expect(out.document).toBe(doc)
   })
@@ -43,12 +46,12 @@ describe('addRelation', () => {
 
 describe('updateRelation', () => {
   it('patches kind', () => {
-    const { doc, aId, bId, aCol, bCol } = seedTwoTables()
+    const { doc, minters, aId, bId, aCol, bCol } = seedTwoTables()
     const created = addRelation(doc, {
       from: { tableId: aId, columnId: aCol },
       to: { tableId: bId, columnId: bCol },
       kind: '1:N',
-    })
+    }, minters)
     const next = updateRelation(created.document, created.id!, { kind: 'N:M' })
     expect(next.relations[created.id!].kind).toBe('N:M')
   })
@@ -61,12 +64,12 @@ describe('updateRelation', () => {
 
 describe('deleteRelation', () => {
   it('removes the relation and order entry', () => {
-    const { doc, aId, bId, aCol, bCol } = seedTwoTables()
+    const { doc, minters, aId, bId, aCol, bCol } = seedTwoTables()
     const created = addRelation(doc, {
       from: { tableId: aId, columnId: aCol },
       to: { tableId: bId, columnId: bCol },
       kind: '1:N',
-    })
+    }, minters)
     const next = deleteRelation(created.document, created.id!)
     expect(next.relations).toEqual({})
     expect(next.relationOrder).toEqual([])

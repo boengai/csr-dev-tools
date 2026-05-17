@@ -14,6 +14,7 @@ import type {
 } from '@/types'
 import { validateDiagramSchema } from '@/diagram/codecs/persistence'
 
+import { createDefaultIdMinters, type EntityIdMinters } from './id-minters'
 import * as columnOps from './operations/columns'
 import * as dbmlOps from './operations/dbml'
 import * as exportOps from './operations/export'
@@ -32,6 +33,7 @@ type DiagramEditorOptions = {
   document?: DiagramDocument
   autosaveMs?: number
   clock?: () => string
+  idMinters?: EntityIdMinters
 }
 
 const isValidDocument = (value: unknown): value is DiagramDocument => {
@@ -54,12 +56,14 @@ export class DiagramEditor {
   private autosaveMs: number
   private clock: () => string
   private autosaveTimer: ReturnType<typeof setTimeout> | null = null
+  private idMinters: EntityIdMinters
 
   constructor(options: DiagramEditorOptions = {}) {
     this.storage = options.storage ?? localStorageDiagramStorage
     this.document = options.document ? cloneDocument(options.document) : createInitialDocument()
     this.autosaveMs = options.autosaveMs ?? 3000
     this.clock = options.clock ?? (() => new Date().toISOString())
+    this.idMinters = options.idMinters ?? createDefaultIdMinters()
   }
 
   listDiagrams(): Array<DiagramIndexEntry> {
@@ -203,7 +207,7 @@ export class DiagramEditor {
   }
 
   addTable(input: { name: string; position?: { x: number; y: number } }): TableId {
-    const { document, id } = tableOps.addTable(this.document, input)
+    const { document, id } = tableOps.addTable(this.document, input, this.idMinters)
     this.commit(this.afterStructuralChange(document))
     return id
   }
@@ -227,7 +231,7 @@ export class DiagramEditor {
   }
 
   addColumn(tableId: TableId, column: Omit<TableColumn, 'id'>): ColumnId | null {
-    const { document, id } = columnOps.addColumn(this.document, tableId, column)
+    const { document, id } = columnOps.addColumn(this.document, tableId, column, this.idMinters)
     if (document === this.document) return null
     this.commit(this.afterStructuralChange(document))
     return id
@@ -246,7 +250,7 @@ export class DiagramEditor {
   }
 
   addRelation(input: { from: ColumnRef; to: ColumnRef; kind: RelationKind }): RelationId | null {
-    const { document, id } = relationOps.addRelation(this.document, input)
+    const { document, id } = relationOps.addRelation(this.document, input, this.idMinters)
     if (document === this.document) return null
     this.commit(this.afterStructuralChange(document))
     return id

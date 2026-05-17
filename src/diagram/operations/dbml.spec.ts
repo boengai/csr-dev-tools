@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { createInitialDocument } from '../state'
+import { createSequentialIdMinters } from '../id-minters'
 import { applyDbmlNow, regenerateDbmlFromDocument, setDbmlText } from './dbml'
 import { addTable } from './tables'
 
@@ -14,7 +15,7 @@ describe('setDbmlText', () => {
 
 describe('regenerateDbmlFromDocument', () => {
   it('writes generated DBML and sets source to diagram', () => {
-    const seeded = addTable(createInitialDocument(), { name: 'users' }).document
+    const seeded = addTable(createInitialDocument(), { name: 'users' }, createSequentialIdMinters()).document
     const next = regenerateDbmlFromDocument(seeded)
     expect(next.dbmlSource).toBe('diagram')
     expect(next.dbmlText).toMatch(/users/)

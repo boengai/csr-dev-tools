@@ -1,18 +1,15 @@
 import type { ColumnId, DiagramDocument, TableColumn, TableId } from '@/types'
-
-const colIdSeq = (() => {
-  let n = 0
-  return () => `c_${Date.now().toString(36)}_${(++n).toString(36)}`
-})()
+import type { EntityIdMinters } from '@/diagram/id-minters'
 
 export const addColumn = (
   doc: DiagramDocument,
   tableId: TableId,
   column: Omit<TableColumn, 'id'>,
+  minters: EntityIdMinters,
 ): { document: DiagramDocument; id: ColumnId | null } => {
   const table = doc.tables[tableId]
   if (!table) return { document: doc, id: null }
-  const id = colIdSeq()
+  const id = minters.column()
   const next: TableColumn = { ...column, id }
   return {
     document: {

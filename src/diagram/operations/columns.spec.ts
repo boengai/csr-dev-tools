@@ -3,25 +3,29 @@ import { describe, expect, it } from 'vitest'
 import { createDefaultColumn } from '@/diagram/defaults'
 
 import { createInitialDocument } from '../state'
+import { createSequentialIdMinters } from '../id-minters'
 import { addColumn, deleteColumn, updateColumn } from './columns'
 import { addTable } from './tables'
 
 const seedWithTable = () => {
-  const { document, id } = addTable(createInitialDocument(), { name: 'users' })
-  return { doc: document, tableId: id }
+  const minters = createSequentialIdMinters()
+  const { document, id } = addTable(createInitialDocument(), { name: 'users' }, minters)
+  return { doc: document, minters, tableId: id }
 }
 
 describe('addColumn', () => {
   it('appends a column to the table', () => {
     const { doc, tableId } = seedWithTable()
-    const { document, id } = addColumn(doc, tableId, createDefaultColumn('email'))
+    const colMinters = createSequentialIdMinters()
+    const { document, id } = addColumn(doc, tableId, createDefaultColumn('email', false, colMinters.column), createSequentialIdMinters())
     expect(document.tables[tableId].columns.map((c) => c.id)).toContain(id)
     expect(document.tables[tableId].columns.at(-1)?.name).toBe('email')
   })
 
   it('is a no-op on unknown table', () => {
     const { doc } = seedWithTable()
-    const out = addColumn(doc, 'missing', createDefaultColumn('email'))
+    const colMinters = createSequentialIdMinters()
+    const out = addColumn(doc, 'missing', createDefaultColumn('email', false, colMinters.column), createSequentialIdMinters())
     expect(out.document).toBe(doc)
     expect(out.id).toBeNull()
   })
@@ -47,8 +51,9 @@ describe('updateColumn', () => {
 describe('deleteColumn', () => {
   it('removes the column and cascades relations touching it', () => {
     const { doc: initial, tableId: aId } = seedWithTable()
-    const a = addColumn(initial, aId, createDefaultColumn('email'))
-    const docAfterB = addTable(a.document, { name: 'posts' })
+    const colMinters = createSequentialIdMinters()
+    const a = addColumn(initial, aId, createDefaultColumn('email', false, colMinters.column), createSequentialIdMinters())
+    const docAfterB = addTable(a.document, { name: 'posts' }, createSequentialIdMinters())
     const bId = docAfterB.id
     const targetColId = docAfterB.document.tables[bId].columns[0].id
     const sourceColId = a.id!

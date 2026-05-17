@@ -3,42 +3,45 @@ import { describe, expect, it } from 'vitest'
 import type { DiagramDocument } from '@/types'
 
 import { createInitialDocument } from '../state'
+import { createSequentialIdMinters } from '../id-minters'
 import { addTable, deleteTable, moveTable, renameTable } from './tables'
 
 const seed = (): DiagramDocument => createInitialDocument()
 
 describe('addTable', () => {
   it('inserts a new table and appends to tableOrder', () => {
-    const { document, id } = addTable(seed(), { name: 'users' })
-    expect(id).toMatch(/^t_/)
+    const { document, id } = addTable(seed(), { name: 'users' }, createSequentialIdMinters())
+    expect(id).toBe('t_1')
     expect(document.tables[id]).toMatchObject({ name: 'users' })
     expect(document.tableOrder).toEqual([id])
   })
 
   it('uses the provided position when given', () => {
-    const { document, id } = addTable(seed(), { name: 'users', position: { x: 50, y: 75 } })
+    const { document, id } = addTable(seed(), { name: 'users', position: { x: 50, y: 75 } }, createSequentialIdMinters())
     expect(document.tables[id].position).toEqual({ x: 50, y: 75 })
   })
 
   it('assigns a non-overlapping default position when omitted', () => {
+    const minters = createSequentialIdMinters()
     let doc = seed()
-    ;({ document: doc } = addTable(doc, { name: 'a' }))
-    ;({ document: doc } = addTable(doc, { name: 'b' }))
+    ;({ document: doc } = addTable(doc, { name: 'a' }, minters))
+    ;({ document: doc } = addTable(doc, { name: 'b' }, minters))
     const positions = Object.values(doc.tables).map((t) => `${t.position.x},${t.position.y}`)
     expect(new Set(positions).size).toBe(2)
   })
 
   it('seeds a primary-key column by default', () => {
-    const { document, id } = addTable(seed(), { name: 'users' })
+    const { document, id } = addTable(seed(), { name: 'users' }, createSequentialIdMinters())
     expect(document.tables[id].columns).toHaveLength(1)
     expect(document.tables[id].columns[0].constraints.isPrimaryKey).toBe(true)
+    expect(document.tables[id].columns[0].id).toBe('c_1')
   })
 })
 
 describe('renameTable', () => {
   it('updates the table name', () => {
     let doc = seed()
-    const { document, id } = addTable(doc, { name: 'old' })
+    const { document, id } = addTable(doc, { name: 'old' }, createSequentialIdMinters())
     doc = renameTable(document, id, 'new')
     expect(doc.tables[id].name).toBe('new')
   })
@@ -52,7 +55,7 @@ describe('renameTable', () => {
 describe('moveTable', () => {
   it('updates position immutably', () => {
     let doc = seed()
-    const { document, id } = addTable(doc, { name: 'a' })
+    const { document, id } = addTable(doc, { name: 'a' }, createSequentialIdMinters())
     const next = moveTable(document, id, { x: 999, y: 888 })
     expect(next.tables[id].position).toEqual({ x: 999, y: 888 })
     expect(document.tables[id].position).not.toEqual({ x: 999, y: 888 })
@@ -67,17 +70,18 @@ describe('moveTable', () => {
 describe('deleteTable', () => {
   it('removes the table and its order entry', () => {
     let doc = seed()
-    const { document, id } = addTable(doc, { name: 'a' })
+    const { document, id } = addTable(doc, { name: 'a' }, createSequentialIdMinters())
     doc = deleteTable(document, id)
     expect(doc.tables[id]).toBeUndefined()
     expect(doc.tableOrder).not.toContain(id)
   })
 
   it('cascades to relations touching the table', () => {
+    const minters = createSequentialIdMinters()
     let doc = seed()
-    const a = addTable(doc, { name: 'a' })
+    const a = addTable(doc, { name: 'a' }, minters)
     doc = a.document
-    const b = addTable(doc, { name: 'b' })
+    const b = addTable(doc, { name: 'b' }, minters)
     doc = b.document
     const aCol = doc.tables[a.id].columns[0].id
     const bCol = doc.tables[b.id].columns[0].id
