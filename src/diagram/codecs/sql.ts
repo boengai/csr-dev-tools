@@ -1,4 +1,6 @@
 import type { ColumnType, DiagramSchema, SqlDialect } from '@/types'
+import type { EntityIdMinters } from '@/diagram/id-minters'
+import type { FkRef, ParseResult, ParsedColumn } from '@/types/diagram/codecs/import'
 
 const TYPE_MAP: Record<ColumnType, Record<SqlDialect, string>> = {
   BIGINT: { mysql: 'BIGINT', postgresql: 'BIGINT', sqlite: 'INTEGER' },
@@ -246,4 +248,336 @@ export function generateSql(schema: DiagramSchema, dialect: SqlDialect): string 
   }
 
   return parts.join('\n\n')
+}
+
+const SQL_TYPE_MAP: Array<{ match: RegExp; type: ColumnType }> = [
+  { match: /^BIGSERIAL$/i, type: 'BIGINT' },
+  { match: /^SERIAL$/i, type: 'SERIAL' },
+  { match: /^BIGINT/i, type: 'BIGINT' },
+  { match: /^TINYINT\s*\(\s*1\s*\)/i, type: 'BOOLEAN' },
+  { match: /^(INT|INTEGER)/i, type: 'INT' },
+  { match: /^(BOOLEAN|BOOL)$/i, type: 'BOOLEAN' },
+  { match: /^UUID$/i, type: 'UUID' },
+  { match: /^CHAR\s*\(\s*36\s*\)$/i, type: 'UUID' },
+  { match: /^(VARCHAR|CHAR)\s*(\(.*\))?$/i, type: 'VARCHAR' },
+  { match: /^(TINYTEXT|MEDIUMTEXT|LONGTEXT|TEXT)/i, type: 'TEXT' },
+  { match: /^DATE$/i, type: 'DATE' },
+  { match: /^(TIMESTAMP|DATETIME)/i, type: 'TIMESTAMP' },
+  { match: /^(FLOAT|REAL|DOUBLE)/i, type: 'FLOAT' },
+  { match: /^(DECIMAL|NUMERIC)/i, type: 'DECIMAL' },
+  { match: /^JSONB?$/i, type: 'JSON' },
+  { match: /^(BLOB|BYTEA|BINARY|VARBINARY)/i, type: 'BLOB' },
+]
+
+function mapSqlType(rawType: string): ColumnType {
+  const trimmed = rawType.trim()
+  for (const entry of SQL_TYPE_MAP) {
+    if (entry.match.test(trimmed)) return entry.type
+  }
+  return 'TEXT'
+}
+
+function stripComments(sql: string): string {
+  let result = sql.replace(/\/\*[\s\S]*?\*\//g, '')
+  result = result.replace(/--[^\n]*/g, '')
+  return result
+}
+
+function unquoteName(name: string): string {
+  const trimmed = name.trim()
+  if (
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+    (trimmed.startsWith('`') && trimmed.endsWith('`')) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+  ) {
+    return trimmed.slice(1, -1)
+  }
+  return trimmed
+}
+
+function extractType(tokens: Array<string>): { consumed: number; rawType: string } {
+  if (tokens.length === 0) return { consumed: 0, rawType: '' }
+
+  let rawType = tokens[0]
+  let consumed = 1
+
+  if (consumed < tokens.length && tokens[consumed].startsWith('(')) {
+    let parenPart = ''
+    while (consumed < tokens.length) {
+      parenPart += tokens[consumed]
+      consumed++
+      if (parenPart.includes(')')) break
+    }
+    rawType += parenPart
+  } else if (rawType.includes('(')) {
+    // nothing to do
+  }
+
+  return { consumed, rawType }
+}
+
+function splitColumnDefs(body: string): Array<string> {
+  const parts: Array<string> = []
+  let depth = 0
+  let current = ''
+
+  for (const char of body) {
+    if (char === '(') depth++
+    else if (char === ')') depth--
+
+    if (char === ',' && depth === 0) {
+      parts.push(current.trim())
+      current = ''
+    } else {
+      current += char
+    }
+  }
+  if (current.trim()) parts.push(current.trim())
+
+  return parts
+}
+
+function parseColumnDef(def: string, mintColumn: () => string): {
+  column: ParsedColumn | null
+  fkRef: FkRef | null
+  isPkConstraint: string | null
+  isUniqueConstraint: string | null
+} {
+  const trimmed = def.trim()
+  const upper = trimmed.toUpperCase()
+
+  const pkMatch = upper.match(/^PRIMARY\s+KEY\s*\(([^)]+)\)/)
+  if (pkMatch) {
+    return { column: null, fkRef: null, isPkConstraint: unquoteName(pkMatch[1]), isUniqueConstraint: null }
+  }
+
+  const fkMatch = trimmed.match(/^FOREIGN\s+KEY\s*\(\s*([^)]+)\s*\)\s*REFERENCES\s+([^\s(]+)\s*\(\s*([^)]+)\s*\)/i)
+  if (fkMatch) {
+    return {
+      column: null,
+      fkRef: {
+        referencedColumn: unquoteName(fkMatch[3]),
+        referencedTable: unquoteName(fkMatch[2]),
+        sourceColumn: unquoteName(fkMatch[1]),
+      },
+      isPkConstraint: null,
+      isUniqueConstraint: null,
+    }
+  }
+
+  const uniqueMatch = upper.match(/^UNIQUE\s*\(([^)]+)\)/)
+  if (uniqueMatch) {
+    return { column: null, fkRef: null, isPkConstraint: null, isUniqueConstraint: unquoteName(uniqueMatch[1]) }
+  }
+
+  if (upper.startsWith('CONSTRAINT')) {
+    const afterConstraint = trimmed.replace(/^CONSTRAINT\s+\S+\s+/i, '')
+    return parseColumnDef(afterConstraint, mintColumn)
+  }
+
+  const tokens = trimmed.split(/\s+/)
+  if (tokens.length < 2) return { column: null, fkRef: null, isPkConstraint: null, isUniqueConstraint: null }
+
+  const name = unquoteName(tokens[0])
+
+  if (name.toUpperCase().startsWith('ENGINE') || name.toUpperCase().startsWith('DEFAULT')) {
+    return { column: null, fkRef: null, isPkConstraint: null, isUniqueConstraint: null }
+  }
+
+  const { consumed, rawType } = extractType(tokens.slice(1))
+  const mappedType = mapSqlType(rawType)
+  const restTokens = tokens.slice(1 + consumed)
+  const rest = restTokens.join(' ').toUpperCase()
+
+  const isPrimaryKey = rest.includes('PRIMARY KEY') || rest.includes('PRIMARY')
+  const isUnique = rest.includes('UNIQUE') || isPrimaryKey
+  const isNotNull = rest.includes('NOT NULL') || isPrimaryKey
+  const isAutoIncrement = rest.includes('AUTO_INCREMENT') || rest.includes('AUTOINCREMENT')
+
+  let inlineFkRef: FkRef | null = null
+  const refMatch = trimmed.match(/REFERENCES\s+([^\s(]+)\s*\(\s*([^)]+)\s*\)/i)
+  if (refMatch) {
+    inlineFkRef = {
+      referencedColumn: unquoteName(refMatch[2]),
+      referencedTable: unquoteName(refMatch[1]),
+      sourceColumn: name,
+    }
+  }
+
+  const column: ParsedColumn = {
+    constraints: {
+      isForeignKey: inlineFkRef !== null,
+      isNullable: !isNotNull,
+      isPrimaryKey,
+      isUnique,
+    },
+    id: mintColumn(),
+    name,
+    type: isAutoIncrement && mappedType === 'INT' ? 'INT' : mappedType,
+  }
+
+  return { column, fkRef: inlineFkRef, isPkConstraint: null, isUniqueConstraint: null }
+}
+
+function parseCreateTable(statement: string, mintColumn: () => string): {
+  columns: Array<ParsedColumn>
+  fkRefs: Array<FkRef>
+  tableName: string
+} | null {
+  const tableMatch = statement.match(/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?["'`]?(\w+)["'`]?\s*\(/i)
+  if (!tableMatch) return null
+
+  const tableName = tableMatch[1]
+
+  const firstParen = statement.indexOf('(')
+  const lastParen = statement.lastIndexOf(')')
+  if (firstParen === -1 || lastParen === -1 || lastParen <= firstParen) return null
+
+  const body = statement.slice(firstParen + 1, lastParen)
+  const defs = splitColumnDefs(body)
+
+  const columns: Array<ParsedColumn> = []
+  const fkRefs: Array<FkRef> = []
+  const pkColumns: Array<string> = []
+  const uniqueColumns: Array<string> = []
+
+  for (const def of defs) {
+    const parsed = parseColumnDef(def, mintColumn)
+
+    if (parsed.column) {
+      columns.push(parsed.column)
+    }
+    if (parsed.fkRef) {
+      fkRefs.push(parsed.fkRef)
+    }
+    if (parsed.isPkConstraint) {
+      pkColumns.push(parsed.isPkConstraint)
+    }
+    if (parsed.isUniqueConstraint) {
+      uniqueColumns.push(parsed.isUniqueConstraint)
+    }
+  }
+
+  for (const pkName of pkColumns) {
+    const col = columns.find((c) => c.name.toLowerCase() === pkName.toLowerCase())
+    if (col) {
+      col.constraints.isPrimaryKey = true
+      col.constraints.isNullable = false
+      col.constraints.isUnique = true
+    }
+  }
+
+  for (const uName of uniqueColumns) {
+    const col = columns.find((c) => c.name.toLowerCase() === uName.toLowerCase())
+    if (col) {
+      col.constraints.isUnique = true
+    }
+  }
+
+  return { columns, fkRefs, tableName }
+}
+
+function layoutTables(
+  tables: Array<{ columns: Array<ParsedColumn>; fkRefs: Array<FkRef>; tableName: string }>,
+  mintTable: () => string,
+): Array<DiagramSchema['tables'][number]> {
+  const GRID_COLS = 3
+  const H_SPACING = 300
+  const V_SPACING = 250
+
+  return tables.map((t, index) => ({
+    columns: t.columns.map((c) => ({
+      constraints: { ...c.constraints },
+      id: c.id,
+      name: c.name,
+      type: c.type,
+    })),
+    id: mintTable(),
+    name: t.tableName,
+    position: {
+      x: (index % GRID_COLS) * H_SPACING,
+      y: Math.floor(index / GRID_COLS) * V_SPACING,
+    },
+  }))
+}
+
+function buildRelationships(
+  parsedTables: Array<{ columns: Array<ParsedColumn>; fkRefs: Array<FkRef>; tableName: string }>,
+  layoutedTables: DiagramSchema['tables'],
+  mintRelation: () => string,
+): DiagramSchema['relationships'] {
+  const relationships: DiagramSchema['relationships'] = []
+
+  const tableByName = new Map<string, DiagramSchema['tables'][number]>()
+  for (const lt of layoutedTables) {
+    tableByName.set(lt.name.toLowerCase(), lt)
+  }
+
+  for (let i = 0; i < parsedTables.length; i++) {
+    const parsed = parsedTables[i]
+    const sourceLayouted = layoutedTables[i]
+
+    for (const fkRef of parsed.fkRefs) {
+      const referencedTable = tableByName.get(fkRef.referencedTable.toLowerCase())
+      if (!referencedTable) continue
+
+      const referencedCol = referencedTable.columns.find(
+        (c) => c.name.toLowerCase() === fkRef.referencedColumn.toLowerCase(),
+      )
+      const sourceCol = sourceLayouted.columns.find((c) => c.name.toLowerCase() === fkRef.sourceColumn.toLowerCase())
+      if (!referencedCol || !sourceCol) continue
+
+      sourceCol.constraints.isForeignKey = true
+
+      const relationType = sourceCol.constraints.isUnique ? '1:1' : '1:N'
+
+      relationships.push({
+        id: mintRelation(),
+        relationType,
+        sourceColumnId: referencedCol.id,
+        sourceTableId: referencedTable.id,
+        targetColumnId: sourceCol.id,
+        targetTableId: sourceLayouted.id,
+      })
+    }
+  }
+
+  return relationships
+}
+
+export function parseSqlDdl(sql: string, dialect: SqlDialect, minters: EntityIdMinters): ParseResult {
+  if (!sql.trim()) {
+    return { errors: [], relationships: [], tables: [] }
+  }
+
+  const cleaned = stripComments(sql)
+  const statements = cleaned
+    .split(';')
+    .map((s) => s.trim())
+    .filter(Boolean)
+
+  const parsedTables: Array<{ columns: Array<ParsedColumn>; fkRefs: Array<FkRef>; tableName: string }> = []
+  const errors: ParseResult['errors'] = []
+
+  for (const stmt of statements) {
+    if (/CREATE\s+TABLE/i.test(stmt)) {
+      const result = parseCreateTable(stmt, minters.column)
+      if (result) {
+        parsedTables.push(result)
+      } else {
+        const idx = cleaned.indexOf(stmt)
+        const line = (cleaned.slice(0, idx).match(/\n/g) ?? []).length + 1
+        errors.push({ line, message: `[${dialect}] Failed to parse CREATE TABLE statement near line ${line}` })
+      }
+    } else if (stmt.length > 0 && !/^\s*$/.test(stmt)) {
+      const idx = cleaned.indexOf(stmt)
+      const line = (cleaned.slice(0, idx).match(/\n/g) ?? []).length + 1
+      errors.push({ line, message: `[${dialect}] Unsupported statement near line ${line}: ${stmt.slice(0, 60)}...` })
+    }
+  }
+
+  const tables = layoutTables(parsedTables, minters.table)
+  const relationships = buildRelationships(parsedTables, tables, minters.relation)
+
+  return { errors, relationships, tables }
 }

@@ -1,7 +1,7 @@
 import type { DiagramDocument, ImportResult, SqlDialect } from '@/types'
 import type { EntityIdMinters } from '@/diagram/id-minters'
 
-import { parseSqlDdl } from '@/diagram/codecs/import'
+import { parseSqlDdl } from '@/diagram/codecs/sql'
 import { parseJsonSchema } from '@/diagram/codecs/json-schema'
 
 import { schemaToDocument } from './lifecycle'
