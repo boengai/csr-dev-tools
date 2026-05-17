@@ -206,66 +206,71 @@ export class DiagramEditor {
     return dbmlOps.regenerateDbmlFromDocument(doc)
   }
 
+  // The single channel for structural document mutations. Threads idMinters,
+  // runs afterStructuralChange, and commits only when the document changed.
+  // Ops may return either a bare DiagramDocument or { document, result } — the
+  // wrapper passes `result` back to the caller even on the no-op branch (op
+  // returned the same doc) so import ops can surface their error result without
+  // a successful commit.
+  private commitStructural(op: (doc: DiagramDocument, minters: EntityIdMinters) => DiagramDocument): void
+  private commitStructural<R>(op: (doc: DiagramDocument, minters: EntityIdMinters) => { document: DiagramDocument; result: R }): R
+  private commitStructural<R>(
+    op: (doc: DiagramDocument, minters: EntityIdMinters) => DiagramDocument | { document: DiagramDocument; result: R },
+  ): R | undefined {
+    const out = op(this.document, this.idMinters)
+    const next = 'document' in out ? out.document : out
+    const result = 'result' in out ? out.result : undefined
+    if (next !== this.document) this.commit(this.afterStructuralChange(next))
+    return result
+  }
+
   addTable(input: { name: string; position?: { x: number; y: number } }): TableId {
-    const { document, id } = tableOps.addTable(this.document, input, this.idMinters)
-    this.commit(this.afterStructuralChange(document))
-    return id
+    return this.commitStructural((doc, m) => {
+      const { document, id } = tableOps.addTable(doc, input, m)
+      return { document, result: id }
+    })
   }
 
   renameTable(id: TableId, name: string): void {
-    const next = tableOps.renameTable(this.document, id, name)
-    if (next === this.document) return
-    this.commit(this.afterStructuralChange(next))
+    this.commitStructural((doc) => tableOps.renameTable(doc, id, name))
   }
 
   moveTable(id: TableId, position: { x: number; y: number }): void {
-    const next = tableOps.moveTable(this.document, id, position)
-    if (next === this.document) return
-    this.commit(this.afterStructuralChange(next))
+    this.commitStructural((doc) => tableOps.moveTable(doc, id, position))
   }
 
   deleteTable(id: TableId): void {
-    const next = tableOps.deleteTable(this.document, id)
-    if (next === this.document) return
-    this.commit(this.afterStructuralChange(next))
+    this.commitStructural((doc) => tableOps.deleteTable(doc, id))
   }
 
   addColumn(tableId: TableId, column: Omit<TableColumn, 'id'>): ColumnId | null {
-    const { document, id } = columnOps.addColumn(this.document, tableId, column, this.idMinters)
-    if (document === this.document) return null
-    this.commit(this.afterStructuralChange(document))
-    return id
+    return this.commitStructural((doc, m) => {
+      const { document, id } = columnOps.addColumn(doc, tableId, column, m)
+      return { document, result: id }
+    })
   }
 
   updateColumn(tableId: TableId, columnId: ColumnId, patch: Partial<TableColumn>): void {
-    const next = columnOps.updateColumn(this.document, tableId, columnId, patch)
-    if (next === this.document) return
-    this.commit(this.afterStructuralChange(next))
+    this.commitStructural((doc) => columnOps.updateColumn(doc, tableId, columnId, patch))
   }
 
   deleteColumn(tableId: TableId, columnId: ColumnId): void {
-    const next = columnOps.deleteColumn(this.document, tableId, columnId)
-    if (next === this.document) return
-    this.commit(this.afterStructuralChange(next))
+    this.commitStructural((doc) => columnOps.deleteColumn(doc, tableId, columnId))
   }
 
   addRelation(input: { from: ColumnRef; to: ColumnRef; kind: RelationKind }): RelationId | null {
-    const { document, id } = relationOps.addRelation(this.document, input, this.idMinters)
-    if (document === this.document) return null
-    this.commit(this.afterStructuralChange(document))
-    return id
+    return this.commitStructural((doc, m) => {
+      const { document, id } = relationOps.addRelation(doc, input, m)
+      return { document, result: id }
+    })
   }
 
   updateRelation(id: RelationId, patch: Partial<Omit<EditorRelation, 'id'>>): void {
-    const next = relationOps.updateRelation(this.document, id, patch)
-    if (next === this.document) return
-    this.commit(this.afterStructuralChange(next))
+    this.commitStructural((doc) => relationOps.updateRelation(doc, id, patch))
   }
 
   deleteRelation(id: RelationId): void {
-    const next = relationOps.deleteRelation(this.document, id)
-    if (next === this.document) return
-    this.commit(this.afterStructuralChange(next))
+    this.commitStructural((doc) => relationOps.deleteRelation(doc, id))
   }
 
   toDbml(): string {
@@ -319,21 +324,15 @@ export class DiagramEditor {
   }
 
   applyDbmlNow(): ImportResult {
-    const { document, result } = dbmlOps.applyDbmlNow(this.document, this.idMinters)
-    this.commit(document)
-    return result
+    return this.commitStructural((doc, m) => dbmlOps.applyDbmlNow(doc, m))
   }
 
   importFromSql(text: string, dialect: SqlDialect): ImportResult {
-    const { document, result } = importOps.importFromSql(this.document, text, dialect, this.idMinters)
-    if (document !== this.document) this.commit(this.afterStructuralChange(document))
-    return result
+    return this.commitStructural((doc, m) => importOps.importFromSql(doc, text, dialect, m))
   }
 
   importFromJsonSchema(text: string): ImportResult {
-    const { document, result } = importOps.importFromJsonSchema(this.document, text, this.idMinters)
-    if (document !== this.document) this.commit(this.afterStructuralChange(document))
-    return result
+    return this.commitStructural((doc, m) => importOps.importFromJsonSchema(doc, text, m))
   }
 
   getDbmlSource(): 'diagram' | 'editor' {

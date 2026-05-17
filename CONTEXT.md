@@ -484,6 +484,14 @@ Carries these invariants:
 5. **JSON imports are always new** — `loadFromExportedJson(parsed, name)`
    validates the schema, clears `diagramId`, and lets autosave mint a fresh
    id. Imported files never overwrite a matching stored diagram.
+6. **All structural mutations route through `commitStructural`** — a private
+   channel that threads `idMinters`, skips when the op returned the same
+   document, runs `afterStructuralChange`, and commits. Ops keep their pure
+   `(doc, …, minters) => doc | { document, result }` signature; the editor
+   never threads `this.idMinters` at the call site. Non-structural setters
+   (`setDiagramName`, `setDbmlText`, `syncDbmlFromDiagram`,
+   `loadFromExportedJson`) keep calling `commit` directly — they must not
+   run `afterStructuralChange` (it would overwrite a typed DBML draft).
 
 The `DiagramStorage` adapter (`{ loadIndex, saveIndex, loadDiagram,
 saveDiagram, deleteDiagram, generateId }`) decouples the editor from
