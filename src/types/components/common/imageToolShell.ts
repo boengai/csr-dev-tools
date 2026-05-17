@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react'
 
-export type ImageToolShellPhase = 'import' | 'processing' | 'done' | 'error'
-
 export type ImageToolShellPreviewContext = {
   source: File
   sourceUrl: string
