@@ -390,8 +390,9 @@ The hook owns:
 - File upload + `mimePrefix` validation + reject toast (rejected uploads
   leave state untouched).
 - Source decoding via `loadImageFromFile` → `sourceImage: HTMLImageElement`.
-- The source `Blob` URL (`sourcePreview`), revoked when source changes or
-  on unmount.
+- The source `Blob` URL (`sourcePreview`) — derived via [[useBlobUrl]] so
+  the revoke-previous-then-create-next + revoke-on-unmount lifecycle lives
+  in one module shared with the [[Image tool shell]].
 - The `regenerate(process)` lifecycle: stale-safety via `useStaleSafeAsync`
   (newer call wins; older session's result and progress reports are dropped),
   unmount-safety, success/failure toasts.
@@ -423,6 +424,34 @@ sheds debounce + `isEmpty`-bypass: these Tools fire on a button click
 (or on upload), never on a debounced input. The stale-safety + unmount-safety
 invariants are the same — just composed from `useStaleSafeAsync` directly
 rather than from the full pipeline.
+
+## useBlobUrl
+
+The single seam that owns a `Blob`'s object-URL lifecycle. Implemented by
+`useBlobUrl` (`src/hooks/useBlobUrl.ts`).
+
+Given a `Blob | null`, returns a `string | null` that is the current
+object URL. The previous URL is revoked when the blob changes or on
+unmount. The single invariant — "for every `createObjectURL`, exactly
+one `revokeObjectURL` runs by the time the blob changes or the consumer
+unmounts" — is the load-bearing one: forgetting to revoke leaks memory
+across long sessions, and a single Blob is the natural unit at which the
+lifecycle is decidable.
+
+Today's adopters:
+
+- [[Image tool shell]] — source `File` URL and result `Blob` URL.
+- [[Batch asset pipeline]] — source `File` URL (`sourcePreview`).
+- `ImageColorPicker` — uploaded image preview URL.
+
+Carries one timing note callers must understand: the URL is set inside a
+`useEffect`, so the first render after a new non-null blob still sees
+`null`; the second render sees the URL. Consumers that need an `<img
+src>` should already be gating on the URL being non-null (a brief absent
+tile is preferable to a flashed broken image). When a consumer needs the
+URL synchronously in the same commit as the blob (e.g. to return it from
+an event handler), it must call `URL.createObjectURL` itself and accept
+the manual revoke responsibility.
 
 ## DiagramEditor
 

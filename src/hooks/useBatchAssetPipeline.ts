@@ -11,6 +11,7 @@ import { loadImageFromFile } from '@/utils/image'
 import { buildZipBlob } from '@/utils/zip'
 
 import { useToast } from './state/useToast'
+import { useBlobUrl } from './useBlobUrl'
 import { useStaleSafeAsync } from './useStaleSafeAsync'
 
 /**
@@ -20,6 +21,7 @@ import { useStaleSafeAsync } from './useStaleSafeAsync'
  *
  *   - `useStaleSafeAsync` for race-free `regenerate()`
  *   - `loadImageFromFile` for source decoding
+ *   - `useBlobUrl` for the source preview URL lifecycle
  *   - `downloadBlob` / `buildZipBlob` for output
  *   - `useToast` for the reject / success / failure messages
  *
@@ -32,7 +34,7 @@ export function useBatchAssetPipeline<TResults>(
 
   const [sourceFile, setSourceFile] = useState<File | null>(null)
   const [sourceImage, setSourceImage] = useState<HTMLImageElement | null>(null)
-  const [sourcePreview, setSourcePreview] = useState<string | null>(null)
+  const sourcePreview = useBlobUrl(sourceFile)
   const [results, setResults] = useState<TResults | null>(null)
   const [pending, setPending] = useState(false)
   const [progress, setProgress] = useState<BatchAssetProgress | null>(null)
@@ -53,14 +55,6 @@ export function useBatchAssetPipeline<TResults>(
 
   const newSession = useStaleSafeAsync()
   const { showError, showSuccess } = useToast()
-
-  // Revoke the previous source preview when it changes or on unmount.
-  useEffect(() => {
-    if (!sourcePreview) return
-    return () => {
-      URL.revokeObjectURL(sourcePreview)
-    }
-  }, [sourcePreview])
 
   const upload = useCallback(
     async (files: Array<File>) => {
@@ -85,7 +79,6 @@ export function useBatchAssetPipeline<TResults>(
       sourceImageRef.current = image
       setSourceFile(file)
       setSourceImage(image)
-      setSourcePreview(URL.createObjectURL(file))
       setResults(null)
       setProgress(null)
       setError(null)
@@ -164,7 +157,6 @@ export function useBatchAssetPipeline<TResults>(
     sourceImageRef.current = null
     setSourceFile(null)
     setSourceImage(null)
-    setSourcePreview(null)
     setResults(null)
     setProgress(null)
     setError(null)
