@@ -491,6 +491,50 @@ localStorage. `localStorageDiagramStorage` is the production adapter;
 `createInMemoryDiagramStorage()` is the test double — counters on `saves`
 and `deletes` make autosave behavior unit-testable without DOM.
 
+## Entity ID minters
+
+The single injectable seam through which document-internal entity ids
+(tables, columns, relations) are minted in the diagram domain.
+Implemented by `createDefaultIdMinters` / `createSequentialIdMinters`
+(`src/diagram/id-minters.ts`).
+
+Adapter shape:
+
+```ts
+type EntityIdMinters = {
+  table: () => TableId
+  column: () => ColumnId
+  relation: () => RelationId
+}
+```
+
+The default adapter (`createDefaultIdMinters`) emits the
+`<prefix>_<base36Time>_<base36Counter>` shape per entity type with
+independent counters: `t_lz3k_1`, `c_lz3k_1`, `r_lz3k_1`. The
+sequential adapter (`createSequentialIdMinters`) emits deterministic
+`t_1, c_1, r_1, …` for spec assertions.
+
+The seam absorbs five previously scattered mint sites — three
+module-local IIFEs (`tableIdSeq` / `colIdSeq` / `relIdSeq` in
+`operations/{tables,columns,relations}.ts`), `defaults.generateId`
+(reached indirectly via `createDefaultColumn`), and the same
+`generateId` reached directly by the import codecs (`codecs/dbml.ts`,
+`codecs/import.ts`, `codecs/json-schema.ts`). After this consolidation,
+every entity id in any document — whether minted interactively via
+`addTable` / `addColumn` / `addRelation` or via DBML / SQL /
+JSON-Schema import — takes the same prefixed base36 shape, end to end.
+
+[[DiagramEditor]] owns the bag: `options.idMinters?: EntityIdMinters`
+defaulting to `createDefaultIdMinters()`. Specs construct an editor
+with `createSequentialIdMinters()` for exact-id assertions, the
+parallel of the existing `clock` option and the existing
+`createInMemoryDiagramStorage()` test adapter.
+
+Distinct from `DiagramStorage.generateId`, which mints diagram-level
+persistence keys (the localStorage key under which a saved diagram
+lives). Document-internal entity ids and persistence keys are
+different concerns; the seams are separate.
+
 ## Async action
 
 Button-fired (or one-shot) async work with stale-safety + unmount-safety.
