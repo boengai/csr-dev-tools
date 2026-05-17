@@ -7758,7 +7758,7 @@
       "source_file": "src/types/components/feature/code/jsonToTypeScript.ts",
       "source_location": "L1",
       "id": "src_types_components_feature_code_jsontotypescript_ts",
-      "community": 369,
+      "community": 827,
       "norm_label": "jsontotypescript.ts"
     },
     {
@@ -7767,7 +7767,7 @@
       "source_file": "src/types/components/feature/code/jsonToTypeScript.ts",
       "source_location": "L1",
       "id": "code_jsontotypescript_jsontsinput",
-      "community": 369,
+      "community": 827,
       "norm_label": "jsontsinput"
     },
     {
@@ -9099,7 +9099,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L3",
       "id": "diagram_state_createinitialdocument",
-      "community": 773,
+      "community": 24,
       "norm_label": "createinitialdocument()"
     },
     {
@@ -9126,7 +9126,7 @@
       "source_file": "src/diagram/editor.persistence.spec.ts",
       "source_location": "L9",
       "id": "diagram_editor_persistence_spec_createtestdoc",
-      "community": 773,
+      "community": 24,
       "norm_label": "createtestdoc()"
     },
     {
@@ -9216,7 +9216,7 @@
       "source_file": "src/diagram/projections.ts",
       "source_location": "L1",
       "id": "src_diagram_projections_ts",
-      "community": 773,
+      "community": 791,
       "norm_label": "projections.ts"
     },
     {
@@ -9225,7 +9225,7 @@
       "source_file": "src/diagram/projections.ts",
       "source_location": "L3",
       "id": "diagram_projections_documenttoflow",
-      "community": 773,
+      "community": 791,
       "norm_label": "documenttoflow()"
     },
     {
@@ -9270,7 +9270,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L39",
       "id": "diagram_editor_isvaliddocument",
-      "community": 773,
+      "community": 9,
       "norm_label": "isvaliddocument()"
     },
     {
@@ -9288,7 +9288,7 @@
       "source_file": "src/diagram/editor.ts",
       "source_location": "L61",
       "id": "diagram_editor_diagrameditor_constructor",
-      "community": 773,
+      "community": 68,
       "norm_label": ".constructor()"
     },
     {
@@ -9322,7 +9322,7 @@
       "label": ".deleteDiagram()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L89",
+      "source_location": "L88",
       "id": "diagram_editor_diagrameditor_deletediagram",
       "community": 9,
       "norm_label": ".deletediagram()"
@@ -9331,7 +9331,7 @@
       "label": ".renameDiagram()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L98",
+      "source_location": "L96",
       "id": "diagram_editor_diagrameditor_renamediagram",
       "community": 9,
       "norm_label": ".renamediagram()"
@@ -9340,7 +9340,7 @@
       "label": ".bootstrap()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L113",
+      "source_location": "L110",
       "id": "diagram_editor_diagrameditor_bootstrap",
       "community": 9,
       "norm_label": ".bootstrap()"
@@ -9349,7 +9349,7 @@
       "label": ".getDocument()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L120",
+      "source_location": "L117",
       "id": "diagram_editor_diagrameditor_getdocument",
       "community": 9,
       "norm_label": ".getdocument()"
@@ -9358,7 +9358,7 @@
       "label": ".subscribe()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L124",
+      "source_location": "L121",
       "id": "diagram_editor_diagrameditor_subscribe",
       "community": 9,
       "norm_label": ".subscribe()"
@@ -9367,25 +9367,34 @@
       "label": ".replaceDocument()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L131",
+      "source_location": "L128",
       "id": "diagram_editor_diagrameditor_replacedocument",
-      "community": 773,
+      "community": 9,
       "norm_label": ".replacedocument()"
     },
     {
       "label": ".commit()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L140",
+      "source_location": "L132",
       "id": "diagram_editor_diagrameditor_commit",
       "community": 9,
       "norm_label": ".commit()"
     },
     {
+      "label": ".applyLifecycle()",
+      "file_type": "code",
+      "source_file": "src/diagram/editor.ts",
+      "source_location": "L143",
+      "id": "diagram_editor_diagrameditor_applylifecycle",
+      "community": 9,
+      "norm_label": ".applylifecycle()"
+    },
+    {
       "label": ".flush()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L146",
+      "source_location": "L148",
       "id": "diagram_editor_diagrameditor_flush",
       "community": 9,
       "norm_label": ".flush()"
@@ -9394,7 +9403,7 @@
       "label": ".dispose()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L153",
+      "source_location": "L155",
       "id": "diagram_editor_diagrameditor_dispose",
       "community": 9,
       "norm_label": ".dispose()"
@@ -9403,7 +9412,7 @@
       "label": ".scheduleAutosave()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L162",
+      "source_location": "L164",
       "id": "diagram_editor_diagrameditor_scheduleautosave",
       "community": 9,
       "norm_label": ".scheduleautosave()"
@@ -9412,7 +9421,7 @@
       "label": ".performAutosave()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L170",
+      "source_location": "L172",
       "id": "diagram_editor_diagrameditor_performautosave",
       "community": 9,
       "norm_label": ".performautosave()"
@@ -9421,7 +9430,7 @@
       "label": ".afterStructuralChange()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L200",
+      "source_location": "L202",
       "id": "diagram_editor_diagrameditor_afterstructuralchange",
       "community": 9,
       "norm_label": ".afterstructuralchange()"
@@ -9430,7 +9439,7 @@
       "label": ".commitStructural()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L217",
+      "source_location": "L219",
       "id": "diagram_editor_diagrameditor_commitstructural",
       "community": 9,
       "norm_label": ".commitstructural()"
@@ -9439,7 +9448,7 @@
       "label": ".addTable()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L227",
+      "source_location": "L229",
       "id": "diagram_editor_diagrameditor_addtable",
       "community": 9,
       "norm_label": ".addtable()"
@@ -9448,7 +9457,7 @@
       "label": ".renameTable()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L234",
+      "source_location": "L236",
       "id": "diagram_editor_diagrameditor_renametable",
       "community": 9,
       "norm_label": ".renametable()"
@@ -9457,7 +9466,7 @@
       "label": ".moveTable()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L238",
+      "source_location": "L240",
       "id": "diagram_editor_diagrameditor_movetable",
       "community": 9,
       "norm_label": ".movetable()"
@@ -9466,7 +9475,7 @@
       "label": ".deleteTable()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L242",
+      "source_location": "L244",
       "id": "diagram_editor_diagrameditor_deletetable",
       "community": 9,
       "norm_label": ".deletetable()"
@@ -9475,7 +9484,7 @@
       "label": ".addColumn()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L246",
+      "source_location": "L248",
       "id": "diagram_editor_diagrameditor_addcolumn",
       "community": 9,
       "norm_label": ".addcolumn()"
@@ -9484,7 +9493,7 @@
       "label": ".updateColumn()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L253",
+      "source_location": "L255",
       "id": "diagram_editor_diagrameditor_updatecolumn",
       "community": 9,
       "norm_label": ".updatecolumn()"
@@ -9493,7 +9502,7 @@
       "label": ".deleteColumn()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L257",
+      "source_location": "L259",
       "id": "diagram_editor_diagrameditor_deletecolumn",
       "community": 9,
       "norm_label": ".deletecolumn()"
@@ -9502,7 +9511,7 @@
       "label": ".addRelation()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L261",
+      "source_location": "L263",
       "id": "diagram_editor_diagrameditor_addrelation",
       "community": 9,
       "norm_label": ".addrelation()"
@@ -9511,7 +9520,7 @@
       "label": ".updateRelation()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L268",
+      "source_location": "L270",
       "id": "diagram_editor_diagrameditor_updaterelation",
       "community": 9,
       "norm_label": ".updaterelation()"
@@ -9520,7 +9529,7 @@
       "label": ".deleteRelation()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L272",
+      "source_location": "L274",
       "id": "diagram_editor_diagrameditor_deleterelation",
       "community": 9,
       "norm_label": ".deleterelation()"
@@ -9529,7 +9538,7 @@
       "label": ".toDbml()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L276",
+      "source_location": "L278",
       "id": "diagram_editor_diagrameditor_todbml",
       "community": 9,
       "norm_label": ".todbml()"
@@ -9538,7 +9547,7 @@
       "label": ".toSql()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L280",
+      "source_location": "L282",
       "id": "diagram_editor_diagrameditor_tosql",
       "community": 9,
       "norm_label": ".tosql()"
@@ -9547,7 +9556,7 @@
       "label": ".toMermaid()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L284",
+      "source_location": "L286",
       "id": "diagram_editor_diagrameditor_tomermaid",
       "community": 9,
       "norm_label": ".tomermaid()"
@@ -9556,7 +9565,7 @@
       "label": ".toTypeScript()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L288",
+      "source_location": "L290",
       "id": "diagram_editor_diagrameditor_totypescript",
       "community": 9,
       "norm_label": ".totypescript()"
@@ -9565,7 +9574,7 @@
       "label": ".newDiagram()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L292",
+      "source_location": "L294",
       "id": "diagram_editor_diagrameditor_newdiagram",
       "community": 9,
       "norm_label": ".newdiagram()"
@@ -9574,7 +9583,7 @@
       "label": ".setDiagramName()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L305",
+      "source_location": "L306",
       "id": "diagram_editor_diagrameditor_setdiagramname",
       "community": 9,
       "norm_label": ".setdiagramname()"
@@ -9583,7 +9592,7 @@
       "label": ".setDbmlText()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L309",
+      "source_location": "L310",
       "id": "diagram_editor_diagrameditor_setdbmltext",
       "community": 9,
       "norm_label": ".setdbmltext()"
@@ -9592,7 +9601,7 @@
       "label": ".syncDbmlFromDiagram()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L313",
+      "source_location": "L314",
       "id": "diagram_editor_diagrameditor_syncdbmlfromdiagram",
       "community": 9,
       "norm_label": ".syncdbmlfromdiagram()"
@@ -9601,7 +9610,7 @@
       "label": ".loadFromExportedJson()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L318",
+      "source_location": "L319",
       "id": "diagram_editor_diagrameditor_loadfromexportedjson",
       "community": 9,
       "norm_label": ".loadfromexportedjson()"
@@ -9610,7 +9619,7 @@
       "label": ".applyDbmlNow()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L326",
+      "source_location": "L327",
       "id": "diagram_editor_diagrameditor_applydbmlnow",
       "community": 9,
       "norm_label": ".applydbmlnow()"
@@ -9619,7 +9628,7 @@
       "label": ".importFromSql()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L330",
+      "source_location": "L331",
       "id": "diagram_editor_diagrameditor_importfromsql",
       "community": 9,
       "norm_label": ".importfromsql()"
@@ -9628,7 +9637,7 @@
       "label": ".importFromJsonSchema()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L334",
+      "source_location": "L335",
       "id": "diagram_editor_diagrameditor_importfromjsonschema",
       "community": 9,
       "norm_label": ".importfromjsonschema()"
@@ -9637,7 +9646,7 @@
       "label": ".getDbmlSource()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L338",
+      "source_location": "L339",
       "id": "diagram_editor_diagrameditor_getdbmlsource",
       "community": 9,
       "norm_label": ".getdbmlsource()"
@@ -9646,7 +9655,7 @@
       "label": ".notify()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L342",
+      "source_location": "L343",
       "id": "diagram_editor_diagrameditor_notify",
       "community": 9,
       "norm_label": ".notify()"
@@ -9655,7 +9664,7 @@
       "label": ".notifyIndex()",
       "file_type": "code",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L346",
+      "source_location": "L347",
       "id": "diagram_editor_diagrameditor_notifyindex",
       "community": 9,
       "norm_label": ".notifyindex()"
@@ -9864,7 +9873,7 @@
       "source_file": "src/diagram/id-minters.ts",
       "source_location": "L1",
       "id": "src_diagram_id_minters_ts",
-      "community": 731,
+      "community": 68,
       "norm_label": "id-minters.ts"
     },
     {
@@ -9873,7 +9882,7 @@
       "source_file": "src/diagram/id-minters.ts",
       "source_location": "L3",
       "id": "diagram_id_minters_entityidminters",
-      "community": 731,
+      "community": 68,
       "norm_label": "entityidminters"
     },
     {
@@ -9882,7 +9891,7 @@
       "source_file": "src/diagram/id-minters.ts",
       "source_location": "L9",
       "id": "diagram_id_minters_makedefaultminter",
-      "community": 731,
+      "community": 68,
       "norm_label": "makedefaultminter()"
     },
     {
@@ -9891,7 +9900,7 @@
       "source_file": "src/diagram/id-minters.ts",
       "source_location": "L14",
       "id": "diagram_id_minters_createdefaultidminters",
-      "community": 731,
+      "community": 68,
       "norm_label": "createdefaultidminters()"
     },
     {
@@ -9900,7 +9909,7 @@
       "source_file": "src/diagram/id-minters.ts",
       "source_location": "L20",
       "id": "diagram_id_minters_makesequentialminter",
-      "community": 731,
+      "community": 68,
       "norm_label": "makesequentialminter()"
     },
     {
@@ -9909,7 +9918,7 @@
       "source_file": "src/diagram/id-minters.ts",
       "source_location": "L25",
       "id": "diagram_id_minters_createsequentialidminters",
-      "community": 731,
+      "community": 68,
       "norm_label": "createsequentialidminters()"
     },
     {
@@ -9954,7 +9963,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_projections_spec_ts",
-      "community": 773,
+      "community": 791,
       "norm_label": "projections.spec.ts"
     },
     {
@@ -9963,7 +9972,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L8",
       "id": "diagram_projections_spec_docwithonetable",
-      "community": 773,
+      "community": 791,
       "norm_label": "docwithonetable()"
     },
     {
@@ -9972,7 +9981,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L30",
       "id": "diagram_projections_spec_nodes_edges",
-      "community": 773,
+      "community": 791,
       "norm_label": "{ nodes, edges }"
     },
     {
@@ -9981,7 +9990,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L42",
       "id": "diagram_projections_spec_doc",
-      "community": 773,
+      "community": 791,
       "norm_label": "doc"
     },
     {
@@ -9990,7 +9999,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L45",
       "id": "diagram_projections_spec_nodes",
-      "community": 773,
+      "community": 791,
       "norm_label": "{ nodes }"
     },
     {
@@ -9999,7 +10008,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L74",
       "id": "diagram_projections_spec_edges",
-      "community": 773,
+      "community": 791,
       "norm_label": "{ edges }"
     },
     {
@@ -10008,7 +10017,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_id_minters_spec_ts",
-      "community": 731,
+      "community": 68,
       "norm_label": "id-minters.spec.ts"
     },
     {
@@ -10017,7 +10026,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L7",
       "id": "diagram_id_minters_spec_minters",
-      "community": 731,
+      "community": 68,
       "norm_label": "minters"
     },
     {
@@ -10026,7 +10035,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L17",
       "id": "diagram_id_minters_spec_a",
-      "community": 731,
+      "community": 68,
       "norm_label": "a"
     },
     {
@@ -10035,7 +10044,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L18",
       "id": "diagram_id_minters_spec_b",
-      "community": 731,
+      "community": 68,
       "norm_label": "b"
     },
     {
@@ -10044,7 +10053,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L35",
       "id": "diagram_id_minters_spec_ids",
-      "community": 731,
+      "community": 68,
       "norm_label": "ids"
     },
     {
@@ -10053,7 +10062,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L41",
       "id": "diagram_id_minters_spec_t1",
-      "community": 731,
+      "community": 68,
       "norm_label": "t1"
     },
     {
@@ -10062,7 +10071,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L42",
       "id": "diagram_id_minters_spec_c1",
-      "community": 731,
+      "community": 68,
       "norm_label": "c1"
     },
     {
@@ -10413,7 +10422,7 @@
       "source_file": "src/diagram/codecs/persistence.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_codecs_persistence_spec_ts",
-      "community": 9,
+      "community": 113,
       "norm_label": "persistence.spec.ts"
     },
     {
@@ -10422,7 +10431,7 @@
       "source_file": "src/diagram/codecs/persistence.spec.ts",
       "source_location": "L7",
       "id": "codecs_persistence_spec_makesampleschema",
-      "community": 9,
+      "community": 113,
       "norm_label": "makesampleschema()"
     },
     {
@@ -10431,7 +10440,7 @@
       "source_file": "src/diagram/codecs/persistence.spec.ts",
       "source_location": "L63",
       "id": "codecs_persistence_spec_nodes",
-      "community": 9,
+      "community": 113,
       "norm_label": "nodes"
     },
     {
@@ -10440,7 +10449,7 @@
       "source_file": "src/diagram/codecs/persistence.spec.ts",
       "source_location": "L86",
       "id": "codecs_persistence_spec_edges",
-      "community": 9,
+      "community": 113,
       "norm_label": "edges"
     },
     {
@@ -10449,7 +10458,7 @@
       "source_file": "src/diagram/codecs/persistence.spec.ts",
       "source_location": "L102",
       "id": "codecs_persistence_spec_schema",
-      "community": 9,
+      "community": 113,
       "norm_label": "schema"
     },
     {
@@ -10458,7 +10467,7 @@
       "source_file": "src/diagram/codecs/persistence.spec.ts",
       "source_location": "L129",
       "id": "codecs_persistence_spec_json",
-      "community": 9,
+      "community": 113,
       "norm_label": "json"
     },
     {
@@ -10467,7 +10476,7 @@
       "source_file": "src/diagram/codecs/persistence.spec.ts",
       "source_location": "L137",
       "id": "codecs_persistence_spec_edges_nodes",
-      "community": 9,
+      "community": 113,
       "norm_label": "{ edges, nodes }"
     },
     {
@@ -10476,7 +10485,7 @@
       "source_file": "src/diagram/codecs/persistence.spec.ts",
       "source_location": "L162",
       "id": "codecs_persistence_spec_originalnodes",
-      "community": 9,
+      "community": 113,
       "norm_label": "originalnodes"
     },
     {
@@ -10485,7 +10494,7 @@
       "source_file": "src/diagram/codecs/persistence.spec.ts",
       "source_location": "L193",
       "id": "codecs_persistence_spec_nodes_restorednodes",
-      "community": 9,
+      "community": 113,
       "norm_label": "{ nodes: restorednodes }"
     },
     {
@@ -11115,7 +11124,7 @@
       "source_file": "src/diagram/codecs/persistence.ts",
       "source_location": "L1",
       "id": "src_diagram_codecs_persistence_ts",
-      "community": 9,
+      "community": 113,
       "norm_label": "persistence.ts"
     },
     {
@@ -11124,7 +11133,7 @@
       "source_file": "src/diagram/codecs/persistence.ts",
       "source_location": "L4",
       "id": "codecs_persistence_serializediagram",
-      "community": 9,
+      "community": 113,
       "norm_label": "serializediagram()"
     },
     {
@@ -11133,7 +11142,7 @@
       "source_file": "src/diagram/codecs/persistence.ts",
       "source_location": "L64",
       "id": "codecs_persistence_deserializediagram",
-      "community": 9,
+      "community": 113,
       "norm_label": "deserializediagram()"
     },
     {
@@ -11142,7 +11151,7 @@
       "source_file": "src/diagram/codecs/persistence.ts",
       "source_location": "L106",
       "id": "codecs_persistence_validatediagramschema",
-      "community": 9,
+      "community": 113,
       "norm_label": "validatediagramschema()"
     },
     {
@@ -11196,7 +11205,7 @@
       "source_file": "src/diagram/operations/columns.spec.ts",
       "source_location": "L10",
       "id": "operations_columns_spec_seedwithtable",
-      "community": 731,
+      "community": 24,
       "norm_label": "seedwithtable()"
     },
     {
@@ -11565,7 +11574,7 @@
       "source_file": "src/diagram/operations/relations.spec.ts",
       "source_location": "L8",
       "id": "operations_relations_spec_seedtwotables",
-      "community": 731,
+      "community": 68,
       "norm_label": "seedtwotables()"
     },
     {
@@ -11826,7 +11835,7 @@
       "source_file": "src/diagram/operations/export.spec.ts",
       "source_location": "L12",
       "id": "operations_export_spec_seed",
-      "community": 63,
+      "community": 771,
       "norm_label": "seed()"
     },
     {
@@ -12375,7 +12384,7 @@
       "source_file": "src/utils/image-base64.spec.ts",
       "source_location": "L1",
       "id": "src_utils_image_base64_spec_ts",
-      "community": 79,
+      "community": 727,
       "norm_label": "image-base64.spec.ts"
     },
     {
@@ -12537,7 +12546,7 @@
       "source_file": "src/utils/image.ts",
       "source_location": "L57",
       "id": "utils_image_loadimagefromblob",
-      "community": 187,
+      "community": 727,
       "norm_label": "loadimagefromblob()"
     },
     {
@@ -12726,7 +12735,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L1",
       "id": "src_utils_regex_ts",
-      "community": 15,
+      "community": 826,
       "norm_label": "regex.ts"
     },
     {
@@ -12735,7 +12744,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L5",
       "id": "utils_regex_executeregex",
-      "community": 15,
+      "community": 826,
       "norm_label": "executeregex()"
     },
     {
@@ -12744,7 +12753,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L45",
       "id": "utils_regex_buildhighlightsegments",
-      "community": 15,
+      "community": 826,
       "norm_label": "buildhighlightsegments()"
     },
     {
@@ -12753,7 +12762,7 @@
       "source_file": "src/utils/regex.ts",
       "source_location": "L74",
       "id": "utils_regex_formatmatchesforcopy",
-      "community": 15,
+      "community": 826,
       "norm_label": "formatmatchesforcopy()"
     },
     {
@@ -13761,7 +13770,7 @@
       "source_file": "src/utils/background-removal.ts",
       "source_location": "L1",
       "id": "src_utils_background_removal_ts",
-      "community": 187,
+      "community": 727,
       "norm_label": "background-removal.ts"
     },
     {
@@ -13770,7 +13779,7 @@
       "source_file": "src/utils/background-removal.ts",
       "source_location": "L7",
       "id": "utils_background_removal_removebackground",
-      "community": 187,
+      "community": 727,
       "norm_label": "removebackground()"
     },
     {
@@ -13779,7 +13788,7 @@
       "source_file": "src/utils/background-removal.ts",
       "source_location": "L52",
       "id": "utils_background_removal_applybackground",
-      "community": 187,
+      "community": 727,
       "norm_label": "applybackground()"
     },
     {
@@ -13788,7 +13797,7 @@
       "source_file": "src/utils/background-removal.ts",
       "source_location": "L73",
       "id": "utils_background_removal_resetpipelinecache",
-      "community": 187,
+      "community": 727,
       "norm_label": "resetpipelinecache()"
     },
     {
@@ -15975,7 +15984,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L1",
       "id": "src_utils_timezone_converter_ts",
-      "community": 22,
+      "community": 722,
       "norm_label": "timezone-converter.ts"
     },
     {
@@ -15984,7 +15993,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L6",
       "id": "utils_timezone_converter_gettimezonelist",
-      "community": 22,
+      "community": 722,
       "norm_label": "gettimezonelist()"
     },
     {
@@ -15993,7 +16002,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L14",
       "id": "utils_timezone_converter_parseoffsettominutes",
-      "community": 22,
+      "community": 722,
       "norm_label": "parseoffsettominutes()"
     },
     {
@@ -16002,7 +16011,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L24",
       "id": "utils_timezone_converter_getabbreviation",
-      "community": 22,
+      "community": 722,
       "norm_label": "getabbreviation()"
     },
     {
@@ -16011,7 +16020,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L33",
       "id": "utils_timezone_converter_getoffset",
-      "community": 22,
+      "community": 722,
       "norm_label": "getoffset()"
     },
     {
@@ -16020,7 +16029,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L42",
       "id": "utils_timezone_converter_extractcity",
-      "community": 22,
+      "community": 722,
       "norm_label": "extractcity()"
     },
     {
@@ -16029,7 +16038,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L48",
       "id": "utils_timezone_converter_extractregion",
-      "community": 22,
+      "community": 722,
       "norm_label": "extractregion()"
     },
     {
@@ -16038,7 +16047,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L52",
       "id": "utils_timezone_converter_buildtimezoneindex",
-      "community": 22,
+      "community": 722,
       "norm_label": "buildtimezoneindex()"
     },
     {
@@ -16047,7 +16056,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L95",
       "id": "utils_timezone_converter_searchtimezones",
-      "community": 22,
+      "community": 722,
       "norm_label": "searchtimezones()"
     },
     {
@@ -16056,7 +16065,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L104",
       "id": "utils_timezone_converter_converttimezone",
-      "community": 22,
+      "community": 722,
       "norm_label": "converttimezone()"
     },
     {
@@ -16065,7 +16074,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L133",
       "id": "utils_timezone_converter_parsedatetimeinput",
-      "community": 22,
+      "community": 722,
       "norm_label": "parsedatetimeinput()"
     },
     {
@@ -16074,7 +16083,7 @@
       "source_file": "src/utils/timezone-converter.ts",
       "source_location": "L198",
       "id": "utils_timezone_converter_getlocaltimezone",
-      "community": 22,
+      "community": 722,
       "norm_label": "getlocaltimezone()"
     },
     {
@@ -16992,7 +17001,7 @@
       "source_file": "src/utils/splash-screen.ts",
       "source_location": "L1",
       "id": "src_utils_splash_screen_ts",
-      "community": 101,
+      "community": 187,
       "norm_label": "splash-screen.ts"
     },
     {
@@ -17001,7 +17010,7 @@
       "source_file": "src/utils/splash-screen.ts",
       "source_location": "L7",
       "id": "utils_splash_screen_slugify",
-      "community": 101,
+      "community": 187,
       "norm_label": "slugify()"
     },
     {
@@ -17010,7 +17019,7 @@
       "source_file": "src/utils/splash-screen.ts",
       "source_location": "L14",
       "id": "utils_splash_screen_generatesplashscreen",
-      "community": 101,
+      "community": 187,
       "norm_label": "generatesplashscreen()"
     },
     {
@@ -17019,7 +17028,7 @@
       "source_file": "src/utils/splash-screen.ts",
       "source_location": "L48",
       "id": "utils_splash_screen_generatepwaicon",
-      "community": 101,
+      "community": 187,
       "norm_label": "generatepwaicon()"
     },
     {
@@ -17028,7 +17037,7 @@
       "source_file": "src/utils/splash-screen.ts",
       "source_location": "L88",
       "id": "utils_splash_screen_generateallassets",
-      "community": 101,
+      "community": 187,
       "norm_label": "generateallassets()"
     },
     {
@@ -17037,7 +17046,7 @@
       "source_file": "src/utils/splash-screen.ts",
       "source_location": "L131",
       "id": "utils_splash_screen_generatesplashmetatags",
-      "community": 101,
+      "community": 187,
       "norm_label": "generatesplashmetatags()"
     },
     {
@@ -17046,7 +17055,7 @@
       "source_file": "src/utils/splash-screen.ts",
       "source_location": "L155",
       "id": "utils_splash_screen_generatemanifesticons",
-      "community": 101,
+      "community": 187,
       "norm_label": "generatemanifesticons()"
     },
     {
@@ -17109,7 +17118,7 @@
       "source_file": "src/utils/image-base64.ts",
       "source_location": "L1",
       "id": "src_utils_image_base64_ts",
-      "community": 79,
+      "community": 727,
       "norm_label": "image-base64.ts"
     },
     {
@@ -17118,7 +17127,7 @@
       "source_file": "src/utils/image-base64.ts",
       "source_location": "L6",
       "id": "utils_image_base64_imagefiletobase64",
-      "community": 79,
+      "community": 727,
       "norm_label": "imagefiletobase64()"
     },
     {
@@ -17127,7 +17136,7 @@
       "source_file": "src/utils/image-base64.ts",
       "source_location": "L28",
       "id": "utils_image_base64_formatbase64size",
-      "community": 79,
+      "community": 727,
       "norm_label": "formatbase64size()"
     },
     {
@@ -17514,7 +17523,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L1",
       "id": "src_utils_tailwind_variants_ts",
-      "community": 85,
+      "community": 815,
       "norm_label": "tailwind-variants.ts"
     },
     {
@@ -17523,7 +17532,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L3",
       "id": "utils_tailwind_variants_twmergeconfig",
-      "community": 85,
+      "community": 815,
       "norm_label": "twmergeconfig"
     },
     {
@@ -17532,7 +17541,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L23",
       "id": "utils_tailwind_variants_cnmerge",
-      "community": 85,
+      "community": 815,
       "norm_label": "cnmerge()"
     },
     {
@@ -17541,7 +17550,7 @@
       "source_file": "src/utils/tailwind-variants.ts",
       "source_location": "L24",
       "id": "utils_tailwind_variants_tv",
-      "community": 85,
+      "community": 815,
       "norm_label": "tv"
     },
     {
@@ -18783,7 +18792,7 @@
       "source_file": "src/components/common/input/TextInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_input_textinput_tsx",
-      "community": 85,
+      "community": 731,
       "norm_label": "textinput.tsx"
     },
     {
@@ -18792,7 +18801,7 @@
       "source_file": "src/components/common/input/TextInput.tsx",
       "source_location": "L6",
       "id": "input_textinput_inputvariants",
-      "community": 85,
+      "community": 731,
       "norm_label": "inputvariants"
     },
     {
@@ -18801,7 +18810,7 @@
       "source_file": "src/components/common/input/TextInput.tsx",
       "source_location": "L24",
       "id": "input_textinput_textinput",
-      "community": 85,
+      "community": 731,
       "norm_label": "textinput()"
     },
     {
@@ -18828,7 +18837,7 @@
       "source_file": "src/components/common/input/SelectInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_input_selectinput_tsx",
-      "community": 85,
+      "community": 731,
       "norm_label": "selectinput.tsx"
     },
     {
@@ -18837,7 +18846,7 @@
       "source_file": "src/components/common/input/SelectInput.tsx",
       "source_location": "L22",
       "id": "input_selectinput_selectinput",
-      "community": 85,
+      "community": 815,
       "norm_label": "selectinput()"
     },
     {
@@ -18846,7 +18855,7 @@
       "source_file": "src/components/common/input/TextAreaInput.tsx",
       "source_location": "L1",
       "id": "src_components_common_input_textareainput_tsx",
-      "community": 85,
+      "community": 731,
       "norm_label": "textareainput.tsx"
     },
     {
@@ -18855,7 +18864,7 @@
       "source_file": "src/components/common/input/TextAreaInput.tsx",
       "source_location": "L8",
       "id": "input_textareainput_textareainput",
-      "community": 85,
+      "community": 815,
       "norm_label": "textareainput()"
     },
     {
@@ -18864,7 +18873,7 @@
       "source_file": "src/components/common/input/TextInput.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_components_common_input_textinput_dom_spec_tsx",
-      "community": 85,
+      "community": 731,
       "norm_label": "textinput.dom.spec.tsx"
     },
     {
@@ -18873,7 +18882,7 @@
       "source_file": "src/components/common/input/TextInput.dom.spec.tsx",
       "source_location": "L11",
       "id": "input_textinput_dom_spec_onenter",
-      "community": 85,
+      "community": 731,
       "norm_label": "onenter"
     },
     {
@@ -18882,7 +18891,7 @@
       "source_file": "src/components/common/input/TextInput.dom.spec.tsx",
       "source_location": "L12",
       "id": "input_textinput_dom_spec_getbyrole",
-      "community": 85,
+      "community": 731,
       "norm_label": "{ getbyrole }"
     },
     {
@@ -18891,7 +18900,7 @@
       "source_file": "src/components/common/input/TextInput.dom.spec.tsx",
       "source_location": "L18",
       "id": "input_textinput_dom_spec_onescape",
-      "community": 85,
+      "community": 731,
       "norm_label": "onescape"
     },
     {
@@ -20961,7 +20970,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L1",
       "id": "src_components_feature_security_certificatedecoder_tsx",
-      "community": 85,
+      "community": 812,
       "norm_label": "certificatedecoder.tsx"
     },
     {
@@ -20970,7 +20979,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L12",
       "id": "security_certificatedecoder_resultvaluestyles",
-      "community": 85,
+      "community": 812,
       "norm_label": "resultvaluestyles"
     },
     {
@@ -20979,7 +20988,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L22",
       "id": "security_certificatedecoder_resultrow",
-      "community": 85,
+      "community": 812,
       "norm_label": "resultrow()"
     },
     {
@@ -20988,7 +20997,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L42",
       "id": "security_certificatedecoder_validity_config",
-      "community": 85,
+      "community": 812,
       "norm_label": "validity_config"
     },
     {
@@ -20997,7 +21006,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L53",
       "id": "security_certificatedecoder_formatrelativetime",
-      "community": 85,
+      "community": 812,
       "norm_label": "formatrelativetime()"
     },
     {
@@ -21006,7 +21015,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L63",
       "id": "security_certificatedecoder_validitybadge",
-      "community": 85,
+      "community": 812,
       "norm_label": "validitybadge()"
     },
     {
@@ -21015,7 +21024,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L97",
       "id": "security_certificatedecoder_extensionitem",
-      "community": 85,
+      "community": 812,
       "norm_label": "extensionitem()"
     },
     {
@@ -21024,7 +21033,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L109",
       "id": "security_certificatedecoder_certificatedecoder",
-      "community": 85,
+      "community": 812,
       "norm_label": "certificatedecoder()"
     },
     {
@@ -21699,7 +21708,7 @@
       "source_file": "src/components/feature/code/JsonToTypeScript.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_jsontotypescript_tsx",
-      "community": 369,
+      "community": 827,
       "norm_label": "jsontotypescript.tsx"
     },
     {
@@ -21717,7 +21726,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L1",
       "id": "src_components_feature_code_mermaidrenderer_tsx",
-      "community": 90,
+      "community": 820,
       "norm_label": "mermaidrenderer.tsx"
     },
     {
@@ -21726,7 +21735,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L20",
       "id": "code_mermaidrenderer_chevronstyles",
-      "community": 90,
+      "community": 820,
       "norm_label": "chevronstyles"
     },
     {
@@ -21735,7 +21744,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L39",
       "id": "code_mermaidrenderer_syntax_examples",
-      "community": 90,
+      "community": 820,
       "norm_label": "syntax_examples"
     },
     {
@@ -21744,7 +21753,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L48",
       "id": "code_mermaidrenderer_initial_result",
-      "community": 90,
+      "community": 820,
       "norm_label": "initial_result"
     },
     {
@@ -21762,7 +21771,7 @@
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L65",
       "id": "code_mermaidrenderer_mermaidrenderer",
-      "community": 784,
+      "community": 369,
       "norm_label": "mermaidrenderer()"
     },
     {
@@ -21789,7 +21798,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L16",
       "id": "code_protobuftojson_kindbadge",
-      "community": 85,
+      "community": 815,
       "norm_label": "kindbadge()"
     },
     {
@@ -21825,7 +21834,7 @@
       "source_file": "src/components/feature/code/ProtobufToJson.tsx",
       "source_location": "L134",
       "id": "code_protobuftojson_protobuftojson",
-      "community": 784,
+      "community": 369,
       "norm_label": "protobuftojson()"
     },
     {
@@ -21915,7 +21924,7 @@
       "source_file": "src/components/feature/code/ProtobufCodec.tsx",
       "source_location": "L396",
       "id": "code_protobufcodec_protobufcodec",
-      "community": 15,
+      "community": 369,
       "norm_label": "protobufcodec()"
     },
     {
@@ -21996,7 +22005,7 @@
       "source_file": "src/components/feature/code/GraphqlSchemaViewer.tsx",
       "source_location": "L232",
       "id": "code_graphqlschemaviewer_graphqlschemaviewer",
-      "community": 784,
+      "community": 369,
       "norm_label": "graphqlschemaviewer()"
     },
     {
@@ -22086,7 +22095,7 @@
       "source_file": "src/components/feature/encoding/JwtDecoder.tsx",
       "source_location": "L1",
       "id": "src_components_feature_encoding_jwtdecoder_tsx",
-      "community": 314,
+      "community": 15,
       "norm_label": "jwtdecoder.tsx"
     },
     {
@@ -22095,7 +22104,7 @@
       "source_file": "src/components/feature/encoding/JwtDecoder.tsx",
       "source_location": "L12",
       "id": "encoding_jwtdecoder_jwtdecoded",
-      "community": 314,
+      "community": 15,
       "norm_label": "jwtdecoded"
     },
     {
@@ -22104,7 +22113,7 @@
       "source_file": "src/components/feature/encoding/JwtDecoder.tsx",
       "source_location": "L19",
       "id": "encoding_jwtdecoder_empty_decoded",
-      "community": 314,
+      "community": 15,
       "norm_label": "empty_decoded"
     },
     {
@@ -22113,7 +22122,7 @@
       "source_file": "src/components/feature/encoding/JwtDecoder.tsx",
       "source_location": "L24",
       "id": "encoding_jwtdecoder_jwtdecoder",
-      "community": 314,
+      "community": 15,
       "norm_label": "jwtdecoder()"
     },
     {
@@ -22122,7 +22131,7 @@
       "source_file": "src/components/feature/encoding/UrlParser.tsx",
       "source_location": "L1",
       "id": "src_components_feature_encoding_urlparser_tsx",
-      "community": 722,
+      "community": 15,
       "norm_label": "urlparser.tsx"
     },
     {
@@ -22131,7 +22140,7 @@
       "source_file": "src/components/feature/encoding/UrlParser.tsx",
       "source_location": "L11",
       "id": "encoding_urlparser_empty",
-      "community": 722,
+      "community": 15,
       "norm_label": "empty"
     },
     {
@@ -22140,7 +22149,7 @@
       "source_file": "src/components/feature/encoding/UrlParser.tsx",
       "source_location": "L21",
       "id": "encoding_urlparser_resultrow",
-      "community": 722,
+      "community": 15,
       "norm_label": "resultrow()"
     },
     {
@@ -22149,7 +22158,7 @@
       "source_file": "src/components/feature/encoding/UrlParser.tsx",
       "source_location": "L35",
       "id": "encoding_urlparser_urlparser",
-      "community": 722,
+      "community": 15,
       "norm_label": "urlparser()"
     },
     {
@@ -22329,7 +22338,7 @@
       "source_file": "src/components/feature/image/ImageToBase64.tsx",
       "source_location": "L1",
       "id": "src_components_feature_image_imagetobase64_tsx",
-      "community": 79,
+      "community": 727,
       "norm_label": "imagetobase64.tsx"
     },
     {
@@ -22338,7 +22347,7 @@
       "source_file": "src/components/feature/image/ImageToBase64.tsx",
       "source_location": "L12",
       "id": "image_imagetobase64_imagetobase64",
-      "community": 79,
+      "community": 727,
       "norm_label": "imagetobase64()"
     },
     {
@@ -22509,7 +22518,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L1",
       "id": "src_components_feature_image_placeholderimagegenerator_tsx",
-      "community": 113,
+      "community": 135,
       "norm_label": "placeholderimagegenerator.tsx"
     },
     {
@@ -22518,7 +22527,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L23",
       "id": "image_placeholderimagegenerator_preset_options",
-      "community": 113,
+      "community": 135,
       "norm_label": "preset_options"
     },
     {
@@ -22527,7 +22536,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L28",
       "id": "image_placeholderimagegenerator_topickerhex",
-      "community": 113,
+      "community": 135,
       "norm_label": "topickerhex()"
     },
     {
@@ -22536,7 +22545,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L34",
       "id": "image_placeholderimagegenerator_buildoptions",
-      "community": 113,
+      "community": 135,
       "norm_label": "buildoptions()"
     },
     {
@@ -22554,7 +22563,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L54",
       "id": "image_placeholderimagegenerator_initialstate",
-      "community": 113,
+      "community": 135,
       "norm_label": "initialstate"
     },
     {
@@ -22563,7 +22572,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L64",
       "id": "image_placeholderimagegenerator_reducer",
-      "community": 113,
+      "community": 135,
       "norm_label": "reducer()"
     },
     {
@@ -22572,7 +22581,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L95",
       "id": "image_placeholderimagegenerator_placeholderimagegenerator",
-      "community": 113,
+      "community": 135,
       "norm_label": "placeholderimagegenerator()"
     },
     {
@@ -23013,7 +23022,7 @@
       "source_file": "src/components/feature/time/TimezoneConverter.tsx",
       "source_location": "L207",
       "id": "time_timezoneconverter_computeconversion",
-      "community": 22,
+      "community": 722,
       "norm_label": "computeconversion()"
     },
     {
@@ -23022,7 +23031,7 @@
       "source_file": "src/components/feature/time/TimezoneConverter.tsx",
       "source_location": "L222",
       "id": "time_timezoneconverter_timezoneconverter",
-      "community": 369,
+      "community": 15,
       "norm_label": "timezoneconverter()"
     },
     {
@@ -23670,7 +23679,7 @@
       "source_file": "src/components/feature/data/JsonFormatter.tsx",
       "source_location": "L1",
       "id": "src_components_feature_data_jsonformatter_tsx",
-      "community": 784,
+      "community": 369,
       "norm_label": "jsonformatter.tsx"
     },
     {
@@ -23679,7 +23688,7 @@
       "source_file": "src/components/feature/data/JsonFormatter.tsx",
       "source_location": "L10",
       "id": "data_jsonformatter_jsonformatter",
-      "community": 784,
+      "community": 369,
       "norm_label": "jsonformatter()"
     },
     {
@@ -23967,7 +23976,7 @@
       "source_file": "src/components/feature/data/JsonDiffChecker.tsx",
       "source_location": "L10",
       "id": "data_jsondiffchecker_jsondiffchecker",
-      "community": 15,
+      "community": 369,
       "norm_label": "jsondiffchecker()"
     },
     {
@@ -25632,7 +25641,7 @@
       "source_file": "src/hooks/useToolComputation.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_usetoolcomputation_dom_spec_tsx",
-      "community": 369,
+      "community": 804,
       "norm_label": "usetoolcomputation.dom.spec.tsx"
     },
     {
@@ -25641,7 +25650,7 @@
       "source_file": "src/hooks/useToolComputation.dom.spec.tsx",
       "source_location": "L19",
       "id": "hooks_usetoolcomputation_dom_spec_result",
-      "community": 369,
+      "community": 804,
       "norm_label": "{ result }"
     },
     {
@@ -25650,7 +25659,7 @@
       "source_file": "src/hooks/useToolComputation.dom.spec.tsx",
       "source_location": "L26",
       "id": "hooks_usetoolcomputation_dom_spec_compute",
-      "community": 369,
+      "community": 804,
       "norm_label": "compute"
     },
     {
@@ -25659,7 +25668,7 @@
       "source_file": "src/hooks/useToolComputation.dom.spec.tsx",
       "source_location": "L73",
       "id": "hooks_usetoolcomputation_dom_spec_resolvers",
-      "community": 369,
+      "community": 804,
       "norm_label": "resolvers"
     },
     {
@@ -25668,7 +25677,7 @@
       "source_file": "src/hooks/useToolComputation.dom.spec.tsx",
       "source_location": "L169",
       "id": "hooks_usetoolcomputation_dom_spec_resolvecompute",
-      "community": 369,
+      "community": 804,
       "norm_label": "resolvecompute()"
     },
     {
@@ -25677,7 +25686,7 @@
       "source_file": "src/hooks/useToolComputation.dom.spec.tsx",
       "source_location": "L259",
       "id": "hooks_usetoolcomputation_dom_spec_onerror",
-      "community": 369,
+      "community": 804,
       "norm_label": "onerror"
     },
     {
@@ -25686,7 +25695,7 @@
       "source_file": "src/hooks/useToolComputation.dom.spec.tsx",
       "source_location": "L282",
       "id": "hooks_usetoolcomputation_dom_spec_errorspy",
-      "community": 369,
+      "community": 804,
       "norm_label": "errorspy"
     },
     {
@@ -25695,7 +25704,7 @@
       "source_file": "src/hooks/useToolComputation.dom.spec.tsx",
       "source_location": "L283",
       "id": "hooks_usetoolcomputation_dom_spec_result_unmount",
-      "community": 369,
+      "community": 804,
       "norm_label": "{ result, unmount }"
     },
     {
@@ -25992,7 +26001,7 @@
       "source_file": "src/hooks/persist/useToolComputationPersisted.ts",
       "source_location": "L19",
       "id": "persist_usetoolcomputationpersisted_usetoolcomputationpersisted",
-      "community": 784,
+      "community": 369,
       "norm_label": "usetoolcomputationpersisted()"
     },
     {
@@ -26001,7 +26010,7 @@
       "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_persist_usetoolcomputationpersisted_dom_spec_tsx",
-      "community": 784,
+      "community": 369,
       "norm_label": "usetoolcomputationpersisted.dom.spec.tsx"
     },
     {
@@ -26010,7 +26019,7 @@
       "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L22",
       "id": "persist_usetoolcomputationpersisted_dom_spec_result",
-      "community": 784,
+      "community": 369,
       "norm_label": "{ result }"
     },
     {
@@ -26019,7 +26028,7 @@
       "source_file": "src/hooks/persist/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L109",
       "id": "persist_usetoolcomputationpersisted_dom_spec_compute",
-      "community": 784,
+      "community": 369,
       "norm_label": "compute"
     },
     {
@@ -26037,7 +26046,7 @@
       "source_file": "src/hooks/persist/useInputLocalStorage.ts",
       "source_location": "L7",
       "id": "persist_useinputlocalstorage_useinputlocalstorage",
-      "community": 15,
+      "community": 369,
       "norm_label": "useinputlocalstorage()"
     },
     {
@@ -26127,7 +26136,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_persist_usetoolfieldspersisted_dom_spec_tsx",
-      "community": 369,
+      "community": 825,
       "norm_label": "usetoolfieldspersisted.dom.spec.tsx"
     },
     {
@@ -26136,7 +26145,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L9",
       "id": "persist_usetoolfieldspersisted_dom_spec_bag",
-      "community": 369,
+      "community": 825,
       "norm_label": "bag"
     },
     {
@@ -26145,7 +26154,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L11",
       "id": "persist_usetoolfieldspersisted_dom_spec_initial",
-      "community": 369,
+      "community": 825,
       "norm_label": "initial"
     },
     {
@@ -26154,7 +26163,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L25",
       "id": "persist_usetoolfieldspersisted_dom_spec_result",
-      "community": 369,
+      "community": 825,
       "norm_label": "{ result }"
     },
     {
@@ -26163,7 +26172,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L118",
       "id": "persist_usetoolfieldspersisted_dom_spec_compute",
-      "community": 369,
+      "community": 825,
       "norm_label": "compute"
     },
     {
@@ -26467,7 +26476,7 @@
       "label": "Entity ID minters",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L626",
+      "source_location": "L641",
       "id": "csr_dev_tools_context_entity_id_minters",
       "community": 94,
       "norm_label": "entity id minters"
@@ -26476,7 +26485,7 @@
       "label": "code:ts (type EntityIdMinters = {)",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L635",
+      "source_location": "L650",
       "id": "csr_dev_tools_context_codeblock_1",
       "community": 94,
       "norm_label": "code:ts (type entityidminters = {)"
@@ -26485,7 +26494,7 @@
       "label": "Async action",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L670",
+      "source_location": "L685",
       "id": "csr_dev_tools_context_async_action",
       "community": 94,
       "norm_label": "async action"
@@ -26494,7 +26503,7 @@
       "label": "Keyboard list navigation",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L707",
+      "source_location": "L722",
       "id": "csr_dev_tools_context_keyboard_list_navigation",
       "community": 94,
       "norm_label": "keyboard list navigation"
@@ -26503,7 +26512,7 @@
       "label": "N-mirror broadcast",
       "file_type": "document",
       "source_file": "CONTEXT.md",
-      "source_location": "L740",
+      "source_location": "L755",
       "id": "csr_dev_tools_context_n_mirror_broadcast",
       "community": 94,
       "norm_label": "n-mirror broadcast"
@@ -37889,7 +37898,7 @@
       "file_type": "code",
       "source_file": "src/utils/image-base64.ts",
       "source_location": "L5",
-      "community": 79,
+      "community": 727,
       "norm_label": "getimagedimensions()",
       "id": "utils_image_base64_getimagedimensions"
     },
@@ -40733,7 +40742,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram.ts",
       "source_location": "L5",
-      "community": 771,
+      "community": 764,
       "norm_label": "generateid()",
       "id": "utils_db_diagram_generateid"
     },
@@ -40967,7 +40976,7 @@
       "file_type": "code",
       "source_file": "src/types/utils/db-diagram-import.ts",
       "source_location": "L1",
-      "community": 812,
+      "community": 764,
       "norm_label": "db-diagram-import.ts",
       "id": "src_types_utils_db_diagram_import_ts"
     },
@@ -40976,7 +40985,7 @@
       "file_type": "code",
       "source_file": "src/types/utils/db-diagram-import.ts",
       "source_location": "L3",
-      "community": 812,
+      "community": 764,
       "norm_label": "parseresult",
       "id": "utils_db_diagram_import_parseresult"
     },
@@ -40985,7 +40994,7 @@
       "file_type": "code",
       "source_file": "src/types/utils/db-diagram-import.ts",
       "source_location": "L9",
-      "community": 812,
+      "community": 764,
       "norm_label": "parsedcolumn",
       "id": "utils_db_diagram_import_parsedcolumn"
     },
@@ -40994,7 +41003,7 @@
       "file_type": "code",
       "source_file": "src/types/utils/db-diagram-import.ts",
       "source_location": "L21",
-      "community": 812,
+      "community": 764,
       "norm_label": "fkref",
       "id": "utils_db_diagram_import_fkref"
     },
@@ -41543,7 +41552,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-persistence.ts",
       "source_location": "L1",
-      "community": 9,
+      "community": 314,
       "norm_label": "db-diagram-persistence.ts",
       "id": "src_utils_db_diagram_persistence_ts"
     },
@@ -41552,7 +41561,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-persistence.ts",
       "source_location": "L4",
-      "community": 9,
+      "community": 314,
       "norm_label": "serializediagram()",
       "id": "utils_db_diagram_persistence_serializediagram"
     },
@@ -41561,7 +41570,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-persistence.ts",
       "source_location": "L64",
-      "community": 9,
+      "community": 314,
       "norm_label": "deserializediagram()",
       "id": "utils_db_diagram_persistence_deserializediagram"
     },
@@ -41570,7 +41579,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-persistence.ts",
       "source_location": "L106",
-      "community": 9,
+      "community": 314,
       "norm_label": "validatediagramschema()",
       "id": "utils_db_diagram_persistence_validatediagramschema"
     },
@@ -41579,7 +41588,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-dbml.spec.ts",
       "source_location": "L1",
-      "community": 727,
+      "community": 64,
       "norm_label": "db-diagram-dbml.spec.ts",
       "id": "src_utils_db_diagram_dbml_spec_ts"
     },
@@ -41588,7 +41597,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-dbml.spec.ts",
       "source_location": "L13",
-      "community": 727,
+      "community": 64,
       "norm_label": "schema",
       "id": "utils_db_diagram_dbml_spec_schema"
     },
@@ -41597,7 +41606,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-dbml.spec.ts",
       "source_location": "L38",
-      "community": 727,
+      "community": 64,
       "norm_label": "result",
       "id": "utils_db_diagram_dbml_spec_result"
     },
@@ -41606,7 +41615,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-dbml.spec.ts",
       "source_location": "L291",
-      "community": 727,
+      "community": 64,
       "norm_label": "sourcetable",
       "id": "utils_db_diagram_dbml_spec_sourcetable"
     },
@@ -41615,7 +41624,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-dbml.spec.ts",
       "source_location": "L372",
-      "community": 727,
+      "community": 64,
       "norm_label": "positions",
       "id": "utils_db_diagram_dbml_spec_positions"
     },
@@ -41624,7 +41633,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-dbml.spec.ts",
       "source_location": "L373",
-      "community": 727,
+      "community": 64,
       "norm_label": "uniquepositions",
       "id": "utils_db_diagram_dbml_spec_uniquepositions"
     },
@@ -41633,7 +41642,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-dbml.spec.ts",
       "source_location": "L395",
-      "community": 727,
+      "community": 64,
       "norm_label": "original",
       "id": "utils_db_diagram_dbml_spec_original"
     },
@@ -41642,7 +41651,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-dbml.spec.ts",
       "source_location": "L448",
-      "community": 727,
+      "community": 64,
       "norm_label": "dbml",
       "id": "utils_db_diagram_dbml_spec_dbml"
     },
@@ -41651,7 +41660,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-dbml.spec.ts",
       "source_location": "L449",
-      "community": 727,
+      "community": 64,
       "norm_label": "parsed",
       "id": "utils_db_diagram_dbml_spec_parsed"
     },
@@ -41660,7 +41669,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-dbml.spec.ts",
       "source_location": "L461",
-      "community": 727,
+      "community": 64,
       "norm_label": "regenerated",
       "id": "utils_db_diagram_dbml_spec_regenerated"
     },
@@ -41750,7 +41759,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L1",
-      "community": 9,
+      "community": 314,
       "norm_label": "db-diagram-persistence.spec.ts",
       "id": "src_utils_db_diagram_persistence_spec_ts"
     },
@@ -41759,7 +41768,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L7",
-      "community": 9,
+      "community": 314,
       "norm_label": "makesampleschema()",
       "id": "utils_db_diagram_persistence_spec_makesampleschema"
     },
@@ -41768,7 +41777,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L63",
-      "community": 9,
+      "community": 314,
       "norm_label": "nodes",
       "id": "utils_db_diagram_persistence_spec_nodes"
     },
@@ -41777,7 +41786,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L86",
-      "community": 9,
+      "community": 314,
       "norm_label": "edges",
       "id": "utils_db_diagram_persistence_spec_edges"
     },
@@ -41786,7 +41795,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L102",
-      "community": 9,
+      "community": 314,
       "norm_label": "schema",
       "id": "utils_db_diagram_persistence_spec_schema"
     },
@@ -41795,7 +41804,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L129",
-      "community": 9,
+      "community": 314,
       "norm_label": "json",
       "id": "utils_db_diagram_persistence_spec_json"
     },
@@ -41804,7 +41813,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L137",
-      "community": 9,
+      "community": 314,
       "norm_label": "{ edges, nodes }",
       "id": "utils_db_diagram_persistence_spec_edges_nodes"
     },
@@ -41813,7 +41822,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L162",
-      "community": 9,
+      "community": 314,
       "norm_label": "originalnodes",
       "id": "utils_db_diagram_persistence_spec_originalnodes"
     },
@@ -41822,7 +41831,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-persistence.spec.ts",
       "source_location": "L193",
-      "community": 9,
+      "community": 314,
       "norm_label": "{ nodes: restorednodes }",
       "id": "utils_db_diagram_persistence_spec_nodes_restorednodes"
     },
@@ -42416,7 +42425,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolComputationPersisted.ts",
       "source_location": "L18",
-      "community": 784,
+      "community": 369,
       "norm_label": "usetoolcomputationpersisted()",
       "id": "hooks_usetoolcomputationpersisted_usetoolcomputationpersisted"
     },
@@ -42425,7 +42434,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L1",
-      "community": 784,
+      "community": 369,
       "norm_label": "usetoolcomputationpersisted.dom.spec.tsx",
       "id": "src_hooks_usetoolcomputationpersisted_dom_spec_tsx"
     },
@@ -42434,7 +42443,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L22",
-      "community": 784,
+      "community": 369,
       "norm_label": "{ result }",
       "id": "hooks_usetoolcomputationpersisted_dom_spec_result"
     },
@@ -42443,7 +42452,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolComputationPersisted.dom.spec.tsx",
       "source_location": "L109",
-      "community": 784,
+      "community": 369,
       "norm_label": "compute",
       "id": "hooks_usetoolcomputationpersisted_dom_spec_compute"
     },
@@ -42470,7 +42479,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L1",
-      "community": 369,
+      "community": 824,
       "norm_label": "usetoolfieldspersisted.dom.spec.tsx",
       "id": "src_hooks_usetoolfieldspersisted_dom_spec_tsx"
     },
@@ -42479,7 +42488,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L9",
-      "community": 369,
+      "community": 824,
       "norm_label": "bag",
       "id": "hooks_usetoolfieldspersisted_dom_spec_bag"
     },
@@ -42488,7 +42497,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L11",
-      "community": 369,
+      "community": 824,
       "norm_label": "initial",
       "id": "hooks_usetoolfieldspersisted_dom_spec_initial"
     },
@@ -42497,7 +42506,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L25",
-      "community": 369,
+      "community": 824,
       "norm_label": "{ result }",
       "id": "hooks_usetoolfieldspersisted_dom_spec_result"
     },
@@ -42506,7 +42515,7 @@
       "file_type": "code",
       "source_file": "src/hooks/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L118",
-      "community": 369,
+      "community": 824,
       "norm_label": "compute",
       "id": "hooks_usetoolfieldspersisted_dom_spec_compute"
     },
@@ -42650,7 +42659,7 @@
       "file_type": "code",
       "source_file": "src/utils/download.ts",
       "source_location": "L15",
-      "community": 158,
+      "community": 33,
       "norm_label": "downloadblobsaszip()",
       "id": "utils_download_downloadblobsaszip"
     },
@@ -42677,7 +42686,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L47",
-      "community": 90,
+      "community": 820,
       "norm_label": "initialstate",
       "id": "code_mermaidrenderer_initialstate"
     },
@@ -42686,7 +42695,7 @@
       "file_type": "code",
       "source_file": "src/components/feature/code/MermaidRenderer.tsx",
       "source_location": "L56",
-      "community": 90,
+      "community": 820,
       "norm_label": "reducer()",
       "id": "code_mermaidrenderer_reducer"
     },
@@ -42695,7 +42704,7 @@
       "file_type": "code",
       "source_file": "src/utils/favicon.ts",
       "source_location": "L69",
-      "community": 158,
+      "community": 33,
       "norm_label": "downloadfaviconsaszip()",
       "id": "utils_favicon_downloadfaviconsaszip"
     },
@@ -42704,7 +42713,7 @@
       "file_type": "code",
       "source_file": "src/utils/splash-screen.ts",
       "source_location": "L179",
-      "community": 158,
+      "community": 33,
       "norm_label": "downloadsplashscreenzip()",
       "id": "utils_splash_screen_downloadsplashscreenzip"
     },
@@ -43091,7 +43100,7 @@
       "file_type": "code",
       "source_file": "src/utils/splash-screen.ts",
       "source_location": "L12",
-      "community": 101,
+      "community": 187,
       "norm_label": "canvastoblob()",
       "id": "utils_splash_screen_canvastoblob"
     },
@@ -65132,6 +65141,16 @@
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "src/diagram/editor.ts",
+      "source_location": "L143",
+      "weight": 1.0,
+      "source": "diagram_editor_diagrameditor",
+      "target": "diagram_editor_diagrameditor_applylifecycle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "method",
+      "confidence": "EXTRACTED",
+      "source_file": "src/diagram/editor.ts",
       "source_location": "L128",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -65465,11 +65484,11 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L68",
+      "source_location": "L85",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "diagram_editor_diagrameditor_loaddiagram",
-      "target": "diagram_editor_diagrameditor_notify"
+      "target": "diagram_editor_diagrameditor_applylifecycle",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -65487,6 +65506,39 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/diagram/editor.ts",
+      "source_location": "L68",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "diagram_editor_diagrameditor_loaddiagram",
+      "target": "diagram_editor_diagrameditor_notify"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/diagram/editor.ts",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "diagram_editor_diagrameditor_deletediagram",
+      "target": "diagram_editor_diagrameditor_applylifecycle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/diagram/editor.ts",
+      "source_location": "L77",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "diagram_editor_diagrameditor_deletediagram",
+      "target": "diagram_editor_diagrameditor_notifyindex"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/diagram/editor.ts",
       "source_location": "L75",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -65498,10 +65550,21 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L77",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "diagram_editor_diagrameditor_renamediagram",
+      "target": "diagram_editor_diagrameditor_applylifecycle",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/diagram/editor.ts",
+      "source_location": "L92",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "diagram_editor_diagrameditor_deletediagram",
+      "source": "diagram_editor_diagrameditor_renamediagram",
       "target": "diagram_editor_diagrameditor_notifyindex"
     },
     {
@@ -65520,11 +65583,11 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "src/diagram/editor.ts",
-      "source_location": "L92",
+      "source_location": "L129",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "diagram_editor_diagrameditor_renamediagram",
-      "target": "diagram_editor_diagrameditor_notifyindex"
+      "source": "diagram_editor_diagrameditor_replacedocument",
+      "target": "diagram_editor_diagrameditor_applylifecycle",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -65767,6 +65830,28 @@
       "confidence_score": 1.0,
       "source": "diagram_editor_diagrameditor_commit",
       "target": "diagram_editor_diagrameditor_newdiagram"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/diagram/editor.ts",
+      "source_location": "L145",
+      "weight": 1.0,
+      "source": "diagram_editor_diagrameditor_applylifecycle",
+      "target": "diagram_editor_diagrameditor_notify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/diagram/editor.ts",
+      "source_location": "L303",
+      "weight": 1.0,
+      "source": "diagram_editor_diagrameditor_newdiagram",
+      "target": "diagram_editor_diagrameditor_applylifecycle",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -95860,9 +95945,9 @@
       "source_file": "docs/adr/0018-wasm-facade-per-function-bodies-stay.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "docs_adr_0018_wasm_facade_per_function_bodies_stay_md",
-      "target": "adr_0018_wasm_facade_per_function_bodies_stay_adr_0018_wasm_facade_per_function_bodies_stay",
-      "confidence_score": 1.0
+      "target": "adr_0018_wasm_facade_per_function_bodies_stay_adr_0018_wasm_facade_per_function_bodies_stay"
     },
     {
       "relation": "contains",
@@ -95870,9 +95955,9 @@
       "source_file": "docs/adr/0018-wasm-facade-per-function-bodies-stay.md",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adr_0018_wasm_facade_per_function_bodies_stay_adr_0018_wasm_facade_per_function_bodies_stay",
-      "target": "adr_0018_wasm_facade_per_function_bodies_stay_context",
-      "confidence_score": 1.0
+      "target": "adr_0018_wasm_facade_per_function_bodies_stay_context"
     },
     {
       "relation": "contains",
@@ -95880,9 +95965,9 @@
       "source_file": "docs/adr/0018-wasm-facade-per-function-bodies-stay.md",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adr_0018_wasm_facade_per_function_bodies_stay_adr_0018_wasm_facade_per_function_bodies_stay",
-      "target": "adr_0018_wasm_facade_per_function_bodies_stay_decision",
-      "confidence_score": 1.0
+      "target": "adr_0018_wasm_facade_per_function_bodies_stay_decision"
     },
     {
       "relation": "contains",
@@ -95890,9 +95975,9 @@
       "source_file": "docs/adr/0018-wasm-facade-per-function-bodies-stay.md",
       "source_location": "L75",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adr_0018_wasm_facade_per_function_bodies_stay_adr_0018_wasm_facade_per_function_bodies_stay",
-      "target": "adr_0018_wasm_facade_per_function_bodies_stay_consequences",
-      "confidence_score": 1.0
+      "target": "adr_0018_wasm_facade_per_function_bodies_stay_consequences"
     },
     {
       "relation": "contains",
@@ -95900,9 +95985,9 @@
       "source_file": "docs/adr/0018-wasm-facade-per-function-bodies-stay.md",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adr_0018_wasm_facade_per_function_bodies_stay_adr_0018_wasm_facade_per_function_bodies_stay",
-      "target": "adr_0018_wasm_facade_per_function_bodies_stay_revisit_when",
-      "confidence_score": 1.0
+      "target": "adr_0018_wasm_facade_per_function_bodies_stay_revisit_when"
     },
     {
       "relation": "contains",
@@ -95910,9 +95995,9 @@
       "source_file": "docs/adr/0018-wasm-facade-per-function-bodies-stay.md",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "adr_0018_wasm_facade_per_function_bodies_stay_context",
-      "target": "adr_0018_wasm_facade_per_function_bodies_stay_codeblock_1",
-      "confidence_score": 1.0
+      "target": "adr_0018_wasm_facade_per_function_bodies_stay_codeblock_1"
     },
     {
       "relation": "contains",
@@ -119653,5 +119738,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "78875651678778c9a55232fd125986e2b33a592b"
+  "built_at_commit": "8e0316d4a4b4b87c585f8c9261743431c927b994"
 }
