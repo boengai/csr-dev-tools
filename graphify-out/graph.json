@@ -940,19 +940,10 @@
       "norm_label": "@monaco-editor/react"
     },
     {
-      "label": "@peculiar/x509",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L31",
-      "id": "csr_dev_tools_package_dependencies_peculiar_x509",
-      "community": 12,
-      "norm_label": "@peculiar/x509"
-    },
-    {
       "label": "@radix-ui/react-checkbox",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L32",
+      "source_location": "L31",
       "id": "csr_dev_tools_package_dependencies_radix_ui_react_checkbox",
       "community": 12,
       "norm_label": "@radix-ui/react-checkbox"
@@ -961,7 +952,7 @@
       "label": "@radix-ui/react-dialog",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L33",
+      "source_location": "L32",
       "id": "csr_dev_tools_package_dependencies_radix_ui_react_dialog",
       "community": 12,
       "norm_label": "@radix-ui/react-dialog"
@@ -970,7 +961,7 @@
       "label": "@radix-ui/react-dropdown-menu",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L34",
+      "source_location": "L33",
       "id": "csr_dev_tools_package_dependencies_radix_ui_react_dropdown_menu",
       "community": 12,
       "norm_label": "@radix-ui/react-dropdown-menu"
@@ -979,7 +970,7 @@
       "label": "@radix-ui/react-radio-group",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L35",
+      "source_location": "L34",
       "id": "csr_dev_tools_package_dependencies_radix_ui_react_radio_group",
       "community": 12,
       "norm_label": "@radix-ui/react-radio-group"
@@ -988,7 +979,7 @@
       "label": "@radix-ui/react-select",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L36",
+      "source_location": "L35",
       "id": "csr_dev_tools_package_dependencies_radix_ui_react_select",
       "community": 12,
       "norm_label": "@radix-ui/react-select"
@@ -997,7 +988,7 @@
       "label": "@radix-ui/react-slider",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L37",
+      "source_location": "L36",
       "id": "csr_dev_tools_package_dependencies_radix_ui_react_slider",
       "community": 12,
       "norm_label": "@radix-ui/react-slider"
@@ -1006,7 +997,7 @@
       "label": "@radix-ui/react-switch",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L37",
       "id": "csr_dev_tools_package_dependencies_radix_ui_react_switch",
       "community": 12,
       "norm_label": "@radix-ui/react-switch"
@@ -1015,7 +1006,7 @@
       "label": "@radix-ui/react-tabs",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L39",
+      "source_location": "L38",
       "id": "csr_dev_tools_package_dependencies_radix_ui_react_tabs",
       "community": 12,
       "norm_label": "@radix-ui/react-tabs"
@@ -1024,7 +1015,7 @@
       "label": "@radix-ui/react-toast",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L40",
+      "source_location": "L39",
       "id": "csr_dev_tools_package_dependencies_radix_ui_react_toast",
       "community": 12,
       "norm_label": "@radix-ui/react-toast"
@@ -1033,7 +1024,7 @@
       "label": "@tailwindcss/typography",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L41",
+      "source_location": "L40",
       "id": "csr_dev_tools_package_dependencies_tailwindcss_typography",
       "community": 12,
       "norm_label": "@tailwindcss/typography"
@@ -1042,7 +1033,7 @@
       "label": "@tanstack/react-query",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L42",
+      "source_location": "L41",
       "id": "csr_dev_tools_package_dependencies_tanstack_react_query",
       "community": 12,
       "norm_label": "@tanstack/react-query"
@@ -1051,7 +1042,7 @@
       "label": "@tanstack/react-router",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L43",
+      "source_location": "L42",
       "id": "csr_dev_tools_package_dependencies_tanstack_react_router",
       "community": 12,
       "norm_label": "@tanstack/react-router"
@@ -1060,7 +1051,7 @@
       "label": "@uiw/codemirror-themes",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L44",
+      "source_location": "L43",
       "id": "csr_dev_tools_package_dependencies_uiw_codemirror_themes",
       "community": 12,
       "norm_label": "@uiw/codemirror-themes"
@@ -1069,7 +1060,7 @@
       "label": "@uiw/react-codemirror",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L45",
+      "source_location": "L44",
       "id": "csr_dev_tools_package_dependencies_uiw_react_codemirror",
       "community": 12,
       "norm_label": "@uiw/react-codemirror"
@@ -1078,7 +1069,7 @@
       "label": "@xyflow/react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L46",
+      "source_location": "L45",
       "id": "csr_dev_tools_package_dependencies_xyflow_react",
       "community": 12,
       "norm_label": "@xyflow/react"
@@ -1087,7 +1078,7 @@
       "label": "ajv",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L47",
+      "source_location": "L46",
       "id": "csr_dev_tools_package_dependencies_ajv",
       "community": 12,
       "norm_label": "ajv"
@@ -1096,7 +1087,7 @@
       "label": "dompurify",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L48",
+      "source_location": "L47",
       "id": "csr_dev_tools_package_dependencies_dompurify",
       "community": 12,
       "norm_label": "dompurify"
@@ -1105,7 +1096,7 @@
       "label": "graphql",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L49",
+      "source_location": "L48",
       "id": "csr_dev_tools_package_dependencies_graphql",
       "community": 12,
       "norm_label": "graphql"
@@ -1114,7 +1105,7 @@
       "label": "jsonpath-plus",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L50",
+      "source_location": "L49",
       "id": "csr_dev_tools_package_dependencies_jsonpath_plus",
       "community": 12,
       "norm_label": "jsonpath-plus"
@@ -1123,7 +1114,7 @@
       "label": "jszip",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L51",
+      "source_location": "L50",
       "id": "csr_dev_tools_package_dependencies_jszip",
       "community": 12,
       "norm_label": "jszip"
@@ -1132,7 +1123,7 @@
       "label": "mermaid",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L52",
+      "source_location": "L51",
       "id": "csr_dev_tools_package_dependencies_mermaid",
       "community": 12,
       "norm_label": "mermaid"
@@ -1141,7 +1132,7 @@
       "label": "motion",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L53",
+      "source_location": "L52",
       "id": "csr_dev_tools_package_dependencies_motion",
       "community": 12,
       "norm_label": "motion"
@@ -1150,7 +1141,7 @@
       "label": "react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L54",
+      "source_location": "L53",
       "id": "csr_dev_tools_package_dependencies_react",
       "community": 12,
       "norm_label": "react"
@@ -1159,7 +1150,7 @@
       "label": "react-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L55",
+      "source_location": "L54",
       "id": "csr_dev_tools_package_dependencies_react_dom",
       "community": 12,
       "norm_label": "react-dom"
@@ -1168,25 +1159,16 @@
       "label": "react-image-crop",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L56",
+      "source_location": "L55",
       "id": "csr_dev_tools_package_dependencies_react_image_crop",
       "community": 12,
       "norm_label": "react-image-crop"
     },
     {
-      "label": "reflect-metadata",
-      "file_type": "code",
-      "source_file": "package.json",
-      "source_location": "L57",
-      "id": "csr_dev_tools_package_dependencies_reflect_metadata",
-      "community": 12,
-      "norm_label": "reflect-metadata"
-    },
-    {
       "label": "tailwind-variants",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L58",
+      "source_location": "L56",
       "id": "csr_dev_tools_package_dependencies_tailwind_variants",
       "community": 12,
       "norm_label": "tailwind-variants"
@@ -1195,7 +1177,7 @@
       "label": "tailwindcss",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L59",
+      "source_location": "L57",
       "id": "csr_dev_tools_package_dependencies_tailwindcss",
       "community": 12,
       "norm_label": "tailwindcss"
@@ -1204,7 +1186,7 @@
       "label": "zustand",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L60",
+      "source_location": "L58",
       "id": "csr_dev_tools_package_dependencies_zustand",
       "community": 12,
       "norm_label": "zustand"
@@ -1213,7 +1195,7 @@
       "label": "devDependencies",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L62",
+      "source_location": "L60",
       "id": "csr_dev_tools_package_devdependencies",
       "community": 60,
       "norm_label": "devdependencies"
@@ -1222,7 +1204,7 @@
       "label": "@playwright/test",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L63",
+      "source_location": "L61",
       "id": "csr_dev_tools_package_devdependencies_playwright_test",
       "community": 60,
       "norm_label": "@playwright/test"
@@ -1231,7 +1213,7 @@
       "label": "@tailwindcss/vite",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L64",
+      "source_location": "L62",
       "id": "csr_dev_tools_package_devdependencies_tailwindcss_vite",
       "community": 60,
       "norm_label": "@tailwindcss/vite"
@@ -1240,7 +1222,7 @@
       "label": "@testing-library/jest-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L65",
+      "source_location": "L63",
       "id": "csr_dev_tools_package_devdependencies_testing_library_jest_dom",
       "community": 60,
       "norm_label": "@testing-library/jest-dom"
@@ -1249,7 +1231,7 @@
       "label": "@testing-library/react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L66",
+      "source_location": "L64",
       "id": "csr_dev_tools_package_devdependencies_testing_library_react",
       "community": 60,
       "norm_label": "@testing-library/react"
@@ -1258,7 +1240,7 @@
       "label": "@types/node",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L67",
+      "source_location": "L65",
       "id": "csr_dev_tools_package_devdependencies_types_node",
       "community": 60,
       "norm_label": "@types/node"
@@ -1267,7 +1249,7 @@
       "label": "@types/react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L68",
+      "source_location": "L66",
       "id": "csr_dev_tools_package_devdependencies_types_react",
       "community": 60,
       "norm_label": "@types/react"
@@ -1276,7 +1258,7 @@
       "label": "@types/react-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L69",
+      "source_location": "L67",
       "id": "csr_dev_tools_package_devdependencies_types_react_dom",
       "community": 60,
       "norm_label": "@types/react-dom"
@@ -1285,7 +1267,7 @@
       "label": "@vitejs/plugin-react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L70",
+      "source_location": "L68",
       "id": "csr_dev_tools_package_devdependencies_vitejs_plugin_react",
       "community": 60,
       "norm_label": "@vitejs/plugin-react"
@@ -1294,7 +1276,7 @@
       "label": "jsdom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L71",
+      "source_location": "L69",
       "id": "csr_dev_tools_package_devdependencies_jsdom",
       "community": 60,
       "norm_label": "jsdom"
@@ -1303,7 +1285,7 @@
       "label": "oxfmt",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L72",
+      "source_location": "L70",
       "id": "csr_dev_tools_package_devdependencies_oxfmt",
       "community": 60,
       "norm_label": "oxfmt"
@@ -1312,7 +1294,7 @@
       "label": "oxlint",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L73",
+      "source_location": "L71",
       "id": "csr_dev_tools_package_devdependencies_oxlint",
       "community": 60,
       "norm_label": "oxlint"
@@ -1321,7 +1303,7 @@
       "label": "typescript",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L74",
+      "source_location": "L72",
       "id": "csr_dev_tools_package_devdependencies_typescript",
       "community": 60,
       "norm_label": "typescript"
@@ -1330,7 +1312,7 @@
       "label": "vite",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L75",
+      "source_location": "L73",
       "id": "csr_dev_tools_package_devdependencies_vite",
       "community": 60,
       "norm_label": "vite"
@@ -1339,7 +1321,7 @@
       "label": "vite-plugin-wasm",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L76",
+      "source_location": "L74",
       "id": "csr_dev_tools_package_devdependencies_vite_plugin_wasm",
       "community": 60,
       "norm_label": "vite-plugin-wasm"
@@ -1348,7 +1330,7 @@
       "label": "vitest",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L77",
+      "source_location": "L75",
       "id": "csr_dev_tools_package_devdependencies_vitest",
       "community": 60,
       "norm_label": "vitest"
@@ -1357,7 +1339,7 @@
       "label": "peerDependencies",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L79",
+      "source_location": "L77",
       "id": "csr_dev_tools_package_peerdependencies",
       "community": 104,
       "norm_label": "peerdependencies"
@@ -1366,7 +1348,7 @@
       "label": "tailwind-merge",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L80",
+      "source_location": "L78",
       "id": "csr_dev_tools_package_peerdependencies_tailwind_merge",
       "community": 104,
       "norm_label": "tailwind-merge"
@@ -1375,43 +1357,43 @@
       "label": "pnpm",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L82",
+      "source_location": "L80",
       "id": "csr_dev_tools_package_pnpm",
-      "community": 104,
+      "community": 826,
       "norm_label": "pnpm"
     },
     {
       "label": "supportedArchitectures",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L83",
+      "source_location": "L81",
       "id": "csr_dev_tools_package_pnpm_supportedarchitectures",
-      "community": 104,
+      "community": 826,
       "norm_label": "supportedarchitectures"
     },
     {
       "label": "os",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L84",
+      "source_location": "L82",
       "id": "csr_dev_tools_package_supportedarchitectures_os",
-      "community": 104,
+      "community": 826,
       "norm_label": "os"
     },
     {
       "label": "cpu",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L89",
+      "source_location": "L87",
       "id": "csr_dev_tools_package_supportedarchitectures_cpu",
-      "community": 104,
+      "community": 826,
       "norm_label": "cpu"
     },
     {
       "label": "packageManager",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L96",
+      "source_location": "L94",
       "id": "csr_dev_tools_package_packagemanager",
       "community": 104,
       "norm_label": "packagemanager"
@@ -1420,7 +1402,7 @@
       "label": "engines",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L97",
+      "source_location": "L95",
       "id": "csr_dev_tools_package_engines",
       "community": 104,
       "norm_label": "engines"
@@ -1429,7 +1411,7 @@
       "label": "node",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L98",
+      "source_location": "L96",
       "id": "csr_dev_tools_package_engines_node",
       "community": 104,
       "norm_label": "node"
@@ -1438,7 +1420,7 @@
       "label": "sideEffects",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L100",
+      "source_location": "L98",
       "id": "csr_dev_tools_package_sideeffects",
       "community": 104,
       "norm_label": "sideeffects"
@@ -2475,7 +2457,7 @@
       "source_file": "e2e/protobuf-to-json.spec.ts",
       "source_location": "L1",
       "id": "e2e_protobuf_to_json_spec_ts",
-      "community": 293,
+      "community": 38,
       "norm_label": "protobuf-to-json.spec.ts"
     },
     {
@@ -2484,7 +2466,7 @@
       "source_file": "e2e/protobuf-to-json.spec.ts",
       "source_location": "L100",
       "id": "e2e_protobuf_to_json_spec_editor",
-      "community": 293,
+      "community": 38,
       "norm_label": "editor"
     },
     {
@@ -2493,7 +2475,7 @@
       "source_file": "e2e/protobuf-to-json.spec.ts",
       "source_location": "L127",
       "id": "e2e_protobuf_to_json_spec_outputpanel",
-      "community": 293,
+      "community": 38,
       "norm_label": "outputpanel"
     },
     {
@@ -2502,7 +2484,7 @@
       "source_file": "e2e/protobuf-to-json.spec.ts",
       "source_location": "L176",
       "id": "e2e_protobuf_to_json_spec_preelement",
-      "community": 293,
+      "community": 38,
       "norm_label": "preelement"
     },
     {
@@ -2952,7 +2934,7 @@
       "source_file": "e2e/color-palette-generator.spec.ts",
       "source_location": "L1",
       "id": "e2e_color_palette_generator_spec_ts",
-      "community": 265,
+      "community": 38,
       "norm_label": "color-palette-generator.spec.ts"
     },
     {
@@ -2961,7 +2943,7 @@
       "source_file": "e2e/color-palette-generator.spec.ts",
       "source_location": "L19",
       "id": "e2e_color_palette_generator_spec_swatches",
-      "community": 265,
+      "community": 38,
       "norm_label": "swatches"
     },
     {
@@ -2970,7 +2952,7 @@
       "source_file": "e2e/color-palette-generator.spec.ts",
       "source_location": "L24",
       "id": "e2e_color_palette_generator_spec_hexinput",
-      "community": 265,
+      "community": 38,
       "norm_label": "hexinput"
     },
     {
@@ -2979,7 +2961,7 @@
       "source_file": "e2e/color-palette-generator.spec.ts",
       "source_location": "L43",
       "id": "e2e_color_palette_generator_spec_firstswatch",
-      "community": 265,
+      "community": 38,
       "norm_label": "firstswatch"
     },
     {
@@ -2988,7 +2970,7 @@
       "source_file": "e2e/color-palette-generator.spec.ts",
       "source_location": "L56",
       "id": "e2e_color_palette_generator_spec_picker",
-      "community": 265,
+      "community": 38,
       "norm_label": "picker"
     },
     {
@@ -3346,7 +3328,7 @@
       "label": "restoredNode",
       "file_type": "code",
       "source_file": "e2e/db-diagram.spec.ts",
-      "source_location": "L170",
+      "source_location": "L175",
       "id": "e2e_db_diagram_spec_restorednode",
       "community": 117,
       "norm_label": "restorednode"
@@ -3355,7 +3337,7 @@
       "label": "diagramNameInput",
       "file_type": "code",
       "source_file": "e2e/db-diagram.spec.ts",
-      "source_location": "L200",
+      "source_location": "L205",
       "id": "e2e_db_diagram_spec_diagramnameinput",
       "community": 117,
       "norm_label": "diagramnameinput"
@@ -3364,7 +3346,7 @@
       "label": "fileChooserPromise",
       "file_type": "code",
       "source_file": "e2e/db-diagram.spec.ts",
-      "source_location": "L351",
+      "source_location": "L356",
       "id": "e2e_db_diagram_spec_filechooserpromise",
       "community": 117,
       "norm_label": "filechooserpromise"
@@ -3400,7 +3382,7 @@
       "label": "autoOpenDialogTools",
       "file_type": "code",
       "source_file": "e2e/image-tools.spec.ts",
-      "source_location": "L34",
+      "source_location": "L35",
       "id": "e2e_image_tools_spec_autoopendialogtools",
       "community": 224,
       "norm_label": "autoopendialogtools"
@@ -3613,13 +3595,13 @@
       "norm_label": "encoding-tools.spec.ts"
     },
     {
-      "label": "input",
+      "label": "dialog",
       "file_type": "code",
       "source_file": "e2e/encoding-tools.spec.ts",
-      "source_location": "L11",
-      "id": "e2e_encoding_tools_spec_input",
+      "source_location": "L10",
+      "id": "e2e_encoding_tools_spec_dialog",
       "community": 28,
-      "norm_label": "input"
+      "norm_label": "dialog"
     },
     {
       "label": "output",
@@ -3629,6 +3611,15 @@
       "id": "e2e_encoding_tools_spec_output",
       "community": 28,
       "norm_label": "output"
+    },
+    {
+      "label": "input",
+      "file_type": "code",
+      "source_file": "e2e/encoding-tools.spec.ts",
+      "source_location": "L36",
+      "id": "e2e_encoding_tools_spec_input",
+      "community": 28,
+      "norm_label": "input"
     },
     {
       "label": "aspect-ratio-calculator.spec.ts",
@@ -3888,34 +3879,25 @@
       "source_file": "e2e/html-entity-converter.spec.ts",
       "source_location": "L1",
       "id": "e2e_html_entity_converter_spec_ts",
-      "community": 294,
+      "community": 58,
       "norm_label": "html-entity-converter.spec.ts"
     },
     {
       "label": "dialog",
       "file_type": "code",
       "source_file": "e2e/html-entity-converter.spec.ts",
-      "source_location": "L9",
+      "source_location": "L11",
       "id": "e2e_html_entity_converter_spec_dialog",
-      "community": 294,
+      "community": 58,
       "norm_label": "dialog"
-    },
-    {
-      "label": "input",
-      "file_type": "code",
-      "source_file": "e2e/html-entity-converter.spec.ts",
-      "source_location": "L12",
-      "id": "e2e_html_entity_converter_spec_input",
-      "community": 294,
-      "norm_label": "input"
     },
     {
       "label": "output",
       "file_type": "code",
       "source_file": "e2e/html-entity-converter.spec.ts",
-      "source_location": "L15",
+      "source_location": "L16",
       "id": "e2e_html_entity_converter_spec_output",
-      "community": 294,
+      "community": 58,
       "norm_label": "output"
     },
     {
@@ -9090,7 +9072,7 @@
       "source_file": "src/diagram/state.ts",
       "source_location": "L3",
       "id": "diagram_state_createinitialdocument",
-      "community": 63,
+      "community": 9,
       "norm_label": "createinitialdocument()"
     },
     {
@@ -9207,7 +9189,7 @@
       "source_file": "src/diagram/projections.ts",
       "source_location": "L1",
       "id": "src_diagram_projections_ts",
-      "community": 63,
+      "community": 311,
       "norm_label": "projections.ts"
     },
     {
@@ -9216,7 +9198,7 @@
       "source_file": "src/diagram/projections.ts",
       "source_location": "L3",
       "id": "diagram_projections_documenttoflow",
-      "community": 63,
+      "community": 311,
       "norm_label": "documenttoflow()"
     },
     {
@@ -9900,7 +9882,7 @@
       "source_file": "src/diagram/layout.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_layout_spec_ts",
-      "community": 370,
+      "community": 186,
       "norm_label": "layout.spec.ts"
     },
     {
@@ -9909,7 +9891,7 @@
       "source_file": "src/diagram/layout.spec.ts",
       "source_location": "L15",
       "id": "diagram_layout_spec_positions",
-      "community": 370,
+      "community": 186,
       "norm_label": "positions"
     },
     {
@@ -9918,7 +9900,7 @@
       "source_file": "src/diagram/layout.spec.ts",
       "source_location": "L43",
       "id": "diagram_layout_spec_keys",
-      "community": 370,
+      "community": 186,
       "norm_label": "keys"
     },
     {
@@ -9963,7 +9945,7 @@
       "source_file": "src/diagram/layout.ts",
       "source_location": "L1",
       "id": "src_diagram_layout_ts",
-      "community": 370,
+      "community": 186,
       "norm_label": "layout.ts"
     },
     {
@@ -9972,7 +9954,7 @@
       "source_file": "src/diagram/layout.ts",
       "source_location": "L1",
       "id": "diagram_layout_gridlayoutpositions",
-      "community": 370,
+      "community": 186,
       "norm_label": "gridlayoutpositions()"
     },
     {
@@ -9981,7 +9963,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_projections_spec_ts",
-      "community": 63,
+      "community": 311,
       "norm_label": "projections.spec.ts"
     },
     {
@@ -9990,7 +9972,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L8",
       "id": "diagram_projections_spec_docwithonetable",
-      "community": 63,
+      "community": 311,
       "norm_label": "docwithonetable()"
     },
     {
@@ -9999,7 +9981,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L30",
       "id": "diagram_projections_spec_nodes_edges",
-      "community": 63,
+      "community": 311,
       "norm_label": "{ nodes, edges }"
     },
     {
@@ -10008,7 +9990,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L42",
       "id": "diagram_projections_spec_doc",
-      "community": 63,
+      "community": 311,
       "norm_label": "doc"
     },
     {
@@ -10017,7 +9999,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L45",
       "id": "diagram_projections_spec_nodes",
-      "community": 63,
+      "community": 311,
       "norm_label": "{ nodes }"
     },
     {
@@ -10026,7 +10008,7 @@
       "source_file": "src/diagram/projections.spec.ts",
       "source_location": "L74",
       "id": "diagram_projections_spec_edges",
-      "community": 63,
+      "community": 311,
       "norm_label": "{ edges }"
     },
     {
@@ -10035,7 +10017,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L1",
       "id": "src_diagram_id_minters_spec_ts",
-      "community": 311,
+      "community": 63,
       "norm_label": "id-minters.spec.ts"
     },
     {
@@ -10044,7 +10026,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L7",
       "id": "diagram_id_minters_spec_minters",
-      "community": 311,
+      "community": 63,
       "norm_label": "minters"
     },
     {
@@ -10053,7 +10035,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L17",
       "id": "diagram_id_minters_spec_a",
-      "community": 311,
+      "community": 63,
       "norm_label": "a"
     },
     {
@@ -10062,7 +10044,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L18",
       "id": "diagram_id_minters_spec_b",
-      "community": 311,
+      "community": 63,
       "norm_label": "b"
     },
     {
@@ -10071,7 +10053,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L35",
       "id": "diagram_id_minters_spec_ids",
-      "community": 311,
+      "community": 63,
       "norm_label": "ids"
     },
     {
@@ -10080,7 +10062,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L41",
       "id": "diagram_id_minters_spec_t1",
-      "community": 311,
+      "community": 63,
       "norm_label": "t1"
     },
     {
@@ -10089,7 +10071,7 @@
       "source_file": "src/diagram/id-minters.spec.ts",
       "source_location": "L42",
       "id": "diagram_id_minters_spec_c1",
-      "community": 311,
+      "community": 63,
       "norm_label": "c1"
     },
     {
@@ -11160,7 +11142,7 @@
       "source_file": "src/diagram/codecs/persistence.ts",
       "source_location": "L106",
       "id": "codecs_persistence_validatediagramschema",
-      "community": 85,
+      "community": 9,
       "norm_label": "validatediagramschema()"
     },
     {
@@ -11533,6 +11515,15 @@
       "norm_label": "schematodocument()"
     },
     {
+      "label": "mergeSchemaIntoDocument()",
+      "file_type": "code",
+      "source_file": "src/diagram/operations/lifecycle.ts",
+      "source_location": "L44",
+      "id": "operations_lifecycle_mergeschemaintodocument",
+      "community": 773,
+      "norm_label": "mergeschemaintodocument()"
+    },
+    {
       "label": "columns.ts",
       "file_type": "code",
       "source_file": "src/diagram/operations/columns.ts",
@@ -11844,7 +11835,7 @@
       "source_file": "src/diagram/operations/export.spec.ts",
       "source_location": "L12",
       "id": "operations_export_spec_seed",
-      "community": 41,
+      "community": 771,
       "norm_label": "seed()"
     },
     {
@@ -11896,7 +11887,7 @@
       "label": "importFromJsonSchema()",
       "file_type": "code",
       "source_file": "src/diagram/operations/import.ts",
-      "source_location": "L28",
+      "source_location": "L30",
       "id": "operations_import_importfromjsonschema",
       "community": 773,
       "norm_label": "importfromjsonschema()"
@@ -12393,7 +12384,7 @@
       "source_file": "src/utils/image-base64.spec.ts",
       "source_location": "L1",
       "id": "src_utils_image_base64_spec_ts",
-      "community": 727,
+      "community": 79,
       "norm_label": "image-base64.spec.ts"
     },
     {
@@ -16330,28 +16321,10 @@
       "norm_label": "certificate-decoder.ts"
     },
     {
-      "label": "KEY_USAGE_FLAGS",
-      "file_type": "code",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L10",
-      "id": "utils_certificate_decoder_key_usage_flags",
-      "community": 39,
-      "norm_label": "key_usage_flags"
-    },
-    {
-      "label": "EKU_NAMES",
-      "file_type": "code",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L22",
-      "id": "utils_certificate_decoder_eku_names",
-      "community": 39,
-      "norm_label": "eku_names"
-    },
-    {
       "label": "getValidityStatus()",
       "file_type": "code",
       "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L31",
+      "source_location": "L11",
       "id": "utils_certificate_decoder_getvaliditystatus",
       "community": 39,
       "norm_label": "getvaliditystatus()"
@@ -16360,7 +16333,7 @@
       "label": "isValidPemCertificate()",
       "file_type": "code",
       "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L41",
+      "source_location": "L21",
       "id": "utils_certificate_decoder_isvalidpemcertificate",
       "community": 39,
       "norm_label": "isvalidpemcertificate()"
@@ -16369,88 +16342,16 @@
       "label": "formatDistinguishedName()",
       "file_type": "code",
       "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L45",
+      "source_location": "L25",
       "id": "utils_certificate_decoder_formatdistinguishedname",
       "community": 39,
       "norm_label": "formatdistinguishedname()"
     },
     {
-      "label": "formatSerialNumber()",
-      "file_type": "code",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L68",
-      "id": "utils_certificate_decoder_formatserialnumber",
-      "community": 39,
-      "norm_label": "formatserialnumber()"
-    },
-    {
-      "label": "toHex()",
-      "file_type": "code",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L75",
-      "id": "utils_certificate_decoder_tohex",
-      "community": 39,
-      "norm_label": "tohex()"
-    },
-    {
-      "label": "formatHexId()",
-      "file_type": "code",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L79",
-      "id": "utils_certificate_decoder_formathexid",
-      "community": 39,
-      "norm_label": "formathexid()"
-    },
-    {
-      "label": "getPublicKeyAlgorithmInfo()",
-      "file_type": "code",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L85",
-      "id": "utils_certificate_decoder_getpublickeyalgorithminfo",
-      "community": 39,
-      "norm_label": "getpublickeyalgorithminfo()"
-    },
-    {
-      "label": "parseSanExtension()",
-      "file_type": "code",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L107",
-      "id": "utils_certificate_decoder_parsesanextension",
-      "community": 39,
-      "norm_label": "parsesanextension()"
-    },
-    {
-      "label": "parseKeyUsageExtension()",
-      "file_type": "code",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L134",
-      "id": "utils_certificate_decoder_parsekeyusageextension",
-      "community": 39,
-      "norm_label": "parsekeyusageextension()"
-    },
-    {
-      "label": "parseEkuExtension()",
-      "file_type": "code",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L151",
-      "id": "utils_certificate_decoder_parseekuextension",
-      "community": 39,
-      "norm_label": "parseekuextension()"
-    },
-    {
-      "label": "parseBasicConstraintsExtension()",
-      "file_type": "code",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L165",
-      "id": "utils_certificate_decoder_parsebasicconstraintsextension",
-      "community": 39,
-      "norm_label": "parsebasicconstraintsextension()"
-    },
-    {
       "label": "parsePemCertificate()",
       "file_type": "code",
       "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L179",
+      "source_location": "L48",
       "id": "utils_certificate_decoder_parsepemcertificate",
       "community": 39,
       "norm_label": "parsepemcertificate()"
@@ -17145,7 +17046,7 @@
       "source_file": "src/utils/image-base64.ts",
       "source_location": "L1",
       "id": "src_utils_image_base64_ts",
-      "community": 727,
+      "community": 79,
       "norm_label": "image-base64.ts"
     },
     {
@@ -17154,7 +17055,7 @@
       "source_file": "src/utils/image-base64.ts",
       "source_location": "L6",
       "id": "utils_image_base64_imagefiletobase64",
-      "community": 727,
+      "community": 79,
       "norm_label": "imagefiletobase64()"
     },
     {
@@ -17163,7 +17064,7 @@
       "source_file": "src/utils/image-base64.ts",
       "source_location": "L28",
       "id": "utils_image_base64_formatbase64size",
-      "community": 727,
+      "community": 79,
       "norm_label": "formatbase64size()"
     },
     {
@@ -21060,7 +20961,7 @@
       "source_file": "src/components/feature/security/CertificateDecoder.tsx",
       "source_location": "L109",
       "id": "security_certificatedecoder_certificatedecoder",
-      "community": 15,
+      "community": 731,
       "norm_label": "certificatedecoder()"
     },
     {
@@ -22509,7 +22410,7 @@
       "source_file": "src/components/feature/image/ImageToBase64.tsx",
       "source_location": "L1",
       "id": "src_components_feature_image_imagetobase64_tsx",
-      "community": 727,
+      "community": 79,
       "norm_label": "imagetobase64.tsx"
     },
     {
@@ -22518,7 +22419,7 @@
       "source_file": "src/components/feature/image/ImageToBase64.tsx",
       "source_location": "L12",
       "id": "image_imagetobase64_imagetobase64",
-      "community": 727,
+      "community": 79,
       "norm_label": "imagetobase64()"
     },
     {
@@ -22689,7 +22590,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L1",
       "id": "src_components_feature_image_placeholderimagegenerator_tsx",
-      "community": 135,
+      "community": 727,
       "norm_label": "placeholderimagegenerator.tsx"
     },
     {
@@ -22698,7 +22599,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L23",
       "id": "image_placeholderimagegenerator_preset_options",
-      "community": 135,
+      "community": 727,
       "norm_label": "preset_options"
     },
     {
@@ -22707,7 +22608,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L28",
       "id": "image_placeholderimagegenerator_topickerhex",
-      "community": 135,
+      "community": 727,
       "norm_label": "topickerhex()"
     },
     {
@@ -22716,7 +22617,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L34",
       "id": "image_placeholderimagegenerator_buildoptions",
-      "community": 135,
+      "community": 727,
       "norm_label": "buildoptions()"
     },
     {
@@ -22734,7 +22635,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L54",
       "id": "image_placeholderimagegenerator_initialstate",
-      "community": 135,
+      "community": 727,
       "norm_label": "initialstate"
     },
     {
@@ -22743,7 +22644,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L64",
       "id": "image_placeholderimagegenerator_reducer",
-      "community": 135,
+      "community": 727,
       "norm_label": "reducer()"
     },
     {
@@ -22752,7 +22653,7 @@
       "source_file": "src/components/feature/image/PlaceholderImageGenerator.tsx",
       "source_location": "L95",
       "id": "image_placeholderimagegenerator_placeholderimagegenerator",
-      "community": 135,
+      "community": 727,
       "norm_label": "placeholderimagegenerator()"
     },
     {
@@ -25272,7 +25173,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_usetimeoutref_dom_spec_tsx",
-      "community": 106,
+      "community": 294,
       "norm_label": "usetimeoutref.dom.spec.tsx"
     },
     {
@@ -25281,7 +25182,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L19",
       "id": "hooks_usetimeoutref_dom_spec_cb",
-      "community": 106,
+      "community": 294,
       "norm_label": "cb"
     },
     {
@@ -25290,7 +25191,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L20",
       "id": "hooks_usetimeoutref_dom_spec_result",
-      "community": 106,
+      "community": 294,
       "norm_label": "{ result }"
     },
     {
@@ -25299,7 +25200,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L34",
       "id": "hooks_usetimeoutref_dom_spec_first",
-      "community": 106,
+      "community": 294,
       "norm_label": "first"
     },
     {
@@ -25308,7 +25209,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L35",
       "id": "hooks_usetimeoutref_dom_spec_second",
-      "community": 106,
+      "community": 294,
       "norm_label": "second"
     },
     {
@@ -25317,7 +25218,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L84",
       "id": "hooks_usetimeoutref_dom_spec_result_unmount",
-      "community": 106,
+      "community": 294,
       "norm_label": "{ result, unmount }"
     },
     {
@@ -25326,7 +25227,7 @@
       "source_file": "src/hooks/useTimeoutRef.dom.spec.tsx",
       "source_location": "L98",
       "id": "hooks_usetimeoutref_dom_spec_result_rerender",
-      "community": 106,
+      "community": 294,
       "norm_label": "{ result, rerender }"
     },
     {
@@ -25668,7 +25569,7 @@
       "source_file": "src/hooks/useTimeoutRef.ts",
       "source_location": "L1",
       "id": "src_hooks_usetimeoutref_ts",
-      "community": 106,
+      "community": 294,
       "norm_label": "usetimeoutref.ts"
     },
     {
@@ -25677,7 +25578,7 @@
       "source_file": "src/hooks/useTimeoutRef.ts",
       "source_location": "L14",
       "id": "hooks_usetimeoutref_usetimeoutref",
-      "community": 106,
+      "community": 294,
       "norm_label": "usetimeoutref()"
     },
     {
@@ -26307,7 +26208,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L1",
       "id": "src_hooks_persist_usetoolfieldspersisted_dom_spec_tsx",
-      "community": 826,
+      "community": 369,
       "norm_label": "usetoolfieldspersisted.dom.spec.tsx"
     },
     {
@@ -26316,7 +26217,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L9",
       "id": "persist_usetoolfieldspersisted_dom_spec_bag",
-      "community": 826,
+      "community": 369,
       "norm_label": "bag"
     },
     {
@@ -26325,7 +26226,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L11",
       "id": "persist_usetoolfieldspersisted_dom_spec_initial",
-      "community": 826,
+      "community": 369,
       "norm_label": "initial"
     },
     {
@@ -26334,7 +26235,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L25",
       "id": "persist_usetoolfieldspersisted_dom_spec_result",
-      "community": 826,
+      "community": 369,
       "norm_label": "{ result }"
     },
     {
@@ -26343,7 +26244,7 @@
       "source_file": "src/hooks/persist/useToolFieldsPersisted.dom.spec.tsx",
       "source_location": "L118",
       "id": "persist_usetoolfieldspersisted_dom_spec_compute",
-      "community": 826,
+      "community": 369,
       "norm_label": "compute"
     },
     {
@@ -30017,6 +29918,249 @@
       "id": "plans_2026_04_06_wasm_phase3_text_processing_codeblock_32",
       "community": 364,
       "norm_label": "code:bash (git add benchmarks/)"
+    },
+    {
+      "label": "2026-05-19-certificate-decoder-wasm.md",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L1",
+      "id": "docs_superpowers_plans_2026_05_19_certificate_decoder_wasm_md",
+      "community": 293,
+      "norm_label": "2026-05-19-certificate-decoder-wasm.md"
+    },
+    {
+      "label": "Certificate Decoder WASM Migration \u2014 Implementation Plan",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L1",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_certificate_decoder_wasm_migration_implementation_plan",
+      "community": 293,
+      "norm_label": "certificate decoder wasm migration \u2014 implementation plan"
+    },
+    {
+      "label": "File Structure",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L15",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_file_structure",
+      "community": 293,
+      "norm_label": "file structure"
+    },
+    {
+      "label": "Task 1: Scaffold the Rust crate",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L40",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_task_1_scaffold_the_rust_crate",
+      "community": 293,
+      "norm_label": "task 1: scaffold the rust crate"
+    },
+    {
+      "label": "code:toml ([package])",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L50",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_1",
+      "community": 293,
+      "norm_label": "code:toml ([package])"
+    },
+    {
+      "label": "code:rust (use wasm_bindgen::prelude::*;)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L78",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_2",
+      "community": 293,
+      "norm_label": "code:rust (use wasm_bindgen::prelude::*;)"
+    },
+    {
+      "label": "Task 2: Implement OID \u2192 algorithm/curve maps",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L125",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_task_2_implement_oid_algorithm_curve_maps",
+      "community": 293,
+      "norm_label": "task 2: implement oid \u2192 algorithm/curve maps"
+    },
+    {
+      "label": "code:rust (// at the bottom of algorithms.rs (created in Step 2))",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L132",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_3",
+      "community": 293,
+      "norm_label": "code:rust (// at the bottom of algorithms.rs (created in step 2))"
+    },
+    {
+      "label": "code:rust (use x509_parser::der_parser::oid::Oid;)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L179",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_4",
+      "community": 293,
+      "norm_label": "code:rust (use x509_parser::der_parser::oid::oid;)"
+    },
+    {
+      "label": "Task 3: Implement extension formatters",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L281",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_task_3_implement_extension_formatters",
+      "community": 293,
+      "norm_label": "task 3: implement extension formatters"
+    },
+    {
+      "label": "code:rust (#[cfg(test)])",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L290",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_5",
+      "community": 293,
+      "norm_label": "code:rust (#[cfg(test)])"
+    },
+    {
+      "label": "code:rust (use serde::Serialize;)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L337",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_6",
+      "community": 293,
+      "norm_label": "code:rust (use serde::serialize;)"
+    },
+    {
+      "label": "Task 4: Implement `decode.rs`, finish the crate, commit",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L487",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_task_4_implement_decode_rs_finish_the_crate_commit",
+      "community": 293,
+      "norm_label": "task 4: implement `decode.rs`, finish the crate, commit"
+    },
+    {
+      "label": "code:rust (use serde::Serialize;)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L494",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_7",
+      "community": 293,
+      "norm_label": "code:rust (use serde::serialize;)"
+    },
+    {
+      "label": "code:bash (git add wasm/crates/certificate/ wasm/pkg/certificate/)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L625",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_8",
+      "community": 293,
+      "norm_label": "code:bash (git add wasm/crates/certificate/ wasm/pkg/certificate/)"
+    },
+    {
+      "label": "Task 5: Add the JS seam, verify end-to-end",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L641",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_task_5_add_the_js_seam_verify_end_to_end",
+      "community": 293,
+      "norm_label": "task 5: add the js seam, verify end-to-end"
+    },
+    {
+      "label": "code:ts (import type { CertificateInfo } from '@/types/utils/certific)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L648",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_9",
+      "community": 293,
+      "norm_label": "code:ts (import type { certificateinfo } from '@/types/utils/certific)"
+    },
+    {
+      "label": "code:bash (git add src/wasm/certificate.ts)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L681",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_10",
+      "community": 293,
+      "norm_label": "code:bash (git add src/wasm/certificate.ts)"
+    },
+    {
+      "label": "Task 6: Swap `parsePemCertificate` body + add Date assertion",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L696",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_task_6_swap_parsepemcertificate_body_add_date_assertion",
+      "community": 293,
+      "norm_label": "task 6: swap `parsepemcertificate` body + add date assertion"
+    },
+    {
+      "label": "code:ts (it('returns notBefore/notAfter as Date instances that ISO-ro)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L706",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_11",
+      "community": 293,
+      "norm_label": "code:ts (it('returns notbefore/notafter as date instances that iso-ro)"
+    },
+    {
+      "label": "code:ts (import type { ValidityStatus, CertificateExtension, Certific)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L727",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_12",
+      "community": 293,
+      "norm_label": "code:ts (import type { validitystatus, certificateextension, certific)"
+    },
+    {
+      "label": "code:bash (git add src/utils/certificate-decoder.ts src/utils/certifica)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L847",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_13",
+      "community": 293,
+      "norm_label": "code:bash (git add src/utils/certificate-decoder.ts src/utils/certifica)"
+    },
+    {
+      "label": "Task 7: Drop `@peculiar/x509` + `reflect-metadata`, verify, commit",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L865",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_task_7_drop_peculiar_x509_reflect_metadata_verify_commit",
+      "community": 293,
+      "norm_label": "task 7: drop `@peculiar/x509` + `reflect-metadata`, verify, commit"
+    },
+    {
+      "label": "code:diff (- \"@peculiar/x509\": \"2.0.0\",)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L880",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_14",
+      "community": 293,
+      "norm_label": "code:diff (- \"@peculiar/x509\": \"2.0.0\",)"
+    },
+    {
+      "label": "code:bash (cd wasm && cargo test -p certificate && cd ..)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L894",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_15",
+      "community": 293,
+      "norm_label": "code:bash (cd wasm && cargo test -p certificate && cd ..)"
+    },
+    {
+      "label": "code:bash (git add package.json pnpm-lock.yaml)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L907",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_codeblock_16",
+      "community": 293,
+      "norm_label": "code:bash (git add package.json pnpm-lock.yaml)"
+    },
+    {
+      "label": "Self-review checklist",
+      "file_type": "document",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L926",
+      "id": "plans_2026_05_19_certificate_decoder_wasm_self_review_checklist",
+      "community": 293,
+      "norm_label": "self-review checklist"
     },
     {
       "label": "2026-04-06-wasm-phase2-crypto.md",
@@ -37219,6 +37363,321 @@
       "norm_label": "expected performance"
     },
     {
+      "label": "2026-05-19-certificate-decoder-wasm-design.md",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L1",
+      "id": "docs_superpowers_specs_2026_05_19_certificate_decoder_wasm_design_md",
+      "community": 265,
+      "norm_label": "2026-05-19-certificate-decoder-wasm-design.md"
+    },
+    {
+      "label": "Certificate Decoder \u2192 WASM Migration",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L1",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "community": 265,
+      "norm_label": "certificate decoder \u2192 wasm migration"
+    },
+    {
+      "label": "Goal",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L8",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_goal",
+      "community": 265,
+      "norm_label": "goal"
+    },
+    {
+      "label": "Public API of `src/utils/certificate-decoder.ts`",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L12",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_public_api_of_src_utils_certificate_decoder_ts",
+      "community": 265,
+      "norm_label": "public api of `src/utils/certificate-decoder.ts`"
+    },
+    {
+      "label": "Non-goals",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L25",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_non_goals",
+      "community": 265,
+      "norm_label": "non-goals"
+    },
+    {
+      "label": "Architecture",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L32",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_architecture",
+      "community": 265,
+      "norm_label": "architecture"
+    },
+    {
+      "label": "code:block1 (wasm/crates/certificate/                         (new Rust c)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L34",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_1",
+      "community": 265,
+      "norm_label": "code:block1 (wasm/crates/certificate/                         (new rust c)"
+    },
+    {
+      "label": "Why a new `certificate` crate (not in `parsers/`)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L67",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_why_a_new_certificate_crate_not_in_parsers",
+      "community": 265,
+      "norm_label": "why a new `certificate` crate (not in `parsers/`)"
+    },
+    {
+      "label": "Why JSON-string return (not `serde-wasm-bindgen`)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L71",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_why_json_string_return_not_serde_wasm_bindgen",
+      "community": 265,
+      "norm_label": "why json-string return (not `serde-wasm-bindgen`)"
+    },
+    {
+      "label": "FFI surface",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L75",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_ffi_surface",
+      "community": 265,
+      "norm_label": "ffi surface"
+    },
+    {
+      "label": "code:rust (#[wasm_bindgen])",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L79",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_2",
+      "community": 265,
+      "norm_label": "code:rust (#[wasm_bindgen])"
+    },
+    {
+      "label": "code:jsonc ({)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L88",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_3",
+      "community": 265,
+      "norm_label": "code:jsonc ({)"
+    },
+    {
+      "label": "JS internals (`src/wasm/certificate.ts`)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L109",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_js_internals_src_wasm_certificate_ts",
+      "community": 265,
+      "norm_label": "js internals (`src/wasm/certificate.ts`)"
+    },
+    {
+      "label": "code:ts (import type { CertificateInfo } from '@/types/utils/certific)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L111",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_4",
+      "community": 265,
+      "norm_label": "code:ts (import type { certificateinfo } from '@/types/utils/certific)"
+    },
+    {
+      "label": "Rewritten `parsePemCertificate` body (sketch)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L138",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_rewritten_parsepemcertificate_body_sketch",
+      "community": 265,
+      "norm_label": "rewritten `parsepemcertificate` body (sketch)"
+    },
+    {
+      "label": "code:ts (export const parsePemCertificate = async (input: string): Pr)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L140",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_5",
+      "community": 265,
+      "norm_label": "code:ts (export const parsepemcertificate = async (input: string): pr)"
+    },
+    {
+      "label": "Input pre-validation (stays in JS)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L165",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_input_pre_validation_stays_in_js",
+      "community": 265,
+      "norm_label": "input pre-validation (stays in js)"
+    },
+    {
+      "label": "Date / validity split",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L178",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_date_validity_split",
+      "community": 265,
+      "norm_label": "date / validity split"
+    },
+    {
+      "label": "OID \u2192 human name mapping (Rust-side)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L188",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_oid_human_name_mapping_rust_side",
+      "community": 265,
+      "norm_label": "oid \u2192 human name mapping (rust-side)"
+    },
+    {
+      "label": "Signature-algorithm formatting",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L200",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_signature_algorithm_formatting",
+      "community": 265,
+      "norm_label": "signature-algorithm formatting"
+    },
+    {
+      "label": "Public key size extraction",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L204",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_public_key_size_extraction",
+      "community": 265,
+      "norm_label": "public key size extraction"
+    },
+    {
+      "label": "code:rust (match spki.algorithm.algorithm {)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L206",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_6",
+      "community": 265,
+      "norm_label": "code:rust (match spki.algorithm.algorithm {)"
+    },
+    {
+      "label": "Extension formatters",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L215",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_extension_formatters",
+      "community": 265,
+      "norm_label": "extension formatters"
+    },
+    {
+      "label": "Subject / issuer (DN) formatting",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L230",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_subject_issuer_dn_formatting",
+      "community": 265,
+      "norm_label": "subject / issuer (dn) formatting"
+    },
+    {
+      "label": "Test strategy",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L234",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_test_strategy",
+      "community": 265,
+      "norm_label": "test strategy"
+    },
+    {
+      "label": "Migration mechanics",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L254",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_migration_mechanics",
+      "community": 265,
+      "norm_label": "migration mechanics"
+    },
+    {
+      "label": "Build wiring",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L256",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_build_wiring",
+      "community": 265,
+      "norm_label": "build wiring"
+    },
+    {
+      "label": "Commit ordering",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L262",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_commit_ordering",
+      "community": 265,
+      "norm_label": "commit ordering"
+    },
+    {
+      "label": "package.json deltas",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L273",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_package_json_deltas",
+      "community": 265,
+      "norm_label": "package.json deltas"
+    },
+    {
+      "label": "code:diff (- \"@peculiar/x509\": \"2.0.0\",)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L275",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_7",
+      "community": 265,
+      "norm_label": "code:diff (- \"@peculiar/x509\": \"2.0.0\",)"
+    },
+    {
+      "label": "Verification gate (before claiming done)",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L282",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_verification_gate_before_claiming_done",
+      "community": 265,
+      "norm_label": "verification gate (before claiming done)"
+    },
+    {
+      "label": "After",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L297",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_after",
+      "community": 265,
+      "norm_label": "after"
+    },
+    {
+      "label": "Known risks",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L302",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_known_risks",
+      "community": 265,
+      "norm_label": "known risks"
+    },
+    {
+      "label": "Out of scope",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L308",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_out_of_scope",
+      "community": 265,
+      "norm_label": "out of scope"
+    },
+    {
+      "label": "Open questions",
+      "file_type": "document",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L314",
+      "id": "specs_2026_05_19_certificate_decoder_wasm_design_open_questions",
+      "community": 265,
+      "norm_label": "open questions"
+    },
+    {
       "label": "2026-04-06-wasm-migration-design.md",
       "file_type": "document",
       "source_file": "docs/superpowers/specs/2026-04-06-wasm-migration-design.md",
@@ -38047,94 +38506,211 @@
       "norm_label": "out-of-scope follow-ups"
     },
     {
+      "label": "@peculiar/x509",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L31",
+      "community": 12,
+      "norm_label": "@peculiar/x509",
+      "id": "csr_dev_tools_package_dependencies_peculiar_x509"
+    },
+    {
+      "label": "reflect-metadata",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L57",
+      "community": 12,
+      "norm_label": "reflect-metadata",
+      "id": "csr_dev_tools_package_dependencies_reflect_metadata"
+    },
+    {
+      "label": "input",
+      "file_type": "code",
+      "source_file": "e2e/html-entity-converter.spec.ts",
+      "source_location": "L12",
+      "community": 58,
+      "norm_label": "input",
+      "id": "e2e_html_entity_converter_spec_input"
+    },
+    {
+      "label": "KEY_USAGE_FLAGS",
+      "file_type": "code",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L10",
+      "community": 39,
+      "norm_label": "key_usage_flags",
+      "id": "utils_certificate_decoder_key_usage_flags"
+    },
+    {
+      "label": "EKU_NAMES",
+      "file_type": "code",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L22",
+      "community": 39,
+      "norm_label": "eku_names",
+      "id": "utils_certificate_decoder_eku_names"
+    },
+    {
+      "label": "formatSerialNumber()",
+      "file_type": "code",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L68",
+      "community": 39,
+      "norm_label": "formatserialnumber()",
+      "id": "utils_certificate_decoder_formatserialnumber"
+    },
+    {
+      "label": "toHex()",
+      "file_type": "code",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L75",
+      "community": 39,
+      "norm_label": "tohex()",
+      "id": "utils_certificate_decoder_tohex"
+    },
+    {
+      "label": "formatHexId()",
+      "file_type": "code",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L79",
+      "community": 39,
+      "norm_label": "formathexid()",
+      "id": "utils_certificate_decoder_formathexid"
+    },
+    {
+      "label": "getPublicKeyAlgorithmInfo()",
+      "file_type": "code",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L85",
+      "community": 39,
+      "norm_label": "getpublickeyalgorithminfo()",
+      "id": "utils_certificate_decoder_getpublickeyalgorithminfo"
+    },
+    {
+      "label": "parseSanExtension()",
+      "file_type": "code",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L107",
+      "community": 39,
+      "norm_label": "parsesanextension()",
+      "id": "utils_certificate_decoder_parsesanextension"
+    },
+    {
+      "label": "parseKeyUsageExtension()",
+      "file_type": "code",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L134",
+      "community": 39,
+      "norm_label": "parsekeyusageextension()",
+      "id": "utils_certificate_decoder_parsekeyusageextension"
+    },
+    {
+      "label": "parseEkuExtension()",
+      "file_type": "code",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L151",
+      "community": 39,
+      "norm_label": "parseekuextension()",
+      "id": "utils_certificate_decoder_parseekuextension"
+    },
+    {
+      "label": "parseBasicConstraintsExtension()",
+      "file_type": "code",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L165",
+      "community": 39,
+      "norm_label": "parsebasicconstraintsextension()",
+      "id": "utils_certificate_decoder_parsebasicconstraintsextension"
+    },
+    {
       "label": "error-context.md",
       "file_type": "document",
       "source_file": "test-results/db-diagram-DB-Diagram-canv-58879--controls-and-minimap-AC-1--chromium-retry1/error-context.md",
       "source_location": "L1",
-      "id": "test_results_db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_retry1_error_context_md",
       "community": 264,
-      "norm_label": "error-context.md"
+      "norm_label": "error-context.md",
+      "id": "test_results_db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_retry1_error_context_md"
     },
     {
       "label": "Instructions",
       "file_type": "document",
       "source_file": "test-results/db-diagram-DB-Diagram-canv-58879--controls-and-minimap-AC-1--chromium-retry1/error-context.md",
       "source_location": "L1",
-      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_retry1_error_context_instructions",
       "community": 264,
-      "norm_label": "instructions"
+      "norm_label": "instructions",
+      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_retry1_error_context_instructions"
     },
     {
       "label": "Test info",
       "file_type": "document",
       "source_file": "test-results/db-diagram-DB-Diagram-canv-58879--controls-and-minimap-AC-1--chromium-retry1/error-context.md",
       "source_location": "L7",
-      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_retry1_error_context_test_info",
       "community": 264,
-      "norm_label": "test info"
+      "norm_label": "test info",
+      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_retry1_error_context_test_info"
     },
     {
       "label": "Error details",
       "file_type": "document",
       "source_file": "test-results/db-diagram-DB-Diagram-canv-58879--controls-and-minimap-AC-1--chromium-retry1/error-context.md",
       "source_location": "L12",
-      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_retry1_error_context_error_details",
       "community": 264,
-      "norm_label": "error details"
+      "norm_label": "error details",
+      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_retry1_error_context_error_details"
     },
     {
       "label": "code:block1 (Error: browserType.launch: Executable doesn't exist at /User)",
       "file_type": "document",
       "source_file": "test-results/db-diagram-DB-Diagram-canv-58879--controls-and-minimap-AC-1--chromium-retry1/error-context.md",
       "source_location": "L14",
-      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_retry1_error_context_codeblock_1",
       "community": 264,
-      "norm_label": "code:block1 (error: browsertype.launch: executable doesn't exist at /user)"
+      "norm_label": "code:block1 (error: browsertype.launch: executable doesn't exist at /user)",
+      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_retry1_error_context_codeblock_1"
     },
     {
       "label": "error-context.md",
       "file_type": "document",
       "source_file": "test-results/db-diagram-DB-Diagram-canv-58879--controls-and-minimap-AC-1--chromium/error-context.md",
       "source_location": "L1",
-      "id": "test_results_db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_error_context_md",
       "community": 282,
-      "norm_label": "error-context.md"
+      "norm_label": "error-context.md",
+      "id": "test_results_db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_error_context_md"
     },
     {
       "label": "Instructions",
       "file_type": "document",
       "source_file": "test-results/db-diagram-DB-Diagram-canv-58879--controls-and-minimap-AC-1--chromium/error-context.md",
       "source_location": "L1",
-      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_error_context_instructions",
       "community": 282,
-      "norm_label": "instructions"
+      "norm_label": "instructions",
+      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_error_context_instructions"
     },
     {
       "label": "Test info",
       "file_type": "document",
       "source_file": "test-results/db-diagram-DB-Diagram-canv-58879--controls-and-minimap-AC-1--chromium/error-context.md",
       "source_location": "L7",
-      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_error_context_test_info",
       "community": 282,
-      "norm_label": "test info"
+      "norm_label": "test info",
+      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_error_context_test_info"
     },
     {
       "label": "Error details",
       "file_type": "document",
       "source_file": "test-results/db-diagram-DB-Diagram-canv-58879--controls-and-minimap-AC-1--chromium/error-context.md",
       "source_location": "L12",
-      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_error_context_error_details",
       "community": 282,
-      "norm_label": "error details"
+      "norm_label": "error details",
+      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_error_context_error_details"
     },
     {
       "label": "code:block1 (Error: browserType.launch: Executable doesn't exist at /User)",
       "file_type": "document",
       "source_file": "test-results/db-diagram-DB-Diagram-canv-58879--controls-and-minimap-AC-1--chromium/error-context.md",
       "source_location": "L14",
-      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_error_context_codeblock_1",
       "community": 282,
-      "norm_label": "code:block1 (error: browsertype.launch: executable doesn't exist at /user)"
+      "norm_label": "code:block1 (error: browsertype.launch: executable doesn't exist at /user)",
+      "id": "db_diagram_db_diagram_canv_58879_controls_and_minimap_ac_1_chromium_error_context_codeblock_1"
     },
     {
       "label": "gridLayoutPositions()",
@@ -38213,7 +38789,7 @@
       "file_type": "code",
       "source_file": "src/utils/image-base64.ts",
       "source_location": "L5",
-      "community": 727,
+      "community": 79,
       "norm_label": "getimagedimensions()",
       "id": "utils_image_base64_getimagedimensions"
     },
@@ -41057,7 +41633,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram.ts",
       "source_location": "L5",
-      "community": 771,
+      "community": 764,
       "norm_label": "generateid()",
       "id": "utils_db_diagram_generateid"
     },
@@ -41291,7 +41867,7 @@
       "file_type": "code",
       "source_file": "src/types/utils/db-diagram-import.ts",
       "source_location": "L1",
-      "community": 764,
+      "community": 64,
       "norm_label": "db-diagram-import.ts",
       "id": "src_types_utils_db_diagram_import_ts"
     },
@@ -41300,7 +41876,7 @@
       "file_type": "code",
       "source_file": "src/types/utils/db-diagram-import.ts",
       "source_location": "L3",
-      "community": 764,
+      "community": 64,
       "norm_label": "parseresult",
       "id": "utils_db_diagram_import_parseresult"
     },
@@ -41309,7 +41885,7 @@
       "file_type": "code",
       "source_file": "src/types/utils/db-diagram-import.ts",
       "source_location": "L9",
-      "community": 764,
+      "community": 64,
       "norm_label": "parsedcolumn",
       "id": "utils_db_diagram_import_parsedcolumn"
     },
@@ -41318,7 +41894,7 @@
       "file_type": "code",
       "source_file": "src/types/utils/db-diagram-import.ts",
       "source_location": "L21",
-      "community": 764,
+      "community": 64,
       "norm_label": "fkref",
       "id": "utils_db_diagram_import_fkref"
     },
@@ -41498,7 +42074,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-dbml.ts",
       "source_location": "L31",
-      "community": 729,
+      "community": 64,
       "norm_label": "formatconstraints()",
       "id": "utils_db_diagram_dbml_formatconstraints"
     },
@@ -41507,7 +42083,7 @@
       "file_type": "code",
       "source_file": "src/utils/db-diagram-dbml.ts",
       "source_location": "L40",
-      "community": 729,
+      "community": 64,
       "norm_label": "generatedbml()",
       "id": "utils_db_diagram_dbml_generatedbml"
     },
@@ -43019,7 +43595,7 @@
       "file_type": "code",
       "source_file": "src/utils/favicon.ts",
       "source_location": "L69",
-      "community": 33,
+      "community": 158,
       "norm_label": "downloadfaviconsaszip()",
       "id": "utils_favicon_downloadfaviconsaszip"
     },
@@ -55304,16 +55880,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L30",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "csr_dev_tools_package_dependencies",
-      "target": "csr_dev_tools_package_dependencies_peculiar_x509"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "package.json",
       "source_location": "L31",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -55564,16 +56130,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "package.json",
-      "source_location": "L56",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "csr_dev_tools_package_dependencies",
-      "target": "csr_dev_tools_package_dependencies_reflect_metadata"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "package.json",
       "source_location": "L57",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -55599,6 +56155,26 @@
       "confidence_score": 1.0,
       "source": "csr_dev_tools_package_dependencies",
       "target": "csr_dev_tools_package_dependencies_zustand"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L30",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "csr_dev_tools_package_dependencies",
+      "target": "csr_dev_tools_package_dependencies_peculiar_x509"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L56",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "csr_dev_tools_package_dependencies",
+      "target": "csr_dev_tools_package_dependencies_reflect_metadata"
     },
     {
       "relation": "contains",
@@ -58656,14 +59232,36 @@
       "target": "helpers_fixtures_base64"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/encoding-tools.spec.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "e2e_encoding_tools_spec_ts",
+      "target": "e2e_helpers_selectors_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/encoding-tools.spec.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "e2e_encoding_tools_spec_ts",
+      "target": "helpers_selectors_codeinputin",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "e2e/encoding-tools.spec.ts",
-      "source_location": "L36",
+      "source_location": "L23",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "e2e_encoding_tools_spec_ts",
-      "target": "e2e_encoding_tools_spec_input"
+      "target": "e2e_encoding_tools_spec_dialog",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -58674,6 +59272,16 @@
       "confidence_score": 1.0,
       "source": "e2e_encoding_tools_spec_ts",
       "target": "e2e_encoding_tools_spec_output"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/encoding-tools.spec.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_encoding_tools_spec_ts",
+      "target": "e2e_encoding_tools_spec_input"
     },
     {
       "relation": "imports_from",
@@ -59106,6 +59714,28 @@
       "target": "e2e_data_tools_spec_titleinput"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/html-entity-converter.spec.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "e2e_html_entity_converter_spec_ts",
+      "target": "e2e_helpers_selectors_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/html-entity-converter.spec.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "e2e_html_entity_converter_spec_ts",
+      "target": "helpers_selectors_codeinputin",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "e2e/html-entity-converter.spec.ts",
@@ -59119,21 +59749,21 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "e2e/html-entity-converter.spec.ts",
-      "source_location": "L25",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_html_entity_converter_spec_ts",
-      "target": "e2e_html_entity_converter_spec_input"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/html-entity-converter.spec.ts",
       "source_location": "L28",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "e2e_html_entity_converter_spec_ts",
       "target": "e2e_html_entity_converter_spec_output"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/html-entity-converter.spec.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_html_entity_converter_spec_ts",
+      "target": "e2e_html_entity_converter_spec_input"
     },
     {
       "relation": "imports_from",
@@ -67320,9 +67950,9 @@
       "source_file": "src/diagram/layout.spec.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_diagram_layout_spec_ts",
-      "target": "src_diagram_layout_ts",
-      "confidence_score": 1.0
+      "target": "src_diagram_layout_ts"
     },
     {
       "relation": "imports",
@@ -67331,9 +67961,9 @@
       "source_file": "src/diagram/layout.spec.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_diagram_layout_spec_ts",
-      "target": "diagram_layout_gridlayoutpositions",
-      "confidence_score": 1.0
+      "target": "diagram_layout_gridlayoutpositions"
     },
     {
       "relation": "contains",
@@ -67341,9 +67971,9 @@
       "source_file": "src/diagram/layout.spec.ts",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_diagram_layout_spec_ts",
-      "target": "diagram_layout_spec_positions",
-      "confidence_score": 1.0
+      "target": "diagram_layout_spec_positions"
     },
     {
       "relation": "contains",
@@ -67351,9 +67981,9 @@
       "source_file": "src/diagram/layout.spec.ts",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_diagram_layout_spec_ts",
-      "target": "diagram_layout_spec_keys",
-      "confidence_score": 1.0
+      "target": "diagram_layout_spec_keys"
     },
     {
       "relation": "contains",
@@ -67391,9 +68021,9 @@
       "source_file": "src/diagram/layout.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_diagram_layout_ts",
-      "target": "diagram_layout_gridlayoutpositions",
-      "confidence_score": 1.0
+      "target": "diagram_layout_gridlayoutpositions"
     },
     {
       "relation": "calls",
@@ -70135,6 +70765,16 @@
       "target": "operations_lifecycle_schematodocument"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/diagram/operations/lifecycle.ts",
+      "source_location": "L44",
+      "weight": 1.0,
+      "source": "src_diagram_operations_lifecycle_ts",
+      "target": "operations_lifecycle_mergeschemaintodocument",
+      "confidence_score": 1.0
+    },
+    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -70254,6 +70894,39 @@
       "weight": 1.0,
       "source": "operations_lifecycle_schematodocument",
       "target": "operations_import_importfromjsonschema"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/diagram/operations/import.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "src_diagram_operations_import_ts",
+      "target": "operations_lifecycle_mergeschemaintodocument",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/diagram/operations/import.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "operations_import_importfromsql",
+      "target": "operations_lifecycle_mergeschemaintodocument"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/diagram/operations/import.ts",
+      "source_location": "L47",
+      "weight": 1.0,
+      "source": "operations_import_importfromjsonschema",
+      "target": "operations_lifecycle_mergeschemaintodocument"
     },
     {
       "relation": "imports_from",
@@ -77981,26 +78654,6 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L10",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_utils_certificate_decoder_ts",
-      "target": "utils_certificate_decoder_key_usage_flags"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L22",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_utils_certificate_decoder_ts",
-      "target": "utils_certificate_decoder_eku_names"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/utils/certificate-decoder.ts",
       "source_location": "L31",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -78026,6 +78679,36 @@
       "confidence_score": 1.0,
       "source": "src_utils_certificate_decoder_ts",
       "target": "utils_certificate_decoder_formatdistinguishedname"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L179",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_utils_certificate_decoder_ts",
+      "target": "utils_certificate_decoder_parsepemcertificate"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_utils_certificate_decoder_ts",
+      "target": "utils_certificate_decoder_key_usage_flags"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L22",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_utils_certificate_decoder_ts",
+      "target": "utils_certificate_decoder_eku_names"
     },
     {
       "relation": "contains",
@@ -78108,16 +78791,6 @@
       "target": "utils_certificate_decoder_parsebasicconstraintsextension"
     },
     {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L179",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_utils_certificate_decoder_ts",
-      "target": "utils_certificate_decoder_parsepemcertificate"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -78160,50 +78833,6 @@
       "confidence_score": 1.0,
       "source": "utils_certificate_decoder_formatserialnumber",
       "target": "utils_certificate_decoder_parsepemcertificate"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L130",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "utils_certificate_decoder_tohex",
-      "target": "utils_certificate_decoder_parsesanextension"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L147",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "utils_certificate_decoder_tohex",
-      "target": "utils_certificate_decoder_parsekeyusageextension"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L161",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "utils_certificate_decoder_tohex",
-      "target": "utils_certificate_decoder_parseekuextension"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/utils/certificate-decoder.ts",
-      "source_location": "L175",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "utils_certificate_decoder_tohex",
-      "target": "utils_certificate_decoder_parsebasicconstraintsextension"
     },
     {
       "relation": "calls",
@@ -94571,9 +95200,9 @@
       "source_file": "CONTEXT.md",
       "source_location": "L692",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "csr_dev_tools_context_csr_dev_tools_domain_language",
-      "target": "csr_dev_tools_context_grid_layout_positions",
-      "confidence_score": 1.0
+      "target": "csr_dev_tools_context_grid_layout_positions"
     },
     {
       "relation": "contains",
@@ -94621,9 +95250,9 @@
       "source_file": "CONTEXT.md",
       "source_location": "L700",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "csr_dev_tools_context_grid_layout_positions",
-      "target": "csr_dev_tools_context_codeblock_2",
-      "confidence_score": 1.0
+      "target": "csr_dev_tools_context_codeblock_2"
     },
     {
       "relation": "contains",
@@ -98094,6 +98723,266 @@
       "confidence_score": 1.0,
       "source": "plans_2026_04_06_wasm_phase3_text_processing_steps_2180",
       "target": "plans_2026_04_06_wasm_phase3_text_processing_codeblock_32"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "docs_superpowers_plans_2026_05_19_certificate_decoder_wasm_md",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_certificate_decoder_wasm_migration_implementation_plan",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_certificate_decoder_wasm_migration_implementation_plan",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_file_structure",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L40",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_certificate_decoder_wasm_migration_implementation_plan",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_task_1_scaffold_the_rust_crate",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L125",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_certificate_decoder_wasm_migration_implementation_plan",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_task_2_implement_oid_algorithm_curve_maps",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L281",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_certificate_decoder_wasm_migration_implementation_plan",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_task_3_implement_extension_formatters",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L487",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_certificate_decoder_wasm_migration_implementation_plan",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_task_4_implement_decode_rs_finish_the_crate_commit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L641",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_certificate_decoder_wasm_migration_implementation_plan",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_task_5_add_the_js_seam_verify_end_to_end",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L696",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_certificate_decoder_wasm_migration_implementation_plan",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_task_6_swap_parsepemcertificate_body_add_date_assertion",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L865",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_certificate_decoder_wasm_migration_implementation_plan",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_task_7_drop_peculiar_x509_reflect_metadata_verify_commit",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L926",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_certificate_decoder_wasm_migration_implementation_plan",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_self_review_checklist",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L50",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_1_scaffold_the_rust_crate",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L78",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_1_scaffold_the_rust_crate",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L132",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_2_implement_oid_algorithm_curve_maps",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L179",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_2_implement_oid_algorithm_curve_maps",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L290",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_3_implement_extension_formatters",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L337",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_3_implement_extension_formatters",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L494",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_4_implement_decode_rs_finish_the_crate_commit",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L625",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_4_implement_decode_rs_finish_the_crate_commit",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_8",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L648",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_5_add_the_js_seam_verify_end_to_end",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_9",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L681",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_5_add_the_js_seam_verify_end_to_end",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_10",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L706",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_6_swap_parsepemcertificate_body_add_date_assertion",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_11",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L727",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_6_swap_parsepemcertificate_body_add_date_assertion",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_12",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L847",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_6_swap_parsepemcertificate_body_add_date_assertion",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_13",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L880",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_7_drop_peculiar_x509_reflect_metadata_verify_commit",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_14",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L894",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_7_drop_peculiar_x509_reflect_metadata_verify_commit",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_15",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/plans/2026-05-19-certificate-decoder-wasm.md",
+      "source_location": "L907",
+      "weight": 1.0,
+      "source": "plans_2026_05_19_certificate_decoder_wasm_task_7_drop_peculiar_x509_reflect_metadata_verify_commit",
+      "target": "plans_2026_05_19_certificate_decoder_wasm_codeblock_16",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -105928,6 +106817,346 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "docs_superpowers_specs_2026_05_19_certificate_decoder_wasm_design_md",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_goal",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L12",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_public_api_of_src_utils_certificate_decoder_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L25",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_non_goals",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L32",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_architecture",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L75",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_ffi_surface",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L109",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_js_internals_src_wasm_certificate_ts",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L138",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_rewritten_parsepemcertificate_body_sketch",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L165",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_input_pre_validation_stays_in_js",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L178",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_date_validity_split",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L188",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_oid_human_name_mapping_rust_side",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L200",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_signature_algorithm_formatting",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L204",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_public_key_size_extraction",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L215",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_extension_formatters",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L230",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_subject_issuer_dn_formatting",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L234",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_test_strategy",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L254",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_migration_mechanics",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L282",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_verification_gate_before_claiming_done",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L302",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_known_risks",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L308",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_out_of_scope",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L314",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_certificate_decoder_wasm_migration",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_open_questions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L34",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_architecture",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_1",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L67",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_architecture",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_why_a_new_certificate_crate_not_in_parsers",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L71",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_architecture",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_why_json_string_return_not_serde_wasm_bindgen",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L79",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_ffi_surface",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_2",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L88",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_ffi_surface",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_3",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L111",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_js_internals_src_wasm_certificate_ts",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_4",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L140",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_rewritten_parsepemcertificate_body_sketch",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_5",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L206",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_public_key_size_extraction",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_6",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L256",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_migration_mechanics",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_build_wiring",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L262",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_migration_mechanics",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_commit_ordering",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L273",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_migration_mechanics",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_package_json_deltas",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L275",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_package_json_deltas",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_codeblock_7",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "docs/superpowers/specs/2026-05-19-certificate-decoder-wasm-design.md",
+      "source_location": "L297",
+      "weight": 1.0,
+      "source": "specs_2026_05_19_certificate_decoder_wasm_design_verification_gate_before_claiming_done",
+      "target": "specs_2026_05_19_certificate_decoder_wasm_design_after",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "docs/superpowers/specs/2026-04-06-wasm-migration-design.md",
       "source_location": "L1",
       "weight": 1.0,
@@ -106804,6 +108033,50 @@
       "confidence_score": 1.0,
       "source": "specs_2026_05_13_db_diagram_editor_extraction_design_data_flow",
       "target": "specs_2026_05_13_db_diagram_editor_extraction_design_codeblock_3"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L130",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "utils_certificate_decoder_tohex",
+      "target": "utils_certificate_decoder_parsesanextension"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L147",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "utils_certificate_decoder_tohex",
+      "target": "utils_certificate_decoder_parsekeyusageextension"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L161",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "utils_certificate_decoder_tohex",
+      "target": "utils_certificate_decoder_parseekuextension"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/certificate-decoder.ts",
+      "source_location": "L175",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "utils_certificate_decoder_tohex",
+      "target": "utils_certificate_decoder_parsebasicconstraintsextension"
     },
     {
       "relation": "contains",
@@ -120474,5 +121747,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "fd0fd1880c0e9ec2b28eba47a816a0cc7fef492d"
+  "built_at_commit": "2b721ae244e90b8c5f142daa07767235f2811d27"
 }

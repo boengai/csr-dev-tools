@@ -29,8 +29,7 @@
 | HTML Sanitize | dompurify | 3.3.2 | XSS-safe HTML rendering |
 | AI/ML | @huggingface/transformers | 3.8.1 | In-browser image background removal |
 | Data Formats | graphql | Various | GraphQL schema viewing |
-| WASM | Rust crates (13) | Various | Hashing, bcrypt, HMAC, diff, CSV, color, XML/YAML/TOML parsing, JS/HTML/CSS/SQL formatting, QR codes, Markdown |
-| Crypto | @peculiar/x509 | Various | X.509 certificate decoding |
+| WASM | Rust crates (14) | Various | Hashing, bcrypt, HMAC, diff, CSV, color, XML/YAML/TOML parsing, JS/HTML/CSS/SQL formatting, QR codes, Markdown, X.509 certificate decoding |
 | Image | react-image-crop | 11.0.10 | Image cropping UI |
 | JSON | ajv, jsonpath-plus | Various | JSON schema validation, JSONPath queries |
 | File Processing | JSZip | 3.10.1 | ZIP generation (dynamic import, lazy-loaded) |

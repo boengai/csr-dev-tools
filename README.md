@@ -234,8 +234,7 @@ Performance-critical tools are implemented in Rust and compiled to WebAssembly:
 
 ### Security & Cryptography
 
-- **[Rust WASM](https://rustwasm.github.io/docs/book/)** — Hand-written bcrypt, HMAC, MD5/SHA hashing
-- **[@peculiar/x509](https://github.com/nicolo-ribaudo/x509)** — X.509 certificate parsing
+- **[Rust WASM](https://rustwasm.github.io/docs/book/)** — bcrypt, HMAC, MD5/SHA hashing, X.509 certificate decoding
 
 ### Development Tools
 
