@@ -49,10 +49,6 @@ pub fn eku_name_from_str(oid_str: &str) -> Option<&'static str> {
     }
 }
 
-pub fn eku_name(oid: &Oid) -> Option<&'static str> {
-    eku_name_from_str(oid.to_id_string().as_str())
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

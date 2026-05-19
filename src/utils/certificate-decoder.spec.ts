@@ -221,5 +221,15 @@ MIICYDCCAUgCAQAwGzEZMBcGA1UE...fake...
         expect(typeof ext.value).toBe('string')
       }
     })
+
+    it('returns notBefore/notAfter as Date instances that ISO-roundtrip', async () => {
+      const result = await parsePemCertificate(VALID_CERT_PEM)
+
+      expect(result.notBefore).toBeInstanceOf(Date)
+      expect(result.notAfter).toBeInstanceOf(Date)
+      // Compare ISO seconds (drop sub-second) — x509-parser exposes UTC seconds.
+      expect(result.notBefore.toISOString().slice(0, 19)).toBe('2026-02-24T09:45:20')
+      expect(result.notAfter.toISOString().slice(0, 19)).toBe('2027-02-24T09:45:20')
+    })
   })
 })

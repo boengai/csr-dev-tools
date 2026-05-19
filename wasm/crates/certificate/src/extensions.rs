@@ -24,6 +24,7 @@ pub fn build_extension_dto(ext: &X509Extension<'_>) -> ExtensionDto {
 
 /// Format the value of an extension as a human-readable string.
 /// Used in tests to assert on formatted output.
+#[cfg(test)]
 pub fn format_extension(ext: &X509Extension<'_>) -> String {
     format_extension_fields(ext).1
 }
