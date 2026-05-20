@@ -44,7 +44,7 @@ const MODES: [
   },
 ]
 
-const upperCompute = async ({ source }: { source: string; mode: Mode }) => source.toUpperCase()
+const upperCompute = async ({ source }: { source: string; mode: Mode }) => ({ output: source.toUpperCase() })
 
 beforeEach(() => {
   localStorage.clear()
@@ -281,5 +281,62 @@ describe('BidirectionalConverter — mode persistence', () => {
     render(<BidirectionalConverter autoOpen modes={MODES} modeStorageKey="test" compute={upperCompute} />)
     // After remount with autoOpen, the persisted mode (b-to-a) drives the labels.
     expect(screen.getByText('B Input')).toBeTruthy()
+  })
+})
+
+describe('BidirectionalConverter — renderBanner', () => {
+  it('invokes renderBanner with the current result and renders the returned node', async () => {
+    localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('hi'))
+    const renderBanner = vi.fn((r: { output: string }) =>
+      r.output ? <div data-testid="banner">banner for {r.output}</div> : null,
+    )
+    render(
+      <BidirectionalConverter
+        modes={MODES}
+        modeStorageKey="test"
+        compute={upperCompute}
+        renderBanner={renderBanner}
+      />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1)
+    })
+
+    expect(renderBanner).toHaveBeenCalled()
+    expect(screen.getByTestId('banner').textContent).toBe('banner for HI')
+  })
+
+  it('does not render anything when renderBanner returns null', async () => {
+    localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('hi'))
+    render(
+      <BidirectionalConverter
+        modes={MODES}
+        modeStorageKey="test"
+        compute={upperCompute}
+        renderBanner={() => null}
+      />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1)
+    })
+
+    expect(screen.queryByTestId('banner')).toBeNull()
+  })
+
+  it('omits the renderBanner slot entirely when prop is not provided', async () => {
+    localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('hi'))
+    render(<BidirectionalConverter modes={MODES} modeStorageKey="test" compute={upperCompute} />)
+    fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1)
+    })
+
+    // No assertion needed beyond "no crash"; absence of the slot is the test.
+    expect(screen.getByText('A Input')).toBeTruthy()
   })
 })

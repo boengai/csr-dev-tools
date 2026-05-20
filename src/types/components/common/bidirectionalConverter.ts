@@ -9,14 +9,31 @@ export type ConverterMode<M extends string> = {
   sourcePlaceholder: string
 }
 
-export type BidirectionalConverterProps<M extends string> = {
+/**
+ * Minimum result shape every converter's `compute` must return. Tools may
+ * extend with extra fields (e.g. `warnings`) and surface them via
+ * `renderBanner`. Mirrors `DiffOutput` in `diffCheckerShell.ts`.
+ */
+export type ConvertOutput = {
+  output: string
+}
+
+export type BidirectionalConverterProps<M extends string, R extends ConvertOutput = ConvertOutput> = {
   autoOpen?: boolean
-  compute: (input: { mode: M; source: string }) => Promise<string>
+  compute: (input: { mode: M; source: string }) => Promise<R>
   description?: string
   modeStorageKey: string
   modes: [ConverterMode<M>, ConverterMode<M>]
   onAfterDialogClose?: () => void
   onError?: (error: unknown, mode: M) => void
+  /**
+   * Optional slot rendered above the source/result `<SplitPanel>`. Tools whose
+   * compute can surface inline metadata about the source (warnings, validation
+   * notes) render it here instead of routing it through `useToast` — toasts
+   * dismiss before the user can act on a source-line reference. Mirrors
+   * `DiffCheckerShell.renderBanner`.
+   */
+  renderBanner?: (result: R) => ReactNode
   /**
    * Optional prefix prepended to the per-mode source localStorage key:
    * `csr-dev-tools-<prefix>-<mode>-source`. Use when mode names are generic

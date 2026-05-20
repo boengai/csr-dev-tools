@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 import { Button, CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { useInputLocalStorage, useMountOnce, useToast, useToolFields } from '@/hooks'
-import type { BidirectionalConverterProps } from '@/types'
+import type { BidirectionalConverterProps, ConvertOutput } from '@/types'
 
 const sourceKey = (mode: string, prefix?: string) =>
   prefix ? `csr-dev-tools-${prefix}-${mode}-source` : `csr-dev-tools-${mode}-source`
@@ -23,7 +23,7 @@ const writeSource = (mode: string, value: string, prefix?: string) => {
   } catch {}
 }
 
-export function BidirectionalConverter<M extends string>({
+export function BidirectionalConverter<M extends string, R extends ConvertOutput = ConvertOutput>({
   autoOpen,
   compute,
   description,
@@ -31,9 +31,10 @@ export function BidirectionalConverter<M extends string>({
   modes,
   onAfterDialogClose,
   onError,
+  renderBanner,
   sourceKeyPrefix,
   sourceToolbarSlot,
-}: BidirectionalConverterProps<M>) {
+}: BidirectionalConverterProps<M, R>) {
   const [persistedMode, setPersistedMode] = useInputLocalStorage<M>(
     `csr-dev-tools-${modeStorageKey}-mode`,
     modes[0].key,
@@ -49,11 +50,11 @@ export function BidirectionalConverter<M extends string>({
     [],
   )
 
-  const { inputs, recompute, result, setFields, setFieldsImmediate } = useToolFields<{ mode: M; source: string }, string>({
+  const { inputs, recompute, result, setFields, setFieldsImmediate } = useToolFields<{ mode: M; source: string }, R>({
     compute,
     debounceMs: 300,
     initial: initialBag,
-    initialResult: '',
+    initialResult: { output: '' } as R,
     isEmpty: ({ source: val }) => val.trim().length === 0,
     onError: (err, input) => {
       if (onError) {
@@ -112,6 +113,7 @@ export function BidirectionalConverter<M extends string>({
       >
         <div className="flex w-full grow flex-col gap-4">
           {sourceToolbarSlot ? sourceToolbarSlot({ mode, recompute }) : null}
+          {renderBanner?.(result)}
           <SplitPanel>
             <Pane>
               <FieldForm
@@ -128,11 +130,11 @@ export function BidirectionalConverter<M extends string>({
                 label={
                   <span className="flex items-center gap-1">
                     <span>{modeConfig.resultLabel}</span>
-                    <CopyButton label="result" value={result} />
+                    <CopyButton label="result" value={result.output} />
                   </span>
                 }
                 placeholder={modeConfig.resultPlaceholder}
-                value={result}
+                value={result.output}
               />
             </Pane>
           </SplitPanel>
