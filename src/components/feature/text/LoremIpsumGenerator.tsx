@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Button, CheckboxInput, CopyButton, FieldForm } from '@/components/common'
+import { Button, CheckboxInput, CopyButton, FieldForm, Pane } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { LoremUnit } from '@/types'
@@ -64,7 +64,7 @@ export const LoremIpsumGenerator = () => {
 
       <div className="border-t-2 border-dashed border-gray-900" />
 
-      <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+      <Pane live>
         <div className="flex items-center gap-2">
           <span className="text-body-sm font-medium text-gray-400">Generated Text</span>
           {output.length > 0 && <CopyButton label="lorem ipsum" value={output} />}
@@ -73,7 +73,7 @@ export const LoremIpsumGenerator = () => {
         <div className="max-h-80 overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3">
           <p className="text-sm whitespace-pre-wrap text-gray-300">{output}</p>
         </div>
-      </div>
+      </Pane>
     </div>
   )
 }

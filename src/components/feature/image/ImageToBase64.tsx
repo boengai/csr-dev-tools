@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { CopyButton, FieldForm } from '@/components/common'
+import { CopyButton, FieldForm, Pane } from '@/components/common'
 import { UploadDialogFrame } from '@/components/common/dialog/UploadDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
@@ -64,7 +64,7 @@ export const ImageToBase64 = ({ onAfterDialogClose }: ToolComponentProps) => {
 
           <div className="border-t-2 border-dashed border-gray-900" />
 
-          <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-4">
+          <Pane gap="md" live>
             <div className="flex min-h-0 flex-col gap-2">
               <FieldForm
                 disabled
@@ -115,7 +115,7 @@ export const ImageToBase64 = ({ onAfterDialogClose }: ToolComponentProps) => {
                 value={result.htmlTag}
               />
             </div>
-          </div>
+          </Pane>
         </div>
       )}
     </UploadDialogFrame>

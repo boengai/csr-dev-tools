@@ -1,6 +1,6 @@
 import { useMemo, useReducer } from 'react'
 
-import { Button, ColorInput, DownloadIcon, FieldForm, SelectInput } from '@/components/common'
+import { Button, ColorInput, DownloadIcon, FieldForm, Pane, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { PlaceholderImageAction, PlaceholderImageState } from '@/types'
@@ -236,7 +236,7 @@ export const PlaceholderImageGenerator = () => {
 
         <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
 
-        <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col items-center justify-center gap-4">
+        <Pane align="center" gap="md" justify="center" live>
           {previewUri ? (
             <img
               alt={`Placeholder preview: ${displayText}, background ${bgColor}, text ${textColor}`}
@@ -246,7 +246,7 @@ export const PlaceholderImageGenerator = () => {
           ) : (
             <p className="text-body-sm text-gray-500">Enter dimensions to preview</p>
           )}
-        </div>
+        </Pane>
       </div>
 
       <div className="flex w-full shrink-0 gap-8 [&>button]:w-[calc(50%-1rem)]">

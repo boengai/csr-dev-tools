@@ -1,4 +1,4 @@
-import { CopyButton, FieldForm, ToggleButton } from '@/components/common'
+import { CopyButton, FieldForm, Pane, ToggleButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolFields } from '@/hooks'
@@ -154,7 +154,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
 
         <div className="border-t-2 border-dashed border-gray-900" />
 
-        <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        <Pane live>
           <div className="flex items-center gap-2">
             <span className="text-body-sm font-medium text-gray-400">
               {loading
@@ -191,7 +191,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
           </div>
 
           {matches.length > 0 && <MatchDetails matches={matches} />}
-        </div>
+        </Pane>
       </div>
     </ToolDialogFrame>
   )

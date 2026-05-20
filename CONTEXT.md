@@ -576,16 +576,20 @@ the dashed divider that flips border direction at the same breakpoint,
 and the per-pane envelope. The load-bearing invariant is
 `min-h-0 min-w-0` on every `Pane` — without it, a nested `CodeOutput`
 or `FieldForm` breaks overflow inside `min-h-0` ancestor flex
-containers. Today that contract is enforced by copy-paste across 21
-sites; once migrated it lives in one module with a spec.
+containers. That contract now lives in one module with a spec; the
+copy-paste form has been retired from every Tool site.
 
-`Pane` exposes four named knobs for the real variances seen across
+`Pane` exposes five named knobs for the real variances seen across
 adopters:
 
 - `live` — adds `aria-live="polite"`. Pick this for the result pane.
 - `gap` — `'sm' | 'md' | 'lg'` → `gap-2` / `gap-3` / `gap-4`. Default `sm`.
-- `align` — `'start' | 'center'`. Pick `center` for image-output panes
-  (e.g. `Base64ToImage`).
+- `align` — `'start' | 'center'`. Cross-axis (horizontal) alignment.
+  Pick `center` for image-output panes (e.g. `Base64ToImage`).
+- `justify` — `'start' | 'center'`. Main-axis (vertical) alignment.
+  Pick `center` when the result pane should vertically center its
+  content (e.g. `PlaceholderImageGenerator`'s preview, which can be
+  smaller than the available pane height).
 - `scroll` — adds `overflow-y-auto` for panes whose content can grow
   beyond viewport height (e.g. `JwtDecoder`'s decoded JSON).
 
@@ -593,15 +597,19 @@ adopters:
 divider between consecutive panes. In practice every adopter is
 two-pane; the N-child handling is defensive, not a feature.
 
-Adoption order: the two shells that own the source→divider→result
-chrome internally ([[Formatter shell]], [[Bidirectional converter]])
-migrate first — indirectly bringing their Tool consumers along — then
-the ~18 unshelled Tools follow in batches. [[Diff checker shell]]
-does NOT fit: its layout is "two inputs side-by-side (no divider) +
-horizontal divider + single full-width diff output." If a future
-refactor wants the `min-h-0 min-w-0` invariant there, `Pane` can be
-used standalone (without `SplitPanel`) — the envelope still applies,
+[[Diff checker shell]] does NOT fit `SplitPanel`: its layout is "two
+inputs side-by-side (no divider) + horizontal divider + single
+full-width diff output." It currently still hand-rolls the
+`min-h-0 min-w-0` envelope on its panes; migrating it to standalone
+`Pane` (without `SplitPanel`) is a follow-up — the envelope applies,
 just no divider interleaved.
+
+Standalone `<Pane>` use is the documented path for any single result
+pane that needs the overflow envelope without a paired source pane
+(today's adopters include `LoremIpsumGenerator`, `PasswordGenerator`,
+`UuidGenerator`, `RegexTester`, `ImageToBase64`,
+`PlaceholderImageGenerator`, and the encode dialog inside
+`DataUriGenerator`).
 
 Per the common-component rule, future variances must be a new named
 prop on `Pane`, not a `className` override.

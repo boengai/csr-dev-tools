@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Button, CopyButton, FieldForm } from '@/components/common'
+import { Button, CopyButton, FieldForm, Pane } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useAsyncAction, useMountOnce, useToast } from '@/hooks'
 import { generateBulkUuids } from '@/utils'
@@ -52,7 +52,7 @@ export const UuidGenerator = () => {
 
       <div className="border-t-2 border-dashed border-gray-900" />
 
-      <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+      <Pane live>
         <div className="flex items-center gap-2">
           <span className="text-body-sm font-medium text-gray-400">Generated UUIDs ({uuids.length})</span>
           {uuids.length > 0 && <CopyButton label="all UUIDs" value={uuids.join('\n')} />}
@@ -69,7 +69,7 @@ export const UuidGenerator = () => {
             </div>
           ))}
         </div>
-      </div>
+      </Pane>
     </div>
   )
 }

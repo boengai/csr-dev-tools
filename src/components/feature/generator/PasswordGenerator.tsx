@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react'
 
-import { Button, CopyButton, FieldForm, ToggleButton } from '@/components/common'
+import { Button, CopyButton, FieldForm, Pane, ToggleButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import { DEFAULT_PASSWORD_OPTIONS, generatePassword, type PasswordOptions } from '@/utils'
@@ -91,7 +91,7 @@ export const PasswordGenerator = () => {
         </div>
       </div>
       <div className="border-t-2 border-dashed border-gray-900" />
-      <div aria-live="polite" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+      <Pane live>
         <div className="flex items-center gap-2">
           <span className="text-body-sm font-medium text-gray-400">Generated Passwords ({passwords.length})</span>
           {passwords.length > 0 && (
@@ -109,7 +109,7 @@ export const PasswordGenerator = () => {
             </div>
           ))}
         </div>
-      </div>
+      </Pane>
     </div>
   )
 }

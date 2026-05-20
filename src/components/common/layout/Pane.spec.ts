@@ -10,14 +10,15 @@ describe('paneStyles', () => {
     for (const cls of invariants) expect(classes).toContain(cls)
   })
 
-  it('applies the same envelope across every gap / align / scroll combination', () => {
+  it('applies the same envelope across every gap / align / justify / scroll combination', () => {
     const combos = [
       paneStyles({ gap: 'sm' }),
       paneStyles({ gap: 'md' }),
       paneStyles({ gap: 'lg' }),
       paneStyles({ align: 'center' }),
+      paneStyles({ justify: 'center' }),
       paneStyles({ scroll: true }),
-      paneStyles({ align: 'center', gap: 'lg', scroll: true }),
+      paneStyles({ align: 'center', gap: 'lg', justify: 'center', scroll: true }),
     ]
     for (const result of combos) {
       const classes = result.split(' ')
@@ -37,6 +38,12 @@ describe('paneStyles', () => {
   it('adds items-center when align=center, omits it for align=start', () => {
     expect(paneStyles({ align: 'center' }).split(' ')).toContain('items-center')
     expect(paneStyles({ align: 'start' }).split(' ')).not.toContain('items-center')
+  })
+
+  it('adds justify-center when justify=center, omits it for justify=start', () => {
+    expect(paneStyles({ justify: 'center' }).split(' ')).toContain('justify-center')
+    expect(paneStyles({ justify: 'start' }).split(' ')).not.toContain('justify-center')
+    expect(paneStyles({}).split(' ')).not.toContain('justify-center')
   })
 
   it('adds overflow-y-auto when scroll=true, omits it otherwise', () => {
