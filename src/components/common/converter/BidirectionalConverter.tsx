@@ -2,26 +2,24 @@ import { useMemo, useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
-import { useInputLocalStorage, useMountOnce, useToast, useToolFields } from '@/hooks'
+import {
+  readJsonStorage,
+  useInputLocalStorage,
+  useMountOnce,
+  useToast,
+  useToolFields,
+  writeJsonStorage,
+} from '@/hooks'
 import type { BidirectionalConverterProps, ConvertOutput } from '@/types'
 
 const sourceKey = (mode: string, prefix?: string) =>
   prefix ? `csr-dev-tools-${prefix}-${mode}-source` : `csr-dev-tools-${mode}-source`
 
-const readSource = (mode: string, prefix?: string): string => {
-  try {
-    const item = localStorage.getItem(sourceKey(mode, prefix))
-    return item !== null ? (JSON.parse(item) as string) : ''
-  } catch {
-    return ''
-  }
-}
+const readSource = (mode: string, prefix?: string): string =>
+  readJsonStorage<string>(sourceKey(mode, prefix), '')
 
-const writeSource = (mode: string, value: string, prefix?: string) => {
-  try {
-    localStorage.setItem(sourceKey(mode, prefix), JSON.stringify(value))
-  } catch {}
-}
+const writeSource = (mode: string, value: string, prefix?: string): void =>
+  writeJsonStorage(sourceKey(mode, prefix), value)
 
 export function BidirectionalConverter<M extends string, R extends ConvertOutput = ConvertOutput>({
   autoOpen,
