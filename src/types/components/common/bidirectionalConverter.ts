@@ -29,7 +29,7 @@ export type BidirectionalConverterProps<M extends string, R extends ConvertOutpu
    */
   initialResult: R
   modeStorageKey: string
-  modes: [ConverterMode<M>, ConverterMode<M>]
+  modes: ReadonlyArray<ConverterMode<M>>
   onAfterDialogClose?: () => void
   onError?: (error: unknown, mode: M) => void
   /**
