@@ -182,6 +182,7 @@ export default function HomePage() {
         {Array.from({ length: 6 }).map((_, idx) => (
           <section
             className="flex aspect-2/3 w-full flex-col tablet:w-[calc(100%/2-1rem)] laptop:aspect-auto laptop:h-[calc(50dvh-3.75rem)] laptop:w-[calc(100%/3-1rem)]"
+            data-testid="dashboard-widget"
             key={`${idx}`}
           >
             <Suspense fallback={<AppLoading />}>

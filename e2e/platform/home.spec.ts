@@ -9,8 +9,10 @@ test.describe('Home Page', () => {
   })
 
   test('renders 6 tool cards on the dashboard', async ({ page }) => {
-    // Default layout has all 6 tools assigned to positions
-    const sections = page.locator('main section')
+    // `main section` would over-match: when localStorage from prior tests assigns
+    // tools to widgets, those tool components render their own nested <section>
+    // elements. Scope to the outer widget slots only.
+    const sections = page.getByTestId('dashboard-widget')
     await expect(sections).toHaveCount(6)
 
     // Verify at least some tool cards rendered with their names

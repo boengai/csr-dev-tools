@@ -43,18 +43,12 @@ test.describe('TypeScript Playground', () => {
   })
 
   test('default sample code is present on load with JS output generated (AC #2, #3)', async ({ page }) => {
-    // Wait for transpilation
-    await page.waitForTimeout(2000)
-
-    // The JS output editor should have transpiled content
+    // The JS output editor should have transpiled content. Use a web-first
+    // assertion that polls for the transpiled text instead of a fixed sleep —
+    // Monaco's transpilation timing varies with worker startup load.
     const jsViewLines = page.locator('[aria-label="JavaScript output (read-only)"] .view-lines')
     await expect(jsViewLines).toBeVisible({ timeout: 10000 })
-
-    const jsText = await jsViewLines.textContent()
-    expect(jsText).toBeTruthy()
-    expect(jsText!.length).toBeGreaterThan(0)
-    // The transpiled output should contain the sample functions
-    expect(jsText).toContain('greet')
+    await expect(jsViewLines).toContainText('greet', { timeout: 10000 })
   })
 
   test('type valid TypeScript → JS output shows transpiled JavaScript (AC #3)', async ({ page }) => {
