@@ -285,6 +285,28 @@ Tools with extras (entity-mode select, double-escape checkbox) plug into the
 `sourceToolbarSlot` render-prop, which receives `{ mode, recompute }` — the
 caller renders its extras and calls `recompute()` after their value changes.
 
+The result type is generic (`<R extends ConvertOutput>`) so Tools may
+extend the minimum `{ output: string }` shape with extra fields
+(`EnvResult` adds `warnings: Array<string>`). Tools whose compute can
+surface inline metadata about the source — warnings, validation notes
+— render it via the `renderBanner` slot (mirrors [[Diff checker shell]]).
+This keeps source-line references on screen while the user reads the
+result; [[Toast channel]] is the wrong category for that case because
+toasts dismiss before the user can act on the reference.
+
+`modes` is `ReadonlyArray<ConverterMode<M>>` (not a 2-tuple) to admit
+Tools that swap between more than two directions; `EnvFileConverter` is
+the four-mode adopter (`.env ↔ JSON`, `.env ↔ YAML`).
+
+`initialResult: R` is required (mirrors [[Diff checker shell]]) so
+extended `R` types can't render with missing fields before the first
+compute resolves.
+
+Today's adopters: `EncodingBase64`, `UrlEncoder`, `JsonToYamlConverter`,
+`JsonToXmlConverter`, `JsonToTomlConverter`, `JsonToCsvConverter`,
+`HtmlEntityConverter`, `HtmlToMarkdownConverter`, `EscapedJsonStringifier`,
+`EnvFileConverter` (the only `renderBanner` user today).
+
 ## Formatter shell
 
 A Tool whose interaction is "paste source code → pick mode (or dialect)
