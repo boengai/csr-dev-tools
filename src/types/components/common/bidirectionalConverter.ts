@@ -22,6 +22,12 @@ export type BidirectionalConverterProps<M extends string, R extends ConvertOutpu
   autoOpen?: boolean
   compute: (input: { mode: M; source: string }) => Promise<R>
   description?: string
+  /**
+   * The initial result rendered before the first compute resolves. Required
+   * because callers may extend `R` with extra fields (e.g. `warnings`) that
+   * the shell cannot synthesize. Mirrors `DiffCheckerShellProps.initialResult`.
+   */
+  initialResult: R
   modeStorageKey: string
   modes: [ConverterMode<M>, ConverterMode<M>]
   onAfterDialogClose?: () => void

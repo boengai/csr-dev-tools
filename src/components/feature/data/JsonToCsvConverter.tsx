@@ -24,9 +24,16 @@ const MODES: [ConverterMode<JsonCsvConvertMode>, ConverterMode<JsonCsvConvertMod
   },
 ]
 
-const compute = async ({ mode, source }: { mode: JsonCsvConvertMode; source: string }): Promise<string> => {
+const compute = async ({
+  mode,
+  source,
+}: {
+  mode: JsonCsvConvertMode
+  source: string
+}): Promise<{ output: string }> => {
   try {
-    return mode === 'json-to-csv' ? await jsonToCsv(source) : await csvToJson(source)
+    const output = mode === 'json-to-csv' ? await jsonToCsv(source) : await csvToJson(source)
+    return { output }
   } catch (e) {
     if (mode === 'json-to-csv') {
       const message = e instanceof Error ? e.message : ''
@@ -49,6 +56,7 @@ export const JsonToCsvConverter = () => (
   <BidirectionalConverter
     compute={compute}
     description={toolEntry?.description}
+    initialResult={{ output: '' }}
     modeStorageKey="json-to-csv"
     modes={MODES}
   />

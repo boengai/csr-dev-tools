@@ -35,8 +35,10 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
   const [entityMode, setEntityMode] = useState<EntityMode>('named')
 
   const compute = useCallback(
-    async ({ mode, source }: { mode: HtmlEntityConvertMode; source: string }): Promise<string> =>
-      mode === 'encode' ? encodeHtmlEntities(source, entityMode) : decodeHtmlEntities(source),
+    async ({ mode, source }: { mode: HtmlEntityConvertMode; source: string }): Promise<{ output: string }> => {
+      const output = mode === 'encode' ? encodeHtmlEntities(source, entityMode) : decodeHtmlEntities(source)
+      return { output }
+    },
     [entityMode],
   )
 
@@ -45,6 +47,7 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
       autoOpen={autoOpen}
       compute={compute}
       description={toolEntry?.description}
+      initialResult={{ output: '' }}
       modeStorageKey="html-entity"
       modes={MODES}
       onAfterDialogClose={onAfterDialogClose}

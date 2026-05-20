@@ -24,10 +24,17 @@ const MODES: [ConverterMode<JsonXmlConvertMode>, ConverterMode<JsonXmlConvertMod
   },
 ]
 
-const compute = async ({ mode, source }: { mode: JsonXmlConvertMode; source: string }): Promise<string> => {
+const compute = async ({
+  mode,
+  source,
+}: {
+  mode: JsonXmlConvertMode
+  source: string
+}): Promise<{ output: string }> => {
   const { xmlToJson, jsonToXml } = await import('@/wasm/parsers')
   try {
-    return mode === 'xml-to-json' ? await xmlToJson(source) : await jsonToXml(source)
+    const output = mode === 'xml-to-json' ? await xmlToJson(source) : await jsonToXml(source)
+    return { output }
   } catch {
     if (mode === 'xml-to-json') {
       const { getXmlParseError } = await import('@/wasm/parsers')
@@ -42,6 +49,7 @@ export const JsonToXmlConverter = ({ onAfterDialogClose }: ToolComponentProps) =
   <BidirectionalConverter
     compute={compute}
     description={toolEntry?.description}
+    initialResult={{ output: '' }}
     modeStorageKey="json-to-xml"
     modes={MODES}
     onAfterDialogClose={onAfterDialogClose}

@@ -30,8 +30,10 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
   const [doubleEscape, setDoubleEscape] = useState(false)
 
   const compute = useCallback(
-    async ({ mode, source }: { mode: EscapedJsonConvertMode; source: string }): Promise<string> =>
-      mode === 'stringify' ? stringifyJson(source, doubleEscape) : parseStringifiedJson(source),
+    async ({ mode, source }: { mode: EscapedJsonConvertMode; source: string }): Promise<{ output: string }> => {
+      const output = mode === 'stringify' ? stringifyJson(source, doubleEscape) : parseStringifiedJson(source)
+      return { output }
+    },
     [doubleEscape],
   )
 
@@ -40,6 +42,7 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
       autoOpen={autoOpen}
       compute={compute}
       description={toolEntry?.description}
+      initialResult={{ output: '' }}
       modeStorageKey="escaped-json"
       modes={MODES}
       onAfterDialogClose={onAfterDialogClose}

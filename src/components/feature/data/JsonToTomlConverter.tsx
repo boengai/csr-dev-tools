@@ -24,10 +24,17 @@ const MODES: [ConverterMode<JsonTomlConvertMode>, ConverterMode<JsonTomlConvertM
   },
 ]
 
-const compute = async ({ mode, source }: { mode: JsonTomlConvertMode; source: string }): Promise<string> => {
+const compute = async ({
+  mode,
+  source,
+}: {
+  mode: JsonTomlConvertMode
+  source: string
+}): Promise<{ output: string }> => {
   const { tomlToJson, jsonToToml } = await import('@/wasm/parsers')
   try {
-    return mode === 'toml-to-json' ? await tomlToJson(source) : await jsonToToml(source)
+    const output = mode === 'toml-to-json' ? await tomlToJson(source) : await jsonToToml(source)
+    return { output }
   } catch {
     if (mode === 'toml-to-json') {
       throw new Error(formatParseError(await getTomlParseError(source), 'TOML'))
@@ -41,6 +48,7 @@ export const JsonToTomlConverter = ({ onAfterDialogClose }: ToolComponentProps) 
   <BidirectionalConverter
     compute={compute}
     description={toolEntry?.description}
+    initialResult={{ output: '' }}
     modeStorageKey="json-to-toml"
     modes={MODES}
     onAfterDialogClose={onAfterDialogClose}

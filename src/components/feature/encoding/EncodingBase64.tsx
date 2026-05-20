@@ -29,27 +29,32 @@ const MODES: [ConverterMode<Base64Mode>, ConverterMode<Base64Mode>] = [
 ]
 
 export const EncodingBase64 = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const compute = useCallback(async ({ mode, source }: { mode: Base64Mode; source: string }): Promise<string> => {
-    try {
-      if (mode === 'decode' && !isValidBase64(source)) {
-        throw new Error('Enter a valid Base64 string (e.g., SGVsbG8=)')
+  const compute = useCallback(
+    async ({ mode, source }: { mode: Base64Mode; source: string }): Promise<{ output: string }> => {
+      try {
+        if (mode === 'decode' && !isValidBase64(source)) {
+          throw new Error('Enter a valid Base64 string (e.g., SGVsbG8=)')
+        }
+        const output = mode === 'encode' ? encodeBase64(source) : decodeBase64(source)
+        return { output }
+      } catch (err) {
+        if (err instanceof Error && err.message) throw err
+        throw new Error(
+          mode === 'encode'
+            ? 'Unable to encode text — input contains invalid characters'
+            : 'Enter a valid Base64 string (e.g., SGVsbG8=)',
+        )
       }
-      return mode === 'encode' ? encodeBase64(source) : decodeBase64(source)
-    } catch (err) {
-      if (err instanceof Error && err.message) throw err
-      throw new Error(
-        mode === 'encode'
-          ? 'Unable to encode text — input contains invalid characters'
-          : 'Enter a valid Base64 string (e.g., SGVsbG8=)',
-      )
-    }
-  }, [])
+    },
+    [],
+  )
 
   return (
     <BidirectionalConverter
       autoOpen={autoOpen}
       compute={compute}
       description={toolEntry?.description}
+      initialResult={{ output: '' }}
       modeStorageKey="base64"
       modes={MODES}
       onAfterDialogClose={onAfterDialogClose}

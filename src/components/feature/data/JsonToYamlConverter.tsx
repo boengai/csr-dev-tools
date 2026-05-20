@@ -24,9 +24,16 @@ const MODES: [ConverterMode<JsonYamlConvertMode>, ConverterMode<JsonYamlConvertM
   },
 ]
 
-const compute = async ({ mode, source }: { mode: JsonYamlConvertMode; source: string }): Promise<string> => {
+const compute = async ({
+  mode,
+  source,
+}: {
+  mode: JsonYamlConvertMode
+  source: string
+}): Promise<{ output: string }> => {
   try {
-    return mode === 'json-to-yaml' ? await jsonToYaml(source) : await yamlToJson(source)
+    const output = mode === 'json-to-yaml' ? await jsonToYaml(source) : await yamlToJson(source)
+    return { output }
   } catch {
     if (mode === 'json-to-yaml') {
       throw new Error(formatParseError(await getJsonParseError(source), 'JSON'))
@@ -39,6 +46,7 @@ export const JsonToYamlConverter = () => (
   <BidirectionalConverter
     compute={compute}
     description={toolEntry?.description}
+    initialResult={{ output: '' }}
     modeStorageKey="json-to-yaml"
     modes={MODES}
   />

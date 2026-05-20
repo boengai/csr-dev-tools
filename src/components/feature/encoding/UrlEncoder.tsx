@@ -28,23 +28,28 @@ const MODES: [ConverterMode<UrlMode>, ConverterMode<UrlMode>] = [
 ]
 
 export const UrlEncoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const compute = useCallback(async ({ mode, source }: { mode: UrlMode; source: string }): Promise<string> => {
-    try {
-      return mode === 'encode' ? encodeURIComponent(source) : decodeURIComponent(source)
-    } catch {
-      throw new Error(
-        mode === 'encode'
-          ? 'Unable to encode text — input contains invalid characters'
-          : 'Enter a valid URL-encoded string (e.g., hello%20world)',
-      )
-    }
-  }, [])
+  const compute = useCallback(
+    async ({ mode, source }: { mode: UrlMode; source: string }): Promise<{ output: string }> => {
+      try {
+        const output = mode === 'encode' ? encodeURIComponent(source) : decodeURIComponent(source)
+        return { output }
+      } catch {
+        throw new Error(
+          mode === 'encode'
+            ? 'Unable to encode text — input contains invalid characters'
+            : 'Enter a valid URL-encoded string (e.g., hello%20world)',
+        )
+      }
+    },
+    [],
+  )
 
   return (
     <BidirectionalConverter
       autoOpen={autoOpen}
       compute={compute}
       description={toolEntry?.description}
+      initialResult={{ output: '' }}
       modeStorageKey="url-encoder"
       modes={MODES}
       onAfterDialogClose={onAfterDialogClose}

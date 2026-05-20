@@ -25,6 +25,7 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
   autoOpen,
   compute,
   description,
+  initialResult,
   modeStorageKey,
   modes,
   onAfterDialogClose,
@@ -52,7 +53,7 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
     compute,
     debounceMs: 300,
     initial: initialBag,
-    initialResult: { output: '' } as R,
+    initialResult,
     isEmpty: ({ source: val }) => val.trim().length === 0,
     onError: (err, input) => {
       if (onError) {

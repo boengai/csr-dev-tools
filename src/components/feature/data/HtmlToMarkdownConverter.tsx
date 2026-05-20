@@ -23,9 +23,16 @@ const MODES: [ConverterMode<HtmlMdConvertMode>, ConverterMode<HtmlMdConvertMode>
   },
 ]
 
-const compute = async ({ mode, source }: { mode: HtmlMdConvertMode; source: string }): Promise<string> => {
+const compute = async ({
+  mode,
+  source,
+}: {
+  mode: HtmlMdConvertMode
+  source: string
+}): Promise<{ output: string }> => {
   const { htmlToMarkdown, markdownToHtml } = await import('@/wasm/markdown')
-  return mode === 'html-to-markdown' ? await htmlToMarkdown(source) : await markdownToHtml(source)
+  const output = mode === 'html-to-markdown' ? await htmlToMarkdown(source) : await markdownToHtml(source)
+  return { output }
 }
 
 export const HtmlToMarkdownConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => (
@@ -33,6 +40,7 @@ export const HtmlToMarkdownConverter = ({ autoOpen, onAfterDialogClose }: ToolCo
     autoOpen={autoOpen}
     compute={compute}
     description={toolEntry?.description}
+    initialResult={{ output: '' }}
     modeStorageKey="html-to-markdown"
     modes={MODES}
     onAfterDialogClose={onAfterDialogClose}
