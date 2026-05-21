@@ -678,6 +678,48 @@ pane that needs the overflow envelope without a paired source pane
 Per the common-component rule, future variances must be a new named
 prop on `Pane`, not a `className` override.
 
+## Disclosure panel
+
+The single seam for the recurring "▶ Label → animated reveal of an
+inline reference/help panel" shape. Implemented by `<DisclosurePanel>`
+(`src/components/common/disclosure/DisclosurePanel.tsx`).
+
+Owns: the open/close `useState`, the trigger button (with the
+gray-400-to-200 hover, the focus-visible ring, and the
+`before:inset-y-[-8px]` invisible-padding hover-target inset), the
+rotating chevron, the `<AnimatePresence>` + `<m.div>` height/opacity
+animation (`duration: 0.2`), the panel chrome
+(`rounded border border-gray-800 bg-gray-950`), and the
+`aria-expanded` / `aria-controls` wiring against a `useId()`-minted
+panel id rendered on a stable wrapper so the relationship survives the
+exit animation.
+
+The caller's role narrows to a `label: string` and the panel
+`children`. One named knob: `padding: 'none' | 'md'` (default `'md'`).
+Pick `padding="none"` when the children render their own internal
+padding (e.g., a `<table>` whose `<th>`/`<td>` already pad); pick
+`padding="md"` for the typical text/list body.
+
+Today's adopters:
+
+- `JsonpathEvaluator` (`<DisclosurePanel label="JSONPath Cheatsheet" padding="none">`)
+- `MermaidRenderer` (`<DisclosurePanel label="Syntax Reference">`)
+
+Does NOT fit:
+
+- Modal-style overlays — those are [[Tool dialog frame]] /
+  `<ToolDialogShell>` territory; disclosures are inline.
+- Animated banners that toggle on data (e.g.,
+  `MermaidRenderer`'s `errorMessage` banner) — those animate in
+  response to state outside the user's direct click and are not user-
+  toggled; they stay as inline `<AnimatePresence>` blocks.
+- Persistent "show/hide" preferences across sessions — no `defaultOpen`
+  prop today; add one when a real adopter needs it.
+
+Per the common-component rule, future variances (different padding
+scales, an `aria-label` override for the button, etc.) must be named
+props on `<DisclosurePanel>`, not className overrides.
+
 ## DiagramEditor
 
 The single seam the DB Diagram Tool owns: a pure-TS module (`src/diagram/`)

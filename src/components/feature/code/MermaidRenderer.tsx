@@ -1,22 +1,12 @@
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Button, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
+import { Button, CopyButton, DisclosurePanel, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDownload, useMountOnce, useToast, useToolComputationPersisted } from '@/hooks'
 import type { MermaidComputeResult, ToolComponentProps } from '@/types'
-import { consumeHandoff, initializeMermaid, renderMermaid, suggestMermaidFix, svgToPng, tv } from '@/utils'
-
-const chevronStyles = tv({
-  base: 'inline-block transition-transform',
-  variants: {
-    open: {
-      true: 'rotate-90',
-      false: '',
-    },
-  },
-})
+import { consumeHandoff, initializeMermaid, renderMermaid, suggestMermaidFix, svgToPng } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['mermaid-renderer']
 
@@ -55,7 +45,6 @@ const computeMermaid = async (input: string): Promise<MermaidComputeResult> => {
 
 export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [exportingPng, setExportingPng] = useState(false)
-  const [referenceOpen, setReferenceOpen] = useState(false)
   const { showError } = useToast()
   const { downloadDataUrl, downloadSvg } = useDownload()
 
@@ -178,52 +167,28 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                 )}
               </AnimatePresence>
 
-              {/* Syntax Reference Toggle */}
-              <div className="flex flex-col gap-2">
-                <button
-                  aria-expanded={referenceOpen}
-                  aria-label="Syntax Reference"
-                  className="relative flex cursor-pointer items-center gap-2 text-body-xs text-gray-400 before:absolute before:inset-x-0 before:inset-y-[-8px] before:content-[''] hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-                  onClick={() => setReferenceOpen((v) => !v)}
-                  type="button"
-                >
-                  <span className={chevronStyles({ open: referenceOpen })}>▶</span>
-                  Syntax Reference
-                </button>
-
-                <AnimatePresence>
-                  {referenceOpen && (
-                    <m.div
-                      animate={{ height: 'auto', opacity: 1 }}
-                      className="overflow-hidden"
-                      exit={{ height: 0, opacity: 0 }}
-                      initial={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      <div className="flex flex-col gap-2 rounded border border-gray-800 bg-gray-950 p-3">
-                        {SYNTAX_EXAMPLES.map((example) => (
-                          <div className="flex items-start justify-between gap-2" key={example.label}>
-                            <div className="min-w-0 flex-1">
-                              <button
-                                aria-label={`Use ${example.label} example`}
-                                className="cursor-pointer text-body-xs font-semibold text-primary hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-                                onClick={() => handleExampleClick(example.code)}
-                                type="button"
-                              >
-                                {example.label}
-                              </button>
-                              <pre className="mt-1 overflow-x-auto font-mono text-body-xs whitespace-pre-wrap text-gray-400">
-                                {example.code}
-                              </pre>
-                            </div>
-                            <CopyButton label={example.label} value={example.code} variant="icon-only" />
-                          </div>
-                        ))}
+              <DisclosurePanel label="Syntax Reference">
+                <div className="flex flex-col gap-2">
+                  {SYNTAX_EXAMPLES.map((example) => (
+                    <div className="flex items-start justify-between gap-2" key={example.label}>
+                      <div className="min-w-0 flex-1">
+                        <button
+                          aria-label={`Use ${example.label} example`}
+                          className="cursor-pointer text-body-xs font-semibold text-primary hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                          onClick={() => handleExampleClick(example.code)}
+                          type="button"
+                        >
+                          {example.label}
+                        </button>
+                        <pre className="mt-1 overflow-x-auto font-mono text-body-xs whitespace-pre-wrap text-gray-400">
+                          {example.code}
+                        </pre>
                       </div>
-                    </m.div>
-                  )}
-                </AnimatePresence>
-              </div>
+                      <CopyButton label={example.label} value={example.code} variant="icon-only" />
+                    </div>
+                  ))}
+                </div>
+              </DisclosurePanel>
             </Pane>
 
             {/* Right Panel: Preview */}

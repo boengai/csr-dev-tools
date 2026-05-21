@@ -1,22 +1,11 @@
 import { json } from '@codemirror/lang-json'
-import { AnimatePresence, m } from 'motion/react'
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 
-import { CodeInput, CopyButton, TextInput } from '@/components/common'
+import { CodeInput, CopyButton, DisclosurePanel, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolFieldsPersisted } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { evaluateJsonPath, formatResultValue, type JsonPathEvaluation, parseJsonInput, tv } from '@/utils'
-
-const chevronStyles = tv({
-  base: 'inline-block transition-transform',
-  variants: {
-    open: {
-      true: 'rotate-90',
-      false: '',
-    },
-  },
-})
+import { evaluateJsonPath, formatResultValue, type JsonPathEvaluation, parseJsonInput } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['jsonpath-evaluator']
 
@@ -69,7 +58,6 @@ type EvalResult = { evaluation: JsonPathEvaluation | null; parseError: string | 
 const INITIAL_RESULT: EvalResult = { evaluation: null, parseError: null, parsedData: null }
 
 export const JsonpathEvaluator = (_props: ToolComponentProps) => {
-  const [cheatsheetOpen, setCheatsheetOpen] = useState(false)
   const { showError } = useToast()
 
   const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<EvalInput, EvalResult>({
@@ -206,58 +194,33 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
             </div>
           </div>
 
-          {/* Cheatsheet Toggle */}
-          <div className="flex flex-col gap-2">
-            <button
-              aria-expanded={cheatsheetOpen}
-              className="relative flex cursor-pointer items-center gap-2 text-body-xs text-gray-400 before:absolute before:inset-x-0 before:inset-y-[-8px] before:content-[''] hover:text-gray-200 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-              onClick={() => setCheatsheetOpen((prev) => !prev)}
-              type="button"
-            >
-              <span className={chevronStyles({ open: cheatsheetOpen })}>▶</span>
-              JSONPath Cheatsheet
-            </button>
-
-            <AnimatePresence>
-              {cheatsheetOpen && (
-                <m.div
-                  animate={{ height: 'auto', opacity: 1 }}
-                  className="overflow-hidden"
-                  exit={{ height: 0, opacity: 0 }}
-                  initial={{ height: 0, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <div className="rounded border border-gray-800 bg-gray-950">
-                    <table className="w-full text-body-xs">
-                      <thead>
-                        <tr className="border-b border-gray-800">
-                          <th className="px-3 py-2 text-left font-semibold text-gray-300">Expression</th>
-                          <th className="px-3 py-2 text-left font-semibold text-gray-300">Description</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {CHEATSHEET_ENTRIES.map((entry) => (
-                          <tr className="border-b border-gray-800/50 last:border-0" key={entry.expression}>
-                            <td className="px-3 py-1.5">
-                              <button
-                                aria-label={`Use expression: ${entry.expression}`}
-                                className="cursor-pointer font-mono text-primary hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-                                onClick={() => handleCheatsheetClick(entry.expression)}
-                                type="button"
-                              >
-                                {entry.expression}
-                              </button>
-                            </td>
-                            <td className="px-3 py-1.5 text-gray-400">{entry.description}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
-                </m.div>
-              )}
-            </AnimatePresence>
-          </div>
+          <DisclosurePanel label="JSONPath Cheatsheet" padding="none">
+            <table className="w-full text-body-xs">
+              <thead>
+                <tr className="border-b border-gray-800">
+                  <th className="px-3 py-2 text-left font-semibold text-gray-300">Expression</th>
+                  <th className="px-3 py-2 text-left font-semibold text-gray-300">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {CHEATSHEET_ENTRIES.map((entry) => (
+                  <tr className="border-b border-gray-800/50 last:border-0" key={entry.expression}>
+                    <td className="px-3 py-1.5">
+                      <button
+                        aria-label={`Use expression: ${entry.expression}`}
+                        className="cursor-pointer font-mono text-primary hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                        onClick={() => handleCheatsheetClick(entry.expression)}
+                        type="button"
+                      >
+                        {entry.expression}
+                      </button>
+                    </td>
+                    <td className="px-3 py-1.5 text-gray-400">{entry.description}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </DisclosurePanel>
         </div>
       </div>
     </div>
