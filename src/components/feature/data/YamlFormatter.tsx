@@ -3,7 +3,8 @@ import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolFields } from '@/hooks'
 import type { ToolComponentProps, YamlInput } from '@/types'
-import { formatYaml, getYamlParseError } from '@/utils'
+import { formatYaml } from '@/utils'
+import { narrateParseError } from '@/utils/parse-error-narrators'
 
 const toolEntry = TOOL_REGISTRY_MAP['yaml-formatter']
 
@@ -17,10 +18,8 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
 
   const { inputs, result, reset, setFields, setFieldsImmediate } = useToolFields<YamlInput, string>({
     compute: async ({ source: val, indent: currentIndent, sortKeys: currentSortKeys }) => {
-      const parseError = await getYamlParseError(val)
-      if (parseError != null) {
-        throw new Error(`Invalid YAML: ${parseError}`)
-      }
+      const narrated = await narrateParseError('yaml', val)
+      if (narrated != null) throw new Error(narrated)
       try {
         return await formatYaml(val, { indent: currentIndent, sortKeys: currentSortKeys })
       } catch {

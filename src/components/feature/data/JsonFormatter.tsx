@@ -3,7 +3,8 @@ import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputationPersisted } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { formatJson, getJsonParseError } from '@/utils'
+import { formatJson } from '@/utils'
+import { narrateParseError } from '@/utils/parse-error-narrators'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-formatter']
 
@@ -17,10 +18,8 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     setInputImmediate,
   } = useToolComputationPersisted<string, string>({
     compute: async (val) => {
-      const parseError = await getJsonParseError(val)
-      if (parseError != null) {
-        throw new Error(`Invalid JSON: ${parseError}`)
-      }
+      const narrated = await narrateParseError('json', val)
+      if (narrated != null) throw new Error(narrated)
       try {
         return await formatJson(val)
       } catch {

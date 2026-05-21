@@ -346,13 +346,20 @@ input is actually malformed for the declared format.
 
 Today's adopters (via the shell): `JsonToYamlConverter`,
 `JsonToXmlConverter`, `JsonToTomlConverter`, `JsonToCsvConverter`.
+Standalone adopters (validate-first compute outside the shell):
+`JsonFormatter` (single-Input via `useToolComputationPersisted`),
+`YamlFormatter` (multi-field via `useToolFields`). Each wraps the
+narrator inline: `const narrated = await narrateParseError(fmt, val);
+if (narrated != null) throw new Error(narrated)`. The trailing
+`try { format... } catch { throw new Error('Unable to format X') }`
+stays inline — it handles format failures on parse-valid input, which
+the narrator does not cover.
 
 Pick this when a Tool whose source is one of the five known formats
-goes through [[Bidirectional converter]]. Tools using
-`useToolComputationPersisted` directly (`JsonFormatter`, `YamlFormatter`)
-can adopt `narrateParseError` standalone for their validate-first paths
-— the module is shaped for both call shapes — but no current adopter
-takes that path.
+runs a validate-first compute — whether via [[Bidirectional converter]]
+or standalone. The module is shaped for both call shapes (the shell
+gates on the narrator returning non-null; standalone callers do the
+same check inline).
 
 ## Formatter shell
 
