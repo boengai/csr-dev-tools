@@ -1,19 +1,9 @@
 import { useState } from 'react'
 
-import { ColorInput, CssOutputCell, FieldForm } from '@/components/common'
+import { ColorInput, CssOutputCell, FieldForm, ToggleButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
-import { type BorderRadiusConfig, DEFAULT_BORDER_RADIUS, generateBorderRadiusCss, tv } from '@/utils'
-
-const toggleButtonStyles = tv({
-  base: 'rounded border px-3 py-1 text-body-xs',
-  variants: {
-    active: {
-      true: 'border-primary bg-primary/20 text-primary',
-      false: 'border-gray-700 text-gray-500',
-    },
-  },
-})
+import { type BorderRadiusConfig, DEFAULT_BORDER_RADIUS, generateBorderRadiusCss } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['css-border-radius-generator']
 
@@ -41,14 +31,13 @@ export const BorderRadiusGenerator = (_props: ToolComponentProps) => {
 
       <div className="flex shrink-0 flex-col gap-3">
         <div className="flex items-center gap-2">
-          <button
-            aria-pressed={config.asymmetric}
-            className={toggleButtonStyles({ active: config.asymmetric })}
+          <ToggleButton
             onClick={() => update('asymmetric', !config.asymmetric)}
-            type="button"
+            pressed={config.asymmetric}
+            variant="subtle"
           >
             Asymmetric
-          </button>
+          </ToggleButton>
         </div>
 
         {CORNERS.map((corner) => (

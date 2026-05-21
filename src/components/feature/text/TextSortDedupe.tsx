@@ -1,18 +1,8 @@
-import { CopyButton, FieldForm } from '@/components/common'
+import { CopyButton, FieldForm, ToggleButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFields } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { sortAndProcessText, type SortMode, type TextSortResult, tv } from '@/utils'
-
-const toggleButtonStyles = tv({
-  base: 'rounded border px-3 py-1 text-body-xs',
-  variants: {
-    active: {
-      true: 'border-primary bg-primary/20 text-primary',
-      false: 'border-gray-700 text-gray-500',
-    },
-  },
-})
+import { sortAndProcessText, type SortMode, type TextSortResult } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['text-sort-dedupe']
 
@@ -80,14 +70,14 @@ export const TextSortDedupe = (_props: ToolComponentProps) => {
           { current: removeEmpty, field: 'removeEmpty' as const, label: 'No Empty' },
           { current: trimLines, field: 'trimLines' as const, label: 'Trim' },
         ].map(({ current, field, label }) => (
-          <button
-            className={toggleButtonStyles({ active: current })}
+          <ToggleButton
             key={field}
             onClick={() => setFields({ [field]: !current } as Partial<SortInput>)}
-            type="button"
+            pressed={current}
+            variant="subtle"
           >
             {label}
-          </button>
+          </ToggleButton>
         ))}
       </div>
 

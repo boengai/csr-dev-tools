@@ -31,4 +31,5 @@ export type ToggleButtonProps = Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'a
   children: ReactElement<HTMLSpanElement> | string
   pressed: boolean
   size?: 'compact' | 'default'
+  variant?: 'default' | 'subtle'
 }

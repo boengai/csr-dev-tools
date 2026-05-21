@@ -1,19 +1,9 @@
 import { useMemo, useState } from 'react'
 
-import { FieldForm } from '@/components/common'
+import { FieldForm, ToggleButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
 import { cnMerge, filterHttpStatusCodes, HTTP_STATUS_CODES, type HttpStatusCategory, tv } from '@/utils'
-
-const categoryFilterStyles = tv({
-  base: 'rounded border px-3 py-1 text-body-xs',
-  variants: {
-    active: {
-      true: 'border-primary bg-primary/20 text-primary',
-      false: 'border-gray-700 text-gray-500',
-    },
-  },
-})
 
 const sectionHeaderStyles = tv({
   base: 'mb-2 border-b border-gray-800 pb-1 text-body-xs font-medium',
@@ -68,15 +58,14 @@ export const HttpStatusCodes = (_props: ToolComponentProps) => {
 
       <div className="flex flex-wrap gap-2">
         {CATEGORIES.map((cat) => (
-          <button
-            aria-pressed={category === cat.value}
-            className={categoryFilterStyles({ active: category === cat.value })}
+          <ToggleButton
             key={cat.label}
             onClick={() => setCategory(cat.value)}
-            type="button"
+            pressed={category === cat.value}
+            variant="subtle"
           >
             {cat.label}
-          </button>
+          </ToggleButton>
         ))}
       </div>
 
