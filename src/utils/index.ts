@@ -1,7 +1,6 @@
 export * from './aes'
 export * from './aspect-ratio'
 export * from './background-removal'
-export * from './base64-image'
 export * from './base64'
 export * from './bcrypt-hasher'
 export * from './border-radius'
