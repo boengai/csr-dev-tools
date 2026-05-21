@@ -72,6 +72,48 @@ export type UseToolFieldsResult<F, R> = {
   recompute: () => void
 }
 
+export type UseToolInputOptions<I, R> = {
+  /**
+   * Fire compute once on mount with `options.initial`. Honors the
+   * pipeline's `isEmpty` short-circuit (no compute call if the initial
+   * input is empty). The named alternative to a per-Tool
+   * `useMountOnce(() => recompute())` ritual.
+   */
+  autorunOnMount?: boolean
+  compute: (input: I) => R | Promise<R>
+  debounceMs?: number
+  /** Initial input value — also the value `reset()` restores. */
+  initial: I
+  /** Initial result, used until the first compute resolves and after `reset()` short-circuits via `isEmpty`. */
+  initialResult: R
+  isEmpty?: (input: I) => boolean
+  onError?: (error: unknown, input: I) => void
+}
+
+export type UseToolInputResult<I, R> = {
+  error: unknown | null
+  /** Current input value (live; updated by setInput / setInputImmediate / reset). */
+  input: I
+  isPending: boolean
+  /**
+   * Fire compute with the current input. Equivalent to `setInputImmediate(input)` —
+   * kept as the canonical, named alternative. Runs through the same path:
+   * all four pipeline invariants apply, including `isEmpty` short-circuit.
+   */
+  recompute: () => void
+  /**
+   * Restore input to `options.initial` and clear pending compute.
+   * If `isEmpty(initial)` is true the result resets to `initialResult`
+   * synchronously; otherwise the pipeline recomputes from `initial`.
+   */
+  reset: () => void
+  result: R
+  /** Debounced input change. Use for keystroke-driven inputs. */
+  setInput: (input: I) => void
+  /** Same pipeline as `setInput` but bypasses the debounce wait. */
+  setInputImmediate: (input: I) => void
+}
+
 export type UseToolFieldsPersistedOptions<F, R> = UseToolFieldsOptions<F, R> & {
   /** localStorage key holding the persisted input bag (JSON-serialized). */
   storageKey: string
