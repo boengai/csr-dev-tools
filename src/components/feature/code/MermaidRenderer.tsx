@@ -6,15 +6,7 @@ import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDownload, useMountOnce, useToast, useToolComputationPersisted } from '@/hooks'
 import type { MermaidComputeResult, ToolComponentProps } from '@/types'
-import {
-  consumeHandoff,
-  downloadMermaidSvg,
-  initializeMermaid,
-  renderMermaid,
-  suggestMermaidFix,
-  svgToPng,
-  tv,
-} from '@/utils'
+import { consumeHandoff, initializeMermaid, renderMermaid, suggestMermaidFix, svgToPng, tv } from '@/utils'
 
 const chevronStyles = tv({
   base: 'inline-block transition-transform',
@@ -64,8 +56,8 @@ const computeMermaid = async (input: string): Promise<MermaidComputeResult> => {
 export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [exportingPng, setExportingPng] = useState(false)
   const [referenceOpen, setReferenceOpen] = useState(false)
-  const { showError, showSuccess } = useToast()
-  const { downloadDataUrl } = useDownload()
+  const { showError } = useToast()
+  const { downloadDataUrl, downloadSvg } = useDownload()
 
   const {
     input: code,
@@ -112,8 +104,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
 
   const handleExportSvg = () => {
     try {
-      downloadMermaidSvg(svg)
-      showSuccess('Downloaded mermaid-diagram.svg')
+      downloadSvg(svg, 'mermaid-diagram.svg')
     } catch {
       showError('Failed to export SVG')
     }

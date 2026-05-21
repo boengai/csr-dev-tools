@@ -2,7 +2,6 @@ import DOMPurify from 'dompurify'
 import mermaid from 'mermaid'
 
 import type { MermaidRenderResult } from '@/types/utils/mermaid-renderer'
-import { downloadBlob } from '@/utils/download'
 import { loadImageFromBlob } from '@/utils/image'
 
 let initialized = false
@@ -74,11 +73,6 @@ export async function svgToPng(svgString: string, scale = 2): Promise<string> {
   }
   ctx.drawImage(img, 0, 0, canvas.width, canvas.height)
   return canvas.toDataURL('image/png')
-}
-
-export function downloadSvg(svgString: string, filename = 'mermaid-diagram.svg'): void {
-  const blob = new Blob([svgString], { type: 'image/svg+xml' })
-  downloadBlob(blob, filename)
 }
 
 export type { MermaidRenderResult } from '@/types/utils/mermaid-renderer'

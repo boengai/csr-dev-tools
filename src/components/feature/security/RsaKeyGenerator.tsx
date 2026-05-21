@@ -4,9 +4,9 @@ import { useCallback, useState } from 'react'
 import { Button, CodeInput, CopyButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useAsyncAction, useToast } from '@/hooks'
+import { useAsyncAction, useDownload, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { downloadPemFile, generateRsaKeyPair, type RsaKeyPair, type RsaKeySize } from '@/utils'
+import { generateRsaKeyPair, type RsaKeyPair, type RsaKeySize } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['rsa-key-generator']
 
@@ -18,6 +18,7 @@ const KEY_SIZES: Array<{ label: string; value: RsaKeySize }> = [
 export const RsaKeyGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [keySize, setKeySize] = useState<RsaKeySize>(2048)
   const { showError, showSuccess } = useToast()
+  const { downloadPemFile } = useDownload()
 
   const {
     pending: generating,
@@ -39,20 +40,20 @@ export const RsaKeyGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     }
   }, [keySize, run, showError, showSuccess])
 
-  const handleDownloadPublic = useCallback(() => {
+  const handleDownloadPublic = () => {
     if (keyPair) downloadPemFile(keyPair.publicKey, 'public.pem')
-  }, [keyPair])
+  }
 
-  const handleDownloadPrivate = useCallback(() => {
+  const handleDownloadPrivate = () => {
     if (keyPair) downloadPemFile(keyPair.privateKey, 'private.pem')
-  }, [keyPair])
+  }
 
-  const handleDownloadAll = useCallback(() => {
+  const handleDownloadAll = () => {
     if (keyPair) {
       downloadPemFile(keyPair.publicKey, 'public.pem')
       setTimeout(() => downloadPemFile(keyPair.privateKey, 'private.pem'), 100)
     }
-  }, [keyPair])
+  }
 
   const handleReset = useCallback(() => {
     setKeySize(2048)

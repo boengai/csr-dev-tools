@@ -6,7 +6,6 @@ import { useDownload, useToast } from '@/hooks'
 import type { PlaceholderImageAction, PlaceholderImageState } from '@/types'
 import {
   canvasToBlob,
-  downloadSvg,
   generatePlaceholderCanvas,
   generatePlaceholderSvg,
   PLACEHOLDER_PRESETS,
@@ -94,8 +93,8 @@ const reducer = (state: PlaceholderImageState, action: PlaceholderImageAction): 
 export const PlaceholderImageGenerator = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const { bgColor, bgHexInput, height, text, textColor, textHexInput, width } = state
-  const { showError, showSuccess } = useToast()
-  const { downloadBlob } = useDownload()
+  const { showError } = useToast()
+  const { downloadBlob, downloadSvg } = useDownload()
 
   const previewUri = useMemo(() => {
     const opts = buildOptions(width, height, bgColor, textColor, text)
@@ -146,7 +145,6 @@ export const PlaceholderImageGenerator = () => {
     if (!opts) return
     const svg = generatePlaceholderSvg(opts)
     downloadSvg(svg, `placeholder-${opts.width}x${opts.height}.svg`)
-    showSuccess(`Downloaded placeholder-${opts.width}x${opts.height}.svg`)
   }
 
   const displayText = text || `${width || '0'}x${height || '0'}`

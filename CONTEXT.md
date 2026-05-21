@@ -599,11 +599,12 @@ binary'` from `ProtobufCodec`). It is not used for "compute succeeded" —
 successful pipelines render their result; that IS the success signal.
 
 Download confirmations are factored into [[useDownload]]
-(`src/hooks/useDownload.ts`) — sibling of `useCopyToClipboard`. Callers
-that go through the hook's `downloadBlob` / `downloadDataUrl` get the
-`Downloaded ${filename}` toast for free; Tools using the domain wrappers
-(`downloadSvg`, `downloadMermaidSvg`, `downloadPemFile`) still wire the
-`showSuccess` inline until those wrappers consolidate into the hook.
+(`src/hooks/useDownload.ts`) — sibling of `useCopyToClipboard`. The hook
+exposes four methods (`downloadBlob`, `downloadDataUrl`, `downloadSvg`,
+`downloadPemFile`) that each invoke the corresponding `src/utils/download.ts`
+helper and fire the `Downloaded ${filename}` toast. All Tool-side download
+paths route through it; the lower-level utils stay reachable for non-React
+sites (none today) but no caller wires `showSuccess` inline after a download.
 
 Does NOT fit: **validation errors that are part of the result the user
 is reading**. When the compute can fail in a way the user must inspect

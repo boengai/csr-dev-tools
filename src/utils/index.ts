@@ -46,13 +46,7 @@ export * from './lorem-ipsum'
 export * from './markdown-table'
 export { renderMarkdown } from '@/wasm/markdown'
 export * from './mermaid-auto-fix'
-export {
-  type MermaidRenderResult,
-  initializeMermaid,
-  renderMermaid,
-  svgToPng,
-  downloadSvg as downloadMermaidSvg,
-} from './mermaid-renderer'
+export { type MermaidRenderResult, initializeMermaid, renderMermaid, svgToPng } from './mermaid-renderer'
 export * from '@/wasm/number-base'
 export * from './og-tags'
 export * from './parse-error-narrators'

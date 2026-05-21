@@ -1,5 +1,4 @@
 import type { RsaKeySize, RsaKeyPair } from '@/types/utils/rsa-key-generator'
-import { downloadBlob } from '@/utils/download'
 
 export const arrayBufferToPem = (buffer: ArrayBuffer, label: string): string => {
   const bytes = new Uint8Array(buffer)
@@ -29,11 +28,6 @@ export const generateRsaKeyPair = async (keySize: RsaKeySize): Promise<RsaKeyPai
     privateKey: arrayBufferToPem(privateDer, 'PRIVATE KEY'),
     publicKey: arrayBufferToPem(publicDer, 'PUBLIC KEY'),
   }
-}
-
-export const downloadPemFile = (content: string, filename: string): void => {
-  const blob = new Blob([content], { type: 'application/x-pem-file' })
-  downloadBlob(blob, filename)
 }
 
 export type { RsaKeySize, RsaKeyPair } from '@/types/utils/rsa-key-generator'

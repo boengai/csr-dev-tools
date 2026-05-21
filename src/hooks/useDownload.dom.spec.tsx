@@ -48,4 +48,34 @@ describe('useDownload', () => {
     expect(items[0].label).toBe('Downloaded pic.png')
     expect(items[0].type).toBe('success')
   })
+
+  it('downloadSvg triggers an SVG download and toasts the filename', () => {
+    const spy = vi.spyOn(downloadUtils, 'downloadSvg').mockImplementation(() => {})
+    const { result } = renderHook(() => useDownload())
+
+    act(() => {
+      result.current.downloadSvg('<svg/>', 'diagram.svg')
+    })
+
+    expect(spy).toHaveBeenCalledWith('<svg/>', 'diagram.svg')
+    const items = useToast.getState().items
+    expect(items).toHaveLength(1)
+    expect(items[0].label).toBe('Downloaded diagram.svg')
+    expect(items[0].type).toBe('success')
+  })
+
+  it('downloadPemFile triggers a PEM download and toasts the filename', () => {
+    const spy = vi.spyOn(downloadUtils, 'downloadPemFile').mockImplementation(() => {})
+    const { result } = renderHook(() => useDownload())
+
+    act(() => {
+      result.current.downloadPemFile('-----BEGIN KEY-----', 'key.pem')
+    })
+
+    expect(spy).toHaveBeenCalledWith('-----BEGIN KEY-----', 'key.pem')
+    const items = useToast.getState().items
+    expect(items).toHaveLength(1)
+    expect(items[0].label).toBe('Downloaded key.pem')
+    expect(items[0].type).toBe('success')
+  })
 })
