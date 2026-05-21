@@ -1,8 +1,6 @@
-import { useState } from 'react'
-
 import { Button, CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolComputation } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { parseUserAgent, type UserAgentResult } from '@/utils'
 
@@ -26,28 +24,17 @@ const ResultRow = ({ label, value }: { label: string; value: string }) => (
 )
 
 export const UserAgentParser = (_props: ToolComponentProps) => {
-  const [input, setInput] = useState('')
-
-  const {
-    result,
-    setInput: setComputeInput,
-    setInputImmediate,
-  } = useToolComputation<string, UserAgentResult>((val) => parseUserAgent(val), {
+  const { input, result, setInput, setInputImmediate } = useToolInput<string, UserAgentResult>({
+    compute: (val) => parseUserAgent(val),
     debounceMs: 300,
-    initial: EMPTY,
+    initial: '',
+    initialResult: EMPTY,
     isEmpty: (val) => !val.trim(),
   })
 
-  const handleChange = (val: string) => {
-    setInput(val)
-    setComputeInput(val)
-  }
-
   const handleUseMyUa = () => {
     if (typeof navigator !== 'undefined') {
-      const ua = navigator.userAgent
-      setInput(ua)
-      setInputImmediate(ua)
+      setInputImmediate(navigator.userAgent)
     }
   }
 
@@ -62,7 +49,7 @@ export const UserAgentParser = (_props: ToolComponentProps) => {
           <FieldForm
             label="User Agent String"
             name="ua-input"
-            onChange={handleChange}
+            onChange={setInput}
             placeholder="Mozilla/5.0 (Windows NT 10.0; Win64; x64) ..."
             type="text"
             value={input}

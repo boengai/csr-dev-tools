@@ -1,8 +1,6 @@
-import { useState } from 'react'
-
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolComputation } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { parseUrl, type UrlParseResult } from '@/utils'
 
@@ -33,18 +31,13 @@ const ResultRow = ({ label, value, displayValue }: { label: string; value: strin
 }
 
 export const UrlParser = (_props: ToolComponentProps) => {
-  const [input, setInput] = useState('')
-
-  const { result, setInput: setComputeInput } = useToolComputation<string, UrlParseResult>((val) => parseUrl(val), {
+  const { input, result, setInput } = useToolInput<string, UrlParseResult>({
+    compute: (val) => parseUrl(val),
     debounceMs: 300,
-    initial: EMPTY,
+    initial: '',
+    initialResult: EMPTY,
     isEmpty: (val) => !val.trim(),
   })
-
-  const handleChange = (val: string) => {
-    setInput(val)
-    setComputeInput(val)
-  }
 
   return (
     <div className="flex w-full grow flex-col items-center gap-4">
@@ -53,7 +46,7 @@ export const UrlParser = (_props: ToolComponentProps) => {
       <FieldForm
         label="URL"
         name="url-input"
-        onChange={handleChange}
+        onChange={setInput}
         placeholder="https://example.com:8080/path?key=value#section"
         type="text"
         value={input}

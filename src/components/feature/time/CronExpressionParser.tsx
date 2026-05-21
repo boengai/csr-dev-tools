@@ -1,8 +1,6 @@
-import { useState } from 'react'
-
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolComputation } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { type CronParseResult, CRON_PRESETS, parseCron } from '@/utils'
 
@@ -11,26 +9,13 @@ const toolEntry = TOOL_REGISTRY_MAP['cron-expression-parser']
 const EMPTY_RESULT: CronParseResult = { description: '', error: null, nextRuns: [], valid: false }
 
 export const CronExpressionParser = (_props: ToolComponentProps) => {
-  const [expression, setExpression] = useState('')
-
-  const { result, setInput, setInputImmediate } = useToolComputation<string, CronParseResult>(
-    (val) => parseCron(val, 10),
-    {
-      debounceMs: 300,
-      initial: EMPTY_RESULT,
-      isEmpty: (val) => !val.trim(),
-    },
-  )
-
-  const handleChange = (val: string) => {
-    setExpression(val)
-    setInput(val)
-  }
-
-  const handlePreset = (expr: string) => {
-    setExpression(expr)
-    setInputImmediate(expr)
-  }
+  const { input: expression, result, setInput, setInputImmediate } = useToolInput<string, CronParseResult>({
+    compute: (val) => parseCron(val, 10),
+    debounceMs: 300,
+    initial: '',
+    initialResult: EMPTY_RESULT,
+    isEmpty: (val) => !val.trim(),
+  })
 
   return (
     <div className="flex w-full grow flex-col gap-4">
@@ -39,7 +24,7 @@ export const CronExpressionParser = (_props: ToolComponentProps) => {
       <FieldForm
         label="Cron Expression"
         name="cron-input"
-        onChange={handleChange}
+        onChange={setInput}
         placeholder="* * * * *"
         type="text"
         value={expression}
@@ -50,7 +35,7 @@ export const CronExpressionParser = (_props: ToolComponentProps) => {
           <button
             className="rounded border border-gray-800 px-2 py-1 text-body-xs text-gray-400 hover:border-primary hover:text-primary"
             key={preset.expression}
-            onClick={() => handlePreset(preset.expression)}
+            onClick={() => setInputImmediate(preset.expression)}
             type="button"
           >
             {preset.label}
