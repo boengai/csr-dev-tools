@@ -14,10 +14,9 @@ import {
   UploadInput,
 } from '@/components/common'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast } from '@/hooks'
+import { useDownload, useToast } from '@/hooks'
 import type { DownloadTarget, ImageConvertorAction, ImageConvertorState, ImageFormat } from '@/types'
 import { convertImageFormat, isValidImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
-import { downloadBlob } from '@/utils/download'
 import { buildZipBlob } from '@/utils/zip'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
@@ -65,7 +64,8 @@ export const ImageConvertor = () => {
   const downloadTargetRef = useRef<DownloadTarget | null>(null)
 
   // hooks
-  const { showError, showSuccess } = useToast()
+  const { showError } = useToast()
+  const { downloadBlob } = useDownload()
 
   // state
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -177,8 +177,6 @@ export const ImageConvertor = () => {
         downloadBlob(blob, fileName)
       }
 
-      showSuccess(`Downloaded ${fileName}`)
-
       // go to download tab
       dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.DOWNLOAD })
     } catch {
@@ -197,7 +195,6 @@ export const ImageConvertor = () => {
       blob = await parseDataUrlToBlob(dt.dataUrl)
     }
     downloadBlob(blob, dt.filename)
-    showSuccess(`Downloaded ${dt.filename}`)
   }
 
   const isLossy = LOSSY_FORMATS.has(target.format)

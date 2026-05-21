@@ -2,7 +2,7 @@ import { useMemo, useReducer } from 'react'
 
 import { Button, ColorInput, DownloadIcon, FieldForm, Pane, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast } from '@/hooks'
+import { useDownload, useToast } from '@/hooks'
 import type { PlaceholderImageAction, PlaceholderImageState } from '@/types'
 import {
   canvasToBlob,
@@ -12,7 +12,6 @@ import {
   PLACEHOLDER_PRESETS,
   type PlaceholderOptions,
 } from '@/utils'
-import { downloadBlob } from '@/utils/download'
 
 const DEFAULT_WIDTH = '800'
 const DEFAULT_HEIGHT = '600'
@@ -96,6 +95,7 @@ export const PlaceholderImageGenerator = () => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const { bgColor, bgHexInput, height, text, textColor, textHexInput, width } = state
   const { showError, showSuccess } = useToast()
+  const { downloadBlob } = useDownload()
 
   const previewUri = useMemo(() => {
     const opts = buildOptions(width, height, bgColor, textColor, text)
@@ -136,7 +136,6 @@ export const PlaceholderImageGenerator = () => {
       const canvas = generatePlaceholderCanvas(opts)
       const blob = await canvasToBlob(canvas)
       downloadBlob(blob, `placeholder-${opts.width}x${opts.height}.png`)
-      showSuccess(`Downloaded placeholder-${opts.width}x${opts.height}.png`)
     } catch {
       showError('Failed to generate PNG')
     }

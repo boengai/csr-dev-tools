@@ -4,11 +4,10 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useMountOnce, useToast, useToolComputationPersisted } from '@/hooks'
+import { useDownload, useMountOnce, useToast, useToolComputationPersisted } from '@/hooks'
 import type { MermaidComputeResult, ToolComponentProps } from '@/types'
 import {
   consumeHandoff,
-  downloadDataUrl,
   downloadMermaidSvg,
   initializeMermaid,
   renderMermaid,
@@ -66,6 +65,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const [exportingPng, setExportingPng] = useState(false)
   const [referenceOpen, setReferenceOpen] = useState(false)
   const { showError, showSuccess } = useToast()
+  const { downloadDataUrl } = useDownload()
 
   const {
     input: code,
@@ -124,7 +124,6 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     try {
       const dataUrl = await svgToPng(svg)
       downloadDataUrl(dataUrl, 'mermaid-diagram.png')
-      showSuccess('Downloaded mermaid-diagram.png')
     } catch {
       showError('Failed to export PNG')
     } finally {

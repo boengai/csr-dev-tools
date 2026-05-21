@@ -3,10 +3,9 @@ import { useState } from 'react'
 import { Button, CopyButton, DownloadIcon, FieldForm, Pane, SplitPanel, UploadInput } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useDownload, useToast, useToolComputation } from '@/hooks'
 import type { DataUriDecodeResult, DataUriEncodeResult, ToolComponentProps } from '@/types'
 import { fileToDataUri, formatFileSize, parseDataUri, parseDataUrlToBlob } from '@/utils'
-import { downloadBlob } from '@/utils/download'
 
 const toolEntry = TOOL_REGISTRY_MAP['data-uri-generator']
 
@@ -19,7 +18,8 @@ const getMimeExtension = (mimeType: string): string => {
 }
 
 export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
-  const { showError, showSuccess } = useToast()
+  const { showError } = useToast()
+  const { downloadBlob } = useDownload()
 
   const [encodeOpen, setEncodeOpen] = useState(false)
   const [decodeOpen, setDecodeOpen] = useState(false)
@@ -65,7 +65,6 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
       const blob = await parseDataUrlToBlob(decodeInput.trim())
       const ext = getMimeExtension(decodeResult.mimeType)
       downloadBlob(blob, `decoded.${ext}`)
-      showSuccess(`Downloaded decoded.${ext}`)
     } catch {
       showError('Failed to download file')
     }

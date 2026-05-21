@@ -2,9 +2,9 @@ import { useEffect, useState } from 'react'
 
 import { Button, DownloadIcon, FieldForm, ProgressBar, UploadInput } from '@/components/common'
 import { COMPRESSIBLE_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useTimeoutRef, useToast, useToolFields } from '@/hooks'
+import { useDownload, useTimeoutRef, useToast, useToolFields } from '@/hooks'
 import type { CompressInput, ImageProcessingResult, OriginalInfo } from '@/types'
-import { downloadDataUrl, formatFileSize, processImage, tv } from '@/utils'
+import { formatFileSize, processImage, tv } from '@/utils'
 
 const processingWrapperStyles = tv({
   base: 'flex flex-col gap-2',
@@ -23,7 +23,8 @@ const INITIAL_INPUT: CompressInput = { file: null, quality: 80 }
 const PROGRESS_THRESHOLD_MS = 300
 
 export const ImageCompressor = () => {
-  const { showError, showSuccess } = useToast()
+  const { showError } = useToast()
+  const { downloadDataUrl } = useDownload()
   const progressTimer = useTimeoutRef()
   const [showProgress, setShowProgress] = useState(false)
 
@@ -93,7 +94,6 @@ export const ImageCompressor = () => {
     const baseName = file.name.replace(/\.[^.]+$/, '')
     const filename = `compressed-${baseName}.${ext}`
     downloadDataUrl(compressed.dataUrl, filename)
-    showSuccess(`Downloaded ${filename}`)
   }
 
   const compressionRatio =

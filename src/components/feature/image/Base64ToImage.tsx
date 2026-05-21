@@ -3,15 +3,16 @@ import { useState } from 'react'
 import { Button, DownloadIcon, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useDownload, useToast, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { type Base64ImageInfo, base64ToImageInfo, downloadDataUrl, formatFileSize } from '@/utils'
+import { type Base64ImageInfo, base64ToImageInfo, formatFileSize } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['base64-to-image']
 
 export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [input, setInputValue] = useState('')
-  const { showError, showSuccess } = useToast()
+  const { showError } = useToast()
+  const { downloadDataUrl } = useDownload()
 
   const {
     result: info,
@@ -33,7 +34,6 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     if (!info) return
     const filename = `image.${info.format}`
     downloadDataUrl(info.dataUri, filename)
-    showSuccess(`Downloaded ${filename}`)
   }
 
   const handleReset = () => {

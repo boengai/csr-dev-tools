@@ -1,9 +1,9 @@
 import { Button, ColorInput, CopyButton, DownloadIcon, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolFields } from '@/hooks'
+import { useDownload, useToast, useToolFields } from '@/hooks'
 import type { QrErrorCorrectionLevel, QrInput, QrResult, ToolComponentProps } from '@/types'
-import { downloadDataUrl, generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils'
+import { generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['qr-code-generator']
 
@@ -18,7 +18,8 @@ const INITIAL_INPUT: QrInput = {
 const EMPTY_RESULT: QrResult = { dataUrl: '', svgString: '' }
 
 export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { showError, showSuccess } = useToast()
+  const { showError } = useToast()
+  const { downloadDataUrl } = useDownload()
 
   const {
     inputs: { background, errorCorrection, foreground, size, text },
@@ -74,7 +75,6 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const handleDownload = () => {
     if (!dataUrl) return
     downloadDataUrl(dataUrl, 'qr-code.png')
-    showSuccess('Downloaded qr-code.png')
   }
 
   return (

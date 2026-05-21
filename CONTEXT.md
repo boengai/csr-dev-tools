@@ -598,6 +598,13 @@ Three categories cover every `showError` adopter:
 binary'` from `ProtobufCodec`). It is not used for "compute succeeded" —
 successful pipelines render their result; that IS the success signal.
 
+Download confirmations are factored into [[useDownload]]
+(`src/hooks/useDownload.ts`) — sibling of `useCopyToClipboard`. Callers
+that go through the hook's `downloadBlob` / `downloadDataUrl` get the
+`Downloaded ${filename}` toast for free; Tools using the domain wrappers
+(`downloadSvg`, `downloadMermaidSvg`, `downloadPemFile`) still wire the
+`showSuccess` inline until those wrappers consolidate into the hook.
+
 Does NOT fit: **validation errors that are part of the result the user
 is reading**. When the compute can fail in a way the user must inspect
 alongside their input (e.g., `JsonDiffChecker` showing "Invalid JSON at
