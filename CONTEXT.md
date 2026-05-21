@@ -74,9 +74,13 @@ four invariants (debounced, stale-safe, empty-bypass, unmount-safe) carry over
 unchanged — `useToolFields` is implemented as a thin layer over
 `useToolComputation` so the invariants stay defined in one place.
 
-Pick this when a Tool has more than one input field. Keep `useToolComputation`
-for single-value Tools (one `string` in, one result out) — forcing them
-through `setFields({ value: x })` is worse than what they have.
+Pick this when a Tool has more than one input field. Pick [[Tool input]]
+for single-value Tools where the input mirrors a single React-side value —
+the same "owns the input, no parallel `useState`" property, sized for one
+field. Keep the unwrapped `useToolComputation` only when the input is built
+fresh per change from external React state (the [[N-mirror broadcast]]
+shape) or when a wrapper bridges React-side props on every call (the
+[[Image tool shell]] shape).
 
 Carries one extra invariant beyond the pipeline:
 
@@ -97,6 +101,51 @@ the seam previously occupied by per-Tool `useMountOnce(() => recompute())`
 rituals — non-persisted adopters that want a "fire on mount with the
 default bag" hook no longer need to import `useMountOnce`. Today's
 adopters: `ColorPaletteGenerator`.
+
+## Tool input
+
+The single-Input variant of [[Tool field bag]]. Implemented by
+`useToolInput` (`src/hooks/useToolInput.ts`).
+
+`useToolComputation` is stateless w.r.t. input — Tools using it must keep
+one `useState` mirroring the pipeline input and write to both in every
+handler (`setSource(val); setInput(val)` in change; `setSource('');
+setInputImmediate('')` in reset). Same bug surface as the multi-field
+case that motivated [[Tool field bag]]: forget a write in one handler
+and the UI desyncs from the pipeline silently. The duplicate-write tax
+also leaks into renames at the import site (`setInput` collides with the
+local `useState` setter, so callers alias one of them — `setComputeInput`,
+`setInputValue` — adding vocabulary the hook should have absorbed).
+
+`useToolInput` collapses both. The hook owns the input value, exposes
+`input` for reads, `setInput(val)` for debounced writes, plus
+`setInputImmediate(val)`, `recompute()`, and `reset()` (restores `input`
+to `options.initial` and routes through `setInputImmediate` so any
+pending compute is cancelled and `isEmpty`-driven short-circuits fire
+synchronously). The pipeline's four invariants (debounced, stale-safe,
+empty-bypass, unmount-safe) carry over unchanged — `useToolInput` is
+implemented as a thin layer over `useToolComputation` so the invariants
+stay defined in one place.
+
+`autorunOnMount: true` (option, default `false`) fires `recompute()`
+once after mount with `options.initial`, mirroring the [[Tool field
+bag]] variant.
+
+Pick this when a Tool has a single input value that mirrors a single
+React-side state — the bulk of single-Input Tools without persistence.
+Pick [[Persistent tool computation]] when that input also persists
+across reloads. Keep the unwrapped `useToolComputation` for
+[[N-mirror broadcast]] adopters (the input is a discriminated bag
+rebuilt per keystroke from React state, not a mirror of it — today:
+`ColorConvertor`, `UnitPxToRem`, `AspectRatioCalculator`) and for
+shells that bridge React-side props on every call ([[Image tool shell]]
+with `{ file, controls }`).
+
+Today's adopters: `MarkdownPreview`, `JwtDecoder`, `UrlParser`,
+`Base64ToImage`, `SshKeyFingerprint`, `CertificateDecoder`,
+`TextCaseConverter`, `WordCounter`, `CronExpressionParser`,
+`UserAgentParser`, `TimeUnixTimestamp` (UnixTimestampSection),
+`SvgViewer`.
 
 ## Persistent tool field bag
 
