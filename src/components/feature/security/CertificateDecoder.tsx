@@ -1,9 +1,7 @@
-import { useState } from 'react'
-
 import { CodeInput, CopyButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { type CertificateExtension, type CertificateInfo, cnMerge, tv, type ValidityStatus } from '@/utils'
 
@@ -107,45 +105,28 @@ const ExtensionItem = ({ ext }: { ext: CertificateExtension }) => (
 )
 
 export const CertificateDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [input, setInputValue] = useState('')
   const { showError } = useToast()
 
-  const {
-    result,
-    isPending: loading,
-    setInput,
-    setInputImmediate,
-  } = useToolComputation<string, CertificateInfo | null>(
-    async (val) => {
+  const { input, result, isPending: loading, setInput, reset } = useToolInput<string, CertificateInfo | null>({
+    compute: async (val) => {
       const { parsePemCertificate } = await import('@/utils/certificate-decoder')
       return parsePemCertificate(val.trim())
     },
-    {
-      debounceMs: 300,
-      initial: null,
-      isEmpty: (val) => !val.trim(),
-      onError: (error) => {
-        showError(error instanceof Error ? error.message : 'Certificate format not recognized')
-      },
+    debounceMs: 300,
+    initial: '',
+    initialResult: null,
+    isEmpty: (val) => !val.trim(),
+    onError: (error) => {
+      showError(error instanceof Error ? error.message : 'Certificate format not recognized')
     },
-  )
-
-  const handleChange = (val: string) => {
-    setInputValue(val)
-    setInput(val)
-  }
-
-  const handleReset = () => {
-    setInputValue('')
-    setInputImmediate('')
-  }
+  })
 
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
       onAfterClose={onAfterDialogClose}
-      onReset={handleReset}
+      onReset={reset}
       title="Certificate Decoder"
       triggers={[{ label: 'Decode Certificate' }]}
     >
@@ -154,7 +135,7 @@ export const CertificateDecoder = ({ autoOpen, onAfterDialogClose }: ToolCompone
           aria-label="PEM certificate input"
           minHeight="200px"
           name="certificate-input"
-          onChange={handleChange}
+          onChange={setInput}
           placeholder="Paste PEM-encoded certificate here..."
           value={input}
         />

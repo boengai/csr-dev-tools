@@ -1,9 +1,7 @@
-import { useState } from 'react'
-
 import { CodeInput, CopyButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { analyzeSshKey, type SshKeyInfo } from '@/utils'
 
@@ -20,39 +18,25 @@ const ResultRow = ({ label, value }: { label: string; value: string }) => (
 )
 
 export const SshKeyFingerprint = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [input, setInputValue] = useState('')
   const { showError } = useToast()
 
-  const {
-    result,
-    isPending: loading,
-    setInput,
-    setInputImmediate,
-  } = useToolComputation<string, SshKeyInfo | null>(async (val) => analyzeSshKey(val.trim()), {
+  const { input, result, isPending: loading, setInput, reset } = useToolInput<string, SshKeyInfo | null>({
+    compute: async (val) => analyzeSshKey(val.trim()),
     debounceMs: 300,
-    initial: null,
+    initial: '',
+    initialResult: null,
     isEmpty: (val) => !val.trim(),
     onError: (error) => {
       showError(error instanceof Error ? error.message : 'SSH key format not recognized')
     },
   })
 
-  const handleChange = (val: string) => {
-    setInputValue(val)
-    setInput(val)
-  }
-
-  const handleReset = () => {
-    setInputValue('')
-    setInputImmediate('')
-  }
-
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
       onAfterClose={onAfterDialogClose}
-      onReset={handleReset}
+      onReset={reset}
       size="default"
       title="SSH Key Fingerprint"
       triggers={[{ label: 'Analyze SSH Key' }]}
@@ -62,7 +46,7 @@ export const SshKeyFingerprint = ({ autoOpen, onAfterDialogClose }: ToolComponen
           aria-label="SSH public key input"
           minHeight="100px"
           name="ssh-key-input"
-          onChange={handleChange}
+          onChange={setInput}
           placeholder="Paste SSH public key here..."
           value={input}
         />
