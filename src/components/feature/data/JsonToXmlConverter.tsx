@@ -1,7 +1,6 @@
 import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ConverterMode, JsonXmlConvertMode, ToolComponentProps } from '@/types'
-import { formatParseError } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-xml-converter']
 
@@ -11,6 +10,7 @@ const MODES: [ConverterMode<JsonXmlConvertMode>, ConverterMode<JsonXmlConvertMod
     label: 'XML → JSON',
     resultLabel: 'JSON Output',
     resultPlaceholder: '{\n  "root": {\n    "name": "John",\n    "age": 30\n  }\n}',
+    sourceFormat: 'xml',
     sourceLabel: 'XML Input',
     sourcePlaceholder: '<root>\n  <name>John</name>\n  <age>30</age>\n</root>',
   },
@@ -19,6 +19,7 @@ const MODES: [ConverterMode<JsonXmlConvertMode>, ConverterMode<JsonXmlConvertMod
     label: 'JSON → XML',
     resultLabel: 'XML Output',
     resultPlaceholder: '<root>\n  <name>John</name>\n  <age>30</age>\n</root>',
+    sourceFormat: 'json',
     sourceLabel: 'JSON Input',
     sourcePlaceholder: '{\n  "root": {\n    "name": "John",\n    "age": 30\n  }\n}',
   },
@@ -31,18 +32,9 @@ const compute = async ({
   mode: JsonXmlConvertMode
   source: string
 }): Promise<{ output: string }> => {
-  const { xmlToJson, jsonToXml } = await import('@/wasm/parsers')
-  try {
-    const output = mode === 'xml-to-json' ? await xmlToJson(source) : await jsonToXml(source)
-    return { output }
-  } catch {
-    if (mode === 'xml-to-json') {
-      const { getXmlParseError } = await import('@/wasm/parsers')
-      throw new Error(formatParseError(await getXmlParseError(source), 'XML'))
-    }
-    const { getJsonParseError } = await import('@/wasm/json-tools')
-    throw new Error(formatParseError(await getJsonParseError(source), 'JSON'))
-  }
+  const { jsonToXml, xmlToJson } = await import('@/wasm/parsers')
+  const output = mode === 'xml-to-json' ? await xmlToJson(source) : await jsonToXml(source)
+  return { output }
 }
 
 export const JsonToXmlConverter = ({ onAfterDialogClose }: ToolComponentProps) => (

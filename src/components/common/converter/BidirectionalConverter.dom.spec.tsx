@@ -4,6 +4,12 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+vi.mock('@/utils/parse-error-narrators', () => ({
+  narrateParseError: vi.fn(),
+}))
+
+import { narrateParseError } from '@/utils/parse-error-narrators'
+
 import { BidirectionalConverter } from './BidirectionalConverter'
 
 type Mode = 'a-to-b' | 'b-to-a'
@@ -364,6 +370,119 @@ describe('BidirectionalConverter — mode persistence', () => {
     )
     // After remount with autoOpen, the persisted mode (b-to-a) drives the labels.
     expect(screen.getByText('B Input')).toBeTruthy()
+  })
+})
+
+describe('BidirectionalConverter — parse-error narration', () => {
+  beforeEach(() => {
+    vi.mocked(narrateParseError).mockReset()
+  })
+
+  const MODES_WITH_FORMAT: [
+    {
+      key: Mode
+      label: string
+      sourceLabel: string
+      sourcePlaceholder: string
+      resultLabel: string
+      resultPlaceholder: string
+      sourceFormat: 'json'
+    },
+    {
+      key: Mode
+      label: string
+      sourceLabel: string
+      sourcePlaceholder: string
+      resultLabel: string
+      resultPlaceholder: string
+      sourceFormat: 'yaml'
+    },
+  ] = [
+    { ...MODES[0], sourceFormat: 'json' },
+    { ...MODES[1], sourceFormat: 'yaml' },
+  ]
+
+  it('narrates with the narrator output when source has a parse error', async () => {
+    localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('{bad'))
+    vi.mocked(narrateParseError).mockResolvedValueOnce('Invalid JSON: unexpected token')
+    const onError = vi.fn()
+    const compute = async () => {
+      throw new Error('cryptic wasm failure')
+    }
+    render(
+      <BidirectionalConverter
+        compute={compute}
+        initialResult={{ output: '' }}
+        modes={MODES_WITH_FORMAT}
+        modeStorageKey="test"
+        onError={onError}
+      />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1)
+    })
+
+    expect(narrateParseError).toHaveBeenCalledWith('json', '{bad')
+    expect(onError).toHaveBeenCalledTimes(1)
+    const thrown = onError.mock.calls[0][0] as Error
+    expect(thrown.message).toBe('Invalid JSON: unexpected token')
+  })
+
+  it('passes the original error through when source is parse-valid', async () => {
+    localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('[{"a":1}]'))
+    vi.mocked(narrateParseError).mockResolvedValueOnce(null)
+    const onError = vi.fn()
+    const compute = async () => {
+      throw new Error('JSON must be an array of objects')
+    }
+    render(
+      <BidirectionalConverter
+        compute={compute}
+        initialResult={{ output: '' }}
+        modes={MODES_WITH_FORMAT}
+        modeStorageKey="test"
+        onError={onError}
+      />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1)
+    })
+
+    expect(narrateParseError).toHaveBeenCalledWith('json', '[{"a":1}]')
+    expect(onError).toHaveBeenCalledTimes(1)
+    const thrown = onError.mock.calls[0][0] as Error
+    expect(thrown.message).toBe('JSON must be an array of objects')
+  })
+
+  it('skips the narrator entirely when sourceFormat is absent on the active mode', async () => {
+    localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('x'))
+    const onError = vi.fn()
+    const compute = async () => {
+      throw new Error('boom')
+    }
+    render(
+      <BidirectionalConverter
+        compute={compute}
+        initialResult={{ output: '' }}
+        modes={MODES}
+        modeStorageKey="test"
+        onError={onError}
+      />,
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1)
+    })
+
+    expect(narrateParseError).not.toHaveBeenCalled()
+    expect(onError).toHaveBeenCalledTimes(1)
+    const thrown = onError.mock.calls[0][0] as Error
+    expect(thrown.message).toBe('boom')
   })
 })
 

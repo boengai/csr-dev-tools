@@ -11,6 +11,7 @@ import {
   writeJsonStorage,
 } from '@/hooks'
 import type { BidirectionalConverterProps, ConvertOutput } from '@/types'
+import { narrateParseError } from '@/utils/parse-error-narrators'
 
 const sourceKey = (mode: string, prefix?: string) =>
   prefix ? `csr-dev-tools-${prefix}-${mode}-source` : `csr-dev-tools-${mode}-source`
@@ -49,8 +50,25 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
     [],
   )
 
+  // Wrap compute so that, when the active mode declares a sourceFormat and the
+  // source has a parse error matching that format, the thrown Error carries a
+  // narrated `Invalid <FORMAT>: <reason>` message. Otherwise the original
+  // error from compute flows through unchanged.
+  const wrappedCompute = async (input: { mode: M; source: string }): Promise<R> => {
+    try {
+      return await compute(input)
+    } catch (e) {
+      const fmt = modes.find((m) => m.key === input.mode)?.sourceFormat
+      if (fmt) {
+        const narrated = await narrateParseError(fmt, input.source)
+        if (narrated != null) throw new Error(narrated)
+      }
+      throw e
+    }
+  }
+
   const { inputs, recompute, result, setFields, setFieldsImmediate } = useToolFields<{ mode: M; source: string }, R>({
-    compute,
+    compute: wrappedCompute,
     debounceMs: 300,
     initial: initialBag,
     initialResult,

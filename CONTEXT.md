@@ -294,6 +294,12 @@ This keeps source-line references on screen while the user reads the
 result; [[Toast channel]] is the wrong category for that case because
 toasts dismiss before the user can act on the reference.
 
+Each `ConverterMode<M>` may declare `sourceFormat: 'json' | 'yaml' | 'xml'
+| 'toml' | 'csv'`. When set, compute failures route through the
+[[Parse-error narrator]] before reaching `onError`. Omit for modes whose
+source isn't a parseable format (Base64, URL encoding, HTML entities) —
+those keep today's "toast `err.message`" behavior.
+
 `modes` is `ReadonlyArray<ConverterMode<M>>` (not a 2-tuple) to admit
 Tools that swap between more than two directions; `EnvFileConverter` is
 the four-mode adopter (`.env ↔ JSON`, `.env ↔ YAML`).
@@ -306,6 +312,47 @@ Today's adopters: `EncodingBase64`, `UrlEncoder`, `JsonToYamlConverter`,
 `JsonToXmlConverter`, `JsonToTomlConverter`, `JsonToCsvConverter`,
 `HtmlEntityConverter`, `HtmlToMarkdownConverter`, `EscapedJsonStringifier`,
 `EnvFileConverter` (the only `renderBanner` user today).
+
+## Parse-error narrator
+
+The single seam that owns the "translate a WASM compute failure into a
+human-readable `Invalid <FORMAT>: <reason>` message" concern across the
+[[Bidirectional converter]] family. Implemented by `narrateParseError`
+(`src/utils/parse-error-narrators.ts`).
+
+Owns a static `Record<SourceFormat, { label, get }>` mapping each known
+source format to its parse-error helper from `src/wasm/`:
+
+```ts
+type SourceFormat = 'csv' | 'json' | 'toml' | 'xml' | 'yaml'
+narrateParseError(format, source): Promise<string | null>
+```
+
+Returns the narrated message when `get(source)` returns a non-null
+reason, `null` when the source is parse-valid for that format.
+
+The shell consumes it via the gate-on-result invariant: if the active
+mode declares `sourceFormat`, the shell wraps the user's `compute` so
+that on failure it calls `narrateParseError(fmt, source)` and — only if
+the narrator returns non-null — throws `new Error(narrated)`. When the
+narrator returns null (source is parse-valid), the original error from
+compute flows through unchanged.
+
+The null-gate is load-bearing: it lets Tools throw bespoke shape /
+semantic errors (e.g. `JsonToCsvConverter`'s `'JSON must be an array
+of objects'` for valid-but-wrong-shape JSON) and have those surface
+verbatim, without a sentinel API. The narrator only fires when the
+input is actually malformed for the declared format.
+
+Today's adopters (via the shell): `JsonToYamlConverter`,
+`JsonToXmlConverter`, `JsonToTomlConverter`, `JsonToCsvConverter`.
+
+Pick this when a Tool whose source is one of the five known formats
+goes through [[Bidirectional converter]]. Tools using
+`useToolComputationPersisted` directly (`JsonFormatter`, `YamlFormatter`)
+can adopt `narrateParseError` standalone for their validate-first paths
+— the module is shaped for both call shapes — but no current adopter
+takes that path.
 
 ## Formatter shell
 

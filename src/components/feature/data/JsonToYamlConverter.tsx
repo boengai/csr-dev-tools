@@ -1,7 +1,7 @@
 import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ConverterMode, JsonYamlConvertMode } from '@/types'
-import { formatParseError, getJsonParseError, getYamlParseError, jsonToYaml, yamlToJson } from '@/utils'
+import { jsonToYaml, yamlToJson } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-yaml-converter']
 
@@ -11,6 +11,7 @@ const MODES: [ConverterMode<JsonYamlConvertMode>, ConverterMode<JsonYamlConvertM
     label: 'JSON → YAML',
     resultLabel: 'YAML Output',
     resultPlaceholder: 'name: John\nage: 30',
+    sourceFormat: 'json',
     sourceLabel: 'JSON Input',
     sourcePlaceholder: '{"name":"John","age":30}',
   },
@@ -19,6 +20,7 @@ const MODES: [ConverterMode<JsonYamlConvertMode>, ConverterMode<JsonYamlConvertM
     label: 'YAML → JSON',
     resultLabel: 'JSON Output',
     resultPlaceholder: '{\n  "name": "John",\n  "age": 30\n}',
+    sourceFormat: 'yaml',
     sourceLabel: 'YAML Input',
     sourcePlaceholder: 'name: John\nage: 30',
   },
@@ -31,15 +33,8 @@ const compute = async ({
   mode: JsonYamlConvertMode
   source: string
 }): Promise<{ output: string }> => {
-  try {
-    const output = mode === 'json-to-yaml' ? await jsonToYaml(source) : await yamlToJson(source)
-    return { output }
-  } catch {
-    if (mode === 'json-to-yaml') {
-      throw new Error(formatParseError(await getJsonParseError(source), 'JSON'))
-    }
-    throw new Error(formatParseError(await getYamlParseError(source), 'YAML'))
-  }
+  const output = mode === 'json-to-yaml' ? await jsonToYaml(source) : await yamlToJson(source)
+  return { output }
 }
 
 export const JsonToYamlConverter = () => (

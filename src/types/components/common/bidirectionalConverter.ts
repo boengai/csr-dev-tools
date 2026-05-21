@@ -1,10 +1,20 @@
 import type { ReactNode } from 'react'
 
+import type { SourceFormat } from '@/utils/parse-error-narrators'
+
 export type ConverterMode<M extends string> = {
   key: M
   label: string
   resultLabel: string
   resultPlaceholder: string
+  /**
+   * If set, the shell calls the matching parse-error narrator when this
+   * mode's `compute` rejects. When the narrator returns a non-null reason,
+   * the shell throws `Invalid <FORMAT>: <reason>`; otherwise the original
+   * error from `compute` flows through to `onError`. Omit for modes whose
+   * source isn't a parseable format (e.g. URL/Base64 encoding).
+   */
+  sourceFormat?: SourceFormat
   sourceLabel: string
   sourcePlaceholder: string
 }

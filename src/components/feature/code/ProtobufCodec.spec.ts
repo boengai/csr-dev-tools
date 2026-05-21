@@ -21,6 +21,12 @@ vi.mock('@/wasm/parsers', () => ({
   detectProtobufFormat: vi.fn(),
   parseProtobufSchema: vi.fn(),
   generateSampleJson: vi.fn(),
+  // Imported by parse-error-narrators (transitively via the @/utils barrel).
+  // ProtobufCodec doesn't call them, but the mock must define them so the
+  // narrator registry can read the references at module-load.
+  getTomlParseError: vi.fn(),
+  getXmlParseError: vi.fn(),
+  getYamlParseError: vi.fn(),
 }))
 
 const DUMMY_INPUT = {
