@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 
 import { CodeInput, CopyButton, DisclosurePanel, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolFieldsPersisted } from '@/hooks'
+import { useToolFieldsPersisted } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { evaluateJsonPath, formatResultValue, type JsonPathEvaluation, parseJsonInput } from '@/utils'
 
@@ -58,8 +58,6 @@ type EvalResult = { evaluation: JsonPathEvaluation | null; parseError: string | 
 const INITIAL_RESULT: EvalResult = { evaluation: null, parseError: null, parsedData: null }
 
 export const JsonpathEvaluator = (_props: ToolComponentProps) => {
-  const { showError } = useToast()
-
   const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<EvalInput, EvalResult>({
     autorunOnMount: true,
     compute: ({ expression: expr, jsonInput: value }) => {
@@ -69,11 +67,9 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
       return { evaluation: evaluateJsonPath(parsed.data, expr), parseError: null, parsedData: parsed.data }
     },
     debounceMs: 300,
+    errorLabel: 'Unexpected error during evaluation',
     initial: { jsonInput: SAMPLE_JSON, expression: DEFAULT_EXPRESSION },
     initialResult: INITIAL_RESULT,
-    onError: () => {
-      showError('Unexpected error during evaluation')
-    },
     storageKey: 'csr-dev-tools-jsonpath-evaluator',
   })
   const { jsonInput, expression } = inputs

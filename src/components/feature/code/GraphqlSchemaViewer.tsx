@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react'
 
 import { BrowsableItemList, CodeInput, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputationPersisted } from '@/hooks'
+import { useToolComputationPersisted } from '@/hooks'
 import type { GraphqlParseOutput, ToolComponentProps } from '@/types'
 import { cnMerge, type GraphqlTypeInfo, type GraphqlTypeKind } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['graphql-schema-viewer']
@@ -232,7 +232,6 @@ scalar DateTime`
 export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
   const [selectedType, setSelectedType] = useState<string | null>(null)
   const [filter, setFilter] = useState('')
-  const { showError } = useToast()
 
   const {
     input,
@@ -249,12 +248,10 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
       return { schema: null, parseError: result.error }
     },
     debounceMs: 300,
+    errorLabel: 'Failed to parse schema',
     initial: '',
     initialResult: { schema: null, parseError: null },
     isEmpty: (value) => !value.trim(),
-    onError: () => {
-      showError('Failed to parse schema')
-    },
     storageKey: 'csr-dev-tools-graphql-schema-viewer-input',
   })
 

@@ -18,13 +18,13 @@ export const UnitPxToRem = () => {
 
   const { result, setInput, setInputImmediate } = useToolComputation<PxRemInput, PxRemOutput | null>(solvePxRem, {
     debounceMs: 300,
+    errorFallback: 'Invalid input',
     initial: null,
     isEmpty: ({ px, rem, source }) => {
       if (source === 'px') return !px.trim()
       if (source === 'rem') return !rem.trim()
       return false
     },
-    onError: (err) => showError(err instanceof Error ? err.message : 'Invalid input'),
   })
 
   useEffect(() => {

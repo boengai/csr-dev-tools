@@ -1,6 +1,6 @@
 import { CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
-import { useToast, useToolFieldsPersisted } from '@/hooks'
+import { useToolFieldsPersisted } from '@/hooks'
 import type { DiffCheckerShellProps, DiffInput, DiffOutput, InlineSpan, SideBySideRow } from '@/types'
 
 const renderSpans = (spans: Array<InlineSpan>, side: 'left' | 'right') => {
@@ -61,15 +61,13 @@ export const DiffCheckerShell = <R extends DiffOutput>({
   storageKey,
   title,
 }: DiffCheckerShellProps<R>) => {
-  const { showError } = useToast()
-
   const { inputs, result, reset, setFields } = useToolFieldsPersisted<DiffInput, R>({
     compute,
     debounceMs: 300,
+    errorLabel,
     initial: { original: '', modified: '' },
     initialResult,
     isEmpty: ({ original, modified }) => original.trim().length === 0 && modified.trim().length === 0,
-    onError: () => showError(errorLabel),
     storageKey,
   })
   const { original, modified } = inputs

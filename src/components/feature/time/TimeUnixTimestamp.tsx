@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 
 import { CopyButton, DataCellTable, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolInput } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type { DateTime } from '@/types'
 import { getDaysInMonth, isValidTimestamp } from '@/utils'
 
@@ -44,7 +44,7 @@ const renderWithCopy = (label: string) => (val: string) => (
   </span>
 )
 
-const UnixTimestampSection = ({ showError }: { showError: (label: string) => void }) => {
+const UnixTimestampSection = () => {
   const { input, result, setInput } = useToolInput<string, Array<string>>({
     compute: (source) => {
       if (!isValidTimestamp(source)) throw new Error('Enter a valid Unix timestamp (e.g., 1700000000)')
@@ -55,12 +55,10 @@ const UnixTimestampSection = ({ showError }: { showError: (label: string) => voi
       return [isMilliseconds ? 'Milliseconds' : 'Seconds', d.toUTCString(), d.toString()]
     },
     debounceMs: 300,
+    errorFallback: 'Enter a valid Unix timestamp (e.g., 1700000000)',
     initial: '',
     initialResult: [],
     isEmpty: (source) => source.length === 0,
-    onError: (err) => {
-      showError(err instanceof Error ? err.message : 'Enter a valid Unix timestamp (e.g., 1700000000)')
-    },
   })
 
   return (
@@ -248,11 +246,10 @@ const DateSection = () => {
 const toolEntry = TOOL_REGISTRY_MAP['unix-timestamp']
 
 export const TimeUnixTimestamp = () => {
-  const { showError } = useToast()
   return (
     <div className="flex grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-      <UnixTimestampSection showError={showError} />
+      <UnixTimestampSection />
       <hr />
       <DateSection />
     </div>

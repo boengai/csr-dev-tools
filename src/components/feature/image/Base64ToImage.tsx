@@ -1,14 +1,13 @@
 import { Button, DownloadIcon, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDownload, useToast, useToolInput } from '@/hooks'
+import { useDownload, useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { type Base64ImageInfo, base64ToImageInfo, formatFileSize } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['base64-to-image']
 
 export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { showError } = useToast()
   const { downloadDataUrl } = useDownload()
 
   const {
@@ -19,10 +18,10 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   } = useToolInput<string, Base64ImageInfo | null>({
     compute: async (val) => base64ToImageInfo(val.trim()),
     debounceMs: 500,
+    errorLabel: 'Invalid Base64 image data',
     initial: '',
     initialResult: null,
     isEmpty: (val) => !val.trim(),
-    onError: () => showError('Invalid Base64 image data'),
   })
 
   const handleDownload = () => {

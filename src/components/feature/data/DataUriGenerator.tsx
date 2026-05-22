@@ -32,9 +32,9 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
     setInputImmediate: setDecodeInputImmediate,
   } = useToolComputation<string, DataUriDecodeResult | null>((val) => parseDataUri(val.trim()), {
     debounceMs: 300,
+    errorLabel: 'Invalid data URI format (e.g., data:image/png;base64,...)',
     initial: null,
     isEmpty: (val) => !val.trim(),
-    onError: () => showError('Invalid data URI format (e.g., data:image/png;base64,...)'),
   })
 
   const handleFileUpload = async (values: Array<File>) => {

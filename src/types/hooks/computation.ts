@@ -2,6 +2,25 @@ export type UseToolComputationOptions<I, R> = {
   initial: R
   debounceMs?: number
   isEmpty?: (input: I) => boolean
+  /**
+   * Pipeline-error toast: always show this exact string when compute rejects.
+   * Mutually exclusive with `errorFallback` and `onError` (precedence:
+   * `onError` > `errorFallback` > `errorLabel`).
+   */
+  errorLabel?: string
+  /**
+   * Pipeline-error toast with a generic fallback: shows `err.message` when
+   * the rejection is an `Error`, otherwise this fallback string. Use when
+   * compute throws user-facing messages (validation, `narrateParseError`)
+   * that should reach the user verbatim. Mutually exclusive with
+   * `errorLabel` and `onError`.
+   */
+  errorFallback?: string
+  /**
+   * Full callback for sites that need the input bag (context-specific
+   * messages) or side effects beyond toasting. Wins over `errorLabel` /
+   * `errorFallback` — the pipeline does not toast on its behalf.
+   */
   onError?: (error: unknown, input: I) => void
 }
 
@@ -41,6 +60,11 @@ export type UseToolFieldsOptions<F, R> = {
   /** Initial result, used until the first compute resolves and after `reset()` short-circuits via `isEmpty`. */
   initialResult: R
   isEmpty?: (input: F) => boolean
+  /** See `UseToolComputationOptions.errorLabel`. */
+  errorLabel?: string
+  /** See `UseToolComputationOptions.errorFallback`. */
+  errorFallback?: string
+  /** See `UseToolComputationOptions.onError`. */
   onError?: (error: unknown, input: F) => void
 }
 
@@ -87,6 +111,11 @@ export type UseToolInputOptions<I, R> = {
   /** Initial result, used until the first compute resolves and after `reset()` short-circuits via `isEmpty`. */
   initialResult: R
   isEmpty?: (input: I) => boolean
+  /** See `UseToolComputationOptions.errorLabel`. */
+  errorLabel?: string
+  /** See `UseToolComputationOptions.errorFallback`. */
+  errorFallback?: string
+  /** See `UseToolComputationOptions.onError`. */
   onError?: (error: unknown, input: I) => void
 }
 

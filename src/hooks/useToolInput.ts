@@ -27,6 +27,8 @@ export function useToolInput<I, R>(options: UseToolInputOptions<I, R>): UseToolI
     setInputImmediate: pipelineSetInputImmediate,
   } = useToolComputation<I, R>(options.compute, {
     debounceMs: options.debounceMs,
+    errorFallback: options.errorFallback,
+    errorLabel: options.errorLabel,
     initial: options.initialResult,
     isEmpty: options.isEmpty,
     onError: options.onError,

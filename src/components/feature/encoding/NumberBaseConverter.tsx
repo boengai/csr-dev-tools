@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useToolComputation } from '@/hooks'
 import type { BaseField, BaseInput, BaseResult, ToolComponentProps } from '@/types'
 import { convertBase, isValidForBase } from '@/utils'
 
@@ -20,7 +20,6 @@ const INITIAL_RESULT: BaseResult = { values: null, error: '' }
 
 export const NumberBaseConverter = (_props: ToolComponentProps) => {
   const [values, setValues] = useState<Record<string, string>>(EMPTY_VALUES)
-  const { showError } = useToast()
 
   const { result, setInput } = useToolComputation<BaseInput, BaseResult>(
     async ({ val, fromBase, fromName }) => {
@@ -40,11 +39,9 @@ export const NumberBaseConverter = (_props: ToolComponentProps) => {
     },
     {
       debounceMs: 300,
+      errorLabel: 'Conversion failed — please check your input',
       initial: INITIAL_RESULT,
       isEmpty: ({ val }) => val.trim().length === 0,
-      onError: () => {
-        showError('Conversion failed — please check your input')
-      },
     },
   )
 

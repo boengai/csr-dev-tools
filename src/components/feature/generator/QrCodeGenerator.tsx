@@ -1,7 +1,7 @@
 import { Button, ColorInput, CopyButton, DownloadIcon, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDownload, useToast, useToolFields } from '@/hooks'
+import { useDownload, useToolFields } from '@/hooks'
 import type { QrErrorCorrectionLevel, QrInput, QrResult, ToolComponentProps } from '@/types'
 import { generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils'
 
@@ -18,7 +18,6 @@ const INITIAL_INPUT: QrInput = {
 const EMPTY_RESULT: QrResult = { dataUrl: '', svgString: '' }
 
 export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { showError } = useToast()
   const { downloadDataUrl } = useDownload()
 
   const {
@@ -46,10 +45,10 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
       return { dataUrl: url, svgString: svg }
     },
     debounceMs: 300,
+    errorLabel: 'Failed to generate QR code',
     initial: INITIAL_INPUT,
     initialResult: EMPTY_RESULT,
     isEmpty: ({ text: t }) => !t,
-    onError: () => showError('Failed to generate QR code'),
   })
 
   const handleTextChange = (val: string) => {

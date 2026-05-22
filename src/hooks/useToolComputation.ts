@@ -2,6 +2,36 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { UseToolComputationOptions, UseToolComputationResult } from '@/types'
 
+import { useToast } from './state/useToast'
+
+type PipelineErrorRouting<I> = {
+  errorLabel?: string
+  errorFallback?: string
+  onError?: (err: unknown, input: I) => void
+}
+
+/**
+ * Routes a pipeline rejection to the configured error handler. Precedence:
+ * `onError` > `errorFallback` > `errorLabel`. Reads the toast store lazily
+ * via `getState()` so callers don't subscribe to toast state.
+ *
+ * Shared between `useToolComputation` and `useAsyncAction`. Exported so the
+ * latter can route through the same shape without duplicating the precedence.
+ */
+export function reportPipelineError<I>(err: unknown, input: I, routing: PipelineErrorRouting<I>): void {
+  if (routing.onError) {
+    routing.onError(err, input)
+    return
+  }
+  if (routing.errorFallback !== undefined) {
+    useToast.getState().showError(err instanceof Error ? err.message : routing.errorFallback)
+    return
+  }
+  if (routing.errorLabel !== undefined) {
+    useToast.getState().showError(routing.errorLabel)
+  }
+}
+
 /**
  * Tool computation pipeline: debounced + stale-safe async transformation from
  * a Tool's input to its result. Owns `result`, `error`, `isPending`, plus a
@@ -73,7 +103,7 @@ export function useToolComputation<I, R>(
           if (session !== sessionRef.current || !mountedRef.current) return
           setError(err)
           setIsPending(false)
-          optionsRef.current.onError?.(err, input)
+          reportPipelineError(err, input, optionsRef.current)
         }
       })()
     }, delayMs)

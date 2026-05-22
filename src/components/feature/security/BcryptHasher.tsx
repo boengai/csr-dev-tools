@@ -35,7 +35,6 @@ const INVALID_HASH_MESSAGE =
 const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => void }) => {
   const [password, setPassword] = useState('')
   const [rounds, setRounds] = useState('10')
-  const { showError } = useToast()
 
   const {
     pending: hashing,
@@ -43,7 +42,7 @@ const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => v
     result,
     run: handleHash,
   } = useAsyncAction<BcryptHashResult>(() => hashPassword(password, Number(rounds)), {
-    onError: () => showError('Hashing failed. Please try again.'),
+    errorLabel: 'Hashing failed. Please try again.',
   })
   const elapsedDisplay = useElapsedTimer(hashing)
 
@@ -144,7 +143,7 @@ const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) =>
     result,
     run,
   } = useAsyncAction<BcryptVerifyResult>(() => verifyPassword(password, hashInput.trim()), {
-    onError: () => showError('Verification failed. Please check inputs.'),
+    errorLabel: 'Verification failed. Please check inputs.',
   })
   const elapsedDisplay = useElapsedTimer(verifying)
 

@@ -4,15 +4,20 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { useToast } from './state/useToast'
 import { useToolComputation } from './useToolComputation'
 
 beforeEach(() => {
   vi.useFakeTimers()
+  useToast.setState({ items: [] })
 })
 
 afterEach(() => {
   vi.useRealTimers()
 })
+
+/** Convenience: read the labels of every toast added during a test. */
+const toastLabels = () => useToast.getState().items.map((it) => it.label)
 
 describe('useToolComputation', () => {
   it('exposes initial result, no error, not pending', () => {
@@ -269,6 +274,126 @@ describe('useToolComputation', () => {
     expect(onError).toHaveBeenCalledTimes(1)
     expect(onError.mock.calls[0][0]).toBeInstanceOf(Error)
     expect(onError.mock.calls[0][1]).toBe('hello')
+  })
+
+  it('errorLabel: toasts the label verbatim on rejection', async () => {
+    const compute = vi.fn(async () => {
+      throw new Error('underlying error that should not surface')
+    })
+    const { result } = renderHook(() =>
+      useToolComputation(compute, { initial: '', debounceMs: 0, errorLabel: 'Hashing failed' }),
+    )
+
+    act(() => {
+      result.current.setInput('x')
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    expect(toastLabels()).toEqual(['Hashing failed'])
+  })
+
+  it('errorFallback: toasts err.message when rejection is an Error', async () => {
+    const compute = vi.fn(async () => {
+      throw new Error('Invalid format: missing }')
+    })
+    const { result } = renderHook(() =>
+      useToolComputation(compute, { initial: '', debounceMs: 0, errorFallback: 'Could not parse' }),
+    )
+
+    act(() => {
+      result.current.setInput('x')
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    expect(toastLabels()).toEqual(['Invalid format: missing }'])
+  })
+
+  it('errorFallback: toasts the fallback when rejection is not an Error', async () => {
+    const compute = vi.fn(async () => {
+      throw 'string rejection' // eslint-disable-line no-throw-literal -- shape-only test of the unknown-rejection branch
+    })
+    const { result } = renderHook(() =>
+      useToolComputation(compute, { initial: '', debounceMs: 0, errorFallback: 'Could not parse' }),
+    )
+
+    act(() => {
+      result.current.setInput('x')
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    expect(toastLabels()).toEqual(['Could not parse'])
+  })
+
+  it('precedence: onError wins over errorFallback and errorLabel', async () => {
+    const compute = vi.fn(async () => {
+      throw new Error('boom')
+    })
+    const onError = vi.fn()
+    const { result } = renderHook(() =>
+      useToolComputation(compute, {
+        initial: '',
+        debounceMs: 0,
+        errorFallback: 'fallback',
+        errorLabel: 'label',
+        onError,
+      }),
+    )
+
+    act(() => {
+      result.current.setInput('x')
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    expect(onError).toHaveBeenCalledTimes(1)
+    expect(toastLabels()).toEqual([])
+  })
+
+  it('precedence: errorFallback wins over errorLabel when both set', async () => {
+    const compute = vi.fn(async () => {
+      throw new Error('typed message')
+    })
+    const { result } = renderHook(() =>
+      useToolComputation(compute, {
+        initial: '',
+        debounceMs: 0,
+        errorFallback: 'fallback',
+        errorLabel: 'label',
+      }),
+    )
+
+    act(() => {
+      result.current.setInput('x')
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    expect(toastLabels()).toEqual(['typed message'])
+  })
+
+  it('no error option set: rejection sets error state but does NOT toast', async () => {
+    const compute = vi.fn(async () => {
+      throw new Error('boom')
+    })
+    const { result } = renderHook(() => useToolComputation(compute, { initial: '', debounceMs: 0 }))
+
+    act(() => {
+      result.current.setInput('x')
+    })
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+
+    expect(result.current.error).toBeInstanceOf(Error)
+    expect(toastLabels()).toEqual([])
   })
 
   it('does not commit results after unmount', async () => {

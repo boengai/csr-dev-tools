@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { CopyButton, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useToolComputation } from '@/hooks'
 import type {
   AspectRatioInput,
   AspectRatioLastEdited,
@@ -58,20 +58,19 @@ const INITIAL_FIELDS: Fields = {
 }
 
 export const AspectRatioCalculator = () => {
-  const { showError } = useToast()
   const [fields, setFields] = useState<Fields>(INITIAL_FIELDS)
 
   const { result, setInput, setInputImmediate } = useToolComputation<AspectRatioInput, AspectRatioOutput | null>(
     solveAspectRatio,
     {
       debounceMs: 300,
+      errorFallback: 'Invalid input',
       initial: null,
       isEmpty: ({ height, ratio, source, width }) => {
         if (source === 'width') return !width.trim()
         if (source === 'height') return !height.trim()
         return !ratio.trim()
       },
-      onError: (err) => showError(err instanceof Error ? err.message : 'Invalid input'),
     },
   )
 

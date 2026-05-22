@@ -2,7 +2,7 @@ import { m } from 'motion/react'
 
 import { Button, ColorInput, CopyButton, FieldForm, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useCopyToClipboard, useToast, useToolFields } from '@/hooks'
+import { useCopyToClipboard, useToolFields } from '@/hooks'
 import type { PaletteInput } from '@/types'
 import { formatPaletteAsCss, generatePalette, type HarmonyType, type PaletteColor } from '@/utils'
 
@@ -26,7 +26,6 @@ const toPickerHex = (hex: string): string => {
 const toolEntry = TOOL_REGISTRY_MAP['color-palette-generator']
 
 export const ColorPaletteGenerator = () => {
-  const { showError } = useToast()
   const copyToClipboard = useCopyToClipboard()
 
   const {
@@ -38,12 +37,10 @@ export const ColorPaletteGenerator = () => {
     autorunOnMount: true,
     compute: ({ hex, harmony }) => generatePalette(hex, harmony),
     debounceMs: 300,
+    errorLabel: 'Enter a valid hex color (e.g., #3B82F6)',
     initial: { hex: DEFAULT_COLOR, harmony: DEFAULT_HARMONY },
     initialResult: [],
     isEmpty: ({ hex }) => !hex.trim(),
-    onError: () => {
-      showError('Enter a valid hex color (e.g., #3B82F6)')
-    },
   })
   const { hex: hexInput, harmony: harmonyType } = inputs
 

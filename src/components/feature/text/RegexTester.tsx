@@ -1,7 +1,7 @@
 import { CopyButton, FieldForm, Pane, ToggleButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolFields } from '@/hooks'
+import { useToolFields } from '@/hooks'
 import type { Flags, ToolComponentProps } from '@/types'
 import {
   buildHighlightSegments,
@@ -72,8 +72,6 @@ const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
 )
 
 export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { showError } = useToast()
-
   const {
     inputs,
     isPending: loading,
@@ -87,13 +85,10 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
       return { regex: r, segments: buildHighlightSegments(text, r.matches) }
     },
     debounceMs: 300,
+    errorFallback: 'Invalid regex',
     initial: INITIAL_INPUT,
     initialResult: INITIAL_COMPUTED,
     isEmpty: ({ pattern: pat, testString: text }) => pat.trim() === '' || text.trim() === '',
-    onError: (err) => {
-      const message = err instanceof Error ? err.message : 'Invalid regex'
-      showError(message)
-    },
   })
 
   const { flags, pattern, testString } = inputs

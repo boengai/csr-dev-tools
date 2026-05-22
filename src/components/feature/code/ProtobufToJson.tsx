@@ -151,12 +151,10 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
       return { schema: null, parseError: { line: result.line, message: result.error } }
     },
     debounceMs: 300,
+    errorLabel: 'Failed to parse proto definition',
     initial: '',
     initialResult: { schema: null, parseError: null },
     isEmpty: (value) => !value.trim(),
-    onError: () => {
-      showError('Failed to parse proto definition')
-    },
     storageKey: 'csr-dev-tools-protobuf-to-json-input',
   })
 

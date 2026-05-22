@@ -1,24 +1,20 @@
 import { CodeInput, InlineLabeledRow } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolInput } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { analyzeSshKey, type SshKeyInfo } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['ssh-key-fingerprint']
 
 export const SshKeyFingerprint = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { showError } = useToast()
-
   const { input, result, isPending: loading, setInput, reset } = useToolInput<string, SshKeyInfo | null>({
     compute: async (val) => analyzeSshKey(val.trim()),
     debounceMs: 300,
+    errorFallback: 'SSH key format not recognized',
     initial: '',
     initialResult: null,
     isEmpty: (val) => !val.trim(),
-    onError: (error) => {
-      showError(error instanceof Error ? error.message : 'SSH key format not recognized')
-    },
   })
 
   return (

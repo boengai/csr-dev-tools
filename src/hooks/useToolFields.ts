@@ -25,6 +25,8 @@ export function useToolFields<F, R>(options: UseToolFieldsOptions<F, R>): UseToo
 
   const { error, isPending, result, setInput, setInputImmediate } = useToolComputation<F, R>(options.compute, {
     debounceMs: options.debounceMs,
+    errorFallback: options.errorFallback,
+    errorLabel: options.errorLabel,
     initial: options.initialResult,
     isEmpty: options.isEmpty,
     onError: options.onError,

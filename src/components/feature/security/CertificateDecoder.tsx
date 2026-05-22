@@ -1,7 +1,7 @@
 import { CodeInput, CopyButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolInput } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { type CertificateExtension, type CertificateInfo, cnMerge, tv, type ValidityStatus } from '@/utils'
 
@@ -105,20 +105,16 @@ const ExtensionItem = ({ ext }: { ext: CertificateExtension }) => (
 )
 
 export const CertificateDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { showError } = useToast()
-
   const { input, result, isPending: loading, setInput, reset } = useToolInput<string, CertificateInfo | null>({
     compute: async (val) => {
       const { parsePemCertificate } = await import('@/utils/certificate-decoder')
       return parsePemCertificate(val.trim())
     },
     debounceMs: 300,
+    errorFallback: 'Certificate format not recognized',
     initial: '',
     initialResult: null,
     isEmpty: (val) => !val.trim(),
-    onError: (error) => {
-      showError(error instanceof Error ? error.message : 'Certificate format not recognized')
-    },
   })
 
   return (

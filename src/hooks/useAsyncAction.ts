@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { UseAsyncActionOptions, UseAsyncActionResult } from '@/types'
 
+import { reportPipelineError } from './useToolComputation'
 import { useStaleSafeAsync } from './useStaleSafeAsync'
 
 /**
@@ -23,8 +24,8 @@ export function useAsyncAction<T>(
 
   const actionRef = useRef(action)
   actionRef.current = action
-  const onErrorRef = useRef(options?.onError)
-  onErrorRef.current = options?.onError
+  const optionsRef = useRef(options)
+  optionsRef.current = options
 
   const newSession = useStaleSafeAsync()
   const mountedRef = useRef(true)
@@ -46,7 +47,7 @@ export function useAsyncAction<T>(
       return value
     } catch (err) {
       if (!session.isFresh() || !mountedRef.current) return undefined
-      onErrorRef.current?.(err)
+      reportPipelineError(err, undefined, optionsRef.current ?? {})
       return undefined
     } finally {
       if (session.isFresh() && mountedRef.current) {

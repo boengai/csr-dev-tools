@@ -1,7 +1,7 @@
 import { CheckboxInput, CodeOutput, CopyButton, FieldForm, Pane, SelectInput, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolFields } from '@/hooks'
+import { useToolFields } from '@/hooks'
 import type { ToolComponentProps, YamlInput } from '@/types'
 import { formatYaml } from '@/utils'
 import { narrateParseError } from '@/utils/parse-error-narrators'
@@ -14,8 +14,6 @@ const INDENT_OPTIONS = [
 ]
 
 export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { showError } = useToast()
-
   const { inputs, result, reset, setFields, setFieldsImmediate } = useToolFields<YamlInput, string>({
     compute: async ({ source: val, indent: currentIndent, sortKeys: currentSortKeys }) => {
       const narrated = await narrateParseError('yaml', val)
@@ -27,13 +25,10 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
       }
     },
     debounceMs: 300,
+    errorFallback: 'Unable to format YAML',
     initial: { source: '', indent: 2, sortKeys: false },
     initialResult: '',
     isEmpty: ({ source: val }) => val.trim().length === 0,
-    onError: (err) => {
-      const label = err instanceof Error ? err.message : 'Unable to format YAML'
-      showError(label)
-    },
   })
   const { source, indent, sortKeys } = inputs
 

@@ -40,10 +40,10 @@ export const ImageCompressor = () => {
       return await processImage(f, { quality: q / 100, strategy: 'stretch' })
     },
     debounceMs: 300,
+    errorLabel: 'Compression failed — try a different image',
     initial: INITIAL_INPUT,
     initialResult: null,
     isEmpty: ({ file: f }) => !f,
-    onError: () => showError('Compression failed — try a different image'),
   })
 
   // Show the progress bar only when compute outlasts a 300ms threshold —

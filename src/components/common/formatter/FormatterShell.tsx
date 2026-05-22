@@ -1,6 +1,6 @@
 import { CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
-import { useToast, useToolFieldsPersisted } from '@/hooks'
+import { useToolFieldsPersisted } from '@/hooks'
 import type { FormatterShellProps } from '@/types'
 
 export const FormatterShell = <I extends { source: string }>({
@@ -18,15 +18,13 @@ export const FormatterShell = <I extends { source: string }>({
   title,
   triggerLabel,
 }: FormatterShellProps<I>) => {
-  const { showError } = useToast()
-
   const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<I, string>({
     compute,
     debounceMs: 300,
+    errorLabel,
     initial,
     initialResult: '',
     isEmpty: (input) => input.source.trim().length === 0,
-    onError: () => showError(errorLabel),
     storageKey,
   })
 

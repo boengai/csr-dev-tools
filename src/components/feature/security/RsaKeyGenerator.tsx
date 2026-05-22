@@ -26,7 +26,7 @@ export const RsaKeyGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     result: keyPair,
     run,
   } = useAsyncAction<RsaKeyPair>(() => generateRsaKeyPair(keySize), {
-    onError: () => showError('Key generation failed. Please try again.'),
+    errorLabel: 'Key generation failed. Please try again.',
   })
 
   const handleGenerate = useCallback(async () => {

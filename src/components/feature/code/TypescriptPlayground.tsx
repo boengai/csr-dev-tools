@@ -3,7 +3,7 @@ import { lazy, Suspense, useRef, useState } from 'react'
 
 import { CopyButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useAsyncAction, useDebounceCallback, useToast } from '@/hooks'
+import { useAsyncAction, useDebounceCallback } from '@/hooks'
 import type { DiagnosticError, EditorInstance, MarkerData, ToolComponentProps } from '@/types'
 import { tv } from '@/utils'
 
@@ -62,8 +62,6 @@ export const TypescriptPlayground = (_props: ToolComponentProps) => {
   const [errors, setErrors] = useState<Array<DiagnosticError>>([])
   const editorRef = useRef<EditorInstance | null>(null)
   const monacoRef = useRef<Monaco | null>(null)
-  const { showError } = useToast()
-
   const { result: transpiledJs, run: transpile } = useAsyncAction<string>(
     async () => {
       const editor = editorRef.current
@@ -76,7 +74,7 @@ export const TypescriptPlayground = (_props: ToolComponentProps) => {
       const out = await client.getEmitOutput(model.uri.toString())
       return out.outputFiles[0]?.text ?? ''
     },
-    { onError: () => showError('Failed to transpile TypeScript') },
+    { errorLabel: 'Failed to transpile TypeScript' },
   )
 
   const debouncedTranspile = useDebounceCallback(() => {

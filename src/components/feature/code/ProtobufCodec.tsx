@@ -238,13 +238,10 @@ const ProtobufContent = ({
     profile.computeFn,
     {
       debounceMs: 300,
+      errorFallback: profile.defaultErrorMsg,
       initial: '',
       isEmpty: ({ schema: schemaVal, msgType, source: sourceVal }) =>
         !schemaVal.trim() || !msgType || !sourceVal.trim(),
-      onError: (err) => {
-        const label = err instanceof Error ? err.message : profile.defaultErrorMsg
-        showError(label)
-      },
     },
   )
 
@@ -449,11 +446,9 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
     },
     {
       debounceMs: 300,
+      errorLabel: 'Failed to parse proto schema',
       initial: { messageTypes: [], toastError: null },
       isEmpty: (value) => !value.trim(),
-      onError: () => {
-        showError('Failed to parse proto schema')
-      },
     },
   )
 

@@ -55,6 +55,31 @@ state into the pipeline on every call — as `<ImageToolShell>` does with
 the pipeline's `inputRef` only sees what was last passed in, so a bare
 `recompute()` there would re-fire with stale React-side values.
 
+Pipeline failures route through one of three declarative options (mutually
+exclusive; precedence `onError` > `errorFallback` > `errorLabel`):
+
+- `errorLabel: 'X'` — always toast `'X'` on rejection, ignoring the error.
+  Pick this when the underlying error is implementation-leaking (parser
+  stack traces, transpile noise) and the user-facing message should be
+  generic. Dominant shape today.
+- `errorFallback: 'X'` — toast `err.message` when the rejection is an
+  `Error`, otherwise toast `'X'`. Pick this when the compute throws
+  user-facing messages (validation, [[Parse-error narrator]]) that should
+  reach the user verbatim.
+- `onError: (err, input) => …` — full callback. Pick this only when the
+  handler needs the input bag (context-specific messages, e.g. HashGenerator
+  branching on `algo`) or has side effects beyond toasting (e.g.
+  ColorConvertor clearing its display field). When set, the pipeline does
+  NOT toast on its behalf.
+
+The hook reads `useToast.getState().showError` lazily inside the catch, so
+adopting the toast-emitting options does not subscribe the Tool component
+to toast state. The `useToast` hook can therefore disappear entirely from
+the Tool when no other code needs `showError`. The previous "manual
+`onError: (err) => showError(err instanceof Error ? err.message : 'X')`"
+shape that 25+ Tools repeated is replaced by `errorFallback: 'X'` or
+`errorLabel: 'X'` — see [[Toast channel]] for the cross-Tool picture.
+
 ## Tool field bag
 
 The variant of the [[Tool computation pipeline]] that owns its inputs.
@@ -632,12 +657,20 @@ Carries two invariants:
 
 Three categories cover every `showError` adopter:
 
-- **Async-pipeline failures** — wired via the `onError` option on
-  [[Tool computation pipeline]] / [[Tool field bag]] / [[Async action]].
-  The pipeline rejects, the callback toasts. The bulk of adopters.
+- **Async-pipeline failures** — wired declaratively via the
+  `errorLabel` / `errorFallback` options on [[Tool computation pipeline]] /
+  [[Tool field bag]] / [[Async action]]. The pipeline catches the
+  rejection and calls `useToast.getState().showError` lazily inside the
+  catch; the Tool component does not import `useToast` for this path.
+  The bulk of adopters (25+ today). Sites that need the input bag or
+  side effects beyond toasting (HashGenerator, ColorConvertor,
+  StringEscapeUnescape) still pass the full `onError: (err, input) => …`
+  callback and continue to `useToast()` at the call site.
 - **Inline validation rejections** — synchronous "your input is
   unusable" rejections in event handlers (`'Maximum dimension is
   ...'`, `'Please enter JSON input'`, `'Upload a valid image file'`).
+  These remain `useToast()` adopters because they fire outside any
+  pipeline.
 - **Read / parse rejections** — file-read failures (`'Failed to read
   file'`), schema-parse errors not tied to a pipeline.
 

@@ -1,7 +1,7 @@
 import { FieldForm, MonoOutputCell, TextAreaInput, ToggleButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolFields } from '@/hooks'
+import { useToolFields } from '@/hooks'
 import type { HmacInput, ToolComponentProps } from '@/types'
 import {
   DEFAULT_HMAC_ALGORITHM,
@@ -17,8 +17,6 @@ const toolEntry = TOOL_REGISTRY_MAP['hmac-generator']
 const ENCODINGS: Array<HmacEncoding> = ['hex', 'base64']
 
 export const HmacGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { showError } = useToast()
-
   const {
     inputs,
     result: hmac,
@@ -28,12 +26,10 @@ export const HmacGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
   } = useToolFields<HmacInput, string>({
     compute: ({ message: msg, secretKey: key, algorithm: algo, encoding: enc }) => generateHmac(msg, key, algo, enc),
     debounceMs: 300,
+    errorLabel: 'HMAC computation failed — your browser may not support this feature',
     initial: { message: '', secretKey: '', algorithm: DEFAULT_HMAC_ALGORITHM, encoding: DEFAULT_HMAC_ENCODING },
     initialResult: '',
     isEmpty: ({ message: msg, secretKey: key }) => !msg || !key,
-    onError: () => {
-      showError('HMAC computation failed — your browser may not support this feature')
-    },
   })
   const { message, secretKey, algorithm, encoding } = inputs
 

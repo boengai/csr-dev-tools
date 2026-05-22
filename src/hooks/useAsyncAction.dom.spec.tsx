@@ -2,9 +2,16 @@
  * @vitest-environment jsdom
  */
 import { act, renderHook } from '@testing-library/react'
-import { describe, expect, it, vi } from 'vitest'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { useToast } from './state/useToast'
 import { useAsyncAction } from './useAsyncAction'
+
+beforeEach(() => {
+  useToast.setState({ items: [] })
+})
+
+const toastLabels = () => useToast.getState().items.map((it) => it.label)
 
 /** Builds a deferred promise + matching resolve/reject so a test can hold the
  * action open until it explicitly settles it. */
@@ -189,6 +196,76 @@ describe('useAsyncAction', () => {
       result.current.reset()
     })
     expect(result.current.result).toBeNull()
+  })
+
+  it('errorLabel: toasts the label verbatim on rejection (ignores err)', async () => {
+    const { result } = renderHook(() =>
+      useAsyncAction(
+        async () => {
+          throw new Error('underlying error that should not surface')
+        },
+        { errorLabel: 'Generation failed' },
+      ),
+    )
+
+    await act(async () => {
+      await result.current.run()
+    })
+
+    expect(toastLabels()).toEqual(['Generation failed'])
+  })
+
+  it('errorFallback: toasts err.message when rejection is an Error', async () => {
+    const { result } = renderHook(() =>
+      useAsyncAction(
+        async () => {
+          throw new Error('Bad input: row 3')
+        },
+        { errorFallback: 'Could not process' },
+      ),
+    )
+
+    await act(async () => {
+      await result.current.run()
+    })
+
+    expect(toastLabels()).toEqual(['Bad input: row 3'])
+  })
+
+  it('errorFallback: toasts the fallback when rejection is not an Error', async () => {
+    const { result } = renderHook(() =>
+      useAsyncAction(
+        async () => {
+          throw 'string rejection' // eslint-disable-line no-throw-literal -- shape-only test of the unknown-rejection branch
+        },
+        { errorFallback: 'Could not process' },
+      ),
+    )
+
+    await act(async () => {
+      await result.current.run()
+    })
+
+    expect(toastLabels()).toEqual(['Could not process'])
+  })
+
+  it('precedence: onError wins over errorFallback/errorLabel', async () => {
+    const onError = vi.fn()
+    const { result } = renderHook(() =>
+      useAsyncAction(
+        async () => {
+          throw new Error('boom')
+        },
+        { errorFallback: 'fallback', errorLabel: 'label', onError },
+      ),
+    )
+
+    await act(async () => {
+      await result.current.run()
+    })
+
+    expect(onError).toHaveBeenCalledTimes(1)
+    expect(toastLabels()).toEqual([])
   })
 
   it('reads the latest action closure even when run is invoked after the closure swaps', async () => {

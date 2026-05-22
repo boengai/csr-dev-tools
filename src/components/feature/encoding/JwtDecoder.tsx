@@ -1,7 +1,7 @@
 import { CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolInput } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { decodeJwt, formatPayloadWithTimestamps, isValidJwt } from '@/utils'
 
@@ -20,8 +20,6 @@ const INVALID_JWT_MESSAGE = 'Enter a valid JWT token (e.g., eyJhbGciOiJIUzI1NiJ9
 const DECODE_FAILURE_MESSAGE = 'JWT contains invalid header or payload — could not decode segments'
 
 export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { showError } = useToast()
-
   const { input: source, result: decoded, setInput, reset } = useToolInput<string, JwtDecoded>({
     compute: (val) => {
       if (!isValidJwt(val)) throw new Error(INVALID_JWT_MESSAGE)
@@ -38,13 +36,10 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       }
     },
     debounceMs: 300,
+    errorFallback: DECODE_FAILURE_MESSAGE,
     initial: '',
     initialResult: EMPTY_DECODED,
     isEmpty: (val) => val.length === 0,
-    onError: (err) => {
-      const message = err instanceof Error ? err.message : DECODE_FAILURE_MESSAGE
-      showError(message)
-    },
   })
 
   return (
