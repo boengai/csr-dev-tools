@@ -101,7 +101,7 @@ describe('ImageToPdf', () => {
   it('toggles between one-per-page and grid layout', async () => {
     render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
 
-    const checkbox = await screen.findByRole('checkbox', { name: /one image per page/i })
+    const checkbox = await screen.findByLabelText(/1 image per page/i)
     expect(checkbox).toBeChecked()
 
     await act(async () => {

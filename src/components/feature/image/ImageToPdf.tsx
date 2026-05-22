@@ -186,19 +186,6 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       <div className="flex w-full grow flex-col gap-4">
         <SplitPanel>
           <Pane>
-            <div className="flex items-center gap-2">
-              <CheckboxInput
-                aria-label="One image per page"
-                checked={onePerPage}
-                id="image-to-pdf-one-per-page"
-                name="image-to-pdf-one-per-page"
-                onChange={(c) => setOnePerPage(c === true)}
-              />
-              <label className="cursor-pointer text-body-xs text-gray-300" htmlFor="image-to-pdf-one-per-page">
-                1 image per page
-              </label>
-            </div>
-
             <UploadInput
               accept="image/png,image/jpeg"
               button={{ block: true, children: 'Select PNG or JPEG images' }}
@@ -233,8 +220,19 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
           </Pane>
 
           <Pane live>
-            <div className="flex items-center justify-between gap-1">
-              <span className="text-body-xs font-medium text-gray-300">Preview</span>
+            <div className="flex items-center justify-between gap-2">
+              <label
+                className="flex cursor-pointer items-center gap-2 text-body-xs text-gray-300"
+                htmlFor="image-to-pdf-one-per-page"
+              >
+                <CheckboxInput
+                  checked={onePerPage}
+                  id="image-to-pdf-one-per-page"
+                  name="image-to-pdf-one-per-page"
+                  onChange={(c) => setOnePerPage(c === true)}
+                />
+                1 image per page
+              </label>
               <DownloadPdfButton bytes={result.pdf} filename="images.pdf" />
             </div>
             <PdfBytesPreview bytes={result.pdf} />
