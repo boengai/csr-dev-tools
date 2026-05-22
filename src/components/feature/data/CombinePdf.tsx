@@ -225,7 +225,7 @@ export const CombinePdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
 
           <Pane live>
             <div className="flex items-center justify-end">
-              <DownloadPdfButton bytes={result.pdf} filename="combined.pdf" />
+              <DownloadPdfButton bytes={result.pdf} filename={`csr-dev-tools_combined_${Date.now()}.pdf`} />
             </div>
             <PdfBytesPreview bytes={result.pdf} />
           </Pane>

@@ -50,7 +50,7 @@ export const MarkdownToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
           <Pane live>
             <div className="flex items-center justify-between gap-1">
               <span className="text-body-xs font-medium text-gray-300">Preview</span>
-              <DownloadPdfButton bytes={result.pdf} filename="markdown.pdf" />
+              <DownloadPdfButton bytes={result.pdf} filename={`csr-dev-tools_markdown_${Date.now()}.pdf`} />
             </div>
             <PdfSvgPreview pages={result.svgs} />
           </Pane>

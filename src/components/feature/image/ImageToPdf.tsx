@@ -233,7 +233,7 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
                 />
                 1 image per page
               </label>
-              <DownloadPdfButton bytes={result.pdf} filename="images.pdf" />
+              <DownloadPdfButton bytes={result.pdf} filename={`csr-dev-tools_images_${Date.now()}.pdf`} />
             </div>
             <PdfBytesPreview bytes={result.pdf} />
           </Pane>
