@@ -13,6 +13,7 @@ export * from './exportSidePanel'
 export * from './exportSqlPanel'
 export * from './exportTypescriptPanel'
 export * from './importJsonSchemaPanel'
+export * from './importSidePanel'
 export * from './importSqlPanel'
 
 // ---------------------------------------------------------------------------

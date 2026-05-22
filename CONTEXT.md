@@ -925,6 +925,36 @@ One caller responsibility: `extraDeps` must list every local variable the
 missing dep silently gives `derive` a stale closure until the next `document`
 change triggers a re-run. When in doubt, add the dep.
 
+## Diagram import panel
+
+The single internal shell for the DB Diagram Tool's "paste source text,
+optionally merge, press Import, see errors" shape. Implemented by
+`<ImportSidePanel>`
+(`src/components/feature/data/db-diagram/ImportSidePanel.tsx`).
+
+Today's consumers: `ImportSqlPanel`, `ImportJsonSchemaPanel`.
+
+The shell owns: `{ text, merge, errors }` state, the non-empty-text
+guard (callers' `onImport` is never called with empty text), the
+`<CodeInput>` body, the error list (`err.message`, keyed by
+`${err.line}-${err.message}`), the merge `<CheckboxInput>`, and the
+`<Button block size="small" variant="primary">Import</Button>`.
+
+The caller's role narrows to:
+
+- `onImport(text, { merge }) => Array<DbmlError>` — calls
+  `editor.importFromX(...)` and returns `result.errors`. Callers that
+  require extra parameters (e.g. SQL `dialect`) close over local state.
+- `extensions` — the CodeMirror language extension array (callers
+  memoize or define at module scope since extensions are stable)
+- `placeholder`, `title`, `testId`, `onClose` — metadata
+- `controls?` — optional header slot (only `ImportSqlPanel` uses this
+  for the dialect picker)
+
+Sibling of [[Diagram export panel]]. Both panels follow the same
+`DiagramSidePanel` framing: optional `controls` header, body, footer
+with the primary action.
+
 ## Entity ID minters
 
 The single injectable seam through which document-internal entity ids
