@@ -1,4 +1,4 @@
-import { CopyButton, FieldForm } from '@/components/common'
+import { CopyButton, FieldForm, Pane } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { useToolFieldsPersisted } from '@/hooks'
 import type { DiffCheckerShellProps, DiffInput, DiffOutput, InlineSpan, SideBySideRow } from '@/types'
@@ -84,7 +84,7 @@ export const DiffCheckerShell = <R extends DiffOutput>({
     >
       <div className="flex w-full grow flex-col gap-4">
         <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-6 tablet:flex-row">
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <Pane>
             <FieldForm
               label="Original"
               name="original"
@@ -93,9 +93,9 @@ export const DiffCheckerShell = <R extends DiffOutput>({
               type="code"
               value={original}
             />
-          </div>
+          </Pane>
 
-          <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+          <Pane>
             <FieldForm
               label="Modified"
               name="modified"
@@ -104,14 +104,14 @@ export const DiffCheckerShell = <R extends DiffOutput>({
               type="code"
               value={modified}
             />
-          </div>
+          </Pane>
         </div>
 
         <div className="border-t-2 border-dashed border-gray-900" />
 
         {renderBanner?.(result)}
 
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
+        <Pane>
           <div className="flex items-center gap-1">
             <span className="text-body-sm font-medium text-gray-400">Diff Output</span>
             {unifiedDiff && <CopyButton label="diff" value={unifiedDiff} />}
@@ -158,7 +158,7 @@ export const DiffCheckerShell = <R extends DiffOutput>({
               <p className="p-3 text-gray-600">Diff output will appear here...</p>
             )}
           </div>
-        </div>
+        </Pane>
       </div>
     </ToolDialogFrame>
   )

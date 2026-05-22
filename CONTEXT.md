@@ -745,17 +745,20 @@ two-pane; the N-child handling is defensive, not a feature.
 
 [[Diff checker shell]] does NOT fit `SplitPanel`: its layout is "two
 inputs side-by-side (no divider) + horizontal divider + single
-full-width diff output." It currently still hand-rolls the
-`min-h-0 min-w-0` envelope on its panes; migrating it to standalone
-`Pane` (without `SplitPanel`) is a follow-up — the envelope applies,
-just no divider interleaved.
+full-width diff output." The three inner pane envelopes (Original
+input, Modified input, Diff output) ARE standalone `<Pane>` adopters
+— `SplitPanel` would interleave dividers that this shape doesn't
+want. The outer row container stays hand-rolled because `<Pane>`'s
+`flex-col` invariant conflicts with the `tablet:flex-row` 2-column
+layout the shell wants for its two inputs.
 
 Standalone `<Pane>` use is the documented path for any single result
 pane that needs the overflow envelope without a paired source pane
 (today's adopters include `LoremIpsumGenerator`, `PasswordGenerator`,
 `UuidGenerator`, `RegexTester`, `ImageToBase64`,
-`PlaceholderImageGenerator`, and the encode dialog inside
-`DataUriGenerator`).
+`PlaceholderImageGenerator`, the encode dialog inside
+`DataUriGenerator`, and the three pane wrappers inside
+[[Diff checker shell]]).
 
 Per the common-component rule, future variances must be a new named
 prop on `Pane`, not a `className` override.
