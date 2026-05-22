@@ -183,7 +183,7 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       title="Image to PDF"
       triggers={[{ label: 'Convert' }]}
     >
-      <div className="flex w-full grow flex-col gap-4">
+      <div className="flex min-h-0 w-full grow flex-col gap-4">
         <SplitPanel>
           <Pane>
             <UploadInput

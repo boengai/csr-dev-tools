@@ -34,7 +34,7 @@ export const HtmlToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
       title="HTML to PDF"
       triggers={[{ label: 'Convert' }]}
     >
-      <div className="flex w-full grow flex-col gap-4">
+      <div className="flex min-h-0 w-full grow flex-col gap-4">
         <SplitPanel>
           <Pane>
             <FieldForm
