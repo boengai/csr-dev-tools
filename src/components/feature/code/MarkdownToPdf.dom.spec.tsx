@@ -110,7 +110,7 @@ describe('MarkdownToPdf', () => {
     expect(screen.getByLabelText('Page 1')).toBeInTheDocument()
   })
 
-  it('enables the download link once the PDF is non-empty', () => {
+  it('enables the download button once the PDF is non-empty', () => {
     mockUseToolInput.mockImplementation((): UseToolInputResult<string, CompileResultDto> => ({
       input: '# Hello',
       result: PDF_RESULT,
@@ -124,7 +124,7 @@ describe('MarkdownToPdf', () => {
 
     render(<MarkdownToPdf autoOpen onAfterDialogClose={() => {}} />)
 
-    const link = screen.getByRole('link', { name: /Download PDF/i })
-    expect(link).toHaveAttribute('download', 'markdown.pdf')
+    const button = screen.getByRole('button', { name: /^Download$/i })
+    expect(button).not.toBeDisabled()
   })
 })

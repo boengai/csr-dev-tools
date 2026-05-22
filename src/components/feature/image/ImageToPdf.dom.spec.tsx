@@ -59,8 +59,10 @@ describe('ImageToPdf', () => {
       expect(screen.getByText(/Page 2/i)).toBeInTheDocument()
     })
 
-    const link = await screen.findByRole('link', { name: /Download PDF/i })
-    expect(link).toHaveAttribute('download', 'images.pdf')
+    await waitFor(() => {
+      const button = screen.getByRole('button', { name: /^Download$/i })
+      expect(button).not.toBeDisabled()
+    })
   })
 
   it('removes an image when its X button is clicked', async () => {
