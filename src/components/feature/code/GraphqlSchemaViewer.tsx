@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { BrowsableItemList, CodeInput, TextInput } from '@/components/common'
+import { BrowsableItemList, CodeInput, EmptyState, ErrorBanner, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolComputationPersisted } from '@/hooks'
 import type { GraphqlParseOutput, ToolComponentProps } from '@/types'
@@ -305,15 +305,11 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
         value={input}
       />
 
-      {error && (
-        <p className="text-red-400 text-body-xs" role="alert">
-          {error}
-        </p>
-      )}
+      {error && <ErrorBanner>{error}</ErrorBanner>}
 
       {!schemaInfo && !error && (
         <div className="flex flex-col items-center gap-3 py-8 text-center">
-          <p className="text-body-xs text-gray-500">Paste a GraphQL schema to explore its types and fields</p>
+          <EmptyState>Paste a GraphQL schema to explore its types and fields</EmptyState>
           <button
             className="cursor-pointer rounded border border-gray-700 bg-gray-800 px-3 py-1.5 text-body-xs text-gray-300 hover:bg-gray-700 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
             onClick={handleLoadExample}

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { BrowsableItemList, CodeInput, CopyButton } from '@/components/common'
+import { BrowsableItemList, CodeInput, CopyButton, EmptyState, ErrorBanner } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputationPersisted } from '@/hooks'
 import type { BrowsableEntry, EntryKind, ParseOutput, ToolComponentProps } from '@/types'
@@ -214,16 +214,16 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
       />
 
       {error && (
-        <p className="text-red-400 text-body-xs" role="alert">
+        <ErrorBanner>
           {error.line !== null ? `Syntax error at line ${error.line}: ${error.message}` : error.message}
-        </p>
+        </ErrorBanner>
       )}
 
       {!schemaInfo && !error && (
         <div className="flex flex-col items-center gap-3 py-8 text-center">
-          <p className="text-body-xs text-gray-500">
+          <EmptyState>
             Paste a .proto definition to explore its message types and generate sample JSON
-          </p>
+          </EmptyState>
           <button
             className="cursor-pointer rounded border border-gray-700 bg-gray-800 px-3 py-1.5 text-body-xs text-gray-300 hover:bg-gray-700 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
             onClick={handleLoadExample}

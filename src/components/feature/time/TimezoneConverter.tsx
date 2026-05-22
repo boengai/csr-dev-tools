@@ -1,7 +1,7 @@
 import { AnimatePresence, m } from 'motion/react'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 
-import { Button, CopyButton, FieldForm, TextInput } from '@/components/common'
+import { Button, CopyButton, EmptyState, ErrorBanner, FieldForm, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { readJsonStorage, useKeyboardListNav, useToolFieldsPersisted, writeJsonStorage } from '@/hooks'
 import type { TargetResult, ToolComponentProps } from '@/types'
@@ -329,11 +329,7 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
             Now
           </Button>
 
-          {error && (
-            <p className="text-red-400 text-body-xs" role="alert">
-              {error}
-            </p>
-          )}
+          {error && <ErrorBanner>{error}</ErrorBanner>}
         </section>
 
         {/* Target Timezones Section */}
@@ -364,7 +360,7 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
 
           <div aria-live="polite" className="flex flex-col gap-2">
             {results.length === 0 && targetTzIds.length === 0 && (
-              <p className="text-body-xs text-gray-500">Add a target timezone to see conversions</p>
+              <EmptyState>Add a target timezone to see conversions</EmptyState>
             )}
             <AnimatePresence mode="popLayout">
               {results.map(({ result: tzResult, timezoneId }) => {

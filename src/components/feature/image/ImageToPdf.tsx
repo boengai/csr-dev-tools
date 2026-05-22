@@ -3,33 +3,25 @@ import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordi
 import { CSS } from '@dnd-kit/utilities'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Pane, SplitPanel } from '@/components/common'
+import { ErrorBanner, Pane, SplitPanel } from '@/components/common'
 import { DownloadPdfButton, PdfBytesPreview } from '@/components/common/pdf'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { useBlobUrl } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { imagesToPdf, type ImageToPdfInput, type ImageToPdfResult } from '@/utils'
+import { formatFileSize, imagesToPdf, type ImageToPdfInput, type ImageToPdfResult } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['image-to-pdf']
 
 type ImageItem = {
   id: string
   file: File
-  thumbnailUrl: string
   rotation: 0 | 90 | 180 | 270
 }
 
 const EMPTY_RESULT: ImageToPdfResult = { pdf: new Uint8Array(0), pageCount: 0, skipped: [] }
 
 const ALLOWED_RE = /\.(png|jpe?g)$/i
-
-// ─── Utilities ───────────────────────────────────────────────────────────────
-
-const formatBytes = (bytes: number): string => {
-  if (bytes < 1024) return `${bytes} B`
-  if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`
-  return `${(bytes / 1024 / 1024).toFixed(1)} MB`
-}
 
 // ─── Dropzone ────────────────────────────────────────────────────────────────
 
@@ -94,6 +86,7 @@ type ImageCardProps = {
 
 const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id })
+  const thumbnailUrl = useBlobUrl(item.file)
 
   const style = {
     transform: CSS.Transform.toString(transform),
@@ -112,12 +105,14 @@ const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => 
         {...attributes}
         {...listeners}
       >
-        <img
-          alt={item.file.name}
-          className="h-full w-full object-cover"
-          src={item.thumbnailUrl}
-          style={{ transform: `rotate(${item.rotation}deg)` }}
-        />
+        {thumbnailUrl && (
+          <img
+            alt={item.file.name}
+            className="h-full w-full object-cover"
+            src={thumbnailUrl}
+            style={{ transform: `rotate(${item.rotation}deg)` }}
+          />
+        )}
       </div>
       <div className="flex items-center justify-between gap-1 text-body-xs">
         <span className="truncate text-gray-300" title={item.file.name}>
@@ -126,7 +121,7 @@ const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => 
       </div>
       <div className="flex items-center justify-between text-body-xs text-gray-500">
         <span>Page {pageNumber}</span>
-        <span>{formatBytes(item.file.size)}</span>
+        <span>{formatFileSize(item.file.size)}</span>
       </div>
       <button
         aria-label={`Remove ${item.file.name}`}
@@ -156,9 +151,6 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
   const [skipped, setSkipped] = useState<Array<string>>([])
   const [result, setResult] = useState<ImageToPdfResult>(EMPTY_RESULT)
   const debounceRef = useRef<number | undefined>(undefined)
-  // Keep a ref in sync so the unmount cleanup can read the latest items
-  const itemsRef = useRef(items)
-  itemsRef.current = items
 
   // Regenerate the PDF whenever items change (debounced ~150ms)
   useEffect(() => {
@@ -177,13 +169,6 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
     }
   }, [items])
 
-  // Revoke all thumbnail URLs on unmount — read itemsRef so closure captures latest state
-  useEffect(() => {
-    return () => {
-      for (const i of itemsRef.current) URL.revokeObjectURL(i.thumbnailUrl)
-    }
-  }, [])
-
   const addFiles = useCallback((files: Array<File>) => {
     const accepted: Array<ImageItem> = []
     const skippedNames: Array<string> = []
@@ -192,7 +177,6 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
         accepted.push({
           id: crypto.randomUUID(),
           file,
-          thumbnailUrl: URL.createObjectURL(file),
           rotation: 0,
         })
       } else {
@@ -204,11 +188,7 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
   }, [])
 
   const removeItem = useCallback((id: string) => {
-    setItems((prev) => {
-      const item = prev.find((i) => i.id === id)
-      if (item) URL.revokeObjectURL(item.thumbnailUrl)
-      return prev.filter((i) => i.id !== id)
-    })
+    setItems((prev) => prev.filter((i) => i.id !== id))
   }, [])
 
   const rotateItem = useCallback((id: string) => {
@@ -222,11 +202,10 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
   }, [])
 
   const reset = useCallback(() => {
-    for (const i of items) URL.revokeObjectURL(i.thumbnailUrl)
     setItems([])
     setSkipped([])
     setResult(EMPTY_RESULT)
-  }, [items])
+  }, [])
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
@@ -258,9 +237,9 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
             <Dropzone compact={items.length > 0} onFiles={addFiles} />
 
             {skipped.length > 0 && (
-              <p className="text-body-xs text-yellow-400" role="alert">
+              <ErrorBanner variant="warning">
                 Skipped {skipped.length} unsupported file{skipped.length === 1 ? '' : 's'}: {skipped.join(', ')}
-              </p>
+              </ErrorBanner>
             )}
 
             {items.length > 0 && (

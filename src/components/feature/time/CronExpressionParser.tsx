@@ -1,4 +1,4 @@
-import { CopyButton, FieldForm } from '@/components/common'
+import { CopyButton, ErrorBanner, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -43,11 +43,7 @@ export const CronExpressionParser = (_props: ToolComponentProps) => {
         ))}
       </div>
 
-      {result.error && (
-        <p className="text-red-500 text-body-xs" role="alert">
-          {result.error}
-        </p>
-      )}
+      {result.error && <ErrorBanner>{result.error}</ErrorBanner>}
 
       {result.valid && (
         <div className="flex flex-col gap-3">

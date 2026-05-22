@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { Button, CheckboxInput, CopyButton, TextInput } from '@/components/common'
+import { Button, CheckboxInput, CopyButton, ErrorBanner, TextInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
@@ -141,11 +141,7 @@ export const ChmodCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
               type="text"
               value={octalInput}
             />
-            {octalError && (
-              <p className="text-amber-400 text-body-xs" role="alert">
-                {octalError}
-              </p>
-            )}
+            {octalError && <ErrorBanner variant="warning">{octalError}</ErrorBanner>}
           </label>
 
           <label className="flex flex-1 flex-col gap-1">
@@ -159,11 +155,7 @@ export const ChmodCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                 value={symbolicInput}
               />
             </div>
-            {symbolicError && (
-              <p className="text-amber-400 text-body-xs" role="alert">
-                {symbolicError}
-              </p>
-            )}
+            {symbolicError && <ErrorBanner variant="warning">{symbolicError}</ErrorBanner>}
           </label>
         </div>
 

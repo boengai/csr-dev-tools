@@ -1,6 +1,6 @@
 import { useCallback, useMemo } from 'react'
 
-import { CopyButton, FieldForm, Tabs } from '@/components/common'
+import { CopyButton, ErrorBanner, FieldForm, Tabs } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFields } from '@/hooks'
 import type { InputMode, ToolComponentProps } from '@/types'
@@ -189,11 +189,7 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
           />
 
           {/* Error Display */}
-          {error && (
-            <p className="text-amber-400 text-body-xs" role="alert">
-              {error}
-            </p>
-          )}
+          {error && <ErrorBanner variant="warning">{error}</ErrorBanner>}
 
           {/* Preset Buttons */}
           <div className="flex flex-wrap gap-1.5" role="group" aria-label="Common prefix lengths">

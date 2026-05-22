@@ -1,7 +1,7 @@
 import { json } from '@codemirror/lang-json'
 import { useMemo } from 'react'
 
-import { CodeInput, CopyButton, DisclosurePanel, TextInput } from '@/components/common'
+import { CodeInput, CopyButton, DisclosurePanel, EmptyState, ErrorBanner, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFieldsPersisted } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -109,11 +109,7 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
             placeholder="Paste JSON here..."
             value={jsonInput}
           />
-          {parseError && (
-            <p className="text-red-400 text-body-xs" role="alert">
-              {parseError}
-            </p>
-          )}
+          {parseError && <ErrorBanner>{parseError}</ErrorBanner>}
         </div>
 
         {/* Right Panel: Expression + Results */}
@@ -131,11 +127,7 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
                 value={expression}
               />
             </div>
-            {evaluation && !evaluation.success && (
-              <p className="text-red-400 text-body-xs" role="alert">
-                {evaluation.error}
-              </p>
-            )}
+            {evaluation && !evaluation.success && <ErrorBanner>{evaluation.error}</ErrorBanner>}
           </div>
 
           {/* Results Panel */}
@@ -181,11 +173,11 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
               )}
 
               {!evaluation && parsedData !== null && (
-                <p className="text-body-xs text-gray-500">Enter a JSONPath expression to see results</p>
+                <EmptyState>Enter a JSONPath expression to see results</EmptyState>
               )}
 
               {parsedData == null && !parseError && (
-                <p className="text-body-xs text-gray-500">Paste JSON to get started</p>
+                <EmptyState>Paste JSON to get started</EmptyState>
               )}
             </div>
           </div>

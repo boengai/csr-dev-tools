@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { CopyButton, FieldForm } from '@/components/common'
+import { CopyButton, ErrorBanner, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolComputation } from '@/hooks'
 import type { BaseField, BaseInput, BaseResult, ToolComponentProps } from '@/types'
@@ -67,11 +67,7 @@ export const NumberBaseConverter = (_props: ToolComponentProps) => {
     <div className="flex w-full grow flex-col gap-4">
       {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
 
-      {error && (
-        <p className="text-red-500 text-body-xs" role="alert">
-          {error}
-        </p>
-      )}
+      {error && <ErrorBanner>{error}</ErrorBanner>}
 
       <div aria-live="polite" className="flex w-full grow flex-col gap-4">
         {BASE_FIELDS.map((field) => (

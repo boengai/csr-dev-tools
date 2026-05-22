@@ -1,4 +1,4 @@
-import { CopyButton, FieldForm, InlineLabeledRow } from '@/components/common'
+import { CopyButton, ErrorBanner, FieldForm, InlineLabeledRow } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -38,11 +38,7 @@ export const UrlParser = (_props: ToolComponentProps) => {
         value={input}
       />
 
-      {result.error && (
-        <p className="text-red-500 text-body-xs" role="alert">
-          {result.error}
-        </p>
-      )}
+      {result.error && <ErrorBanner>{result.error}</ErrorBanner>}
 
       {!result.error && result.hostname && (
         <div className="flex flex-col gap-2">

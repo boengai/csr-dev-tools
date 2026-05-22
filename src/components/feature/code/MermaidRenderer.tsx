@@ -1,7 +1,7 @@
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { Button, CopyButton, DisclosurePanel, FieldForm, Pane, SplitPanel } from '@/components/common'
+import { Button, CopyButton, DisclosurePanel, EmptyState, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDownload, useMountOnce, useToast, useToolComputationPersisted } from '@/hooks'
@@ -209,7 +209,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                 {svg ? (
                   <div className="w-full [&_svg]:h-auto [&_svg]:w-full" ref={previewRef} />
                 ) : (
-                  !errorMessage && <p className="text-body-xs text-gray-500">Enter Mermaid syntax to see a preview</p>
+                  !errorMessage && <EmptyState>Enter Mermaid syntax to see a preview</EmptyState>
                 )}
               </div>
             </Pane>
