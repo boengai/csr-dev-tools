@@ -3,7 +3,7 @@ import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordi
 import { CSS } from '@dnd-kit/utilities'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { ErrorBanner, Pane, SplitPanel } from '@/components/common'
+import { ErrorBanner, Pane, SplitPanel, UploadInput } from '@/components/common'
 import { DownloadPdfButton, PdfBytesPreview } from '@/components/common/pdf'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
@@ -22,58 +22,6 @@ type ImageItem = {
 const EMPTY_RESULT: ImageToPdfResult = { pdf: new Uint8Array(0), pageCount: 0, skipped: [] }
 
 const ALLOWED_RE = /\.(png|jpe?g)$/i
-
-// ─── Dropzone ────────────────────────────────────────────────────────────────
-
-type DropzoneProps = {
-  onFiles: (files: Array<File>) => void
-  compact: boolean
-}
-
-const Dropzone = ({ onFiles, compact }: DropzoneProps) => {
-  const [isOver, setIsOver] = useState(false)
-  const inputRef = useRef<HTMLInputElement>(null)
-
-  const handleDrop = (e: React.DragEvent) => {
-    e.preventDefault()
-    setIsOver(false)
-    const files = Array.from(e.dataTransfer.files)
-    onFiles(files)
-  }
-
-  return (
-    <div
-      className={`grid place-items-center rounded-lg border-2 border-dashed transition-colors cursor-pointer ${
-        isOver ? 'border-blue-500 bg-blue-950' : 'border-gray-700 bg-gray-950 hover:border-gray-500'
-      } ${compact ? 'min-h-[80px] p-3' : 'min-h-[180px] p-6'}`}
-      onClick={() => inputRef.current?.click()}
-      onDragLeave={() => setIsOver(false)}
-      onDragOver={(e) => { e.preventDefault(); setIsOver(true) }}
-      onDrop={handleDrop}
-      role="button"
-      tabIndex={0}
-    >
-      <div className="flex flex-col items-center gap-2 text-center">
-        <span className="text-2xl">📥</span>
-        <span className="text-body-sm font-medium text-gray-200">
-          Drop images here or click to choose
-        </span>
-        <span className="text-body-xs text-gray-500">PNG · JPEG</span>
-      </div>
-      <input
-        accept="image/png,image/jpeg"
-        className="hidden"
-        multiple
-        onChange={(e) => {
-          if (e.target.files) onFiles(Array.from(e.target.files))
-          e.target.value = ''
-        }}
-        ref={inputRef}
-        type="file"
-      />
-    </div>
-  )
-}
 
 // ─── ImageCard ────────────────────────────────────────────────────────────────
 
@@ -236,7 +184,13 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       <div className="flex w-full grow flex-col gap-4">
         <SplitPanel>
           <Pane>
-            <Dropzone compact={items.length > 0} onFiles={addFiles} />
+            <UploadInput
+              accept="image/png,image/jpeg"
+              button={{ block: true, children: 'Select PNG or JPEG images' }}
+              multiple
+              name="image-to-pdf-source"
+              onChange={addFiles}
+            />
 
             {skipped.length > 0 && (
               <ErrorBanner variant="warning">

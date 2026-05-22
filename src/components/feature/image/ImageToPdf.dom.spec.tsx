@@ -42,9 +42,9 @@ afterEach(() => {
 const makeFile = (name: string, type: string): File => new File(['mock'], name, { type })
 
 describe('ImageToPdf', () => {
-  it('renders dropzone in initial state', async () => {
+  it('renders the upload button in initial state', async () => {
     render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
-    expect(await screen.findByText(/Drop images here or click to choose/i)).toBeInTheDocument()
+    expect(await screen.findByText(/Select PNG or JPEG images/i)).toBeInTheDocument()
   })
 
   it('renders thumbnails and enables download after files are chosen', async () => {
