@@ -105,3 +105,62 @@ its own controls and preview, end with `<CssOutputCell>`.
 - `<CssOutputCell>`'s API needs a new prop that every CSS Playground
   Tool would pass identically. That could be a signal that a shell
   one level up is now justified.
+
+## Re-examined 2026-05-22
+
+A 2026-05-22 architecture pass (the third pass in this codebase, following
+the [[Tool input]] and [[Inline labeled row]] extractions) revisited this
+ADR. A new reframe was considered: rather than a shell, extract a
+hook (`useCssGeneratorConfig` or a generic `usePartialState<T>`) that owns
+the config-bag-with-memoized-CSS-output orchestration but leaves the
+preview and controls fully to each Tool. The hypothesis was that the
+"variances dominate" critique applied only to UI layout, not to a
+state-only seam.
+
+The hypothesis did not survive contact with the code. State-shape audit
+across all six adopters (including `CssAnimationBuilder`, added since
+this ADR was written):
+
+| Tool | State buckets |
+|---|---|
+| `BorderRadiusGenerator` | `config` + `previewBg` (preview overlay is separate state) |
+| `BoxShadowGenerator` | `config` + `previewBg` (same shape) |
+| `CssAnimationBuilder` | `config` + `animKey` (replay-trigger key) |
+| `FlexboxPlayground` | `container` + `items[]` + `selectedItem` (three distinct buckets) |
+| `GradientGenerator` | single `config` (lazy initializer) |
+| `GridPlayground` | `container` + `itemCount` (two distinct concerns) |
+
+Three of six Tools have multiple distinct state buckets, not a single
+config record. The proposed hook would need either to cover only the
+single-bucket case (admitting fewer than half the adopters — failing
+the "two adapters = real seam" bar in practice) or to grow opt-outs
+for the multi-bucket cases (re-introducing the depth-loss the ADR
+already rejected).
+
+Memoization audit: only `CssAnimationBuilder` uses `useMemo` for its
+CSS output. The other five inline-build the CSS string per render —
+cheap enough that memoization is not worth the cognitive overhead. The
+"memoized CSS output" half of the hypothesised hook does not exist in
+five of six adopters.
+
+A separately-scoped `usePartialState<T>` (just "useState with partial
+updates") was also considered. The pattern `setConfig(prev => ({
+...prev, [key]: val }))` is three lines and terse; it appears beyond
+the CSS family too. Extracting it would be a near-zero-depth alias —
+the same kind of CSS-class deduplication ADR-0007 rejected for visual
+chrome. `useToolFields` already covers the case where partial-update +
+debounce + computed-result invariants matter; CSS playground Tools
+don't need those invariants (no async compute, no expensive operation),
+so the heavier hook would be overkill.
+
+**Decision (re-affirmed):** ADR-0006's original decline stands at the
+hook level as well. The CSS Playground family stays unshelled and
+un-hooked above the existing `<CssOutputCell>` seam.
+
+**Revisit trigger amended:** the prior "sixth Tool emerges whose
+controls match" trigger still applies. Additionally — if a third
+Tool family outside CSS adopts the exact `useState<C> +
+setConfig(prev => ({ ...prev, [key]: val })) + inline-rendered CSS`
+shape (i.e., not just the partial-update half), the question becomes
+"is the cross-family shape worth naming," at which point a different
+ADR (not amending this one) would be the right vehicle.
