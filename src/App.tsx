@@ -1,47 +1,24 @@
 import { Link, Outlet, useLocation } from '@tanstack/react-router'
 import { domAnimation, LazyMotion } from 'motion/react'
-import { type ComponentType, lazy, Suspense } from 'react'
+import { lazy, Suspense } from 'react'
 
 import { NotoEmoji } from '@/components/common/emoji' // optimized import
 import { ArrowIcon, GitHubIcon, HamburgerIcon, SearchIcon } from '@/components/common/icon' // optimized import
 import { ROUTE_PATH } from '@/constants'
 import { useCommandPaletteStore, useKeyboardShortcut, usePersistSettings, useSidebarStore } from '@/hooks'
+import { loadNamed } from '@/utils'
 
-const TwinkleStarsAnimate = lazy(() =>
-  import('@/components/common/animate/TwinkleStarsAnimate').then(
-    ({ TwinkleStarsAnimate }: { TwinkleStarsAnimate: ComponentType }) => ({
-      default: TwinkleStarsAnimate,
-    }),
-  ),
+const TwinkleStarsAnimate = lazy(
+  loadNamed(() => import('@/components/common/animate/TwinkleStarsAnimate'), 'TwinkleStarsAnimate'),
 )
-
-const CommandPalette = lazy(() =>
-  import('@/components/common/command-palette/CommandPalette').then(
-    ({ CommandPalette }: { CommandPalette: ComponentType }) => ({
-      default: CommandPalette,
-    }),
-  ),
+const CommandPalette = lazy(
+  loadNamed(() => import('@/components/common/command-palette/CommandPalette'), 'CommandPalette'),
 )
-
-const Sidebar = lazy(() =>
-  import('@/components/common/sidebar/Sidebar').then(({ Sidebar }: { Sidebar: ComponentType }) => ({
-    default: Sidebar,
-  })),
+const Sidebar = lazy(loadNamed(() => import('@/components/common/sidebar/Sidebar'), 'Sidebar'))
+const SettingsDialog = lazy(
+  loadNamed(() => import('@/components/common/settings/SettingsDialog'), 'SettingsDialog'),
 )
-
-const SettingsDialog = lazy(() =>
-  import('@/components/common/settings/SettingsDialog').then(
-    ({ SettingsDialog }: { SettingsDialog: ComponentType }) => ({
-      default: SettingsDialog,
-    }),
-  ),
-)
-
-const ToastProvider = lazy(() =>
-  import('@/components/common/toast/ToastProvider').then(({ ToastProvider }: { ToastProvider: ComponentType }) => ({
-    default: ToastProvider,
-  })),
-)
+const ToastProvider = lazy(loadNamed(() => import('@/components/common/toast/ToastProvider'), 'ToastProvider'))
 
 const PageLoading = () => {
   return (

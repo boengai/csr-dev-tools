@@ -667,6 +667,30 @@ Today's adopters:
 now decodes directly via `loadImageFromBlob` (which owns its own URL
 lifecycle internally), so it no longer needs a separate preview URL.
 
+## loadNamed
+
+The single seam that adapts a dynamic-import loader of a module with a
+named export to the `{ default: T }` shape `React.lazy` requires.
+Implemented by `loadNamed` (`src/utils/load-named.ts`).
+
+```ts
+loadNamed(() => import('@/x/Y'), 'Y'): () => Promise<{ default: typeof Y }>
+```
+
+Absorbs the `import(...).then(({ Name }: { Name: ComponentType }) =>
+({ default: Name }))` ceremony that was inlined at 85 sites — 80 entries
+in `src/constants/tool-registry.ts` (every Tool's lazy loader) and 5 in
+`src/App.tsx` (CommandPalette, Sidebar, SettingsDialog, ToastProvider,
+TwinkleStarsAnimate). The type `K extends keyof M` makes the export-name
+lookup type-checked: a typo fails at typecheck rather than at
+`React.lazy`'s first render.
+
+The name still appears twice per adopter (in the import path and as the
+export key) — TypeScript can't introspect module exports at runtime, so
+the export-key string is unavoidable. The win is removing the
+`{ Name: ComponentType }` annotation and the `({ default: Name })`
+reshaping, collapsing 3 lines per registry entry to 1.
+
 ## Toast channel
 
 The ephemeral notification channel for events that happen *to* a user

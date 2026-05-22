@@ -2,334 +2,91 @@ import type { ComponentType } from 'react'
 import { lazy } from 'react'
 
 import type { ToolCategory, ToolRegistryEntry } from '@/types'
+import { loadNamed } from '@/utils'
 
 import { TOOL_ROUTES } from './tool-routes'
 
 const COMPONENT_LOADERS: Record<string, () => Promise<{ default: ComponentType }>> = {
-  'aes-encrypt-decrypt': () =>
-    import('@/components/feature/security/AesEncryptDecrypt').then(
-      ({ AesEncryptDecrypt }: { AesEncryptDecrypt: ComponentType }) => ({ default: AesEncryptDecrypt }),
-    ),
-  'aspect-ratio-calculator': () =>
-    import('@/components/feature/unit/AspectRatioCalculator').then(
-      ({ AspectRatioCalculator }: { AspectRatioCalculator: ComponentType }) => ({ default: AspectRatioCalculator }),
-    ),
-  'background-remover': () =>
-    import('@/components/feature/image/BackgroundRemover').then(
-      ({ BackgroundRemover }: { BackgroundRemover: ComponentType }) => ({ default: BackgroundRemover }),
-    ),
-  'base64-to-image': () =>
-    import('@/components/feature/image/Base64ToImage').then(({ Base64ToImage }: { Base64ToImage: ComponentType }) => ({
-      default: Base64ToImage,
-    })),
-  'base64-codec': () =>
-    import('@/components/feature/encoding/EncodingBase64').then(
-      ({ EncodingBase64 }: { EncodingBase64: ComponentType }) => ({ default: EncodingBase64 }),
-    ),
-  'box-shadow-generator': () =>
-    import('@/components/feature/css/BoxShadowGenerator').then(
-      ({ BoxShadowGenerator }: { BoxShadowGenerator: ComponentType }) => ({ default: BoxShadowGenerator }),
-    ),
-  'css-animation-builder': () =>
-    import('@/components/feature/css/CssAnimationBuilder').then(
-      ({ CssAnimationBuilder }: { CssAnimationBuilder: ComponentType }) => ({ default: CssAnimationBuilder }),
-    ),
-  'css-flexbox-playground': () =>
-    import('@/components/feature/css/FlexboxPlayground').then(
-      ({ FlexboxPlayground }: { FlexboxPlayground: ComponentType }) => ({ default: FlexboxPlayground }),
-    ),
-  'css-formatter': () =>
-    import('@/components/feature/code/CssFormatter').then(({ CssFormatter }: { CssFormatter: ComponentType }) => ({
-      default: CssFormatter,
-    })),
-  'css-gradient-generator': () =>
-    import('@/components/feature/css/GradientGenerator').then(
-      ({ GradientGenerator }: { GradientGenerator: ComponentType }) => ({ default: GradientGenerator }),
-    ),
-  'color-converter': () =>
-    import('@/components/feature/color/ColorConvertor').then(
-      ({ ColorConvertor }: { ColorConvertor: ComponentType }) => ({ default: ColorConvertor }),
-    ),
-  'color-palette-generator': () =>
-    import('@/components/feature/color/ColorPaletteGenerator').then(
-      ({ ColorPaletteGenerator }: { ColorPaletteGenerator: ComponentType }) => ({ default: ColorPaletteGenerator }),
-    ),
-  'hash-generator': () =>
-    import('@/components/feature/security/HashGenerator').then(
-      ({ HashGenerator }: { HashGenerator: ComponentType }) => ({ default: HashGenerator }),
-    ),
-  'graphql-schema-viewer': () =>
-    import('@/components/feature/code/GraphqlSchemaViewer').then(
-      ({ GraphqlSchemaViewer }: { GraphqlSchemaViewer: ComponentType }) => ({ default: GraphqlSchemaViewer }),
-    ),
-  'hmac-generator': () =>
-    import('@/components/feature/security/HmacGenerator').then(
-      ({ HmacGenerator }: { HmacGenerator: ComponentType }) => ({ default: HmacGenerator }),
-    ),
-  'html-formatter': () =>
-    import('@/components/feature/code/HtmlFormatter').then(({ HtmlFormatter }: { HtmlFormatter: ComponentType }) => ({
-      default: HtmlFormatter,
-    })),
-  'html-to-markdown-converter': () =>
-    import('@/components/feature/data/HtmlToMarkdownConverter').then(
-      ({ HtmlToMarkdownConverter }: { HtmlToMarkdownConverter: ComponentType }) => ({
-        default: HtmlToMarkdownConverter,
-      }),
-    ),
-  'svg-viewer': () =>
-    import('@/components/feature/image/SvgViewer').then(({ SvgViewer }: { SvgViewer: ComponentType }) => ({
-      default: SvgViewer,
-    })),
-  'splash-screen-generator': () =>
-    import('@/components/feature/image/SplashScreenGenerator').then(
-      ({ SplashScreenGenerator }: { SplashScreenGenerator: ComponentType }) => ({ default: SplashScreenGenerator }),
-    ),
-  'image-converter': () =>
-    import('@/components/feature/image/ImageConvertor').then(
-      ({ ImageConvertor }: { ImageConvertor: ComponentType }) => ({ default: ImageConvertor }),
-    ),
-  'image-compressor': () =>
-    import('@/components/feature/image/ImageCompressor').then(
-      ({ ImageCompressor }: { ImageCompressor: ComponentType }) => ({ default: ImageCompressor }),
-    ),
-  'image-cropper': () =>
-    import('@/components/feature/image/ImageCropper').then(({ ImageCropper }: { ImageCropper: ComponentType }) => ({
-      default: ImageCropper,
-    })),
-  'image-to-base64': () =>
-    import('@/components/feature/image/ImageToBase64').then(({ ImageToBase64 }: { ImageToBase64: ComponentType }) => ({
-      default: ImageToBase64,
-    })),
-  'image-resizer': () =>
-    import('@/components/feature/image/ImageResizer').then(({ ImageResizer }: { ImageResizer: ComponentType }) => ({
-      default: ImageResizer,
-    })),
-  'ip-subnet-calculator': () =>
-    import('@/components/feature/network/IpSubnetCalculator').then(
-      ({ IpSubnetCalculator }: { IpSubnetCalculator: ComponentType }) => ({ default: IpSubnetCalculator }),
-    ),
-  'javascript-minifier': () =>
-    import('@/components/feature/code/JavaScriptMinifier').then(
-      ({ JavaScriptMinifier }: { JavaScriptMinifier: ComponentType }) => ({ default: JavaScriptMinifier }),
-    ),
-  'json-diff-checker': () =>
-    import('@/components/feature/data/JsonDiffChecker').then(
-      ({ JsonDiffChecker }: { JsonDiffChecker: ComponentType }) => ({ default: JsonDiffChecker }),
-    ),
-  'json-formatter': () =>
-    import('@/components/feature/data/JsonFormatter').then(({ JsonFormatter }: { JsonFormatter: ComponentType }) => ({
-      default: JsonFormatter,
-    })),
-  'json-schema-validator': () =>
-    import('@/components/feature/code/JsonSchemaValidator').then(
-      ({ JsonSchemaValidator }: { JsonSchemaValidator: ComponentType }) => ({ default: JsonSchemaValidator }),
-    ),
-  'json-to-csv-converter': () =>
-    import('@/components/feature/data/JsonToCsvConverter').then(
-      ({ JsonToCsvConverter }: { JsonToCsvConverter: ComponentType }) => ({ default: JsonToCsvConverter }),
-    ),
-  'json-to-yaml-converter': () =>
-    import('@/components/feature/data/JsonToYamlConverter').then(
-      ({ JsonToYamlConverter }: { JsonToYamlConverter: ComponentType }) => ({ default: JsonToYamlConverter }),
-    ),
-  'jsonpath-evaluator': () =>
-    import('@/components/feature/code/JsonpathEvaluator').then(
-      ({ JsonpathEvaluator }: { JsonpathEvaluator: ComponentType }) => ({ default: JsonpathEvaluator }),
-    ),
-  'jwt-decoder': () =>
-    import('@/components/feature/encoding/JwtDecoder').then(({ JwtDecoder }: { JwtDecoder: ComponentType }) => ({
-      default: JwtDecoder,
-    })),
-  'lorem-ipsum-generator': () =>
-    import('@/components/feature/text/LoremIpsumGenerator').then(
-      ({ LoremIpsumGenerator }: { LoremIpsumGenerator: ComponentType }) => ({ default: LoremIpsumGenerator }),
-    ),
-  'markdown-preview': () =>
-    import('@/components/feature/code/MarkdownPreview').then(
-      ({ MarkdownPreview }: { MarkdownPreview: ComponentType }) => ({ default: MarkdownPreview }),
-    ),
-  'number-base-converter': () =>
-    import('@/components/feature/encoding/NumberBaseConverter').then(
-      ({ NumberBaseConverter }: { NumberBaseConverter: ComponentType }) => ({ default: NumberBaseConverter }),
-    ),
-  'password-generator': () =>
-    import('@/components/feature/generator/PasswordGenerator').then(
-      ({ PasswordGenerator }: { PasswordGenerator: ComponentType }) => ({ default: PasswordGenerator }),
-    ),
-  'qr-code-generator': () =>
-    import('@/components/feature/generator/QrCodeGenerator').then(
-      ({ QrCodeGenerator }: { QrCodeGenerator: ComponentType }) => ({ default: QrCodeGenerator }),
-    ),
-  'px-to-rem': () =>
-    import('@/components/feature/unit/UnitPxToRem').then(({ UnitPxToRem }: { UnitPxToRem: ComponentType }) => ({
-      default: UnitPxToRem,
-    })),
-  'regex-tester': () =>
-    import('@/components/feature/text/RegexTester').then(({ RegexTester }: { RegexTester: ComponentType }) => ({
-      default: RegexTester,
-    })),
-  'bcrypt-hasher': () =>
-    import('@/components/feature/security/BcryptHasher').then(({ BcryptHasher }: { BcryptHasher: ComponentType }) => ({
-      default: BcryptHasher,
-    })),
-  'certificate-decoder': () =>
-    import('@/components/feature/security/CertificateDecoder').then(
-      ({ CertificateDecoder }: { CertificateDecoder: ComponentType }) => ({ default: CertificateDecoder }),
-    ),
-  'chmod-calculator': () =>
-    import('@/components/feature/security/ChmodCalculator').then(
-      ({ ChmodCalculator }: { ChmodCalculator: ComponentType }) => ({ default: ChmodCalculator }),
-    ),
-  'rsa-key-generator': () =>
-    import('@/components/feature/security/RsaKeyGenerator').then(
-      ({ RsaKeyGenerator }: { RsaKeyGenerator: ComponentType }) => ({ default: RsaKeyGenerator }),
-    ),
-  'ssh-key-fingerprint': () =>
-    import('@/components/feature/security/SshKeyFingerprint').then(
-      ({ SshKeyFingerprint }: { SshKeyFingerprint: ComponentType }) => ({ default: SshKeyFingerprint }),
-    ),
-  'string-escape-unescape': () =>
-    import('@/components/feature/text/StringEscapeUnescape').then(
-      ({ StringEscapeUnescape }: { StringEscapeUnescape: ComponentType }) => ({ default: StringEscapeUnescape }),
-    ),
-  'sql-formatter': () =>
-    import('@/components/feature/code/SqlFormatter').then(({ SqlFormatter }: { SqlFormatter: ComponentType }) => ({
-      default: SqlFormatter,
-    })),
-  'text-case-converter': () =>
-    import('@/components/feature/text/TextCaseConverter').then(
-      ({ TextCaseConverter }: { TextCaseConverter: ComponentType }) => ({ default: TextCaseConverter }),
-    ),
-  'text-diff-checker': () =>
-    import('@/components/feature/text/TextDiffChecker').then(
-      ({ TextDiffChecker }: { TextDiffChecker: ComponentType }) => ({ default: TextDiffChecker }),
-    ),
-  'json-to-toml-converter': () =>
-    import('@/components/feature/data/JsonToTomlConverter').then(
-      ({ JsonToTomlConverter }: { JsonToTomlConverter: ComponentType }) => ({ default: JsonToTomlConverter }),
-    ),
-  'typescript-playground': () =>
-    import('@/components/feature/code/TypescriptPlayground').then(
-      ({ TypescriptPlayground }: { TypescriptPlayground: ComponentType }) => ({ default: TypescriptPlayground }),
-    ),
-  'unix-timestamp': () =>
-    import('@/components/feature/time/TimeUnixTimestamp').then(
-      ({ TimeUnixTimestamp }: { TimeUnixTimestamp: ComponentType }) => ({ default: TimeUnixTimestamp }),
-    ),
-  'url-encoder-decoder': () =>
-    import('@/components/feature/encoding/UrlEncoder').then(({ UrlEncoder }: { UrlEncoder: ComponentType }) => ({
-      default: UrlEncoder,
-    })),
-  'uuid-generator': () =>
-    import('@/components/feature/generator/UuidGenerator').then(
-      ({ UuidGenerator }: { UuidGenerator: ComponentType }) => ({ default: UuidGenerator }),
-    ),
-  'word-counter': () =>
-    import('@/components/feature/text/WordCounter').then(({ WordCounter }: { WordCounter: ComponentType }) => ({
-      default: WordCounter,
-    })),
-  'json-to-xml-converter': () =>
-    import('@/components/feature/data/JsonToXmlConverter').then(
-      ({ JsonToXmlConverter }: { JsonToXmlConverter: ComponentType }) => ({ default: JsonToXmlConverter }),
-    ),
-  'json-to-typescript': () =>
-    import('@/components/feature/code/JsonToTypeScript').then(
-      ({ JsonToTypeScript }: { JsonToTypeScript: ComponentType }) => ({ default: JsonToTypeScript }),
-    ),
-  'cron-expression-parser': () =>
-    import('@/components/feature/time/CronExpressionParser').then(
-      ({ CronExpressionParser }: { CronExpressionParser: ComponentType }) => ({ default: CronExpressionParser }),
-    ),
-  'crontab-generator': () =>
-    import('@/components/feature/time/CrontabGenerator').then(
-      ({ CrontabGenerator }: { CrontabGenerator: ComponentType }) => ({ default: CrontabGenerator }),
-    ),
-  'css-grid-playground': () =>
-    import('@/components/feature/css/GridPlayground').then(({ GridPlayground }: { GridPlayground: ComponentType }) => ({
-      default: GridPlayground,
-    })),
-  'image-color-picker': () =>
-    import('@/components/feature/image/ImageColorPicker').then(
-      ({ ImageColorPicker }: { ImageColorPicker: ComponentType }) => ({ default: ImageColorPicker }),
-    ),
-  'text-sort-dedupe': () =>
-    import('@/components/feature/text/TextSortDedupe').then(
-      ({ TextSortDedupe }: { TextSortDedupe: ComponentType }) => ({ default: TextSortDedupe }),
-    ),
-  'timezone-converter': () =>
-    import('@/components/feature/time/TimezoneConverter').then(
-      ({ TimezoneConverter }: { TimezoneConverter: ComponentType }) => ({ default: TimezoneConverter }),
-    ),
-  'css-border-radius-generator': () =>
-    import('@/components/feature/css/BorderRadiusGenerator').then(
-      ({ BorderRadiusGenerator }: { BorderRadiusGenerator: ComponentType }) => ({ default: BorderRadiusGenerator }),
-    ),
-  'url-parser': () =>
-    import('@/components/feature/encoding/UrlParser').then(({ UrlParser }: { UrlParser: ComponentType }) => ({
-      default: UrlParser,
-    })),
-  'markdown-table-generator': () =>
-    import('@/components/feature/code/MarkdownTableGenerator').then(
-      ({ MarkdownTableGenerator }: { MarkdownTableGenerator: ComponentType }) => ({ default: MarkdownTableGenerator }),
-    ),
-  'mermaid-renderer': () =>
-    import('@/components/feature/code/MermaidRenderer').then(
-      ({ MermaidRenderer }: { MermaidRenderer: ComponentType }) => ({ default: MermaidRenderer }),
-    ),
-  'http-status-codes': () =>
-    import('@/components/feature/data/HttpStatusCodes').then(
-      ({ HttpStatusCodes }: { HttpStatusCodes: ComponentType }) => ({ default: HttpStatusCodes }),
-    ),
-  'og-preview': () =>
-    import('@/components/feature/data/OgPreview').then(({ OgPreview }: { OgPreview: ComponentType }) => ({
-      default: OgPreview,
-    })),
-  'user-agent-parser': () =>
-    import('@/components/feature/text/UserAgentParser').then(
-      ({ UserAgentParser }: { UserAgentParser: ComponentType }) => ({ default: UserAgentParser }),
-    ),
-  'favicon-generator': () =>
-    import('@/components/feature/image/FaviconGenerator').then(
-      ({ FaviconGenerator }: { FaviconGenerator: ComponentType }) => ({ default: FaviconGenerator }),
-    ),
-  'yaml-formatter': () =>
-    import('@/components/feature/data/YamlFormatter').then(({ YamlFormatter }: { YamlFormatter: ComponentType }) => ({
-      default: YamlFormatter,
-    })),
-  'data-uri-generator': () =>
-    import('@/components/feature/data/DataUriGenerator').then(
-      ({ DataUriGenerator }: { DataUriGenerator: ComponentType }) => ({ default: DataUriGenerator }),
-    ),
-  'db-diagram': () =>
-    import('@/components/feature/data/db-diagram').then(({ DbDiagram }: { DbDiagram: ComponentType }) => ({
-      default: DbDiagram,
-    })),
-  'env-file-converter': () =>
-    import('@/components/feature/data/EnvFileConverter').then(
-      ({ EnvFileConverter }: { EnvFileConverter: ComponentType }) => ({ default: EnvFileConverter }),
-    ),
-  'escaped-json-stringifier': () =>
-    import('@/components/feature/data/EscapedJsonStringifier').then(
-      ({ EscapedJsonStringifier }: { EscapedJsonStringifier: ComponentType }) => ({ default: EscapedJsonStringifier }),
-    ),
-  'html-entity-converter': () =>
-    import('@/components/feature/data/HtmlEntityConverter').then(
-      ({ HtmlEntityConverter }: { HtmlEntityConverter: ComponentType }) => ({ default: HtmlEntityConverter }),
-    ),
-  'placeholder-image-generator': () =>
-    import('@/components/feature/image/PlaceholderImageGenerator').then(
-      ({ PlaceholderImageGenerator }: { PlaceholderImageGenerator: ComponentType }) => ({
-        default: PlaceholderImageGenerator,
-      }),
-    ),
-  'protobuf-codec': () =>
-    import('@/components/feature/code/ProtobufCodec').then(({ ProtobufCodec }: { ProtobufCodec: ComponentType }) => ({
-      default: ProtobufCodec,
-    })),
-  'protobuf-to-json': () =>
-    import('@/components/feature/code/ProtobufToJson').then(
-      ({ ProtobufToJson }: { ProtobufToJson: ComponentType }) => ({ default: ProtobufToJson }),
-    ),
+  'aes-encrypt-decrypt': loadNamed(() => import('@/components/feature/security/AesEncryptDecrypt'), 'AesEncryptDecrypt'),
+  'aspect-ratio-calculator': loadNamed(() => import('@/components/feature/unit/AspectRatioCalculator'), 'AspectRatioCalculator'),
+  'background-remover': loadNamed(() => import('@/components/feature/image/BackgroundRemover'), 'BackgroundRemover'),
+  'base64-to-image': loadNamed(() => import('@/components/feature/image/Base64ToImage'), 'Base64ToImage'),
+  'base64-codec': loadNamed(() => import('@/components/feature/encoding/EncodingBase64'), 'EncodingBase64'),
+  'box-shadow-generator': loadNamed(() => import('@/components/feature/css/BoxShadowGenerator'), 'BoxShadowGenerator'),
+  'css-animation-builder': loadNamed(() => import('@/components/feature/css/CssAnimationBuilder'), 'CssAnimationBuilder'),
+  'css-flexbox-playground': loadNamed(() => import('@/components/feature/css/FlexboxPlayground'), 'FlexboxPlayground'),
+  'css-formatter': loadNamed(() => import('@/components/feature/code/CssFormatter'), 'CssFormatter'),
+  'css-gradient-generator': loadNamed(() => import('@/components/feature/css/GradientGenerator'), 'GradientGenerator'),
+  'color-converter': loadNamed(() => import('@/components/feature/color/ColorConvertor'), 'ColorConvertor'),
+  'color-palette-generator': loadNamed(() => import('@/components/feature/color/ColorPaletteGenerator'), 'ColorPaletteGenerator'),
+  'hash-generator': loadNamed(() => import('@/components/feature/security/HashGenerator'), 'HashGenerator'),
+  'graphql-schema-viewer': loadNamed(() => import('@/components/feature/code/GraphqlSchemaViewer'), 'GraphqlSchemaViewer'),
+  'hmac-generator': loadNamed(() => import('@/components/feature/security/HmacGenerator'), 'HmacGenerator'),
+  'html-formatter': loadNamed(() => import('@/components/feature/code/HtmlFormatter'), 'HtmlFormatter'),
+  'html-to-markdown-converter': loadNamed(() => import('@/components/feature/data/HtmlToMarkdownConverter'), 'HtmlToMarkdownConverter'),
+  'svg-viewer': loadNamed(() => import('@/components/feature/image/SvgViewer'), 'SvgViewer'),
+  'splash-screen-generator': loadNamed(() => import('@/components/feature/image/SplashScreenGenerator'), 'SplashScreenGenerator'),
+  'image-converter': loadNamed(() => import('@/components/feature/image/ImageConvertor'), 'ImageConvertor'),
+  'image-compressor': loadNamed(() => import('@/components/feature/image/ImageCompressor'), 'ImageCompressor'),
+  'image-cropper': loadNamed(() => import('@/components/feature/image/ImageCropper'), 'ImageCropper'),
+  'image-to-base64': loadNamed(() => import('@/components/feature/image/ImageToBase64'), 'ImageToBase64'),
+  'image-resizer': loadNamed(() => import('@/components/feature/image/ImageResizer'), 'ImageResizer'),
+  'ip-subnet-calculator': loadNamed(() => import('@/components/feature/network/IpSubnetCalculator'), 'IpSubnetCalculator'),
+  'javascript-minifier': loadNamed(() => import('@/components/feature/code/JavaScriptMinifier'), 'JavaScriptMinifier'),
+  'json-diff-checker': loadNamed(() => import('@/components/feature/data/JsonDiffChecker'), 'JsonDiffChecker'),
+  'json-formatter': loadNamed(() => import('@/components/feature/data/JsonFormatter'), 'JsonFormatter'),
+  'json-schema-validator': loadNamed(() => import('@/components/feature/code/JsonSchemaValidator'), 'JsonSchemaValidator'),
+  'json-to-csv-converter': loadNamed(() => import('@/components/feature/data/JsonToCsvConverter'), 'JsonToCsvConverter'),
+  'json-to-yaml-converter': loadNamed(() => import('@/components/feature/data/JsonToYamlConverter'), 'JsonToYamlConverter'),
+  'jsonpath-evaluator': loadNamed(() => import('@/components/feature/code/JsonpathEvaluator'), 'JsonpathEvaluator'),
+  'jwt-decoder': loadNamed(() => import('@/components/feature/encoding/JwtDecoder'), 'JwtDecoder'),
+  'lorem-ipsum-generator': loadNamed(() => import('@/components/feature/text/LoremIpsumGenerator'), 'LoremIpsumGenerator'),
+  'markdown-preview': loadNamed(() => import('@/components/feature/code/MarkdownPreview'), 'MarkdownPreview'),
+  'number-base-converter': loadNamed(() => import('@/components/feature/encoding/NumberBaseConverter'), 'NumberBaseConverter'),
+  'password-generator': loadNamed(() => import('@/components/feature/generator/PasswordGenerator'), 'PasswordGenerator'),
+  'qr-code-generator': loadNamed(() => import('@/components/feature/generator/QrCodeGenerator'), 'QrCodeGenerator'),
+  'px-to-rem': loadNamed(() => import('@/components/feature/unit/UnitPxToRem'), 'UnitPxToRem'),
+  'regex-tester': loadNamed(() => import('@/components/feature/text/RegexTester'), 'RegexTester'),
+  'bcrypt-hasher': loadNamed(() => import('@/components/feature/security/BcryptHasher'), 'BcryptHasher'),
+  'certificate-decoder': loadNamed(() => import('@/components/feature/security/CertificateDecoder'), 'CertificateDecoder'),
+  'chmod-calculator': loadNamed(() => import('@/components/feature/security/ChmodCalculator'), 'ChmodCalculator'),
+  'rsa-key-generator': loadNamed(() => import('@/components/feature/security/RsaKeyGenerator'), 'RsaKeyGenerator'),
+  'ssh-key-fingerprint': loadNamed(() => import('@/components/feature/security/SshKeyFingerprint'), 'SshKeyFingerprint'),
+  'string-escape-unescape': loadNamed(() => import('@/components/feature/text/StringEscapeUnescape'), 'StringEscapeUnescape'),
+  'sql-formatter': loadNamed(() => import('@/components/feature/code/SqlFormatter'), 'SqlFormatter'),
+  'text-case-converter': loadNamed(() => import('@/components/feature/text/TextCaseConverter'), 'TextCaseConverter'),
+  'text-diff-checker': loadNamed(() => import('@/components/feature/text/TextDiffChecker'), 'TextDiffChecker'),
+  'json-to-toml-converter': loadNamed(() => import('@/components/feature/data/JsonToTomlConverter'), 'JsonToTomlConverter'),
+  'typescript-playground': loadNamed(() => import('@/components/feature/code/TypescriptPlayground'), 'TypescriptPlayground'),
+  'unix-timestamp': loadNamed(() => import('@/components/feature/time/TimeUnixTimestamp'), 'TimeUnixTimestamp'),
+  'url-encoder-decoder': loadNamed(() => import('@/components/feature/encoding/UrlEncoder'), 'UrlEncoder'),
+  'uuid-generator': loadNamed(() => import('@/components/feature/generator/UuidGenerator'), 'UuidGenerator'),
+  'word-counter': loadNamed(() => import('@/components/feature/text/WordCounter'), 'WordCounter'),
+  'json-to-xml-converter': loadNamed(() => import('@/components/feature/data/JsonToXmlConverter'), 'JsonToXmlConverter'),
+  'json-to-typescript': loadNamed(() => import('@/components/feature/code/JsonToTypeScript'), 'JsonToTypeScript'),
+  'cron-expression-parser': loadNamed(() => import('@/components/feature/time/CronExpressionParser'), 'CronExpressionParser'),
+  'crontab-generator': loadNamed(() => import('@/components/feature/time/CrontabGenerator'), 'CrontabGenerator'),
+  'css-grid-playground': loadNamed(() => import('@/components/feature/css/GridPlayground'), 'GridPlayground'),
+  'image-color-picker': loadNamed(() => import('@/components/feature/image/ImageColorPicker'), 'ImageColorPicker'),
+  'text-sort-dedupe': loadNamed(() => import('@/components/feature/text/TextSortDedupe'), 'TextSortDedupe'),
+  'timezone-converter': loadNamed(() => import('@/components/feature/time/TimezoneConverter'), 'TimezoneConverter'),
+  'css-border-radius-generator': loadNamed(() => import('@/components/feature/css/BorderRadiusGenerator'), 'BorderRadiusGenerator'),
+  'url-parser': loadNamed(() => import('@/components/feature/encoding/UrlParser'), 'UrlParser'),
+  'markdown-table-generator': loadNamed(() => import('@/components/feature/code/MarkdownTableGenerator'), 'MarkdownTableGenerator'),
+  'mermaid-renderer': loadNamed(() => import('@/components/feature/code/MermaidRenderer'), 'MermaidRenderer'),
+  'http-status-codes': loadNamed(() => import('@/components/feature/data/HttpStatusCodes'), 'HttpStatusCodes'),
+  'og-preview': loadNamed(() => import('@/components/feature/data/OgPreview'), 'OgPreview'),
+  'user-agent-parser': loadNamed(() => import('@/components/feature/text/UserAgentParser'), 'UserAgentParser'),
+  'favicon-generator': loadNamed(() => import('@/components/feature/image/FaviconGenerator'), 'FaviconGenerator'),
+  'yaml-formatter': loadNamed(() => import('@/components/feature/data/YamlFormatter'), 'YamlFormatter'),
+  'data-uri-generator': loadNamed(() => import('@/components/feature/data/DataUriGenerator'), 'DataUriGenerator'),
+  'db-diagram': loadNamed(() => import('@/components/feature/data/db-diagram'), 'DbDiagram'),
+  'env-file-converter': loadNamed(() => import('@/components/feature/data/EnvFileConverter'), 'EnvFileConverter'),
+  'escaped-json-stringifier': loadNamed(() => import('@/components/feature/data/EscapedJsonStringifier'), 'EscapedJsonStringifier'),
+  'html-entity-converter': loadNamed(() => import('@/components/feature/data/HtmlEntityConverter'), 'HtmlEntityConverter'),
+  'placeholder-image-generator': loadNamed(() => import('@/components/feature/image/PlaceholderImageGenerator'), 'PlaceholderImageGenerator'),
+  'protobuf-codec': loadNamed(() => import('@/components/feature/code/ProtobufCodec'), 'ProtobufCodec'),
+  'protobuf-to-json': loadNamed(() => import('@/components/feature/code/ProtobufToJson'), 'ProtobufToJson'),
 }
 
 export const TOOL_REGISTRY: Array<ToolRegistryEntry> = TOOL_ROUTES.map((route) => {
