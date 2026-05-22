@@ -47,6 +47,7 @@ export type ToolRegistryKey =
   | 'chmod-calculator'
   | 'color-converter'
   | 'color-palette-generator'
+  | 'combine-pdf'
   | 'cron-expression-parser'
   | 'crontab-generator'
   | 'css-animation-builder'

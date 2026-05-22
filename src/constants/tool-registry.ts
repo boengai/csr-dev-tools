@@ -19,6 +19,7 @@ const COMPONENT_LOADERS: Record<string, () => Promise<{ default: ComponentType }
   'css-gradient-generator': loadNamed(() => import('@/components/feature/css/GradientGenerator'), 'GradientGenerator'),
   'color-converter': loadNamed(() => import('@/components/feature/color/ColorConvertor'), 'ColorConvertor'),
   'color-palette-generator': loadNamed(() => import('@/components/feature/color/ColorPaletteGenerator'), 'ColorPaletteGenerator'),
+  'combine-pdf': loadNamed(() => import('@/components/feature/data/CombinePdf'), 'CombinePdf'),
   'hash-generator': loadNamed(() => import('@/components/feature/security/HashGenerator'), 'HashGenerator'),
   'graphql-schema-viewer': loadNamed(() => import('@/components/feature/code/GraphqlSchemaViewer'), 'GraphqlSchemaViewer'),
   'hmac-generator': loadNamed(() => import('@/components/feature/security/HmacGenerator'), 'HmacGenerator'),

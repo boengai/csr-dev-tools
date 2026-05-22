@@ -170,6 +170,20 @@ export const TOOL_ROUTES: Array<ToolRoute> = [
     },
   },
   {
+    category: 'Data',
+    description:
+      'Combine multiple PDFs into one. Drag-and-drop to reorder, see the merged result instantly. 100% client-side — your PDFs never leave your browser.',
+    emoji: '📎',
+    key: 'combine-pdf',
+    name: 'Combine PDF',
+    routePath: '/tools/combine-pdf',
+    seo: {
+      description:
+        'Merge multiple PDF files into one in the browser. Drag-and-drop to reorder, preview the combined result, download. 100% client-side — your PDFs never leave your device.',
+      title: 'Combine PDF - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Security',
     description: 'Compute hash values from text using MD5, SHA-1, SHA-256, and SHA-512',
     emoji: '#️⃣',
