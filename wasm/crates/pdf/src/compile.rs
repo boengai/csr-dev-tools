@@ -68,8 +68,8 @@ impl World for InMemoryWorld {
     }
 }
 
-/// Compile a Typst source string (already pre-pended with our preamble in
-/// the caller) to per-page SVG strings + PDF bytes.
+/// Prepend the fixed PREAMBLE to `typst_source`, compile the combined Typst
+/// source, and return per-page SVG strings + PDF bytes.
 pub fn compile(typst_source: String) -> Result<(Vec<String>, Vec<u8>), String> {
     let full_source = format!("{}{}", PREAMBLE, typst_source);
     let world = InMemoryWorld::new(full_source);
