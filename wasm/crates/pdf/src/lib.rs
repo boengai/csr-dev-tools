@@ -2,6 +2,7 @@ use wasm_bindgen::prelude::*;
 
 mod compile;
 mod fonts;
+mod markdown;
 mod preamble;
 
 /// Opaque handle returned from `compile_markdown`.
@@ -30,16 +31,14 @@ impl CompileResult {
 }
 
 /// Compile a Markdown string to SVG pages + PDF bytes.
-///
-/// v2 (this task): bypasses real Markdown translation and treats the input
-/// as Typst source directly. Real MD→Typst conversion lands in Task 3.
 #[wasm_bindgen]
 pub fn compile_markdown(md: &str) -> Result<CompileResult, JsError> {
     if md.trim().is_empty() {
         return Ok(CompileResult { svgs: vec![], pdf_bytes: vec![] });
     }
 
-    let (svgs, pdf_bytes) = compile::compile(md.to_string())
+    let typst_source = markdown::md_to_typst(md);
+    let (svgs, pdf_bytes) = compile::compile(typst_source)
         .map_err(|msg| JsError::new(&format!("Typst compile failed: {}", msg)))?;
 
     Ok(CompileResult { svgs, pdf_bytes })
@@ -57,11 +56,13 @@ mod tests {
     }
 
     #[test]
-    fn typst_source_compiles_to_pdf_and_svg() {
-        let result = compile_markdown("Hello world.").unwrap();
+    fn markdown_compiles_to_pdf_and_svg() {
+        let result = compile_markdown("# Hello\n\nThis is a paragraph.").unwrap();
         assert!(result.page_count() >= 1, "expected at least 1 page");
         assert!(result.pdf().len() > 100, "expected non-trivial PDF bytes");
-        assert!(result.page_svg(0).unwrap().contains("<svg"));
+        let svg = result.page_svg(0).unwrap();
+        assert!(svg.contains("<svg"));
+        assert!(svg.len() > 500);
     }
 
     #[test]
