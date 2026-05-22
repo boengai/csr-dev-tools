@@ -1,11 +1,12 @@
 use wasm_bindgen::prelude::*;
 
+mod compile;
+mod fonts;
+mod preamble;
+
 /// Opaque handle returned from `compile_markdown`.
-///
-/// Holds the per-page SVG strings and the PDF byte buffer.
-/// JS-side consumers iterate via `page_count` + `page_svg(i)` and pull
-/// the final document via `pdf` once.
 #[wasm_bindgen]
+#[derive(Debug)]
 pub struct CompileResult {
     svgs: Vec<String>,
     pdf_bytes: Vec<u8>,
@@ -30,20 +31,18 @@ impl CompileResult {
 
 /// Compile a Markdown string to SVG pages + PDF bytes.
 ///
-/// v0 (this task): returns a single placeholder SVG + empty PDF.
-/// Real Typst pipeline lands in Task 3.
+/// v2 (this task): bypasses real Markdown translation and treats the input
+/// as Typst source directly. Real MD→Typst conversion lands in Task 3.
 #[wasm_bindgen]
 pub fn compile_markdown(md: &str) -> Result<CompileResult, JsError> {
     if md.trim().is_empty() {
-        return Ok(CompileResult {
-            svgs: vec![],
-            pdf_bytes: vec![],
-        });
+        return Ok(CompileResult { svgs: vec![], pdf_bytes: vec![] });
     }
-    Ok(CompileResult {
-        svgs: vec!["<svg xmlns=\"http://www.w3.org/2000/svg\"></svg>".to_string()],
-        pdf_bytes: vec![],
-    })
+
+    let (svgs, pdf_bytes) = compile::compile(md.to_string())
+        .map_err(|msg| JsError::new(&format!("Typst compile failed: {}", msg)))?;
+
+    Ok(CompileResult { svgs, pdf_bytes })
 }
 
 #[cfg(test)]
@@ -58,9 +57,18 @@ mod tests {
     }
 
     #[test]
-    fn nonempty_input_returns_one_placeholder_page() {
-        let result = compile_markdown("# hello").unwrap();
-        assert_eq!(result.page_count(), 1);
+    fn typst_source_compiles_to_pdf_and_svg() {
+        let result = compile_markdown("Hello world.").unwrap();
+        assert!(result.page_count() >= 1, "expected at least 1 page");
+        assert!(result.pdf().len() > 100, "expected non-trivial PDF bytes");
         assert!(result.page_svg(0).unwrap().contains("<svg"));
+    }
+
+    #[test]
+    fn malformed_typst_returns_err() {
+        // `#unclosed_block(` is invalid Typst; test via compile() directly
+        // to avoid constructing JsError (panics on non-wasm targets).
+        let result = compile::compile("#unclosed_block(".to_string());
+        assert!(result.is_err(), "expected compile error for malformed Typst");
     }
 }
