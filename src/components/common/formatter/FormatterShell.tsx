@@ -7,10 +7,12 @@ export const FormatterShell = <I extends { source: string }>({
   autoOpen,
   compute,
   description,
+  errorFallback,
   errorLabel,
   initial,
   onAfterDialogClose,
   renderControls,
+  resultLabel = 'Result',
   resultPlaceholder,
   sourceLabel,
   sourcePlaceholder,
@@ -21,6 +23,7 @@ export const FormatterShell = <I extends { source: string }>({
   const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<I, string>({
     compute,
     debounceMs: 300,
+    errorFallback,
     errorLabel,
     initial,
     initialResult: '',
@@ -63,8 +66,8 @@ export const FormatterShell = <I extends { source: string }>({
             <CodeOutput
               label={
                 <span className="flex items-center gap-1">
-                  <span>Result</span>
-                  <CopyButton label="result" value={result} />
+                  <span>{resultLabel}</span>
+                  <CopyButton label={resultLabel} value={result} />
                 </span>
               }
               placeholder={resultPlaceholder}

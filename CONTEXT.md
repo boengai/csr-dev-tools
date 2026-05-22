@@ -442,15 +442,22 @@ A Tool whose interaction is "paste source code → pick mode (or dialect)
 `<FormatterShell>` (`src/components/common/formatter/FormatterShell.tsx`).
 
 Today's consumers: `CssFormatter`, `HtmlFormatter`, `SqlFormatter`,
-`JavaScriptMinifier`. All four route their compute through
-`src/wasm/formatter` (`formatCss`/`minifyCss`, `formatHtml`/`minifyHtml`,
-`formatSql`, `formatJs`/`minifyJs`).
+`JavaScriptMinifier`, `JsonFormatter`, `YamlFormatter`. All six route
+their compute through `src/wasm/formatter` (CSS/HTML/SQL/JS) or
+`src/utils` (`formatJson` / `formatYaml`); the JSON / YAML pair also
+wraps the compute through [[Parse-error narrator]] before reaching the
+shell's `errorFallback`.
 
 The shell wraps the [[Persistent tool field bag]] internally, so all
 five of its invariants apply to the `compute` function. Persistence is
 required (every consumer gets its own `storageKey`) — a previous
 inconsistency where HtmlFormatter persisted but CSS/SQL/JS did not has
-been resolved by making persistence the default.
+been resolved by making persistence the default. JSON and YAML joined
+the family in a later pass; the pre-migration JSON key
+(`csr-dev-tools-json-formatter-source`, raw-string shape from
+`useToolComputationPersisted`) was retired in favor of
+`csr-dev-tools-json-formatter` (JSON-bag shape) — reusing the old key
+would have corrupted on first read because the shape is different.
 
 The shell owns: the [[Tool dialog frame]] wiring, the source `FieldForm`
 panel, the result `CodeOutput` + `CopyButton` panel, the two-column
@@ -461,12 +468,22 @@ The Tool's role narrows to its `compute` function, its labels/placeholders,
 its `storageKey`, and a `renderControls` render-prop that receives
 `{ inputs, result, setFieldsImmediate }` — the Tool builds whatever
 controls it needs (mode select, dialect select, indent select, size-savings
-stat). The shell hardcodes the layout container around them.
+stat). `renderControls` is omitted entirely by JsonFormatter (no extra
+controls — its bag is `{ source: string }`). The shell hardcodes the
+layout container around the slot.
+
+`resultLabel` (optional, default `'Result'`) names the result pane
+header and the CopyButton's accessible label. CSS/HTML/SQL/JS take the
+default; JSON and YAML pass `'Formatted JSON'` / `'Formatted YAML'`
+because the bare "Result" reads too generically next to a syntax-aware
+output panel.
 
 The shell's input type is generic over `<I extends { source: string }>` —
 each Tool has its own typed bag (`CssInput`, `HtmlInput`, `SqlInput`,
-`JsInput`) with different mode/dialect/indent vocabularies. The constraint
-on `source` lets the shell own the input panel + reset/`isEmpty` logic.
+`JsInput`, `YamlInput`, plus the trivial `{ source: string }` for
+JsonFormatter) with different mode/dialect/indent vocabularies. The
+constraint on `source` lets the shell own the input panel +
+reset/`isEmpty` logic.
 
 Does NOT fit `JsonToTypeScript`: that Tool drives compute from a button
 click rather than debounced input change, plus its control row is
