@@ -2,14 +2,7 @@ import { useMemo, useState } from 'react'
 
 import { Button, CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
-import {
-  readJsonStorage,
-  useInputLocalStorage,
-  useMountOnce,
-  useToast,
-  useToolFields,
-  writeJsonStorage,
-} from '@/hooks'
+import { readJsonStorage, useInputLocalStorage, useToast, useToolFields, writeJsonStorage } from '@/hooks'
 import type { BidirectionalConverterProps, ConvertOutput } from '@/types'
 import { narrateParseError } from '@/utils/parse-error-narrators'
 
@@ -68,6 +61,7 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
   }
 
   const { inputs, recompute, result, setFields, setFieldsImmediate } = useToolFields<{ mode: M; source: string }, R>({
+    autorunOnMount: true,
     compute: wrappedCompute,
     debounceMs: 300,
     initial: initialBag,
@@ -85,12 +79,6 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
 
   const { mode, source } = inputs
   const modeConfig = modes.find((m) => m.key === mode) ?? modes[0]
-
-  useMountOnce(() => {
-    if (initialBag.source) {
-      setFieldsImmediate(initialBag)
-    }
-  })
 
   const handleSourceChange = (val: string) => {
     writeSource(mode, val, sourceKeyPrefix)

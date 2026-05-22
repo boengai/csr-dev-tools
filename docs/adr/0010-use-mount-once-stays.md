@@ -22,12 +22,27 @@ sibling deepening), the remaining callers dropped from 14 to **5**:
 | `UuidGenerator.tsx:17` | `useAsyncAction.run()` (non-idempotent — generates a batch of UUIDs) |
 | `MermaidRenderer.tsx:103` | `initializeMermaid()` + `consumeHandoff('mermaid-renderer')` + `setInputImmediate(prefill)` |
 | `BidirectionalConverter.tsx:71` | `setFieldsImmediate(initialBag)` (per-mode localStorage source restore) |
+| `ProtobufCodec.tsx:466` | parse schema once (per ADR-0005's bespoke triad) |
 | `useToolFields.ts` (NEW) | `setInputImmediate(inputsRef.current)` when `autorunOnMount: true` |
 
 The five callers serve **four different concerns** — not one shape.
 Applying the deletion test: if `useMountOnce` were deleted, complexity
 would NOT concentrate in one new module — it would redistribute as
 `useEffect(fn, [])` (plus a `useRef` guard) at five sites.
+
+**Amendment, 2026-05-22.** `BidirectionalConverter` migrated off
+`useMountOnce`. Its mount-time callback was `if (initialBag.source)
+setFieldsImmediate(initialBag)` — a manual non-empty gate plus a
+`setFieldsImmediate` fire. Both were already absorbed by
+`useToolFields.autorunOnMount: true`: the autorun fires `setInputImmediate`
+with the current bag, and `useToolComputation`'s `isEmpty` short-circuit
+handles the gate (and more precisely than the old truthy check — it skips
+whitespace-only sources too, eliminating a spurious "Invalid X" toast on
+mount when a stored source was whitespace-only). The shell no longer
+imports `useMountOnce`; the four remaining adopters
+(`UuidGenerator`, `MermaidRenderer`, `ProtobufCodec`, and `useToolFields`
+itself) serve the same four distinct concerns the original analysis
+identified. The decision stands.
 
 ## Decision
 
