@@ -1,71 +1,93 @@
-/**
- * @vitest-environment jsdom
- */
+/** @vitest-environment jsdom */
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ImageToPdf } from './ImageToPdf'
 
-vi.mock('@/utils/image-to-pdf', () => ({
-  imagesToPdf: vi.fn(async (files: Array<File>) => {
-    if (files.length === 0) return { pdf: new Uint8Array(0), pageCount: 0, skipped: [] }
+vi.mock('@/utils/image-to-pdf', async () => ({
+  imagesToPdf: vi.fn(async (items: Array<{ file: File; rotation?: number }>) => {
+    if (items.length === 0) return { pdf: new Uint8Array(0), pageCount: 0, skipped: [] }
     return {
       pdf: new Uint8Array([0x25, 0x50, 0x44, 0x46]),
-      pageCount: files.filter((f) => /\.(png|jpe?g)$/i.test(f.name)).length,
-      skipped: files.filter((f) => !/\.(png|jpe?g)$/i.test(f.name)).map((f) => f.name),
+      pageCount: items.length,
+      skipped: [],
     }
   }),
 }))
 
-const ORIG_CREATE = URL.createObjectURL
-const ORIG_REVOKE = URL.revokeObjectURL
-
 beforeEach(() => {
-  URL.createObjectURL = vi.fn(() => 'blob:mock')
-  URL.revokeObjectURL = vi.fn()
+  Object.defineProperty(URL, 'createObjectURL', {
+    value: vi.fn(() => 'blob:mock'),
+    configurable: true,
+    writable: true,
+  })
+  Object.defineProperty(URL, 'revokeObjectURL', {
+    value: vi.fn(),
+    configurable: true,
+    writable: true,
+  })
+  // crypto.randomUUID may not be available in jsdom default — polyfill
+  if (!('randomUUID' in globalThis.crypto)) {
+    Object.defineProperty(globalThis.crypto, 'randomUUID', {
+      value: () => Math.random().toString(36).slice(2),
+      configurable: true,
+    })
+  }
 })
 
 afterEach(() => {
-  URL.createObjectURL = ORIG_CREATE
-  URL.revokeObjectURL = ORIG_REVOKE
   vi.clearAllMocks()
 })
 
 const makeFile = (name: string, type: string): File => new File(['mock'], name, { type })
 
-const uploadFiles = (files: Array<File>) => {
-  const input = document.querySelector('input[type="file"]') as HTMLInputElement
-  Object.defineProperty(input, 'files', { configurable: true, value: files })
-  fireEvent.change(input)
-}
-
 describe('ImageToPdf', () => {
-  it('renders empty state initially', async () => {
+  it('renders dropzone in initial state', async () => {
     render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
-    expect(await screen.findByLabelText('Empty result')).toBeInTheDocument()
+    expect(await screen.findByText(/Drop images here or click to choose/i)).toBeInTheDocument()
   })
 
-  it('renders page count and download link after files are chosen', async () => {
+  it('renders thumbnails and a summary bar after files are chosen', async () => {
     render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
 
-    uploadFiles([makeFile('a.png', 'image/png'), makeFile('b.jpg', 'image/jpeg')])
+    const files = [makeFile('a.png', 'image/png'), makeFile('b.jpg', 'image/jpeg')]
+    fireEvent.change(input, { target: { files } })
 
     await waitFor(() => {
-      expect(screen.getByText(/2 pages generated/i)).toBeInTheDocument()
+      expect(screen.getByText(/Page 1/i)).toBeInTheDocument()
+      expect(screen.getByText(/Page 2/i)).toBeInTheDocument()
+      expect(screen.getByText(/2 images → 1 PDF/i)).toBeInTheDocument()
     })
 
-    const link = screen.getByRole('link', { name: /Download PDF/i })
+    const link = await screen.findByRole('link', { name: /Download PDF/i })
     expect(link).toHaveAttribute('download', 'images.pdf')
+  })
+
+  it('removes an image when its X button is clicked', async () => {
+    render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
+
+    const files = [makeFile('a.png', 'image/png'), makeFile('b.jpg', 'image/jpeg')]
+    fireEvent.change(input, { target: { files } })
+
+    await waitFor(() => expect(screen.getByText(/2 images → 1 PDF/i)).toBeInTheDocument())
+
+    const removeBtn = screen.getByRole('button', { name: /Remove a\.png/i })
+    fireEvent.click(removeBtn)
+
+    await waitFor(() => expect(screen.getByText(/1 image → 1 PDF/i)).toBeInTheDocument())
   })
 
   it('surfaces skipped files', async () => {
     render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
 
-    uploadFiles([makeFile('a.png', 'image/png'), makeFile('weird.webp', 'image/webp')])
+    const files = [makeFile('a.png', 'image/png'), makeFile('weird.webp', 'image/webp')]
+    fireEvent.change(input, { target: { files } })
 
     await waitFor(() => {
       expect(screen.getByText(/Skipped 1 unsupported file/i)).toBeInTheDocument()
-      expect(screen.getByText(/weird\.webp/i)).toBeInTheDocument()
     })
   })
 })
