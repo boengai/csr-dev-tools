@@ -1,5 +1,11 @@
 import { describe, expect, it, vi } from 'vitest'
 
+import { getCsvParseError } from '@/wasm/csv'
+import { getJsonParseError } from '@/wasm/json-tools'
+import { getTomlParseError, getXmlParseError, getYamlParseError } from '@/wasm/parsers'
+
+import { narrateParseError } from './parse-error-narrators'
+
 vi.mock('@/wasm/csv', () => ({ getCsvParseError: vi.fn() }))
 vi.mock('@/wasm/json-tools', () => ({ getJsonParseError: vi.fn() }))
 vi.mock('@/wasm/parsers', () => ({
@@ -7,12 +13,6 @@ vi.mock('@/wasm/parsers', () => ({
   getXmlParseError: vi.fn(),
   getYamlParseError: vi.fn(),
 }))
-
-import { getCsvParseError } from '@/wasm/csv'
-import { getJsonParseError } from '@/wasm/json-tools'
-import { getTomlParseError, getXmlParseError, getYamlParseError } from '@/wasm/parsers'
-
-import { narrateParseError } from './parse-error-narrators'
 
 describe('narrateParseError', () => {
   it('returns a narrated message when the source has a parse error', async () => {

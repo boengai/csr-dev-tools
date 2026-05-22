@@ -4,13 +4,13 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-vi.mock('@/utils/parse-error-narrators', () => ({
-  narrateParseError: vi.fn(),
-}))
-
 import { narrateParseError } from '@/utils/parse-error-narrators'
 
 import { BidirectionalConverter } from './BidirectionalConverter'
+
+vi.mock('@/utils/parse-error-narrators', () => ({
+  narrateParseError: vi.fn(),
+}))
 
 type Mode = 'a-to-b' | 'b-to-a'
 
