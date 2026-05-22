@@ -65,6 +65,7 @@ export type ToolRegistryKey =
   | 'hmac-generator'
   | 'html-entity-converter'
   | 'html-formatter'
+  | 'html-to-pdf'
   | 'html-to-markdown-converter'
   | 'http-status-codes'
   | 'image-color-picker'

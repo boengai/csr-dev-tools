@@ -1,6 +1,7 @@
 import type { CompileResultDto } from '@/types/wasm/pdf'
 
 import { loadWasm } from './init'
+import { htmlToMarkdown } from './markdown'
 
 type CsrPdf = {
   compile_markdown: (md: string) => CsrPdfCompileResult
@@ -12,6 +13,7 @@ type CsrPdfCompileResult = {
   readonly pdf: Uint8Array
 }
 
+export const MAX_HTML_INPUT_BYTES = 256 * 1024
 export const MAX_MD_INPUT_BYTES = 256 * 1024
 
 let worker: Worker | null = null
@@ -71,4 +73,17 @@ export async function compileMarkdownToPdf(md: string): Promise<CompileResultDto
   }
 
   return callWorker(md)
+}
+
+export async function compileHtmlToPdf(html: string): Promise<CompileResultDto> {
+  if (html.trim().length === 0) {
+    return { svgs: [], pdf: new Uint8Array(0) }
+  }
+  if (html.length > MAX_HTML_INPUT_BYTES) {
+    throw new Error(
+      `Input too large (${html.length} bytes). Maximum is ${MAX_HTML_INPUT_BYTES} bytes.`,
+    )
+  }
+  const md = await htmlToMarkdown(html)
+  return compileMarkdownToPdf(md)
 }

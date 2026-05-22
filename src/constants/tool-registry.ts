@@ -23,6 +23,7 @@ const COMPONENT_LOADERS: Record<string, () => Promise<{ default: ComponentType }
   'graphql-schema-viewer': loadNamed(() => import('@/components/feature/code/GraphqlSchemaViewer'), 'GraphqlSchemaViewer'),
   'hmac-generator': loadNamed(() => import('@/components/feature/security/HmacGenerator'), 'HmacGenerator'),
   'html-formatter': loadNamed(() => import('@/components/feature/code/HtmlFormatter'), 'HtmlFormatter'),
+  'html-to-pdf': loadNamed(() => import('@/components/feature/code/HtmlToPdf'), 'HtmlToPdf'),
   'html-to-markdown-converter': loadNamed(() => import('@/components/feature/data/HtmlToMarkdownConverter'), 'HtmlToMarkdownConverter'),
   'svg-viewer': loadNamed(() => import('@/components/feature/image/SvgViewer'), 'SvgViewer'),
   'splash-screen-generator': loadNamed(() => import('@/components/feature/image/SplashScreenGenerator'), 'SplashScreenGenerator'),

@@ -223,6 +223,20 @@ export const TOOL_ROUTES: Array<ToolRoute> = [
     },
   },
   {
+    category: 'Code',
+    description:
+      'Convert HTML to a typeset PDF. Real ligatures, justified text, page geometry. Reuses our Typst→WASM engine — 100% client-side.',
+    emoji: '📄',
+    key: 'html-to-pdf',
+    name: 'HTML to PDF',
+    routePath: '/tools/html-to-pdf',
+    seo: {
+      description:
+        'Convert HTML to a typeset PDF in the browser. Real typography (ligatures, justified paragraphs, page geometry) powered by Typst compiled to WebAssembly. 100% client-side — your HTML never leaves your device.',
+      title: 'HTML to PDF - CSR Dev Tools',
+    },
+  },
+  {
     category: 'Data',
     description: 'Convert between HTML and Markdown. Transform web content to Markdown and back.',
     emoji: '🔄',
