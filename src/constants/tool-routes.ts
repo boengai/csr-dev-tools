@@ -866,6 +866,20 @@ export const TOOL_ROUTES: Array<ToolRoute> = [
   {
     category: 'Code',
     description:
+      'Convert Markdown to a typeset PDF. Real ligatures, justified text, page geometry. 100% client-side via Typst compiled to WASM.',
+    emoji: '📄',
+    key: 'markdown-to-pdf',
+    name: 'Markdown to PDF',
+    routePath: '/tools/markdown-to-pdf',
+    seo: {
+      description:
+        'Convert Markdown to a typeset PDF in the browser. Real typography (ligatures, justified paragraphs, page geometry) powered by Typst compiled to WebAssembly. 100% client-side — your text never leaves your device.',
+      title: 'Markdown to PDF - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Code',
+    description:
       'Write Mermaid diagram syntax and see a live SVG preview. Supports flowchart, sequence, class, state, gantt, pie, and more. Export as SVG or PNG.',
     emoji: '🧜',
     key: 'mermaid-renderer',

@@ -88,6 +88,7 @@ export type ToolRegistryKey =
   | 'lorem-ipsum-generator'
   | 'markdown-preview'
   | 'markdown-table-generator'
+  | 'markdown-to-pdf'
   | 'mermaid-renderer'
   | 'number-base-converter'
   | 'og-preview'
