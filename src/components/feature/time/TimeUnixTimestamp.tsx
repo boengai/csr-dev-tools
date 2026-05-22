@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react'
 
 import { CopyButton, DataCellTable, FieldForm } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useToast, useToolInput } from '@/hooks'
 import type { DateTime } from '@/types'
 import { getDaysInMonth, isValidTimestamp } from '@/utils'
 
@@ -45,10 +45,8 @@ const renderWithCopy = (label: string) => (val: string) => (
 )
 
 const UnixTimestampSection = ({ showError }: { showError: (label: string) => void }) => {
-  const [input, setInput] = useState('')
-
-  const { result, setInput: setComputeInput } = useToolComputation<string, Array<string>>(
-    (source) => {
+  const { input, result, setInput } = useToolInput<string, Array<string>>({
+    compute: (source) => {
       if (!isValidTimestamp(source)) throw new Error('Enter a valid Unix timestamp (e.g., 1700000000)')
       const inputNumber = Number(source)
       // Auto-detect seconds vs milliseconds: > 100 billion implies ms (year 5138 in seconds is unrealistic).
@@ -56,20 +54,14 @@ const UnixTimestampSection = ({ showError }: { showError: (label: string) => voi
       const d = new Date(isMilliseconds ? inputNumber : inputNumber * 1_000)
       return [isMilliseconds ? 'Milliseconds' : 'Seconds', d.toUTCString(), d.toString()]
     },
-    {
-      debounceMs: 300,
-      initial: [],
-      isEmpty: (source) => source.length === 0,
-      onError: (err) => {
-        showError(err instanceof Error ? err.message : 'Enter a valid Unix timestamp (e.g., 1700000000)')
-      },
+    debounceMs: 300,
+    initial: '',
+    initialResult: [],
+    isEmpty: (source) => source.length === 0,
+    onError: (err) => {
+      showError(err instanceof Error ? err.message : 'Enter a valid Unix timestamp (e.g., 1700000000)')
     },
-  )
-
-  const handleInputChange = (val: string) => {
-    setInput(val)
-    setComputeInput(val)
-  }
+  })
 
   return (
     <section className="flex grow flex-col gap-2">
@@ -77,7 +69,7 @@ const UnixTimestampSection = ({ showError }: { showError: (label: string) => voi
         <FieldForm
           label="Enter a Timestamp"
           name="unixTimestamp"
-          onChange={handleInputChange}
+          onChange={setInput}
           placeholder={Date.now().toString()}
           type="text"
           value={input}
