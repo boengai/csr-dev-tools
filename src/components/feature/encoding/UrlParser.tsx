@@ -1,4 +1,4 @@
-import { CopyButton, FieldForm } from '@/components/common'
+import { CopyButton, FieldForm, InlineLabeledRow } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -14,20 +14,6 @@ const EMPTY: UrlParseResult = {
   protocol: '',
   search: '',
   searchParams: [],
-}
-
-const ResultRow = ({ label, value, displayValue }: { label: string; value: string; displayValue?: string }) => {
-  const display = displayValue ?? value
-  if (!display) return null
-  return (
-    <div className="flex items-center justify-between gap-2 rounded border border-gray-800 bg-gray-950 px-3 py-2">
-      <span className="text-body-xs text-gray-400">{label}</span>
-      <div className="flex items-center gap-1">
-        <span className="font-mono text-body-xs text-gray-200">{display}</span>
-        {value && <CopyButton label={label} value={value} />}
-      </div>
-    </div>
-  )
 }
 
 export const UrlParser = (_props: ToolComponentProps) => {
@@ -60,11 +46,11 @@ export const UrlParser = (_props: ToolComponentProps) => {
 
       {!result.error && result.hostname && (
         <div className="flex flex-col gap-2">
-          <ResultRow label="Protocol" value={result.protocol} />
-          <ResultRow label="Hostname" value={result.hostname} />
-          <ResultRow label="Port" displayValue={result.port || 'default'} value={result.port} />
-          <ResultRow label="Path" value={result.pathname} />
-          <ResultRow label="Hash" value={result.hash} />
+          <InlineLabeledRow label="Protocol" value={result.protocol} />
+          <InlineLabeledRow label="Hostname" value={result.hostname} />
+          <InlineLabeledRow label="Port" displayValue={result.port || 'default'} value={result.port} />
+          <InlineLabeledRow label="Path" value={result.pathname} />
+          <InlineLabeledRow label="Hash" value={result.hash} />
 
           {result.searchParams.length > 0 && (
             <div className="flex flex-col gap-1 rounded border border-gray-800 bg-gray-950 p-3">
