@@ -15,7 +15,6 @@ pub fn md_to_typst(md: &str) -> String {
 
     let mut out = String::new();
     let mut list_stack: Vec<ListKind> = vec![];
-    let mut table_columns: usize = 0;
     let mut in_table_header = false;
     let mut in_code_block = false;
     let mut in_image = false;
@@ -114,12 +113,10 @@ pub fn md_to_typst(md: &str) -> String {
 
             // GFM tables:
             Event::Start(Tag::Table(alignments)) => {
-                table_columns = alignments.len();
-                out.push_str(&format!("\n#table(columns: {},\n", table_columns));
+                out.push_str(&format!("\n#table(columns: {},\n", alignments.len()));
             }
             Event::End(TagEnd::Table) => {
                 out.push_str(")\n\n");
-                table_columns = 0;
             }
             Event::Start(Tag::TableHead) => {
                 in_table_header = true;
