@@ -10,12 +10,15 @@ pub fn md_to_typst(md: &str) -> String {
     let mut opts = Options::empty();
     opts.insert(Options::ENABLE_TABLES);
     opts.insert(Options::ENABLE_STRIKETHROUGH);
+    opts.insert(Options::ENABLE_TASKLISTS);
     let parser = Parser::new_ext(md, opts);
 
     let mut out = String::new();
     let mut list_stack: Vec<ListKind> = vec![];
     let mut table_columns: usize = 0;
     let mut in_table_header = false;
+    let mut in_code_block = false;
+    let mut in_image = false;
 
     for event in parser {
         match event {
@@ -42,13 +45,17 @@ pub fn md_to_typst(md: &str) -> String {
             }
 
             Event::Start(Tag::CodeBlock(kind)) => {
+                in_code_block = true;
                 out.push_str("\n```");
                 if let pulldown_cmark::CodeBlockKind::Fenced(lang) = kind {
                     out.push_str(&lang);
                 }
                 out.push('\n');
             }
-            Event::End(TagEnd::CodeBlock) => out.push_str("```\n\n"),
+            Event::End(TagEnd::CodeBlock) => {
+                in_code_block = false;
+                out.push_str("```\n\n");
+            }
 
             Event::Start(Tag::List(start)) => {
                 list_stack.push(match start {
@@ -85,16 +92,25 @@ pub fn md_to_typst(md: &str) -> String {
             Event::SoftBreak => out.push(' '),
             Event::HardBreak => out.push_str(" \\\n"),
 
-            Event::Text(s) => out.push_str(&escape_typst(&s)),
+            Event::Text(s) => {
+                if in_image {
+                    // suppress alt text — images are dropped in v1
+                } else if in_code_block {
+                    out.push_str(&s);
+                } else {
+                    out.push_str(&escape_typst(&s));
+                }
+            }
 
             // v1 explicit no-ops:
             Event::Html(_) | Event::InlineHtml(_) => {}
-            Event::Start(Tag::Image { .. }) => {}
-            Event::End(TagEnd::Image) => {}
-            Event::TaskListMarker(_) => out.push_str("- "),
+            Event::Start(Tag::Image { .. }) => { in_image = true; }
+            Event::End(TagEnd::Image) => { in_image = false; }
+            Event::TaskListMarker(_) => {}
             Event::FootnoteReference(_) => {}
             Event::Start(Tag::FootnoteDefinition(_)) => {}
             Event::End(TagEnd::FootnoteDefinition) => {}
+            Event::Start(Tag::Strikethrough) | Event::End(TagEnd::Strikethrough) => {}
 
             // GFM tables:
             Event::Start(Tag::Table(alignments)) => {
@@ -250,8 +266,34 @@ mod tests {
 
     #[test]
     fn image_dropped() {
-        let out = md_to_typst("![alt](url.png)");
+        let out = md_to_typst("![sunset photo](url.png)");
         assert!(!out.contains("url.png"));
+        assert!(!out.contains("sunset photo"), "alt text should not leak, got: {}", out);
+    }
+
+    #[test]
+    fn code_block_preserves_typst_chars() {
+        let out = md_to_typst("```rust\nlet x = arr[0];\nlet h = #1;\n```");
+        assert!(out.contains("arr[0]"), "expected literal '[' in code, got: {}", out);
+        assert!(out.contains("#1"), "expected literal '#' in code, got: {}", out);
+        assert!(!out.contains("\\["), "did not expect escaped '[' in code, got: {}", out);
+        assert!(!out.contains("\\#"), "did not expect escaped '#' in code, got: {}", out);
+    }
+
+    #[test]
+    fn task_list_is_plain_bullet_no_double_marker() {
+        let out = md_to_typst("- [ ] todo\n- [x] done");
+        assert!(out.contains("- todo"), "got: {}", out);
+        assert!(out.contains("- done"), "got: {}", out);
+        assert!(!out.contains("- - "), "double-marker bug detected: {}", out);
+    }
+
+    #[test]
+    fn strikethrough_emits_text_no_decoration() {
+        let out = md_to_typst("~~deleted~~");
+        assert!(out.contains("deleted"));
+        // For v1, strikethrough is dropped; text content emits naturally.
+        // No assertion about decoration — just confirming no panic and text survives.
     }
 
     #[test]
