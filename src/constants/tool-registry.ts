@@ -31,6 +31,7 @@ const COMPONENT_LOADERS: Record<string, () => Promise<{ default: ComponentType }
   'image-compressor': loadNamed(() => import('@/components/feature/image/ImageCompressor'), 'ImageCompressor'),
   'image-cropper': loadNamed(() => import('@/components/feature/image/ImageCropper'), 'ImageCropper'),
   'image-to-base64': loadNamed(() => import('@/components/feature/image/ImageToBase64'), 'ImageToBase64'),
+  'image-to-pdf': loadNamed(() => import('@/components/feature/image/ImageToPdf'), 'ImageToPdf'),
   'image-resizer': loadNamed(() => import('@/components/feature/image/ImageResizer'), 'ImageResizer'),
   'ip-subnet-calculator': loadNamed(() => import('@/components/feature/network/IpSubnetCalculator'), 'IpSubnetCalculator'),
   'javascript-minifier': loadNamed(() => import('@/components/feature/code/JavaScriptMinifier'), 'JavaScriptMinifier'),

@@ -327,6 +327,20 @@ export const TOOL_ROUTES: Array<ToolRoute> = [
   },
   {
     category: 'Image',
+    description:
+      'Combine multiple PNG or JPEG images into a single PDF, one image per page. 100% client-side — your images never leave your browser.',
+    emoji: '📑',
+    key: 'image-to-pdf',
+    name: 'Image to PDF',
+    routePath: '/tools/image-to-pdf',
+    seo: {
+      description:
+        'Combine PNG and JPEG images into a single PDF online. One image per page at native pixel dimensions. 100% client-side — your images never leave your device.',
+      title: 'Image to PDF - CSR Dev Tools',
+    },
+  },
+  {
+    category: 'Image',
     description: 'Resize images to custom dimensions with aspect ratio control',
     emoji: '📐',
     key: 'image-resizer',

@@ -74,6 +74,7 @@ export type ToolRegistryKey =
   | 'image-cropper'
   | 'image-resizer'
   | 'image-to-base64'
+  | 'image-to-pdf'
   | 'ip-subnet-calculator'
   | 'javascript-minifier'
   | 'json-diff-checker'
