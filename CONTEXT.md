@@ -885,6 +885,46 @@ localStorage. `localStorageDiagramStorage` is the production adapter;
 `createInMemoryDiagramStorage()` is the test double — counters on `saves`
 and `deletes` make autosave behavior unit-testable without DOM.
 
+## Diagram export panel
+
+The single internal shell for the DB Diagram Tool's "derive text from the
+live diagram and display it with copy + optional action" shape. Implemented
+by `<ExportSidePanel>`
+(`src/components/feature/data/db-diagram/ExportSidePanel.tsx`).
+
+Today's consumers: `ExportSqlPanel`, `ExportTypescriptPanel`,
+`ExportMermaidPanel`.
+
+The shell owns: the reactive derivation from the editor
+(`derive: (editor) => string` + `extraDeps?`), the `<pre>` display block
+(with `font-mono break-all whitespace-pre-wrap`), the placeholder-when-empty
+rule, the `<CopyButton>` in the footer, and the `<DiagramSidePanel>` wiring.
+
+The caller's role narrows to:
+
+- `derive` — the selector function called against the `DiagramEditor`
+- `copyLabel`, `emptyPlaceholder`, `title`, `testId`, `onClose` — metadata
+- `controls?` — optional header slot (only `ExportSqlPanel` uses this for the
+  dialect picker)
+- `action?: (value: string) => ReactNode` — optional secondary footer action;
+  receives the derived value so callers can wire download or handoff buttons
+  without re-deriving
+
+Carries one load-bearing invariant: the reactive coupling between `derive`
+and the diagram's live state is sealed inside the shell. `DiagramEditor` is
+an external mutable object — `editor.toSql()` reads state outside React. The
+shell uses `useMemo([document, editor, ...extraDeps])` with `document` as an
+intentional reactivity signal (the `DiagramContext` re-provides it whenever
+the editor emits). Callers never spell out this `document`-as-dep pattern;
+the shell is the one place where the corresponding `eslint-disable` comment
+is justified and recorded.
+
+One caller responsibility: `extraDeps` must list every local variable the
+`derive` closure closes over (e.g., `[dialect]` for `ExportSqlPanel`). The
+`react-hooks/exhaustive-deps` rule cannot statically verify `extraDeps` — a
+missing dep silently gives `derive` a stale closure until the next `document`
+change triggers a re-run. When in doubt, add the dep.
+
 ## Entity ID minters
 
 The single injectable seam through which document-internal entity ids
