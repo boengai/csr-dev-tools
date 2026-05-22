@@ -1,7 +1,7 @@
 import { closestCenter, DndContext, type DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
@@ -148,6 +148,96 @@ const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => 
   )
 }
 
+// ─── PdfPreview ───────────────────────────────────────────────────────────────
+
+type PdfPreviewProps = { pdfBytes: Uint8Array }
+
+const PdfPreview = ({ pdfBytes }: PdfPreviewProps) => {
+  const [pages, setPages] = useState<Array<string>>([])
+  const [isRendering, setIsRendering] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  // Track the last rendered buffer by reference so we don't re-render
+  // when the parent re-renders but result.pdf is the same object.
+  const lastBytesRef = useRef<Uint8Array | null>(null)
+
+  useEffect(() => {
+    // Skip if it's the exact same buffer reference — avoids infinite loops
+    // when sibling state changes (e.g. isRendering) cause parent re-renders.
+    if (pdfBytes === lastBytesRef.current) return
+
+    lastBytesRef.current = pdfBytes
+
+    if (pdfBytes.byteLength === 0) {
+      setPages([])
+      return
+    }
+    let cancelled = false
+    setIsRendering(true)
+    setError(null)
+
+    ;(async () => {
+      try {
+        const pdfjsLib = await import('pdfjs-dist')
+        const workerUrl = (await import('pdfjs-dist/build/pdf.worker.min.mjs?url')).default
+        pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl
+
+        const loadingTask = pdfjsLib.getDocument({ data: pdfBytes.slice() })
+        const doc = await loadingTask.promise
+        const out: Array<string> = []
+
+        for (let i = 1; i <= doc.numPages; i++) {
+          if (cancelled) break
+          const page = await doc.getPage(i)
+          const viewport = page.getViewport({ scale: 0.6 })
+          const canvas = document.createElement('canvas')
+          canvas.width = viewport.width
+          canvas.height = viewport.height
+          await page.render({ canvas, viewport }).promise
+          out.push(canvas.toDataURL('image/png'))
+        }
+
+        if (!cancelled) setPages(out)
+      } catch (e) {
+        if (!cancelled) {
+          setError(e instanceof Error ? e.message : 'Failed to render preview')
+        }
+      } finally {
+        if (!cancelled) setIsRendering(false)
+      }
+    })()
+
+    return () => {
+      cancelled = true
+    }
+  }, [pdfBytes])
+
+  if (pdfBytes.byteLength === 0) return null
+
+  return (
+    <div className="flex flex-col gap-3">
+      <div className="flex items-center justify-between">
+        <span className="text-body-xs font-medium text-gray-300">PDF preview</span>
+        {isRendering && <span className="text-body-xs text-gray-500">Rendering…</span>}
+      </div>
+      {error !== null && (
+        <p className="text-body-xs text-red-400" role="alert">
+          {error}
+        </p>
+      )}
+      <div className="grid max-h-[480px] grid-cols-1 gap-3 overflow-auto rounded-lg border-2 border-gray-900 bg-gray-100 p-3">
+        {pages.map((dataUrl, i) => (
+          <img
+            alt={`Page ${i + 1}`}
+            className="mx-auto block w-full max-w-[400px] rounded shadow-md"
+            key={i}
+            src={dataUrl}
+          />
+        ))}
+      </div>
+    </div>
+  )
+}
+
 // ─── SummaryBar ───────────────────────────────────────────────────────────────
 
 type SummaryBarProps = {
@@ -157,7 +247,12 @@ type SummaryBarProps = {
 }
 
 const SummaryBar = ({ itemCount, pdfBytes, isBusy }: SummaryBarProps) => {
-  const blob = pdfBytes.byteLength === 0 ? null : new Blob([pdfBytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' })
+  // Memoize so the Blob reference is stable across re-renders — useBlobUrl's
+  // useEffect depends on blob identity and would loop if given a new Blob each render.
+  const blob = useMemo(
+    () => (pdfBytes.byteLength === 0 ? null : new Blob([pdfBytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' })),
+    [pdfBytes],
+  )
   const href = useBlobUrl(blob)
 
   if (itemCount === 0) return null
@@ -317,6 +412,8 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
             </SortableContext>
           </DndContext>
         )}
+
+        <PdfPreview pdfBytes={result.pdf} />
 
         <SummaryBar isBusy={isBusy} itemCount={items.length} pdfBytes={result.pdf} />
       </div>

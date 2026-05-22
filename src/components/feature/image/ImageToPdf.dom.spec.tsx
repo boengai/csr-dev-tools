@@ -90,4 +90,19 @@ describe('ImageToPdf', () => {
       expect(screen.getByText(/Skipped 1 unsupported file/i)).toBeInTheDocument()
     })
   })
+
+  it('shows an error banner when the preview cannot render', async () => {
+    render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
+    const input = document.querySelector('input[type="file"]') as HTMLInputElement
+
+    fireEvent.change(input, { target: { files: [makeFile('a.png', 'image/png')] } })
+
+    await waitFor(() => expect(screen.getByText(/1 image → 1 PDF/i)).toBeInTheDocument())
+
+    // pdf.js will reject the mock %PDF\x00 bytes — error banner should appear
+    await waitFor(
+      () => expect(screen.getByRole('alert')).toBeInTheDocument(),
+      { timeout: 3000 },
+    )
+  })
 })
