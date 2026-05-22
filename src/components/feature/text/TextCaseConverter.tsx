@@ -1,9 +1,7 @@
-import { useState } from 'react'
-
 import { CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolComputation } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type { CaseResult, ToolComponentProps } from '@/types'
 import {
   toCamelCase,
@@ -35,37 +33,25 @@ const CASES: Array<CaseResult> = [
 ]
 
 export const TextCaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useState('')
-
   const {
+    input: source,
     result: results,
     setInput,
-    setInputImmediate,
-  } = useToolComputation<string, Array<{ label: string; value: string }>>(
-    (val) => CASES.map((c) => ({ label: c.label, value: c.fn(val) })),
-    {
-      debounceMs: 300,
-      initial: [],
-      isEmpty: (val) => val.length === 0,
-    },
-  )
-
-  const handleSourceChange = (val: string) => {
-    setSource(val)
-    setInput(val)
-  }
-
-  const handleReset = () => {
-    setSource('')
-    setInputImmediate('')
-  }
+    reset,
+  } = useToolInput<string, Array<{ label: string; value: string }>>({
+    compute: (val) => CASES.map((c) => ({ label: c.label, value: c.fn(val) })),
+    debounceMs: 300,
+    initial: '',
+    initialResult: [],
+    isEmpty: (val) => val.length === 0,
+  })
 
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
       onAfterClose={onAfterDialogClose}
-      onReset={handleReset}
+      onReset={reset}
       title="Text Case Converter"
       triggers={[{ label: 'Convert Text Case' }]}
     >
@@ -75,7 +61,7 @@ export const TextCaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
             <FieldForm
               label="Source"
               name="dialog-source"
-              onChange={handleSourceChange}
+              onChange={setInput}
               placeholder="Enter text to convert..."
               rows={12}
               type="textarea"

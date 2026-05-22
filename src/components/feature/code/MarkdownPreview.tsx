@@ -1,26 +1,28 @@
 import DOMPurify from 'dompurify'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolComputation } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { renderMarkdown } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['markdown-preview']
 
 export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useState('')
   const previewRef = useRef<HTMLDivElement>(null)
 
   const {
+    input: source,
     result: htmlOutput,
     setInput,
-    setInputImmediate,
-  } = useToolComputation<string, string>(renderMarkdown, {
+    reset,
+  } = useToolInput<string, string>({
+    compute: renderMarkdown,
     debounceMs: 300,
     initial: '',
+    initialResult: '',
     isEmpty: (val) => val.trim().length === 0,
   })
 
@@ -30,22 +32,12 @@ export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     }
   }, [htmlOutput])
 
-  const handleSourceChange = (val: string) => {
-    setSource(val)
-    setInput(val)
-  }
-
-  const handleReset = () => {
-    setSource('')
-    setInputImmediate('')
-  }
-
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
       onAfterClose={onAfterDialogClose}
-      onReset={handleReset}
+      onReset={reset}
       title="Markdown Preview"
       triggers={[{ label: 'Preview' }]}
     >
@@ -55,7 +47,7 @@ export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             <FieldForm
               label="Markdown Input"
               name="dialog-source"
-              onChange={handleSourceChange}
+              onChange={setInput}
               placeholder="# Hello World\n\nWrite **markdown** here..."
               type="code"
               value={source}

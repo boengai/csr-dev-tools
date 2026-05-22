@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Button, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolComputation } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { downloadBlob, optimizeSvg, type SvgOptimizeResult } from '@/utils'
 
@@ -13,17 +13,20 @@ const toolEntry = TOOL_REGISTRY_MAP['svg-viewer']
 const sanitize = (svg: string): string => DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true } })
 
 export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useState('')
   const [optimizeResult, setOptimizeResult] = useState<SvgOptimizeResult | null>(null)
   const previewRef = useRef<HTMLDivElement>(null)
 
   const {
+    input: source,
     result: safeSvg,
     setInput,
     setInputImmediate,
-  } = useToolComputation<string, string>((val) => sanitize(val), {
+    reset,
+  } = useToolInput<string, string>({
+    compute: (val) => sanitize(val),
     debounceMs: 300,
     initial: '',
+    initialResult: '',
     isEmpty: (val) => !val,
   })
 
@@ -34,7 +37,6 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
   }, [safeSvg])
 
   const handleSourceChange = (val: string) => {
-    setSource(val)
     setOptimizeResult(null)
     setInput(val)
   }
@@ -43,7 +45,6 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
     if (!source) return
     const result = optimizeSvg(source)
     setOptimizeResult(result)
-    setSource(result.optimized)
     setInputImmediate(result.optimized)
   }
 
@@ -55,9 +56,8 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
   }
 
   const handleReset = () => {
-    setSource('')
     setOptimizeResult(null)
-    setInputImmediate('')
+    reset()
   }
 
   const displaySvg = optimizeResult?.optimized ?? source

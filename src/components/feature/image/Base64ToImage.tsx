@@ -1,34 +1,29 @@
-import { useState } from 'react'
-
 import { Button, DownloadIcon, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDownload, useToast, useToolComputation } from '@/hooks'
+import { useDownload, useToast, useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { type Base64ImageInfo, base64ToImageInfo, formatFileSize } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['base64-to-image']
 
 export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [input, setInputValue] = useState('')
   const { showError } = useToast()
   const { downloadDataUrl } = useDownload()
 
   const {
+    input,
     result: info,
     setInput,
-    setInputImmediate,
-  } = useToolComputation<string, Base64ImageInfo | null>(async (val) => base64ToImageInfo(val.trim()), {
+    reset,
+  } = useToolInput<string, Base64ImageInfo | null>({
+    compute: async (val) => base64ToImageInfo(val.trim()),
     debounceMs: 500,
-    initial: null,
+    initial: '',
+    initialResult: null,
     isEmpty: (val) => !val.trim(),
     onError: () => showError('Invalid Base64 image data'),
   })
-
-  const handleInputChange = (val: string) => {
-    setInputValue(val)
-    setInput(val)
-  }
 
   const handleDownload = () => {
     if (!info) return
@@ -36,17 +31,12 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     downloadDataUrl(info.dataUri, filename)
   }
 
-  const handleReset = () => {
-    setInputValue('')
-    setInputImmediate('')
-  }
-
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
       onAfterClose={onAfterDialogClose}
-      onReset={handleReset}
+      onReset={reset}
       title="Base64 to Image"
       triggers={[{ label: 'Convert Base64 to Image' }]}
     >
@@ -56,7 +46,7 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
             <FieldForm
               label="Base64 or Data URI"
               name="base64-input"
-              onChange={handleInputChange}
+              onChange={setInput}
               placeholder="Paste base64 string or data:image/... URI"
               rows={12}
               type="textarea"

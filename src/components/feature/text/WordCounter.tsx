@@ -1,9 +1,7 @@
-import { useState } from 'react'
-
 import { FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolComputation } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { countTextStats, type TextStats } from '@/utils'
 
@@ -32,34 +30,25 @@ const STAT_LABELS: Array<{ key: keyof TextStats; label: string }> = [
 ]
 
 export const WordCounter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [source, setSource] = useState('')
-
   const {
+    input: source,
     result: stats,
     setInput,
-    setInputImmediate,
-  } = useToolComputation<string, TextStats>((val) => countTextStats(val), {
+    reset,
+  } = useToolInput<string, TextStats>({
+    compute: (val) => countTextStats(val),
     debounceMs: 300,
-    initial: EMPTY_STATS,
+    initial: '',
+    initialResult: EMPTY_STATS,
     isEmpty: (val) => val.length === 0,
   })
-
-  const handleSourceChange = (val: string) => {
-    setSource(val)
-    setInput(val)
-  }
-
-  const handleReset = () => {
-    setSource('')
-    setInputImmediate('')
-  }
 
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
       onAfterClose={onAfterDialogClose}
-      onReset={handleReset}
+      onReset={reset}
       title="Word Counter"
       triggers={[{ label: 'Count Words' }]}
     >
@@ -69,7 +58,7 @@ export const WordCounter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
             <FieldForm
               label="Text"
               name="dialog-source"
-              onChange={handleSourceChange}
+              onChange={setInput}
               placeholder="Enter or paste your text here..."
               rows={12}
               type="textarea"
