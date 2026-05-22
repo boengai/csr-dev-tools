@@ -47,7 +47,7 @@ describe('ImageToPdf', () => {
     expect(await screen.findByText(/Drop images here or click to choose/i)).toBeInTheDocument()
   })
 
-  it('renders thumbnails and a summary bar after files are chosen', async () => {
+  it('renders thumbnails and enables download after files are chosen', async () => {
     render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
 
@@ -57,7 +57,6 @@ describe('ImageToPdf', () => {
     await waitFor(() => {
       expect(screen.getByText(/Page 1/i)).toBeInTheDocument()
       expect(screen.getByText(/Page 2/i)).toBeInTheDocument()
-      expect(screen.getByText(/2 images → 1 PDF/i)).toBeInTheDocument()
     })
 
     const link = await screen.findByRole('link', { name: /Download PDF/i })
@@ -71,12 +70,18 @@ describe('ImageToPdf', () => {
     const files = [makeFile('a.png', 'image/png'), makeFile('b.jpg', 'image/jpeg')]
     fireEvent.change(input, { target: { files } })
 
-    await waitFor(() => expect(screen.getByText(/2 images → 1 PDF/i)).toBeInTheDocument())
+    await waitFor(() => {
+      expect(screen.getByText(/Page 1/i)).toBeInTheDocument()
+      expect(screen.getByText(/Page 2/i)).toBeInTheDocument()
+    })
 
     const removeBtn = screen.getByRole('button', { name: /Remove a\.png/i })
     fireEvent.click(removeBtn)
 
-    await waitFor(() => expect(screen.getByText(/1 image → 1 PDF/i)).toBeInTheDocument())
+    await waitFor(() => {
+      expect(screen.queryByText(/a\.png/i)).not.toBeInTheDocument()
+      expect(screen.getByText(/Page 1/i)).toBeInTheDocument()
+    })
   })
 
   it('surfaces skipped files', async () => {
@@ -97,7 +102,8 @@ describe('ImageToPdf', () => {
 
     fireEvent.change(input, { target: { files: [makeFile('a.png', 'image/png')] } })
 
-    await waitFor(() => expect(screen.getByText(/1 image → 1 PDF/i)).toBeInTheDocument())
+    // Wait for the thumbnail to appear (confirms the file was accepted)
+    await waitFor(() => expect(screen.getByText(/Page 1/i)).toBeInTheDocument())
 
     // pdf.js will reject the mock %PDF\x00 bytes — error banner should appear
     await waitFor(

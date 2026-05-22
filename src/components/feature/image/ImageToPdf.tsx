@@ -1,11 +1,12 @@
 import { closestCenter, DndContext, type DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 
+import { Pane, SplitPanel } from '@/components/common'
+import { DownloadPdfButton, PdfBytesPreview } from '@/components/common/pdf'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useBlobUrl } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { imagesToPdf, type ImageToPdfInput, type ImageToPdfResult } from '@/utils'
 
@@ -148,142 +149,12 @@ const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => 
   )
 }
 
-// ─── PdfPreview ───────────────────────────────────────────────────────────────
-
-type PdfPreviewProps = { pdfBytes: Uint8Array }
-
-const PdfPreview = ({ pdfBytes }: PdfPreviewProps) => {
-  const [pages, setPages] = useState<Array<string>>([])
-  const [isRendering, setIsRendering] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  // Track the last rendered buffer by reference so we don't re-render
-  // when the parent re-renders but result.pdf is the same object.
-  const lastBytesRef = useRef<Uint8Array | null>(null)
-
-  useEffect(() => {
-    // Skip if it's the exact same buffer reference — avoids infinite loops
-    // when sibling state changes (e.g. isRendering) cause parent re-renders.
-    if (pdfBytes === lastBytesRef.current) return
-
-    lastBytesRef.current = pdfBytes
-
-    if (pdfBytes.byteLength === 0) {
-      setPages([])
-      return
-    }
-    let cancelled = false
-    setIsRendering(true)
-    setError(null)
-
-    ;(async () => {
-      try {
-        const pdfjsLib = await import('pdfjs-dist')
-        const workerUrl = (await import('pdfjs-dist/build/pdf.worker.min.mjs?url')).default
-        pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl
-
-        const loadingTask = pdfjsLib.getDocument({ data: pdfBytes.slice() })
-        const doc = await loadingTask.promise
-        const out: Array<string> = []
-
-        for (let i = 1; i <= doc.numPages; i++) {
-          if (cancelled) break
-          const page = await doc.getPage(i)
-          const viewport = page.getViewport({ scale: 0.6 })
-          const canvas = document.createElement('canvas')
-          canvas.width = viewport.width
-          canvas.height = viewport.height
-          await page.render({ canvas, viewport }).promise
-          out.push(canvas.toDataURL('image/png'))
-        }
-
-        if (!cancelled) setPages(out)
-      } catch (e) {
-        if (!cancelled) {
-          setError(e instanceof Error ? e.message : 'Failed to render preview')
-        }
-      } finally {
-        if (!cancelled) setIsRendering(false)
-      }
-    })()
-
-    return () => {
-      cancelled = true
-    }
-  }, [pdfBytes])
-
-  if (pdfBytes.byteLength === 0) return null
-
-  return (
-    <div className="flex flex-col gap-3">
-      <div className="flex items-center justify-between">
-        <span className="text-body-xs font-medium text-gray-300">PDF preview</span>
-        {isRendering && <span className="text-body-xs text-gray-500">Rendering…</span>}
-      </div>
-      {error !== null && (
-        <p className="text-body-xs text-red-400" role="alert">
-          {error}
-        </p>
-      )}
-      <div className="grid max-h-[480px] grid-cols-1 gap-3 overflow-auto rounded-lg border-2 border-gray-900 bg-gray-100 p-3">
-        {pages.map((dataUrl, i) => (
-          <img
-            alt={`Page ${i + 1}`}
-            className="mx-auto block w-full max-w-[400px] rounded shadow-md"
-            key={i}
-            src={dataUrl}
-          />
-        ))}
-      </div>
-    </div>
-  )
-}
-
-// ─── SummaryBar ───────────────────────────────────────────────────────────────
-
-type SummaryBarProps = {
-  itemCount: number
-  pdfBytes: Uint8Array
-  isBusy: boolean
-}
-
-const SummaryBar = ({ itemCount, pdfBytes, isBusy }: SummaryBarProps) => {
-  // Memoize so the Blob reference is stable across re-renders — useBlobUrl's
-  // useEffect depends on blob identity and would loop if given a new Blob each render.
-  const blob = useMemo(
-    () => (pdfBytes.byteLength === 0 ? null : new Blob([pdfBytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' })),
-    [pdfBytes],
-  )
-  const href = useBlobUrl(blob)
-
-  if (itemCount === 0) return null
-
-  return (
-    <div className="flex items-center justify-between rounded-lg border-2 border-gray-900 bg-gray-950 p-4">
-      <span className="text-body-sm text-gray-300">
-        {itemCount} image{itemCount === 1 ? '' : 's'} → 1 PDF ({formatBytes(pdfBytes.byteLength)})
-      </span>
-      {isBusy ? (
-        <span className="text-body-xs text-gray-500">Generating…</span>
-      ) : href === null ? (
-        <button className="rounded-md bg-gray-800 px-4 py-2 text-body-sm font-medium text-gray-500" disabled type="button">
-          Download PDF
-        </button>
-      ) : (
-        <a className="rounded-md bg-blue-600 px-4 py-2 text-body-sm font-medium text-white hover:bg-blue-500" download="images.pdf" href={href}>
-          Download PDF
-        </a>
-      )}
-    </div>
-  )
-}
-
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [items, setItems] = useState<Array<ImageItem>>([])
   const [skipped, setSkipped] = useState<Array<string>>([])
   const [result, setResult] = useState<ImageToPdfResult>(EMPTY_RESULT)
-  const [isBusy, setIsBusy] = useState(false)
   const debounceRef = useRef<number | undefined>(undefined)
   // Keep a ref in sync so the unmount cleanup can read the latest items
   const itemsRef = useRef(items)
@@ -296,15 +167,10 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       setResult(EMPTY_RESULT)
       return
     }
-    setIsBusy(true)
     debounceRef.current = window.setTimeout(async () => {
-      try {
-        const inputs: Array<ImageToPdfInput> = items.map((i) => ({ file: i.file, rotation: i.rotation }))
-        const out = await imagesToPdf(inputs)
-        setResult(out)
-      } finally {
-        setIsBusy(false)
-      }
+      const inputs: Array<ImageToPdfInput> = items.map((i) => ({ file: i.file, rotation: i.rotation }))
+      const out = await imagesToPdf(inputs)
+      setResult(out)
     }, 150)
     return () => {
       if (debounceRef.current !== undefined) window.clearTimeout(debounceRef.current)
@@ -387,35 +253,43 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       triggers={[{ label: 'Convert' }]}
     >
       <div className="flex w-full grow flex-col gap-4">
-        <Dropzone compact={items.length > 0} onFiles={addFiles} />
+        <SplitPanel>
+          <Pane>
+            <Dropzone compact={items.length > 0} onFiles={addFiles} />
 
-        {skipped.length > 0 && (
-          <p className="text-body-xs text-yellow-400" role="alert">
-            Skipped {skipped.length} unsupported file{skipped.length === 1 ? '' : 's'}: {skipped.join(', ')}
-          </p>
-        )}
+            {skipped.length > 0 && (
+              <p className="text-body-xs text-yellow-400" role="alert">
+                Skipped {skipped.length} unsupported file{skipped.length === 1 ? '' : 's'}: {skipped.join(', ')}
+              </p>
+            )}
 
-        {items.length > 0 && (
-          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} sensors={sensors}>
-            <SortableContext items={items.map((i) => i.id)} strategy={rectSortingStrategy}>
-              <div className="flex flex-wrap gap-3">
-                {items.map((item, idx) => (
-                  <ImageCard
-                    item={item}
-                    key={item.id}
-                    onRemove={() => removeItem(item.id)}
-                    onRotate={() => rotateItem(item.id)}
-                    pageNumber={idx + 1}
-                  />
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
-        )}
+            {items.length > 0 && (
+              <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} sensors={sensors}>
+                <SortableContext items={items.map((i) => i.id)} strategy={rectSortingStrategy}>
+                  <div className="flex flex-wrap gap-3">
+                    {items.map((item, idx) => (
+                      <ImageCard
+                        item={item}
+                        key={item.id}
+                        onRemove={() => removeItem(item.id)}
+                        onRotate={() => rotateItem(item.id)}
+                        pageNumber={idx + 1}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+            )}
+          </Pane>
 
-        <PdfPreview pdfBytes={result.pdf} />
-
-        <SummaryBar isBusy={isBusy} itemCount={items.length} pdfBytes={result.pdf} />
+          <Pane live>
+            <div className="flex items-center justify-between gap-1">
+              <span className="text-body-xs font-medium text-gray-300">Preview</span>
+              <DownloadPdfButton bytes={result.pdf} filename="images.pdf" />
+            </div>
+            <PdfBytesPreview bytes={result.pdf} />
+          </Pane>
+        </SplitPanel>
       </div>
     </ToolDialogFrame>
   )
