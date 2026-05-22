@@ -1,3 +1,19 @@
+## Codebase search policy — READ FIRST
+
+**You MUST attempt a `codegraph_*` tool before reaching for `rg` / `grep` / `find` / `Read` to locate code.** This applies to the main session AND to any subagent (`Explore`, `Plan`, `general-purpose`) spawned in this project. The MCP server is connected, the index is current, and reads are sub-millisecond — bypassing it wastes tokens and returns inferior results.
+
+Decision flow for any "find / where / what / how does X work" question:
+
+1. **Symbol by name** (`X` is an identifier) → `codegraph_search`.
+2. **Area / trace / "how does X work"** → `codegraph_context` first, then ONE `codegraph_explore` over the symbols it surfaces.
+3. **Refactor / blast radius** → `codegraph_callers` → `codegraph_impact`.
+4. **Browse a directory** → `codegraph_files`.
+5. Fall back to `rg` / `grep` / `Read` **only** if codegraph returns no relevant hits, OR the query is genuinely textual (a literal string, comment, log message, error text, regex pattern).
+
+If you catch yourself opening Bash for grep/rg before trying codegraph, **STOP and re-route**. This has been flagged as a recurring miss.
+
+The block below documents the full tool/intent mapping.
+
 <!-- CODEGRAPH_START -->
 ## CodeGraph
 
