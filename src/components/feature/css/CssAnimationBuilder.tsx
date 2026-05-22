@@ -108,6 +108,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
               <div className="rounded border border-gray-800 bg-gray-950 p-3" key={kf.percent}>
                 <div className="mb-2 flex items-center justify-between">
                   <span className="text-body-sm font-bold text-primary">{kf.percent}%</span>
+                  {/* raw button: micro-sized icon (text-body-xs), smaller than Button size="small" floor */}
                   {config.keyframes.length > 2 && (
                     <button
                       className="text-red-400 hover:text-red-300 text-body-xs"
@@ -182,6 +183,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
 
             {addablePercents.length > 0 && (
               <div className="flex flex-wrap gap-2">
+                {/* raw button: micro chip (px-2 py-1 text-body-xs), smaller than Button size="small" floor */}
                 {addablePercents.map((p) => (
                   <button
                     className="rounded border border-gray-700 px-2 py-1 text-body-xs text-gray-400 hover:border-primary hover:text-primary"

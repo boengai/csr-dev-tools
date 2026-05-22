@@ -158,6 +158,7 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
                     value={cidrInput}
                   />
                 ),
+                // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
                 trigger: <button type="button">CIDR Notation</button>,
                 value: 'cidr',
               },
@@ -182,6 +183,7 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
                     />
                   </div>
                 ),
+                // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
                 trigger: <button type="button">IP + Mask</button>,
                 value: 'ip-mask',
               },
@@ -193,6 +195,7 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
 
           {/* Preset Buttons */}
           <div className="flex flex-wrap gap-1.5" role="group" aria-label="Common prefix lengths">
+            {/* raw button: active-state preset chip (data-[state=active/inactive] styling), Button has no active variant */}
             {PRESET_PREFIXES.map((prefix) => (
               <button
                 aria-label={`Set prefix length to ${prefix}`}

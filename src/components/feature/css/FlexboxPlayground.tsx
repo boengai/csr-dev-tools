@@ -127,6 +127,7 @@ export const FlexboxPlayground = () => {
 
         <div className="flex items-center gap-2">
           <span className="text-body-sm text-gray-400">Items: {items.length}</span>
+          {/* raw button: micro chip (text-xs px-2 py-0.5), smaller than Button size="small" floor */}
           <button
             className="text-xs rounded border border-gray-700 px-2 py-0.5 text-gray-400 hover:text-gray-100 disabled:opacity-30"
             disabled={items.length >= 10}
@@ -135,6 +136,7 @@ export const FlexboxPlayground = () => {
           >
             +
           </button>
+          {/* raw button: micro chip (text-xs px-2 py-0.5), smaller than Button size="small" floor */}
           <button
             className="text-xs rounded border border-gray-700 px-2 py-0.5 text-gray-400 hover:text-gray-100 disabled:opacity-30"
             disabled={items.length <= 3}
@@ -192,6 +194,7 @@ export const FlexboxPlayground = () => {
           justifyContent: container.justifyContent,
         }}
       >
+        {/* raw button: active-state canvas item (data-[state=active] ring styling); Button has no active variant */}
         {items.map((item, index) => (
           <button
             aria-label={`Item ${index + 1}`}

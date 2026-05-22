@@ -31,6 +31,7 @@ export const CronExpressionParser = (_props: ToolComponentProps) => {
       />
 
       <div className="flex flex-wrap gap-2">
+        {/* raw button: micro preset chip (px-2 py-1 text-body-xs), smaller than Button size="small" floor */}
         {CRON_PRESETS.map((preset) => (
           <button
             className="rounded border border-gray-800 px-2 py-1 text-body-xs text-gray-400 hover:border-primary hover:text-primary"

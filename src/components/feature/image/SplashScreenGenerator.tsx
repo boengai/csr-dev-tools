@@ -265,16 +265,19 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
               items={[
                 {
                   content: iosSplashContent,
+                  // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
                   trigger: <button type="button">iOS Splash</button>,
                   value: 'ios-splash',
                 },
                 {
                   content: androidIconsContent,
+                  // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
                   trigger: <button type="button">Android Icons</button>,
                   value: 'android-icons',
                 },
                 {
                   content: pwaConfigContent,
+                  // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
                   trigger: <button type="button">PWA Config</button>,
                   value: 'pwa-config',
                 },
@@ -291,6 +294,7 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
 }
 
 const SplashPreviewCard = ({ onDownload, splash }: { onDownload: () => void; splash: SplashScreenResult }) => (
+  // raw button: card-style download tile with image content; Button's min-h-8 and motion would distort the grid card layout
   <button
     className="flex cursor-pointer flex-col items-center gap-1 rounded border border-gray-800 p-2 transition-colors hover:border-gray-600"
     onClick={onDownload}
@@ -310,6 +314,7 @@ const SplashPreviewCard = ({ onDownload, splash }: { onDownload: () => void; spl
 )
 
 const IconPreviewCard = ({ icon, onDownload }: { icon: PwaIconResult; onDownload: () => void }) => (
+  // raw button: card-style download tile with image content; Button's min-h-8 and motion would distort the grid card layout
   <button
     className="flex cursor-pointer flex-col items-center gap-1 rounded border border-gray-800 p-2 transition-colors hover:border-gray-600"
     onClick={onDownload}

@@ -182,6 +182,7 @@ export const AspectRatioCalculator = () => {
             label={
               <span className="flex items-center gap-1">
                 Width
+                {/* raw button: lock toggle with active/inactive visual state (lockIndicatorStyles), Button has no active variant */}
                 <button
                   className={lockIndicatorStyles({ locked: locked === 'width' })}
                   onClick={() => toggleLock('width')}
@@ -203,6 +204,7 @@ export const AspectRatioCalculator = () => {
             label={
               <span className="flex items-center gap-1">
                 Height
+                {/* raw button: lock toggle with active/inactive visual state (lockIndicatorStyles), Button has no active variant */}
                 <button
                   className={lockIndicatorStyles({ locked: locked === 'height' })}
                   onClick={() => toggleLock('height')}
@@ -233,6 +235,7 @@ export const AspectRatioCalculator = () => {
         />
 
         <div className="flex flex-wrap gap-2">
+          {/* raw button: preset ratio toggle with active/inactive styles (presetButtonStyles), Button has no active variant */}
           {PRESETS.map((preset) => (
             <button
               className={presetButtonStyles({ active: ratio === preset.label })}

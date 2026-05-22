@@ -72,6 +72,7 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
             <div className="flex grow flex-col gap-3">
               <p className="text-body-sm font-medium text-gray-300">Generated Favicons</p>
               <div className="grid grid-cols-3 gap-4 tablet:grid-cols-6">
+                {/* raw button: card-style download tile with image content; Button's min-h-8 and motion would distort the grid card layout */}
                 {results.map((result) => (
                   <button
                     className="flex cursor-pointer flex-col items-center gap-1 rounded border border-gray-800 p-2 transition-colors hover:border-gray-600"

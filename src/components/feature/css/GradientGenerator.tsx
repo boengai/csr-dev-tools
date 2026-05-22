@@ -95,6 +95,7 @@ export const GradientGenerator = () => {
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <span className="text-body-sm font-medium text-gray-400">Color Stops</span>
+            {/* raw button: micro chip (text-xs px-2 py-0.5), smaller than Button size="small" floor */}
             <button
               className="text-xs rounded border border-gray-700 px-2 py-0.5 text-gray-400 hover:text-gray-100"
               onClick={addStop}
@@ -122,6 +123,7 @@ export const GradientGenerator = () => {
                   value={String(stop.position)}
                 />
               </div>
+              {/* raw button: micro chip (text-xs px-2 py-0.5), smaller than Button size="small" floor */}
               {config.stops.length > 2 && (
                 <button
                   aria-label={`Remove stop ${index + 1}`}

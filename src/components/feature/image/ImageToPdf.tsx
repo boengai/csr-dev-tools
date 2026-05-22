@@ -123,6 +123,7 @@ const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => 
         <span>Page {pageNumber}</span>
         <span>{formatFileSize(item.file.size)}</span>
       </div>
+      {/* raw button: absolute-positioned 24×24 hover-only circle; Button always shows children with min-h-8 */}
       <button
         aria-label={`Remove ${item.file.name}`}
         className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-gray-800 text-gray-300 opacity-0 transition-opacity hover:bg-red-600 hover:text-white group-hover:opacity-100"
@@ -131,6 +132,7 @@ const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => 
       >
         ×
       </button>
+      {/* raw button: absolute-positioned 24×24 hover-only circle; Button always shows children with min-h-8 */}
       <button
         aria-label={`Rotate ${item.file.name}`}
         className="absolute -left-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-gray-800 text-gray-300 opacity-0 transition-opacity hover:bg-blue-600 hover:text-white group-hover:opacity-100"

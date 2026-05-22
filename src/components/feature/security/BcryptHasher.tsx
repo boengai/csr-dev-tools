@@ -240,6 +240,7 @@ export const BcryptHasher = (_props: ToolComponentProps) => {
         items={[
           {
             content: <HashTab onProcessingChange={setProcessing} />,
+            // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
             trigger: (
               <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>
                 Hash
@@ -249,6 +250,7 @@ export const BcryptHasher = (_props: ToolComponentProps) => {
           },
           {
             content: <VerifyTab onProcessingChange={setProcessing} />,
+            // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
             trigger: (
               <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>
                 Verify

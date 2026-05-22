@@ -68,6 +68,7 @@ const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEdi
           {label} ({min}–{max})
         </span>
         <div className="flex flex-wrap gap-1">
+          {/* raw button: active-state mode selector (modeButtonClass), Button has no active variant */}
           {MODES.map((m) => (
             <button
               className={modeButtonClass(config.mode === m.value)}
@@ -83,6 +84,7 @@ const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEdi
 
       {config.mode === 'specific' && useButtons && names && (
         <div className="ml-32 flex flex-wrap gap-1">
+          {/* raw button: active-state specific-value toggle (data-[state=active/inactive] styling), Button has no active variant */}
           {names.map((name, i) => {
             const val = fieldIndex === 3 ? i + 1 : i
             const active = (config.values ?? []).includes(val)

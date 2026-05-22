@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react'
 
-import { BrowsableItemList, CodeInput, EmptyState, ErrorBanner, TextInput } from '@/components/common'
+import { BrowsableItemList, Button, CodeInput, EmptyState, ErrorBanner, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolComputationPersisted } from '@/hooks'
 import type { GraphqlParseOutput, ToolComponentProps } from '@/types'
@@ -310,13 +310,9 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
       {!schemaInfo && !error && (
         <div className="flex flex-col items-center gap-3 py-8 text-center">
           <EmptyState>Paste a GraphQL schema to explore its types and fields</EmptyState>
-          <button
-            className="cursor-pointer rounded border border-gray-700 bg-gray-800 px-3 py-1.5 text-body-xs text-gray-300 hover:bg-gray-700 focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-            onClick={handleLoadExample}
-            type="button"
-          >
+          <Button onClick={handleLoadExample} size="small">
             Load Example Schema
-          </button>
+          </Button>
         </div>
       )}
 

@@ -63,6 +63,7 @@ export const DiagramToolbar = ({
           value={editNameValue}
         />
       ) : (
+        // raw button: inline editable diagram name in custom canvas toolbar, Button's style/size would mismatch the diagram design language
         <button
           className="text-xs max-w-[200px] truncate font-bold text-white hover:text-primary"
           data-testid="diagram-name"
