@@ -23,11 +23,16 @@ const EMPTY_RESULT: ImageToPdfResult = {
   skipped: [],
 }
 
+// A4 portrait dimensions in PDF points (210mm × 297mm at 72pt/inch).
+const A4_W = 595
+const A4_H = 842
+const MARGIN = 36
+
 /**
- * Embed each PNG/JPEG file as its own PDF page sized to the image's native
- * pixel dimensions. Per-item rotation (0/90/180/270) is applied to the
- * page metadata, not by re-encoding the image. Unsupported file types are
- * returned in `skipped` so the UI can surface them.
+ * Embed each PNG/JPEG file in its own A4 page, contained within the page
+ * bounds (preserving aspect ratio) with a uniform margin. Per-item rotation
+ * (0/90/180/270) is applied via PDF page rotation metadata. Unsupported file
+ * types are returned in `skipped` so the UI can surface them.
  */
 export async function imagesToPdf(
   items: Array<ImageToPdfInput>,
@@ -42,6 +47,8 @@ export async function imagesToPdf(
 async function buildOnePerPage(items: Array<ImageToPdfInput>): Promise<ImageToPdfResult> {
   const pdf = await PDFDocument.create()
   const skipped: Array<string> = []
+  const innerW = A4_W - 2 * MARGIN
+  const innerH = A4_H - 2 * MARGIN
 
   for (const item of items) {
     const bytes = new Uint8Array(await item.file.arrayBuffer())
@@ -55,9 +62,24 @@ async function buildOnePerPage(items: Array<ImageToPdfInput>): Promise<ImageToPd
       skipped.push(item.file.name)
       continue
     }
-    const { width, height } = image
-    const page = pdf.addPage([width, height])
-    page.drawImage(image, { x: 0, y: 0, width, height })
+
+    // Contain-fit the image within the page's inner area (page minus margin).
+    const aspectImg = image.width / image.height
+    const aspectInner = innerW / innerH
+    let drawW: number
+    let drawH: number
+    if (aspectImg > aspectInner) {
+      drawW = innerW
+      drawH = innerW / aspectImg
+    } else {
+      drawH = innerH
+      drawW = innerH * aspectImg
+    }
+    const drawX = MARGIN + (innerW - drawW) / 2
+    const drawY = MARGIN + (innerH - drawH) / 2
+
+    const page = pdf.addPage([A4_W, A4_H])
+    page.drawImage(image, { x: drawX, y: drawY, width: drawW, height: drawH })
     if (item.rotation) {
       page.setRotation(degrees(item.rotation))
     }
@@ -68,7 +90,7 @@ async function buildOnePerPage(items: Array<ImageToPdfInput>): Promise<ImageToPd
 }
 
 /**
- * Arrange up to 4 images per US Letter portrait page in a 2×2 grid.
+ * Arrange up to 4 images per A4 portrait page in a 2×2 grid.
  * Each image is contained within its cell preserving aspect ratio.
  *
  * Known v1 limitation: per-image rotation (set in one-per-page mode) is NOT
@@ -81,14 +103,11 @@ async function buildGrid2x2(items: Array<ImageToPdfInput>): Promise<ImageToPdfRe
   const pdf = await PDFDocument.create()
   const skipped: Array<string> = []
 
-  const PAGE_W = 612
-  const PAGE_H = 792
-  const MARGIN = 36
   const GAP = 18
   const COLS = 2
   const ROWS = 2
-  const CELL_W = (PAGE_W - 2 * MARGIN - (COLS - 1) * GAP) / COLS
-  const CELL_H = (PAGE_H - 2 * MARGIN - (ROWS - 1) * GAP) / ROWS
+  const CELL_W = (A4_W - 2 * MARGIN - (COLS - 1) * GAP) / COLS
+  const CELL_H = (A4_H - 2 * MARGIN - (ROWS - 1) * GAP) / ROWS
   const PER_PAGE = COLS * ROWS
 
   type Embedded = { image: Awaited<ReturnType<typeof pdf.embedPng>> }
@@ -110,7 +129,7 @@ async function buildGrid2x2(items: Array<ImageToPdfInput>): Promise<ImageToPdfRe
   }
 
   for (let pageStart = 0; pageStart < embedded.length; pageStart += PER_PAGE) {
-    const page = pdf.addPage([PAGE_W, PAGE_H])
+    const page = pdf.addPage([A4_W, A4_H])
     const slice = embedded.slice(pageStart, pageStart + PER_PAGE)
 
     for (let idx = 0; idx < slice.length; idx++) {
@@ -118,7 +137,7 @@ async function buildGrid2x2(items: Array<ImageToPdfInput>): Promise<ImageToPdfRe
       const row = Math.floor(idx / COLS)
       const cellX = MARGIN + col * (CELL_W + GAP)
       // PDF y-axis is bottom-up; row 0 is the top row
-      const cellY = PAGE_H - MARGIN - (row + 1) * CELL_H - row * GAP
+      const cellY = A4_H - MARGIN - (row + 1) * CELL_H - row * GAP
 
       const { image } = slice[idx]
       const aspectImg = image.width / image.height
