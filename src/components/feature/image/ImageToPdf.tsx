@@ -3,7 +3,7 @@ import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordi
 import { CSS } from '@dnd-kit/utilities'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { ErrorBanner, Pane, SplitPanel, UploadInput } from '@/components/common'
+import { CheckboxInput, ErrorBanner, Pane, SplitPanel, UploadInput } from '@/components/common'
 import { DownloadPdfButton, PdfBytesPreview } from '@/components/common/pdf'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
@@ -100,9 +100,10 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
   const [items, setItems] = useState<Array<ImageItem>>([])
   const [skipped, setSkipped] = useState<Array<string>>([])
   const [result, setResult] = useState<ImageToPdfResult>(EMPTY_RESULT)
+  const [onePerPage, setOnePerPage] = useState(true)
   const debounceRef = useRef<number | undefined>(undefined)
 
-  // Regenerate the PDF whenever items change (debounced ~150ms)
+  // Regenerate the PDF whenever items or layout option changes (debounced ~150ms)
   useEffect(() => {
     if (debounceRef.current !== undefined) window.clearTimeout(debounceRef.current)
     if (items.length === 0) {
@@ -111,13 +112,13 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
     }
     debounceRef.current = window.setTimeout(async () => {
       const inputs: Array<ImageToPdfInput> = items.map((i) => ({ file: i.file, rotation: i.rotation }))
-      const out = await imagesToPdf(inputs)
+      const out = await imagesToPdf(inputs, { layout: onePerPage ? 'one-per-page' : 'grid-2x2' })
       setResult(out)
     }, 150)
     return () => {
       if (debounceRef.current !== undefined) window.clearTimeout(debounceRef.current)
     }
-  }, [items])
+  }, [items, onePerPage])
 
   const addFiles = useCallback((files: Array<File>) => {
     const accepted: Array<ImageItem> = []
@@ -155,6 +156,7 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
     setItems([])
     setSkipped([])
     setResult(EMPTY_RESULT)
+    setOnePerPage(true)
   }, [])
 
   const sensors = useSensors(
@@ -184,6 +186,19 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       <div className="flex w-full grow flex-col gap-4">
         <SplitPanel>
           <Pane>
+            <div className="flex items-center gap-2">
+              <CheckboxInput
+                aria-label="One image per page"
+                checked={onePerPage}
+                id="image-to-pdf-one-per-page"
+                name="image-to-pdf-one-per-page"
+                onChange={(c) => setOnePerPage(c === true)}
+              />
+              <label className="cursor-pointer text-body-xs text-gray-300" htmlFor="image-to-pdf-one-per-page">
+                1 image per page
+              </label>
+            </div>
+
             <UploadInput
               accept="image/png,image/jpeg"
               button={{ block: true, children: 'Select PNG or JPEG images' }}

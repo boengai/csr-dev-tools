@@ -1,11 +1,11 @@
 /** @vitest-environment jsdom */
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { ImageToPdf } from './ImageToPdf'
 
 vi.mock('@/utils/image-to-pdf', async () => ({
-  imagesToPdf: vi.fn(async (items: Array<{ file: File; rotation?: number }>) => {
+  imagesToPdf: vi.fn(async (items: Array<{ file: File; rotation?: number }>, _options?: { layout?: string }) => {
     if (items.length === 0) return { pdf: new Uint8Array(0), pageCount: 0, skipped: [] }
     return {
       pdf: new Uint8Array([0x25, 0x50, 0x44, 0x46]),
@@ -96,6 +96,19 @@ describe('ImageToPdf', () => {
     await waitFor(() => {
       expect(screen.getByText(/Skipped 1 unsupported file/i)).toBeInTheDocument()
     })
+  })
+
+  it('toggles between one-per-page and grid layout', async () => {
+    render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
+
+    const checkbox = await screen.findByRole('checkbox', { name: /one image per page/i })
+    expect(checkbox).toBeChecked()
+
+    await act(async () => {
+      fireEvent.click(checkbox)
+    })
+
+    expect(checkbox).not.toBeChecked()
   })
 
   it('shows an error banner when the preview cannot render', async () => {
