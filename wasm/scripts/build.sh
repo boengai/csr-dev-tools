@@ -51,7 +51,7 @@ if [[ "$PROFILE" == "release" ]] && command -v wasm-opt &>/dev/null; then
   for wasm_file in "$PKG_DIR"/*/*_bg.wasm; do
     if [[ -f "$wasm_file" ]]; then
       echo "  Optimizing $(basename "$wasm_file")..."
-      wasm-opt -O3 --strip-debug "$wasm_file" -o "$wasm_file"
+      wasm-opt -Oz --strip-debug "$wasm_file" -o "$wasm_file"
     fi
   done
 fi
