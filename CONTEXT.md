@@ -461,8 +461,22 @@ would have corrupted on first read because the shape is different.
 
 The shell owns: the [[Tool dialog frame]] wiring, the source `FieldForm`
 panel, the result `CodeOutput` + `CopyButton` panel, the two-column
-layout, the error toast, and the partial-reset semantic (`reset` clears
-`source` only, preserves the control fields like `mode`/`dialect`/`indent`).
+layout, the error toast, the optional `renderBanner` slot that surfaces
+pipeline errors inline above the split (used by `JsonFormatter` and
+`YamlFormatter` to keep their [[Parse-error narrator]] message on
+screen instead of toast-truncated), and the partial-reset semantic
+(`reset` clears `source` only, preserves the control fields like
+`mode`/`dialect`/`indent`).
+
+`renderBanner?: (error: unknown) => ReactNode` mirrors the same-named
+slot on [[Diff checker shell]] / [[Bidirectional converter]], but reads
+from the pipeline's `error` state rather than from `result` — formatter
+parse failures throw (no valid result), so the banner source is the
+rejected error. Setting the slot suppresses `errorFallback`/`errorLabel`
+toast routing — the banner replaces the toast (same content, two
+channels would duplicate). CSS/HTML/SQL/JS-minifier opt out and keep
+their `errorFallback`/`errorLabel` toast — their compute throws opaque
+errors that don't reward an inline display.
 
 The Tool's role narrows to its `compute` function, its labels/placeholders,
 its `storageKey`, and a `renderControls` render-prop that receives

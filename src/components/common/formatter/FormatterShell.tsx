@@ -11,6 +11,7 @@ export const FormatterShell = <I extends { source: string }>({
   errorLabel,
   initial,
   onAfterDialogClose,
+  renderBanner,
   renderControls,
   resultLabel = 'Result',
   resultPlaceholder,
@@ -20,11 +21,13 @@ export const FormatterShell = <I extends { source: string }>({
   title,
   triggerLabel,
 }: FormatterShellProps<I>) => {
-  const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<I, string>({
+  // Suppress toast routing when renderBanner is set — banner replaces toast
+  // (same content, two channels duplicate). See CONTEXT.md → Formatter shell.
+  const { error, inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<I, string>({
     compute,
     debounceMs: 300,
-    errorFallback,
-    errorLabel,
+    errorFallback: renderBanner ? undefined : errorFallback,
+    errorLabel: renderBanner ? undefined : errorLabel,
     initial,
     initialResult: '',
     isEmpty: (input) => input.source.trim().length === 0,
@@ -49,6 +52,8 @@ export const FormatterShell = <I extends { source: string }>({
         {renderControls && (
           <div className="flex flex-wrap items-end gap-4">{renderControls({ inputs, result, setFieldsImmediate })}</div>
         )}
+
+        {renderBanner?.(error)}
 
         <SplitPanel>
           <Pane>

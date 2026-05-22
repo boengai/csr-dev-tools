@@ -19,7 +19,8 @@ export type FormatterShellProps<I extends { source: string }> = {
    * Pipeline-error toast: always show this exact string on rejection. Mirrors
    * the pipeline option of the same name. Pick this when the underlying
    * library throws implementation-leaking errors (CSS/HTML/SQL/JS WASM
-   * facades). Mutually exclusive with `errorFallback`.
+   * facades). Mutually exclusive with `errorFallback`. Suppressed when
+   * `renderBanner` is set (the banner replaces the toast).
    */
   errorLabel?: string
   /**
@@ -27,11 +28,22 @@ export type FormatterShellProps<I extends { source: string }> = {
    * the rejection is an `Error`, otherwise this fallback string. Pick this
    * when the compute throws user-facing messages (e.g. JSON / YAML routed
    * through [[Parse-error narrator]]) that should reach the user verbatim.
-   * Mutually exclusive with `errorLabel`.
+   * Mutually exclusive with `errorLabel`. Suppressed when `renderBanner` is
+   * set (the banner replaces the toast).
    */
   errorFallback?: string
   initial: I
   onAfterDialogClose?: () => void
+  /**
+   * Inline error slot. When provided, the shell calls it with the pipeline's
+   * latest `error` state (`unknown | null`) and renders the result above the
+   * source/result split. Mirrors [[Diff checker shell]] / [[Bidirectional
+   * converter]] `renderBanner`, but reads from `error` rather than `result` —
+   * formatter parse failures throw (no valid result), so the banner source is
+   * the rejected error itself. Setting this suppresses the
+   * `errorLabel`/`errorFallback` toast — the banner replaces the toast.
+   */
+  renderBanner?: (error: unknown) => ReactNode
   renderControls?: (ctx: FormatterShellControlsCtx<I>) => ReactNode
   /**
    * Display label for the result pane (also used as the CopyButton's accessible

@@ -22,9 +22,15 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         }
       }}
       description={toolEntry?.description}
-      errorFallback="Unable to format JSON"
       initial={INITIAL}
       onAfterDialogClose={onAfterDialogClose}
+      renderBanner={(error) =>
+        error instanceof Error ? (
+          <p className="text-body-sm text-error" role="alert">
+            {error.message}
+          </p>
+        ) : null
+      }
       resultLabel="Formatted JSON"
       resultPlaceholder={'{\n  "name": "John",\n  "age": 30\n}'}
       sourceLabel="JSON Input"

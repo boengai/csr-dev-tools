@@ -27,9 +27,15 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         }
       }}
       description={toolEntry?.description}
-      errorFallback="Unable to format YAML"
       initial={INITIAL}
       onAfterDialogClose={onAfterDialogClose}
+      renderBanner={(error) =>
+        error instanceof Error ? (
+          <p className="text-body-sm text-error" role="alert">
+            {error.message}
+          </p>
+        ) : null
+      }
       renderControls={({ inputs, setFieldsImmediate }) => (
         <>
           <FieldForm
