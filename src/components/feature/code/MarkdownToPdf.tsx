@@ -3,7 +3,7 @@ import { useMemo } from 'react'
 import { FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolInput } from '@/hooks'
+import { useBlobUrl, useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import type { CompileResultDto } from '@/types/wasm/pdf'
 import { compileMarkdownToPdf } from '@/utils'
@@ -93,11 +93,12 @@ const PdfPreview = ({ pages }: PdfPreviewProps) => {
 type DownloadPdfButtonProps = { bytes: Uint8Array }
 
 const DownloadPdfButton = ({ bytes }: DownloadPdfButtonProps) => {
-  const href = useMemo(() => {
+  const blob = useMemo(() => {
     if (bytes.byteLength === 0) return null
-    const blob = new Blob([bytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' })
-    return URL.createObjectURL(blob)
+    return new Blob([bytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' })
   }, [bytes])
+
+  const href = useBlobUrl(blob)
 
   if (href === null) {
     return (
