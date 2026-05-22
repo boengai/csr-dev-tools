@@ -769,6 +769,61 @@ Per the common-component rule, future variances (different padding
 scales, an `aria-label` override for the button, etc.) must be named
 props on `<DisclosurePanel>`, not className overrides.
 
+## Inline labeled row
+
+The single seam for the recurring horizontal `[label · mono-value + copy]`
+cell shape. Implemented by `<InlineLabeledRow>`
+(`src/components/common/output/InlineLabeledRow.tsx`).
+
+Owns: the chrome (`rounded border border-gray-800 bg-gray-950 px-3 py-2
+flex items-center justify-between gap-2`), the label slot
+(`text-body-xs text-gray-400`), the mono value slot
+(`font-mono text-body-xs text-gray-200`), the inline `<CopyButton>` on
+the right, and two conditional render rules:
+
+1. **Hide when display is empty** — if the computed display
+   (`displayValue ?? value`) is empty, render nothing. Lets callers
+   render a row per field without inline gating for "no value AND no
+   fallback" cases.
+2. **Hide copy button when value is empty** — if `value` is empty
+   (even when `displayValue` is a synthetic fallback like `"default"`
+   for a missing port), suppress the copy button. Nothing to copy.
+
+The caller's role narrows to three props:
+
+```ts
+type InlineLabeledRowProps = {
+  label: string
+  value: string                  // canonical (clipboard + display by default)
+  displayValue?: string          // override what's shown (defaults to value)
+}
+```
+
+Today's adopters:
+
+- `SshKeyFingerprint` (5 cells: Key Type, Bit Size, Comment, SHA256, MD5)
+- `UrlParser` (5 cells: Protocol, Hostname, Port, Path, Hash)
+
+Does NOT fit (kept bespoke per ADR-0007):
+
+- `CertificateDecoder`'s local `<ResultRow>` — has a `mono` toggle (not
+  all rows are mono) and a `copyValue` override (display text vs
+  clipboard text differ, e.g., `"2026-05-16 (in 5 days)"` displays,
+  `"2026-05-16"` copies). Extending to absorb it reintroduces the
+  4-knob unified shell ADR-0007 rejected.
+- `IpSubnetCalculator` — stacked label-above-value with conditional
+  RFC pill inside the value slot. Different shape.
+- `ChmodCalculator` — `<code>`-element value, no label. Different shape.
+- [[Mono output cell]] — the vertical sibling already in `common/output/`
+  for the "label + copy on top, value box below" shape (2 adopters:
+  `HashGenerator`, `HmacGenerator`).
+
+Per the common-component rule, future variances (a `mono` toggle, a
+`suffix` slot, an icon prefix) must be named props — not a `className`
+override. Adding a `mono?` toggle or `copyValue?` override re-opens
+ADR-0007's "shape unification" concern; revisit the ADR before crossing
+that line.
+
 ## DiagramEditor
 
 The single seam the DB Diagram Tool owns: a pure-TS module (`src/diagram/`)
