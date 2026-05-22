@@ -893,7 +893,7 @@ by `<ExportSidePanel>`
 (`src/components/feature/data/db-diagram/ExportSidePanel.tsx`).
 
 Today's consumers: `ExportSqlPanel`, `ExportTypescriptPanel`,
-`ExportMermaidPanel`.
+`ExportMermaidPanel`. Sibling of [[Diagram import panel]].
 
 The shell owns: the reactive derivation from the editor
 (`derive: (editor) => string` + `extraDeps?`), the `<pre>` display block
