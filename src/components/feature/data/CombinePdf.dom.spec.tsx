@@ -5,7 +5,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { CombinePdf } from './CombinePdf'
 
 vi.mock('@/utils/combine-pdf', async () => ({
-  combinePdfs: vi.fn(async (items: Array<{ file: File }>) => {
+  combinePdfPages: vi.fn(async (items: Array<{ file: File; pageIndex: number }>) => {
     if (items.length === 0) return { pdf: new Uint8Array(0), pageCount: 0, skipped: [] }
     return {
       pdf: new Uint8Array([0x25, 0x50, 0x44, 0x46]),
@@ -13,7 +13,13 @@ vi.mock('@/utils/combine-pdf', async () => ({
       skipped: [],
     }
   }),
-  readPdfMeta: vi.fn(async () => ({ pageCount: 3, thumbnailUrl: 'data:image/png;base64,mock' })),
+  readPdfPages: vi.fn(async (file: File) => {
+    if (!file.name.endsWith('.pdf')) return null
+    return [
+      { pageIndex: 0, thumbnailUrl: 'data:image/png;base64,mock1' },
+      { pageIndex: 1, thumbnailUrl: 'data:image/png;base64,mock2' },
+    ]
+  }),
 }))
 
 beforeEach(() => {
@@ -33,22 +39,23 @@ afterEach(() => {
 
 const makeFile = (name: string, type: string): File => new File(['mock'], name, { type })
 
-describe('CombinePdf', () => {
+describe('CombinePdf (per-page)', () => {
   it('renders the upload button in initial state', async () => {
     render(<CombinePdf autoOpen onAfterDialogClose={() => {}} />)
     expect(await screen.findByText(/Select PDF files/i)).toBeInTheDocument()
   })
 
-  it('renders cards and enables download after PDF files are chosen', async () => {
+  it('renders one card per page across all uploaded files', async () => {
     render(<CombinePdf autoOpen onAfterDialogClose={() => {}} />)
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
 
     const files = [makeFile('a.pdf', 'application/pdf'), makeFile('b.pdf', 'application/pdf')]
     fireEvent.change(input, { target: { files } })
 
+    // 2 files × 2 pages = 4 page cards
     await waitFor(() => {
-      expect(screen.getByText(/a\.pdf/i)).toBeInTheDocument()
-      expect(screen.getByText(/b\.pdf/i)).toBeInTheDocument()
+      const cards = screen.getAllByText(/^p[12]$/)
+      expect(cards.length).toBe(4)
     })
 
     await waitFor(() => {
@@ -57,22 +64,19 @@ describe('CombinePdf', () => {
     })
   })
 
-  it('removes a PDF when its × button is clicked', async () => {
+  it('removes a single page card when its × is clicked', async () => {
     render(<CombinePdf autoOpen onAfterDialogClose={() => {}} />)
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
 
-    const files = [makeFile('a.pdf', 'application/pdf'), makeFile('b.pdf', 'application/pdf')]
-    fireEvent.change(input, { target: { files } })
+    fireEvent.change(input, { target: { files: [makeFile('a.pdf', 'application/pdf')] } })
 
-    await waitFor(() => expect(screen.getByText(/a\.pdf/i)).toBeInTheDocument())
+    await waitFor(() => expect(screen.getAllByText(/^p[12]$/).length).toBe(2))
 
-    const removeBtn = screen.getByRole('button', { name: /Remove a\.pdf/i })
-    fireEvent.click(removeBtn)
+    const removeBtns = screen.getAllByRole('button', { name: /Remove a\.pdf page/i })
+    expect(removeBtns.length).toBe(2)
+    fireEvent.click(removeBtns[0])
 
-    await waitFor(() => {
-      expect(screen.queryByText(/a\.pdf/i)).not.toBeInTheDocument()
-      expect(screen.getByText(/b\.pdf/i)).toBeInTheDocument()
-    })
+    await waitFor(() => expect(screen.getAllByText(/^p[12]$/).length).toBe(1))
   })
 
   it('surfaces skipped non-PDF files', async () => {
