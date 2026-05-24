@@ -181,7 +181,7 @@ export default function HomePage() {
       <div className="flex grow flex-wrap gap-6 p-6 pb-[calc(1.5rem+var(--safe-area-inset-bottom))]">
         {Array.from({ length: 6 }).map((_, idx) => (
           <section
-            className="flex aspect-2/3 w-full flex-col tablet:w-[calc(100%/2-1rem)] laptop:aspect-auto laptop:h-[calc(50dvh-3.75rem)] laptop:w-[calc(100%/3-1rem)]"
+            className="flex min-h-[12rem] w-full flex-col tablet:aspect-2/3 tablet:w-[calc(100%/2-1rem)] laptop:aspect-auto laptop:h-[calc(50dvh-3.75rem)] laptop:w-[calc(100%/3-1rem)]"
             data-testid="dashboard-widget"
             key={`${idx}`}
           >

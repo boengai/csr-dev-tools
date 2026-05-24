@@ -167,11 +167,39 @@ const DiagramWorkspace = () => {
   )
 }
 
+// Match Tailwind's `tablet` breakpoint (48rem) so the JS gate aligns with the
+// `tablet:` utility prefix used elsewhere in the codebase.
+const useIsTabletOrLarger = (): boolean => {
+  const [matches, setMatches] = useState(() => {
+    if (typeof window === 'undefined') return true
+    return window.matchMedia('(min-width: 48rem)').matches
+  })
+  useEffect(() => {
+    if (typeof window === 'undefined') return
+    const mq = window.matchMedia('(min-width: 48rem)')
+    const handler = () => setMatches(mq.matches)
+    mq.addEventListener('change', handler)
+    return () => mq.removeEventListener('change', handler)
+  }, [])
+  return matches
+}
+
+const MobileBlocker = () => (
+  <div className="flex grow flex-col items-center justify-center gap-3 p-8 text-center">
+    <p className="text-body-sm text-gray-200">DB Diagram needs a larger screen.</p>
+    <p className="text-body-xs text-gray-500">
+      The canvas, toolbar, and side panels are designed for tablet-and-up viewports. Please open this tool on a tablet
+      or desktop browser.
+    </p>
+  </div>
+)
+
 // ---------------------------------------------------------------------------
 // DbDiagram — public export, owns the Dialog shell
 // ---------------------------------------------------------------------------
 export const DbDiagram = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
+  const isTabletOrLarger = useIsTabletOrLarger()
 
   return (
     <div className="flex w-full grow flex-col gap-4">
@@ -190,7 +218,7 @@ export const DbDiagram = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
         size="screen"
         title="DB Diagram"
       >
-        <DiagramWorkspace />
+        {isTabletOrLarger ? <DiagramWorkspace /> : <MobileBlocker />}
       </ToolDialogShell>
     </div>
   )

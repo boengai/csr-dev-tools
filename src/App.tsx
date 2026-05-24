@@ -75,7 +75,7 @@ export default function App() {
           >
             <SearchIcon />
             <span className="text-body-xs">Search</span>
-            <kbd className="rounded-sm border border-gray-800 bg-gray-950 px-1.5 py-0.5 text-body-xs">
+            <kbd className="hidden rounded-sm border border-gray-800 bg-gray-950 px-1.5 py-0.5 text-body-xs tablet:inline-block">
               {typeof navigator !== 'undefined' && /Mac/i.test(navigator.userAgent) ? '⌘K' : 'Ctrl+K'}
             </kbd>
           </button>
