@@ -35,6 +35,7 @@ const createKeyframe = (percent: number): KeyframeStep => ({
 export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [config, setConfig] = useState<AnimationConfig>({ ...DEFAULT_ANIMATION_CONFIG })
   const [animKey, setAnimKey] = useState(0)
+  const [isPlaying, setIsPlaying] = useState(true)
 
   const cssOutput = useMemo(() => generateAnimationCss(config), [config])
 
@@ -68,6 +69,12 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
   const handleReset = () => {
     setConfig({ ...DEFAULT_ANIMATION_CONFIG })
     setAnimKey(0)
+    setIsPlaying(true)
+  }
+
+  const handleRestart = () => {
+    setAnimKey((k) => k + 1)
+    setIsPlaying(true)
   }
 
   const existingPercents = new Set(config.keyframes.map((kf) => kf.percent))
@@ -87,8 +94,8 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
         : Number(config.iterationCount) > 0
           ? config.iterationCount
           : '1'
-    return `@keyframes csr-anim-preview { ${keyframeBody} } .csr-anim-target { animation: csr-anim-preview ${config.duration}s ${config.timingFunction} ${iterations} ${config.direction} ${config.fillMode}; }`
-  }, [config])
+    return `@keyframes csr-anim-preview { ${keyframeBody} } .csr-anim-target { animation: csr-anim-preview ${config.duration}s ${config.timingFunction} ${iterations} ${config.direction} ${config.fillMode}; animation-play-state: ${isPlaying ? 'running' : 'paused'}; }`
+  }, [config, isPlaying])
 
   return (
     <ToolDialogFrame
@@ -250,7 +257,26 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
         {/* Right Panel: Preview + CSS Output */}
         <div className="flex flex-col gap-4 tablet:w-1/2">
           <div className="flex flex-col gap-2">
-            <h3 className="text-body-sm font-medium text-gray-300">Preview</h3>
+            <div className="flex items-center justify-between">
+              <h3 className="text-body-sm font-medium text-gray-300">Preview</h3>
+              <div className="flex gap-2">
+                {/* raw button: micro chip, smaller than Button size="small" floor */}
+                <button
+                  className="rounded border border-gray-700 px-2 py-1 text-body-xs text-gray-400 hover:border-primary hover:text-primary"
+                  onClick={() => setIsPlaying((p) => !p)}
+                  type="button"
+                >
+                  {isPlaying ? '❚❚ Pause' : '▶ Play'}
+                </button>
+                <button
+                  className="rounded border border-gray-700 px-2 py-1 text-body-xs text-gray-400 hover:border-primary hover:text-primary"
+                  onClick={handleRestart}
+                  type="button"
+                >
+                  ↻ Restart
+                </button>
+              </div>
+            </div>
             <div className="flex items-center justify-center rounded-lg border border-gray-800 bg-gray-950 p-12">
               <style>{previewStyle}</style>
               <div
