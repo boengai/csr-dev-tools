@@ -1,4 +1,4 @@
-import { Content, Overlay, Portal, Root, Title } from '@radix-ui/react-dialog'
+import { Content, Description, Overlay, Portal, Root, Title } from '@radix-ui/react-dialog'
 import { useNavigate } from '@tanstack/react-router'
 import { AnimatePresence, m } from 'motion/react'
 import { useCallback, useMemo, useState } from 'react'
@@ -96,6 +96,9 @@ export const CommandPalette = () => {
                 transition={{ duration: 0.2, ease: 'easeOut' }}
               >
                 <Title className="sr-only">Search tools</Title>
+                <Description className="sr-only">
+                  Search the catalog of developer tools. Use arrow keys to navigate, Enter to open.
+                </Description>
                 <SearchInput
                   activeDescendantId={activeDescendantId}
                   onChange={(val) => {
