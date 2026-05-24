@@ -323,8 +323,8 @@ export const GraphqlSchemaViewer = ({ autoOpen, onAfterDialogClose }: ToolCompon
         )}
 
         {schemaInfo && (
-          <div className="md:flex-row flex flex-col gap-4">
-            <div className="md:w-64 flex w-full shrink-0 flex-col gap-2">
+          <div className="tablet:flex-row flex flex-col gap-4">
+            <div className="tablet:w-64 flex w-full shrink-0 flex-col gap-2">
               <label className="sr-only" htmlFor="graphql-type-filter">
                 Filter types
               </label>

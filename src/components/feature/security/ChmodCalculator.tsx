@@ -131,7 +131,7 @@ export const ChmodCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         </div>
 
         {/* Octal and Symbolic Inputs */}
-        <div className="sm:flex-row flex flex-col gap-4">
+        <div className="tablet:flex-row flex flex-col gap-4">
           <label className="flex flex-1 flex-col gap-1">
             <span className="text-body-xs font-medium text-gray-400">Octal</span>
             <TextInput

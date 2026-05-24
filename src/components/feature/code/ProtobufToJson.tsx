@@ -235,8 +235,8 @@ export const ProtobufToJson = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
         )}
 
         {schemaInfo && (
-          <div className="md:flex-row flex flex-col gap-4">
-            <div className="md:w-64 flex w-full shrink-0 flex-col gap-2">
+          <div className="tablet:flex-row flex flex-col gap-4">
+            <div className="tablet:w-64 flex w-full shrink-0 flex-col gap-2">
               <BrowsableItemList
                 emptyMessage="No message types found"
                 items={entries.map((entry) => ({

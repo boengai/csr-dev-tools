@@ -91,7 +91,7 @@ export const ColorPaletteGenerator = ({ autoOpen, onAfterDialogClose }: ToolComp
 
         <div aria-live="polite" className="flex flex-col gap-3">
           {palette.length > 0 && (
-            <div className="max-sm:grid-cols-1 grid grid-cols-5 gap-2">
+            <div className="grid grid-cols-1 gap-2 tablet:grid-cols-5">
               {palette.map((color, i) => (
                 <m.button
                   animate={{ opacity: 1, scale: 1 }}
