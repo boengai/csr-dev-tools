@@ -1,6 +1,7 @@
 import { useCallback, useMemo } from 'react'
 
 import { CopyButton, ErrorBanner, FieldForm, Tabs } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFields } from '@/hooks'
 import type { InputMode, ToolComponentProps } from '@/types'
@@ -75,7 +76,7 @@ const BinaryDisplay = ({ binary, prefixLength }: { binary: string; prefixLength:
   )
 }
 
-export const IpSubnetCalculator = (_props: ToolComponentProps) => {
+export const IpSubnetCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const {
     inputs,
     result: bag,
@@ -138,137 +139,143 @@ export const IpSubnetCalculator = (_props: ToolComponentProps) => {
   }, [result])
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-      <div className="md:flex-row flex flex-col gap-4">
-        {/* Input Section */}
-        <div className="md:w-[35%] flex w-full flex-col gap-4">
-          <Tabs
-            injected={{ setValue: (v) => handleModeChange(v as InputMode), value: mode }}
-            items={[
-              {
-                content: (
-                  <FieldForm
-                    label="CIDR Notation"
-                    name="cidr-input"
-                    onChange={(val) => setFields({ cidrInput: val })}
-                    placeholder="192.168.1.0/24"
-                    type="text"
-                    value={cidrInput}
-                  />
-                ),
-                // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
-                trigger: <button type="button">CIDR Notation</button>,
-                value: 'cidr',
-              },
-              {
-                content: (
-                  <div className="flex flex-col gap-3">
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="IP Subnet Calculator"
+      triggers={[{ label: 'Calculate' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        <div className="md:flex-row flex flex-col gap-4">
+          {/* Input Section */}
+          <div className="md:w-[35%] flex w-full flex-col gap-4">
+            <Tabs
+              injected={{ setValue: (v) => handleModeChange(v as InputMode), value: mode }}
+              items={[
+                {
+                  content: (
                     <FieldForm
-                      label="IP Address"
-                      name="ip-input"
-                      onChange={(val) => setFields({ ipInput: val })}
-                      placeholder="192.168.1.0"
+                      label="CIDR Notation"
+                      name="cidr-input"
+                      onChange={(val) => setFields({ cidrInput: val })}
+                      placeholder="192.168.1.0/24"
                       type="text"
-                      value={ipInput}
+                      value={cidrInput}
                     />
-                    <FieldForm
-                      label="Subnet Mask"
-                      name="mask-input"
-                      onChange={(val) => setFields({ maskInput: val })}
-                      placeholder="255.255.255.0"
-                      type="text"
-                      value={maskInput}
-                    />
-                  </div>
-                ),
-                // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
-                trigger: <button type="button">IP + Mask</button>,
-                value: 'ip-mask',
-              },
-            ]}
-          />
+                  ),
+                  // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
+                  trigger: <button type="button">CIDR Notation</button>,
+                  value: 'cidr',
+                },
+                {
+                  content: (
+                    <div className="flex flex-col gap-3">
+                      <FieldForm
+                        label="IP Address"
+                        name="ip-input"
+                        onChange={(val) => setFields({ ipInput: val })}
+                        placeholder="192.168.1.0"
+                        type="text"
+                        value={ipInput}
+                      />
+                      <FieldForm
+                        label="Subnet Mask"
+                        name="mask-input"
+                        onChange={(val) => setFields({ maskInput: val })}
+                        placeholder="255.255.255.0"
+                        type="text"
+                        value={maskInput}
+                      />
+                    </div>
+                  ),
+                  // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
+                  trigger: <button type="button">IP + Mask</button>,
+                  value: 'ip-mask',
+                },
+              ]}
+            />
 
-          {/* Error Display */}
-          {error && <ErrorBanner variant="warning">{error}</ErrorBanner>}
+            {/* Error Display */}
+            {error && <ErrorBanner variant="warning">{error}</ErrorBanner>}
 
-          {/* Preset Buttons */}
-          <div className="flex flex-wrap gap-1.5" role="group" aria-label="Common prefix lengths">
-            {/* raw button: active-state preset chip (data-[state=active/inactive] styling), Button has no active variant */}
-            {PRESET_PREFIXES.map((prefix) => (
-              <button
-                aria-label={`Set prefix length to ${prefix}`}
-                className="rounded-md px-2.5 py-1 text-body-xs font-medium transition-colors data-[state=active]:bg-gray-700 data-[state=active]:text-gray-100 data-[state=inactive]:bg-gray-900 data-[state=inactive]:text-gray-400 data-[state=inactive]:hover:bg-gray-800 data-[state=inactive]:hover:text-gray-300"
-                data-state={result?.prefixLength === prefix ? 'active' : 'inactive'}
-                key={prefix}
-                onClick={() => handlePreset(prefix)}
-                type="button"
-              >
-                /{prefix}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Results Section */}
-        {result && (
-          <div className="md:w-[65%] flex w-full flex-col gap-4" aria-live="polite">
-            {/* Results Grid */}
-            <div className="md:grid-cols-2 grid grid-cols-1 gap-2">
-              {resultRows.map((row) => (
-                <div
-                  className="flex items-center justify-between gap-2 rounded-md border border-gray-800 bg-gray-950 px-3 py-2"
-                  key={row.label}
+            {/* Preset Buttons */}
+            <div className="flex flex-wrap gap-1.5" role="group" aria-label="Common prefix lengths">
+              {/* raw button: active-state preset chip (data-[state=active/inactive] styling), Button has no active variant */}
+              {PRESET_PREFIXES.map((prefix) => (
+                <button
+                  aria-label={`Set prefix length to ${prefix}`}
+                  className="rounded-md px-2.5 py-1 text-body-xs font-medium transition-colors data-[state=active]:bg-gray-700 data-[state=active]:text-gray-100 data-[state=inactive]:bg-gray-900 data-[state=inactive]:text-gray-400 data-[state=inactive]:hover:bg-gray-800 data-[state=inactive]:hover:text-gray-300"
+                  data-state={result?.prefixLength === prefix ? 'active' : 'inactive'}
+                  key={prefix}
+                  onClick={() => handlePreset(prefix)}
+                  type="button"
                 >
-                  <div className="min-w-0">
-                    <p className="text-body-xs text-gray-500">{row.label}</p>
-                    <p className="truncate font-mono text-body-sm text-gray-200">
-                      {row.value}
-                      {row.label === 'Total Hosts' && result.prefixLength === 32 && (
-                        <span className="bg-sky-900/50 text-sky-400 ml-2 rounded px-1.5 py-0.5 font-sans text-body-xs">
-                          Single Host
-                        </span>
-                      )}
-                      {row.label === 'Total Hosts' && result.prefixLength === 31 && (
-                        <span className="bg-sky-900/50 text-sky-400 ml-2 rounded px-1.5 py-0.5 font-sans text-body-xs">
-                          Point-to-Point Link (RFC 3021)
-                        </span>
-                      )}
-                    </p>
-                  </div>
-                  <CopyButton label={row.label} value={row.value} />
-                </div>
+                  /{prefix}
+                </button>
               ))}
             </div>
+          </div>
 
-            {/* Binary Representation */}
-            <div className="flex flex-col gap-3 rounded-md border border-gray-800 bg-gray-950 p-3">
-              <p className="text-body-xs font-medium text-gray-400">Binary Representation</p>
-              <div className="flex flex-col gap-2">
-                <div>
-                  <p className="mb-1 text-body-xs text-gray-500">IP Address (binary)</p>
-                  <BinaryDisplay binary={result.binaryIp} prefixLength={result.prefixLength} />
-                </div>
-                <div>
-                  <p className="mb-1 text-body-xs text-gray-500">Subnet Mask (binary)</p>
-                  <BinaryDisplay binary={result.binaryMask} prefixLength={result.prefixLength} />
-                </div>
+          {/* Results Section */}
+          {result && (
+            <div className="md:w-[65%] flex w-full flex-col gap-4" aria-live="polite">
+              {/* Results Grid */}
+              <div className="md:grid-cols-2 grid grid-cols-1 gap-2">
+                {resultRows.map((row) => (
+                  <div
+                    className="flex items-center justify-between gap-2 rounded-md border border-gray-800 bg-gray-950 px-3 py-2"
+                    key={row.label}
+                  >
+                    <div className="min-w-0">
+                      <p className="text-body-xs text-gray-500">{row.label}</p>
+                      <p className="truncate font-mono text-body-sm text-gray-200">
+                        {row.value}
+                        {row.label === 'Total Hosts' && result.prefixLength === 32 && (
+                          <span className="bg-sky-900/50 text-sky-400 ml-2 rounded px-1.5 py-0.5 font-sans text-body-xs">
+                            Single Host
+                          </span>
+                        )}
+                        {row.label === 'Total Hosts' && result.prefixLength === 31 && (
+                          <span className="bg-sky-900/50 text-sky-400 ml-2 rounded px-1.5 py-0.5 font-sans text-body-xs">
+                            Point-to-Point Link (RFC 3021)
+                          </span>
+                        )}
+                      </p>
+                    </div>
+                    <CopyButton label={row.label} value={row.value} />
+                  </div>
+                ))}
               </div>
-              <div className="flex gap-4 text-body-xs">
-                <span className="flex items-center gap-1">
-                  <span className="bg-sky-400 inline-block h-2.5 w-2.5 rounded-sm" />
-                  <span className="text-gray-500">Network bits</span>
-                </span>
-                <span className="flex items-center gap-1">
-                  <span className="bg-amber-400 inline-block h-2.5 w-2.5 rounded-sm" />
-                  <span className="text-gray-500">Host bits</span>
-                </span>
+
+              {/* Binary Representation */}
+              <div className="flex flex-col gap-3 rounded-md border border-gray-800 bg-gray-950 p-3">
+                <p className="text-body-xs font-medium text-gray-400">Binary Representation</p>
+                <div className="flex flex-col gap-2">
+                  <div>
+                    <p className="mb-1 text-body-xs text-gray-500">IP Address (binary)</p>
+                    <BinaryDisplay binary={result.binaryIp} prefixLength={result.prefixLength} />
+                  </div>
+                  <div>
+                    <p className="mb-1 text-body-xs text-gray-500">Subnet Mask (binary)</p>
+                    <BinaryDisplay binary={result.binaryMask} prefixLength={result.prefixLength} />
+                  </div>
+                </div>
+                <div className="flex gap-4 text-body-xs">
+                  <span className="flex items-center gap-1">
+                    <span className="bg-sky-400 inline-block h-2.5 w-2.5 rounded-sm" />
+                    <span className="text-gray-500">Network bits</span>
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <span className="bg-amber-400 inline-block h-2.5 w-2.5 rounded-sm" />
+                    <span className="text-gray-500">Host bits</span>
+                  </span>
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </ToolDialogFrame>
   )
 }

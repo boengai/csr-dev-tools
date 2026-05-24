@@ -2,9 +2,10 @@ import { m } from 'motion/react'
 import { type PropsWithChildren, useEffect, useState } from 'react'
 
 import { ColorInput, CopyButton, FieldForm, NotoEmoji } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
-import type { ColorFormat, ConvertInput } from '@/types'
+import type { ColorFormat, ConvertInput, ToolComponentProps } from '@/types'
 import { convertColor } from '@/wasm/color'
 
 const randomByte = () => Math.floor(Math.random() * 256)
@@ -58,7 +59,7 @@ const InputWrapper = ({ children, color }: PropsWithChildren<{ color: string }>)
 
 const toolEntry = TOOL_REGISTRY_MAP['color-converter']
 
-export const ColorConvertor = () => {
+export const ColorConvertor = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [color, setColor] = useState<Record<ColorFormat, string>>(emptyColors)
   const { showError } = useToast()
 
@@ -100,24 +101,36 @@ export const ColorConvertor = () => {
   }
 
   return (
-    <div className="flex size-full grow flex-col gap-2">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-      <ColorInput aria-label="Color picker" onChange={handlePickerChange} size="full" value={color.hex || '#000000'} />
-      <div aria-live="polite" className="flex flex-wrap gap-4">
-        {FORMATS.map(({ format, label, placeholder }) => (
-          <InputWrapper key={format} color={color[format]}>
-            <FieldForm
-              label={label}
-              name={format}
-              onChange={(val) => handleColorChange(format, val)}
-              placeholder={placeholder}
-              suffix={<CopyButton label={label} value={color[format]} />}
-              type="text"
-              value={color[format]}
-            />
-          </InputWrapper>
-        ))}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Color Converter"
+      triggers={[{ label: 'Convert' }]}
+    >
+      <div className="flex size-full grow flex-col gap-2">
+        <ColorInput
+          aria-label="Color picker"
+          onChange={handlePickerChange}
+          size="full"
+          value={color.hex || '#000000'}
+        />
+        <div aria-live="polite" className="flex flex-wrap gap-4">
+          {FORMATS.map(({ format, label, placeholder }) => (
+            <InputWrapper key={format} color={color[format]}>
+              <FieldForm
+                label={label}
+                name={format}
+                onChange={(val) => handleColorChange(format, val)}
+                placeholder={placeholder}
+                suffix={<CopyButton label={label} value={color[format]} />}
+                type="text"
+                value={color[format]}
+              />
+            </InputWrapper>
+          ))}
+        </div>
       </div>
-    </div>
+    </ToolDialogFrame>
   )
 }

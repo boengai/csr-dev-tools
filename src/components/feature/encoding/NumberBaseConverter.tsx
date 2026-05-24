@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { CopyButton, ErrorBanner, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolComputation } from '@/hooks'
 import type { BaseField, BaseInput, BaseResult, ToolComponentProps } from '@/types'
@@ -18,7 +19,7 @@ const EMPTY_VALUES: Record<string, string> = { binary: '', decimal: '', hex: '',
 
 const INITIAL_RESULT: BaseResult = { values: null, error: '' }
 
-export const NumberBaseConverter = (_props: ToolComponentProps) => {
+export const NumberBaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [values, setValues] = useState<Record<string, string>>(EMPTY_VALUES)
 
   const { result, setInput } = useToolComputation<BaseInput, BaseResult>(
@@ -64,32 +65,38 @@ export const NumberBaseConverter = (_props: ToolComponentProps) => {
   const error = result.error
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Number Base Converter"
+      triggers={[{ label: 'Convert' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        {error && <ErrorBanner>{error}</ErrorBanner>}
 
-      {error && <ErrorBanner>{error}</ErrorBanner>}
-
-      <div aria-live="polite" className="flex w-full grow flex-col gap-4">
-        {BASE_FIELDS.map((field) => (
-          <div className="flex min-h-0 flex-col gap-2" key={field.name}>
-            <FieldForm
-              label={
-                <span className="flex items-center gap-1">
-                  <span>
-                    {field.label} (base {field.base.toString()})
+        <div aria-live="polite" className="flex w-full grow flex-col gap-4">
+          {BASE_FIELDS.map((field) => (
+            <div className="flex min-h-0 flex-col gap-2" key={field.name}>
+              <FieldForm
+                label={
+                  <span className="flex items-center gap-1">
+                    <span>
+                      {field.label} (base {field.base.toString()})
+                    </span>
+                    <CopyButton label={field.label} value={values[field.name]} />
                   </span>
-                  <CopyButton label={field.label} value={values[field.name]} />
-                </span>
-              }
-              name={field.name}
-              onChange={(val: string) => handleChange(val, field)}
-              placeholder={field.placeholder}
-              type="text"
-              value={values[field.name]}
-            />
-          </div>
-        ))}
+                }
+                name={field.name}
+                onChange={(val: string) => handleChange(val, field)}
+                placeholder={field.placeholder}
+                type="text"
+                value={values[field.name]}
+              />
+            </div>
+          ))}
+        </div>
       </div>
-    </div>
+    </ToolDialogFrame>
   )
 }
