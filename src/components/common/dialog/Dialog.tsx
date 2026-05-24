@@ -4,6 +4,8 @@ import { AnimatePresence, m } from 'motion/react'
 import type { CompVariant, DialogProps, DialogVariants } from '@/types'
 import { tv } from '@/utils'
 
+import { XIcon } from '../icon'
+
 const contentVariants: CompVariant<DialogVariants> = tv({
   base: 'fixed top-[50%] left-[50%] z-50 flex -translate-1/2 flex-col overflow-hidden rounded-card border border-gray-800 bg-gray-900 shadow-[0_0_40px_12px] shadow-primary/30',
   defaultVariants: {
@@ -62,11 +64,15 @@ export const Dialog = ({
                 <div className="flex w-full shrink-0 items-center gap-3 border-b border-gray-800 px-4 py-2 pt-[calc(var(--safe-area-inset-top)+0.5rem)]">
                   <Close asChild>
                     <m.button
-                      className="relative size-3 shrink-0 rounded-full bg-error before:absolute before:inset-[-12px] before:content-['']"
+                      className="group relative size-3 shrink-0 rounded-full bg-error before:absolute before:inset-[-12px] before:content-['']"
+                      title="Close"
                       transition={{ duration: 0.15, ease: 'easeOut' }}
-                      whileHover={{ opacity: 0.8, scale: 1.15 }}
+                      whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.9 }}
                     >
+                      <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                        <XIcon size={10} />
+                      </span>
                       <span className="sr-only">Close</span>
                     </m.button>
                   </Close>
