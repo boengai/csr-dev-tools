@@ -7,12 +7,16 @@ import { generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['qr-code-generator']
 
+// Seed with a real value so the dialog renders a working QR the moment it
+// opens — the empty-state copy is reserved for the rare case the user clears
+// the field, which is more meaningful than greeting first-time visitors with
+// a "type something to see anything" wall.
 const INITIAL_INPUT: QrInput = {
   background: '#ffffff',
   errorCorrection: 'M',
   foreground: '#000000',
   size: 256,
-  text: '',
+  text: 'https://example.com',
 }
 
 const EMPTY_RESULT: QrResult = { dataUrl: '', svgString: '' }
@@ -27,6 +31,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     setFields,
     setFieldsImmediate,
   } = useToolFields<QrInput, QrResult>({
+    autorunOnMount: true,
     compute: async ({ background: bg, errorCorrection: ec, foreground: fg, size: s, text: t }) => {
       const [url, svg] = await Promise.all([
         generateQrCodeDataUrl(t, {
@@ -93,8 +98,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
               name="qr-text"
               onChange={handleTextChange}
               placeholder="https://example.com"
-              rows={4}
-              type="textarea"
+              type="text"
               value={text}
             />
 
