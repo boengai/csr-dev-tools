@@ -1,8 +1,9 @@
 import { useRef, useState } from 'react'
 
 import { CssOutputCell, FieldForm, SelectInput } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { FlexItemEntry } from '@/types'
+import type { FlexItemEntry, ToolComponentProps } from '@/types'
 import {
   type AlignItems,
   DEFAULT_CONTAINER,
@@ -41,7 +42,7 @@ const JUSTIFY_OPTIONS: Array<JustifyContent> = [
 ]
 const ALIGN_OPTIONS: Array<AlignItems> = ['flex-start', 'center', 'flex-end', 'stretch', 'baseline']
 const WRAP_OPTIONS: Array<FlexWrap> = ['nowrap', 'wrap', 'wrap-reverse']
-export const FlexboxPlayground = () => {
+export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [container, setContainer] = useState<FlexboxContainerProps>(DEFAULT_CONTAINER)
   const nextItemId = useRef(3)
   const [items, setItems] = useState<Array<FlexItemEntry>>(() => [
@@ -77,145 +78,151 @@ export const FlexboxPlayground = () => {
     `.container {\n${containerCss}\n}` + items.map((_, i) => `\n\n.item-${i + 1} {\n${itemsCss[i]}\n}`).join('')
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-      <div className="flex shrink-0 flex-col gap-3">
-        <div className="flex flex-wrap gap-4">
-          <SelectInput
-            name="fb-dir"
-            onChange={(v) => setContainer((prev) => ({ ...prev, direction: v as FlexDirection }))}
-            options={DIRECTION_OPTIONS.map((o) => ({ label: o, value: o }))}
-            placeholder="Direction"
-            value={container.direction}
-          />
-          <SelectInput
-            name="fb-justify"
-            onChange={(v) => setContainer((prev) => ({ ...prev, justifyContent: v as JustifyContent }))}
-            options={JUSTIFY_OPTIONS.map((o) => ({ label: o, value: o }))}
-            placeholder="Justify"
-            value={container.justifyContent}
-          />
-          <SelectInput
-            name="fb-align"
-            onChange={(v) => setContainer((prev) => ({ ...prev, alignItems: v as AlignItems }))}
-            options={ALIGN_OPTIONS.map((o) => ({ label: o, value: o }))}
-            placeholder="Align"
-            value={container.alignItems}
-          />
-          <SelectInput
-            name="fb-wrap"
-            onChange={(v) => setContainer((prev) => ({ ...prev, wrap: v as FlexWrap }))}
-            options={WRAP_OPTIONS.map((o) => ({ label: o, value: o }))}
-            placeholder="Wrap"
-            value={container.wrap}
-          />
-        </div>
-
-        <FieldForm
-          label="Gap"
-          max={64}
-          min={0}
-          name="fb-gap"
-          onChange={(val: string) => {
-            const parsed = Number(val)
-            if (!Number.isNaN(parsed)) setContainer((prev) => ({ ...prev, gap: parsed }))
-          }}
-          type="range"
-          value={String(container.gap)}
-        />
-
-        <div className="flex items-center gap-2">
-          <span className="text-body-sm text-gray-400">Items: {items.length}</span>
-          {/* raw button: micro chip (text-xs px-2 py-0.5), smaller than Button size="small" floor */}
-          <button
-            className="text-xs rounded border border-gray-700 px-2 py-0.5 text-gray-400 hover:text-gray-100 disabled:opacity-30"
-            disabled={items.length >= 10}
-            onClick={addItem}
-            type="button"
-          >
-            +
-          </button>
-          {/* raw button: micro chip (text-xs px-2 py-0.5), smaller than Button size="small" floor */}
-          <button
-            className="text-xs rounded border border-gray-700 px-2 py-0.5 text-gray-400 hover:text-gray-100 disabled:opacity-30"
-            disabled={items.length <= 3}
-            onClick={removeItem}
-            type="button"
-          >
-            −
-          </button>
-        </div>
-
-        {selectedItem !== null && (
-          <div className="flex flex-col gap-2 rounded border border-gray-800 bg-gray-950 p-3">
-            <span className="text-body-sm font-medium text-gray-300">Item {selectedItem + 1}</span>
-            <FieldForm
-              label="flex-grow"
-              max={10}
-              min={0}
-              name={`fb-item-grow-${selectedItem}`}
-              onChange={(val: string) => updateItem(selectedItem, 'flexGrow', val)}
-              type="range"
-              value={String(items[selectedItem].flexGrow)}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Flexbox Playground"
+      triggers={[{ label: 'Build' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        <div className="flex shrink-0 flex-col gap-3">
+          <div className="flex flex-wrap gap-4">
+            <SelectInput
+              name="fb-dir"
+              onChange={(v) => setContainer((prev) => ({ ...prev, direction: v as FlexDirection }))}
+              options={DIRECTION_OPTIONS.map((o) => ({ label: o, value: o }))}
+              placeholder="Direction"
+              value={container.direction}
             />
-            <FieldForm
-              label="flex-shrink"
-              max={10}
-              min={0}
-              name={`fb-item-shrink-${selectedItem}`}
-              onChange={(val: string) => updateItem(selectedItem, 'flexShrink', val)}
-              type="range"
-              value={String(items[selectedItem].flexShrink)}
+            <SelectInput
+              name="fb-justify"
+              onChange={(v) => setContainer((prev) => ({ ...prev, justifyContent: v as JustifyContent }))}
+              options={JUSTIFY_OPTIONS.map((o) => ({ label: o, value: o }))}
+              placeholder="Justify"
+              value={container.justifyContent}
             />
-            <FieldForm
-              label="order"
-              max={10}
-              min={-10}
-              name={`fb-item-order-${selectedItem}`}
-              onChange={(val: string) => updateItem(selectedItem, 'order', val)}
-              type="range"
-              value={String(items[selectedItem].order)}
+            <SelectInput
+              name="fb-align"
+              onChange={(v) => setContainer((prev) => ({ ...prev, alignItems: v as AlignItems }))}
+              options={ALIGN_OPTIONS.map((o) => ({ label: o, value: o }))}
+              placeholder="Align"
+              value={container.alignItems}
+            />
+            <SelectInput
+              name="fb-wrap"
+              onChange={(v) => setContainer((prev) => ({ ...prev, wrap: v as FlexWrap }))}
+              options={WRAP_OPTIONS.map((o) => ({ label: o, value: o }))}
+              placeholder="Wrap"
+              value={container.wrap}
             />
           </div>
-        )}
-      </div>
 
-      <div className="border-t-2 border-dashed border-gray-900" />
-
-      <div
-        className="min-h-48 rounded-lg border border-gray-800 p-4"
-        style={{
-          alignItems: container.alignItems,
-          display: 'flex',
-          flexDirection: container.direction,
-          flexWrap: container.wrap,
-          gap: `${container.gap}px`,
-          justifyContent: container.justifyContent,
-        }}
-      >
-        {/* raw button: active-state canvas item (data-[state=active] ring styling); Button has no active variant */}
-        {items.map((item, index) => (
-          <button
-            aria-label={`Item ${index + 1}`}
-            className="text-sm flex h-16 w-16 items-center justify-center rounded font-bold text-white data-[state=active]:ring-2 data-[state=active]:ring-white"
-            data-state={selectedItem === index ? 'active' : 'inactive'}
-            key={item._id}
-            onClick={() => setSelectedItem(selectedItem === index ? null : index)}
-            style={{
-              backgroundColor: ITEM_COLORS[index % ITEM_COLORS.length],
-              flexGrow: item.flexGrow,
-              flexShrink: item.flexShrink,
-              order: item.order,
+          <FieldForm
+            label="Gap"
+            max={64}
+            min={0}
+            name="fb-gap"
+            onChange={(val: string) => {
+              const parsed = Number(val)
+              if (!Number.isNaN(parsed)) setContainer((prev) => ({ ...prev, gap: parsed }))
             }}
-            type="button"
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
+            type="range"
+            value={String(container.gap)}
+          />
 
-      <CssOutputCell copyLabel="CSS flexbox" value={fullCss} />
-    </div>
+          <div className="flex items-center gap-2">
+            <span className="text-body-sm text-gray-400">Items: {items.length}</span>
+            {/* raw button: micro chip (text-xs px-2 py-0.5), smaller than Button size="small" floor */}
+            <button
+              className="text-xs rounded border border-gray-700 px-2 py-0.5 text-gray-400 hover:text-gray-100 disabled:opacity-30"
+              disabled={items.length >= 10}
+              onClick={addItem}
+              type="button"
+            >
+              +
+            </button>
+            {/* raw button: micro chip (text-xs px-2 py-0.5), smaller than Button size="small" floor */}
+            <button
+              className="text-xs rounded border border-gray-700 px-2 py-0.5 text-gray-400 hover:text-gray-100 disabled:opacity-30"
+              disabled={items.length <= 3}
+              onClick={removeItem}
+              type="button"
+            >
+              −
+            </button>
+          </div>
+
+          {selectedItem !== null && (
+            <div className="flex flex-col gap-2 rounded border border-gray-800 bg-gray-950 p-3">
+              <span className="text-body-sm font-medium text-gray-300">Item {selectedItem + 1}</span>
+              <FieldForm
+                label="flex-grow"
+                max={10}
+                min={0}
+                name={`fb-item-grow-${selectedItem}`}
+                onChange={(val: string) => updateItem(selectedItem, 'flexGrow', val)}
+                type="range"
+                value={String(items[selectedItem].flexGrow)}
+              />
+              <FieldForm
+                label="flex-shrink"
+                max={10}
+                min={0}
+                name={`fb-item-shrink-${selectedItem}`}
+                onChange={(val: string) => updateItem(selectedItem, 'flexShrink', val)}
+                type="range"
+                value={String(items[selectedItem].flexShrink)}
+              />
+              <FieldForm
+                label="order"
+                max={10}
+                min={-10}
+                name={`fb-item-order-${selectedItem}`}
+                onChange={(val: string) => updateItem(selectedItem, 'order', val)}
+                type="range"
+                value={String(items[selectedItem].order)}
+              />
+            </div>
+          )}
+        </div>
+
+        <div className="border-t-2 border-dashed border-gray-900" />
+
+        <div
+          className="min-h-48 rounded-lg border border-gray-800 p-4"
+          style={{
+            alignItems: container.alignItems,
+            display: 'flex',
+            flexDirection: container.direction,
+            flexWrap: container.wrap,
+            gap: `${container.gap}px`,
+            justifyContent: container.justifyContent,
+          }}
+        >
+          {/* raw button: active-state canvas item (data-[state=active] ring styling); Button has no active variant */}
+          {items.map((item, index) => (
+            <button
+              aria-label={`Item ${index + 1}`}
+              className="text-sm flex h-16 w-16 items-center justify-center rounded font-bold text-white data-[state=active]:ring-2 data-[state=active]:ring-white"
+              data-state={selectedItem === index ? 'active' : 'inactive'}
+              key={item._id}
+              onClick={() => setSelectedItem(selectedItem === index ? null : index)}
+              style={{
+                backgroundColor: ITEM_COLORS[index % ITEM_COLORS.length],
+                flexGrow: item.flexGrow,
+                flexShrink: item.flexShrink,
+                order: item.order,
+              }}
+              type="button"
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+
+        <CssOutputCell copyLabel="CSS flexbox" value={fullCss} />
+      </div>
+    </ToolDialogFrame>
   )
 }

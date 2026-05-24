@@ -1,14 +1,15 @@
 import { useRef, useState } from 'react'
 
 import { ColorInput, CssOutputCell, FieldForm, SelectInput } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { LocalConfig } from '@/types'
+import type { LocalConfig, ToolComponentProps } from '@/types'
 import { DEFAULT_GRADIENT, generateGradientCss, type GradientType } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['css-gradient-generator']
 
 const ITEM_COLORS = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe', '#43e97b', '#fa709a']
-export const GradientGenerator = () => {
+export const GradientGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const nextStopId = useRef(DEFAULT_GRADIENT.stops.length)
   const [config, setConfig] = useState<LocalConfig>(() => ({
     ...DEFAULT_GRADIENT,
@@ -66,87 +67,93 @@ export const GradientGenerator = () => {
   }
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Gradient Generator"
+      triggers={[{ label: 'Build' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        <div className="flex shrink-0 flex-col gap-3">
+          <SelectInput
+            name="grad-type"
+            onChange={handleTypeChange}
+            options={[
+              { label: 'Linear', value: 'linear' },
+              { label: 'Radial', value: 'radial' },
+            ]}
+            value={config.type}
+          />
 
-      <div className="flex shrink-0 flex-col gap-3">
-        <SelectInput
-          name="grad-type"
-          onChange={handleTypeChange}
-          options={[
-            { label: 'Linear', value: 'linear' },
-            { label: 'Radial', value: 'radial' },
-          ]}
-          value={config.type}
+          {config.type === 'linear' && (
+            <FieldForm
+              label="Angle"
+              max={360}
+              min={0}
+              name="grad-angle"
+              onChange={handleAngleChange}
+              type="range"
+              value={String(config.angle)}
+            />
+          )}
+
+          <div className="flex flex-col gap-2">
+            <div className="flex items-center justify-between">
+              <span className="text-body-sm font-medium text-gray-400">Color Stops</span>
+              {/* raw button: micro chip (text-xs px-2 py-0.5), smaller than Button size="small" floor */}
+              <button
+                className="text-xs rounded border border-gray-700 px-2 py-0.5 text-gray-400 hover:text-gray-100"
+                onClick={addStop}
+                type="button"
+              >
+                + Add Stop
+              </button>
+            </div>
+
+            {config.stops.map((stop, index) => (
+              <div className="flex items-center gap-3" key={stop._id}>
+                <ColorInput
+                  aria-label={`Gradient stop ${index + 1} color`}
+                  onChange={(color) => handleStopColorChange(index, color)}
+                  value={stop.color}
+                />
+                <div className="flex-1">
+                  <FieldForm
+                    label={`Position ${index + 1}`}
+                    max={100}
+                    min={0}
+                    name={`grad-stop-${index}`}
+                    onChange={(val: string) => handleStopPositionChange(index, val)}
+                    type="range"
+                    value={String(stop.position)}
+                  />
+                </div>
+                {/* raw button: micro chip (text-xs px-2 py-0.5), smaller than Button size="small" floor */}
+                {config.stops.length > 2 && (
+                  <button
+                    aria-label={`Remove stop ${index + 1}`}
+                    className="text-xs text-red-400 hover:text-red-300 rounded border border-gray-700 px-2 py-0.5"
+                    onClick={() => removeStop(index)}
+                    type="button"
+                  >
+                    ✕
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="border-t-2 border-dashed border-gray-900" />
+
+        <div
+          className="flex h-48 items-center justify-center rounded-lg border border-gray-800"
+          style={{ background: cssValue }}
         />
 
-        {config.type === 'linear' && (
-          <FieldForm
-            label="Angle"
-            max={360}
-            min={0}
-            name="grad-angle"
-            onChange={handleAngleChange}
-            type="range"
-            value={String(config.angle)}
-          />
-        )}
-
-        <div className="flex flex-col gap-2">
-          <div className="flex items-center justify-between">
-            <span className="text-body-sm font-medium text-gray-400">Color Stops</span>
-            {/* raw button: micro chip (text-xs px-2 py-0.5), smaller than Button size="small" floor */}
-            <button
-              className="text-xs rounded border border-gray-700 px-2 py-0.5 text-gray-400 hover:text-gray-100"
-              onClick={addStop}
-              type="button"
-            >
-              + Add Stop
-            </button>
-          </div>
-
-          {config.stops.map((stop, index) => (
-            <div className="flex items-center gap-3" key={stop._id}>
-              <ColorInput
-                aria-label={`Gradient stop ${index + 1} color`}
-                onChange={(color) => handleStopColorChange(index, color)}
-                value={stop.color}
-              />
-              <div className="flex-1">
-                <FieldForm
-                  label={`Position ${index + 1}`}
-                  max={100}
-                  min={0}
-                  name={`grad-stop-${index}`}
-                  onChange={(val: string) => handleStopPositionChange(index, val)}
-                  type="range"
-                  value={String(stop.position)}
-                />
-              </div>
-              {/* raw button: micro chip (text-xs px-2 py-0.5), smaller than Button size="small" floor */}
-              {config.stops.length > 2 && (
-                <button
-                  aria-label={`Remove stop ${index + 1}`}
-                  className="text-xs text-red-400 hover:text-red-300 rounded border border-gray-700 px-2 py-0.5"
-                  onClick={() => removeStop(index)}
-                  type="button"
-                >
-                  ✕
-                </button>
-              )}
-            </div>
-          ))}
-        </div>
+        <CssOutputCell copyLabel="CSS gradient" value={`background: ${cssValue};`} />
       </div>
-
-      <div className="border-t-2 border-dashed border-gray-900" />
-
-      <div
-        className="flex h-48 items-center justify-center rounded-lg border border-gray-800"
-        style={{ background: cssValue }}
-      />
-
-      <CssOutputCell copyLabel="CSS gradient" value={`background: ${cssValue};`} />
-    </div>
+    </ToolDialogFrame>
   )
 }

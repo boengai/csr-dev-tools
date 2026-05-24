@@ -1,12 +1,14 @@
 import { useState } from 'react'
 
 import { ColorInput, CssOutputCell, FieldForm, ToggleButton } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import type { ToolComponentProps } from '@/types'
 import { type BoxShadowConfig, DEFAULT_BOX_SHADOW, generateBoxShadowCSS } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['box-shadow-generator']
 
-export const BoxShadowGenerator = () => {
+export const BoxShadowGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [config, setConfig] = useState<BoxShadowConfig>(DEFAULT_BOX_SHADOW)
   const [previewBg, setPreviewBg] = useState('#ffffff')
 
@@ -20,93 +22,99 @@ export const BoxShadowGenerator = () => {
     }
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Box Shadow Generator"
+      triggers={[{ label: 'Build' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        <div className="flex shrink-0 flex-col gap-3">
+          <FieldForm
+            label="Horizontal Offset"
+            max={100}
+            min={-100}
+            name="bs-h-offset"
+            onChange={handleNumberChange('hOffset')}
+            type="range"
+            value={String(config.hOffset)}
+          />
+          <FieldForm
+            label="Vertical Offset"
+            max={100}
+            min={-100}
+            name="bs-v-offset"
+            onChange={handleNumberChange('vOffset')}
+            type="range"
+            value={String(config.vOffset)}
+          />
+          <FieldForm
+            label="Blur Radius"
+            max={200}
+            min={0}
+            name="bs-blur"
+            onChange={handleNumberChange('blur')}
+            type="range"
+            value={String(config.blur)}
+          />
+          <FieldForm
+            label="Spread Radius"
+            max={100}
+            min={-100}
+            name="bs-spread"
+            onChange={handleNumberChange('spread')}
+            type="range"
+            value={String(config.spread)}
+          />
+          <FieldForm
+            label="Opacity"
+            max={100}
+            min={0}
+            name="bs-alpha"
+            onChange={handleNumberChange('alpha')}
+            type="range"
+            value={String(config.alpha)}
+          />
 
-      <div className="flex shrink-0 flex-col gap-3">
-        <FieldForm
-          label="Horizontal Offset"
-          max={100}
-          min={-100}
-          name="bs-h-offset"
-          onChange={handleNumberChange('hOffset')}
-          type="range"
-          value={String(config.hOffset)}
-        />
-        <FieldForm
-          label="Vertical Offset"
-          max={100}
-          min={-100}
-          name="bs-v-offset"
-          onChange={handleNumberChange('vOffset')}
-          type="range"
-          value={String(config.vOffset)}
-        />
-        <FieldForm
-          label="Blur Radius"
-          max={200}
-          min={0}
-          name="bs-blur"
-          onChange={handleNumberChange('blur')}
-          type="range"
-          value={String(config.blur)}
-        />
-        <FieldForm
-          label="Spread Radius"
-          max={100}
-          min={-100}
-          name="bs-spread"
-          onChange={handleNumberChange('spread')}
-          type="range"
-          value={String(config.spread)}
-        />
-        <FieldForm
-          label="Opacity"
-          max={100}
-          min={0}
-          name="bs-alpha"
-          onChange={handleNumberChange('alpha')}
-          type="range"
-          value={String(config.alpha)}
-        />
-
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <label className="text-gray-100" htmlFor="bs-color">
-              Color
-            </label>
-            <ColorInput
-              id="bs-color"
-              onChange={(val) => setConfig((prev) => ({ ...prev, color: val }))}
-              value={config.color}
-            />
+          <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2">
+              <label className="text-gray-100" htmlFor="bs-color">
+                Color
+              </label>
+              <ColorInput
+                id="bs-color"
+                onChange={(val) => setConfig((prev) => ({ ...prev, color: val }))}
+                value={config.color}
+              />
+            </div>
+            <ToggleButton
+              aria-label="Toggle inset shadow"
+              onClick={() => setConfig((prev) => ({ ...prev, inset: !prev.inset }))}
+              pressed={config.inset}
+            >
+              Inset
+            </ToggleButton>
           </div>
-          <ToggleButton
-            aria-label="Toggle inset shadow"
-            onClick={() => setConfig((prev) => ({ ...prev, inset: !prev.inset }))}
-            pressed={config.inset}
-          >
-            Inset
-          </ToggleButton>
         </div>
-      </div>
 
-      <div className="border-t-2 border-dashed border-gray-900" />
+        <div className="border-t-2 border-dashed border-gray-900" />
 
-      <div
-        className="relative flex items-center justify-center rounded-lg border border-gray-800 p-16"
-        style={{ backgroundColor: previewBg }}
-      >
-        <div className="absolute top-2 right-2 flex items-center gap-1.5">
-          <label className="text-body-xs text-gray-500" htmlFor="bs-preview-bg">
-            BG
-          </label>
-          <ColorInput id="bs-preview-bg" onChange={setPreviewBg} value={previewBg} />
+        <div
+          className="relative flex items-center justify-center rounded-lg border border-gray-800 p-16"
+          style={{ backgroundColor: previewBg }}
+        >
+          <div className="absolute top-2 right-2 flex items-center gap-1.5">
+            <label className="text-body-xs text-gray-500" htmlFor="bs-preview-bg">
+              BG
+            </label>
+            <ColorInput id="bs-preview-bg" onChange={setPreviewBg} value={previewBg} />
+          </div>
+          <div className="h-32 w-48 rounded-lg border border-gray-200 bg-white" style={{ boxShadow: cssString }} />
         </div>
-        <div className="h-32 w-48 rounded-lg border border-gray-200 bg-white" style={{ boxShadow: cssString }} />
-      </div>
 
-      <CssOutputCell copyLabel="CSS box-shadow" value={`box-shadow: ${cssString};`} />
-    </div>
+        <CssOutputCell copyLabel="CSS box-shadow" value={`box-shadow: ${cssString};`} />
+      </div>
+    </ToolDialogFrame>
   )
 }
