@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { BrowsableItemList, Button, CodeInput, CopyButton, EmptyState, ErrorBanner } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputationPersisted } from '@/hooks'
 import type { BrowsableEntry, EntryKind, ParseOutput, ToolComponentProps } from '@/types'
@@ -131,7 +132,7 @@ function annotateJsonWithEnums(jsonStr: string, allEnums: Array<ProtobufEnumInfo
   })
 }
 
-export const ProtobufToJson = (_props: ToolComponentProps) => {
+export const ProtobufToJson = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [selectedEntry, setSelectedEntry] = useState<string | null>(null)
   const [generatedJson, setGeneratedJson] = useState<string | null>(null)
   const { showError } = useToast()
@@ -202,74 +203,78 @@ export const ProtobufToJson = (_props: ToolComponentProps) => {
   const entries = schemaInfo ? buildBrowsableEntries(schemaInfo) : []
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Protobuf to JSON"
+      triggers={[{ label: 'Open' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        <CodeInput
+          aria-label="Proto definition input"
+          name="proto-input"
+          onChange={handleChange}
+          placeholder="Paste your .proto definition here..."
+          value={input}
+        />
 
-      <CodeInput
-        aria-label="Proto definition input"
-        name="proto-input"
-        onChange={handleChange}
-        placeholder="Paste your .proto definition here..."
-        value={input}
-      />
+        {error && (
+          <ErrorBanner>
+            {error.line !== null ? `Syntax error at line ${error.line}: ${error.message}` : error.message}
+          </ErrorBanner>
+        )}
 
-      {error && (
-        <ErrorBanner>
-          {error.line !== null ? `Syntax error at line ${error.line}: ${error.message}` : error.message}
-        </ErrorBanner>
-      )}
-
-      {!schemaInfo && !error && (
-        <div className="flex flex-col items-center gap-3 py-8 text-center">
-          <EmptyState>
-            Paste a .proto definition to explore its message types and generate sample JSON
-          </EmptyState>
-          <Button onClick={handleLoadExample} size="small">
-            Load Example
-          </Button>
-        </div>
-      )}
-
-      {schemaInfo && (
-        <div className="md:flex-row flex flex-col gap-4">
-          <div className="md:w-64 flex w-full shrink-0 flex-col gap-2">
-            <BrowsableItemList
-              emptyMessage="No message types found"
-              items={entries.map((entry) => ({
-                ariaLabel: `${entry.name} - ${entry.kind === 'message' ? 'Message' : 'Enum'} type`,
-                badge: <KindBadge kind={entry.kind} />,
-                id: entry.fullName,
-                name: entry.name,
-              }))}
-              onSelect={(item) => {
-                const entry = entries.find((e) => e.fullName === item.id)
-                if (entry) handleSelectEntry(entry)
-              }}
-              selectedId={selectedEntry}
-            />
+        {!schemaInfo && !error && (
+          <div className="flex flex-col items-center gap-3 py-8 text-center">
+            <EmptyState>Paste a .proto definition to explore its message types and generate sample JSON</EmptyState>
+            <Button onClick={handleLoadExample} size="small">
+              Load Example
+            </Button>
           </div>
+        )}
 
-          <div aria-live="polite" className="min-w-0 grow">
-            {generatedJson ? (
-              <div className="flex flex-col gap-2">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-body-sm font-semibold text-gray-100">
-                    {entries.find((e) => e.fullName === selectedEntry)?.name}
-                  </h3>
-                  <CopyButton label="Copy JSON" value={generatedJson} />
+        {schemaInfo && (
+          <div className="md:flex-row flex flex-col gap-4">
+            <div className="md:w-64 flex w-full shrink-0 flex-col gap-2">
+              <BrowsableItemList
+                emptyMessage="No message types found"
+                items={entries.map((entry) => ({
+                  ariaLabel: `${entry.name} - ${entry.kind === 'message' ? 'Message' : 'Enum'} type`,
+                  badge: <KindBadge kind={entry.kind} />,
+                  id: entry.fullName,
+                  name: entry.name,
+                }))}
+                onSelect={(item) => {
+                  const entry = entries.find((e) => e.fullName === item.id)
+                  if (entry) handleSelectEntry(entry)
+                }}
+                selectedId={selectedEntry}
+              />
+            </div>
+
+            <div aria-live="polite" className="min-w-0 grow">
+              {generatedJson ? (
+                <div className="flex flex-col gap-2">
+                  <div className="flex items-center justify-between">
+                    <h3 className="text-body-sm font-semibold text-gray-100">
+                      {entries.find((e) => e.fullName === selectedEntry)?.name}
+                    </h3>
+                    <CopyButton label="Copy JSON" value={generatedJson} />
+                  </div>
+                  <pre className="overflow-x-auto rounded border border-gray-800 bg-gray-950 p-4 font-mono text-body-xs text-gray-200">
+                    {generatedJson}
+                  </pre>
                 </div>
-                <pre className="overflow-x-auto rounded border border-gray-800 bg-gray-950 p-4 font-mono text-body-xs text-gray-200">
-                  {generatedJson}
-                </pre>
-              </div>
-            ) : (
-              <p className="py-8 text-center text-body-xs text-gray-500">
-                Select a message from the list to view its JSON structure
-              </p>
-            )}
+              ) : (
+                <p className="py-8 text-center text-body-xs text-gray-500">
+                  Select a message from the list to view its JSON structure
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </ToolDialogFrame>
   )
 }

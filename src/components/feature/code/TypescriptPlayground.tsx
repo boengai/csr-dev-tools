@@ -2,6 +2,7 @@ import type { EditorProps, Monaco } from '@monaco-editor/react'
 import { lazy, Suspense, useRef, useState } from 'react'
 
 import { CopyButton } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useAsyncAction, useDebounceCallback } from '@/hooks'
 import type { DiagnosticError, EditorInstance, MarkerData, ToolComponentProps } from '@/types'
@@ -58,7 +59,7 @@ const EditorSkeleton = () => (
   </div>
 )
 
-export const TypescriptPlayground = (_props: ToolComponentProps) => {
+export const TypescriptPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [errors, setErrors] = useState<Array<DiagnosticError>>([])
   const editorRef = useRef<EditorInstance | null>(null)
   const monacoRef = useRef<Monaco | null>(null)
@@ -125,80 +126,86 @@ export const TypescriptPlayground = (_props: ToolComponentProps) => {
   const warningCount = errors.filter((e) => e.severity === 'warning').length
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="TypeScript Playground"
+      triggers={[{ label: 'Open' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        <div className="md:flex-row flex flex-col gap-4">
+          <div aria-label="TypeScript code editor" className="flex min-w-0 flex-1 flex-col gap-1">
+            <h3 className="text-body-sm font-semibold text-gray-100">TypeScript</h3>
+            <div className="md:h-[400px] h-[300px] overflow-hidden rounded border border-gray-800">
+              <Suspense fallback={<EditorSkeleton />}>
+                <Editor
+                  beforeMount={handleBeforeMount}
+                  defaultLanguage="typescript"
+                  defaultValue={SAMPLE_CODE}
+                  height="100%"
+                  loading={<EditorSkeleton />}
+                  onChange={handleEditorChange}
+                  onMount={handleEditorMount}
+                  onValidate={handleValidation}
+                  options={EDITOR_OPTIONS}
+                  theme="vs-dark"
+                />
+              </Suspense>
+            </div>
+          </div>
 
-      <div className="md:flex-row flex flex-col gap-4">
-        <div aria-label="TypeScript code editor" className="flex min-w-0 flex-1 flex-col gap-1">
-          <h3 className="text-body-sm font-semibold text-gray-100">TypeScript</h3>
-          <div className="md:h-[400px] h-[300px] overflow-hidden rounded border border-gray-800">
-            <Suspense fallback={<EditorSkeleton />}>
-              <Editor
-                beforeMount={handleBeforeMount}
-                defaultLanguage="typescript"
-                defaultValue={SAMPLE_CODE}
-                height="100%"
-                loading={<EditorSkeleton />}
-                onChange={handleEditorChange}
-                onMount={handleEditorMount}
-                onValidate={handleValidation}
-                options={EDITOR_OPTIONS}
-                theme="vs-dark"
-              />
-            </Suspense>
+          <div aria-label="JavaScript output (read-only)" className="flex min-w-0 flex-1 flex-col gap-1">
+            <div className="flex items-center justify-between">
+              <h3 className="text-body-sm font-semibold text-gray-100">JavaScript</h3>
+              <CopyButton label="Copy JS" value={transpiledJs ?? ''} />
+            </div>
+            <div className="md:h-[400px] h-[300px] overflow-hidden rounded border border-gray-800">
+              <Suspense fallback={<EditorSkeleton />}>
+                <Editor
+                  defaultLanguage="javascript"
+                  height="100%"
+                  loading={<EditorSkeleton />}
+                  options={READONLY_EDITOR_OPTIONS}
+                  theme="vs-dark"
+                  value={transpiledJs ?? ''}
+                />
+              </Suspense>
+            </div>
           </div>
         </div>
 
-        <div aria-label="JavaScript output (read-only)" className="flex min-w-0 flex-1 flex-col gap-1">
-          <div className="flex items-center justify-between">
-            <h3 className="text-body-sm font-semibold text-gray-100">JavaScript</h3>
-            <CopyButton label="Copy JS" value={transpiledJs ?? ''} />
-          </div>
-          <div className="md:h-[400px] h-[300px] overflow-hidden rounded border border-gray-800">
-            <Suspense fallback={<EditorSkeleton />}>
-              <Editor
-                defaultLanguage="javascript"
-                height="100%"
-                loading={<EditorSkeleton />}
-                options={READONLY_EDITOR_OPTIONS}
-                theme="vs-dark"
-                value={transpiledJs ?? ''}
-              />
-            </Suspense>
-          </div>
+        <div aria-live="polite" className="flex flex-col gap-2" role="status">
+          {errors.length > 0 ? (
+            <>
+              <p className="text-body-xs font-semibold text-gray-300">
+                {errorCount > 0 && `${errorCount} error${errorCount !== 1 ? 's' : ''}`}
+                {errorCount > 0 && warningCount > 0 && ', '}
+                {warningCount > 0 && `${warningCount} warning${warningCount !== 1 ? 's' : ''}`}
+              </p>
+              <ul className="max-h-40 overflow-y-auto rounded border border-gray-800 bg-gray-950 p-2">
+                {errors.map((error) => (
+                  <li
+                    aria-label={`${error.severity === 'error' ? 'Error' : 'Warning'} on line ${error.line}: ${error.message}`}
+                    className="flex items-start gap-2 px-1 py-0.5 font-mono text-body-xs"
+                    key={`${error.line}-${error.column}-${error.message}`}
+                  >
+                    <span className={severityStyles({ severity: error.severity })}>
+                      {error.severity === 'error' ? '●' : '▲'}
+                    </span>
+                    <span className="shrink-0 text-gray-500">
+                      Line {error.line}:{error.column}
+                    </span>
+                    <span className="text-gray-300">{error.message}</span>
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <p className="text-green-400 text-body-xs">No errors</p>
+          )}
         </div>
       </div>
-
-      <div aria-live="polite" className="flex flex-col gap-2" role="status">
-        {errors.length > 0 ? (
-          <>
-            <p className="text-body-xs font-semibold text-gray-300">
-              {errorCount > 0 && `${errorCount} error${errorCount !== 1 ? 's' : ''}`}
-              {errorCount > 0 && warningCount > 0 && ', '}
-              {warningCount > 0 && `${warningCount} warning${warningCount !== 1 ? 's' : ''}`}
-            </p>
-            <ul className="max-h-40 overflow-y-auto rounded border border-gray-800 bg-gray-950 p-2">
-              {errors.map((error) => (
-                <li
-                  aria-label={`${error.severity === 'error' ? 'Error' : 'Warning'} on line ${error.line}: ${error.message}`}
-                  className="flex items-start gap-2 px-1 py-0.5 font-mono text-body-xs"
-                  key={`${error.line}-${error.column}-${error.message}`}
-                >
-                  <span className={severityStyles({ severity: error.severity })}>
-                    {error.severity === 'error' ? '●' : '▲'}
-                  </span>
-                  <span className="shrink-0 text-gray-500">
-                    Line {error.line}:{error.column}
-                  </span>
-                  <span className="text-gray-300">{error.message}</span>
-                </li>
-              ))}
-            </ul>
-          </>
-        ) : (
-          <p className="text-green-400 text-body-xs">No errors</p>
-        )}
-      </div>
-    </div>
+    </ToolDialogFrame>
   )
 }

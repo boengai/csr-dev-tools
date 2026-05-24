@@ -2,6 +2,7 @@ import { json } from '@codemirror/lang-json'
 import { useMemo } from 'react'
 
 import { CodeInput, CopyButton, DisclosurePanel, EmptyState, ErrorBanner, TextInput } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFieldsPersisted } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -57,7 +58,7 @@ type EvalResult = { evaluation: JsonPathEvaluation | null; parseError: string | 
 
 const INITIAL_RESULT: EvalResult = { evaluation: null, parseError: null, parsedData: null }
 
-export const JsonpathEvaluator = (_props: ToolComponentProps) => {
+export const JsonpathEvaluator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<EvalInput, EvalResult>({
     autorunOnMount: true,
     compute: ({ expression: expr, jsonInput: value }) => {
@@ -94,123 +95,127 @@ export const JsonpathEvaluator = (_props: ToolComponentProps) => {
   )
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-      <div className="md:flex-row flex flex-col gap-4">
-        {/* Left Panel: JSON Input */}
-        <div className="flex min-w-0 flex-1 flex-col gap-2">
-          <h3 className="text-body-sm font-semibold text-gray-100">JSON Input</h3>
-          <CodeInput
-            aria-label="JSON input"
-            extensions={jsonExtensions}
-            name="json-input"
-            onChange={handleJsonChange}
-            placeholder="Paste JSON here..."
-            value={jsonInput}
-          />
-          {parseError && <ErrorBanner>{parseError}</ErrorBanner>}
-        </div>
-
-        {/* Right Panel: Expression + Results */}
-        <div className="flex min-w-0 flex-1 flex-col gap-4">
-          {/* Expression Input */}
-          <div className="flex flex-col gap-2">
-            <h3 className="text-body-sm font-semibold text-gray-100">JSONPath Expression</h3>
-            <div aria-label="JSONPath expression" className="font-mono">
-              <TextInput
-                aria-label="JSONPath expression"
-                name="jsonpath-expression"
-                onChange={handleExpressionChange}
-                placeholder="Enter JSONPath expression (e.g., $.store.book[*].author)"
-                type="text"
-                value={expression}
-              />
-            </div>
-            {evaluation && !evaluation.success && <ErrorBanner>{evaluation.error}</ErrorBanner>}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="JSONPath Evaluator"
+      triggers={[{ label: 'Evaluate' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        <div className="md:flex-row flex flex-col gap-4">
+          {/* Left Panel: JSON Input */}
+          <div className="flex min-w-0 flex-1 flex-col gap-2">
+            <h3 className="text-body-sm font-semibold text-gray-100">JSON Input</h3>
+            <CodeInput
+              aria-label="JSON input"
+              extensions={jsonExtensions}
+              name="json-input"
+              onChange={handleJsonChange}
+              placeholder="Paste JSON here..."
+              value={jsonInput}
+            />
+            {parseError && <ErrorBanner>{parseError}</ErrorBanner>}
           </div>
 
-          {/* Results Panel */}
-          <div className="flex flex-col gap-2">
-            <h3 className="text-body-sm font-semibold text-gray-100">Results</h3>
-            <div aria-live="polite">
-              {evaluation?.success && (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between">
-                    <p className="text-body-xs text-gray-400" role="status">
-                      {evaluation.results.length === 0
-                        ? 'No matches'
-                        : `${evaluation.results.length} match${evaluation.results.length === 1 ? '' : 'es'} found`}
-                    </p>
+          {/* Right Panel: Expression + Results */}
+          <div className="flex min-w-0 flex-1 flex-col gap-4">
+            {/* Expression Input */}
+            <div className="flex flex-col gap-2">
+              <h3 className="text-body-sm font-semibold text-gray-100">JSONPath Expression</h3>
+              <div aria-label="JSONPath expression" className="font-mono">
+                <TextInput
+                  aria-label="JSONPath expression"
+                  name="jsonpath-expression"
+                  onChange={handleExpressionChange}
+                  placeholder="Enter JSONPath expression (e.g., $.store.book[*].author)"
+                  type="text"
+                  value={expression}
+                />
+              </div>
+              {evaluation && !evaluation.success && <ErrorBanner>{evaluation.error}</ErrorBanner>}
+            </div>
+
+            {/* Results Panel */}
+            <div className="flex flex-col gap-2">
+              <h3 className="text-body-sm font-semibold text-gray-100">Results</h3>
+              <div aria-live="polite">
+                {evaluation?.success && (
+                  <div className="flex flex-col gap-2">
+                    <div className="flex items-center justify-between">
+                      <p className="text-body-xs text-gray-400" role="status">
+                        {evaluation.results.length === 0
+                          ? 'No matches'
+                          : `${evaluation.results.length} match${evaluation.results.length === 1 ? '' : 'es'} found`}
+                      </p>
+                      {evaluation.results.length > 0 && (
+                        <CopyButton label="all results" value={allResultsJson} variant="icon-only" />
+                      )}
+                    </div>
+
                     {evaluation.results.length > 0 && (
-                      <CopyButton label="all results" value={allResultsJson} variant="icon-only" />
+                      <div className="flex max-h-96 flex-col gap-2 overflow-y-auto">
+                        {evaluation.results.map((entry) => (
+                          <div
+                            className="flex flex-col gap-1 rounded border border-gray-800 bg-gray-950 p-3"
+                            key={entry.path}
+                          >
+                            <div className="flex items-center justify-between gap-2">
+                              <span className="truncate font-mono text-body-xs text-gray-400">{entry.path}</span>
+                              <CopyButton
+                                label="result value"
+                                value={formatResultValue(entry.value)}
+                                variant="icon-only"
+                              />
+                            </div>
+                            <pre className="overflow-x-auto font-mono text-body-xs whitespace-pre-wrap text-gray-200">
+                              {formatResultValue(entry.value)}
+                            </pre>
+                          </div>
+                        ))}
+                      </div>
                     )}
                   </div>
+                )}
 
-                  {evaluation.results.length > 0 && (
-                    <div className="flex max-h-96 flex-col gap-2 overflow-y-auto">
-                      {evaluation.results.map((entry) => (
-                        <div
-                          className="flex flex-col gap-1 rounded border border-gray-800 bg-gray-950 p-3"
-                          key={entry.path}
-                        >
-                          <div className="flex items-center justify-between gap-2">
-                            <span className="truncate font-mono text-body-xs text-gray-400">{entry.path}</span>
-                            <CopyButton
-                              label="result value"
-                              value={formatResultValue(entry.value)}
-                              variant="icon-only"
-                            />
-                          </div>
-                          <pre className="overflow-x-auto font-mono text-body-xs whitespace-pre-wrap text-gray-200">
-                            {formatResultValue(entry.value)}
-                          </pre>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              )}
+                {!evaluation && parsedData !== null && (
+                  <EmptyState>Enter a JSONPath expression to see results</EmptyState>
+                )}
 
-              {!evaluation && parsedData !== null && (
-                <EmptyState>Enter a JSONPath expression to see results</EmptyState>
-              )}
-
-              {parsedData == null && !parseError && (
-                <EmptyState>Paste JSON to get started</EmptyState>
-              )}
+                {parsedData == null && !parseError && <EmptyState>Paste JSON to get started</EmptyState>}
+              </div>
             </div>
-          </div>
 
-          <DisclosurePanel label="JSONPath Cheatsheet" padding="none">
-            <table className="w-full text-body-xs">
-              <thead>
-                <tr className="border-b border-gray-800">
-                  <th className="px-3 py-2 text-left font-semibold text-gray-300">Expression</th>
-                  <th className="px-3 py-2 text-left font-semibold text-gray-300">Description</th>
-                </tr>
-              </thead>
-              <tbody>
-                {CHEATSHEET_ENTRIES.map((entry) => (
-                  <tr className="border-b border-gray-800/50 last:border-0" key={entry.expression}>
-                    <td className="px-3 py-1.5">
-                      <button
-                        aria-label={`Use expression: ${entry.expression}`}
-                        className="cursor-pointer font-mono text-primary hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-                        onClick={() => handleCheatsheetClick(entry.expression)}
-                        type="button"
-                      >
-                        {entry.expression}
-                      </button>
-                    </td>
-                    <td className="px-3 py-1.5 text-gray-400">{entry.description}</td>
+            <DisclosurePanel label="JSONPath Cheatsheet" padding="none">
+              <table className="w-full text-body-xs">
+                <thead>
+                  <tr className="border-b border-gray-800">
+                    <th className="px-3 py-2 text-left font-semibold text-gray-300">Expression</th>
+                    <th className="px-3 py-2 text-left font-semibold text-gray-300">Description</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </DisclosurePanel>
+                </thead>
+                <tbody>
+                  {CHEATSHEET_ENTRIES.map((entry) => (
+                    <tr className="border-b border-gray-800/50 last:border-0" key={entry.expression}>
+                      <td className="px-3 py-1.5">
+                        <button
+                          aria-label={`Use expression: ${entry.expression}`}
+                          className="cursor-pointer font-mono text-primary hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                          onClick={() => handleCheatsheetClick(entry.expression)}
+                          type="button"
+                        >
+                          {entry.expression}
+                        </button>
+                      </td>
+                      <td className="px-3 py-1.5 text-gray-400">{entry.description}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </DisclosurePanel>
+          </div>
         </div>
       </div>
-    </div>
+    </ToolDialogFrame>
   )
 }

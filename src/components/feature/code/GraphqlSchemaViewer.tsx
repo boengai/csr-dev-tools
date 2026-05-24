@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 
 import { BrowsableItemList, Button, CodeInput, EmptyState, ErrorBanner, TextInput } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolComputationPersisted } from '@/hooks'
 import type { GraphqlParseOutput, ToolComponentProps } from '@/types'
@@ -229,7 +230,7 @@ input CreateUserInput {
 
 scalar DateTime`
 
-export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
+export const GraphqlSchemaViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [selectedType, setSelectedType] = useState<string | null>(null)
   const [filter, setFilter] = useState('')
 
@@ -294,66 +295,74 @@ export const GraphqlSchemaViewer = (_props: ToolComponentProps) => {
   const selectedTypeInfo = schemaInfo?.types.find((t) => t.name === selectedType)
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="GraphQL Schema Viewer"
+      triggers={[{ label: 'Open' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        <CodeInput
+          aria-label="GraphQL SDL input"
+          name="graphql-sdl-input"
+          onChange={handleChange}
+          placeholder="Paste your GraphQL schema (SDL) here..."
+          value={input}
+        />
 
-      <CodeInput
-        aria-label="GraphQL SDL input"
-        name="graphql-sdl-input"
-        onChange={handleChange}
-        placeholder="Paste your GraphQL schema (SDL) here..."
-        value={input}
-      />
+        {error && <ErrorBanner>{error}</ErrorBanner>}
 
-      {error && <ErrorBanner>{error}</ErrorBanner>}
-
-      {!schemaInfo && !error && (
-        <div className="flex flex-col items-center gap-3 py-8 text-center">
-          <EmptyState>Paste a GraphQL schema to explore its types and fields</EmptyState>
-          <Button onClick={handleLoadExample} size="small">
-            Load Example Schema
-          </Button>
-        </div>
-      )}
-
-      {schemaInfo && (
-        <div className="md:flex-row flex flex-col gap-4">
-          <div className="md:w-64 flex w-full shrink-0 flex-col gap-2">
-            <label className="sr-only" htmlFor="graphql-type-filter">
-              Filter types
-            </label>
-            <TextInput
-              aria-label="Filter types"
-              id="graphql-type-filter"
-              name="graphql-type-filter"
-              onChange={setFilter}
-              placeholder="Filter types..."
-              type="text"
-              value={filter}
-            />
-
-            <BrowsableItemList
-              emptyMessage="No types match filter"
-              items={(filteredTypes ?? []).map((type) => ({
-                ariaLabel: `${type.name} - ${getTypeKindLabel(type.kind)} type`,
-                badge: <KindBadge kind={type.kind} />,
-                id: type.name,
-                name: type.name,
-              }))}
-              onSelect={(item) => setSelectedType(item.id)}
-              selectedId={selectedType}
-            />
+        {!schemaInfo && !error && (
+          <div className="flex flex-col items-center gap-3 py-8 text-center">
+            <EmptyState>Paste a GraphQL schema to explore its types and fields</EmptyState>
+            <Button onClick={handleLoadExample} size="small">
+              Load Example Schema
+            </Button>
           </div>
+        )}
 
-          <div className="min-w-0 grow">
-            {selectedTypeInfo ? (
-              <TypeDetailPanel onNavigate={handleNavigateToType} type={selectedTypeInfo} />
-            ) : (
-              <p className="py-8 text-center text-body-xs text-gray-500">Select a type from the list to view details</p>
-            )}
+        {schemaInfo && (
+          <div className="md:flex-row flex flex-col gap-4">
+            <div className="md:w-64 flex w-full shrink-0 flex-col gap-2">
+              <label className="sr-only" htmlFor="graphql-type-filter">
+                Filter types
+              </label>
+              <TextInput
+                aria-label="Filter types"
+                id="graphql-type-filter"
+                name="graphql-type-filter"
+                onChange={setFilter}
+                placeholder="Filter types..."
+                type="text"
+                value={filter}
+              />
+
+              <BrowsableItemList
+                emptyMessage="No types match filter"
+                items={(filteredTypes ?? []).map((type) => ({
+                  ariaLabel: `${type.name} - ${getTypeKindLabel(type.kind)} type`,
+                  badge: <KindBadge kind={type.kind} />,
+                  id: type.name,
+                  name: type.name,
+                }))}
+                onSelect={(item) => setSelectedType(item.id)}
+                selectedId={selectedType}
+              />
+            </div>
+
+            <div className="min-w-0 grow">
+              {selectedTypeInfo ? (
+                <TypeDetailPanel onNavigate={handleNavigateToType} type={selectedTypeInfo} />
+              ) : (
+                <p className="py-8 text-center text-body-xs text-gray-500">
+                  Select a type from the list to view details
+                </p>
+              )}
+            </div>
           </div>
-        </div>
-      )}
-    </div>
+        )}
+      </div>
+    </ToolDialogFrame>
   )
 }
