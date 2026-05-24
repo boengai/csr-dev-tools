@@ -2,9 +2,10 @@ import { AnimatePresence } from 'motion/react'
 import { useMemo, useState } from 'react'
 
 import { CopyButton, DataCellTable, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolInput } from '@/hooks'
-import type { DateTime } from '@/types'
+import type { DateTime, ToolComponentProps } from '@/types'
 import { getDaysInMonth, isValidTimestamp } from '@/utils'
 
 const MONTH_LABELS = [
@@ -245,13 +246,20 @@ const DateSection = () => {
 
 const toolEntry = TOOL_REGISTRY_MAP['unix-timestamp']
 
-export const TimeUnixTimestamp = () => {
+export const TimeUnixTimestamp = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   return (
-    <div className="flex grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-      <UnixTimestampSection />
-      <hr />
-      <DateSection />
-    </div>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Unix Timestamp"
+      triggers={[{ label: 'Convert' }]}
+    >
+      <div className="flex grow flex-col gap-4">
+        <UnixTimestampSection />
+        <hr />
+        <DateSection />
+      </div>
+    </ToolDialogFrame>
   )
 }
