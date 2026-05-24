@@ -1,9 +1,10 @@
 import { useMemo, useReducer } from 'react'
 
 import { Button, ColorInput, DownloadIcon, FieldForm, Pane, SelectInput } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDownload, useToast } from '@/hooks'
-import type { PlaceholderImageAction, PlaceholderImageState } from '@/types'
+import type { PlaceholderImageAction, PlaceholderImageState, ToolComponentProps } from '@/types'
 import {
   canvasToBlob,
   generatePlaceholderCanvas,
@@ -90,7 +91,7 @@ const reducer = (state: PlaceholderImageState, action: PlaceholderImageAction): 
   }
 }
 
-export const PlaceholderImageGenerator = () => {
+export const PlaceholderImageGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const { bgColor, bgHexInput, height, text, textColor, textHexInput, width } = state
   const { showError } = useToast()
@@ -150,110 +151,116 @@ export const PlaceholderImageGenerator = () => {
   const displayText = text || `${width || '0'}x${height || '0'}`
 
   return (
-    <div className="flex size-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-      <div className="flex grow flex-col gap-6 overflow-y-auto tablet:flex-row">
-        <div className="flex shrink-0 flex-col gap-3 tablet:flex-1 tablet:shrink tablet:overflow-y-auto">
-          <div className="flex gap-3">
-            <FieldForm
-              label="Width"
-              name="placeholder-width"
-              onChange={handleWidthChange}
-              placeholder="800"
-              type="text"
-              value={width}
-            />
-            <FieldForm
-              label="Height"
-              name="placeholder-height"
-              onChange={handleHeightChange}
-              placeholder="600"
-              type="text"
-              value={height}
-            />
-          </div>
-
-          <SelectInput
-            name="placeholder-preset"
-            onChange={handlePresetChange}
-            options={PRESET_OPTIONS}
-            placeholder="Preset sizes"
-          />
-
-          <div className="flex flex-col gap-1">
-            <label className="text-body-sm font-medium text-gray-400" htmlFor="placeholder-bg-color">
-              Background Color
-            </label>
-            <div className="flex items-center gap-2">
-              <ColorInput id="placeholder-bg-color" onChange={handleBgPickerChange} value={toPickerHex(bgColor)} />
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Placeholder Image Generator"
+      triggers={[{ label: 'Generate' }]}
+    >
+      <div className="flex size-full grow flex-col gap-4">
+        <div className="flex grow flex-col gap-6 overflow-y-auto tablet:flex-row">
+          <div className="flex shrink-0 flex-col gap-3 tablet:flex-1 tablet:shrink tablet:overflow-y-auto">
+            <div className="flex gap-3">
               <FieldForm
-                aria-label="Background hex value"
-                label=""
-                name="placeholder-bg-hex"
-                onChange={handleBgHexChange}
-                placeholder="#cccccc"
+                label="Width"
+                name="placeholder-width"
+                onChange={handleWidthChange}
+                placeholder="800"
                 type="text"
-                value={bgHexInput}
-              />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-1">
-            <label className="text-body-sm font-medium text-gray-400" htmlFor="placeholder-text-color">
-              Text Color
-            </label>
-            <div className="flex items-center gap-2">
-              <ColorInput
-                id="placeholder-text-color"
-                onChange={handleTextColorPickerChange}
-                value={toPickerHex(textColor)}
+                value={width}
               />
               <FieldForm
-                aria-label="Text color hex value"
-                label=""
-                name="placeholder-text-color-hex"
-                onChange={handleTextColorHexChange}
-                placeholder="#666666"
+                label="Height"
+                name="placeholder-height"
+                onChange={handleHeightChange}
+                placeholder="600"
                 type="text"
-                value={textHexInput}
+                value={height}
               />
             </div>
+
+            <SelectInput
+              name="placeholder-preset"
+              onChange={handlePresetChange}
+              options={PRESET_OPTIONS}
+              placeholder="Preset sizes"
+            />
+
+            <div className="flex flex-col gap-1">
+              <label className="text-body-sm font-medium text-gray-400" htmlFor="placeholder-bg-color">
+                Background Color
+              </label>
+              <div className="flex items-center gap-2">
+                <ColorInput id="placeholder-bg-color" onChange={handleBgPickerChange} value={toPickerHex(bgColor)} />
+                <FieldForm
+                  aria-label="Background hex value"
+                  label=""
+                  name="placeholder-bg-hex"
+                  onChange={handleBgHexChange}
+                  placeholder="#cccccc"
+                  type="text"
+                  value={bgHexInput}
+                />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-1">
+              <label className="text-body-sm font-medium text-gray-400" htmlFor="placeholder-text-color">
+                Text Color
+              </label>
+              <div className="flex items-center gap-2">
+                <ColorInput
+                  id="placeholder-text-color"
+                  onChange={handleTextColorPickerChange}
+                  value={toPickerHex(textColor)}
+                />
+                <FieldForm
+                  aria-label="Text color hex value"
+                  label=""
+                  name="placeholder-text-color-hex"
+                  onChange={handleTextColorHexChange}
+                  placeholder="#666666"
+                  type="text"
+                  value={textHexInput}
+                />
+              </div>
+            </div>
+
+            <FieldForm
+              label="Custom Text"
+              name="placeholder-text"
+              onChange={handleTextChange}
+              placeholder={`${width || '800'}x${height || '600'}`}
+              type="text"
+              value={text}
+            />
           </div>
 
-          <FieldForm
-            label="Custom Text"
-            name="placeholder-text"
-            onChange={handleTextChange}
-            placeholder={`${width || '800'}x${height || '600'}`}
-            type="text"
-            value={text}
-          />
+          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
+
+          <Pane align="center" gap="md" justify="center" live>
+            {previewUri ? (
+              <img
+                alt={`Placeholder preview: ${displayText}, background ${bgColor}, text ${textColor}`}
+                className="max-h-full max-w-full border border-gray-700 object-contain"
+                src={previewUri}
+              />
+            ) : (
+              <p className="text-body-sm text-gray-500">Enter dimensions to preview</p>
+            )}
+          </Pane>
         </div>
 
-        <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
-
-        <Pane align="center" gap="md" justify="center" live>
-          {previewUri ? (
-            <img
-              alt={`Placeholder preview: ${displayText}, background ${bgColor}, text ${textColor}`}
-              className="max-h-full max-w-full border border-gray-700 object-contain"
-              src={previewUri}
-            />
-          ) : (
-            <p className="text-body-sm text-gray-500">Enter dimensions to preview</p>
-          )}
-        </Pane>
+        <div className="flex w-full shrink-0 gap-8 [&>button]:w-[calc(50%-1rem)]">
+          <Button aria-label="Download PNG image" icon={<DownloadIcon />} onClick={handleDownloadPng} variant="primary">
+            Download PNG
+          </Button>
+          <Button aria-label="Download SVG image" icon={<DownloadIcon />} onClick={handleDownloadSvg} variant="default">
+            Download SVG
+          </Button>
+        </div>
       </div>
-
-      <div className="flex w-full shrink-0 gap-8 [&>button]:w-[calc(50%-1rem)]">
-        <Button aria-label="Download PNG image" icon={<DownloadIcon />} onClick={handleDownloadPng} variant="primary">
-          Download PNG
-        </Button>
-        <Button aria-label="Download SVG image" icon={<DownloadIcon />} onClick={handleDownloadSvg} variant="default">
-          Download SVG
-        </Button>
-      </div>
-    </div>
+    </ToolDialogFrame>
   )
 }
