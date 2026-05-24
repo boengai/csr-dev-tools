@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 
 import { CopyButton, FieldForm, TextInput } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { FieldEditorProps, ToolComponentProps } from '@/types'
 import {
@@ -169,7 +170,7 @@ const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEdi
   )
 }
 
-export const CrontabGenerator = (_: ToolComponentProps) => {
+export const CrontabGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [config, setConfig] = useState<CrontabConfig>({
     minute: defaultField(),
     hour: defaultField(),
@@ -187,50 +188,56 @@ export const CrontabGenerator = (_: ToolComponentProps) => {
   }
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Crontab Generator"
+      triggers={[{ label: 'Build' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        {FIELD_KEYS.map((key, i) => (
+          <FieldEditor
+            config={config[key]}
+            fieldIndex={i}
+            key={key}
+            label={FIELD_LABELS[i]}
+            max={FIELD_RANGES[i][1]}
+            min={FIELD_RANGES[i][0]}
+            onChange={(fc) => updateField(key, fc)}
+          />
+        ))}
 
-      {FIELD_KEYS.map((key, i) => (
-        <FieldEditor
-          config={config[key]}
-          fieldIndex={i}
-          key={key}
-          label={FIELD_LABELS[i]}
-          max={FIELD_RANGES[i][1]}
-          min={FIELD_RANGES[i][0]}
-          onChange={(fc) => updateField(key, fc)}
-        />
-      ))}
+        <div className="border-t border-dashed border-gray-800" />
 
-      <div className="border-t border-dashed border-gray-800" />
-
-      <div>
-        <div className="flex items-center gap-2">
-          <span className="text-body-xs font-medium text-gray-400">Cron Expression</span>
-          <CopyButton label="cron expression" value={expression} />
+        <div>
+          <div className="flex items-center gap-2">
+            <span className="text-body-xs font-medium text-gray-400">Cron Expression</span>
+            <CopyButton label="cron expression" value={expression} />
+          </div>
+          <pre className="mt-1 rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono text-body-sm text-gray-200">
+            {expression}
+          </pre>
         </div>
-        <pre className="mt-1 rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono text-body-sm text-gray-200">
-          {expression}
-        </pre>
-      </div>
 
-      <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
-        <span className="text-body-xs font-medium text-gray-400">Description</span>
-        <p className="mt-1 text-body-sm text-gray-200">{description}</p>
-      </div>
-
-      {nextRuns.length > 0 && (
         <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
-          <span className="text-body-xs font-medium text-gray-400">Next {nextRuns.length} runs (UTC)</span>
-          <ul className="mt-1 flex flex-col gap-1">
-            {nextRuns.map((run) => (
-              <li className="font-mono text-body-xs text-gray-300" key={run}>
-                {run}
-              </li>
-            ))}
-          </ul>
+          <span className="text-body-xs font-medium text-gray-400">Description</span>
+          <p className="mt-1 text-body-sm text-gray-200">{description}</p>
         </div>
-      )}
-    </div>
+
+        {nextRuns.length > 0 && (
+          <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
+            <span className="text-body-xs font-medium text-gray-400">Next {nextRuns.length} runs (UTC)</span>
+            <ul className="mt-1 flex flex-col gap-1">
+              {nextRuns.map((run) => (
+                <li className="font-mono text-body-xs text-gray-300" key={run}>
+                  {run}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+    </ToolDialogFrame>
   )
 }

@@ -2,6 +2,7 @@ import { AnimatePresence, m } from 'motion/react'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 
 import { Button, CopyButton, EmptyState, ErrorBanner, FieldForm, TextInput } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { readJsonStorage, useKeyboardListNav, useToolFieldsPersisted, writeJsonStorage } from '@/hooks'
 import type { TargetResult, ToolComponentProps } from '@/types'
@@ -219,7 +220,7 @@ const computeConversion = ({ dateInput, sourceTz, targetTzIds, timeInput }: Conv
   }
 }
 
-export const TimezoneConverter = (_props: ToolComponentProps) => {
+export const TimezoneConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const initialInput = useMemo<ConverterInput>(() => {
     const sourceTz = getLocalTimezone()
     return {
@@ -280,144 +281,150 @@ export const TimezoneConverter = (_props: ToolComponentProps) => {
   const sourceEntry = useMemo(() => index.find((e) => e.id === sourceTz), [index, sourceTz])
 
   return (
-    <div className="flex grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Timezone Converter"
+      triggers={[{ label: 'Convert' }]}
+    >
+      <div className="flex grow flex-col gap-4">
+        <div className="md:flex-row flex flex-col gap-4">
+          {/* Source Section */}
+          <section className="md:w-2/5 flex flex-col gap-3">
+            <h3 className="text-body-sm font-semibold text-gray-300">Source</h3>
 
-      <div className="md:flex-row flex flex-col gap-4">
-        {/* Source Section */}
-        <section className="md:w-2/5 flex flex-col gap-3">
-          <h3 className="text-body-sm font-semibold text-gray-300">Source</h3>
-
-          <div>
-            <label className="mb-1 block text-body-xs text-gray-500" htmlFor="source-timezone-search">
-              Timezone
-            </label>
-            {sourceEntry && (
-              <div className="mb-1 flex items-center gap-1">
-                <span className="rounded bg-gray-800 px-2 py-0.5 text-body-xs text-gray-200">
-                  {sourceEntry.city} ({sourceEntry.abbreviation})
-                </span>
-              </div>
-            )}
-            <TimezoneSearchPicker
-              favorites={favorites}
-              id="source-timezone-search"
-              index={index}
-              onSelect={(id) => setFields({ sourceTz: id })}
-              placeholder="Search timezones..."
-            />
-          </div>
-
-          <div className="flex gap-2">
-            <FieldForm
-              label="Date"
-              name="tz-date"
-              onChange={(val: string) => setFields({ dateInput: val })}
-              type="date"
-              value={dateInput}
-            />
-            <FieldForm
-              label="Time"
-              name="tz-time"
-              onChange={(val: string) => setFields({ timeInput: val })}
-              type="time"
-              value={timeInput}
-            />
-          </div>
-
-          <Button block data-testid="now-button" onClick={handleNow} variant="primary">
-            Now
-          </Button>
-
-          {error && <ErrorBanner>{error}</ErrorBanner>}
-        </section>
-
-        {/* Target Timezones Section */}
-        <section className="md:w-3/5 flex flex-col gap-3">
-          <div className="flex items-center justify-between">
-            <h3 className="text-body-sm font-semibold text-gray-300">Target Timezones</h3>
-            <button
-              aria-label="Add target timezone"
-              className="rounded bg-gray-700 px-3 py-1 text-body-xs text-gray-200 hover:bg-gray-600"
-              data-testid="add-timezone-button"
-              onClick={() => setShowAddPicker((prev) => !prev)}
-              type="button"
-            >
-              + Add Timezone
-            </button>
-          </div>
-
-          {showAddPicker && (
-            <div className="rounded border border-gray-700 bg-gray-900/50 p-2">
+            <div>
+              <label className="mb-1 block text-body-xs text-gray-500" htmlFor="source-timezone-search">
+                Timezone
+              </label>
+              {sourceEntry && (
+                <div className="mb-1 flex items-center gap-1">
+                  <span className="rounded bg-gray-800 px-2 py-0.5 text-body-xs text-gray-200">
+                    {sourceEntry.city} ({sourceEntry.abbreviation})
+                  </span>
+                </div>
+              )}
               <TimezoneSearchPicker
                 favorites={favorites}
+                id="source-timezone-search"
                 index={index}
-                onSelect={handleAddTarget}
-                placeholder="Search to add timezone..."
+                onSelect={(id) => setFields({ sourceTz: id })}
+                placeholder="Search timezones..."
               />
             </div>
-          )}
 
-          <div aria-live="polite" className="flex flex-col gap-2">
-            {results.length === 0 && targetTzIds.length === 0 && (
-              <EmptyState>Add a target timezone to see conversions</EmptyState>
+            <div className="flex gap-2">
+              <FieldForm
+                label="Date"
+                name="tz-date"
+                onChange={(val: string) => setFields({ dateInput: val })}
+                type="date"
+                value={dateInput}
+              />
+              <FieldForm
+                label="Time"
+                name="tz-time"
+                onChange={(val: string) => setFields({ timeInput: val })}
+                type="time"
+                value={timeInput}
+              />
+            </div>
+
+            <Button block data-testid="now-button" onClick={handleNow} variant="primary">
+              Now
+            </Button>
+
+            {error && <ErrorBanner>{error}</ErrorBanner>}
+          </section>
+
+          {/* Target Timezones Section */}
+          <section className="md:w-3/5 flex flex-col gap-3">
+            <div className="flex items-center justify-between">
+              <h3 className="text-body-sm font-semibold text-gray-300">Target Timezones</h3>
+              <button
+                aria-label="Add target timezone"
+                className="rounded bg-gray-700 px-3 py-1 text-body-xs text-gray-200 hover:bg-gray-600"
+                data-testid="add-timezone-button"
+                onClick={() => setShowAddPicker((prev) => !prev)}
+                type="button"
+              >
+                + Add Timezone
+              </button>
+            </div>
+
+            {showAddPicker && (
+              <div className="rounded border border-gray-700 bg-gray-900/50 p-2">
+                <TimezoneSearchPicker
+                  favorites={favorites}
+                  index={index}
+                  onSelect={handleAddTarget}
+                  placeholder="Search to add timezone..."
+                />
+              </div>
             )}
-            <AnimatePresence mode="popLayout">
-              {results.map(({ result: tzResult, timezoneId }) => {
-                const entry = index.find((e) => e.id === timezoneId)
-                const isFav = favorites.includes(timezoneId)
-                const copyValue = `${tzResult.date} ${tzResult.time} ${tzResult.abbreviation}`
-                return (
-                  <m.div
-                    animate={{ opacity: 1, y: 0 }}
-                    className="flex items-center justify-between rounded border border-gray-700 bg-gray-900 p-3"
-                    exit={{ opacity: 0, y: -10 }}
-                    initial={{ opacity: 0, y: 10 }}
-                    key={timezoneId}
-                    layout
-                    role="status"
-                  >
-                    <div className="flex flex-col gap-0.5">
-                      <div className="text-body-sm font-medium text-gray-200">
-                        {entry?.city ?? timezoneId}
-                        <span className="ml-1 text-gray-500">
-                          {tzResult.abbreviation}, {tzResult.offset}
-                        </span>
+
+            <div aria-live="polite" className="flex flex-col gap-2">
+              {results.length === 0 && targetTzIds.length === 0 && (
+                <EmptyState>Add a target timezone to see conversions</EmptyState>
+              )}
+              <AnimatePresence mode="popLayout">
+                {results.map(({ result: tzResult, timezoneId }) => {
+                  const entry = index.find((e) => e.id === timezoneId)
+                  const isFav = favorites.includes(timezoneId)
+                  const copyValue = `${tzResult.date} ${tzResult.time} ${tzResult.abbreviation}`
+                  return (
+                    <m.div
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex items-center justify-between rounded border border-gray-700 bg-gray-900 p-3"
+                      exit={{ opacity: 0, y: -10 }}
+                      initial={{ opacity: 0, y: 10 }}
+                      key={timezoneId}
+                      layout
+                      role="status"
+                    >
+                      <div className="flex flex-col gap-0.5">
+                        <div className="text-body-sm font-medium text-gray-200">
+                          {entry?.city ?? timezoneId}
+                          <span className="ml-1 text-gray-500">
+                            {tzResult.abbreviation}, {tzResult.offset}
+                          </span>
+                        </div>
+                        <div className="text-body-md font-semibold text-gray-100">
+                          {tzResult.date} {tzResult.time}
+                        </div>
                       </div>
-                      <div className="text-body-md font-semibold text-gray-100">
-                        {tzResult.date} {tzResult.time}
+                      <div className="flex items-center gap-1">
+                        <CopyButton label={entry?.city ?? timezoneId} value={copyValue} />
+                        <button
+                          aria-label={
+                            isFav
+                              ? `Remove ${entry?.city ?? timezoneId} from favorites`
+                              : `Add ${entry?.city ?? timezoneId} to favorites`
+                          }
+                          className={favoriteButtonStyles({ favorite: isFav })}
+                          onClick={() => handleToggleFavorite(timezoneId)}
+                          type="button"
+                        >
+                          {isFav ? '★' : '☆'}
+                        </button>
+                        <button
+                          aria-label={`Remove ${entry?.city ?? timezoneId}`}
+                          className="hover:text-red-400 p-1 text-body-sm text-gray-600"
+                          onClick={() => handleRemoveTarget(timezoneId)}
+                          type="button"
+                        >
+                          ✕
+                        </button>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-1">
-                      <CopyButton label={entry?.city ?? timezoneId} value={copyValue} />
-                      <button
-                        aria-label={
-                          isFav
-                            ? `Remove ${entry?.city ?? timezoneId} from favorites`
-                            : `Add ${entry?.city ?? timezoneId} to favorites`
-                        }
-                        className={favoriteButtonStyles({ favorite: isFav })}
-                        onClick={() => handleToggleFavorite(timezoneId)}
-                        type="button"
-                      >
-                        {isFav ? '★' : '☆'}
-                      </button>
-                      <button
-                        aria-label={`Remove ${entry?.city ?? timezoneId}`}
-                        className="hover:text-red-400 p-1 text-body-sm text-gray-600"
-                        onClick={() => handleRemoveTarget(timezoneId)}
-                        type="button"
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  </m.div>
-                )
-              })}
-            </AnimatePresence>
-          </div>
-        </section>
+                    </m.div>
+                  )
+                })}
+              </AnimatePresence>
+            </div>
+          </section>
+        </div>
       </div>
-    </div>
+    </ToolDialogFrame>
   )
 }
