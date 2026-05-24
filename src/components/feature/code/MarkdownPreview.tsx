@@ -48,7 +48,7 @@ export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentP
               label="Markdown Input"
               name="dialog-source"
               onChange={setInput}
-              placeholder="# Hello World\n\nWrite **markdown** here..."
+              placeholder={'# Hello World\n\nWrite **markdown** here...'}
               type="code"
               value={source}
             />

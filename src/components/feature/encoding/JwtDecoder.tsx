@@ -48,7 +48,7 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       description={toolEntry?.description}
       onAfterClose={onAfterDialogClose}
       onReset={reset}
-      title="JWT Decode"
+      title="JWT Decoder"
       triggers={[{ label: 'Decode' }]}
     >
       <div className="flex w-full grow flex-col gap-4">

@@ -32,11 +32,11 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
         ) : null
       }
       resultLabel="Formatted JSON"
-      resultPlaceholder={'{\n  "name": "John",\n  "age": 30\n}'}
+      resultPlaceholder={'{\n  "name": "John",\n  "age": 30,\n  "tags": [\n    "dev",\n    "tools"\n  ]\n}'}
       sourceLabel="JSON Input"
       sourcePlaceholder='{"name":"John","age":30,"tags":["dev","tools"]}'
       storageKey="csr-dev-tools-json-formatter"
-      title="JSON Format"
+      title="JSON Formatter"
       triggerLabel="Format"
     />
   )
