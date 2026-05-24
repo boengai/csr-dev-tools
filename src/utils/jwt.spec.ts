@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { decodeJwt, formatPayloadWithTimestamps, formatTimestampClaim } from '@/utils'
+import { decodeJwt, formatPayloadWithTimestamps, formatTimestampClaim, getExpirationStatus } from '@/utils'
 
 describe('jwt decoding utilities', () => {
   // Standard test JWT: {"alg":"HS256","typ":"JWT"}.{"sub":"1234567890","name":"John Doe","iat":1516239022}
@@ -132,6 +132,45 @@ describe('jwt decoding utilities', () => {
       const annotatedLines = lines.filter((line) => line.includes('//'))
       expect(annotatedLines).toHaveLength(1)
       expect(result).toContain('"exp": 1700000000  //')
+    })
+  })
+
+  describe('getExpirationStatus', () => {
+    // 2024-01-01T00:00:00Z anchors all relative comparisons.
+    const NOW_MS = 1704067200000
+    const FUTURE_EXP = 1735689600 // 2025-01-01T00:00:00Z (1 year later)
+    const PAST_EXP = 1672531200 // 2023-01-01T00:00:00Z (1 year earlier)
+
+    it('returns no-exp when payload lacks exp', () => {
+      expect(getExpirationStatus({ sub: 'x' }, NOW_MS)).toEqual({ kind: 'no-exp' })
+    })
+
+    it('returns no-exp when exp is non-numeric', () => {
+      expect(getExpirationStatus({ exp: 'soon' }, NOW_MS)).toEqual({ kind: 'no-exp' })
+    })
+
+    it('returns valid with seconds-until when exp is in the future', () => {
+      const result = getExpirationStatus({ exp: FUTURE_EXP }, NOW_MS)
+      expect(result.kind).toBe('valid')
+      if (result.kind === 'valid') {
+        expect(result.secondsUntil).toBe(31622400)
+        expect(result.expiresAt).toContain('2025')
+      }
+    })
+
+    it('returns expired with seconds-ago when exp is in the past', () => {
+      const result = getExpirationStatus({ exp: PAST_EXP }, NOW_MS)
+      expect(result.kind).toBe('expired')
+      if (result.kind === 'expired') {
+        expect(result.secondsAgo).toBe(31536000)
+        expect(result.expiredAt).toContain('2023')
+      }
+    })
+
+    it('treats exp equal to now as expired (deltaSeconds === 0 path)', () => {
+      const expNow = Math.floor(NOW_MS / 1000)
+      const result = getExpirationStatus({ exp: expNow }, NOW_MS)
+      expect(result.kind).toBe('expired')
     })
   })
 })
