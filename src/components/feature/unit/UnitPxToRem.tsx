@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
 
 import { CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolComputation } from '@/hooks'
-import type { PxRemInput, PxRemLastEdited, PxRemOutput } from '@/types'
+import type { PxRemInput, PxRemLastEdited, PxRemOutput, ToolComponentProps } from '@/types'
 import { solvePxRem } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['px-to-rem']
@@ -12,7 +13,7 @@ const INITIAL_BAG = { base: '16', lastEdited: 'px' as PxRemLastEdited, px: '', r
 
 const INVALID_BASE_MSG = 'Base font size must be a positive number (e.g., 16)'
 
-export const UnitPxToRem = () => {
+export const UnitPxToRem = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const { showError } = useToast()
   const [fields, setFields] = useState(INITIAL_BAG)
 
@@ -76,41 +77,48 @@ export const UnitPxToRem = () => {
   const { base, px, rem } = fields
 
   return (
-    <div className="flex w-full grow flex-col items-center justify-center gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-      <div aria-live="polite" className="flex w-full items-center *:w-1/2">
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="PX to REM"
+      triggers={[{ label: 'Convert' }]}
+    >
+      <div className="flex w-full grow flex-col items-center justify-center gap-4">
+        <div aria-live="polite" className="flex w-full items-center *:w-1/2">
+          <FieldForm
+            label="PX"
+            name="px"
+            onChange={handlePxChange}
+            placeholder="16"
+            suffix={<CopyButton label="PX" value={px} />}
+            type="text"
+            value={px}
+          />
+          <FieldForm
+            label="REM"
+            name="rem"
+            onChange={handleRemChange}
+            placeholder="1"
+            suffix={<CopyButton label="REM" value={rem} />}
+            type="text"
+            value={rem}
+          />
+        </div>
         <FieldForm
-          label="PX"
-          name="px"
-          onChange={handlePxChange}
+          label="Base (px)"
+          name="base"
+          onChange={handleBaseChange}
           placeholder="16"
-          suffix={<CopyButton label="PX" value={px} />}
           type="text"
-          value={px}
+          value={base}
         />
-        <FieldForm
-          label="REM"
-          name="rem"
-          onChange={handleRemChange}
-          placeholder="1"
-          suffix={<CopyButton label="REM" value={rem} />}
-          type="text"
-          value={rem}
-        />
+        {Number(base) > 0 && (
+          <p className="text-center text-body-sm text-gray-400">
+            Calculation based on a root font-size of {base} pixel.
+          </p>
+        )}
       </div>
-      <FieldForm
-        label="Base (px)"
-        name="base"
-        onChange={handleBaseChange}
-        placeholder="16"
-        type="text"
-        value={base}
-      />
-      {Number(base) > 0 && (
-        <p className="text-center text-body-sm text-gray-400">
-          Calculation based on a root font-size of {base} pixel.
-        </p>
-      )}
-    </div>
+    </ToolDialogFrame>
   )
 }

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolComputation } from '@/hooks'
 import type {
@@ -8,6 +9,7 @@ import type {
   AspectRatioLastEdited,
   AspectRatioLocked,
   AspectRatioOutput,
+  ToolComponentProps,
 } from '@/types'
 import { solveAspectRatio, tv } from '@/utils'
 
@@ -57,7 +59,7 @@ const INITIAL_FIELDS: Fields = {
   width: '',
 }
 
-export const AspectRatioCalculator = () => {
+export const AspectRatioCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [fields, setFields] = useState<Fields>(INITIAL_FIELDS)
 
   const { result, setInput, setInputImmediate } = useToolComputation<AspectRatioInput, AspectRatioOutput | null>(
@@ -173,81 +175,87 @@ export const AspectRatioCalculator = () => {
   const { height, locked, ratio, width } = fields
 
   return (
-    <div className="flex w-full grow flex-col items-center justify-center gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Aspect Ratio Calculator"
+      triggers={[{ label: 'Calculate' }]}
+    >
+      <div className="flex w-full grow flex-col items-center justify-center gap-4">
+        <div aria-live="polite" className="flex w-full flex-col gap-4">
+          <div className="flex w-full items-center gap-2 *:min-w-0 *:flex-1">
+            <FieldForm
+              label={
+                <span className="flex items-center gap-1">
+                  Width
+                  {/* raw button: lock toggle with active/inactive visual state (lockIndicatorStyles), Button has no active variant */}
+                  <button
+                    className={lockIndicatorStyles({ locked: locked === 'width' })}
+                    onClick={() => toggleLock('width')}
+                    title={locked === 'width' ? 'Unlock width' : 'Lock width'}
+                    type="button"
+                  >
+                    {locked === 'width' ? '🔒' : '🔓'}
+                  </button>
+                </span>
+              }
+              name="width"
+              onChange={handleWidthChange}
+              placeholder="1920"
+              suffix={<CopyButton label="Width" value={width} />}
+              type="text"
+              value={width}
+            />
+            <FieldForm
+              label={
+                <span className="flex items-center gap-1">
+                  Height
+                  {/* raw button: lock toggle with active/inactive visual state (lockIndicatorStyles), Button has no active variant */}
+                  <button
+                    className={lockIndicatorStyles({ locked: locked === 'height' })}
+                    onClick={() => toggleLock('height')}
+                    title={locked === 'height' ? 'Unlock height' : 'Lock height'}
+                    type="button"
+                  >
+                    {locked === 'height' ? '🔒' : '🔓'}
+                  </button>
+                </span>
+              }
+              name="height"
+              onChange={handleHeightChange}
+              placeholder="1080"
+              suffix={<CopyButton label="Height" value={height} />}
+              type="text"
+              value={height}
+            />
+          </div>
 
-      <div aria-live="polite" className="flex w-full flex-col gap-4">
-        <div className="flex w-full items-center gap-2 *:min-w-0 *:flex-1">
           <FieldForm
-            label={
-              <span className="flex items-center gap-1">
-                Width
-                {/* raw button: lock toggle with active/inactive visual state (lockIndicatorStyles), Button has no active variant */}
-                <button
-                  className={lockIndicatorStyles({ locked: locked === 'width' })}
-                  onClick={() => toggleLock('width')}
-                  title={locked === 'width' ? 'Unlock width' : 'Lock width'}
-                  type="button"
-                >
-                  {locked === 'width' ? '🔒' : '🔓'}
-                </button>
-              </span>
-            }
-            name="width"
-            onChange={handleWidthChange}
-            placeholder="1920"
-            suffix={<CopyButton label="Width" value={width} />}
+            label="Ratio"
+            name="ratio"
+            onChange={handleRatioChange}
+            placeholder="16:9"
+            suffix={<CopyButton label="Ratio" value={ratio} />}
             type="text"
-            value={width}
+            value={ratio}
           />
-          <FieldForm
-            label={
-              <span className="flex items-center gap-1">
-                Height
-                {/* raw button: lock toggle with active/inactive visual state (lockIndicatorStyles), Button has no active variant */}
-                <button
-                  className={lockIndicatorStyles({ locked: locked === 'height' })}
-                  onClick={() => toggleLock('height')}
-                  title={locked === 'height' ? 'Unlock height' : 'Lock height'}
-                  type="button"
-                >
-                  {locked === 'height' ? '🔒' : '🔓'}
-                </button>
-              </span>
-            }
-            name="height"
-            onChange={handleHeightChange}
-            placeholder="1080"
-            suffix={<CopyButton label="Height" value={height} />}
-            type="text"
-            value={height}
-          />
-        </div>
 
-        <FieldForm
-          label="Ratio"
-          name="ratio"
-          onChange={handleRatioChange}
-          placeholder="16:9"
-          suffix={<CopyButton label="Ratio" value={ratio} />}
-          type="text"
-          value={ratio}
-        />
-
-        <div className="flex flex-wrap gap-2">
-          {/* raw button: preset ratio toggle with active/inactive styles (presetButtonStyles), Button has no active variant */}
-          {PRESETS.map((preset) => (
-            <button
-              className={presetButtonStyles({ active: ratio === preset.label })}
-              key={preset.label}
-              onClick={() => applyRatio(preset.w, preset.h)}
-              type="button"
-            >
-              {preset.label}
-            </button>
-          ))}
+          <div className="flex flex-wrap gap-2">
+            {/* raw button: preset ratio toggle with active/inactive styles (presetButtonStyles), Button has no active variant */}
+            {PRESETS.map((preset) => (
+              <button
+                className={presetButtonStyles({ active: ratio === preset.label })}
+                key={preset.label}
+                onClick={() => applyRatio(preset.w, preset.h)}
+                type="button"
+              >
+                {preset.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
-    </div>
+    </ToolDialogFrame>
   )
 }
