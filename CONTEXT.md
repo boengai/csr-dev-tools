@@ -634,8 +634,10 @@ image scale controls + dimension warning + safe-zone overlay).
 
 Does NOT fit:
 
-- Multi-source N-File Tools (e.g. `ImageConvertor`, which has its own
-  workflow state machine).
+- Multi-source N-File Tools producing a single result — use
+  [[Sortable item bag]] (today: `ImageToPdf`, `CombinePdf`).
+  `ImageConvertor` (N-in / N-out with a workflow state machine) is its
+  own shape, kept inlined per ADR-0002.
 - Inline (no-dialog) image Tools (`ImageCompressor`).
 - Single-Blob-out Tools — use [[Image tool shell]].
 
@@ -644,6 +646,108 @@ sheds debounce + `isEmpty`-bypass: these Tools fire on a button click
 (or on upload), never on a debounced input. The stale-safety + unmount-safety
 invariants are the same — just composed from `useStaleSafeAsync` directly
 rather than from the full pipeline.
+
+## Sortable item bag
+
+The hook seam that owns a re-orderable array of items for "N files in,
+single result out" Tools — the inverse-shape sibling of [[Batch asset
+pipeline]] (which is "1 file in, N results out"). Implemented by
+`useSortableItems` (`src/hooks/useSortableItems.ts`).
+
+Adapter shape:
+
+```ts
+useSortableItems<T extends { id: string }>(initial?: Array<T>) => {
+  items, skipped,
+  addItems, rejectFiles, removeItem, updateItem, reset,
+  dndContextProps, sortableContextProps,
+}
+```
+
+Owns three concerns that the two consumer Tools (`ImageToPdf`,
+`CombinePdf`) previously hand-rolled in parallel:
+
+1. **Items state** — `Array<T & { id }>` with `addItems(next)`,
+   `removeItem(id)`, `updateItem(id, partial)`, `reset()`. `updateItem`
+   is the [[Tool field bag]] `setFields`-equivalent for arrays: the
+   duplicate-write tax of `setItems(prev => prev.map(i => i.id === id ?
+   { ...i, ...partial } : i))` is absorbed at the seam so a contributor
+   cannot forget the map. `addItems` accepts a pre-built array (caller
+   mints ids via `crypto.randomUUID()` or its expansion step's output).
+2. **Skipped-files tracking** — `skipped: Array<string>` updated via
+   `rejectFiles(names)`. The seam owns the state; the consumer Tool
+   decides whether to render `<ErrorBanner variant="warning">Skipped N
+   unsupported files: ...</ErrorBanner>` or another shape. Naming the
+   state concentrates "files came in, some accepted, some rejected" at
+   one address.
+3. **dnd-kit envelope** — `dndContextProps` (`PointerSensor` +
+   `KeyboardSensor`-with-`sortableKeyboardCoordinates`,
+   `collisionDetection: closestCenter`, `onDragEnd` that calls
+   `arrayMove` on the items by stable id) and `sortableContextProps`
+   (items id list + `rectSortingStrategy`). Spread onto `<DndContext>`
+   and `<SortableContext>` at the call site. The companion
+   [[SortableCard]] component owns the per-card chrome.
+
+Does NOT own the result pipeline. Each consumer adopts [[Tool
+computation pipeline]] (or its `useToolInput<Array<T>>` /
+`useToolFields` variant) over `items` separately. Bundling pipeline +
+items would wrap two named seams; keeping them distinct preserves the
+four pipeline invariants in one place. The pipeline migration is the
+natural follow-up commit after this seam lands.
+
+Does NOT own per-file expansion. `CombinePdf`'s `readPdfPages` →
+1-PDF-becomes-N-cards flow (with bespoke `LoadingCard` placeholders
+during read) stays inline — only one of two adopters needs it. Adopters
+await the expansion, then call `addItems(pageItems)` once resolved.
+
+Pick this when a Tool's input shape is "N files in, re-orderable, single
+result out." Pick [[Batch asset pipeline]] when it's the inverse (one
+file in, N results out). Pick [[Tool field bag]] when the inputs are a
+fixed keyed bag (no re-ordering, no add/remove).
+
+## SortableCard
+
+The compound component the [[Sortable item bag]] consumer Tools render
+to wrap each item in the re-orderable grid. Implemented by
+`<SortableCard>` (`src/components/common/list/SortableCard.tsx`).
+
+Composition:
+
+```tsx
+<SortableCard id={item.id} onRemove={() => removeItem(item.id)}>
+  <SortableCard.Handle>
+    {/* drag-area interior — typically an <img> thumbnail */}
+  </SortableCard.Handle>
+  {/* Tool-owned metadata + per-Tool extras
+      (page number, filesize, rotate badge, etc.) */}
+</SortableCard>
+```
+
+Owns:
+
+- The outer chrome (`group relative flex w-32 flex-col gap-2 rounded-lg
+  border border-gray-800 bg-gray-950 p-2`). The `relative` is the
+  positioning context for any absolute-positioned badge siblings the
+  Tool adds.
+- The `useSortable({ id })` wiring: `setNodeRef`, plus the style derived
+  from `CSS.Transform.toString(transform)` + `transition` + `opacity:
+  isDragging ? 0.4 : 1`.
+- The `<SortableCard.Handle>` child slot — owns the `cursor-grab
+  aspect-square overflow-hidden rounded bg-gray-900` chrome AND the
+  `useSortable` `attributes` + `listeners` spread, so the handle is the
+  grab target (not the whole card).
+- The remove badge — absolute-positioned 24×24 hover-only circle in the
+  top-right, rendered only when `onRemove` is provided. Consolidates
+  the "raw button: absolute-positioned 24×24 hover-only circle" shape
+  that previously lived twice.
+
+Per the common-component rule, future variances must be a named prop —
+not a `className` override. ImageToPdf's rotate badge is an
+absolute-positioned sibling of `<SortableCard.Handle>` inside the card
+body, not a `<SortableCard>` knob; if a second adopter needs a similar
+secondary badge, raise a named `secondaryBadge` slot then.
+
+Today's adopters: `ImageToPdf`'s `ImageCard`, `CombinePdf`'s `PageCard`.
 
 ## useBlobUrl
 

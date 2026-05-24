@@ -1,13 +1,12 @@
-import { closestCenter, DndContext, type DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
-import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
+import { DndContext } from '@dnd-kit/core'
+import { SortableContext } from '@dnd-kit/sortable'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { CheckboxInput, ErrorBanner, Pane, SplitPanel, UploadInput } from '@/components/common'
-import { DownloadPdfButton, PdfBytesPreview } from '@/components/common/pdf'
+import { CheckboxInput, ErrorBanner, Pane, SortableCard, SplitPanel, UploadInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { DownloadPdfButton, PdfBytesPreview } from '@/components/common/pdf'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useBlobUrl } from '@/hooks'
+import { useBlobUrl, useSortableItems } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { formatFileSize, imagesToPdf, type ImageToPdfInput, type ImageToPdfResult } from '@/utils'
 
@@ -33,26 +32,11 @@ type ImageCardProps = {
 }
 
 const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id })
   const thumbnailUrl = useBlobUrl(item.file)
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.4 : 1,
-  }
-
   return (
-    <div
-      className="group relative flex w-32 flex-col gap-2 rounded-lg border border-gray-800 bg-gray-950 p-2"
-      ref={setNodeRef}
-      style={style}
-    >
-      <div
-        className="aspect-square cursor-grab overflow-hidden rounded bg-gray-900"
-        {...attributes}
-        {...listeners}
-      >
+    <SortableCard id={item.id} onRemove={onRemove} removeLabel={`Remove ${item.file.name}`}>
+      <SortableCard.Handle>
         {thumbnailUrl && (
           <img
             alt={item.file.name}
@@ -61,7 +45,7 @@ const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => 
             style={{ transform: `rotate(${item.rotation}deg)` }}
           />
         )}
-      </div>
+      </SortableCard.Handle>
       <div className="flex items-center justify-between gap-1 text-body-xs">
         <span className="truncate text-gray-300" title={item.file.name}>
           {item.file.name}
@@ -71,16 +55,9 @@ const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => 
         <span>Page {pageNumber}</span>
         <span>{formatFileSize(item.file.size)}</span>
       </div>
-      {/* raw button: absolute-positioned 24×24 hover-only circle; Button always shows children with min-h-8 */}
-      <button
-        aria-label={`Remove ${item.file.name}`}
-        className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-gray-800 text-gray-300 opacity-0 transition-opacity hover:bg-red-600 hover:text-white group-hover:opacity-100"
-        onClick={onRemove}
-        type="button"
-      >
-        ×
-      </button>
-      {/* raw button: absolute-positioned 24×24 hover-only circle; Button always shows children with min-h-8 */}
+      {/* raw button: absolute-positioned 24×24 hover-only circle; the common
+          <Button> always shows children with min-h-8 chrome. Sibling of
+          <SortableCard.Handle> per CONTEXT.md → SortableCard. */}
       <button
         aria-label={`Rotate ${item.file.name}`}
         className="absolute -left-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-gray-800 text-gray-300 opacity-0 transition-opacity hover:bg-blue-600 hover:text-white group-hover:opacity-100"
@@ -90,15 +67,24 @@ const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => 
       >
         ↻
       </button>
-    </div>
+    </SortableCard>
   )
 }
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [items, setItems] = useState<Array<ImageItem>>([])
-  const [skipped, setSkipped] = useState<Array<string>>([])
+  const {
+    addItems,
+    dndContextProps,
+    items,
+    rejectFiles,
+    removeItem,
+    reset: resetItems,
+    skipped,
+    sortableContextProps,
+    updateItem,
+  } = useSortableItems<ImageItem>()
   const [result, setResult] = useState<ImageToPdfResult>(EMPTY_RESULT)
   const [onePerPage, setOnePerPage] = useState(true)
   const debounceRef = useRef<number | undefined>(undefined)
@@ -120,59 +106,39 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
     }
   }, [items, onePerPage])
 
-  const addFiles = useCallback((files: Array<File>) => {
-    const accepted: Array<ImageItem> = []
-    const skippedNames: Array<string> = []
-    for (const file of files) {
-      if (ALLOWED_RE.test(file.name)) {
-        accepted.push({
-          id: crypto.randomUUID(),
-          file,
-          rotation: 0,
-        })
-      } else {
-        skippedNames.push(file.name)
+  const addFiles = useCallback(
+    (files: Array<File>) => {
+      const accepted: Array<ImageItem> = []
+      const skippedNames: Array<string> = []
+      for (const file of files) {
+        if (ALLOWED_RE.test(file.name)) {
+          accepted.push({ id: crypto.randomUUID(), file, rotation: 0 })
+        } else {
+          skippedNames.push(file.name)
+        }
       }
-    }
-    setItems((prev) => [...prev, ...accepted])
-    setSkipped(skippedNames)
-  }, [])
-
-  const removeItem = useCallback((id: string) => {
-    setItems((prev) => prev.filter((i) => i.id !== id))
-  }, [])
-
-  const rotateItem = useCallback((id: string) => {
-    setItems((prev) =>
-      prev.map((i) => {
-        if (i.id !== id) return i
-        const next: 0 | 90 | 180 | 270 = i.rotation === 0 ? 90 : i.rotation === 90 ? 180 : i.rotation === 180 ? 270 : 0
-        return { ...i, rotation: next }
-      }),
-    )
-  }, [])
-
-  const reset = useCallback(() => {
-    setItems([])
-    setSkipped([])
-    setResult(EMPTY_RESULT)
-    setOnePerPage(true)
-  }, [])
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+      if (accepted.length > 0) addItems(accepted)
+      rejectFiles(skippedNames)
+    },
+    [addItems, rejectFiles],
   )
 
-  const handleDragEnd = (e: DragEndEvent) => {
-    if (e.over && e.active.id !== e.over.id) {
-      setItems((prev) => {
-        const oldIndex = prev.findIndex((i) => i.id === e.active.id)
-        const newIndex = prev.findIndex((i) => i.id === e.over!.id)
-        return arrayMove(prev, oldIndex, newIndex)
-      })
-    }
-  }
+  const rotateItem = useCallback(
+    (id: string) => {
+      const current = items.find((i) => i.id === id)
+      if (!current) return
+      const next: 0 | 90 | 180 | 270 =
+        current.rotation === 0 ? 90 : current.rotation === 90 ? 180 : current.rotation === 180 ? 270 : 0
+      updateItem(id, { rotation: next })
+    },
+    [items, updateItem],
+  )
+
+  const reset = useCallback(() => {
+    resetItems()
+    setResult(EMPTY_RESULT)
+    setOnePerPage(true)
+  }, [resetItems])
 
   return (
     <ToolDialogFrame
@@ -201,8 +167,8 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
             )}
 
             {items.length > 0 && (
-              <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} sensors={sensors}>
-                <SortableContext items={items.map((i) => i.id)} strategy={rectSortingStrategy}>
+              <DndContext {...dndContextProps}>
+                <SortableContext {...sortableContextProps}>
                   <div className="flex flex-wrap gap-3">
                     {items.map((item, idx) => (
                       <ImageCard

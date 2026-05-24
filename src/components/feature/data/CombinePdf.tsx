@@ -1,12 +1,12 @@
-import { closestCenter, DndContext, type DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
-import { arrayMove, rectSortingStrategy, SortableContext, sortableKeyboardCoordinates, useSortable } from '@dnd-kit/sortable'
-import { CSS } from '@dnd-kit/utilities'
+import { DndContext } from '@dnd-kit/core'
+import { SortableContext } from '@dnd-kit/sortable'
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import { ErrorBanner, Pane, SplitPanel, UploadInput } from '@/components/common'
-import { DownloadPdfButton, PdfBytesPreview } from '@/components/common/pdf'
+import { ErrorBanner, Pane, SortableCard, SplitPanel, UploadInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { DownloadPdfButton, PdfBytesPreview } from '@/components/common/pdf'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { useSortableItems } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { combinePdfPages, type CombinePdfResult, readPdfPages } from '@/utils'
 
@@ -36,50 +36,30 @@ type PageCardProps = {
   onRemove: () => void
 }
 
-const PageCard = ({ item, position, onRemove }: PageCardProps) => {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: item.id })
-
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.4 : 1,
-  }
-
-  return (
-    <div
-      className="group relative flex w-32 flex-col gap-2 rounded-lg border border-gray-800 bg-gray-950 p-2"
-      ref={setNodeRef}
-      style={style}
-      title={`${item.sourceFileName} · page ${item.sourcePageIndex + 1}`}
-    >
-      <div
-        className="aspect-square cursor-grab overflow-hidden rounded bg-gray-900"
-        {...attributes}
-        {...listeners}
-      >
-        <img alt={`${item.sourceFileName} page ${item.sourcePageIndex + 1}`} className="h-full w-full object-contain" src={item.thumbnailUrl} />
+const PageCard = ({ item, position, onRemove }: PageCardProps) => (
+  <SortableCard
+    id={item.id}
+    onRemove={onRemove}
+    removeLabel={`Remove ${item.sourceFileName} page ${item.sourcePageIndex + 1}`}
+  >
+    <SortableCard.Handle>
+      <img
+        alt={`${item.sourceFileName} page ${item.sourcePageIndex + 1}`}
+        className="h-full w-full object-contain"
+        src={item.thumbnailUrl}
+      />
+    </SortableCard.Handle>
+    <div className="flex flex-col gap-0.5 text-body-xs">
+      <span className="truncate text-gray-300" title={item.sourceFileName}>
+        {item.sourceFileName}
+      </span>
+      <div className="flex items-center justify-between text-gray-500">
+        <span>p{item.sourcePageIndex + 1}</span>
+        <span>#{position}</span>
       </div>
-      <div className="flex flex-col gap-0.5 text-body-xs">
-        <span className="truncate text-gray-300" title={item.sourceFileName}>
-          {item.sourceFileName}
-        </span>
-        <div className="flex items-center justify-between text-gray-500">
-          <span>p{item.sourcePageIndex + 1}</span>
-          <span>#{position}</span>
-        </div>
-      </div>
-      {/* raw button: absolute-positioned 24×24 hover-only circle; Button always shows children with min-h-8 */}
-      <button
-        aria-label={`Remove ${item.sourceFileName} page ${item.sourcePageIndex + 1}`}
-        className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-gray-800 text-gray-300 opacity-0 transition-opacity hover:bg-red-600 hover:text-white group-hover:opacity-100"
-        onClick={onRemove}
-        type="button"
-      >
-        ×
-      </button>
     </div>
-  )
-}
+  </SortableCard>
+)
 
 // ─── LoadingCard ─────────────────────────────────────────────────────────────
 
@@ -94,9 +74,17 @@ const LoadingCard = ({ fileName }: { fileName: string }) => (
 // ─── Main component ──────────────────────────────────────────────────────────
 
 export const CombinePdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [items, setItems] = useState<Array<PageItem>>([])
+  const {
+    addItems,
+    dndContextProps,
+    items,
+    rejectFiles,
+    removeItem,
+    reset: resetItems,
+    skipped,
+    sortableContextProps,
+  } = useSortableItems<PageItem>()
   const [loading, setLoading] = useState<Array<LoadingFile>>([])
-  const [skipped, setSkipped] = useState<Array<string>>([])
   const [result, setResult] = useState<CombinePdfResult>(EMPTY_RESULT)
   const debounceRef = useRef<number | undefined>(undefined)
 
@@ -116,70 +104,56 @@ export const CombinePdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
     }
   }, [items])
 
-  const addFiles = useCallback((files: Array<File>) => {
-    const skippedNames: Array<string> = []
-    const loadingEntries: Array<LoadingFile> = []
-    for (const file of files) {
-      if (!ALLOWED_RE.test(file.name)) {
-        skippedNames.push(file.name)
-        continue
-      }
-      loadingEntries.push({ id: crypto.randomUUID(), fileName: file.name })
-    }
-    setSkipped(skippedNames)
-    setLoading((prev) => [...prev, ...loadingEntries])
-
-    // Render pages for each newly-accepted file
-    const acceptedFiles = files.filter((f) => ALLOWED_RE.test(f.name))
-    for (let i = 0; i < acceptedFiles.length; i++) {
-      const file = acceptedFiles[i]
-      const loadingId = loadingEntries[i].id
-
-      void (async () => {
-        const pages = await readPdfPages(file)
-        if (pages === null) {
-          setSkipped((prev) => (prev.includes(file.name) ? prev : [...prev, file.name]))
-          setLoading((prev) => prev.filter((l) => l.id !== loadingId))
-          return
+  const addFiles = useCallback(
+    (files: Array<File>) => {
+      const skippedNames: Array<string> = []
+      const loadingEntries: Array<LoadingFile> = []
+      for (const file of files) {
+        if (!ALLOWED_RE.test(file.name)) {
+          skippedNames.push(file.name)
+          continue
         }
-        const newItems: Array<PageItem> = pages.map((p) => ({
-          id: crypto.randomUUID(),
-          file,
-          sourceFileName: file.name,
-          sourcePageIndex: p.pageIndex,
-          thumbnailUrl: p.thumbnailUrl,
-        }))
-        setItems((prev) => [...prev, ...newItems])
-        setLoading((prev) => prev.filter((l) => l.id !== loadingId))
-      })()
-    }
-  }, [])
+        loadingEntries.push({ id: crypto.randomUUID(), fileName: file.name })
+      }
+      rejectFiles(skippedNames)
+      setLoading((prev) => [...prev, ...loadingEntries])
 
-  const removeItem = useCallback((id: string) => {
-    setItems((prev) => prev.filter((i) => i.id !== id))
-  }, [])
+      // Render pages for each newly-accepted file
+      const acceptedFiles = files.filter((f) => ALLOWED_RE.test(f.name))
+      for (let i = 0; i < acceptedFiles.length; i++) {
+        const file = acceptedFiles[i]
+        const loadingId = loadingEntries[i].id
 
-  const reset = useCallback(() => {
-    setItems([])
-    setLoading([])
-    setSkipped([])
-    setResult(EMPTY_RESULT)
-  }, [])
-
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+        void (async () => {
+          const pages = await readPdfPages(file)
+          if (pages === null) {
+            // The functional form preserves the previous skipped list and
+            // dedupes — these inner-async failures must accumulate against
+            // any names rejected by the initial extension filter.
+            rejectFiles((prev) => (prev.includes(file.name) ? prev : [...prev, file.name]))
+            setLoading((prev) => prev.filter((l) => l.id !== loadingId))
+            return
+          }
+          const newItems: Array<PageItem> = pages.map((p) => ({
+            id: crypto.randomUUID(),
+            file,
+            sourceFileName: file.name,
+            sourcePageIndex: p.pageIndex,
+            thumbnailUrl: p.thumbnailUrl,
+          }))
+          addItems(newItems)
+          setLoading((prev) => prev.filter((l) => l.id !== loadingId))
+        })()
+      }
+    },
+    [addItems, rejectFiles],
   )
 
-  const handleDragEnd = (e: DragEndEvent) => {
-    if (e.over && e.active.id !== e.over.id) {
-      setItems((prev) => {
-        const oldIndex = prev.findIndex((i) => i.id === e.active.id)
-        const newIndex = prev.findIndex((i) => i.id === e.over!.id)
-        return arrayMove(prev, oldIndex, newIndex)
-      })
-    }
-  }
+  const reset = useCallback(() => {
+    resetItems()
+    setLoading([])
+    setResult(EMPTY_RESULT)
+  }, [resetItems])
 
   return (
     <ToolDialogFrame
@@ -214,8 +188,8 @@ export const CombinePdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
                 <p>Each page becomes a draggable card you can re-order before downloading the combined result.</p>
               </div>
             ) : (
-              <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} sensors={sensors}>
-                <SortableContext items={items.map((i) => i.id)} strategy={rectSortingStrategy}>
+              <DndContext {...dndContextProps}>
+                <SortableContext {...sortableContextProps}>
                   <div className="flex flex-wrap gap-3">
                     {items.map((item, idx) => (
                       <PageCard item={item} key={item.id} onRemove={() => removeItem(item.id)} position={idx + 1} />
