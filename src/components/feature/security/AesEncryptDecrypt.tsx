@@ -1,4 +1,6 @@
-import { CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
+import { useState } from 'react'
+
+import { CodeOutput, CopyButton, FieldForm, Pane, SplitPanel, ToggleButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFields } from '@/hooks'
@@ -10,6 +12,8 @@ const toolEntry = TOOL_REGISTRY_MAP['aes-encrypt-decrypt']
 const INITIAL_INPUT: AesInput = { mode: 'encrypt', password: '', source: '' }
 
 export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+  const [showPassword, setShowPassword] = useState(false)
+
   const {
     error,
     inputs,
@@ -51,6 +55,24 @@ export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponen
       ]}
     >
       <div className="flex w-full grow flex-col gap-4">
+        <div className="flex items-center gap-2">
+          <span className="text-body-xs text-gray-400">Mode</span>
+          <ToggleButton
+            aria-label="Encrypt mode"
+            onClick={() => setFields({ mode: 'encrypt' })}
+            pressed={mode === 'encrypt'}
+          >
+            Encrypt
+          </ToggleButton>
+          <ToggleButton
+            aria-label="Decrypt mode"
+            onClick={() => setFields({ mode: 'decrypt' })}
+            pressed={mode === 'decrypt'}
+          >
+            Decrypt
+          </ToggleButton>
+        </div>
+
         <SplitPanel>
           <Pane gap="lg">
             <FieldForm
@@ -65,9 +87,19 @@ export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponen
             <FieldForm
               label="Password"
               name="dialog-password"
-              onChange={(val) => setFields({ password: val })}
+              onChange={(val: string) => setFields({ password: val })}
               placeholder="Enter password..."
-              type="text"
+              suffix={
+                <button
+                  aria-label={showPassword ? 'Hide password' : 'Show password'}
+                  className="cursor-pointer text-body-xs text-gray-400 transition-colors hover:text-primary"
+                  onClick={() => setShowPassword((v) => !v)}
+                  type="button"
+                >
+                  {showPassword ? 'Hide' : 'Show'}
+                </button>
+              }
+              type={showPassword ? 'text' : 'password'}
               value={password}
             />
           </Pane>

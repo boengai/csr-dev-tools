@@ -84,7 +84,7 @@ export type TextInputProps = BaseInputProps &
   RefAttributes<HTMLInputElement> &
   Partial<InputVariants> & {
     suffix?: ReactElement
-    type: 'date' | 'number' | 'text' | 'time'
+    type: 'date' | 'number' | 'password' | 'text' | 'time'
   }
 
 export type UploadInputProps = Omit<BaseInputProps, 'onChange' | 'onEnter' | 'placeholder' | 'value'> & {

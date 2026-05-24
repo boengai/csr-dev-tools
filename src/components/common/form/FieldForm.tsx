@@ -35,6 +35,8 @@ const InputController = (props: InputControllerProps) => {
       return <TextInput {...props} type="date" />
     case 'number':
       return <TextInput {...props} type="number" />
+    case 'password':
+      return <TextInput {...props} type="password" />
     case 'radio':
       return <RadioGroupInput {...{ ...props, type: undefined }} />
     case 'range':

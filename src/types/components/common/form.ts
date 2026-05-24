@@ -21,6 +21,7 @@ export type InputControllerProps =
   | ColorInputForm
   | DateInputForm
   | NumberInputForm
+  | PasswordInputForm
   | RadioGroupInputForm
   | RangeInputForm
   | SelectInputForm
@@ -54,6 +55,10 @@ type NumberInputForm = Omit<TextInputProps, 'type'> & {
   max?: number
   min?: number
   type: 'number'
+}
+
+type PasswordInputForm = Omit<TextInputProps, 'type'> & {
+  type: 'password'
 }
 
 type SelectInputForm = SelectInputProps & {
