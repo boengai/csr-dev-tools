@@ -1,4 +1,5 @@
 import { CopyButton, FieldForm, ToggleButton } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFields } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -30,7 +31,7 @@ const INITIAL_INPUT: SortInput = {
   trimLines: false,
 }
 
-export const TextSortDedupe = (_props: ToolComponentProps) => {
+export const TextSortDedupe = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const { inputs, result, setFields } = useToolFields<SortInput, TextSortResult | null>({
     compute: ({ input: text, removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }) =>
       sortAndProcessText(text, { removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }),
@@ -43,57 +44,63 @@ export const TextSortDedupe = (_props: ToolComponentProps) => {
   const { input, removeDuplicates, removeEmpty, sortMode, trimLines } = inputs
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-      <FieldForm
-        label="Input (one item per line)"
-        name="sort-input"
-        onChange={(val) => setFields({ input: val })}
-        placeholder="banana\napple\ncherry\napple"
-        rows={8}
-        type="textarea"
-        value={input}
-      />
-
-      <div className="flex flex-wrap items-center gap-3">
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Text Sort & Dedupe"
+      triggers={[{ label: 'Sort' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
         <FieldForm
-          label="Sort"
-          name="sort-mode"
-          onChange={(val) => setFields({ sortMode: val as SortMode })}
-          options={SORT_OPTIONS}
-          type="select"
-          value={sortMode}
+          label="Input (one item per line)"
+          name="sort-input"
+          onChange={(val) => setFields({ input: val })}
+          placeholder={'banana\napple\ncherry\napple'}
+          rows={8}
+          type="textarea"
+          value={input}
         />
-        {[
-          { current: removeDuplicates, field: 'removeDuplicates' as const, label: 'Dedupe' },
-          { current: removeEmpty, field: 'removeEmpty' as const, label: 'No Empty' },
-          { current: trimLines, field: 'trimLines' as const, label: 'Trim' },
-        ].map(({ current, field, label }) => (
-          <ToggleButton
-            key={field}
-            onClick={() => setFields({ [field]: !current } as Partial<SortInput>)}
-            pressed={current}
-            variant="subtle"
-          >
-            {label}
-          </ToggleButton>
-        ))}
-      </div>
 
-      {result && (
-        <div aria-live="polite" className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-body-xs text-gray-400">
-              {result.lineCountBefore} → {result.lineCountAfter} lines
-            </span>
-            <CopyButton label="result" value={result.output} />
-          </div>
-          <pre className="max-h-[300px] overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono text-body-sm text-gray-200">
-            {result.output}
-          </pre>
+        <div className="flex flex-wrap items-center gap-3">
+          <FieldForm
+            label="Sort"
+            name="sort-mode"
+            onChange={(val) => setFields({ sortMode: val as SortMode })}
+            options={SORT_OPTIONS}
+            type="select"
+            value={sortMode}
+          />
+          {[
+            { current: removeDuplicates, field: 'removeDuplicates' as const, label: 'Dedupe' },
+            { current: removeEmpty, field: 'removeEmpty' as const, label: 'No Empty' },
+            { current: trimLines, field: 'trimLines' as const, label: 'Trim' },
+          ].map(({ current, field, label }) => (
+            <ToggleButton
+              key={field}
+              onClick={() => setFields({ [field]: !current } as Partial<SortInput>)}
+              pressed={current}
+              variant="subtle"
+            >
+              {label}
+            </ToggleButton>
+          ))}
         </div>
-      )}
-    </div>
+
+        {result && (
+          <div aria-live="polite" className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-body-xs text-gray-400">
+                {result.lineCountBefore} → {result.lineCountAfter} lines
+              </span>
+              <CopyButton label="result" value={result.output} />
+            </div>
+            <pre className="max-h-[300px] overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono text-body-sm text-gray-200">
+              {result.output}
+            </pre>
+          </div>
+        )}
+      </div>
+    </ToolDialogFrame>
   )
 }

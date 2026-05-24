@@ -1,9 +1,10 @@
 import { useState } from 'react'
 
 import { Button, CheckboxInput, CopyButton, FieldForm, Pane } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import type { LoremUnit } from '@/types'
+import type { LoremUnit, ToolComponentProps } from '@/types'
 import { generateLoremIpsum } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['lorem-ipsum-generator']
@@ -13,7 +14,7 @@ const UNIT_OPTIONS = [
   { label: 'Words', value: 'words' },
 ]
 
-export const LoremIpsumGenerator = () => {
+export const LoremIpsumGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [count, setCount] = useState(3)
   const [unit, setUnit] = useState<LoremUnit>('paragraphs')
   const [startWithLorem, setStartWithLorem] = useState(true)
@@ -32,48 +33,54 @@ export const LoremIpsumGenerator = () => {
   }
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Lorem Ipsum Generator"
+      triggers={[{ label: 'Generate' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        <div className="flex flex-col gap-3">
+          <FieldForm
+            label="Count"
+            max={50}
+            min={1}
+            name="count"
+            onChange={handleCountChange}
+            type="range"
+            value={String(count)}
+          />
+          <FieldForm
+            label="Unit"
+            name="unit"
+            onChange={(val) => setUnit(val as LoremUnit)}
+            options={UNIT_OPTIONS}
+            type="select"
+            value={unit}
+          />
+          <label className="flex items-center gap-2 text-body-sm text-gray-400" htmlFor="start-with-lorem">
+            <CheckboxInput checked={startWithLorem} id="start-with-lorem" onChange={setStartWithLorem} />
+            Start with &quot;Lorem ipsum dolor sit amet...&quot;
+          </label>
+          <Button onClick={handleGenerate} variant="primary">
+            Generate
+          </Button>
+        </div>
 
-      <div className="flex flex-col gap-3">
-        <FieldForm
-          label="Count"
-          max={50}
-          min={1}
-          name="count"
-          onChange={handleCountChange}
-          type="range"
-          value={String(count)}
-        />
-        <FieldForm
-          label="Unit"
-          name="unit"
-          onChange={(val) => setUnit(val as LoremUnit)}
-          options={UNIT_OPTIONS}
-          type="select"
-          value={unit}
-        />
-        <label className="flex items-center gap-2 text-body-sm text-gray-400" htmlFor="start-with-lorem">
-          <CheckboxInput checked={startWithLorem} id="start-with-lorem" onChange={setStartWithLorem} />
-          Start with &quot;Lorem ipsum dolor sit amet...&quot;
-        </label>
-        <Button onClick={handleGenerate} variant="primary">
-          Generate
-        </Button>
+        <div className="border-t-2 border-dashed border-gray-900" />
+
+        <Pane live>
+          <div className="flex items-center gap-2">
+            <span className="text-body-sm font-medium text-gray-400">Generated Text</span>
+            {output.length > 0 && <CopyButton label="lorem ipsum" value={output} />}
+          </div>
+
+          <div className="max-h-80 overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3">
+            <p className="text-sm whitespace-pre-wrap text-gray-300">{output}</p>
+          </div>
+        </Pane>
       </div>
-
-      <div className="border-t-2 border-dashed border-gray-900" />
-
-      <Pane live>
-        <div className="flex items-center gap-2">
-          <span className="text-body-sm font-medium text-gray-400">Generated Text</span>
-          {output.length > 0 && <CopyButton label="lorem ipsum" value={output} />}
-        </div>
-
-        <div className="max-h-80 overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3">
-          <p className="text-sm whitespace-pre-wrap text-gray-300">{output}</p>
-        </div>
-      </Pane>
-    </div>
+    </ToolDialogFrame>
   )
 }
