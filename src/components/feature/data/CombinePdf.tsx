@@ -207,7 +207,13 @@ export const CombinePdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
               </ErrorBanner>
             )}
 
-            {(items.length > 0 || loading.length > 0) && (
+            {items.length === 0 && loading.length === 0 ? (
+              <div className="flex grow flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-800 p-8 text-center text-body-xs text-gray-500">
+                <p className="text-body-sm text-gray-300">No PDFs added yet</p>
+                <p>Use "Select PDF files" above to add one or more.</p>
+                <p>Each page becomes a draggable card you can re-order before downloading the combined result.</p>
+              </div>
+            ) : (
               <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd} sensors={sensors}>
                 <SortableContext items={items.map((i) => i.id)} strategy={rectSortingStrategy}>
                   <div className="flex flex-wrap gap-3">

@@ -42,7 +42,9 @@ const makeFile = (name: string, type: string): File => new File(['mock'], name, 
 describe('CombinePdf (per-page)', () => {
   it('renders the upload button in initial state', async () => {
     render(<CombinePdf autoOpen onAfterDialogClose={() => {}} />)
-    expect(await screen.findByText(/Select PDF files/i)).toBeInTheDocument()
+    // Use the button role so the assertion isn't ambiguous with the empty-state
+    // hint copy, which also mentions "Select PDF files" by design.
+    expect(await screen.findByRole('button', { name: /Select PDF files/i })).toBeInTheDocument()
   })
 
   it('renders one card per page across all uploaded files', async () => {
