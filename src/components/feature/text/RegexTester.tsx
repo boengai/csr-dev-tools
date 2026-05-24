@@ -20,6 +20,17 @@ type RegexComputed = { regex: RegexResult | null; segments: Array<HighlightSegme
 const INITIAL_INPUT: RegexInput = { flags: DEFAULT_FLAGS, pattern: '', testString: '' }
 const INITIAL_COMPUTED: RegexComputed = { regex: null, segments: [] }
 
+// Curated set of common patterns developers reach for. Each preset only sets
+// the pattern; the user's existing flags are preserved so they don't lose
+// state by clicking a chip.
+const PRESETS: ReadonlyArray<{ label: string; pattern: string }> = [
+  { label: 'Email', pattern: '[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}' },
+  { label: 'URL', pattern: 'https?://[^\\s]+' },
+  { label: 'IPv4', pattern: '\\b(?:\\d{1,3}\\.){3}\\d{1,3}\\b' },
+  { label: 'UUID', pattern: '[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}' },
+  { label: 'Hex color', pattern: '#(?:[0-9a-fA-F]{3}){1,2}\\b' },
+]
+
 const flagsToString = (flags: Flags) =>
   Object.entries(flags)
     .filter(([, v]) => v)
@@ -73,6 +84,7 @@ const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
 
 export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const {
+    error,
     inputs,
     isPending: loading,
     reset,
@@ -95,6 +107,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
   const matches = computed.regex?.matches ?? []
   const matchCount = matches.length
   const copyText = computed.regex ? formatMatchesForCopy(matches) : ''
+  const errorMessage = error instanceof Error ? error.message : null
 
   return (
     <ToolDialogFrame
@@ -106,6 +119,20 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
       triggers={[{ label: 'Test Regex' }]}
     >
       <div className="flex w-full grow flex-col gap-4">
+        <div className="flex items-center gap-2 text-body-xs text-gray-400">
+          <span>Presets:</span>
+          {PRESETS.map((preset) => (
+            <button
+              className="cursor-pointer rounded border border-gray-700 px-2 py-0.5 transition-colors hover:border-primary hover:text-primary"
+              key={preset.label}
+              onClick={() => setFields({ pattern: preset.pattern })}
+              type="button"
+            >
+              {preset.label}
+            </button>
+          ))}
+        </div>
+
         <div className="flex flex-col gap-4">
           <FieldForm
             label={
@@ -150,6 +177,14 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
         <div className="border-t-2 border-dashed border-gray-900" />
 
         <Pane live>
+          {errorMessage && (
+            <p
+              className="rounded border border-error/50 bg-error/10 px-3 py-2 text-body-xs text-error"
+              role="alert"
+            >
+              {errorMessage}
+            </p>
+          )}
           <div className="flex items-center gap-2">
             <span className="text-body-sm font-medium text-gray-400">
               {loading
