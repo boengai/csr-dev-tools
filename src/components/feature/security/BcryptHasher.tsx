@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
 
 import { Button, CodeInput, CopyButton, SelectInput, Tabs, TextInput } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useAsyncAction, useElapsedTimer, useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -229,37 +230,43 @@ const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) =>
   )
 }
 
-export const BcryptHasher = (_props: ToolComponentProps) => {
+export const BcryptHasher = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [processing, setProcessing] = useState(false)
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-      <Tabs
-        items={[
-          {
-            content: <HashTab onProcessingChange={setProcessing} />,
-            // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
-            trigger: (
-              <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>
-                Hash
-              </button>
-            ),
-            value: 'hash',
-          },
-          {
-            content: <VerifyTab onProcessingChange={setProcessing} />,
-            // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
-            trigger: (
-              <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>
-                Verify
-              </button>
-            ),
-            value: 'verify',
-          },
-        ]}
-      />
-    </div>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Bcrypt Hasher"
+      triggers={[{ label: 'Open' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        <Tabs
+          items={[
+            {
+              content: <HashTab onProcessingChange={setProcessing} />,
+              // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
+              trigger: (
+                <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>
+                  Hash
+                </button>
+              ),
+              value: 'hash',
+            },
+            {
+              content: <VerifyTab onProcessingChange={setProcessing} />,
+              // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
+              trigger: (
+                <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>
+                  Verify
+                </button>
+              ),
+              value: 'verify',
+            },
+          ]}
+        />
+      </div>
+    </ToolDialogFrame>
   )
 }

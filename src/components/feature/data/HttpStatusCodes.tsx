@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 
 import { FieldForm, ToggleButton } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
 import { cnMerge, filterHttpStatusCodes, HTTP_STATUS_CODES, type HttpStatusCategory, tv } from '@/utils'
@@ -34,7 +35,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   '5xx Server Error': 'text-red-400',
 }
 
-export const HttpStatusCodes = (_props: ToolComponentProps) => {
+export const HttpStatusCodes = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState<HttpStatusCategory | ''>('')
 
@@ -44,66 +45,72 @@ export const HttpStatusCodes = (_props: ToolComponentProps) => {
   )
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="HTTP Status Codes"
+      triggers={[{ label: 'Browse' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        <FieldForm
+          label="Search"
+          name="status-search"
+          onChange={setQuery}
+          placeholder="Search by code, name, or description..."
+          type="text"
+          value={query}
+        />
 
-      <FieldForm
-        label="Search"
-        name="status-search"
-        onChange={setQuery}
-        placeholder="Search by code, name, or description..."
-        type="text"
-        value={query}
-      />
+        <div className="flex flex-wrap gap-2">
+          {CATEGORIES.map((cat) => (
+            <ToggleButton
+              key={cat.label}
+              onClick={() => setCategory(cat.value)}
+              pressed={category === cat.value}
+              variant="subtle"
+            >
+              {cat.label}
+            </ToggleButton>
+          ))}
+        </div>
 
-      <div className="flex flex-wrap gap-2">
-        {CATEGORIES.map((cat) => (
-          <ToggleButton
-            key={cat.label}
-            onClick={() => setCategory(cat.value)}
-            pressed={category === cat.value}
-            variant="subtle"
-          >
-            {cat.label}
-          </ToggleButton>
-        ))}
-      </div>
-
-      <div className="flex max-h-[400px] flex-col gap-2 overflow-auto">
-        {filtered.length === 0 ? (
-          <p className="text-body-sm text-gray-500">No matching status codes</p>
-        ) : (
-          filtered.map((code, i) => (
-            <div key={code.code}>
-              {!category && (i === 0 || filtered[i - 1].category !== code.category) && (
-                <p
-                  className={cnMerge(
-                    sectionHeaderStyles({ spaced: i > 0 }),
-                    CATEGORY_COLORS[code.category] ?? 'text-gray-300',
-                  )}
-                >
-                  {code.category}
-                </p>
-              )}
-              <div className="rounded border border-gray-800 bg-gray-950 p-3">
-                <div className="flex items-baseline gap-2">
-                  <span
+        <div className="flex max-h-[400px] flex-col gap-2 overflow-auto">
+          {filtered.length === 0 ? (
+            <p className="text-body-sm text-gray-500">No matching status codes</p>
+          ) : (
+            filtered.map((code, i) => (
+              <div key={code.code}>
+                {!category && (i === 0 || filtered[i - 1].category !== code.category) && (
+                  <p
                     className={cnMerge(
-                      'font-mono text-body-lg font-bold',
+                      sectionHeaderStyles({ spaced: i > 0 }),
                       CATEGORY_COLORS[code.category] ?? 'text-gray-300',
                     )}
                   >
-                    {code.code}
-                  </span>
-                  <span className="text-body-sm font-medium text-gray-200">{code.name}</span>
+                    {code.category}
+                  </p>
+                )}
+                <div className="rounded border border-gray-800 bg-gray-950 p-3">
+                  <div className="flex items-baseline gap-2">
+                    <span
+                      className={cnMerge(
+                        'font-mono text-body-lg font-bold',
+                        CATEGORY_COLORS[code.category] ?? 'text-gray-300',
+                      )}
+                    >
+                      {code.code}
+                    </span>
+                    <span className="text-body-sm font-medium text-gray-200">{code.name}</span>
+                  </div>
+                  <p className="mt-1 text-body-xs text-gray-400">{code.description}</p>
+                  <p className="mt-1 text-body-xs text-gray-500">💡 {code.useCase}</p>
                 </div>
-                <p className="mt-1 text-body-xs text-gray-400">{code.description}</p>
-                <p className="mt-1 text-body-xs text-gray-500">💡 {code.useCase}</p>
               </div>
-            </div>
-          ))
-        )}
+            ))
+          )}
+        </div>
       </div>
-    </div>
+    </ToolDialogFrame>
   )
 }

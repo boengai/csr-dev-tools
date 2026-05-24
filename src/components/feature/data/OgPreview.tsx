@@ -1,6 +1,7 @@
 import { useCallback, useMemo, useState } from 'react'
 
 import { CopyButton, FieldForm } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
 import { generateOgMetaTags, type OgConfig } from '@/utils'
@@ -61,7 +62,7 @@ const LinkedInCard = ({ config }: { config: OgConfig }) => (
   </div>
 )
 
-export const OgPreview = (_: ToolComponentProps) => {
+export const OgPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [config, setConfig] = useState<OgConfig>({ ...DEFAULT_CONFIG })
 
   const metaTags = useMemo(() => generateOgMetaTags(config), [config])
@@ -74,80 +75,86 @@ export const OgPreview = (_: ToolComponentProps) => {
   )
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-      <div className="flex flex-col gap-3">
-        <FieldForm
-          label="og:title"
-          name="og-title"
-          onChange={updateField('title')}
-          placeholder="My Awesome Page"
-          type="text"
-          value={config.title}
-        />
-        <FieldForm
-          label="og:description"
-          name="og-description"
-          onChange={updateField('description')}
-          placeholder="A great page about awesome things"
-          type="text"
-          value={config.description}
-        />
-        <FieldForm
-          label="og:image"
-          name="og-image"
-          onChange={updateField('image')}
-          placeholder="https://example.com/image.png"
-          type="text"
-          value={config.image}
-        />
-        <FieldForm
-          label="og:site_name"
-          name="og-site-name"
-          onChange={updateField('siteName')}
-          placeholder="Example"
-          type="text"
-          value={config.siteName}
-        />
-        <FieldForm
-          label="og:url"
-          name="og-url"
-          onChange={updateField('url')}
-          placeholder="https://example.com/page"
-          type="text"
-          value={config.url}
-        />
-      </div>
-
-      <div className="border-t-2 border-dashed border-gray-900" />
-
-      <div className="grid gap-4 tablet:grid-cols-2">
-        <div className="flex flex-col gap-2">
-          <h3 className="text-body-sm font-medium text-gray-300">Twitter Card</h3>
-          <TwitterCard config={config} />
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="OG Preview"
+      triggers={[{ label: 'Preview' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        <div className="flex flex-col gap-3">
+          <FieldForm
+            label="og:title"
+            name="og-title"
+            onChange={updateField('title')}
+            placeholder="My Awesome Page"
+            type="text"
+            value={config.title}
+          />
+          <FieldForm
+            label="og:description"
+            name="og-description"
+            onChange={updateField('description')}
+            placeholder="A great page about awesome things"
+            type="text"
+            value={config.description}
+          />
+          <FieldForm
+            label="og:image"
+            name="og-image"
+            onChange={updateField('image')}
+            placeholder="https://example.com/image.png"
+            type="text"
+            value={config.image}
+          />
+          <FieldForm
+            label="og:site_name"
+            name="og-site-name"
+            onChange={updateField('siteName')}
+            placeholder="Example"
+            type="text"
+            value={config.siteName}
+          />
+          <FieldForm
+            label="og:url"
+            name="og-url"
+            onChange={updateField('url')}
+            placeholder="https://example.com/page"
+            type="text"
+            value={config.url}
+          />
         </div>
-        <div className="flex flex-col gap-2">
-          <h3 className="text-body-sm font-medium text-gray-300">Facebook</h3>
-          <FacebookCard config={config} />
-        </div>
-        <div className="flex flex-col gap-2">
-          <h3 className="text-body-sm font-medium text-gray-300">LinkedIn</h3>
-          <LinkedInCard config={config} />
-        </div>
-      </div>
 
-      {metaTags && (
-        <div aria-live="polite" className="flex flex-col gap-2">
-          <div className="flex items-center gap-2">
-            <span className="text-body-sm font-medium text-gray-400">Meta Tags</span>
-            <CopyButton label="meta tags" value={metaTags} />
+        <div className="border-t-2 border-dashed border-gray-900" />
+
+        <div className="grid gap-4 tablet:grid-cols-2">
+          <div className="flex flex-col gap-2">
+            <h3 className="text-body-sm font-medium text-gray-300">Twitter Card</h3>
+            <TwitterCard config={config} />
           </div>
-          <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
-            <pre className="text-sm font-mono whitespace-pre-wrap text-gray-300">{metaTags}</pre>
+          <div className="flex flex-col gap-2">
+            <h3 className="text-body-sm font-medium text-gray-300">Facebook</h3>
+            <FacebookCard config={config} />
+          </div>
+          <div className="flex flex-col gap-2">
+            <h3 className="text-body-sm font-medium text-gray-300">LinkedIn</h3>
+            <LinkedInCard config={config} />
           </div>
         </div>
-      )}
-    </div>
+
+        {metaTags && (
+          <div aria-live="polite" className="flex flex-col gap-2">
+            <div className="flex items-center gap-2">
+              <span className="text-body-sm font-medium text-gray-400">Meta Tags</span>
+              <CopyButton label="meta tags" value={metaTags} />
+            </div>
+            <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
+              <pre className="text-sm font-mono whitespace-pre-wrap text-gray-300">{metaTags}</pre>
+            </div>
+          </div>
+        )}
+      </div>
+    </ToolDialogFrame>
   )
 }
