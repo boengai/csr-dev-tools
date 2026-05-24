@@ -2,12 +2,13 @@ import { useLocation } from '@tanstack/react-router'
 import { AnimatePresence, m } from 'motion/react'
 import { useEffect, useMemo, useRef, useState } from 'react'
 
-import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY } from '@/constants'
+import { CATEGORY_ORDER, groupToolsByCategory, ROUTE_PATH, TOOL_REGISTRY } from '@/constants'
 import { useKeyboardShortcut, useSidebarStore } from '@/hooks'
 import { tv } from '@/utils'
 
 import { XIcon } from '../icon'
 import { SidebarCategory } from './SidebarCategory'
+import { SidebarHomeItem } from './SidebarHomeItem'
 import { SidebarToolItem } from './SidebarToolItem'
 
 const sidebarNavStyles = tv({
@@ -83,6 +84,9 @@ export const Sidebar = () => {
         >
           <XIcon size={20} />
         </button>
+      </div>
+      <div className="mb-2 px-1">
+        <SidebarHomeItem isActive={pathname === ROUTE_PATH.HOME} />
       </div>
       {CATEGORY_ORDER.filter((cat) => groupedTools[cat]).map((category) => (
         <SidebarCategory categoryName={category} key={category}>

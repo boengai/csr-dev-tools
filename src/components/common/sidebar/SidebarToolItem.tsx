@@ -7,7 +7,7 @@ import type { CompVariant, SidebarToolItemProps } from '@/types'
 import type { SidebarToolItemVariants } from '@/types/components/common/sidebar/sidebarToolItem'
 import { tv } from '@/utils'
 
-const sidebarToolItemVariants: CompVariant<SidebarToolItemVariants> = tv({
+export const sidebarItemVariants: CompVariant<SidebarToolItemVariants> = tv({
   base: 'flex w-full cursor-pointer items-center gap-2 rounded-l border-r-2 border-r-transparent py-2 pl-3 text-gray-300 transition-colors',
   defaultVariants: {
     active: false,
@@ -30,7 +30,7 @@ export const SidebarToolItem = ({ emoji, isActive = false, name, toolKey }: Side
   }, [close, navigate, toolKey])
 
   return (
-    <button className={sidebarToolItemVariants({ active: isActive })} onClick={handleClick} type="button">
+    <button className={sidebarItemVariants({ active: isActive })} onClick={handleClick} type="button">
       <span className="shrink-0">{emoji}</span>
       <span className="truncate">{name}</span>
     </button>
