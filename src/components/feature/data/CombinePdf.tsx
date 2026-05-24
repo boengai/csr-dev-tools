@@ -1,12 +1,12 @@
 import { DndContext } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { ErrorBanner, Pane, SortableCard, SplitPanel, UploadInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { DownloadPdfButton, PdfBytesPreview } from '@/components/common/pdf'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useSortableItems } from '@/hooks'
+import { useSortableItems, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { combinePdfPages, type CombinePdfResult, readPdfPages } from '@/utils'
 
@@ -85,24 +85,23 @@ export const CombinePdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
     sortableContextProps,
   } = useSortableItems<PageItem>()
   const [loading, setLoading] = useState<Array<LoadingFile>>([])
-  const [result, setResult] = useState<CombinePdfResult>(EMPTY_RESULT)
-  const debounceRef = useRef<number | undefined>(undefined)
 
-  // Regenerate the merged PDF whenever items change (debounced ~200ms)
+  const { result, setInput } = useToolComputation<Array<PageItem>, CombinePdfResult>(
+    (input) => combinePdfPages(input.map((i) => ({ file: i.file, pageIndex: i.sourcePageIndex }))),
+    {
+      debounceMs: 200,
+      errorLabel: 'Failed to merge PDFs',
+      initial: EMPTY_RESULT,
+      isEmpty: (input) => input.length === 0,
+    },
+  )
+
+  // Pipeline input is rebuilt per change from external React state (seam's
+  // `items`), so this Tool uses the unwrapped `useToolComputation` per the
+  // doctrine — see CONTEXT.md → "Tool input".
   useEffect(() => {
-    if (debounceRef.current !== undefined) window.clearTimeout(debounceRef.current)
-    if (items.length === 0) {
-      setResult(EMPTY_RESULT)
-      return
-    }
-    debounceRef.current = window.setTimeout(async () => {
-      const out = await combinePdfPages(items.map((i) => ({ file: i.file, pageIndex: i.sourcePageIndex })))
-      setResult(out)
-    }, 200)
-    return () => {
-      if (debounceRef.current !== undefined) window.clearTimeout(debounceRef.current)
-    }
-  }, [items])
+    setInput(items)
+  }, [items, setInput])
 
   const addFiles = useCallback(
     (files: Array<File>) => {
@@ -152,7 +151,8 @@ export const CombinePdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
   const reset = useCallback(() => {
     resetItems()
     setLoading([])
-    setResult(EMPTY_RESULT)
+    // `result` resets via the mirror effect: items becomes [], the pipeline's
+    // isEmpty short-circuits to `initial` synchronously inside the same tick.
   }, [resetItems])
 
   return (

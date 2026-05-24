@@ -1,12 +1,12 @@
 import { DndContext } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
 import { CheckboxInput, ErrorBanner, Pane, SortableCard, SplitPanel, UploadInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { DownloadPdfButton, PdfBytesPreview } from '@/components/common/pdf'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useBlobUrl, useSortableItems } from '@/hooks'
+import { useBlobUrl, useSortableItems, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
 import { formatFileSize, imagesToPdf, type ImageToPdfInput, type ImageToPdfResult } from '@/utils'
 
@@ -85,26 +85,30 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
     sortableContextProps,
     updateItem,
   } = useSortableItems<ImageItem>()
-  const [result, setResult] = useState<ImageToPdfResult>(EMPTY_RESULT)
   const [onePerPage, setOnePerPage] = useState(true)
-  const debounceRef = useRef<number | undefined>(undefined)
 
-  // Regenerate the PDF whenever items or layout option changes (debounced ~150ms)
+  const { result, setInput } = useToolComputation<
+    { items: Array<ImageItem>; onePerPage: boolean },
+    ImageToPdfResult
+  >(
+    (input) => {
+      const inputs: Array<ImageToPdfInput> = input.items.map((i) => ({ file: i.file, rotation: i.rotation }))
+      return imagesToPdf(inputs, { layout: input.onePerPage ? 'one-per-page' : 'grid-2x2' })
+    },
+    {
+      debounceMs: 150,
+      errorLabel: 'Failed to generate PDF',
+      initial: EMPTY_RESULT,
+      isEmpty: (input) => input.items.length === 0,
+    },
+  )
+
+  // Pipeline input is rebuilt per change from external React state (seam's
+  // `items` + Tool-owned `onePerPage`), so this Tool uses the unwrapped
+  // `useToolComputation` per the doctrine — see CONTEXT.md → "Tool input".
   useEffect(() => {
-    if (debounceRef.current !== undefined) window.clearTimeout(debounceRef.current)
-    if (items.length === 0) {
-      setResult(EMPTY_RESULT)
-      return
-    }
-    debounceRef.current = window.setTimeout(async () => {
-      const inputs: Array<ImageToPdfInput> = items.map((i) => ({ file: i.file, rotation: i.rotation }))
-      const out = await imagesToPdf(inputs, { layout: onePerPage ? 'one-per-page' : 'grid-2x2' })
-      setResult(out)
-    }, 150)
-    return () => {
-      if (debounceRef.current !== undefined) window.clearTimeout(debounceRef.current)
-    }
-  }, [items, onePerPage])
+    setInput({ items, onePerPage })
+  }, [items, onePerPage, setInput])
 
   const addFiles = useCallback(
     (files: Array<File>) => {
@@ -136,8 +140,9 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
 
   const reset = useCallback(() => {
     resetItems()
-    setResult(EMPTY_RESULT)
     setOnePerPage(true)
+    // `result` resets via the mirror effect: items becomes [], the pipeline's
+    // isEmpty short-circuits to `initial` synchronously inside the same tick.
   }, [resetItems])
 
   return (
