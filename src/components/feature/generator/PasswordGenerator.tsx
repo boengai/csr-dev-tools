@@ -1,8 +1,10 @@
 import { useRef, useState } from 'react'
 
 import { Button, CopyButton, FieldForm, Pane, ToggleButton } from '@/components/common'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
+import type { ToolComponentProps } from '@/types'
 import { DEFAULT_PASSWORD_OPTIONS, generatePassword, type PasswordOptions } from '@/utils'
 
 const CHAR_TOGGLES: Array<{
@@ -17,7 +19,7 @@ const CHAR_TOGGLES: Array<{
 
 const toolEntry = TOOL_REGISTRY_MAP['password-generator']
 
-export const PasswordGenerator = () => {
+export const PasswordGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [options, setOptions] = useState<PasswordOptions>(DEFAULT_PASSWORD_OPTIONS)
   const [count, setCount] = useState(1)
   const nextPwId = useRef(1)
@@ -48,68 +50,74 @@ export const PasswordGenerator = () => {
   }
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-      <div className="flex shrink-0 items-end gap-3">
-        <div className="flex w-3/5 flex-col gap-3">
-          <FieldForm
-            label="Length"
-            max={128}
-            min={8}
-            name="pw-length"
-            onChange={handleLengthChange}
-            type="range"
-            value={String(options.length)}
-          />
-          <FieldForm
-            label="Count"
-            max={20}
-            min={1}
-            name="pw-count"
-            onChange={handleCountChange}
-            type="range"
-            value={String(count)}
-          />
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterDialogClose}
+      title="Password Generator"
+      triggers={[{ label: 'Generate' }]}
+    >
+      <div className="flex w-full grow flex-col gap-4">
+        <div className="flex shrink-0 items-end gap-3">
+          <div className="flex w-3/5 flex-col gap-3">
+            <FieldForm
+              label="Length"
+              max={128}
+              min={8}
+              name="pw-length"
+              onChange={handleLengthChange}
+              type="range"
+              value={String(options.length)}
+            />
+            <FieldForm
+              label="Count"
+              max={20}
+              min={1}
+              name="pw-count"
+              onChange={handleCountChange}
+              type="range"
+              value={String(count)}
+            />
+          </div>
+          <div className="flex w-2/5 flex-col gap-3">
+            <div className="grid grid-cols-2 gap-2">
+              {CHAR_TOGGLES.map(({ key, label }) => (
+                <ToggleButton
+                  aria-label={`Toggle ${label}`}
+                  key={key}
+                  onClick={() => handleToggle(key)}
+                  pressed={options[key]}
+                >
+                  {label}
+                </ToggleButton>
+              ))}
+            </div>
+            <Button block onClick={handleGenerate} variant="default">
+              Generate
+            </Button>
+          </div>
         </div>
-        <div className="flex w-2/5 flex-col gap-3">
-          <div className="grid grid-cols-2 gap-2">
-            {CHAR_TOGGLES.map(({ key, label }) => (
-              <ToggleButton
-                aria-label={`Toggle ${label}`}
-                key={key}
-                onClick={() => handleToggle(key)}
-                pressed={options[key]}
-              >
-                {label}
-              </ToggleButton>
+        <div className="border-t-2 border-dashed border-gray-900" />
+        <Pane live>
+          <div className="flex items-center gap-2">
+            <span className="text-body-sm font-medium text-gray-400">Generated Passwords ({passwords.length})</span>
+            {passwords.length > 0 && (
+              <CopyButton label="all passwords" value={passwords.map((p) => p.value).join('\n')} />
+            )}
+          </div>
+          <div className="flex max-h-80 flex-col gap-1 overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3">
+            {passwords.map((pw, i) => (
+              <div className="flex items-center justify-between gap-2" key={pw._id}>
+                <span className="text-sm font-mono break-all text-gray-300">
+                  {passwords.length > 1 && <span className="text-gray-600">{i + 1}. </span>}
+                  {pw.value}
+                </span>
+                <CopyButton label={`password ${i + 1}`} value={pw.value} />
+              </div>
             ))}
           </div>
-          <Button block onClick={handleGenerate} variant="default">
-            Generate
-          </Button>
-        </div>
+        </Pane>
       </div>
-      <div className="border-t-2 border-dashed border-gray-900" />
-      <Pane live>
-        <div className="flex items-center gap-2">
-          <span className="text-body-sm font-medium text-gray-400">Generated Passwords ({passwords.length})</span>
-          {passwords.length > 0 && (
-            <CopyButton label="all passwords" value={passwords.map((p) => p.value).join('\n')} />
-          )}
-        </div>
-        <div className="flex max-h-80 flex-col gap-1 overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3">
-          {passwords.map((pw, i) => (
-            <div className="flex items-center justify-between gap-2" key={pw._id}>
-              <span className="text-sm font-mono break-all text-gray-300">
-                {passwords.length > 1 && <span className="text-gray-600">{i + 1}. </span>}
-                {pw.value}
-              </span>
-              <CopyButton label={`password ${i + 1}`} value={pw.value} />
-            </div>
-          ))}
-        </div>
-      </Pane>
-    </div>
+    </ToolDialogFrame>
   )
 }
