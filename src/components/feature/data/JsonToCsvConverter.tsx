@@ -1,6 +1,6 @@
 import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, JsonCsvConvertMode } from '@/types'
+import type { ConverterMode, JsonCsvConvertMode, ToolComponentProps } from '@/types'
 import { csvToJson, jsonToCsv } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-csv-converter']
@@ -40,12 +40,14 @@ const compute = async ({
   return { output }
 }
 
-export const JsonToCsvConverter = () => (
+export const JsonToCsvConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => (
   <BidirectionalConverter
+    autoOpen={autoOpen}
     compute={compute}
     description={toolEntry?.description}
     initialResult={{ output: '' }}
     modeStorageKey="json-to-csv"
     modes={MODES}
+    onAfterDialogClose={onAfterDialogClose}
   />
 )

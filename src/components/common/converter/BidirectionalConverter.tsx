@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react'
 
-import { Button, CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
+import { Button, CodeOutput, CopyButton, FieldForm, Pane, SplitPanel, ToggleButton } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { readJsonStorage, useInputLocalStorage, useToast, useToolFields, writeJsonStorage } from '@/hooks'
 import type { BidirectionalConverterProps, ConvertOutput } from '@/types'
@@ -85,11 +85,16 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
     setFields({ source: val })
   }
 
-  const openDialog = (m: M) => {
+  const switchMode = (m: M) => {
+    if (m === mode) return
     const restored = readSource(m, sourceKeyPrefix)
     setPersistedMode(m)
-    setDialogOpen(true)
     setFieldsImmediate({ mode: m, source: restored })
+  }
+
+  const openDialog = (m: M) => {
+    switchMode(m)
+    setDialogOpen(true)
   }
 
   const handleReset = () => {
@@ -101,11 +106,9 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
       <div className="flex w-full grow flex-col gap-4">
         {description && <p className="shrink-0 text-body-xs text-gray-400">{description}</p>}
         <div className="flex grow flex-col items-center justify-center gap-2">
-          {modes.map((m) => (
-            <Button block key={m.key} onClick={() => openDialog(m.key)} variant="default">
-              {m.label}
-            </Button>
-          ))}
+          <Button block onClick={() => openDialog(mode)} variant="default">
+            {modeConfig.label}
+          </Button>
         </div>
       </div>
       <ToolDialogShell
@@ -117,6 +120,21 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
         title={modeConfig.label}
       >
         <div className="flex w-full grow flex-col gap-4">
+          {modes.length > 1 && (
+            <div className="flex items-center gap-2">
+              <span className="text-body-xs text-gray-400">Mode</span>
+              {modes.map((m) => (
+                <ToggleButton
+                  aria-label={`${m.label} mode`}
+                  key={m.key}
+                  onClick={() => switchMode(m.key)}
+                  pressed={m.key === mode}
+                >
+                  {m.label}
+                </ToggleButton>
+              ))}
+            </div>
+          )}
           {sourceToolbarSlot ? sourceToolbarSlot({ mode, recompute }) : null}
           {renderBanner?.(result)}
           <SplitPanel>

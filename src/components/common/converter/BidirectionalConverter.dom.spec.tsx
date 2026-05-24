@@ -62,7 +62,7 @@ afterEach(() => {
 })
 
 describe('BidirectionalConverter — closed state', () => {
-  it('renders both mode buttons with labels', () => {
+  it('renders only the active mode button on the tile (in-dialog toggle switches modes)', () => {
     render(
       <BidirectionalConverter
         compute={upperCompute}
@@ -71,8 +71,10 @@ describe('BidirectionalConverter — closed state', () => {
         modeStorageKey="test"
       />,
     )
+    // Tile shows a single trigger reflecting the persisted/default mode.
     expect(screen.getByRole('button', { name: 'A → B' })).toBeTruthy()
-    expect(screen.getByRole('button', { name: 'B → A' })).toBeTruthy()
+    // The other mode's switch lives inside the dialog, not on the tile.
+    expect(screen.queryByRole('button', { name: 'B → A' })).toBeNull()
   })
 
   it('renders description when provided', () => {
@@ -116,7 +118,7 @@ describe('BidirectionalConverter — opening + switching modes', () => {
     expect(screen.getByText('B Output')).toBeTruthy()
   })
 
-  it('opens dialog with mode 2 labels when mode 2 button clicked', () => {
+  it('switches to mode 2 labels when the in-dialog mode toggle is clicked', () => {
     render(
       <BidirectionalConverter
         compute={upperCompute}
@@ -125,7 +127,10 @@ describe('BidirectionalConverter — opening + switching modes', () => {
         modeStorageKey="test"
       />,
     )
-    fireEvent.click(screen.getByRole('button', { name: 'B → A' }))
+    fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
+    expect(screen.getByText('A Input')).toBeTruthy()
+
+    fireEvent.click(screen.getByRole('button', { name: 'B → A mode' }))
     expect(screen.getByText('B Input')).toBeTruthy()
     expect(screen.getByText('A Output')).toBeTruthy()
   })
@@ -173,7 +178,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
     expect(onError.mock.calls[0][1]).toBe('a-to-b')
   })
 
-  it('reads per-mode source from localStorage when switching modes', async () => {
+  it('reads per-mode source from localStorage when switching modes via the in-dialog toggle', async () => {
     localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('saved A'))
     localStorage.setItem('csr-dev-tools-b-to-a-source', JSON.stringify('saved B'))
 
@@ -188,8 +193,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
     })
     expect(compute).toHaveBeenLastCalledWith({ mode: 'a-to-b', source: 'saved A' })
 
-    fireEvent.click(screen.getByRole('button', { name: /close/i }))
-    fireEvent.click(screen.getByRole('button', { name: 'B → A' }))
+    fireEvent.click(screen.getByRole('button', { name: 'B → A mode' }))
     await act(async () => {
       await vi.advanceTimersByTimeAsync(1)
     })
@@ -272,7 +276,8 @@ describe('BidirectionalConverter — sourceToolbarSlot', () => {
         sourceToolbarSlot={slot}
       />,
     )
-    fireEvent.click(screen.getByRole('button', { name: 'B → A' }))
+    fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
+    fireEvent.click(screen.getByRole('button', { name: 'B → A mode' }))
 
     expect(screen.getByTestId('slot').textContent).toBe('slot for b-to-a')
   })
@@ -350,8 +355,9 @@ describe('BidirectionalConverter — mode persistence', () => {
         modeStorageKey="test"
       />,
     )
-    fireEvent.click(screen.getByRole('button', { name: 'B → A' }))
-    // Dialog opens with mode b-to-a — confirms mode is set.
+    fireEvent.click(screen.getByRole('button', { name: 'A → B' }))
+    fireEvent.click(screen.getByRole('button', { name: 'B → A mode' }))
+    // Dialog now in mode b-to-a — confirms mode is set.
     expect(screen.getByText('B Input')).toBeTruthy()
 
     // Close before unmount is cleanup hygiene, not a persistence trigger —

@@ -1,6 +1,6 @@
 import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, JsonYamlConvertMode } from '@/types'
+import type { ConverterMode, JsonYamlConvertMode, ToolComponentProps } from '@/types'
 import { jsonToYaml, yamlToJson } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-yaml-converter']
@@ -37,12 +37,14 @@ const compute = async ({
   return { output }
 }
 
-export const JsonToYamlConverter = () => (
+export const JsonToYamlConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => (
   <BidirectionalConverter
+    autoOpen={autoOpen}
     compute={compute}
     description={toolEntry?.description}
     initialResult={{ output: '' }}
     modeStorageKey="json-to-yaml"
     modes={MODES}
+    onAfterDialogClose={onAfterDialogClose}
   />
 )

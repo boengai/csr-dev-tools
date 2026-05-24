@@ -37,8 +37,9 @@ const compute = async ({
   return { output }
 }
 
-export const JsonToXmlConverter = ({ onAfterDialogClose }: ToolComponentProps) => (
+export const JsonToXmlConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => (
   <BidirectionalConverter
+    autoOpen={autoOpen}
     compute={compute}
     description={toolEntry?.description}
     initialResult={{ output: '' }}
