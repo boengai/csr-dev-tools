@@ -2,6 +2,7 @@ import type { CompileResultDto } from '@/types/wasm/pdf'
 
 import { loadWasm } from './init'
 import { htmlToMarkdown } from './markdown'
+import { createWorkerBridge } from './worker-bridge'
 
 type CsrPdf = {
   compile_markdown: (md: string) => CsrPdfCompileResult
@@ -16,37 +17,9 @@ type CsrPdfCompileResult = {
 export const MAX_HTML_INPUT_BYTES = 256 * 1024
 export const MAX_MD_INPUT_BYTES = 256 * 1024
 
-let worker: Worker | null = null
-let msgId = 0
-
-function getWorker(): Worker {
-  if (!worker) {
-    worker = new Worker(new URL('../workers/pdf.worker.ts', import.meta.url), {
-      type: 'module',
-    })
-  }
-  return worker
-}
-
-function callWorker(md: string): Promise<CompileResultDto> {
-  return new Promise((resolve, reject) => {
-    const id = ++msgId
-    const w = getWorker()
-
-    const handler = (e: MessageEvent) => {
-      if (e.data.id !== id) return
-      w.removeEventListener('message', handler)
-      if (e.data.error) {
-        reject(new Error(e.data.error))
-      } else {
-        resolve(e.data.result as CompileResultDto)
-      }
-    }
-
-    w.addEventListener('message', handler)
-    w.postMessage({ id, md })
-  })
-}
+const bridge = createWorkerBridge<{ md: string }>(
+  () => new Worker(new URL('../workers/pdf.worker.ts', import.meta.url), { type: 'module' }),
+)
 
 const isNode =
   typeof globalThis.process !== 'undefined' && globalThis.process.versions?.node
@@ -72,7 +45,7 @@ export async function compileMarkdownToPdf(md: string): Promise<CompileResultDto
     return { svgs, pdf: result.pdf }
   }
 
-  return callWorker(md)
+  return bridge.call<CompileResultDto>({ md })
 }
 
 export async function compileHtmlToPdf(html: string): Promise<CompileResultDto> {

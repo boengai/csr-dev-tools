@@ -846,6 +846,63 @@ the export-key string is unavoidable. The win is removing the
 `{ Name: ComponentType }` annotation and the `({ default: Name })`
 reshaping, collapsing 3 lines per registry entry to 1.
 
+## Worker bridge
+
+The single seam that owns the message-correlated `Promise` bridge to a
+Web Worker. Implemented by `createWorkerBridge`
+(`src/wasm/worker-bridge.ts`).
+
+```ts
+createWorkerBridge<TReq extends object>(
+  workerFactory: () => Worker,
+): { call: <TRes = unknown>(payload: TReq) => Promise<TRes> }
+```
+
+Today's adopters: `src/wasm/bcrypt.ts`, `src/wasm/pdf.ts`. Both
+previously hand-rolled the same `let worker; let msgId; getWorker();
+callWorker(data)` plumbing — ~25 lines apiece — and neither concentrated
+the four invariants the pattern carries:
+
+1. **`msgId` correlation** — each `.call(...)` gets a unique id; responses
+   are matched by id, so concurrent calls cannot swap results.
+2. **Listener removal on receipt** — the per-call handler is removed
+   before resolving/rejecting; the worker never accumulates stale
+   handlers across the page lifetime.
+3. **Error envelope** — `{ id, error }` → `reject(new Error(error))`;
+   `{ id, result }` → `resolve(result)`. A worker-thrown error can't be
+   mistaken for a successful empty result.
+4. **Lazy singleton construction** — `workerFactory` runs once on the
+   first `.call(...)`, not at module import. Facades imported into Tools
+   the user never visits pay zero worker-construction cost.
+
+The wire shape is codified as
+`WorkerResponse<T> = { id: number; result: T } | { id: number; error: string }`
+and re-exported so the worker file (`src/workers/*.worker.ts`) can type
+its `self.postMessage` calls. The worker side of the protocol — the
+`try { ensureInit(); doWork(); postMessage({ id, result }) } catch (err)
+{ postMessage({ id, error: err.message }) }` shape — stays inlined per
+worker (≤36 lines each); extracting it is the kind of tidying ADR-0018
+declined for the `src/wasm/` facade family.
+
+The bridge takes a factory (not a URL or instance) because Vite's worker
+resolution requires the literal pattern `new Worker(new URL('./literal',
+import.meta.url), { type: 'module' })` at the call site — Vite statically
+parses that syntactic form to bundle the worker file. The facade owns
+the URL literal; the bridge owns everything else.
+
+`isNode` branches stay per-facade. Vitest/Node tests load the WASM
+module directly via `loadWasm` (no worker) to keep tests
+synchronous and portable; the worker bridge runs only in the browser
+build. The bridge module itself is testable in plain Node via a
+`MockWorker` stand-in — see `src/wasm/worker-bridge.spec.ts` for the
+four-invariant coverage.
+
+Distinct from `loadWasm` (`src/wasm/init.ts`), which owns the
+`loadWasm<T>(name)` cache + Node-vs-browser WASM bootstrap and is shared
+by every facade in `src/wasm/` (worker-isolated or not). The bridge
+layers on top of (or beside) `loadWasm` for the subset of facades whose
+compute is heavy enough to warrant worker isolation.
+
 ## Toast channel
 
 The ephemeral notification channel for events that happen *to* a user

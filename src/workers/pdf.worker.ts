@@ -2,6 +2,8 @@ import init, { compile_markdown } from '../../wasm/pkg/pdf/pdf.js'
 
 import type { CompileResultDto } from '@/types/wasm/pdf'
 
+import type { WorkerResponse } from '../wasm/worker-bridge'
+
 let ready: Promise<unknown> | null = null
 
 function ensureInit(): Promise<unknown> {
@@ -10,6 +12,8 @@ function ensureInit(): Promise<unknown> {
   }
   return ready!
 }
+
+const post = <T>(response: WorkerResponse<T>): void => self.postMessage(response)
 
 self.onmessage = async (e: MessageEvent) => {
   const { id, md } = e.data as { id: number; md: string }
@@ -26,11 +30,8 @@ self.onmessage = async (e: MessageEvent) => {
     }
     const dto: CompileResultDto = { svgs, pdf: result.pdf }
 
-    self.postMessage({ id, result: dto })
+    post<CompileResultDto>({ id, result: dto })
   } catch (err) {
-    self.postMessage({
-      id,
-      error: err instanceof Error ? err.message : String(err),
-    })
+    post({ id, error: err instanceof Error ? err.message : String(err) })
   }
 }

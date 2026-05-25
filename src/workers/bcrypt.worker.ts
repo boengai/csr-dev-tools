@@ -1,4 +1,5 @@
 import init, { hash_password, verify_password } from '../../wasm/pkg/bcrypt/bcrypt.js'
+import type { WorkerResponse } from '../wasm/worker-bridge'
 
 let ready: Promise<unknown> | null = null
 
@@ -9,6 +10,8 @@ function ensureInit(): Promise<unknown> {
   return ready!
 }
 
+const post = <T>(response: WorkerResponse<T>): void => self.postMessage(response)
+
 self.onmessage = async (e: MessageEvent) => {
   const { id, type, password, rounds, hash } = e.data
 
@@ -17,12 +20,12 @@ self.onmessage = async (e: MessageEvent) => {
 
     if (type === 'hash') {
       const result = hash_password(password, rounds)
-      self.postMessage({ id, result })
+      post<string>({ id, result })
     } else if (type === 'verify') {
       const result = verify_password(password, hash)
-      self.postMessage({ id, result })
+      post<boolean>({ id, result })
     }
   } catch (err) {
-    self.postMessage({ id, error: err instanceof Error ? err.message : String(err) })
+    post({ id, error: err instanceof Error ? err.message : String(err) })
   }
 }
