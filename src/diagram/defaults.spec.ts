@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import { createSequentialIdMinters } from './id-minters'
 import { createDefaultColumn } from './defaults'
+import { createSequentialIdMinters } from './id-minters'
 
 describe('createDefaultColumn', () => {
   it('should create a column with given name', () => {
@@ -39,5 +39,3 @@ describe('createDefaultColumn', () => {
     expect(col.name).toBe('column')
   })
 })
-
-

@@ -51,14 +51,7 @@ describe('ExportSidePanel', () => {
   it('passes the editor to derive', () => {
     const derive = vi.fn(() => 'output')
     render(
-      <ExportSidePanel
-        copyLabel="X"
-        derive={derive}
-        emptyPlaceholder=""
-        onClose={() => {}}
-        testId="panel"
-        title="X"
-      />,
+      <ExportSidePanel copyLabel="X" derive={derive} emptyPlaceholder="" onClose={() => {}} testId="panel" title="X" />,
     )
     expect(derive).toHaveBeenCalledWith(mockEditor)
   })

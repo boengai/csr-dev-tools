@@ -86,9 +86,7 @@ describe('MarkupToPdfShell', () => {
   })
 
   it('renders the svg preview and arms the download button when the result is non-empty', () => {
-    mockHook.mockImplementation((_opts: unknown) =>
-      baseReturn({ input: '# Hi', result: NONEMPTY_RESULT }),
-    )
+    mockHook.mockImplementation((_opts: unknown) => baseReturn({ input: '# Hi', result: NONEMPTY_RESULT }))
 
     renderShell()
 

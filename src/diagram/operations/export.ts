@@ -1,8 +1,8 @@
-import type { DiagramDocument, DiagramSchema, SqlDialect } from '@/types'
 import { generateDbml } from '@/diagram/codecs/dbml'
 import { generateMermaidER } from '@/diagram/codecs/mermaid'
 import { generateSql } from '@/diagram/codecs/sql'
 import { generateTypeScript } from '@/diagram/codecs/typescript'
+import type { DiagramDocument, DiagramSchema, SqlDialect } from '@/types'
 
 export const documentToSchema = (doc: DiagramDocument): DiagramSchema => ({
   tables: doc.tableOrder

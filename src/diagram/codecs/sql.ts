@@ -1,8 +1,7 @@
-import type { ColumnType, DiagramSchema, SqlDialect } from '@/types'
 import type { EntityIdMinters } from '@/diagram/id-minters'
-import type { FkRef, ParseResult, ParsedColumn } from '@/types/diagram/codecs/import'
-
 import { gridLayoutPositions } from '@/diagram/layout'
+import type { ColumnType, DiagramSchema, SqlDialect } from '@/types'
+import type { FkRef, ParseResult, ParsedColumn } from '@/types/diagram/codecs/import'
 
 const TYPE_MAP: Record<ColumnType, Record<SqlDialect, string>> = {
   BIGINT: { mysql: 'BIGINT', postgresql: 'BIGINT', sqlite: 'INTEGER' },
@@ -339,7 +338,10 @@ function splitColumnDefs(body: string): Array<string> {
   return parts
 }
 
-function parseColumnDef(def: string, mintColumn: () => string): {
+function parseColumnDef(
+  def: string,
+  mintColumn: () => string,
+): {
   column: ParsedColumn | null
   fkRef: FkRef | null
   isPkConstraint: string | null
@@ -421,7 +423,10 @@ function parseColumnDef(def: string, mintColumn: () => string): {
   return { column, fkRef: inlineFkRef, isPkConstraint: null, isUniqueConstraint: null }
 }
 
-function parseCreateTable(statement: string, mintColumn: () => string): {
+function parseCreateTable(
+  statement: string,
+  mintColumn: () => string,
+): {
   columns: Array<ParsedColumn>
   fkRefs: Array<FkRef>
   tableName: string
@@ -478,7 +483,6 @@ function parseCreateTable(statement: string, mintColumn: () => string): {
 
   return { columns, fkRefs, tableName }
 }
-
 
 function buildRelationships(
   parsedTables: Array<{ columns: Array<ParsedColumn>; fkRefs: Array<FkRef>; tableName: string }>,

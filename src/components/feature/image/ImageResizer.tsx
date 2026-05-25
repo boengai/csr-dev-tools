@@ -72,9 +72,7 @@ export const ImageResizer = ({ onAfterDialogClose }: ToolComponentProps) => {
           }
           if (controls.ratio) {
             const other = key === 'width' ? Math.round(n / controls.ratio) : Math.round(n * controls.ratio)
-            setControls(
-              key === 'width' ? { height: other, width: n } : { height: n, width: other },
-            )
+            setControls(key === 'width' ? { height: other, width: n } : { height: n, width: other })
             return
           }
           setControls({ [key]: n } as Partial<ResizeControls>)

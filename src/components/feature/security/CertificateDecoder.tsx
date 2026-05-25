@@ -105,7 +105,13 @@ const ExtensionItem = ({ ext }: { ext: CertificateExtension }) => (
 )
 
 export const CertificateDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { input, result, isPending: loading, setInput, reset } = useToolInput<string, CertificateInfo | null>({
+  const {
+    input,
+    result,
+    isPending: loading,
+    setInput,
+    reset,
+  } = useToolInput<string, CertificateInfo | null>({
     compute: async (val) => {
       const { parsePemCertificate } = await import('@/utils/certificate-decoder')
       return parsePemCertificate(val.trim())

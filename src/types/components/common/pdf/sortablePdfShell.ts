@@ -36,10 +36,7 @@ export type SortablePdfShellRenderControlsCtx<TExtras> = {
   result: BytesPdfResult
 }
 
-export type SortablePdfShellProps<
-  TItem extends { id: string },
-  TExtras extends object = Record<string, never>,
-> = {
+export type SortablePdfShellProps<TItem extends { id: string }, TExtras extends object = Record<string, never>> = {
   // ─── Dialog ─────────────────────────────────────────────────────────────
   autoOpen?: boolean
   description?: string

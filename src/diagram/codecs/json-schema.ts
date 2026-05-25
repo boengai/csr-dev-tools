@@ -1,9 +1,8 @@
-import type { ColumnType, DiagramSchema } from '@/types'
 import type { EntityIdMinters } from '@/diagram/id-minters'
+import { gridLayoutPositions } from '@/diagram/layout'
+import type { ColumnType, DiagramSchema } from '@/types'
 import type { ParseResult } from '@/types/diagram/codecs/import'
 import type { JsonSchemaProperty, JsonSchemaRoot } from '@/types/diagram/codecs/json-schema'
-
-import { gridLayoutPositions } from '@/diagram/layout'
 
 const JSON_TYPE_MAP: Record<string, ColumnType> = {
   array: 'JSON',

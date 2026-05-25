@@ -1,4 +1,3 @@
-import type { DiagramIndexEntry, DiagramSchema, DiagramStorage } from '@/types'
 import {
   deleteDiagram,
   generateDiagramId,
@@ -7,6 +6,7 @@ import {
   saveDiagram,
   saveDiagramIndex,
 } from '@/diagram/codecs/storage'
+import type { DiagramIndexEntry, DiagramSchema, DiagramStorage } from '@/types'
 
 export const localStorageDiagramStorage: DiagramStorage = {
   loadIndex: loadDiagramIndex,

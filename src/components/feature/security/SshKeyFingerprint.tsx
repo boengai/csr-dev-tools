@@ -8,7 +8,13 @@ import { analyzeSshKey, type SshKeyInfo } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['ssh-key-fingerprint']
 
 export const SshKeyFingerprint = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { input, result, isPending: loading, setInput, reset } = useToolInput<string, SshKeyInfo | null>({
+  const {
+    input,
+    result,
+    isPending: loading,
+    setInput,
+    reset,
+  } = useToolInput<string, SshKeyInfo | null>({
     compute: async (val) => analyzeSshKey(val.trim()),
     debounceMs: 300,
     errorFallback: 'SSH key format not recognized',

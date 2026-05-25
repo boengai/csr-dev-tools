@@ -28,16 +28,8 @@ export const ImportSidePanel = ({
       controls={controls}
       footer={
         <div className="flex flex-col gap-2">
-          <label
-            className="flex items-center gap-2 text-[10px] text-gray-400"
-            htmlFor={`${testId}-merge`}
-          >
-            <CheckboxInput
-              checked={merge}
-              id={`${testId}-merge`}
-              name={`${testId}-merge`}
-              onChange={setMerge}
-            />
+          <label className="flex items-center gap-2 text-[10px] text-gray-400" htmlFor={`${testId}-merge`}>
+            <CheckboxInput checked={merge} id={`${testId}-merge`} name={`${testId}-merge`} onChange={setMerge} />
             Merge with existing (otherwise replaces)
           </label>
           <Button

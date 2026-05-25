@@ -2,8 +2,8 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { UseAsyncActionOptions, UseAsyncActionResult } from '@/types'
 
-import { reportPipelineError } from './useToolComputation'
 import { useStaleSafeAsync } from './useStaleSafeAsync'
+import { reportPipelineError } from './useToolComputation'
 
 /**
  * Button-fired (or one-shot) async action with stale-safety + unmount-safety.
@@ -15,10 +15,7 @@ import { useStaleSafeAsync } from './useStaleSafeAsync'
  * Per-call-site concerns (input state, validation/early returns, success
  * messaging) stay at the call site. The hook owns `pending` and `result`.
  */
-export function useAsyncAction<T>(
-  action: () => Promise<T>,
-  options?: UseAsyncActionOptions,
-): UseAsyncActionResult<T> {
+export function useAsyncAction<T>(action: () => Promise<T>, options?: UseAsyncActionOptions): UseAsyncActionResult<T> {
   const [pending, setPending] = useState(false)
   const [result, setResult] = useState<T | null>(null)
 

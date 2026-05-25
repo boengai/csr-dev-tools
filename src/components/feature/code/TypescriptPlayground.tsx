@@ -134,10 +134,10 @@ export const TypescriptPlayground = ({ autoOpen, onAfterDialogClose }: ToolCompo
       triggers={[{ label: 'Open' }]}
     >
       <div className="flex w-full grow flex-col gap-4">
-        <div className="tablet:flex-row flex flex-col gap-4">
+        <div className="flex flex-col gap-4 tablet:flex-row">
           <div aria-label="TypeScript code editor" className="flex min-w-0 flex-1 flex-col gap-1">
             <h3 className="text-body-sm font-semibold text-gray-100">TypeScript</h3>
-            <div className="tablet:h-[400px] h-[300px] overflow-hidden rounded border border-gray-800">
+            <div className="h-[300px] overflow-hidden rounded border border-gray-800 tablet:h-[400px]">
               <Suspense fallback={<EditorSkeleton />}>
                 <Editor
                   beforeMount={handleBeforeMount}
@@ -160,7 +160,7 @@ export const TypescriptPlayground = ({ autoOpen, onAfterDialogClose }: ToolCompo
               <h3 className="text-body-sm font-semibold text-gray-100">JavaScript</h3>
               <CopyButton label="Copy JS" value={transpiledJs ?? ''} />
             </div>
-            <div className="tablet:h-[400px] h-[300px] overflow-hidden rounded border border-gray-800">
+            <div className="h-[300px] overflow-hidden rounded border border-gray-800 tablet:h-[400px]">
               <Suspense fallback={<EditorSkeleton />}>
                 <Editor
                   defaultLanguage="javascript"

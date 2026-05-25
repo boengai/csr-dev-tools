@@ -1,7 +1,6 @@
-import type { DiagramDocument, EditorTable, TableId } from '@/types'
-import type { EntityIdMinters } from '@/diagram/id-minters'
-
 import { createDefaultColumn } from '@/diagram/defaults'
+import type { EntityIdMinters } from '@/diagram/id-minters'
+import type { DiagramDocument, EditorTable, TableId } from '@/types'
 
 import { cleanupDanglingRelations } from './relations'
 

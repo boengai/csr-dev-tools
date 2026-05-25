@@ -1,7 +1,6 @@
-import type { DiagramDocument, ImportResult } from '@/types'
-import type { EntityIdMinters } from '@/diagram/id-minters'
-
 import { generateDbml, parseDbml } from '@/diagram/codecs/dbml'
+import type { EntityIdMinters } from '@/diagram/id-minters'
+import type { DiagramDocument, ImportResult } from '@/types'
 
 import { documentToSchema } from './export'
 import { schemaToDocument } from './lifecycle'

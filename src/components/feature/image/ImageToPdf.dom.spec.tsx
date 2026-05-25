@@ -121,9 +121,6 @@ describe('ImageToPdf', () => {
     await waitFor(() => expect(screen.getByText(/Page 1/i)).toBeInTheDocument())
 
     // pdf.js will reject the mock %PDF\x00 bytes — error banner should appear
-    await waitFor(
-      () => expect(screen.getByRole('alert')).toBeInTheDocument(),
-      { timeout: 3000 },
-    )
+    await waitFor(() => expect(screen.getByRole('alert')).toBeInTheDocument(), { timeout: 3000 })
   })
 })

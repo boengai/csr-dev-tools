@@ -30,12 +30,7 @@ export const SidebarToolItem = ({ emoji, isActive = false, name, toolKey }: Side
   }, [close, navigate, toolKey])
 
   return (
-    <button
-      className={sidebarItemVariants({ active: isActive })}
-      onClick={handleClick}
-      title={name}
-      type="button"
-    >
+    <button className={sidebarItemVariants({ active: isActive })} onClick={handleClick} title={name} type="button">
       <span className="shrink-0">{emoji}</span>
       <span className="truncate">{name}</span>
     </button>

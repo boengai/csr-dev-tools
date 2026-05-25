@@ -1,7 +1,6 @@
-import init, { compile_markdown } from '../../wasm/pkg/pdf/pdf.js'
-
 import type { CompileResultDto } from '@/types/wasm/pdf'
 
+import init, { compile_markdown } from '../../wasm/pkg/pdf/pdf.js'
 import type { WorkerResponse } from '../wasm/worker-bridge'
 
 let ready: Promise<unknown> | null = null

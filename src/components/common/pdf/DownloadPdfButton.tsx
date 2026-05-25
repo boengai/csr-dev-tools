@@ -15,12 +15,7 @@ export const DownloadPdfButton = ({ bytes, filename }: DownloadPdfButtonProps) =
   }
 
   return (
-    <Button
-      disabled={bytes.byteLength === 0}
-      icon={<DownloadIcon />}
-      onClick={handleDownload}
-      variant="primary"
-    >
+    <Button disabled={bytes.byteLength === 0} icon={<DownloadIcon />} onClick={handleDownload} variant="primary">
       Download
     </Button>
   )

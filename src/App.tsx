@@ -15,9 +15,7 @@ const CommandPalette = lazy(
   loadNamed(() => import('@/components/common/command-palette/CommandPalette'), 'CommandPalette'),
 )
 const Sidebar = lazy(loadNamed(() => import('@/components/common/sidebar/Sidebar'), 'Sidebar'))
-const SettingsDialog = lazy(
-  loadNamed(() => import('@/components/common/settings/SettingsDialog'), 'SettingsDialog'),
-)
+const SettingsDialog = lazy(loadNamed(() => import('@/components/common/settings/SettingsDialog'), 'SettingsDialog'))
 const ToastProvider = lazy(loadNamed(() => import('@/components/common/toast/ToastProvider'), 'ToastProvider'))
 
 const PageLoading = () => {

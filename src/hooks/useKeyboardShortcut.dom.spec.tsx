@@ -31,9 +31,7 @@ describe('useKeyboardShortcut', () => {
 
   it('passes the KeyboardEvent to the handler so it can preventDefault', () => {
     const handler = vi.fn((e: KeyboardEvent) => e.preventDefault())
-    renderHook(() =>
-      useKeyboardShortcut((e) => (e.metaKey || e.ctrlKey) && e.key === 'k', handler),
-    )
+    renderHook(() => useKeyboardShortcut((e) => (e.metaKey || e.ctrlKey) && e.key === 'k', handler))
 
     const event = dispatchKey('k', { metaKey: true })
     expect(handler).toHaveBeenCalledWith(event)
@@ -51,8 +49,7 @@ describe('useKeyboardShortcut', () => {
   it('toggling enabled re-subscribes / unsubscribes', () => {
     const handler = vi.fn()
     const { rerender } = renderHook(
-      ({ enabled }: { enabled: boolean }) =>
-        useKeyboardShortcut((e) => e.key === 'Escape', handler, { enabled }),
+      ({ enabled }: { enabled: boolean }) => useKeyboardShortcut((e) => e.key === 'Escape', handler, { enabled }),
       { initialProps: { enabled: true } },
     )
 
@@ -81,8 +78,7 @@ describe('useKeyboardShortcut', () => {
     const v1 = vi.fn()
     const v2 = vi.fn()
     const { rerender } = renderHook(
-      ({ handler }: { handler: (e: KeyboardEvent) => void }) =>
-        useKeyboardShortcut((e) => e.key === 'Escape', handler),
+      ({ handler }: { handler: (e: KeyboardEvent) => void }) => useKeyboardShortcut((e) => e.key === 'Escape', handler),
       { initialProps: { handler: v1 } },
     )
 

@@ -1,7 +1,16 @@
 import { json } from '@codemirror/lang-json'
 import { useMemo } from 'react'
 
-import { CodeInput, CopyButton, DisclosurePanel, EmptyState, ErrorBanner, Pane, SplitPanel, TextInput } from '@/components/common'
+import {
+  CodeInput,
+  CopyButton,
+  DisclosurePanel,
+  EmptyState,
+  ErrorBanner,
+  Pane,
+  SplitPanel,
+  TextInput,
+} from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFieldsPersisted } from '@/hooks'
@@ -170,9 +179,7 @@ export const JsonpathEvaluator = ({ autoOpen, onAfterDialogClose }: ToolComponen
               </div>
             )}
 
-            {!evaluation && parsedData !== null && (
-              <EmptyState>Enter a JSONPath expression to see results</EmptyState>
-            )}
+            {!evaluation && parsedData !== null && <EmptyState>Enter a JSONPath expression to see results</EmptyState>}
 
             {parsedData == null && !parseError && <EmptyState>Paste JSON to get started</EmptyState>}
           </Pane>

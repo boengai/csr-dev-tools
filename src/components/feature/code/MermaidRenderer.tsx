@@ -129,92 +129,92 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
       title="Mermaid Renderer"
       triggers={[{ label: 'Render' }]}
     >
-        <div className="flex w-full grow flex-col gap-4">
-          <SplitPanel>
-            {/* Left Panel: Input */}
-            <Pane>
-              <FieldForm
-                label="Mermaid Syntax"
-                name="mermaid-input"
-                onChange={handleCodeChange}
-                placeholder="Enter Mermaid diagram syntax..."
-                type="code"
-                value={code}
-              />
+      <div className="flex w-full grow flex-col gap-4">
+        <SplitPanel>
+          {/* Left Panel: Input */}
+          <Pane>
+            <FieldForm
+              label="Mermaid Syntax"
+              name="mermaid-input"
+              onChange={handleCodeChange}
+              placeholder="Enter Mermaid diagram syntax..."
+              type="code"
+              value={code}
+            />
 
-              <AnimatePresence>
-                {errorMessage && (
-                  <m.div
-                    animate={{ height: 'auto', opacity: 1 }}
-                    className="flex flex-col gap-2 overflow-hidden"
-                    exit={{ height: 0, opacity: 0 }}
-                    initial={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                  >
-                    <p className="text-body-xs text-error" role="alert">
-                      {errorMessage}
-                    </p>
+            <AnimatePresence>
+              {errorMessage && (
+                <m.div
+                  animate={{ height: 'auto', opacity: 1 }}
+                  className="flex flex-col gap-2 overflow-hidden"
+                  exit={{ height: 0, opacity: 0 }}
+                  initial={{ height: 0, opacity: 0 }}
+                  transition={{ duration: 0.2 }}
+                >
+                  <p className="text-body-xs text-error" role="alert">
+                    {errorMessage}
+                  </p>
 
-                    {fixSuggestion && (
-                      <div className="flex items-center gap-2">
-                        <p className="text-yellow-400 text-body-xs">Suggestion: {fixSuggestion.description}</p>
-                        <Button onClick={handleApplyFix} size="small" variant="warning">
-                          Auto-fix
-                        </Button>
-                      </div>
-                    )}
-                  </m.div>
-                )}
-              </AnimatePresence>
-
-              <DisclosurePanel label="Syntax Reference">
-                <div className="flex flex-col gap-2">
-                  {SYNTAX_EXAMPLES.map((example) => (
-                    <div className="flex items-start justify-between gap-2" key={example.label}>
-                      <div className="min-w-0 flex-1">
-                        <button
-                          aria-label={`Use ${example.label} example`}
-                          className="cursor-pointer text-body-xs font-semibold text-primary hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
-                          onClick={() => handleExampleClick(example.code)}
-                          type="button"
-                        >
-                          {example.label}
-                        </button>
-                        <pre className="mt-1 overflow-x-auto font-mono text-body-xs whitespace-pre-wrap text-gray-400">
-                          {example.code}
-                        </pre>
-                      </div>
-                      <CopyButton label={example.label} value={example.code} variant="icon-only" />
+                  {fixSuggestion && (
+                    <div className="flex items-center gap-2">
+                      <p className="text-yellow-400 text-body-xs">Suggestion: {fixSuggestion.description}</p>
+                      <Button onClick={handleApplyFix} size="small" variant="warning">
+                        Auto-fix
+                      </Button>
                     </div>
-                  ))}
-                </div>
-              </DisclosurePanel>
-            </Pane>
+                  )}
+                </m.div>
+              )}
+            </AnimatePresence>
 
-            {/* Right Panel: Preview */}
-            <Pane live>
-              <div className="flex items-center gap-1">
-                <span className="text-body-xs font-medium text-gray-300">Preview</span>
-                <div className="ml-auto flex gap-2">
-                  <Button disabled={!svg} onClick={handleExportSvg} size="small" variant="secondary">
-                    Export SVG
-                  </Button>
-                  <Button disabled={!svg || exportingPng} onClick={handleExportPng} size="small" variant="secondary">
-                    {exportingPng ? 'Exporting...' : 'Export PNG'}
-                  </Button>
-                </div>
+            <DisclosurePanel label="Syntax Reference">
+              <div className="flex flex-col gap-2">
+                {SYNTAX_EXAMPLES.map((example) => (
+                  <div className="flex items-start justify-between gap-2" key={example.label}>
+                    <div className="min-w-0 flex-1">
+                      <button
+                        aria-label={`Use ${example.label} example`}
+                        className="cursor-pointer text-body-xs font-semibold text-primary hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
+                        onClick={() => handleExampleClick(example.code)}
+                        type="button"
+                      >
+                        {example.label}
+                      </button>
+                      <pre className="mt-1 overflow-x-auto font-mono text-body-xs whitespace-pre-wrap text-gray-400">
+                        {example.code}
+                      </pre>
+                    </div>
+                    <CopyButton label={example.label} value={example.code} variant="icon-only" />
+                  </div>
+                ))}
               </div>
+            </DisclosurePanel>
+          </Pane>
 
-              <div className="flex min-h-[300px] flex-1 items-center justify-center overflow-auto">
-                {svg ? (
-                  <div className="w-full [&_svg]:h-auto [&_svg]:w-full" ref={previewRef} />
-                ) : (
-                  !errorMessage && <EmptyState>Enter Mermaid syntax to see a preview</EmptyState>
-                )}
+          {/* Right Panel: Preview */}
+          <Pane live>
+            <div className="flex items-center gap-1">
+              <span className="text-body-xs font-medium text-gray-300">Preview</span>
+              <div className="ml-auto flex gap-2">
+                <Button disabled={!svg} onClick={handleExportSvg} size="small" variant="secondary">
+                  Export SVG
+                </Button>
+                <Button disabled={!svg || exportingPng} onClick={handleExportPng} size="small" variant="secondary">
+                  {exportingPng ? 'Exporting...' : 'Export PNG'}
+                </Button>
               </div>
-            </Pane>
-          </SplitPanel>
-        </div>
+            </div>
+
+            <div className="flex min-h-[300px] flex-1 items-center justify-center overflow-auto">
+              {svg ? (
+                <div className="w-full [&_svg]:h-auto [&_svg]:w-full" ref={previewRef} />
+              ) : (
+                !errorMessage && <EmptyState>Enter Mermaid syntax to see a preview</EmptyState>
+              )}
+            </div>
+          </Pane>
+        </SplitPanel>
+      </div>
     </ToolDialogFrame>
   )
 }

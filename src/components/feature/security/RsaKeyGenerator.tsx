@@ -81,7 +81,7 @@ export const RsaKeyGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
         </div>
 
         {/* Key Size Selector + Generate */}
-        <div className="tablet:flex-row tablet:items-end flex flex-col gap-4">
+        <div className="flex flex-col gap-4 tablet:flex-row tablet:items-end">
           <fieldset className="flex flex-col gap-2">
             <span className="text-body-xs font-medium text-gray-400">Key Size</span>
             <div className="flex gap-2" aria-label="RSA key size">

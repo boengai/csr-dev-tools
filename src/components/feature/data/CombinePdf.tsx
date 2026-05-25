@@ -65,8 +65,10 @@ const PageCard = ({ item, position, onRemove }: PageCardProps) => (
 
 const LoadingCard = ({ fileName }: { fileName: string }) => (
   <div className="flex w-32 flex-col items-center justify-center gap-2 rounded-lg border border-gray-800 bg-gray-950 p-2 text-body-xs text-gray-500">
-    <div className="aspect-square w-full grid place-items-center bg-gray-900">…</div>
-    <span className="truncate" title={fileName}>{fileName}</span>
+    <div className="grid aspect-square w-full place-items-center bg-gray-900">…</div>
+    <span className="truncate" title={fileName}>
+      {fileName}
+    </span>
     <span>Loading…</span>
   </div>
 )

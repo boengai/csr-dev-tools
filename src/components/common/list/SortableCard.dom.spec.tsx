@@ -19,7 +19,14 @@ const wrap = (children: ReactNode, ids: Array<string>) => (
 
 describe('SortableCard', () => {
   it('renders body children inside the card chrome', () => {
-    render(wrap(<SortableCard id="a"><span>card-body</span></SortableCard>, ['a']))
+    render(
+      wrap(
+        <SortableCard id="a">
+          <span>card-body</span>
+        </SortableCard>,
+        ['a'],
+      ),
+    )
     expect(screen.getByText('card-body')).toBeInTheDocument()
   })
 

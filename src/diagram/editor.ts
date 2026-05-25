@@ -1,3 +1,4 @@
+import { validateDiagramSchema } from '@/diagram/codecs/persistence'
 import type {
   ColumnId,
   ColumnRef,
@@ -12,7 +13,6 @@ import type {
   TableColumn,
   TableId,
 } from '@/types'
-import { validateDiagramSchema } from '@/diagram/codecs/persistence'
 
 import { createDefaultIdMinters, type EntityIdMinters } from './id-minters'
 import * as columnOps from './operations/columns'
@@ -215,7 +215,9 @@ export class DiagramEditor {
   // returned the same doc) so import ops can surface their error result without
   // a successful commit.
   private commitStructural(op: (doc: DiagramDocument, minters: EntityIdMinters) => DiagramDocument): void
-  private commitStructural<R>(op: (doc: DiagramDocument, minters: EntityIdMinters) => { document: DiagramDocument; result: R }): R
+  private commitStructural<R>(
+    op: (doc: DiagramDocument, minters: EntityIdMinters) => { document: DiagramDocument; result: R },
+  ): R
   private commitStructural<R>(
     op: (doc: DiagramDocument, minters: EntityIdMinters) => DiagramDocument | { document: DiagramDocument; result: R },
   ): R | undefined {

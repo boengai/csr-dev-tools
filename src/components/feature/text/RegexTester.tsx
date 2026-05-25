@@ -178,10 +178,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
 
         <Pane live>
           {errorMessage && (
-            <p
-              className="rounded border border-error/50 bg-error/10 px-3 py-2 text-body-xs text-error"
-              role="alert"
-            >
+            <p className="rounded border border-error/50 bg-error/10 px-3 py-2 text-body-xs text-error" role="alert">
               {errorMessage}
             </p>
           )}

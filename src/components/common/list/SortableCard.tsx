@@ -54,7 +54,7 @@ const SortableCardRoot = ({ children, id, onRemove, removeLabel }: SortableCardP
           // would defeat the hover-only badge shape.
           <button
             aria-label={removeLabel}
-            className="absolute -right-2 -top-2 grid h-6 w-6 place-items-center rounded-full bg-gray-800 text-gray-300 opacity-0 transition-opacity hover:bg-red-600 hover:text-white group-hover:opacity-100"
+            className="hover:bg-red-600 absolute -top-2 -right-2 grid h-6 w-6 place-items-center rounded-full bg-gray-800 text-gray-300 opacity-0 transition-opacity group-hover:opacity-100 hover:text-white"
             onClick={onRemove}
             type="button"
           >

@@ -37,16 +37,14 @@ export const CommandPalette = () => {
     )
   }, [query])
 
-  const { activeDescendantId, activeIndex, handleKeyDown, listRef, setActiveIndex } = useKeyboardListNav<ToolRegistryEntry>(
-    filteredTools,
-    {
+  const { activeDescendantId, activeIndex, handleKeyDown, listRef, setActiveIndex } =
+    useKeyboardListNav<ToolRegistryEntry>(filteredTools, {
       getOptionId: (tool) => `command-palette-option-${tool.key}`,
       initialIndex: 0,
       // Late binding — handleSelectTool is defined below; the arrow body resolves it at call time.
       onEnter: (tool) => handleSelectTool(tool),
       wraparound: true,
-    },
-  )
+    })
 
   const handleClose = useCallback(() => {
     close()

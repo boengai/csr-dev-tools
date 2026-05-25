@@ -25,13 +25,7 @@ const MODES: [ConverterMode<JsonXmlConvertMode>, ConverterMode<JsonXmlConvertMod
   },
 ]
 
-const compute = async ({
-  mode,
-  source,
-}: {
-  mode: JsonXmlConvertMode
-  source: string
-}): Promise<{ output: string }> => {
+const compute = async ({ mode, source }: { mode: JsonXmlConvertMode; source: string }): Promise<{ output: string }> => {
   const { jsonToXml, xmlToJson } = await import('@/wasm/parsers')
   const output = mode === 'xml-to-json' ? await xmlToJson(source) : await jsonToXml(source)
   return { output }

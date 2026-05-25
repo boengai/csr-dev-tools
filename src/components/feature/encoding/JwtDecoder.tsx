@@ -55,7 +55,12 @@ const ExpirationBadge = ({ status }: { status: JwtExpirationStatus }) => {
 }
 
 export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { input: source, result: decoded, setInput, reset } = useToolInput<string, JwtDecoded>({
+  const {
+    input: source,
+    result: decoded,
+    setInput,
+    reset,
+  } = useToolInput<string, JwtDecoded>({
     compute: (val) => {
       if (!isValidJwt(val)) throw new Error(INVALID_JWT_MESSAGE)
       try {

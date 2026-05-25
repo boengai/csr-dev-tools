@@ -9,8 +9,7 @@ import { narrateParseError } from '@/utils/parse-error-narrators'
 const sourceKey = (mode: string, prefix?: string) =>
   prefix ? `csr-dev-tools-${prefix}-${mode}-source` : `csr-dev-tools-${mode}-source`
 
-const readSource = (mode: string, prefix?: string): string =>
-  readJsonStorage<string>(sourceKey(mode, prefix), '')
+const readSource = (mode: string, prefix?: string): string => readJsonStorage<string>(sourceKey(mode, prefix), '')
 
 const writeSource = (mode: string, value: string, prefix?: string): void =>
   writeJsonStorage(sourceKey(mode, prefix), value)

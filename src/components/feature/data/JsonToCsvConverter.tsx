@@ -29,13 +29,7 @@ const MODES: [ConverterMode<JsonCsvConvertMode>, ConverterMode<JsonCsvConvertMod
 // Shape-validation throws from jsonToCsv (e.g. 'JSON must be an array of
 // objects') fire for valid JSON. The shell's narrator returns null on
 // parse-valid input, so those messages flow through unchanged.
-const compute = async ({
-  mode,
-  source,
-}: {
-  mode: JsonCsvConvertMode
-  source: string
-}): Promise<{ output: string }> => {
+const compute = async ({ mode, source }: { mode: JsonCsvConvertMode; source: string }): Promise<{ output: string }> => {
   const output = mode === 'json-to-csv' ? await jsonToCsv(source) : await csvToJson(source)
   return { output }
 }

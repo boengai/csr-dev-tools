@@ -64,17 +64,17 @@ export const PdfBytesPreview = ({ bytes }: PdfBytesPreviewProps) => {
   if (bytes.byteLength === 0) return null
 
   return (
-    <div className="flex grow flex-col gap-3 min-h-0">
+    <div className="flex min-h-0 grow flex-col gap-3">
       <div className="flex items-center justify-between">
         <span className="text-body-xs font-medium text-gray-300">PDF preview</span>
         {isRendering && <span className="text-body-xs text-gray-500">Rendering…</span>}
       </div>
       {error !== null && (
-        <p className="text-body-xs text-red-400" role="alert">
+        <p className="text-red-400 text-body-xs" role="alert">
           {error}
         </p>
       )}
-      <div className="flex grow flex-col gap-3 min-h-0 overflow-auto rounded-lg border-2 border-gray-900 bg-gray-100 p-3">
+      <div className="flex min-h-0 grow flex-col gap-3 overflow-auto rounded-lg border-2 border-gray-900 bg-gray-100 p-3">
         {pages.map((dataUrl, i) => (
           <img
             alt={`Page ${i + 1}`}

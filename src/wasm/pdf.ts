@@ -21,17 +21,14 @@ const bridge = createWorkerBridge<{ md: string }>(
   () => new Worker(new URL('../workers/pdf.worker.ts', import.meta.url), { type: 'module' }),
 )
 
-const isNode =
-  typeof globalThis.process !== 'undefined' && globalThis.process.versions?.node
+const isNode = typeof globalThis.process !== 'undefined' && globalThis.process.versions?.node
 
 export async function compileMarkdownToPdf(md: string): Promise<CompileResultDto> {
   if (md.trim().length === 0) {
     return { svgs: [], pdf: new Uint8Array(0) }
   }
   if (md.length > MAX_MD_INPUT_BYTES) {
-    throw new Error(
-      `Input too large (${md.length} bytes). Maximum is ${MAX_MD_INPUT_BYTES} bytes.`,
-    )
+    throw new Error(`Input too large (${md.length} bytes). Maximum is ${MAX_MD_INPUT_BYTES} bytes.`)
   }
 
   if (isNode) {
@@ -53,9 +50,7 @@ export async function compileHtmlToPdf(html: string): Promise<CompileResultDto> 
     return { svgs: [], pdf: new Uint8Array(0) }
   }
   if (html.length > MAX_HTML_INPUT_BYTES) {
-    throw new Error(
-      `Input too large (${html.length} bytes). Maximum is ${MAX_HTML_INPUT_BYTES} bytes.`,
-    )
+    throw new Error(`Input too large (${html.length} bytes). Maximum is ${MAX_HTML_INPUT_BYTES} bytes.`)
   }
   const md = await htmlToMarkdown(html)
   return compileMarkdownToPdf(md)

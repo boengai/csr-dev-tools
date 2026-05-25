@@ -1,5 +1,4 @@
 import type { ValidityStatus, CertificateInfo } from '@/types/utils/certificate-decoder'
-
 import { parsePemCertificateViaWasm } from '@/wasm/certificate'
 
 const MAX_INPUT_LENGTH = 32_768

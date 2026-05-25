@@ -4,8 +4,8 @@ import { useCallback, useRef, useState } from 'react'
 
 import { Button, SelectInput, TextInput } from '@/components/common'
 import { XIcon } from '@/components/common/icon'
-import type { ColumnType, TableColumn, TableNode } from '@/types'
 import { COLUMN_TYPES } from '@/diagram/defaults'
+import type { ColumnType, TableColumn, TableNode } from '@/types'
 import { cnMerge } from '@/utils'
 
 const CONSTRAINT_COLORS: Record<string, string> = {

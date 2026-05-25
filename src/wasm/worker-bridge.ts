@@ -31,9 +31,7 @@ export type WorkerBridge<TReq extends object> = {
  * the facade owns the URL literal so Vite can statically bundle the worker
  * file.
  */
-export function createWorkerBridge<TReq extends object>(
-  workerFactory: () => Worker,
-): WorkerBridge<TReq> {
+export function createWorkerBridge<TReq extends object>(workerFactory: () => Worker): WorkerBridge<TReq> {
   let worker: Worker | null = null
   let msgId = 0
 

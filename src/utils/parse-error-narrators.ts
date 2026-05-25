@@ -17,10 +17,7 @@ const NARRATORS: Record<SourceFormat, Narrator> = {
   yaml: { label: 'YAML', get: getYamlParseError },
 }
 
-export const narrateParseError = async (
-  format: SourceFormat,
-  source: string,
-): Promise<string | null> => {
+export const narrateParseError = async (format: SourceFormat, source: string): Promise<string | null> => {
   const { get, label } = NARRATORS[format]
   const reason = await get(source)
   return reason != null ? `Invalid ${label}: ${reason}` : null

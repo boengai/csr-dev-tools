@@ -85,7 +85,12 @@ export const DIRECTION_PROFILES: Record<Direction, DirectionProfile> = {
       handle: async (file, ctx) => {
         const text = await file.text()
         ctx.onSourceChange(text)
-        ctx.setInputImmediate({ schema: ctx.schema, msgType: ctx.selectedMessageType, source: text, format: ctx.format })
+        ctx.setInputImmediate({
+          schema: ctx.schema,
+          msgType: ctx.selectedMessageType,
+          source: text,
+          format: ctx.format,
+        })
       },
     },
     sourceInput: {
@@ -230,20 +235,12 @@ const ProtobufContent = ({
   const { downloadBlob } = useDownload()
   const profile = DIRECTION_PROFILES[direction]
 
-  const {
-    result,
-    setInput,
-    setInputImmediate,
-  } = useToolComputation<CodecInput, string>(
-    profile.computeFn,
-    {
-      debounceMs: 300,
-      errorFallback: profile.defaultErrorMsg,
-      initial: '',
-      isEmpty: ({ schema: schemaVal, msgType, source: sourceVal }) =>
-        !schemaVal.trim() || !msgType || !sourceVal.trim(),
-    },
-  )
+  const { result, setInput, setInputImmediate } = useToolComputation<CodecInput, string>(profile.computeFn, {
+    debounceMs: 300,
+    errorFallback: profile.defaultErrorMsg,
+    initial: '',
+    isEmpty: ({ schema: schemaVal, msgType, source: sourceVal }) => !schemaVal.trim() || !msgType || !sourceVal.trim(),
+  })
 
   useEffect(() => {
     if (schema && selectedMessageType && source) {
@@ -263,8 +260,7 @@ const ProtobufContent = ({
   const handleFormatChange = useCallback(
     (value: string) => {
       onFormatChange(value)
-      if (source)
-        setInputImmediate({ schema, msgType: selectedMessageType, source, format: value as OutputFormat })
+      if (source) setInputImmediate({ schema, msgType: selectedMessageType, source, format: value as OutputFormat })
     },
     [onFormatChange, source, schema, selectedMessageType, setInputImmediate],
   )
@@ -297,7 +293,17 @@ const ProtobufContent = ({
         showError('Failed to read file')
       }
     },
-    [onFormatChange, onSourceChange, schema, selectedMessageType, format, setInputImmediate, showError, showSuccess, profile.upload],
+    [
+      onFormatChange,
+      onSourceChange,
+      schema,
+      selectedMessageType,
+      format,
+      setInputImmediate,
+      showError,
+      showSuccess,
+      profile.upload,
+    ],
   )
 
   const handleDownload = useCallback(() => {

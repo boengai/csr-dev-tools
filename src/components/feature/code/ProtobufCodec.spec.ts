@@ -1,3 +1,5 @@
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
 /**
  * Cross-direction isolation invariant spec for ProtobufCodec.
  *
@@ -9,7 +11,6 @@
  * so these imports are safe at the top.
  */
 import * as parsers from '@/wasm/parsers'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { DIRECTION_PROFILES } from './ProtobufCodec'
 
@@ -166,9 +167,7 @@ describe('ProtobufCodec direction-profile isolation', () => {
       expect(ctx.onSourceChange).toHaveBeenCalledOnce()
       expect(ctx.onSourceChange).toHaveBeenCalledWith(content)
       expect(ctx.setInputImmediate).toHaveBeenCalledOnce()
-      expect(ctx.setInputImmediate).toHaveBeenCalledWith(
-        expect.objectContaining({ source: content }),
-      )
+      expect(ctx.setInputImmediate).toHaveBeenCalledWith(expect.objectContaining({ source: content }))
     })
 
     it('decode upload calls onFormatChange, onSourceChange, and showSuccess with detected format', async () => {

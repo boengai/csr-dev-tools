@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 
 import type { DiagramDocument } from '@/types'
 
-import { createInitialDocument } from '../state'
 import { createSequentialIdMinters } from '../id-minters'
+import { createInitialDocument } from '../state'
 import { addTable, deleteTable, moveTable, renameTable } from './tables'
 
 const seed = (): DiagramDocument => createInitialDocument()
@@ -17,7 +17,11 @@ describe('addTable', () => {
   })
 
   it('uses the provided position when given', () => {
-    const { document, id } = addTable(seed(), { name: 'users', position: { x: 50, y: 75 } }, createSequentialIdMinters())
+    const { document, id } = addTable(
+      seed(),
+      { name: 'users', position: { x: 50, y: 75 } },
+      createSequentialIdMinters(),
+    )
     expect(document.tables[id].position).toEqual({ x: 50, y: 75 })
   })
 

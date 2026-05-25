@@ -70,7 +70,10 @@ export const Dialog = ({
                       whileHover={{ scale: 1.15 }}
                       whileTap={{ scale: 0.9 }}
                     >
-                      <span aria-hidden="true" className="absolute inset-0 flex items-center justify-center text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100">
+                      <span
+                        aria-hidden="true"
+                        className="absolute inset-0 flex items-center justify-center text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                      >
                         <XIcon size={10} />
                       </span>
                       <span className="sr-only">Close</span>

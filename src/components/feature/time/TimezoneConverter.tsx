@@ -289,9 +289,9 @@ export const TimezoneConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
       triggers={[{ label: 'Convert' }]}
     >
       <div className="flex grow flex-col gap-4">
-        <div className="tablet:flex-row flex flex-col gap-4">
+        <div className="flex flex-col gap-4 tablet:flex-row">
           {/* Source Section */}
-          <section className="tablet:w-2/5 flex flex-col gap-3">
+          <section className="flex flex-col gap-3 tablet:w-2/5">
             <h3 className="text-body-sm font-semibold text-gray-300">Source</h3>
 
             <div>
@@ -339,7 +339,7 @@ export const TimezoneConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
           </section>
 
           {/* Target Timezones Section */}
-          <section className="tablet:w-3/5 flex flex-col gap-3">
+          <section className="flex flex-col gap-3 tablet:w-3/5">
             <div className="flex items-center justify-between">
               <h3 className="text-body-sm font-semibold text-gray-300">Target Timezones</h3>
               <button

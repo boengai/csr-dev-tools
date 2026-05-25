@@ -1,10 +1,8 @@
-import type { ColumnType, DiagramSchema, RelationshipType } from '@/types'
 import type { EntityIdMinters } from '@/diagram/id-minters'
-import type { ParsedTable, ParsedRef } from '@/types/diagram/codecs/dbml'
-
-import type { ParseResult } from '@/types/diagram/codecs/import'
-
 import { gridLayoutPositions } from '@/diagram/layout'
+import type { ColumnType, DiagramSchema, RelationshipType } from '@/types'
+import type { ParsedTable, ParsedRef } from '@/types/diagram/codecs/dbml'
+import type { ParseResult } from '@/types/diagram/codecs/import'
 
 // ── Generator ──────────────────────────────────────────────────────
 

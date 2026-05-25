@@ -147,9 +147,9 @@ export const IpSubnetCalculator = ({ autoOpen, onAfterDialogClose }: ToolCompone
       triggers={[{ label: 'Calculate' }]}
     >
       <div className="flex w-full grow flex-col gap-4">
-        <div className="tablet:flex-row tablet:items-start flex flex-col gap-4">
+        <div className="flex flex-col gap-4 tablet:flex-row tablet:items-start">
           {/* Input Section */}
-          <div className="tablet:w-[35%] flex w-full flex-col gap-4">
+          <div className="flex w-full flex-col gap-4 tablet:w-[35%]">
             <Tabs
               injected={{ setValue: (v) => handleModeChange(v as InputMode), value: mode }}
               items={[
@@ -219,9 +219,9 @@ export const IpSubnetCalculator = ({ autoOpen, onAfterDialogClose }: ToolCompone
 
           {/* Results Section */}
           {result && (
-            <div className="tablet:w-[65%] flex w-full flex-col gap-4" aria-live="polite">
+            <div className="flex w-full flex-col gap-4 tablet:w-[65%]" aria-live="polite">
               {/* Results Grid */}
-              <div className="tablet:grid-cols-2 grid grid-cols-1 gap-2">
+              <div className="grid grid-cols-1 gap-2 tablet:grid-cols-2">
                 {resultRows.map((row) => (
                   <div
                     className="flex items-center justify-between gap-2 rounded-md border border-gray-800 bg-gray-950 px-3 py-2"

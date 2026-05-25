@@ -29,8 +29,7 @@ export function useToolFieldsPersisted<F, R>(options: UseToolFieldsPersistedOpti
   )
 
   const effectiveAutorun =
-    fieldsOptions.autorunOnMount === true ||
-    (fieldsOptions.isEmpty !== undefined && !fieldsOptions.isEmpty(initialBag))
+    fieldsOptions.autorunOnMount === true || (fieldsOptions.isEmpty !== undefined && !fieldsOptions.isEmpty(initialBag))
 
   const fields = useToolFields<F, R>({
     ...fieldsOptions,

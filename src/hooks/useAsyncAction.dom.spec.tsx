@@ -269,10 +269,9 @@ describe('useAsyncAction', () => {
   })
 
   it('reads the latest action closure even when run is invoked after the closure swaps', async () => {
-    const { result, rerender } = renderHook(
-      ({ action }: { action: () => Promise<string> }) => useAsyncAction(action),
-      { initialProps: { action: async () => 'v1' } },
-    )
+    const { result, rerender } = renderHook(({ action }: { action: () => Promise<string> }) => useAsyncAction(action), {
+      initialProps: { action: async () => 'v1' },
+    })
 
     rerender({ action: async () => 'v2' })
 

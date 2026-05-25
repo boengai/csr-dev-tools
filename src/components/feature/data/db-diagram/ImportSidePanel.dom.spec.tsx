@@ -12,9 +12,15 @@ vi.mock('@/components/common', async (importOriginal) => {
     ...actual,
     // CodeMirror doesn't expose a value setter in jsdom; swap for a textarea so
     // fireEvent.change works in tests while all other common components stay real.
-    CodeInput: ({ name, onChange, placeholder }: { name?: string; onChange: (v: string) => void; placeholder?: string }) => (
-      <textarea name={name} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />
-    ),
+    CodeInput: ({
+      name,
+      onChange,
+      placeholder,
+    }: {
+      name?: string
+      onChange: (v: string) => void
+      placeholder?: string
+    }) => <textarea name={name} onChange={(e) => onChange(e.target.value)} placeholder={placeholder} />,
   }
 })
 

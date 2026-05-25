@@ -10,10 +10,7 @@ const toolEntry = TOOL_REGISTRY_MAP['json-schema-validator']
 type ValidatorInput = { jsonData: string; jsonSchema: string }
 
 export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { inputs, recompute, result, setFields } = useToolFieldsPersisted<
-    ValidatorInput,
-    ValidationResult | null
-  >({
+  const { inputs, recompute, result, setFields } = useToolFieldsPersisted<ValidatorInput, ValidationResult | null>({
     compute: ({ jsonData: data, jsonSchema: schema }) => validateJsonSchema(data, schema),
     debounceMs: 300,
     initial: { jsonData: '', jsonSchema: '' },
@@ -47,61 +44,58 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
       ]}
     >
       <div className="flex w-full grow flex-col gap-4">
-          <SplitPanel>
-            <Pane>
-              <FieldForm
-                label="JSON Data"
-                name="json-data"
-                onChange={handleDataChange}
-                placeholder='{"name": "John", "age": 30}'
-                type="code"
-                value={jsonData}
-              />
-            </Pane>
+        <SplitPanel>
+          <Pane>
+            <FieldForm
+              label="JSON Data"
+              name="json-data"
+              onChange={handleDataChange}
+              placeholder='{"name": "John", "age": 30}'
+              type="code"
+              value={jsonData}
+            />
+          </Pane>
 
-            <Pane>
-              <FieldForm
-                label="JSON Schema"
-                name="json-schema"
-                onChange={handleSchemaChange}
-                placeholder='{"type": "object", "properties": {"name": {"type": "string"}}}'
-                type="code"
-                value={jsonSchema}
-              />
-            </Pane>
-          </SplitPanel>
+          <Pane>
+            <FieldForm
+              label="JSON Schema"
+              name="json-schema"
+              onChange={handleSchemaChange}
+              placeholder='{"type": "object", "properties": {"name": {"type": "string"}}}'
+              type="code"
+              value={jsonSchema}
+            />
+          </Pane>
+        </SplitPanel>
 
-          <div aria-live="polite">
-            {result?.valid && (
-              <div className="border-green-800 bg-green-950 rounded-lg border p-3">
-                <p className="text-green-400 text-body-sm">✅ Valid — JSON conforms to the schema</p>
-              </div>
-            )}
+        <div aria-live="polite">
+          {result?.valid && (
+            <div className="border-green-800 bg-green-950 rounded-lg border p-3">
+              <p className="text-green-400 text-body-sm">✅ Valid — JSON conforms to the schema</p>
+            </div>
+          )}
 
-            {result && !result.valid && result.errors && result.errors[0]?.keyword === 'parse' && (
-              <div className="border-red-800 bg-red-950 rounded-lg border p-3">
-                <p className="text-red-400 text-body-sm">❌ {result.errors[0].message}</p>
-              </div>
-            )}
+          {result && !result.valid && result.errors && result.errors[0]?.keyword === 'parse' && (
+            <div className="border-red-800 bg-red-950 rounded-lg border p-3">
+              <p className="text-red-400 text-body-sm">❌ {result.errors[0].message}</p>
+            </div>
+          )}
 
-            {result && !result.valid && result.errors && result.errors[0]?.keyword !== 'parse' && (
-              <div className="border-red-800 bg-red-950 rounded-lg border p-3">
-                <p className="text-red-400 mb-2 text-body-sm font-medium">❌ Validation Errors</p>
-                <ul className="flex flex-col gap-1">
-                  {result.errors.map((err) => (
-                    <li
-                      className="text-red-300 font-mono text-body-xs"
-                      key={`${err.path}-${err.keyword}-${err.message}`}
-                    >
-                      <span className="text-red-400">{err.path}</span> — {err.message}{' '}
-                      <span className="text-red-500">(keyword: {err.keyword})</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
+          {result && !result.valid && result.errors && result.errors[0]?.keyword !== 'parse' && (
+            <div className="border-red-800 bg-red-950 rounded-lg border p-3">
+              <p className="text-red-400 mb-2 text-body-sm font-medium">❌ Validation Errors</p>
+              <ul className="flex flex-col gap-1">
+                {result.errors.map((err) => (
+                  <li className="text-red-300 font-mono text-body-xs" key={`${err.path}-${err.keyword}-${err.message}`}>
+                    <span className="text-red-400">{err.path}</span> — {err.message}{' '}
+                    <span className="text-red-500">(keyword: {err.keyword})</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
         </div>
+      </div>
     </ToolDialogFrame>
   )
 }

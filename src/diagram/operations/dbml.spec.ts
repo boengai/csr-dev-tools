@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
-import { createInitialDocument } from '../state'
 import { createSequentialIdMinters } from '../id-minters'
+import { createInitialDocument } from '../state'
 import { applyDbmlNow, regenerateDbmlFromDocument, setDbmlText } from './dbml'
 import { addTable } from './tables'
 

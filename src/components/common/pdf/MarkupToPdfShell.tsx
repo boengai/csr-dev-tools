@@ -77,7 +77,11 @@ export const MarkupToPdfShell = ({
                 <DownloadPdfButton bytes={result.pdf} filename={`csr-dev-tools_${filenameSlug}_${Date.now()}.pdf`} />
               )}
             </div>
-            {hasError ? <ErrorBanner variant="warning">{errorMessage}</ErrorBanner> : <PdfSvgPreview pages={result.svgs} />}
+            {hasError ? (
+              <ErrorBanner variant="warning">{errorMessage}</ErrorBanner>
+            ) : (
+              <PdfSvgPreview pages={result.svgs} />
+            )}
           </Pane>
         </SplitPanel>
       </div>

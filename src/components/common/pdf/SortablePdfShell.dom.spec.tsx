@@ -23,7 +23,9 @@ type Item = { id: string; label: string }
 const setInputSpy = vi.fn()
 
 const baseReturn = (
-  overrides: Partial<UseToolComputationResult<{ items: Array<Item>; extras: Record<string, never> }, BytesPdfResult>> = {},
+  overrides: Partial<
+    UseToolComputationResult<{ items: Array<Item>; extras: Record<string, never> }, BytesPdfResult>
+  > = {},
 ): UseToolComputationResult<{ items: Array<Item>; extras: Record<string, never> }, BytesPdfResult> => ({
   error: null,
   isPending: false,
@@ -70,7 +72,9 @@ const renderShell = (overrides: Partial<React.ComponentProps<typeof SortablePdfS
         <div data-testid={`card-${item.id}`}>
           <span>{item.label}</span>
           <span>p{position}</span>
-          <button onClick={onRemove} type="button">Remove</button>
+          <button onClick={onRemove} type="button">
+            Remove
+          </button>
         </div>
       )}
       title="Sortable PDF Test"
@@ -169,13 +173,11 @@ describe('SortablePdfShell', () => {
     // Render a controls slot that exposes a button which calls setExtras.
     // Asserting via setInputSpy captures the round-trip: setExtras →
     // state update → mirror effect → setInput({ items, extras: merged }).
-    const renderControls = vi.fn(
-      ({ setExtras }: { setExtras: (p: Partial<{ mode: string }>) => void }) => (
-        <button data-testid="toggle" onClick={() => setExtras({ mode: 'b' })} type="button">
-          Toggle
-        </button>
-      ),
-    )
+    const renderControls = vi.fn(({ setExtras }: { setExtras: (p: Partial<{ mode: string }>) => void }) => (
+      <button data-testid="toggle" onClick={() => setExtras({ mode: 'b' })} type="button">
+        Toggle
+      </button>
+    ))
 
     renderShell({
       initialExtras: { mode: 'a' as const },

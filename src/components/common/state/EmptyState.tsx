@@ -4,6 +4,4 @@ type EmptyStateProps = {
   children: ReactNode
 }
 
-export const EmptyState = ({ children }: EmptyStateProps) => (
-  <p className="text-body-xs text-gray-500">{children}</p>
-)
+export const EmptyState = ({ children }: EmptyStateProps) => <p className="text-body-xs text-gray-500">{children}</p>

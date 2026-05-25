@@ -42,9 +42,7 @@ export const DiagramSidePanel = ({
         <CloseButton onClick={onClose} />
       </div>
 
-      {controls && (
-        <div className="flex items-center gap-2 border-b border-gray-800 px-3 py-2">{controls}</div>
-      )}
+      {controls && <div className="flex items-center gap-2 border-b border-gray-800 px-3 py-2">{controls}</div>}
 
       <div className="flex-1 overflow-auto p-3">{children}</div>
 

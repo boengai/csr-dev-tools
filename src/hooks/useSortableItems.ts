@@ -1,11 +1,4 @@
-import {
-  closestCenter,
-  type DragEndEvent,
-  KeyboardSensor,
-  PointerSensor,
-  useSensor,
-  useSensors,
-} from '@dnd-kit/core'
+import { closestCenter, type DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, rectSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
 import { useCallback, useMemo, useRef, useState } from 'react'
 
@@ -37,9 +30,7 @@ import type { DndContextProps, SortableContextProps, UseSortableItemsResult } fr
  *
  * See CONTEXT.md → "Sortable item bag".
  */
-export function useSortableItems<T extends { id: string }>(
-  initial: Array<T> = [],
-): UseSortableItemsResult<T> {
+export function useSortableItems<T extends { id: string }>(initial: Array<T> = []): UseSortableItemsResult<T> {
   const [items, setItems] = useState<Array<T>>(initial)
   const [skipped, setSkipped] = useState<Array<string>>([])
 
@@ -53,15 +44,12 @@ export function useSortableItems<T extends { id: string }>(
     setItems((prev) => [...prev, ...next])
   }, [])
 
-  const rejectFiles = useCallback(
-    (next: Array<string> | ((prev: Array<string>) => Array<string>)) => {
-      // React's setState accepts either form; we forward through unchanged so
-      // adopters can use the functional form for cumulative/append-with-dedupe
-      // flows from inside an async callback.
-      setSkipped(next)
-    },
-    [],
-  )
+  const rejectFiles = useCallback((next: Array<string> | ((prev: Array<string>) => Array<string>)) => {
+    // React's setState accepts either form; we forward through unchanged so
+    // adopters can use the functional form for cumulative/append-with-dedupe
+    // flows from inside an async callback.
+    setSkipped(next)
+  }, [])
 
   const removeItem = useCallback((id: string) => {
     setItems((prev) => prev.filter((i) => i.id !== id))

@@ -218,9 +218,7 @@ describe('aspect-ratio', () => {
       })
 
       it('locked=width: recomputes height, leaves width', () => {
-        expect(
-          solveAspectRatio({ ...base, locked: 'width', ratio: '4:3', source: 'ratio', width: '1920' }),
-        ).toEqual({
+        expect(solveAspectRatio({ ...base, locked: 'width', ratio: '4:3', source: 'ratio', width: '1920' })).toEqual({
           height: '1440',
           ratio: '4:3',
           width: '1920',
@@ -228,9 +226,7 @@ describe('aspect-ratio', () => {
       })
 
       it('locked=height: recomputes width, leaves height', () => {
-        expect(
-          solveAspectRatio({ ...base, height: '1080', locked: 'height', ratio: '4:3', source: 'ratio' }),
-        ).toEqual({
+        expect(solveAspectRatio({ ...base, height: '1080', locked: 'height', ratio: '4:3', source: 'ratio' })).toEqual({
           height: '1080',
           ratio: '4:3',
           width: '1440',
@@ -266,9 +262,7 @@ describe('aspect-ratio', () => {
       })
 
       it('silently skips recompute when dependent side is invalid (no throw)', () => {
-        expect(
-          solveAspectRatio({ ...base, lastEdited: 'width', ratio: '4:3', source: 'ratio', width: '0' }),
-        ).toEqual({
+        expect(solveAspectRatio({ ...base, lastEdited: 'width', ratio: '4:3', source: 'ratio', width: '0' })).toEqual({
           height: '',
           ratio: '4:3',
           width: '0',

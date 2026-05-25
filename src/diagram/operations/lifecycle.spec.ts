@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import type { DiagramSchema } from '@/types'
 import { createDefaultColumn } from '@/diagram/defaults'
+import type { DiagramSchema } from '@/types'
 
-import { createInitialDocument } from '../state'
 import { createSequentialIdMinters } from '../id-minters'
+import { createInitialDocument } from '../state'
 import { addColumn } from './columns'
 import { documentToSchema } from './export'
 import { newDiagram, schemaToDocument, setDiagramName } from './lifecycle'
@@ -37,11 +37,15 @@ describe('schemaToDocument', () => {
     const colMinters = createSequentialIdMinters()
     const fk = addColumn(doc, b.id, createDefaultColumn('user_id', false, colMinters.column), minters)
     doc = fk.document
-    const rel = addRelation(doc, {
-      from: { tableId: a.id, columnId: doc.tables[a.id].columns[0].id },
-      to: { tableId: b.id, columnId: fk.id! },
-      kind: '1:N',
-    }, minters)
+    const rel = addRelation(
+      doc,
+      {
+        from: { tableId: a.id, columnId: doc.tables[a.id].columns[0].id },
+        to: { tableId: b.id, columnId: fk.id! },
+        kind: '1:N',
+      },
+      minters,
+    )
     doc = rel.document
     const schema: DiagramSchema = documentToSchema(doc)
     const round = schemaToDocument(schema, createInitialDocument())

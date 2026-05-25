@@ -287,9 +287,7 @@ export const processImage = async (
         height: sourceHeight,
         quality: options.quality ?? 1,
         ratio: sourceWidth / sourceHeight,
-        size:
-          Math.ceil((dataUrl.length * 3) / 4) -
-          (dataUrl.endsWith('==') ? 2 : dataUrl.endsWith('=') ? 1 : 0),
+        size: Math.ceil((dataUrl.length * 3) / 4) - (dataUrl.endsWith('==') ? 2 : dataUrl.endsWith('=') ? 1 : 0),
         width: sourceWidth,
       }
     }
