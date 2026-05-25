@@ -2,8 +2,8 @@ import { useState } from 'react'
 
 import { Button, SelectInput } from '@/components/common'
 import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
+import { useDownload } from '@/hooks'
 import type { ExportSqlPanelProps, SqlDialect } from '@/types'
-import { downloadBlob } from '@/utils'
 
 import { DIALECT_OPTIONS } from './constants'
 import { ExportSidePanel } from './ExportSidePanel'
@@ -11,6 +11,7 @@ import { ExportSidePanel } from './ExportSidePanel'
 export const ExportSqlPanel = ({ onClose }: ExportSqlPanelProps) => {
   const { document } = useDiagram()
   const [dialect, setDialect] = useState<SqlDialect>('postgresql')
+  const { downloadBlob } = useDownload()
 
   const handleDownload = (sql: string) => {
     if (!sql) return

@@ -6,11 +6,10 @@ import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { DiagramEditor } from '@/diagram/editor'
 import { documentToSchema } from '@/diagram/operations/export'
-import { useMediaQuery } from '@/hooks'
+import { useDownload, useMediaQuery } from '@/hooks'
 import { useToast } from '@/hooks/state'
 import type { DiagramInnerProps, DiagramPanelSwitchProps, SidePanel, ToolComponentProps } from '@/types'
 import { gridLayoutPositions } from '@/diagram/layout'
-import { downloadBlob } from '@/utils/download'
 
 import { DbmlEditorPanel } from './DbmlEditorPanel'
 import { DiagramCanvas } from './DiagramCanvas'
@@ -96,6 +95,7 @@ const DiagramWorkspace = () => {
   const [activePanel, setActivePanel] = useState<SidePanel>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const { showError } = useToast()
+  const { downloadBlob } = useDownload()
 
   useEffect(() => {
     editor.bootstrap()
@@ -112,7 +112,7 @@ const DiagramWorkspace = () => {
     const jsonStr = JSON.stringify(schema, null, 2)
     const safeName = doc.diagramName.replace(/[^a-zA-Z0-9-_]/g, '_').toLowerCase()
     downloadBlob(new Blob([jsonStr], { type: 'application/json' }), `${safeName}.json`)
-  }, [editor])
+  }, [downloadBlob, editor])
 
   const handleImportJson = useCallback(
     async (e: React.ChangeEvent<HTMLInputElement>) => {

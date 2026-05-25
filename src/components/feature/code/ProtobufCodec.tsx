@@ -14,7 +14,7 @@ import {
 } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
+import { useDownload, useInputLocalStorage, useMountOnce, useToast, useToolComputation } from '@/hooks'
 import type {
   CodecInput,
   ContentProps,
@@ -24,7 +24,6 @@ import type {
   ToolComponentProps,
 } from '@/types'
 import type { OutputFormat } from '@/types/utils/protobuf-codec'
-import { downloadBlob } from '@/utils/download'
 import { detectProtobufFormat } from '@/wasm/parsers'
 
 // ---------------------------------------------------------------------------
@@ -228,6 +227,7 @@ const ProtobufContent = ({
   source,
 }: ProtobufContentProps) => {
   const { showError, showSuccess } = useToast()
+  const { downloadBlob } = useDownload()
   const profile = DIRECTION_PROFILES[direction]
 
   const {
@@ -304,7 +304,7 @@ const ProtobufContent = ({
     if (!result) return
     const { blob, filename } = profile.download.build(result, selectedMessageType, format)
     downloadBlob(blob, filename)
-  }, [result, selectedMessageType, format, profile.download])
+  }, [downloadBlob, result, selectedMessageType, format, profile.download])
 
   const toolbarFormatRadio = profile.formatRadio.placement === 'toolbar'
   const belowDividerFormatRadio = profile.formatRadio.placement === 'belowDivider'
