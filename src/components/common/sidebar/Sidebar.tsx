@@ -1,9 +1,9 @@
 import { useLocation } from '@tanstack/react-router'
 import { AnimatePresence, m } from 'motion/react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useMemo, useRef } from 'react'
 
 import { CATEGORY_ORDER, groupToolsByCategory, ROUTE_PATH, TOOL_REGISTRY } from '@/constants'
-import { useKeyboardShortcut, useSidebarStore } from '@/hooks'
+import { useKeyboardShortcut, useMediaQuery, useSidebarStore } from '@/hooks'
 import { tv } from '@/utils'
 
 import { XIcon } from '../icon'
@@ -26,16 +26,7 @@ export const Sidebar = () => {
   const isOpen = useSidebarStore((state) => state.isOpen)
   const { pathname } = useLocation()
   const sidebarRef = useRef<HTMLElement>(null)
-  const [isMobile, setIsMobile] = useState(false)
-
-  // Detect mobile viewport (for width class toggle only)
-  useEffect(() => {
-    const mql = window.matchMedia('(max-width: 767px)')
-    setIsMobile(mql.matches)
-    const handler = (e: MediaQueryListEvent) => setIsMobile(e.matches)
-    mql.addEventListener('change', handler)
-    return () => mql.removeEventListener('change', handler)
-  }, [])
+  const isMobile = useMediaQuery('(max-width: 767px)')
 
   useKeyboardShortcut((e) => e.key === 'Escape', close, { enabled: isOpen })
 

@@ -822,6 +822,50 @@ Today's adopters:
 now decodes directly via `loadImageFromBlob` (which owns its own URL
 lifecycle internally), so it no longer needs a separate preview URL.
 
+## useMediaQuery
+
+The single seam that subscribes a React component to a CSS media query.
+Implemented by `useMediaQuery` (`src/hooks/useMediaQuery.ts`).
+
+```ts
+useMediaQuery(query: string, ssrDefault?: boolean): boolean
+```
+
+Owns three concerns:
+
+1. **SSR-safe initial** — the lazy `useState` initializer reads
+   `window.matchMedia(query).matches` synchronously when `window` exists,
+   so the first render already has the right boolean. Without this, an
+   adopter that gates layout by viewport flashes the desktop layout for
+   one frame on mobile.
+2. **Subscription with cleanup** — listens for `change`, removes the
+   listener on unmount or when `query` changes.
+3. **Prerender control via `ssrDefault`** — when `window` is absent
+   (Vite's prerender pass, Node tests, SSR), the initial value falls
+   back to `ssrDefault` (default `false`). Adopters whose layout differs
+   by viewport pick the *desktop* default explicitly so the prerendered
+   HTML matches the hydration value for the desktop majority — see
+   [[DiagramEditor]]'s tablet gate for the canonical adopter.
+
+Today's adopters:
+
+- `<DbDiagram>` — `useMediaQuery('(min-width: 48rem)', true)`. The
+  `MobileBlocker` ships only on hydration when the viewport is sub-tablet;
+  `ssrDefault: true` keeps the prerender rendering the workspace.
+- `<Sidebar>` — `useMediaQuery('(max-width: 767px)')`. The mobile width
+  class is purely additive (`w-full` vs `w-[260px]`), so `ssrDefault: false`
+  (desktop layout assumed) is correct; the hydration step fixes the value
+  for mobile users without a layout flash.
+
+Both adopters query the Tailwind `tablet:` breakpoint (48rem ↔ 767px) —
+same boundary, opposite directions. The query string is spelled out at
+each call site today; if a third adopter lands, a `breakpoints.tablet`
+constant exported from a Tailwind-config-driven module would consolidate
+the boundary value.
+
+Distinct from `useKeyboardShortcut`, `useTimeoutRef`, and other small
+named hooks on the same shelf — each owns one cross-cutting concern.
+
 ## loadNamed
 
 The single seam that adapts a dynamic-import loader of a module with a

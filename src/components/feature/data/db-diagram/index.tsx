@@ -6,6 +6,7 @@ import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { DiagramEditor } from '@/diagram/editor'
 import { documentToSchema } from '@/diagram/operations/export'
+import { useMediaQuery } from '@/hooks'
 import { useToast } from '@/hooks/state'
 import type { DiagramInnerProps, DiagramPanelSwitchProps, SidePanel, ToolComponentProps } from '@/types'
 import { gridLayoutPositions } from '@/diagram/layout'
@@ -167,23 +168,6 @@ const DiagramWorkspace = () => {
   )
 }
 
-// Match Tailwind's `tablet` breakpoint (48rem) so the JS gate aligns with the
-// `tablet:` utility prefix used elsewhere in the codebase.
-const useIsTabletOrLarger = (): boolean => {
-  const [matches, setMatches] = useState(() => {
-    if (typeof window === 'undefined') return true
-    return window.matchMedia('(min-width: 48rem)').matches
-  })
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    const mq = window.matchMedia('(min-width: 48rem)')
-    const handler = () => setMatches(mq.matches)
-    mq.addEventListener('change', handler)
-    return () => mq.removeEventListener('change', handler)
-  }, [])
-  return matches
-}
-
 const MobileBlocker = () => (
   <div className="flex grow flex-col items-center justify-center gap-3 p-8 text-center">
     <p className="text-body-sm text-gray-200">DB Diagram needs a larger screen.</p>
@@ -199,7 +183,11 @@ const MobileBlocker = () => (
 // ---------------------------------------------------------------------------
 export const DbDiagram = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
-  const isTabletOrLarger = useIsTabletOrLarger()
+  // Match Tailwind's `tablet:` breakpoint (48rem) so the JS gate aligns with the
+  // CSS utility prefix used elsewhere in the codebase. `ssrDefault: true` keeps
+  // the prerender output rendering the workspace (desktop assumption) — same as
+  // the pre-extraction `useIsTabletOrLarger` did.
+  const isTabletOrLarger = useMediaQuery('(min-width: 48rem)', true)
 
   return (
     <div className="flex w-full grow flex-col gap-4">
