@@ -1,3 +1,4 @@
 export { DownloadPdfButton } from './DownloadPdfButton'
+export { MarkupToPdfShell } from './MarkupToPdfShell'
 export { PdfBytesPreview } from './PdfBytesPreview'
 export { PdfSvgPreview } from './PdfSvgPreview'

@@ -504,6 +504,57 @@ click rather than debounced input change, plus its control row is
 toggle buttons + a Generate action — a different interaction shape, not
 this family.
 
+## Markup to PDF shell
+
+A Tool whose interaction is "paste source markup → see compiled PDF
+preview + download" via the Typst WASM pipeline. Implemented by
+`<MarkupToPdfShell>` (`src/components/common/pdf/MarkupToPdfShell.tsx`).
+
+Today's consumers: `HtmlToPdf`, `MarkdownToPdf`. Both route their
+compute through `src/wasm/pdf.ts` (`compileHtmlToPdf` /
+`compileMarkdownToPdf`); both produce `CompileResultDto`
+(`{ svgs: string[]; pdf: Uint8Array }`).
+
+The shell wraps the [[Persistent tool computation]] internally — restore-
+on-mount + autorun-on-non-empty come for free. Persistence is required
+(every consumer gets its own `storageKey`), matching the [[Formatter
+shell]] doctrine that retired the prior persist-some-tools-not-others
+divergence.
+
+Carries three invariants beyond the pipeline's four:
+
+1. **The `CompileResultDto` empty shape** — `{ svgs: [], pdf: new
+   Uint8Array(0) }` paired with `isEmpty: trim().length === 0`. Both
+   move together; either side alone would flash stale output during the
+   empty-bypass window.
+2. **Download/preview share one dto** — `<DownloadPdfButton bytes={result.pdf}>`
+   and `<PdfSvgPreview pages={result.svgs}>` are two views of one compile.
+   A future adopter cannot wire them to different sources.
+3. **Stale output is suppressed on error** — when the pipeline's `error`
+   is non-null, the shell hides both `<DownloadPdfButton>` and
+   `<PdfSvgPreview>` and renders an inline `<ErrorBanner
+   variant="warning">` carrying `err.message` (or `'Failed to render
+   PDF'` when the rejection is not an `Error`). Prevents downloading
+   bytes that don't match the displayed source. Distinct from the
+   pipeline default — `useToolComputation` leaves `result` untouched on
+   rejection, so without the shell the prior-success preview and download
+   silently linger.
+
+Input is concretely `string` — both today's adopters need only the
+source markup. If a third adopter requires extras (`pageFormat`,
+`includeToc`, Typst preamble), swap the internal primitive from
+[[Persistent tool computation]] to [[Persistent tool field bag]] and
+migrate adopters — ~5 lines per adopter, no behavior change. The
+breadcrumb lives in the shell's module-level comment alongside the
+`EMPTY_RESULT` constant.
+
+Does NOT fit: the bytes-PDF Tools (`ImageToPdf`, `CombinePdf`). They
+consume `<PdfBytesPreview>` (pdfjs-decoded async-rendering of arbitrary
+PDF bytes), not `<PdfSvgPreview>` (statically-rendered Typst-emitted
+SVG strings) — see [[Sortable item bag]] for that family. Also does
+NOT fit Tools whose source isn't markup (e.g. an image-to-PDF or a
+data-table-to-PDF Tool would shape a different shell).
+
 ## Diff checker shell
 
 A Tool that compares two text-shaped inputs (`original`, `modified`) and
