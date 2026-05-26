@@ -551,9 +551,84 @@ breadcrumb lives in the shell's module-level comment alongside the
 Does NOT fit: the bytes-PDF Tools (`ImageToPdf`, `CombinePdf`). They
 consume `<PdfBytesPreview>` (pdfjs-decoded async-rendering of arbitrary
 PDF bytes), not `<PdfSvgPreview>` (statically-rendered Typst-emitted
-SVG strings) — see [[Sortable item bag]] for that family. Also does
+SVG strings) — that family is owned by [[Sortable PDF shell]], with
+[[Sortable item bag]] as its underlying items primitive. Also does
 NOT fit Tools whose source isn't markup (e.g. an image-to-PDF or a
 data-table-to-PDF Tool would shape a different shell).
+
+## Sortable PDF shell
+
+The bytes-PDF sibling of [[Markup to PDF shell]] — a Tool whose interaction
+is "upload N files → re-order them → see compiled PDF preview + download."
+Implemented by `<SortablePdfShell>` (`src/components/common/pdf/SortablePdfShell.tsx`).
+
+Today's consumers: `ImageToPdf`, `CombinePdf`. Both route compute through
+`src/utils/...` (`imagesToPdf` / `combinePdfPages`); both produce
+`BytesPdfResult` (`{ pdf: Uint8Array; pageCount: number; skipped: Array<string> }`).
+
+The shell wraps [[Tool computation pipeline]] (unwrapped — the input bag
+`{ items, extras }` is rebuilt per change from internal `useSortableItems`
+items + Tool-owned extras), [[Sortable item bag]] (items + skipped + dnd-kit
+envelope), and [[Tool dialog frame]] (dialog + title + triggers + onReset).
+All four pipeline invariants (debounced, stale-safe, empty-bypass,
+unmount-safe) apply to the `compute` function unchanged.
+
+Carries three invariants beyond the pipeline's four:
+
+1. **The `BytesPdfResult` empty shape** — `{ pdf: new Uint8Array(0),
+   pageCount: 0, skipped: [] }` paired with `isEmpty: items.length === 0`.
+   Both move together; either side alone would flash stale output during
+   the empty-bypass window. Mirrors [[Markup to PDF shell]] invariant 1.
+2. **Download/preview share one result** — `<DownloadPdfButton bytes={result.pdf}>`
+   and `<PdfBytesPreview bytes={result.pdf}>` are two views of one compile.
+   A future adopter cannot wire them to different sources.
+3. **Stale output is suppressed on error** — when the pipeline's `error`
+   is non-null, the shell hides both `<DownloadPdfButton>` and
+   `<PdfBytesPreview>` and renders an inline `<ErrorBanner variant="warning">`
+   carrying `err.message` (or `'Failed to generate PDF'` when the rejection
+   is not an `Error`). Prevents downloading bytes that don't match the
+   displayed source. Distinct from the pipeline default —
+   `useToolComputation` leaves `result` untouched on rejection, so without
+   the shell the prior-success preview and download silently linger.
+
+The shell does NOT pass `errorLabel` / `errorFallback` / `onError` to the
+underlying pipeline — the banner replaces the toast (same content, two
+channels would duplicate). Mirrors [[Formatter shell]]'s discipline (see
+[[Toast channel]] section).
+
+The Tool's role narrows to:
+
+- `compute(items, extras): Promise<BytesPdfResult>`
+- `renderCard(item, { position, onRemove, update })` — per-card chrome
+- `onAcceptedFiles(files, { addItems, rejectFiles })` — sync push or async
+  expansion. The shell handles the up-front extension filter; the callback
+  receives only the accepted set. Cumulative async-failure rejects use the
+  functional updater on `rejectFiles`.
+- Optional: `renderExtraCards()` for non-sortable cards interleaved with
+  the grid (`CombinePdf`'s `LoadingCard` placeholders during async
+  `readPdfPages`), `initialExtras` + `renderControls()` for a controls slot
+  in the right-pane top row (`ImageToPdf`'s `onePerPage` checkbox),
+  `onReset()` for Tool-owned cleanup after the shell resets items+extras.
+- Metadata: `title`, `triggers`, `description`, `filenameSlug`, `accept`,
+  `extensionRe`, `uploadButtonLabel`, `uploadInputName`.
+
+`filenameSlug` (required) is interpolated as
+`csr-dev-tools_${filenameSlug}_${Date.now()}.pdf`. The shell-internal
+exception to ADR-0023 (filename minting stays inline) follows the same
+precedent set by [[Markup to PDF shell]]: when the shell owns the download
+button, the minting moves with it.
+
+`BytesPdfResult` is fixed at the shell's interface (not generic over `R`).
+Both adopters' result shapes are already byte-for-byte identical; a future
+adopter with a different result shape would not fit this shell. The
+asymmetry with [[Diff checker shell]] (generic `R extends DiffOutput`) is
+load-bearing: there, two adopters genuinely diverged (`JsonDiffChecker`
+adds `validationError`). Here they do not.
+
+Does NOT fit: Tools whose source is markup rather than files (use
+[[Markup to PDF shell]]); Tools whose result is multiple PDFs or
+non-PDF artifacts (no current shell — would warrant a new one); inline
+(non-dialog) PDF Tools (none today).
 
 ## Diff checker shell
 
