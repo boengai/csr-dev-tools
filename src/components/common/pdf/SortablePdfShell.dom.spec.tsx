@@ -169,6 +169,22 @@ describe('SortablePdfShell', () => {
     expect(ctx.extras).toEqual({ mode: 'a' })
   })
 
+  it('renders the empty state when items + extra cards are both empty and renderEmptyState is provided', () => {
+    renderShell({
+      renderEmptyState: () => <div data-testid="empty-state">empty</div>,
+    })
+    expect(screen.getByTestId('empty-state')).toBeInTheDocument()
+  })
+
+  it('hides the empty state and shows extra cards when renderExtraCards returns content', () => {
+    renderShell({
+      renderExtraCards: () => <div data-testid="extra-card">extra</div>,
+      renderEmptyState: () => <div data-testid="empty-state">empty</div>,
+    })
+    expect(screen.queryByTestId('empty-state')).toBeNull()
+    expect(screen.getByTestId('extra-card')).toBeInTheDocument()
+  })
+
   it('reflects setExtras changes back into compute via the mirror effect', () => {
     // Render a controls slot that exposes a button which calls setExtras.
     // Asserting via setInputSpy captures the round-trip: setExtras →

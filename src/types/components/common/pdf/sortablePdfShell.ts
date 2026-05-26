@@ -77,6 +77,12 @@ export type SortablePdfShellProps<TItem extends { id: string }, TExtras extends 
    * layout, but are NOT part of the sortable id list.
    */
   renderExtraCards?: () => ReactNode
+  /**
+   * Render an empty-state hint when there are no items AND no extra cards.
+   * Useful for onboarding copy. Renders in the left pane in place of the dnd
+   * grid. Skipped when items or extra cards exist.
+   */
+  renderEmptyState?: () => ReactNode
 
   // ─── Per-card chrome ───────────────────────────────────────────────────
   /**

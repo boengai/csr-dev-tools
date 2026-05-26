@@ -28,6 +28,7 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
   onReset,
   renderCard,
   renderControls,
+  renderEmptyState,
   renderExtraCards,
   title,
   triggers,
@@ -134,24 +135,34 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
               </ErrorBanner>
             )}
 
-            {(items.length > 0 || renderExtraCards) && (
-              <DndContext {...dndContextProps}>
-                <SortableContext {...sortableContextProps}>
-                  <div className="flex flex-wrap gap-3">
-                    {items.map((item, idx) => (
-                      <Fragment key={item.id}>
-                        {renderCard(item, {
-                          position: idx + 1,
-                          onRemove: () => removeItem(item.id),
-                          update: (partial) => updateItem(item.id, partial),
-                        })}
-                      </Fragment>
-                    ))}
-                    {renderExtraCards?.()}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            )}
+            {(() => {
+              const extraCardsNode = renderExtraCards?.()
+              const hasExtraCards =
+                extraCardsNode != null &&
+                (!Array.isArray(extraCardsNode) || (extraCardsNode as Array<unknown>).length > 0)
+              const hasGridContent = items.length > 0 || hasExtraCards
+              if (hasGridContent) {
+                return (
+                  <DndContext {...dndContextProps}>
+                    <SortableContext {...sortableContextProps}>
+                      <div className="flex flex-wrap gap-3">
+                        {items.map((item, idx) => (
+                          <Fragment key={item.id}>
+                            {renderCard(item, {
+                              position: idx + 1,
+                              onRemove: () => removeItem(item.id),
+                              update: (partial) => updateItem(item.id, partial),
+                            })}
+                          </Fragment>
+                        ))}
+                        {extraCardsNode}
+                      </div>
+                    </SortableContext>
+                  </DndContext>
+                )
+              }
+              return renderEmptyState?.() ?? null
+            })()}
           </Pane>
 
           <Pane live>
