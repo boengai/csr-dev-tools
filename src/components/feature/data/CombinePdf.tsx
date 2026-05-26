@@ -1,32 +1,25 @@
-import { DndContext } from '@dnd-kit/core'
-import { SortableContext } from '@dnd-kit/sortable'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 
-import { ErrorBanner, Pane, SortableCard, SplitPanel, UploadInput } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
-import { DownloadPdfButton, PdfBytesPreview } from '@/components/common/pdf'
+import { SortableCard } from '@/components/common'
+import { SortablePdfShell } from '@/components/common/pdf'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useSortableItems, useToolComputation } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { combinePdfPages, type CombinePdfResult, readPdfPages } from '@/utils'
+import { combinePdfPages, readPdfPages } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['combine-pdf']
 
 type PageItem = {
-  id: string // unique per item; identifies the card across drags
-  file: File // source file reference
-  sourceFileName: string // display
-  sourcePageIndex: number // 0-based index within the source PDF
-  thumbnailUrl: string // rendered preview
+  id: string
+  file: File
+  sourceFileName: string
+  sourcePageIndex: number
+  thumbnailUrl: string
 }
 
 type LoadingFile = {
-  id: string // a placeholder card id; replaced once pages render
+  id: string
   fileName: string
 }
-
-const EMPTY_RESULT: CombinePdfResult = { pdf: new Uint8Array(0), pageCount: 0, skipped: [] }
-const ALLOWED_RE = /\.pdf$/i
 
 // ─── PageCard ────────────────────────────────────────────────────────────────
 
@@ -76,62 +69,33 @@ const LoadingCard = ({ fileName }: { fileName: string }) => (
 // ─── Main component ──────────────────────────────────────────────────────────
 
 export const CombinePdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const {
-    addItems,
-    dndContextProps,
-    items,
-    rejectFiles,
-    removeItem,
-    reset: resetItems,
-    skipped,
-    sortableContextProps,
-  } = useSortableItems<PageItem>()
   const [loading, setLoading] = useState<Array<LoadingFile>>([])
 
-  const { result, setInput } = useToolComputation<Array<PageItem>, CombinePdfResult>(
-    (input) => combinePdfPages(input.map((i) => ({ file: i.file, pageIndex: i.sourcePageIndex }))),
-    {
-      debounceMs: 200,
-      errorLabel: 'Failed to merge PDFs',
-      initial: EMPTY_RESULT,
-      isEmpty: (input) => input.length === 0,
-    },
-  )
-
-  // Pipeline input is rebuilt per change from external React state (seam's
-  // `items`), so this Tool uses the unwrapped `useToolComputation` per the
-  // doctrine — see CONTEXT.md → "Tool input".
-  useEffect(() => {
-    setInput(items)
-  }, [items, setInput])
-
-  const addFiles = useCallback(
-    (files: Array<File>) => {
-      const skippedNames: Array<string> = []
-      const loadingEntries: Array<LoadingFile> = []
-      for (const file of files) {
-        if (!ALLOWED_RE.test(file.name)) {
-          skippedNames.push(file.name)
-          continue
-        }
-        loadingEntries.push({ id: crypto.randomUUID(), fileName: file.name })
-      }
-      rejectFiles(skippedNames)
+  const onAcceptedFiles = useCallback(
+    (
+      files: Array<File>,
+      helpers: {
+        addItems: (items: Array<PageItem>) => void
+        rejectFiles: (next: Array<string> | ((prev: Array<string>) => Array<string>)) => void
+      },
+    ) => {
+      const loadingEntries: Array<LoadingFile> = files.map((f) => ({
+        id: crypto.randomUUID(),
+        fileName: f.name,
+      }))
       setLoading((prev) => [...prev, ...loadingEntries])
 
-      // Render pages for each newly-accepted file
-      const acceptedFiles = files.filter((f) => ALLOWED_RE.test(f.name))
-      for (let i = 0; i < acceptedFiles.length; i++) {
-        const file = acceptedFiles[i]
+      for (let i = 0; i < files.length; i++) {
+        const file = files[i]
         const loadingId = loadingEntries[i].id
 
         void (async () => {
           const pages = await readPdfPages(file)
           if (pages === null) {
             // The functional form preserves the previous skipped list and
-            // dedupes — these inner-async failures must accumulate against
-            // any names rejected by the initial extension filter.
-            rejectFiles((prev) => (prev.includes(file.name) ? prev : [...prev, file.name]))
+            // dedupes — these inner-async failures must accumulate against any
+            // names already rejected by the shell's extension filter.
+            helpers.rejectFiles((prev) => (prev.includes(file.name) ? prev : [...prev, file.name]))
             setLoading((prev) => prev.filter((l) => l.id !== loadingId))
             return
           }
@@ -142,77 +106,31 @@ export const CombinePdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
             sourcePageIndex: p.pageIndex,
             thumbnailUrl: p.thumbnailUrl,
           }))
-          addItems(newItems)
+          helpers.addItems(newItems)
           setLoading((prev) => prev.filter((l) => l.id !== loadingId))
         })()
       }
     },
-    [addItems, rejectFiles],
+    [],
   )
 
-  const reset = useCallback(() => {
-    resetItems()
-    setLoading([])
-    // `result` resets via the mirror effect: items becomes [], the pipeline's
-    // isEmpty short-circuits to `initial` synchronously inside the same tick.
-  }, [resetItems])
-
   return (
-    <ToolDialogFrame
+    <SortablePdfShell<PageItem>
+      accept="application/pdf"
       autoOpen={autoOpen}
+      compute={(items) => combinePdfPages(items.map((i) => ({ file: i.file, pageIndex: i.sourcePageIndex })))}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
-      onReset={reset}
+      extensionRe={/\.pdf$/i}
+      filenameSlug="combined"
+      onAcceptedFiles={onAcceptedFiles}
+      onAfterDialogClose={onAfterDialogClose}
+      onReset={() => setLoading([])}
+      renderCard={(item, { position, onRemove }) => <PageCard item={item} onRemove={onRemove} position={position} />}
+      renderExtraCards={() => loading.map((l) => <LoadingCard fileName={l.fileName} key={l.id} />)}
       title="Combine PDF"
       triggers={[{ label: 'Combine' }]}
-    >
-      <div className="flex min-h-0 w-full grow flex-col gap-4">
-        <SplitPanel>
-          <Pane>
-            <UploadInput
-              accept="application/pdf"
-              button={{ block: true, children: 'Select PDF files' }}
-              multiple
-              name="combine-pdf-source"
-              onChange={addFiles}
-            />
-
-            {skipped.length > 0 && (
-              <ErrorBanner variant="warning">
-                Skipped {skipped.length} unsupported file{skipped.length === 1 ? '' : 's'}: {skipped.join(', ')}
-              </ErrorBanner>
-            )}
-
-            {items.length === 0 && loading.length === 0 ? (
-              <div className="flex grow flex-col items-center justify-center gap-2 rounded-lg border-2 border-dashed border-gray-800 p-8 text-center text-body-xs text-gray-500">
-                <p className="text-body-sm text-gray-300">No PDFs added yet</p>
-                <p>Use "Select PDF files" above to add one or more.</p>
-                <p>Each page becomes a draggable card you can re-order before downloading the combined result.</p>
-              </div>
-            ) : (
-              <DndContext {...dndContextProps}>
-                <SortableContext {...sortableContextProps}>
-                  <div className="flex flex-wrap gap-3">
-                    {items.map((item, idx) => (
-                      <PageCard item={item} key={item.id} onRemove={() => removeItem(item.id)} position={idx + 1} />
-                    ))}
-                    {loading.map((l) => (
-                      <LoadingCard fileName={l.fileName} key={l.id} />
-                    ))}
-                  </div>
-                </SortableContext>
-              </DndContext>
-            )}
-          </Pane>
-
-          <Pane live>
-            <div className="flex items-center justify-end">
-              <DownloadPdfButton bytes={result.pdf} filename={`csr-dev-tools_combined_${Date.now()}.pdf`} />
-            </div>
-            <PdfBytesPreview bytes={result.pdf} />
-          </Pane>
-        </SplitPanel>
-      </div>
-    </ToolDialogFrame>
+      uploadButtonLabel="Select PDF files"
+      uploadInputName="combine-pdf-source"
+    />
   )
 }
