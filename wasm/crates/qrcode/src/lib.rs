@@ -7,6 +7,18 @@ mod svg;
 use encode::EcLevel;
 use wasm_bindgen::prelude::*;
 
+/// Derive the per-module pixel size so the rendered QR is about `size` pixels
+/// on a side. `size` is the requested TOTAL image dimension in pixels.
+///
+/// Previously `size` was used directly as the per-module pixel size, which
+/// inflated the output to `(qr_size + 2*margin) * size` pixels — e.g. a 29-
+/// module code at size 512 became 14848px (~220 megapixels, ~880MB decoded),
+/// spiking RAM and stalling paint while dragging the size slider.
+fn module_pixel_size(size: u32, qr_size: usize, margin: usize) -> usize {
+    let modules_per_side = qr_size + 2 * margin;
+    (size.max(1) as usize / modules_per_side).max(1)
+}
+
 /// Internal PNG data URL generation (testable without wasm_bindgen).
 fn qr_png_data_url(data: &str, size: u32, fg: &str, bg: &str, ec: &str) -> Result<String, String> {
     if data.is_empty() {
@@ -23,7 +35,7 @@ fn qr_png_data_url(data: &str, size: u32, fg: &str, bg: &str, ec: &str) -> Resul
     let modules = matrix::QrMatrix::build(version, ec_level, &interleaved);
     let qr_size = matrix::matrix_size(version);
     let margin = 2;
-    let pixel_size = size.max(1) as usize;
+    let pixel_size = module_pixel_size(size, qr_size, margin);
 
     let fg_color = png::parse_hex_color(fg);
     let bg_color = png::parse_hex_color(bg);
@@ -50,7 +62,7 @@ fn qr_svg_string(data: &str, size: u32, fg: &str, bg: &str, ec: &str) -> Result<
     let modules = matrix::QrMatrix::build(version, ec_level, &interleaved);
     let qr_size = matrix::matrix_size(version);
     let margin = 2;
-    let pixel_size = size.max(1) as usize;
+    let pixel_size = module_pixel_size(size, qr_size, margin);
 
     let svg_str = svg::build_svg(&modules, qr_size, pixel_size, margin, fg, bg);
 
@@ -105,6 +117,25 @@ mod tests {
     fn empty_data_returns_error() {
         let result = qr_png_data_url("", 4, "#000000", "#ffffff", "M");
         assert!(result.is_err(), "Empty data should return error");
+    }
+
+    #[test]
+    fn module_pixel_size_keeps_total_within_requested_size() {
+        // A 25-module code (+2 margin each side = 29) at a requested 512px must
+        // stay at or under 512px total — not balloon to 29 * 512 = 14848px.
+        let qr_size = 25;
+        let margin = 2;
+        let ppm = module_pixel_size(512, qr_size, margin);
+        let total = (qr_size + 2 * margin) * ppm;
+        assert!(total <= 512, "total {total} exceeded requested 512");
+        assert!(ppm >= 1, "pixel size must be at least 1");
+    }
+
+    #[test]
+    fn module_pixel_size_never_zero_for_tiny_size() {
+        // Even when size < modules-per-side, every module must be at least 1px.
+        assert_eq!(module_pixel_size(4, 25, 2), 1);
+        assert_eq!(module_pixel_size(0, 25, 2), 1);
     }
 
     #[test]

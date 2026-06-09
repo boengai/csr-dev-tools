@@ -60,8 +60,14 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     setFields({ text: val })
   }
 
+  // Debounced (not immediate): dragging the slider fires a value change per
+  // pointer frame. Each compute regenerates the QR via two WASM calls whose
+  // PNG data-URL is a large base64 string (~380KB at 256px, ~4x at 512px), so
+  // an immediate path churns one big allocation per frame and spikes RAM. The
+  // size label + thumb still update synchronously via setInputs; only the
+  // expensive WASM regen waits for the drag to settle.
   const handleSizeChange = (val: string) => {
-    setFieldsImmediate({ size: Number(val) })
+    setFields({ size: Number(val) })
   }
 
   const handleEcChange = (val: string) => {
