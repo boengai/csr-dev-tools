@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { CopyButton, FieldForm, Pane } from '@/components/common'
 import { UploadDialogFrame } from '@/components/common/dialog/UploadDialogFrame'
+import { UploadInput } from '@/components/common/input'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
@@ -116,6 +117,16 @@ export const ImageToBase64 = ({ onAfterDialogClose }: ToolComponentProps) => {
               />
             </div>
           </Pane>
+
+          {/* Swap the source without closing (close navigates home). Dialog is
+              already open, so re-upload just reprocesses — pass a no-op opener. */}
+          <UploadInput
+            accept="image/*"
+            button={{ block: true, children: 'Choose another image' }}
+            multiple={false}
+            name="image-to-base64-replace"
+            onChange={(files) => void handleUpload(files, () => {})}
+          />
         </div>
       )}
     </UploadDialogFrame>

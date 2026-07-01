@@ -85,10 +85,16 @@ export function ImageToolShell<TControls extends object>({
       onRejectInvalidFile?.(file)
       return
     }
+    // Reset the bag to initial so a new image is re-derived from scratch (e.g.
+    // ImageResizer's <img onLoad> guard only re-reads dimensions when they're
+    // null). Matches the on-close reset — a new file always starts fresh.
+    const init = initialRef.current
+    controlsRef.current = init
+    setControlsState(init)
     setSource(file)
     sourceRef.current = file
     setDialogOpen(true)
-    setInputImmediate({ controls: controlsRef.current, file })
+    setInputImmediate({ controls: init, file })
   }
 
   const handleDialogOpenChange = (open: boolean) => {
@@ -139,11 +145,25 @@ export function ImageToolShell<TControls extends object>({
                 sourceUrl,
               })
             : null}
-          {result && !isPending && (
-            <div className="w-full desktop:w-8/10">
-              <Button block icon={<DownloadIcon />} onClick={handleDownload} variant="primary">
-                Download
-              </Button>
+          {/* Once an image is loaded, "Choose another image" lets the user swap
+              without closing (close navigates home). Swap-safe contract: a new
+              file resets the controls bag, so consumers must re-derive any
+              tool-local state from the new source (via <img onLoad>) or key it
+              by file identity — never assume state survives a swap. */}
+          {source && (
+            <div className={result && !isPending ? 'grid grid-cols-2 gap-2' : 'flex'}>
+              <UploadInput
+                accept={accept}
+                button={{ block: true, children: 'Choose another image' }}
+                multiple={false}
+                name="image-tool-shell-replace"
+                onChange={handleUpload}
+              />
+              {result && !isPending && (
+                <Button block icon={<DownloadIcon />} onClick={handleDownload} variant="primary">
+                  Download
+                </Button>
+              )}
             </div>
           )}
         </div>
