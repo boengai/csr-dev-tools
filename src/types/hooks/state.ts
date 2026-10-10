@@ -13,6 +13,8 @@ export type ToggleStoreOptions = {
 }
 
 export type UseToast = {
+  /** Removes the toast with `id`. Wired to Radix `onOpenChange(false)` so items don't accumulate. */
+  dismiss: (id: string) => void
   items: Array<ToastItemProps>
   showError: (label: string) => string
   showSuccess: (label: string) => string
