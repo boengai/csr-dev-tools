@@ -102,4 +102,11 @@ describe('useTimeoutRef', () => {
     expect(result.current.schedule).toBe(firstSchedule)
     expect(result.current.cancel).toBe(firstCancel)
   })
+
+  it('the returned handle object is stable across re-renders (safe in effect deps)', () => {
+    const { result, rerender } = renderHook(() => useTimeoutRef())
+    const first = result.current
+    rerender()
+    expect(result.current).toBe(first)
+  })
 })

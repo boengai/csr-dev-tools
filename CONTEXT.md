@@ -330,7 +330,7 @@ Transport is `localStorage`. Producers typically `publishHandoff` then
 `window.open` the consumer route — the consumer mounts and `consumeHandoff`
 fires within the same tick.
 
-To add a channel: extend `HandoffChannel` in `src/utils/tool-handoff.ts`. The
+To add a channel: extend `HandoffChannel` in `src/types/utils/tool-handoff.ts`. The
 type-checker will flag any producer or consumer that uses a name not in the
 union.
 
