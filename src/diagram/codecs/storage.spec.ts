@@ -4,14 +4,17 @@ import type { DiagramIndexEntry, DiagramSchema, DiagramStore } from '@/types'
 
 import {
   deleteDiagram,
+  DiagramStorageError,
   generateDiagramId,
   loadDiagram,
   loadDiagramIndex,
   saveDiagram,
   saveDiagramIndex,
+  saveDiagramWithIndex,
 } from './storage'
 
 const STORAGE_KEY = 'csr-dev-tools-db-diagrams'
+const BACKUP_KEY = 'csr-dev-tools-db-diagrams-corrupt-backup'
 
 const mockStorage = new Map<string, string>()
 
@@ -161,6 +164,111 @@ describe('db-diagram-storage', () => {
       const stored: DiagramStore = JSON.parse(mockStorage.get(STORAGE_KEY)!)
       expect(stored.diagrams).toEqual({})
       expect(stored.index).toEqual([])
+    })
+  })
+
+  describe('saveDiagramWithIndex', () => {
+    const entryFor =
+      (now: string) =>
+      (previous: DiagramIndexEntry | undefined): DiagramIndexEntry => ({
+        createdAt: previous?.createdAt ?? now,
+        id: 'diagram-1',
+        name: 'My Diagram',
+        tableCount: 1,
+        updatedAt: now,
+      })
+
+    it('stores the schema and upserts the index entry in one read and one write', () => {
+      setStore({ diagrams: {}, index: [] })
+      localStorageMock.getItem.mockClear()
+      localStorageMock.setItem.mockClear()
+
+      const index = saveDiagramWithIndex('diagram-1', makeSampleSchema(), entryFor('2026-01-01T00:00:00.000Z'))
+
+      expect(localStorageMock.getItem).toHaveBeenCalledTimes(1)
+      expect(localStorageMock.setItem).toHaveBeenCalledTimes(1)
+      const stored: DiagramStore = JSON.parse(mockStorage.get(STORAGE_KEY)!)
+      expect(stored.diagrams['diagram-1']).toEqual(makeSampleSchema())
+      expect(stored.index).toEqual(index)
+      expect(index).toEqual([entryFor('2026-01-01T00:00:00.000Z')(undefined)])
+    })
+
+    it('passes the previous entry so createdAt is preserved', () => {
+      setStore({ diagrams: {}, index: [entryFor('2026-01-01T00:00:00.000Z')(undefined)] })
+      const index = saveDiagramWithIndex('diagram-1', makeSampleSchema(), entryFor('2026-02-02T00:00:00.000Z'))
+      expect(index).toHaveLength(1)
+      expect(index[0].createdAt).toBe('2026-01-01T00:00:00.000Z')
+      expect(index[0].updatedAt).toBe('2026-02-02T00:00:00.000Z')
+    })
+
+    it('throws a "full" DiagramStorageError and leaves the stored data untouched on quota errors', () => {
+      setStore({ diagrams: {}, index: makeSampleIndex() })
+      const before = mockStorage.get(STORAGE_KEY)
+      localStorageMock.setItem.mockImplementationOnce(() => {
+        throw new DOMException('quota', 'QuotaExceededError')
+      })
+
+      let error: unknown
+      try {
+        saveDiagramWithIndex('diagram-2', makeSampleSchema(), entryFor('2026-01-01T00:00:00.000Z'))
+      } catch (e) {
+        error = e
+      }
+      expect(error).toBeInstanceOf(DiagramStorageError)
+      expect((error as DiagramStorageError).reason).toBe('full')
+      expect(mockStorage.get(STORAGE_KEY)).toBe(before)
+    })
+  })
+
+  describe('blocked storage', () => {
+    beforeEach(() => {
+      localStorageMock.getItem.mockImplementation(() => {
+        throw new DOMException('denied', 'SecurityError')
+      })
+    })
+
+    afterEach(() => {
+      localStorageMock.getItem.mockImplementation((key: string) => mockStorage.get(key) ?? null)
+    })
+
+    it('reads fall back to empty instead of throwing', () => {
+      expect(loadDiagramIndex()).toEqual([])
+      expect(loadDiagram('diagram-1')).toBeNull()
+    })
+
+    it('writes throw "unavailable" without writing (never clobber unread data)', () => {
+      localStorageMock.setItem.mockClear()
+      const writes = [
+        () => saveDiagram('diagram-1', makeSampleSchema()),
+        () => saveDiagramIndex([]),
+        () => deleteDiagram('diagram-1'),
+        () => saveDiagramWithIndex('diagram-1', makeSampleSchema(), () => makeSampleIndex()[0]),
+      ]
+      for (const write of writes) {
+        expect(write).toThrow(expect.objectContaining({ name: 'DiagramStorageError', reason: 'unavailable' }))
+      }
+      expect(localStorageMock.setItem).not.toHaveBeenCalled()
+    })
+  })
+
+  describe('malformed store', () => {
+    it('treats a store without a diagrams object as unreadable instead of throwing TypeError', () => {
+      mockStorage.set(STORAGE_KEY, JSON.stringify({ index: makeSampleIndex() }))
+      expect(loadDiagram('diagram-1')).toBeNull()
+      expect(loadDiagramIndex()).toEqual([])
+    })
+
+    it('rejects a diagrams array', () => {
+      mockStorage.set(STORAGE_KEY, JSON.stringify({ diagrams: [], index: [] }))
+      expect(loadDiagram('0')).toBeNull()
+    })
+
+    it('backs up an unreadable store before the first write replaces it', () => {
+      mockStorage.set(STORAGE_KEY, 'not-json')
+      saveDiagram('diagram-1', makeSampleSchema())
+      expect(mockStorage.get(BACKUP_KEY)).toBe('not-json')
+      const stored: DiagramStore = JSON.parse(mockStorage.get(STORAGE_KEY)!)
+      expect(stored.diagrams['diagram-1']).toEqual(makeSampleSchema())
     })
   })
 })

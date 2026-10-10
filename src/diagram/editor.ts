@@ -1,10 +1,12 @@
 import { validateDiagramSchema } from '@/diagram/codecs/persistence'
+import { DiagramStorageError } from '@/diagram/codecs/storage'
 import type {
   ColumnId,
   ColumnRef,
   DiagramDocument,
   DiagramIndexEntry,
   DiagramStorage,
+  DiagramStorageStatus,
   EditorRelation,
   ImportResult,
   RelationId,
@@ -57,6 +59,7 @@ export class DiagramEditor {
   private clock: () => string
   private autosaveTimer: ReturnType<typeof setTimeout> | null = null
   private idMinters: EntityIdMinters
+  private storageStatus: DiagramStorageStatus = 'ok'
 
   constructor(options: DiagramEditorOptions = {}) {
     this.storage = options.storage ?? localStorageDiagramStorage
@@ -68,6 +71,12 @@ export class DiagramEditor {
 
   listDiagrams(): Array<DiagramIndexEntry> {
     return this.storage.loadIndex()
+  }
+
+  // 'ok' until a storage write fails; reset by the next successful write.
+  // Changes are announced through the index listeners.
+  getStorageStatus(): DiagramStorageStatus {
+    return this.storageStatus
   }
 
   subscribeToIndex(listener: IndexListener): () => void {
@@ -86,7 +95,10 @@ export class DiagramEditor {
   }
 
   deleteDiagram(id: string): void {
-    this.storage.deleteDiagram(id)
+    if (!this.tryStorageWrite(() => this.storage.deleteDiagram(id))) {
+      this.notifyIndex()
+      return
+    }
     if (this.document.diagramId === id) {
       this.applyLifecycle(createInitialDocument())
     }
@@ -100,7 +112,10 @@ export class DiagramEditor {
     const entry = idx.find((e) => e.id === id)
     if (!entry) return
     entry.name = trimmed
-    this.storage.saveIndex(idx)
+    if (!this.tryStorageWrite(() => this.storage.saveIndex(idx))) {
+      this.notifyIndex()
+      return
+    }
     if (this.document.diagramId === id) {
       this.applyLifecycle({ ...this.document, diagramName: trimmed })
     }
@@ -181,22 +196,36 @@ export class DiagramEditor {
     }
 
     const schema = exportOps.documentToSchema(this.document)
-    this.storage.saveDiagram(id, schema)
-
     const now = this.clock()
-    const idx = this.storage.loadIndex()
-    const existing = idx.findIndex((e) => e.id === id)
-    const entry: DiagramIndexEntry = {
-      id,
-      name: this.document.diagramName,
-      tableCount: this.document.tableOrder.length,
-      createdAt: existing >= 0 ? idx[existing].createdAt : now,
-      updatedAt: now,
+    const name = this.document.diagramName
+    const tableCount = this.document.tableOrder.length
+    const savedId = id
+    let index: Array<DiagramIndexEntry> | undefined
+    // Runs inside a timer: a throw here would be uncaught and the edit lost
+    // silently, so failures become a storage status the UI can show instead.
+    // The document stays in memory; the next edit retries the save.
+    this.tryStorageWrite(() => {
+      index = this.storage.saveDiagramWithIndex(savedId, schema, (previous) => ({
+        id: savedId,
+        name,
+        tableCount,
+        createdAt: previous?.createdAt ?? now,
+        updatedAt: now,
+      }))
+    })
+    this.notifyIndex(index)
+  }
+
+  // Runs a storage write, recording success/failure in storageStatus.
+  private tryStorageWrite(write: () => void): boolean {
+    try {
+      write()
+      this.storageStatus = 'ok'
+      return true
+    } catch (error) {
+      this.storageStatus = error instanceof DiagramStorageError ? error.reason : 'unavailable'
+      return false
     }
-    if (existing >= 0) idx[existing] = entry
-    else idx.push(entry)
-    this.storage.saveIndex(idx)
-    this.notifyIndex()
   }
 
   protected afterStructuralChange(doc: DiagramDocument): DiagramDocument {
@@ -346,8 +375,7 @@ export class DiagramEditor {
     for (const listener of this.listeners) listener(this.document)
   }
 
-  private notifyIndex(): void {
-    const snapshot = this.storage.loadIndex()
+  private notifyIndex(snapshot: Array<DiagramIndexEntry> = this.storage.loadIndex()): void {
     for (const listener of this.indexListeners) listener(snapshot)
   }
 }

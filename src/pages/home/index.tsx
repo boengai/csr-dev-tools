@@ -1,9 +1,9 @@
 import { m } from 'motion/react'
-import { type ButtonHTMLAttributes, Suspense, useEffect, useMemo, useRef, useState } from 'react'
+import { type ButtonHTMLAttributes, Suspense, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Card, Dialog, NotoEmoji, PlusIcon } from '@/components'
-import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY, TOOL_REGISTRY_MAP } from '@/constants'
-import { useDebounceCallback, usePersistFeatureLayout } from '@/hooks'
+import { CATEGORY_ORDER, getToolEntry, groupToolsByCategory, TOOL_REGISTRY } from '@/constants'
+import { usePersistFeatureLayout } from '@/hooks'
 import type { ToolRegistryKey } from '@/types'
 
 const AddButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'onClick'>) => {
@@ -34,16 +34,15 @@ const AddButton = ({ onClick }: Pick<ButtonHTMLAttributes<HTMLButtonElement>, 'o
 }
 
 const AppContainer = ({ onOpenDialog, position }: { onOpenDialog: (position: number) => void; position: number }) => {
-  //hook
-  const { setter, value } = usePersistFeatureLayout()
+  const registryKey = usePersistFeatureLayout((state) => state.value[position])
+  const setter = usePersistFeatureLayout((state) => state.setter)
 
   const handleClose = () => {
     setter(position, null)
   }
 
-  const registryKey = value[position]
   if (registryKey) {
-    const entry = TOOL_REGISTRY_MAP[registryKey]
+    const entry = getToolEntry(registryKey)
     if (entry) {
       const ToolComponent = entry.component
       return (
@@ -65,10 +64,12 @@ const AppLoading = () => {
 }
 
 const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; position: null | number }) => {
-  const { setter, value } = usePersistFeatureLayout()
+  const value = usePersistFeatureLayout((state) => state.value)
+  const setter = usePersistFeatureLayout((state) => state.setter)
   const [search, setSearch] = useState('')
-  const [debouncedSearch, setDebouncedSearch] = useState('')
-  const debouncedSetSearch = useDebounceCallback(setDebouncedSearch, 200)
+  // ~84 tools: filtering is cheap, so no debounce — just let React keep the
+  // input responsive by rendering the filtered list at lower priority.
+  const deferredSearch = useDeferredValue(search)
   const searchInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -85,15 +86,15 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
   const groupedTools = useMemo(() => groupToolsByCategory(TOOL_REGISTRY), [])
 
   const filteredGroupedTools = useMemo(() => {
-    if (!debouncedSearch.trim()) return groupedTools
-    const query = debouncedSearch.toLowerCase()
+    const query = deferredSearch.trim().toLowerCase()
+    if (!query) return groupedTools
     const filtered: typeof groupedTools = {}
     for (const [category, tools] of Object.entries(groupedTools)) {
       const matched = tools.filter((t) => t.name.toLowerCase().includes(query) || t.key.toLowerCase().includes(query))
       if (matched.length > 0) filtered[category] = matched
     }
     return filtered
-  }, [groupedTools, debouncedSearch])
+  }, [groupedTools, deferredSearch])
 
   const handleSelectApp = (value: ToolRegistryKey) => {
     if (position !== null) {
@@ -110,10 +111,7 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
       <div className="mb-4">
         <input
           className="w-full rounded-md border border-gray-800 bg-gray-950 px-3 py-2 text-body-sm text-white placeholder:text-gray-500 focus:border-primary focus:outline-none"
-          onChange={(e) => {
-            setSearch(e.target.value)
-            debouncedSetSearch(e.target.value)
-          }}
+          onChange={(e) => setSearch(e.target.value)}
           placeholder="Search tools..."
           ref={searchInputRef}
           type="text"
@@ -151,7 +149,7 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
           ))}
         </div>
       ) : (
-        <p className="py-8 text-center text-body-sm text-gray-500">No tools found for "{debouncedSearch}"</p>
+        <p className="py-8 text-center text-body-sm text-gray-500">No tools found for "{deferredSearch}"</p>
       )}
     </Dialog>
   )
@@ -164,9 +162,9 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
 const HOME_TITLE = 'CSR - Free Web Developer Tools Collection | Color Converter, Base64 Codec, Image Tools'
 
 export default function HomePage() {
-  if (typeof document !== 'undefined' && document.title !== HOME_TITLE) {
-    document.title = HOME_TITLE
-  }
+  // Passive effect on purpose: useToolSeo restores the tool page's initial
+  // title in a passive cleanup, which runs before this mount effect in the
+  // same commit. A layout effect would run first and be overwritten.
   useEffect(() => {
     document.title = HOME_TITLE
   }, [])

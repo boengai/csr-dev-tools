@@ -5,7 +5,11 @@ const base64UrlDecode = (str: string): string => {
   while (base64.length % 4 !== 0) {
     base64 += '='
   }
-  return atob(base64)
+  // atob yields one char per byte; JWT segments are UTF-8 JSON, so decode the
+  // bytes rather than handing the binary string to JSON.parse. `fatal` turns
+  // malformed UTF-8 into a thrown error (surfaced as "could not decode").
+  const bytes = Uint8Array.from(atob(base64), (c) => c.charCodeAt(0))
+  return new TextDecoder('utf-8', { fatal: true }).decode(bytes)
 }
 
 const isPlainObject = (value: unknown): value is Record<string, unknown> =>

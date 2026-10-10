@@ -24,16 +24,32 @@ export type ToolComponentProps = {
   onAfterDialogClose?: () => void
 }
 
-export type ToolRegistryEntry = {
+// What a tool author writes in `TOOL_ROUTES` (src/constants/tool-routes.ts).
+// `routePath` is derived from `key`; `seo.title` defaults to
+// `<name> - CSR Dev Tools` and is only set to override that default.
+export type ToolRouteDefinition = {
   category: ToolCategory
-  component: LazyExoticComponent<ComponentType<ToolComponentProps>>
   description: string
   emoji: string
   key: ToolRegistryKey
   name: string
+  seo: {
+    description: string
+    title?: string
+  }
+}
+
+// A definition with the derived fields resolved.
+export type ToolRoute = Omit<ToolRouteDefinition, 'seo'> & {
   routePath: string
   seo: ToolSeo
 }
+
+export type ToolRegistryEntry = ToolRoute & {
+  component: LazyExoticComponent<ComponentType<ToolComponentProps>>
+}
+
+export type ToolComponentLoader = () => Promise<{ default: ComponentType }>
 
 export type ToolRegistryKey =
   | 'aes-encrypt-decrypt'

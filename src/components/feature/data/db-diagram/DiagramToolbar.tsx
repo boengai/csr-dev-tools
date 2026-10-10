@@ -4,6 +4,8 @@ import { Button, ChevronIcon, DropdownMenu, ListIcon, TextInput } from '@/compon
 import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
 import type { DiagramToolbarProps } from '@/types'
 
+import { StorageStatusIndicator } from './StorageStatusIndicator'
+
 export const DiagramToolbar = ({
   activePanel,
   fileInputRef,
@@ -170,6 +172,8 @@ export const DiagramToolbar = ({
       >
         DBML
       </Button>
+
+      <StorageStatusIndicator />
     </div>
   )
 }
