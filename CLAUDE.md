@@ -7,8 +7,9 @@ Primary index: **codegraph** (MCP, tree-sitter AST, auto-updated on save). See `
 Run `pnpm typecheck` (NOT `pnpm tsc --noEmit`). The root `tsconfig.json`
 uses project references with `"files": []`, so a bare `tsc --noEmit`
 exits 0 against an empty file set and silently typechecks nothing.
-The `typecheck` script is `tsc -b --noEmit` which respects the
-project references and surfaces real errors.
+The `typecheck` script is `tsc -b --noEmit && tsc -p e2e/tsconfig.json`:
+the first respects the project references and surfaces real errors, the
+second typechecks the Playwright specs (not part of the references).
 
 ## Adding a new tool
 
