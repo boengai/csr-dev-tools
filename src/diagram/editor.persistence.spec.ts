@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import type { DiagramSchema } from '@/types'
 
+import { DiagramStorageError } from './codecs/storage'
 import { DiagramEditor } from './editor'
 import { createInitialDocument } from './state'
 import { createInMemoryDiagramStorage } from './storage'
@@ -394,5 +395,99 @@ describe('DiagramEditor.loadDiagram', () => {
     editor.loadDiagram('missing')
     expect(listener).not.toHaveBeenCalled()
     expect(editor.getDocument().diagramId).toBe(null)
+  })
+})
+
+describe('DiagramEditor storage failures', () => {
+  beforeEach(() => vi.useFakeTimers())
+  afterEach(() => vi.useRealTimers())
+
+  const failingStorage = (reason: 'full' | 'unavailable') => {
+    const storage = createInMemoryDiagramStorage({ idGenerator: () => 'd1' })
+    let fail = true
+    const save = storage.saveDiagramWithIndex
+    storage.saveDiagramWithIndex = (...args) => {
+      if (fail) throw new DiagramStorageError(reason)
+      return save(...args)
+    }
+    return {
+      recover: () => {
+        fail = false
+      },
+      storage,
+    }
+  }
+
+  it('does not throw out of the autosave timer when the write fails', () => {
+    const { storage } = failingStorage('full')
+    const editor = new DiagramEditor({ storage, autosaveMs: 1000 })
+    editor.addTable({ name: 'users' })
+    expect(() => vi.advanceTimersByTime(1000)).not.toThrow()
+    expect(editor.getDocument().tableOrder).toHaveLength(1)
+  })
+
+  it('reports the failure reason through getStorageStatus and the index listeners', () => {
+    const { storage } = failingStorage('full')
+    const editor = new DiagramEditor({ storage, autosaveMs: 1000 })
+    const listener = vi.fn()
+    editor.subscribeToIndex(listener)
+    expect(editor.getStorageStatus()).toBe('ok')
+    editor.addTable({ name: 'users' })
+    vi.advanceTimersByTime(1000)
+    expect(editor.getStorageStatus()).toBe('full')
+    expect(listener).toHaveBeenCalled()
+  })
+
+  it('maps unknown errors to "unavailable"', () => {
+    const storage = createInMemoryDiagramStorage()
+    storage.saveDiagramWithIndex = () => {
+      throw new Error('boom')
+    }
+    const editor = new DiagramEditor({ storage, autosaveMs: 1000 })
+    editor.addTable({ name: 'users' })
+    vi.advanceTimersByTime(1000)
+    expect(editor.getStorageStatus()).toBe('unavailable')
+  })
+
+  it('clears the status on the next successful save', () => {
+    const { recover, storage } = failingStorage('unavailable')
+    const editor = new DiagramEditor({ storage, autosaveMs: 1000 })
+    editor.addTable({ name: 'users' })
+    vi.advanceTimersByTime(1000)
+    expect(editor.getStorageStatus()).toBe('unavailable')
+
+    recover()
+    editor.addTable({ name: 'orders' })
+    vi.advanceTimersByTime(1000)
+    expect(editor.getStorageStatus()).toBe('ok')
+    expect(storage.loadIndex()).toHaveLength(1)
+    expect(storage.loadIndex()[0].tableCount).toBe(2)
+  })
+
+  it('reports failures from renameDiagram and deleteDiagram instead of throwing', () => {
+    const storage = createInMemoryDiagramStorage()
+    storage.saveIndex([{ id: 'd1', name: 'X', tableCount: 0, createdAt: '', updatedAt: '' }])
+    storage.saveIndex = () => {
+      throw new DiagramStorageError('full')
+    }
+    storage.deleteDiagram = () => {
+      throw new DiagramStorageError('unavailable')
+    }
+    const editor = new DiagramEditor({ storage })
+    expect(() => editor.renameDiagram('d1', 'Y')).not.toThrow()
+    expect(editor.getStorageStatus()).toBe('full')
+    expect(() => editor.deleteDiagram('d1')).not.toThrow()
+    expect(editor.getStorageStatus()).toBe('unavailable')
+  })
+
+  it('saves schema and index in a single storage call', () => {
+    const storage = createInMemoryDiagramStorage({ idGenerator: () => 'd1' })
+    const saveIndex = vi.spyOn(storage, 'saveIndex')
+    const editor = new DiagramEditor({ storage, autosaveMs: 1000 })
+    editor.addTable({ name: 'users' })
+    vi.advanceTimersByTime(1000)
+    expect(saveIndex).not.toHaveBeenCalled()
+    expect(storage.loadDiagram('d1')).not.toBe(null)
+    expect(storage.loadIndex()).toHaveLength(1)
   })
 })
