@@ -70,7 +70,14 @@ const favoriteButtonStyles = tv({
   },
 })
 
-const TimezoneSearchPicker = ({ favorites, id, index, onSelect, placeholder }: TimezoneSearchPickerProps) => {
+const TimezoneSearchPicker = ({
+  'aria-label': ariaLabel,
+  favorites,
+  id,
+  index,
+  onSelect,
+  placeholder,
+}: TimezoneSearchPickerProps) => {
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -138,7 +145,7 @@ const TimezoneSearchPicker = ({ favorites, id, index, onSelect, placeholder }: T
         aria-autocomplete="list"
         aria-controls={listboxId}
         aria-expanded={isOpen}
-        aria-label="Search timezones"
+        aria-label={ariaLabel}
         id={id}
         name="timezone-search"
         onChange={(val) => {
@@ -342,6 +349,7 @@ export const TimezoneConverter = ({ autoOpen, onAfterClose }: ToolComponentProps
             {showAddPicker && (
               <div className="rounded border border-gray-700 bg-gray-900/50 p-2">
                 <TimezoneSearchPicker
+                  aria-label="Search timezones to add"
                   favorites={favorites}
                   index={index}
                   onSelect={handleAddTarget}

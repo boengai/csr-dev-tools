@@ -18,6 +18,8 @@ export type TimezoneConverterOutput = {
 }
 
 export type TimezoneSearchPickerProps = {
+  /** Accessible name when no visible `<label htmlFor={id}>` names the input. */
+  'aria-label'?: string
   favorites: Array<string>
   id?: string
   index: Array<TimezoneEntry>

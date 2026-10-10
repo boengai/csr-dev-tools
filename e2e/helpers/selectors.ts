@@ -15,7 +15,7 @@ export const commandPalette = {
   searchButton: (page: Page) => page.getByLabel('Search tools'),
   searchInput: (page: Page) => page.getByPlaceholder('Search tools...'),
   resultsList: (page: Page) => page.getByRole('listbox'),
-  resultOption: (page: Page, name: string) => page.getByRole('option', { name }),
+  resultOption: (page: Page, name: RegExp | string) => page.getByRole('option', { name }),
 }
 
 // --- Tool Inputs ---
