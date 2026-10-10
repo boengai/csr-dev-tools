@@ -4,8 +4,9 @@
  * fall back to a default otherwise; write swallows quota errors so the
  * in-memory state stays the source of truth.
  *
- * Adopters today: `useInputLocalStorage`, `useToolFieldsPersisted`, and
- * `useToolComputationPersisted` (the persist hooks), plus
+ * Adopters today: `useInputLocalStorage`, `useDebouncedJsonWrite` (the
+ * writer behind `useToolInput` / `useToolFields`'s `storageKey`), the
+ * `storageKey` seed read in those two hooks, plus
  * `BidirectionalConverter` for its per-mode source storage where the key
  * is derived from the current mode rather than being static.
  *

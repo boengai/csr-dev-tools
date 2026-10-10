@@ -13,7 +13,7 @@ import {
 } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolFieldsPersisted } from '@/hooks'
+import { useToolFields } from '@/hooks'
 import type { JsonPathEvalInput, JsonPathEvalResult, ToolComponentProps } from '@/types'
 import { createCachedJsonParser, evaluateJsonPath, formatResultValue } from '@/utils/jsonpath-evaluator'
 
@@ -67,10 +67,7 @@ const INITIAL_RESULT: JsonPathEvalResult = { evaluation: null, parseError: null,
 export const JsonpathEvaluator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   // Expression keystrokes re-run compute; the document is only re-parsed when it changes.
   const [parseJson] = useState(createCachedJsonParser)
-  const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<
-    JsonPathEvalInput,
-    JsonPathEvalResult
-  >({
+  const { inputs, result, setFields, setFieldsImmediate } = useToolFields<JsonPathEvalInput, JsonPathEvalResult>({
     autorunOnMount: true,
     compute: ({ expression: expr, jsonInput: value }) => {
       const parsed = parseJson(value)

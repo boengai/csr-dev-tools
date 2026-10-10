@@ -3,7 +3,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { Button, CodeInput, EmptyState, ErrorBanner, TextInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolComputationPersisted } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type {
   GraphqlEnumValuesListProps,
   GraphqlFieldsTableProps,
@@ -234,7 +234,7 @@ export const GraphqlSchemaViewer = ({ autoOpen, onAfterClose }: ToolComponentPro
     result: parseResult,
     setInput,
     setInputImmediate,
-  } = useToolComputationPersisted<string, GraphqlParseOutput>({
+  } = useToolInput<string, GraphqlParseOutput>({
     compute: async (value) => {
       const { parseGraphqlSchema } = await import('@/utils/graphql-schema-viewer')
       const result = parseGraphqlSchema(value)

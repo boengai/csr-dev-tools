@@ -1,7 +1,7 @@
 import { Button, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolFieldsPersisted } from '@/hooks'
+import { useToast, useToolFields } from '@/hooks'
 import type { JsonTsInput, ToolComponentProps } from '@/types'
 import { jsonToTypeScript } from '@/utils'
 
@@ -17,7 +17,7 @@ export const JsonToTypeScript = ({ autoOpen, onAfterClose }: ToolComponentProps)
     result: output,
     setFields,
     setFieldsImmediate,
-  } = useToolFieldsPersisted<JsonTsInput, string>({
+  } = useToolFields<JsonTsInput, string>({
     compute: ({ source: val, rootName: root, useInterface: iface, optionalProps: optional }) =>
       jsonToTypeScript(val, { optionalProperties: optional, rootName: root, useInterface: iface }),
     debounceMs: 300,

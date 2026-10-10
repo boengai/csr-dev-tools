@@ -1,4 +1,4 @@
-import { useToolComputationPersisted } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type { MarkupToPdfShellProps } from '@/types'
 import type { CompileResultDto } from '@/types/wasm/pdf'
 
@@ -16,8 +16,8 @@ const EMPTY_RESULT: CompileResultDto = { svgs: [], pdf: new Uint8Array(0) }
 
 // Single-string input today; both adopters (HtmlToPdf, MarkdownToPdf) need only
 // the source markup. If a third adopter requires extras (pageFormat, includeToc,
-// Typst preamble), swap the internal primitive from [[Persistent tool computation]]
-// to [[Persistent tool field bag]] and migrate adopters — ~5 lines per adopter,
+// Typst preamble), swap the internal primitive from `useToolInput`
+// to `useToolFields` (both with `storageKey`) and migrate adopters — ~5 lines per adopter,
 // no behavior change.
 export const MarkupToPdfShell = ({
   autoOpen,
@@ -32,7 +32,7 @@ export const MarkupToPdfShell = ({
   title,
   triggerLabel,
 }: MarkupToPdfShellProps) => {
-  const { error, input, result, setInput, setInputImmediate } = useToolComputationPersisted<string, CompileResultDto>({
+  const { error, input, result, setInput, setInputImmediate } = useToolInput<string, CompileResultDto>({
     compute,
     debounceMs: 300,
     initial: '',

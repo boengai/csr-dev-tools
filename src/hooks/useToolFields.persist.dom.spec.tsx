@@ -4,7 +4,7 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { useToolFieldsPersisted } from './useToolFieldsPersisted'
+import { useToolFields } from './useToolFields'
 
 type Bag = { jsonData: string; jsonSchema: string }
 
@@ -20,10 +20,10 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
-describe('useToolFieldsPersisted — initialization', () => {
+describe('useToolFields (storageKey) — initialization', () => {
   it('uses options.initial when storageKey has no entry', () => {
     const { result } = renderHook(() =>
-      useToolFieldsPersisted<Bag, string>({
+      useToolFields<Bag, string>({
         compute: () => 'never',
         initial: INITIAL,
         initialResult: 'EMPTY',
@@ -37,7 +37,7 @@ describe('useToolFieldsPersisted — initialization', () => {
   it('reads bag from localStorage when storageKey has an entry', () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ jsonData: 'X', jsonSchema: 'Y' }))
     const { result } = renderHook(() =>
-      useToolFieldsPersisted<Bag, string>({
+      useToolFields<Bag, string>({
         compute: () => 'never',
         initial: INITIAL,
         initialResult: 'EMPTY',
@@ -50,7 +50,7 @@ describe('useToolFieldsPersisted — initialization', () => {
   it('falls back to options.initial when stored JSON is corrupt', () => {
     localStorage.setItem(STORAGE_KEY, 'not valid json{{{')
     const { result } = renderHook(() =>
-      useToolFieldsPersisted<Bag, string>({
+      useToolFields<Bag, string>({
         compute: () => 'never',
         initial: INITIAL,
         initialResult: 'EMPTY',
@@ -61,10 +61,10 @@ describe('useToolFieldsPersisted — initialization', () => {
   })
 })
 
-describe('useToolFieldsPersisted — write-through', () => {
-  it('writes to localStorage on setFields (after debounce settles inputs)', async () => {
-    const { result } = renderHook(() =>
-      useToolFieldsPersisted<Bag, string>({
+describe('useToolFields (storageKey) — debounced write-through', () => {
+  const setup = () =>
+    renderHook(() =>
+      useToolFields<Bag, string>({
         compute: () => 'never',
         debounceMs: 300,
         initial: INITIAL,
@@ -72,52 +72,75 @@ describe('useToolFieldsPersisted — write-through', () => {
         storageKey: STORAGE_KEY,
       }),
     )
+  const stored = () => JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null')
+
+  it('coalesces setFields calls into one write of the merged bag after the debounce', async () => {
+    const setItem = vi.spyOn(Storage.prototype, 'setItem')
+    const { result } = setup()
 
     act(() => {
+      result.current.setFields({ jsonData: 'c' })
       result.current.setFields({ jsonData: 'changed' })
+      result.current.setFields({ jsonSchema: 's' })
     })
-    // Inputs update synchronously inside setFields; the write-through useEffect
-    // fires when React commits the inputs change.
     await act(async () => {
-      await vi.advanceTimersByTimeAsync(0)
+      await vi.advanceTimersByTimeAsync(299)
     })
+    expect(setItem).not.toHaveBeenCalled()
 
-    expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null')).toEqual({
-      jsonData: 'changed',
-      jsonSchema: '',
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1)
     })
+    expect(setItem).toHaveBeenCalledTimes(1)
+    expect(stored()).toEqual({ jsonData: 'changed', jsonSchema: 's' })
+    setItem.mockRestore()
   })
 
-  it('writes to localStorage on setFieldsImmediate', async () => {
-    const { result } = renderHook(() =>
-      useToolFieldsPersisted<Bag, string>({
-        compute: () => 'never',
-        initial: INITIAL,
-        initialResult: '',
-        storageKey: STORAGE_KEY,
-      }),
-    )
-
+  it('writes immediately on setFieldsImmediate', () => {
+    const { result } = setup()
     act(() => {
       result.current.setFieldsImmediate({ jsonSchema: 'imm' })
     })
-    await act(async () => {
-      await vi.advanceTimersByTimeAsync(0)
-    })
+    expect(stored()).toEqual({ jsonData: '', jsonSchema: 'imm' })
+  })
 
-    expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? 'null')).toEqual({
-      jsonData: '',
-      jsonSchema: 'imm',
+  it('flushes a pending write on unmount', () => {
+    const { result, unmount } = setup()
+    act(() => {
+      result.current.setFields({ jsonData: 'pending' })
     })
+    expect(localStorage.getItem(STORAGE_KEY)).toBeNull()
+    unmount()
+    expect(stored()).toEqual({ jsonData: 'pending', jsonSchema: '' })
+  })
+
+  it('flushes a pending write on pagehide', () => {
+    const { result } = setup()
+    act(() => {
+      result.current.setFields({ jsonData: 'pending' })
+    })
+    window.dispatchEvent(new Event('pagehide'))
+    expect(stored()).toEqual({ jsonData: 'pending', jsonSchema: '' })
+  })
+
+  it('reset() restores options.initial (not the restored bag) and persists it', () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ jsonData: 'X', jsonSchema: 'Y' }))
+    const { result } = setup()
+    expect(result.current.inputs).toEqual({ jsonData: 'X', jsonSchema: 'Y' })
+    act(() => {
+      result.current.reset()
+    })
+    expect(result.current.inputs).toEqual(INITIAL)
+    expect(stored()).toEqual(INITIAL)
   })
 })
 
-describe('useToolFieldsPersisted — mount-time autorun', () => {
+describe('useToolFields (storageKey) — mount-time autorun', () => {
   it('fires compute on mount when restored bag is non-empty (per isEmpty)', async () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ jsonData: 'restored', jsonSchema: '{}' }))
     const compute = vi.fn(({ jsonData, jsonSchema }: Bag) => `${jsonData}|${jsonSchema}`)
     renderHook(() =>
-      useToolFieldsPersisted<Bag, string>({
+      useToolFields<Bag, string>({
         compute,
         initial: INITIAL,
         initialResult: '',
@@ -140,7 +163,7 @@ describe('useToolFieldsPersisted — mount-time autorun', () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ jsonData: '', jsonSchema: '' }))
     const compute = vi.fn()
     renderHook(() =>
-      useToolFieldsPersisted<Bag, string>({
+      useToolFields<Bag, string>({
         compute,
         initial: INITIAL,
         initialResult: '',
@@ -160,7 +183,7 @@ describe('useToolFieldsPersisted — mount-time autorun', () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ jsonData: 'X', jsonSchema: 'Y' }))
     const compute = vi.fn()
     renderHook(() =>
-      useToolFieldsPersisted<Bag, string>({
+      useToolFields<Bag, string>({
         compute,
         initial: INITIAL,
         initialResult: '',
@@ -177,12 +200,12 @@ describe('useToolFieldsPersisted — mount-time autorun', () => {
   })
 })
 
-describe('useToolFieldsPersisted — autorunOnMount override', () => {
+describe('useToolFields (storageKey) — autorunOnMount override', () => {
   it('fires compute on mount when autorunOnMount: true, even with isEmpty undefined', async () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ jsonData: 'X', jsonSchema: 'Y' }))
     const compute = vi.fn(({ jsonData, jsonSchema }: Bag) => `${jsonData}|${jsonSchema}`)
     renderHook(() =>
-      useToolFieldsPersisted<Bag, string>({
+      useToolFields<Bag, string>({
         autorunOnMount: true,
         compute,
         initial: INITIAL,
@@ -204,7 +227,7 @@ describe('useToolFieldsPersisted — autorunOnMount override', () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify({ jsonData: 'X', jsonSchema: 'Y' }))
     const compute = vi.fn(({ jsonData, jsonSchema }: Bag) => `${jsonData}|${jsonSchema}`)
     renderHook(() =>
-      useToolFieldsPersisted<Bag, string>({
+      useToolFields<Bag, string>({
         autorunOnMount: true,
         compute,
         initial: INITIAL,
@@ -227,7 +250,7 @@ describe('useToolFieldsPersisted — autorunOnMount override', () => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL))
     const compute = vi.fn()
     renderHook(() =>
-      useToolFieldsPersisted<Bag, string>({
+      useToolFields<Bag, string>({
         autorunOnMount: true,
         compute,
         initial: INITIAL,
@@ -246,11 +269,11 @@ describe('useToolFieldsPersisted — autorunOnMount override', () => {
   })
 })
 
-describe('useToolFieldsPersisted — delegation to useToolFields', () => {
+describe('useToolFields (storageKey) — delegation to useToolFields', () => {
   it('preserves the full pipeline: setFields → debounce → compute → result', async () => {
     const compute = vi.fn(({ jsonData, jsonSchema }: Bag) => `${jsonData}|${jsonSchema}`)
     const { result } = renderHook(() =>
-      useToolFieldsPersisted<Bag, string>({
+      useToolFields<Bag, string>({
         compute,
         debounceMs: 300,
         initial: INITIAL,
@@ -271,5 +294,23 @@ describe('useToolFieldsPersisted — delegation to useToolFields', () => {
     expect(compute).toHaveBeenCalledTimes(1)
     expect(compute).toHaveBeenCalledWith({ jsonData: 'a', jsonSchema: 'b' })
     expect(result.current.result).toBe('a|b')
+  })
+})
+
+describe('useToolFields — restored-bag autorun is gated on storageKey', () => {
+  it('does NOT autorun without storageKey even when isEmpty is set and initial is non-empty', async () => {
+    const compute = vi.fn(({ jsonData, jsonSchema }: Bag) => `${jsonData}|${jsonSchema}`)
+    renderHook(() =>
+      useToolFields<Bag, string>({
+        compute,
+        initial: { jsonData: 'X', jsonSchema: 'Y' },
+        initialResult: '',
+        isEmpty: ({ jsonData, jsonSchema }) => !jsonData.trim() || !jsonSchema.trim(),
+      }),
+    )
+    await act(async () => {
+      await vi.runAllTimersAsync()
+    })
+    expect(compute).not.toHaveBeenCalled()
   })
 })

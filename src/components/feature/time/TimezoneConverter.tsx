@@ -4,7 +4,7 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Button, CopyButton, EmptyState, ErrorBanner, FieldForm, TextInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { readJsonStorage, useKeyboardListNav, useMountOnce, useToolFieldsPersisted, writeJsonStorage } from '@/hooks'
+import { readJsonStorage, useKeyboardListNav, useMountOnce, useToolFields, writeJsonStorage } from '@/hooks'
 import type {
   TimezoneConverterInput,
   TimezoneConverterOutput,
@@ -214,7 +214,7 @@ export const TimezoneConverter = ({ autoOpen, onAfterClose }: ToolComponentProps
     }
   }, [])
 
-  const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<
+  const { inputs, result, setFields, setFieldsImmediate } = useToolFields<
     TimezoneConverterInput,
     TimezoneConverterOutput
   >({

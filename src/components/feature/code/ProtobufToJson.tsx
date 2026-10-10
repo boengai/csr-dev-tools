@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Button, CodeInput, CopyButton, EmptyState, ErrorBanner } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useStaleSafeAsync, useToast, useToolComputationPersisted } from '@/hooks'
+import { useStaleSafeAsync, useToast, useToolInput } from '@/hooks'
 import type {
   EntryKind,
   KindBadgeStyle,
@@ -86,7 +86,7 @@ export const ProtobufToJson = ({ autoOpen, onAfterClose }: ToolComponentProps) =
     result: parseResult,
     setInput,
     setInputImmediate,
-  } = useToolComputationPersisted<string, ParseOutput>({
+  } = useToolInput<string, ParseOutput>({
     compute: async (value) => {
       const { parseProtobufSchema } = await import('@/wasm/parsers')
       const result = await parseProtobufSchema(value)

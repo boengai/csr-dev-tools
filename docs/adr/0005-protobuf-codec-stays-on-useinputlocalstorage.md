@@ -128,3 +128,7 @@ still holds (nowhere to migrate without growing `useToolFieldsPersisted`
 knobs); the deletion test on the twins flipped from "stays" to
 "consolidates" — they had no genuinely structural divergence, only a
 profile's worth of named variances.
+
+> **Note (2026-10-10):** `useToolFieldsPersisted` / `useToolComputationPersisted`
+> have since been folded into a `storageKey` option on `useToolFields` /
+> `useToolInput` (ADR-0024). The decision above is unchanged.

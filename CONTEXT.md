@@ -16,7 +16,9 @@ A Tool typically composes:
 
 - A **Tool computation pipeline** for its input→result transformation.
 - A `ToolDialogShell` for the modal interaction surface (most tools).
-- Optional per-tool persistence (`useInputLocalStorage`) or SEO (`useToolSeo`).
+- Optional per-tool persistence (`storageKey` on `useToolInput` /
+  `useToolFields` — see [[Persisted tool input]]; `useInputLocalStorage` for
+  bespoke bags) or SEO (`useToolSeo`).
 
 ## Tool computation pipeline
 
@@ -99,6 +101,9 @@ four invariants (debounced, stale-safe, empty-bypass, unmount-safe) carry over
 unchanged — `useToolFields` is implemented as a thin layer over
 `useToolComputation` so the invariants stay defined in one place.
 
+Pass `storageKey` to persist the bag across reloads — see
+[[Persisted tool input]].
+
 Pick this when a Tool has more than one input field. Pick [[Tool input]]
 for single-value Tools where the input mirrors a single React-side value —
 the same "owns the input, no parallel `useState`" property, sized for one
@@ -157,9 +162,9 @@ once after mount with `options.initial`, mirroring the [[Tool field
 bag]] variant.
 
 Pick this when a Tool has a single input value that mirrors a single
-React-side state — the bulk of single-Input Tools without persistence.
-Pick [[Persistent tool computation]] when that input also persists
-across reloads. Keep the unwrapped `useToolComputation` for
+React-side state. Pass `storageKey` when that input also persists
+across reloads (see [[Persisted tool input]]). Keep the unwrapped
+`useToolComputation` for
 [[N-mirror broadcast]] adopters (the input is a discriminated bag
 rebuilt per keystroke from React state, not a mirror of it — today:
 `ColorConvertor`, `UnitPxToRem`, `AspectRatioCalculator`) and for
@@ -172,103 +177,74 @@ Today's adopters: `MarkdownPreview`, `JwtDecoder`, `UrlParser`,
 `UserAgentParser`, `TimeUnixTimestamp` (UnixTimestampSection),
 `SvgViewer`.
 
-## Persistent tool field bag
+## Persisted tool input
 
-The variant of the [[Tool field bag]] that owns its localStorage
-round-trip. Implemented by `useToolFieldsPersisted`
-(`src/hooks/persist/useToolFieldsPersisted.ts`).
+The opt-in localStorage round-trip on [[Tool input]] (`useToolInput`)
+and [[Tool field bag]] (`useToolFields`), switched on by passing
+`storageKey`. One option, two hooks — there is no separate persisted
+hook (the former `useToolComputationPersisted` / `useToolFieldsPersisted`
+were folded in; see ADR-0024).
 
-Composes `useToolFields` with two small concerns the standard pattern
-needs every time it persists: read the bag from localStorage on mount
-(replacing `options.initial` if a stored value exists) and write back
-on every `inputs` change.
+With `storageKey` set, the hook:
 
-Mount autorun fires when EITHER:
+1. **Seeds once on mount** — `readJsonStorage(storageKey, initial)` in a
+   lazy `useState` initializer. Absent or corrupt JSON falls back to
+   `initial`. Later changes to `storageKey` do not re-read.
+2. **Writes back trailing-debounced** — `setInput` / `setFields` queue a
+   write on the same delay as the pipeline (`debounceMs`, default 300ms),
+   so a burst of keystrokes costs one `JSON.stringify` + `setItem`.
+   `setInputImmediate` / `setFieldsImmediate` / `reset()` write
+   immediately. Nothing is written on mount — the seed is not re-persisted.
+3. **Flushes on unmount and `pagehide`** — a write still pending inside
+   the debounce window is committed when the Tool unmounts (in-app
+   navigation, dialog close) or the page is hidden (reload, tab close),
+   so nothing typed is lost. The debounced writer is
+   `useDebouncedJsonWrite` (`src/hooks/persist/useDebouncedJsonWrite.ts`).
+4. **Autoruns on a non-empty restore** — mount autorun fires when EITHER
+   `autorunOnMount === true` (explicit, `isEmpty`-independent) OR
+   `isEmpty` is provided AND the restored value passes `!isEmpty(value)`.
+   The second arm only exists with `storageKey`: a non-persisted hook
+   with a non-empty `initial` does not autorun unless asked. Without
+   either condition, the caller owns the first compute.
 
-- `options.autorunOnMount === true` (explicit, `isEmpty`-independent), OR
-- `options.isEmpty` is provided AND the restored bag passes `!isEmpty(bag)`.
+`reset()` restores `options.initial` (the declared default), not the
+value restored from storage, and persists it.
 
-The autorun decision lives entirely inside `useToolFields` via its own
-`autorunOnMount` option — this hook just computes the effective flag
-(`autorunOnMount || isEmpty-gated condition`) and forwards. Without
-either condition met, no autorun fires (the caller is explicitly
-responsible for triggering the first compute). Picks up the seam
-previously occupied by per-Tool `useMountOnce(() => recompute())` rituals
-in adopters that have no `isEmpty` rule but still want a mount-time
-populate (e.g. `JsonpathEvaluator`).
+The pipeline's four invariants (plus the field bag's same-tick partial
+merge) are untouched — persistence lives beside the pipeline, not in it.
+A clear to empty still persists even though compute short-circuits on
+`isEmpty`.
 
-The four pipeline invariants (debounced, stale-safe, empty-bypass,
-unmount-safe) plus the same-tick partial-merge invariant carry over
-unchanged — they're defined inside `useToolComputation` /
-`useToolFields`, and `useToolFieldsPersisted` does not touch them.
+Today's adopters with `storageKey`:
 
-Pick this when a multi-field Tool persists its inputs as a single bag
-under one localStorage key. Pick [[Tool field bag]] (`useToolFields`)
-when persistence is bespoke or absent (e.g. `<BidirectionalConverter>`'s
-per-mode source-keying, or `AesEncryptDecrypt` which doesn't persist).
+- `useToolInput`: `ProtobufToJson`, `MermaidRenderer`,
+  `GraphqlSchemaViewer`, and the [[Markup to PDF shell]].
+- `useToolFields`: `JsonSchemaValidator`, `JsonpathEvaluator`,
+  `JsonToTypeScript`, `TimezoneConverter`, the [[Formatter shell]] and
+  the [[Diff checker shell]].
 
-Today's consumers: `JsonSchemaValidator`, `JsonDiffChecker`,
-`JsonpathEvaluator`, `TimezoneConverter`. `JsonpathEvaluator` is the
-`autorunOnMount: true` adopter — it has no `isEmpty` rule but still wants
-the result populated on mount from the persisted bag.
-`TimezoneConverter` is the partial-persistence
-shape: its persisted bag holds the converter inputs (sourceTz,
-targetTzIds, dateInput, timeInput), but `dateInput`/`timeInput` are
-overridden with "now" on mount via a follow-up
-`setFieldsImmediate({ dateInput, timeInput })`. The hook does not
-need a per-field opt-out — the override is the documented pattern for
-"persist some fields, recompute others on each mount."
+`JsonpathEvaluator` is the `autorunOnMount: true` adopter — it has no
+`isEmpty` rule but still wants the result populated on mount from the
+persisted bag. `TimezoneConverter` is the partial-persistence shape: its
+persisted bag holds the converter inputs, but `dateInput`/`timeInput`
+are overridden with "now" on mount via a follow-up
+`setFieldsImmediate({ dateInput, timeInput })` — the documented pattern
+for "persist some fields, recompute others on each mount."
+`MermaidRenderer` absorbs a [[Tool handoff]] prefill on mount via its
+own `useMountOnce`, which overrides the hook's autorun by calling
+`setInputImmediate(prefill)`; this relies on the hook's `useMountOnce`
+being registered (and so firing) before the component's own.
 
-`ProtobufCodec` deliberately does NOT adopt this hook (per ADR-0005). Its
-shape — one persisted 5-field bag in which only `schema` drives compute,
-plus two child pipelines (encode, decode) reading slices of that bag — is
-the "shared persisted bag + multiple pipelines reading slices" pattern.
-`useToolFieldsPersisted` would re-fire `parseProtobufSchema` on every
+`ProtobufCodec` deliberately does NOT adopt `storageKey` (per ADR-0005).
+Its shape — one persisted 5-field bag in which only `schema` drives
+compute, plus two child pipelines reading slices of that bag — is the
+"shared persisted bag + multiple pipelines reading slices" pattern; a
+persisted `useToolFields` would re-fire `parseProtobufSchema` on every
 `encodeSource` keystroke, since the hook does not gate compute on which
-field changed. The triad (`useInputLocalStorage` + a single
-`useToolComputation` over `schema` + `useMountOnce` priming that parse)
-is load-bearing and stays. A second adopter with this shape would justify
-a new seam (`usePersistedBagWithSlicePipelines`); one adopter does not.
-Other multi-field Tools that once carried a similar-looking triad
-(`MermaidRenderer`, `GraphqlSchemaViewer`, `JsonpathEvaluator`,
-`ProtobufToJson`, and the formatter family) had a different shape — one
-pipeline driven by the bag — and have since migrated to this hook or to
-its single-Input sibling [[Persistent tool computation]].
-
-## Persistent tool computation
-
-The single-Input variant of [[Persistent tool field bag]]. Implemented
-by `useToolComputationPersisted`
-(`src/hooks/persist/useToolComputationPersisted.ts`).
-
-Composes `useToolComputation` with the same two concerns
-[[Persistent tool field bag]] adds: read the input from localStorage on
-mount (replacing `options.initial` if a stored value exists) and write
-back on every input change. The hook also fires the pipeline's
-`setInputImmediate(initialInput)` once on mount — when `options.isEmpty`
-is provided AND the restored input is non-empty — so the result
-populates without a per-Tool `useMountOnce`. Without `options.isEmpty`,
-no autorun fires (the caller is explicitly responsible for triggering
-the first compute).
-
-Unlike [[Tool field bag]], the underlying `useToolComputation` is
-stateless w.r.t. input — `useToolComputationPersisted` owns the input
-state via its own `useState<I>` and exposes the current value as
-`input` on the result.
-
-Pick this when a Tool has a single Input value (one `string` in, one
-result out) and persists that input across reloads. Pick
-[[Persistent tool field bag]] for multi-field bag persistence. Pick
-the unwrapped `useToolComputation` when a single-Input Tool does NOT
-persist (still the right choice for the 30+ existing single-Input
-Tools without persistence).
-
-Today's consumers: `ProtobufToJson`, `MermaidRenderer`,
-`GraphqlSchemaViewer`. MermaidRenderer additionally absorbs a
-tool-handoff override (`consumeHandoff('mermaid-renderer')`) on mount via
-its own `useMountOnce`, which overrides the hook's autorun by calling
-`setInputImmediate(prefill)` — the documented pattern for combining a
-[[Tool handoff]] consumer with persisted input.
+field changed. Its triad (`useInputLocalStorage` + a single
+`useToolComputation` over `schema` + `useMountOnce`) stays.
+`<BidirectionalConverter>` also stays bespoke: its source is keyed per
+mode, so the key is derived rather than static.
 
 ## Tool dialog frame
 
@@ -421,7 +397,7 @@ input is actually malformed for the declared format.
 Today's adopters (via the shell): `JsonToYamlConverter`,
 `JsonToXmlConverter`, `JsonToTomlConverter`, `JsonToCsvConverter`.
 Standalone adopters (validate-first compute outside the shell):
-`JsonFormatter` (single-Input via `useToolComputationPersisted`),
+`JsonFormatter` (via the [[Formatter shell]]),
 `YamlFormatter` (multi-field via `useToolFields`). Each wraps the
 narrator inline: `const narrated = await narrateParseError(fmt, val);
 if (narrated != null) throw new Error(narrated)`. The trailing
@@ -448,14 +424,14 @@ their compute through `src/wasm/formatter` (CSS/HTML/SQL/JS) or
 wraps the compute through [[Parse-error narrator]] before reaching the
 shell's `errorFallback`.
 
-The shell wraps the [[Persistent tool field bag]] internally, so all
-five of its invariants apply to the `compute` function. Persistence is
+The shell wraps `useToolFields` with `storageKey` ([[Persisted tool input]])
+internally, so all five field-bag invariants apply to the `compute` function. Persistence is
 required (every consumer gets its own `storageKey`) — a previous
 inconsistency where HtmlFormatter persisted but CSS/SQL/JS did not has
 been resolved by making persistence the default. JSON and YAML joined
 the family in a later pass; the pre-migration JSON key
-(`csr-dev-tools-json-formatter-source`, raw-string shape from
-`useToolComputationPersisted`) was retired in favor of
+(`csr-dev-tools-json-formatter-source`, raw-string shape from the
+single-Input persisted hook of the time) was retired in favor of
 `csr-dev-tools-json-formatter` (JSON-bag shape) — reusing the old key
 would have corrupted on first read because the shape is different.
 
@@ -515,8 +491,8 @@ compute through `src/wasm/pdf.ts` (`compileHtmlToPdf` /
 `compileMarkdownToPdf`); both produce `CompileResultDto`
 (`{ svgs: string[]; pdf: Uint8Array }`).
 
-The shell wraps the [[Persistent tool computation]] internally — restore-
-on-mount + autorun-on-non-empty come for free. Persistence is required
+The shell wraps `useToolInput` with `storageKey` ([[Persisted tool input]])
+internally — restore-on-mount + autorun-on-non-empty come for free. Persistence is required
 (every consumer gets its own `storageKey`), matching the [[Formatter
 shell]] doctrine that retired the prior persist-some-tools-not-others
 divergence.
@@ -543,7 +519,7 @@ Carries three invariants beyond the pipeline's four:
 Input is concretely `string` — both today's adopters need only the
 source markup. If a third adopter requires extras (`pageFormat`,
 `includeToc`, Typst preamble), swap the internal primitive from
-[[Persistent tool computation]] to [[Persistent tool field bag]] and
+`useToolInput` to `useToolFields` (both with `storageKey`) and
 migrate adopters — ~5 lines per adopter, no behavior change. The
 breadcrumb lives in the shell's module-level comment alongside the
 `EMPTY_RESULT` constant.
@@ -640,8 +616,8 @@ diff. Implemented by `<DiffCheckerShell>`
 Today's consumers: `TextDiffChecker` (plain text), `JsonDiffChecker`
 (validates + normalizes JSON before diffing).
 
-The shell wraps the [[Persistent tool field bag]] internally, so all
-five of its invariants (debounced, stale-safe, empty-bypass,
+The shell wraps `useToolFields` with `storageKey` ([[Persisted tool input]])
+internally, so all five of its invariants (debounced, stale-safe, empty-bypass,
 unmount-safe, same-tick partial merge) apply to the `compute` function.
 The shell owns: the [[Tool dialog frame]] wiring, the two-column
 input layout, the diff-row rendering (`DiffCell` + `renderSpans` for

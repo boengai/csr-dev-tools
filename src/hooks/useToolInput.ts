@@ -2,6 +2,8 @@ import { useCallback, useRef, useState } from 'react'
 
 import type { UseToolInputOptions, UseToolInputResult } from '@/types'
 
+import { readJsonStorage } from './persist/jsonStorage'
+import { useDebouncedJsonWrite } from './persist/useDebouncedJsonWrite'
 import { useMountOnce } from './useMountOnce'
 import { useToolComputation } from './useToolComputation'
 
@@ -11,13 +13,26 @@ import { useToolComputation } from './useToolComputation'
  * into the pipeline, and exposes the same `reset()` + `recompute()` +
  * `autorunOnMount` surface for parity.
  *
+ * Optional persistence: pass `storageKey` to seed the input from localStorage
+ * once on mount and write it back (trailing-debounced, flushed on unmount and
+ * `pagehide`). With `storageKey`, mount autorun also fires when `isEmpty` is
+ * provided AND the restored input is non-empty.
+ *
  * See CONTEXT.md → "Tool input" for when to pick this over `useToolComputation`.
  */
 export function useToolInput<I, R>(options: UseToolInputOptions<I, R>): UseToolInputResult<I, R> {
-  const [input, setInputState] = useState<I>(options.initial)
-  const inputRef = useRef(input)
-  inputRef.current = input
+  const { storageKey } = options
+  const [seed] = useState<I>(() =>
+    storageKey === undefined ? options.initial : readJsonStorage(storageKey, options.initial),
+  )
+  const [input, setInputState] = useState<I>(seed)
+  // Every setter writes this synchronously, so handlers invoked in the same
+  // tick see the latest value without a render-time mirror.
+  const inputRef = useRef(seed)
   const initialRef = useRef(options.initial)
+
+  const debounceMs = options.debounceMs ?? 300
+  const persist = useDebouncedJsonWrite<I>(storageKey, debounceMs)
 
   const {
     error,
@@ -26,7 +41,7 @@ export function useToolInput<I, R>(options: UseToolInputOptions<I, R>): UseToolI
     setInput: pipelineSetInput,
     setInputImmediate: pipelineSetInputImmediate,
   } = useToolComputation<I, R>(options.compute, {
-    debounceMs: options.debounceMs,
+    debounceMs,
     errorFallback: options.errorFallback,
     errorLabel: options.errorLabel,
     initial: options.initialResult,
@@ -38,18 +53,20 @@ export function useToolInput<I, R>(options: UseToolInputOptions<I, R>): UseToolI
     (val: I) => {
       inputRef.current = val
       setInputState(val)
+      persist.schedule(val)
       pipelineSetInput(val)
     },
-    [pipelineSetInput],
+    [persist, pipelineSetInput],
   )
 
   const setInputImmediate = useCallback(
     (val: I) => {
       inputRef.current = val
       setInputState(val)
+      persist.writeNow(val)
       pipelineSetInputImmediate(val)
     },
-    [pipelineSetInputImmediate],
+    [persist, pipelineSetInputImmediate],
   )
 
   const recompute = useCallback(() => {
@@ -60,12 +77,18 @@ export function useToolInput<I, R>(options: UseToolInputOptions<I, R>): UseToolI
     const init = initialRef.current
     inputRef.current = init
     setInputState(init)
+    persist.writeNow(init)
     pipelineSetInputImmediate(init)
-  }, [pipelineSetInputImmediate])
+  }, [persist, pipelineSetInputImmediate])
 
-  const autorunOnMount = options.autorunOnMount === true
+  // Decided once from the mount-time seed (the restored value when persisted).
+  const [autorun] = useState(
+    () =>
+      options.autorunOnMount === true ||
+      (storageKey !== undefined && options.isEmpty !== undefined && !options.isEmpty(seed)),
+  )
   useMountOnce(() => {
-    if (autorunOnMount) pipelineSetInputImmediate(inputRef.current)
+    if (autorun) pipelineSetInputImmediate(inputRef.current)
   })
 
   return { error, input, isPending, recompute, reset, result, setInput, setInputImmediate }

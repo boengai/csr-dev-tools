@@ -1,4 +1,4 @@
-import { useToolFieldsPersisted } from '@/hooks'
+import { useToolFields } from '@/hooks'
 import type { FormatterShellProps } from '@/types'
 
 import { CopyButton } from '../button'
@@ -27,7 +27,7 @@ export const FormatterShell = <I extends { source: string }>({
 }: FormatterShellProps<I>) => {
   // Suppress toast routing when renderBanner is set — banner replaces toast
   // (same content, two channels duplicate). See CONTEXT.md → Formatter shell.
-  const { error, inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<I, string>({
+  const { error, inputs, result, setFields, setFieldsImmediate } = useToolFields<I, string>({
     compute,
     debounceMs: 300,
     errorFallback: renderBanner ? undefined : errorFallback,

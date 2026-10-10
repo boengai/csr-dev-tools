@@ -1,6 +1,6 @@
 import { memo } from 'react'
 
-import { useToolFieldsPersisted } from '@/hooks'
+import { useToolFields } from '@/hooks'
 import type { DiffCellProps, DiffCheckerShellProps, DiffInput, DiffOutput, DiffRowsProps, InlineSpan } from '@/types'
 
 import { CopyButton } from '../button'
@@ -84,7 +84,7 @@ export const DiffCheckerShell = <R extends DiffOutput>({
   storageKey,
   title,
 }: DiffCheckerShellProps<R>) => {
-  const { inputs, result, reset, setFields } = useToolFieldsPersisted<DiffInput, R>({
+  const { inputs, result, reset, setFields } = useToolFields<DiffInput, R>({
     compute,
     debounceMs: 300,
     errorLabel,

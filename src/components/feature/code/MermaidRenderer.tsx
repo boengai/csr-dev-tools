@@ -4,7 +4,7 @@ import { useCallback, useState } from 'react'
 import { Button, CopyButton, DisclosurePanel, EmptyState, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDownload, useMountOnce, useToast, useToolComputationPersisted } from '@/hooks'
+import { useDownload, useMountOnce, useToast, useToolInput } from '@/hooks'
 import type { MermaidComputeResult, ToolComponentProps } from '@/types'
 import { consumeHandoff, suggestMermaidFix } from '@/utils'
 import { initializeMermaid, renderMermaid, svgToPng } from '@/utils/mermaid-renderer'
@@ -54,7 +54,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterClose }: ToolComponentProps) 
     result,
     setInput,
     setInputImmediate,
-  } = useToolComputationPersisted<string, MermaidComputeResult>({
+  } = useToolInput<string, MermaidComputeResult>({
     compute: computeMermaid,
     debounceMs: 500,
     initial: DEFAULT_CODE,
