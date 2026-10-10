@@ -121,13 +121,16 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
       </div>
       {CATEGORY_ORDER.some((cat) => filteredGroupedTools[cat]) ? (
         <div className="columns-1 gap-x-6 tablet:columns-2 laptop:columns-3">
-          {CATEGORY_ORDER.filter((cat) => filteredGroupedTools[cat]).map((category) => (
+          {CATEGORY_ORDER.flatMap((category) => {
+            const tools = filteredGroupedTools[category]
+            return tools ? [{ category, tools }] : []
+          }).map(({ category, tools }) => (
             <div className="mb-4 break-inside-avoid" key={category}>
               <span className="block px-2 pb-1 text-[0.6rem] tracking-[0.12em] text-gray-400 uppercase">
                 {category}
               </span>
               <ul className="flex flex-col gap-1">
-                {filteredGroupedTools[category].map((entry) => {
+                {tools.map((entry) => {
                   const at = appPosition[entry.key] ?? null
                   return (
                     <li key={entry.key}>

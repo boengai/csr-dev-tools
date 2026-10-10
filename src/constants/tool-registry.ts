@@ -194,10 +194,8 @@ export const CATEGORY_ORDER: Array<ToolCategory> = [
 
 export const groupToolsByCategory = (tools: Array<ToolRegistryEntry>) => {
   return tools.reduce<Record<string, Array<ToolRegistryEntry>>>((acc, tool) => {
-    if (!acc[tool.category]) {
-      acc[tool.category] = []
-    }
-    acc[tool.category].push(tool)
+    const group = (acc[tool.category] ??= [])
+    group.push(tool)
     return acc
   }, {})
 }

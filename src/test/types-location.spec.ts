@@ -71,13 +71,14 @@ function stripNonCode(source: string): string {
   const blank = (ch: string) => (ch === '\n' ? '\n' : ' ')
 
   while (i < source.length) {
-    const ch = source[i]
-    const next = source[i + 1]
+    // charAt keeps these strings ('' past the end) so the comparisons below stay simple.
+    const ch = source.charAt(i)
+    const next = source.charAt(i + 1)
     const inTemplateText = templates.length > 0 && templates[templates.length - 1] === -1
 
     if (inTemplateText) {
       if (ch === '\\') {
-        out += blank(ch) + blank(next ?? '')
+        out += blank(ch) + blank(next)
         i += 2
       } else if (ch === '`') {
         templates.pop()
@@ -106,7 +107,7 @@ function stripNonCode(source: string): string {
     if (ch === '/' && next === '*') {
       const end = source.indexOf('*/', i + 2)
       const stop = end === -1 ? source.length : end + 2
-      for (; i < stop; i += 1) out += blank(source[i])
+      for (; i < stop; i += 1) out += blank(source.charAt(i))
       continue
     }
     if (ch === '"' || ch === "'") {
@@ -149,17 +150,18 @@ function stripNonCode(source: string): string {
       i += 1
       continue
     }
-    if (templates.length > 0) {
+    const depth = templates.at(-1)
+    if (depth !== undefined) {
       const top = templates.length - 1
-      if (ch === '{') templates[top] += 1
+      if (ch === '{') templates[top] = depth + 1
       else if (ch === '}') {
-        if (templates[top] === 0) {
+        if (depth === 0) {
           templates[top] = -1
           out += ch
           i += 1
           continue
         }
-        templates[top] -= 1
+        templates[top] = depth - 1
       }
     }
 
@@ -174,7 +176,9 @@ function findTypeDeclarations(source: string): Array<{ line: number; text: strin
   const original = source.split('\n')
   return stripNonCode(source)
     .split('\n')
-    .flatMap((line, index) => (DECLARATION.test(line) ? [{ line: index + 1, text: original[index].trim() }] : []))
+    .flatMap((line, index) =>
+      DECLARATION.test(line) ? [{ line: index + 1, text: (original[index] ?? line).trim() }] : [],
+    )
 }
 
 const listSourceFiles = (): Array<string> =>

@@ -1,5 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 const mockPipeline = vi.hoisted(() => vi.fn())
 const mockFromBlob = vi.hoisted(() => vi.fn())
 
@@ -13,7 +15,7 @@ const { resetSegmenterCache, segmentImage } = await import('./background-removal
 type ProgressCallback = (info: { progress?: number; status?: string }) => void
 
 const capturedProgressCallback = (): ProgressCallback =>
-  (mockPipeline.mock.calls[0][2] as { progress_callback: ProgressCallback }).progress_callback
+  (nth(mockPipeline.mock.calls, 0)[2] as { progress_callback: ProgressCallback }).progress_callback
 
 const segmenterReturning = (width: number, height: number) =>
   vi.fn().mockResolvedValue({ data: new Uint8ClampedArray(width * height * 4).fill(7), height, width })
