@@ -1,10 +1,8 @@
+import type { HashWasm } from '@/types/wasm/ffi'
+
 import { loadWasm } from './init'
 
-type CsrHash = {
-  md5: (input: string) => string
-}
-
 export async function md5(input: string): Promise<string> {
-  const wasm = await loadWasm<CsrHash>('hash')
+  const wasm = await loadWasm<HashWasm>('hash')
   return wasm.md5(input)
 }

@@ -7,3 +7,6 @@ export type CompileResultDto = {
   svgs: Array<string>
   pdf: Uint8Array
 }
+
+/** Request payload posted to `src/workers/pdf.worker.ts` (the bridge adds `id`). */
+export type PdfWorkerRequest = { md: string }

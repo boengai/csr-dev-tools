@@ -974,34 +974,46 @@ Web Worker. Implemented by `createWorkerBridge`
 ```ts
 createWorkerBridge<TReq extends object>(
   workerFactory: () => Worker,
-): { call: <TRes = unknown>(payload: TReq) => Promise<TRes> }
+): {
+  call: <TRes = unknown>(
+    payload: TReq,
+    options?: { onProgress?: (n: number) => void; timeoutMs?: number; transfer?: Array<Transferable> },
+  ) => Promise<TRes>
+  cancel: () => void
+  hasPending: () => boolean
+}
 ```
 
-Today's adopters: `src/wasm/bcrypt.ts`, `src/wasm/pdf.ts`. Both
-previously hand-rolled the same `let worker; let msgId; getWorker();
-callWorker(data)` plumbing — ~25 lines apiece — and neither concentrated
-the four invariants the pattern carries:
+Today's adopters: `src/wasm/bcrypt.ts`, `src/wasm/pdf.ts`,
+`src/utils/background-removal.ts`, `src/utils/regex-runner.ts`. The
+invariants the bridge concentrates:
 
 1. **`msgId` correlation** — each `.call(...)` gets a unique id; responses
-   are matched by id, so concurrent calls cannot swap results.
-2. **Listener removal on receipt** — the per-call handler is removed
-   before resolving/rejecting; the worker never accumulates stale
-   handlers across the page lifetime.
-3. **Error envelope** — `{ id, error }` → `reject(new Error(error))`;
-   `{ id, result }` → `resolve(result)`. A worker-thrown error can't be
-   mistaken for a successful empty result.
-4. **Lazy singleton construction** — `workerFactory` runs once on the
-   first `.call(...)`, not at module import. Facades imported into Tools
-   the user never visits pay zero worker-construction cost.
+   are matched by id through a `pending` map, so concurrent calls cannot
+   swap results. One `message` listener per worker instance.
+2. **Envelopes** — `{ id, error }` → `reject(new Error(error))`;
+   `{ id, result }` → `resolve(result)`; `{ id, progress }` is
+   non-terminal and goes to that call's `onProgress`. A worker-thrown
+   error can't be mistaken for a successful empty result.
+3. **Worker failure** — an `error` / `messageerror` event (failed script
+   load, uncaught throw) rejects every pending call and drops the worker;
+   the next call lazily constructs a fresh one. No call hangs forever on
+   a dead worker.
+4. **Abort** — `cancel()` and per-call `timeoutMs` terminate the worker
+   (the only way to stop a runaway synchronous job) and reject pending
+   calls with `WorkerAbortError` (`reason: 'cancel' | 'timeout'`;
+   detect with `isWorkerAbortError`).
+5. **Lazy construction** — `workerFactory` runs on the first `.call(...)`
+   (and again after a failure/abort), not at module import. Facades
+   imported into Tools the user never visits pay zero worker-construction
+   cost.
 
-The wire shape is codified as
-`WorkerResponse<T> = { id: number; result: T } | { id: number; error: string }`
-and re-exported so the worker file (`src/workers/*.worker.ts`) can type
-its `self.postMessage` calls. The worker side of the protocol — the
-`try { ensureInit(); doWork(); postMessage({ id, result }) } catch (err)
-{ postMessage({ id, error: err.message }) }` shape — stays inlined per
-worker (≤36 lines each); extracting it is the kind of tidying ADR-0018
-declined for the `src/wasm/` facade family.
+The wire shapes (`WorkerRequest<T>`, `WorkerResponse<T>`) live in
+`src/types/wasm/worker-bridge.ts` so worker files
+(`src/workers/*.worker.ts`) can type `e.data` and `self.postMessage`.
+The worker side of the protocol stays inlined per worker; worker-side
+initialisers use `retryableOnce` (`src/workers/retryable-once.ts`) so a
+failed `init()` is retried rather than cached forever.
 
 The bridge takes a factory (not a URL or instance) because Vite's worker
 resolution requires the literal pattern `new Worker(new URL('./literal',

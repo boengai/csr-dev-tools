@@ -1,36 +1,23 @@
-import type { CompileResultDto } from '@/types/wasm/pdf'
+import type { PdfWorkerRequest } from '@/types/wasm/pdf'
+import type { WorkerRequest, WorkerResponse } from '@/types/wasm/worker-bridge'
 
-import init, { compile_markdown } from '../../wasm/pkg/pdf/pdf.js'
-import type { WorkerResponse } from '../wasm/worker-bridge'
+import * as pdfWasm from '../../wasm/pkg/pdf/pdf.js'
+import { compileMarkdownToDto } from './pdf-compile'
+import { retryableOnce } from './retryable-once'
 
-let ready: Promise<unknown> | null = null
+const ensureInit = retryableOnce(() => pdfWasm.default())
 
-function ensureInit(): Promise<unknown> {
-  if (!ready) {
-    ready = init()
-  }
-  return ready!
-}
-
-const post = <T>(response: WorkerResponse<T>): void => self.postMessage(response)
-
-self.onmessage = async (e: MessageEvent) => {
-  const { id, md } = e.data as { id: number; md: string }
+self.onmessage = async (e: MessageEvent<WorkerRequest<PdfWorkerRequest>>) => {
+  const { id, md } = e.data
 
   try {
     await ensureInit()
-    const result = compile_markdown(md)
-
-    const svgs: Array<string> = []
-    const count = result.page_count
-    for (let i = 0; i < count; i++) {
-      const svg = result.page_svg(i)
-      if (svg !== undefined) svgs.push(svg)
-    }
-    const dto: CompileResultDto = { svgs, pdf: result.pdf }
-
-    post<CompileResultDto>({ id, result: dto })
+    const dto = compileMarkdownToDto(pdfWasm, md)
+    const response: WorkerResponse<typeof dto> = { id, result: dto }
+    // Transfer (not clone) the PDF bytes — they can be several MB per compile.
+    self.postMessage(response, { transfer: [dto.pdf.buffer as ArrayBuffer] })
   } catch (err) {
-    post({ id, error: err instanceof Error ? err.message : String(err) })
+    const response: WorkerResponse<never> = { id, error: err instanceof Error ? err.message : String(err) }
+    self.postMessage(response)
   }
 }

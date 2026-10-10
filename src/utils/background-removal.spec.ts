@@ -1,15 +1,34 @@
 // @vitest-environment jsdom
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-const mockPipeline = vi.fn()
-const mockFromBlob = vi.fn()
+import type { BgRemovalResult, BgRemovalWorkerRequest } from '@/types/utils/background-removal'
+import type { WorkerRequest, WorkerResponse } from '@/types/wasm/worker-bridge'
 
-vi.mock('@huggingface/transformers', () => ({
-  RawImage: { fromBlob: mockFromBlob },
-  pipeline: mockPipeline,
-}))
+import { applyBackground, removeBackground } from './background-removal'
 
-const { applyBackground, removeBackground, resetPipelineCache } = await import('./background-removal')
+type Listener = (e: { data: WorkerResponse<BgRemovalResult>; type: string }) => void
+
+// Fake worker: records requests and lets each test script the reply
+// (progress envelopes, then a result or error), standing in for
+// src/workers/background-removal.worker.ts.
+let respond: (req: WorkerRequest<BgRemovalWorkerRequest>, emit: (r: WorkerResponse<BgRemovalResult>) => void) => void
+const requests: Array<{ req: WorkerRequest<BgRemovalWorkerRequest>; transfer: Array<Transferable> }> = []
+class FakeWorker {
+  listeners = new Set<Listener>()
+  addEventListener(type: string, l: Listener) {
+    if (type === 'message') this.listeners.add(l)
+  }
+  removeEventListener() {}
+  postMessage(req: WorkerRequest<BgRemovalWorkerRequest>, transfer: Array<Transferable>) {
+    requests.push({ req, transfer })
+    queueMicrotask(() =>
+      respond(req, (data) => {
+        for (const l of this.listeners) l({ data, type: 'message' })
+      }),
+    )
+  }
+  terminate() {}
+}
 
 function createMockCanvas() {
   const drawImageCalls: Array<unknown> = []
@@ -91,9 +110,6 @@ if (typeof globalThis.ImageData === 'undefined') {
 describe('background-removal utilities', () => {
   afterEach(() => {
     vi.restoreAllMocks()
-    mockPipeline.mockClear()
-    mockFromBlob.mockClear()
-    resetPipelineCache()
   })
 
   describe('applyBackground', () => {
@@ -129,77 +145,56 @@ describe('background-removal utilities', () => {
   })
 
   describe('removeBackground', () => {
-    it('rejects for non-image blobs', async () => {
-      const blob = new Blob(['text'], { type: 'text/plain' })
-      await expect(removeBackground(blob)).rejects.toThrow('Please select an image file')
+    beforeEach(() => {
+      requests.length = 0
+      vi.stubGlobal('Worker', FakeWorker)
     })
 
-    it('calls the pipeline and returns a Blob', async () => {
+    afterEach(() => {
+      vi.unstubAllGlobals()
+      if (typeof globalThis.ImageData === 'undefined') vi.stubGlobal('ImageData', MockImageData)
+    })
+
+    it('rejects for non-image blobs without contacting the worker', async () => {
+      const blob = new Blob(['text'], { type: 'text/plain' })
+      await expect(removeBackground(blob)).rejects.toThrow('Please select an image file')
+      expect(requests).toHaveLength(0)
+    })
+
+    it('transfers the image bytes to the worker and paints the returned RGBA into a PNG blob', async () => {
       const mock = createMockCanvas()
       mockDocumentCreateElement(mock)
-
-      const mockSegmenter = vi.fn().mockResolvedValue({
-        data: new Uint8ClampedArray(4 * 2 * 2),
-        height: 2,
-        width: 2,
-      })
-      mockPipeline.mockResolvedValue(mockSegmenter)
-      mockFromBlob.mockResolvedValue('raw-image')
+      respond = (req, emit) => emit({ id: req.id, result: { height: 2, rgba: new ArrayBuffer(16), width: 2 } })
 
       const blob = new Blob(['fake'], { type: 'image/png' })
       const result = await removeBackground(blob)
 
       expect(result).toBeInstanceOf(Blob)
-      expect(mockSegmenter).toHaveBeenCalledWith('raw-image')
+      expect(requests[0].req.type).toBe('image/png')
+      expect(requests[0].req.bytes.byteLength).toBe(4)
+      expect(requests[0].transfer).toEqual([requests[0].req.bytes])
+      expect(mock.canvas.width).toBe(2)
+      expect(mock.canvas.height).toBe(2)
     })
 
-    it('passes onProgress to pipeline progress_callback', async () => {
+    it('forwards worker progress envelopes to onProgress', async () => {
       const mock = createMockCanvas()
       mockDocumentCreateElement(mock)
-
-      const mockSegmenter = vi.fn().mockResolvedValue({
-        data: new Uint8ClampedArray(4 * 2 * 2),
-        height: 2,
-        width: 2,
-      })
-      mockPipeline.mockResolvedValue(mockSegmenter)
-      mockFromBlob.mockResolvedValue('raw-image')
+      respond = (req, emit) => {
+        emit({ id: req.id, progress: 30 })
+        emit({ id: req.id, progress: 90 })
+        emit({ id: req.id, result: { height: 1, rgba: new ArrayBuffer(4), width: 1 } })
+      }
 
       const progressFn = vi.fn()
-      const blob = new Blob(['fake'], { type: 'image/png' })
-      await removeBackground(blob, progressFn)
+      await removeBackground(new Blob(['fake'], { type: 'image/png' }), progressFn)
 
-      // Verify pipeline was called with progress_callback option
-      expect(mockPipeline).toHaveBeenCalledWith(
-        'background-removal',
-        'Xenova/modnet',
-        expect.objectContaining({ progress_callback: expect.any(Function) }),
-      )
-
-      // Simulate a progress event through the callback
-      const callArgs = mockPipeline.mock.calls[0][2] as { progress_callback: (info: { progress?: number }) => void }
-      callArgs.progress_callback({ progress: 50 })
-      expect(progressFn).toHaveBeenCalledWith(50)
+      expect(progressFn.mock.calls).toEqual([[30], [90]])
     })
 
-    it('caches the pipeline singleton', async () => {
-      const mock = createMockCanvas()
-      mockDocumentCreateElement(mock)
-
-      const mockSegmenter = vi.fn().mockResolvedValue({
-        data: new Uint8ClampedArray(4 * 2 * 2),
-        height: 2,
-        width: 2,
-      })
-      mockPipeline.mockResolvedValue(mockSegmenter)
-      mockFromBlob.mockResolvedValue('raw-image')
-
-      const blob = new Blob(['fake'], { type: 'image/png' })
-
-      await removeBackground(blob)
-      await removeBackground(blob)
-
-      expect(mockPipeline).toHaveBeenCalledTimes(1)
+    it('rejects with the worker error message', async () => {
+      respond = (req, emit) => emit({ id: req.id, error: 'model fetch failed' })
+      await expect(removeBackground(new Blob(['fake'], { type: 'image/png' }))).rejects.toThrow('model fetch failed')
     })
   })
 })
