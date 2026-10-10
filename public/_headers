@@ -1,0 +1,45 @@
+# Cloudflare Pages response headers (https://developers.cloudflare.com/pages/configuration/headers/).
+# Vite copies public/ verbatim into dist/, so this ships as dist/_headers.
+
+# Vite emits content-hashed filenames under /assets, so they never change in place.
+/assets/*
+  Cache-Control: public, max-age=31536000, immutable
+
+# Site-wide security headers.
+#
+# Content-Security-Policy, directive by directive (a header value must be one line):
+#
+# default-src 'self'                      -- everything not listed below is same-origin only.
+# script-src
+#   'self'                                -- app bundle, lazy chunks, workers' imports.
+#   'wasm-unsafe-eval'                    -- WebAssembly.instantiate for the Rust/wasm-bindgen tools and ONNX Runtime.
+#   'unsafe-eval'                         -- ajv (JSON Schema Validator) compiles schemas with `new Function`;
+#                                            removing this breaks that tool. Also covers monaco's AMD loader.
+#   blob:                                 -- transformers.js turns the ONNX Runtime .mjs factory into a blob: URL and imports it.
+#   https://cdn.jsdelivr.net              -- @monaco-editor/loader loads monaco from cdn.jsdelivr.net/npm/monaco-editor (TypeScript Playground);
+#                                            transformers.js loads onnxruntime-web .mjs from cdn.jsdelivr.net/npm/onnxruntime-web (Background Remover).
+#   https://static.cloudflareinsights.com -- Cloudflare Web Analytics beacon, auto-injected by Pages when analytics is enabled.
+# style-src
+#   'self' 'unsafe-inline'                -- motion, mermaid SVG <style>, xyflow, radix and React style={} attributes are inline.
+#   https://fonts.googleapis.com          -- Space Mono stylesheet linked from index.html.
+#   https://cdn.jsdelivr.net              -- monaco editor CSS.
+# font-src
+#   'self' data:                          -- bundled/inlined fonts.
+#   https://fonts.gstatic.com             -- Space Mono font files.
+#   https://cdn.jsdelivr.net              -- monaco codicon font.
+# img-src 'self' data: blob: https:       -- tool previews use data:/blob: URLs; Markdown Preview / SVG Viewer render user content that may
+#                                            reference any https image.
+# connect-src
+#   'self'                                -- same-origin .wasm and worker fetches.
+#   data: blob:                           -- fetch(dataUri) in image-base64 / file utils; blob URLs for downloads/previews.
+#   https://cdn.jsdelivr.net              -- ONNX Runtime .wasm (transformers.js) and monaco resources.
+#   https://huggingface.co                -- transformers.js model files (Xenova/modnet) via /{model}/resolve/{revision}/.
+#   https://*.huggingface.co https://*.hf.co -- huggingface.co redirects model blobs to LFS / Xet CDN hosts
+#                                            (e.g. cdn-lfs*.huggingface.co, cas-bridge.xethub.hf.co).
+#   https://cloudflareinsights.com        -- Cloudflare Web Analytics beacon reporting endpoint.
+# worker-src 'self' blob:                 -- bundled module workers (bcrypt/pdf/pdf.js); monaco and ONNX Runtime spawn blob: workers.
+# object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none' -- no plugins, no <base> hijack, no framing.
+/*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'wasm-unsafe-eval' 'unsafe-eval' blob: https://cdn.jsdelivr.net https://static.cloudflareinsights.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://cdn.jsdelivr.net; font-src 'self' data: https://fonts.gstatic.com https://cdn.jsdelivr.net; img-src 'self' data: blob: https:; connect-src 'self' data: blob: https://cdn.jsdelivr.net https://huggingface.co https://*.huggingface.co https://*.hf.co https://cloudflareinsights.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
