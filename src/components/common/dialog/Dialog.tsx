@@ -1,5 +1,6 @@
 import { Close, Content, Description, Overlay, Portal, Root, Title, Trigger } from '@radix-ui/react-dialog'
 import { AnimatePresence, m } from 'motion/react'
+import { useRef } from 'react'
 
 import type { CompVariant, DialogProps, DialogVariants } from '@/types'
 import { tv } from '@/utils'
@@ -7,7 +8,7 @@ import { tv } from '@/utils'
 import { XIcon } from '../icon'
 
 const contentVariants: CompVariant<DialogVariants> = tv({
-  base: 'fixed top-[50%] left-[50%] z-50 flex -translate-1/2 flex-col overflow-hidden rounded-card border border-gray-800 bg-gray-900 shadow-[0_0_40px_12px] shadow-primary/30',
+  base: 'fixed top-[50%] left-[50%] z-50 flex -translate-1/2 flex-col overflow-hidden rounded-card border border-gray-800 bg-gray-900 shadow-[0_0_40px_12px] shadow-primary/30 outline-none',
   defaultVariants: {
     size: 'default',
   },
@@ -30,18 +31,38 @@ export const Dialog = ({
   trigger,
 }: DialogProps) => {
   const contentClassName = contentVariants({ size })
+  const contentRef = useRef<HTMLDivElement>(null)
+  // Armed only by a Radix-initiated close (Escape / overlay / close button) —
+  // a parent flipping `injected.open` itself does not fire `onAfterClose`.
+  // Consumed after the exit animation so content doesn't flash empty mid-fade.
+  const afterClosePendingRef = useRef(false)
 
   const handleOpenChange = (open: boolean) => {
+    afterClosePendingRef.current = !open
     injected?.setOpen(open)
-    if (!open) {
-      onAfterClose?.()
+  }
+
+  const handleExitComplete = () => {
+    if (!afterClosePendingRef.current) return
+    afterClosePendingRef.current = false
+    onAfterClose?.()
+  }
+
+  const handleOpenAutoFocus = (event: Event) => {
+    // Move focus into the dialog, but onto the container rather than the
+    // first tabbable (the close dot). Respect a child that already
+    // claimed focus via `autoFocus`.
+    event.preventDefault()
+    const content = contentRef.current
+    if (content && !content.contains(document.activeElement)) {
+      content.focus({ preventScroll: true })
     }
   }
 
   return (
     <Root onOpenChange={handleOpenChange} open={injected?.open}>
       {trigger && <Trigger asChild>{trigger}</Trigger>}
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={handleExitComplete}>
         {injected?.open && (
           <Portal forceMount>
             <Overlay asChild>
@@ -53,10 +74,12 @@ export const Dialog = ({
                 transition={{ duration: 0.2, ease: 'easeOut' }}
               />
             </Overlay>
-            <Content asChild onOpenAutoFocus={(e) => e.preventDefault()}>
+            <Content asChild onOpenAutoFocus={handleOpenAutoFocus}>
               <m.div
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 className={contentClassName}
+                ref={contentRef}
+                tabIndex={-1}
                 exit={{ opacity: 0, scale: 0.95, y: -8 }}
                 initial={{ opacity: 0, scale: 0.95, y: -8 }}
                 transition={{ duration: 0.2, ease: 'easeOut' }}
@@ -64,7 +87,8 @@ export const Dialog = ({
                 <div className="flex w-full shrink-0 items-center gap-3 border-b border-gray-800 px-4 py-2 pt-[calc(var(--safe-area-inset-top)+0.5rem)]">
                   <Close asChild>
                     <m.button
-                      className="group relative size-3 shrink-0 rounded-full bg-error before:absolute before:inset-[-12px] before:content-['']"
+                      aria-label="Close dialog"
+                      className="group relative size-3 shrink-0 rounded-full bg-error outline-none before:absolute before:inset-[-12px] before:content-[''] focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900"
                       title="Close"
                       transition={{ duration: 0.15, ease: 'easeOut' }}
                       whileHover={{ scale: 1.15 }}
@@ -72,11 +96,10 @@ export const Dialog = ({
                     >
                       <span
                         aria-hidden="true"
-                        className="absolute inset-0 flex items-center justify-center text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100"
+                        className="absolute inset-0 flex items-center justify-center text-white opacity-0 transition-opacity duration-150 group-hover:opacity-100 group-focus-visible:opacity-100"
                       >
                         <XIcon size={10} />
                       </span>
-                      <span className="sr-only">Close</span>
                     </m.button>
                   </Close>
                   <Title className="grow truncate text-body-sm text-gray-400">{title}</Title>
