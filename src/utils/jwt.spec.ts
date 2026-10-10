@@ -78,6 +78,20 @@ describe('jwt decoding utilities', () => {
       // 42 -> NDI
       expect(() => decodeJwt('eyJhbGciOiJIUzI1NiJ9.NDI.sig')).toThrow()
     })
+
+    it('should decode UTF-8 claims (multi-byte and 4-byte characters)', () => {
+      const header = Buffer.from(JSON.stringify({ alg: 'HS256', typ: 'JWT' })).toString('base64url')
+      const payload = Buffer.from(JSON.stringify({ city: 'Zürich', emoji: '🔐', name: 'José' })).toString('base64url')
+      const result = decodeJwt(`${header}.${payload}.sig`)
+      expect(result.payload).toEqual({ city: 'Zürich', emoji: '🔐', name: 'José' })
+    })
+
+    it('should reject a payload that is not valid UTF-8', () => {
+      const header = Buffer.from(JSON.stringify({ alg: 'HS256' })).toString('base64url')
+      // `{"a":"<0xff>"}` — 0xff is never valid in UTF-8
+      const payload = Buffer.from([0x7b, 0x22, 0x61, 0x22, 0x3a, 0x22, 0xff, 0x22, 0x7d]).toString('base64url')
+      expect(() => decodeJwt(`${header}.${payload}.sig`)).toThrow('Invalid JWT payload')
+    })
   })
 
   describe('formatTimestampClaim', () => {
