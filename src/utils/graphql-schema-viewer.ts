@@ -8,6 +8,7 @@ import {
   isObjectType,
   isScalarType,
   isUnionType,
+  print,
 } from 'graphql'
 
 import type {
@@ -36,7 +37,11 @@ const extractArgs = (args: ReadonlyArray<GraphQLArgument>): Array<GraphqlArgInfo
   args.map((arg) => {
     const { formattedType, isList, isNonNull, typeName } = unwrapType(arg.type)
     return {
-      defaultValue: arg.defaultValue !== undefined ? JSON.stringify(arg.defaultValue) : null,
+      defaultValue: arg.default?.literal
+        ? print(arg.default.literal)
+        : arg.default
+          ? JSON.stringify(arg.default.value)
+          : null,
       description: arg.description ?? null,
       formattedType,
       isList,

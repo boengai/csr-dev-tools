@@ -1,6 +1,13 @@
-import type { TVReturnType } from 'tailwind-variants'
+import type { TVReturnType, TVReturnTypeLike } from 'tailwind-variants'
 
-export type CompVariant<T> = TVReturnType<VariantTransform<T>, undefined, string, VariantTransform<T>, undefined>
+export type CompVariant<T> = TVReturnType<
+  VariantTransform<T>,
+  undefined,
+  string,
+  VariantTransform<T>,
+  undefined,
+  TVReturnTypeLike<VariantTransform<T>, undefined>
+>
 
 type VariantTransform<T> = T extends infer U
   ? {
