@@ -1,15 +1,7 @@
 import type { HmacAlgorithm, HmacEncoding } from '@/types/utils/hmac'
+import type { HmacWasm } from '@/types/wasm/ffi'
 
 import { loadWasm } from './init'
-
-type CsrHmac = {
-  hmac_sha256: (key: string, message: string) => string
-  hmac_sha384: (key: string, message: string) => string
-  hmac_sha512: (key: string, message: string) => string
-  hmac_sha256_base64: (key: string, message: string) => string
-  hmac_sha384_base64: (key: string, message: string) => string
-  hmac_sha512_base64: (key: string, message: string) => string
-}
 
 type HmacFnKey = `hmac_sha${256 | 384 | 512}` | `hmac_sha${256 | 384 | 512}_base64`
 
@@ -25,7 +17,7 @@ export async function generateHmac(
   algorithm: HmacAlgorithm,
   encoding: HmacEncoding,
 ): Promise<string> {
-  const wasm = await loadWasm<CsrHmac>('hmac')
+  const wasm = await loadWasm<HmacWasm>('hmac')
   const suffix = encoding === 'base64' ? '_base64' : ''
   const fnName = `hmac_${ALGORITHM_MAP[algorithm]}${suffix}` as HmacFnKey
   return (wasm[fnName] as (key: string, message: string) => string)(key, message)

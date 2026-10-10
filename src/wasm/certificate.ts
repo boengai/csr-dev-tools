@@ -1,8 +1,7 @@
 import type { CertificateInfo } from '@/types/utils/certificate-decoder'
+import type { CertificateWasm } from '@/types/wasm/ffi'
 
 import { loadWasm } from './init'
-
-type CsrCertificate = { parse_pem_certificate: (pem: string) => string }
 
 export type CertificateWire = Omit<CertificateInfo, 'notBefore' | 'notAfter' | 'validityStatus'> & {
   notBefore: string
@@ -10,7 +9,7 @@ export type CertificateWire = Omit<CertificateInfo, 'notBefore' | 'notAfter' | '
 }
 
 export async function parsePemCertificateViaWasm(pem: string): Promise<CertificateWire> {
-  const wasm = await loadWasm<CsrCertificate>('certificate')
+  const wasm = await loadWasm<CertificateWasm>('certificate')
   try {
     const raw = wasm.parse_pem_certificate(pem)
     return JSON.parse(raw) as CertificateWire
