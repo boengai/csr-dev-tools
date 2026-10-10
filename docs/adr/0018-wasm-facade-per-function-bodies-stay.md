@@ -11,13 +11,15 @@ through `wasm-bindgen` — totalling ~46 exported async functions across
 `json-tools.ts`, `markdown.ts`, `number-base.ts`, `parsers.ts`,
 `qrcode.ts`, `uuid.ts`, `bcrypt.ts`, and others.
 
-Each facade declares a `CsrModule` type listing the WASM exports, then
+Each facade imports its module type from `@/types/wasm/ffi` (derived from
+wasm-bindgen's generated `.d.ts` — originally a hand-written `CsrModule`
+type per facade, replaced 2026-10 so Rust signature drift is a type error), then
 exports per-method wrapper functions. Almost every function body
 follows the same shape:
 
 ```ts
 export async function jsonToCsv(input: string): Promise<string> {
-  const wasm = await loadWasm<CsrCsv>('csv')
+  const wasm = await loadWasm<CsvWasm>('csv')
   return wasm.json_to_csv(input)
 }
 ```
@@ -67,7 +69,7 @@ a declarative form, which is a tidying, not a deepening.
 WASM facade modules (`src/wasm/*.ts`) keep their per-function bodies
 as-is. No `defineWasm` builder, no per-variant constructor functions,
 no method-callback picker abstraction. Each export declares its own
-`const wasm = await loadWasm<CsrModule>('name')` + dispatch line.
+`const wasm = await loadWasm<ModuleWasm>('name')` + dispatch line.
 
 `loadWasm` (`src/wasm/init.ts`) remains the only shared abstraction
 across the facade family.
@@ -79,7 +81,7 @@ across the facade family.
 - The facade family stays grep-able: search for `wasm.method_name` and
   every adopter is one line away from the WASM call. No indirection
   layer to step through.
-- New facades follow an obvious template — type definition + per-export
+- New facades follow an obvious template — one `ffi.ts` type line + per-export
   load+dispatch — without learning a builder's variant catalog.
 - Each function's return shape (plain · nullable · JSON-parsed) is
   visible at the function body, not encoded in a constructor choice.
