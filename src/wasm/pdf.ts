@@ -1,27 +1,17 @@
-import type { CompileResultDto } from '@/types/wasm/pdf'
+import type { PdfWasm } from '@/types/wasm/ffi'
+import type { CompileResultDto, PdfWorkerRequest } from '@/types/wasm/pdf'
 
+import { compileMarkdownToDto } from '../workers/pdf-compile'
 import { loadWasm } from './init'
 import { htmlToMarkdown } from './markdown'
 import { createWorkerBridge } from './worker-bridge'
 
-type CsrPdf = {
-  compile_markdown: (md: string) => CsrPdfCompileResult
-}
-
-type CsrPdfCompileResult = {
-  readonly page_count: number
-  page_svg: (index: number) => string | undefined
-  readonly pdf: Uint8Array
-}
-
 export const MAX_HTML_INPUT_BYTES = 256 * 1024
 export const MAX_MD_INPUT_BYTES = 256 * 1024
 
-const bridge = createWorkerBridge<{ md: string }>(
+const bridge = createWorkerBridge<PdfWorkerRequest>(
   () => new Worker(new URL('../workers/pdf.worker.ts', import.meta.url), { type: 'module' }),
 )
-
-const isNode = typeof globalThis.process !== 'undefined' && globalThis.process.versions?.node
 
 export async function compileMarkdownToPdf(md: string): Promise<CompileResultDto> {
   if (md.trim().length === 0) {
@@ -31,15 +21,11 @@ export async function compileMarkdownToPdf(md: string): Promise<CompileResultDto
     throw new Error(`Input too large (${md.length} bytes). Maximum is ${MAX_MD_INPUT_BYTES} bytes.`)
   }
 
-  if (isNode) {
-    const wasm = await loadWasm<CsrPdf>('pdf')
-    const result = wasm.compile_markdown(md)
-    const svgs: Array<string> = []
-    for (let i = 0; i < result.page_count; i++) {
-      const svg = result.page_svg(i)
-      if (svg !== undefined) svgs.push(svg)
-    }
-    return { svgs, pdf: result.pdf }
+  // Specs run without Web Workers; Vite constant-folds MODE so production
+  // bundles drop this branch.
+  if (import.meta.env.MODE === 'test') {
+    const wasm = await loadWasm<PdfWasm>('pdf')
+    return compileMarkdownToDto(wasm, md)
   }
 
   return bridge.call<CompileResultDto>({ md })
