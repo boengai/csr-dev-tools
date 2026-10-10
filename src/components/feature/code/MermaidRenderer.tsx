@@ -1,5 +1,5 @@
 import { AnimatePresence, m } from 'motion/react'
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { Button, CopyButton, DisclosurePanel, EmptyState, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
@@ -65,14 +65,6 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
   const svg = result.kind === 'svg' ? result.svg : ''
   const errorMessage = result.kind === 'error' ? result.message : null
   const fixSuggestion = result.kind === 'error' ? result.fixSuggestion : null
-
-  const previewRef = useRef<HTMLDivElement>(null)
-
-  useEffect(() => {
-    if (previewRef.current) {
-      previewRef.current.innerHTML = svg
-    }
-  }, [svg])
 
   // Mount-time: initialize the mermaid library, then handle the optional handoff
   // prefill from the DB Diagram tool. If a prefill exists, override the hook's
@@ -207,7 +199,9 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
 
             <div className="flex min-h-[300px] flex-1 items-center justify-center overflow-auto">
               {svg ? (
-                <div className="w-full [&_svg]:h-auto [&_svg]:w-full" ref={previewRef} />
+                // `svg` is DOMPurify-sanitized inside renderMermaid. Rendered declaratively so a
+                // remount (dialog reopen) shows the current diagram without waiting for it to change.
+                <div className="w-full [&_svg]:h-auto [&_svg]:w-full" dangerouslySetInnerHTML={{ __html: svg }} />
               ) : (
                 !errorMessage && <EmptyState>Enter Mermaid syntax to see a preview</EmptyState>
               )}

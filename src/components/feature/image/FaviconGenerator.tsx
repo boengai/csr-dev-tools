@@ -25,9 +25,8 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
   })
 
   const handleUpload = async (files: Array<File>, openDialog: () => void) => {
-    if (!files[0]) return
+    if (!(await pipeline.upload(files))) return
     openDialog()
-    await pipeline.upload(files)
     await pipeline.regenerate(async (img) => generateFavicons(img))
   }
 

@@ -10,3 +10,6 @@ export type ParseOutput = {
   parseError: { line: number | null; message: string } | null
   schema: ProtobufSchemaInfo | null
 }
+
+/** A generated sample, tagged with the message object it was generated from. */
+export type ProtobufSampleJson = { json: unknown; message: ProtobufMessageInfo }

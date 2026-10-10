@@ -11,3 +11,14 @@ export type SubnetResult = {
   totalHosts: number
   wildcardMask: string
 }
+
+export type SubnetComputeInput = {
+  cidrInput: string
+  ipInput: string
+  maskInput: string
+  mode: 'cidr' | 'ip-mask'
+}
+
+export type SubnetComputeOutput = { error: string; result: SubnetResult | null }
+
+export type ParsedCidr = { ip: string; prefixLength: number }

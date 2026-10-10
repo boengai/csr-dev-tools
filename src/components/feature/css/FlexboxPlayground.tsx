@@ -204,6 +204,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponen
           {items.map((item, index) => (
             <button
               aria-label={`Item ${index + 1}`}
+              aria-pressed={selectedItem === index}
               className="text-sm flex h-16 w-16 items-center justify-center rounded font-bold text-white data-[state=active]:ring-2 data-[state=active]:ring-white"
               data-state={selectedItem === index ? 'active' : 'inactive'}
               key={item._id}

@@ -1,23 +1,11 @@
-import { useCallback, useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Button, CopyButton, Pane, SplitPanel, UploadInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { PickedColorWithId, ToolComponentProps } from '@/types'
-import { type PickedColor, loadImageFromBlob, pixelToColor } from '@/utils'
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const rafThrottle = <T extends (...args: Array<any>) => void>(fn: T): T => {
-  let frame: number | null = null
-  return ((...args: Array<unknown>) => {
-    if (frame) return
-    frame = requestAnimationFrame(() => {
-      fn(...args)
-      frame = null
-    })
-  }) as unknown as T
-}
+import { type PickedColor, getReadableContext2d, loadImageFromBlob, rafThrottle, readCanvasColorAt } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['image-color-picker']
 export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
@@ -38,7 +26,7 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
         if (!canvas) return
         canvas.width = img.naturalWidth
         canvas.height = img.naturalHeight
-        const ctx = canvas.getContext('2d')
+        const ctx = getReadableContext2d(canvas)
         if (!ctx) return
         ctx.drawImage(img, 0, 0)
       })
@@ -65,36 +53,24 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
     [showError],
   )
 
-  const getColorAt = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
-    const canvas = canvasRef.current
-    if (!canvas) return null
-    const ctx = canvas.getContext('2d')
-    if (!ctx) return null
-    const rect = canvas.getBoundingClientRect()
-    const scaleX = canvas.width / rect.width
-    const scaleY = canvas.height / rect.height
-    const x = Math.min(Math.max(Math.floor((e.clientX - rect.left) * scaleX), 0), canvas.width - 1)
-    const y = Math.min(Math.max(Math.floor((e.clientY - rect.top) * scaleY), 0), canvas.height - 1)
-    const pixel = ctx.getImageData(x, y, 1, 1).data
-    return pixelToColor(pixel[0], pixel[1], pixel[2])
+  const handleCanvasClick = useCallback((e: React.MouseEvent<HTMLCanvasElement>) => {
+    const color = readCanvasColorAt(e.currentTarget, e.clientX, e.clientY)
+    if (!color) return
+    setPalette((prev) => [{ ...color, _id: nextColorId.current++ }, ...prev].slice(0, 10))
   }, [])
 
-  const handleCanvasClick = useCallback(
-    (e: React.MouseEvent<HTMLCanvasElement>) => {
-      const color = getColorAt(e)
-      if (!color) return
-      setPalette((prev) => [{ ...color, _id: nextColorId.current++ }, ...prev].slice(0, 10))
-    },
-    [getColorAt],
+  // Created once so successive moves share one frame slot (at most one pixel read per frame).
+  const updateHoverColor = useMemo(
+    () =>
+      rafThrottle((canvas: HTMLCanvasElement, clientX: number, clientY: number) =>
+        setHoverColor(readCanvasColorAt(canvas, clientX, clientY)),
+      ),
+    [],
   )
 
   const handleCanvasMove = useCallback(
-    (e: React.MouseEvent<HTMLCanvasElement>) => {
-      rafThrottle((ev: React.MouseEvent<HTMLCanvasElement>) => {
-        setHoverColor(getColorAt(ev))
-      })(e)
-    },
-    [getColorAt],
+    (e: React.MouseEvent<HTMLCanvasElement>) => updateHoverColor(e.currentTarget, e.clientX, e.clientY),
+    [updateHoverColor],
   )
 
   const handleReset = () => {

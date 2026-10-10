@@ -74,10 +74,12 @@ describe('useBatchAssetPipeline', () => {
   it('upload() decodes the file, sets source state, and does not toast success', async () => {
     const { result } = renderHook(() => useBatchAssetPipeline<Array<Blob>>(OPTIONS))
 
+    let ok: boolean | undefined
     await act(async () => {
-      await result.current.upload([imageFile('icon.png')])
+      ok = await result.current.upload([imageFile('icon.png')])
     })
 
+    expect(ok).toBe(true)
     expect(result.current.sourceFile?.name).toBe('icon.png')
     expect(result.current.sourceImage).not.toBeNull()
     expect(result.current.sourcePreview).toMatch(/^blob:test-/)
@@ -87,10 +89,12 @@ describe('useBatchAssetPipeline', () => {
   it('upload() with a non-matching MIME emits the reject toast and leaves state untouched', async () => {
     const { result } = renderHook(() => useBatchAssetPipeline<Array<Blob>>(OPTIONS))
 
+    let ok: boolean | undefined
     await act(async () => {
-      await result.current.upload([textFile()])
+      ok = await result.current.upload([textFile()])
     })
 
+    expect(ok).toBe(false)
     expect(result.current.sourceFile).toBeNull()
     expect(result.current.sourceImage).toBeNull()
     const toasts = useToast.getState().items
@@ -102,10 +106,12 @@ describe('useBatchAssetPipeline', () => {
   it('upload() with an empty array is a no-op', async () => {
     const { result } = renderHook(() => useBatchAssetPipeline<Array<Blob>>(OPTIONS))
 
+    let ok: boolean | undefined
     await act(async () => {
-      await result.current.upload([])
+      ok = await result.current.upload([])
     })
 
+    expect(ok).toBe(false)
     expect(result.current.sourceFile).toBeNull()
     expect(useToast.getState().items).toHaveLength(0)
   })
@@ -156,6 +162,52 @@ describe('useBatchAssetPipeline', () => {
 
     expect(process).toHaveBeenCalledTimes(1)
     expect(result.current.results).toEqual(['ok'])
+  })
+
+  it('upload() returns false and toasts when decoding fails', async () => {
+    const { loadImageFromBlob } = await import('@/utils/image')
+    vi.mocked(loadImageFromBlob).mockRejectedValueOnce(new Error('bad image'))
+    const { result } = renderHook(() => useBatchAssetPipeline<Array<Blob>>(OPTIONS))
+
+    let ok: boolean | undefined
+    await act(async () => {
+      ok = await result.current.upload([imageFile()])
+    })
+
+    expect(ok).toBe(false)
+    expect(result.current.sourceFile).toBeNull()
+    expect(useToast.getState().items[0].label).toBe('Please select an image')
+  })
+
+  it('upload() of a new image drops the results of a regenerate still running on the old one', async () => {
+    const { result } = renderHook(() => useBatchAssetPipeline<string>(OPTIONS))
+
+    await act(async () => {
+      await result.current.upload([imageFile('old.png')])
+    })
+
+    let releaseSlow: (() => void) | null = null
+    const slow = new Promise<string>((resolve) => {
+      releaseSlow = () => resolve('from-old-image')
+    })
+
+    await act(async () => {
+      void result.current.regenerate(() => slow)
+    })
+    expect(result.current.pending).toBe(true)
+
+    await act(async () => {
+      await result.current.upload([imageFile('new.png')])
+    })
+    expect(result.current.sourceFile?.name).toBe('new.png')
+    expect(result.current.pending).toBe(false)
+
+    await act(async () => {
+      releaseSlow?.()
+      await slow
+    })
+
+    expect(result.current.results).toBeNull()
   })
 
   it('regenerate() drops the result of a stale call when a newer one starts', async () => {
