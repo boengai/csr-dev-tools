@@ -1,17 +1,20 @@
-import { useMemo } from 'react'
+import { useState } from 'react'
+
+const createStars = () => {
+  const starCount = Math.floor(Math.random() * 20) + 12 // random number 12 to 31
+  return Array.from({ length: starCount }, (_, i) => ({
+    delay: Math.random() * 2, // Random delay (0-2s)
+    duration: Math.random() * 2 + 1, // Random duration (1-3s)
+    id: i,
+    size: Math.random() * 3 + 1, // Random size (1-4px)
+    x: Math.random() * 100, // Random x position (0-100%)
+    y: Math.random() * 90, // Random y position (0-90%)
+  }))
+}
 
 export const TwinkleStarsAnimate = () => {
-  const stars = useMemo(() => {
-    const starCount = Math.floor(Math.random() * 20) + 12 // random number 12 to 31
-    return Array.from({ length: starCount }, (_, i) => ({
-      delay: Math.random() * 2, // Random delay (0-2s)
-      duration: Math.random() * 2 + 1, // Random duration (1-3s)
-      id: i,
-      size: Math.random() * 3 + 1, // Random size (1-4px)
-      x: Math.random() * 100, // Random x position (0-100%)
-      y: Math.random() * 90, // Random y position (0-90%)
-    }))
-  }, [])
+  // Lazy initializer: generated once per mount and guaranteed stable (useMemo is only a hint).
+  const [stars] = useState(createStars)
 
   return (
     <section className="fixed top-0 left-0 z-0 h-[90dvh] w-full overflow-hidden">
