@@ -82,6 +82,7 @@ export const ColorPaletteGenerator = ({ autoOpen, onAfterClose }: ToolComponentP
           />
 
           <SelectInput
+            aria-label="Harmony type"
             name="harmony-type"
             onChange={handleHarmonyChange}
             options={HARMONY_OPTIONS}

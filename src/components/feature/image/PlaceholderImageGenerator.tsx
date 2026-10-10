@@ -181,6 +181,7 @@ export const PlaceholderImageGenerator = ({ autoOpen, onAfterClose }: ToolCompon
             </div>
 
             <SelectInput
+              aria-label="Preset size"
               name="placeholder-preset"
               onChange={handlePresetChange}
               options={PRESET_OPTIONS}

@@ -240,6 +240,7 @@ export const SplashScreenGenerator = ({ onAfterClose }: ToolComponentProps) => {
                 id="image-scale"
                 max={100}
                 min={10}
+                aria-label="Image scale"
                 name="image-scale"
                 onChange={setImageScale}
                 step={5}

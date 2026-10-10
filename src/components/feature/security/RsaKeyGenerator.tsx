@@ -134,7 +134,13 @@ export const RsaKeyGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) 
                   </Button>
                 </div>
               </div>
-              <CodeInput minHeight="150px" name="public-key-output" readOnly value={keyPair.publicKey} />
+              <CodeInput
+                aria-label="Public key"
+                minHeight="150px"
+                name="public-key-output"
+                readOnly
+                value={keyPair.publicKey}
+              />
             </div>
 
             {/* Private Key */}
@@ -148,7 +154,13 @@ export const RsaKeyGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) 
                   </Button>
                 </div>
               </div>
-              <CodeInput minHeight="360px" name="private-key-output" readOnly value={keyPair.privateKey} />
+              <CodeInput
+                aria-label="Private key"
+                minHeight="360px"
+                name="private-key-output"
+                readOnly
+                value={keyPair.privateKey}
+              />
             </div>
 
             {/* Download All */}

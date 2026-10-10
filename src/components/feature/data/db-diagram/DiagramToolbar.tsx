@@ -55,6 +55,7 @@ export const DiagramToolbar = ({
       {editingName ? (
         <TextInput
           block={false}
+          aria-label="Diagram name"
           name="diagram-name"
           onBlur={handleCommitName}
           onChange={(value) => setEditNameValue(value)}

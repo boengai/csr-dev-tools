@@ -55,6 +55,7 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterClose }: ToolComponentPro
       sourceToolbarSlot={({ mode, recompute }) =>
         mode === 'encode' ? (
           <SelectInput
+            aria-label="Entity encoding mode"
             name="entity-mode-select"
             onChange={(val) => {
               setEntityMode(val as EntityMode)

@@ -107,6 +107,7 @@ const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEdi
       {config.mode === 'specific' && !useButtons && (
         <div className="ml-32 w-48">
           <TextInput
+            aria-label={`${label} specific values`}
             name={`field-${fieldIndex}-specific`}
             onChange={(value) => {
               const vals = value

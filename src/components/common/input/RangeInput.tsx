@@ -62,6 +62,7 @@ export const RangeInput = ({
       </Root>
       <input
         aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         className="text-sm w-16 rounded border border-gray-700 bg-gray-950 px-2 py-1 text-center font-mono text-gray-300"
         disabled={disabled}
         id={id}

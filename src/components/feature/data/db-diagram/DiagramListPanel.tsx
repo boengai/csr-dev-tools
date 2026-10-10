@@ -87,6 +87,7 @@ export const DiagramListPanel = ({ onClose }: DiagramListPanelProps) => {
                       onClick={(e) => e.stopPropagation()}
                       onEnter={() => handleRenameDiagram(entry.id, renameValue)}
                       onEscape={() => setRenamingId(null)}
+                      aria-label="Diagram name"
                       name="diagram-name"
                       ref={renameInputRef}
                       size="compact"

@@ -127,10 +127,9 @@ const TimezoneSearchPicker = ({ favorites, id, index, onSelect, placeholder }: T
     handleListNavKeyDown(e)
   }
 
-  // Combobox state (expanded/controls/activedescendant) lives on the input, per
+  // The input is the combobox (role + expanded/controls/activedescendant), per
   // the ARIA 1.2 pattern; the wrapper only catches the input's bubbled key
-  // events for list navigation. `role="combobox"` itself can't be set yet:
-  // TextInputProps doesn't accept `role`.
+  // events for list navigation.
   return (
     // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- keydown bubbles from the input, which owns the combobox state
     <div className="relative" onKeyDown={handleKeyDown} ref={containerRef}>
@@ -148,6 +147,7 @@ const TimezoneSearchPicker = ({ favorites, id, index, onSelect, placeholder }: T
           setActiveIndex(-1)
         }}
         placeholder={placeholder}
+        role="combobox"
         type="text"
         value={query}
       />

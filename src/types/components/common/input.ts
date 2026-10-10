@@ -81,7 +81,7 @@ export type TextAreaInputProps = BaseInputProps &
   Partial<InputVariants>
 
 export type TextInputProps = BaseInputProps &
-  Pick<InputHTMLAttributes<HTMLInputElement>, 'autoFocus' | 'autoCorrect' | 'inputMode' | 'onClick'> &
+  Pick<InputHTMLAttributes<HTMLInputElement>, 'autoFocus' | 'autoCorrect' | 'inputMode' | 'onClick' | 'role'> &
   RefAttributes<HTMLInputElement> &
   Partial<InputVariants> & {
     suffix?: ReactElement

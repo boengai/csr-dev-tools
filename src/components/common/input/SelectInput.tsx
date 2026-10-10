@@ -21,6 +21,7 @@ import { inputVariants } from './TextInput'
 
 export const SelectInput = ({
   'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
   block = true,
   disabled,
   id,
@@ -38,6 +39,7 @@ export const SelectInput = ({
     <Root disabled={disabled} name={name} onValueChange={onChange} value={value}>
       <Trigger
         aria-label={ariaLabel}
+        aria-labelledby={ariaLabelledBy}
         className={cnMerge(wrapperClassName, 'group [&>span]:first:truncate')}
         id={id}
         onBlur={onBlur}

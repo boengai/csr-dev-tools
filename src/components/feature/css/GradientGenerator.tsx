@@ -77,6 +77,7 @@ export const GradientGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps
       <div className="flex w-full grow flex-col gap-4">
         <div className="flex shrink-0 flex-col gap-3">
           <SelectInput
+            aria-label="Gradient type"
             name="grad-type"
             onChange={handleTypeChange}
             options={[

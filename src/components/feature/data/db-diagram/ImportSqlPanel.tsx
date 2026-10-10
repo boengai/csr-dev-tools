@@ -20,6 +20,7 @@ export const ImportSqlPanel = ({ onClose }: ImportSqlPanelProps) => {
           <span className="text-xs text-gray-400">Dialect:</span>
           <SelectInput
             block={false}
+            aria-label="SQL dialect"
             name="import-dialect-select"
             onChange={(value) => setDialect(value as SqlDialect)}
             options={DIALECT_OPTIONS}

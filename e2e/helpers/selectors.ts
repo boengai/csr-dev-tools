@@ -6,7 +6,7 @@ export const sidebar = {
   toggleButton: (page: Page) => page.getByLabel('Toggle navigation'),
   nav: (page: Page) => page.locator('nav[aria-label="Tool navigation"]'),
   toolLink: (page: Page, name: string) =>
-    page.locator('nav[aria-label="Tool navigation"]').getByRole('button', { name }),
+    page.locator('nav[aria-label="Tool navigation"]').getByRole('link', { name }),
 }
 
 // --- Command Palette ---

@@ -41,6 +41,7 @@ export const DbmlEditorPanel = ({ onClose }: DbmlEditorPanelProps) => {
     >
       <CodeInput
         height="100%"
+        aria-label="DBML schema"
         name="dbml-editor"
         onChange={handleChange}
         placeholder={'// Define your schema in DBML\n\nTable users {\n  id serial [pk]\n  name varchar [not null]\n}'}

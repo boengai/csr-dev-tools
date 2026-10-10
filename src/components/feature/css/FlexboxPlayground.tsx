@@ -89,6 +89,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterClose }: ToolComponentProps
         <div className="flex shrink-0 flex-col gap-3">
           <div className="flex flex-wrap gap-4">
             <SelectInput
+              aria-label="Flex direction"
               name="fb-dir"
               onChange={(v) => setContainer((prev) => ({ ...prev, direction: v as FlexDirection }))}
               options={DIRECTION_OPTIONS.map((o) => ({ label: o, value: o }))}
@@ -96,6 +97,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterClose }: ToolComponentProps
               value={container.direction}
             />
             <SelectInput
+              aria-label="Justify content"
               name="fb-justify"
               onChange={(v) => setContainer((prev) => ({ ...prev, justifyContent: v as JustifyContent }))}
               options={JUSTIFY_OPTIONS.map((o) => ({ label: o, value: o }))}
@@ -103,6 +105,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterClose }: ToolComponentProps
               value={container.justifyContent}
             />
             <SelectInput
+              aria-label="Align items"
               name="fb-align"
               onChange={(v) => setContainer((prev) => ({ ...prev, alignItems: v as AlignItems }))}
               options={ALIGN_OPTIONS.map((o) => ({ label: o, value: o }))}
@@ -110,6 +113,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterClose }: ToolComponentProps
               value={container.alignItems}
             />
             <SelectInput
+              aria-label="Flex wrap"
               name="fb-wrap"
               onChange={(v) => setContainer((prev) => ({ ...prev, wrap: v as FlexWrap }))}
               options={WRAP_OPTIONS.map((o) => ({ label: o, value: o }))}

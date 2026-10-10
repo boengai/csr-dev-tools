@@ -288,6 +288,7 @@ const ProtobufContent = ({
       <div className="flex flex-col gap-6 tablet:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-2">
           <SelectInput
+            aria-label="Message type"
             name="message-type-select"
             onChange={handleMessageTypeChange}
             options={messageTypes.map((name) => ({ label: name, value: name }))}

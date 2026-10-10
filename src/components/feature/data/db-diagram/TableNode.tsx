@@ -106,6 +106,7 @@ const TableNodeImpl = ({ data, id }: NodeProps<TableNode>) => {
         {editing ? (
           <TextInput
             block={false}
+            aria-label="Table name"
             name="table-name"
             onBlur={commitName}
             onChange={(value) => setEditName(value)}

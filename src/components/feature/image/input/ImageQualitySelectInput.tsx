@@ -7,5 +7,13 @@ export const ImageQualitySelectInput = (props: Pick<SelectInputProps, 'disabled'
     value: (((i + 1) * 5) / 100).toString(),
   }))
 
-  return <SelectInput {...props} name="quality" options={options} placeholder="Select image quality" />
+  return (
+    <SelectInput
+      {...props}
+      aria-label="Image quality"
+      name="quality"
+      options={options}
+      placeholder="Select image quality"
+    />
+  )
 }

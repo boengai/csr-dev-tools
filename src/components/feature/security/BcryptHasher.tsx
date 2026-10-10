@@ -124,6 +124,7 @@ const HashTab = ({ onProcessingChange }: BcryptTabProps) => {
 
       <SelectInput
         disabled={hashing}
+        aria-label="Cost factor"
         name="cost-factor"
         onChange={setRounds}
         options={COST_OPTIONS}
