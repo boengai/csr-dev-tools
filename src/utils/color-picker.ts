@@ -40,3 +40,28 @@ export const pixelToColor = (r: number, g: number, b: number): PickedColor => ({
 })
 
 export type { PickedColor } from '@/types/utils/color-picker'
+
+// One 2D context per canvas, requested with `willReadFrequently` (CPU-backed,
+// so repeated getImageData reads are cheap). The option only applies on a
+// canvas's *first* getContext call, so all access must go through here.
+const readableContexts = new WeakMap<HTMLCanvasElement, CanvasRenderingContext2D | null>()
+
+export const getReadableContext2d = (canvas: HTMLCanvasElement): CanvasRenderingContext2D | null => {
+  if (!readableContexts.has(canvas)) {
+    readableContexts.set(canvas, canvas.getContext('2d', { willReadFrequently: true }))
+  }
+  return readableContexts.get(canvas) ?? null
+}
+
+/** Color of the canvas pixel under a viewport point (clamped to the canvas bounds). */
+export const readCanvasColorAt = (canvas: HTMLCanvasElement, clientX: number, clientY: number): PickedColor | null => {
+  const ctx = getReadableContext2d(canvas)
+  if (!ctx) return null
+  const rect = canvas.getBoundingClientRect()
+  const scaleX = canvas.width / rect.width
+  const scaleY = canvas.height / rect.height
+  const x = Math.min(Math.max(Math.floor((clientX - rect.left) * scaleX), 0), canvas.width - 1)
+  const y = Math.min(Math.max(Math.floor((clientY - rect.top) * scaleY), 0), canvas.height - 1)
+  const pixel = ctx.getImageData(x, y, 1, 1).data
+  return pixelToColor(pixel[0], pixel[1], pixel[2])
+}
