@@ -2,7 +2,8 @@ import { describe, expect, it } from 'vitest'
 
 import type { DiagramDocument } from '@/types'
 
-import { documentToFlow } from './projections'
+import { moveTable } from './operations/tables'
+import { columnHandleId, createFlowProjector, documentToFlow, parseColumnHandleId } from './projections'
 import { createInitialDocument } from './state'
 
 const docWithOneTable = (): DiagramDocument => ({
@@ -79,6 +80,44 @@ describe('documentToFlow', () => {
       target: 't2',
       type: 'relationship',
       data: { sourceColumnId: 'c1', targetColumnId: 'c2', relationType: '1:N' },
+      sourceHandle: 't1-c1-source',
+      targetHandle: 't2-c2-target',
     })
+  })
+
+  it('emits node data without callbacks', () => {
+    const { nodes } = documentToFlow(docWithOneTable())
+    expect(Object.keys(nodes[0].data).sort()).toEqual(['columns', 'tableName'])
+  })
+})
+
+describe('column handle ids', () => {
+  it('round-trips through parseColumnHandleId', () => {
+    const handle = columnHandleId('t-1', 'c-2', 'source')
+    expect(handle).toBe('t-1-c-2-source')
+    expect(parseColumnHandleId(handle, 't-1', 'source')).toBe('c-2')
+  })
+
+  it('returns null for a handle of another table or kind', () => {
+    expect(parseColumnHandleId('t1-c1-source', 't2', 'source')).toBeNull()
+    expect(parseColumnHandleId('t1-c1-source', 't1', 'target')).toBeNull()
+    expect(parseColumnHandleId('t1--source', 't1', 'source')).toBeNull()
+  })
+})
+
+describe('createFlowProjector', () => {
+  it('reuses node objects for tables that did not change', () => {
+    const doc = docWithOneTable()
+    doc.tables.t2 = { id: 't2', name: 'posts', position: { x: 0, y: 0 }, columns: [] }
+    doc.tableOrder = ['t1', 't2']
+    const project = createFlowProjector()
+    const first = project(doc)
+
+    const moved = moveTable(doc, 't2', { x: 50, y: 60 })
+    const second = project(moved)
+
+    expect(second.nodes[0]).toBe(first.nodes[0])
+    expect(second.nodes[1]).not.toBe(first.nodes[1])
+    expect(second.nodes[1].position).toEqual({ x: 50, y: 60 })
   })
 })

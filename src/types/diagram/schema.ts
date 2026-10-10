@@ -29,15 +29,14 @@ export type TableColumn = {
   type: ColumnType
 }
 
+// Pure data: TableNode calls the editor (via useDiagramEditor) with its node
+// id, so node data carries no per-render closures.
 export type TableNodeData = {
   columns: Array<TableColumn>
-  onAddColumn: () => void
-  onColumnChange: (columnId: string, updates: Partial<TableColumn>) => void
-  onDeleteColumn: (columnId: string) => void
-  onDeleteTable: () => void
-  onTableNameChange: (name: string) => void
   tableName: string
 }
+
+export type HandleKind = 'source' | 'target'
 
 export type RelationshipType = '1:1' | '1:N' | 'N:M'
 

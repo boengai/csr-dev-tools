@@ -1,6 +1,6 @@
 import { useSyncExternalStore } from 'react'
 
-import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
+import { useDiagramEditor } from '@/components/feature/data/db-diagram/DiagramContext'
 
 const MESSAGES = {
   full: 'Browser storage is full — recent changes are not saved. Delete old diagrams or use Export → JSON.',
@@ -10,7 +10,7 @@ const MESSAGES = {
 // Persistent (not a toast): autosave retries on every edit, so a toast would
 // repeat every few seconds while the condition lasts.
 export const StorageStatusIndicator = () => {
-  const { editor } = useDiagram()
+  const editor = useDiagramEditor()
   const status = useSyncExternalStore(
     (listener) => editor.subscribeToIndex(listener),
     () => editor.getStorageStatus(),

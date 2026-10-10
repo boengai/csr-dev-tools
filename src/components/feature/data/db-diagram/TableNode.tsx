@@ -1,12 +1,23 @@
 import type { NodeProps } from '@xyflow/react'
 import { Handle, Position } from '@xyflow/react'
-import { useCallback, useRef, useState } from 'react'
+import { memo, useCallback, useRef, useState } from 'react'
 
 import { Button, SelectInput, TextInput } from '@/components/common'
 import { XIcon } from '@/components/common/icon'
 import { COLUMN_TYPES } from '@/diagram/defaults'
+import { columnHandleId } from '@/diagram/projections'
 import type { ColumnType, TableColumn, TableNode } from '@/types'
 import { cnMerge } from '@/utils'
+
+import { useDiagramEditor } from './DiagramContext'
+
+const NEW_COLUMN: Omit<TableColumn, 'id'> = {
+  name: 'column',
+  type: 'TEXT',
+  constraints: { isPrimaryKey: false, isForeignKey: false, isNullable: true, isUnique: false },
+}
+
+const COLUMN_TYPE_OPTIONS = COLUMN_TYPES.map((t) => ({ label: t, value: t }))
 
 const CONSTRAINT_COLORS: Record<string, string> = {
   error:
@@ -22,11 +33,13 @@ const ConstraintToggle = ({
   active,
   color,
   label,
+  name,
   onClick,
 }: {
   active: boolean
   color: keyof typeof CONSTRAINT_COLORS
   label: string
+  name: string
   onClick: () => void
 }) => {
   return (
@@ -35,12 +48,14 @@ const ConstraintToggle = ({
         'rounded px-1 py-0.5 text-[10px] leading-none font-bold transition-colors',
         CONSTRAINT_COLORS[color] ?? '',
       )}
+      aria-label={name}
+      aria-pressed={active}
       data-state={active ? 'active' : 'inactive'}
       onClick={(e) => {
         e.stopPropagation()
         onClick()
       }}
-      title={label}
+      title={name}
       type="button"
     >
       {label}
@@ -48,7 +63,10 @@ const ConstraintToggle = ({
   )
 }
 
-export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
+// Memoized: node data is plain (no callbacks) and kept referentially stable by
+// createFlowProjector, so a node re-renders only when its own table changes.
+const TableNodeImpl = ({ data, id }: NodeProps<TableNode>) => {
+  const editor = useDiagramEditor()
   const [editing, setEditing] = useState(false)
   const [editName, setEditName] = useState(data.tableName)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -62,18 +80,18 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
   const commitName = useCallback(() => {
     const trimmed = editName.trim()
     if (trimmed && trimmed !== data.tableName) {
-      data.onTableNameChange(trimmed)
+      editor.renameTable(id, trimmed)
     } else {
       setEditName(data.tableName)
     }
     setEditing(false)
-  }, [editName, data])
+  }, [data.tableName, editName, editor, id])
 
   const handleConstraintChange = (
     column: TableColumn,
     field: 'isForeignKey' | 'isNullable' | 'isPrimaryKey' | 'isUnique',
   ) => {
-    data.onColumnChange(column.id, {
+    editor.updateColumn(id, column.id, {
       constraints: { ...column.constraints, [field]: !column.constraints[field] },
     })
   }
@@ -107,8 +125,9 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
           </Button>
         )}
         <button
+          aria-label={`Delete table ${data.tableName}`}
           className="ml-2 text-gray-500 hover:text-error"
-          onClick={() => data.onDeleteTable()}
+          onClick={() => editor.deleteTable(id)}
           title="Delete table"
           type="button"
         >
@@ -118,12 +137,12 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
 
       {/* Columns */}
       <div className="relative flex flex-col">
-        {data.columns.map((col) => (
+        {data.columns.map((col, index) => (
           <div className="group relative flex items-center border-b border-gray-800 px-1 py-1" key={col.id}>
             {/* Target handle (left) */}
             <Handle
               className="h-[10px]! w-[10px]! rounded-full! border-2! border-gray-600! bg-gray-400!"
-              id={`${id}-${col.id}-target`}
+              id={columnHandleId(id, col.id, 'target')}
               position={Position.Left}
               style={{ left: -5, top: '50%', transform: 'translateY(-50%)' }}
               type="target"
@@ -133,9 +152,10 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
               {/* Column name */}
               <div className="min-w-45">
                 <TextInput
+                  aria-label={`Column ${index + 1} name`}
                   block={false}
-                  name="column-name"
-                  onChange={(value) => data.onColumnChange(col.id, { name: value })}
+                  name={`column-name-${col.id}`}
+                  onChange={(value) => editor.updateColumn(id, col.id, { name: value })}
                   size="compact"
                   type="text"
                   value={col.name}
@@ -145,9 +165,10 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
               {/* Type dropdown */}
               <div className="min-w-30">
                 <SelectInput
-                  name="column-type"
-                  onChange={(value) => data.onColumnChange(col.id, { type: value as ColumnType })}
-                  options={COLUMN_TYPES.map((t) => ({ label: t, value: t }))}
+                  aria-label={`Column ${index + 1} type`}
+                  name={`column-type-${col.id}`}
+                  onChange={(value) => editor.updateColumn(id, col.id, { type: value as ColumnType })}
+                  options={COLUMN_TYPE_OPTIONS}
                   size="compact"
                   value={col.type}
                 />
@@ -158,32 +179,37 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
                   active={col.constraints.isPrimaryKey}
                   color="warning"
                   label="PK"
+                  name="Primary key"
                   onClick={() => handleConstraintChange(col, 'isPrimaryKey')}
                 />
                 <ConstraintToggle
                   active={col.constraints.isForeignKey}
                   color="info"
                   label="FK"
+                  name="Foreign key"
                   onClick={() => handleConstraintChange(col, 'isForeignKey')}
                 />
                 <ConstraintToggle
                   active={!col.constraints.isNullable}
                   color="error"
                   label="NN"
+                  name="Not null"
                   onClick={() => handleConstraintChange(col, 'isNullable')}
                 />
                 <ConstraintToggle
                   active={col.constraints.isUnique}
                   color="success"
                   label="UQ"
+                  name="Unique"
                   onClick={() => handleConstraintChange(col, 'isUnique')}
                 />
               </div>
 
               {/* Delete column */}
               <button
-                className="ml-auto text-gray-600 opacity-0 transition-opacity group-hover:opacity-100 hover:text-error"
-                onClick={() => data.onDeleteColumn(col.id)}
+                aria-label={`Delete column ${index + 1}`}
+                className="ml-auto text-gray-600 opacity-0 transition-opacity group-hover:opacity-100 hover:text-error focus-visible:opacity-100"
+                onClick={() => editor.deleteColumn(id, col.id)}
                 title="Delete column"
                 type="button"
               >
@@ -194,7 +220,7 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
             {/* Source handle (right) */}
             <Handle
               className="h-[10px]! w-[10px]! rounded-full! border-2! border-gray-600! bg-gray-400!"
-              id={`${id}-${col.id}-source`}
+              id={columnHandleId(id, col.id, 'source')}
               position={Position.Right}
               style={{ right: -5, top: '50%', transform: 'translateY(-50%)' }}
               type="source"
@@ -204,9 +230,17 @@ export const TableNodeComponent = ({ data, id }: NodeProps<TableNode>) => {
       </div>
 
       {/* Add Column button */}
-      <Button block data-testid={`add-column-btn-${id}`} onClick={() => data.onAddColumn()} size="small" variant="text">
+      <Button
+        block
+        data-testid={`add-column-btn-${id}`}
+        onClick={() => editor.addColumn(id, NEW_COLUMN)}
+        size="small"
+        variant="text"
+      >
         + Add Column
       </Button>
     </div>
   )
 }
+
+export const TableNodeComponent = memo(TableNodeImpl)
