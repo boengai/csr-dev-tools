@@ -1,9 +1,8 @@
-import { useLocation } from '@tanstack/react-router'
+import { Close, Content, Overlay, Portal, Root, Title } from '@radix-ui/react-dialog'
 import { AnimatePresence, m } from 'motion/react'
-import { useEffect, useMemo, useRef } from 'react'
 
-import { CATEGORY_ORDER, groupToolsByCategory, ROUTE_PATH, TOOL_REGISTRY } from '@/constants'
-import { useKeyboardShortcut, useMediaQuery, useSidebarStore } from '@/hooks'
+import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY } from '@/constants'
+import { useMediaQuery, useSidebarStore } from '@/hooks'
 import { tv } from '@/utils'
 
 import { XIcon } from '../icon'
@@ -12,7 +11,7 @@ import { SidebarHomeItem } from './SidebarHomeItem'
 import { SidebarToolItem } from './SidebarToolItem'
 
 const sidebarNavStyles = tv({
-  base: 'fixed inset-y-0 left-0 z-50 flex flex-col border-r border-gray-800 bg-gray-950 pt-(--safe-area-inset-top) pb-(--safe-area-inset-bottom)',
+  base: 'fixed inset-y-0 left-0 z-50 flex flex-col border-r border-gray-800 bg-gray-950 pt-(--safe-area-inset-top) pb-(--safe-area-inset-bottom) outline-none',
   variants: {
     mobile: {
       true: 'w-full',
@@ -21,113 +20,77 @@ const sidebarNavStyles = tv({
   },
 })
 
+// TOOL_REGISTRY is static, so grouping happens once at module load.
+const GROUPED_TOOLS = groupToolsByCategory(TOOL_REGISTRY)
+const VISIBLE_CATEGORIES = CATEGORY_ORDER.filter((category) => GROUPED_TOOLS[category])
+
+/**
+ * Modal navigation drawer built on Radix Dialog (like CommandPalette): Radix
+ * owns the focus trap, focus restore to the hamburger, Escape handling
+ * (layer-aware, so Escape inside the CommandPalette doesn't also close this),
+ * outside-click dismissal and `aria-hidden` on the rest of the page.
+ */
 export const Sidebar = () => {
   const close = useSidebarStore((state) => state.close)
   const isOpen = useSidebarStore((state) => state.isOpen)
-  const { pathname } = useLocation()
-  const sidebarRef = useRef<HTMLElement>(null)
   const isMobile = useMediaQuery('(max-width: 767px)')
 
-  useKeyboardShortcut((e) => e.key === 'Escape', close, { enabled: isOpen })
-
-  // Focus trap for overlay (all viewports)
-  useEffect(() => {
-    if (!isOpen) return
-    const sidebar = sidebarRef.current
-    if (!sidebar) return
-
-    const getFocusable = () =>
-      sidebar.querySelectorAll<HTMLElement>('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])')
-
-    const elements = getFocusable()
-    if (elements.length > 0) elements[0].focus()
-
-    const handleTab = (e: KeyboardEvent) => {
-      if (e.key !== 'Tab') return
-      const focusable = getFocusable()
-      if (focusable.length === 0) return
-      const first = focusable[0]
-      const last = focusable[focusable.length - 1]
-      if (e.shiftKey && document.activeElement === first) {
-        e.preventDefault()
-        last.focus()
-      } else if (!e.shiftKey && document.activeElement === last) {
-        e.preventDefault()
-        first.focus()
-      }
-    }
-
-    document.addEventListener('keydown', handleTab)
-    return () => document.removeEventListener('keydown', handleTab)
-  }, [isOpen])
-
-  // Group tools by category
-  const groupedTools = useMemo(() => groupToolsByCategory(TOOL_REGISTRY), [])
-
-  const navContent = (
-    <div className="flex grow flex-col overflow-y-auto pb-4">
-      <div className="flex items-center justify-end px-2 pt-2">
-        <button
-          aria-label="Close navigation"
-          className="flex size-10 items-center justify-center rounded text-gray-400 transition-colors hover:text-white"
-          onClick={close}
-          type="button"
-        >
-          <XIcon size={20} />
-        </button>
-      </div>
-      <div className="mb-2 px-1">
-        <SidebarHomeItem isActive={pathname === ROUTE_PATH.HOME} />
-      </div>
-      {CATEGORY_ORDER.filter((cat) => groupedTools[cat]).map((category) => (
-        <SidebarCategory categoryName={category} key={category}>
-          {groupedTools[category].map((tool) => (
-            <li key={tool.key}>
-              <SidebarToolItem
-                emoji={tool.emoji}
-                isActive={pathname === tool.routePath}
-                name={tool.name}
-                toolKey={tool.key}
-              />
-            </li>
-          ))}
-        </SidebarCategory>
-      ))}
-    </div>
-  )
-
   return (
-    <>
-      {/* Backdrop */}
+    <Root
+      onOpenChange={(open) => {
+        if (!open) close()
+      }}
+      open={isOpen}
+    >
       <AnimatePresence>
         {isOpen && (
-          <m.div
-            animate={{ opacity: 1 }}
-            className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
-            exit={{ opacity: 0 }}
-            initial={{ opacity: 0 }}
-            onClick={close}
-            transition={{ duration: 0.2, ease: 'easeOut' }}
-          />
+          <Portal forceMount>
+            <Overlay asChild forceMount>
+              <m.div
+                animate={{ opacity: 1 }}
+                className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm"
+                exit={{ opacity: 0 }}
+                initial={{ opacity: 0 }}
+                transition={{ duration: 0.2, ease: 'easeOut' }}
+              />
+            </Overlay>
+            <Content aria-describedby={undefined} asChild forceMount>
+              <m.nav
+                animate={{ x: 0 }}
+                aria-label="Tool navigation"
+                className={sidebarNavStyles({ mobile: isMobile })}
+                exit={{ x: '-100%' }}
+                initial={{ x: '-100%' }}
+                transition={{ duration: 0.3, ease: 'easeOut' }}
+              >
+                <Title className="sr-only">Tool navigation</Title>
+                <div className="flex grow flex-col overflow-y-auto pb-4">
+                  <div className="flex items-center justify-end px-2 pt-2">
+                    <Close
+                      aria-label="Close navigation"
+                      className="flex size-10 items-center justify-center rounded text-gray-400 transition-colors hover:text-white"
+                    >
+                      <XIcon size={20} />
+                    </Close>
+                  </div>
+                  <div className="mb-2 px-1">
+                    <SidebarHomeItem />
+                  </div>
+                  {VISIBLE_CATEGORIES.map((category) => (
+                    <SidebarCategory categoryName={category} key={category}>
+                      {GROUPED_TOOLS[category].map((tool) => (
+                        <li key={tool.key}>
+                          <SidebarToolItem emoji={tool.emoji} name={tool.name} routePath={tool.routePath} />
+                        </li>
+                      ))}
+                    </SidebarCategory>
+                  ))}
+                </div>
+              </m.nav>
+            </Content>
+          </Portal>
         )}
       </AnimatePresence>
-
-      {/* Drawer */}
-      <AnimatePresence>
-        {isOpen && (
-          <m.nav
-            animate={{ x: 0 }}
-            aria-label="Tool navigation"
-            className={sidebarNavStyles({ mobile: isMobile })}
-            exit={{ x: '-100%' }}
-            initial={{ x: '-100%' }}
-            ref={sidebarRef}
-            transition={{ duration: 0.3, ease: 'easeOut' }}
-          >
-            {navContent}
-          </m.nav>
-        )}
-      </AnimatePresence>
-    </>
+    </Root>
   )
 }
