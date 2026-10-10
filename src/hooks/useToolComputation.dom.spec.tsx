@@ -4,6 +4,8 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { useToast } from './state/useToast'
 import { useToolComputation } from './useToolComputation'
 
@@ -99,13 +101,13 @@ describe('useToolComputation', () => {
     expect(resolvers.length).toBe(2)
 
     await act(async () => {
-      resolvers[1]('SECOND')
+      nth(resolvers, 1)('SECOND')
       await Promise.resolve()
     })
     expect(result.current.result).toBe('SECOND')
 
     await act(async () => {
-      resolvers[0]('FIRST')
+      nth(resolvers, 0)('FIRST')
       await Promise.resolve()
     })
     expect(result.current.result).toBe('SECOND')
@@ -272,8 +274,8 @@ describe('useToolComputation', () => {
     })
 
     expect(onError).toHaveBeenCalledTimes(1)
-    expect(onError.mock.calls[0][0]).toBeInstanceOf(Error)
-    expect(onError.mock.calls[0][1]).toBe('hello')
+    expect(nth(onError.mock.calls, 0)[0]).toBeInstanceOf(Error)
+    expect(nth(onError.mock.calls, 0)[1]).toBe('hello')
   })
 
   it('errorLabel: toasts the label verbatim on rejection', async () => {
@@ -587,19 +589,19 @@ describe('useToolComputation — AbortSignal', () => {
       await vi.advanceTimersByTimeAsync(0)
     })
     expect(signals).toHaveLength(1)
-    expect(signals[0].aborted).toBe(false)
+    expect(nth(signals, 0).aborted).toBe(false)
 
     act(() => {
       result.current.setInput('second')
     })
     // Aborted at enqueue time, not when the next compute fires.
-    expect(signals[0].aborted).toBe(true)
+    expect(nth(signals, 0).aborted).toBe(true)
 
     await act(async () => {
       await vi.advanceTimersByTimeAsync(0)
     })
     expect(signals).toHaveLength(2)
-    expect(signals[1].aborted).toBe(false)
+    expect(nth(signals, 1).aborted).toBe(false)
     expect(result.current.error).toBeNull()
     expect(toastLabels()).toEqual([])
   })
@@ -620,7 +622,7 @@ describe('useToolComputation — AbortSignal', () => {
       result.current.setInput('')
     })
 
-    expect(signals[0].aborted).toBe(true)
+    expect(nth(signals, 0).aborted).toBe(true)
     expect(result.current.isPending).toBe(false)
     expect(result.current.result).toBe('EMPTY')
   })
@@ -636,7 +638,7 @@ describe('useToolComputation — AbortSignal', () => {
       await vi.advanceTimersByTimeAsync(0)
     })
     unmount()
-    expect(signals[0].aborted).toBe(true)
+    expect(nth(signals, 0).aborted).toBe(true)
   })
 
   it('treats an AbortError rejection from the current compute as silent (no error, no toast)', async () => {
@@ -677,6 +679,6 @@ describe('useToolComputation — AbortSignal', () => {
     act(() => {
       result.current.setInput('b')
     })
-    expect(signals[0].aborted).toBe(false)
+    expect(nth(signals, 0).aborted).toBe(false)
   })
 })

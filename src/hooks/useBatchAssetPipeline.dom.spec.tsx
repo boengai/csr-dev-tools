@@ -5,6 +5,7 @@ import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useToast } from '@/hooks/state/useToast'
+import { nth } from '@/test/nth'
 
 import { useBatchAssetPipeline } from './useBatchAssetPipeline'
 
@@ -99,8 +100,8 @@ describe('useBatchAssetPipeline', () => {
     expect(result.current.sourceImage).toBeNull()
     const toasts = useToast.getState().items
     expect(toasts).toHaveLength(1)
-    expect(toasts[0].label).toBe('Please select an image')
-    expect(toasts[0].type).toBe('error')
+    expect(nth(toasts, 0).label).toBe('Please select an image')
+    expect(nth(toasts, 0).type).toBe('error')
   })
 
   it('upload() with an empty array is a no-op', async () => {
@@ -176,7 +177,7 @@ describe('useBatchAssetPipeline', () => {
 
     expect(ok).toBe(false)
     expect(result.current.sourceFile).toBeNull()
-    expect(useToast.getState().items[0].label).toBe('Please select an image')
+    expect(nth(useToast.getState().items, 0).label).toBe('Please select an image')
   })
 
   it('upload() of a new image drops the results of a regenerate still running on the old one', async () => {

@@ -1,5 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { useToast } from './useToast'
 
 beforeEach(() => {
@@ -12,9 +14,9 @@ describe('useToast helpers', () => {
 
     const items = useToast.getState().items
     expect(items).toHaveLength(1)
-    expect(items[0].label).toBe('Failed')
-    expect(items[0].type).toBe('error')
-    expect(items[0].id).toBe(id)
+    expect(nth(items, 0).label).toBe('Failed')
+    expect(nth(items, 0).type).toBe('error')
+    expect(nth(items, 0).id).toBe(id)
   })
 
   it('showSuccess appends a success-type item and returns its id', () => {
@@ -22,9 +24,9 @@ describe('useToast helpers', () => {
 
     const items = useToast.getState().items
     expect(items).toHaveLength(1)
-    expect(items[0].label).toBe('Done')
-    expect(items[0].type).toBe('success')
-    expect(items[0].id).toBe(id)
+    expect(nth(items, 0).label).toBe('Done')
+    expect(nth(items, 0).type).toBe('success')
+    expect(nth(items, 0).id).toBe(id)
   })
 
   it('multiple helper calls accumulate items in call order', () => {

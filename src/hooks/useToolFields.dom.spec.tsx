@@ -4,6 +4,8 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { useToolFields } from './useToolFields'
 
 type Input = { mode: 'a' | 'b'; pattern: string; testString: string }
@@ -209,8 +211,8 @@ describe('useToolFields', () => {
     })
 
     expect(onError).toHaveBeenCalledTimes(1)
-    expect(onError.mock.calls[0][0]).toBeInstanceOf(Error)
-    expect(onError.mock.calls[0][1]).toEqual({ mode: 'a', pattern: 'p', testString: 't' })
+    expect(nth(onError.mock.calls, 0)[0]).toBeInstanceOf(Error)
+    expect(nth(onError.mock.calls, 0)[1]).toEqual({ mode: 'a', pattern: 'p', testString: 't' })
   })
 
   it('recompute: fires compute with the current bag', async () => {

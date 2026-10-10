@@ -4,6 +4,8 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { useToolInput } from './useToolInput'
 
 beforeEach(() => {
@@ -201,8 +203,8 @@ describe('useToolInput', () => {
     })
 
     expect(onError).toHaveBeenCalledTimes(1)
-    expect(onError.mock.calls[0][0]).toBeInstanceOf(Error)
-    expect(onError.mock.calls[0][1]).toBe('x')
+    expect(nth(onError.mock.calls, 0)[0]).toBeInstanceOf(Error)
+    expect(nth(onError.mock.calls, 0)[1]).toBe('x')
   })
 
   it('recompute: fires compute with the current input', async () => {

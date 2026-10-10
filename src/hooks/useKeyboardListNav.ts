@@ -20,8 +20,8 @@ export function useKeyboardListNav<T, L extends HTMLElement = HTMLUListElement>(
   const [activeIndex, setActiveIndex] = useState(initialIndex)
   const listRef = useRef<L | null>(null)
 
-  const activeDescendantId =
-    getOptionId && activeIndex >= 0 && activeIndex < items.length ? getOptionId(items[activeIndex]) : undefined
+  const activeItem = activeIndex >= 0 ? items[activeIndex] : undefined
+  const activeDescendantId = getOptionId && activeItem !== undefined ? getOptionId(activeItem) : undefined
 
   useEffect(() => {
     if (activeIndex < 0) return
@@ -46,9 +46,8 @@ export function useKeyboardListNav<T, L extends HTMLElement = HTMLUListElement>(
         }
         case 'Enter': {
           event.preventDefault()
-          if (activeIndex >= 0 && activeIndex < items.length) {
-            onEnter(items[activeIndex])
-          }
+          const item = activeIndex >= 0 ? items[activeIndex] : undefined
+          if (item !== undefined) onEnter(item)
           break
         }
       }
