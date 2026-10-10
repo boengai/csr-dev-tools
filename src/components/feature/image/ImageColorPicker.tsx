@@ -14,16 +14,17 @@ export const ImageColorPicker = ({ autoOpen, onAfterClose }: ToolComponentProps)
   const nextColorId = useRef(0)
   const [palette, setPalette] = useState<Array<PickedColorWithId>>([])
   const [hoverColor, setHoverColor] = useState<PickedColor | null>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  // Held in state (via a callback ref) rather than a ref object so the draw
+  // effect re-runs whenever a new canvas mounts — e.g. the dialog body is torn
+  // down and reopened while the image is kept. A fresh canvas starts blank.
+  const [canvas, setCanvas] = useState<HTMLCanvasElement | null>(null)
 
   useEffect(() => {
-    if (!imageFile) return
+    if (!imageFile || !canvas) return
     let cancelled = false
     loadImageFromBlob(imageFile)
       .then((img) => {
         if (cancelled) return
-        const canvas = canvasRef.current
-        if (!canvas) return
         canvas.width = img.naturalWidth
         canvas.height = img.naturalHeight
         const ctx = getReadableContext2d(canvas)
@@ -37,7 +38,7 @@ export const ImageColorPicker = ({ autoOpen, onAfterClose }: ToolComponentProps)
     return () => {
       cancelled = true
     }
-  }, [imageFile, showError])
+  }, [canvas, imageFile, showError])
 
   const handleFileChange = useCallback(
     (files: Array<File>) => {
@@ -104,7 +105,7 @@ export const ImageColorPicker = ({ autoOpen, onAfterClose }: ToolComponentProps)
                   className="max-h-[500px] w-full cursor-crosshair object-contain"
                   onClick={handleCanvasClick}
                   onMouseMove={handleCanvasMove}
-                  ref={canvasRef}
+                  ref={setCanvas}
                 />
               </div>
             )}
