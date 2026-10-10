@@ -7,7 +7,7 @@ const toolEntry = TOOL_REGISTRY_MAP['sql-formatter']
 
 const INITIAL: SqlInput = { source: '', dialect: 'sql', indent: 2 }
 
-export const SqlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const SqlFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
     <FormatterShell<SqlInput>
       autoOpen={autoOpen}
@@ -15,7 +15,7 @@ export const SqlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
       description={toolEntry?.description}
       errorLabel="Unable to format SQL"
       initial={INITIAL}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       renderControls={({ inputs, setFieldsImmediate }) => (
         <>
           <FieldForm

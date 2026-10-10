@@ -15,7 +15,7 @@ const Harness = ({ onAfterClose, open: initialOpen = true }: { onAfterClose?: ()
       <button onClick={() => setOpen((prev) => !prev)} type="button">
         toggle
       </button>
-      <Dialog injected={{ open, setOpen }} onAfterClose={onAfterClose} title="Test dialog">
+      <Dialog onOpenChange={setOpen} open={open} onAfterClose={onAfterClose} title="Test dialog">
         <input aria-label="field" />
       </Dialog>
     </LazyMotion>

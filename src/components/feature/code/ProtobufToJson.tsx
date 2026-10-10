@@ -70,7 +70,7 @@ enum PaymentMethod {
   CRYPTO = 3;
 }`
 
-export const ProtobufToJson = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const ProtobufToJson = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [selectedName, setSelectedName] = useState<string | null>(null)
   // Sample JSON for a message, tagged with the exact message object it was
   // generated from so a reparse (new object identity) never shows a stale one.
@@ -165,7 +165,7 @@ export const ProtobufToJson = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Protobuf to JSON"
       triggers={[{ label: 'Open' }]}
     >

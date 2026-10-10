@@ -13,7 +13,7 @@ const INDENT_OPTIONS = [
   { label: '4 spaces', value: '4' },
 ]
 
-export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const YamlFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
     <FormatterShell<YamlInput>
       autoOpen={autoOpen}
@@ -28,7 +28,7 @@ export const YamlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
       }}
       description={toolEntry?.description}
       initial={INITIAL}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       renderBanner={(error) =>
         error instanceof Error ? (
           <p className="text-body-sm text-error" role="alert">

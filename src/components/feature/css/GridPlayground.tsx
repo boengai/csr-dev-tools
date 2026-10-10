@@ -41,7 +41,7 @@ const ALIGN_OPTIONS = [
   { label: 'stretch', value: 'stretch' },
 ]
 
-export const GridPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const GridPlayground = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [container, setContainer] = useState<GridContainerProps>(DEFAULT_GRID_CONTAINER)
   const [itemCount, setItemCount] = useState(6)
 
@@ -55,7 +55,7 @@ export const GridPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Grid Playground"
       triggers={[{ label: 'Build' }]}
     >

@@ -40,7 +40,7 @@ const ToolsPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
           }
         >
           <Card onClose={navigateHome} title={tool.name}>
-            <ToolComponent autoOpen onAfterDialogClose={navigateHome} />
+            <ToolComponent autoOpen onAfterClose={navigateHome} />
           </Card>
         </Suspense>
       </div>

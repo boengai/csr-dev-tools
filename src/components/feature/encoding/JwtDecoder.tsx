@@ -54,7 +54,7 @@ const ExpirationBadge = ({ status }: { status: JwtExpirationStatus }) => {
   )
 }
 
-export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const JwtDecoder = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const {
     input: source,
     result: decoded,
@@ -87,7 +87,7 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title="JWT Decoder"
       triggers={[{ label: 'Decode' }]}

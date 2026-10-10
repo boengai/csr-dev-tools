@@ -19,7 +19,7 @@ const EMPTY_VALUES: Record<string, string> = { binary: '', decimal: '', hex: '',
 
 const INITIAL_RESULT: BaseResult = { values: null, error: '' }
 
-export const NumberBaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const NumberBaseConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [values, setValues] = useState<Record<string, string>>(EMPTY_VALUES)
 
   const { result, setInput } = useToolComputation<BaseInput, BaseResult>(
@@ -68,7 +68,7 @@ export const NumberBaseConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Number Base Converter"
       triggers={[{ label: 'Convert' }]}
     >

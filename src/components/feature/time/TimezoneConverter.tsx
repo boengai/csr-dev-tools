@@ -203,7 +203,7 @@ const computeConversion = ({
   }
 }
 
-export const TimezoneConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const TimezoneConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const initialInput = useMemo<TimezoneConverterInput>(() => {
     const sourceTz = getLocalTimezone()
     return {
@@ -270,7 +270,7 @@ export const TimezoneConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Timezone Converter"
       triggers={[{ label: 'Convert' }]}
     >

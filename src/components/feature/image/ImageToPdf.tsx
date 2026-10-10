@@ -65,7 +65,7 @@ const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => 
 
 // ─── Main component ───────────────────────────────────────────────────────────
 
-export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => (
+export const ImageToPdf = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
   <SortablePdfShell<ImageItem, Extras>
     accept="image/png,image/jpeg"
     autoOpen={autoOpen}
@@ -82,7 +82,7 @@ export const ImageToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
     onAcceptedFiles={(files, { addItems }) => {
       addItems(files.map((file): ImageItem => ({ id: crypto.randomUUID(), file, rotation: 0 })))
     }}
-    onAfterDialogClose={onAfterDialogClose}
+    onAfterClose={onAfterClose}
     renderCard={(item, { position, onRemove, update }) => (
       <ImageCard
         item={item}

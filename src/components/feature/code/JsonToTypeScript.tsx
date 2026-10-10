@@ -7,7 +7,7 @@ import { jsonToTypeScript } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-typescript']
 
-export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const JsonToTypeScript = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const { showError, showSuccess } = useToast()
 
   const {
@@ -54,7 +54,7 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title="JSON to TypeScript"
       triggers={[

@@ -25,7 +25,7 @@ export const MarkupToPdfShell = ({
   description,
   filenameSlug,
   inputName,
-  onAfterDialogClose,
+  onAfterClose,
   placeholder,
   sourceLabel,
   storageKey,
@@ -54,7 +54,7 @@ export const MarkupToPdfShell = ({
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title={title}
       triggers={[{ label: triggerLabel }]}

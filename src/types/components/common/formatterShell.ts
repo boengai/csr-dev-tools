@@ -33,7 +33,7 @@ export type FormatterShellProps<I extends { source: string }> = {
    */
   errorFallback?: string
   initial: I
-  onAfterDialogClose?: () => void
+  onAfterClose?: () => void
   /**
    * Inline error slot. When provided, the shell calls it with the pipeline's
    * latest `error` state (`unknown | null`) and renders the result above the

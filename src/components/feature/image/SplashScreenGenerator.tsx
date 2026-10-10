@@ -39,7 +39,7 @@ const computeSafeZoneBorder = (backgroundColor: string): string => {
   return luminance > 0.5 ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.6)'
 }
 
-export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
+export const SplashScreenGenerator = ({ onAfterClose }: ToolComponentProps) => {
   const pipeline = useBatchAssetPipeline<SplashScreenGeneratorOutput>({
     accept: ACCEPT,
     failureToastLabel: 'Failed to generate assets',
@@ -143,7 +143,7 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
       accept={ACCEPT}
       buttonLabel="Select image to generate splash screens"
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={resetState}
       onUpload={handleUpload}
       title="Splash Screen Generator"

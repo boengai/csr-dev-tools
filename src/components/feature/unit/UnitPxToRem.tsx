@@ -13,7 +13,7 @@ const INITIAL_BAG = { base: '16', lastEdited: 'px' as PxRemLastEdited, px: '', r
 
 const INVALID_BASE_MSG = 'Base font size must be a positive number (e.g., 16)'
 
-export const UnitPxToRem = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const UnitPxToRem = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const { showError } = useToast()
   const [fields, setFields] = useState(INITIAL_BAG)
 
@@ -80,7 +80,7 @@ export const UnitPxToRem = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="PX to REM"
       triggers={[{ label: 'Convert' }]}
     >

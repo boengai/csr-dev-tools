@@ -31,7 +31,7 @@ const INITIAL_INPUT: SortInput = {
   trimLines: false,
 }
 
-export const TextSortDedupe = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const TextSortDedupe = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const { inputs, result, setFields } = useToolFields<SortInput, TextSortResult | null>({
     compute: ({ input: text, removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }) =>
       sortAndProcessText(text, { removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }),
@@ -47,7 +47,7 @@ export const TextSortDedupe = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Text Sort & Dedupe"
       triggers={[{ label: 'Sort' }]}
     >

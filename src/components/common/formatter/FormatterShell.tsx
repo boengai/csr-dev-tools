@@ -14,7 +14,7 @@ export const FormatterShell = <I extends { source: string }>({
   errorFallback,
   errorLabel,
   initial,
-  onAfterDialogClose,
+  onAfterClose,
   renderBanner,
   renderControls,
   resultLabel = 'Result',
@@ -47,7 +47,7 @@ export const FormatterShell = <I extends { source: string }>({
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title={title}
       triggers={[{ label: triggerLabel }]}

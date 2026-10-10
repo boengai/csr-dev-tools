@@ -28,7 +28,7 @@ const MODES: [ConverterMode<Base64Mode>, ConverterMode<Base64Mode>] = [
   },
 ]
 
-export const EncodingBase64 = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const EncodingBase64 = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const compute = useCallback(
     async ({ mode, source }: { mode: Base64Mode; source: string }): Promise<{ output: string }> => {
       try {
@@ -57,7 +57,7 @@ export const EncodingBase64 = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
       initialResult={{ output: '' }}
       modeStorageKey="base64"
       modes={MODES}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       sourceKeyPrefix="base64"
     />
   )

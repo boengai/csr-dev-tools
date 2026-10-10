@@ -328,8 +328,8 @@ describe('BidirectionalConverter — autoOpen + close', () => {
     expect(screen.getByText('A Input')).toBeTruthy()
   })
 
-  it('calls onAfterDialogClose on close', () => {
-    const onAfterDialogClose = vi.fn()
+  it('calls onAfterClose on close', () => {
+    const onAfterClose = vi.fn()
     render(
       <BidirectionalConverter
         autoOpen
@@ -337,11 +337,11 @@ describe('BidirectionalConverter — autoOpen + close', () => {
         initialResult={{ output: '' }}
         modes={MODES}
         modeStorageKey="test"
-        onAfterDialogClose={onAfterDialogClose}
+        onAfterClose={onAfterClose}
       />,
     )
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
-    expect(onAfterDialogClose).toHaveBeenCalledTimes(1)
+    expect(onAfterClose).toHaveBeenCalledTimes(1)
   })
 })
 

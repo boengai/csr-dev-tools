@@ -25,7 +25,7 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
   initialResult,
   modeStorageKey,
   modes,
-  onAfterDialogClose,
+  onAfterClose,
   onError,
   renderBanner,
   sourceKeyPrefix,
@@ -98,7 +98,7 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       size="screen"
       title={modeConfig.label}

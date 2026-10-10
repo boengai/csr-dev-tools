@@ -42,7 +42,7 @@ const JUSTIFY_OPTIONS: Array<JustifyContent> = [
 ]
 const ALIGN_OPTIONS: Array<AlignItems> = ['flex-start', 'center', 'flex-end', 'stretch', 'baseline']
 const WRAP_OPTIONS: Array<FlexWrap> = ['nowrap', 'wrap', 'wrap-reverse']
-export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const FlexboxPlayground = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [container, setContainer] = useState<FlexboxContainerProps>(DEFAULT_CONTAINER)
   const nextItemId = useRef(3)
   const [items, setItems] = useState<Array<FlexItemEntry>>(() => [
@@ -81,7 +81,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponen
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Flexbox Playground"
       triggers={[{ label: 'Build' }]}
     >

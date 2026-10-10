@@ -181,7 +181,7 @@ const MobileBlocker = () => (
 // ---------------------------------------------------------------------------
 // DbDiagram — public export, owns the Dialog shell
 // ---------------------------------------------------------------------------
-export const DbDiagram = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const DbDiagram = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   // Match Tailwind's `tablet:` breakpoint (48rem) so the JS gate aligns with the
   // CSS utility prefix used elsewhere in the codebase. `ssrDefault: true` keeps
@@ -200,7 +200,7 @@ export const DbDiagram = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
       </div>
 
       <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
+        onAfterClose={onAfterClose}
         onOpenChange={setDialogOpen}
         open={dialogOpen}
         size="screen"

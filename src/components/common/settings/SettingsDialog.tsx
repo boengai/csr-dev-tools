@@ -14,7 +14,7 @@ export const SettingsDialog = ({ onOpenChange, open }: SettingsDialogProps) => {
   const setSetting = usePersistSettings((s) => s.setSetting)
 
   return (
-    <Dialog injected={{ open, setOpen: onOpenChange }} size="small" title="Settings">
+    <Dialog onOpenChange={onOpenChange} open={open} size="small" title="Settings">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-3">
           <label className="flex cursor-pointer flex-col gap-0.5" htmlFor="bg-animation">

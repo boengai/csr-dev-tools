@@ -170,7 +170,7 @@ const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEdi
   )
 }
 
-export const CrontabGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const CrontabGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [config, setConfig] = useState<CrontabConfig>({
     minute: defaultField(),
     hour: defaultField(),
@@ -191,7 +191,7 @@ export const CrontabGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponent
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Crontab Generator"
       triggers={[{ label: 'Build' }]}
     >

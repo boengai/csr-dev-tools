@@ -3,8 +3,8 @@ import type { ReactNode } from 'react'
 export type ToolDialogSize = 'default' | 'screen' | 'small'
 
 export type ToolDialogShellProps = {
-  autoOpen?: boolean
-  onAfterDialogClose?: () => void
+  /** Fires after `onReset`, once the exit animation of a user-initiated close completes. */
+  onAfterClose?: () => void
 
   title: string
   description?: string
@@ -12,8 +12,8 @@ export type ToolDialogShellProps = {
 
   onReset?: () => void
 
-  open?: boolean
-  onOpenChange?: (open: boolean) => void
+  open: boolean
+  onOpenChange: (open: boolean) => void
 
   children: ReactNode
 }

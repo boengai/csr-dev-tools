@@ -43,7 +43,7 @@ const computeMermaid = async (input: string): Promise<MermaidComputeResult> => {
   }
 }
 
-export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const MermaidRenderer = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [exportingPng, setExportingPng] = useState(false)
   const { showError } = useToast()
   const { downloadDataUrl, downloadSvg } = useDownload()
@@ -116,7 +116,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title="Mermaid Renderer"
       triggers={[{ label: 'Render' }]}

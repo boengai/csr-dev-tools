@@ -40,7 +40,7 @@ export type BidirectionalConverterProps<M extends string, R extends ConvertOutpu
   initialResult: R
   modeStorageKey: string
   modes: ReadonlyArray<ConverterMode<M>>
-  onAfterDialogClose?: () => void
+  onAfterClose?: () => void
   onError?: (error: unknown, mode: M) => void
   /**
    * Optional slot rendered above the source/result `<SplitPanel>`. Tools whose

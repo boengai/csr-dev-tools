@@ -25,8 +25,9 @@ const contentVariants: CompVariant<DialogVariants> = tv({
 export const Dialog = ({
   children,
   description,
-  injected,
   onAfterClose,
+  onOpenChange,
+  open,
   size = 'default',
   title,
   trigger,
@@ -34,14 +35,14 @@ export const Dialog = ({
   const contentClassName = contentVariants({ size })
   const contentRef = useRef<HTMLDivElement>(null)
   // Armed only by a Radix-initiated close (Escape / overlay / close button) —
-  // a parent flipping `injected.open` itself does not fire `onAfterClose`.
+  // a parent flipping `open` itself does not fire `onAfterClose`.
   // Consumed after the exit animation so content doesn't flash empty mid-fade.
   const afterClosePendingRef = useRef(false)
   const { capture, handleCloseAutoFocus } = useReturnFocus()
 
-  const handleOpenChange = (open: boolean) => {
-    afterClosePendingRef.current = !open
-    injected?.setOpen(open)
+  const handleOpenChange = (next: boolean) => {
+    afterClosePendingRef.current = !next
+    onOpenChange(next)
   }
 
   const handleExitComplete = () => {
@@ -63,10 +64,10 @@ export const Dialog = ({
   }
 
   return (
-    <Root onOpenChange={handleOpenChange} open={injected?.open}>
+    <Root onOpenChange={handleOpenChange} open={open}>
       {trigger && <Trigger asChild>{trigger}</Trigger>}
       <AnimatePresence onExitComplete={handleExitComplete}>
-        {injected?.open && (
+        {open && (
           <Portal forceMount>
             <Overlay asChild>
               <m.div

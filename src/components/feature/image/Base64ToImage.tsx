@@ -7,7 +7,7 @@ import { type Base64ImageInfo, base64ToImageInfo, formatFileSize } from '@/utils
 
 const toolEntry = TOOL_REGISTRY_MAP['base64-to-image']
 
-export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const Base64ToImage = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const { downloadDataUrl } = useDownload()
 
   const {
@@ -34,7 +34,7 @@ export const Base64ToImage = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title="Base64 to Image"
       triggers={[{ label: 'Convert Base64 to Image' }]}

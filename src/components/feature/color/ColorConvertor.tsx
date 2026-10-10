@@ -59,7 +59,7 @@ const InputWrapper = ({ children, color }: ColorInputWrapperProps) => {
 
 const toolEntry = TOOL_REGISTRY_MAP['color-converter']
 
-export const ColorConvertor = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const ColorConvertor = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [color, setColor] = useState<Record<ColorFormat, string>>(emptyColors)
   const { showError } = useToast()
 
@@ -104,7 +104,7 @@ export const ColorConvertor = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Color Converter"
       triggers={[{ label: 'Convert' }]}
     >

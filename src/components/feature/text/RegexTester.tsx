@@ -101,7 +101,7 @@ const MatchDetails = ({ matches }: RegexMatchDetailsProps) => {
   )
 }
 
-export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const RegexTester = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const {
     error,
     inputs,
@@ -135,7 +135,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title="Regex Tester"
       triggers={[{ label: 'Test Regex' }]}

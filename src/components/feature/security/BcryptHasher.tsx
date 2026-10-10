@@ -338,11 +338,11 @@ const BcryptHasherBody = () => {
   )
 }
 
-export const BcryptHasher = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => (
+export const BcryptHasher = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
   <ToolDialogFrame
     autoOpen={autoOpen}
     description={toolEntry?.description}
-    onAfterClose={onAfterDialogClose}
+    onAfterClose={onAfterClose}
     title="Bcrypt Hasher"
     triggers={[{ label: 'Open' }]}
   >

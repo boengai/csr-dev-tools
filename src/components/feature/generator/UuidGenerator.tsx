@@ -9,7 +9,7 @@ import { generateBulkUuids } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['uuid-generator']
 
-export const UuidGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const UuidGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [count, setCount] = useState(1)
   const { showSuccess } = useToast()
 
@@ -37,7 +37,7 @@ export const UuidGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="UUID Generator"
       triggers={[{ label: 'Generate' }]}
     >

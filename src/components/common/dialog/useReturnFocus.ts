@@ -4,7 +4,7 @@ import type { UseReturnFocusResult } from '@/types'
 
 /**
  * Radix Dialog only restores focus to its own `<Trigger>` on close. Dialogs
- * opened through controlled state (`injected`, a store, a button outside the
+ * opened through controlled state (a parent `open` prop, a store, a button outside the
  * Root) would drop focus on `<body>`. Call `capture` from `onOpenAutoFocus`
  * (before focus moves in) and pass `handleCloseAutoFocus` as
  * `onCloseAutoFocus` to return focus to whatever opened the dialog.

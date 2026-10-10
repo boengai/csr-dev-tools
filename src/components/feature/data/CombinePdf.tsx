@@ -78,7 +78,7 @@ const EmptyHint = () => (
 
 // ─── Main component ──────────────────────────────────────────────────────────
 
-export const CombinePdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const CombinePdf = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [loading, setLoading] = useState<Array<LoadingFile>>([])
 
   const handleReset = useCallback(() => setLoading([]), [])
@@ -135,7 +135,7 @@ export const CombinePdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       extensionRe={/\.pdf$/i}
       filenameSlug="combined"
       onAcceptedFiles={onAcceptedFiles}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       renderCard={(item, { position, onRemove }) => <PageCard item={item} onRemove={onRemove} position={position} />}
       renderEmptyState={() => <EmptyHint />}

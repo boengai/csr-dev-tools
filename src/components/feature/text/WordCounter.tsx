@@ -29,7 +29,7 @@ const STAT_LABELS: Array<{ key: keyof TextStats; label: string }> = [
   { key: 'speakingTime', label: 'Speaking Time' },
 ]
 
-export const WordCounter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const WordCounter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const {
     input: source,
     result: stats,
@@ -47,7 +47,7 @@ export const WordCounter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title="Word Counter"
       triggers={[{ label: 'Count Words' }]}

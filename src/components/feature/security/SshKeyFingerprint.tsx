@@ -7,7 +7,7 @@ import { analyzeSshKey, type SshKeyInfo } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['ssh-key-fingerprint']
 
-export const SshKeyFingerprint = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const SshKeyFingerprint = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const {
     input,
     result,
@@ -27,7 +27,7 @@ export const SshKeyFingerprint = ({ autoOpen, onAfterDialogClose }: ToolComponen
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       size="default"
       title="SSH Key Fingerprint"

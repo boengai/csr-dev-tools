@@ -105,7 +105,8 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
 
   return (
     <Dialog
-      injected={{ open: position !== null, setOpen: onDismiss }}
+      onOpenChange={onDismiss}
+      open={position !== null}
       title={`Select App for Widget#${position !== null ? position + 1 : ''}`}
     >
       <div className="mb-4">

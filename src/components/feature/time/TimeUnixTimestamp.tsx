@@ -246,12 +246,12 @@ const DateSection = () => {
 
 const toolEntry = TOOL_REGISTRY_MAP['unix-timestamp']
 
-export const TimeUnixTimestamp = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const TimeUnixTimestamp = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Unix Timestamp"
       triggers={[{ label: 'Convert' }]}
     >

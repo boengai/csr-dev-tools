@@ -234,12 +234,12 @@ describe('ImageToolShell — process pipeline', () => {
     expect(screen.queryByRole('heading', { name: 'Test Shell' })).toBeNull()
   })
 
-  it('calls onAfterDialogClose when the dialog closes', () => {
-    const onAfterDialogClose = vi.fn()
-    const { container } = render(<RenderShell onAfterDialogClose={onAfterDialogClose} />)
+  it('calls onAfterClose when the dialog closes', () => {
+    const onAfterClose = vi.fn()
+    const { container } = render(<RenderShell onAfterClose={onAfterClose} />)
     uploadFile(container, pngFile())
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
-    expect(onAfterDialogClose).toHaveBeenCalledTimes(1)
+    expect(onAfterClose).toHaveBeenCalledTimes(1)
   })
 
   it('clears source after dialog closes — next upload starts fresh', async () => {

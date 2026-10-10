@@ -8,7 +8,7 @@ import { type BoxShadowConfig, DEFAULT_BOX_SHADOW, generateBoxShadowCSS } from '
 
 const toolEntry = TOOL_REGISTRY_MAP['box-shadow-generator']
 
-export const BoxShadowGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const BoxShadowGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [config, setConfig] = useState<BoxShadowConfig>(DEFAULT_BOX_SHADOW)
   const [previewBg, setPreviewBg] = useState('#ffffff')
 
@@ -25,7 +25,7 @@ export const BoxShadowGenerator = ({ autoOpen, onAfterDialogClose }: ToolCompone
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Box Shadow Generator"
       triggers={[{ label: 'Build' }]}
     >

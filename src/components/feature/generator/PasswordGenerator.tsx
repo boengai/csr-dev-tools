@@ -19,7 +19,7 @@ const CHAR_TOGGLES: Array<{
 
 const toolEntry = TOOL_REGISTRY_MAP['password-generator']
 
-export const PasswordGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const PasswordGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [options, setOptions] = useState<PasswordOptions>(DEFAULT_PASSWORD_OPTIONS)
   const [count, setCount] = useState(1)
   const nextPwId = useRef(1)
@@ -53,7 +53,7 @@ export const PasswordGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponen
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Password Generator"
       triggers={[{ label: 'Generate' }]}
     >

@@ -15,7 +15,7 @@ export function ImageToolShell<TControls extends object>({
   description,
   getDownloadFilename,
   initialControls,
-  onAfterDialogClose,
+  onAfterClose,
   onRejectInvalidFile,
   process,
   renderControls,
@@ -100,7 +100,7 @@ export function ImageToolShell<TControls extends object>({
 
   // Auto-reset controls to initialControls when the dialog closes — the
   // shell owns the bag's lifecycle. Consumers handle per-Tool non-controls
-  // cleanup (refs, UI-only state) in onAfterDialogClose (runs after this).
+  // cleanup (refs, UI-only state) in onAfterClose (runs after this).
   const handleReset = () => {
     const init = initialRef.current
     controlsRef.current = init
@@ -112,7 +112,7 @@ export function ImageToolShell<TControls extends object>({
       accept={accept}
       buttonLabel={uploadLabel}
       description={description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       onUpload={handleUpload}
       size="screen"

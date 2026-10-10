@@ -7,7 +7,7 @@ const toolEntry = TOOL_REGISTRY_MAP['json-diff-checker']
 
 const INITIAL_RESULT: JsonDiffResult = { rows: [], unifiedDiff: '', validationError: '' }
 
-export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const JsonDiffChecker = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
     <DiffCheckerShell<JsonDiffResult>
       autoOpen={autoOpen}
@@ -31,7 +31,7 @@ export const JsonDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
       errorLabel="Unable to compute JSON diff"
       initialResult={INITIAL_RESULT}
       modifiedPlaceholder='{"key": "paste JSON here..."}'
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       originalPlaceholder='{"key": "paste JSON here..."}'
       renderBanner={(result) =>
         result.validationError ? (

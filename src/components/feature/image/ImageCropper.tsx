@@ -31,7 +31,7 @@ const cropImageCanvas = (image: HTMLImageElement, crop: CropRegion, mimeType: st
 
 const INITIAL_CONTROLS: CropControls = { aspectPreset: 'free', naturalCrop: null }
 
-export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
+export const ImageCropper = ({ onAfterClose }: ToolComponentProps) => {
   const imgRef = useRef<HTMLImageElement | null>(null)
   const [crop, setCrop] = useState<Crop | undefined>(undefined)
   const { showError } = useToast()
@@ -58,12 +58,12 @@ export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
         return `cropped-${base}.${ext}`
       }}
       initialControls={INITIAL_CONTROLS}
-      onAfterDialogClose={() => {
+      onAfterClose={() => {
         // Shell auto-resets the controls bag. Tool clears its non-controls
         // state (imgRef, the live drag `crop`) so a re-upload starts clean.
         imgRef.current = null
         setCrop(undefined)
-        onAfterDialogClose?.()
+        onAfterClose?.()
       }}
       onRejectInvalidFile={() => showError('Please select an image file')}
       process={process}

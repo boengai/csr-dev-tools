@@ -55,7 +55,7 @@ const compute = async ({ mode, source }: { mode: EnvConvertMode; source: string 
   }
 }
 
-export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => (
+export const EnvFileConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
   <BidirectionalConverter<EnvConvertMode, EnvResult>
     autoOpen={autoOpen}
     compute={compute}
@@ -63,7 +63,7 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
     initialResult={EMPTY_RESULT}
     modeStorageKey="env-file-converter"
     modes={MODES}
-    onAfterDialogClose={onAfterDialogClose}
+    onAfterClose={onAfterClose}
     renderBanner={(result) =>
       result.warnings.length > 0 ? (
         <p className="text-body-sm text-warning" role="status">

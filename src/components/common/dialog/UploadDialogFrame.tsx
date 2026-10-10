@@ -54,7 +54,7 @@ export const UploadDialogFrame = ({
         </div>
       </div>
       <ToolDialogShell
-        onAfterDialogClose={onAfterClose}
+        onAfterClose={onAfterClose}
         onOpenChange={setOpen}
         onReset={onReset}
         open={open}

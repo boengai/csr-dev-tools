@@ -49,7 +49,7 @@ const BinaryDisplay = ({ binary, prefixLength }: BinaryDisplayProps) => {
   )
 }
 
-export const IpSubnetCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const IpSubnetCalculator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   // computeSubnet is cheap and synchronous, so the result is derived directly
   // from the inputs — no debounce, and handlers always read the current result.
   const [inputs, setInputs] = useState<SubnetComputeInput>(INITIAL_INPUT)
@@ -110,7 +110,7 @@ export const IpSubnetCalculator = ({ autoOpen, onAfterDialogClose }: ToolCompone
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="IP Subnet Calculator"
       triggers={[{ label: 'Calculate' }]}
     >

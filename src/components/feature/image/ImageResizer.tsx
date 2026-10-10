@@ -26,7 +26,7 @@ const INITIAL_CONTROLS: ResizeControls = {
   width: null,
 }
 
-export const ImageResizer = ({ onAfterDialogClose }: ToolComponentProps) => {
+export const ImageResizer = ({ onAfterClose }: ToolComponentProps) => {
   const { showError } = useToast()
 
   const process = async (file: File, c: ResizeControls): Promise<Blob | null> => {
@@ -58,7 +58,7 @@ export const ImageResizer = ({ onAfterDialogClose }: ToolComponentProps) => {
       description={toolEntry?.description}
       getDownloadFilename={({ controls, sourceName }) => parseFileName(sourceName, controls.format ?? undefined)}
       initialControls={INITIAL_CONTROLS}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onRejectInvalidFile={() => showError('Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)')}
       process={process}
       renderControls={({ controls, setControls }) => {

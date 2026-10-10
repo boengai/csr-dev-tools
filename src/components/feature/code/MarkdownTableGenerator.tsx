@@ -79,7 +79,7 @@ const reducer = (state: MarkdownTableState, action: MarkdownTableAction): Markdo
   }
 }
 
-export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const MarkdownTableGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [state, dispatch] = useReducer(reducer, undefined, createInitialState)
   const { alignments, cols, data, rows } = state
 
@@ -109,7 +109,7 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title="Markdown Table Generator"
       triggers={[{ label: 'Build Table' }]}

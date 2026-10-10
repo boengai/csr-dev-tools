@@ -12,7 +12,7 @@ const toolEntry = TOOL_REGISTRY_MAP['svg-viewer']
 
 const sanitize = (svg: string): string => DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true } })
 
-export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const SvgViewer = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [optimizeResult, setOptimizeResult] = useState<SvgOptimizeResult | null>(null)
 
   const {
@@ -59,7 +59,7 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title="SVG Viewer & Optimizer"
       triggers={[{ label: 'Open SVG Viewer' }]}

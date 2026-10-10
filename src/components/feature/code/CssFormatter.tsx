@@ -7,7 +7,7 @@ const toolEntry = TOOL_REGISTRY_MAP['css-formatter']
 
 const INITIAL: CssInput = { source: '', mode: 'beautify', indent: 2 }
 
-export const CssFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const CssFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
     <FormatterShell<CssInput>
       autoOpen={autoOpen}
@@ -15,7 +15,7 @@ export const CssFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProp
       description={toolEntry?.description}
       errorLabel="Unable to format CSS"
       initial={INITIAL}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       renderControls={({ inputs, setFieldsImmediate }) => (
         <>
           <FieldForm

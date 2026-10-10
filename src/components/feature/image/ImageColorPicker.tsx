@@ -8,7 +8,7 @@ import type { PickedColorWithId, ToolComponentProps } from '@/types'
 import { type PickedColor, getReadableContext2d, loadImageFromBlob, rafThrottle, readCanvasColorAt } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['image-color-picker']
-export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const ImageColorPicker = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const { showError } = useToast()
   const [imageFile, setImageFile] = useState<File | null>(null)
   const nextColorId = useRef(0)
@@ -83,7 +83,7 @@ export const ImageColorPicker = ({ autoOpen, onAfterDialogClose }: ToolComponent
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title="Color Picker from Image"
       triggers={[{ label: 'Open Color Picker' }]}

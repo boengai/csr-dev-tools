@@ -64,7 +64,7 @@ const CHEATSHEET_ENTRIES = [
 
 const INITIAL_RESULT: JsonPathEvalResult = { evaluation: null, parseError: null, parsedData: null }
 
-export const JsonpathEvaluator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const JsonpathEvaluator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   // Expression keystrokes re-run compute; the document is only re-parsed when it changes.
   const [parseJson] = useState(createCachedJsonParser)
   const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<
@@ -109,7 +109,7 @@ export const JsonpathEvaluator = ({ autoOpen, onAfterDialogClose }: ToolComponen
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="JSONPath Evaluator"
       triggers={[{ label: 'Evaluate' }]}
     >

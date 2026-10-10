@@ -59,7 +59,7 @@ const EditorSkeleton = () => (
   </div>
 )
 
-export const TypescriptPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const TypescriptPlayground = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [errors, setErrors] = useState<Array<DiagnosticError>>([])
   const editorRef = useRef<EditorInstance | null>(null)
   const monacoRef = useRef<Monaco | null>(null)
@@ -129,7 +129,7 @@ export const TypescriptPlayground = ({ autoOpen, onAfterDialogClose }: ToolCompo
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="TypeScript Playground"
       triggers={[{ label: 'Open' }]}
     >

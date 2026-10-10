@@ -12,7 +12,7 @@ import { ToolDialogShell } from './ToolDialogShell'
  *
  * Replaces the four-concern boilerplate every dialog Tool used to repeat:
  * `useState(dialogOpen)`, the centered trigger area, the trigger button(s),
- * and `<ToolDialogShell open=.../onOpenChange=.../onAfterDialogClose=.../>`.
+ * and `<ToolDialogShell open=.../onOpenChange=.../onAfterClose=.../>`.
  *
  * Triggers' `onOpen` fires synchronously in the same React event that flips
  * the dialog open, so any state set there is committed before the body renders.
@@ -48,7 +48,7 @@ export const ToolDialogFrame = ({
         </div>
       </div>
       <ToolDialogShell
-        onAfterDialogClose={onAfterClose}
+        onAfterClose={onAfterClose}
         onOpenChange={setOpen}
         onReset={onReset}
         open={open}

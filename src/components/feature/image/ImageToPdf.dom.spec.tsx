@@ -43,12 +43,12 @@ const makeFile = (name: string, type: string): File => new File(['mock'], name, 
 
 describe('ImageToPdf', () => {
   it('renders the upload button in initial state', async () => {
-    render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
+    render(<ImageToPdf autoOpen onAfterClose={() => {}} />)
     expect(await screen.findByText(/Select PNG or JPEG images/i)).toBeInTheDocument()
   })
 
   it('renders thumbnails and enables download after files are chosen', async () => {
-    render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
+    render(<ImageToPdf autoOpen onAfterClose={() => {}} />)
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
 
     const files = [makeFile('a.png', 'image/png'), makeFile('b.jpg', 'image/jpeg')]
@@ -66,7 +66,7 @@ describe('ImageToPdf', () => {
   })
 
   it('removes an image when its X button is clicked', async () => {
-    render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
+    render(<ImageToPdf autoOpen onAfterClose={() => {}} />)
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
 
     const files = [makeFile('a.png', 'image/png'), makeFile('b.jpg', 'image/jpeg')]
@@ -87,7 +87,7 @@ describe('ImageToPdf', () => {
   })
 
   it('surfaces skipped files', async () => {
-    render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
+    render(<ImageToPdf autoOpen onAfterClose={() => {}} />)
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
 
     const files = [makeFile('a.png', 'image/png'), makeFile('weird.webp', 'image/webp')]
@@ -99,7 +99,7 @@ describe('ImageToPdf', () => {
   })
 
   it('toggles between one-per-page and grid layout', async () => {
-    render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
+    render(<ImageToPdf autoOpen onAfterClose={() => {}} />)
 
     const checkbox = await screen.findByLabelText(/1 image per page/i)
     expect(checkbox).toBeChecked()
@@ -112,7 +112,7 @@ describe('ImageToPdf', () => {
   })
 
   it('shows an error banner when the preview cannot render', async () => {
-    render(<ImageToPdf autoOpen onAfterDialogClose={() => {}} />)
+    render(<ImageToPdf autoOpen onAfterClose={() => {}} />)
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
 
     fireEvent.change(input, { target: { files: [makeFile('a.png', 'image/png')] } })

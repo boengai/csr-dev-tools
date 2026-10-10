@@ -34,7 +34,7 @@ const compute = async ({ mode, source }: { mode: JsonCsvConvertMode; source: str
   return { output }
 }
 
-export const JsonToCsvConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => (
+export const JsonToCsvConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
   <BidirectionalConverter
     autoOpen={autoOpen}
     compute={compute}
@@ -42,6 +42,6 @@ export const JsonToCsvConverter = ({ autoOpen, onAfterDialogClose }: ToolCompone
     initialResult={{ output: '' }}
     modeStorageKey="json-to-csv"
     modes={MODES}
-    onAfterDialogClose={onAfterDialogClose}
+    onAfterClose={onAfterClose}
   />
 )

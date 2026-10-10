@@ -9,7 +9,7 @@ const toolEntry = TOOL_REGISTRY_MAP['cron-expression-parser']
 
 const EMPTY_RESULT: CronParseResult = { description: '', error: null, nextRuns: [], valid: false }
 
-export const CronExpressionParser = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const CronExpressionParser = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const {
     input: expression,
     result,
@@ -27,7 +27,7 @@ export const CronExpressionParser = ({ autoOpen, onAfterDialogClose }: ToolCompo
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Cron Parser"
       triggers={[{ label: 'Parse' }]}
     >

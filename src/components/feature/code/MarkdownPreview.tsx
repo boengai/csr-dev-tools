@@ -10,7 +10,7 @@ import { renderMarkdown } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['markdown-preview']
 
-export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const MarkdownPreview = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const {
     input: source,
     result: htmlOutput,
@@ -30,7 +30,7 @@ export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title="Markdown Preview"
       triggers={[{ label: 'Preview' }]}

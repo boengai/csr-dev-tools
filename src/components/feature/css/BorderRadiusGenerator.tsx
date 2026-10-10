@@ -15,7 +15,7 @@ const CORNERS = [
   { hKey: 'bottomLeft', label: 'Bottom Left', vKey: 'bottomLeftV' },
 ] as const
 
-export const BorderRadiusGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const BorderRadiusGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [config, setConfig] = useState<BorderRadiusConfig>(DEFAULT_BORDER_RADIUS)
   const [previewBg, setPreviewBg] = useState('#6366f1')
 
@@ -30,7 +30,7 @@ export const BorderRadiusGenerator = ({ autoOpen, onAfterDialogClose }: ToolComp
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Border Radius Generator"
       triggers={[{ label: 'Build' }]}
     >

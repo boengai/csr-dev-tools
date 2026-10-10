@@ -78,7 +78,7 @@ export const DiffCheckerShell = <R extends DiffOutput>({
   errorLabel,
   initialResult,
   modifiedPlaceholder,
-  onAfterDialogClose,
+  onAfterClose,
   originalPlaceholder,
   renderBanner,
   storageKey,
@@ -100,7 +100,7 @@ export const DiffCheckerShell = <R extends DiffOutput>({
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title={title}
       triggers={[{ label: 'Compare' }]}

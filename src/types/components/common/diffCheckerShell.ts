@@ -21,7 +21,7 @@ export type DiffCheckerShellProps<R extends DiffOutput> = {
   errorLabel: string
   initialResult: R
   modifiedPlaceholder: string
-  onAfterDialogClose?: () => void
+  onAfterClose?: () => void
   originalPlaceholder: string
   /**
    * Optional slot rendered between the input columns and the diff output.

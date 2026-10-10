@@ -64,7 +64,7 @@ const renderShell = () =>
       compute={vi.fn()}
       filenameSlug="html"
       inputName="markup-source"
-      onAfterDialogClose={() => {}}
+      onAfterClose={() => {}}
       placeholder="placeholder"
       sourceLabel="Source"
       storageKey="csr-dev-tools-markup-test"

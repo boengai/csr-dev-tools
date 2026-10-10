@@ -9,7 +9,7 @@ const toolEntry = TOOL_REGISTRY_MAP['json-schema-validator']
 
 type ValidatorInput = { jsonData: string; jsonSchema: string }
 
-export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const JsonSchemaValidator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const { inputs, recompute, result, setFields } = useToolFieldsPersisted<ValidatorInput, ValidationResult | null>({
     compute: ({ jsonData: data, jsonSchema: schema }) => validateJsonSchema(data, schema),
     debounceMs: 300,
@@ -29,7 +29,7 @@ export const JsonSchemaValidator = ({ autoOpen, onAfterDialogClose }: ToolCompon
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleRevalidate}
       title="JSON Schema Validator"
       triggers={[

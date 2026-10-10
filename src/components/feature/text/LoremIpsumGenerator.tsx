@@ -14,7 +14,7 @@ const UNIT_OPTIONS = [
   { label: 'Words', value: 'words' },
 ]
 
-export const LoremIpsumGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const LoremIpsumGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [count, setCount] = useState(3)
   const [unit, setUnit] = useState<LoremUnit>('paragraphs')
   const [startWithLorem, setStartWithLorem] = useState(true)
@@ -36,7 +36,7 @@ export const LoremIpsumGenerator = ({ autoOpen, onAfterDialogClose }: ToolCompon
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Lorem Ipsum Generator"
       triggers={[{ label: 'Generate' }]}
     >

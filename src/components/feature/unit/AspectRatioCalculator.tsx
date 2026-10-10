@@ -59,7 +59,7 @@ const INITIAL_FIELDS: Fields = {
   width: '',
 }
 
-export const AspectRatioCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const AspectRatioCalculator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [fields, setFields] = useState<Fields>(INITIAL_FIELDS)
 
   const { result, setInput, setInputImmediate } = useToolComputation<AspectRatioInput, AspectRatioOutput | null>(
@@ -178,7 +178,7 @@ export const AspectRatioCalculator = ({ autoOpen, onAfterDialogClose }: ToolComp
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Aspect Ratio Calculator"
       triggers={[{ label: 'Calculate' }]}
     >

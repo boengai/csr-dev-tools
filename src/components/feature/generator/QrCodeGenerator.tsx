@@ -21,7 +21,7 @@ const INITIAL_INPUT: QrInput = {
 
 const EMPTY_RESULT: QrResult = { dataUrl: '', svgString: '' }
 
-export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const QrCodeGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const { downloadDataUrl } = useDownload()
 
   const {
@@ -91,7 +91,7 @@ export const QrCodeGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title="QR Code Generator"
       triggers={[{ label: 'Generate QR Code' }]}

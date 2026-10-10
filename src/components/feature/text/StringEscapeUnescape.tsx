@@ -19,7 +19,7 @@ type Direction = 'escape' | 'unescape'
 type EscapeInput = { direction: Direction; mode: EscapeMode; source: string }
 const INITIAL_INPUT: EscapeInput = { direction: 'escape', mode: 'html', source: '' }
 
-export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const StringEscapeUnescape = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const { showError } = useToast()
 
   const { inputs, reset, result, setFields, setFieldsImmediate } = useToolFields<EscapeInput, string>({
@@ -40,7 +40,7 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title={direction === 'escape' ? 'String Escape' : 'String Unescape'}
       triggers={[

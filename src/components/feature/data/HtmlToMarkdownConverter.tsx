@@ -29,7 +29,7 @@ const compute = async ({ mode, source }: { mode: HtmlMdConvertMode; source: stri
   return { output }
 }
 
-export const HtmlToMarkdownConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => (
+export const HtmlToMarkdownConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
   <BidirectionalConverter
     autoOpen={autoOpen}
     compute={compute}
@@ -37,7 +37,7 @@ export const HtmlToMarkdownConverter = ({ autoOpen, onAfterDialogClose }: ToolCo
     initialResult={{ output: '' }}
     modeStorageKey="html-to-markdown"
     modes={MODES}
-    onAfterDialogClose={onAfterDialogClose}
+    onAfterClose={onAfterClose}
     onError={() => undefined}
   />
 )

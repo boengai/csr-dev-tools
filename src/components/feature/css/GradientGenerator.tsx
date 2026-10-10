@@ -9,7 +9,7 @@ import { DEFAULT_GRADIENT, generateGradientCss, type GradientType } from '@/util
 const toolEntry = TOOL_REGISTRY_MAP['css-gradient-generator']
 
 const ITEM_COLORS = ['#667eea', '#764ba2', '#f093fb', '#f5576c', '#4facfe', '#00f2fe', '#43e97b', '#fa709a']
-export const GradientGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const GradientGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const nextStopId = useRef(DEFAULT_GRADIENT.stops.length)
   const [config, setConfig] = useState<LocalConfig>(() => ({
     ...DEFAULT_GRADIENT,
@@ -70,7 +70,7 @@ export const GradientGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponen
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Gradient Generator"
       triggers={[{ label: 'Build' }]}
     >

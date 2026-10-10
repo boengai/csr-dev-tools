@@ -7,7 +7,7 @@ const toolEntry = TOOL_REGISTRY_MAP['html-formatter']
 
 const INITIAL: HtmlInput = { source: '', mode: 'beautify', indent: 2 }
 
-export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const HtmlFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
     <FormatterShell<HtmlInput>
       autoOpen={autoOpen}
@@ -15,7 +15,7 @@ export const HtmlFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
       description={toolEntry?.description}
       errorLabel="Unable to format HTML"
       initial={INITIAL}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       renderControls={({ inputs, setFieldsImmediate }) => (
         <>
           <FieldForm

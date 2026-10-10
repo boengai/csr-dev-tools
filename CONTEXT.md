@@ -278,7 +278,7 @@ by `<ToolDialogFrame>` (`src/components/common/dialog/ToolDialogFrame.tsx`).
 Replaces the four-concern boilerplate every dialog Tool used to repeat:
 `useState(dialogOpen)`, the centered tile layout (description + button column),
 the trigger button(s), and the controlled `<ToolDialogShell>` wiring
-(`open`/`onOpenChange`/`onAfterDialogClose`). The Tool's role narrows to
+(`open`/`onOpenChange`/`onAfterClose`). The Tool's role narrows to
 `triggers`, `title`, `onReset`, and the dialog body.
 
 Each trigger is `{ label, onOpen? }`. `onOpen` fires synchronously in the same
@@ -706,7 +706,7 @@ needs to re-fire compute without changing the bag — e.g. after `<img onLoad>`
 populates `imgRef`.
 
 The shell auto-resets controls to `initialControls` on dialog close. The
-Tool's `onAfterDialogClose` callback handles per-Tool non-controls cleanup
+Tool's `onAfterClose` callback handles per-Tool non-controls cleanup
 (refs, UI-only state like the live drag `crop` in `ImageCropper`).
 
 ## Batch asset pipeline

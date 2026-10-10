@@ -23,7 +23,7 @@ const PRESETS = ['644', '755', '777', '600', '400'] as const
 const GROUPS = ['owner', 'group', 'other'] as const
 const PERMS = ['read', 'write', 'execute'] as const
 
-export const ChmodCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const ChmodCalculator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [state, setState] = useState<ChmodState>(DEFAULT_STATE)
   const [octalInput, setOctalInput] = useState('755')
   const [symbolicInput, setSymbolicInput] = useState('rwxr-xr-x')
@@ -109,7 +109,7 @@ export const ChmodCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       size="default"
       title="Chmod Calculator"

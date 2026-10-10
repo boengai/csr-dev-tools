@@ -27,7 +27,7 @@ const MODES: [ConverterMode<UrlMode>, ConverterMode<UrlMode>] = [
   },
 ]
 
-export const UrlEncoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const UrlEncoder = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const compute = useCallback(
     async ({ mode, source }: { mode: UrlMode; source: string }): Promise<{ output: string }> => {
       try {
@@ -52,7 +52,7 @@ export const UrlEncoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       initialResult={{ output: '' }}
       modeStorageKey="url-encoder"
       modes={MODES}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       sourceKeyPrefix="url-encoder"
     />
   )

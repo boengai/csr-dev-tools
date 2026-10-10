@@ -15,7 +15,7 @@ const KEY_SIZES: Array<{ label: string; value: RsaKeySize }> = [
   { label: '4096 bits', value: 4096 },
 ]
 
-export const RsaKeyGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const RsaKeyGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [keySize, setKeySize] = useState<RsaKeySize>(2048)
   const { showError, showSuccess } = useToast()
   const { downloadPemFile } = useDownload()
@@ -64,7 +64,7 @@ export const RsaKeyGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title="RSA Key Generator"
       triggers={[{ label: 'Generate RSA Key Pair' }]}

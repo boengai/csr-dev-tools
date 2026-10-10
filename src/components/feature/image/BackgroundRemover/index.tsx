@@ -19,7 +19,7 @@ type BgControls = {
 
 const INITIAL_CONTROLS: BgControls = { bgOption: 'transparent', customColor: '#ff0000' }
 
-export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) => {
+export const BackgroundRemover = ({ onAfterClose }: ToolComponentProps) => {
   const strippedCacheRef = useRef<{ file: File; stripped: Blob } | null>(null)
   const { showError } = useToast()
 
@@ -40,7 +40,7 @@ export const BackgroundRemover = ({ onAfterDialogClose }: ToolComponentProps) =>
       description={toolEntry?.description}
       getDownloadFilename={() => 'background-removed.png'}
       initialControls={INITIAL_CONTROLS}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onRejectInvalidFile={() => showError('Please select an image file (PNG, JPG, or WEBP)')}
       process={process}
       renderControls={({ controls, setControls }) => (

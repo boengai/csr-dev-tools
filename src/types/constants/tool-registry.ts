@@ -21,7 +21,7 @@ export type ToolSeo = {
 
 export type ToolComponentProps = {
   autoOpen?: boolean
-  onAfterDialogClose?: () => void
+  onAfterClose?: () => void
 }
 
 // What a tool author writes in `TOOL_ROUTES` (src/constants/tool-routes.ts).

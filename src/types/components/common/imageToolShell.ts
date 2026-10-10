@@ -27,7 +27,7 @@ export type ImageToolShellDownloadContext<TControls> = {
 
 export type ImageToolShellProps<TControls extends object> = {
   description?: string
-  onAfterDialogClose?: () => void
+  onAfterClose?: () => void
   title: string
 
   accept: string

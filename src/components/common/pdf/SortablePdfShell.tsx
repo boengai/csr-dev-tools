@@ -26,7 +26,7 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
   filenameSlug,
   initialExtras,
   onAcceptedFiles,
-  onAfterDialogClose,
+  onAfterClose,
   onReset,
   renderCard,
   renderControls,
@@ -139,7 +139,7 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title={title}
       triggers={triggers}

@@ -7,11 +7,10 @@ export * from './uploadDialogFrame'
 export type DialogProps = Partial<DialogVariants> & {
   children: ReactNode
   description?: string
-  injected?: {
-    open: boolean
-    setOpen: (value: boolean) => void
-  }
+  /** Fires after the exit animation, only for user-initiated closes (Escape / overlay / close button). */
   onAfterClose?: () => void
+  onOpenChange: (open: boolean) => void
+  open: boolean
   title: string
   trigger?: ReactElement<HTMLButtonElement>
 }

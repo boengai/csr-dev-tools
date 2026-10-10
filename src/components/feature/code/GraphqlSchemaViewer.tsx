@@ -225,7 +225,7 @@ input CreateUserInput {
 
 scalar DateTime`
 
-export const GraphqlSchemaViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const GraphqlSchemaViewer = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [selectedType, setSelectedType] = useState<string | null>(null)
   const [filter, setFilter] = useState('')
 
@@ -306,7 +306,7 @@ export const GraphqlSchemaViewer = ({ autoOpen, onAfterDialogClose }: ToolCompon
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="GraphQL Schema Viewer"
       triggers={[{ label: 'Open' }]}
     >

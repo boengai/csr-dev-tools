@@ -7,7 +7,7 @@ const toolEntry = TOOL_REGISTRY_MAP['text-diff-checker']
 
 const INITIAL_RESULT: TextDiffResult = { rows: [], unifiedDiff: '' }
 
-export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const TextDiffChecker = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
     <DiffCheckerShell<TextDiffResult>
       autoOpen={autoOpen}
@@ -22,7 +22,7 @@ export const TextDiffChecker = ({ autoOpen, onAfterDialogClose }: ToolComponentP
       errorLabel="Unable to compute diff"
       initialResult={INITIAL_RESULT}
       modifiedPlaceholder="Paste modified text here..."
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       originalPlaceholder="Paste original text here..."
       storageKey="csr-dev-tools-text-diff"
       title="Text Diff Checker"

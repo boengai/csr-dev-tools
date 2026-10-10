@@ -16,7 +16,7 @@ export type MarkupToPdfShellProps = {
   filenameSlug: string
   /** Form field `name` for the source CodeMirror input. */
   inputName: string
-  onAfterDialogClose?: () => void
+  onAfterClose?: () => void
   /** Placeholder shown in the empty source pane. */
   placeholder: string
   /** Display label on the source pane (e.g. "HTML Input"). */

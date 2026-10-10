@@ -35,7 +35,7 @@ const CATEGORY_COLORS: Record<string, string> = {
   '5xx Server Error': 'text-red-400',
 }
 
-export const HttpStatusCodes = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const HttpStatusCodes = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState<HttpStatusCategory | ''>('')
 
@@ -48,7 +48,7 @@ export const HttpStatusCodes = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="HTTP Status Codes"
       triggers={[{ label: 'Browse' }]}
     >

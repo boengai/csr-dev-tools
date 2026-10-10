@@ -91,7 +91,7 @@ const reducer = (state: PlaceholderImageState, action: PlaceholderImageAction): 
   }
 }
 
-export const PlaceholderImageGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const PlaceholderImageGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const { bgColor, bgHexInput, height, text, textColor, textHexInput, width } = state
   const { showError } = useToast()
@@ -154,7 +154,7 @@ export const PlaceholderImageGenerator = ({ autoOpen, onAfterDialogClose }: Tool
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Placeholder Image Generator"
       triggers={[{ label: 'Generate' }]}
     >
