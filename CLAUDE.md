@@ -15,8 +15,11 @@ project references and surfaces real errors.
 Tool metadata lives in `src/constants/tool-routes.ts` — the single source of truth. Both the runtime `TOOL_REGISTRY` (which adds the lazy React component) and the build-time prerenderer in `vite.config.ts` derive from it.
 
 To add a tool:
-1. Append a `ToolRoute` entry to `TOOL_ROUTES` in `src/constants/tool-routes.ts` (category, description, emoji, key, name, routePath, seo).
-2. Add a `COMPONENT_LOADERS[<key>]` entry in `src/constants/tool-registry.ts` pointing at the lazy import.
+1. Add the key to the `ToolRegistryKey` union in `src/types/constants/tool-registry.ts`.
+2. Append a `ToolRouteDefinition` entry to `TOOL_ROUTE_DEFINITIONS` in `src/constants/tool-routes.ts` (category, description, emoji, key, name, `seo.description`). Do **not** add `routePath` — it is derived as `/tools/<key>`. `seo.title` is optional and defaults to `<name> - CSR Dev Tools`; set it only to override.
+3. Add a `COMPONENT_LOADERS[<key>]` entry in `src/constants/tool-registry.ts` pointing at the lazy import. `COMPONENT_LOADERS` is typed `Record<ToolRegistryKey, …>`, so a missing loader is a `pnpm typecheck` error.
+
+Look tools up by an untrusted string (route param, persisted layout) with `getToolEntry(key)`, not `TOOL_REGISTRY_MAP[key]`.
 
 `pnpm build` emits a prerendered `dist/tools/<route>/index.html` for every entry — if it's missing, the tool isn't in `TOOL_ROUTES`.
 

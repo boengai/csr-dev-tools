@@ -2,7 +2,7 @@ import { m } from 'motion/react'
 import { type ButtonHTMLAttributes, Suspense, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Card, Dialog, NotoEmoji, PlusIcon } from '@/components'
-import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY, TOOL_REGISTRY_MAP } from '@/constants'
+import { CATEGORY_ORDER, getToolEntry, groupToolsByCategory, TOOL_REGISTRY } from '@/constants'
 import { useDebounceCallback, usePersistFeatureLayout } from '@/hooks'
 import type { ToolRegistryKey } from '@/types'
 
@@ -43,7 +43,7 @@ const AppContainer = ({ onOpenDialog, position }: { onOpenDialog: (position: num
 
   const registryKey = value[position]
   if (registryKey) {
-    const entry = TOOL_REGISTRY_MAP[registryKey]
+    const entry = getToolEntry(registryKey)
     if (entry) {
       const ToolComponent = entry.component
       return (
