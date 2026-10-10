@@ -15,10 +15,11 @@ import { afterEach, beforeAll, describe, expect, it, vi } from 'vitest'
 
 import { TOOL_REGISTRY } from '@/constants'
 import { useSidebarStore } from '@/hooks'
+import { nth } from '@/test/nth'
 
 import { Sidebar } from './Sidebar'
 
-const firstTool = TOOL_REGISTRY[0]
+const firstTool = nth(TOOL_REGISTRY, 0)
 
 beforeAll(() => {
   vi.stubGlobal(

@@ -141,8 +141,9 @@ const DiagramWorkspace = () => {
   const handleRearrange = useCallback(() => {
     const doc = editor.getDocument()
     const positions = gridLayoutPositions(doc.tableOrder.length)
-    for (let i = 0; i < doc.tableOrder.length; i++) {
-      editor.moveTable(doc.tableOrder[i], positions[i])
+    for (const [i, tableId] of doc.tableOrder.entries()) {
+      const position = positions[i]
+      if (position) editor.moveTable(tableId, position)
     }
   }, [editor])
 

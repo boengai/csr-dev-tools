@@ -72,16 +72,14 @@ export const CombinePdf = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
         rejectFiles: (next: Array<string> | ((prev: Array<string>) => Array<string>)) => void
       },
     ) => {
-      const loadingEntries: Array<CombinePdfLoadingFile> = files.map((f) => ({
-        id: crypto.randomUUID(),
-        fileName: f.name,
+      const pending = files.map((file) => ({ file, loadingId: crypto.randomUUID() }))
+      const loadingEntries: Array<CombinePdfLoadingFile> = pending.map(({ file, loadingId }) => ({
+        id: loadingId,
+        fileName: file.name,
       }))
       setLoading((prev) => [...prev, ...loadingEntries])
 
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i]
-        const loadingId = loadingEntries[i].id
-
+      for (const { file, loadingId } of pending) {
         void (async () => {
           const pages = await readPdfPages(file)
           if (pages === null) {

@@ -4,6 +4,7 @@
 import { render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type { UseToolInputResult } from '@/types'
 import type { CompileResultDto } from '@/types/wasm/pdf'
 
@@ -129,7 +130,7 @@ describe('MarkupToPdfShell', () => {
     renderShell()
 
     expect(mockHook).toHaveBeenCalled()
-    const opts = mockHook.mock.calls[0][0] as {
+    const opts = nth(nth(mockHook.mock.calls, 0), 0) as {
       storageKey: string
       isEmpty: (val: string) => boolean
       initialResult: CompileResultDto

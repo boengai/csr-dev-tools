@@ -4,6 +4,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type { BytesPdfResult, UseToolComputationResult } from '@/types'
 
 import { SortablePdfShell } from './SortablePdfShell'
@@ -124,7 +125,7 @@ describe('SortablePdfShell', () => {
   it('passes the items-length isEmpty rule + EMPTY_RESULT initial through to the pipeline hook', () => {
     renderShell()
     expect(mockHook).toHaveBeenCalled()
-    const opts = mockHook.mock.calls[0][0] as {
+    const opts = nth(nth(mockHook.mock.calls, 0), 0) as {
       isEmpty: (input: { items: Array<Item>; extras: Record<string, never> }) => boolean
       initial: BytesPdfResult
     }
@@ -149,7 +150,7 @@ describe('SortablePdfShell', () => {
     fireEvent.change(input)
 
     expect(onAcceptedFiles).toHaveBeenCalledTimes(1)
-    const [accepted] = onAcceptedFiles.mock.calls[0]
+    const [accepted] = nth(onAcceptedFiles.mock.calls, 0)
     expect(accepted).toEqual([png])
 
     // The shell auto-rejected note.txt — skipped banner should be visible.

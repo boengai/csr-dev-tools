@@ -15,15 +15,13 @@ import {
 
 const toolEntry = TOOL_REGISTRY_MAP['crontab-generator']
 
-const FIELD_LABELS = ['Minute', 'Hour', 'Day of Month', 'Month', 'Day of Week'] as const
-const FIELD_KEYS = ['minute', 'hour', 'dayOfMonth', 'month', 'dayOfWeek'] as const
-const FIELD_RANGES: Array<[number, number]> = [
-  [0, 59],
-  [0, 23],
-  [1, 31],
-  [1, 12],
-  [0, 6],
-]
+const FIELDS = [
+  { key: 'minute', label: 'Minute', max: 59, min: 0 },
+  { key: 'hour', label: 'Hour', max: 23, min: 0 },
+  { key: 'dayOfMonth', label: 'Day of Month', max: 31, min: 1 },
+  { key: 'month', label: 'Month', max: 12, min: 1 },
+  { key: 'dayOfWeek', label: 'Day of Week', max: 6, min: 0 },
+] as const
 const MONTH_NAMES = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
 const DOW_NAMES = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']
 
@@ -184,7 +182,7 @@ export const CrontabGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps)
   const description = useMemo(() => describeCron(expression), [expression])
   const nextRuns = useMemo(() => getNextRuns(expression, 5), [expression])
 
-  const updateField = (key: (typeof FIELD_KEYS)[number], fieldConfig: CronFieldConfig) => {
+  const updateField = (key: (typeof FIELDS)[number]['key'], fieldConfig: CronFieldConfig) => {
     setConfig((prev) => ({ ...prev, [key]: fieldConfig }))
   }
 
@@ -197,14 +195,14 @@ export const CrontabGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps)
       triggers={[{ label: 'Build' }]}
     >
       <div className="flex w-full grow flex-col gap-4">
-        {FIELD_KEYS.map((key, i) => (
+        {FIELDS.map(({ key, label, max, min }, i) => (
           <FieldEditor
             config={config[key]}
             fieldIndex={i}
             key={key}
-            label={FIELD_LABELS[i]}
-            max={FIELD_RANGES[i][1]}
-            min={FIELD_RANGES[i][0]}
+            label={label}
+            max={max}
+            min={min}
             onChange={(fc) => updateField(key, fc)}
           />
         ))}

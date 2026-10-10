@@ -8,6 +8,7 @@ import { describe, expect, it, vi } from 'vitest'
 
 import { DiagramEditor } from '@/diagram/editor'
 import { createInMemoryDiagramStorage } from '@/diagram/storage'
+import { entry, nth } from '@/test/nth'
 import type { TableNode } from '@/types'
 
 import { DiagramProvider } from './DiagramContext'
@@ -21,7 +22,7 @@ const setup = () => {
     type: 'TEXT',
     constraints: { isPrimaryKey: false, isForeignKey: false, isNullable: true, isUnique: true },
   })
-  const table = editor.getDocument().tables[tableId]
+  const table = entry(editor.getDocument().tables, tableId)
   const props = {
     data: { columns: table.columns, tableName: table.name },
     id: tableId,
@@ -51,9 +52,9 @@ describe('TableNodeComponent', () => {
   it('exposes constraint toggles as pressed/unpressed buttons', () => {
     const { columns } = setup()
     const emailRow = columns.length - 1
-    const unique = screen.getAllByRole('button', { name: 'Unique' })[emailRow]
+    const unique = nth(screen.getAllByRole('button', { name: 'Unique' }), emailRow)
     expect(unique.getAttribute('aria-pressed')).toBe('true')
-    const primary = screen.getAllByRole('button', { name: 'Primary key' })[emailRow]
+    const primary = nth(screen.getAllByRole('button', { name: 'Primary key' }), emailRow)
     expect(primary.getAttribute('aria-pressed')).toBe('false')
     expect(screen.getAllByRole('button', { name: 'Foreign key' })).toHaveLength(columns.length)
     expect(screen.getAllByRole('button', { name: 'Not null' })).toHaveLength(columns.length)
@@ -66,9 +67,9 @@ describe('TableNodeComponent', () => {
     const last = columns.length
 
     fireEvent.change(screen.getByLabelText(`Column ${last} name`), { target: { value: 'mail' } })
-    expect(updateColumn).toHaveBeenCalledWith(tableId, columns[last - 1].id, { name: 'mail' })
+    expect(updateColumn).toHaveBeenCalledWith(tableId, nth(columns, last - 1).id, { name: 'mail' })
 
     fireEvent.click(screen.getByRole('button', { name: `Delete column ${last}` }))
-    expect(deleteColumn).toHaveBeenCalledWith(tableId, columns[last - 1].id)
+    expect(deleteColumn).toHaveBeenCalledWith(tableId, nth(columns, last - 1).id)
   })
 })

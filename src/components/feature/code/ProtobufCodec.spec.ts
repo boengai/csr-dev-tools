@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
 /**
  * Cross-direction isolation invariant spec for ProtobufCodec.
  *
@@ -199,7 +200,7 @@ describe('ProtobufCodec direction-profile isolation', () => {
 
       expect(ctx.onFormatChange).toHaveBeenCalledWith('binary')
       // source should be the latin1 string, not the UTF-8 decoded text
-      const calledSource = ctx.onSourceChange.mock.calls[0][0] as string
+      const calledSource = nth(nth(ctx.onSourceChange.mock.calls, 0), 0) as string
       expect(calledSource).toHaveLength(bytes.length)
       for (let i = 0; i < bytes.length; i++) {
         expect(calledSource.charCodeAt(i)).toBe(bytes[i])

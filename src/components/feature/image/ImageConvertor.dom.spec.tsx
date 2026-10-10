@@ -4,6 +4,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
 import { downloadBlob } from '@/utils/download'
 import { convertImageFormat } from '@/utils/image'
 import { buildZipBlob } from '@/utils/zip'
@@ -67,7 +68,7 @@ describe('ImageConvertor', () => {
     await settle()
 
     expect(buildZipBlob).toHaveBeenCalledOnce()
-    const names = Object.keys(vi.mocked(buildZipBlob).mock.calls[0][0])
+    const names = Object.keys(nth(vi.mocked(buildZipBlob).mock.calls, 0)[0])
     expect(names).toHaveLength(2)
     expect(new Set(names).size).toBe(2)
   })

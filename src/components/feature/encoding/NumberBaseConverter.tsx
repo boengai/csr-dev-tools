@@ -88,7 +88,7 @@ export const NumberBaseConverter = ({ autoOpen, onAfterClose }: ToolComponentPro
                     <span>
                       {field.label} (base {field.base.toString()})
                     </span>
-                    <CopyButton label={field.label} value={values[field.name]} />
+                    <CopyButton label={field.label} value={values[field.name] ?? ''} />
                   </span>
                 }
                 name={field.name}

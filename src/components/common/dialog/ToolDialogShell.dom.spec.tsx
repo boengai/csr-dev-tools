@@ -5,6 +5,8 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { useState } from 'react'
 import { describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { ToolDialogShell } from './ToolDialogShell'
 
 const Harness = ({
@@ -68,7 +70,7 @@ describe('ToolDialogShell', () => {
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
     await waitFor(() => expect(onAfter).toHaveBeenCalledTimes(1))
     expect(onReset).toHaveBeenCalledTimes(1)
-    expect(onReset.mock.invocationCallOrder[0]).toBeLessThan(onAfter.mock.invocationCallOrder[0])
+    expect(nth(onReset.mock.invocationCallOrder, 0)).toBeLessThan(nth(onAfter.mock.invocationCallOrder, 0))
   })
 
   it('does not call onReset on initial mount', () => {

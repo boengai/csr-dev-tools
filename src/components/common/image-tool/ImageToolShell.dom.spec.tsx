@@ -4,6 +4,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type {
   ImageToolShellControlsContext,
   ImageToolShellDownloadContext,
@@ -101,7 +102,7 @@ describe('ImageToolShell — MIME validation', () => {
     const txt = new File(['hi'], 'doc.txt', { type: 'text/plain' })
     uploadFile(container, txt)
     expect(onRejectInvalidFile).toHaveBeenCalledTimes(1)
-    expect((onRejectInvalidFile.mock.calls[0][0] as File).name).toBe('doc.txt')
+    expect((nth(nth(onRejectInvalidFile.mock.calls, 0), 0) as File).name).toBe('doc.txt')
   })
 
   it('does not call onRejectInvalidFile for a valid image', () => {
@@ -121,9 +122,9 @@ describe('ImageToolShell — process pipeline', () => {
       await vi.advanceTimersByTimeAsync(0)
     })
     expect(process).toHaveBeenCalledTimes(1)
-    expect(process.mock.calls[0][0]).toBeInstanceOf(File)
-    expect((process.mock.calls[0][0] as File).name).toBe('photo.png')
-    expect(process.mock.calls[0][1]).toEqual({ k: 7 })
+    expect(nth(nth(process.mock.calls, 0), 0)).toBeInstanceOf(File)
+    expect((nth(nth(process.mock.calls, 0), 0) as File).name).toBe('photo.png')
+    expect(nth(nth(process.mock.calls, 0), 1)).toEqual({ k: 7 })
   })
 
   it('renders renderControls inside the dialog after upload', () => {
@@ -221,9 +222,9 @@ describe('ImageToolShell — process pipeline', () => {
     }
 
     expect(getDownloadFilename).toHaveBeenCalledTimes(1)
-    expect(getDownloadFilename.mock.calls[0][0].sourceName).toBe('cat.png')
+    expect(nth(nth(getDownloadFilename.mock.calls, 0), 0).sourceName).toBe('cat.png')
     expect(anchorClicks).toHaveLength(1)
-    expect(anchorClicks[0].download).toBe('out-cat.png')
+    expect(nth(anchorClicks, 0).download).toBe('out-cat.png')
   })
 
   it('closes the dialog when the close button is clicked', () => {
@@ -282,7 +283,7 @@ describe('ImageToolShell — process pipeline', () => {
       await vi.advanceTimersByTimeAsync(0)
     })
     expect(process).toHaveBeenCalledTimes(2)
-    expect(process.mock.calls[1][1]).toEqual({ k: 2 })
+    expect(nth(nth(process.mock.calls, 1), 1)).toEqual({ k: 2 })
   })
 
   it('renderControls.recompute fires process again with current controls', async () => {
@@ -306,7 +307,7 @@ describe('ImageToolShell — process pipeline', () => {
       await vi.advanceTimersByTimeAsync(0)
     })
     expect(process).toHaveBeenCalledTimes(2)
-    expect(process.mock.calls[1][1]).toEqual({ k: 1 })
+    expect(nth(nth(process.mock.calls, 1), 1)).toEqual({ k: 1 })
   })
 
   it('setControls merges partial into bag, re-fires process with merged controls', async () => {
@@ -332,14 +333,14 @@ describe('ImageToolShell — process pipeline', () => {
     await act(async () => {
       await vi.advanceTimersByTimeAsync(0)
     })
-    expect(process.mock.calls[0][1]).toEqual({ a: 1, b: 2 })
+    expect(nth(nth(process.mock.calls, 0), 1)).toEqual({ a: 1, b: 2 })
 
     await act(async () => {
       captured.setControls?.({ a: 9 })
       await vi.advanceTimersByTimeAsync(0)
     })
     expect(process).toHaveBeenCalledTimes(2)
-    expect(process.mock.calls[1][1]).toEqual({ a: 9, b: 2 })
+    expect(nth(nth(process.mock.calls, 1), 1)).toEqual({ a: 9, b: 2 })
   })
 
   it('setControls composes same-tick partials before re-firing process once', async () => {

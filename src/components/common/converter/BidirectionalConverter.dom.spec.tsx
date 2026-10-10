@@ -4,6 +4,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
 import { narrateParseError } from '@/utils/parse-error-narrators'
 
 import { BidirectionalConverter } from './BidirectionalConverter'
@@ -174,8 +175,8 @@ describe('BidirectionalConverter — compute pipeline', () => {
     })
 
     expect(onError).toHaveBeenCalledTimes(1)
-    expect(onError.mock.calls[0][0]).toBeInstanceOf(Error)
-    expect(onError.mock.calls[0][1]).toBe('a-to-b')
+    expect(nth(nth(onError.mock.calls, 0), 0)).toBeInstanceOf(Error)
+    expect(nth(nth(onError.mock.calls, 0), 1)).toBe('a-to-b')
   })
 
   it('reads per-mode source from localStorage when switching modes via the in-dialog toggle', async () => {
@@ -432,7 +433,7 @@ describe('BidirectionalConverter — parse-error narration', () => {
 
     expect(narrateParseError).toHaveBeenCalledWith('json', '{bad')
     expect(onError).toHaveBeenCalledTimes(1)
-    const thrown = onError.mock.calls[0][0] as Error
+    const thrown = nth(nth(onError.mock.calls, 0), 0) as Error
     expect(thrown.message).toBe('Invalid JSON: unexpected token')
   })
 
@@ -460,7 +461,7 @@ describe('BidirectionalConverter — parse-error narration', () => {
 
     expect(narrateParseError).toHaveBeenCalledWith('json', '[{"a":1}]')
     expect(onError).toHaveBeenCalledTimes(1)
-    const thrown = onError.mock.calls[0][0] as Error
+    const thrown = nth(nth(onError.mock.calls, 0), 0) as Error
     expect(thrown.message).toBe('JSON must be an array of objects')
   })
 
@@ -487,7 +488,7 @@ describe('BidirectionalConverter — parse-error narration', () => {
 
     expect(narrateParseError).not.toHaveBeenCalled()
     expect(onError).toHaveBeenCalledTimes(1)
-    const thrown = onError.mock.calls[0][0] as Error
+    const thrown = nth(nth(onError.mock.calls, 0), 0) as Error
     expect(thrown.message).toBe('boom')
   })
 })

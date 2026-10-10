@@ -40,7 +40,8 @@ export type BidirectionalConverterProps<M extends string, R extends ConvertOutpu
    */
   initialResult: R
   modeStorageKey: string
-  modes: ReadonlyArray<ConverterMode<M>>
+  /** Non-empty: the first mode is the default when nothing is persisted. */
+  modes: ConverterModes<M>
   onAfterClose?: () => void
   onError?: (error: unknown, mode: M) => void
   /**
@@ -60,3 +61,6 @@ export type BidirectionalConverterProps<M extends string, R extends ConvertOutpu
   sourceKeyPrefix?: string
   sourceToolbarSlot?: (props: { mode: M; recompute: () => void }) => ReactNode
 }
+
+/** A non-empty mode list; the first entry is the default when nothing is persisted. */
+export type ConverterModes<M extends string> = readonly [ConverterMode<M>, ...Array<ConverterMode<M>>]

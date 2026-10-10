@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { DiagramEditor } from '@/diagram/editor'
 import { createInMemoryDiagramStorage } from '@/diagram/storage'
+import { nth } from '@/test/nth'
 
 import { DiagramProvider } from './DiagramContext'
 import { DiagramListPanel } from './DiagramListPanel'
@@ -27,7 +28,7 @@ describe('DiagramListPanel — diagram index subscription', () => {
       editor.addTable({ name: 'users' })
       vi.advanceTimersByTime(1000)
     })
-    const [entry] = editor.listDiagrams()
+    const entry = nth(editor.listDiagrams(), 0)
 
     renderPanel(editor)
     expect(screen.getByText(entry.name)).toBeInTheDocument()
@@ -39,7 +40,7 @@ describe('DiagramListPanel — diagram index subscription', () => {
       editor.addTable({ name: 'users' })
       vi.advanceTimersByTime(1000)
     })
-    const [entry] = editor.listDiagrams()
+    const entry = nth(editor.listDiagrams(), 0)
     renderPanel(editor)
 
     act(() => {

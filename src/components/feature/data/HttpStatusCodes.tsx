@@ -81,7 +81,7 @@ export const HttpStatusCodes = ({ autoOpen, onAfterClose }: ToolComponentProps) 
           ) : (
             filtered.map((code, i) => (
               <div key={code.code}>
-                {!category && (i === 0 || filtered[i - 1].category !== code.category) && (
+                {!category && filtered[i - 1]?.category !== code.category && (
                   <p
                     className={cnMerge(
                       sectionHeaderStyles({ spaced: i > 0 }),

@@ -111,7 +111,7 @@ export const PlaceholderImageGenerator = ({ autoOpen, onAfterClose }: ToolCompon
   const handleTextColorHexChange = (val: string) => dispatch({ type: 'SET_TEXT_COLOR_HEX', value: val })
 
   const handlePresetChange = (val: string) => {
-    const [w, h] = val.split('x')
+    const [w = '', h = ''] = val.split('x')
     dispatch({ type: 'SET_PRESET', height: h, width: w })
   }
 

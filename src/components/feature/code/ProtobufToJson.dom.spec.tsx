@@ -4,6 +4,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type { ProtobufMessageInfo, ProtobufParseResult } from '@/types'
 import * as parsers from '@/wasm/parsers'
 
@@ -153,7 +154,7 @@ describe('ProtobufToJson', () => {
     vi.mocked(parsers.parseProtobufSchema).mockImplementation(async () => {
       const result = parsed()
       if (!result.success) return result
-      result.schema.messages[0].fields.push({
+      nth(result.schema.messages, 0).fields.push({
         description: null,
         id: 2,
         isMap: false,
@@ -221,7 +222,7 @@ describe('ProtobufToJson', () => {
     await flush()
 
     expect(writeText).toHaveBeenCalledOnce()
-    const copied = writeText.mock.calls[0][0] as string
+    const copied = nth(nth(writeText.mock.calls, 0), 0) as string
     expect(JSON.parse(copied)).toEqual({ status: 'UNKNOWN' })
   })
 })

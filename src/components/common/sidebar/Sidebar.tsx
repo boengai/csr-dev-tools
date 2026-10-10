@@ -23,7 +23,10 @@ const sidebarNavStyles = tv({
 
 // TOOL_REGISTRY is static, so grouping happens once at module load.
 const GROUPED_TOOLS = groupToolsByCategory(TOOL_REGISTRY)
-const VISIBLE_CATEGORIES = CATEGORY_ORDER.filter((category) => GROUPED_TOOLS[category])
+const VISIBLE_CATEGORIES = CATEGORY_ORDER.flatMap((category) => {
+  const tools = GROUPED_TOOLS[category]
+  return tools ? [{ category, tools }] : []
+})
 
 /**
  * Modal navigation drawer built on Radix Dialog (like CommandPalette): Radix
@@ -86,9 +89,9 @@ export const Sidebar = () => {
                   <div className="mb-2 px-1">
                     <SidebarHomeItem />
                   </div>
-                  {VISIBLE_CATEGORIES.map((category) => (
+                  {VISIBLE_CATEGORIES.map(({ category, tools }) => (
                     <SidebarCategory categoryName={category} key={category}>
-                      {GROUPED_TOOLS[category].map((tool) => (
+                      {tools.map((tool) => (
                         <li key={tool.key}>
                           <SidebarToolItem emoji={tool.emoji} name={tool.name} routePath={tool.routePath} />
                         </li>

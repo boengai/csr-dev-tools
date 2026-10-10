@@ -80,10 +80,10 @@ beforeEach(() => {
       enums: [],
       package: '',
       syntax: 'proto3',
-      messages: [...schema.matchAll(/message (\w+)/g)].map((m) => ({
+      messages: [...schema.matchAll(/message (\w+)/g)].map(([, name = '']) => ({
         fields: [],
-        fullName: m[1],
-        name: m[1],
+        fullName: name,
+        name,
         nestedEnums: [],
         nestedMessages: [],
         oneofs: [],

@@ -51,6 +51,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterClose }: ToolComponentProps
     { ...DEFAULT_ITEM, _id: 2 },
   ])
   const [selectedItem, setSelectedItem] = useState<number | null>(null)
+  const selected = selectedItem === null ? undefined : items[selectedItem]
 
   const { containerCss, itemsCss } = generateFlexboxCss(container, items)
 
@@ -157,7 +158,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterClose }: ToolComponentProps
             </button>
           </div>
 
-          {selectedItem !== null && (
+          {selectedItem !== null && selected && (
             <div className="flex flex-col gap-2 rounded border border-gray-800 bg-gray-950 p-3">
               <span className="text-body-sm font-medium text-gray-300">Item {selectedItem + 1}</span>
               <FieldForm
@@ -167,7 +168,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterClose }: ToolComponentProps
                 name={`fb-item-grow-${selectedItem}`}
                 onChange={(val: string) => updateItem(selectedItem, 'flexGrow', val)}
                 type="range"
-                value={String(items[selectedItem].flexGrow)}
+                value={String(selected.flexGrow)}
               />
               <FieldForm
                 label="flex-shrink"
@@ -176,7 +177,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterClose }: ToolComponentProps
                 name={`fb-item-shrink-${selectedItem}`}
                 onChange={(val: string) => updateItem(selectedItem, 'flexShrink', val)}
                 type="range"
-                value={String(items[selectedItem].flexShrink)}
+                value={String(selected.flexShrink)}
               />
               <FieldForm
                 label="order"
@@ -185,7 +186,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterClose }: ToolComponentProps
                 name={`fb-item-order-${selectedItem}`}
                 onChange={(val: string) => updateItem(selectedItem, 'order', val)}
                 type="range"
-                value={String(items[selectedItem].order)}
+                value={String(selected.order)}
               />
             </div>
           )}

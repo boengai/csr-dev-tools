@@ -2,6 +2,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { CombinePdf } from './CombinePdf'
 
 vi.mock('@/utils/combine-pdf', async () => ({
@@ -76,7 +78,7 @@ describe('CombinePdf (per-page)', () => {
 
     const removeBtns = screen.getAllByRole('button', { name: /Remove a\.pdf page/i })
     expect(removeBtns.length).toBe(2)
-    fireEvent.click(removeBtns[0])
+    fireEvent.click(nth(removeBtns, 0))
 
     await waitFor(() => expect(screen.getAllByText(/^p[12]$/).length).toBe(1))
   })

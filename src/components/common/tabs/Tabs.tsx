@@ -10,7 +10,7 @@ export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
   const [indicator, setIndicator] = useState({ translateX: 0, width: 30 })
   // Tracks the active tab when uncontrolled (no `injected`); controlled
   // callers own the value and this state is ignored.
-  const [uncontrolledValue, setUncontrolledValue] = useState(() => defaultValue ?? items[0].value)
+  const [uncontrolledValue, setUncontrolledValue] = useState(() => defaultValue ?? items[0]?.value ?? '')
   const value = injected?.value ?? uncontrolledValue
 
   const navTriggers = useMemo(() => {

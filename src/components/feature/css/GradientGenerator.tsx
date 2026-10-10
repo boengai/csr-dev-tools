@@ -51,7 +51,8 @@ export const GradientGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps
         ...prev.stops,
         {
           _id: nextStopId.current++,
-          color: ITEM_COLORS[prev.stops.length % ITEM_COLORS.length],
+          // Modulo keeps the index inside the non-empty palette.
+          color: ITEM_COLORS[prev.stops.length % ITEM_COLORS.length]!,
           position: 50,
         },
       ],

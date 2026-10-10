@@ -179,7 +179,9 @@ export const ImageConvertor = () => {
         downloadBlob(blob, fileName)
         downloadTargetRef.current = { blob, filename: fileName }
       } else {
-        const [[key, dataUrl]] = Object.entries(formattedImages)
+        const [single] = Object.entries(formattedImages)
+        if (!single) throw new Error('No converted image to download')
+        const [key, dataUrl] = single
         fileName = key
         downloadTargetRef.current = { dataUrl, filename: fileName }
         const blob = await parseDataUrlToBlob(dataUrl)

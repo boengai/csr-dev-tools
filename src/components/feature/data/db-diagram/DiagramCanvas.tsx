@@ -88,7 +88,8 @@ export const DiagramCanvas = () => {
 
   const tableIndex = useMemo(() => new Map(document.tableOrder.map((id, i) => [id, i])), [document.tableOrder])
   const minimapNodeColor = useCallback(
-    (node: { id: string }) => MINIMAP_PALETTE[(tableIndex.get(node.id) ?? 0) % MINIMAP_PALETTE.length],
+    // Modulo keeps the index inside the non-empty palette.
+    (node: { id: string }) => MINIMAP_PALETTE[(tableIndex.get(node.id) ?? 0) % MINIMAP_PALETTE.length]!,
     [tableIndex],
   )
 

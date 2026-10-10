@@ -4,6 +4,8 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { UploadDialogFrame } from './UploadDialogFrame'
 
 const fileOf = (name: string, type = 'image/png') => new File(['x'], name, { type })
@@ -39,8 +41,8 @@ describe('UploadDialogFrame', () => {
     fireEvent.change(input, { target: { files: [fileOf('a.png')] } })
 
     expect(onUpload).toHaveBeenCalledTimes(1)
-    expect(onUpload.mock.calls[0][0][0].name).toBe('a.png')
-    expect(typeof onUpload.mock.calls[0][1]).toBe('function')
+    expect(nth(nth(onUpload.mock.calls, 0)[0], 0).name).toBe('a.png')
+    expect(typeof nth(nth(onUpload.mock.calls, 0), 1)).toBe('function')
 
     // openDialog has not been called → dialog body still hidden
     expect(screen.queryByText('dialog body')).toBeNull()
@@ -71,7 +73,7 @@ describe('UploadDialogFrame', () => {
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
     expect(onReset).toHaveBeenCalledTimes(1)
     expect(onAfterClose).toHaveBeenCalledTimes(1)
-    expect(onReset.mock.invocationCallOrder[0]).toBeLessThan(onAfterClose.mock.invocationCallOrder[0])
+    expect(nth(onReset.mock.invocationCallOrder, 0)).toBeLessThan(nth(onAfterClose.mock.invocationCallOrder, 0))
   })
 
   it('omits the description when not provided', () => {

@@ -1,11 +1,11 @@
 import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, EnvConvertMode, EnvResult, ToolComponentProps } from '@/types'
+import type { ConverterModes, EnvConvertMode, EnvResult, ToolComponentProps } from '@/types'
 import { envToJson, envToYaml, jsonToEnv, yamlToEnv } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['env-file-converter']
 
-const MODES: ReadonlyArray<ConverterMode<EnvConvertMode>> = [
+const MODES: ConverterModes<EnvConvertMode> = [
   {
     key: 'env-to-json',
     label: '.env → JSON',

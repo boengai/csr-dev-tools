@@ -49,7 +49,7 @@ const UnixTimestampSection = () => {
   // Example timestamp for the placeholder, captured once on mount (an impure
   // `Date.now()` in render would change on every keystroke re-render).
   const [placeholder] = useState(() => Date.now().toString())
-  const { input, result, setInput } = useToolInput<string, Array<string>>({
+  const { input, result, setInput } = useToolInput<string, [format: string, gmt: string, local: string] | null>({
     compute: (source) => {
       if (!isValidTimestamp(source)) throw new Error('Enter a valid Unix timestamp (e.g., 1700000000)')
       const inputNumber = Number(source)
@@ -61,7 +61,7 @@ const UnixTimestampSection = () => {
     debounceMs: 300,
     errorFallback: 'Enter a valid Unix timestamp (e.g., 1700000000)',
     initial: '',
-    initialResult: [],
+    initialResult: null,
     isEmpty: (source) => source.length === 0,
   })
 
@@ -82,7 +82,7 @@ const UnixTimestampSection = () => {
       </p>
       <div aria-live="polite">
         <AnimatePresence mode="wait">
-          {result.length > 0 && (
+          {result && (
             <DataCellTable
               rows={[
                 { label: 'Format', render: renderWithCopy('Format'), value: result[0] },
@@ -109,7 +109,7 @@ const DateSection = () => {
       year: d.getFullYear().toString(),
     }
   })
-  const [result, setResult] = useState<Array<string>>(() => {
+  const [result, setResult] = useState<[timestamp: string, gmt: string, local: string]>(() => {
     const d = new Date()
     return [Math.floor(d.getTime() / 1000).toString(), d.toUTCString(), d.toString()]
   })
