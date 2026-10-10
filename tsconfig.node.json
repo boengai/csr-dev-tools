@@ -20,6 +20,7 @@
     "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+    "noUncheckedIndexedAccess": true,
     "types": ["node"]
   },
   "include": ["playwright.config.ts", "vite.config.ts", "vite-plugins/**/*.ts", "vitest.config.ts"]
