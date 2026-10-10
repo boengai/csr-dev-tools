@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { initializeMermaid, renderMermaid } from '@/utils'
+import { initializeMermaid, renderMermaid } from './mermaid-renderer'
 
 vi.mock('mermaid', () => ({
   default: {

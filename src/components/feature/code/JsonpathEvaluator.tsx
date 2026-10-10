@@ -15,7 +15,7 @@ import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFieldsPersisted } from '@/hooks'
 import type { JsonPathEvalInput, JsonPathEvalResult, ToolComponentProps } from '@/types'
-import { createCachedJsonParser, evaluateJsonPath, formatResultValue } from '@/utils'
+import { createCachedJsonParser, evaluateJsonPath, formatResultValue } from '@/utils/jsonpath-evaluator'
 
 const toolEntry = TOOL_REGISTRY_MAP['jsonpath-evaluator']
 

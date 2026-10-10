@@ -6,7 +6,8 @@ import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDownload, useMountOnce, useToast, useToolComputationPersisted } from '@/hooks'
 import type { MermaidComputeResult, ToolComponentProps } from '@/types'
-import { consumeHandoff, initializeMermaid, renderMermaid, suggestMermaidFix, svgToPng } from '@/utils'
+import { consumeHandoff, suggestMermaidFix } from '@/utils'
+import { initializeMermaid, renderMermaid, svgToPng } from '@/utils/mermaid-renderer'
 
 const toolEntry = TOOL_REGISTRY_MAP['mermaid-renderer']
 

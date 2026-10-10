@@ -4,7 +4,7 @@ import { SortableCard } from '@/components/common'
 import { SortablePdfShell } from '@/components/common/pdf'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
-import { combinePdfPages, readPdfPages } from '@/utils'
+import { combinePdfPages, readPdfPages } from '@/utils/combine-pdf'
 
 const toolEntry = TOOL_REGISTRY_MAP['combine-pdf']
 

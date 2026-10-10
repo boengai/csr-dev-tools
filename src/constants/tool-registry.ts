@@ -1,7 +1,7 @@
 import { lazy } from 'react'
 
 import type { ToolCategory, ToolComponentLoader, ToolRegistryEntry, ToolRegistryKey } from '@/types'
-import { loadNamed } from '@/utils'
+import { loadNamed } from '@/utils/load-named'
 
 import { TOOL_ROUTES } from './tool-routes'
 

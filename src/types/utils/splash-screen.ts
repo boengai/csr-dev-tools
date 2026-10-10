@@ -1,4 +1,4 @@
-import type { SplashScreenDevice } from '@/constants'
+import type { SplashScreenDevice } from '@/types/constants/splash-screen'
 
 export type SplashScreenResult = {
   blob: Blob

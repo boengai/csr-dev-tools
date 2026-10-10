@@ -3,7 +3,8 @@ import { SortablePdfShell } from '@/components/common/pdf'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useBlobUrl } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { formatFileSize, imagesToPdf, type ImageToPdfInput } from '@/utils'
+import { formatFileSize } from '@/utils'
+import { imagesToPdf, type ImageToPdfInput } from '@/utils/image-to-pdf'
 
 const toolEntry = TOOL_REGISTRY_MAP['image-to-pdf']
 

@@ -2,8 +2,8 @@ import { FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFieldsPersisted } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import { type ValidationResult, validateJsonSchema } from '@/utils'
+import type { ToolComponentProps, ValidationResult } from '@/types'
+import { validateJsonSchema } from '@/utils/json-schema'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-schema-validator']
 
