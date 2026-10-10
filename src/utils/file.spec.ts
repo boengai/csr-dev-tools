@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { formatFileSize, parseFileName } from './file'
+import { dedupeFileName, formatFileSize, parseFileName } from './file'
 
 describe('parseFileName', () => {
   beforeEach(() => {
@@ -54,5 +54,21 @@ describe('formatFileSize', () => {
   it('renders 1MB and above with one decimal of MB', () => {
     expect(formatFileSize(1024 * 1024)).toBe('1.0 MB')
     expect(formatFileSize(1024 * 1024 * 2.5)).toBe('2.5 MB')
+  })
+})
+
+describe('dedupeFileName', () => {
+  it('returns the name unchanged when free', () => {
+    expect(dedupeFileName('a.webp', () => false)).toBe('a.webp')
+  })
+
+  it('suffixes the stem with the first free counter', () => {
+    const taken = new Set(['a.webp', 'a-1.webp'])
+    expect(dedupeFileName('a.webp', (n) => taken.has(n))).toBe('a-2.webp')
+  })
+
+  it('handles names without an extension and dotfiles', () => {
+    expect(dedupeFileName('README', (n) => n === 'README')).toBe('README-1')
+    expect(dedupeFileName('.env', (n) => n === '.env')).toBe('.env-1')
   })
 })
