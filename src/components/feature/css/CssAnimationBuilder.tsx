@@ -118,6 +118,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
                   {/* raw button: micro-sized icon (text-body-xs), smaller than Button size="small" floor */}
                   {config.keyframes.length > 2 && (
                     <button
+                      aria-label={`Remove keyframe ${i + 1}`}
                       className="text-red-400 hover:text-red-300 text-body-xs"
                       onClick={() => removeKeyframe(i)}
                       type="button"

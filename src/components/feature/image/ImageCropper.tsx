@@ -3,6 +3,7 @@ import { useRef, useState } from 'react'
 import 'react-image-crop/dist/ReactCrop.css'
 import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop'
 
+import { ToggleButton } from '@/components/common'
 import { ImageToolShell } from '@/components/common/image-tool'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
@@ -14,18 +15,7 @@ import {
   getAspectRatio,
   getDefaultCrop,
   scaleCropToNatural,
-  tv,
 } from '@/utils'
-
-const aspectButtonStyles = tv({
-  base: 'rounded-md px-3 py-1.5 text-body-sm transition-colors',
-  variants: {
-    active: {
-      true: 'text-primary-foreground bg-primary',
-      false: 'bg-surface-secondary hover:bg-surface-tertiary text-gray-300',
-    },
-  },
-})
 
 const toolEntry = TOOL_REGISTRY_MAP['image-cropper']
 
@@ -85,8 +75,7 @@ export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
       renderControls={({ controls, setControls }) => (
         <div className="flex shrink-0 flex-wrap items-center justify-center gap-2">
           {ASPECT_RATIO_OPTIONS.map((option) => (
-            <button
-              className={aspectButtonStyles({ active: controls.aspectPreset === option.value })}
+            <ToggleButton
               key={option.value}
               onClick={() => {
                 const img = imgRef.current
@@ -101,10 +90,11 @@ export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
                 setCrop(next)
                 setControls({ aspectPreset: option.value, naturalCrop: captureNaturalCrop(next) })
               }}
-              type="button"
+              pressed={controls.aspectPreset === option.value}
+              variant="subtle"
             >
               {option.label}
-            </button>
+            </ToggleButton>
           ))}
           {controls.naturalCrop && (
             <>
