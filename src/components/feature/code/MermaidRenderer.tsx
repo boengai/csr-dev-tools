@@ -45,7 +45,7 @@ const computeMermaid = async (input: string): Promise<MermaidComputeResult> => {
 
 export const MermaidRenderer = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [exportingPng, setExportingPng] = useState(false)
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
   const { downloadDataUrl, downloadSvg } = useDownload()
 
   const {

@@ -76,7 +76,7 @@ export const ProtobufToJson = ({ autoOpen, onAfterClose }: ToolComponentProps) =
   // generated from so a reparse (new object identity) never shows a stale one.
   const [sample, setSample] = useState<ProtobufSampleJson | null>(null)
   const newSession = useStaleSafeAsync()
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
 
   const {
     input,

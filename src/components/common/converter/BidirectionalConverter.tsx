@@ -35,7 +35,7 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
     `csr-dev-tools-${modeStorageKey}-mode`,
     modes[0].key,
   )
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
 
   // Initial bag is captured once on mount (lazy initializer); mode changes
   // after that are routed through setFieldsImmediate.

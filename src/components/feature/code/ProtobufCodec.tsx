@@ -195,7 +195,8 @@ const ProtobufContent = ({
   selectedMessageType,
   source,
 }: ProtobufContentProps) => {
-  const { showError, showSuccess } = useToast()
+  const showError = useToast((s) => s.showError)
+  const showSuccess = useToast((s) => s.showSuccess)
   const { downloadBlob } = useDownload()
   const profile = DIRECTION_PROFILES[direction]
 
@@ -397,7 +398,7 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
   // The user's explicit pick; the effective selection is derived against the
   // latest parse so a schema edit keeps the pick while it still exists.
   const [chosenMessageType, setChosenMessageType] = useState('')
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
 
   const update = useCallback(
     (patch: Partial<PersistedState>) => {

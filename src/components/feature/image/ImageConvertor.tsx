@@ -69,7 +69,7 @@ export const ImageConvertor = () => {
   const downloadTargetRef = useRef<DownloadTarget | null>(null)
 
   // hooks
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
   const { downloadBlob } = useDownload()
   // A run is invalidated by a newer run, a reset, or unmount — after each
   // await, a stale run stops before dispatching or auto-downloading.

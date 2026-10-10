@@ -9,7 +9,7 @@ import { type PickedColor, getReadableContext2d, loadImageFromBlob, rafThrottle,
 
 const toolEntry = TOOL_REGISTRY_MAP['image-color-picker']
 export const ImageColorPicker = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
   const [imageFile, setImageFile] = useState<File | null>(null)
   const nextColorId = useRef(0)
   const [palette, setPalette] = useState<Array<PickedColorWithId>>([])

@@ -9,7 +9,7 @@ import {
 import { useToast } from './state'
 
 export const useDownload = (): UseDownload => {
-  const { showSuccess } = useToast()
+  const showSuccess = useToast((s) => s.showSuccess)
 
   return {
     downloadBlob: (blob, filename) => {

@@ -34,7 +34,7 @@ const INITIAL_CONTROLS: CropControls = { aspectPreset: 'free', naturalCrop: null
 export const ImageCropper = ({ onAfterClose }: ToolComponentProps) => {
   const imgRef = useRef<HTMLImageElement | null>(null)
   const [crop, setCrop] = useState<Crop | undefined>(undefined)
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
 
   const captureNaturalCrop = (displayCrop: PixelCrop) => {
     const img = imgRef.current

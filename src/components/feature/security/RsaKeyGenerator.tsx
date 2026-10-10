@@ -17,7 +17,8 @@ const KEY_SIZES: Array<{ label: string; value: RsaKeySize }> = [
 
 export const RsaKeyGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [keySize, setKeySize] = useState<RsaKeySize>(2048)
-  const { showError, showSuccess } = useToast()
+  const showError = useToast((s) => s.showError)
+  const showSuccess = useToast((s) => s.showSuccess)
   const { downloadPemFile } = useDownload()
 
   const {

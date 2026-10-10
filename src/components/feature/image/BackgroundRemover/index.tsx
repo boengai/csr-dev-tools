@@ -21,7 +21,7 @@ const INITIAL_CONTROLS: BgControls = { bgOption: 'transparent', customColor: '#f
 
 export const BackgroundRemover = ({ onAfterClose }: ToolComponentProps) => {
   const strippedCacheRef = useRef<{ file: File; stripped: Blob } | null>(null)
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
 
   const process = useCallback(async (file: File, { bgOption: bg, customColor: c }: BgControls) => {
     let stripped = strippedCacheRef.current?.file === file ? strippedCacheRef.current.stripped : null

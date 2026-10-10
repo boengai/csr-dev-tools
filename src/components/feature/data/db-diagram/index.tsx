@@ -94,7 +94,7 @@ const DiagramWorkspace = () => {
   const editor = useMemo(() => new DiagramEditor(), [])
   const [activePanel, setActivePanel] = useState<SidePanel>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
   const { downloadBlob } = useDownload()
 
   useEffect(() => {

@@ -23,7 +23,7 @@ const INITIAL_INPUT: CompressInput = { file: null, quality: 80 }
 const PROGRESS_THRESHOLD_MS = 300
 
 export const ImageCompressor = () => {
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
   const { downloadDataUrl } = useDownload()
   const progressTimer = useTimeoutRef()
   const [showProgress, setShowProgress] = useState(false)

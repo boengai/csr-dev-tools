@@ -71,7 +71,7 @@ const INVALID_HASH_MESSAGE =
 const HashTab = ({ onProcessingChange }: BcryptTabProps) => {
   const [password, setPassword] = useState('')
   const [rounds, setRounds] = useState('10')
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
   const passwordVisibility = usePasswordVisibility()
 
   const {
@@ -189,7 +189,7 @@ const HashTab = ({ onProcessingChange }: BcryptTabProps) => {
 const VerifyTab = ({ onProcessingChange }: BcryptTabProps) => {
   const [password, setPassword] = useState('')
   const [hashInput, setHashInput] = useState('')
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
   const passwordVisibility = usePasswordVisibility()
 
   const {

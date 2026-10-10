@@ -61,7 +61,7 @@ const toolEntry = TOOL_REGISTRY_MAP['color-converter']
 
 export const ColorConvertor = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [color, setColor] = useState<Record<ColorFormat, string>>(emptyColors)
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
 
   const {
     result: converted,

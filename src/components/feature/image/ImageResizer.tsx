@@ -27,7 +27,7 @@ const INITIAL_CONTROLS: ResizeControls = {
 }
 
 export const ImageResizer = ({ onAfterClose }: ToolComponentProps) => {
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
 
   const process = async (file: File, c: ResizeControls): Promise<Blob | null> => {
     if (!c.width || !c.height || !c.format) return null

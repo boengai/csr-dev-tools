@@ -12,7 +12,7 @@ const toolEntry = TOOL_REGISTRY_MAP['image-to-base64']
 
 export const ImageToBase64 = ({ onAfterClose }: ToolComponentProps) => {
   const [result, setResult] = useState<ImageBase64Result | null>(null)
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
 
   const handleUpload = async (files: Array<File>, openDialog: () => void) => {
     const file = files[0]

@@ -18,7 +18,7 @@ const getMimeExtension = (mimeType: string): string => {
 }
 
 export const DataUriGenerator = ({ onAfterClose }: ToolComponentProps) => {
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
   const { downloadBlob } = useDownload()
 
   const [encodeOpen, setEncodeOpen] = useState(false)

@@ -8,7 +8,8 @@ import { jsonToTypeScript } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['json-to-typescript']
 
 export const JsonToTypeScript = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const { showError, showSuccess } = useToast()
+  const showError = useToast((s) => s.showError)
+  const showSuccess = useToast((s) => s.showSuccess)
 
   const {
     inputs,

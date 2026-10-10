@@ -94,7 +94,7 @@ const reducer = (state: PlaceholderImageState, action: PlaceholderImageAction): 
 export const PlaceholderImageGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const { bgColor, bgHexInput, height, text, textColor, textHexInput, width } = state
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
   const { downloadBlob, downloadSvg } = useDownload()
 
   const previewUri = useMemo(() => {

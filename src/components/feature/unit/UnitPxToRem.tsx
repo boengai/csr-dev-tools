@@ -14,7 +14,7 @@ const INITIAL_BAG = { base: '16', lastEdited: 'px' as PxRemLastEdited, px: '', r
 const INVALID_BASE_MSG = 'Base font size must be a positive number (e.g., 16)'
 
 export const UnitPxToRem = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
   const [fields, setFields] = useState(INITIAL_BAG)
 
   const { result, setInput, setInputImmediate } = useToolComputation<PxRemInput, PxRemOutput | null>(solvePxRem, {

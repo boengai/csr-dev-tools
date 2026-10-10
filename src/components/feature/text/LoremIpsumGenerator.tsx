@@ -19,7 +19,7 @@ export const LoremIpsumGenerator = ({ autoOpen, onAfterClose }: ToolComponentPro
   const [unit, setUnit] = useState<LoremUnit>('paragraphs')
   const [startWithLorem, setStartWithLorem] = useState(true)
   const [output, setOutput] = useState(() => generateLoremIpsum(3, 'paragraphs', true))
-  const { showSuccess } = useToast()
+  const showSuccess = useToast((s) => s.showSuccess)
 
   const handleGenerate = () => {
     setOutput(generateLoremIpsum(count, unit, startWithLorem))

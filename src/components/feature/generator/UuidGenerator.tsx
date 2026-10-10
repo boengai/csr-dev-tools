@@ -11,7 +11,7 @@ const toolEntry = TOOL_REGISTRY_MAP['uuid-generator']
 
 export const UuidGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [count, setCount] = useState(1)
-  const { showSuccess } = useToast()
+  const showSuccess = useToast((s) => s.showSuccess)
 
   const { result, run } = useAsyncAction<Array<string>>(() => generateBulkUuids(count))
   const uuids = result ?? []

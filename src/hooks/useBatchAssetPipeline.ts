@@ -57,7 +57,8 @@ export function useBatchAssetPipeline<TResults>(
   // Separate counter for uploads: a newer upload supersedes an older decode
   // still in flight, without a rejected upload cancelling a running regenerate.
   const newUploadSession = useStaleSafeAsync()
-  const { showError, showSuccess } = useToast()
+  const showError = useToast((s) => s.showError)
+  const showSuccess = useToast((s) => s.showSuccess)
 
   const upload = useCallback(
     async (files: Array<File>): Promise<boolean> => {

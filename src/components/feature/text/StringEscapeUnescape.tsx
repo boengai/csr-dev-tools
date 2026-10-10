@@ -20,7 +20,7 @@ type EscapeInput = { direction: Direction; mode: EscapeMode; source: string }
 const INITIAL_INPUT: EscapeInput = { direction: 'escape', mode: 'html', source: '' }
 
 export const StringEscapeUnescape = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
 
   const { inputs, reset, result, setFields, setFieldsImmediate } = useToolFields<EscapeInput, string>({
     compute: ({ direction: dir, mode: m, source: val }) =>
