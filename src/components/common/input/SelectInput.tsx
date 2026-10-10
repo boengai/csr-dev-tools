@@ -35,8 +35,11 @@ export const SelectInput = ({
 }: SelectInputProps) => {
   const wrapperClassName = inputVariants({ block, size })
 
+  // Always controlled: Radix treats '' as "nothing selected" and shows the placeholder, so a
+  // caller whose value starts undefined (e.g. no format picked yet) doesn't flip the Root from
+  // uncontrolled to controlled on its first selection.
   return (
-    <Root disabled={disabled} name={name} onValueChange={onChange} value={value}>
+    <Root disabled={disabled} name={name} onValueChange={onChange} value={value ?? ''}>
       <Trigger
         aria-label={ariaLabel}
         aria-labelledby={ariaLabelledBy}
