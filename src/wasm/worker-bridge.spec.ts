@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type { WorkerResponse } from '@/types/wasm/worker-bridge'
 
 import { createWorkerBridge, isWorkerAbortError, WorkerAbortError } from './worker-bridge'
@@ -79,11 +80,11 @@ describe('createWorkerBridge', () => {
     const { bridge, workers } = setup()
 
     const p = bridge.call<string>({ x: 42 })
-    const posted = workers[0].posted[0] as { x: number; id: number }
+    const posted = nth(workers, 0).posted[0] as { x: number; id: number }
     expect(posted.x).toBe(42)
     expect(typeof posted.id).toBe('number')
 
-    workers[0].deliver<string>({ id: posted.id, result: 'ok' })
+    nth(workers, 0).deliver<string>({ id: posted.id, result: 'ok' })
     await expect(p).resolves.toBe('ok')
   })
 
@@ -93,13 +94,13 @@ describe('createWorkerBridge', () => {
     const p1 = bridge.call<string>({ x: 1 })
     const p2 = bridge.call<string>({ x: 2 })
 
-    const id1 = (workers[0].posted[0] as { id: number }).id
-    const id2 = (workers[0].posted[1] as { id: number }).id
+    const id1 = (nth(workers, 0).posted[0] as { id: number }).id
+    const id2 = (nth(workers, 0).posted[1] as { id: number }).id
     expect(id1).not.toBe(id2)
 
     // Deliver in reverse order on purpose
-    workers[0].deliver<string>({ id: id2, result: 'second' })
-    workers[0].deliver<string>({ id: id1, result: 'first' })
+    nth(workers, 0).deliver<string>({ id: id2, result: 'second' })
+    nth(workers, 0).deliver<string>({ id: id1, result: 'first' })
 
     await expect(p1).resolves.toBe('first')
     await expect(p2).resolves.toBe('second')
@@ -110,11 +111,11 @@ describe('createWorkerBridge', () => {
 
     const p1 = bridge.call<string>({ x: 1 })
     const p2 = bridge.call<string>({ x: 2 })
-    expect(workers[0].listenerCount('message')).toBe(1)
+    expect(nth(workers, 0).listenerCount('message')).toBe(1)
     expect(bridge.hasPending()).toBe(true)
 
-    workers[0].deliver<string>({ id: (workers[0].posted[0] as { id: number }).id, result: 'a' })
-    workers[0].deliver<string>({ id: (workers[0].posted[1] as { id: number }).id, result: 'b' })
+    nth(workers, 0).deliver<string>({ id: (nth(workers, 0).posted[0] as { id: number }).id, result: 'a' })
+    nth(workers, 0).deliver<string>({ id: (nth(workers, 0).posted[1] as { id: number }).id, result: 'b' })
     await Promise.all([p1, p2])
 
     expect(bridge.hasPending()).toBe(false)
@@ -124,11 +125,11 @@ describe('createWorkerBridge', () => {
     const { bridge, workers } = setup()
 
     const p = bridge.call<string>({ x: 1 })
-    const id = lastId(workers[0])
+    const id = lastId(nth(workers, 0))
 
-    workers[0].deliver<string>({ id: id + 999, result: 'stray' })
+    nth(workers, 0).deliver<string>({ id: id + 999, result: 'stray' })
     expect(bridge.hasPending()).toBe(true)
-    workers[0].deliver<string>({ id, result: 'ok' })
+    nth(workers, 0).deliver<string>({ id, result: 'ok' })
 
     await expect(p).resolves.toBe('ok')
   })
@@ -136,8 +137,8 @@ describe('createWorkerBridge', () => {
   it('ignores malformed messages without throwing', async () => {
     const { bridge, workers } = setup()
     const p = bridge.call<string>({ x: 1 })
-    workers[0].deliver({ nope: true } as unknown as WorkerResponse<string>)
-    workers[0].deliver<string>({ id: lastId(workers[0]), result: 'ok' })
+    nth(workers, 0).deliver({ nope: true } as unknown as WorkerResponse<string>)
+    nth(workers, 0).deliver<string>({ id: lastId(nth(workers, 0)), result: 'ok' })
     await expect(p).resolves.toBe('ok')
   })
 
@@ -145,7 +146,7 @@ describe('createWorkerBridge', () => {
     const { bridge, workers } = setup()
 
     const p = bridge.call<string>({ x: 1 })
-    workers[0].deliver<string>({ id: lastId(workers[0]), error: 'Input too large (300000 bytes).' })
+    nth(workers, 0).deliver<string>({ id: lastId(nth(workers, 0)), error: 'Input too large (300000 bytes).' })
 
     await expect(p).rejects.toThrow('Input too large (300000 bytes).')
     expect(bridge.hasPending()).toBe(false)
@@ -157,14 +158,14 @@ describe('createWorkerBridge', () => {
     const onB = vi.fn()
 
     const pA = bridge.call<string>({ x: 1 }, { onProgress: onA })
-    const idA = lastId(workers[0])
+    const idA = lastId(nth(workers, 0))
     const pB = bridge.call<string>({ x: 2 }, { onProgress: onB })
-    const idB = lastId(workers[0])
+    const idB = lastId(nth(workers, 0))
 
-    workers[0].deliver({ id: idA, progress: 25 })
-    workers[0].deliver({ id: idB, progress: 75 })
-    workers[0].deliver<string>({ id: idA, result: 'a' })
-    workers[0].deliver<string>({ id: idB, result: 'b' })
+    nth(workers, 0).deliver({ id: idA, progress: 25 })
+    nth(workers, 0).deliver({ id: idB, progress: 75 })
+    nth(workers, 0).deliver<string>({ id: idA, result: 'a' })
+    nth(workers, 0).deliver<string>({ id: idB, result: 'b' })
 
     await expect(pA).resolves.toBe('a')
     await expect(pB).resolves.toBe('b')
@@ -176,7 +177,7 @@ describe('createWorkerBridge', () => {
     const { bridge, workers } = setup()
     const buffer = new ArrayBuffer(8)
     void bridge.call({ x: 1 }, { transfer: [buffer] })
-    expect(workers[0].transfers[0]).toEqual([buffer])
+    expect(nth(workers, 0).transfers[0]).toEqual([buffer])
   })
 
   describe('worker failure', () => {
@@ -185,23 +186,23 @@ describe('createWorkerBridge', () => {
 
       const p1 = bridge.call<string>({ x: 1 })
       const p2 = bridge.call<string>({ x: 2 })
-      workers[0].fail('Failed to fetch worker script')
+      nth(workers, 0).fail('Failed to fetch worker script')
 
       await expect(p1).rejects.toThrow(/Failed to fetch worker script/)
       await expect(p2).rejects.toThrow(/Failed to fetch worker script/)
-      expect(workers[0].isTerminated()).toBe(true)
+      expect(nth(workers, 0).isTerminated()).toBe(true)
       expect(bridge.hasPending()).toBe(false)
 
       const p3 = bridge.call<string>({ x: 3 })
       expect(factory).toHaveBeenCalledTimes(2)
-      workers[1].deliver<string>({ id: lastId(workers[1]), result: 'recovered' })
+      nth(workers, 1).deliver<string>({ id: lastId(nth(workers, 1)), result: 'recovered' })
       await expect(p3).resolves.toBe('recovered')
     })
 
     it('rejects every pending call on a messageerror event', async () => {
       const { bridge, workers } = setup()
       const p = bridge.call<string>({ x: 1 })
-      workers[0].failDeserialize()
+      nth(workers, 0).failDeserialize()
       await expect(p).rejects.toThrow(/deserialized/)
     })
   })
@@ -217,7 +218,7 @@ describe('createWorkerBridge', () => {
       expect(err).toBeInstanceOf(WorkerAbortError)
       expect(isWorkerAbortError(err, 'cancel')).toBe(true)
       expect(isWorkerAbortError(err, 'timeout')).toBe(false)
-      expect(workers[0].isTerminated()).toBe(true)
+      expect(nth(workers, 0).isTerminated()).toBe(true)
 
       void bridge.call({ x: 2 })
       expect(factory).toHaveBeenCalledTimes(2)
@@ -232,10 +233,10 @@ describe('createWorkerBridge', () => {
     it('ignores a late response from the terminated worker', async () => {
       const { bridge, workers } = setup()
       const p = bridge.call<string>({ x: 1 })
-      const id = lastId(workers[0])
+      const id = lastId(nth(workers, 0))
       bridge.cancel()
       await expect(p).rejects.toBeInstanceOf(WorkerAbortError)
-      expect(() => workers[0].deliver<string>({ id, result: 'late' })).not.toThrow()
+      expect(() => nth(workers, 0).deliver<string>({ id, result: 'late' })).not.toThrow()
     })
   })
 
@@ -248,7 +249,7 @@ describe('createWorkerBridge', () => {
       const assertion = expect(p).rejects.toSatisfy((e: unknown) => isWorkerAbortError(e, 'timeout'))
       vi.advanceTimersByTime(2000)
       await assertion
-      expect(workers[0].isTerminated()).toBe(true)
+      expect(nth(workers, 0).isTerminated()).toBe(true)
     })
 
     it('clears the timer when the call settles in time', async () => {
@@ -256,11 +257,11 @@ describe('createWorkerBridge', () => {
       const { bridge, workers } = setup()
 
       const p = bridge.call<string>({ x: 1 }, { timeoutMs: 2000 })
-      workers[0].deliver<string>({ id: lastId(workers[0]), result: 'fast' })
+      nth(workers, 0).deliver<string>({ id: lastId(nth(workers, 0)), result: 'fast' })
       await expect(p).resolves.toBe('fast')
 
       vi.advanceTimersByTime(5000)
-      expect(workers[0].isTerminated()).toBe(false)
+      expect(nth(workers, 0).isTerminated()).toBe(false)
     })
   })
 
@@ -273,7 +274,7 @@ describe('createWorkerBridge', () => {
       const assertion = expect(p).rejects.toSatisfy((e: unknown) => isWorkerAbortError(e, 'cancel'))
       controller.abort()
       await assertion
-      expect(workers[0].isTerminated()).toBe(true)
+      expect(nth(workers, 0).isTerminated()).toBe(true)
       expect(bridge.hasPending()).toBe(false)
     })
 
@@ -293,13 +294,13 @@ describe('createWorkerBridge', () => {
       const controller = new AbortController()
 
       const p = bridge.call<string>({ x: 1 }, { signal: controller.signal })
-      workers[0].deliver<string>({ id: lastId(workers[0]), result: 'done' })
+      nth(workers, 0).deliver<string>({ id: lastId(nth(workers, 0)), result: 'done' })
       await expect(p).resolves.toBe('done')
 
       const next = bridge.call<string>({ x: 2 })
       controller.abort()
-      expect(workers[0].isTerminated()).toBe(false)
-      workers[0].deliver<string>({ id: lastId(workers[0]), result: 'still alive' })
+      expect(nth(workers, 0).isTerminated()).toBe(false)
+      nth(workers, 0).deliver<string>({ id: lastId(nth(workers, 0)), result: 'still alive' })
       await expect(next).resolves.toBe('still alive')
     })
   })
