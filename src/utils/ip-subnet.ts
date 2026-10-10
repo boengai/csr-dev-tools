@@ -1,4 +1,4 @@
-import type { SubnetResult } from '@/types/utils/ip-subnet'
+import type { SubnetComputeInput, SubnetComputeOutput, SubnetResult } from '@/types/utils/ip-subnet'
 
 export const validateIpv4 = (ip: string): boolean => {
   const parts = ip.split('.')
@@ -124,6 +124,20 @@ export const calculateSubnet = (ip: string, prefixLength: number): SubnetResult 
     totalHosts,
     wildcardMask,
   }
+}
+
+/** Subnet result (or a validation error) for the calculator's current input mode. */
+export const computeSubnet = ({ cidrInput, ipInput, maskInput, mode }: SubnetComputeInput): SubnetComputeOutput => {
+  if (mode === 'cidr') {
+    if (cidrInput.trim().length === 0) return { error: '', result: null }
+    const parsed = parseCidr(cidrInput)
+    if (!parsed) return { error: 'Invalid CIDR notation — expected format: x.x.x.x/y', result: null }
+    return { error: '', result: calculateSubnet(parsed.ip, parsed.prefixLength) }
+  }
+  if (ipInput.trim().length === 0 && maskInput.trim().length === 0) return { error: '', result: null }
+  if (!validateIpv4(ipInput)) return { error: 'Invalid IPv4 address', result: null }
+  if (!validateSubnetMask(maskInput)) return { error: 'Invalid subnet mask — mask must be contiguous', result: null }
+  return { error: '', result: calculateSubnet(ipInput, maskToPrefix(maskInput)) }
 }
 
 export type { SubnetResult } from '@/types/utils/ip-subnet'
