@@ -54,36 +54,45 @@ export function useBatchAssetPipeline<TResults>(
   }, [])
 
   const newSession = useStaleSafeAsync()
+  // Separate counter for uploads: a newer upload supersedes an older decode
+  // still in flight, without a rejected upload cancelling a running regenerate.
+  const newUploadSession = useStaleSafeAsync()
   const { showError, showSuccess } = useToast()
 
   const upload = useCallback(
-    async (files: Array<File>) => {
+    async (files: Array<File>): Promise<boolean> => {
       const file = files[0]
-      if (!file) return
+      if (!file) return false
 
       if (mimePrefix && !file.type.startsWith(mimePrefix)) {
         showError(rejectToastLabel)
-        return
+        return false
       }
 
+      const uploadSession = newUploadSession()
       let image: HTMLImageElement
       try {
         image = await loadImageFromBlob(file)
       } catch {
-        if (!mountedRef.current) return
+        if (!mountedRef.current || !uploadSession.isFresh()) return false
         showError(rejectToastLabel)
-        return
+        return false
       }
-      if (!mountedRef.current) return
+      if (!mountedRef.current || !uploadSession.isFresh()) return false
 
+      // The source changed: any regenerate still running against the old
+      // image is now stale and must not write its results back.
+      newSession()
       sourceImageRef.current = image
       setSourceFile(file)
       setSourceImage(image)
       setResults(null)
       setProgress(null)
       setError(null)
+      setPending(false)
+      return true
     },
-    [mimePrefix, rejectToastLabel, showError],
+    [mimePrefix, newSession, newUploadSession, rejectToastLabel, showError],
   )
 
   const regenerate = useCallback(
@@ -151,9 +160,10 @@ export function useBatchAssetPipeline<TResults>(
   }, [accept, upload])
 
   const reset = useCallback(() => {
-    // Bumping the session via newSession() guarantees any in-flight regenerate
+    // Bumping the sessions guarantees any in-flight regenerate / decode
     // becomes stale and cannot write back over the cleared state.
     newSession()
+    newUploadSession()
     sourceImageRef.current = null
     setSourceFile(null)
     setSourceImage(null)
@@ -161,7 +171,7 @@ export function useBatchAssetPipeline<TResults>(
     setProgress(null)
     setError(null)
     setPending(false)
-  }, [newSession])
+  }, [newSession, newUploadSession])
 
   return {
     downloadAll,

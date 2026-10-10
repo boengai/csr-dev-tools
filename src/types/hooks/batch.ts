@@ -35,10 +35,15 @@ export type UseBatchAssetPipelineResult<TResults> = {
   /**
    * Validate the first file's MIME (if `mimePrefix` is set), decode it via
    * `loadImageFromBlob`, and populate `sourceFile`/`sourcePreview`/
-   * `sourceImage`. Clears any previous results. A failed MIME check fires
-   * the reject toast and leaves state untouched.
+   * `sourceImage`. Clears any previous results and invalidates any in-flight
+   * `regenerate` (its results are dropped). A failed MIME check or decode
+   * fires the reject toast and leaves state untouched.
+   *
+   * Resolves `true` when the new source was adopted, `false` otherwise (no
+   * file, rejected, superseded by a newer upload, or unmounted) — callers
+   * gate follow-up UI (e.g. opening a dialog) on it.
    */
-  upload: (files: Array<File>) => Promise<void>
+  upload: (files: Array<File>) => Promise<boolean>
   /**
    * Run `process` against the current `sourceImage`. No-op if there is no
    * sourceImage. Drops the result of a stale call if a newer regenerate has
