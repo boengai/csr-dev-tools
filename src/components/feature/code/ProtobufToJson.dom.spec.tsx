@@ -116,6 +116,33 @@ describe('ProtobufToJson', () => {
     await vi.waitFor(() => expect(screen.getByText(/"status": "UNKNOWN"/)).toBeInTheDocument())
   })
 
+  it('keeps the detail pane on the selected message while a reparse regenerates its sample', async () => {
+    await openTool()
+    fireEvent.click(screen.getByRole('button', { name: 'Person - Message type' }))
+    await flush()
+    await vi.waitFor(() => expect(screen.getByText(/"status": "UNKNOWN"/)).toBeInTheDocument())
+
+    // The regenerated sample for the reparsed (new-identity) message is still pending.
+    let resolveSample: (v: Record<string, unknown>) => void = () => {}
+    vi.mocked(parsers.generateSampleJson).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveSample = resolve
+        }),
+    )
+    fireEvent.change(screen.getByLabelText('Proto definition input'), { target: { value: 'message Person { }' } })
+    await flush()
+
+    expect(screen.queryByText(/Select a message from the list/)).not.toBeInTheDocument()
+    expect(screen.getByText(/"status": "UNKNOWN"/)).toBeInTheDocument()
+
+    await act(async () => {
+      resolveSample({ status: 'ACTIVE' })
+    })
+    await flush()
+    expect(screen.getByText(/"status": "ACTIVE"/)).toBeInTheDocument()
+  })
+
   it('drops a late message sample when an enum was selected in the meantime', async () => {
     let resolveSample: (v: Record<string, unknown>) => void = () => {}
     vi.mocked(parsers.generateSampleJson).mockImplementationOnce(

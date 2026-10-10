@@ -12,4 +12,4 @@ export type ParseOutput = {
 }
 
 /** A generated sample, tagged with the message object it was generated from. */
-export type ProtobufSampleJson = { json: unknown; message: ProtobufMessageInfo }
+export type ProtobufSampleJson = { fullName: string; json: unknown }
