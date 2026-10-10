@@ -1,14 +1,5 @@
 import { m } from 'motion/react'
-import {
-  type ButtonHTMLAttributes,
-  Suspense,
-  useDeferredValue,
-  useEffect,
-  useLayoutEffect,
-  useMemo,
-  useRef,
-  useState,
-} from 'react'
+import { type ButtonHTMLAttributes, Suspense, useDeferredValue, useEffect, useMemo, useRef, useState } from 'react'
 
 import { Card, Dialog, NotoEmoji, PlusIcon } from '@/components'
 import { CATEGORY_ORDER, getToolEntry, groupToolsByCategory, TOOL_REGISTRY } from '@/constants'
@@ -171,8 +162,10 @@ const SelectAppDialog = ({ onDismiss, position }: { onDismiss: () => void; posit
 const HOME_TITLE = 'CSR - Free Web Developer Tools Collection | Color Converter, Base64 Codec, Image Tools'
 
 export default function HomePage() {
-  // Layout effect: runs before paint, so the tool title never flashes on home.
-  useLayoutEffect(() => {
+  // Passive effect on purpose: useToolSeo restores the tool page's initial
+  // title in a passive cleanup, which runs before this mount effect in the
+  // same commit. A layout effect would run first and be overwritten.
+  useEffect(() => {
     document.title = HOME_TITLE
   }, [])
 
