@@ -1,6 +1,6 @@
 import { closestCenter, type DragEndEvent, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { arrayMove, rectSortingStrategy, sortableKeyboardCoordinates } from '@dnd-kit/sortable'
-import { useCallback, useMemo, useRef, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import type { DndContextProps, SortableContextProps, UseSortableItemsResult } from '@/types'
 
@@ -34,12 +34,6 @@ export function useSortableItems<T extends { id: string }>(initial: Array<T> = [
   const [items, setItems] = useState<Array<T>>(initial)
   const [skipped, setSkipped] = useState<Array<string>>([])
 
-  // Ref-shadow so `onDragEnd` (with `[]` deps) reads the freshest items
-  // without rebuilding `dndContextProps` on every items change. Keeps the
-  // sensor identity stable across re-orders.
-  const itemsRef = useRef<Array<T>>(items)
-  itemsRef.current = items
-
   const addItems = useCallback((next: Array<T>) => {
     setItems((prev) => [...prev, ...next])
   }, [])
@@ -72,14 +66,17 @@ export function useSortableItems<T extends { id: string }>(initial: Array<T> = [
     useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
   )
 
+  // Functional update reads the freshest items without rebuilding
+  // `dndContextProps` on every items change (keeps sensor identity stable).
   const onDragEnd = useCallback((e: DragEndEvent) => {
-    if (e.over && e.active.id !== e.over.id) {
-      const current = itemsRef.current
-      const oldIndex = current.findIndex((i) => i.id === e.active.id)
-      const newIndex = current.findIndex((i) => i.id === e.over!.id)
-      if (oldIndex === -1 || newIndex === -1) return
-      setItems(arrayMove(current, oldIndex, newIndex))
-    }
+    const { active, over } = e
+    if (!over || active.id === over.id) return
+    setItems((current) => {
+      const oldIndex = current.findIndex((i) => i.id === active.id)
+      const newIndex = current.findIndex((i) => i.id === over.id)
+      if (oldIndex === -1 || newIndex === -1) return current
+      return arrayMove(current, oldIndex, newIndex)
+    })
   }, [])
 
   const dndContextProps: DndContextProps = useMemo(

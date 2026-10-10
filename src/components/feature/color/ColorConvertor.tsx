@@ -82,6 +82,7 @@ export const ColorConvertor = ({ autoOpen, onAfterClose }: ToolComponentProps) =
 
   // Adopt computed conversions into the visible state.
   useEffect(() => {
+    // oxlint-disable-next-line react/set-state-in-effect -- ADR-0019 N-mirror broadcast adoption effect
     if (converted) setColor(converted)
   }, [converted])
 

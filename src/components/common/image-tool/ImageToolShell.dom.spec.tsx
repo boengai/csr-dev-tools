@@ -135,7 +135,7 @@ describe('ImageToolShell — process pipeline', () => {
   })
 
   it('passes source File and sourceUrl to renderPreview after upload', async () => {
-    const renderPreview = vi.fn((_: ImageToolShellPreviewContext<TestControls>) => null)
+    const renderPreview = vi.fn<(ctx: ImageToolShellPreviewContext<TestControls>) => null>(() => null)
     const { container } = render(<RenderShell renderPreview={renderPreview} />)
     uploadFile(container, pngFile('cat.png'))
     await act(async () => {
@@ -151,7 +151,7 @@ describe('ImageToolShell — process pipeline', () => {
 
   it('passes result and resultUrl to renderPreview after process resolves', async () => {
     const resultBlob = new Blob(['xx'], { type: 'image/png' })
-    const renderPreview = vi.fn((_: ImageToolShellPreviewContext<TestControls>) => null)
+    const renderPreview = vi.fn<(ctx: ImageToolShellPreviewContext<TestControls>) => null>(() => null)
     const { container } = render(<RenderShell process={async () => resultBlob} renderPreview={renderPreview} />)
     uploadFile(container, pngFile())
     await act(async () => {
@@ -243,7 +243,7 @@ describe('ImageToolShell — process pipeline', () => {
   })
 
   it('clears source after dialog closes — next upload starts fresh', async () => {
-    const renderPreview = vi.fn((_: ImageToolShellPreviewContext<TestControls>) => null)
+    const renderPreview = vi.fn<(ctx: ImageToolShellPreviewContext<TestControls>) => null>(() => null)
     const { container } = render(<RenderShell renderPreview={renderPreview} />)
     uploadFile(container, pngFile('first.png'))
     await act(async () => {

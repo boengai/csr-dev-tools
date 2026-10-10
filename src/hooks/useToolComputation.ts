@@ -3,6 +3,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 import type { ToolComputeContext, UseToolComputationOptions, UseToolComputationResult } from '@/types'
 
 import { useToast } from './state/useToast'
+import { useLatestRef } from './useLatestRef'
 
 type PipelineErrorRouting<I> = {
   errorLabel?: string
@@ -60,10 +61,8 @@ export function useToolComputation<I, R>(
   const [error, setError] = useState<unknown | null>(null)
   const [isPending, setIsPending] = useState(false)
 
-  const optionsRef = useRef(options)
-  optionsRef.current = options
-  const computeRef = useRef(compute)
-  computeRef.current = compute
+  const optionsRef = useLatestRef(options)
+  const computeRef = useLatestRef(compute)
 
   const timeoutRef = useRef<number | undefined>(undefined)
   const controllerRef = useRef<AbortController | null>(null)
@@ -89,61 +88,64 @@ export function useToolComputation<I, R>(
     }
   }, [])
 
-  const enqueue = useCallback((input: I, delayMs: number) => {
-    const { initial, isEmpty } = optionsRef.current
+  const enqueue = useCallback(
+    (input: I, delayMs: number) => {
+      const { initial, isEmpty } = optionsRef.current
 
-    if (timeoutRef.current !== undefined) {
-      clearTimeout(timeoutRef.current)
-      timeoutRef.current = undefined
-    }
-    // A newer input (or the empty bypass) supersedes whatever is in flight.
-    controllerRef.current?.abort()
-    controllerRef.current = null
+      if (timeoutRef.current !== undefined) {
+        clearTimeout(timeoutRef.current)
+        timeoutRef.current = undefined
+      }
+      // A newer input (or the empty bypass) supersedes whatever is in flight.
+      controllerRef.current?.abort()
+      controllerRef.current = null
 
-    if (isEmpty?.(input)) {
-      sessionRef.current += 1
-      setResult(initial)
-      setError(null)
-      setIsPending(false)
-      return
-    }
+      if (isEmpty?.(input)) {
+        sessionRef.current += 1
+        setResult(initial)
+        setError(null)
+        setIsPending(false)
+        return
+      }
 
-    setIsPending(true)
-    const session = ++sessionRef.current
-    const controller = new AbortController()
-    controllerRef.current = controller
+      setIsPending(true)
+      const session = ++sessionRef.current
+      const controller = new AbortController()
+      controllerRef.current = controller
 
-    timeoutRef.current = window.setTimeout(() => {
-      timeoutRef.current = undefined
-      void (async () => {
-        try {
-          const value = await computeRef.current(input, { signal: controller.signal })
-          if (session !== sessionRef.current || !mountedRef.current) return
-          if (controllerRef.current === controller) controllerRef.current = null
-          setResult(value)
-          setError(null)
-          setIsPending(false)
-        } catch (err) {
-          if (session !== sessionRef.current || !mountedRef.current) return
-          if (controllerRef.current === controller) controllerRef.current = null
-          if (controller.signal.aborted || isAbortError(err)) {
+      timeoutRef.current = window.setTimeout(() => {
+        timeoutRef.current = undefined
+        void (async () => {
+          try {
+            const value = await computeRef.current(input, { signal: controller.signal })
+            if (session !== sessionRef.current || !mountedRef.current) return
+            if (controllerRef.current === controller) controllerRef.current = null
+            setResult(value)
+            setError(null)
             setIsPending(false)
-            return
+          } catch (err) {
+            if (session !== sessionRef.current || !mountedRef.current) return
+            if (controllerRef.current === controller) controllerRef.current = null
+            if (controller.signal.aborted || isAbortError(err)) {
+              setIsPending(false)
+              return
+            }
+            setError(err)
+            setIsPending(false)
+            reportPipelineError(err, input, optionsRef.current)
           }
-          setError(err)
-          setIsPending(false)
-          reportPipelineError(err, input, optionsRef.current)
-        }
-      })()
-    }, delayMs)
-  }, [])
+        })()
+      }, delayMs)
+    },
+    [computeRef, optionsRef],
+  )
 
   const setInput = useCallback(
     (input: I) => {
       inputRef.current = { value: input }
       enqueue(input, optionsRef.current.debounceMs ?? 300)
     },
-    [enqueue],
+    [enqueue, optionsRef],
   )
 
   const setInputImmediate = useCallback(

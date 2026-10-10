@@ -898,8 +898,9 @@ useMediaQuery(query: string, ssrDefault?: boolean): boolean
 
 Owns three concerns:
 
-1. **SSR-safe initial** — the lazy `useState` initializer reads
-   `window.matchMedia(query).matches` synchronously when `window` exists,
+1. **SSR-safe initial** — built on `useSyncExternalStore`; its client
+   snapshot reads `window.matchMedia(query).matches` synchronously when
+   `window` exists,
    so the first render already has the right boolean. Without this, an
    adopter that gates layout by viewport flashes the desktop layout for
    one frame on mobile.

@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { CopyButton, ErrorBanner, FieldForm } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
@@ -46,12 +46,16 @@ export const NumberBaseConverter = ({ autoOpen, onAfterClose }: ToolComponentPro
     },
   )
 
-  // Sync converted values down into local `values` so the non-typed fields
-  // update after each compute resolves. The typed field stays in sync because
-  // `handleChange` echoes the keystroke immediately.
-  useEffect(() => {
+  // Adopt converted values into local `values` so the non-typed fields update
+  // after each compute resolves. The typed field stays in sync because
+  // `handleChange` echoes the keystroke immediately. Done during render (React's
+  // "adjust state when a prop changes" pattern) rather than in an effect, so the
+  // adoption lands in the same commit as the new result.
+  const [adoptedValues, setAdoptedValues] = useState(result.values)
+  if (result.values !== adoptedValues) {
+    setAdoptedValues(result.values)
     if (result.values) setValues(result.values)
-  }, [result.values])
+  }
 
   const handleChange = (val: string, field: BaseField) => {
     if (val.trim().length === 0) {

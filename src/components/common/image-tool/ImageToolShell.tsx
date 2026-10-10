@@ -25,10 +25,11 @@ export function ImageToolShell<TControls extends object>({
 }: ImageToolShellProps<TControls>) {
   const [source, setSource] = useState<File | null>(null)
   const [controls, setControlsState] = useState<TControls>(initialControls)
+  // Every write to `controls` / `source` goes through these refs first, so
+  // same-tick handlers (and `recompute`) read the live values without a
+  // render-time mirror.
   const controlsRef = useRef(controls)
-  controlsRef.current = controls
   const sourceRef = useRef(source)
-  sourceRef.current = source
   const initialRef = useRef(initialControls)
 
   const { error, isPending, result, setInputImmediate } = useToolComputation<
@@ -120,9 +121,14 @@ export function ImageToolShell<TControls extends object>({
       uploadInputName="image-tool-shell-source"
     >
       <div className="flex grow flex-col gap-4">
+        {/* `recompute` / `setControls` read refs but are only ever invoked by
+            adopters from handlers / <img onLoad>, never during render — the
+            render-prop contract of ADR-0014. */}
+        {/* oxlint-disable-next-line react/refs -- ADR-0014 render-prop callbacks run from handlers only */}
         {renderControls({ controls, pending: isPending, recompute, setControls })}
         {source && sourceUrl
-          ? renderPreview({
+          ? // oxlint-disable-next-line react/refs -- ADR-0014 render-prop callbacks run from handlers only
+            renderPreview({
               controls,
               error,
               pending: isPending,

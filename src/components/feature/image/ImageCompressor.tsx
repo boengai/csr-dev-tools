@@ -49,9 +49,9 @@ export const ImageCompressor = () => {
   // Show the progress bar only when compute outlasts a 300ms threshold —
   // pipeline-driven, no dispatch-from-inside-compute.
   useEffect(() => {
-    if (isPending) {
-      progressTimer.schedule(() => setShowProgress(true), PROGRESS_THRESHOLD_MS)
-    } else {
+    if (!isPending) return
+    progressTimer.schedule(() => setShowProgress(true), PROGRESS_THRESHOLD_MS)
+    return () => {
       progressTimer.cancel()
       setShowProgress(false)
     }

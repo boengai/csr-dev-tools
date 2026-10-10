@@ -30,6 +30,7 @@ export const UnitPxToRem = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
 
   useEffect(() => {
     if (result) {
+      // oxlint-disable-next-line react/set-state-in-effect -- ADR-0019 N-mirror broadcast adoption effect
       setFields((prev) => ({ ...prev, ...result }))
     }
   }, [result])

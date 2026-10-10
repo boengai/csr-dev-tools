@@ -46,6 +46,9 @@ const renderWithCopy = (label: string) => (val: string) => (
 )
 
 const UnixTimestampSection = () => {
+  // Example timestamp for the placeholder, captured once on mount (an impure
+  // `Date.now()` in render would change on every keystroke re-render).
+  const [placeholder] = useState(() => Date.now().toString())
   const { input, result, setInput } = useToolInput<string, Array<string>>({
     compute: (source) => {
       if (!isValidTimestamp(source)) throw new Error('Enter a valid Unix timestamp (e.g., 1700000000)')
@@ -69,7 +72,7 @@ const UnixTimestampSection = () => {
           label="Enter a Timestamp"
           name="unixTimestamp"
           onChange={setInput}
-          placeholder={Date.now().toString()}
+          placeholder={placeholder}
           type="text"
           value={input}
         />
@@ -111,7 +114,8 @@ const DateSection = () => {
     return [Math.floor(d.getTime() / 1000).toString(), d.toUTCString(), d.toString()]
   })
 
-  const placeholder = useMemo(() => {
+  // Lazy initializer: computed once on mount (impure reads stay out of render).
+  const [placeholder] = useState(() => {
     const d = new Date()
     return {
       day: d.getDate().toString(),
@@ -121,7 +125,7 @@ const DateSection = () => {
       second: d.getSeconds().toString(),
       year: d.getFullYear().toString(),
     }
-  }, [])
+  })
 
   const dayOptions = useMemo(() => {
     const daysInMonth = getDaysInMonth(Number(input.year), Number(input.month) + 1)
