@@ -1,7 +1,12 @@
-import { CopyButton, FieldForm, Pane } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { memo } from 'react'
+
 import { useToolFieldsPersisted } from '@/hooks'
-import type { DiffCheckerShellProps, DiffInput, DiffOutput, InlineSpan, SideBySideRow } from '@/types'
+import type { DiffCellProps, DiffCheckerShellProps, DiffInput, DiffOutput, DiffRowsProps, InlineSpan } from '@/types'
+
+import { CopyButton } from '../button'
+import { ToolDialogFrame } from '../dialog/ToolDialogFrame'
+import { FieldForm } from '../form'
+import { Pane } from '../layout'
 
 const renderSpans = (spans: Array<InlineSpan>, side: 'left' | 'right') => {
   let offset = 0
@@ -18,19 +23,7 @@ const renderSpans = (spans: Array<InlineSpan>, side: 'left' | 'right') => {
   })
 }
 
-const DiffCell = ({
-  content,
-  lineNum,
-  spans,
-  type,
-  side,
-}: {
-  content: string
-  lineNum: number | null
-  side: 'left' | 'right'
-  spans: Array<InlineSpan> | null
-  type: SideBySideRow['leftType']
-}) => {
+const DiffCell = ({ content, lineNum, side, spans, type }: DiffCellProps) => {
   return (
     <div className="flex data-[state=added]:bg-success/10 data-[state=removed]:bg-error/10" data-state={type}>
       <span className="w-10 shrink-0 py-px pr-2 text-right text-gray-600 select-none">{lineNum ?? ''}</span>
@@ -47,6 +40,36 @@ const DiffCell = ({
     </div>
   )
 }
+
+// Memoized on `rows` (the pipeline result identity) so typing in either
+// editor re-renders the inputs but not the whole diff grid.
+const DiffRows = memo(({ rows }: DiffRowsProps) => (
+  <div className="grid grid-cols-2">
+    {rows.map((row) => (
+      <div
+        className="col-span-2 grid grid-cols-subgrid"
+        key={`${row.leftLineNum ?? 'e'}-${row.rightLineNum ?? 'e'}-${row.leftType}-${row.rightType}`}
+      >
+        <DiffCell
+          content={row.leftContent}
+          lineNum={row.leftLineNum}
+          side="left"
+          spans={row.leftSpans}
+          type={row.leftType}
+        />
+        <div className="border-l border-gray-800">
+          <DiffCell
+            content={row.rightContent}
+            lineNum={row.rightLineNum}
+            side="right"
+            spans={row.rightSpans}
+            type={row.rightType}
+          />
+        </div>
+      </div>
+    ))}
+  </div>
+))
 
 export const DiffCheckerShell = <R extends DiffOutput>({
   autoOpen,
@@ -128,31 +151,7 @@ export const DiffCheckerShell = <R extends DiffOutput>({
                   <div className="text-xs px-3 py-1.5 font-medium text-gray-500">Original</div>
                   <div className="text-xs border-l border-gray-800 px-3 py-1.5 font-medium text-gray-500">Modified</div>
                 </div>
-                <div className="grid grid-cols-2">
-                  {rows.map((row) => (
-                    <div
-                      className="col-span-2 grid grid-cols-subgrid"
-                      key={`${row.leftLineNum ?? 'e'}-${row.rightLineNum ?? 'e'}-${row.leftType}-${row.rightType}`}
-                    >
-                      <DiffCell
-                        content={row.leftContent}
-                        lineNum={row.leftLineNum}
-                        side="left"
-                        spans={row.leftSpans}
-                        type={row.leftType}
-                      />
-                      <div className="border-l border-gray-800">
-                        <DiffCell
-                          content={row.rightContent}
-                          lineNum={row.rightLineNum}
-                          side="right"
-                          spans={row.rightSpans}
-                          type={row.rightType}
-                        />
-                      </div>
-                    </div>
-                  ))}
-                </div>
+                <DiffRows rows={rows} />
               </>
             ) : (
               <p className="p-3 text-gray-600">Diff output will appear here...</p>

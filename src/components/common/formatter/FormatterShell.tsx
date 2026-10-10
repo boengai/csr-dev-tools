@@ -1,7 +1,11 @@
-import { CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { useToolFieldsPersisted } from '@/hooks'
 import type { FormatterShellProps } from '@/types'
+
+import { CopyButton } from '../button'
+import { ToolDialogFrame } from '../dialog/ToolDialogFrame'
+import { FieldForm } from '../form'
+import { Pane, SplitPanel } from '../layout'
+import { CodeOutput } from '../output'
 
 export const FormatterShell = <I extends { source: string }>({
   autoOpen,

@@ -1,8 +1,8 @@
-import { useCallback, useState } from 'react'
+import { useState } from 'react'
 
-import { UploadInput } from '@/components/common/input/UploadInput'
 import type { UploadDialogFrameProps } from '@/types'
 
+import { UploadInput } from '../input/UploadInput'
 import { ToolDialogShell } from './ToolDialogShell'
 
 /**
@@ -32,9 +32,7 @@ export const UploadDialogFrame = ({
 }: UploadDialogFrameProps) => {
   const [open, setOpen] = useState(false)
 
-  const openDialog = useCallback(() => {
-    setOpen(true)
-  }, [])
+  const openDialog = () => setOpen(true)
 
   const handleChange = (files: Array<File>) => {
     void onUpload(files, openDialog)

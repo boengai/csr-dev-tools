@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react'
 
-import type { SideBySideRow } from '@/types'
+import type { InlineSpan, SideBySideRow } from '@/types'
 
 export type DiffInput = { modified: string; original: string }
 
@@ -31,4 +31,16 @@ export type DiffCheckerShellProps<R extends DiffOutput> = {
   renderBanner?: (result: R) => ReactNode
   storageKey: string
   title: string
+}
+
+export type DiffCellProps = {
+  content: string
+  lineNum: number | null
+  side: 'left' | 'right'
+  spans: Array<InlineSpan> | null
+  type: SideBySideRow['leftType']
+}
+
+export type DiffRowsProps = {
+  rows: Array<SideBySideRow>
 }

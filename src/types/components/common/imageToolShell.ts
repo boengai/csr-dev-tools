@@ -42,3 +42,9 @@ export type ImageToolShellProps<TControls extends object> = {
 
   getDownloadFilename: (ctx: ImageToolShellDownloadContext<TControls>) => string
 }
+
+/** Internal pipeline input of `<ImageToolShell>`: the source file plus the shell-owned controls bag. */
+export type ImageToolPipelineInput<TControls> = {
+  controls: TControls
+  file: File | null
+}

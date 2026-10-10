@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
-import { Button } from '@/components/common/button/Button'
 import type { ToolDialogFrameProps } from '@/types'
 
+import { Button } from '../button/Button'
 import { ToolDialogShell } from './ToolDialogShell'
 
 /**
