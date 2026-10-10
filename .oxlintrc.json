@@ -25,6 +25,7 @@
     "no-console": "warn",
     "typescript/array-type": ["error", { "default": "generic" }],
     "import/first": "error",
+    "import/no-cycle": "warn",
     "import/no-duplicates": "error",
     "react/self-closing-comp": "error",
     "react/rules-of-hooks": "error",
