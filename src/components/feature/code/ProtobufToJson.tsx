@@ -1,33 +1,25 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { BrowsableItemList, Button, CodeInput, CopyButton, EmptyState, ErrorBanner } from '@/components/common'
+import { Button, CodeInput, CopyButton, EmptyState, ErrorBanner } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputationPersisted } from '@/hooks'
-import type { BrowsableEntry, EntryKind, ParseOutput, ToolComponentProps } from '@/types'
-import { cnMerge } from '@/utils'
-import type { ProtobufEnumInfo, ProtobufMessageInfo, ProtobufSchemaInfo } from '@/wasm/parsers'
+import { useStaleSafeAsync, useToast, useToolComputationPersisted } from '@/hooks'
+import type {
+  EntryKind,
+  KindBadgeStyle,
+  ParseOutput,
+  ProtobufMessageInfo,
+  ProtobufSampleJson,
+  ToolComponentProps,
+} from '@/types'
+import { annotateJsonWithEnums, buildBrowsableEntries } from '@/utils'
+
+import { KindBadge, SchemaBrowserLayout } from './schema-browser'
 
 const toolEntry = TOOL_REGISTRY_MAP['protobuf-to-json']
-const KIND_STYLES: Record<EntryKind, { badge: string; label: string }> = {
+const KIND_STYLES: Record<EntryKind, KindBadgeStyle> = {
   enum: { badge: 'border-green-700 bg-green-900/50 text-green-300', label: 'E' },
   message: { badge: 'border-blue-700 bg-blue-900/50 text-blue-300', label: 'M' },
-}
-
-const KindBadge = ({ kind }: { kind: EntryKind }) => {
-  const style = KIND_STYLES[kind]
-  const kindLabel = kind === 'message' ? 'Message type' : 'Enum type'
-  return (
-    <span
-      aria-label={kindLabel}
-      className={cnMerge(
-        'inline-flex h-6 w-6 shrink-0 items-center justify-center rounded border text-[10px] font-bold',
-        style.badge,
-      )}
-    >
-      {style.label}
-    </span>
-  )
 }
 
 const SAMPLE_PROTO = `syntax = "proto3";
@@ -78,63 +70,12 @@ enum PaymentMethod {
   CRYPTO = 3;
 }`
 
-function buildBrowsableEntries(schema: ProtobufSchemaInfo): Array<BrowsableEntry> {
-  const entries: Array<BrowsableEntry> = []
-
-  const addMessages = (messages: Array<ProtobufMessageInfo>) => {
-    for (const msg of messages) {
-      entries.push({ fullName: msg.fullName, kind: 'message', messageInfo: msg, name: msg.name })
-      addMessages(msg.nestedMessages)
-      for (const nestedEnum of msg.nestedEnums) {
-        entries.push({ enumInfo: nestedEnum, fullName: nestedEnum.fullName, kind: 'enum', name: nestedEnum.name })
-      }
-    }
-  }
-
-  addMessages(schema.messages)
-  for (const enumInfo of schema.enums) {
-    entries.push({ enumInfo, fullName: enumInfo.fullName, kind: 'enum', name: enumInfo.name })
-  }
-
-  return entries.sort((a, b) => a.name.localeCompare(b.name))
-}
-
-function collectAllEnumsFlat(schema: ProtobufSchemaInfo): Array<ProtobufEnumInfo> {
-  const result = [...schema.enums]
-  const traverse = (messages: Array<ProtobufMessageInfo>) => {
-    for (const msg of messages) {
-      result.push(...msg.nestedEnums)
-      traverse(msg.nestedMessages)
-    }
-  }
-  traverse(schema.messages)
-  return result
-}
-
-function annotateJsonWithEnums(jsonStr: string, allEnums: Array<ProtobufEnumInfo>): Array<string> {
-  const enumValueToAllValues = new Map<string, Array<string>>()
-  for (const enumInfo of allEnums) {
-    const values = Object.keys(enumInfo.values)
-    for (const val of values) {
-      enumValueToAllValues.set(val, values)
-    }
-  }
-
-  return jsonStr.split('\n').map((line) => {
-    const match = line.match(/^\s*"\w+":\s*"([A-Z_][A-Z0-9_]*)"/)
-    if (match) {
-      const enumValues = enumValueToAllValues.get(match[1])
-      if (enumValues) {
-        return `${line} // ${enumValues.join(' | ')}`
-      }
-    }
-    return line
-  })
-}
-
 export const ProtobufToJson = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const [selectedEntry, setSelectedEntry] = useState<string | null>(null)
-  const [generatedJson, setGeneratedJson] = useState<string | null>(null)
+  const [selectedName, setSelectedName] = useState<string | null>(null)
+  // Sample JSON for a message, tagged with the exact message object it was
+  // generated from so a reparse (new object identity) never shows a stale one.
+  const [sample, setSample] = useState<ProtobufSampleJson | null>(null)
+  const newSession = useStaleSafeAsync()
   const { showError } = useToast()
 
   const {
@@ -162,11 +103,43 @@ export const ProtobufToJson = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
   const schemaInfo = parseResult.schema
   const error = parseResult.parseError
 
-  // When the parse result changes (new schema or error), clear the user's selection.
+  const entries = useMemo(() => (schemaInfo ? buildBrowsableEntries(schemaInfo) : []), [schemaInfo])
+  // Derived: the selection survives reparses while the entry still exists.
+  const selectedEntry = useMemo(() => entries.find((e) => e.fullName === selectedName), [entries, selectedName])
+  const selectedMessage: ProtobufMessageInfo | null =
+    selectedEntry?.kind === 'message' ? selectedEntry.messageInfo : null
+
+  // (Re)generate the sample whenever the selected message changes — including
+  // when a reparse hands us a new object for the same message. Every run bumps
+  // the session, so a slow generation for a previous selection/schema can't
+  // land on top of a newer one (or on an enum selection).
   useEffect(() => {
-    setSelectedEntry(null)
-    setGeneratedJson(null)
-  }, [parseResult])
+    const session = newSession()
+    if (!selectedMessage || !schemaInfo) return
+    void (async () => {
+      try {
+        const { generateSampleJson } = await import('@/wasm/parsers')
+        const json = await generateSampleJson(selectedMessage, schemaInfo.messages, schemaInfo.enums)
+        session.ifFresh(() => setSample({ json, message: selectedMessage }))
+      } catch {
+        session.ifFresh(() => showError('Failed to generate JSON'))
+      }
+    })()
+  }, [newSession, schemaInfo, selectedMessage, showError])
+
+  const output = useMemo(() => {
+    if (selectedEntry?.kind === 'enum') {
+      const json = JSON.stringify({ name: selectedEntry.enumInfo.name, values: selectedEntry.enumInfo.values }, null, 2)
+      return { copy: json, display: json }
+    }
+    if (selectedMessage && schemaInfo && sample?.message === selectedMessage) {
+      return {
+        copy: JSON.stringify(sample.json, null, 2),
+        display: annotateJsonWithEnums(sample.json, selectedMessage, schemaInfo),
+      }
+    }
+    return null
+  }, [sample, schemaInfo, selectedEntry, selectedMessage])
 
   const handleChange = (value: string) => setInput(value)
 
@@ -174,33 +147,19 @@ export const ProtobufToJson = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
     setInputImmediate(SAMPLE_PROTO)
   }, [setInputImmediate])
 
-  const handleSelectEntry = useCallback(
-    async (entry: BrowsableEntry) => {
-      setSelectedEntry(entry.fullName)
-
-      if (entry.kind === 'message' && schemaInfo) {
-        try {
-          const { generateSampleJson } = await import('@/wasm/parsers')
-          const json = await generateSampleJson(entry.messageInfo, schemaInfo.messages, schemaInfo.enums)
-          const jsonStr = JSON.stringify(json, null, 2)
-          const allEnums = collectAllEnumsFlat(schemaInfo)
-          const annotatedLines = annotateJsonWithEnums(jsonStr, allEnums)
-          setGeneratedJson(annotatedLines.join('\n'))
-        } catch {
-          showError('Failed to generate JSON')
+  const listItems = useMemo(
+    () =>
+      entries.map((entry) => {
+        const kindLabel = entry.kind === 'message' ? 'Message' : 'Enum'
+        return {
+          ariaLabel: `${entry.name} - ${kindLabel} type`,
+          badge: <KindBadge ariaLabel={`${kindLabel} type`} kind={entry.kind} styles={KIND_STYLES} />,
+          id: entry.fullName,
+          name: entry.name,
         }
-      } else if (entry.kind === 'enum') {
-        const enumDisplay = {
-          name: entry.enumInfo.name,
-          values: entry.enumInfo.values,
-        }
-        setGeneratedJson(JSON.stringify(enumDisplay, null, 2))
-      }
-    },
-    [schemaInfo, showError],
+      }),
+    [entries],
   )
-
-  const entries = schemaInfo ? buildBrowsableEntries(schemaInfo) : []
 
   return (
     <ToolDialogFrame
@@ -235,44 +194,31 @@ export const ProtobufToJson = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
         )}
 
         {schemaInfo && (
-          <div className="flex flex-col gap-4 tablet:flex-row">
-            <div className="flex w-full shrink-0 flex-col gap-2 tablet:w-64">
-              <BrowsableItemList
-                emptyMessage="No message types found"
-                items={entries.map((entry) => ({
-                  ariaLabel: `${entry.name} - ${entry.kind === 'message' ? 'Message' : 'Enum'} type`,
-                  badge: <KindBadge kind={entry.kind} />,
-                  id: entry.fullName,
-                  name: entry.name,
-                }))}
-                onSelect={(item) => {
-                  const entry = entries.find((e) => e.fullName === item.id)
-                  if (entry) handleSelectEntry(entry)
-                }}
-                selectedId={selectedEntry}
-              />
-            </div>
-
-            <div aria-live="polite" className="min-w-0 grow">
-              {generatedJson ? (
+          <SchemaBrowserLayout
+            detail={
+              output ? (
                 <div className="flex flex-col gap-2">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-body-sm font-semibold text-gray-100">
-                      {entries.find((e) => e.fullName === selectedEntry)?.name}
-                    </h3>
-                    <CopyButton label="Copy JSON" value={generatedJson} />
+                    <h3 className="text-body-sm font-semibold text-gray-100">{selectedEntry?.name}</h3>
+                    <CopyButton label="Copy JSON" value={output.copy} />
                   </div>
                   <pre className="overflow-x-auto rounded border border-gray-800 bg-gray-950 p-4 font-mono text-body-xs text-gray-200">
-                    {generatedJson}
+                    {output.display}
                   </pre>
                 </div>
               ) : (
                 <p className="py-8 text-center text-body-xs text-gray-500">
                   Select a message from the list to view its JSON structure
                 </p>
-              )}
-            </div>
-          </div>
+              )
+            }
+            list={{
+              emptyMessage: 'No message types found',
+              items: listItems,
+              onSelect: (item) => setSelectedName(item.id),
+              selectedId: selectedEntry?.fullName ?? null,
+            }}
+          />
         )}
       </div>
     </ToolDialogFrame>
