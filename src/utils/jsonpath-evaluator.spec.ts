@@ -1,8 +1,26 @@
 import { describe, expect, it } from 'vitest'
 
-import { evaluateJsonPath, formatResultValue, parseJsonInput } from '@/utils'
+import { createCachedJsonParser, evaluateJsonPath, formatResultValue, parseJsonInput } from '@/utils'
 
 describe('jsonpath-evaluator', () => {
+  describe('createCachedJsonParser', () => {
+    it('returns the identical result for repeated input and re-parses on change', () => {
+      const parse = createCachedJsonParser()
+      const first = parse('{"a":1}')
+      expect(parse('{"a":1}')).toBe(first)
+      const second = parse('{"a":2}')
+      expect(second).not.toBe(first)
+      expect(second).toEqual(parseJsonInput('{"a":2}'))
+    })
+
+    it('caches failures too', () => {
+      const parse = createCachedJsonParser()
+      const bad = parse('{')
+      expect(bad.success).toBe(false)
+      expect(parse('{')).toBe(bad)
+    })
+  })
+
   describe('parseJsonInput', () => {
     it('parses a valid JSON object', () => {
       const result = parseJsonInput('{"name":"test","value":42}')

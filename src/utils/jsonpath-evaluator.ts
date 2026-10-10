@@ -17,6 +17,19 @@ export function parseJsonInput(input: string): JsonParseResult {
   }
 }
 
+/**
+ * Returns a `parseJsonInput` that memoizes the most recent input. Lets a
+ * caller re-evaluate many expressions against the same document without
+ * re-parsing (and re-formatting) it on every keystroke.
+ */
+export function createCachedJsonParser(): (input: string) => JsonParseResult {
+  let last: { input: string; result: JsonParseResult } | null = null
+  return (input) => {
+    if (last?.input !== input) last = { input, result: parseJsonInput(input) }
+    return last.result
+  }
+}
+
 export function evaluateJsonPath(data: unknown, expression: string): JsonPathEvaluation {
   const trimmed = expression.trim()
   if (!trimmed) {
