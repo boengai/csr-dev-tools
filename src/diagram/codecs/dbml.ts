@@ -1,6 +1,5 @@
-import type { EntityIdMinters } from '@/diagram/id-minters'
 import { gridLayoutPositions } from '@/diagram/layout'
-import type { ColumnType, DiagramSchema, RelationshipType } from '@/types'
+import type { ColumnType, DiagramSchema, EntityIdMinters, RelationshipType } from '@/types'
 import type { ParsedTable, ParsedRef } from '@/types/diagram/codecs/dbml'
 import type { ParseResult } from '@/types/diagram/codecs/import'
 

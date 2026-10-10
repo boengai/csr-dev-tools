@@ -3,7 +3,7 @@ import { useCallback, useRef } from 'react'
 import { ImageToolShell } from '@/components/common/image-tool'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import type { BgOption, ToolComponentProps, ToolComputeContext } from '@/types'
+import type { BgControls, ToolComponentProps, ToolComputeContext } from '@/types'
 import { applyBackground, removeBackground } from '@/utils'
 
 import { BackgroundRemoverError } from './Error'
@@ -11,11 +11,6 @@ import { BackgroundRemoverProcessing } from './Processing'
 import { BackgroundRemoverResult } from './Result'
 
 const toolEntry = TOOL_REGISTRY_MAP['background-remover']
-
-type BgControls = {
-  bgOption: BgOption
-  customColor: string
-}
 
 const INITIAL_CONTROLS: BgControls = { bgOption: 'transparent', customColor: '#ff0000' }
 

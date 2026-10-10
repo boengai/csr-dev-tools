@@ -2,6 +2,7 @@ import type {
   WorkerAbortReason,
   WorkerBridge,
   WorkerCallOptions,
+  WorkerPendingCall,
   WorkerRequest,
   WorkerResponse,
 } from '@/types/wasm/worker-bridge'
@@ -23,14 +24,6 @@ export class WorkerAbortError extends Error {
 
 export const isWorkerAbortError = (err: unknown, reason?: WorkerAbortReason): err is WorkerAbortError =>
   err instanceof WorkerAbortError && (reason === undefined || err.reason === reason)
-
-type PendingCall = {
-  detachSignal?: () => void
-  onProgress?: (progress: number) => void
-  reject: (err: Error) => void
-  resolve: (value: unknown) => void
-  timer?: ReturnType<typeof setTimeout>
-}
 
 const isResponse = (data: unknown): data is WorkerResponse<unknown> =>
   typeof data === 'object' && data !== null && typeof (data as { id?: unknown }).id === 'number'
@@ -65,9 +58,9 @@ const isResponse = (data: unknown): data is WorkerResponse<unknown> =>
 export function createWorkerBridge<TReq extends object>(workerFactory: () => Worker): WorkerBridge<TReq> {
   let worker: Worker | null = null
   let msgId = 0
-  const pending = new Map<number, PendingCall>()
+  const pending = new Map<number, WorkerPendingCall>()
 
-  const settle = (id: number): PendingCall | undefined => {
+  const settle = (id: number): WorkerPendingCall | undefined => {
     const entry = pending.get(id)
     if (!entry) return undefined
     pending.delete(id)
@@ -134,7 +127,7 @@ export function createWorkerBridge<TReq extends object>(workerFactory: () => Wor
         }
         const id = ++msgId
         const w = getWorker()
-        const entry: PendingCall = {
+        const entry: WorkerPendingCall = {
           onProgress: options.onProgress,
           reject,
           resolve: resolve as (value: unknown) => void,

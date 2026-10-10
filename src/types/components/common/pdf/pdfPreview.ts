@@ -16,3 +16,5 @@ export type PdfBytesPreviewRendered = {
   error: string | null
   pages: Array<string>
 }
+
+export type PdfSvgPreviewProps = { pages: Array<string> }

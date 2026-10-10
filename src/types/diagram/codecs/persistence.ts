@@ -1,4 +1,4 @@
-import type { RelationshipType, TableColumn } from '@/types'
+import type { DiagramStore, RelationshipType, TableColumn } from '@/types'
 
 export type ReactFlowNode = {
   data: {
@@ -24,3 +24,5 @@ export type ReactFlowEdge = {
   targetHandle?: string | null
   type?: string
 }
+
+export type DiagramStoreReadResult = { kind: 'ok'; store: DiagramStore } | { kind: 'corrupt'; raw: string }

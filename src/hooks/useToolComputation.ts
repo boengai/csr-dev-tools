@@ -1,15 +1,14 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import type { ToolComputeContext, UseToolComputationOptions, UseToolComputationResult } from '@/types'
+import type {
+  PipelineErrorRouting,
+  ToolComputeContext,
+  UseToolComputationOptions,
+  UseToolComputationResult,
+} from '@/types'
 
 import { useToast } from './state/useToast'
 import { useLatestRef } from './useLatestRef'
-
-type PipelineErrorRouting<I> = {
-  errorLabel?: string
-  errorFallback?: string
-  onError?: (err: unknown, input: I) => void
-}
 
 /**
  * Routes a pipeline rejection to the configured error handler. Precedence:

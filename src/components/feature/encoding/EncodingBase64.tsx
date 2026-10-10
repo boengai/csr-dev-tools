@@ -2,12 +2,10 @@ import { useCallback } from 'react'
 
 import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, ToolComponentProps } from '@/types'
+import type { Base64Mode, ConverterMode, ToolComponentProps } from '@/types'
 import { decodeBase64, encodeBase64, isValidBase64 } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['base64-codec']
-
-type Base64Mode = 'encode' | 'decode'
 
 const MODES: [ConverterMode<Base64Mode>, ConverterMode<Base64Mode>] = [
   {

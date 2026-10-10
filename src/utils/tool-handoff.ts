@@ -1,3 +1,4 @@
+import type { HandoffChannel } from '@/types'
 /**
  * Cross-tool handoff: a typed channel that lets one Tool publish a payload for
  * another Tool to consume on its next mount. Currently used by DB Diagram's
@@ -15,8 +16,6 @@
  * `window.open` the consumer route — the consumer mounts and `consumeHandoff`
  * fires within the same tick.
  */
-
-export type HandoffChannel = 'mermaid-renderer'
 
 const HANDOFF_KEY_PREFIX = 'csr-dev-tools-handoff-'
 const channelKey = (channel: HandoffChannel): string => `${HANDOFF_KEY_PREFIX}${channel}`

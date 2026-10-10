@@ -4,13 +4,7 @@ import { CopyButton, FieldForm } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolComputation } from '@/hooks'
-import type {
-  AspectRatioInput,
-  AspectRatioLastEdited,
-  AspectRatioLocked,
-  AspectRatioOutput,
-  ToolComponentProps,
-} from '@/types'
+import type { AspectRatioFields, AspectRatioInput, AspectRatioOutput, ToolComponentProps } from '@/types'
 import { solveAspectRatio, tv } from '@/utils'
 
 const lockIndicatorStyles = tv({
@@ -43,15 +37,7 @@ const PRESETS = [
   { label: '9:16', w: 9, h: 16 },
 ]
 
-type Fields = {
-  width: string
-  height: string
-  ratio: string
-  lastEdited: AspectRatioLastEdited
-  locked: AspectRatioLocked
-}
-
-const INITIAL_FIELDS: Fields = {
+const INITIAL_FIELDS: AspectRatioFields = {
   height: '',
   lastEdited: 'width',
   locked: null,
@@ -60,7 +46,7 @@ const INITIAL_FIELDS: Fields = {
 }
 
 export const AspectRatioCalculator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const [fields, setFields] = useState<Fields>(INITIAL_FIELDS)
+  const [fields, setFields] = useState<AspectRatioFields>(INITIAL_FIELDS)
 
   const { result, setInput, setInputImmediate } = useToolComputation<AspectRatioInput, AspectRatioOutput | null>(
     solveAspectRatio,

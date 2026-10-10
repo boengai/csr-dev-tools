@@ -47,3 +47,11 @@ export type WorkerBridge<TReq extends object> = {
   /** True while at least one call is awaiting a terminal envelope. */
   hasPending: () => boolean
 }
+
+export type WorkerPendingCall = {
+  detachSignal?: () => void
+  onProgress?: (progress: number) => void
+  reject: (err: Error) => void
+  resolve: (value: unknown) => void
+  timer?: ReturnType<typeof setTimeout>
+}

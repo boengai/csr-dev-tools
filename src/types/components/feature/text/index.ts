@@ -1,4 +1,6 @@
 export * from './loremIpsumGenerator'
 export * from './regexTester'
+export * from './stringEscapeUnescape'
 export * from './textCaseConverter'
 export * from './textDiffChecker'
+export * from './textSortDedupe'

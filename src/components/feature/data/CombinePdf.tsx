@@ -3,33 +3,14 @@ import { useCallback, useState } from 'react'
 import { SortableCard } from '@/components/common'
 import { SortablePdfShell } from '@/components/common/pdf'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ToolComponentProps } from '@/types'
+import type { CombinePdfLoadingFile, CombinePdfPageCardProps, CombinePdfPageItem, ToolComponentProps } from '@/types'
 import { combinePdfPages, readPdfPages } from '@/utils/combine-pdf'
 
 const toolEntry = TOOL_REGISTRY_MAP['combine-pdf']
 
-type PageItem = {
-  id: string
-  file: File
-  sourceFileName: string
-  sourcePageIndex: number
-  thumbnailUrl: string
-}
-
-type LoadingFile = {
-  id: string
-  fileName: string
-}
-
 // ─── PageCard ────────────────────────────────────────────────────────────────
 
-type PageCardProps = {
-  item: PageItem
-  position: number
-  onRemove: () => void
-}
-
-const PageCard = ({ item, position, onRemove }: PageCardProps) => (
+const PageCard = ({ item, position, onRemove }: CombinePdfPageCardProps) => (
   <SortableCard
     id={item.id}
     onRemove={onRemove}
@@ -79,7 +60,7 @@ const EmptyHint = () => (
 // ─── Main component ──────────────────────────────────────────────────────────
 
 export const CombinePdf = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const [loading, setLoading] = useState<Array<LoadingFile>>([])
+  const [loading, setLoading] = useState<Array<CombinePdfLoadingFile>>([])
 
   const handleReset = useCallback(() => setLoading([]), [])
 
@@ -87,11 +68,11 @@ export const CombinePdf = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
     (
       files: Array<File>,
       helpers: {
-        addItems: (items: Array<PageItem>) => void
+        addItems: (items: Array<CombinePdfPageItem>) => void
         rejectFiles: (next: Array<string> | ((prev: Array<string>) => Array<string>)) => void
       },
     ) => {
-      const loadingEntries: Array<LoadingFile> = files.map((f) => ({
+      const loadingEntries: Array<CombinePdfLoadingFile> = files.map((f) => ({
         id: crypto.randomUUID(),
         fileName: f.name,
       }))
@@ -111,7 +92,7 @@ export const CombinePdf = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
             setLoading((prev) => prev.filter((l) => l.id !== loadingId))
             return
           }
-          const newItems: Array<PageItem> = pages.map((p) => ({
+          const newItems: Array<CombinePdfPageItem> = pages.map((p) => ({
             id: crypto.randomUUID(),
             file,
             sourceFileName: file.name,
@@ -127,7 +108,7 @@ export const CombinePdf = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   )
 
   return (
-    <SortablePdfShell<PageItem>
+    <SortablePdfShell<CombinePdfPageItem>
       accept="application/pdf"
       autoOpen={autoOpen}
       compute={(items) => combinePdfPages(items.map((i) => ({ file: i.file, pageIndex: i.sourcePageIndex })))}

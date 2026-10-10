@@ -1,11 +1,6 @@
 import { useCallback, useRef } from 'react'
 
-export type StaleSafeSession = {
-  /** True iff no newer session has been started since this one. */
-  isFresh: () => boolean
-  /** Run `fn` only if this session is still fresh; otherwise return undefined. */
-  ifFresh: <T>(fn: () => T) => T | undefined
-}
+import type { StaleSafeSession } from '@/types'
 
 /**
  * Returns a factory that bumps a monotonic session counter and yields a token

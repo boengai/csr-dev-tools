@@ -1,9 +1,8 @@
 import type { HmacAlgorithm, HmacEncoding } from '@/types/utils/hmac'
 import type { HmacWasm } from '@/types/wasm/ffi'
+import type { HmacFnKey } from '@/types/wasm/hmac'
 
 import { loadWasm } from './init'
-
-type HmacFnKey = `hmac_sha${256 | 384 | 512}` | `hmac_sha${256 | 384 | 512}_base64`
 
 const ALGORITHM_MAP: Record<HmacAlgorithm, string> = {
   'SHA-256': 'sha256',

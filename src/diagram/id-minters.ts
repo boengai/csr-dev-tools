@@ -1,10 +1,4 @@
-import type { ColumnId, RelationId, TableId } from '@/types'
-
-export type EntityIdMinters = {
-  column: () => ColumnId
-  relation: () => RelationId
-  table: () => TableId
-}
+import type { EntityIdMinters } from '@/types'
 
 const makeDefaultMinter = (prefix: string): (() => string) => {
   let n = 0

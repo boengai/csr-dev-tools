@@ -1,3 +1,4 @@
+export * from './combinePdf'
 export * from './db-diagram'
 export * from './envFileConverter'
 export * from './escapedJsonStringifier'

@@ -1,4 +1,4 @@
-type PdfSvgPreviewProps = { pages: Array<string> }
+import type { PdfSvgPreviewProps } from '@/types'
 
 export const PdfSvgPreview = ({ pages }: PdfSvgPreviewProps) => {
   if (pages.length === 0) {

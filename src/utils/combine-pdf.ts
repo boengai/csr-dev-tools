@@ -1,15 +1,6 @@
 import { PDFDocument } from 'pdf-lib'
 
-export type CombinePdfPageRef = {
-  file: File
-  pageIndex: number // 0-based
-}
-
-export type CombinePdfResult = {
-  pdf: Uint8Array
-  pageCount: number
-  skipped: Array<string> // distinct filenames that failed to load
-}
+import type { CombinePdfPageRef, CombinePdfResult, PdfPageThumbnail } from '@/types'
 
 const EMPTY_RESULT: CombinePdfResult = { pdf: new Uint8Array(0), pageCount: 0, skipped: [] }
 
@@ -59,11 +50,6 @@ export async function combinePdfPages(items: Array<CombinePdfPageRef>): Promise<
 
   const pdfBytes = await merged.save()
   return { pdf: pdfBytes, pageCount: merged.getPageCount(), skipped: Array.from(skippedSet) }
-}
-
-export type PdfPageThumbnail = {
-  pageIndex: number
-  thumbnailUrl: string
 }
 
 /**

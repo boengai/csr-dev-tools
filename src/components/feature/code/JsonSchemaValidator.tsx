@@ -2,15 +2,13 @@ import { FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFields } from '@/hooks'
-import type { ToolComponentProps, ValidationResult } from '@/types'
+import type { JsonSchemaValidatorInput, ToolComponentProps, ValidationResult } from '@/types'
 import { validateJsonSchema } from '@/utils/json-schema'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-schema-validator']
 
-type ValidatorInput = { jsonData: string; jsonSchema: string }
-
 export const JsonSchemaValidator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const { inputs, recompute, result, setFields } = useToolFields<ValidatorInput, ValidationResult | null>({
+  const { inputs, recompute, result, setFields } = useToolFields<JsonSchemaValidatorInput, ValidationResult | null>({
     compute: ({ jsonData: data, jsonSchema: schema }) => validateJsonSchema(data, schema),
     debounceMs: 300,
     initial: { jsonData: '', jsonSchema: '' },

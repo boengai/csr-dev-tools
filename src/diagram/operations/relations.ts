@@ -1,5 +1,4 @@
-import type { EntityIdMinters } from '@/diagram/id-minters'
-import type { ColumnRef, DiagramDocument, EditorRelation, RelationId, RelationKind } from '@/types'
+import type { ColumnRef, DiagramDocument, EditorRelation, EntityIdMinters, RelationId, RelationKind } from '@/types'
 
 const columnExists = (doc: DiagramDocument, ref: ColumnRef): boolean => {
   const table = doc.tables[ref.tableId]

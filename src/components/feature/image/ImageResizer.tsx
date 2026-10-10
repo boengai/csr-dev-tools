@@ -2,21 +2,13 @@ import { FieldForm } from '@/components/common'
 import { ImageToolShell } from '@/components/common/image-tool'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import type { ImageFormat, ToolComponentProps } from '@/types'
+import type { ImageFormat, ResizeControls, ToolComponentProps } from '@/types'
 import { isValidImageFormat, parseDataUrlToBlob, parseFileName, resizeImage } from '@/utils'
 
 import { EMPTY_IMAGE } from './ImagePreview'
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
 
 const toolEntry = TOOL_REGISTRY_MAP['image-resizer']
-
-type ResizeControls = {
-  format: ImageFormat | null
-  height: number | null
-  quality: number | null
-  ratio: number | null
-  width: number | null
-}
 
 const INITIAL_CONTROLS: ResizeControls = {
   format: null,

@@ -2,7 +2,7 @@ import { Button, CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/c
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolFields } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
+import type { EscapeInput, ToolComponentProps } from '@/types'
 import { type EscapeMode, escapeString, unescapeString } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['string-escape-unescape']
@@ -15,8 +15,6 @@ const MODE_OPTIONS = [
   { label: 'XML', value: 'xml' },
 ]
 
-type Direction = 'escape' | 'unescape'
-type EscapeInput = { direction: Direction; mode: EscapeMode; source: string }
 const INITIAL_INPUT: EscapeInput = { direction: 'escape', mode: 'html', source: '' }
 
 export const StringEscapeUnescape = ({ autoOpen, onAfterClose }: ToolComponentProps) => {

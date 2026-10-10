@@ -1,4 +1,10 @@
-import type { DiagramIndexEntry, DiagramSchema, DiagramStorageFailure, DiagramStore } from '@/types'
+import type {
+  DiagramIndexEntry,
+  DiagramSchema,
+  DiagramStorageFailure,
+  DiagramStore,
+  DiagramStoreReadResult,
+} from '@/types'
 
 const STORAGE_KEY = 'csr-dev-tools-db-diagrams'
 // An unreadable store is copied here once before the first write replaces it,
@@ -22,10 +28,8 @@ const isQuotaError = (error: unknown): boolean =>
   error instanceof DOMException &&
   (error.name === 'QuotaExceededError' || error.name === 'NS_ERROR_DOM_QUOTA_REACHED' || error.code === 22)
 
-type ReadResult = { kind: 'ok'; store: DiagramStore } | { kind: 'corrupt'; raw: string }
-
 // Throws DiagramStorageError('unavailable') when storage itself can't be read.
-const readStore = (): ReadResult => {
+const readStore = (): DiagramStoreReadResult => {
   let raw: string | null
   try {
     raw = localStorage.getItem(STORAGE_KEY)

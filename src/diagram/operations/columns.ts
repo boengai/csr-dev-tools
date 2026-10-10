@@ -1,5 +1,4 @@
-import type { EntityIdMinters } from '@/diagram/id-minters'
-import type { ColumnId, DiagramDocument, TableColumn, TableId } from '@/types'
+import type { ColumnId, DiagramDocument, EntityIdMinters, TableColumn, TableId } from '@/types'
 
 import { cleanupDanglingRelations } from './relations'
 

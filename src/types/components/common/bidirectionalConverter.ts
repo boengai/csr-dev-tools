@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 
 import type { ToolComputeContext } from '@/types/hooks/computation'
-import type { SourceFormat } from '@/utils/parse-error-narrators'
+import type { SourceFormat } from '@/types/utils/parse-error-narrators'
 
 export type ConverterMode<M extends string> = {
   key: M

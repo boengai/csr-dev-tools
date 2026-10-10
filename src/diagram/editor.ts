@@ -4,10 +4,14 @@ import type {
   ColumnId,
   ColumnRef,
   DiagramDocument,
+  DiagramDocumentListener,
+  DiagramEditorOptions,
   DiagramIndexEntry,
+  DiagramIndexListener,
   DiagramStorage,
   DiagramStorageStatus,
   EditorRelation,
+  EntityIdMinters,
   ImportResult,
   RelationId,
   RelationKind,
@@ -16,7 +20,7 @@ import type {
   TableId,
 } from '@/types'
 
-import { createDefaultIdMinters, type EntityIdMinters } from './id-minters'
+import { createDefaultIdMinters } from './id-minters'
 import * as columnOps from './operations/columns'
 import * as dbmlOps from './operations/dbml'
 import * as exportOps from './operations/export'
@@ -26,17 +30,6 @@ import * as relationOps from './operations/relations'
 import * as tableOps from './operations/tables'
 import { cloneDocument, createInitialDocument } from './state'
 import { localStorageDiagramStorage } from './storage'
-
-type Listener = (document: DiagramDocument) => void
-type IndexListener = (entries: Array<DiagramIndexEntry>) => void
-
-type DiagramEditorOptions = {
-  storage?: DiagramStorage
-  document?: DiagramDocument
-  autosaveMs?: number
-  clock?: () => string
-  idMinters?: EntityIdMinters
-}
 
 const isValidDocument = (value: unknown): value is DiagramDocument => {
   if (!value || typeof value !== 'object') return false
@@ -52,8 +45,8 @@ const isValidDocument = (value: unknown): value is DiagramDocument => {
 
 export class DiagramEditor {
   private document: DiagramDocument
-  private listeners: Set<Listener> = new Set()
-  private indexListeners: Set<IndexListener> = new Set()
+  private listeners: Set<DiagramDocumentListener> = new Set()
+  private indexListeners: Set<DiagramIndexListener> = new Set()
   private storage: DiagramStorage
   private autosaveMs: number
   private clock: () => string
@@ -79,7 +72,7 @@ export class DiagramEditor {
     return this.storageStatus
   }
 
-  subscribeToIndex(listener: IndexListener): () => void {
+  subscribeToIndex(listener: DiagramIndexListener): () => void {
     this.indexListeners.add(listener)
     return () => {
       this.indexListeners.delete(listener)
@@ -133,7 +126,7 @@ export class DiagramEditor {
     return this.document
   }
 
-  subscribe(listener: Listener): () => void {
+  subscribe(listener: DiagramDocumentListener): () => void {
     this.listeners.add(listener)
     return () => {
       this.listeners.delete(listener)

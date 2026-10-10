@@ -1,6 +1,7 @@
 import type {
   ColumnId,
   DiagramDocument,
+  DiagramFlowProjection,
   EditorRelation,
   EditorTable,
   HandleKind,
@@ -43,13 +44,11 @@ const relationToEdge = (r: EditorRelation): RelationshipEdge => ({
   },
 })
 
-type FlowProjection = { nodes: Array<TableNode>; edges: Array<RelationshipEdge> }
-
 const project = (
   doc: DiagramDocument,
   toNode: (t: EditorTable) => TableNode,
   toEdge: (r: EditorRelation) => RelationshipEdge,
-): FlowProjection => ({
+): DiagramFlowProjection => ({
   nodes: doc.tableOrder
     .map((id) => doc.tables[id])
     .filter((t): t is NonNullable<typeof t> => Boolean(t))
@@ -60,12 +59,12 @@ const project = (
     .map(toEdge),
 })
 
-export const documentToFlow = (doc: DiagramDocument): FlowProjection => project(doc, tableToNode, relationToEdge)
+export const documentToFlow = (doc: DiagramDocument): DiagramFlowProjection => project(doc, tableToNode, relationToEdge)
 
 // Memoizing variant: operations replace only the tables/relations they touch,
 // so caching by object identity keeps unchanged nodes/edges referentially
 // stable across document updates (lets memoized node components skip renders).
-export const createFlowProjector = (): ((doc: DiagramDocument) => FlowProjection) => {
+export const createFlowProjector = (): ((doc: DiagramDocument) => DiagramFlowProjection) => {
   const nodes = new WeakMap<EditorTable, TableNode>()
   const edges = new WeakMap<EditorRelation, RelationshipEdge>()
   const cached =

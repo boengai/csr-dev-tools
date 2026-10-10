@@ -172,3 +172,9 @@ export type UseToolInputResult<I, R> = {
   /** Same pipeline as `setInput` but bypasses the debounce wait. */
   setInputImmediate: (input: I) => void
 }
+
+export type PipelineErrorRouting<I> = {
+  errorLabel?: string
+  errorFallback?: string
+  onError?: (err: unknown, input: I) => void
+}

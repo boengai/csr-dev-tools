@@ -2,11 +2,9 @@ import { useCallback } from 'react'
 
 import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, ToolComponentProps } from '@/types'
+import type { ConverterMode, ToolComponentProps, UrlMode } from '@/types'
 
 const toolEntry = TOOL_REGISTRY_MAP['url-encoder-decoder']
-
-type UrlMode = 'encode' | 'decode'
 
 const MODES: [ConverterMode<UrlMode>, ConverterMode<UrlMode>] = [
   {

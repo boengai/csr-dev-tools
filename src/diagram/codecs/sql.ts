@@ -1,6 +1,5 @@
-import type { EntityIdMinters } from '@/diagram/id-minters'
 import { gridLayoutPositions } from '@/diagram/layout'
-import type { ColumnType, DiagramSchema, SqlDialect } from '@/types'
+import type { ColumnType, DiagramSchema, EntityIdMinters, SqlDialect } from '@/types'
 import type { FkRef, ParseResult, ParsedColumn } from '@/types/diagram/codecs/import'
 
 const TYPE_MAP: Record<ColumnType, Record<SqlDialect, string>> = {

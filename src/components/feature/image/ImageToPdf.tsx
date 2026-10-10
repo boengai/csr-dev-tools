@@ -2,30 +2,21 @@ import { CheckboxInput, SortableCard } from '@/components/common'
 import { SortablePdfShell } from '@/components/common/pdf'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useBlobUrl } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
+import type {
+  ImageToPdfCardProps,
+  ImageToPdfExtras,
+  ImageToPdfInput,
+  ImageToPdfItem,
+  ToolComponentProps,
+} from '@/types'
 import { formatFileSize } from '@/utils'
-import { imagesToPdf, type ImageToPdfInput } from '@/utils/image-to-pdf'
+import { imagesToPdf } from '@/utils/image-to-pdf'
 
 const toolEntry = TOOL_REGISTRY_MAP['image-to-pdf']
 
-type ImageItem = {
-  id: string
-  file: File
-  rotation: 0 | 90 | 180 | 270
-}
-
-type Extras = { onePerPage: boolean }
-
 // ─── ImageCard ────────────────────────────────────────────────────────────────
 
-type ImageCardProps = {
-  item: ImageItem
-  pageNumber: number
-  onRemove: () => void
-  onRotate: () => void
-}
-
-const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => {
+const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageToPdfCardProps) => {
   const thumbnailUrl = useBlobUrl(item.file)
 
   return (
@@ -67,7 +58,7 @@ const ImageCard = ({ item, pageNumber, onRemove, onRotate }: ImageCardProps) => 
 // ─── Main component ───────────────────────────────────────────────────────────
 
 export const ImageToPdf = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
-  <SortablePdfShell<ImageItem, Extras>
+  <SortablePdfShell<ImageToPdfItem, ImageToPdfExtras>
     accept="image/png,image/jpeg"
     autoOpen={autoOpen}
     compute={async (items, { onePerPage }) =>
@@ -81,7 +72,7 @@ export const ImageToPdf = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
     filenameSlug="images"
     initialExtras={{ onePerPage: true }}
     onAcceptedFiles={(files, { addItems }) => {
-      addItems(files.map((file): ImageItem => ({ id: crypto.randomUUID(), file, rotation: 0 })))
+      addItems(files.map((file): ImageToPdfItem => ({ id: crypto.randomUUID(), file, rotation: 0 })))
     }}
     onAfterClose={onAfterClose}
     renderCard={(item, { position, onRemove, update }) => (

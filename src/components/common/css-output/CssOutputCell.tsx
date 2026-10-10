@@ -1,14 +1,6 @@
 import { CopyButton } from '@/components/common/button/CopyButton'
+import type { CssOutputCellProps } from '@/types'
 import { tv } from '@/utils'
-
-type CssOutputCellSize = 'compact' | 'default'
-
-type CssOutputCellProps = {
-  copyLabel: string
-  value: string
-  size?: CssOutputCellSize
-  scrollable?: boolean
-}
 
 const labelStyles = tv({
   base: 'font-medium text-gray-400',

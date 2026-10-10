@@ -1,7 +1,6 @@
 import { parseJsonSchema } from '@/diagram/codecs/json-schema'
 import { parseSqlDdl } from '@/diagram/codecs/sql'
-import type { EntityIdMinters } from '@/diagram/id-minters'
-import type { DiagramDocument, ImportResult, SqlDialect } from '@/types'
+import type { DiagramDocument, EntityIdMinters, ImportResult, SqlDialect } from '@/types'
 
 import { mergeSchemaIntoDocument, schemaToDocument } from './lifecycle'
 
