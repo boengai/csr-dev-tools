@@ -3,6 +3,7 @@ import { IOS_DEVICES, MASKABLE_ICON_SIZES, MASKABLE_SAFE_ZONE_RATIO, PWA_ICON_SI
 import type {
   ManifestIconEntry,
   PwaIconResult,
+  SplashOrientation,
   SplashScreenGeneratorOutput,
   SplashScreenResult,
 } from '@/types/utils/splash-screen'
@@ -19,7 +20,7 @@ const slugify = (name: string) =>
 const generateSplashScreen = async (
   image: HTMLImageElement,
   device: SplashScreenDevice,
-  orientation: 'landscape' | 'portrait',
+  orientation: SplashOrientation,
   bgColor: string,
   imageScale = 0.5,
 ): Promise<SplashScreenResult> => {
@@ -96,7 +97,7 @@ export const generateAllAssets = async (
   imageScale = 0.5,
   onProgress?: (current: number, total: number) => void,
 ): Promise<SplashScreenGeneratorOutput> => {
-  const orientations: Array<'landscape' | 'portrait'> = ['portrait', 'landscape']
+  const orientations: Array<SplashOrientation> = ['portrait', 'landscape']
   const totalSplash = IOS_DEVICES.length * orientations.length
   const totalIcons = PWA_ICON_SIZES.length + MASKABLE_ICON_SIZES.length
   const total = totalSplash + totalIcons

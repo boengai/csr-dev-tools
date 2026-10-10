@@ -1,6 +1,11 @@
 import { JSONPath } from 'jsonpath-plus'
 
-import type { JsonPathEvaluation, JsonParseResult } from '@/types/utils/jsonpath-evaluator'
+import type {
+  JsonParseCacheEntry,
+  JsonPathEvaluation,
+  JsonParseResult,
+  JsonPathResult,
+} from '@/types/utils/jsonpath-evaluator'
 
 export function parseJsonInput(input: string): JsonParseResult {
   const trimmed = input.trim()
@@ -23,7 +28,7 @@ export function parseJsonInput(input: string): JsonParseResult {
  * re-parsing (and re-formatting) it on every keystroke.
  */
 export function createCachedJsonParser(): (input: string) => JsonParseResult {
-  let last: { input: string; result: JsonParseResult } | null = null
+  let last: JsonParseCacheEntry | null = null
   return (input) => {
     if (last?.input !== input) last = { input, result: parseJsonInput(input) }
     return last.result
@@ -37,10 +42,11 @@ export function evaluateJsonPath(data: unknown, expression: string): JsonPathEva
   }
 
   try {
-    const results = JSONPath({ json: data as object, path: trimmed, resultType: 'all' }) as unknown as Array<{
-      path: string
-      value: unknown
-    }>
+    const results = JSONPath({
+      json: data as object,
+      path: trimmed,
+      resultType: 'all',
+    }) as unknown as Array<JsonPathResult>
 
     return {
       results: results.map((r) => ({ path: r.path, value: r.value })),

@@ -15,13 +15,20 @@ import {
 } from '@/components/common'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useDownload, useStaleSafeAsync, useToast } from '@/hooks'
-import type { DownloadTarget, ImageConvertorAction, ImageConvertorState, ImageFormat } from '@/types'
+import type {
+  DownloadTarget,
+  ImageConvertorAction,
+  ImageConvertorPreview,
+  ImageConvertorState,
+  ImageConvertorTab,
+  ImageFormat,
+} from '@/types'
 import { convertImageFormat, dedupeFileName, isValidImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
 import { buildZipBlob } from '@/utils/zip'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
 
-const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING' | 'SELECT_FORMAT', string> = {
+const TABS_VALUES: Record<ImageConvertorTab, string> = {
   DOWNLOAD: 'download',
   IMPORT: 'import',
   PROCESSING: 'processing',
@@ -84,7 +91,7 @@ export const ImageConvertor = () => {
     Promise.all(
       sources.map(
         (file) =>
-          new Promise<{ height: number; url: string; width: number }>((resolve) => {
+          new Promise<ImageConvertorPreview>((resolve) => {
             const reader = new FileReader()
             reader.onload = () => {
               const url = typeof reader.result === 'string' ? reader.result : ''

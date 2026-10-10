@@ -13,3 +13,5 @@ export type JsonPathEvalResult = {
   parseError: string | null
   parsedData: unknown
 }
+
+export type JsonParseCacheEntry = { input: string; result: JsonParseResult }

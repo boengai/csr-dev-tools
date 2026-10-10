@@ -1,4 +1,4 @@
-import type { SubnetComputeInput, SubnetComputeOutput, SubnetResult } from '@/types/utils/ip-subnet'
+import type { ParsedCidr, SubnetComputeInput, SubnetComputeOutput, SubnetResult } from '@/types/utils/ip-subnet'
 
 export const validateIpv4 = (ip: string): boolean => {
   const parts = ip.split('.')
@@ -29,7 +29,7 @@ export const validatePrefixLength = (prefix: number): boolean => {
   return Number.isInteger(prefix) && prefix >= 0 && prefix <= 32
 }
 
-export const parseCidr = (input: string): { ip: string; prefixLength: number } | null => {
+export const parseCidr = (input: string): ParsedCidr | null => {
   const parts = input.split('/')
   if (parts.length !== 2) return null
 

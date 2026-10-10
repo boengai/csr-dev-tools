@@ -20,3 +20,5 @@ export type SubnetComputeInput = {
 }
 
 export type SubnetComputeOutput = { error: string; result: SubnetResult | null }
+
+export type ParsedCidr = { ip: string; prefixLength: number }

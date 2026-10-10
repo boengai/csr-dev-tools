@@ -4,7 +4,7 @@ export type SplashScreenResult = {
   blob: Blob
   device: SplashScreenDevice
   fileName: string
-  orientation: 'landscape' | 'portrait'
+  orientation: SplashOrientation
 }
 
 export type PwaIconResult = {
@@ -22,3 +22,5 @@ export type SplashScreenGeneratorOutput = {
 }
 
 export type ManifestIconEntry = { purpose: string; sizes: string; src: string; type: string }
+
+export type SplashOrientation = 'landscape' | 'portrait'

@@ -7,7 +7,7 @@ import { ToggleButton } from '@/components/common'
 import { ImageToolShell } from '@/components/common/image-tool'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import type { AspectRatioPreset, CropRegion, ToolComponentProps } from '@/types'
+import type { CropControls, CropPreviewProps, CropRegion, ToolComponentProps } from '@/types'
 import {
   ASPECT_RATIO_OPTIONS,
   canvasToBlob,
@@ -27,11 +27,6 @@ const cropImageCanvas = (image: HTMLImageElement, crop: CropRegion, mimeType: st
   if (!ctx) return Promise.reject(new Error('Canvas context not available'))
   ctx.drawImage(image, crop.x, crop.y, crop.width, crop.height, 0, 0, crop.width, crop.height)
   return canvasToBlob(canvas, mimeType)
-}
-
-type CropControls = {
-  aspectPreset: AspectRatioPreset
-  naturalCrop: CropRegion | null
 }
 
 const INITIAL_CONTROLS: CropControls = { aspectPreset: 'free', naturalCrop: null }
@@ -130,17 +125,6 @@ export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
       uploadLabel="Select image to crop"
     />
   )
-}
-
-type CropPreviewProps = {
-  aspectPreset: AspectRatioPreset
-  captureNaturalCrop: (displayCrop: PixelCrop) => CropRegion | null
-  crop: Crop | undefined
-  imgRef: React.MutableRefObject<HTMLImageElement | null>
-  onCropComplete: (c: PixelCrop) => void
-  onImageLoad: (e: React.SyntheticEvent<HTMLImageElement>) => void
-  setCrop: (c: Crop) => void
-  sourceUrl: string
 }
 
 const CropPreview = ({

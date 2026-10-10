@@ -5,7 +5,7 @@ import { ColorInput, CopyButton, FieldForm, NotoEmoji } from '@/components/commo
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useMountOnce, useToast, useToolComputation } from '@/hooks'
-import type { ColorFormat, ColorInputWrapperProps, ConvertInput, ToolComponentProps } from '@/types'
+import type { ColorFormat, ColorFormatField, ColorInputWrapperProps, ConvertInput, ToolComponentProps } from '@/types'
 import { convertColor } from '@/wasm/color'
 
 const randomByte = () => Math.floor(Math.random() * 256)
@@ -28,7 +28,7 @@ const ERROR_MESSAGES: Record<ColorFormat, string> = {
   rgb: 'Enter a valid RGB color (e.g., rgb(59, 130, 246))',
 }
 
-const FORMATS: Array<{ format: ColorFormat; label: string; placeholder: string }> = [
+const FORMATS: Array<ColorFormatField> = [
   { format: 'hex', label: 'Hex', placeholder: '#000 or #000000' },
   { format: 'rgb', label: 'RGB', placeholder: 'rgb(0, 0, 0)' },
   { format: 'oklch', label: 'OKLCH', placeholder: 'oklch(0 0 0)' },
