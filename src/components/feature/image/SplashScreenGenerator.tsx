@@ -3,8 +3,13 @@ import { useState } from 'react'
 import { Button, CopyButton, DownloadIcon, RangeInput, RefreshIcon, Tabs } from '@/components/common'
 import { UploadDialogFrame } from '@/components/common/dialog/UploadDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useBatchAssetPipeline } from '@/hooks'
-import type { PwaIconResult, SplashScreenGeneratorOutput, SplashScreenResult, ToolComponentProps } from '@/types'
+import { useBatchAssetPipeline, useBlobUrl } from '@/hooks'
+import type {
+  IconPreviewCardProps,
+  SplashPreviewCardProps,
+  SplashScreenGeneratorOutput,
+  ToolComponentProps,
+} from '@/types'
 import { generateAllAssets } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['splash-screen-generator']
@@ -48,8 +53,7 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
   const [activeTab, setActiveTab] = useState('ios-splash')
 
   const handleUpload = async (files: Array<File>, openDialog: () => void) => {
-    if (!files[0]) return
-    await pipeline.upload(files)
+    if (!(await pipeline.upload(files))) return
     openDialog()
   }
 
@@ -293,45 +297,57 @@ export const SplashScreenGenerator = ({ onAfterDialogClose }: ToolComponentProps
   )
 }
 
-const SplashPreviewCard = ({ onDownload, splash }: { onDownload: () => void; splash: SplashScreenResult }) => (
-  // raw button: card-style download tile with image content; Button's min-h-8 and motion would distort the grid card layout
-  <button
-    className="flex cursor-pointer flex-col items-center gap-1 rounded border border-gray-800 p-2 transition-colors hover:border-gray-600"
-    onClick={onDownload}
-    title={`Download ${splash.fileName}`}
-    type="button"
-  >
-    <div className="bg-grid-texture flex items-center justify-center rounded p-1">
-      <img alt={`${splash.device.name} ${splash.orientation}`} className="max-h-16 max-w-12" src={splash.dataUrl} />
-    </div>
-    <span className="text-body-xs text-gray-400">{splash.device.name}</span>
-    <span className="text-body-xs text-gray-500">
-      {splash.orientation === 'portrait' ? splash.device.width : splash.device.height}x
-      {splash.orientation === 'portrait' ? splash.device.height : splash.device.width}
-    </span>
-    <span className="text-body-xs text-gray-600 capitalize">{splash.orientation}</span>
-  </button>
-)
+// Each card owns its thumbnail object URL via useBlobUrl, so it's revoked when
+// the card unmounts (reset, new results, closing the dialog).
+const SplashPreviewCard = ({ onDownload, splash }: SplashPreviewCardProps) => {
+  const thumbnailUrl = useBlobUrl(splash.blob)
+  return (
+    // raw button: card-style download tile with image content; Button's min-h-8 and motion would distort the grid card layout
+    <button
+      className="flex cursor-pointer flex-col items-center gap-1 rounded border border-gray-800 p-2 transition-colors hover:border-gray-600"
+      onClick={onDownload}
+      title={`Download ${splash.fileName}`}
+      type="button"
+    >
+      <div className="bg-grid-texture flex items-center justify-center rounded p-1">
+        {thumbnailUrl && (
+          <img alt={`${splash.device.name} ${splash.orientation}`} className="max-h-16 max-w-12" src={thumbnailUrl} />
+        )}
+      </div>
+      <span className="text-body-xs text-gray-400">{splash.device.name}</span>
+      <span className="text-body-xs text-gray-500">
+        {splash.orientation === 'portrait' ? splash.device.width : splash.device.height}x
+        {splash.orientation === 'portrait' ? splash.device.height : splash.device.width}
+      </span>
+      <span className="text-body-xs text-gray-600 capitalize">{splash.orientation}</span>
+    </button>
+  )
+}
 
-const IconPreviewCard = ({ icon, onDownload }: { icon: PwaIconResult; onDownload: () => void }) => (
-  // raw button: card-style download tile with image content; Button's min-h-8 and motion would distort the grid card layout
-  <button
-    className="flex cursor-pointer flex-col items-center gap-1 rounded border border-gray-800 p-2 transition-colors hover:border-gray-600"
-    onClick={onDownload}
-    title={`Download ${icon.fileName}`}
-    type="button"
-  >
-    <div className="bg-grid-texture flex items-center justify-center rounded p-2">
-      <img
-        alt={`${icon.size}x${icon.size}`}
-        height={Math.min(icon.size, 64)}
-        src={icon.dataUrl}
-        width={Math.min(icon.size, 64)}
-      />
-    </div>
-    <span className="text-body-xs text-gray-400">
-      {icon.size}x{icon.size}
-    </span>
-    {icon.maskable && <span className="text-yellow-400 text-body-xs">maskable</span>}
-  </button>
-)
+const IconPreviewCard = ({ icon, onDownload }: IconPreviewCardProps) => {
+  const thumbnailUrl = useBlobUrl(icon.blob)
+  return (
+    // raw button: card-style download tile with image content; Button's min-h-8 and motion would distort the grid card layout
+    <button
+      className="flex cursor-pointer flex-col items-center gap-1 rounded border border-gray-800 p-2 transition-colors hover:border-gray-600"
+      onClick={onDownload}
+      title={`Download ${icon.fileName}`}
+      type="button"
+    >
+      <div className="bg-grid-texture flex items-center justify-center rounded p-2">
+        {thumbnailUrl && (
+          <img
+            alt={`${icon.size}x${icon.size}`}
+            height={Math.min(icon.size, 64)}
+            src={thumbnailUrl}
+            width={Math.min(icon.size, 64)}
+          />
+        )}
+      </div>
+      <span className="text-body-xs text-gray-400">
+        {icon.size}x{icon.size}
+      </span>
+      {icon.maskable && <span className="text-yellow-400 text-body-xs">maskable</span>}
+    </button>
+  )
+}

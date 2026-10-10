@@ -1,6 +1,11 @@
 import type { SplashScreenDevice } from '@/constants'
 import { IOS_DEVICES, MASKABLE_ICON_SIZES, MASKABLE_SAFE_ZONE_RATIO, PWA_ICON_SIZES } from '@/constants'
-import type { SplashScreenResult, PwaIconResult, SplashScreenGeneratorOutput } from '@/types/utils/splash-screen'
+import type {
+  ManifestIconEntry,
+  PwaIconResult,
+  SplashScreenGeneratorOutput,
+  SplashScreenResult,
+} from '@/types/utils/splash-screen'
 
 import { canvasToBlob } from './canvas'
 
@@ -37,12 +42,13 @@ const generateSplashScreen = async (
   const y = (height - scaledH) / 2
   ctx.drawImage(image, x, y, scaledW, scaledH)
 
-  const dataUrl = canvas.toDataURL('image/png')
+  // Blob only — thumbnails render from object URLs, so no base64 copy of a
+  // full-size (up to 2732x2048) canvas is ever held in memory.
   const blob = await canvasToBlob(canvas)
   const slug = slugify(device.name)
   const fileName = `${slug}-${orientation}.png`
 
-  return { blob, dataUrl, device, fileName, orientation }
+  return { blob, device, fileName, orientation }
 }
 
 const generatePwaIcon = async (
@@ -78,11 +84,10 @@ const generatePwaIcon = async (
     ctx.drawImage(image, x, y, scaledW, scaledH)
   }
 
-  const dataUrl = canvas.toDataURL('image/png')
   const blob = await canvasToBlob(canvas)
   const fileName = maskable ? `maskable-icon-${size}x${size}.png` : `icon-${size}x${size}.png`
 
-  return { blob, dataUrl, fileName, maskable, size }
+  return { blob, fileName, maskable, size }
 }
 
 export const generateAllAssets = async (
@@ -153,7 +158,7 @@ export const generateSplashMetaTags = (devices: Array<SplashScreenDevice>): stri
 }
 
 export const generateManifestIcons = (): string => {
-  const icons: Array<{ purpose: string; sizes: string; src: string; type: string }> = []
+  const icons: Array<ManifestIconEntry> = []
 
   for (const size of PWA_ICON_SIZES) {
     icons.push({
