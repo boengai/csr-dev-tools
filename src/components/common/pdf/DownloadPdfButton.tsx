@@ -1,17 +1,15 @@
-import { Button, DownloadIcon } from '@/components/common'
 import { useDownload } from '@/hooks'
+import type { DownloadPdfButtonProps } from '@/types'
 
-type DownloadPdfButtonProps = {
-  bytes: Uint8Array
-  filename: string
-}
+import { Button } from '../button'
+import { DownloadIcon } from '../icon'
 
-export const DownloadPdfButton = ({ bytes, filename }: DownloadPdfButtonProps) => {
+export const DownloadPdfButton = ({ bytes, filenameSlug }: DownloadPdfButtonProps) => {
   const { downloadBlob } = useDownload()
 
   const handleDownload = () => {
     const blob = new Blob([bytes as Uint8Array<ArrayBuffer>], { type: 'application/pdf' })
-    downloadBlob(blob, filename)
+    downloadBlob(blob, `csr-dev-tools_${filenameSlug}_${Date.now()}.pdf`)
   }
 
   return (
