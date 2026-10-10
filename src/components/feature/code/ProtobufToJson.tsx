@@ -72,10 +72,11 @@ enum PaymentMethod {
 
 export const ProtobufToJson = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [selectedName, setSelectedName] = useState<string | null>(null)
-  // Sample JSON for a message, tagged with the message's `fullName`. A reparse
-  // hands us new message objects; keying on the name keeps the detail pane on
+  // Sample JSON for a message, matched to the selection by `fullName`. A reparse
+  // hands us new message objects; matching on the name keeps the detail pane on
   // the current sample (instead of flashing the placeholder) until the
-  // regenerated one lands, while a different selection never shows it.
+  // regenerated one lands, while a different selection never shows it. The
+  // sample is annotated with the message/schema it was generated from.
   const [sample, setSample] = useState<ProtobufSampleJson | null>(null)
   const newSession = useStaleSafeAsync()
   const showError = useToast((s) => s.showError)
@@ -122,7 +123,7 @@ export const ProtobufToJson = ({ autoOpen, onAfterClose }: ToolComponentProps) =
       try {
         const { generateSampleJson } = await import('@/wasm/parsers')
         const json = await generateSampleJson(selectedMessage, schemaInfo.messages, schemaInfo.enums)
-        session.ifFresh(() => setSample({ fullName: selectedMessage.fullName, json }))
+        session.ifFresh(() => setSample({ json, message: selectedMessage, schema: schemaInfo }))
       } catch {
         session.ifFresh(() => showError('Failed to generate JSON'))
       }
@@ -134,14 +135,14 @@ export const ProtobufToJson = ({ autoOpen, onAfterClose }: ToolComponentProps) =
       const json = JSON.stringify({ name: selectedEntry.enumInfo.name, values: selectedEntry.enumInfo.values }, null, 2)
       return { copy: json, display: json }
     }
-    if (selectedMessage && schemaInfo && sample?.fullName === selectedMessage.fullName) {
+    if (selectedMessage && sample?.message.fullName === selectedMessage.fullName) {
       return {
         copy: JSON.stringify(sample.json, null, 2),
-        display: annotateJsonWithEnums(sample.json, selectedMessage, schemaInfo),
+        display: annotateJsonWithEnums(sample.json, sample.message, sample.schema),
       }
     }
     return null
-  }, [sample, schemaInfo, selectedEntry, selectedMessage])
+  }, [sample, selectedEntry, selectedMessage])
 
   const handleChange = (value: string) => setInput(value)
 

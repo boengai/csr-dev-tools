@@ -11,5 +11,9 @@ export type ParseOutput = {
   schema: ProtobufSchemaInfo | null
 }
 
-/** A generated sample, tagged with the message object it was generated from. */
-export type ProtobufSampleJson = { fullName: string; json: unknown }
+/**
+ * A generated sample, carrying the message and schema it was generated from so
+ * it is always annotated consistently — even while a reparse's regenerated
+ * sample is still pending. Matched to the selection by `message.fullName`.
+ */
+export type ProtobufSampleJson = { json: unknown; message: ProtobufMessageInfo; schema: ProtobufSchemaInfo }

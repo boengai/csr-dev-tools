@@ -143,6 +143,50 @@ describe('ProtobufToJson', () => {
     expect(screen.getByText(/"status": "ACTIVE"/)).toBeInTheDocument()
   })
 
+  it('annotates a pending-regeneration sample with the schema it came from when the message changes shape', async () => {
+    await openTool()
+    fireEvent.click(screen.getByRole('button', { name: 'Person - Message type' }))
+    await flush()
+    await vi.waitFor(() => expect(screen.getByText(/\/\/ ACTIVE \| UNKNOWN/)).toBeInTheDocument())
+
+    // Reparse: Person gains a `color` enum field; its regenerated sample is pending.
+    vi.mocked(parsers.parseProtobufSchema).mockImplementation(async () => {
+      const result = parsed()
+      if (!result.success) return result
+      result.schema.messages[0].fields.push({
+        description: null,
+        id: 2,
+        isMap: false,
+        name: 'color',
+        resolvedKind: 'enum',
+        resolvedTypeName: '.Color',
+        rule: undefined,
+        type: 'Color',
+      })
+      return result
+    })
+    let resolveSample: (v: Record<string, unknown>) => void = () => {}
+    vi.mocked(parsers.generateSampleJson).mockImplementationOnce(
+      () =>
+        new Promise((resolve) => {
+          resolveSample = resolve
+        }),
+    )
+    fireEvent.change(screen.getByLabelText('Proto definition input'), {
+      target: { value: 'message Person { Color c = 2; }' },
+    })
+    await flush()
+
+    expect(screen.getByText(/\/\/ ACTIVE \| UNKNOWN/)).toBeInTheDocument()
+    expect(screen.queryByText(/\/\/ RED/)).not.toBeInTheDocument()
+
+    await act(async () => {
+      resolveSample({ color: 'RED', status: 'ACTIVE' })
+    })
+    await flush()
+    expect(screen.getByText(/"color": "RED", \/\/ RED/)).toBeInTheDocument()
+  })
+
   it('drops a late message sample when an enum was selected in the meantime', async () => {
     let resolveSample: (v: Record<string, unknown>) => void = () => {}
     vi.mocked(parsers.generateSampleJson).mockImplementationOnce(
