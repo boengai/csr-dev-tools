@@ -38,8 +38,9 @@ if [[ "$PROFILE" == "release" ]] && ! command -v wasm-opt &>/dev/null; then
   cat >&2 <<'EOF'
 error: wasm-opt (binaryen) not found on PATH; release WASM builds require it.
   macOS:          brew install binaryen
-  Debian/Ubuntu:  sudo apt-get install -y binaryen
-  other:          https://github.com/WebAssembly/binaryen/releases
+  any (cargo):    cargo install wasm-opt --locked
+  prebuilt:       https://github.com/WebAssembly/binaryen/releases
+  (distro packages, e.g. Ubuntu apt, may be too old for current rustc output)
 Use `--dev` for an unoptimised build without wasm-opt.
 EOF
   exit 1
