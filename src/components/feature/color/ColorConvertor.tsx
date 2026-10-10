@@ -1,11 +1,11 @@
 import { m } from 'motion/react'
-import { type PropsWithChildren, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { ColorInput, CopyButton, FieldForm, NotoEmoji } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
-import type { ColorFormat, ConvertInput, ToolComponentProps } from '@/types'
+import { useMountOnce, useToast, useToolComputation } from '@/hooks'
+import type { ColorFormat, ColorInputWrapperProps, ConvertInput, ToolComponentProps } from '@/types'
 import { convertColor } from '@/wasm/color'
 
 const randomByte = () => Math.floor(Math.random() * 256)
@@ -37,7 +37,7 @@ const FORMATS: Array<{ format: ColorFormat; label: string; placeholder: string }
   { format: 'lch', label: 'LCH', placeholder: 'lch(0 0 0)' },
 ]
 
-const InputWrapper = ({ children, color }: PropsWithChildren<{ color: string }>) => {
+const InputWrapper = ({ children, color }: ColorInputWrapperProps) => {
   return (
     <div className="flex w-full items-end gap-2">
       {color ? (
@@ -85,10 +85,10 @@ export const ColorConvertor = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
     if (converted) setColor(converted)
   }, [converted])
 
-  // Seed with a random color on mount.
-  useEffect(() => {
+  // Seed with a random color on mount — once, even under StrictMode's double effects.
+  useMountOnce(() => {
     setInputImmediate({ format: 'rgb', value: `rgb(${randomByte()}, ${randomByte()}, ${randomByte()})` })
-  }, [setInputImmediate])
+  })
 
   const handleColorChange = (format: ColorFormat, value: string) => {
     setColor((prev) => ({ ...prev, [format]: value }))
