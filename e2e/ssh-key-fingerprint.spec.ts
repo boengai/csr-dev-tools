@@ -63,7 +63,7 @@ test.describe('SSH Key Fingerprint', () => {
     await codeInput.fill(page, 'ssh-key-input', TEST_RSA_KEY)
 
     await expect(page.getByText('SHA256:')).toBeVisible({ timeout: 3000 })
-    await copyButton.byLabel(page, 'SHA256 Fingerprint').click()
+    await copyButton.byLabel(page, 'SHA256').click()
     await expect(toast.copied(page)).toBeVisible({ timeout: 3000 })
   })
 
@@ -72,7 +72,7 @@ test.describe('SSH Key Fingerprint', () => {
     await codeInput.fill(page, 'ssh-key-input', TEST_RSA_KEY)
 
     await expect(page.getByText('MD5 (legacy)')).toBeVisible({ timeout: 3000 })
-    await copyButton.byLabel(page, 'MD5 Fingerprint').click()
+    await copyButton.byLabel(page, 'MD5 (legacy)').click()
     await expect(toast.copied(page)).toBeVisible({ timeout: 3000 })
   })
 

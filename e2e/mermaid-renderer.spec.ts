@@ -11,7 +11,7 @@ test.describe('Mermaid Renderer', () => {
   })
 
   test('navigate to /tools/mermaid-renderer, verify title and description', async ({ page }) => {
-    await expect(page.getByText('Mermaid Syntax')).toBeVisible()
+    await expect(page.getByText('Mermaid Syntax', { exact: true })).toBeVisible()
     await expect(page.getByText('Write Mermaid diagram syntax and see a live SVG preview')).toBeVisible()
   })
 

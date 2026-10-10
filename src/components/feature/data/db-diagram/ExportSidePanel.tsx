@@ -35,7 +35,9 @@ export const ExportSidePanel = ({
       testId={testId}
       title={title}
     >
-      <pre className="text-xs font-mono break-all whitespace-pre-wrap text-gray-300">{value || emptyPlaceholder}</pre>
+      <pre className="text-xs font-mono break-all whitespace-pre-wrap text-gray-300" data-testid={`${testId}-output`}>
+        {value || emptyPlaceholder}
+      </pre>
     </DiagramSidePanel>
   )
 }

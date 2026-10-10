@@ -96,9 +96,10 @@ test.describe('DB Diagram', () => {
     await expect(page.locator('[data-testid^="table-node-"]')).toHaveCount(0, { timeout: 5000 })
   })
 
-  test('responsive: canvas renders at 375px viewport', async ({ page }) => {
+  test('responsive: shows larger-screen notice at 375px viewport', async ({ page }) => {
     await page.setViewportSize({ height: 812, width: 375 })
-    await expect(page.locator('.react-flow')).toBeVisible({ timeout: 10000 })
+    await expect(page.getByText('DB Diagram needs a larger screen.')).toBeVisible()
+    await expect(page.locator('.react-flow')).toHaveCount(0)
   })
 
   // Story 27.2 E2E Tests
@@ -112,10 +113,10 @@ test.describe('DB Diagram', () => {
     await page.getByTestId('export-dropdown-btn').click()
     await page.getByTestId('export-sql-btn').click()
     await expect(page.getByTestId('sql-panel')).toBeVisible()
-    await expect(page.getByTestId('sql-output')).toBeVisible()
+    await expect(page.getByTestId('sql-panel-output')).toBeVisible()
 
     // Should contain CREATE TABLE
-    const sqlText = await page.getByTestId('sql-output').textContent()
+    const sqlText = await page.getByTestId('sql-panel-output').textContent()
     expect(sqlText).toContain('CREATE TABLE')
   })
 
@@ -130,17 +131,17 @@ test.describe('DB Diagram', () => {
     await expect(page.getByTestId('sql-panel')).toBeVisible()
 
     // Default is PostgreSQL -- check for CREATE TABLE
-    const pgSql = await page.getByTestId('sql-output').textContent()
+    const pgSql = await page.getByTestId('sql-panel-output').textContent()
     expect(pgSql).toContain('CREATE TABLE')
 
     // Switch to MySQL via Radix Select
     await selectRadixOption(page, 'sql-panel', 'MySQL')
-    const mysqlSql = await page.getByTestId('sql-output').textContent()
+    const mysqlSql = await page.getByTestId('sql-panel-output').textContent()
     expect(mysqlSql).toContain('ENGINE=InnoDB')
 
     // Switch to SQLite via Radix Select
     await selectRadixOption(page, 'sql-panel', 'SQLite')
-    const sqliteSql = await page.getByTestId('sql-output').textContent()
+    const sqliteSql = await page.getByTestId('sql-panel-output').textContent()
     expect(sqliteSql).not.toContain('ENGINE=InnoDB')
   })
 
@@ -220,10 +221,10 @@ test.describe('DB Diagram', () => {
 
     await fillCodeInput(
       page,
-      'code-input-import-sql-input',
+      'code-input-import-sql-panel-input',
       'CREATE TABLE users (id INT PRIMARY KEY, name VARCHAR(255));\nCREATE TABLE posts (id INT PRIMARY KEY, user_id INT, FOREIGN KEY (user_id) REFERENCES users(id));',
     )
-    await page.getByTestId('import-sql-submit').click()
+    await page.getByTestId('import-sql-panel-submit').click()
 
     // Two table nodes should appear
     await expect(page.locator('[data-testid^="table-node-"]')).toHaveCount(2, { timeout: 5000 })
@@ -236,16 +237,16 @@ test.describe('DB Diagram', () => {
 
     await fillCodeInput(
       page,
-      'code-input-import-sql-input',
+      'code-input-import-sql-panel-input',
       'CREATE TABLE valid_table (id INT PRIMARY KEY);\nTHIS IS INVALID SQL;',
     )
-    await page.getByTestId('import-sql-submit').click()
+    await page.getByTestId('import-sql-panel-submit').click()
 
     // Should import the valid table
     await expect(page.locator('[data-testid^="table-node-"]')).toHaveCount(1, { timeout: 5000 })
 
     // Should show errors
-    await expect(page.getByTestId('import-sql-errors')).toBeVisible()
+    await expect(page.getByTestId('import-sql-panel-errors')).toBeVisible()
   })
 
   test('can export Mermaid and see valid output (AC #6)', async ({ page }) => {
@@ -257,9 +258,9 @@ test.describe('DB Diagram', () => {
     await page.getByTestId('export-dropdown-btn').click()
     await page.getByTestId('export-mermaid-btn').click()
     await expect(page.getByTestId('mermaid-panel')).toBeVisible()
-    await expect(page.getByTestId('mermaid-output')).toBeVisible()
+    await expect(page.getByTestId('mermaid-panel-output')).toBeVisible()
 
-    const mermaidText = await page.getByTestId('mermaid-output').textContent()
+    const mermaidText = await page.getByTestId('mermaid-panel-output').textContent()
     expect(mermaidText).toContain('erDiagram')
   })
 
@@ -272,9 +273,9 @@ test.describe('DB Diagram', () => {
     await page.getByTestId('export-dropdown-btn').click()
     await page.getByTestId('export-typescript-btn').click()
     await expect(page.getByTestId('typescript-panel')).toBeVisible()
-    await expect(page.getByTestId('typescript-output')).toBeVisible()
+    await expect(page.getByTestId('typescript-panel-output')).toBeVisible()
 
-    const tsText = await page.getByTestId('typescript-output').textContent()
+    const tsText = await page.getByTestId('typescript-panel-output').textContent()
     expect(tsText).toContain('export type')
   })
 
@@ -285,7 +286,7 @@ test.describe('DB Diagram', () => {
 
     await fillCodeInput(
       page,
-      'code-input-import-json-schema-input',
+      'code-input-import-json-schema-panel-input',
       JSON.stringify({
         definitions: {
           User: {
@@ -296,7 +297,7 @@ test.describe('DB Diagram', () => {
         },
       }),
     )
-    await page.getByTestId('import-json-schema-submit').click()
+    await page.getByTestId('import-json-schema-panel-submit').click()
 
     await expect(page.locator('[data-testid^="table-node-"]')).toHaveCount(1, { timeout: 5000 })
   })
@@ -310,14 +311,14 @@ test.describe('DB Diagram', () => {
     await page.getByTestId('import-dropdown-btn').click()
     await page.getByTestId('import-sql-btn').click()
     await expect(page.getByTestId('import-sql-panel')).toBeVisible()
-    await page.locator('#import-sql-merge').check()
+    await page.locator('#import-sql-panel-merge').check()
 
     await fillCodeInput(
       page,
-      'code-input-import-sql-input',
+      'code-input-import-sql-panel-input',
       'CREATE TABLE imported_table (id INT PRIMARY KEY);',
     )
-    await page.getByTestId('import-sql-submit').click()
+    await page.getByTestId('import-sql-panel-submit').click()
 
     // Should now have 2 tables (1 existing + 1 imported)
     await expect(page.locator('[data-testid^="table-node-"]')).toHaveCount(2, { timeout: 5000 })

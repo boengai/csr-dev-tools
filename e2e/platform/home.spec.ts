@@ -36,6 +36,6 @@ test.describe('Home Page', () => {
 
   test('navigate to a tool via its dedicated route', async ({ page }) => {
     await page.goto('/tools/color-converter')
-    await expect(page.getByRole('heading', { level: 3, name: 'Color Converter' })).toBeVisible()
+    await expect(page.getByRole('heading', { level: 2, name: 'Color Converter' })).toBeVisible()
   })
 })
