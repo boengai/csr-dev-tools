@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { validateJsonSchema } from './json-schema'
 
 describe('validateJsonSchema', () => {
@@ -46,7 +48,7 @@ describe('validateJsonSchema', () => {
     const result = validateJsonSchema(data, schema)
     expect(result.valid).toBe(false)
     expect(result.errors!.length).toBeGreaterThan(0)
-    expect(result.errors![0].path).toBe('/1')
+    expect(nth(result.errors ?? [], 0).path).toBe('/1')
   })
 
   it('validates nested objects with deep paths', () => {
@@ -64,33 +66,33 @@ describe('validateJsonSchema', () => {
     const data = JSON.stringify({ address: { zip: 12345 } })
     const result = validateJsonSchema(data, schema)
     expect(result.valid).toBe(false)
-    expect(result.errors![0].path).toBe('/address/zip')
+    expect(nth(result.errors ?? [], 0).path).toBe('/address/zip')
   })
 
   it('returns parse error for malformed JSON data', () => {
     const result = validateJsonSchema('{bad json', simpleSchema)
     expect(result.valid).toBe(false)
-    expect(result.errors![0].keyword).toBe('parse')
-    expect(result.errors![0].message).toContain('data input')
+    expect(nth(result.errors ?? [], 0).keyword).toBe('parse')
+    expect(nth(result.errors ?? [], 0).message).toContain('data input')
   })
 
   it('returns parse error for malformed schema', () => {
     const result = validateJsonSchema('{}', '{bad schema')
     expect(result.valid).toBe(false)
-    expect(result.errors![0].keyword).toBe('parse')
-    expect(result.errors![0].message).toContain('schema input')
+    expect(nth(result.errors ?? [], 0).keyword).toBe('parse')
+    expect(nth(result.errors ?? [], 0).message).toContain('schema input')
   })
 
   it('returns parse error for empty string data', () => {
     const result = validateJsonSchema('', simpleSchema)
     expect(result.valid).toBe(false)
-    expect(result.errors![0].keyword).toBe('parse')
+    expect(nth(result.errors ?? [], 0).keyword).toBe('parse')
   })
 
   it('returns parse error for empty string schema', () => {
     const result = validateJsonSchema('{}', '')
     expect(result.valid).toBe(false)
-    expect(result.errors![0].keyword).toBe('parse')
+    expect(nth(result.errors ?? [], 0).keyword).toBe('parse')
   })
 
   it('returns multiple errors with allErrors true', () => {
@@ -105,7 +107,7 @@ describe('validateJsonSchema', () => {
     const result = validateJsonSchema('{}', invalidSchema)
     expect(result.valid).toBe(false)
     expect(result.errors).not.toBeNull()
-    expect(result.errors![0].keyword).toBe('schema')
-    expect(result.errors![0].message).toContain('Invalid JSON Schema')
+    expect(nth(result.errors ?? [], 0).keyword).toBe('schema')
+    expect(nth(result.errors ?? [], 0).message).toContain('Invalid JSON Schema')
   })
 })

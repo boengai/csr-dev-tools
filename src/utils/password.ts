@@ -18,16 +18,21 @@ const randomIndex = (max: number): number => {
   // bias when max does not divide 2^32.
   const limit = Math.floor(0x1_0000_0000 / max) * max
   const array = new Uint32Array(1)
+  let value: number
   do {
     crypto.getRandomValues(array)
-  } while (array[0] >= limit)
-  return array[0] % max
+    value = array[0]! // one-element buffer
+  } while (value >= limit)
+  return value % max
 }
 
 const fisherYatesShuffle = (arr: Array<string>): Array<string> => {
   for (let i = arr.length - 1; i > 0; i--) {
+    // i is in [1, length) and j in [0, i], so both slots exist.
     const j = randomIndex(i + 1)
-    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+    const swapped = arr[i]!
+    arr[i] = arr[j]!
+    arr[j] = swapped
   }
   return arr
 }
@@ -48,12 +53,12 @@ export const generatePassword = (options: PasswordOptions): string => {
   const chars: Array<string> = []
 
   for (const set of enabledSets) {
-    chars.push(set[randomIndex(set.length)])
+    chars.push(set.charAt(randomIndex(set.length)))
   }
 
   const pool = enabledSets.join('')
   for (let i = chars.length; i < length; i++) {
-    chars.push(pool[randomIndex(pool.length)])
+    chars.push(pool.charAt(randomIndex(pool.length)))
   }
 
   return fisherYatesShuffle(chars).join('')

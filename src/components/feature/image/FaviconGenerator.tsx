@@ -15,7 +15,7 @@ const flattenForZip = (results: Array<FaviconResult>): Record<string, Blob> => {
   return files
 }
 
-export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
+export const FaviconGenerator = ({ onAfterClose }: ToolComponentProps) => {
   const pipeline = useBatchAssetPipeline<Array<FaviconResult>>({
     accept: ACCEPT,
     failureToastLabel: 'Failed to generate favicons',
@@ -25,9 +25,8 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
   })
 
   const handleUpload = async (files: Array<File>, openDialog: () => void) => {
-    if (!files[0]) return
+    if (!(await pipeline.upload(files))) return
     openDialog()
-    await pipeline.upload(files)
     await pipeline.regenerate(async (img) => generateFavicons(img))
   }
 
@@ -43,7 +42,7 @@ export const FaviconGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
       accept={ACCEPT}
       buttonLabel="Select image to generate favicons"
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={pipeline.reset}
       onUpload={handleUpload}
       title="Favicon Generator"

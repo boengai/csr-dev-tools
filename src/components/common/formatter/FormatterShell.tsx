@@ -1,7 +1,11 @@
-import { CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
-import { useToolFieldsPersisted } from '@/hooks'
+import { useToolFields } from '@/hooks'
 import type { FormatterShellProps } from '@/types'
+
+import { CopyButton } from '../button'
+import { ToolDialogFrame } from '../dialog/ToolDialogFrame'
+import { FieldForm } from '../form'
+import { Pane, SplitPanel } from '../layout'
+import { CodeOutput } from '../output'
 
 export const FormatterShell = <I extends { source: string }>({
   autoOpen,
@@ -10,7 +14,7 @@ export const FormatterShell = <I extends { source: string }>({
   errorFallback,
   errorLabel,
   initial,
-  onAfterDialogClose,
+  onAfterClose,
   renderBanner,
   renderControls,
   resultLabel = 'Result',
@@ -23,7 +27,7 @@ export const FormatterShell = <I extends { source: string }>({
 }: FormatterShellProps<I>) => {
   // Suppress toast routing when renderBanner is set — banner replaces toast
   // (same content, two channels duplicate). See CONTEXT.md → Formatter shell.
-  const { error, inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<I, string>({
+  const { error, inputs, result, setFields, setFieldsImmediate } = useToolFields<I, string>({
     compute,
     debounceMs: 300,
     errorFallback: renderBanner ? undefined : errorFallback,
@@ -43,7 +47,7 @@ export const FormatterShell = <I extends { source: string }>({
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title={title}
       triggers={[{ label: triggerLabel }]}

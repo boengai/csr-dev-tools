@@ -1,24 +1,21 @@
 import { useCallback, useRef, useState } from 'react'
 
-import { Button, DownloadIcon } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
-import { UploadInput } from '@/components/common/input'
 import { useBlobUrl } from '@/hooks/useBlobUrl'
 import { useToolComputation } from '@/hooks/useToolComputation'
-import type { ImageToolShellProps } from '@/types'
+import type { ImageToolPipelineInput, ImageToolShellProps } from '@/types'
 import { downloadBlob } from '@/utils/download'
 
-type PipelineInput<TControls> = {
-  file: File | null
-  controls: TControls
-}
+import { Button } from '../button'
+import { UploadDialogFrame } from '../dialog/UploadDialogFrame'
+import { DownloadIcon } from '../icon'
+import { UploadInput } from '../input/UploadInput'
 
 export function ImageToolShell<TControls extends object>({
   accept,
   description,
   getDownloadFilename,
   initialControls,
-  onAfterDialogClose,
+  onAfterClose,
   onRejectInvalidFile,
   process,
   renderControls,
@@ -27,18 +24,21 @@ export function ImageToolShell<TControls extends object>({
   uploadLabel,
 }: ImageToolShellProps<TControls>) {
   const [source, setSource] = useState<File | null>(null)
-  const [dialogOpen, setDialogOpen] = useState(false)
   const [controls, setControlsState] = useState<TControls>(initialControls)
+  // Every write to `controls` / `source` goes through these refs first, so
+  // same-tick handlers (and `recompute`) read the live values without a
+  // render-time mirror.
   const controlsRef = useRef(controls)
-  controlsRef.current = controls
   const sourceRef = useRef(source)
-  sourceRef.current = source
   const initialRef = useRef(initialControls)
 
-  const { error, isPending, result, setInputImmediate } = useToolComputation<PipelineInput<TControls>, Blob | null>(
-    async ({ file, controls: c }) => {
+  const { error, isPending, result, setInputImmediate } = useToolComputation<
+    ImageToolPipelineInput<TControls>,
+    Blob | null
+  >(
+    async ({ file, controls: c }, context) => {
       if (!file) return null
-      return process(file, c)
+      return process(file, c, context)
     },
     // Tool's process may return null when it has insufficient state to produce
     // a result (e.g. ImageCropper before the user finishes selecting a region).
@@ -78,7 +78,9 @@ export function ImageToolShell<TControls extends object>({
     downloadBlob(result, filename)
   }
 
-  const handleUpload = (files: Array<File>) => {
+  // `openDialog` comes from <UploadDialogFrame> on the tile upload; the
+  // in-dialog "Choose another image" swap calls this without it (already open).
+  const handleUpload = (files: Array<File>, openDialog?: () => void) => {
     const file = files[0]
     if (!file) return
     if (!file.type.startsWith('image/')) {
@@ -93,81 +95,73 @@ export function ImageToolShell<TControls extends object>({
     setControlsState(init)
     setSource(file)
     sourceRef.current = file
-    setDialogOpen(true)
+    openDialog?.()
     setInputImmediate({ controls: init, file })
   }
 
-  const handleDialogOpenChange = (open: boolean) => {
-    setDialogOpen(open)
-    if (!open) {
-      // Auto-reset controls to initialControls when the dialog closes — the
-      // shell owns the bag's lifecycle. Consumers handle per-Tool non-controls
-      // cleanup (refs, UI-only state) in onAfterDialogClose.
-      const init = initialRef.current
-      controlsRef.current = init
-      setControlsState(init)
-    }
+  // Auto-reset controls to initialControls when the dialog closes — the
+  // shell owns the bag's lifecycle. Consumers handle per-Tool non-controls
+  // cleanup (refs, UI-only state) in onAfterClose (runs after this).
+  const handleReset = () => {
+    const init = initialRef.current
+    controlsRef.current = init
+    setControlsState(init)
   }
 
   return (
-    <>
-      <div className="flex w-full grow flex-col gap-4">
-        {description && <p className="shrink-0 text-body-xs text-gray-400">{description}</p>}
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <UploadInput
-            accept={accept}
-            button={{ block: true, children: uploadLabel }}
-            multiple={false}
-            name="image-tool-shell-source"
-            onChange={handleUpload}
-          />
-        </div>
-      </div>
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={handleDialogOpenChange}
-        open={dialogOpen}
-        size="screen"
-        title={title}
-      >
-        <div className="flex grow flex-col gap-4">
-          {renderControls({ controls, pending: isPending, recompute, setControls })}
-          {source && sourceUrl
-            ? renderPreview({
-                controls,
-                error,
-                pending: isPending,
-                recompute,
-                result,
-                resultUrl,
-                setControls,
-                source,
-                sourceUrl,
-              })
-            : null}
-          {/* Once an image is loaded, "Choose another image" lets the user swap
+    <UploadDialogFrame
+      accept={accept}
+      buttonLabel={uploadLabel}
+      description={description}
+      onAfterClose={onAfterClose}
+      onReset={handleReset}
+      onUpload={handleUpload}
+      size="screen"
+      title={title}
+      uploadInputName="image-tool-shell-source"
+    >
+      <div className="flex grow flex-col gap-4">
+        {/* `recompute` / `setControls` read refs but are only ever invoked by
+            adopters from handlers / <img onLoad>, never during render — the
+            render-prop contract of ADR-0014. */}
+        {/* oxlint-disable-next-line react/refs -- ADR-0014 render-prop callbacks run from handlers only */}
+        {renderControls({ controls, pending: isPending, recompute, setControls })}
+        {source && sourceUrl
+          ? // oxlint-disable-next-line react/refs -- ADR-0014 render-prop callbacks run from handlers only
+            renderPreview({
+              controls,
+              error,
+              pending: isPending,
+              recompute,
+              result,
+              resultUrl,
+              setControls,
+              source,
+              sourceUrl,
+            })
+          : null}
+        {/* Once an image is loaded, "Choose another image" lets the user swap
               without closing (close navigates home). Swap-safe contract: a new
               file resets the controls bag, so consumers must re-derive any
               tool-local state from the new source (via <img onLoad>) or key it
               by file identity — never assume state survives a swap. */}
-          {source && (
-            <div className={result && !isPending ? 'grid grid-cols-2 gap-2' : 'flex'}>
-              <UploadInput
-                accept={accept}
-                button={{ block: true, children: 'Choose another image' }}
-                multiple={false}
-                name="image-tool-shell-replace"
-                onChange={handleUpload}
-              />
-              {result && !isPending && (
-                <Button block icon={<DownloadIcon />} onClick={handleDownload} variant="primary">
-                  Download
-                </Button>
-              )}
-            </div>
-          )}
-        </div>
-      </ToolDialogShell>
-    </>
+        {source && (
+          <div className={result && !isPending ? 'grid grid-cols-2 gap-2' : 'flex'}>
+            <UploadInput
+              accept={accept}
+              button={{ block: true, children: 'Choose another image' }}
+              multiple={false}
+              name="image-tool-shell-replace"
+              onChange={handleUpload}
+            />
+            {result && !isPending && (
+              <Button block icon={<DownloadIcon />} onClick={handleDownload} variant="primary">
+                Download
+              </Button>
+            )}
+          </div>
+        )}
+      </div>
+    </UploadDialogFrame>
   )
 }

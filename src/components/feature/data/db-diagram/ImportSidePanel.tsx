@@ -51,6 +51,7 @@ export const ImportSidePanel = ({
       <CodeInput
         extensions={extensions}
         height="192px"
+        aria-label={title}
         name={`${testId}-input`}
         onChange={setText}
         placeholder={placeholder}

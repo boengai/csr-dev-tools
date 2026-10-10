@@ -18,59 +18,25 @@ import { useDownload, useInputLocalStorage, useMountOnce, useToast, useToolCompu
 import type {
   CodecInput,
   ContentProps,
+  DirectionProfile,
   PersistedState,
   ProtobufCodecAction,
+  ProtobufContentProps,
+  ProtobufDirection,
+  ProtobufDownloadButtonProps,
   SchemaParseOutput,
   ToolComponentProps,
+  UploadCtx,
 } from '@/types'
 import type { OutputFormat } from '@/types/utils/protobuf-codec'
 import { detectProtobufFormat } from '@/wasm/parsers'
-
-// ---------------------------------------------------------------------------
-// File-local types (not exported — kept out of @/types per convention)
-// ---------------------------------------------------------------------------
-
-type Direction = 'encode' | 'decode'
-
-// UploadCtx carries the callbacks and state a profile's upload handler needs
-// from the component without prop-drilling the full ContentProps.
-type UploadCtx = {
-  onFormatChange: (v: string) => void
-  onSourceChange: (v: string) => void
-  schema: string
-  selectedMessageType: string
-  format: OutputFormat
-  setInputImmediate: (input: CodecInput) => void
-  showError: (msg: string) => void
-  showSuccess: (msg: string) => void
-}
-
-type DownloadResult = { blob: Blob; filename: string }
-
-type DirectionProfile = {
-  computeFn: (input: CodecInput) => Promise<string>
-  defaultErrorMsg: string
-  upload: {
-    accept: string
-    buttonLabel: string
-    handle: (file: File, ctx: UploadCtx) => Promise<void>
-  }
-  sourceInput: { kind: 'code' | 'textarea'; placeholder: string }
-  formatRadio: { placement: 'toolbar' | 'belowDivider'; label: string }
-  download: {
-    build: (result: string, msgType: string, format: OutputFormat) => DownloadResult
-    ariaLabel: string
-  }
-  resultPlaceholder: string
-  selectSize?: 'compact'
-}
 
 // ---------------------------------------------------------------------------
 // Direction profiles — static lookup table, defined once at module load.
 // Exported for tests; not part of the component's public API.
 // ---------------------------------------------------------------------------
 
-export const DIRECTION_PROFILES: Record<Direction, DirectionProfile> = {
+export const DIRECTION_PROFILES: Record<ProtobufDirection, DirectionProfile> = {
   encode: {
     computeFn: async ({ schema, msgType, source, format }) => {
       const { encodeProtobuf } = await import('@/wasm/parsers')
@@ -200,7 +166,7 @@ const FORMAT_OPTIONS = [
 // Download button — shared across both directions
 // ---------------------------------------------------------------------------
 
-const DownloadButton = ({ ariaLabel, ...props }: { ariaLabel: string; disabled: boolean; onClick: () => void }) => {
+const DownloadButton = ({ ariaLabel, ...props }: ProtobufDownloadButtonProps) => {
   return (
     <button
       {...props}
@@ -217,8 +183,6 @@ const DownloadButton = ({ ariaLabel, ...props }: { ariaLabel: string; disabled: 
 // ProtobufContent — single direction-parametrized component
 // ---------------------------------------------------------------------------
 
-type ProtobufContentProps = ContentProps & { direction: Direction }
-
 const ProtobufContent = ({
   direction,
   format,
@@ -231,7 +195,8 @@ const ProtobufContent = ({
   selectedMessageType,
   source,
 }: ProtobufContentProps) => {
-  const { showError, showSuccess } = useToast()
+  const showError = useToast((s) => s.showError)
+  const showSuccess = useToast((s) => s.showSuccess)
   const { downloadBlob } = useDownload()
   const profile = DIRECTION_PROFILES[direction]
 
@@ -242,12 +207,15 @@ const ProtobufContent = ({
     isEmpty: ({ schema: schemaVal, msgType, source: sourceVal }) => !schemaVal.trim() || !msgType || !sourceVal.trim(),
   })
 
+  // Re-run the codec whenever a fresh schema parse lands (new `messageTypes`
+  // identity) or the effective message type changes, so the output always
+  // reflects the current schema rather than the one at dialog-open time. An
+  // invalid/emptied schema yields no message type, which `isEmpty` maps back
+  // to the empty result instead of leaving the previous output on screen.
   useEffect(() => {
-    if (schema && selectedMessageType && source) {
-      setInputImmediate({ schema, msgType: selectedMessageType, source, format })
-    }
-    // eslint-disable-next-line react/exhaustive-deps -- run once when messageType becomes available
-  }, [selectedMessageType])
+    setInputImmediate({ schema, msgType: selectedMessageType, source, format })
+    // eslint-disable-next-line react/exhaustive-deps -- source/format edits route through their own handlers
+  }, [messageTypes, selectedMessageType])
 
   const handleSourceChange = useCallback(
     (value: string) => {
@@ -320,6 +288,7 @@ const ProtobufContent = ({
       <div className="flex flex-col gap-6 tablet:flex-row">
         <div className="flex flex-1 flex-col justify-center gap-2">
           <SelectInput
+            aria-label="Message type"
             name="message-type-select"
             onChange={handleMessageTypeChange}
             options={messageTypes.map((name) => ({ label: name, value: name }))}
@@ -427,8 +396,10 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
     'csr-dev-tools-protobuf-codec-input',
     INITIAL_STATE,
   )
-  const [selectedMessageType, setSelectedMessageType] = useState('')
-  const { showError } = useToast()
+  // The user's explicit pick; the effective selection is derived against the
+  // latest parse so a schema edit keeps the pick while it still exists.
+  const [chosenMessageType, setChosenMessageType] = useState('')
+  const showError = useToast((s) => s.showError)
 
   const update = useCallback(
     (patch: Partial<PersistedState>) => {
@@ -459,10 +430,10 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
   )
 
   const messageTypes = schemaResult.messageTypes
+  const selectedMessageType = messageTypes.includes(chosenMessageType) ? chosenMessageType : (messageTypes[0] ?? '')
 
-  // Reset selected message type and surface parse-validation toasts on each new parse result.
+  // Surface parse-validation toasts on each new parse result.
   useEffect(() => {
-    setSelectedMessageType(schemaResult.messageTypes[0] ?? '')
     if (schemaResult.toastError) {
       showError(schemaResult.toastError)
     }
@@ -482,7 +453,7 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
   )
 
   const handleMessageTypeChange = useCallback((value: string) => {
-    setSelectedMessageType(value)
+    setChosenMessageType(value)
   }, [])
 
   const openDialog = (act: ProtobufCodecAction) => {

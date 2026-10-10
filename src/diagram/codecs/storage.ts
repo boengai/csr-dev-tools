@@ -1,21 +1,93 @@
-import type { DiagramIndexEntry, DiagramSchema, DiagramStore } from '@/types'
+import type {
+  DiagramIndexEntry,
+  DiagramSchema,
+  DiagramStorageFailure,
+  DiagramStore,
+  DiagramStoreReadResult,
+} from '@/types'
 
 const STORAGE_KEY = 'csr-dev-tools-db-diagrams'
+// An unreadable store is copied here once before the first write replaces it,
+// so a corrupted blob is never silently destroyed.
+const BACKUP_KEY = 'csr-dev-tools-db-diagrams-corrupt-backup'
 
-function loadStore(): DiagramStore {
-  const raw = localStorage.getItem(STORAGE_KEY)
-  if (!raw) return { diagrams: {}, index: [] }
-  try {
-    const parsed = JSON.parse(raw)
-    if (parsed && typeof parsed === 'object' && Array.isArray(parsed.index)) return parsed
-    return { diagrams: {}, index: [] }
-  } catch {
-    return { diagrams: {}, index: [] }
+export class DiagramStorageError extends Error {
+  readonly reason: DiagramStorageFailure
+
+  constructor(reason: DiagramStorageFailure, cause?: unknown) {
+    super(reason === 'full' ? 'Browser storage is full' : 'Browser storage is unavailable', { cause })
+    this.name = 'DiagramStorageError'
+    this.reason = reason
   }
 }
 
-function saveStore(store: DiagramStore): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(store))
+const isRecord = (value: unknown): value is Record<string, unknown> =>
+  typeof value === 'object' && value !== null && !Array.isArray(value)
+
+const isQuotaError = (error: unknown): boolean =>
+  error instanceof DOMException &&
+  (error.name === 'QuotaExceededError' || error.name === 'NS_ERROR_DOM_QUOTA_REACHED' || error.code === 22)
+
+// Throws DiagramStorageError('unavailable') when storage itself can't be read.
+const readStore = (): DiagramStoreReadResult => {
+  let raw: string | null
+  try {
+    raw = localStorage.getItem(STORAGE_KEY)
+  } catch (error) {
+    throw new DiagramStorageError('unavailable', error)
+  }
+  if (raw === null) return { kind: 'ok', store: { diagrams: {}, index: [] } }
+  try {
+    const parsed: unknown = JSON.parse(raw)
+    if (isRecord(parsed) && Array.isArray(parsed.index) && isRecord(parsed.diagrams)) {
+      return { kind: 'ok', store: parsed as DiagramStore }
+    }
+  } catch {
+    // fall through to corrupt
+  }
+  return { kind: 'corrupt', raw }
+}
+
+const setItem = (key: string, value: string): void => {
+  try {
+    localStorage.setItem(key, value)
+  } catch (error) {
+    throw new DiagramStorageError(isQuotaError(error) ? 'full' : 'unavailable', error)
+  }
+}
+
+// Reads never throw: blocked or unreadable storage looks empty to the UI.
+const readStoreOrEmpty = (): DiagramStore => {
+  try {
+    const result = readStore()
+    if (result.kind === 'ok') return result.store
+  } catch {
+    // unavailable
+  }
+  return { diagrams: {}, index: [] }
+}
+
+// The single read-modify-write path for every mutation. If the read fails the
+// write is aborted (throws) — an unreadable-because-blocked store must never be
+// overwritten with a near-empty one.
+const updateStore = <R>(mutate: (store: DiagramStore) => R): R => {
+  const result = readStore()
+  let store: DiagramStore
+  if (result.kind === 'ok') {
+    store = result.store
+  } else {
+    let hasBackup: boolean
+    try {
+      hasBackup = localStorage.getItem(BACKUP_KEY) !== null
+    } catch (error) {
+      throw new DiagramStorageError('unavailable', error)
+    }
+    if (!hasBackup) setItem(BACKUP_KEY, result.raw)
+    store = { diagrams: {}, index: [] }
+  }
+  const out = mutate(store)
+  setItem(STORAGE_KEY, JSON.stringify(store))
+  return out
 }
 
 export function generateDiagramId(): string {
@@ -23,28 +95,44 @@ export function generateDiagramId(): string {
 }
 
 export function loadDiagramIndex(): Array<DiagramIndexEntry> {
-  return loadStore().index
+  return readStoreOrEmpty().index
 }
 
 export function saveDiagramIndex(index: Array<DiagramIndexEntry>): void {
-  const store = loadStore()
-  store.index = index
-  saveStore(store)
+  updateStore((store) => {
+    store.index = index
+  })
 }
 
 export function loadDiagram(id: string): DiagramSchema | null {
-  return loadStore().diagrams[id] ?? null
+  const { diagrams } = readStoreOrEmpty()
+  return Object.hasOwn(diagrams, id) ? (diagrams[id] ?? null) : null
 }
 
 export function saveDiagram(id: string, schema: DiagramSchema): void {
-  const store = loadStore()
-  store.diagrams[id] = schema
-  saveStore(store)
+  updateStore((store) => {
+    store.diagrams[id] = schema
+  })
+}
+
+export function saveDiagramWithIndex(
+  id: string,
+  schema: DiagramSchema,
+  entry: (previous: DiagramIndexEntry | undefined) => DiagramIndexEntry,
+): Array<DiagramIndexEntry> {
+  return updateStore((store) => {
+    store.diagrams[id] = schema
+    const at = store.index.findIndex((e) => e.id === id)
+    const next = entry(at >= 0 ? store.index[at] : undefined)
+    if (at >= 0) store.index[at] = next
+    else store.index.push(next)
+    return store.index
+  })
 }
 
 export function deleteDiagram(id: string): void {
-  const store = loadStore()
-  delete store.diagrams[id]
-  store.index = store.index.filter((entry) => entry.id !== id)
-  saveStore(store)
+  updateStore((store) => {
+    delete store.diagrams[id]
+    store.index = store.index.filter((entry) => entry.id !== id)
+  })
 }

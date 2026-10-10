@@ -13,3 +13,12 @@ export type UsePersistSettings = {
 export type UsePersistSettingsValue = {
   showBackgroundAnimation: boolean
 }
+
+export type DebouncedJsonWrite<T> = {
+  /** Write any pending value now and cancel the timer. Idempotent. */
+  flush: () => void
+  /** Queue `value` for a trailing-debounced write (replaces any pending value). */
+  schedule: (value: T) => void
+  /** Write `value` immediately (cancels any pending write). */
+  writeNow: (value: T) => void
+}

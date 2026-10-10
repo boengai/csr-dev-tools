@@ -5,6 +5,7 @@ import type { ButtonProps } from './button'
 
 export type CodeInputProps = {
   'aria-label'?: string
+  'aria-labelledby'?: string
   block?: boolean
   disabled?: boolean
   extensions?: Array<Extension>
@@ -80,7 +81,7 @@ export type TextAreaInputProps = BaseInputProps &
   Partial<InputVariants>
 
 export type TextInputProps = BaseInputProps &
-  Pick<InputHTMLAttributes<HTMLInputElement>, 'autoFocus' | 'autoCorrect' | 'inputMode' | 'onClick'> &
+  Pick<InputHTMLAttributes<HTMLInputElement>, 'autoFocus' | 'autoCorrect' | 'inputMode' | 'onClick' | 'role'> &
   RefAttributes<HTMLInputElement> &
   Partial<InputVariants> & {
     suffix?: ReactElement
@@ -101,6 +102,8 @@ export type InputVariants = {
 
 type BaseInputProps = {
   'aria-label'?: string
+  /** Id of a visible label element. Used where `<label htmlFor>` can't target the focusable node (radio group). */
+  'aria-labelledby'?: string
   disabled?: boolean
   id?: string
   name: string

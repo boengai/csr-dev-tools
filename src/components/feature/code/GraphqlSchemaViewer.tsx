@@ -1,11 +1,23 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
-import { BrowsableItemList, Button, CodeInput, EmptyState, ErrorBanner, TextInput } from '@/components/common'
+import { Button, CodeInput, EmptyState, ErrorBanner, TextInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolComputationPersisted } from '@/hooks'
-import type { GraphqlParseOutput, ToolComponentProps } from '@/types'
-import { cnMerge, type GraphqlTypeInfo, type GraphqlTypeKind } from '@/utils'
+import { useToolInput } from '@/hooks'
+import type {
+  GraphqlEnumValuesListProps,
+  GraphqlFieldsTableProps,
+  GraphqlKindBadgeProps,
+  GraphqlParseOutput,
+  GraphqlTypeDetailPanelProps,
+  GraphqlTypeKind,
+  GraphqlTypeReferenceProps,
+  KindBadgeStyle,
+  ToolComponentProps,
+} from '@/types'
+
+import { KindBadge, SchemaBrowserLayout } from './schema-browser'
+
 const toolEntry = TOOL_REGISTRY_MAP['graphql-schema-viewer']
 
 const getTypeKindLabel = (kind: GraphqlTypeKind): string => {
@@ -20,7 +32,7 @@ const getTypeKindLabel = (kind: GraphqlTypeKind): string => {
   return labels[kind]
 }
 
-const KIND_STYLES: Record<GraphqlTypeKind, { badge: string; label: string }> = {
+const KIND_STYLES: Record<GraphqlTypeKind, KindBadgeStyle> = {
   Enum: { badge: 'border-green-700 bg-green-900/50 text-green-300', label: 'E' },
   Input: { badge: 'border-teal-700 bg-teal-900/50 text-teal-300', label: 'In' },
   Interface: { badge: 'border-purple-700 bg-purple-900/50 text-purple-300', label: 'I' },
@@ -29,22 +41,11 @@ const KIND_STYLES: Record<GraphqlTypeKind, { badge: string; label: string }> = {
   Union: { badge: 'border-orange-700 bg-orange-900/50 text-orange-300', label: 'U' },
 }
 
-const KindBadge = ({ kind }: { kind: GraphqlTypeKind }) => {
-  const style = KIND_STYLES[kind]
-  return (
-    <span
-      aria-label={`${getTypeKindLabel(kind)} type`}
-      className={cnMerge(
-        'inline-flex h-6 w-6 shrink-0 items-center justify-center rounded border text-[10px] font-bold',
-        style.badge,
-      )}
-    >
-      {style.label}
-    </span>
-  )
-}
+const GraphqlKindBadge = ({ kind }: GraphqlKindBadgeProps) => (
+  <KindBadge ariaLabel={`${getTypeKindLabel(kind)} type`} kind={kind} styles={KIND_STYLES} />
+)
 
-const TypeReference = ({ onNavigate, typeName }: { onNavigate: (name: string) => void; typeName: string }) => (
+const TypeReference = ({ onNavigate, typeName }: GraphqlTypeReferenceProps) => (
   <button
     aria-label={`Navigate to type ${typeName}`}
     className="cursor-pointer text-primary hover:underline focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none"
@@ -55,13 +56,7 @@ const TypeReference = ({ onNavigate, typeName }: { onNavigate: (name: string) =>
   </button>
 )
 
-const FieldsTable = ({
-  fields,
-  onNavigate,
-}: {
-  fields: NonNullable<GraphqlTypeInfo['fields']>
-  onNavigate: (name: string) => void
-}) => (
+const FieldsTable = ({ fields, onNavigate }: GraphqlFieldsTableProps) => (
   <div className="flex flex-col gap-1">
     {fields.map((field) => (
       <div className="flex flex-col gap-1 rounded border border-gray-800 bg-gray-950 px-3 py-2" key={field.name}>
@@ -99,7 +94,7 @@ const FieldsTable = ({
   </div>
 )
 
-const EnumValuesList = ({ values }: { values: NonNullable<GraphqlTypeInfo['enumValues']> }) => (
+const EnumValuesList = ({ values }: GraphqlEnumValuesListProps) => (
   <div className="flex flex-col gap-1">
     {values.map((value) => (
       <div className="flex flex-col gap-1 rounded border border-gray-800 bg-gray-950 px-3 py-2" key={value.name}>
@@ -120,10 +115,10 @@ const EnumValuesList = ({ values }: { values: NonNullable<GraphqlTypeInfo['enumV
   </div>
 )
 
-const TypeDetailPanel = ({ onNavigate, type }: { onNavigate: (name: string) => void; type: GraphqlTypeInfo }) => (
-  <div aria-live="polite" className="flex flex-col gap-3">
+const TypeDetailPanel = ({ onNavigate, type }: GraphqlTypeDetailPanelProps) => (
+  <div className="flex flex-col gap-3">
     <div className="flex items-center gap-2">
-      <KindBadge kind={type.kind} />
+      <GraphqlKindBadge kind={type.kind} />
       <h3 className="text-body-sm font-semibold text-gray-100">{type.name}</h3>
       <span className="text-body-xs text-gray-500">{getTypeKindLabel(type.kind)}</span>
     </div>
@@ -230,7 +225,7 @@ input CreateUserInput {
 
 scalar DateTime`
 
-export const GraphqlSchemaViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const GraphqlSchemaViewer = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [selectedType, setSelectedType] = useState<string | null>(null)
   const [filter, setFilter] = useState('')
 
@@ -239,7 +234,7 @@ export const GraphqlSchemaViewer = ({ autoOpen, onAfterDialogClose }: ToolCompon
     result: parseResult,
     setInput,
     setInputImmediate,
-  } = useToolComputationPersisted<string, GraphqlParseOutput>({
+  } = useToolInput<string, GraphqlParseOutput>({
     compute: async (value) => {
       const { parseGraphqlSchema } = await import('@/utils/graphql-schema-viewer')
       const result = parseGraphqlSchema(value)
@@ -259,11 +254,6 @@ export const GraphqlSchemaViewer = ({ autoOpen, onAfterDialogClose }: ToolCompon
   const schemaInfo = parseResult.schema
   const error = parseResult.parseError
 
-  // When the parse result changes (new schema or error), clear the user's selection.
-  useEffect(() => {
-    setSelectedType(null)
-  }, [parseResult])
-
   const handleChange = (value: string) => setInput(value)
 
   const handleLoadExample = useCallback(() => {
@@ -282,23 +272,41 @@ export const GraphqlSchemaViewer = ({ autoOpen, onAfterDialogClose }: ToolCompon
     [schemaInfo],
   )
 
-  const filteredTypes = schemaInfo?.types.filter((type) => {
-    if (!filter) return true
+  const filteredTypes = useMemo(() => {
+    const types = schemaInfo?.types ?? []
+    if (!filter) return types
     const lowerFilter = filter.toLowerCase()
-    if (type.name.toLowerCase().includes(lowerFilter)) return true
-    if (type.fields?.some((f) => f.name.toLowerCase().includes(lowerFilter))) return true
-    if (type.inputFields?.some((f) => f.name.toLowerCase().includes(lowerFilter))) return true
-    if (type.enumValues?.some((v) => v.name.toLowerCase().includes(lowerFilter))) return true
-    return false
-  })
+    return types.filter(
+      (type) =>
+        type.name.toLowerCase().includes(lowerFilter) ||
+        type.fields?.some((f) => f.name.toLowerCase().includes(lowerFilter)) ||
+        type.inputFields?.some((f) => f.name.toLowerCase().includes(lowerFilter)) ||
+        type.enumValues?.some((v) => v.name.toLowerCase().includes(lowerFilter)),
+    )
+  }, [filter, schemaInfo])
 
-  const selectedTypeInfo = schemaInfo?.types.find((t) => t.name === selectedType)
+  const listItems = useMemo(
+    () =>
+      filteredTypes.map((type) => ({
+        ariaLabel: `${type.name} - ${getTypeKindLabel(type.kind)} type`,
+        badge: <GraphqlKindBadge kind={type.kind} />,
+        id: type.name,
+        name: type.name,
+      })),
+    [filteredTypes],
+  )
+
+  // Derived: the selection survives reparses while the type still exists.
+  const selectedTypeInfo = useMemo(
+    () => schemaInfo?.types.find((t) => t.name === selectedType),
+    [schemaInfo, selectedType],
+  )
 
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="GraphQL Schema Viewer"
       triggers={[{ label: 'Open' }]}
     >
@@ -323,44 +331,39 @@ export const GraphqlSchemaViewer = ({ autoOpen, onAfterDialogClose }: ToolCompon
         )}
 
         {schemaInfo && (
-          <div className="flex flex-col gap-4 tablet:flex-row">
-            <div className="flex w-full shrink-0 flex-col gap-2 tablet:w-64">
-              <label className="sr-only" htmlFor="graphql-type-filter">
-                Filter types
-              </label>
-              <TextInput
-                aria-label="Filter types"
-                id="graphql-type-filter"
-                name="graphql-type-filter"
-                onChange={setFilter}
-                placeholder="Filter types..."
-                type="text"
-                value={filter}
-              />
-
-              <BrowsableItemList
-                emptyMessage="No types match filter"
-                items={(filteredTypes ?? []).map((type) => ({
-                  ariaLabel: `${type.name} - ${getTypeKindLabel(type.kind)} type`,
-                  badge: <KindBadge kind={type.kind} />,
-                  id: type.name,
-                  name: type.name,
-                }))}
-                onSelect={(item) => setSelectedType(item.id)}
-                selectedId={selectedType}
-              />
-            </div>
-
-            <div className="min-w-0 grow">
-              {selectedTypeInfo ? (
+          <SchemaBrowserLayout
+            detail={
+              selectedTypeInfo ? (
                 <TypeDetailPanel onNavigate={handleNavigateToType} type={selectedTypeInfo} />
               ) : (
                 <p className="py-8 text-center text-body-xs text-gray-500">
                   Select a type from the list to view details
                 </p>
-              )}
-            </div>
-          </div>
+              )
+            }
+            filter={
+              <>
+                <label className="sr-only" htmlFor="graphql-type-filter">
+                  Filter types
+                </label>
+                <TextInput
+                  aria-label="Filter types"
+                  id="graphql-type-filter"
+                  name="graphql-type-filter"
+                  onChange={setFilter}
+                  placeholder="Filter types..."
+                  type="text"
+                  value={filter}
+                />
+              </>
+            }
+            list={{
+              emptyMessage: 'No types match filter',
+              items: listItems,
+              onSelect: (item) => setSelectedType(item.id),
+              selectedId: selectedTypeInfo?.name ?? null,
+            }}
+          />
         )}
       </div>
     </ToolDialogFrame>

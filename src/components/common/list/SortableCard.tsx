@@ -1,12 +1,8 @@
-import type { DraggableAttributes, DraggableSyntheticListeners } from '@dnd-kit/core'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { createContext, type ReactNode, useContext, useMemo } from 'react'
+import { createContext, useContext, useMemo } from 'react'
 
-type SortableCardContextValue = {
-  attributes: DraggableAttributes
-  listeners: DraggableSyntheticListeners
-}
+import type { SortableCardContextValue, SortableCardHandleProps, SortableCardProps } from '@/types'
 
 const SortableCardContext = createContext<SortableCardContextValue | null>(null)
 
@@ -16,17 +12,6 @@ const useSortableCardContext = () => {
     throw new Error('SortableCard.Handle must be rendered inside <SortableCard>')
   }
   return ctx
-}
-
-type SortableCardProps = {
-  /** Stable id used by dnd-kit. Must match the id given to `useSortableItems`. */
-  id: string
-  /** Card body — `<SortableCard.Handle>` plus any Tool-owned metadata and extras. */
-  children: ReactNode
-  /** Optional remove handler. When provided, the top-right hover-only × badge renders. */
-  onRemove?: () => void
-  /** aria-label for the remove button. Required when `onRemove` is provided. */
-  removeLabel?: string
 }
 
 const SortableCardRoot = ({ children, id, onRemove, removeLabel }: SortableCardProps) => {
@@ -41,7 +26,7 @@ const SortableCardRoot = ({ children, id, onRemove, removeLabel }: SortableCardP
   const ctx = useMemo<SortableCardContextValue>(() => ({ attributes, listeners }), [attributes, listeners])
 
   return (
-    <SortableCardContext.Provider value={ctx}>
+    <SortableCardContext value={ctx}>
       <div
         className="group relative flex w-32 flex-col gap-2 rounded-lg border border-gray-800 bg-gray-950 p-2"
         ref={setNodeRef}
@@ -49,12 +34,12 @@ const SortableCardRoot = ({ children, id, onRemove, removeLabel }: SortableCardP
       >
         {children}
         {onRemove && (
-          // raw button: absolute-positioned 24×24 hover-only circle; the
+          // raw button: absolute-positioned 24×24 hover/focus-only circle; the
           // common <Button> always shows children with min-h-8 chrome which
           // would defeat the hover-only badge shape.
           <button
             aria-label={removeLabel}
-            className="hover:bg-red-600 absolute -top-2 -right-2 grid h-6 w-6 place-items-center rounded-full bg-gray-800 text-gray-300 opacity-0 transition-opacity group-hover:opacity-100 hover:text-white"
+            className="hover:bg-red-600 absolute -top-2 -right-2 grid h-6 w-6 place-items-center rounded-full bg-gray-800 text-gray-300 opacity-0 transition-opacity group-focus-within:opacity-100 group-hover:opacity-100 hover:text-white focus-visible:opacity-100"
             onClick={onRemove}
             type="button"
           >
@@ -62,13 +47,8 @@ const SortableCardRoot = ({ children, id, onRemove, removeLabel }: SortableCardP
           </button>
         )}
       </div>
-    </SortableCardContext.Provider>
+    </SortableCardContext>
   )
-}
-
-type SortableCardHandleProps = {
-  /** Drag-area interior — typically the `<img>` thumbnail. */
-  children: ReactNode
 }
 
 const SortableCardHandle = ({ children }: SortableCardHandleProps) => {

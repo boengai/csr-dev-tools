@@ -2,7 +2,7 @@ import { Button, CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/c
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast, useToolFields } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
+import type { EscapeInput, ToolComponentProps } from '@/types'
 import { type EscapeMode, escapeString, unescapeString } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['string-escape-unescape']
@@ -15,12 +15,10 @@ const MODE_OPTIONS = [
   { label: 'XML', value: 'xml' },
 ]
 
-type Direction = 'escape' | 'unescape'
-type EscapeInput = { direction: Direction; mode: EscapeMode; source: string }
 const INITIAL_INPUT: EscapeInput = { direction: 'escape', mode: 'html', source: '' }
 
-export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { showError } = useToast()
+export const StringEscapeUnescape = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
+  const showError = useToast((s) => s.showError)
 
   const { inputs, reset, result, setFields, setFieldsImmediate } = useToolFields<EscapeInput, string>({
     compute: ({ direction: dir, mode: m, source: val }) =>
@@ -40,7 +38,7 @@ export const StringEscapeUnescape = ({ autoOpen, onAfterDialogClose }: ToolCompo
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title={direction === 'escape' ? 'String Escape' : 'String Unescape'}
       triggers={[

@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify'
-import { useEffect, useRef } from 'react'
+import { useMemo } from 'react'
 
 import { CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
@@ -10,9 +10,7 @@ import { renderMarkdown } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['markdown-preview']
 
-export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const previewRef = useRef<HTMLDivElement>(null)
-
+export const MarkdownPreview = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const {
     input: source,
     result: htmlOutput,
@@ -26,17 +24,13 @@ export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     isEmpty: (val) => val.trim().length === 0,
   })
 
-  useEffect(() => {
-    if (previewRef.current) {
-      previewRef.current.innerHTML = DOMPurify.sanitize(htmlOutput)
-    }
-  }, [htmlOutput])
+  const safeHtml = useMemo(() => DOMPurify.sanitize(htmlOutput), [htmlOutput])
 
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title="Markdown Preview"
       triggers={[{ label: 'Preview' }]}
@@ -61,7 +55,7 @@ export const MarkdownPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentP
             </div>
             <div
               className="prose min-h-[300px] grow overflow-auto rounded-lg border-2 border-gray-900 bg-gray-950 p-4 prose-invert"
-              ref={previewRef}
+              dangerouslySetInnerHTML={{ __html: safeHtml }}
             />
           </Pane>
         </SplitPanel>

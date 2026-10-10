@@ -7,7 +7,6 @@ export type SidebarCategoryProps = {
 
 export type SidebarToolItemProps = {
   emoji: string
-  isActive?: boolean
   name: string
-  toolKey: string
+  routePath: string
 }

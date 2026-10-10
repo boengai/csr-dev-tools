@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 
+import type { ToolComputeContext } from '@/types/hooks/computation'
+
 export type ImageToolShellPreviewContext<TControls> = {
   controls: TControls
   source: File
@@ -27,7 +29,7 @@ export type ImageToolShellDownloadContext<TControls> = {
 
 export type ImageToolShellProps<TControls extends object> = {
   description?: string
-  onAfterDialogClose?: () => void
+  onAfterClose?: () => void
   title: string
 
   accept: string
@@ -35,10 +37,21 @@ export type ImageToolShellProps<TControls extends object> = {
   onRejectInvalidFile?: (file: File) => void
 
   initialControls: TControls
-  process: (file: File, controls: TControls) => Promise<Blob | null>
+  /**
+   * Produce the result Blob. `context.signal` aborts when a newer
+   * file/controls change supersedes this run, or on unmount — check it
+   * between expensive steps (decode, draw, encode) to skip stale work.
+   */
+  process: (file: File, controls: TControls, context: ToolComputeContext) => Promise<Blob | null>
 
   renderControls: (ctx: ImageToolShellControlsContext<TControls>) => ReactNode
   renderPreview: (ctx: ImageToolShellPreviewContext<TControls>) => ReactNode
 
   getDownloadFilename: (ctx: ImageToolShellDownloadContext<TControls>) => string
+}
+
+/** Internal pipeline input of `<ImageToolShell>`: the source file plus the shell-owned controls bag. */
+export type ImageToolPipelineInput<TControls> = {
+  controls: TControls
+  file: File | null
 }

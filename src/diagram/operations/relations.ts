@@ -1,5 +1,4 @@
-import type { EntityIdMinters } from '@/diagram/id-minters'
-import type { ColumnRef, DiagramDocument, EditorRelation, RelationId, RelationKind } from '@/types'
+import type { ColumnRef, DiagramDocument, EditorRelation, EntityIdMinters, RelationId, RelationKind } from '@/types'
 
 const columnExists = (doc: DiagramDocument, ref: ColumnRef): boolean => {
   const table = doc.tables[ref.tableId]
@@ -10,12 +9,14 @@ export const cleanupDanglingRelations = (
   doc: DiagramDocument,
   isDangling: (r: EditorRelation) => boolean,
 ): { relations: DiagramDocument['relations']; relationOrder: DiagramDocument['relationOrder'] } => {
-  const relationOrder = doc.relationOrder.filter((rId) => {
-    const r = doc.relations[rId]
-    return !!r && !isDangling(r)
-  })
   const relations: DiagramDocument['relations'] = {}
-  for (const rId of relationOrder) relations[rId] = doc.relations[rId]
+  const relationOrder: DiagramDocument['relationOrder'] = []
+  for (const rId of doc.relationOrder) {
+    const r = doc.relations[rId]
+    if (!r || isDangling(r)) continue
+    relations[rId] = r
+    relationOrder.push(rId)
+  }
   return { relations, relationOrder }
 }
 

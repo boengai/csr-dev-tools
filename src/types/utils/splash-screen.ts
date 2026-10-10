@@ -1,16 +1,14 @@
-import type { SplashScreenDevice } from '@/constants'
+import type { SplashScreenDevice } from '@/types/constants/splash-screen'
 
 export type SplashScreenResult = {
   blob: Blob
-  dataUrl: string
   device: SplashScreenDevice
   fileName: string
-  orientation: 'landscape' | 'portrait'
+  orientation: SplashOrientation
 }
 
 export type PwaIconResult = {
   blob: Blob
-  dataUrl: string
   fileName: string
   maskable: boolean
   size: number
@@ -22,3 +20,7 @@ export type SplashScreenGeneratorOutput = {
   metaTags: string
   splashScreens: Array<SplashScreenResult>
 }
+
+export type ManifestIconEntry = { purpose: string; sizes: string; src: string; type: string }
+
+export type SplashOrientation = 'landscape' | 'portrait'

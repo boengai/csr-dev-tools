@@ -11,7 +11,7 @@ const toolEntry = TOOL_REGISTRY_MAP['aes-encrypt-decrypt']
 
 const INITIAL_INPUT: AesInput = { mode: 'encrypt', password: '', source: '' }
 
-export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const AesEncryptDecrypt = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [showPassword, setShowPassword] = useState(false)
 
   const {
@@ -46,7 +46,7 @@ export const AesEncryptDecrypt = ({ autoOpen, onAfterDialogClose }: ToolComponen
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title={mode === 'encrypt' ? 'AES-256-GCM Encrypt' : 'AES-256-GCM Decrypt'}
       triggers={[

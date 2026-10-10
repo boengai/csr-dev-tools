@@ -1,11 +1,17 @@
 import { validateDiagramSchema } from '@/diagram/codecs/persistence'
+import { DiagramStorageError } from '@/diagram/codecs/storage'
 import type {
   ColumnId,
   ColumnRef,
   DiagramDocument,
+  DiagramDocumentListener,
+  DiagramEditorOptions,
   DiagramIndexEntry,
+  DiagramIndexListener,
   DiagramStorage,
+  DiagramStorageStatus,
   EditorRelation,
+  EntityIdMinters,
   ImportResult,
   RelationId,
   RelationKind,
@@ -14,7 +20,7 @@ import type {
   TableId,
 } from '@/types'
 
-import { createDefaultIdMinters, type EntityIdMinters } from './id-minters'
+import { createDefaultIdMinters } from './id-minters'
 import * as columnOps from './operations/columns'
 import * as dbmlOps from './operations/dbml'
 import * as exportOps from './operations/export'
@@ -24,17 +30,6 @@ import * as relationOps from './operations/relations'
 import * as tableOps from './operations/tables'
 import { cloneDocument, createInitialDocument } from './state'
 import { localStorageDiagramStorage } from './storage'
-
-type Listener = (document: DiagramDocument) => void
-type IndexListener = (entries: Array<DiagramIndexEntry>) => void
-
-type DiagramEditorOptions = {
-  storage?: DiagramStorage
-  document?: DiagramDocument
-  autosaveMs?: number
-  clock?: () => string
-  idMinters?: EntityIdMinters
-}
 
 const isValidDocument = (value: unknown): value is DiagramDocument => {
   if (!value || typeof value !== 'object') return false
@@ -50,13 +45,14 @@ const isValidDocument = (value: unknown): value is DiagramDocument => {
 
 export class DiagramEditor {
   private document: DiagramDocument
-  private listeners: Set<Listener> = new Set()
-  private indexListeners: Set<IndexListener> = new Set()
+  private listeners: Set<DiagramDocumentListener> = new Set()
+  private indexListeners: Set<DiagramIndexListener> = new Set()
   private storage: DiagramStorage
   private autosaveMs: number
   private clock: () => string
   private autosaveTimer: ReturnType<typeof setTimeout> | null = null
   private idMinters: EntityIdMinters
+  private storageStatus: DiagramStorageStatus = 'ok'
 
   constructor(options: DiagramEditorOptions = {}) {
     this.storage = options.storage ?? localStorageDiagramStorage
@@ -70,7 +66,13 @@ export class DiagramEditor {
     return this.storage.loadIndex()
   }
 
-  subscribeToIndex(listener: IndexListener): () => void {
+  // 'ok' until a storage write fails; reset by the next successful write.
+  // Changes are announced through the index listeners.
+  getStorageStatus(): DiagramStorageStatus {
+    return this.storageStatus
+  }
+
+  subscribeToIndex(listener: DiagramIndexListener): () => void {
     this.indexListeners.add(listener)
     return () => {
       this.indexListeners.delete(listener)
@@ -86,7 +88,10 @@ export class DiagramEditor {
   }
 
   deleteDiagram(id: string): void {
-    this.storage.deleteDiagram(id)
+    if (!this.tryStorageWrite(() => this.storage.deleteDiagram(id))) {
+      this.notifyIndex()
+      return
+    }
     if (this.document.diagramId === id) {
       this.applyLifecycle(createInitialDocument())
     }
@@ -100,7 +105,10 @@ export class DiagramEditor {
     const entry = idx.find((e) => e.id === id)
     if (!entry) return
     entry.name = trimmed
-    this.storage.saveIndex(idx)
+    if (!this.tryStorageWrite(() => this.storage.saveIndex(idx))) {
+      this.notifyIndex()
+      return
+    }
     if (this.document.diagramId === id) {
       this.applyLifecycle({ ...this.document, diagramName: trimmed })
     }
@@ -108,9 +116,8 @@ export class DiagramEditor {
   }
 
   bootstrap(): void {
-    const idx = this.storage.loadIndex()
-    if (idx.length === 0) return
-    const latest = [...idx].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0]
+    const [latest] = [...this.storage.loadIndex()].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+    if (!latest) return
     this.loadDiagram(latest.id)
   }
 
@@ -118,7 +125,7 @@ export class DiagramEditor {
     return this.document
   }
 
-  subscribe(listener: Listener): () => void {
+  subscribe(listener: DiagramDocumentListener): () => void {
     this.listeners.add(listener)
     return () => {
       this.listeners.delete(listener)
@@ -181,22 +188,36 @@ export class DiagramEditor {
     }
 
     const schema = exportOps.documentToSchema(this.document)
-    this.storage.saveDiagram(id, schema)
-
     const now = this.clock()
-    const idx = this.storage.loadIndex()
-    const existing = idx.findIndex((e) => e.id === id)
-    const entry: DiagramIndexEntry = {
-      id,
-      name: this.document.diagramName,
-      tableCount: this.document.tableOrder.length,
-      createdAt: existing >= 0 ? idx[existing].createdAt : now,
-      updatedAt: now,
+    const name = this.document.diagramName
+    const tableCount = this.document.tableOrder.length
+    const savedId = id
+    let index: Array<DiagramIndexEntry> | undefined
+    // Runs inside a timer: a throw here would be uncaught and the edit lost
+    // silently, so failures become a storage status the UI can show instead.
+    // The document stays in memory; the next edit retries the save.
+    this.tryStorageWrite(() => {
+      index = this.storage.saveDiagramWithIndex(savedId, schema, (previous) => ({
+        id: savedId,
+        name,
+        tableCount,
+        createdAt: previous?.createdAt ?? now,
+        updatedAt: now,
+      }))
+    })
+    this.notifyIndex(index)
+  }
+
+  // Runs a storage write, recording success/failure in storageStatus.
+  private tryStorageWrite(write: () => void): boolean {
+    try {
+      write()
+      this.storageStatus = 'ok'
+      return true
+    } catch (error) {
+      this.storageStatus = error instanceof DiagramStorageError ? error.reason : 'unavailable'
+      return false
     }
-    if (existing >= 0) idx[existing] = entry
-    else idx.push(entry)
-    this.storage.saveIndex(idx)
-    this.notifyIndex()
   }
 
   protected afterStructuralChange(doc: DiagramDocument): DiagramDocument {
@@ -346,8 +367,7 @@ export class DiagramEditor {
     for (const listener of this.listeners) listener(this.document)
   }
 
-  private notifyIndex(): void {
-    const snapshot = this.storage.loadIndex()
+  private notifyIndex(snapshot: Array<DiagramIndexEntry> = this.storage.loadIndex()): void {
     for (const listener of this.indexListeners) listener(snapshot)
   }
 }

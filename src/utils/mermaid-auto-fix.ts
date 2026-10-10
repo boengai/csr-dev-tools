@@ -27,6 +27,9 @@ const DIAGRAM_TYPE_CORRECTIONS = new Map<string, string>([
 const KNOWN_DIAGRAM_TYPES =
   /^(flowchart|graph|sequenceDiagram|classDiagram|stateDiagram|stateDiagram-v2|erDiagram|gantt|pie|gitGraph|journey|mindmap|timeline|sankey-beta|xychart-beta|block-beta|quadrantChart|requirementDiagram|C4Context|C4Container|C4Component|C4Dynamic|C4Deployment)\b/i
 
+/** First non-blank line, trimmed. `split` always yields at least one element. */
+const firstLineOf = (code: string): string => code.trim().split('\n')[0]?.trim() ?? ''
+
 const MERMAID_FIX_RULES: Array<MermaidFixRule> = [
   // Rule 1: box...end containing messages → rect...end
   {
@@ -38,8 +41,8 @@ const MERMAID_FIX_RULES: Array<MermaidFixRule> = [
       let currentBoxStart = -1
       let currentHasMessages = false
 
-      for (let i = 0; i < lines.length; i++) {
-        const trimmed = lines[i].trim()
+      for (const [i, line] of lines.entries()) {
+        const trimmed = line.trim()
         if (/^box\b/i.test(trimmed) && currentBoxStart < 0) {
           currentBoxStart = i
           currentHasMessages = false
@@ -61,14 +64,15 @@ const MERMAID_FIX_RULES: Array<MermaidFixRule> = [
           const match = line.match(/^(\s*)box\b\s*(.*)/i)
           if (!match) return line
 
-          const indent = match[1]
-          const rest = match[2].trim()
+          const [, indent = '', tail = ''] = match
+          const rest = tail.trim()
 
           // Try to extract color portion (rgb/rgba/hex/transparent)
           const colorMatch = rest.match(/^(rgba?\([^)]+\)|#[0-9a-fA-F]{3,8}|transparent)\s*/i)
 
-          if (colorMatch) {
-            return `${indent}rect ${colorMatch[1]}`
+          const color = colorMatch?.[1]
+          if (color) {
+            return `${indent}rect ${color}`
           }
 
           // No recognized color — use a default
@@ -104,7 +108,7 @@ const MERMAID_FIX_RULES: Array<MermaidFixRule> = [
     description: 'Add missing diagram type declaration',
     detect: (code: string, error: string): boolean => {
       if (!error) return false
-      const firstLine = code.trim().split('\n')[0].trim()
+      const firstLine = firstLineOf(code)
       if (KNOWN_DIAGRAM_TYPES.test(firstLine)) return false
       // Also check if a correction exists — if so, the typo rule should handle it
       if (DIAGRAM_TYPE_CORRECTIONS.has(firstLine.toLowerCase())) return false
@@ -116,17 +120,21 @@ const MERMAID_FIX_RULES: Array<MermaidFixRule> = [
   // Rule 3: Diagram type typos / case errors
   {
     apply: (code: string): string => {
+      // Rewrite the first non-blank line — the same line `detect` inspected. Leading
+      // blank lines used to make this target the empty line 0 and return the input unchanged.
       const lines = code.split('\n')
-      const firstLineTrimmed = lines[0].trim().toLowerCase()
-      const correction = DIAGRAM_TYPE_CORRECTIONS.get(firstLineTrimmed)
+      const index = lines.findIndex((line) => line.trim() !== '')
+      const line = lines[index]
+      if (line === undefined) return code
+      const correction = DIAGRAM_TYPE_CORRECTIONS.get(line.trim().toLowerCase())
       if (correction) {
-        lines[0] = lines[0].replace(lines[0].trim(), correction)
+        lines[index] = line.replace(line.trim(), correction)
       }
       return lines.join('\n')
     },
     description: 'Fix diagram type spelling',
     detect: (code: string, _error: string): boolean => {
-      const firstLine = code.trim().split('\n')[0].trim()
+      const firstLine = firstLineOf(code)
       const lower = firstLine.toLowerCase()
       const correction = DIAGRAM_TYPE_CORRECTIONS.get(lower)
       // Only trigger if the correction differs from the original text
@@ -143,7 +151,7 @@ const MERMAID_FIX_RULES: Array<MermaidFixRule> = [
     description: 'Replace deprecated "graph" with modern "flowchart" syntax',
     detect: (code: string, error: string): boolean => {
       if (!error) return false
-      const firstLine = code.trim().split('\n')[0].trim()
+      const firstLine = firstLineOf(code)
       return /^graph\b/i.test(firstLine)
     },
     id: 'graph-to-flowchart',

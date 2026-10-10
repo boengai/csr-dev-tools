@@ -2,11 +2,9 @@ import { useCallback } from 'react'
 
 import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, ToolComponentProps } from '@/types'
+import type { ConverterMode, ToolComponentProps, UrlMode } from '@/types'
 
 const toolEntry = TOOL_REGISTRY_MAP['url-encoder-decoder']
-
-type UrlMode = 'encode' | 'decode'
 
 const MODES: [ConverterMode<UrlMode>, ConverterMode<UrlMode>] = [
   {
@@ -27,7 +25,7 @@ const MODES: [ConverterMode<UrlMode>, ConverterMode<UrlMode>] = [
   },
 ]
 
-export const UrlEncoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const UrlEncoder = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const compute = useCallback(
     async ({ mode, source }: { mode: UrlMode; source: string }): Promise<{ output: string }> => {
       try {
@@ -52,7 +50,7 @@ export const UrlEncoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
       initialResult={{ output: '' }}
       modeStorageKey="url-encoder"
       modes={MODES}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       sourceKeyPrefix="url-encoder"
     />
   )

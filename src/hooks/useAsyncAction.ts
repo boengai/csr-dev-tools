@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 import type { UseAsyncActionOptions, UseAsyncActionResult } from '@/types'
 
+import { useLatestRef } from './useLatestRef'
 import { useStaleSafeAsync } from './useStaleSafeAsync'
 import { reportPipelineError } from './useToolComputation'
 
@@ -19,10 +20,8 @@ export function useAsyncAction<T>(action: () => Promise<T>, options?: UseAsyncAc
   const [pending, setPending] = useState(false)
   const [result, setResult] = useState<T | null>(null)
 
-  const actionRef = useRef(action)
-  actionRef.current = action
-  const optionsRef = useRef(options)
-  optionsRef.current = options
+  const actionRef = useLatestRef(action)
+  const optionsRef = useLatestRef(options)
 
   const newSession = useStaleSafeAsync()
   const mountedRef = useRef(true)
@@ -51,7 +50,7 @@ export function useAsyncAction<T>(action: () => Promise<T>, options?: UseAsyncAc
         setPending(false)
       }
     }
-  }, [newSession])
+  }, [actionRef, newSession, optionsRef])
 
   const reset = useCallback(() => {
     setResult(null)

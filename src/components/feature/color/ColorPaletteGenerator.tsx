@@ -26,7 +26,7 @@ const toPickerHex = (hex: string): string => {
 
 const toolEntry = TOOL_REGISTRY_MAP['color-palette-generator']
 
-export const ColorPaletteGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const ColorPaletteGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const copyToClipboard = useCopyToClipboard()
 
   const {
@@ -58,7 +58,7 @@ export const ColorPaletteGenerator = ({ autoOpen, onAfterDialogClose }: ToolComp
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Color Palette Generator"
       triggers={[{ label: 'Generate' }]}
     >
@@ -82,6 +82,7 @@ export const ColorPaletteGenerator = ({ autoOpen, onAfterDialogClose }: ToolComp
           />
 
           <SelectInput
+            aria-label="Harmony type"
             name="harmony-type"
             onChange={handleHarmonyChange}
             options={HARMONY_OPTIONS}

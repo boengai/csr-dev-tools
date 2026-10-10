@@ -53,6 +53,20 @@ describe('useElapsedTimer', () => {
     expect(result.current).toBe(0)
   })
 
+  it("starts a restarted run at 0, never the previous run's value", () => {
+    const nowSpy = vi.spyOn(performance, 'now').mockReturnValue(1000)
+    const { result, rerender } = renderHook(({ running }) => useElapsedTimer(running), {
+      initialProps: { running: true },
+    })
+    nowSpy.mockReturnValue(1500)
+    act(() => {
+      vi.advanceTimersByTime(100)
+    })
+    rerender({ running: false })
+    rerender({ running: true })
+    expect(result.current).toBe(0)
+  })
+
   it('clears the interval on unmount', () => {
     const { unmount } = renderHook(() => useElapsedTimer(true))
     expect(vi.getTimerCount()).toBeGreaterThan(0)

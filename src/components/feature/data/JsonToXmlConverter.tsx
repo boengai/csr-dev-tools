@@ -31,7 +31,7 @@ const compute = async ({ mode, source }: { mode: JsonXmlConvertMode; source: str
   return { output }
 }
 
-export const JsonToXmlConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => (
+export const JsonToXmlConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
   <BidirectionalConverter
     autoOpen={autoOpen}
     compute={compute}
@@ -39,6 +39,6 @@ export const JsonToXmlConverter = ({ autoOpen, onAfterDialogClose }: ToolCompone
     initialResult={{ output: '' }}
     modeStorageKey="json-to-xml"
     modes={MODES}
-    onAfterDialogClose={onAfterDialogClose}
+    onAfterClose={onAfterClose}
   />
 )

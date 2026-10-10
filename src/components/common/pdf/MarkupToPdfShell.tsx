@@ -1,9 +1,11 @@
-import { ErrorBanner, FieldForm, Pane, SplitPanel } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
-import { useToolComputationPersisted } from '@/hooks'
+import { useToolInput } from '@/hooks'
 import type { MarkupToPdfShellProps } from '@/types'
 import type { CompileResultDto } from '@/types/wasm/pdf'
 
+import { ErrorBanner } from '../banner'
+import { ToolDialogFrame } from '../dialog/ToolDialogFrame'
+import { FieldForm } from '../form'
+import { Pane, SplitPanel } from '../layout'
 import { DownloadPdfButton } from './DownloadPdfButton'
 import { PdfSvgPreview } from './PdfSvgPreview'
 
@@ -14,8 +16,8 @@ const EMPTY_RESULT: CompileResultDto = { svgs: [], pdf: new Uint8Array(0) }
 
 // Single-string input today; both adopters (HtmlToPdf, MarkdownToPdf) need only
 // the source markup. If a third adopter requires extras (pageFormat, includeToc,
-// Typst preamble), swap the internal primitive from [[Persistent tool computation]]
-// to [[Persistent tool field bag]] and migrate adopters — ~5 lines per adopter,
+// Typst preamble), swap the internal primitive from `useToolInput`
+// to `useToolFields` (both with `storageKey`) and migrate adopters — ~5 lines per adopter,
 // no behavior change.
 export const MarkupToPdfShell = ({
   autoOpen,
@@ -23,14 +25,14 @@ export const MarkupToPdfShell = ({
   description,
   filenameSlug,
   inputName,
-  onAfterDialogClose,
+  onAfterClose,
   placeholder,
   sourceLabel,
   storageKey,
   title,
   triggerLabel,
 }: MarkupToPdfShellProps) => {
-  const { error, input, result, setInput, setInputImmediate } = useToolComputationPersisted<string, CompileResultDto>({
+  const { error, input, result, setInput, setInputImmediate } = useToolInput<string, CompileResultDto>({
     compute,
     debounceMs: 300,
     initial: '',
@@ -52,7 +54,7 @@ export const MarkupToPdfShell = ({
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title={title}
       triggers={[{ label: triggerLabel }]}
@@ -73,9 +75,7 @@ export const MarkupToPdfShell = ({
           <Pane live>
             <div className="flex items-center justify-between gap-1">
               <span className="text-body-xs font-medium text-gray-300">Preview</span>
-              {!hasError && (
-                <DownloadPdfButton bytes={result.pdf} filename={`csr-dev-tools_${filenameSlug}_${Date.now()}.pdf`} />
-              )}
+              {!hasError && <DownloadPdfButton bytes={result.pdf} filenameSlug={filenameSlug} />}
             </div>
             {hasError ? (
               <ErrorBanner variant="warning">{errorMessage}</ErrorBanner>

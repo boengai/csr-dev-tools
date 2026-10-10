@@ -62,7 +62,7 @@ const LinkedInCard = ({ config }: { config: OgConfig }) => (
   </div>
 )
 
-export const OgPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const OgPreview = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [config, setConfig] = useState<OgConfig>({ ...DEFAULT_CONFIG })
 
   const metaTags = useMemo(() => generateOgMetaTags(config), [config])
@@ -78,7 +78,7 @@ export const OgPreview = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="OG Preview"
       triggers={[{ label: 'Preview' }]}
     >

@@ -17,8 +17,8 @@ const getMimeExtension = (mimeType: string): string => {
   return sub
 }
 
-export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => {
-  const { showError } = useToast()
+export const DataUriGenerator = ({ onAfterClose }: ToolComponentProps) => {
+  const showError = useToast((s) => s.showError)
   const { downloadBlob } = useDownload()
 
   const [encodeOpen, setEncodeOpen] = useState(false)
@@ -100,7 +100,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
 
       {/* Encode Dialog */}
       <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
+        onAfterClose={onAfterClose}
         onOpenChange={setEncodeOpen}
         onReset={handleEncodeReset}
         open={encodeOpen}
@@ -197,7 +197,7 @@ export const DataUriGenerator = ({ onAfterDialogClose }: ToolComponentProps) => 
 
       {/* Decode Dialog */}
       <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
+        onAfterClose={onAfterClose}
         onOpenChange={setDecodeOpen}
         onReset={handleDecodeReset}
         open={decodeOpen}

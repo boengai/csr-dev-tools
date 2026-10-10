@@ -32,7 +32,7 @@ const CASES: Array<CaseResult> = [
   { fn: toPathCase, label: 'path/case' },
 ]
 
-export const TextCaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const TextCaseConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const {
     input: source,
     result: results,
@@ -50,7 +50,7 @@ export const TextCaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title="Text Case Converter"
       triggers={[{ label: 'Convert Text Case' }]}

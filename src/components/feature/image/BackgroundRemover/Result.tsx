@@ -11,6 +11,7 @@ export const BackgroundRemoverResult = ({
     <div className="flex w-full shrink-0 flex-wrap items-center justify-center gap-4">
       <span className="text-body-sm text-gray-400">Background:</span>
       <RadioGroupInput
+        aria-label="Background"
         name="bg-option"
         onChange={(val) => onBgChange(val as BgOption)}
         options={[

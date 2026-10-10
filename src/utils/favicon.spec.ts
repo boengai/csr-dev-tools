@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { FAVICON_SIZES, generateFaviconLinkTags, generateFavicons } from './favicon'
 
 const createMockCanvas = () => {
@@ -77,8 +79,8 @@ describe('favicon utils', () => {
       const results = await generateFavicons(img, sizes)
 
       expect(results).toHaveLength(2)
-      expect(results[0].size).toBe(sizes[0])
-      expect(results[1].size).toBe(sizes[1])
+      expect(nth(results, 0).size).toBe(nth(sizes, 0))
+      expect(nth(results, 1).size).toBe(nth(sizes, 1))
     })
 
     it('returns valid blobs and data URLs', async () => {
@@ -86,11 +88,11 @@ describe('favicon utils', () => {
       vi.spyOn(document, 'createElement').mockReturnValue(mockCanvas as unknown as HTMLCanvasElement)
 
       const img = new Image()
-      const sizes = [FAVICON_SIZES[0]]
+      const sizes = [nth(FAVICON_SIZES, 0)]
       const results = await generateFavicons(img, sizes)
 
-      expect(results[0].blob).toBeInstanceOf(Blob)
-      expect(results[0].dataUrl).toBe('data:image/png;base64,mockdata')
+      expect(nth(results, 0).blob).toBeInstanceOf(Blob)
+      expect(nth(results, 0).dataUrl).toBe('data:image/png;base64,mockdata')
     })
   })
 })

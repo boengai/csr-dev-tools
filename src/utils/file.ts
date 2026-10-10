@@ -42,3 +42,18 @@ export const parseDataUrlToBlob = async (source: string): Promise<Blob> => {
   const res = await fetch(source)
   return res.blob()
 }
+
+/**
+ * Resolves a filename collision by suffixing the stem: `a.webp` → `a-1.webp`,
+ * `a-2.webp`, … until `isTaken` says the candidate is free. Does not sanitize
+ * or otherwise build the name (that stays at the call site, per ADR 0023).
+ */
+export const dedupeFileName = (name: string, isTaken: (candidate: string) => boolean): string => {
+  if (!isTaken(name)) return name
+  const dot = name.lastIndexOf('.')
+  const stem = dot > 0 ? name.slice(0, dot) : name
+  const ext = dot > 0 ? name.slice(dot) : ''
+  let n = 1
+  while (isTaken(`${stem}-${n}${ext}`)) n++
+  return `${stem}-${n}${ext}`
+}

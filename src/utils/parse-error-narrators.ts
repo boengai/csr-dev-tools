@@ -1,15 +1,9 @@
+import type { ParseErrorNarrator, SourceFormat } from '@/types'
 import { getCsvParseError } from '@/wasm/csv'
 import { getJsonParseError } from '@/wasm/json-tools'
 import { getTomlParseError, getXmlParseError, getYamlParseError } from '@/wasm/parsers'
 
-export type SourceFormat = 'csv' | 'json' | 'toml' | 'xml' | 'yaml'
-
-type Narrator = {
-  label: string
-  get: (source: string) => Promise<string | null>
-}
-
-const NARRATORS: Record<SourceFormat, Narrator> = {
+const NARRATORS: Record<SourceFormat, ParseErrorNarrator> = {
   csv: { label: 'CSV', get: getCsvParseError },
   json: { label: 'JSON', get: getJsonParseError },
   toml: { label: 'TOML', get: getTomlParseError },

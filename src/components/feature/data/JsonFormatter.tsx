@@ -8,7 +8,7 @@ const toolEntry = TOOL_REGISTRY_MAP['json-formatter']
 
 const INITIAL: { source: string } = { source: '' }
 
-export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const JsonFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
     <FormatterShell<{ source: string }>
       autoOpen={autoOpen}
@@ -23,7 +23,7 @@ export const JsonFormatter = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
       }}
       description={toolEntry?.description}
       initial={INITIAL}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       renderBanner={(error) =>
         error instanceof Error ? (
           <p className="text-body-sm text-error" role="alert">

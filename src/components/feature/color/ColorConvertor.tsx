@@ -1,11 +1,11 @@
 import { m } from 'motion/react'
-import { type PropsWithChildren, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import { ColorInput, CopyButton, FieldForm, NotoEmoji } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
-import type { ColorFormat, ConvertInput, ToolComponentProps } from '@/types'
+import { useMountOnce, useToast, useToolComputation } from '@/hooks'
+import type { ColorFormat, ColorFormatField, ColorInputWrapperProps, ConvertInput, ToolComponentProps } from '@/types'
 import { convertColor } from '@/wasm/color'
 
 const randomByte = () => Math.floor(Math.random() * 256)
@@ -28,7 +28,7 @@ const ERROR_MESSAGES: Record<ColorFormat, string> = {
   rgb: 'Enter a valid RGB color (e.g., rgb(59, 130, 246))',
 }
 
-const FORMATS: Array<{ format: ColorFormat; label: string; placeholder: string }> = [
+const FORMATS: Array<ColorFormatField> = [
   { format: 'hex', label: 'Hex', placeholder: '#000 or #000000' },
   { format: 'rgb', label: 'RGB', placeholder: 'rgb(0, 0, 0)' },
   { format: 'oklch', label: 'OKLCH', placeholder: 'oklch(0 0 0)' },
@@ -37,7 +37,7 @@ const FORMATS: Array<{ format: ColorFormat; label: string; placeholder: string }
   { format: 'lch', label: 'LCH', placeholder: 'lch(0 0 0)' },
 ]
 
-const InputWrapper = ({ children, color }: PropsWithChildren<{ color: string }>) => {
+const InputWrapper = ({ children, color }: ColorInputWrapperProps) => {
   return (
     <div className="flex w-full items-end gap-2">
       {color ? (
@@ -59,9 +59,9 @@ const InputWrapper = ({ children, color }: PropsWithChildren<{ color: string }>)
 
 const toolEntry = TOOL_REGISTRY_MAP['color-converter']
 
-export const ColorConvertor = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const ColorConvertor = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [color, setColor] = useState<Record<ColorFormat, string>>(emptyColors)
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
 
   const {
     result: converted,
@@ -82,13 +82,14 @@ export const ColorConvertor = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
 
   // Adopt computed conversions into the visible state.
   useEffect(() => {
+    // oxlint-disable-next-line react/set-state-in-effect -- ADR-0019 N-mirror broadcast adoption effect
     if (converted) setColor(converted)
   }, [converted])
 
-  // Seed with a random color on mount.
-  useEffect(() => {
+  // Seed with a random color on mount — once, even under StrictMode's double effects.
+  useMountOnce(() => {
     setInputImmediate({ format: 'rgb', value: `rgb(${randomByte()}, ${randomByte()}, ${randomByte()})` })
-  }, [setInputImmediate])
+  })
 
   const handleColorChange = (format: ColorFormat, value: string) => {
     setColor((prev) => ({ ...prev, [format]: value }))
@@ -104,7 +105,7 @@ export const ColorConvertor = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Color Converter"
       triggers={[{ label: 'Convert' }]}
     >

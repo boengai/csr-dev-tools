@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
-import type { SideBySideRow } from '@/types'
+import type { InlineSpan, SideBySideRow } from '@/types'
+import type { ToolComputeContext } from '@/types/hooks/computation'
 
 export type DiffInput = { modified: string; original: string }
 
@@ -16,12 +17,12 @@ export type DiffOutput = {
 
 export type DiffCheckerShellProps<R extends DiffOutput> = {
   autoOpen?: boolean
-  compute: (input: DiffInput) => Promise<R> | R
+  compute: (input: DiffInput, context: ToolComputeContext) => Promise<R> | R
   description?: string
   errorLabel: string
   initialResult: R
   modifiedPlaceholder: string
-  onAfterDialogClose?: () => void
+  onAfterClose?: () => void
   originalPlaceholder: string
   /**
    * Optional slot rendered between the input columns and the diff output.
@@ -31,4 +32,16 @@ export type DiffCheckerShellProps<R extends DiffOutput> = {
   renderBanner?: (result: R) => ReactNode
   storageKey: string
   title: string
+}
+
+export type DiffCellProps = {
+  content: string
+  lineNum: number | null
+  side: 'left' | 'right'
+  spans: Array<InlineSpan> | null
+  type: SideBySideRow['leftType']
+}
+
+export type DiffRowsProps = {
+  rows: Array<SideBySideRow>
 }

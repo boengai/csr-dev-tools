@@ -2,13 +2,13 @@ import { Navigate, useNavigate, useParams } from '@tanstack/react-router'
 import { Suspense } from 'react'
 
 import { Card, NotoEmoji } from '@/components'
-import { ROUTE_PATH, TOOL_REGISTRY_MAP } from '@/constants'
+import { getToolEntry, ROUTE_PATH } from '@/constants'
 import { useToolSeo } from '@/hooks'
 import type { ToolRegistryEntry } from '@/types'
 
 export default function ToolsPage() {
   const { toolKey } = useParams({ strict: false })
-  const tool = TOOL_REGISTRY_MAP[toolKey]
+  const tool = getToolEntry(toolKey)
 
   if (!tool) {
     return <Navigate to={ROUTE_PATH.HOME} />
@@ -40,7 +40,7 @@ const ToolsPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
           }
         >
           <Card onClose={navigateHome} title={tool.name}>
-            <ToolComponent autoOpen onAfterDialogClose={navigateHome} />
+            <ToolComponent autoOpen onAfterClose={navigateHome} />
           </Card>
         </Suspense>
       </div>

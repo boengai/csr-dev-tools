@@ -225,6 +225,13 @@ describe('mermaid-auto-fix', () => {
       expect(result?.ruleId).not.toBe('diagram-type-typo')
     })
 
+    it('fixes the type line when the code starts with blank lines', () => {
+      const code = '\n\n  sequencediagram\n    Alice->>Bob: Hello'
+      const result = suggestMermaidFix(code, 'error')
+      expect(result?.ruleId).toBe('diagram-type-typo')
+      expect(result?.fixedCode).toBe('\n\n  sequenceDiagram\n    Alice->>Bob: Hello')
+    })
+
     it('preserves the rest of the code unchanged', () => {
       const code = 'sequencediagram\n    Alice->>Bob: Hello\n    Bob-->>Alice: Hi'
       const result = suggestMermaidFix(code, 'error')

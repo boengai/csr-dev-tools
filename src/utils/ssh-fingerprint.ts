@@ -48,24 +48,24 @@ const parseAuthorizedKeysLine = (line: string): ParsedKeyLine | null => {
   const trimmed = line.trim()
   if (!trimmed || trimmed.startsWith('#')) return null
 
-  const parts = trimmed.split(/\s+/)
-  if (parts.length < 2) return null
-
-  const firstToken = parts[0]
+  const [firstToken, secondToken, ...rest] = trimmed.split(/\s+/)
+  if (firstToken === undefined || secondToken === undefined) return null
 
   if (KNOWN_KEY_TYPES.has(firstToken)) {
     return {
-      comment: parts.slice(2).join(' '),
-      keyBlob: parts[1],
+      comment: rest.join(' '),
+      keyBlob: secondToken,
       keyType: firstToken,
     }
   }
 
-  if (parts.length >= 3 && KNOWN_KEY_TYPES.has(parts[1])) {
+  // Options-prefixed line: `<options> <type> <blob> [comment]`.
+  const [keyBlob, ...commentParts] = rest
+  if (keyBlob !== undefined && KNOWN_KEY_TYPES.has(secondToken)) {
     return {
-      comment: parts.slice(3).join(' '),
-      keyBlob: parts[2],
-      keyType: parts[1],
+      comment: commentParts.join(' '),
+      keyBlob,
+      keyType: secondToken,
     }
   }
 
@@ -78,10 +78,10 @@ const getRsaBitLength = (modulus: Uint8Array): number => {
     startIndex++
   }
 
-  if (startIndex >= modulus.length) return 0
+  const highByte = modulus[startIndex]
+  if (highByte === undefined) return 0
 
   const significantBytes = modulus.length - startIndex
-  const highByte = modulus[startIndex]
 
   return (significantBytes - 1) * 8 + Math.floor(Math.log2(highByte)) + 1
 }
@@ -186,11 +186,13 @@ const md5Raw = (data: Uint8Array): string => {
         F = C ^ (B | ~D)
         g = (7 * i) % 16
       }
-      F = (F + A + MD5_K[i] + M[g]) >>> 0
+      // Hot loop: i < 64 and g < 16 index the fixed 64-entry tables and 16-word block.
+      F = (F + A + MD5_K[i]! + M[g]!) >>> 0
       A = D
       D = C
       C = B
-      B = (B + ((F << MD5_S[i]) | (F >>> (32 - MD5_S[i])))) >>> 0
+      const shift = MD5_S[i]!
+      B = (B + ((F << shift) | (F >>> (32 - shift)))) >>> 0
     }
 
     a0 = (a0 + A) >>> 0

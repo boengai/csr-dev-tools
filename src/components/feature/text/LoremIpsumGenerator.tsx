@@ -14,12 +14,12 @@ const UNIT_OPTIONS = [
   { label: 'Words', value: 'words' },
 ]
 
-export const LoremIpsumGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const LoremIpsumGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [count, setCount] = useState(3)
   const [unit, setUnit] = useState<LoremUnit>('paragraphs')
   const [startWithLorem, setStartWithLorem] = useState(true)
   const [output, setOutput] = useState(() => generateLoremIpsum(3, 'paragraphs', true))
-  const { showSuccess } = useToast()
+  const showSuccess = useToast((s) => s.showSuccess)
 
   const handleGenerate = () => {
     setOutput(generateLoremIpsum(count, unit, startWithLorem))
@@ -36,7 +36,7 @@ export const LoremIpsumGenerator = ({ autoOpen, onAfterDialogClose }: ToolCompon
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Lorem Ipsum Generator"
       triggers={[{ label: 'Generate' }]}
     >

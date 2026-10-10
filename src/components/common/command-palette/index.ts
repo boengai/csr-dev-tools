@@ -1,2 +1,1 @@
-export * from './CommandPalette'
-export * from './SearchInput'
+export { CommandPalette } from './CommandPalette'

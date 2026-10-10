@@ -1,8 +1,28 @@
 import { describe, expect, it } from 'vitest'
 
-import { evaluateJsonPath, formatResultValue, parseJsonInput } from '@/utils'
+import { nth } from '@/test/nth'
+
+import { createCachedJsonParser, evaluateJsonPath, formatResultValue, parseJsonInput } from './jsonpath-evaluator'
 
 describe('jsonpath-evaluator', () => {
+  describe('createCachedJsonParser', () => {
+    it('returns the identical result for repeated input and re-parses on change', () => {
+      const parse = createCachedJsonParser()
+      const first = parse('{"a":1}')
+      expect(parse('{"a":1}')).toBe(first)
+      const second = parse('{"a":2}')
+      expect(second).not.toBe(first)
+      expect(second).toEqual(parseJsonInput('{"a":2}'))
+    })
+
+    it('caches failures too', () => {
+      const parse = createCachedJsonParser()
+      const bad = parse('{')
+      expect(bad.success).toBe(false)
+      expect(parse('{')).toBe(bad)
+    })
+  })
+
   describe('parseJsonInput', () => {
     it('parses a valid JSON object', () => {
       const result = parseJsonInput('{"name":"test","value":42}')
@@ -101,7 +121,7 @@ describe('jsonpath-evaluator', () => {
       expect(result.success).toBe(true)
       if (result.success) {
         expect(result.results).toHaveLength(1)
-        expect(result.results[0].value).toBe('red')
+        expect(nth(result.results, 0).value).toBe('red')
       }
     })
 
@@ -135,7 +155,7 @@ describe('jsonpath-evaluator', () => {
       expect(result.success).toBe(true)
       if (result.success) {
         expect(result.results).toHaveLength(1)
-        expect((result.results[0].value as Record<string, unknown>).author).toBe('Nigel Rees')
+        expect((nth(result.results, 0).value as Record<string, unknown>).author).toBe('Nigel Rees')
       }
     })
 
@@ -155,7 +175,7 @@ describe('jsonpath-evaluator', () => {
       expect(result.success).toBe(true)
       if (result.success) {
         expect(result.results).toHaveLength(1)
-        expect(result.results[0].value).toEqual(sampleData)
+        expect(nth(result.results, 0).value).toEqual(sampleData)
       }
     })
 
@@ -187,8 +207,8 @@ describe('jsonpath-evaluator', () => {
       const result = evaluateJsonPath(sampleData, '$.store.book[0].author')
       expect(result.success).toBe(true)
       if (result.success) {
-        expect(result.results[0].path).toBeTruthy()
-        expect(typeof result.results[0].path).toBe('string')
+        expect(nth(result.results, 0).path).toBeTruthy()
+        expect(typeof nth(result.results, 0).path).toBe('string')
       }
     })
 

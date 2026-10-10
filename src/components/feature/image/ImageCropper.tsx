@@ -3,10 +3,11 @@ import { useRef, useState } from 'react'
 import 'react-image-crop/dist/ReactCrop.css'
 import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop'
 
+import { ToggleButton } from '@/components/common'
 import { ImageToolShell } from '@/components/common/image-tool'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import type { AspectRatioPreset, CropRegion, ToolComponentProps } from '@/types'
+import type { CropControls, CropPreviewProps, CropRegion, ToolComponentProps } from '@/types'
 import {
   ASPECT_RATIO_OPTIONS,
   canvasToBlob,
@@ -14,18 +15,7 @@ import {
   getAspectRatio,
   getDefaultCrop,
   scaleCropToNatural,
-  tv,
 } from '@/utils'
-
-const aspectButtonStyles = tv({
-  base: 'rounded-md px-3 py-1.5 text-body-sm transition-colors',
-  variants: {
-    active: {
-      true: 'text-primary-foreground bg-primary',
-      false: 'bg-surface-secondary hover:bg-surface-tertiary text-gray-300',
-    },
-  },
-})
 
 const toolEntry = TOOL_REGISTRY_MAP['image-cropper']
 
@@ -39,17 +29,12 @@ const cropImageCanvas = (image: HTMLImageElement, crop: CropRegion, mimeType: st
   return canvasToBlob(canvas, mimeType)
 }
 
-type CropControls = {
-  aspectPreset: AspectRatioPreset
-  naturalCrop: CropRegion | null
-}
-
 const INITIAL_CONTROLS: CropControls = { aspectPreset: 'free', naturalCrop: null }
 
-export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
+export const ImageCropper = ({ onAfterClose }: ToolComponentProps) => {
   const imgRef = useRef<HTMLImageElement | null>(null)
   const [crop, setCrop] = useState<Crop | undefined>(undefined)
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
 
   const captureNaturalCrop = (displayCrop: PixelCrop) => {
     const img = imgRef.current
@@ -73,20 +58,19 @@ export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
         return `cropped-${base}.${ext}`
       }}
       initialControls={INITIAL_CONTROLS}
-      onAfterDialogClose={() => {
+      onAfterClose={() => {
         // Shell auto-resets the controls bag. Tool clears its non-controls
         // state (imgRef, the live drag `crop`) so a re-upload starts clean.
         imgRef.current = null
         setCrop(undefined)
-        onAfterDialogClose?.()
+        onAfterClose?.()
       }}
       onRejectInvalidFile={() => showError('Please select an image file')}
       process={process}
       renderControls={({ controls, setControls }) => (
         <div className="flex shrink-0 flex-wrap items-center justify-center gap-2">
           {ASPECT_RATIO_OPTIONS.map((option) => (
-            <button
-              className={aspectButtonStyles({ active: controls.aspectPreset === option.value })}
+            <ToggleButton
               key={option.value}
               onClick={() => {
                 const img = imgRef.current
@@ -101,10 +85,11 @@ export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
                 setCrop(next)
                 setControls({ aspectPreset: option.value, naturalCrop: captureNaturalCrop(next) })
               }}
-              type="button"
+              pressed={controls.aspectPreset === option.value}
+              variant="subtle"
             >
               {option.label}
-            </button>
+            </ToggleButton>
           ))}
           {controls.naturalCrop && (
             <>
@@ -140,17 +125,6 @@ export const ImageCropper = ({ onAfterDialogClose }: ToolComponentProps) => {
       uploadLabel="Select image to crop"
     />
   )
-}
-
-type CropPreviewProps = {
-  aspectPreset: AspectRatioPreset
-  captureNaturalCrop: (displayCrop: PixelCrop) => CropRegion | null
-  crop: Crop | undefined
-  imgRef: React.MutableRefObject<HTMLImageElement | null>
-  onCropComplete: (c: PixelCrop) => void
-  onImageLoad: (e: React.SyntheticEvent<HTMLImageElement>) => void
-  setCrop: (c: Crop) => void
-  sourceUrl: string
 }
 
 const CropPreview = ({

@@ -1,7 +1,9 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { entry, nth } from '@/test/nth'
 import type { DiagramSchema } from '@/types'
 
+import { DiagramStorageError } from './codecs/storage'
 import { DiagramEditor } from './editor'
 import { createInitialDocument } from './state'
 import { createInMemoryDiagramStorage } from './storage'
@@ -115,7 +117,7 @@ describe('DiagramEditor.renameDiagram', () => {
     storage.saveIndex([{ id: 'd1', name: 'Old', tableCount: 0, createdAt: '', updatedAt: '' }])
     const editor = new DiagramEditor({ storage })
     editor.renameDiagram('d1', 'New')
-    expect(storage.loadIndex()[0].name).toBe('New')
+    expect(nth(storage.loadIndex(), 0).name).toBe('New')
   })
 
   it('updates the active document name when the renamed id is active', () => {
@@ -133,7 +135,7 @@ describe('DiagramEditor.renameDiagram', () => {
     storage.saveIndex([{ id: 'd1', name: 'Old', tableCount: 0, createdAt: '', updatedAt: '' }])
     const editor = new DiagramEditor({ storage })
     editor.renameDiagram('d1', '   ')
-    expect(storage.loadIndex()[0].name).toBe('Old')
+    expect(nth(storage.loadIndex(), 0).name).toBe('Old')
   })
 })
 
@@ -196,7 +198,7 @@ describe('DiagramEditor autosave', () => {
     expect(editor.getDocument().diagramId).toBe('minted')
     expect(storage.loadDiagram('minted')).not.toBe(null)
 
-    editor.renameTable(editor.getDocument().tableOrder[0], 'people')
+    editor.renameTable(nth(editor.getDocument().tableOrder, 0), 'people')
     vi.advanceTimersByTime(1000)
     expect(storage.saves).toBe(2)
     expect(editor.getDocument().diagramId).toBe('minted')
@@ -231,8 +233,8 @@ describe('DiagramEditor autosave', () => {
     now = '2026-05-15T00:00:00Z'
     editor.addTable({ name: 'orders' })
     vi.advanceTimersByTime(1000)
-    expect(storage.loadIndex()[0].createdAt).toBe('2026-05-14T00:00:00Z')
-    expect(storage.loadIndex()[0].updatedAt).toBe('2026-05-15T00:00:00Z')
+    expect(nth(storage.loadIndex(), 0).createdAt).toBe('2026-05-14T00:00:00Z')
+    expect(nth(storage.loadIndex(), 0).updatedAt).toBe('2026-05-15T00:00:00Z')
   })
 
   it('skips empty unsaved diagrams (no id, no tables)', () => {
@@ -383,7 +385,7 @@ describe('DiagramEditor.loadDiagram', () => {
     expect(doc.diagramId).toBe('d1')
     expect(doc.diagramName).toBe('My Schema')
     expect(doc.tableOrder).toEqual(['t1'])
-    expect(doc.tables.t1.name).toBe('users')
+    expect(entry(doc.tables, 't1').name).toBe('users')
   })
 
   it('is a no-op when the id is not in storage', () => {
@@ -394,5 +396,99 @@ describe('DiagramEditor.loadDiagram', () => {
     editor.loadDiagram('missing')
     expect(listener).not.toHaveBeenCalled()
     expect(editor.getDocument().diagramId).toBe(null)
+  })
+})
+
+describe('DiagramEditor storage failures', () => {
+  beforeEach(() => vi.useFakeTimers())
+  afterEach(() => vi.useRealTimers())
+
+  const failingStorage = (reason: 'full' | 'unavailable') => {
+    const storage = createInMemoryDiagramStorage({ idGenerator: () => 'd1' })
+    let fail = true
+    const save = storage.saveDiagramWithIndex
+    storage.saveDiagramWithIndex = (...args) => {
+      if (fail) throw new DiagramStorageError(reason)
+      return save(...args)
+    }
+    return {
+      recover: () => {
+        fail = false
+      },
+      storage,
+    }
+  }
+
+  it('does not throw out of the autosave timer when the write fails', () => {
+    const { storage } = failingStorage('full')
+    const editor = new DiagramEditor({ storage, autosaveMs: 1000 })
+    editor.addTable({ name: 'users' })
+    expect(() => vi.advanceTimersByTime(1000)).not.toThrow()
+    expect(editor.getDocument().tableOrder).toHaveLength(1)
+  })
+
+  it('reports the failure reason through getStorageStatus and the index listeners', () => {
+    const { storage } = failingStorage('full')
+    const editor = new DiagramEditor({ storage, autosaveMs: 1000 })
+    const listener = vi.fn()
+    editor.subscribeToIndex(listener)
+    expect(editor.getStorageStatus()).toBe('ok')
+    editor.addTable({ name: 'users' })
+    vi.advanceTimersByTime(1000)
+    expect(editor.getStorageStatus()).toBe('full')
+    expect(listener).toHaveBeenCalled()
+  })
+
+  it('maps unknown errors to "unavailable"', () => {
+    const storage = createInMemoryDiagramStorage()
+    storage.saveDiagramWithIndex = () => {
+      throw new Error('boom')
+    }
+    const editor = new DiagramEditor({ storage, autosaveMs: 1000 })
+    editor.addTable({ name: 'users' })
+    vi.advanceTimersByTime(1000)
+    expect(editor.getStorageStatus()).toBe('unavailable')
+  })
+
+  it('clears the status on the next successful save', () => {
+    const { recover, storage } = failingStorage('unavailable')
+    const editor = new DiagramEditor({ storage, autosaveMs: 1000 })
+    editor.addTable({ name: 'users' })
+    vi.advanceTimersByTime(1000)
+    expect(editor.getStorageStatus()).toBe('unavailable')
+
+    recover()
+    editor.addTable({ name: 'orders' })
+    vi.advanceTimersByTime(1000)
+    expect(editor.getStorageStatus()).toBe('ok')
+    expect(storage.loadIndex()).toHaveLength(1)
+    expect(nth(storage.loadIndex(), 0).tableCount).toBe(2)
+  })
+
+  it('reports failures from renameDiagram and deleteDiagram instead of throwing', () => {
+    const storage = createInMemoryDiagramStorage()
+    storage.saveIndex([{ id: 'd1', name: 'X', tableCount: 0, createdAt: '', updatedAt: '' }])
+    storage.saveIndex = () => {
+      throw new DiagramStorageError('full')
+    }
+    storage.deleteDiagram = () => {
+      throw new DiagramStorageError('unavailable')
+    }
+    const editor = new DiagramEditor({ storage })
+    expect(() => editor.renameDiagram('d1', 'Y')).not.toThrow()
+    expect(editor.getStorageStatus()).toBe('full')
+    expect(() => editor.deleteDiagram('d1')).not.toThrow()
+    expect(editor.getStorageStatus()).toBe('unavailable')
+  })
+
+  it('saves schema and index in a single storage call', () => {
+    const storage = createInMemoryDiagramStorage({ idGenerator: () => 'd1' })
+    const saveIndex = vi.spyOn(storage, 'saveIndex')
+    const editor = new DiagramEditor({ storage, autosaveMs: 1000 })
+    editor.addTable({ name: 'users' })
+    vi.advanceTimersByTime(1000)
+    expect(saveIndex).not.toHaveBeenCalled()
+    expect(storage.loadDiagram('d1')).not.toBe(null)
+    expect(storage.loadIndex()).toHaveLength(1)
   })
 })

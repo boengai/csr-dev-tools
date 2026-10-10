@@ -10,9 +10,9 @@ import { formatBase64Size, formatFileSize, type ImageBase64Result, imageFileToBa
 
 const toolEntry = TOOL_REGISTRY_MAP['image-to-base64']
 
-export const ImageToBase64 = ({ onAfterDialogClose }: ToolComponentProps) => {
+export const ImageToBase64 = ({ onAfterClose }: ToolComponentProps) => {
   const [result, setResult] = useState<ImageBase64Result | null>(null)
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
 
   const handleUpload = async (files: Array<File>, openDialog: () => void) => {
     const file = files[0]
@@ -41,7 +41,7 @@ export const ImageToBase64 = ({ onAfterDialogClose }: ToolComponentProps) => {
       accept="image/*"
       buttonLabel="Select image"
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       onUpload={handleUpload}
       title="Image to Base64"

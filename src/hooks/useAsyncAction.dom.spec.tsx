@@ -4,6 +4,8 @@
 import { act, renderHook } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { useToast } from './state/useToast'
 import { useAsyncAction } from './useAsyncAction'
 
@@ -81,7 +83,7 @@ describe('useAsyncAction', () => {
     expect(result.current.pending).toBe(false)
     expect(result.current.result).toBeNull()
     expect(onError).toHaveBeenCalledTimes(1)
-    expect(onError.mock.calls[0][0]).toBeInstanceOf(Error)
+    expect(nth(onError.mock.calls, 0)[0]).toBeInstanceOf(Error)
   })
 
   it('returns undefined from run() when the action rejects', async () => {

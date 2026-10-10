@@ -1,7 +1,9 @@
 import { describe, expect, it } from 'vitest'
 
 import {
+  BCRYPT_MAX_COST,
   checkPasswordTruncation,
+  exceedsMaxBcryptCost,
   hashPassword,
   isValidBcryptHash,
   parseBcryptHash,
@@ -22,6 +24,10 @@ describe('bcrypt-hasher', () => {
       expect(result.hash).toMatch(/^\$2b\$04\$.{53}$/)
       expect(result.hash).toHaveLength(60)
       expect(result.rounds).toBe(4)
+    })
+
+    it(`rejects a cost above ${BCRYPT_MAX_COST} without running it`, async () => {
+      await expect(hashPassword('testpassword', BCRYPT_MAX_COST + 1)).rejects.toThrow(/cost/i)
     })
 
     it('tracks elapsed time (> 0)', async () => {
@@ -74,6 +80,24 @@ describe('bcrypt-hasher', () => {
       expect(isValidBcryptHash('$2b$03$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy')).toBe(false)
       expect(isValidBcryptHash('$2b$32$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy')).toBe(false)
       expect(isValidBcryptHash('$2b$99$N9qo8uLOickgx2ZMRZoMyeIjZAgcfl7p92ldGxad68LJZdL17lhWy')).toBe(false)
+    })
+  })
+
+  describe('exceedsMaxBcryptCost', () => {
+    it('is false for hashes at or below the max cost', () => {
+      expect(exceedsMaxBcryptCost(`$2b$10$${'a'.repeat(53)}`)).toBe(false)
+      expect(exceedsMaxBcryptCost(`$2b$16$${'a'.repeat(53)}`)).toBe(false)
+    })
+
+    it('is true for hashes above the max cost', () => {
+      expect(exceedsMaxBcryptCost(`$2b$17$${'a'.repeat(53)}`)).toBe(true)
+      expect(exceedsMaxBcryptCost(`$2b$31$${'a'.repeat(53)}`)).toBe(true)
+    })
+  })
+
+  describe('verifyPassword cost guard', () => {
+    it('rejects a hash whose cost exceeds the max without running it', async () => {
+      await expect(verifyPassword('pw', `$2b$20$${'a'.repeat(53)}`)).rejects.toThrow(/cost/i)
     })
   })
 

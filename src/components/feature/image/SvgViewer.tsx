@@ -1,5 +1,5 @@
 import DOMPurify from 'dompurify'
-import { useEffect, useRef, useState } from 'react'
+import { useState } from 'react'
 
 import { Button, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
@@ -12,9 +12,8 @@ const toolEntry = TOOL_REGISTRY_MAP['svg-viewer']
 
 const sanitize = (svg: string): string => DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true } })
 
-export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const SvgViewer = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [optimizeResult, setOptimizeResult] = useState<SvgOptimizeResult | null>(null)
-  const previewRef = useRef<HTMLDivElement>(null)
 
   const {
     input: source,
@@ -29,12 +28,6 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
     initialResult: '',
     isEmpty: (val) => !val,
   })
-
-  useEffect(() => {
-    if (previewRef.current) {
-      previewRef.current.innerHTML = safeSvg
-    }
-  }, [safeSvg])
 
   const handleSourceChange = (val: string) => {
     setOptimizeResult(null)
@@ -66,7 +59,7 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title="SVG Viewer & Optimizer"
       triggers={[{ label: 'Open SVG Viewer' }]}
@@ -117,7 +110,8 @@ export const SvgViewer = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
             </div>
             <div
               className="flex flex-1 items-center justify-center rounded-lg border border-gray-800 bg-white p-4"
-              ref={previewRef}
+              // `safeSvg` is the DOMPurify-sanitized compute result.
+              dangerouslySetInnerHTML={{ __html: safeSvg }}
               style={{ minHeight: '200px' }}
             />
             {source && <span className="text-body-xs text-gray-500">Size: {new Blob([source]).size} bytes</span>}

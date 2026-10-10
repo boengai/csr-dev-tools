@@ -1,38 +1,39 @@
-import { useNavigate } from '@tanstack/react-router'
-import { useCallback } from 'react'
+import { Link } from '@tanstack/react-router'
+import type { MouseEvent } from 'react'
 
-import { ROUTE_PATH } from '@/constants'
 import { useSidebarStore } from '@/hooks'
-import type { CompVariant, SidebarToolItemProps } from '@/types'
-import type { SidebarToolItemVariants } from '@/types/components/common/sidebar/sidebarToolItem'
-import { tv } from '@/utils'
+import type { SidebarToolItemProps } from '@/types'
 
-export const sidebarItemVariants: CompVariant<SidebarToolItemVariants> = tv({
-  base: 'flex w-full cursor-pointer items-center gap-2 rounded-l border-r-2 border-r-transparent py-2 pl-3 text-gray-300 transition-colors',
-  defaultVariants: {
-    active: false,
-  },
-  variants: {
-    active: {
-      false: 'hover:bg-primary/10 hover:text-white',
-      true: 'border-r-primary bg-primary/[0.08] text-primary-light',
-    },
-  },
-})
+// Active styling keys off the `data-status="active"` TanStack <Link> sets
+// (alongside `aria-current="page"`) for the current route.
+export const sidebarItemClassName =
+  'flex w-full cursor-pointer items-center gap-2 rounded-l border-r-2 border-r-transparent py-2 pl-3 text-gray-300 transition-colors hover:bg-primary/10 hover:text-white data-[status=active]:border-r-primary data-[status=active]:bg-primary/[0.08] data-[status=active]:text-primary-light'
 
-export const SidebarToolItem = ({ emoji, isActive = false, name, toolKey }: SidebarToolItemProps) => {
+/** Matches the current route exactly, ignoring search params. */
+export const sidebarLinkActiveOptions = { exact: true, includeSearch: false } as const
+
+/** Close the drawer on a plain click; leave it open for modified clicks that open a new tab/window. */
+export const useCloseSidebarOnNavigate = () => {
   const close = useSidebarStore((state) => state.close)
-  const navigate = useNavigate()
-
-  const handleClick = useCallback(() => {
-    navigate({ to: `${ROUTE_PATH.TOOLS}/${toolKey}` })
+  return (event: MouseEvent) => {
+    if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) return
     close()
-  }, [close, navigate, toolKey])
+  }
+}
+
+export const SidebarToolItem = ({ emoji, name, routePath }: SidebarToolItemProps) => {
+  const handleClick = useCloseSidebarOnNavigate()
 
   return (
-    <button className={sidebarItemVariants({ active: isActive })} onClick={handleClick} title={name} type="button">
+    <Link
+      activeOptions={sidebarLinkActiveOptions}
+      className={sidebarItemClassName}
+      onClick={handleClick}
+      title={name}
+      to={routePath}
+    >
       <span className="shrink-0">{emoji}</span>
       <span className="truncate">{name}</span>
-    </button>
+    </Link>
   )
 }

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type { DiagramSchema } from '@/types'
 
 import { createSequentialIdMinters } from '../id-minters'
@@ -205,19 +206,19 @@ describe('parseDbml', () => {
     const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.errors).toHaveLength(0)
     expect(result.tables).toHaveLength(1)
-    expect(result.tables[0].id).toBe('t_1')
-    expect(result.tables[0].name).toBe('users')
-    expect(result.tables[0].columns).toHaveLength(3)
-    expect(result.tables[0].columns[0].id).toBe('c_1')
-    expect(result.tables[0].columns[0].name).toBe('id')
-    expect(result.tables[0].columns[0].type).toBe('SERIAL')
-    expect(result.tables[0].columns[0].constraints.isPrimaryKey).toBe(true)
-    expect(result.tables[0].columns[1].id).toBe('c_2')
-    expect(result.tables[0].columns[1].name).toBe('name')
-    expect(result.tables[0].columns[1].constraints.isNullable).toBe(false)
-    expect(result.tables[0].columns[2].id).toBe('c_3')
-    expect(result.tables[0].columns[2].name).toBe('bio')
-    expect(result.tables[0].columns[2].constraints.isNullable).toBe(true)
+    expect(nth(result.tables, 0).id).toBe('t_1')
+    expect(nth(result.tables, 0).name).toBe('users')
+    expect(nth(result.tables, 0).columns).toHaveLength(3)
+    expect(nth(nth(result.tables, 0).columns, 0).id).toBe('c_1')
+    expect(nth(nth(result.tables, 0).columns, 0).name).toBe('id')
+    expect(nth(nth(result.tables, 0).columns, 0).type).toBe('SERIAL')
+    expect(nth(nth(result.tables, 0).columns, 0).constraints.isPrimaryKey).toBe(true)
+    expect(nth(nth(result.tables, 0).columns, 1).id).toBe('c_2')
+    expect(nth(nth(result.tables, 0).columns, 1).name).toBe('name')
+    expect(nth(nth(result.tables, 0).columns, 1).constraints.isNullable).toBe(false)
+    expect(nth(nth(result.tables, 0).columns, 2).id).toBe('c_3')
+    expect(nth(nth(result.tables, 0).columns, 2).name).toBe('bio')
+    expect(nth(nth(result.tables, 0).columns, 2).constraints.isNullable).toBe(true)
   })
 
   it('parses unique constraint', () => {
@@ -225,7 +226,7 @@ describe('parseDbml', () => {
   email varchar [unique]
 }`
     const result = parseDbml(dbml, createSequentialIdMinters())
-    expect(result.tables[0].columns[0].constraints.isUnique).toBe(true)
+    expect(nth(nth(result.tables, 0).columns, 0).constraints.isUnique).toBe(true)
   })
 
   it('parses standalone Ref lines', () => {
@@ -243,8 +244,8 @@ Ref: users.id < posts.user_id`
     const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.errors).toHaveLength(0)
     expect(result.relationships).toHaveLength(1)
-    expect(result.relationships[0].relationType).toBe('1:N')
-    expect(result.relationships[0].id).toBe('r_1')
+    expect(nth(result.relationships, 0).relationType).toBe('1:N')
+    expect(nth(result.relationships, 0).id).toBe('r_1')
   })
 
   it('parses 1:1 relationship', () => {
@@ -260,7 +261,7 @@ Ref: users.id - profiles.user_id`
 
     const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.relationships).toHaveLength(1)
-    expect(result.relationships[0].relationType).toBe('1:1')
+    expect(nth(result.relationships, 0).relationType).toBe('1:1')
   })
 
   it('parses N:M relationship', () => {
@@ -276,7 +277,7 @@ Ref: tags.id <> posts.id`
 
     const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.relationships).toHaveLength(1)
-    expect(result.relationships[0].relationType).toBe('N:M')
+    expect(nth(result.relationships, 0).relationType).toBe('N:M')
   })
 
   it('parses reversed > ref direction', () => {
@@ -292,9 +293,9 @@ Ref: posts.user_id > users.id`
 
     const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.relationships).toHaveLength(1)
-    expect(result.relationships[0].relationType).toBe('1:N')
+    expect(nth(result.relationships, 0).relationType).toBe('1:N')
     // Source should be users (the "one" side)
-    const sourceTable = result.tables.find((t) => t.id === result.relationships[0].sourceTableId)
+    const sourceTable = result.tables.find((t) => t.id === nth(result.relationships, 0).sourceTableId)
     expect(sourceTable?.name).toBe('users')
   })
 
@@ -337,7 +338,7 @@ Table users {
     const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.errors).toHaveLength(0)
     expect(result.tables).toHaveLength(1)
-    expect(result.tables[0].columns).toHaveLength(2)
+    expect(nth(result.tables, 0).columns).toHaveLength(2)
   })
 
   it('parses multiple tables', () => {
@@ -352,10 +353,10 @@ Table posts {
 
     const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.tables).toHaveLength(2)
-    expect(result.tables[0].name).toBe('users')
-    expect(result.tables[0].id).toBe('t_1')
-    expect(result.tables[1].name).toBe('posts')
-    expect(result.tables[1].id).toBe('t_2')
+    expect(nth(result.tables, 0).name).toBe('users')
+    expect(nth(result.tables, 0).id).toBe('t_1')
+    expect(nth(result.tables, 1).name).toBe('posts')
+    expect(nth(result.tables, 1).id).toBe('t_2')
   })
 
   it('assigns grid layout positions to tables', () => {
@@ -394,8 +395,8 @@ Table posts {
 
     const result = parseDbml(dbml, createSequentialIdMinters())
     expect(result.relationships).toHaveLength(1)
-    expect(result.relationships[0].relationType).toBe('1:N')
-    expect(result.relationships[0].id).toBe('r_1')
+    expect(nth(result.relationships, 0).relationType).toBe('1:N')
+    expect(nth(result.relationships, 0).id).toBe('r_1')
   })
 })
 
@@ -459,12 +460,12 @@ describe('round-trip', () => {
 
     expect(parsed.errors).toHaveLength(0)
     expect(parsed.tables).toHaveLength(2)
-    expect(parsed.tables[0].name).toBe('users')
-    expect(parsed.tables[1].name).toBe('posts')
-    expect(parsed.tables[0].columns).toHaveLength(2)
-    expect(parsed.tables[1].columns).toHaveLength(2)
+    expect(nth(parsed.tables, 0).name).toBe('users')
+    expect(nth(parsed.tables, 1).name).toBe('posts')
+    expect(nth(parsed.tables, 0).columns).toHaveLength(2)
+    expect(nth(parsed.tables, 1).columns).toHaveLength(2)
     expect(parsed.relationships).toHaveLength(1)
-    expect(parsed.relationships[0].relationType).toBe('1:N')
+    expect(nth(parsed.relationships, 0).relationType).toBe('1:N')
 
     // Re-generate from parsed result
     const regenerated = generateDbml(parsed)

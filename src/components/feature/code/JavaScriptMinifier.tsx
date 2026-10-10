@@ -7,7 +7,7 @@ const toolEntry = TOOL_REGISTRY_MAP['javascript-minifier']
 
 const INITIAL: JsInput = { source: '', mode: 'minify', indent: 2 }
 
-export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const JavaScriptMinifier = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
     <FormatterShell<JsInput>
       autoOpen={autoOpen}
@@ -15,7 +15,7 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterDialogClose }: ToolCompone
       description={toolEntry?.description}
       errorLabel="Unable to process JavaScript"
       initial={INITIAL}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       renderControls={({ inputs, result, setFieldsImmediate }) => {
         const originalSize = new Blob([inputs.source]).size
         const resultSize = new Blob([result]).size

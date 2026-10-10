@@ -4,8 +4,13 @@ import { useEffect, useId, useMemo, useRef, useState } from 'react'
 import { Button, CopyButton, EmptyState, ErrorBanner, FieldForm, TextInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { readJsonStorage, useKeyboardListNav, useToolFieldsPersisted, writeJsonStorage } from '@/hooks'
-import type { TargetResult, ToolComponentProps } from '@/types'
+import { readJsonStorage, useKeyboardListNav, useMountOnce, useToolFields, writeJsonStorage } from '@/hooks'
+import type {
+  TimezoneConverterInput,
+  TimezoneConverterOutput,
+  TimezoneSearchPickerProps,
+  ToolComponentProps,
+} from '@/types'
 import {
   buildTimezoneIndex,
   convertTimezone,
@@ -66,18 +71,13 @@ const favoriteButtonStyles = tv({
 })
 
 const TimezoneSearchPicker = ({
+  'aria-label': ariaLabel,
   favorites,
   id,
   index,
   onSelect,
   placeholder,
-}: {
-  favorites: Array<string>
-  id?: string
-  index: Array<TimezoneEntry>
-  onSelect: (id: string) => void
-  placeholder: string
-}) => {
+}: TimezoneSearchPickerProps) => {
   const [query, setQuery] = useState('')
   const [isOpen, setIsOpen] = useState(false)
   const containerRef = useRef<HTMLDivElement>(null)
@@ -134,19 +134,18 @@ const TimezoneSearchPicker = ({
     handleListNavKeyDown(e)
   }
 
+  // The input is the combobox (role + expanded/controls/activedescendant), per
+  // the ARIA 1.2 pattern; the wrapper only catches the input's bubbled key
+  // events for list navigation.
   return (
-    <div
-      aria-controls={listboxId}
-      aria-expanded={isOpen}
-      className="relative"
-      onKeyDown={handleKeyDown}
-      ref={containerRef}
-      role="combobox"
-    >
+    // eslint-disable-next-line jsx-a11y/no-static-element-interactions -- keydown bubbles from the input, which owns the combobox state
+    <div className="relative" onKeyDown={handleKeyDown} ref={containerRef}>
       <TextInput
         aria-activedescendant={activeDescendantId}
         aria-autocomplete="list"
-        aria-label="Search timezones"
+        aria-controls={listboxId}
+        aria-expanded={isOpen}
+        aria-label={ariaLabel}
         id={id}
         name="timezone-search"
         onChange={(val) => {
@@ -155,6 +154,7 @@ const TimezoneSearchPicker = ({
           setActiveIndex(-1)
         }}
         placeholder={placeholder}
+        role="combobox"
         type="text"
         value={query}
       />
@@ -173,9 +173,6 @@ const TimezoneSearchPicker = ({
               id={`${listboxId}-${entry.id}`}
               key={entry.id}
               onClick={() => selectItem(entry.id)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') selectItem(entry.id)
-              }}
               role="option"
             >
               <span className="font-medium text-gray-100">{entry.city}</span>
@@ -191,21 +188,14 @@ const TimezoneSearchPicker = ({
   )
 }
 
-type ConverterInput = {
-  dateInput: string
-  sourceTz: string
-  targetTzIds: Array<string>
-  timeInput: string
-}
+const INITIAL_OUTPUT: TimezoneConverterOutput = { error: '', results: [] }
 
-type ConverterOutput = {
-  error: string
-  results: Array<TargetResult>
-}
-
-const INITIAL_OUTPUT: ConverterOutput = { error: '', results: [] }
-
-const computeConversion = ({ dateInput, sourceTz, targetTzIds, timeInput }: ConverterInput): ConverterOutput => {
+const computeConversion = ({
+  dateInput,
+  sourceTz,
+  targetTzIds,
+  timeInput,
+}: TimezoneConverterInput): TimezoneConverterOutput => {
   if (!dateInput || !timeInput) return { error: '', results: [] }
 
   const parsed = parseDateTimeInput(dateInput, timeInput, sourceTz)
@@ -220,8 +210,8 @@ const computeConversion = ({ dateInput, sourceTz, targetTzIds, timeInput }: Conv
   }
 }
 
-export const TimezoneConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const initialInput = useMemo<ConverterInput>(() => {
+export const TimezoneConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
+  const initialInput = useMemo<TimezoneConverterInput>(() => {
     const sourceTz = getLocalTimezone()
     return {
       dateInput: formatNowDate(),
@@ -231,7 +221,10 @@ export const TimezoneConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
     }
   }, [])
 
-  const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<ConverterInput, ConverterOutput>({
+  const { inputs, result, setFields, setFieldsImmediate } = useToolFields<
+    TimezoneConverterInput,
+    TimezoneConverterOutput
+  >({
     compute: computeConversion,
     debounceMs: 300,
     initial: initialInput,
@@ -247,10 +240,9 @@ export const TimezoneConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
   // setFieldsImmediate also kicks the compute (the hook doesn't autorun without
   // an `isEmpty` gate, which doesn't fit this Tool's defaults-from-`getLocalTimezone`
   // initial bag).
-  useEffect(() => {
+  useMountOnce(() => {
     setFieldsImmediate({ dateInput: formatNowDate(), timeInput: formatNowTime() })
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only
-  }, [])
+  })
 
   // UI-only state lives outside the input bag.
   const [favorites, setFavorites] = useState<Array<string>>(loadFavorites)
@@ -265,11 +257,12 @@ export const TimezoneConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
   const handleAddTarget = (id: string) => {
     setShowAddPicker(false)
     if (targetTzIds.includes(id)) return
-    setFields({ targetTzIds: [...targetTzIds, id] })
+    // Clicks commit immediately (like Now); only typed date/time edits debounce.
+    setFieldsImmediate({ targetTzIds: [...targetTzIds, id] })
   }
 
   const handleRemoveTarget = (id: string) => {
-    setFields({ targetTzIds: targetTzIds.filter((tz) => tz !== id) })
+    setFieldsImmediate({ targetTzIds: targetTzIds.filter((tz) => tz !== id) })
   }
 
   const handleToggleFavorite = (id: string) => {
@@ -284,7 +277,7 @@ export const TimezoneConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Timezone Converter"
       triggers={[{ label: 'Convert' }]}
     >
@@ -356,6 +349,7 @@ export const TimezoneConverter = ({ autoOpen, onAfterDialogClose }: ToolComponen
             {showAddPicker && (
               <div className="rounded border border-gray-700 bg-gray-900/50 p-2">
                 <TimezoneSearchPicker
+                  aria-label="Search timezones to add"
                   favorites={favorites}
                   index={index}
                   onSelect={handleAddTarget}

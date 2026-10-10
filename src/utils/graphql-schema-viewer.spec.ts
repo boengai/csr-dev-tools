@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { parseGraphqlSchema } from '@/utils'
+import { parseGraphqlSchema } from './graphql-schema-viewer'
 
 const COMPREHENSIVE_SDL = `
 type Query {
@@ -91,12 +91,12 @@ describe('graphql-schema-viewer', () => {
       const { schema } = result
       const byName = Object.fromEntries(schema.types.map((t) => [t.name, t]))
 
-      expect(byName['User'].kind).toBe('Object')
-      expect(byName['Node'].kind).toBe('Interface')
-      expect(byName['SearchResult'].kind).toBe('Union')
-      expect(byName['Role'].kind).toBe('Enum')
-      expect(byName['CreateUserInput'].kind).toBe('Input')
-      expect(byName['DateTime'].kind).toBe('Scalar')
+      expect(byName['User']?.kind).toBe('Object')
+      expect(byName['Node']?.kind).toBe('Interface')
+      expect(byName['SearchResult']?.kind).toBe('Union')
+      expect(byName['Role']?.kind).toBe('Enum')
+      expect(byName['CreateUserInput']?.kind).toBe('Input')
+      expect(byName['DateTime']?.kind).toBe('Scalar')
     })
 
     it('should return error for invalid SDL with line number', () => {

@@ -91,10 +91,10 @@ const reducer = (state: PlaceholderImageState, action: PlaceholderImageAction): 
   }
 }
 
-export const PlaceholderImageGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const PlaceholderImageGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [state, dispatch] = useReducer(reducer, initialState)
   const { bgColor, bgHexInput, height, text, textColor, textHexInput, width } = state
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
   const { downloadBlob, downloadSvg } = useDownload()
 
   const previewUri = useMemo(() => {
@@ -111,7 +111,7 @@ export const PlaceholderImageGenerator = ({ autoOpen, onAfterDialogClose }: Tool
   const handleTextColorHexChange = (val: string) => dispatch({ type: 'SET_TEXT_COLOR_HEX', value: val })
 
   const handlePresetChange = (val: string) => {
-    const [w, h] = val.split('x')
+    const [w = '', h = ''] = val.split('x')
     dispatch({ type: 'SET_PRESET', height: h, width: w })
   }
 
@@ -154,7 +154,7 @@ export const PlaceholderImageGenerator = ({ autoOpen, onAfterDialogClose }: Tool
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Placeholder Image Generator"
       triggers={[{ label: 'Generate' }]}
     >
@@ -181,6 +181,7 @@ export const PlaceholderImageGenerator = ({ autoOpen, onAfterDialogClose }: Tool
             </div>
 
             <SelectInput
+              aria-label="Preset size"
               name="placeholder-preset"
               onChange={handlePresetChange}
               options={PRESET_OPTIONS}

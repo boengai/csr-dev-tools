@@ -40,7 +40,7 @@ export type SortablePdfShellProps<TItem extends { id: string }, TExtras extends 
   // ─── Dialog ─────────────────────────────────────────────────────────────
   autoOpen?: boolean
   description?: string
-  onAfterDialogClose?: () => void
+  onAfterClose?: () => void
   /** Dialog title (e.g. "Image to PDF"). */
   title: string
   /** Trigger button(s) on the launch tile. Mirrors `<ToolDialogFrame>` triggers. */

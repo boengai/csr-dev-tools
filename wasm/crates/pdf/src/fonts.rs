@@ -5,16 +5,18 @@ use typst::foundations::Bytes;
 ///
 /// Order matters: index in this array == font index referenced by the
 /// Typst `World::font(index)` lookup.
+///
+/// Only the families named in `preamble.rs` are bundled. Every font here
+/// adds its full size to `pdf_bg.wasm`, which must stay under Cloudflare
+/// Pages' 25 MiB per-file limit. Inter and NewCMMath were dropped: nothing
+/// selects Inter, and math mode is unreachable (`md_to_typst` escapes `$`
+/// and never enables pulldown-cmark math; the HTML path goes through
+/// Markdown first).
 const FONT_DATA: &[&[u8]] = &[
     // New Computer Modern — default serif
     include_bytes!("../assets/fonts/NewCM10-Regular.otf"),
     include_bytes!("../assets/fonts/NewCM10-Bold.otf"),
     include_bytes!("../assets/fonts/NewCM10-Italic.otf"),
-    include_bytes!("../assets/fonts/NewCMMath-Regular.otf"),
-    // Inter — sans alternative
-    include_bytes!("../assets/fonts/Inter-Regular.otf"),
-    include_bytes!("../assets/fonts/Inter-Bold.otf"),
-    include_bytes!("../assets/fonts/Inter-Italic.otf"),
     // JetBrains Mono — monospace for code
     include_bytes!("../assets/fonts/JetBrainsMono-Regular.ttf"),
     include_bytes!("../assets/fonts/JetBrainsMono-Bold.ttf"),
@@ -40,5 +42,19 @@ impl Fonts {
         }
 
         Self { book, fonts }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn every_bundled_font_parses() {
+        let fonts = Fonts::load();
+        assert_eq!(fonts.fonts.len(), FONT_DATA.len());
+        let families: Vec<_> = fonts.book.families().map(|(name, _)| name.to_string()).collect();
+        assert!(families.iter().any(|f| f == "New Computer Modern"), "{families:?}");
+        assert!(families.iter().any(|f| f == "JetBrains Mono"), "{families:?}");
     }
 }

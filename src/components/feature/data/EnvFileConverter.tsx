@@ -1,11 +1,11 @@
 import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, EnvConvertMode, EnvResult, ToolComponentProps } from '@/types'
+import type { ConverterModes, EnvConvertMode, EnvResult, ToolComponentProps } from '@/types'
 import { envToJson, envToYaml, jsonToEnv, yamlToEnv } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['env-file-converter']
 
-const MODES: ReadonlyArray<ConverterMode<EnvConvertMode>> = [
+const MODES: ConverterModes<EnvConvertMode> = [
   {
     key: 'env-to-json',
     label: '.env → JSON',
@@ -55,7 +55,7 @@ const compute = async ({ mode, source }: { mode: EnvConvertMode; source: string 
   }
 }
 
-export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => (
+export const EnvFileConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
   <BidirectionalConverter<EnvConvertMode, EnvResult>
     autoOpen={autoOpen}
     compute={compute}
@@ -63,7 +63,7 @@ export const EnvFileConverter = ({ autoOpen, onAfterDialogClose }: ToolComponent
     initialResult={EMPTY_RESULT}
     modeStorageKey="env-file-converter"
     modes={MODES}
-    onAfterDialogClose={onAfterDialogClose}
+    onAfterClose={onAfterClose}
     renderBanner={(result) =>
       result.warnings.length > 0 ? (
         <p className="text-body-sm text-warning" role="status">

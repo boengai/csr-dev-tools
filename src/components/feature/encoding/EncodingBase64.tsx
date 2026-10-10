@@ -2,12 +2,10 @@ import { useCallback } from 'react'
 
 import { BidirectionalConverter } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, ToolComponentProps } from '@/types'
+import type { Base64Mode, ConverterMode, ToolComponentProps } from '@/types'
 import { decodeBase64, encodeBase64, isValidBase64 } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['base64-codec']
-
-type Base64Mode = 'encode' | 'decode'
 
 const MODES: [ConverterMode<Base64Mode>, ConverterMode<Base64Mode>] = [
   {
@@ -28,7 +26,7 @@ const MODES: [ConverterMode<Base64Mode>, ConverterMode<Base64Mode>] = [
   },
 ]
 
-export const EncodingBase64 = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const EncodingBase64 = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const compute = useCallback(
     async ({ mode, source }: { mode: Base64Mode; source: string }): Promise<{ output: string }> => {
       try {
@@ -57,7 +55,7 @@ export const EncodingBase64 = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
       initialResult={{ output: '' }}
       modeStorageKey="base64"
       modes={MODES}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       sourceKeyPrefix="base64"
     />
   )

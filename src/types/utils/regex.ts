@@ -16,3 +16,6 @@ export type HighlightSegment = {
   matchIndex?: number
   text: string
 }
+
+/** Request payload posted to `src/workers/regex.worker.ts` (the bridge adds `id`). */
+export type RegexWorkerRequest = { flags: string; pattern: string; text: string }

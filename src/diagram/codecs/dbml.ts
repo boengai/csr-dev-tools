@@ -1,6 +1,5 @@
-import type { EntityIdMinters } from '@/diagram/id-minters'
 import { gridLayoutPositions } from '@/diagram/layout'
-import type { ColumnType, DiagramSchema, RelationshipType } from '@/types'
+import type { ColumnType, DiagramSchema, EntityIdMinters, RelationshipType } from '@/types'
 import type { ParsedTable, ParsedRef } from '@/types/diagram/codecs/dbml'
 import type { ParseResult } from '@/types/diagram/codecs/import'
 
@@ -135,9 +134,9 @@ function parseConstraintBrackets(bracketContent: string): {
     } else if (part.startsWith('ref:')) {
       // inline ref: ref: > table.column or ref: - table.column
       const refStr = part.slice(4).trim()
-      const refMatch = refStr.match(/^([<>-]+)\s*(\w+)\.(\w+)$/)
-      if (refMatch) {
-        inlineRef = { column: refMatch[3], table: refMatch[2] }
+      const [, , table, column] = refStr.match(/^([<>-]+)\s*(\w+)\.(\w+)$/) ?? []
+      if (table && column) {
+        inlineRef = { column, table }
         result.isForeignKey = true
       }
     }
@@ -158,25 +157,23 @@ function parseColumnLine(
   // Extract bracket constraints if present
   let mainPart = trimmed
   let bracketContent = ''
-  const bracketMatch = trimmed.match(/^(.+?)\s*\[([^\]]*)\]\s*$/)
-  if (bracketMatch) {
-    mainPart = bracketMatch[1].trim()
-    bracketContent = bracketMatch[2]
+  const [, bracketMain, bracketInner] = trimmed.match(/^(.+?)\s*\[([^\]]*)\]\s*$/) ?? []
+  if (bracketMain !== undefined && bracketInner !== undefined) {
+    mainPart = bracketMain.trim()
+    bracketContent = bracketInner
   }
 
   // Split main part into name and type
-  const tokens = mainPart.split(/\s+/)
-  if (tokens.length < 2) {
+  const [name, typeToken] = mainPart.split(/\s+/)
+  if (name === undefined || typeToken === undefined) {
     errors.push({ line: lineNumber, message: `Invalid column definition: "${trimmed}"` })
     return null
   }
 
-  const name = tokens[0]
-  const rawType = tokens[1].toLowerCase()
-  const mappedType = DBML_TYPE_REVERSE[rawType]
+  const mappedType = DBML_TYPE_REVERSE[typeToken.toLowerCase()]
 
   if (!mappedType) {
-    errors.push({ line: lineNumber, message: `Unknown type "${tokens[1]}" for column "${name}"` })
+    errors.push({ line: lineNumber, message: `Unknown type "${typeToken}" for column "${name}"` })
     return null
   }
 
@@ -204,10 +201,10 @@ function parseRefLine(line: string, lineNumber: number): ParsedRef | null {
   // Ref: table1.col - table2.col
   // Ref: table1.col <> table2.col
   const trimmed = line.trim()
-  const refMatch = trimmed.match(/^Ref\s*:\s*(\w+)\.(\w+)\s*(<>|[<>-])\s*(\w+)\.(\w+)\s*$/i)
-  if (!refMatch) return null
+  const [, leftTable, leftColumn, symbol, rightTable, rightColumn] =
+    trimmed.match(/^Ref\s*:\s*(\w+)\.(\w+)\s*(<>|[<>-])\s*(\w+)\.(\w+)\s*$/i) ?? []
+  if (!leftTable || !leftColumn || !symbol || !rightTable || !rightColumn) return null
 
-  const symbol = refMatch[3]
   const relationType = REL_SYMBOL_REVERSE[symbol]
   if (!relationType) return null
 
@@ -218,10 +215,10 @@ function parseRefLine(line: string, lineNumber: number): ParsedRef | null {
     lineNumber,
     relationType,
     reversed,
-    sourceColumn: reversed ? refMatch[5] : refMatch[2],
-    sourceTable: reversed ? refMatch[4] : refMatch[1],
-    targetColumn: reversed ? refMatch[2] : refMatch[5],
-    targetTable: reversed ? refMatch[1] : refMatch[4],
+    sourceColumn: reversed ? rightColumn : leftColumn,
+    sourceTable: reversed ? rightTable : leftTable,
+    targetColumn: reversed ? leftColumn : rightColumn,
+    targetTable: reversed ? leftTable : rightTable,
   }
 }
 
@@ -238,8 +235,7 @@ export function parseDbml(text: string, minters: EntityIdMinters): ParseResult {
   let currentTable: ParsedTable | null = null
   let braceDepth = 0
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i]
+  for (const [i, line] of lines.entries()) {
     const trimmed = line.trim()
     const lineNumber = i + 1
 
@@ -247,9 +243,9 @@ export function parseDbml(text: string, minters: EntityIdMinters): ParseResult {
     if (!trimmed || trimmed.startsWith('//') || trimmed.startsWith('--')) continue
 
     // Table block start
-    const tableMatch = trimmed.match(/^Table\s+(\w+)\s*\{?\s*$/i)
-    if (tableMatch) {
-      currentTable = { columns: [], lineNumber, name: tableMatch[1] }
+    const [, tableName] = trimmed.match(/^Table\s+(\w+)\s*\{?\s*$/i) ?? []
+    if (tableName) {
+      currentTable = { columns: [], lineNumber, name: tableName }
       braceDepth = trimmed.includes('{') ? 1 : 0
       continue
     }
@@ -348,28 +344,28 @@ export function parseDbml(text: string, minters: EntityIdMinters): ParseResult {
   }
 
   // Process inline refs from columns
-  for (let tIdx = 0; tIdx < parsedTables.length; tIdx++) {
-    const parsed = parsedTables[tIdx]
+  // `tables` maps `parsedTables` 1:1 and copies column ids, so the parsed column id
+  // is also the laid-out column id.
+  for (const [tIdx, parsed] of parsedTables.entries()) {
     const layouted = tables[tIdx]
+    if (!layouted) continue
 
-    for (let cIdx = 0; cIdx < parsed.columns.length; cIdx++) {
-      const parsedCol = parsed.columns[cIdx]
-      if (!parsedCol.inlineRef) continue
+    for (const parsedCol of parsed.columns) {
+      const { inlineRef } = parsedCol
+      if (!inlineRef) continue
 
-      const refTable = tableByName.get(parsedCol.inlineRef.table.toLowerCase())
+      const refTable = tableByName.get(inlineRef.table.toLowerCase())
       if (!refTable) continue
 
-      const refCol = refTable.columns.find((c) => c.name.toLowerCase() === parsedCol.inlineRef!.column.toLowerCase())
+      const refCol = refTable.columns.find((c) => c.name.toLowerCase() === inlineRef.column.toLowerCase())
       if (!refCol) continue
-
-      const sourceCol = layouted.columns[cIdx]
 
       relationships.push({
         id: minters.relation(),
         relationType: '1:N',
         sourceColumnId: refCol.id,
         sourceTableId: refTable.id,
-        targetColumnId: sourceCol.id,
+        targetColumnId: parsedCol.id,
         targetTableId: layouted.id,
       })
     }

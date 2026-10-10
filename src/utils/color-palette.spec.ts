@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type { HSLColor } from '@/types'
 import {
   formatPaletteAsCss,
@@ -22,21 +23,21 @@ describe('color-palette', () => {
 
     it('should have the base color as the first swatch', async () => {
       const palette = await generateComplementaryPalette(baseHsl)
-      expect(palette[0].hsl.h).toBeCloseTo(217, 0)
+      expect(nth(palette, 0).hsl.h).toBeCloseTo(217, 0)
     })
 
     it('should include a complement at hue+180', async () => {
       const palette = await generateComplementaryPalette(baseHsl)
-      expect(palette[2].hsl.h).toBeCloseTo(37, 0) // 217+180=397 → 37
+      expect(nth(palette, 2).hsl.h).toBeCloseTo(37, 0) // 217+180=397 → 37
     })
 
     it('should include lightness variants for padding to 5', async () => {
       const palette = await generateComplementaryPalette(baseHsl)
       // Darker variant of base
-      expect(palette[1].hsl.l).toBeCloseTo(baseHsl.l - 15, 0)
+      expect(nth(palette, 1).hsl.l).toBeCloseTo(baseHsl.l - 15, 0)
       // Lighter/darker variants of complement
-      expect(palette[3].hsl.l).toBeCloseTo(baseHsl.l - 15, 0)
-      expect(palette[4].hsl.l).toBeCloseTo(baseHsl.l + 15, 0)
+      expect(nth(palette, 3).hsl.l).toBeCloseTo(baseHsl.l - 15, 0)
+      expect(nth(palette, 4).hsl.l).toBeCloseTo(baseHsl.l + 15, 0)
     })
   })
 
@@ -48,16 +49,16 @@ describe('color-palette', () => {
 
     it('should have the base color as the middle swatch', async () => {
       const palette = await generateAnalogousPalette(baseHsl)
-      expect(palette[2].hsl.h).toBeCloseTo(217, 0)
+      expect(nth(palette, 2).hsl.h).toBeCloseTo(217, 0)
     })
 
     it('should space hues at -60, -30, 0, +30, +60 from base', async () => {
       const palette = await generateAnalogousPalette(baseHsl)
-      expect(palette[0].hsl.h).toBeCloseTo(157, 0) // 217-60
-      expect(palette[1].hsl.h).toBeCloseTo(187, 0) // 217-30
-      expect(palette[2].hsl.h).toBeCloseTo(217, 0) // base
-      expect(palette[3].hsl.h).toBeCloseTo(247, 0) // 217+30
-      expect(palette[4].hsl.h).toBeCloseTo(277, 0) // 217+60
+      expect(nth(palette, 0).hsl.h).toBeCloseTo(157, 0) // 217-60
+      expect(nth(palette, 1).hsl.h).toBeCloseTo(187, 0) // 217-30
+      expect(nth(palette, 2).hsl.h).toBeCloseTo(217, 0) // base
+      expect(nth(palette, 3).hsl.h).toBeCloseTo(247, 0) // 217+30
+      expect(nth(palette, 4).hsl.h).toBeCloseTo(277, 0) // 217+60
     })
 
     it('should preserve saturation and lightness for all colors', async () => {
@@ -77,15 +78,15 @@ describe('color-palette', () => {
 
     it('should have 3 primary colors at 120-degree intervals', async () => {
       const palette = await generateTriadicPalette(baseHsl)
-      expect(palette[0].hsl.h).toBeCloseTo(217, 0) // base
-      expect(palette[1].hsl.h).toBeCloseTo(337, 0) // 217+120
-      expect(palette[3].hsl.h).toBeCloseTo(97, 0) // 217+240=457 → 97
+      expect(nth(palette, 0).hsl.h).toBeCloseTo(217, 0) // base
+      expect(nth(palette, 1).hsl.h).toBeCloseTo(337, 0) // 217+120
+      expect(nth(palette, 3).hsl.h).toBeCloseTo(97, 0) // 217+240=457 → 97
     })
 
     it('should pad with lightness variants to reach 5 colors', async () => {
       const palette = await generateTriadicPalette(baseHsl)
-      expect(palette[2].hsl.l).toBeCloseTo(baseHsl.l + 15, 0)
-      expect(palette[4].hsl.l).toBeCloseTo(baseHsl.l + 15, 0)
+      expect(nth(palette, 2).hsl.l).toBeCloseTo(baseHsl.l + 15, 0)
+      expect(nth(palette, 4).hsl.l).toBeCloseTo(baseHsl.l + 15, 0)
     })
   })
 
@@ -97,15 +98,15 @@ describe('color-palette', () => {
 
     it('should have base at position 0 and split complements at 150/210 degrees', async () => {
       const palette = await generateSplitComplementaryPalette(baseHsl)
-      expect(palette[0].hsl.h).toBeCloseTo(217, 0) // base
-      expect(palette[1].hsl.h).toBeCloseTo(7, 0) // 217+150=367 → 7
-      expect(palette[3].hsl.h).toBeCloseTo(67, 0) // 217+210=427 → 67
+      expect(nth(palette, 0).hsl.h).toBeCloseTo(217, 0) // base
+      expect(nth(palette, 1).hsl.h).toBeCloseTo(7, 0) // 217+150=367 → 7
+      expect(nth(palette, 3).hsl.h).toBeCloseTo(67, 0) // 217+210=427 → 67
     })
 
     it('should pad with lightness variants', async () => {
       const palette = await generateSplitComplementaryPalette(baseHsl)
-      expect(palette[2].hsl.l).toBeCloseTo(baseHsl.l + 15, 0)
-      expect(palette[4].hsl.l).toBeCloseTo(baseHsl.l + 15, 0)
+      expect(nth(palette, 2).hsl.l).toBeCloseTo(baseHsl.l + 15, 0)
+      expect(nth(palette, 4).hsl.l).toBeCloseTo(baseHsl.l + 15, 0)
     })
   })
 
@@ -125,11 +126,11 @@ describe('color-palette', () => {
 
     it('should vary lightness at 15%, 30%, 50%, 70%, 85%', async () => {
       const palette = await generateMonochromaticPalette(baseHsl)
-      expect(palette[0].hsl.l).toBeCloseTo(15, 0)
-      expect(palette[1].hsl.l).toBeCloseTo(30, 0)
-      expect(palette[2].hsl.l).toBeCloseTo(50, 0)
-      expect(palette[3].hsl.l).toBeCloseTo(70, 0)
-      expect(palette[4].hsl.l).toBeCloseTo(85, 0)
+      expect(nth(palette, 0).hsl.l).toBeCloseTo(15, 0)
+      expect(nth(palette, 1).hsl.l).toBeCloseTo(30, 0)
+      expect(nth(palette, 2).hsl.l).toBeCloseTo(50, 0)
+      expect(nth(palette, 3).hsl.l).toBeCloseTo(70, 0)
+      expect(nth(palette, 4).hsl.l).toBeCloseTo(85, 0)
     })
   })
 
@@ -177,7 +178,7 @@ describe('color-palette', () => {
       const palette = await generateComplementaryPalette(black)
       expect(palette).toHaveLength(5)
       // Lightness should clamp to 0 minimum
-      expect(palette[1].hsl.l).toBe(0) // 0-15 clamped to 0
+      expect(nth(palette, 1).hsl.l).toBe(0) // 0-15 clamped to 0
     })
 
     it('should handle white (h=0, s=0, l=100)', async () => {
@@ -185,42 +186,42 @@ describe('color-palette', () => {
       const palette = await generateComplementaryPalette(white)
       expect(palette).toHaveLength(5)
       // Lightness should clamp to 100 max
-      expect(palette[4].hsl.l).toBe(100) // 100+15 clamped to 100
+      expect(nth(palette, 4).hsl.l).toBe(100) // 100+15 clamped to 100
     })
 
     it('should handle pure red (h=0)', async () => {
       const red: HSLColor = { h: 0, l: 50, s: 100 }
       const palette = await generateComplementaryPalette(red)
-      expect(palette[0].hsl.h).toBeCloseTo(0, 0)
-      expect(palette[2].hsl.h).toBeCloseTo(180, 0) // complement
+      expect(nth(palette, 0).hsl.h).toBeCloseTo(0, 0)
+      expect(nth(palette, 2).hsl.h).toBeCloseTo(180, 0) // complement
     })
 
     it('should handle pure green (h=120)', async () => {
       const green: HSLColor = { h: 120, l: 50, s: 100 }
       const palette = await generateTriadicPalette(green)
-      expect(palette[0].hsl.h).toBeCloseTo(120, 0)
-      expect(palette[1].hsl.h).toBeCloseTo(240, 0)
-      expect(palette[3].hsl.h).toBeCloseTo(0, 0)
+      expect(nth(palette, 0).hsl.h).toBeCloseTo(120, 0)
+      expect(nth(palette, 1).hsl.h).toBeCloseTo(240, 0)
+      expect(nth(palette, 3).hsl.h).toBeCloseTo(0, 0)
     })
 
     it('should handle pure blue (h=240)', async () => {
       const blue: HSLColor = { h: 240, l: 50, s: 100 }
       const palette = await generateAnalogousPalette(blue)
-      expect(palette[0].hsl.h).toBeCloseTo(180, 0) // 240-60
-      expect(palette[4].hsl.h).toBeCloseTo(300, 0) // 240+60
+      expect(nth(palette, 0).hsl.h).toBeCloseTo(180, 0) // 240-60
+      expect(nth(palette, 4).hsl.h).toBeCloseTo(300, 0) // 240+60
     })
 
     it('should handle hue wrapping at 360 degrees', async () => {
       const nearMax: HSLColor = { h: 350, l: 50, s: 100 }
       const palette = await generateAnalogousPalette(nearMax)
-      expect(palette[3].hsl.h).toBeCloseTo(20, 0) // 350+30=380 → 20
-      expect(palette[4].hsl.h).toBeCloseTo(50, 0) // 350+60=410 → 50
+      expect(nth(palette, 3).hsl.h).toBeCloseTo(20, 0) // 350+30=380 → 20
+      expect(nth(palette, 4).hsl.h).toBeCloseTo(50, 0) // 350+60=410 → 50
     })
 
     it('should handle 3-digit hex input', async () => {
       const palette = await generatePalette('#f00', 'complementary')
       expect(palette).toHaveLength(5)
-      expect(palette[0].hsl.h).toBeCloseTo(0, 0)
+      expect(nth(palette, 0).hsl.h).toBeCloseTo(0, 0)
     })
   })
 

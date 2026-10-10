@@ -30,6 +30,7 @@ export const useToolSeo = ({ description, title, url }: UseToolSeoParams) => {
       initialTitleRef.current = document.title
     }
     if (document.title !== title) {
+      // oxlint-disable-next-line react/immutability -- deliberate render-time title write (see comment above; CLAUDE.md "useToolSeo")
       document.title = title
     }
   }

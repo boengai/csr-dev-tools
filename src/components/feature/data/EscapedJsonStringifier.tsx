@@ -26,7 +26,7 @@ const MODES: [ConverterMode<EscapedJsonConvertMode>, ConverterMode<EscapedJsonCo
   },
 ]
 
-export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const EscapedJsonStringifier = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [doubleEscape, setDoubleEscape] = useState(false)
 
   const compute = useCallback(
@@ -45,7 +45,7 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterDialogClose }: ToolCom
       initialResult={{ output: '' }}
       modeStorageKey="escaped-json"
       modes={MODES}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       sourceKeyPrefix="escaped-json"
       sourceToolbarSlot={({ mode, recompute }) =>
         mode === 'stringify' ? (

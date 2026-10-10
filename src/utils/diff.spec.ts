@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type { SideBySideRow } from '@/types'
 import { computeLineDiff, computeSideBySideDiff, createUnifiedDiff } from '@/utils'
 
@@ -8,9 +9,9 @@ describe('diff utilities', () => {
     it('should return unchanged for identical texts', async () => {
       const result = await computeLineDiff('hello\nworld', 'hello\nworld')
       expect(result).toHaveLength(1)
-      expect(result[0].added).toBe(false)
-      expect(result[0].removed).toBe(false)
-      expect(result[0].value).toContain('hello')
+      expect(nth(result, 0).added).toBe(false)
+      expect(nth(result, 0).removed).toBe(false)
+      expect(nth(result, 0).value).toContain('hello')
     })
 
     it('should detect completely different texts', async () => {
@@ -23,14 +24,14 @@ describe('diff utilities', () => {
       const result = await computeLineDiff('line1\n', 'line1\nline2\n')
       const added = result.filter((c) => c.added)
       expect(added.length).toBeGreaterThan(0)
-      expect(added[0].value).toContain('line2')
+      expect(nth(added, 0).value).toContain('line2')
     })
 
     it('should detect removed lines', async () => {
       const result = await computeLineDiff('line1\nline2\n', 'line1\n')
       const removed = result.filter((c) => c.removed)
       expect(removed.length).toBeGreaterThan(0)
-      expect(removed[0].value).toContain('line2')
+      expect(nth(removed, 0).value).toContain('line2')
     })
 
     it('should detect mixed changes', async () => {
@@ -68,7 +69,7 @@ describe('diff utilities', () => {
       const result = await computeLineDiff('hello 🌍\n', 'hello 🌍\nnew 日本語\n')
       const added = result.filter((c) => c.added)
       expect(added.length).toBeGreaterThan(0)
-      expect(added[0].value).toContain('日本語')
+      expect(nth(added, 0).value).toContain('日本語')
     })
 
     it('should handle large texts without error', async () => {
@@ -128,18 +129,18 @@ describe('diff utilities', () => {
         expect(row.rightType).toBe('unchanged')
         expect(row.leftContent).toBe(row.rightContent)
       }
-      expect(result[0].leftLineNum).toBe(1)
-      expect(result[0].rightLineNum).toBe(1)
-      expect(result[2].leftLineNum).toBe(3)
-      expect(result[2].rightLineNum).toBe(3)
+      expect(nth(result, 0).leftLineNum).toBe(1)
+      expect(nth(result, 0).rightLineNum).toBe(1)
+      expect(nth(result, 2).leftLineNum).toBe(3)
+      expect(nth(result, 2).rightLineNum).toBe(3)
     })
 
     it('should handle added-only lines', async () => {
       const result = await computeSideBySideDiff('a\n', 'a\nb\nc\n')
       expect(result.length).toBe(3)
 
-      expect(result[0].leftType).toBe('unchanged')
-      expect(result[0].rightType).toBe('unchanged')
+      expect(nth(result, 0).leftType).toBe('unchanged')
+      expect(nth(result, 0).rightType).toBe('unchanged')
 
       const addedRows = result.filter((r) => r.rightType === 'added')
       expect(addedRows).toHaveLength(2)
@@ -153,7 +154,7 @@ describe('diff utilities', () => {
       const result = await computeSideBySideDiff('a\nb\nc\n', 'a\n')
       expect(result.length).toBe(3)
 
-      expect(result[0].leftType).toBe('unchanged')
+      expect(nth(result, 0).leftType).toBe('unchanged')
       const removedRows = result.filter((r) => r.leftType === 'removed')
       expect(removedRows).toHaveLength(2)
       for (const row of removedRows) {
@@ -166,7 +167,7 @@ describe('diff utilities', () => {
       const result = await computeSideBySideDiff('hello world\n', 'hello earth\n')
       expect(result).toHaveLength(1)
 
-      const row = result[0]
+      const row = nth(result, 0)
       expect(row.leftType).toBe('removed')
       expect(row.rightType).toBe('added')
       expect(row.leftSpans).not.toBeNull()

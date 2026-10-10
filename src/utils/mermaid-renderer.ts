@@ -51,9 +51,10 @@ export async function svgToPng(svgString: string, scale = 2): Promise<string> {
     width = parseFloat(widthAttr)
     height = parseFloat(heightAttr)
   } else if (viewBox) {
-    const parts = viewBox.split(/[\s,]+/)
-    width = parseFloat(parts[2])
-    height = parseFloat(parts[3])
+    // A short viewBox leaves NaN here, which the fallback below replaces.
+    const [, , viewBoxWidth = '', viewBoxHeight = ''] = viewBox.split(/[\s,]+/)
+    width = parseFloat(viewBoxWidth)
+    height = parseFloat(viewBoxHeight)
   }
 
   if (!width || !height) {

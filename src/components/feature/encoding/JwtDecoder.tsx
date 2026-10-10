@@ -2,18 +2,10 @@ import { CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/component
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolInput } from '@/hooks'
-import type { JwtExpirationStatus, ToolComponentProps } from '@/types'
+import type { JwtDecoded, JwtExpirationStatus, ToolComponentProps } from '@/types'
 import { decodeJwt, formatPayloadWithTimestamps, getExpirationStatus, isValidJwt } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['jwt-decoder']
-
-type JwtDecoded = {
-  expiration: JwtExpirationStatus
-  header: string
-  payload: string
-  payloadCopy: string
-  signature: string
-}
 
 const EMPTY_DECODED: JwtDecoded = {
   expiration: { kind: 'no-exp' },
@@ -54,7 +46,7 @@ const ExpirationBadge = ({ status }: { status: JwtExpirationStatus }) => {
   )
 }
 
-export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const JwtDecoder = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const {
     input: source,
     result: decoded,
@@ -87,7 +79,7 @@ export const JwtDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps)
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title="JWT Decoder"
       triggers={[{ label: 'Decode' }]}

@@ -104,7 +104,7 @@ const ExtensionItem = ({ ext }: { ext: CertificateExtension }) => (
   </div>
 )
 
-export const CertificateDecoder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const CertificateDecoder = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const {
     input,
     result,
@@ -127,7 +127,7 @@ export const CertificateDecoder = ({ autoOpen, onAfterDialogClose }: ToolCompone
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title="Certificate Decoder"
       triggers={[{ label: 'Decode Certificate' }]}

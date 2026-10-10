@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
+import { entry, nth } from '@/test/nth'
+
 import { createSequentialIdMinters } from '../id-minters'
 import { createInitialDocument } from '../state'
 import { addRelation, deleteRelation, updateRelation } from './relations'
@@ -14,8 +16,8 @@ const seedTwoTables = () => {
     minters,
     aId: a.id,
     bId: b.id,
-    aCol: a.document.tables[a.id].columns[0].id,
-    bCol: b.document.tables[b.id].columns[0].id,
+    aCol: nth(entry(a.document.tables, a.id).columns, 0).id,
+    bCol: nth(entry(b.document.tables, b.id).columns, 0).id,
   }
 }
 
@@ -65,7 +67,7 @@ describe('updateRelation', () => {
       minters,
     )
     const next = updateRelation(created.document, created.id!, { kind: 'N:M' })
-    expect(next.relations[created.id!].kind).toBe('N:M')
+    expect(entry(next.relations, created.id ?? '').kind).toBe('N:M')
   })
 
   it('is a no-op for unknown id', () => {

@@ -6,6 +6,16 @@ use pulldown_cmark::{Event, Options, Parser, Tag, TagEnd};
 /// docs/superpowers/specs/2026-05-22-markdown-to-pdf-typst-design.md
 /// §"Markdown → Typst translation". Constructs outside that set
 /// (raw HTML, images, math) are silently dropped.
+///
+/// Injection safety: user-controlled text only ever reaches the Typst source
+/// in one of two forms, both of which are inert:
+/// - markup text, via [`escape_typst`], which backslash-escapes every ASCII
+///   punctuation character that has (or could gain) markup meaning; and
+/// - Typst string literals (link targets, inline/block code, code-block
+///   language), via [`typst_str`], which escapes `\` and `"` plus control
+///   characters.
+/// No user text is ever placed in Typst code mode unquoted, and code spans no
+/// longer use backtick delimiters, so no delimiter in user text can close them.
 pub fn md_to_typst(md: &str) -> String {
     let mut opts = Options::empty();
     opts.insert(Options::ENABLE_TABLES);
@@ -16,7 +26,7 @@ pub fn md_to_typst(md: &str) -> String {
     let mut out = String::new();
     let mut list_stack: Vec<ListKind> = vec![];
     let mut in_table_header = false;
-    let mut in_code_block = false;
+    let mut code_block: Option<CodeBlock> = None;
     let mut in_image = false;
 
     for event in parser {
@@ -38,22 +48,36 @@ pub fn md_to_typst(md: &str) -> String {
             Event::End(TagEnd::Strong) => out.push('*'),
 
             Event::Code(s) => {
-                out.push('`');
-                out.push_str(&s);
-                out.push('`');
+                out.push_str("#raw(");
+                out.push_str(&typst_str(&s));
+                out.push_str(", block: false)");
             }
 
             Event::Start(Tag::CodeBlock(kind)) => {
-                in_code_block = true;
-                out.push_str("\n```");
-                if let pulldown_cmark::CodeBlockKind::Fenced(lang) = kind {
-                    out.push_str(&lang);
-                }
-                out.push('\n');
+                let lang = match kind {
+                    pulldown_cmark::CodeBlockKind::Fenced(info) => info
+                        .split_whitespace()
+                        .next()
+                        .unwrap_or("")
+                        .to_string(),
+                    pulldown_cmark::CodeBlockKind::Indented => String::new(),
+                };
+                code_block = Some(CodeBlock { lang, text: String::new() });
             }
             Event::End(TagEnd::CodeBlock) => {
-                in_code_block = false;
-                out.push_str("```\n\n");
+                if let Some(block) = code_block.take() {
+                    // pulldown-cmark keeps the trailing newline of the last
+                    // line; a block-level raw renders it as an empty line.
+                    let text = block.text.strip_suffix('\n').unwrap_or(&block.text);
+                    out.push_str("\n#raw(");
+                    out.push_str(&typst_str(text));
+                    out.push_str(", block: true");
+                    if !block.lang.is_empty() {
+                        out.push_str(", lang: ");
+                        out.push_str(&typst_str(&block.lang));
+                    }
+                    out.push_str(")\n\n");
+                }
             }
 
             Event::Start(Tag::List(start)) => {
@@ -77,9 +101,9 @@ pub fn md_to_typst(md: &str) -> String {
             Event::End(TagEnd::Item) => out.push('\n'),
 
             Event::Start(Tag::Link { dest_url, .. }) => {
-                out.push_str("#link(\"");
-                out.push_str(&dest_url);
-                out.push_str("\")[");
+                out.push_str("#link(");
+                out.push_str(&typst_str(&dest_url));
+                out.push_str(")[");
             }
             Event::End(TagEnd::Link) => out.push(']'),
 
@@ -94,8 +118,8 @@ pub fn md_to_typst(md: &str) -> String {
             Event::Text(s) => {
                 if in_image {
                     // suppress alt text — images are dropped in v1
-                } else if in_code_block {
-                    out.push_str(&s);
+                } else if let Some(block) = code_block.as_mut() {
+                    block.text.push_str(&s);
                 } else {
                     out.push_str(&escape_typst(&s));
                 }
@@ -152,16 +176,52 @@ enum ListKind {
     Ordered,
 }
 
-/// Escape characters that are syntactically meaningful in Typst markup.
+struct CodeBlock {
+    lang: String,
+    text: String,
+}
+
+/// Escape text for Typst *markup* mode.
+///
+/// Typst's lexer treats `\` followed by any non-whitespace character as an
+/// escape for that literal character (see typst-syntax `Lexer::backslash`),
+/// so escaping is always safe. We escape every ASCII punctuation character
+/// rather than an allow-list of "known" markup characters: besides the
+/// obvious `# $ [ ] * _ \``, Typst markup also gives meaning to `<label>`,
+/// `@ref`, `//` / `/*` comments, line-start `=`, `-`, `+`, `/`, `1.` and
+/// shorthands (`~`, `--`, `...`), and `(` / `.` directly after an embedded
+/// expression like `#link(..)[..]` continue that expression. The only
+/// punctuation left unescaped is `'` and `"`, which merely become smart
+/// quotes. `\u{..}` is unreachable because `u` is never escaped and a literal
+/// `\` is always doubled.
 fn escape_typst(s: &str) -> String {
-    s.replace('\\', "\\\\")
-        .replace('#', "\\#")
-        .replace('$', "\\$")
-        .replace('[', "\\[")
-        .replace(']', "\\]")
-        .replace('*', "\\*")
-        .replace('_', "\\_")
-        .replace('`', "\\`")
+    let mut out = String::with_capacity(s.len());
+    for c in s.chars() {
+        if c.is_ascii_punctuation() && c != '\'' && c != '"' {
+            out.push('\\');
+        }
+        out.push(c);
+    }
+    out
+}
+
+/// Render `s` as a Typst string literal (including the surrounding quotes).
+fn typst_str(s: &str) -> String {
+    let mut out = String::with_capacity(s.len() + 2);
+    out.push('"');
+    for c in s.chars() {
+        match c {
+            '\\' => out.push_str("\\\\"),
+            '"' => out.push_str("\\\""),
+            '\n' => out.push_str("\\n"),
+            '\r' => out.push_str("\\r"),
+            '\t' => out.push_str("\\t"),
+            c if c.is_control() => out.push_str(&format!("\\u{{{:x}}}", c as u32)),
+            c => out.push(c),
+        }
+    }
+    out.push('"');
+    out
 }
 
 #[cfg(test)]
@@ -184,7 +244,7 @@ mod tests {
     #[test]
     fn paragraph() {
         let out = md_to_typst("Hello world.");
-        assert!(out.contains("Hello world."));
+        assert!(out.contains("Hello world\\."), "got: {out}");
     }
 
     #[test]
@@ -197,14 +257,16 @@ mod tests {
     #[test]
     fn inline_code() {
         let out = md_to_typst("Hello `code`.");
-        assert!(out.contains("`code`"));
+        assert!(out.contains("#raw(\"code\", block: false)"), "got: {out}");
     }
 
     #[test]
     fn fenced_code_block() {
         let out = md_to_typst("```rust\nfn main() {}\n```");
-        assert!(out.contains("```rust"));
-        assert!(out.contains("fn main() {}"));
+        assert!(
+            out.contains("#raw(\"fn main() {}\", block: true, lang: \"rust\")"),
+            "got: {out}"
+        );
     }
 
     #[test]
@@ -301,5 +363,79 @@ mod tests {
         assert!(out.contains("[*a*]"));
         assert!(out.contains("[1]"));
         assert!(out.contains("[2]"));
+    }
+
+    // ---- Typst injection / break-out regression tests ----
+    // Each payload tries to escape into Typst code mode and call
+    // `panic("pwned")`. If the escape works, compilation fails with a panic
+    // diagnostic; when the translator is safe, the document compiles.
+
+    fn compiles(md: &str) -> Result<(), String> {
+        let typst = md_to_typst(md);
+        crate::compile::compile(typst.clone())
+            .map(|_| ())
+            .map_err(|e| format!("{e}\n--- typst source ---\n{typst}"))
+    }
+
+    #[test]
+    fn link_dest_quote_cannot_break_out() {
+        compiles(r#"[x](a"+panic("pwned")+")"#).unwrap();
+    }
+
+    #[test]
+    fn link_dest_trailing_backslash_cannot_break_out() {
+        compiles(r#"[x](<a\\>) and more"#).unwrap();
+    }
+
+    #[test]
+    fn inline_code_with_backticks_cannot_break_out() {
+        compiles(r#"`` `#panic("pwned")` ``"#).unwrap();
+    }
+
+    #[test]
+    fn code_block_with_inner_fence_cannot_break_out() {
+        compiles("````\n```\n#panic(\"pwned\")\n```\n````").unwrap();
+    }
+
+    #[test]
+    fn code_block_lang_cannot_break_out() {
+        compiles("```a\"+panic(\"pwned\")+\"\nx\n```").unwrap();
+    }
+
+    #[test]
+    fn text_comment_markers_do_not_swallow_markup() {
+        let md = "[a /* b](https://example.com) and c // d";
+        compiles(md).unwrap();
+        let out = md_to_typst(md);
+        assert!(out.contains("\\/\\*") && out.contains("\\/\\/"), "got: {out}");
+    }
+
+    #[test]
+    fn text_label_and_ref_syntax_is_literal() {
+        compiles("see @missing and <lbl> here").unwrap();
+    }
+
+    #[test]
+    fn text_after_link_cannot_call_link_result() {
+        compiles(r#"[x](https://example.com)("pwned")"#).unwrap();
+        compiles(r#"`x`("pwned") and `y`.text"#).unwrap();
+    }
+
+    #[test]
+    fn table_cell_content_cannot_break_out() {
+        compiles("| a | b |\n|---|---|\n| ], panic(\"pwned\"), [ | `` ` ``#panic(\"x\") |").unwrap();
+    }
+
+    #[test]
+    fn heading_text_cannot_break_out() {
+        compiles("# `` `#panic(\"pwned\")` ``").unwrap();
+    }
+
+    #[test]
+    fn line_start_markup_is_literal() {
+        let out = md_to_typst("= not a heading");
+        assert!(out.starts_with("\\="), "got: {out}");
+        let out = md_to_typst("1\\. not a list");
+        assert!(out.starts_with("1\\."), "got: {out}");
     }
 }

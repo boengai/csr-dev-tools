@@ -32,7 +32,7 @@ const createKeyframe = (percent: number): KeyframeStep => ({
   translateY: 0,
 })
 
-export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const CssAnimationBuilder = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [config, setConfig] = useState<AnimationConfig>({ ...DEFAULT_ANIMATION_CONFIG })
   const [animKey, setAnimKey] = useState(0)
   const [isPlaying, setIsPlaying] = useState(true)
@@ -101,7 +101,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title="CSS Animation Builder"
       triggers={[{ label: 'Build Animation' }]}
@@ -118,6 +118,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterDialogClose }: ToolCompon
                   {/* raw button: micro-sized icon (text-body-xs), smaller than Button size="small" floor */}
                   {config.keyframes.length > 2 && (
                     <button
+                      aria-label={`Remove keyframe ${i + 1}`}
                       className="text-red-400 hover:text-red-300 text-body-xs"
                       onClick={() => removeKeyframe(i)}
                       type="button"

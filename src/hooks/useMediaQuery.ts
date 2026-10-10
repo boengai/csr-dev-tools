@@ -1,17 +1,17 @@
-import { useEffect, useState } from 'react'
+import { useCallback, useSyncExternalStore } from 'react'
 
 /**
  * Subscribes to a CSS media query and returns its current match state.
  * See CONTEXT.md → "useMediaQuery" for the three invariants:
  *
- *   1. SSR-safe initial — the lazy initializer reads `window.matchMedia(query).matches`
- *      synchronously when `window` exists, so the first render already has the right
- *      boolean (no flash between hydration and the first effect tick). Without `window`
- *      (Vite prerender, SSR, tests), it returns `ssrDefault`.
+ *   1. SSR-safe initial — `useSyncExternalStore`'s client snapshot reads
+ *      `window.matchMedia(query).matches` synchronously, so the first render already has
+ *      the right boolean (no flash before a first effect tick). Without `window` /
+ *      `matchMedia` (Vite prerender, SSR, tests), the snapshot is `ssrDefault`.
  *   2. Subscription with cleanup — listens for `change` events and removes the listener
  *      on unmount or when `query` changes.
- *   3. Reactive to query changes — the effect re-runs if the query string itself
- *      changes (rare in practice, but the contract supports it).
+ *   3. Reactive to query changes — a new query string re-subscribes and re-reads the
+ *      snapshot (rare in practice, but the contract supports it).
  *
  * The `ssrDefault` parameter picks which boolean the prerender output assumes.
  * Adopters whose layout differs by viewport pick the *desktop* default
@@ -21,19 +21,18 @@ import { useEffect, useState } from 'react'
  * keep the default `false`.
  */
 export function useMediaQuery(query: string, ssrDefault: boolean = false): boolean {
-  const [matches, setMatches] = useState<boolean>(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return ssrDefault
-    return window.matchMedia(query).matches
-  })
+  const subscribe = useCallback(
+    (onChange: () => void) => {
+      if (!hasMatchMedia()) return () => {}
+      const mql = window.matchMedia(query)
+      mql.addEventListener('change', onChange)
+      return () => mql.removeEventListener('change', onChange)
+    },
+    [query],
+  )
+  const getSnapshot = () => (hasMatchMedia() ? window.matchMedia(query).matches : ssrDefault)
 
-  useEffect(() => {
-    if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return
-    const mql = window.matchMedia(query)
-    setMatches(mql.matches)
-    const handler = (e: MediaQueryListEvent) => setMatches(e.matches)
-    mql.addEventListener('change', handler)
-    return () => mql.removeEventListener('change', handler)
-  }, [query])
-
-  return matches
+  return useSyncExternalStore(subscribe, getSnapshot, () => ssrDefault)
 }
+
+const hasMatchMedia = (): boolean => typeof window !== 'undefined' && typeof window.matchMedia === 'function'

@@ -34,3 +34,9 @@ export type ProtobufSchemaInfo = {
 export type ProtobufParseResult =
   | { error: string; line: number | null; success: false }
   | { schema: ProtobufSchemaInfo; success: true }
+
+/** Resolves a field to its enum value names / nested message, by field type. */
+export type ProtobufFieldTypeResolver = {
+  enumValues: (field: ProtobufFieldInfo) => Array<string> | null
+  message: (field: ProtobufFieldInfo) => ProtobufMessageInfo | null
+}

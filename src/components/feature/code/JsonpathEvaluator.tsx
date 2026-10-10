@@ -1,5 +1,5 @@
 import { json } from '@codemirror/lang-json'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 
 import {
   CodeInput,
@@ -13,9 +13,9 @@ import {
 } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolFieldsPersisted } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import { evaluateJsonPath, formatResultValue, type JsonPathEvaluation, parseJsonInput } from '@/utils'
+import { useToolFields } from '@/hooks'
+import type { JsonPathEvalInput, JsonPathEvalResult, ToolComponentProps } from '@/types'
+import { createCachedJsonParser, evaluateJsonPath, formatResultValue } from '@/utils/jsonpath-evaluator'
 
 const toolEntry = TOOL_REGISTRY_MAP['jsonpath-evaluator']
 
@@ -62,16 +62,15 @@ const CHEATSHEET_ENTRIES = [
   { description: 'All authors in store', expression: '$.store.book[*].author' },
 ]
 
-type EvalInput = { expression: string; jsonInput: string }
-type EvalResult = { evaluation: JsonPathEvaluation | null; parseError: string | null; parsedData: unknown }
+const INITIAL_RESULT: JsonPathEvalResult = { evaluation: null, parseError: null, parsedData: null }
 
-const INITIAL_RESULT: EvalResult = { evaluation: null, parseError: null, parsedData: null }
-
-export const JsonpathEvaluator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { inputs, result, setFields, setFieldsImmediate } = useToolFieldsPersisted<EvalInput, EvalResult>({
+export const JsonpathEvaluator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
+  // Expression keystrokes re-run compute; the document is only re-parsed when it changes.
+  const [parseJson] = useState(createCachedJsonParser)
+  const { inputs, result, setFields, setFieldsImmediate } = useToolFields<JsonPathEvalInput, JsonPathEvalResult>({
     autorunOnMount: true,
     compute: ({ expression: expr, jsonInput: value }) => {
-      const parsed = parseJsonInput(value)
+      const parsed = parseJson(value)
       if (!parsed.success) return { evaluation: null, parseError: parsed.error, parsedData: null }
       if (!expr.trim()) return { evaluation: null, parseError: null, parsedData: parsed.data }
       return { evaluation: evaluateJsonPath(parsed.data, expr), parseError: null, parsedData: parsed.data }
@@ -107,7 +106,7 @@ export const JsonpathEvaluator = ({ autoOpen, onAfterDialogClose }: ToolComponen
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="JSONPath Evaluator"
       triggers={[{ label: 'Evaluate' }]}
     >

@@ -1,4 +1,6 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
+
+import { useLatestRef } from './useLatestRef'
 
 /**
  * Subscribes a document-level `keydown` listener that fires `handler` when
@@ -16,10 +18,8 @@ export function useKeyboardShortcut(
   options?: { enabled?: boolean },
 ): void {
   const enabled = options?.enabled ?? true
-  const predicateRef = useRef(predicate)
-  predicateRef.current = predicate
-  const handlerRef = useRef(handler)
-  handlerRef.current = handler
+  const predicateRef = useLatestRef(predicate)
+  const handlerRef = useLatestRef(handler)
 
   useEffect(() => {
     if (!enabled) return
@@ -30,5 +30,5 @@ export function useKeyboardShortcut(
     }
     document.addEventListener('keydown', onKey)
     return () => document.removeEventListener('keydown', onKey)
-  }, [enabled])
+  }, [enabled, handlerRef, predicateRef])
 }

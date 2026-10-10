@@ -23,7 +23,7 @@ const PRESETS = ['644', '755', '777', '600', '400'] as const
 const GROUPS = ['owner', 'group', 'other'] as const
 const PERMS = ['read', 'write', 'execute'] as const
 
-export const ChmodCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const ChmodCalculator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [state, setState] = useState<ChmodState>(DEFAULT_STATE)
   const [octalInput, setOctalInput] = useState('755')
   const [symbolicInput, setSymbolicInput] = useState('rwxr-xr-x')
@@ -109,7 +109,7 @@ export const ChmodCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       size="default"
       title="Chmod Calculator"
@@ -164,18 +164,26 @@ export const ChmodCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
           <table className="w-full text-body-sm" aria-label="Permission checkboxes">
             <thead>
               <tr className="text-gray-400">
-                <th className="py-2 pr-4 text-left font-medium" />
-                <th className="px-4 py-2 text-center font-medium">Read</th>
-                <th className="px-4 py-2 text-center font-medium">Write</th>
-                <th className="px-4 py-2 text-center font-medium">Execute</th>
+                <th className="py-2 pr-4 text-left font-medium" scope="col">
+                  <span className="sr-only">Group</span>
+                </th>
+                <th className="px-4 py-2 text-center font-medium" scope="col">
+                  Read
+                </th>
+                <th className="px-4 py-2 text-center font-medium" scope="col">
+                  Write
+                </th>
+                <th className="px-4 py-2 text-center font-medium" scope="col">
+                  Execute
+                </th>
               </tr>
             </thead>
             <tbody>
               {GROUPS.map((group) => (
-                <tr key={group} role="group" aria-labelledby={`label-${group}`}>
-                  <td className="py-2 pr-4 font-medium text-gray-300 capitalize" id={`label-${group}`}>
+                <tr key={group}>
+                  <th className="py-2 pr-4 text-left font-medium text-gray-300 capitalize" scope="row">
                     {group}
-                  </td>
+                  </th>
                   {PERMS.map((perm) => (
                     <td key={perm} className="px-4 py-3 text-center">
                       <CheckboxInput

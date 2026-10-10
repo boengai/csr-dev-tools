@@ -1,6 +1,5 @@
-import type { EntityIdMinters } from '@/diagram/id-minters'
 import { gridLayoutPositions } from '@/diagram/layout'
-import type { ColumnType, DiagramSchema, SqlDialect } from '@/types'
+import type { ColumnType, DiagramSchema, EntityIdMinters, SqlDialect } from '@/types'
 import type { FkRef, ParseResult, ParsedColumn } from '@/types/diagram/codecs/import'
 
 const TYPE_MAP: Record<ColumnType, Record<SqlDialect, string>> = {
@@ -297,24 +296,20 @@ function unquoteName(name: string): string {
 }
 
 function extractType(tokens: Array<string>): { consumed: number; rawType: string } {
-  if (tokens.length === 0) return { consumed: 0, rawType: '' }
+  const [baseType, ...rest] = tokens
+  if (baseType === undefined) return { consumed: 0, rawType: '' }
+  // `VARCHAR(255)` is one token; `VARCHAR (255)` / `DECIMAL (10, 2)` spill the params into the next tokens.
+  if (!rest[0]?.startsWith('(')) return { consumed: 1, rawType: baseType }
 
-  let rawType = tokens[0]
+  let parenPart = ''
   let consumed = 1
-
-  if (consumed < tokens.length && tokens[consumed].startsWith('(')) {
-    let parenPart = ''
-    while (consumed < tokens.length) {
-      parenPart += tokens[consumed]
-      consumed++
-      if (parenPart.includes(')')) break
-    }
-    rawType += parenPart
-  } else if (rawType.includes('(')) {
-    // nothing to do
+  for (const token of rest) {
+    parenPart += token
+    consumed++
+    if (parenPart.includes(')')) break
   }
 
-  return { consumed, rawType }
+  return { consumed, rawType: baseType + parenPart }
 }
 
 function splitColumnDefs(body: string): Array<string> {
@@ -350,28 +345,29 @@ function parseColumnDef(
   const trimmed = def.trim()
   const upper = trimmed.toUpperCase()
 
-  const pkMatch = upper.match(/^PRIMARY\s+KEY\s*\(([^)]+)\)/)
-  if (pkMatch) {
-    return { column: null, fkRef: null, isPkConstraint: unquoteName(pkMatch[1]), isUniqueConstraint: null }
+  const [, pkColumns] = upper.match(/^PRIMARY\s+KEY\s*\(([^)]+)\)/) ?? []
+  if (pkColumns !== undefined) {
+    return { column: null, fkRef: null, isPkConstraint: unquoteName(pkColumns), isUniqueConstraint: null }
   }
 
-  const fkMatch = trimmed.match(/^FOREIGN\s+KEY\s*\(\s*([^)]+)\s*\)\s*REFERENCES\s+([^\s(]+)\s*\(\s*([^)]+)\s*\)/i)
-  if (fkMatch) {
+  const [, fkSource, fkTable, fkColumn] =
+    trimmed.match(/^FOREIGN\s+KEY\s*\(\s*([^)]+)\s*\)\s*REFERENCES\s+([^\s(]+)\s*\(\s*([^)]+)\s*\)/i) ?? []
+  if (fkSource !== undefined && fkTable !== undefined && fkColumn !== undefined) {
     return {
       column: null,
       fkRef: {
-        referencedColumn: unquoteName(fkMatch[3]),
-        referencedTable: unquoteName(fkMatch[2]),
-        sourceColumn: unquoteName(fkMatch[1]),
+        referencedColumn: unquoteName(fkColumn),
+        referencedTable: unquoteName(fkTable),
+        sourceColumn: unquoteName(fkSource),
       },
       isPkConstraint: null,
       isUniqueConstraint: null,
     }
   }
 
-  const uniqueMatch = upper.match(/^UNIQUE\s*\(([^)]+)\)/)
-  if (uniqueMatch) {
-    return { column: null, fkRef: null, isPkConstraint: null, isUniqueConstraint: unquoteName(uniqueMatch[1]) }
+  const [, uniqueColumns] = upper.match(/^UNIQUE\s*\(([^)]+)\)/) ?? []
+  if (uniqueColumns !== undefined) {
+    return { column: null, fkRef: null, isPkConstraint: null, isUniqueConstraint: unquoteName(uniqueColumns) }
   }
 
   if (upper.startsWith('CONSTRAINT')) {
@@ -379,18 +375,20 @@ function parseColumnDef(
     return parseColumnDef(afterConstraint, mintColumn)
   }
 
-  const tokens = trimmed.split(/\s+/)
-  if (tokens.length < 2) return { column: null, fkRef: null, isPkConstraint: null, isUniqueConstraint: null }
+  const [nameToken, ...typeAndRest] = trimmed.split(/\s+/)
+  if (nameToken === undefined || typeAndRest.length === 0) {
+    return { column: null, fkRef: null, isPkConstraint: null, isUniqueConstraint: null }
+  }
 
-  const name = unquoteName(tokens[0])
+  const name = unquoteName(nameToken)
 
   if (name.toUpperCase().startsWith('ENGINE') || name.toUpperCase().startsWith('DEFAULT')) {
     return { column: null, fkRef: null, isPkConstraint: null, isUniqueConstraint: null }
   }
 
-  const { consumed, rawType } = extractType(tokens.slice(1))
+  const { consumed, rawType } = extractType(typeAndRest)
   const mappedType = mapSqlType(rawType)
-  const restTokens = tokens.slice(1 + consumed)
+  const restTokens = typeAndRest.slice(consumed)
   const rest = restTokens.join(' ').toUpperCase()
 
   const isPrimaryKey = rest.includes('PRIMARY KEY') || rest.includes('PRIMARY')
@@ -399,11 +397,11 @@ function parseColumnDef(
   const isAutoIncrement = rest.includes('AUTO_INCREMENT') || rest.includes('AUTOINCREMENT')
 
   let inlineFkRef: FkRef | null = null
-  const refMatch = trimmed.match(/REFERENCES\s+([^\s(]+)\s*\(\s*([^)]+)\s*\)/i)
-  if (refMatch) {
+  const [, refTable, refColumn] = trimmed.match(/REFERENCES\s+([^\s(]+)\s*\(\s*([^)]+)\s*\)/i) ?? []
+  if (refTable !== undefined && refColumn !== undefined) {
     inlineFkRef = {
-      referencedColumn: unquoteName(refMatch[2]),
-      referencedTable: unquoteName(refMatch[1]),
+      referencedColumn: unquoteName(refColumn),
+      referencedTable: unquoteName(refTable),
       sourceColumn: name,
     }
   }
@@ -431,10 +429,8 @@ function parseCreateTable(
   fkRefs: Array<FkRef>
   tableName: string
 } | null {
-  const tableMatch = statement.match(/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?["'`]?(\w+)["'`]?\s*\(/i)
-  if (!tableMatch) return null
-
-  const tableName = tableMatch[1]
+  const [, tableName] = statement.match(/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?["'`]?(\w+)["'`]?\s*\(/i) ?? []
+  if (tableName === undefined) return null
 
   const firstParen = statement.indexOf('(')
   const lastParen = statement.lastIndexOf(')')
@@ -496,9 +492,9 @@ function buildRelationships(
     tableByName.set(lt.name.toLowerCase(), lt)
   }
 
-  for (let i = 0; i < parsedTables.length; i++) {
-    const parsed = parsedTables[i]
+  for (const [i, parsed] of parsedTables.entries()) {
     const sourceLayouted = layoutedTables[i]
+    if (!sourceLayouted) continue
 
     for (const fkRef of parsed.fkRefs) {
       const referencedTable = tableByName.get(fkRef.referencedTable.toLowerCase())
@@ -569,7 +565,7 @@ export function parseSqlDdl(sql: string, dialect: SqlDialect, minters: EntityIdM
     })),
     id: minters.table(),
     name: t.tableName,
-    position: positions[i],
+    position: positions[i] ?? { x: 0, y: 0 },
   }))
   const relationships = buildRelationships(parsedTables, tables, minters.relation)
 

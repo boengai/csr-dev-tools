@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
-import type { SourceFormat } from '@/utils/parse-error-narrators'
+import type { ToolComputeContext } from '@/types/hooks/computation'
+import type { SourceFormat } from '@/types/utils/parse-error-narrators'
 
 export type ConverterMode<M extends string> = {
   key: M
@@ -30,7 +31,7 @@ export type ConvertOutput = {
 
 export type BidirectionalConverterProps<M extends string, R extends ConvertOutput = ConvertOutput> = {
   autoOpen?: boolean
-  compute: (input: { mode: M; source: string }) => Promise<R>
+  compute: (input: { mode: M; source: string }, context: ToolComputeContext) => Promise<R>
   description?: string
   /**
    * The initial result rendered before the first compute resolves. Required
@@ -39,8 +40,9 @@ export type BidirectionalConverterProps<M extends string, R extends ConvertOutpu
    */
   initialResult: R
   modeStorageKey: string
-  modes: ReadonlyArray<ConverterMode<M>>
-  onAfterDialogClose?: () => void
+  /** Non-empty: the first mode is the default when nothing is persisted. */
+  modes: ConverterModes<M>
+  onAfterClose?: () => void
   onError?: (error: unknown, mode: M) => void
   /**
    * Optional slot rendered above the source/result `<SplitPanel>`. Tools whose
@@ -59,3 +61,6 @@ export type BidirectionalConverterProps<M extends string, R extends ConvertOutpu
   sourceKeyPrefix?: string
   sourceToolbarSlot?: (props: { mode: M; recompute: () => void }) => ReactNode
 }
+
+/** A non-empty mode list; the first entry is the default when nothing is persisted. */
+export type ConverterModes<M extends string> = readonly [ConverterMode<M>, ...Array<ConverterMode<M>>]

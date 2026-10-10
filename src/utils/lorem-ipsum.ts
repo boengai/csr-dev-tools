@@ -204,7 +204,8 @@ const LOREM_START = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit'
 const getRandomWord = (index: number): string => {
   // Simple hash-based pseudo-random selection to avoid repetitive cycling
   const hash = ((index * 2654435761) >>> 0) % LOREM_WORDS.length
-  return LOREM_WORDS[hash]
+  // `hash` is reduced modulo the list length, so it is always in range.
+  return LOREM_WORDS[hash]!
 }
 
 const generateSentence = (wordCount: number, startIndex: number): string => {
@@ -212,8 +213,8 @@ const generateSentence = (wordCount: number, startIndex: number): string => {
   for (let i = 0; i < wordCount; i++) {
     words.push(getRandomWord(startIndex + i))
   }
-  words[0] = words[0].charAt(0).toUpperCase() + words[0].slice(1)
-  return words.join(' ') + '.'
+  const [first = '', ...rest] = words
+  return [first.charAt(0).toUpperCase() + first.slice(1), ...rest].join(' ') + '.'
 }
 
 export const generateLoremIpsum = (

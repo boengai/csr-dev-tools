@@ -2,6 +2,8 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { CombinePdf } from './CombinePdf'
 
 vi.mock('@/utils/combine-pdf', async () => ({
@@ -41,14 +43,14 @@ const makeFile = (name: string, type: string): File => new File(['mock'], name, 
 
 describe('CombinePdf (per-page)', () => {
   it('renders the upload button in initial state', async () => {
-    render(<CombinePdf autoOpen onAfterDialogClose={() => {}} />)
+    render(<CombinePdf autoOpen onAfterClose={() => {}} />)
     // Use the button role so the assertion isn't ambiguous with the empty-state
     // hint copy, which also mentions "Select PDF files" by design.
     expect(await screen.findByRole('button', { name: /Select PDF files/i })).toBeInTheDocument()
   })
 
   it('renders one card per page across all uploaded files', async () => {
-    render(<CombinePdf autoOpen onAfterDialogClose={() => {}} />)
+    render(<CombinePdf autoOpen onAfterClose={() => {}} />)
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
 
     const files = [makeFile('a.pdf', 'application/pdf'), makeFile('b.pdf', 'application/pdf')]
@@ -67,7 +69,7 @@ describe('CombinePdf (per-page)', () => {
   })
 
   it('removes a single page card when its × is clicked', async () => {
-    render(<CombinePdf autoOpen onAfterDialogClose={() => {}} />)
+    render(<CombinePdf autoOpen onAfterClose={() => {}} />)
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
 
     fireEvent.change(input, { target: { files: [makeFile('a.pdf', 'application/pdf')] } })
@@ -76,13 +78,13 @@ describe('CombinePdf (per-page)', () => {
 
     const removeBtns = screen.getAllByRole('button', { name: /Remove a\.pdf page/i })
     expect(removeBtns.length).toBe(2)
-    fireEvent.click(removeBtns[0])
+    fireEvent.click(nth(removeBtns, 0))
 
     await waitFor(() => expect(screen.getAllByText(/^p[12]$/).length).toBe(1))
   })
 
   it('surfaces skipped non-PDF files', async () => {
-    render(<CombinePdf autoOpen onAfterDialogClose={() => {}} />)
+    render(<CombinePdf autoOpen onAfterClose={() => {}} />)
     const input = document.querySelector('input[type="file"]') as HTMLInputElement
 
     const files = [makeFile('a.pdf', 'application/pdf'), makeFile('weird.png', 'image/png')]

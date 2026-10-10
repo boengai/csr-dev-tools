@@ -42,7 +42,7 @@ const JUSTIFY_OPTIONS: Array<JustifyContent> = [
 ]
 const ALIGN_OPTIONS: Array<AlignItems> = ['flex-start', 'center', 'flex-end', 'stretch', 'baseline']
 const WRAP_OPTIONS: Array<FlexWrap> = ['nowrap', 'wrap', 'wrap-reverse']
-export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const FlexboxPlayground = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [container, setContainer] = useState<FlexboxContainerProps>(DEFAULT_CONTAINER)
   const nextItemId = useRef(3)
   const [items, setItems] = useState<Array<FlexItemEntry>>(() => [
@@ -51,6 +51,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponen
     { ...DEFAULT_ITEM, _id: 2 },
   ])
   const [selectedItem, setSelectedItem] = useState<number | null>(null)
+  const selected = selectedItem === null ? undefined : items[selectedItem]
 
   const { containerCss, itemsCss } = generateFlexboxCss(container, items)
 
@@ -81,7 +82,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponen
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Flexbox Playground"
       triggers={[{ label: 'Build' }]}
     >
@@ -89,6 +90,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponen
         <div className="flex shrink-0 flex-col gap-3">
           <div className="flex flex-wrap gap-4">
             <SelectInput
+              aria-label="Flex direction"
               name="fb-dir"
               onChange={(v) => setContainer((prev) => ({ ...prev, direction: v as FlexDirection }))}
               options={DIRECTION_OPTIONS.map((o) => ({ label: o, value: o }))}
@@ -96,6 +98,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponen
               value={container.direction}
             />
             <SelectInput
+              aria-label="Justify content"
               name="fb-justify"
               onChange={(v) => setContainer((prev) => ({ ...prev, justifyContent: v as JustifyContent }))}
               options={JUSTIFY_OPTIONS.map((o) => ({ label: o, value: o }))}
@@ -103,6 +106,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponen
               value={container.justifyContent}
             />
             <SelectInput
+              aria-label="Align items"
               name="fb-align"
               onChange={(v) => setContainer((prev) => ({ ...prev, alignItems: v as AlignItems }))}
               options={ALIGN_OPTIONS.map((o) => ({ label: o, value: o }))}
@@ -110,6 +114,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponen
               value={container.alignItems}
             />
             <SelectInput
+              aria-label="Flex wrap"
               name="fb-wrap"
               onChange={(v) => setContainer((prev) => ({ ...prev, wrap: v as FlexWrap }))}
               options={WRAP_OPTIONS.map((o) => ({ label: o, value: o }))}
@@ -153,7 +158,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponen
             </button>
           </div>
 
-          {selectedItem !== null && (
+          {selectedItem !== null && selected && (
             <div className="flex flex-col gap-2 rounded border border-gray-800 bg-gray-950 p-3">
               <span className="text-body-sm font-medium text-gray-300">Item {selectedItem + 1}</span>
               <FieldForm
@@ -163,7 +168,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponen
                 name={`fb-item-grow-${selectedItem}`}
                 onChange={(val: string) => updateItem(selectedItem, 'flexGrow', val)}
                 type="range"
-                value={String(items[selectedItem].flexGrow)}
+                value={String(selected.flexGrow)}
               />
               <FieldForm
                 label="flex-shrink"
@@ -172,7 +177,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponen
                 name={`fb-item-shrink-${selectedItem}`}
                 onChange={(val: string) => updateItem(selectedItem, 'flexShrink', val)}
                 type="range"
-                value={String(items[selectedItem].flexShrink)}
+                value={String(selected.flexShrink)}
               />
               <FieldForm
                 label="order"
@@ -181,7 +186,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponen
                 name={`fb-item-order-${selectedItem}`}
                 onChange={(val: string) => updateItem(selectedItem, 'order', val)}
                 type="range"
-                value={String(items[selectedItem].order)}
+                value={String(selected.order)}
               />
             </div>
           )}
@@ -204,6 +209,7 @@ export const FlexboxPlayground = ({ autoOpen, onAfterDialogClose }: ToolComponen
           {items.map((item, index) => (
             <button
               aria-label={`Item ${index + 1}`}
+              aria-pressed={selectedItem === index}
               className="text-sm flex h-16 w-16 items-center justify-center rounded font-bold text-white data-[state=active]:ring-2 data-[state=active]:ring-white"
               data-state={selectedItem === index ? 'active' : 'inactive'}
               key={item._id}

@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { createDefaultColumn } from '@/diagram/defaults'
+import { entry, nth } from '@/test/nth'
 
 import { createSequentialIdMinters } from '../id-minters'
 import { createInitialDocument } from '../state'
@@ -24,8 +25,8 @@ describe('addColumn', () => {
       createDefaultColumn('email', false, colMinters.column),
       createSequentialIdMinters(),
     )
-    expect(document.tables[tableId].columns.map((c) => c.id)).toContain(id)
-    expect(document.tables[tableId].columns.at(-1)?.name).toBe('email')
+    expect(entry(document.tables, tableId).columns.map((c) => c.id)).toContain(id)
+    expect(entry(document.tables, tableId).columns.at(-1)?.name).toBe('email')
   })
 
   it('is a no-op on unknown table', () => {
@@ -45,9 +46,9 @@ describe('addColumn', () => {
 describe('updateColumn', () => {
   it('patches the named column', () => {
     const { doc, tableId } = seedWithTable()
-    const colId = doc.tables[tableId].columns[0].id
+    const colId = nth(entry(doc.tables, tableId).columns, 0).id
     const next = updateColumn(doc, tableId, colId, { name: 'renamed', type: 'BIGINT' })
-    const updated = next.tables[tableId].columns[0]
+    const updated = nth(entry(next.tables, tableId).columns, 0)
     expect(updated.name).toBe('renamed')
     expect(updated.type).toBe('BIGINT')
   })
@@ -71,7 +72,7 @@ describe('deleteColumn', () => {
     )
     const docAfterB = addTable(a.document, { name: 'posts' }, createSequentialIdMinters())
     const bId = docAfterB.id
-    const targetColId = docAfterB.document.tables[bId].columns[0].id
+    const targetColId = nth(entry(docAfterB.document.tables, bId).columns, 0).id
     const sourceColId = a.id!
     const docWithRel = {
       ...docAfterB.document,
@@ -86,7 +87,7 @@ describe('deleteColumn', () => {
       relationOrder: ['r1'],
     }
     const next = deleteColumn(docWithRel, aId, sourceColId)
-    expect(next.tables[aId].columns.find((c) => c.id === sourceColId)).toBeUndefined()
+    expect(entry(next.tables, aId).columns.find((c) => c.id === sourceColId)).toBeUndefined()
     expect(next.relations).toEqual({})
     expect(next.relationOrder).toEqual([])
   })

@@ -2,21 +2,13 @@ import { FieldForm } from '@/components/common'
 import { ImageToolShell } from '@/components/common/image-tool'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import type { ImageFormat, ToolComponentProps } from '@/types'
+import type { ImageFormat, ResizeControls, ToolComponentProps } from '@/types'
 import { isValidImageFormat, parseDataUrlToBlob, parseFileName, resizeImage } from '@/utils'
 
 import { EMPTY_IMAGE } from './ImagePreview'
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
 
 const toolEntry = TOOL_REGISTRY_MAP['image-resizer']
-
-type ResizeControls = {
-  format: ImageFormat | null
-  height: number | null
-  quality: number | null
-  ratio: number | null
-  width: number | null
-}
 
 const INITIAL_CONTROLS: ResizeControls = {
   format: null,
@@ -26,8 +18,8 @@ const INITIAL_CONTROLS: ResizeControls = {
   width: null,
 }
 
-export const ImageResizer = ({ onAfterDialogClose }: ToolComponentProps) => {
-  const { showError } = useToast()
+export const ImageResizer = ({ onAfterClose }: ToolComponentProps) => {
+  const showError = useToast((s) => s.showError)
 
   const process = async (file: File, c: ResizeControls): Promise<Blob | null> => {
     if (!c.width || !c.height || !c.format) return null
@@ -58,7 +50,7 @@ export const ImageResizer = ({ onAfterDialogClose }: ToolComponentProps) => {
       description={toolEntry?.description}
       getDownloadFilename={({ controls, sourceName }) => parseFileName(sourceName, controls.format ?? undefined)}
       initialControls={INITIAL_CONTROLS}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onRejectInvalidFile={() => showError('Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)')}
       process={process}
       renderControls={({ controls, setControls }) => {

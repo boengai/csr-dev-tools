@@ -79,7 +79,7 @@ const reducer = (state: MarkdownTableState, action: MarkdownTableAction): Markdo
   }
 }
 
-export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const MarkdownTableGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [state, dispatch] = useReducer(reducer, undefined, createInitialState)
   const { alignments, cols, data, rows } = state
 
@@ -109,7 +109,7 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title="Markdown Table Generator"
       triggers={[{ label: 'Build Table' }]}
@@ -144,18 +144,21 @@ export const MarkdownTableGenerator = ({ autoOpen, onAfterDialogClose }: ToolCom
           <table className="w-full border-collapse">
             <thead>
               <tr>
-                {Array.from({ length: cols }).map((_, c) => (
-                  <th className="border border-gray-800 p-1" key={c}>
-                    <button
-                      className="w-full rounded bg-gray-900 px-2 py-1 text-body-xs text-gray-400 hover:text-primary"
-                      onClick={() => toggleAlign(c)}
-                      title={`Align: ${alignments[c]}`}
-                      type="button"
-                    >
-                      {ALIGN_ICON[alignments[c]]}
-                    </button>
-                  </th>
-                ))}
+                {Array.from({ length: cols }).map((_, c) => {
+                  const align = alignments[c] ?? 'left'
+                  return (
+                    <th className="border border-gray-800 p-1" key={c}>
+                      <button
+                        className="w-full rounded bg-gray-900 px-2 py-1 text-body-xs text-gray-400 hover:text-primary"
+                        onClick={() => toggleAlign(c)}
+                        title={`Align: ${align}`}
+                        type="button"
+                      >
+                        {ALIGN_ICON[align]}
+                      </button>
+                    </th>
+                  )
+                })}
               </tr>
             </thead>
             <tbody>

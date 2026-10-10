@@ -16,7 +16,7 @@ const toolEntry = TOOL_REGISTRY_MAP['hmac-generator']
 
 const ENCODINGS: Array<HmacEncoding> = ['hex', 'base64']
 
-export const HmacGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const HmacGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const {
     inputs,
     result: hmac,
@@ -42,7 +42,7 @@ export const HmacGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       size="default"
       title="HMAC Generator"

@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { parseUrl } from './url-parse'
 
 describe('parseUrl', () => {
@@ -39,7 +41,7 @@ describe('parseUrl', () => {
 
   it('handles encoded query params', () => {
     const result = parseUrl('https://example.com?name=hello%20world')
-    expect(result.searchParams[0].value).toBe('hello world')
+    expect(nth(result.searchParams, 0).value).toBe('hello world')
   })
 
   it('returns error for invalid URL', () => {

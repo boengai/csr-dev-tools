@@ -1,3 +1,4 @@
+import type { ToolComputeContext } from '@/types/hooks/computation'
 import type { CompileResultDto } from '@/types/wasm/pdf'
 
 export type MarkupToPdfShellProps = {
@@ -6,7 +7,7 @@ export type MarkupToPdfShellProps = {
    * Source-to-PDF compile function. Today's adopters route through Typst
    * via `src/wasm/pdf.ts` (`compileHtmlToPdf` / `compileMarkdownToPdf`).
    */
-  compute: (source: string) => Promise<CompileResultDto> | CompileResultDto
+  compute: (source: string, context: ToolComputeContext) => Promise<CompileResultDto> | CompileResultDto
   description?: string
   /**
    * Slug interpolated into the download filename:
@@ -16,7 +17,7 @@ export type MarkupToPdfShellProps = {
   filenameSlug: string
   /** Form field `name` for the source CodeMirror input. */
   inputName: string
-  onAfterDialogClose?: () => void
+  onAfterClose?: () => void
   /** Placeholder shown in the empty source pane. */
   placeholder: string
   /** Display label on the source pane (e.g. "HTML Input"). */

@@ -1,3 +1,15 @@
+/**
+ * Second argument the pipeline passes to every `compute` call. `signal` is
+ * aborted when the call is superseded (a newer input is enqueued), when the
+ * input becomes empty (`isEmpty` bypass), and on unmount. Computes may ignore
+ * it — `(input) => …` stays assignable — but long-running work (worker calls,
+ * canvas loops) should check it so cancelled work stops instead of merely
+ * having its result dropped. Cancellation, not progress (see ADR-0001).
+ */
+export type ToolComputeContext = {
+  signal: AbortSignal
+}
+
 export type UseToolComputationOptions<I, R> = {
   initial: R
   debounceMs?: number
@@ -53,7 +65,7 @@ export type UseToolFieldsOptions<F, R> = {
    * `useMountOnce(() => recompute())` ritual.
    */
   autorunOnMount?: boolean
-  compute: (input: F) => R | Promise<R>
+  compute: (input: F, context: ToolComputeContext) => R | Promise<R>
   debounceMs?: number
   /** Initial input bag — also the value `reset()` restores. */
   initial: F
@@ -66,6 +78,15 @@ export type UseToolFieldsOptions<F, R> = {
   errorFallback?: string
   /** See `UseToolComputationOptions.onError`. */
   onError?: (error: unknown, input: F) => void
+  /**
+   * Opt-in persistence. When set, the input is seeded once on mount from this
+   * localStorage key (JSON; falls back to `initial` if absent or corrupt) and
+   * written back trailing-debounced on every change (same delay as
+   * `debounceMs`), flushed on unmount and `pagehide`. Also enables the
+   * restored-value autorun: compute fires on mount when `isEmpty` is provided
+   * AND the restored value is non-empty. `reset()` still restores `initial`.
+   */
+  storageKey?: string
 }
 
 export type UseToolFieldsResult<F, R> = {
@@ -104,7 +125,7 @@ export type UseToolInputOptions<I, R> = {
    * `useMountOnce(() => recompute())` ritual.
    */
   autorunOnMount?: boolean
-  compute: (input: I) => R | Promise<R>
+  compute: (input: I, context: ToolComputeContext) => R | Promise<R>
   debounceMs?: number
   /** Initial input value — also the value `reset()` restores. */
   initial: I
@@ -117,6 +138,15 @@ export type UseToolInputOptions<I, R> = {
   errorFallback?: string
   /** See `UseToolComputationOptions.onError`. */
   onError?: (error: unknown, input: I) => void
+  /**
+   * Opt-in persistence. When set, the input is seeded once on mount from this
+   * localStorage key (JSON; falls back to `initial` if absent or corrupt) and
+   * written back trailing-debounced on every change (same delay as
+   * `debounceMs`), flushed on unmount and `pagehide`. Also enables the
+   * restored-value autorun: compute fires on mount when `isEmpty` is provided
+   * AND the restored value is non-empty. `reset()` still restores `initial`.
+   */
+  storageKey?: string
 }
 
 export type UseToolInputResult<I, R> = {
@@ -143,32 +173,8 @@ export type UseToolInputResult<I, R> = {
   setInputImmediate: (input: I) => void
 }
 
-export type UseToolFieldsPersistedOptions<F, R> = UseToolFieldsOptions<F, R> & {
-  /** localStorage key holding the persisted input bag (JSON-serialized). */
-  storageKey: string
-}
-
-export type UseToolComputationPersistedOptions<I, R> = Omit<UseToolComputationOptions<I, R>, 'initial'> & {
-  /** Compute function — same shape as the parameter to `useToolComputation`. */
-  compute: (input: I) => R | Promise<R>
-  /** Initial input value — also the value persisted on first mount when localStorage is empty. */
-  initial: I
-  /** Initial result, used until the first compute resolves. */
-  initialResult: R
-  /** localStorage key holding the persisted input value (JSON-serialized). */
-  storageKey: string
-}
-
-export type UseToolComputationPersistedResult<I, R> = {
-  error: unknown | null
-  /** Current input value (live; updated by setInput / setInputImmediate). */
-  input: I
-  isPending: boolean
-  result: R
-  /** Debounced input change. Updates state, persists to localStorage, schedules debounced compute. */
-  setInput: (input: I) => void
-  /** Immediate input change. Updates state, persists, fires compute without debounce. */
-  setInputImmediate: (input: I) => void
-  /** Fire compute with the current input. See `UseToolComputationResult.recompute`. */
-  recompute: () => void
+export type PipelineErrorRouting<I> = {
+  errorLabel?: string
+  errorFallback?: string
+  onError?: (err: unknown, input: I) => void
 }

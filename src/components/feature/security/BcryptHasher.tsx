@@ -1,41 +1,78 @@
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState, type ReactElement } from 'react'
 
 import { Button, CodeInput, CopyButton, SelectInput, Tabs, TextInput } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useAsyncAction, useElapsedTimer, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
+import type { BcryptTabProps, ToolComponentProps } from '@/types'
 import {
+  BCRYPT_MAX_COST,
+  BCRYPT_SLOW_COST,
   type BcryptHashComponents,
   type BcryptHashResult,
   type BcryptVerifyResult,
+  bcryptCostTooHighMessage,
+  cancelBcrypt,
   checkPasswordTruncation,
+  exceedsMaxBcryptCost,
   hashPassword,
   isValidBcryptHash,
   parseBcryptHash,
   verifyPassword,
 } from '@/utils'
+import { isWorkerAbortError } from '@/wasm/worker-bridge'
+
 const toolEntry = TOOL_REGISTRY_MAP['bcrypt-hasher']
 
-const COST_OPTIONS = Array.from({ length: 28 }, (_, i) => {
-  const val = i + 4
+const MIN_COST = 4
+
+const COST_OPTIONS = Array.from({ length: BCRYPT_MAX_COST - MIN_COST + 1 }, (_, i) => {
+  const val = i + MIN_COST
   const labels: Record<number, string> = {
     4: '4 (fast)',
     10: '10 (default)',
     12: '12 (~300ms)',
     14: '14 (~1s)',
     16: '16 (~4s)',
-    18: '18 (~18s)',
   }
   return { label: labels[val] ?? String(val), value: String(val) }
 })
 
+// A user-initiated cancel rejects the pending call; don't toast it as a failure.
+const toastUnlessCancelled = (showError: (msg: string) => void, label: string) => (err: unknown) => {
+  if (isWorkerAbortError(err, 'cancel')) return
+  showError(label)
+}
+
+const handleCancel = () => {
+  void cancelBcrypt()
+}
+
+const usePasswordVisibility = (): { suffix: ReactElement; type: 'password' | 'text' } => {
+  const [visible, setVisible] = useState(false)
+  return {
+    suffix: (
+      <button
+        aria-label={visible ? 'Hide password' : 'Show password'}
+        className="cursor-pointer text-body-xs text-gray-400 transition-colors hover:text-primary"
+        onClick={() => setVisible((v) => !v)}
+        type="button"
+      >
+        {visible ? 'Hide' : 'Show'}
+      </button>
+    ),
+    type: visible ? 'text' : 'password',
+  }
+}
+
 const INVALID_HASH_MESSAGE =
   'Invalid bcrypt hash. Expected format: $2a$/$2b$/$2y$ followed by cost and 53 characters (e.g., $2b$10$...)'
 
-const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => void }) => {
+const HashTab = ({ onProcessingChange }: BcryptTabProps) => {
   const [password, setPassword] = useState('')
   const [rounds, setRounds] = useState('10')
+  const showError = useToast((s) => s.showError)
+  const passwordVisibility = usePasswordVisibility()
 
   const {
     pending: hashing,
@@ -43,7 +80,7 @@ const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => v
     result,
     run: handleHash,
   } = useAsyncAction<BcryptHashResult>(() => hashPassword(password, Number(rounds)), {
-    errorLabel: 'Hashing failed. Please try again.',
+    onError: toastUnlessCancelled(showError, 'Hashing failed. Please try again.'),
   })
   const elapsedDisplay = useElapsedTimer(hashing)
 
@@ -74,7 +111,8 @@ const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => v
         onChange={handlePasswordChange}
         onEnter={hashing ? undefined : handleHash}
         placeholder="Enter password to hash..."
-        type="text"
+        suffix={passwordVisibility.suffix}
+        type={passwordVisibility.type}
         value={password}
       />
 
@@ -86,6 +124,7 @@ const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => v
 
       <SelectInput
         disabled={hashing}
+        aria-label="Cost factor"
         name="cost-factor"
         onChange={setRounds}
         options={COST_OPTIONS}
@@ -93,9 +132,24 @@ const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => v
         value={rounds}
       />
 
-      <Button disabled={hashing} onClick={handleHash} variant="primary">
-        {hashing ? 'Hashing...' : 'Hash Password'}
-      </Button>
+      {Number(rounds) > BCRYPT_SLOW_COST && (
+        <p className="text-amber-400 text-body-xs">
+          Cost {rounds} is slow — each step doubles the hashing time and blocks a CPU core until it finishes.
+        </p>
+      )}
+
+      <div className="flex gap-2">
+        <div className="grow">
+          <Button block disabled={hashing} onClick={handleHash} variant="primary">
+            {hashing ? 'Hashing...' : 'Hash Password'}
+          </Button>
+        </div>
+        {hashing && (
+          <Button onClick={handleCancel} variant="secondary">
+            Cancel
+          </Button>
+        )}
+      </div>
 
       {hashing && (
         <p className="text-body-xs text-gray-400" role="status">
@@ -133,10 +187,11 @@ const HashTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => v
   )
 }
 
-const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) => void }) => {
+const VerifyTab = ({ onProcessingChange }: BcryptTabProps) => {
   const [password, setPassword] = useState('')
   const [hashInput, setHashInput] = useState('')
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
+  const passwordVisibility = usePasswordVisibility()
 
   const {
     pending: verifying,
@@ -144,7 +199,7 @@ const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) =>
     result,
     run,
   } = useAsyncAction<BcryptVerifyResult>(() => verifyPassword(password, hashInput.trim()), {
-    errorLabel: 'Verification failed. Please check inputs.',
+    onError: toastUnlessCancelled(showError, 'Verification failed. Please check inputs.'),
   })
   const elapsedDisplay = useElapsedTimer(verifying)
 
@@ -169,8 +224,13 @@ const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) =>
   )
 
   const handleVerify = useCallback(async () => {
-    if (!isValidBcryptHash(hashInput.trim())) {
+    const hash = hashInput.trim()
+    if (!isValidBcryptHash(hash)) {
       showError(INVALID_HASH_MESSAGE)
+      return
+    }
+    if (exceedsMaxBcryptCost(hash)) {
+      showError(bcryptCostTooHighMessage(parseBcryptHash(hash).rounds))
       return
     }
     await run()
@@ -179,16 +239,19 @@ const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) =>
   return (
     <div className="flex w-full flex-col gap-4">
       <TextInput
+        aria-label="Password to verify"
         disabled={verifying}
         name="verify-password"
         onChange={handlePasswordChange}
         onEnter={verifying ? undefined : handleVerify}
         placeholder="Enter password..."
-        type="text"
+        suffix={passwordVisibility.suffix}
+        type={passwordVisibility.type}
         value={password}
       />
 
       <CodeInput
+        aria-label="Bcrypt hash to verify"
         disabled={verifying}
         minHeight="60px"
         name="verify-hash"
@@ -197,9 +260,18 @@ const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) =>
         value={hashInput}
       />
 
-      <Button disabled={verifying} onClick={handleVerify} variant="primary">
-        {verifying ? 'Verifying...' : 'Verify Password'}
-      </Button>
+      <div className="flex gap-2">
+        <div className="grow">
+          <Button block disabled={verifying} onClick={handleVerify} variant="primary">
+            {verifying ? 'Verifying...' : 'Verify Password'}
+          </Button>
+        </div>
+        {verifying && (
+          <Button onClick={handleCancel} variant="secondary">
+            Cancel
+          </Button>
+        )}
+      </div>
 
       {verifying && (
         <p className="text-body-xs text-gray-400" role="status">
@@ -230,43 +302,51 @@ const VerifyTab = ({ onProcessingChange }: { onProcessingChange: (v: boolean) =>
   )
 }
 
-export const BcryptHasher = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+const BcryptHasherBody = () => {
   const [processing, setProcessing] = useState(false)
 
+  // Dialog content unmounts on close: terminate the worker so an in-flight
+  // high-cost hash doesn't keep a CPU core busy after the user leaves.
+  useEffect(() => handleCancel, [])
+
   return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
-      title="Bcrypt Hasher"
-      triggers={[{ label: 'Open' }]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
-        <Tabs
-          items={[
-            {
-              content: <HashTab onProcessingChange={setProcessing} />,
-              // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
-              trigger: (
-                <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>
-                  Hash
-                </button>
-              ),
-              value: 'hash',
-            },
-            {
-              content: <VerifyTab onProcessingChange={setProcessing} />,
-              // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
-              trigger: (
-                <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>
-                  Verify
-                </button>
-              ),
-              value: 'verify',
-            },
-          ]}
-        />
-      </div>
-    </ToolDialogFrame>
+    <div className="flex w-full grow flex-col gap-4">
+      <Tabs
+        items={[
+          {
+            content: <HashTab onProcessingChange={setProcessing} />,
+            // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
+            trigger: (
+              <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>
+                Hash
+              </button>
+            ),
+            value: 'hash',
+          },
+          {
+            content: <VerifyTab onProcessingChange={setProcessing} />,
+            // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
+            trigger: (
+              <button className="disabled:pointer-events-none disabled:opacity-50" disabled={processing}>
+                Verify
+              </button>
+            ),
+            value: 'verify',
+          },
+        ]}
+      />
+    </div>
   )
 }
+
+export const BcryptHasher = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <ToolDialogFrame
+    autoOpen={autoOpen}
+    description={toolEntry?.description}
+    onAfterClose={onAfterClose}
+    title="Bcrypt Hasher"
+    triggers={[{ label: 'Open' }]}
+  >
+    <BcryptHasherBody />
+  </ToolDialogFrame>
+)

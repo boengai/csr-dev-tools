@@ -1,44 +1,30 @@
-import { useState } from 'react'
-
 import type { ToolDialogShellProps } from '@/types'
 
 import { Dialog } from './Dialog'
 
 export const ToolDialogShell = ({
-  autoOpen,
-  onAfterDialogClose,
-  title,
+  children,
   description,
-  size = 'default',
+  onAfterClose,
+  onOpenChange,
   onReset,
   open,
-  onOpenChange,
-  children,
+  size = 'default',
+  title,
 }: ToolDialogShellProps) => {
-  const [internalOpen, setInternalOpen] = useState(autoOpen ?? false)
-  const isControlled = open !== undefined
-  const effectiveOpen = isControlled ? (open as boolean) : internalOpen
-
-  const setOpen = (next: boolean) => {
-    if (isControlled) {
-      onOpenChange?.(next)
-    } else {
-      setInternalOpen(next)
-    }
-  }
-
   const handleAfterClose = () => {
     onReset?.()
-    onAfterDialogClose?.()
+    onAfterClose?.()
   }
 
   return (
     <Dialog
-      injected={{ open: effectiveOpen, setOpen }}
+      description={description}
       onAfterClose={handleAfterClose}
+      onOpenChange={onOpenChange}
+      open={open}
       size={size}
       title={title}
-      description={description}
     >
       {children}
     </Dialog>

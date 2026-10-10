@@ -3,8 +3,8 @@ import type { RsaKeySize, RsaKeyPair } from '@/types/utils/rsa-key-generator'
 export const arrayBufferToPem = (buffer: ArrayBuffer, label: string): string => {
   const bytes = new Uint8Array(buffer)
   let binary = ''
-  for (let i = 0; i < bytes.byteLength; i++) {
-    binary += String.fromCharCode(bytes[i])
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte)
   }
   const base64 = btoa(binary)
   const lines = base64.match(/.{1,64}/g)?.join('\n') ?? ''

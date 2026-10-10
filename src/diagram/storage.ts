@@ -5,6 +5,7 @@ import {
   loadDiagramIndex,
   saveDiagram,
   saveDiagramIndex,
+  saveDiagramWithIndex,
 } from '@/diagram/codecs/storage'
 import type { DiagramIndexEntry, DiagramSchema, DiagramStorage } from '@/types'
 
@@ -13,6 +14,7 @@ export const localStorageDiagramStorage: DiagramStorage = {
   saveIndex: saveDiagramIndex,
   loadDiagram,
   saveDiagram,
+  saveDiagramWithIndex,
   deleteDiagram,
   generateId: generateDiagramId,
 }
@@ -36,6 +38,14 @@ export const createInMemoryDiagramStorage = (
     saveDiagram: (id, schema) => {
       diagrams[id] = structuredClone(schema)
       saves++
+    },
+    saveDiagramWithIndex: (id, schema, entry) => {
+      diagrams[id] = structuredClone(schema)
+      const at = index.findIndex((e) => e.id === id)
+      const next = entry(at >= 0 ? index[at] : undefined)
+      index = at >= 0 ? index.map((e, i) => (i === at ? next : e)) : [...index, next]
+      saves++
+      return [...index]
     },
     deleteDiagram: (id) => {
       delete diagrams[id]

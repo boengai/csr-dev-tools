@@ -31,5 +31,13 @@ export const ImageFormatSelectInput = (props: Pick<SelectInputProps, 'disabled' 
     [],
   )
 
-  return <SelectInput {...props} name="format" options={options} placeholder="Select image format" />
+  return (
+    <SelectInput
+      {...props}
+      aria-label="Image format"
+      name="format"
+      options={options}
+      placeholder="Select image format"
+    />
+  )
 }

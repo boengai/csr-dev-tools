@@ -9,8 +9,8 @@ const toolEntry = TOOL_REGISTRY_MAP['hash-generator']
 
 const INITIAL: HashInput = { algo: DEFAULT_HASH_ALGORITHM, text: '' }
 
-export const HashGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { showError } = useToast()
+export const HashGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
+  const showError = useToast((s) => s.showError)
 
   const {
     inputs,
@@ -41,7 +41,7 @@ export const HashGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentPro
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       size="default"
       title="Hash Generator"

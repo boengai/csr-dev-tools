@@ -4,6 +4,8 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { useToast } from './state'
 import { useCopyToClipboard } from './useCopyToClipboard'
 
@@ -39,8 +41,8 @@ describe('useCopyToClipboard', () => {
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith('hello')
     const items = useToast.getState().items
     expect(items).toHaveLength(1)
-    expect(items[0].label).toBe('Copied to clipboard')
-    expect(items[0].type).toBe('success')
+    expect(nth(items, 0).label).toBe('Copied to clipboard')
+    expect(nth(items, 0).type).toBe('success')
   })
 
   it('toasts an error when the clipboard write rejects', async () => {
@@ -53,8 +55,8 @@ describe('useCopyToClipboard', () => {
 
     const items = useToast.getState().items
     expect(items).toHaveLength(1)
-    expect(items[0].label).toBe('Failed to copy to clipboard')
-    expect(items[0].type).toBe('error')
+    expect(nth(items, 0).label).toBe('Failed to copy to clipboard')
+    expect(nth(items, 0).type).toBe('error')
   })
 
   it('absorbs the rejection so callers do not need to catch', async () => {

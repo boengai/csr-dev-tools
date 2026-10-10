@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { CopyButton, ErrorBanner, FieldForm } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
@@ -19,7 +19,7 @@ const EMPTY_VALUES: Record<string, string> = { binary: '', decimal: '', hex: '',
 
 const INITIAL_RESULT: BaseResult = { values: null, error: '' }
 
-export const NumberBaseConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const NumberBaseConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [values, setValues] = useState<Record<string, string>>(EMPTY_VALUES)
 
   const { result, setInput } = useToolComputation<BaseInput, BaseResult>(
@@ -46,12 +46,16 @@ export const NumberBaseConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
     },
   )
 
-  // Sync converted values down into local `values` so the non-typed fields
-  // update after each compute resolves. The typed field stays in sync because
-  // `handleChange` echoes the keystroke immediately.
-  useEffect(() => {
+  // Adopt converted values into local `values` so the non-typed fields update
+  // after each compute resolves. The typed field stays in sync because
+  // `handleChange` echoes the keystroke immediately. Done during render (React's
+  // "adjust state when a prop changes" pattern) rather than in an effect, so the
+  // adoption lands in the same commit as the new result.
+  const [adoptedValues, setAdoptedValues] = useState(result.values)
+  if (result.values !== adoptedValues) {
+    setAdoptedValues(result.values)
     if (result.values) setValues(result.values)
-  }, [result.values])
+  }
 
   const handleChange = (val: string, field: BaseField) => {
     if (val.trim().length === 0) {
@@ -68,7 +72,7 @@ export const NumberBaseConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Number Base Converter"
       triggers={[{ label: 'Convert' }]}
     >
@@ -84,7 +88,7 @@ export const NumberBaseConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
                     <span>
                       {field.label} (base {field.base.toString()})
                     </span>
-                    <CopyButton label={field.label} value={values[field.name]} />
+                    <CopyButton label={field.label} value={values[field.name] ?? ''} />
                   </span>
                 }
                 name={field.name}

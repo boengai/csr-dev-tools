@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type { DiagramSchema } from '@/types'
 
 import { deserializeDiagram, serializeDiagram, validateDiagramSchema } from './persistence'
@@ -101,9 +102,9 @@ describe('db-diagram-persistence', () => {
 
       const schema = serializeDiagram(nodes, edges)
       expect(schema.tables).toHaveLength(1)
-      expect(schema.tables[0].name).toBe('users')
-      expect(schema.tables[0].position).toEqual({ x: 100, y: 200 })
-      expect(schema.tables[0].columns).toHaveLength(1)
+      expect(nth(schema.tables, 0).name).toBe('users')
+      expect(nth(schema.tables, 0).position).toEqual({ x: 100, y: 200 })
+      expect(nth(schema.tables, 0).columns).toHaveLength(1)
       // Callbacks should not be in serialized output
       expect(schema.tables[0]).not.toHaveProperty('onAddColumn')
     })
@@ -137,23 +138,23 @@ describe('db-diagram-persistence', () => {
       const { edges, nodes } = deserializeDiagram(schema)
 
       expect(nodes).toHaveLength(2)
-      expect(nodes[0].id).toBe('t1')
-      expect(nodes[0].data.tableName).toBe('users')
-      expect(nodes[0].position).toEqual({ x: 100, y: 200 })
-      expect(nodes[0].type).toBe('tableNode')
+      expect(nth(nodes, 0).id).toBe('t1')
+      expect(nth(nodes, 0).data.tableName).toBe('users')
+      expect(nth(nodes, 0).position).toEqual({ x: 100, y: 200 })
+      expect(nth(nodes, 0).type).toBe('tableNode')
 
       expect(edges).toHaveLength(1)
-      expect(edges[0].source).toBe('t1')
-      expect(edges[0].target).toBe('t2')
-      expect(edges[0].type).toBe('relationship')
+      expect(nth(edges, 0).source).toBe('t1')
+      expect(nth(edges, 0).target).toBe('t2')
+      expect(nth(edges, 0).type).toBe('relationship')
     })
 
     it('should re-create handle IDs on deserialized edges', () => {
       const schema = makeSampleSchema()
       const { edges } = deserializeDiagram(schema)
 
-      expect(edges[0].sourceHandle).toBe('t1-c1-source')
-      expect(edges[0].targetHandle).toBe('t2-c3-target')
+      expect(nth(edges, 0).sourceHandle).toBe('t1-c1-source')
+      expect(nth(edges, 0).targetHandle).toBe('t2-c3-target')
     })
   })
 
@@ -192,12 +193,12 @@ describe('db-diagram-persistence', () => {
       const schema = serializeDiagram(originalNodes, [])
       const { nodes: restoredNodes } = deserializeDiagram(schema)
 
-      expect(restoredNodes[0].id).toBe(originalNodes[0].id)
-      expect(restoredNodes[0].data.tableName).toBe(originalNodes[0].data.tableName)
-      expect(restoredNodes[0].position).toEqual(originalNodes[0].position)
-      expect(restoredNodes[0].data.columns).toHaveLength(2)
-      expect(restoredNodes[0].data.columns[0].name).toBe('id')
-      expect(restoredNodes[0].data.columns[1].name).toBe('email')
+      expect(nth(restoredNodes, 0).id).toBe(nth(originalNodes, 0).id)
+      expect(nth(restoredNodes, 0).data.tableName).toBe(nth(originalNodes, 0).data.tableName)
+      expect(nth(restoredNodes, 0).position).toEqual(nth(originalNodes, 0).position)
+      expect(nth(restoredNodes, 0).data.columns).toHaveLength(2)
+      expect(nth(nth(restoredNodes, 0).data.columns, 0).name).toBe('id')
+      expect(nth(nth(restoredNodes, 0).data.columns, 1).name).toBe('email')
     })
   })
 

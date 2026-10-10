@@ -36,53 +36,65 @@ const defaultDuration: Record<NonNullable<ToastItemVariant['type']>, number> = {
   success: 1500,
 }
 
-const ToastItem = ({ duration, label, type }: Omit<ToastItemProps, 'id'>) => {
+const ToastItem = ({ duration, id, label, type }: ToastItemProps) => {
+  const dismiss = useToast((state) => state.dismiss)
   const resolvedDuration = duration ?? defaultDuration[type ?? 'success']
   const iconClassname = iconVariants({ type })
 
+  // `forceMount` + always-open: Radix never unmounts the node itself. Closing
+  // (timeout / swipe / Escape) removes the item from the store, and the
+  // list-level <AnimatePresence> plays the exit animation before unmount.
   return (
-    <AnimatePresence>
-      <Root asChild duration={resolvedDuration === 0 ? Infinity : resolvedDuration}>
-        <m.li
-          animate={{ opacity: 1, y: 0 }}
-          className="popover flex w-fit items-center gap-2 rounded-sm p-2 text-body-sm"
-          exit={{ opacity: 0, y: -20 }}
-          initial={{ opacity: 0, y: -20 }}
+    <Root
+      asChild
+      duration={resolvedDuration === 0 ? Infinity : resolvedDuration}
+      forceMount
+      onOpenChange={(open) => {
+        if (!open) dismiss(id)
+      }}
+      open
+    >
+      <m.li
+        animate={{ opacity: 1, y: 0 }}
+        className="popover flex w-fit items-center gap-2 rounded-sm p-2 text-body-sm"
+        exit={{ opacity: 0, y: -20 }}
+        initial={{ opacity: 0, y: -20 }}
+        transition={{
+          duration: 0.2,
+          ease: 'easeInOut',
+          opacity: { duration: 0.15 },
+        }}
+      >
+        <m.div
+          animate={{
+            rotate: [0, 5, -5, 0],
+            scale: [1, 1.2, 1],
+          }}
+          className={iconClassname}
           transition={{
-            duration: 0.2,
+            duration: 0.6,
             ease: 'easeInOut',
-            opacity: { duration: 0.15 },
+            times: [0, 0.3, 1],
           }}
         >
-          <m.div
-            animate={{
-              rotate: [0, 5, -5, 0],
-              scale: [1, 1.2, 1],
-            }}
-            className={iconClassname}
-            transition={{
-              duration: 0.6,
-              ease: 'easeInOut',
-              times: [0, 0.3, 1],
-            }}
-          >
-            <ToastTypeIcon type={type} />
-          </m.div>
-          <Title className="capitalize">{label}</Title>
-        </m.li>
-      </Root>
-    </AnimatePresence>
+          <ToastTypeIcon type={type} />
+        </m.div>
+        <Title className="capitalize">{label}</Title>
+      </m.li>
+    </Root>
   )
 }
 
 export const ToastProvider = () => {
-  const { items } = useToast()
+  const items = useToast((state) => state.items)
 
   return (
     <Provider>
-      {items.map((item) => (
-        <ToastItem key={item.id} {...item} />
-      ))}
+      <AnimatePresence initial={false}>
+        {items.map((item) => (
+          <ToastItem key={item.id} {...item} />
+        ))}
+      </AnimatePresence>
       <Viewport className="pointer-events-none fixed top-0 left-1/2 z-999 mt-(--header-height) flex w-full -translate-x-1/2 flex-col-reverse items-center gap-2 p-2 outline-none" />
     </Provider>
   )

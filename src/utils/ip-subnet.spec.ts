@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import {
   calculateSubnet,
+  computeSubnet,
   ipToBinary,
   ipToNumber,
   maskToPrefix,
@@ -212,5 +213,34 @@ describe('ip-subnet', () => {
         expect(result.networkAddress).toBe('192.168.1.0')
       })
     })
+  })
+})
+
+describe('computeSubnet', () => {
+  const base = { cidrInput: '', ipInput: '', maskInput: '', mode: 'cidr' as const }
+
+  it('computes from CIDR in cidr mode', () => {
+    expect(computeSubnet({ ...base, cidrInput: '10.0.0.0/8' }).result?.subnetMask).toBe('255.0.0.0')
+  })
+
+  it('reports invalid CIDR', () => {
+    expect(computeSubnet({ ...base, cidrInput: 'nope' })).toEqual({
+      error: 'Invalid CIDR notation — expected format: x.x.x.x/y',
+      result: null,
+    })
+  })
+
+  it('computes from IP + mask in ip-mask mode and validates both', () => {
+    const ipMask = { ...base, mode: 'ip-mask' as const }
+    expect(computeSubnet({ ...ipMask, ipInput: '10.0.0.1', maskInput: '255.255.0.0' }).result?.cidr).toBe('10.0.0.0/16')
+    expect(computeSubnet({ ...ipMask, ipInput: 'x', maskInput: '255.255.0.0' }).error).toBe('Invalid IPv4 address')
+    expect(computeSubnet({ ...ipMask, ipInput: '10.0.0.1', maskInput: '255.0.255.0' }).error).toBe(
+      'Invalid subnet mask — mask must be contiguous',
+    )
+  })
+
+  it('returns an empty result for empty input', () => {
+    expect(computeSubnet(base)).toEqual({ error: '', result: null })
+    expect(computeSubnet({ ...base, mode: 'ip-mask' })).toEqual({ error: '', result: null })
   })
 })

@@ -15,9 +15,10 @@ const KEY_SIZES: Array<{ label: string; value: RsaKeySize }> = [
   { label: '4096 bits', value: 4096 },
 ]
 
-export const RsaKeyGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const RsaKeyGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [keySize, setKeySize] = useState<RsaKeySize>(2048)
-  const { showError, showSuccess } = useToast()
+  const showError = useToast((s) => s.showError)
+  const showSuccess = useToast((s) => s.showSuccess)
   const { downloadPemFile } = useDownload()
 
   const {
@@ -64,7 +65,7 @@ export const RsaKeyGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title="RSA Key Generator"
       triggers={[{ label: 'Generate RSA Key Pair' }]}
@@ -133,7 +134,13 @@ export const RsaKeyGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                   </Button>
                 </div>
               </div>
-              <CodeInput minHeight="150px" name="public-key-output" readOnly value={keyPair.publicKey} />
+              <CodeInput
+                aria-label="Public key"
+                minHeight="150px"
+                name="public-key-output"
+                readOnly
+                value={keyPair.publicKey}
+              />
             </div>
 
             {/* Private Key */}
@@ -147,7 +154,13 @@ export const RsaKeyGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentP
                   </Button>
                 </div>
               </div>
-              <CodeInput minHeight="360px" name="private-key-output" readOnly value={keyPair.privateKey} />
+              <CodeInput
+                aria-label="Private key"
+                minHeight="360px"
+                name="private-key-output"
+                readOnly
+                value={keyPair.privateKey}
+              />
             </div>
 
             {/* Download All */}

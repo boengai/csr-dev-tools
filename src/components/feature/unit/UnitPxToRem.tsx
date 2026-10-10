@@ -13,8 +13,8 @@ const INITIAL_BAG = { base: '16', lastEdited: 'px' as PxRemLastEdited, px: '', r
 
 const INVALID_BASE_MSG = 'Base font size must be a positive number (e.g., 16)'
 
-export const UnitPxToRem = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { showError } = useToast()
+export const UnitPxToRem = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
+  const showError = useToast((s) => s.showError)
   const [fields, setFields] = useState(INITIAL_BAG)
 
   const { result, setInput, setInputImmediate } = useToolComputation<PxRemInput, PxRemOutput | null>(solvePxRem, {
@@ -30,6 +30,7 @@ export const UnitPxToRem = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
 
   useEffect(() => {
     if (result) {
+      // oxlint-disable-next-line react/set-state-in-effect -- ADR-0019 N-mirror broadcast adoption effect
       setFields((prev) => ({ ...prev, ...result }))
     }
   }, [result])
@@ -80,7 +81,7 @@ export const UnitPxToRem = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="PX to REM"
       triggers={[{ label: 'Convert' }]}
     >

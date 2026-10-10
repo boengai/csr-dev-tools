@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
 import { generateSampleJson, parseProtobufSchema } from '@/wasm/parsers'
 
 const SAMPLE_PROTO = `
@@ -173,7 +174,7 @@ message Test {
       if (!person) return
 
       expect(person.nestedEnums).toHaveLength(1)
-      expect(person.nestedEnums[0].name).toBe('Status')
+      expect(nth(person.nestedEnums, 0).name).toBe('Status')
     })
 
     it('handles oneof groups', async () => {
@@ -192,11 +193,11 @@ message TestMessage {
       expect(result.success).toBe(true)
       if (!result.success) return
 
-      const msg = result.schema.messages[0]
+      const msg = nth(result.schema.messages, 0)
       expect(msg.oneofs).toHaveLength(1)
-      expect(msg.oneofs[0].name).toBe('testOneof')
-      expect(msg.oneofs[0].fieldNames).toContain('name')
-      expect(msg.oneofs[0].fieldNames).toContain('id')
+      expect(nth(msg.oneofs, 0).name).toBe('testOneof')
+      expect(nth(msg.oneofs, 0).fieldNames).toContain('name')
+      expect(nth(msg.oneofs, 0).fieldNames).toContain('id')
     })
 
     it('handles map fields', async () => {
@@ -212,7 +213,7 @@ message TestMessage {
       expect(result.success).toBe(true)
       if (!result.success) return
 
-      const msg = result.schema.messages[0]
+      const msg = nth(result.schema.messages, 0)
       const scoresField = msg.fields.find((f) => f.name === 'scores')
       expect(scoresField?.isMap).toBe(true)
 
@@ -237,7 +238,7 @@ message LegacyMessage {
       expect(result.schema.syntax).toBe('proto2')
       expect(result.schema.messages).toHaveLength(1)
 
-      const msg = result.schema.messages[0]
+      const msg = nth(result.schema.messages, 0)
       const nameField = msg.fields.find((f) => f.name === 'name')
       expect(nameField?.rule).toBe('required')
 
@@ -301,7 +302,7 @@ message AllScalars {
       const result = await parseProtobufSchema(allScalars)
       if (!result.success) throw new Error('Parse failed')
 
-      const msg = result.schema.messages[0]
+      const msg = nth(result.schema.messages, 0)
       const json = await generateSampleJson(msg, result.schema.messages, result.schema.enums)
 
       expect(json).toEqual({
@@ -386,7 +387,7 @@ message TreeNode {
       const result = await parseProtobufSchema(selfRef)
       if (!result.success) throw new Error('Parse failed')
 
-      const msg = result.schema.messages[0]
+      const msg = nth(result.schema.messages, 0)
       const json = await generateSampleJson(msg, result.schema.messages, result.schema.enums)
 
       expect(json.value).toBe('')

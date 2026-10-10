@@ -14,21 +14,26 @@ import {
   UploadInput,
 } from '@/components/common'
 import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useDownload, useToast } from '@/hooks'
-import type { DownloadTarget, ImageConvertorAction, ImageConvertorState, ImageFormat } from '@/types'
-import { convertImageFormat, isValidImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
+import { useDownload, useStaleSafeAsync, useToast } from '@/hooks'
+import type {
+  DownloadTarget,
+  ImageConvertorAction,
+  ImageConvertorPreview,
+  ImageConvertorState,
+  ImageConvertorTab,
+  ImageFormat,
+} from '@/types'
+import { convertImageFormat, dedupeFileName, isValidImageFormat, parseDataUrlToBlob, parseFileName } from '@/utils'
 import { buildZipBlob } from '@/utils/zip'
 
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
 
-const TABS_VALUES: Record<'DOWNLOAD' | 'IMPORT' | 'PROCESSING' | 'SELECT_FORMAT', string> = {
+const TABS_VALUES: Record<ImageConvertorTab, string> = {
   DOWNLOAD: 'download',
   IMPORT: 'import',
   PROCESSING: 'processing',
   SELECT_FORMAT: 'select-format',
 }
-
-const fakeWait = (ms: number = 500) => new Promise((resolve) => setTimeout(resolve, ms))
 
 const toolEntry = TOOL_REGISTRY_MAP['image-converter']
 const initialState: ImageConvertorState = {
@@ -64,8 +69,12 @@ export const ImageConvertor = () => {
   const downloadTargetRef = useRef<DownloadTarget | null>(null)
 
   // hooks
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
   const { downloadBlob } = useDownload()
+  // A run is invalidated by a newer run, a reset, or unmount — after each
+  // await, a stale run stops before dispatching or auto-downloading.
+  const newSession = useStaleSafeAsync()
+  useEffect(() => () => void newSession(), [newSession])
 
   // state
   const [state, dispatch] = useReducer(reducer, initialState)
@@ -82,7 +91,7 @@ export const ImageConvertor = () => {
     Promise.all(
       sources.map(
         (file) =>
-          new Promise<{ height: number; url: string; width: number }>((resolve) => {
+          new Promise<ImageConvertorPreview>((resolve) => {
             const reader = new FileReader()
             reader.onload = () => {
               const url = typeof reader.result === 'string' ? reader.result : ''
@@ -117,6 +126,7 @@ export const ImageConvertor = () => {
   }
 
   const handleReset = () => {
+    newSession()
     dispatch({ type: 'RESET' })
   }
 
@@ -135,6 +145,7 @@ export const ImageConvertor = () => {
   }
 
   const handleConvert = async () => {
+    const session = newSession()
     try {
       // go to processing tab
       dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.PROCESSING })
@@ -144,19 +155,16 @@ export const ImageConvertor = () => {
       const formattedImages: Record<string, string> = {}
       const processTick = 100 / sources.length
       for (const img of sources) {
-        const [, fi] = await Promise.all([
-          await fakeWait(),
-          convertImageFormat(img, target.format, {
-            quality: Number(target.quality),
-          }),
-        ])
+        const fi = await convertImageFormat(img, target.format, {
+          quality: Number(target.quality),
+        })
+        if (!session.isFresh()) return
 
-        formattedImages[`${parseFileName(img.name, target.format)}`] = fi
+        // Two inputs can share a base name — keep both instead of overwriting.
+        const name = dedupeFileName(parseFileName(img.name, target.format), (n) => n in formattedImages)
+        formattedImages[name] = fi
         dispatch({ type: 'INCREMENT_PROCESSING', payload: processTick })
       }
-
-      // wait for animation to complete
-      await fakeWait(450)
 
       // save
       let fileName: string
@@ -167,19 +175,24 @@ export const ImageConvertor = () => {
         }
         fileName = `csr-dev-tools_converted_${Date.now()}.zip`
         const blob = await buildZipBlob(files)
+        if (!session.isFresh()) return
         downloadBlob(blob, fileName)
         downloadTargetRef.current = { blob, filename: fileName }
       } else {
-        const [[key, dataUrl]] = Object.entries(formattedImages)
+        const [single] = Object.entries(formattedImages)
+        if (!single) throw new Error('No converted image to download')
+        const [key, dataUrl] = single
         fileName = key
         downloadTargetRef.current = { dataUrl, filename: fileName }
         const blob = await parseDataUrlToBlob(dataUrl)
+        if (!session.isFresh()) return
         downloadBlob(blob, fileName)
       }
 
       // go to download tab
       dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.DOWNLOAD })
     } catch {
+      if (!session.isFresh()) return
       showError('Image conversion failed — try a different format or smaller file')
       dispatch({ type: 'SET_TAB_VALUE', payload: TABS_VALUES.SELECT_FORMAT })
     }

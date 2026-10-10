@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 
 /**
  * Manages a single pending `setTimeout` handle with automatic cancellation on
@@ -43,5 +43,6 @@ export function useTimeoutRef(): {
     }, delay)
   }, [])
 
-  return { cancel, schedule }
+  // Stable identity so callers can list the handle in effect deps.
+  return useMemo(() => ({ cancel, schedule }), [cancel, schedule])
 }

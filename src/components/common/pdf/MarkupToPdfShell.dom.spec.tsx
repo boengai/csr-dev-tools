@@ -4,7 +4,8 @@
 import { render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import type { UseToolComputationPersistedResult } from '@/types'
+import { nth } from '@/test/nth'
+import type { UseToolInputResult } from '@/types'
 import type { CompileResultDto } from '@/types/wasm/pdf'
 
 import { MarkupToPdfShell } from './MarkupToPdfShell'
@@ -12,7 +13,7 @@ import { MarkupToPdfShell } from './MarkupToPdfShell'
 // FieldForm type="code" wraps CodeMirror (contenteditable; not reachable via
 // fireEvent.change in jsdom). The shell's interesting behavior is the pipeline
 // state → UI mapping, not CodeMirror integration — so we drive the shell by
-// mocking the persisted-pipeline hook's return value. Mirrors the pattern in
+// mocking the pipeline hook (useToolInput)'s return value. Mirrors the pattern in
 // BidirectionalConverter.dom.spec.tsx and the now-retired per-Tool specs.
 
 const EMPTY_RESULT: CompileResultDto = { svgs: [], pdf: new Uint8Array(0) }
@@ -22,12 +23,13 @@ const NONEMPTY_RESULT: CompileResultDto = {
 }
 
 const baseReturn = (
-  overrides: Partial<UseToolComputationPersistedResult<string, CompileResultDto>> = {},
-): UseToolComputationPersistedResult<string, CompileResultDto> => ({
+  overrides: Partial<UseToolInputResult<string, CompileResultDto>> = {},
+): UseToolInputResult<string, CompileResultDto> => ({
   error: null,
   input: '',
   isPending: false,
   recompute: vi.fn(),
+  reset: vi.fn(),
   result: EMPTY_RESULT,
   setInput: vi.fn(),
   setInputImmediate: vi.fn(),
@@ -40,7 +42,7 @@ vi.mock('@/hooks', async () => {
   const actual = await vi.importActual<typeof import('@/hooks')>('@/hooks')
   return {
     ...actual,
-    useToolComputationPersisted: (opts: unknown) => mockHook(opts),
+    useToolInput: (opts: unknown) => mockHook(opts),
   }
 })
 
@@ -64,7 +66,7 @@ const renderShell = () =>
       compute={vi.fn()}
       filenameSlug="html"
       inputName="markup-source"
-      onAfterDialogClose={() => {}}
+      onAfterClose={() => {}}
       placeholder="placeholder"
       sourceLabel="Source"
       storageKey="csr-dev-tools-markup-test"
@@ -128,7 +130,7 @@ describe('MarkupToPdfShell', () => {
     renderShell()
 
     expect(mockHook).toHaveBeenCalled()
-    const opts = mockHook.mock.calls[0][0] as {
+    const opts = nth(nth(mockHook.mock.calls, 0), 0) as {
       storageKey: string
       isEmpty: (val: string) => boolean
       initialResult: CompileResultDto

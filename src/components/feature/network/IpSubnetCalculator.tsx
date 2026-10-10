@@ -1,49 +1,22 @@
-import { useCallback, useMemo } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { CopyButton, ErrorBanner, FieldForm, Tabs } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolFields } from '@/hooks'
-import type { InputMode, ToolComponentProps } from '@/types'
-import {
-  calculateSubnet,
-  maskToPrefix,
-  parseCidr,
-  prefixToMask,
-  type SubnetResult,
-  validateIpv4,
-  validateSubnetMask,
-} from '@/utils'
+import type { BinaryDisplayProps, InputMode, SubnetComputeInput, ToolComponentProps } from '@/types'
+import { computeSubnet, parseCidr, prefixToMask, validateIpv4 } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['ip-subnet-calculator']
 
 const DEFAULT_CIDR = '192.168.1.0/24'
-const DEFAULT_RESULT = calculateSubnet('192.168.1.0', 24)
-const INITIAL_BAG = { error: '', result: DEFAULT_RESULT as SubnetResult | null }
 
 const PRESET_PREFIXES = [8, 16, 24, 25, 26, 27, 28, 29, 30, 31, 32] as const
 
-type SubnetInput = { cidrInput: string; ipInput: string; maskInput: string; mode: InputMode }
-type SubnetBag = { error: string; result: SubnetResult | null }
-
-const INITIAL_INPUT: SubnetInput = {
+const INITIAL_INPUT: SubnetComputeInput = {
   cidrInput: DEFAULT_CIDR,
   ipInput: '',
   maskInput: '',
   mode: 'cidr',
-}
-
-const computeSubnet = ({ cidrInput, ipInput, maskInput, mode }: SubnetInput): SubnetBag => {
-  if (mode === 'cidr') {
-    if (cidrInput.trim().length === 0) return { error: '', result: null }
-    const parsed = parseCidr(cidrInput)
-    if (!parsed) return { error: 'Invalid CIDR notation — expected format: x.x.x.x/y', result: null }
-    return { error: '', result: calculateSubnet(parsed.ip, parsed.prefixLength) }
-  }
-  if (ipInput.trim().length === 0 && maskInput.trim().length === 0) return { error: '', result: null }
-  if (!validateIpv4(ipInput)) return { error: 'Invalid IPv4 address', result: null }
-  if (!validateSubnetMask(maskInput)) return { error: 'Invalid subnet mask — mask must be contiguous', result: null }
-  return { error: '', result: calculateSubnet(ipInput, maskToPrefix(maskInput)) }
 }
 
 const formatBinarySegment = (bits: string, startBitIndex: number): string => {
@@ -58,7 +31,7 @@ const formatBinarySegment = (bits: string, startBitIndex: number): string => {
   return result
 }
 
-const BinaryDisplay = ({ binary, prefixLength }: { binary: string; prefixLength: number }) => {
+const BinaryDisplay = ({ binary, prefixLength }: BinaryDisplayProps) => {
   const bitsOnly = binary.replace(/\./g, '')
   const networkBits = bitsOnly.slice(0, prefixLength)
   const hostBits = bitsOnly.slice(prefixLength)
@@ -76,21 +49,16 @@ const BinaryDisplay = ({ binary, prefixLength }: { binary: string; prefixLength:
   )
 }
 
-export const IpSubnetCalculator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const {
-    inputs,
-    result: bag,
-    setFields,
-    setFieldsImmediate,
-  } = useToolFields<SubnetInput, SubnetBag>({
-    compute: computeSubnet,
-    debounceMs: 300,
-    initial: INITIAL_INPUT,
-    initialResult: INITIAL_BAG,
-  })
-
+export const IpSubnetCalculator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
+  // computeSubnet is cheap and synchronous, so the result is derived directly
+  // from the inputs — no debounce, and handlers always read the current result.
+  const [inputs, setInputs] = useState<SubnetComputeInput>(INITIAL_INPUT)
   const { cidrInput, ipInput, maskInput, mode } = inputs
-  const { error, result } = bag
+  const { error, result } = useMemo(() => computeSubnet(inputs), [inputs])
+
+  const setFields = useCallback((patch: Partial<SubnetComputeInput>) => {
+    setInputs((prev) => ({ ...prev, ...patch }))
+  }, [])
 
   const handleModeChange = useCallback(
     (newMode: InputMode) => {
@@ -110,18 +78,18 @@ export const IpSubnetCalculator = ({ autoOpen, onAfterDialogClose }: ToolCompone
       if (mode === 'cidr') {
         const parsed = parseCidr(cidrInput)
         const ip = parsed ? parsed.ip : '192.168.1.0'
-        setFieldsImmediate({ cidrInput: `${ip}/${prefix}` })
+        setFields({ cidrInput: `${ip}/${prefix}` })
       } else {
         const ip = ipInput || '192.168.1.0'
         const mask = prefixToMask(prefix)
         if (validateIpv4(ip)) {
-          setFieldsImmediate({ ipInput: ip, maskInput: mask })
+          setFields({ ipInput: ip, maskInput: mask })
         } else {
           setFields({ maskInput: mask })
         }
       }
     },
-    [cidrInput, ipInput, mode, setFields, setFieldsImmediate],
+    [cidrInput, ipInput, mode, setFields],
   )
 
   const resultRows = useMemo(() => {
@@ -142,7 +110,7 @@ export const IpSubnetCalculator = ({ autoOpen, onAfterDialogClose }: ToolCompone
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="IP Subnet Calculator"
       triggers={[{ label: 'Calculate' }]}
     >

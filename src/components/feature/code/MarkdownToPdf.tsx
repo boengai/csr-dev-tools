@@ -5,14 +5,14 @@ import { compileMarkdownToPdf } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['markdown-to-pdf']
 
-export const MarkdownToPdf = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => (
+export const MarkdownToPdf = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
   <MarkupToPdfShell
     autoOpen={autoOpen}
     compute={compileMarkdownToPdf}
     description={toolEntry?.description}
     filenameSlug="markdown"
     inputName="markdown-to-pdf-source"
-    onAfterDialogClose={onAfterDialogClose}
+    onAfterClose={onAfterClose}
     placeholder={'# Document Title\n\nWrite **markdown** here...'}
     sourceLabel="Markdown Input"
     storageKey="csr-dev-tools-markdown-to-pdf"

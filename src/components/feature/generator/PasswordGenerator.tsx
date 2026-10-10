@@ -19,12 +19,12 @@ const CHAR_TOGGLES: Array<{
 
 const toolEntry = TOOL_REGISTRY_MAP['password-generator']
 
-export const PasswordGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const PasswordGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [options, setOptions] = useState<PasswordOptions>(DEFAULT_PASSWORD_OPTIONS)
   const [count, setCount] = useState(1)
   const nextPwId = useRef(1)
   const [passwords, setPasswords] = useState(() => [{ _id: 0, value: generatePassword(DEFAULT_PASSWORD_OPTIONS) }])
-  const { showSuccess } = useToast()
+  const showSuccess = useToast((s) => s.showSuccess)
 
   const handleGenerate = () => {
     setPasswords(Array.from({ length: count }, () => ({ _id: nextPwId.current++, value: generatePassword(options) })))
@@ -53,7 +53,7 @@ export const PasswordGenerator = ({ autoOpen, onAfterDialogClose }: ToolComponen
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Password Generator"
       triggers={[{ label: 'Generate' }]}
     >

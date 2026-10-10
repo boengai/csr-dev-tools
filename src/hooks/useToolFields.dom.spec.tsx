@@ -4,6 +4,8 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { useToolFields } from './useToolFields'
 
 type Input = { mode: 'a' | 'b'; pattern: string; testString: string }
@@ -55,7 +57,10 @@ describe('useToolFields', () => {
       await vi.advanceTimersByTimeAsync(300)
     })
     expect(compute).toHaveBeenCalledTimes(1)
-    expect(compute).toHaveBeenCalledWith({ mode: 'a', pattern: 'abc', testString: '' })
+    expect(compute).toHaveBeenCalledWith(
+      { mode: 'a', pattern: 'abc', testString: '' },
+      { signal: expect.any(AbortSignal) },
+    )
     expect(result.current.result).toBe('abc|')
   })
 
@@ -81,7 +86,10 @@ describe('useToolFields', () => {
     // Both partials chained through the inputs ref → final bag is the union.
     expect(result.current.inputs).toEqual({ mode: 'a', pattern: 'p1', testString: 't1' })
     expect(compute).toHaveBeenCalledTimes(1)
-    expect(compute).toHaveBeenCalledWith({ mode: 'a', pattern: 'p1', testString: 't1' })
+    expect(compute).toHaveBeenCalledWith(
+      { mode: 'a', pattern: 'p1', testString: 't1' },
+      { signal: expect.any(AbortSignal) },
+    )
   })
 
   it('setFieldsImmediate skips the debounce and updates inputs sync', async () => {
@@ -108,7 +116,10 @@ describe('useToolFields', () => {
     })
 
     expect(compute).toHaveBeenCalledTimes(1)
-    expect(compute).toHaveBeenCalledWith({ mode: 'b', pattern: 'slow', testString: '' })
+    expect(compute).toHaveBeenCalledWith(
+      { mode: 'b', pattern: 'slow', testString: '' },
+      { signal: expect.any(AbortSignal) },
+    )
     expect(result.current.inputs.mode).toBe('b')
     expect(result.current.result).toBe('B')
 
@@ -200,8 +211,8 @@ describe('useToolFields', () => {
     })
 
     expect(onError).toHaveBeenCalledTimes(1)
-    expect(onError.mock.calls[0][0]).toBeInstanceOf(Error)
-    expect(onError.mock.calls[0][1]).toEqual({ mode: 'a', pattern: 'p', testString: 't' })
+    expect(nth(onError.mock.calls, 0)[0]).toBeInstanceOf(Error)
+    expect(nth(onError.mock.calls, 0)[1]).toEqual({ mode: 'a', pattern: 'p', testString: 't' })
   })
 
   it('recompute: fires compute with the current bag', async () => {
@@ -232,7 +243,10 @@ describe('useToolFields', () => {
     })
 
     expect(compute).toHaveBeenCalledTimes(2)
-    expect(compute).toHaveBeenLastCalledWith({ mode: 'a', pattern: 'p', testString: 't' })
+    expect(compute).toHaveBeenLastCalledWith(
+      { mode: 'a', pattern: 'p', testString: 't' },
+      { signal: expect.any(AbortSignal) },
+    )
     expect(result.current.result).toBe('p|t')
   })
 
@@ -280,7 +294,10 @@ describe('useToolFields', () => {
       })
 
       expect(compute).toHaveBeenCalledTimes(1)
-      expect(compute).toHaveBeenCalledWith({ mode: 'a', pattern: 'P', testString: 'T' })
+      expect(compute).toHaveBeenCalledWith(
+        { mode: 'a', pattern: 'P', testString: 'T' },
+        { signal: expect.any(AbortSignal) },
+      )
     })
 
     it('does NOT fire compute on mount when autorunOnMount is undefined (existing default)', async () => {
@@ -372,7 +389,15 @@ describe('useToolFields', () => {
 
     // recompute and setFieldsImmediate({}) each fire one additional compute beyond the initial setFields call.
     expect(compute).toHaveBeenCalledTimes(3)
-    expect(compute).toHaveBeenNthCalledWith(2, { mode: 'a', pattern: 'p', testString: '' })
-    expect(compute).toHaveBeenNthCalledWith(3, { mode: 'a', pattern: 'p', testString: '' })
+    expect(compute).toHaveBeenNthCalledWith(
+      2,
+      { mode: 'a', pattern: 'p', testString: '' },
+      { signal: expect.any(AbortSignal) },
+    )
+    expect(compute).toHaveBeenNthCalledWith(
+      3,
+      { mode: 'a', pattern: 'p', testString: '' },
+      { signal: expect.any(AbortSignal) },
+    )
   })
 })

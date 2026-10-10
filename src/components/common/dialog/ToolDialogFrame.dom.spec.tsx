@@ -4,6 +4,8 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { ToolDialogFrame } from './ToolDialogFrame'
 
 describe('ToolDialogFrame', () => {
@@ -100,7 +102,7 @@ describe('ToolDialogFrame', () => {
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
     expect(onReset).toHaveBeenCalledTimes(1)
     expect(onAfterClose).toHaveBeenCalledTimes(1)
-    expect(onReset.mock.invocationCallOrder[0]).toBeLessThan(onAfterClose.mock.invocationCallOrder[0])
+    expect(nth(onReset.mock.invocationCallOrder, 0)).toBeLessThan(nth(onAfterClose.mock.invocationCallOrder, 0))
   })
 
   it('omits the description when not provided', () => {

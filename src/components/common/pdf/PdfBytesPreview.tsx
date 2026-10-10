@@ -1,42 +1,51 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 
-type PdfBytesPreviewProps = { bytes: Uint8Array }
+import type { PdfBytesPreviewProps, PdfBytesPreviewRendered } from '@/types'
+
+let pdfjsPromise: Promise<typeof import('pdfjs-dist')> | null = null
+
+/** Loads pdf.js + wires its worker once; concurrent callers (StrictMode's double effect) share one import. */
+const loadPdfjs = (): Promise<typeof import('pdfjs-dist')> => {
+  if (pdfjsPromise) return pdfjsPromise
+  pdfjsPromise = (async () => {
+    const [pdfjsLib, worker] = await Promise.all([
+      import('pdfjs-dist'),
+      import('pdfjs-dist/build/pdf.worker.min.mjs?url'),
+    ])
+    pdfjsLib.GlobalWorkerOptions.workerSrc = worker.default
+    return pdfjsLib
+  })()
+  // Allow a retry after a failed chunk load.
+  pdfjsPromise.catch(() => {
+    pdfjsPromise = null
+  })
+  return pdfjsPromise
+}
 
 export const PdfBytesPreview = ({ bytes }: PdfBytesPreviewProps) => {
-  const [pages, setPages] = useState<Array<string>>([])
-  const [isRendering, setIsRendering] = useState(false)
-  const [error, setError] = useState<string | null>(null)
-  // Track the last rendered buffer by reference so we don't re-render
-  // when the parent re-renders but result.pdf is the same object.
-  const lastBytesRef = useRef<Uint8Array | null>(null)
+  // State is only written from the async render below, tagged with the buffer
+  // it belongs to. `isRendering` derives from a mismatch, so the effect never
+  // sets state synchronously and StrictMode's mount→cleanup→mount simply
+  // cancels the first run and lets the second one finish.
+  const [rendered, setRendered] = useState<PdfBytesPreviewRendered | null>(null)
 
   useEffect(() => {
-    // Skip if it's the exact same buffer reference — avoids infinite loops
-    // when sibling state changes (e.g. isRendering) cause parent re-renders.
-    if (bytes === lastBytesRef.current) return
-
-    lastBytesRef.current = bytes
-
-    if (bytes.byteLength === 0) {
-      setPages([])
-      return
-    }
+    if (bytes.byteLength === 0) return
     let cancelled = false
-    setIsRendering(true)
-    setError(null)
+    let loadingTask: { destroy: () => Promise<void> } | null = null
 
     ;(async () => {
       try {
-        const pdfjsLib = await import('pdfjs-dist')
-        const workerUrl = (await import('pdfjs-dist/build/pdf.worker.min.mjs?url')).default
-        pdfjsLib.GlobalWorkerOptions.workerSrc = workerUrl
+        const pdfjsLib = await loadPdfjs()
+        if (cancelled) return
 
-        const loadingTask = pdfjsLib.getDocument({ data: bytes.slice() })
-        const doc = await loadingTask.promise
+        const task = pdfjsLib.getDocument({ data: bytes.slice() })
+        loadingTask = task
+        const doc = await task.promise
         const out: Array<string> = []
 
         for (let i = 1; i <= doc.numPages; i++) {
-          if (cancelled) break
+          if (cancelled) return
           const page = await doc.getPage(i)
           const viewport = page.getViewport({ scale: 0.6 })
           const canvas = document.createElement('canvas')
@@ -46,22 +55,29 @@ export const PdfBytesPreview = ({ bytes }: PdfBytesPreviewProps) => {
           out.push(canvas.toDataURL('image/png'))
         }
 
-        if (!cancelled) setPages(out)
+        if (!cancelled) setRendered({ bytes, error: null, pages: out })
       } catch (e) {
         if (!cancelled) {
-          setError(e instanceof Error ? e.message : 'Failed to render preview')
+          setRendered({ bytes, error: e instanceof Error ? e.message : 'Failed to render preview', pages: [] })
         }
       } finally {
-        if (!cancelled) setIsRendering(false)
+        // Frees the worker-side document and its page caches.
+        void loadingTask?.destroy()
       }
     })()
 
     return () => {
       cancelled = true
+      void loadingTask?.destroy()
     }
   }, [bytes])
 
   if (bytes.byteLength === 0) return null
+
+  const isRendering = rendered?.bytes !== bytes
+  // While a new buffer renders, keep showing the previous pages (no flash).
+  const pages = rendered?.pages ?? []
+  const error = isRendering ? null : rendered.error
 
   return (
     <div className="flex min-h-0 grow flex-col gap-3">
@@ -76,10 +92,11 @@ export const PdfBytesPreview = ({ bytes }: PdfBytesPreviewProps) => {
       )}
       <div className="flex min-h-0 grow flex-col gap-3 overflow-auto rounded-lg border-2 border-gray-900 bg-gray-100 p-3">
         {pages.map((dataUrl, i) => (
+          // Page number is the page's identity — the list is rebuilt wholesale per buffer.
           <img
             alt={`Page ${i + 1}`}
             className="mx-auto block w-full max-w-[400px] rounded shadow-md"
-            key={i}
+            key={`page-${i + 1}`}
             src={dataUrl}
           />
         ))}

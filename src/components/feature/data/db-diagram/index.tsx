@@ -94,7 +94,7 @@ const DiagramWorkspace = () => {
   const editor = useMemo(() => new DiagramEditor(), [])
   const [activePanel, setActivePanel] = useState<SidePanel>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const { showError } = useToast()
+  const showError = useToast((s) => s.showError)
   const { downloadBlob } = useDownload()
 
   useEffect(() => {
@@ -141,8 +141,9 @@ const DiagramWorkspace = () => {
   const handleRearrange = useCallback(() => {
     const doc = editor.getDocument()
     const positions = gridLayoutPositions(doc.tableOrder.length)
-    for (let i = 0; i < doc.tableOrder.length; i++) {
-      editor.moveTable(doc.tableOrder[i], positions[i])
+    for (const [i, tableId] of doc.tableOrder.entries()) {
+      const position = positions[i]
+      if (position) editor.moveTable(tableId, position)
     }
   }, [editor])
 
@@ -181,7 +182,7 @@ const MobileBlocker = () => (
 // ---------------------------------------------------------------------------
 // DbDiagram — public export, owns the Dialog shell
 // ---------------------------------------------------------------------------
-export const DbDiagram = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const DbDiagram = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   // Match Tailwind's `tablet:` breakpoint (48rem) so the JS gate aligns with the
   // CSS utility prefix used elsewhere in the codebase. `ssrDefault: true` keeps
@@ -200,7 +201,7 @@ export const DbDiagram = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
       </div>
 
       <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
+        onAfterClose={onAfterClose}
         onOpenChange={setDialogOpen}
         open={dialogOpen}
         size="screen"

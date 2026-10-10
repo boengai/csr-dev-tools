@@ -37,7 +37,7 @@ const compute = async ({
   return { output }
 }
 
-export const JsonToYamlConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => (
+export const JsonToYamlConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
   <BidirectionalConverter
     autoOpen={autoOpen}
     compute={compute}
@@ -45,6 +45,6 @@ export const JsonToYamlConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
     initialResult={{ output: '' }}
     modeStorageKey="json-to-yaml"
     modes={MODES}
-    onAfterDialogClose={onAfterDialogClose}
+    onAfterClose={onAfterClose}
   />
 )

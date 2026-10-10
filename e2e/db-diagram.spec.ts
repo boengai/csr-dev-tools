@@ -81,7 +81,7 @@ test.describe('DB Diagram', () => {
     await tableNode.getByText('+ Add Column').click()
 
     // Should now have id column + new column = verify second column name input exists
-    const columnInputs = tableNode.locator('input[name="column-name"]')
+    const columnInputs = tableNode.locator('input[name^="column-name-"]')
     const count = await columnInputs.count()
     expect(count).toBeGreaterThanOrEqual(2)
   })

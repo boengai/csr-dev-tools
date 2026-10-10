@@ -4,6 +4,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
 import { narrateParseError } from '@/utils/parse-error-narrators'
 
 import { BidirectionalConverter } from './BidirectionalConverter'
@@ -149,7 +150,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
       await vi.advanceTimersByTimeAsync(1)
     })
 
-    expect(compute).toHaveBeenCalledWith({ mode: 'a-to-b', source: 'hello' })
+    expect(compute).toHaveBeenCalledWith({ mode: 'a-to-b', source: 'hello' }, { signal: expect.any(AbortSignal) })
   })
 
   it('calls onError when compute throws', async () => {
@@ -174,8 +175,8 @@ describe('BidirectionalConverter — compute pipeline', () => {
     })
 
     expect(onError).toHaveBeenCalledTimes(1)
-    expect(onError.mock.calls[0][0]).toBeInstanceOf(Error)
-    expect(onError.mock.calls[0][1]).toBe('a-to-b')
+    expect(nth(nth(onError.mock.calls, 0), 0)).toBeInstanceOf(Error)
+    expect(nth(nth(onError.mock.calls, 0), 1)).toBe('a-to-b')
   })
 
   it('reads per-mode source from localStorage when switching modes via the in-dialog toggle', async () => {
@@ -191,13 +192,13 @@ describe('BidirectionalConverter — compute pipeline', () => {
     await act(async () => {
       await vi.advanceTimersByTimeAsync(1)
     })
-    expect(compute).toHaveBeenLastCalledWith({ mode: 'a-to-b', source: 'saved A' })
+    expect(compute).toHaveBeenLastCalledWith({ mode: 'a-to-b', source: 'saved A' }, { signal: expect.any(AbortSignal) })
 
     fireEvent.click(screen.getByRole('button', { name: 'B → A mode' }))
     await act(async () => {
       await vi.advanceTimersByTimeAsync(1)
     })
-    expect(compute).toHaveBeenLastCalledWith({ mode: 'b-to-a', source: 'saved B' })
+    expect(compute).toHaveBeenLastCalledWith({ mode: 'b-to-a', source: 'saved B' }, { signal: expect.any(AbortSignal) })
   })
 
   // The mode buttons live outside the dialog (in the tile), so there is no
@@ -220,7 +221,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
     })
 
     expect(compute).toHaveBeenCalledTimes(1)
-    expect(compute).toHaveBeenCalledWith({ mode: 'a-to-b', source: 'hello' })
+    expect(compute).toHaveBeenCalledWith({ mode: 'a-to-b', source: 'hello' }, { signal: expect.any(AbortSignal) })
   })
 
   // NOTE: write-path characterization is intentionally absent.
@@ -310,7 +311,7 @@ describe('BidirectionalConverter — sourceToolbarSlot', () => {
       await vi.advanceTimersByTimeAsync(1)
     })
     expect(compute).toHaveBeenCalledTimes(2)
-    expect(compute).toHaveBeenLastCalledWith({ mode: 'a-to-b', source: 'hi' })
+    expect(compute).toHaveBeenLastCalledWith({ mode: 'a-to-b', source: 'hi' }, { signal: expect.any(AbortSignal) })
   })
 })
 
@@ -328,8 +329,8 @@ describe('BidirectionalConverter — autoOpen + close', () => {
     expect(screen.getByText('A Input')).toBeTruthy()
   })
 
-  it('calls onAfterDialogClose on close', () => {
-    const onAfterDialogClose = vi.fn()
+  it('calls onAfterClose on close', () => {
+    const onAfterClose = vi.fn()
     render(
       <BidirectionalConverter
         autoOpen
@@ -337,11 +338,11 @@ describe('BidirectionalConverter — autoOpen + close', () => {
         initialResult={{ output: '' }}
         modes={MODES}
         modeStorageKey="test"
-        onAfterDialogClose={onAfterDialogClose}
+        onAfterClose={onAfterClose}
       />,
     )
     fireEvent.click(screen.getByRole('button', { name: /close/i }))
-    expect(onAfterDialogClose).toHaveBeenCalledTimes(1)
+    expect(onAfterClose).toHaveBeenCalledTimes(1)
   })
 })
 
@@ -432,7 +433,7 @@ describe('BidirectionalConverter — parse-error narration', () => {
 
     expect(narrateParseError).toHaveBeenCalledWith('json', '{bad')
     expect(onError).toHaveBeenCalledTimes(1)
-    const thrown = onError.mock.calls[0][0] as Error
+    const thrown = nth(nth(onError.mock.calls, 0), 0) as Error
     expect(thrown.message).toBe('Invalid JSON: unexpected token')
   })
 
@@ -460,7 +461,7 @@ describe('BidirectionalConverter — parse-error narration', () => {
 
     expect(narrateParseError).toHaveBeenCalledWith('json', '[{"a":1}]')
     expect(onError).toHaveBeenCalledTimes(1)
-    const thrown = onError.mock.calls[0][0] as Error
+    const thrown = nth(nth(onError.mock.calls, 0), 0) as Error
     expect(thrown.message).toBe('JSON must be an array of objects')
   })
 
@@ -487,7 +488,7 @@ describe('BidirectionalConverter — parse-error narration', () => {
 
     expect(narrateParseError).not.toHaveBeenCalled()
     expect(onError).toHaveBeenCalledTimes(1)
-    const thrown = onError.mock.calls[0][0] as Error
+    const thrown = nth(nth(onError.mock.calls, 0), 0) as Error
     expect(thrown.message).toBe('boom')
   })
 })

@@ -4,6 +4,8 @@
 import { renderHook } from '@testing-library/react'
 import { beforeEach, describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { useToolSeo } from './useToolSeo'
 
 const BASELINE_TITLE = 'csr-dev-tools'
@@ -74,6 +76,6 @@ describe('useToolSeo', () => {
 
     const descTags = document.querySelectorAll('meta[name="description"]')
     expect(descTags.length).toBe(1)
-    expect(descTags[0].getAttribute('content')).toBe('new')
+    expect(nth(descTags, 0).getAttribute('content')).toBe('new')
   })
 })

@@ -1,14 +1,15 @@
 import { Button, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolFieldsPersisted } from '@/hooks'
+import { useToast, useToolFields } from '@/hooks'
 import type { JsonTsInput, ToolComponentProps } from '@/types'
 import { jsonToTypeScript } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-typescript']
 
-export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { showError, showSuccess } = useToast()
+export const JsonToTypeScript = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
+  const showError = useToast((s) => s.showError)
+  const showSuccess = useToast((s) => s.showSuccess)
 
   const {
     inputs,
@@ -16,7 +17,7 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
     result: output,
     setFields,
     setFieldsImmediate,
-  } = useToolFieldsPersisted<JsonTsInput, string>({
+  } = useToolFields<JsonTsInput, string>({
     compute: ({ source: val, rootName: root, useInterface: iface, optionalProps: optional }) =>
       jsonToTypeScript(val, { optionalProperties: optional, rootName: root, useInterface: iface }),
     debounceMs: 300,
@@ -54,7 +55,7 @@ export const JsonToTypeScript = ({ autoOpen, onAfterDialogClose }: ToolComponent
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={handleReset}
       title="JSON to TypeScript"
       triggers={[

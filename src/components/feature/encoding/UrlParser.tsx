@@ -17,7 +17,7 @@ const EMPTY: UrlParseResult = {
   searchParams: [],
 }
 
-export const UrlParser = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const UrlParser = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const { input, result, setInput } = useToolInput<string, UrlParseResult>({
     compute: (val) => parseUrl(val),
     debounceMs: 300,
@@ -30,7 +30,7 @@ export const UrlParser = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) 
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="URL Parser"
       triggers={[{ label: 'Parse' }]}
     >

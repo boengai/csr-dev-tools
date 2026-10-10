@@ -1,22 +1,25 @@
-import { CopyButton, FieldForm, Pane, ToggleButton } from '@/components/common'
+import { useState } from 'react'
+
+import { Button, CopyButton, FieldForm, Pane, ToggleButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFields } from '@/hooks'
-import type { Flags, ToolComponentProps } from '@/types'
-import {
-  buildHighlightSegments,
-  executeRegex,
-  formatMatchesForCopy,
-  type HighlightSegment,
-  type RegexMatch,
-  type RegexResult,
-} from '@/utils'
+import type {
+  Flags,
+  RegexComputed,
+  RegexFlagToggleProps,
+  RegexInput,
+  RegexMatchDetailsProps,
+  ToolComponentProps,
+} from '@/types'
+import { buildHighlightSegments, formatMatchesForCopy } from '@/utils'
+import { runRegex } from '@/utils/regex-runner'
 
 const toolEntry = TOOL_REGISTRY_MAP['regex-tester']
 const DEFAULT_FLAGS: Flags = { g: true, i: false, m: false }
 
-type RegexInput = { flags: Flags; pattern: string; testString: string }
-type RegexComputed = { regex: RegexResult | null; segments: Array<HighlightSegment> }
+// Rendering thousands of match cards stalls React; page them in.
+const MATCH_PAGE_SIZE = 200
 const INITIAL_INPUT: RegexInput = { flags: DEFAULT_FLAGS, pattern: '', testString: '' }
 const INITIAL_COMPUTED: RegexComputed = { regex: null, segments: [] }
 
@@ -37,52 +40,68 @@ const flagsToString = (flags: Flags) =>
     .map(([k]) => k)
     .join('')
 
-const FlagToggle = ({ active, flag, onToggle }: { active: boolean; flag: string; onToggle: () => void }) => (
+const FlagToggle = ({ active, flag, onToggle }: RegexFlagToggleProps) => (
   <ToggleButton aria-label={`Toggle ${flag} flag`} onClick={onToggle} pressed={active} size="compact">
     {flag}
   </ToggleButton>
 )
 
-const MatchDetails = ({ matches }: { matches: Array<RegexMatch> }) => (
-  <div className="flex flex-col gap-2">
-    {matches.map((match, i) => (
-      <div
-        className="text-sm rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-2"
-        key={`${match.index}-${match.fullMatch}`}
-      >
-        <p className="text-gray-300">
-          <span className="font-medium text-gray-200">Match {i + 1}:</span>{' '}
-          <span className="font-mono text-primary">&quot;{match.fullMatch}&quot;</span> at index {match.index}
-        </p>
-        {match.groups.length > 0 && (
-          <div className="mt-1 flex flex-col gap-0.5 pl-4 text-gray-400">
-            {match.groups.map((group, g) => (
-              <p key={`group-${g}`}>
-                Group {g + 1}:{' '}
-                {group === undefined ? (
-                  <span className="text-gray-600 italic">undefined</span>
-                ) : (
-                  <span className="font-mono">{group}</span>
-                )}
-              </p>
-            ))}
-          </div>
-        )}
-        {match.namedGroups != null && (
-          <div className="mt-1 flex flex-col gap-0.5 pl-4 text-gray-400">
-            {Object.entries(match.namedGroups).map(([name, value]) => (
-              <p key={name}>
-                {name}: <span className="font-mono">{value}</span>
-              </p>
-            ))}
-          </div>
-        )}
-      </div>
-    ))}
-  </div>
-)
+const MatchDetails = ({ matches }: RegexMatchDetailsProps) => {
+  const [limit, setLimit] = useState(MATCH_PAGE_SIZE)
+  const [shownFor, setShownFor] = useState(matches)
+  // New result set → collapse back to the first page (render-phase reset).
+  if (shownFor !== matches) {
+    setShownFor(matches)
+    setLimit(MATCH_PAGE_SIZE)
+  }
+  const remaining = matches.length - limit
 
-export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+  return (
+    <div className="flex flex-col gap-2">
+      {matches.slice(0, limit).map((match, i) => (
+        <div
+          className="text-sm rounded-lg border border-gray-800 bg-gray-900/50 px-3 py-2"
+          key={`${match.index}-${match.fullMatch}`}
+        >
+          <p className="text-gray-300">
+            <span className="font-medium text-gray-200">Match {i + 1}:</span>{' '}
+            <span className="font-mono text-primary">&quot;{match.fullMatch}&quot;</span> at index {match.index}
+          </p>
+          {match.groups.length > 0 && (
+            <div className="mt-1 flex flex-col gap-0.5 pl-4 text-gray-400">
+              {match.groups.map((group, g) => (
+                <p key={`group-${g}`}>
+                  Group {g + 1}:{' '}
+                  {group === undefined ? (
+                    <span className="text-gray-600 italic">undefined</span>
+                  ) : (
+                    <span className="font-mono">{group}</span>
+                  )}
+                </p>
+              ))}
+            </div>
+          )}
+          {match.namedGroups != null && (
+            <div className="mt-1 flex flex-col gap-0.5 pl-4 text-gray-400">
+              {Object.entries(match.namedGroups).map(([name, value]) => (
+                <p key={name}>
+                  {name}: <span className="font-mono">{value}</span>
+                </p>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+      {remaining > 0 && (
+        <Button onClick={() => setLimit((l) => l + MATCH_PAGE_SIZE)} variant="secondary">
+          {`Show ${Math.min(remaining, MATCH_PAGE_SIZE)} more (${remaining} hidden)`}
+        </Button>
+      )}
+    </div>
+  )
+}
+
+export const RegexTester = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const {
     error,
     inputs,
@@ -91,8 +110,11 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
     result: computed,
     setFields,
   } = useToolFields<RegexInput, RegexComputed>({
-    compute: ({ flags: fl, pattern: pat, testString: text }) => {
-      const r = executeRegex(pat, flagsToString(fl), text)
+    // The pipeline aborts `signal` when a newer input supersedes this run, on
+    // clear, and on unmount — which terminates a still-running (possibly
+    // runaway) pattern in the worker.
+    compute: async ({ flags: fl, pattern: pat, testString: text }, { signal }) => {
+      const r = await runRegex(pat, flagsToString(fl), text, signal)
       if (r.error != null) throw new Error(r.error)
       return { regex: r, segments: buildHighlightSegments(text, r.matches) }
     },
@@ -113,7 +135,7 @@ export const RegexTester = ({ autoOpen, onAfterDialogClose }: ToolComponentProps
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       onReset={reset}
       title="Regex Tester"
       triggers={[{ label: 'Test Regex' }]}

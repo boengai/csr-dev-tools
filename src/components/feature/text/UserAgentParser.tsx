@@ -24,7 +24,7 @@ const ResultRow = ({ label, value }: { label: string; value: string }) => (
   </div>
 )
 
-export const UserAgentParser = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const UserAgentParser = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const { input, result, setInput, setInputImmediate } = useToolInput<string, UserAgentResult>({
     compute: (val) => parseUserAgent(val),
     debounceMs: 300,
@@ -45,7 +45,7 @@ export const UserAgentParser = ({ autoOpen, onAfterDialogClose }: ToolComponentP
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="User Agent Parser"
       triggers={[{ label: 'Parse' }]}
     >

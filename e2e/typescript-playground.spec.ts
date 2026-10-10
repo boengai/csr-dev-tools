@@ -7,15 +7,13 @@ import { copyButton, toast } from './helpers/selectors'
 async function setTsEditorContent(page: Page, code: string) {
   await page.evaluate((content) => {
     // @monaco-editor/loader makes Monaco available as window.monaco after CDN load
-    const m = (window as Record<string, unknown>).monaco as {
+    const m = (window as unknown as Record<string, unknown>).monaco as {
       editor: { getModels: () => Array<{ setValue: (v: string) => void }> }
     }
     if (m) {
       const models = m.editor.getModels()
       // First model is the TypeScript editor (created first)
-      if (models.length > 0) {
-        models[0].setValue(content)
-      }
+      models[0]?.setValue(content)
     }
   }, code)
 }

@@ -4,6 +4,7 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
 import * as downloadUtils from '@/utils/download'
 
 import { useToast } from './state'
@@ -30,8 +31,8 @@ describe('useDownload', () => {
     expect(spy).toHaveBeenCalledWith(blob, 'note.txt')
     const items = useToast.getState().items
     expect(items).toHaveLength(1)
-    expect(items[0].label).toBe('Downloaded note.txt')
-    expect(items[0].type).toBe('success')
+    expect(nth(items, 0).label).toBe('Downloaded note.txt')
+    expect(nth(items, 0).type).toBe('success')
   })
 
   it('downloadDataUrl triggers a data-URL download and toasts the filename', () => {
@@ -45,8 +46,8 @@ describe('useDownload', () => {
     expect(spy).toHaveBeenCalledWith('data:image/png;base64,AAAA', 'pic.png')
     const items = useToast.getState().items
     expect(items).toHaveLength(1)
-    expect(items[0].label).toBe('Downloaded pic.png')
-    expect(items[0].type).toBe('success')
+    expect(nth(items, 0).label).toBe('Downloaded pic.png')
+    expect(nth(items, 0).type).toBe('success')
   })
 
   it('downloadSvg triggers an SVG download and toasts the filename', () => {
@@ -60,8 +61,8 @@ describe('useDownload', () => {
     expect(spy).toHaveBeenCalledWith('<svg/>', 'diagram.svg')
     const items = useToast.getState().items
     expect(items).toHaveLength(1)
-    expect(items[0].label).toBe('Downloaded diagram.svg')
-    expect(items[0].type).toBe('success')
+    expect(nth(items, 0).label).toBe('Downloaded diagram.svg')
+    expect(nth(items, 0).type).toBe('success')
   })
 
   it('downloadPemFile triggers a PEM download and toasts the filename', () => {
@@ -75,7 +76,7 @@ describe('useDownload', () => {
     expect(spy).toHaveBeenCalledWith('-----BEGIN KEY-----', 'key.pem')
     const items = useToast.getState().items
     expect(items).toHaveLength(1)
-    expect(items[0].label).toBe('Downloaded key.pem')
-    expect(items[0].type).toBe('success')
+    expect(nth(items, 0).label).toBe('Downloaded key.pem')
+    expect(nth(items, 0).type).toBe('success')
   })
 })

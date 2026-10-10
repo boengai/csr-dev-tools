@@ -2,7 +2,7 @@ import { CopyButton, FieldForm, ToggleButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFields } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
+import type { TextSortInput, ToolComponentProps } from '@/types'
 import { sortAndProcessText, type SortMode, type TextSortResult } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['text-sort-dedupe']
@@ -15,15 +15,7 @@ const SORT_OPTIONS = [
   { label: 'Numeric', value: 'numeric' },
 ]
 
-type SortInput = {
-  input: string
-  removeDuplicates: boolean
-  removeEmpty: boolean
-  sortMode: SortMode
-  trimLines: boolean
-}
-
-const INITIAL_INPUT: SortInput = {
+const INITIAL_INPUT: TextSortInput = {
   input: '',
   removeDuplicates: false,
   removeEmpty: false,
@@ -31,8 +23,8 @@ const INITIAL_INPUT: SortInput = {
   trimLines: false,
 }
 
-export const TextSortDedupe = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
-  const { inputs, result, setFields } = useToolFields<SortInput, TextSortResult | null>({
+export const TextSortDedupe = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
+  const { inputs, result, setFields } = useToolFields<TextSortInput, TextSortResult | null>({
     compute: ({ input: text, removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }) =>
       sortAndProcessText(text, { removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }),
     debounceMs: 300,
@@ -47,7 +39,7 @@ export const TextSortDedupe = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
     <ToolDialogFrame
       autoOpen={autoOpen}
       description={toolEntry?.description}
-      onAfterClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       title="Text Sort & Dedupe"
       triggers={[{ label: 'Sort' }]}
     >
@@ -78,7 +70,7 @@ export const TextSortDedupe = ({ autoOpen, onAfterDialogClose }: ToolComponentPr
           ].map(({ current, field, label }) => (
             <ToggleButton
               key={field}
-              onClick={() => setFields({ [field]: !current } as Partial<SortInput>)}
+              onClick={() => setFields({ [field]: !current } as Partial<TextSortInput>)}
               pressed={current}
               variant="subtle"
             >

@@ -31,7 +31,7 @@ const ENTITY_MODE_OPTIONS = [
   { label: 'Numeric Entities', value: 'numeric' },
 ]
 
-export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolComponentProps) => {
+export const HtmlEntityConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [entityMode, setEntityMode] = useState<EntityMode>('named')
 
   const compute = useCallback(
@@ -50,11 +50,12 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterDialogClose }: ToolCompon
       initialResult={{ output: '' }}
       modeStorageKey="html-entity"
       modes={MODES}
-      onAfterDialogClose={onAfterDialogClose}
+      onAfterClose={onAfterClose}
       sourceKeyPrefix="html-entity"
       sourceToolbarSlot={({ mode, recompute }) =>
         mode === 'encode' ? (
           <SelectInput
+            aria-label="Entity encoding mode"
             name="entity-mode-select"
             onChange={(val) => {
               setEntityMode(val as EntityMode)

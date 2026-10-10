@@ -40,13 +40,13 @@ function getOffset(timezone: string, date: Date): string {
 }
 
 function extractCity(timezoneId: string): string {
-  const segments = timezoneId.split('/')
-  const last = segments[segments.length - 1]
+  // `split` always yields at least one segment.
+  const last = timezoneId.split('/').at(-1) ?? timezoneId
   return last.replace(/_/g, ' ')
 }
 
 function extractRegion(timezoneId: string): string {
-  return timezoneId.split('/')[0]
+  return timezoneId.split('/')[0] ?? timezoneId
 }
 
 export function buildTimezoneIndex(referenceDate?: Date): Array<TimezoneEntry> {

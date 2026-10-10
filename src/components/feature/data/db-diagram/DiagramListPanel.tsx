@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react'
+import { useMemo, useRef, useState, useSyncExternalStore } from 'react'
 
 import { Button, TextInput } from '@/components/common'
 import { useDiagram } from '@/components/feature/data/db-diagram/DiagramContext'
+import type { DiagramEditor } from '@/diagram/editor'
 import type { DiagramIndexEntry, DiagramListPanelProps } from '@/types'
 import { formatRelativeTime, tv } from '@/utils'
 
@@ -17,17 +18,32 @@ const diagramItemStyles = tv({
   },
 })
 
+// External-store adapter over the editor's diagram index for
+// useSyncExternalStore. The snapshot is cached (listDiagrams() returns a fresh
+// array per call) and re-read when the subscription attaches, so a change
+// between render and subscribe is still picked up — React re-checks the
+// snapshot right after subscribing.
+const createIndexStore = (editor: DiagramEditor) => {
+  let snapshot: Array<DiagramIndexEntry> = editor.listDiagrams()
+  return {
+    getSnapshot: () => snapshot,
+    subscribe: (onChange: () => void) => {
+      snapshot = editor.listDiagrams()
+      return editor.subscribeToIndex((next) => {
+        snapshot = next
+        onChange()
+      })
+    },
+  }
+}
+
 export const DiagramListPanel = ({ onClose }: DiagramListPanelProps) => {
   const { document, editor } = useDiagram()
-  const [diagramIndex, setDiagramIndex] = useState<Array<DiagramIndexEntry>>(() => editor.listDiagrams())
+  const indexStore = useMemo(() => createIndexStore(editor), [editor])
+  const diagramIndex = useSyncExternalStore(indexStore.subscribe, indexStore.getSnapshot, indexStore.getSnapshot)
   const [renamingId, setRenamingId] = useState<string | null>(null)
   const [renameValue, setRenameValue] = useState('')
   const renameInputRef = useRef<HTMLInputElement | null>(null)
-
-  useEffect(() => {
-    setDiagramIndex(editor.listDiagrams())
-    return editor.subscribeToIndex(setDiagramIndex)
-  }, [editor])
 
   const handleLoadDiagram = (id: string) => editor.loadDiagram(id)
 
@@ -87,6 +103,7 @@ export const DiagramListPanel = ({ onClose }: DiagramListPanelProps) => {
                       onClick={(e) => e.stopPropagation()}
                       onEnter={() => handleRenameDiagram(entry.id, renameValue)}
                       onEscape={() => setRenamingId(null)}
+                      aria-label="Diagram name"
                       name="diagram-name"
                       ref={renameInputRef}
                       size="compact"

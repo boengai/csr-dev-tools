@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { IOS_DEVICES, MASKABLE_ICON_SIZES, MASKABLE_SAFE_ZONE_RATIO, PWA_ICON_SIZES } from '@/constants'
+import { nth } from '@/test/nth'
 
 import { generateManifestIcons, generateSplashMetaTags } from './splash-screen'
 
@@ -242,7 +243,7 @@ describe('splash-screen', () => {
 
   describe('ZIP folder structure', () => {
     it('should use ios-splash/ for splash screen paths', () => {
-      const device = IOS_DEVICES[0]
+      const device = nth(IOS_DEVICES, 0)
       const slug = device.name
         .toLowerCase()
         .replace(/[""]/g, '')

@@ -1,12 +1,13 @@
-import type { ComponentType } from 'react'
 import { lazy } from 'react'
 
-import type { ToolCategory, ToolRegistryEntry } from '@/types'
-import { loadNamed } from '@/utils'
+import type { ToolCategory, ToolComponentLoader, ToolRegistryEntry, ToolRegistryKey } from '@/types'
+import { loadNamed } from '@/utils/load-named'
 
 import { TOOL_ROUTES } from './tool-routes'
 
-const COMPONENT_LOADERS: Record<string, () => Promise<{ default: ComponentType }>> = {
+// Keyed by ToolRegistryKey so a tool without a loader (or a loader for an
+// unknown key) is a compile error rather than a crash at import time.
+const COMPONENT_LOADERS: Record<ToolRegistryKey, ToolComponentLoader> = {
   'aes-encrypt-decrypt': loadNamed(
     () => import('@/components/feature/security/AesEncryptDecrypt'),
     'AesEncryptDecrypt',
@@ -171,13 +172,10 @@ const COMPONENT_LOADERS: Record<string, () => Promise<{ default: ComponentType }
   'protobuf-to-json': loadNamed(() => import('@/components/feature/code/ProtobufToJson'), 'ProtobufToJson'),
 }
 
-export const TOOL_REGISTRY: Array<ToolRegistryEntry> = TOOL_ROUTES.map((route) => {
-  const loader = COMPONENT_LOADERS[route.key]
-  if (!loader) {
-    throw new Error(`No component loader registered for tool key: ${route.key}`)
-  }
-  return { ...route, component: lazy(loader) }
-})
+export const TOOL_REGISTRY: Array<ToolRegistryEntry> = TOOL_ROUTES.map((route) => ({
+  ...route,
+  component: lazy(COMPONENT_LOADERS[route.key]),
+}))
 
 export const CATEGORY_ORDER: Array<ToolCategory> = [
   'Code',
@@ -196,15 +194,23 @@ export const CATEGORY_ORDER: Array<ToolCategory> = [
 
 export const groupToolsByCategory = (tools: Array<ToolRegistryEntry>) => {
   return tools.reduce<Record<string, Array<ToolRegistryEntry>>>((acc, tool) => {
-    if (!acc[tool.category]) {
-      acc[tool.category] = []
-    }
-    acc[tool.category].push(tool)
+    const group = (acc[tool.category] ??= [])
+    group.push(tool)
     return acc
   }, {})
 }
 
-export const TOOL_REGISTRY_MAP = TOOL_REGISTRY.reduce<Partial<Record<string, ToolRegistryEntry>>>((acc, entry) => {
-  acc[entry.key] = entry
-  return acc
-}, {})
+// Partial: persisted layouts and URL params can carry stale/unknown keys, so
+// lookups must still handle `undefined`.
+export const TOOL_REGISTRY_MAP = TOOL_REGISTRY.reduce<Partial<Record<ToolRegistryKey, ToolRegistryEntry>>>(
+  (acc, entry) => {
+    acc[entry.key] = entry
+    return acc
+  },
+  {},
+)
+
+// Look up a tool by an untrusted string (route param, persisted value). Uses an
+// own-property check so keys like `constructor` don't resolve to Object.prototype.
+export const getToolEntry = (key: null | string | undefined): ToolRegistryEntry | undefined =>
+  key != null && Object.hasOwn(TOOL_REGISTRY_MAP, key) ? TOOL_REGISTRY_MAP[key as ToolRegistryKey] : undefined

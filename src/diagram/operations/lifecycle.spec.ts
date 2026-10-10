@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { createDefaultColumn } from '@/diagram/defaults'
+import { entry, nth } from '@/test/nth'
 import type { DiagramSchema } from '@/types'
 
 import { createSequentialIdMinters } from '../id-minters'
@@ -40,7 +41,7 @@ describe('schemaToDocument', () => {
     const rel = addRelation(
       doc,
       {
-        from: { tableId: a.id, columnId: doc.tables[a.id].columns[0].id },
+        from: { tableId: a.id, columnId: nth(entry(doc.tables, a.id).columns, 0).id },
         to: { tableId: b.id, columnId: fk.id! },
         kind: '1:N',
       },
