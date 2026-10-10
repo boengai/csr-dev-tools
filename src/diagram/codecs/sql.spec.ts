@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type { ColumnType, DiagramSchema } from '@/types'
 
 import { createSequentialIdMinters } from '../id-minters'
@@ -322,25 +323,25 @@ describe('db-diagram-sql', () => {
       `
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
-      expect(result.tables[0].name).toBe('users')
-      expect(result.tables[0].id).toBe('t_1')
-      expect(result.tables[0].columns).toHaveLength(4)
+      expect(nth(result.tables, 0).name).toBe('users')
+      expect(nth(result.tables, 0).id).toBe('t_1')
+      expect(nth(result.tables, 0).columns).toHaveLength(4)
       expect(result.errors).toHaveLength(0)
 
-      const idCol = result.tables[0].columns.find((c) => c.name === 'id')
+      const idCol = nth(result.tables, 0).columns.find((c) => c.name === 'id')
       expect(idCol?.type).toBe('INT')
       expect(idCol?.constraints.isPrimaryKey).toBe(true)
       expect(idCol?.constraints.isNullable).toBe(false)
 
-      const nameCol = result.tables[0].columns.find((c) => c.name === 'name')
+      const nameCol = nth(result.tables, 0).columns.find((c) => c.name === 'name')
       expect(nameCol?.type).toBe('VARCHAR')
       expect(nameCol?.constraints.isNullable).toBe(true)
 
-      const emailCol = result.tables[0].columns.find((c) => c.name === 'email')
+      const emailCol = nth(result.tables, 0).columns.find((c) => c.name === 'email')
       expect(emailCol?.type).toBe('TEXT')
       expect(emailCol?.constraints.isNullable).toBe(false)
 
-      const activeCol = result.tables[0].columns.find((c) => c.name === 'active')
+      const activeCol = nth(result.tables, 0).columns.find((c) => c.name === 'active')
       expect(activeCol?.type).toBe('BOOLEAN')
     })
 
@@ -366,7 +367,7 @@ describe('db-diagram-sql', () => {
     it('extracts PRIMARY KEY inline constraint', () => {
       const sql = `CREATE TABLE t (id INT PRIMARY KEY, name TEXT);`
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
-      const idCol = result.tables[0].columns.find((c) => c.name === 'id')
+      const idCol = nth(result.tables, 0).columns.find((c) => c.name === 'id')
       expect(idCol?.constraints.isPrimaryKey).toBe(true)
       expect(idCol?.constraints.isNullable).toBe(false)
     })
@@ -380,7 +381,7 @@ describe('db-diagram-sql', () => {
         );
       `
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
-      const idCol = result.tables[0].columns.find((c) => c.name === 'id')
+      const idCol = nth(result.tables, 0).columns.find((c) => c.name === 'id')
       expect(idCol?.constraints.isPrimaryKey).toBe(true)
     })
 
@@ -397,7 +398,7 @@ describe('db-diagram-sql', () => {
       `
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.relationships).toHaveLength(1)
-      const rel = result.relationships[0]
+      const rel = nth(result.relationships, 0)
       expect(rel.relationType).toBe('1:N')
 
       const usersTable = result.tables.find((t) => t.name === 'users')
@@ -419,7 +420,7 @@ describe('db-diagram-sql', () => {
       `
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.relationships).toHaveLength(1)
-      expect(result.relationships[0].relationType).toBe('1:1')
+      expect(nth(result.relationships, 0).relationType).toBe('1:1')
     })
 
     it('detects 1:1 from table-level UNIQUE constraint on FK column', () => {
@@ -436,7 +437,7 @@ describe('db-diagram-sql', () => {
       `
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.relationships).toHaveLength(1)
-      expect(result.relationships[0].relationType).toBe('1:1')
+      expect(nth(result.relationships, 0).relationType).toBe('1:1')
     })
 
     it('handles MySQL AUTO_INCREMENT syntax', () => {
@@ -449,7 +450,7 @@ describe('db-diagram-sql', () => {
       `
       const result = parseSqlDdl(sql, 'mysql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
-      const idCol = result.tables[0].columns.find((c) => c.name === 'id')
+      const idCol = nth(result.tables, 0).columns.find((c) => c.name === 'id')
       expect(idCol?.type).toBe('INT')
       expect(idCol?.constraints.isPrimaryKey).toBe(true)
     })
@@ -462,7 +463,7 @@ describe('db-diagram-sql', () => {
         );
       `
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
-      const idCol = result.tables[0].columns.find((c) => c.name === 'id')
+      const idCol = nth(result.tables, 0).columns.find((c) => c.name === 'id')
       expect(idCol?.type).toBe('SERIAL')
       expect(idCol?.constraints.isPrimaryKey).toBe(true)
     })
@@ -474,7 +475,7 @@ describe('db-diagram-sql', () => {
         );
       `
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
-      const idCol = result.tables[0].columns.find((c) => c.name === 'id')
+      const idCol = nth(result.tables, 0).columns.find((c) => c.name === 'id')
       expect(idCol?.type).toBe('BIGINT')
     })
 
@@ -486,7 +487,7 @@ describe('db-diagram-sql', () => {
         );
       `
       const result = parseSqlDdl(sql, 'sqlite', createSequentialIdMinters())
-      const idCol = result.tables[0].columns.find((c) => c.name === 'id')
+      const idCol = nth(result.tables, 0).columns.find((c) => c.name === 'id')
       expect(idCol?.type).toBe('INT')
       expect(idCol?.constraints.isPrimaryKey).toBe(true)
     })
@@ -501,7 +502,7 @@ describe('db-diagram-sql', () => {
       `
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
-      expect(result.tables[0].columns).toHaveLength(2)
+      expect(nth(result.tables, 0).columns).toHaveLength(2)
       expect(result.errors).toHaveLength(0)
     })
 
@@ -516,14 +517,14 @@ describe('db-diagram-sql', () => {
       `
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
-      expect(result.tables[0].columns).toHaveLength(2)
+      expect(nth(result.tables, 0).columns).toHaveLength(2)
     })
 
     it('handles IF NOT EXISTS', () => {
       const sql = `CREATE TABLE IF NOT EXISTS users (id INT PRIMARY KEY);`
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
-      expect(result.tables[0].name).toBe('users')
+      expect(nth(result.tables, 0).name).toBe('users')
     })
 
     it('returns errors for malformed SQL with partial success', () => {
@@ -573,20 +574,20 @@ describe('db-diagram-sql', () => {
       for (const { expected, sqlType } of typeTests) {
         const sql = `CREATE TABLE t (col ${sqlType});`
         const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
-        expect(result.tables[0].columns[0].type).toBe(expected)
+        expect(nth(nth(result.tables, 0).columns, 0).type).toBe(expected)
       }
     })
 
     it('handles TINYINT(1) as BOOLEAN in MySQL', () => {
       const sql = `CREATE TABLE t (active TINYINT(1));`
       const result = parseSqlDdl(sql, 'mysql', createSequentialIdMinters())
-      expect(result.tables[0].columns[0].type).toBe('BOOLEAN')
+      expect(nth(nth(result.tables, 0).columns, 0).type).toBe('BOOLEAN')
     })
 
     it('handles UNIQUE constraint on columns', () => {
       const sql = `CREATE TABLE t (email VARCHAR(255) UNIQUE);`
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
-      expect(result.tables[0].columns[0].constraints.isUnique).toBe(true)
+      expect(nth(nth(result.tables, 0).columns, 0).constraints.isUnique).toBe(true)
     })
 
     it('handles inline REFERENCES syntax', () => {
@@ -599,7 +600,7 @@ describe('db-diagram-sql', () => {
       `
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
       expect(result.relationships).toHaveLength(1)
-      expect(result.relationships[0].relationType).toBe('1:N')
+      expect(nth(result.relationships, 0).relationType).toBe('1:N')
     })
 
     it('handles DEFAULT clause (strips it)', () => {
@@ -610,23 +611,23 @@ describe('db-diagram-sql', () => {
         );
       `
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
-      expect(result.tables[0].columns).toHaveLength(2)
-      expect(result.tables[0].columns[0].name).toBe('status')
-      expect(result.tables[0].columns[1].name).toBe('count')
+      expect(nth(result.tables, 0).columns).toHaveLength(2)
+      expect(nth(nth(result.tables, 0).columns, 0).name).toBe('status')
+      expect(nth(nth(result.tables, 0).columns, 1).name).toBe('count')
     })
 
     it('handles quoted table and column names', () => {
       const sql = `CREATE TABLE "my_table" ("my_col" INT PRIMARY KEY);`
       const result = parseSqlDdl(sql, 'postgresql', createSequentialIdMinters())
-      expect(result.tables[0].name).toBe('my_table')
-      expect(result.tables[0].columns[0].name).toBe('my_col')
+      expect(nth(result.tables, 0).name).toBe('my_table')
+      expect(nth(nth(result.tables, 0).columns, 0).name).toBe('my_col')
     })
 
     it('handles backtick-quoted names (MySQL)', () => {
       const sql = 'CREATE TABLE `users` (`id` INT PRIMARY KEY);'
       const result = parseSqlDdl(sql, 'mysql', createSequentialIdMinters())
-      expect(result.tables[0].name).toBe('users')
-      expect(result.tables[0].columns[0].name).toBe('id')
+      expect(nth(result.tables, 0).name).toBe('users')
+      expect(nth(nth(result.tables, 0).columns, 0).name).toBe('id')
     })
 
     it('auto-layouts tables in a grid pattern', () => {
@@ -642,8 +643,8 @@ describe('db-diagram-sql', () => {
         expect(typeof table.position.x).toBe('number')
         expect(typeof table.position.y).toBe('number')
       }
-      expect(result.tables[0].position.y).toBe(0)
-      expect(result.tables[3].position.y).toBe(550)
+      expect(nth(result.tables, 0).position.y).toBe(0)
+      expect(nth(result.tables, 3).position.y).toBe(550)
     })
 
     it('returns empty result for empty input', () => {
@@ -666,7 +667,7 @@ describe('db-diagram-sql', () => {
     it('handles CHAR(36) as UUID', () => {
       const sql = `CREATE TABLE t (guid CHAR(36));`
       const result = parseSqlDdl(sql, 'mysql', createSequentialIdMinters())
-      expect(result.tables[0].columns[0].type).toBe('UUID')
+      expect(nth(nth(result.tables, 0).columns, 0).type).toBe('UUID')
     })
 
     it('sets FK column constraints.isForeignKey to true', () => {

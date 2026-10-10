@@ -106,7 +106,7 @@ export function saveDiagramIndex(index: Array<DiagramIndexEntry>): void {
 
 export function loadDiagram(id: string): DiagramSchema | null {
   const { diagrams } = readStoreOrEmpty()
-  return Object.hasOwn(diagrams, id) ? diagrams[id] : null
+  return Object.hasOwn(diagrams, id) ? (diagrams[id] ?? null) : null
 }
 
 export function saveDiagram(id: string, schema: DiagramSchema): void {

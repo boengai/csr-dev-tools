@@ -1,5 +1,7 @@
 import { describe, expect, it, vi } from 'vitest'
 
+import { entry } from '@/test/nth'
+
 import { DiagramEditor } from './editor'
 import { createInitialDocument } from './state'
 
@@ -41,7 +43,7 @@ describe('DiagramEditor table ops', () => {
     const id = editor.addTable({ name: 'users' })
     expect(id).toBeTruthy()
     expect(listener).toHaveBeenCalledTimes(1)
-    expect(editor.getDocument().tables[id].name).toBe('users')
+    expect(entry(editor.getDocument().tables, id).name).toBe('users')
   })
 
   it('renameTable is a no-op on unknown id (no notify)', () => {

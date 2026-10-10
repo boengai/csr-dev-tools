@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { createSequentialIdMinters } from '../id-minters'
 import { parseJsonSchema } from './json-schema'
 
@@ -20,10 +22,10 @@ describe('db-diagram-json-schema', () => {
       }
       const result = parseJsonSchema(schema, createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
-      expect(result.tables[0].name).toBe('User')
-      expect(result.tables[0].id).toBe('t_1')
-      expect(result.tables[0].columns).toHaveLength(3)
-      expect(result.tables[0].columns[0].id).toBe('c_1')
+      expect(nth(result.tables, 0).name).toBe('User')
+      expect(nth(result.tables, 0).id).toBe('t_1')
+      expect(nth(result.tables, 0).columns).toHaveLength(3)
+      expect(nth(nth(result.tables, 0).columns, 0).id).toBe('c_1')
     })
 
     it('supports $defs as alternative to definitions', () => {
@@ -40,7 +42,7 @@ describe('db-diagram-json-schema', () => {
       }
       const result = parseJsonSchema(schema, createSequentialIdMinters())
       expect(result.tables).toHaveLength(1)
-      expect(result.tables[0].name).toBe('Post')
+      expect(nth(result.tables, 0).name).toBe('Post')
     })
 
     it('maps JSON Schema types to ColumnType', () => {
@@ -60,7 +62,7 @@ describe('db-diagram-json-schema', () => {
         },
       }
       const result = parseJsonSchema(schema, createSequentialIdMinters())
-      const cols = result.tables[0].columns
+      const cols = nth(result.tables, 0).columns
 
       expect(cols.find((c) => c.name === 'name')?.type).toBe('VARCHAR')
       expect(cols.find((c) => c.name === 'count')?.type).toBe('INT')
@@ -93,7 +95,7 @@ describe('db-diagram-json-schema', () => {
       const result = parseJsonSchema(schema, createSequentialIdMinters())
       expect(result.relationships).toHaveLength(1)
 
-      const rel = result.relationships[0]
+      const rel = nth(result.relationships, 0)
       const userTable = result.tables.find((t) => t.name === 'User')
       const postTable = result.tables.find((t) => t.name === 'Post')
       expect(rel.sourceTableId).toBe(userTable?.id)
@@ -120,7 +122,7 @@ describe('db-diagram-json-schema', () => {
         },
       }
       const result = parseJsonSchema(schema, createSequentialIdMinters())
-      const cols = result.tables[0].columns
+      const cols = nth(result.tables, 0).columns
 
       expect(cols.find((c) => c.name === 'id')?.constraints.isNullable).toBe(false)
       expect(cols.find((c) => c.name === 'email')?.constraints.isNullable).toBe(false)
@@ -146,7 +148,7 @@ describe('db-diagram-json-schema', () => {
         },
       }
       const result = parseJsonSchema(schema, createSequentialIdMinters())
-      const idCol = result.tables[0].columns.find((c) => c.name === 'id')
+      const idCol = nth(result.tables, 0).columns.find((c) => c.name === 'id')
       expect(idCol?.constraints.isPrimaryKey).toBe(true)
     })
 

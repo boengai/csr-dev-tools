@@ -9,3 +9,10 @@ export const nth = <T>(items: ArrayLike<T>, index: number): T => {
   if (item === undefined) throw new Error(`Expected an item at index ${index} (length ${items.length})`)
   return item
 }
+
+/** Read `record[key]` in a spec, failing loudly when the key is absent. */
+export const entry = <K extends PropertyKey, V>(record: Readonly<Partial<Record<K, V>>>, key: K): V => {
+  const value = record[key]
+  if (value === undefined) throw new Error(`Expected an entry for key ${String(key)}`)
+  return value
+}

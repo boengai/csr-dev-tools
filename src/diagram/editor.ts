@@ -116,9 +116,8 @@ export class DiagramEditor {
   }
 
   bootstrap(): void {
-    const idx = this.storage.loadIndex()
-    if (idx.length === 0) return
-    const latest = [...idx].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))[0]
+    const [latest] = [...this.storage.loadIndex()].sort((a, b) => b.updatedAt.localeCompare(a.updatedAt))
+    if (!latest) return
     this.loadDiagram(latest.id)
   }
 

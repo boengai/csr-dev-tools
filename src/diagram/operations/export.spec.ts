@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
 import { createDefaultColumn } from '@/diagram/defaults'
+import { entry, nth } from '@/test/nth'
 
 import { createSequentialIdMinters } from '../id-minters'
 import { createInitialDocument } from '../state'
@@ -16,7 +17,7 @@ const seed = () => {
   // Isolated minter for createDefaultColumn's input shape; addColumn() mints the stored id from `minters`.
   const colMinters = createSequentialIdMinters()
   const withFk = addColumn(b.document, b.id, createDefaultColumn('user_id', false, colMinters.column), minters)
-  const aCol = a.document.tables[a.id].columns[0].id
+  const aCol = nth(entry(a.document.tables, a.id).columns, 0).id
   const fkCol = withFk.id!
   const withRel = addRelation(
     withFk.document,

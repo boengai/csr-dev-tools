@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type { DiagramDocument } from '@/types'
 
 import { moveTable } from './operations/tables'
@@ -87,7 +88,7 @@ describe('documentToFlow', () => {
 
   it('emits node data without callbacks', () => {
     const { nodes } = documentToFlow(docWithOneTable())
-    expect(Object.keys(nodes[0].data).sort()).toEqual(['columns', 'tableName'])
+    expect(Object.keys(nth(nodes, 0).data).sort()).toEqual(['columns', 'tableName'])
   })
 })
 
@@ -118,6 +119,6 @@ describe('createFlowProjector', () => {
 
     expect(second.nodes[0]).toBe(first.nodes[0])
     expect(second.nodes[1]).not.toBe(first.nodes[1])
-    expect(second.nodes[1].position).toEqual({ x: 50, y: 60 })
+    expect(nth(second.nodes, 1).position).toEqual({ x: 50, y: 60 })
   })
 })

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { entry, nth } from '@/test/nth'
 import type { DiagramDocument } from '@/types'
 
 import { createSequentialIdMinters } from '../id-minters'
@@ -22,7 +23,7 @@ describe('addTable', () => {
       { name: 'users', position: { x: 50, y: 75 } },
       createSequentialIdMinters(),
     )
-    expect(document.tables[id].position).toEqual({ x: 50, y: 75 })
+    expect(entry(document.tables, id).position).toEqual({ x: 50, y: 75 })
   })
 
   it('assigns a non-overlapping default position when omitted', () => {
@@ -36,9 +37,9 @@ describe('addTable', () => {
 
   it('seeds a primary-key column by default', () => {
     const { document, id } = addTable(seed(), { name: 'users' }, createSequentialIdMinters())
-    expect(document.tables[id].columns).toHaveLength(1)
-    expect(document.tables[id].columns[0].constraints.isPrimaryKey).toBe(true)
-    expect(document.tables[id].columns[0].id).toBe('c_1')
+    expect(entry(document.tables, id).columns).toHaveLength(1)
+    expect(nth(entry(document.tables, id).columns, 0).constraints.isPrimaryKey).toBe(true)
+    expect(nth(entry(document.tables, id).columns, 0).id).toBe('c_1')
   })
 })
 
@@ -47,7 +48,7 @@ describe('renameTable', () => {
     let doc = seed()
     const { document, id } = addTable(doc, { name: 'old' }, createSequentialIdMinters())
     doc = renameTable(document, id, 'new')
-    expect(doc.tables[id].name).toBe('new')
+    expect(entry(doc.tables, id).name).toBe('new')
   })
 
   it('is a no-op for unknown ID', () => {
@@ -61,8 +62,8 @@ describe('moveTable', () => {
     let doc = seed()
     const { document, id } = addTable(doc, { name: 'a' }, createSequentialIdMinters())
     const next = moveTable(document, id, { x: 999, y: 888 })
-    expect(next.tables[id].position).toEqual({ x: 999, y: 888 })
-    expect(document.tables[id].position).not.toEqual({ x: 999, y: 888 })
+    expect(entry(next.tables, id).position).toEqual({ x: 999, y: 888 })
+    expect(entry(document.tables, id).position).not.toEqual({ x: 999, y: 888 })
   })
 
   it('is a no-op for unknown ID', () => {
@@ -87,8 +88,8 @@ describe('deleteTable', () => {
     doc = a.document
     const b = addTable(doc, { name: 'b' }, minters)
     doc = b.document
-    const aCol = doc.tables[a.id].columns[0].id
-    const bCol = doc.tables[b.id].columns[0].id
+    const aCol = nth(entry(doc.tables, a.id).columns, 0).id
+    const bCol = nth(entry(doc.tables, b.id).columns, 0).id
     doc = {
       ...doc,
       relations: {

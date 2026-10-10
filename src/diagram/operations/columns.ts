@@ -30,12 +30,13 @@ export const updateColumn = (
   const table = doc.tables[tableId]
   if (!table) return doc
   const idx = table.columns.findIndex((c) => c.id === columnId)
-  if (idx === -1) return doc
+  const column = table.columns[idx]
+  if (!column) return doc
   const nextColumns = [...table.columns]
   nextColumns[idx] = {
-    ...nextColumns[idx],
+    ...column,
     ...patch,
-    constraints: { ...nextColumns[idx].constraints, ...patch.constraints },
+    constraints: { ...column.constraints, ...patch.constraints },
   }
   return {
     ...doc,

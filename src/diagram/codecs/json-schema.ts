@@ -14,8 +14,7 @@ const JSON_TYPE_MAP: Record<string, ColumnType> = {
 
 function resolveRefName(ref: string): string | null {
   // Handle $ref: "#/definitions/User" or "#/$defs/User"
-  const match = ref.match(/#\/(?:definitions|\$defs)\/(.+)/)
-  return match ? match[1] : null
+  return ref.match(/#\/(?:definitions|\$defs)\/(.+)/)?.[1] ?? null
 }
 
 function mapJsonType(prop: JsonSchemaProperty): ColumnType {
@@ -82,7 +81,7 @@ export function parseJsonSchema(schema: object, minters: EntityIdMinters): Parse
 
   // Compute positions from the actual number of tables that passed the filter
   const positions = gridLayoutPositions(rawTables.length)
-  const tables: DiagramSchema['tables'] = rawTables.map((t, i) => ({ ...t, position: positions[i] }))
+  const tables: DiagramSchema['tables'] = rawTables.map((t, i) => ({ ...t, position: positions[i] ?? { x: 0, y: 0 } }))
 
   // Rebuild lookup to point at the final positioned table objects
   for (const t of tables) {

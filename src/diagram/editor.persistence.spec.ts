@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { entry, nth } from '@/test/nth'
 import type { DiagramSchema } from '@/types'
 
 import { DiagramStorageError } from './codecs/storage'
@@ -116,7 +117,7 @@ describe('DiagramEditor.renameDiagram', () => {
     storage.saveIndex([{ id: 'd1', name: 'Old', tableCount: 0, createdAt: '', updatedAt: '' }])
     const editor = new DiagramEditor({ storage })
     editor.renameDiagram('d1', 'New')
-    expect(storage.loadIndex()[0].name).toBe('New')
+    expect(nth(storage.loadIndex(), 0).name).toBe('New')
   })
 
   it('updates the active document name when the renamed id is active', () => {
@@ -134,7 +135,7 @@ describe('DiagramEditor.renameDiagram', () => {
     storage.saveIndex([{ id: 'd1', name: 'Old', tableCount: 0, createdAt: '', updatedAt: '' }])
     const editor = new DiagramEditor({ storage })
     editor.renameDiagram('d1', '   ')
-    expect(storage.loadIndex()[0].name).toBe('Old')
+    expect(nth(storage.loadIndex(), 0).name).toBe('Old')
   })
 })
 
@@ -197,7 +198,7 @@ describe('DiagramEditor autosave', () => {
     expect(editor.getDocument().diagramId).toBe('minted')
     expect(storage.loadDiagram('minted')).not.toBe(null)
 
-    editor.renameTable(editor.getDocument().tableOrder[0], 'people')
+    editor.renameTable(nth(editor.getDocument().tableOrder, 0), 'people')
     vi.advanceTimersByTime(1000)
     expect(storage.saves).toBe(2)
     expect(editor.getDocument().diagramId).toBe('minted')
@@ -232,8 +233,8 @@ describe('DiagramEditor autosave', () => {
     now = '2026-05-15T00:00:00Z'
     editor.addTable({ name: 'orders' })
     vi.advanceTimersByTime(1000)
-    expect(storage.loadIndex()[0].createdAt).toBe('2026-05-14T00:00:00Z')
-    expect(storage.loadIndex()[0].updatedAt).toBe('2026-05-15T00:00:00Z')
+    expect(nth(storage.loadIndex(), 0).createdAt).toBe('2026-05-14T00:00:00Z')
+    expect(nth(storage.loadIndex(), 0).updatedAt).toBe('2026-05-15T00:00:00Z')
   })
 
   it('skips empty unsaved diagrams (no id, no tables)', () => {
@@ -384,7 +385,7 @@ describe('DiagramEditor.loadDiagram', () => {
     expect(doc.diagramId).toBe('d1')
     expect(doc.diagramName).toBe('My Schema')
     expect(doc.tableOrder).toEqual(['t1'])
-    expect(doc.tables.t1.name).toBe('users')
+    expect(entry(doc.tables, 't1').name).toBe('users')
   })
 
   it('is a no-op when the id is not in storage', () => {
@@ -461,7 +462,7 @@ describe('DiagramEditor storage failures', () => {
     vi.advanceTimersByTime(1000)
     expect(editor.getStorageStatus()).toBe('ok')
     expect(storage.loadIndex()).toHaveLength(1)
-    expect(storage.loadIndex()[0].tableCount).toBe(2)
+    expect(nth(storage.loadIndex(), 0).tableCount).toBe(2)
   })
 
   it('reports failures from renameDiagram and deleteDiagram instead of throwing', () => {

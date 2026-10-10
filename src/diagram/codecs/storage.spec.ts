@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type { DiagramIndexEntry, DiagramSchema, DiagramStore } from '@/types'
 
 import {
@@ -197,8 +198,8 @@ describe('db-diagram-storage', () => {
       setStore({ diagrams: {}, index: [entryFor('2026-01-01T00:00:00.000Z')(undefined)] })
       const index = saveDiagramWithIndex('diagram-1', makeSampleSchema(), entryFor('2026-02-02T00:00:00.000Z'))
       expect(index).toHaveLength(1)
-      expect(index[0].createdAt).toBe('2026-01-01T00:00:00.000Z')
-      expect(index[0].updatedAt).toBe('2026-02-02T00:00:00.000Z')
+      expect(nth(index, 0).createdAt).toBe('2026-01-01T00:00:00.000Z')
+      expect(nth(index, 0).updatedAt).toBe('2026-02-02T00:00:00.000Z')
     })
 
     it('throws a "full" DiagramStorageError and leaves the stored data untouched on quota errors', () => {
@@ -242,7 +243,7 @@ describe('db-diagram-storage', () => {
         () => saveDiagram('diagram-1', makeSampleSchema()),
         () => saveDiagramIndex([]),
         () => deleteDiagram('diagram-1'),
-        () => saveDiagramWithIndex('diagram-1', makeSampleSchema(), () => makeSampleIndex()[0]),
+        () => saveDiagramWithIndex('diagram-1', makeSampleSchema(), () => nth(makeSampleIndex(), 0)),
       ]
       for (const write of writes) {
         expect(write).toThrow(expect.objectContaining({ name: 'DiagramStorageError', reason: 'unavailable' }))
