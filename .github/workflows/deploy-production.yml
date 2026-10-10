@@ -54,6 +54,11 @@ jobs:
       - name: Build
         run: pnpm run build
 
+      # ponytail: transformers.js loads ORT wasm from jsdelivr at runtime; the bundled copy
+      # (>25 MiB) is dead weight and exceeds the Pages per-file limit.
+      - name: Drop unused ONNX Runtime wasm
+        run: rm -f dist/assets/ort-wasm-*.wasm
+
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
