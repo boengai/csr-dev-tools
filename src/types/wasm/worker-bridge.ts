@@ -16,6 +16,14 @@ export type WorkerCallOptions = {
   /** Non-terminal progress envelopes for this call (`{ id, progress }`). */
   onProgress?: (progress: number) => void
   /**
+   * Cancel this call when the signal aborts: same effect as `cancel()` —
+   * the worker is terminated and every pending call rejects with a
+   * `WorkerAbortError` (`reason: 'cancel'`). An already-aborted signal
+   * rejects immediately without posting. Only pass a signal for workers
+   * that are cheap to respawn (termination drops any loaded WASM/model).
+   */
+  signal?: AbortSignal
+  /**
    * Reject with a `WorkerAbortError` (`reason: 'timeout'`) and terminate the
    * worker if no terminal envelope arrives within this many ms. Termination
    * is the only way to stop a runaway synchronous job, so every other pending

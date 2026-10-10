@@ -36,6 +36,20 @@ Carries four invariants the call site must not have to reassemble:
    stale result while debouncing).
 4. **Unmount-safe** — pending computes do not write state after unmount.
 
+Every compute is called as `compute(input, { signal })`. The pipeline
+aborts that `AbortSignal` when a newer input is enqueued (at enqueue
+time, not when the next debounce fires), on the empty bypass, and on
+unmount — so cancellable work actually stops instead of only having its
+result dropped by invariant 2. Computes may ignore the second argument
+(`(input) => …` still type-checks). A rejection after abort, or any
+`AbortError`-named rejection, is silent: no `error`, no toast. Adopters
+that use it: `RegexTester` (signal → [[Worker bridge]] terminates a
+runaway pattern) and `BackgroundRemover` via the [[Image tool shell]]'s
+`process(file, controls, { signal })` (skips the stale composite + PNG
+encode during colour-picker drags). This is **cancellation, not
+progress** — ADR-0001's "the pipeline does not carry progress" still
+holds; the signal flows into compute, nothing flows back out.
+
 The pipeline owns its result, error, and pending state, plus a `recompute()`
 primitive that re-fires compute with the last input. The two lower-level
 primitives it composes — `useDebounceCallback` and `useStaleSafeAsync` — remain
@@ -651,7 +665,7 @@ the `process` function. The shell **owns the controls bag** — mirroring
 [[Tool field bag]] semantics — alongside the dialog, the file UploadInput +
 MIME validation, source and result `Blob` URL lifecycles (via [[useBlobUrl]]),
 and the Download button + filename. The Tool declares `initialControls` and a
-`process(file, controls)` function; the bag's live value lives in the shell.
+`process(file, controls, { signal })` function; the bag's live value lives in the shell.
 
 `process` receives the raw `File`, not a pre-decoded `HTMLImageElement` —
 distinct from the sibling [[Batch asset pipeline]] which decodes once at
@@ -953,7 +967,12 @@ createWorkerBridge<TReq extends object>(
 ): {
   call: <TRes = unknown>(
     payload: TReq,
-    options?: { onProgress?: (n: number) => void; timeoutMs?: number; transfer?: Array<Transferable> },
+    options?: {
+      onProgress?: (n: number) => void
+      signal?: AbortSignal
+      timeoutMs?: number
+      transfer?: Array<Transferable>
+    },
   ) => Promise<TRes>
   cancel: () => void
   hasPending: () => boolean
@@ -975,10 +994,16 @@ invariants the bridge concentrates:
    load, uncaught throw) rejects every pending call and drops the worker;
    the next call lazily constructs a fresh one. No call hangs forever on
    a dead worker.
-4. **Abort** — `cancel()` and per-call `timeoutMs` terminate the worker
-   (the only way to stop a runaway synchronous job) and reject pending
-   calls with `WorkerAbortError` (`reason: 'cancel' | 'timeout'`;
-   detect with `isWorkerAbortError`).
+4. **Abort** — `cancel()`, per-call `timeoutMs`, and an aborted
+   per-call `signal` terminate the worker (the only way to stop a
+   runaway synchronous job) and reject pending calls with
+   `WorkerAbortError` (`reason: 'cancel' | 'timeout'`; detect with
+   `isWorkerAbortError`). An already-aborted `signal` rejects without
+   posting. Pass `signal` only for workers that are cheap to respawn —
+   today `regex-runner`, fed the pipeline's signal by `RegexTester`.
+   The PDF, bcrypt and background-removal workers hold loaded WASM /
+   models, so they are not handed a signal (termination would force a
+   reload on every superseded keystroke).
 5. **Lazy construction** — `workerFactory` runs on the first `.call(...)`
    (and again after a failure/abort), not at module import. Facades
    imported into Tools the user never visits pay zero worker-construction

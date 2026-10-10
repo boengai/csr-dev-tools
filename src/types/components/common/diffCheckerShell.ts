@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react'
 
 import type { InlineSpan, SideBySideRow } from '@/types'
+import type { ToolComputeContext } from '@/types/hooks/computation'
 
 export type DiffInput = { modified: string; original: string }
 
@@ -16,7 +17,7 @@ export type DiffOutput = {
 
 export type DiffCheckerShellProps<R extends DiffOutput> = {
   autoOpen?: boolean
-  compute: (input: DiffInput) => Promise<R> | R
+  compute: (input: DiffInput, context: ToolComputeContext) => Promise<R> | R
   description?: string
   errorLabel: string
   initialResult: R

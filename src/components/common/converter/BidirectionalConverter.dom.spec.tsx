@@ -149,7 +149,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
       await vi.advanceTimersByTimeAsync(1)
     })
 
-    expect(compute).toHaveBeenCalledWith({ mode: 'a-to-b', source: 'hello' })
+    expect(compute).toHaveBeenCalledWith({ mode: 'a-to-b', source: 'hello' }, { signal: expect.any(AbortSignal) })
   })
 
   it('calls onError when compute throws', async () => {
@@ -191,13 +191,13 @@ describe('BidirectionalConverter — compute pipeline', () => {
     await act(async () => {
       await vi.advanceTimersByTimeAsync(1)
     })
-    expect(compute).toHaveBeenLastCalledWith({ mode: 'a-to-b', source: 'saved A' })
+    expect(compute).toHaveBeenLastCalledWith({ mode: 'a-to-b', source: 'saved A' }, { signal: expect.any(AbortSignal) })
 
     fireEvent.click(screen.getByRole('button', { name: 'B → A mode' }))
     await act(async () => {
       await vi.advanceTimersByTimeAsync(1)
     })
-    expect(compute).toHaveBeenLastCalledWith({ mode: 'b-to-a', source: 'saved B' })
+    expect(compute).toHaveBeenLastCalledWith({ mode: 'b-to-a', source: 'saved B' }, { signal: expect.any(AbortSignal) })
   })
 
   // The mode buttons live outside the dialog (in the tile), so there is no
@@ -220,7 +220,7 @@ describe('BidirectionalConverter — compute pipeline', () => {
     })
 
     expect(compute).toHaveBeenCalledTimes(1)
-    expect(compute).toHaveBeenCalledWith({ mode: 'a-to-b', source: 'hello' })
+    expect(compute).toHaveBeenCalledWith({ mode: 'a-to-b', source: 'hello' }, { signal: expect.any(AbortSignal) })
   })
 
   // NOTE: write-path characterization is intentionally absent.
@@ -310,7 +310,7 @@ describe('BidirectionalConverter — sourceToolbarSlot', () => {
       await vi.advanceTimersByTimeAsync(1)
     })
     expect(compute).toHaveBeenCalledTimes(2)
-    expect(compute).toHaveBeenLastCalledWith({ mode: 'a-to-b', source: 'hi' })
+    expect(compute).toHaveBeenLastCalledWith({ mode: 'a-to-b', source: 'hi' }, { signal: expect.any(AbortSignal) })
   })
 })
 

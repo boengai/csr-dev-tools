@@ -35,9 +35,9 @@ export function ImageToolShell<TControls extends object>({
     ImageToolPipelineInput<TControls>,
     Blob | null
   >(
-    async ({ file, controls: c }) => {
+    async ({ file, controls: c }, context) => {
       if (!file) return null
-      return process(file, c)
+      return process(file, c, context)
     },
     // Tool's process may return null when it has insufficient state to produce
     // a result (e.g. ImageCropper before the user finishes selecting a region).

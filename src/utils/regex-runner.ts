@@ -17,13 +17,22 @@ const bridge = createWorkerBridge<RegexWorkerRequest>(
  * previous call is cancelled first so a fresh pattern never queues behind a
  * runaway one. Falls back to synchronous execution where `Worker` is
  * unavailable (node specs).
+ *
+ * Pass the pipeline's `signal` so a superseded or unmounted run terminates
+ * the worker immediately rather than at the 2s timeout (the regex worker is
+ * cheap to respawn).
  */
-export async function runRegex(pattern: string, flags: string, text: string): Promise<RegexResult> {
+export async function runRegex(
+  pattern: string,
+  flags: string,
+  text: string,
+  signal?: AbortSignal,
+): Promise<RegexResult> {
   if (typeof Worker === 'undefined') return executeRegex(pattern, flags, text)
 
   if (bridge.hasPending()) bridge.cancel()
   try {
-    return await bridge.call<RegexResult>({ flags, pattern, text }, { timeoutMs: REGEX_TIMEOUT_MS })
+    return await bridge.call<RegexResult>({ flags, pattern, text }, { signal, timeoutMs: REGEX_TIMEOUT_MS })
   } catch (err) {
     if (isWorkerAbortError(err, 'timeout')) throw new Error(REGEX_TIMEOUT_MESSAGE)
     throw err

@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react'
 
+import type { ToolComputeContext } from '@/types/hooks/computation'
+
 /**
  * Render-prop context the shell passes to a Tool's `renderControls`.
  * Tools build their per-Tool top-of-dialog control row (mode/dialect select,
@@ -13,7 +15,7 @@ export type FormatterShellControlsCtx<I> = {
 
 export type FormatterShellProps<I extends { source: string }> = {
   autoOpen?: boolean
-  compute: (input: I) => Promise<string> | string
+  compute: (input: I, context: ToolComputeContext) => Promise<string> | string
   description?: string
   /**
    * Pipeline-error toast: always show this exact string on rejection. Mirrors

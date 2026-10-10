@@ -263,4 +263,44 @@ describe('createWorkerBridge', () => {
       expect(workers[0].isTerminated()).toBe(false)
     })
   })
+
+  describe('signal', () => {
+    it('aborting the signal cancels the call and terminates the worker', async () => {
+      const { bridge, workers } = setup()
+      const controller = new AbortController()
+
+      const p = bridge.call<string>({ x: 1 }, { signal: controller.signal })
+      const assertion = expect(p).rejects.toSatisfy((e: unknown) => isWorkerAbortError(e, 'cancel'))
+      controller.abort()
+      await assertion
+      expect(workers[0].isTerminated()).toBe(true)
+      expect(bridge.hasPending()).toBe(false)
+    })
+
+    it('an already-aborted signal rejects without spawning or posting', async () => {
+      const { bridge, factory } = setup()
+      const controller = new AbortController()
+      controller.abort()
+
+      await expect(bridge.call({ x: 1 }, { signal: controller.signal })).rejects.toSatisfy((e: unknown) =>
+        isWorkerAbortError(e, 'cancel'),
+      )
+      expect(factory).not.toHaveBeenCalled()
+    })
+
+    it('aborting after the call settled is a no-op (listener detached)', async () => {
+      const { bridge, workers } = setup()
+      const controller = new AbortController()
+
+      const p = bridge.call<string>({ x: 1 }, { signal: controller.signal })
+      workers[0].deliver<string>({ id: lastId(workers[0]), result: 'done' })
+      await expect(p).resolves.toBe('done')
+
+      const next = bridge.call<string>({ x: 2 })
+      controller.abort()
+      expect(workers[0].isTerminated()).toBe(false)
+      workers[0].deliver<string>({ id: lastId(workers[0]), result: 'still alive' })
+      await expect(next).resolves.toBe('still alive')
+    })
+  })
 })

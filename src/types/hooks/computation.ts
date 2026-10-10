@@ -1,3 +1,15 @@
+/**
+ * Second argument the pipeline passes to every `compute` call. `signal` is
+ * aborted when the call is superseded (a newer input is enqueued), when the
+ * input becomes empty (`isEmpty` bypass), and on unmount. Computes may ignore
+ * it — `(input) => …` stays assignable — but long-running work (worker calls,
+ * canvas loops) should check it so cancelled work stops instead of merely
+ * having its result dropped. Cancellation, not progress (see ADR-0001).
+ */
+export type ToolComputeContext = {
+  signal: AbortSignal
+}
+
 export type UseToolComputationOptions<I, R> = {
   initial: R
   debounceMs?: number
@@ -53,7 +65,7 @@ export type UseToolFieldsOptions<F, R> = {
    * `useMountOnce(() => recompute())` ritual.
    */
   autorunOnMount?: boolean
-  compute: (input: F) => R | Promise<R>
+  compute: (input: F, context: ToolComputeContext) => R | Promise<R>
   debounceMs?: number
   /** Initial input bag — also the value `reset()` restores. */
   initial: F
@@ -113,7 +125,7 @@ export type UseToolInputOptions<I, R> = {
    * `useMountOnce(() => recompute())` ritual.
    */
   autorunOnMount?: boolean
-  compute: (input: I) => R | Promise<R>
+  compute: (input: I, context: ToolComputeContext) => R | Promise<R>
   debounceMs?: number
   /** Initial input value — also the value `reset()` restores. */
   initial: I

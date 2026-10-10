@@ -3,7 +3,7 @@ import { useCallback, useRef } from 'react'
 import { ImageToolShell } from '@/components/common/image-tool'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
-import type { BgOption, ToolComponentProps } from '@/types'
+import type { BgOption, ToolComponentProps, ToolComputeContext } from '@/types'
 import { applyBackground, removeBackground } from '@/utils'
 
 import { BackgroundRemoverError } from './Error'
@@ -23,16 +23,22 @@ export const BackgroundRemover = ({ onAfterClose }: ToolComponentProps) => {
   const strippedCacheRef = useRef<{ file: File; stripped: Blob } | null>(null)
   const showError = useToast((s) => s.showError)
 
-  const process = useCallback(async (file: File, { bgOption: bg, customColor: c }: BgControls) => {
-    let stripped = strippedCacheRef.current?.file === file ? strippedCacheRef.current.stripped : null
-    if (!stripped) {
-      stripped = await removeBackground(file)
-      strippedCacheRef.current = { file, stripped }
-    }
-    if (bg === 'transparent') return stripped
-    const bgColor = bg === 'white' ? '#ffffff' : c
-    return applyBackground(stripped, bgColor)
-  }, [])
+  const process = useCallback(
+    async (file: File, { bgOption: bg, customColor: c }: BgControls, { signal }: ToolComputeContext) => {
+      let stripped = strippedCacheRef.current?.file === file ? strippedCacheRef.current.stripped : null
+      if (!stripped) {
+        // Not cancelled mid-inference: the model run is the expensive part and
+        // its output is cached for the next run on the same file.
+        stripped = await removeBackground(file)
+        strippedCacheRef.current = { file, stripped }
+      }
+      if (bg === 'transparent') return stripped
+      signal.throwIfAborted()
+      const bgColor = bg === 'white' ? '#ffffff' : c
+      return applyBackground(stripped, bgColor, signal)
+    },
+    [],
+  )
 
   return (
     <ImageToolShell<BgControls>

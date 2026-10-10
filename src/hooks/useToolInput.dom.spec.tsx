@@ -51,7 +51,7 @@ describe('useToolInput', () => {
       await vi.advanceTimersByTimeAsync(300)
     })
     expect(compute).toHaveBeenCalledTimes(1)
-    expect(compute).toHaveBeenCalledWith('abc')
+    expect(compute).toHaveBeenCalledWith('abc', { signal: expect.any(AbortSignal) })
     expect(result.current.result).toBe('ABC')
   })
 
@@ -79,7 +79,7 @@ describe('useToolInput', () => {
     })
 
     expect(compute).toHaveBeenCalledTimes(1)
-    expect(compute).toHaveBeenCalledWith('fast')
+    expect(compute).toHaveBeenCalledWith('fast', { signal: expect.any(AbortSignal) })
     expect(result.current.input).toBe('fast')
     expect(result.current.result).toBe('FAST')
 
@@ -232,7 +232,7 @@ describe('useToolInput', () => {
     })
 
     expect(compute).toHaveBeenCalledTimes(2)
-    expect(compute).toHaveBeenLastCalledWith('x')
+    expect(compute).toHaveBeenLastCalledWith('x', { signal: expect.any(AbortSignal) })
     expect(result.current.result).toBe('X')
   })
 
@@ -279,7 +279,7 @@ describe('useToolInput', () => {
       })
 
       expect(compute).toHaveBeenCalledTimes(1)
-      expect(compute).toHaveBeenCalledWith('SEED')
+      expect(compute).toHaveBeenCalledWith('SEED', { signal: expect.any(AbortSignal) })
     })
 
     it('does NOT fire compute on mount when autorunOnMount is undefined (default)', async () => {
@@ -371,7 +371,7 @@ describe('useToolInput', () => {
 
     // recompute and setInputImmediate(current) each fire one additional compute beyond the initial setInputImmediate call.
     expect(compute).toHaveBeenCalledTimes(3)
-    expect(compute).toHaveBeenNthCalledWith(2, 'x')
-    expect(compute).toHaveBeenNthCalledWith(3, 'x')
+    expect(compute).toHaveBeenNthCalledWith(2, 'x', { signal: expect.any(AbortSignal) })
+    expect(compute).toHaveBeenNthCalledWith(3, 'x', { signal: expect.any(AbortSignal) })
   })
 })

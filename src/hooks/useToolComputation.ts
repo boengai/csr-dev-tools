@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 
-import type { UseToolComputationOptions, UseToolComputationResult } from '@/types'
+import type { ToolComputeContext, UseToolComputationOptions, UseToolComputationResult } from '@/types'
 
 import { useToast } from './state/useToast'
 
@@ -33,13 +33,27 @@ export function reportPipelineError<I>(err: unknown, input: I, routing: Pipeline
 }
 
 /**
+ * True for rejections that mean "this compute was cancelled" — a DOM
+ * `AbortError` (e.g. `signal.throwIfAborted()`, an aborted `fetch`). The
+ * pipeline treats these as silent: no error state, no toast.
+ */
+export function isAbortError(err: unknown): boolean {
+  return typeof err === 'object' && err !== null && (err as { name?: unknown }).name === 'AbortError'
+}
+
+/**
  * Tool computation pipeline: debounced + stale-safe async transformation from
  * a Tool's input to its result. Owns `result`, `error`, `isPending`, plus a
  * `recompute()` primitive that re-fires compute with the last input.
  * See CONTEXT.md → "Tool computation pipeline" for the four invariants.
+ *
+ * Each compute receives `{ signal }`; the signal is aborted when a newer
+ * input is enqueued, on the `isEmpty` bypass, and on unmount, so cancellable
+ * work stops instead of only having its result dropped. An abort rejection
+ * is silent.
  */
 export function useToolComputation<I, R>(
-  compute: (input: I) => Promise<R> | R,
+  compute: (input: I, context: ToolComputeContext) => Promise<R> | R,
   options: UseToolComputationOptions<I, R>,
 ): UseToolComputationResult<I, R> {
   const [result, setResult] = useState<R>(options.initial)
@@ -52,6 +66,7 @@ export function useToolComputation<I, R>(
   computeRef.current = compute
 
   const timeoutRef = useRef<number | undefined>(undefined)
+  const controllerRef = useRef<AbortController | null>(null)
   const sessionRef = useRef(0)
   const mountedRef = useRef(true)
   // Holds the last input passed to setInput / setInputImmediate. Boxed so
@@ -66,8 +81,11 @@ export function useToolComputation<I, R>(
         clearTimeout(timeoutRef.current)
         timeoutRef.current = undefined
       }
-      // Invalidate any in-flight compute so its resolution is dropped.
+      // Invalidate any in-flight compute so its resolution is dropped, and
+      // tell cancellable work to stop.
       sessionRef.current += 1
+      controllerRef.current?.abort()
+      controllerRef.current = null
     }
   }, [])
 
@@ -78,6 +96,9 @@ export function useToolComputation<I, R>(
       clearTimeout(timeoutRef.current)
       timeoutRef.current = undefined
     }
+    // A newer input (or the empty bypass) supersedes whatever is in flight.
+    controllerRef.current?.abort()
+    controllerRef.current = null
 
     if (isEmpty?.(input)) {
       sessionRef.current += 1
@@ -89,18 +110,26 @@ export function useToolComputation<I, R>(
 
     setIsPending(true)
     const session = ++sessionRef.current
+    const controller = new AbortController()
+    controllerRef.current = controller
 
     timeoutRef.current = window.setTimeout(() => {
       timeoutRef.current = undefined
       void (async () => {
         try {
-          const value = await computeRef.current(input)
+          const value = await computeRef.current(input, { signal: controller.signal })
           if (session !== sessionRef.current || !mountedRef.current) return
+          if (controllerRef.current === controller) controllerRef.current = null
           setResult(value)
           setError(null)
           setIsPending(false)
         } catch (err) {
           if (session !== sessionRef.current || !mountedRef.current) return
+          if (controllerRef.current === controller) controllerRef.current = null
+          if (controller.signal.aborted || isAbortError(err)) {
+            setIsPending(false)
+            return
+          }
           setError(err)
           setIsPending(false)
           reportPipelineError(err, input, optionsRef.current)

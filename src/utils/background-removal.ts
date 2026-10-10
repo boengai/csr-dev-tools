@@ -33,12 +33,18 @@ export async function removeBackground(image: Blob, onProgress?: (progress: numb
   return canvasToBlob(canvas)
 }
 
-export async function applyBackground(foreground: Blob, color: string): Promise<Blob> {
+/**
+ * Composite `foreground` over a solid `color`. Pass `signal` to skip the
+ * draw + PNG encode (the expensive half) when the run was superseded while
+ * the image was decoding — e.g. a colour-picker drag firing per tick.
+ */
+export async function applyBackground(foreground: Blob, color: string, signal?: AbortSignal): Promise<Blob> {
   if (!foreground.type.startsWith('image/')) {
     throw new Error('Invalid foreground image')
   }
 
   const img = await loadImageFromBlob(foreground)
+  signal?.throwIfAborted()
 
   const canvas = document.createElement('canvas')
   canvas.width = img.width

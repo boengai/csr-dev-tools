@@ -25,6 +25,7 @@ export const isWorkerAbortError = (err: unknown, reason?: WorkerAbortReason): er
   err instanceof WorkerAbortError && (reason === undefined || err.reason === reason)
 
 type PendingCall = {
+  detachSignal?: () => void
   onProgress?: (progress: number) => void
   reject: (err: Error) => void
   resolve: (value: unknown) => void
@@ -48,9 +49,10 @@ const isResponse = (data: unknown): data is WorkerResponse<unknown> =>
  *      script load, uncaught throw) rejects every pending call and drops the
  *      worker; the next call lazily constructs a fresh one. No call can hang
  *      forever on a dead worker.
- *   4. Abort — `cancel()` and per-call `timeoutMs` terminate the worker and
- *      reject pending calls with `WorkerAbortError`. Termination is the only
- *      way to stop a runaway synchronous job.
+ *   4. Abort — `cancel()`, per-call `timeoutMs`, and an aborted per-call
+ *      `signal` terminate the worker and reject pending calls with
+ *      `WorkerAbortError`. Termination is the only way to stop a runaway
+ *      synchronous job.
  *   5. Lazy construction — `workerFactory` runs on the first `.call(...)`
  *      (and again after a failure/abort), not at module import.
  *
@@ -70,6 +72,7 @@ export function createWorkerBridge<TReq extends object>(workerFactory: () => Wor
     if (!entry) return undefined
     pending.delete(id)
     if (entry.timer !== undefined) clearTimeout(entry.timer)
+    entry.detachSignal?.()
     return entry
   }
 
@@ -124,6 +127,11 @@ export function createWorkerBridge<TReq extends object>(workerFactory: () => Wor
   return {
     call: <TRes = unknown>(payload: TReq, options: WorkerCallOptions = {}) =>
       new Promise<TRes>((resolve, reject) => {
+        const { signal } = options
+        if (signal?.aborted) {
+          reject(new WorkerAbortError('cancel'))
+          return
+        }
         const id = ++msgId
         const w = getWorker()
         const entry: PendingCall = {
@@ -133,6 +141,11 @@ export function createWorkerBridge<TReq extends object>(workerFactory: () => Wor
         }
         if (options.timeoutMs !== undefined) {
           entry.timer = setTimeout(() => abort('timeout'), options.timeoutMs)
+        }
+        if (signal) {
+          const onAbort = () => abort('cancel')
+          signal.addEventListener('abort', onAbort, { once: true })
+          entry.detachSignal = () => signal.removeEventListener('abort', onAbort)
         }
         pending.set(id, entry)
         // Bridge appends `id` so a typo'd id in the caller's payload is

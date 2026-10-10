@@ -81,6 +81,18 @@ describe('runRegex', () => {
     expect((err as Error).message).not.toBe(REGEX_TIMEOUT_MESSAGE)
   })
 
+  it('terminates a runaway pattern as soon as the signal aborts (before the timeout)', async () => {
+    const controller = new AbortController()
+    const hung = runRegex('HANG', 'g', 'aaaa', controller.signal)
+    const outcome = hung.catch((e: unknown) => e)
+
+    controller.abort()
+    const err = await outcome
+    expect(err).toBeInstanceOf(Error)
+    expect((err as Error).message).not.toBe(REGEX_TIMEOUT_MESSAGE)
+    expect(instances[0].terminated).toBe(true)
+  })
+
   it('runs synchronously when Worker is unavailable', async () => {
     vi.unstubAllGlobals()
     const result = await runRegex('b', 'g', 'abb')

@@ -156,7 +156,10 @@ describe('useToolFields (storageKey) — mount-time autorun', () => {
     })
 
     expect(compute).toHaveBeenCalledTimes(1)
-    expect(compute).toHaveBeenCalledWith({ jsonData: 'restored', jsonSchema: '{}' })
+    expect(compute).toHaveBeenCalledWith(
+      { jsonData: 'restored', jsonSchema: '{}' },
+      { signal: expect.any(AbortSignal) },
+    )
   })
 
   it('does NOT fire compute on mount when restored bag passes isEmpty', async () => {
@@ -220,7 +223,7 @@ describe('useToolFields (storageKey) — autorunOnMount override', () => {
     })
 
     expect(compute).toHaveBeenCalledTimes(1)
-    expect(compute).toHaveBeenCalledWith({ jsonData: 'X', jsonSchema: 'Y' })
+    expect(compute).toHaveBeenCalledWith({ jsonData: 'X', jsonSchema: 'Y' }, { signal: expect.any(AbortSignal) })
   })
 
   it('does NOT double-fire when autorunOnMount: true AND the isEmpty gate would also fire', async () => {
@@ -292,7 +295,7 @@ describe('useToolFields (storageKey) — delegation to useToolFields', () => {
     })
 
     expect(compute).toHaveBeenCalledTimes(1)
-    expect(compute).toHaveBeenCalledWith({ jsonData: 'a', jsonSchema: 'b' })
+    expect(compute).toHaveBeenCalledWith({ jsonData: 'a', jsonSchema: 'b' }, { signal: expect.any(AbortSignal) })
     expect(result.current.result).toBe('a|b')
   })
 })

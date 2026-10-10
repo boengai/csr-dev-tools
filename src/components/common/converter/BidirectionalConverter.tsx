@@ -1,7 +1,7 @@
 import { useState } from 'react'
 
 import { readJsonStorage, useInputLocalStorage, useToast, useToolFields, writeJsonStorage } from '@/hooks'
-import type { BidirectionalConverterProps, ConvertOutput } from '@/types'
+import type { BidirectionalConverterProps, ConvertOutput, ToolComputeContext } from '@/types'
 import { narrateParseError } from '@/utils/parse-error-narrators'
 
 import { CopyButton, ToggleButton } from '../button'
@@ -45,9 +45,9 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
   // source has a parse error matching that format, the thrown Error carries a
   // narrated `Invalid <FORMAT>: <reason>` message. Otherwise the original
   // error from compute flows through unchanged.
-  const wrappedCompute = async (input: { mode: M; source: string }): Promise<R> => {
+  const wrappedCompute = async (input: { mode: M; source: string }, context: ToolComputeContext): Promise<R> => {
     try {
-      return await compute(input)
+      return await compute(input, context)
     } catch (e) {
       const fmt = modes.find((m) => m.key === input.mode)?.sourceFormat
       if (fmt) {

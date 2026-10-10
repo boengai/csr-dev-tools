@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 
 import { Button, CopyButton, FieldForm, Pane, ToggleButton } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
@@ -13,7 +13,7 @@ import type {
   ToolComponentProps,
 } from '@/types'
 import { buildHighlightSegments, formatMatchesForCopy } from '@/utils'
-import { cancelRegex, runRegex } from '@/utils/regex-runner'
+import { runRegex } from '@/utils/regex-runner'
 
 const toolEntry = TOOL_REGISTRY_MAP['regex-tester']
 const DEFAULT_FLAGS: Flags = { g: true, i: false, m: false }
@@ -110,8 +110,11 @@ export const RegexTester = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
     result: computed,
     setFields,
   } = useToolFields<RegexInput, RegexComputed>({
-    compute: async ({ flags: fl, pattern: pat, testString: text }) => {
-      const r = await runRegex(pat, flagsToString(fl), text)
+    // The pipeline aborts `signal` when a newer input supersedes this run, on
+    // clear, and on unmount — which terminates a still-running (possibly
+    // runaway) pattern in the worker.
+    compute: async ({ flags: fl, pattern: pat, testString: text }, { signal }) => {
+      const r = await runRegex(pat, flagsToString(fl), text, signal)
       if (r.error != null) throw new Error(r.error)
       return { regex: r, segments: buildHighlightSegments(text, r.matches) }
     },
@@ -121,9 +124,6 @@ export const RegexTester = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
     initialResult: INITIAL_COMPUTED,
     isEmpty: ({ pattern: pat, testString: text }) => pat.trim() === '' || text.trim() === '',
   })
-
-  // Kill a still-running (possibly runaway) pattern when the tool unmounts.
-  useEffect(() => cancelRegex, [])
 
   const { flags, pattern, testString } = inputs
   const matches = computed.regex?.matches ?? []

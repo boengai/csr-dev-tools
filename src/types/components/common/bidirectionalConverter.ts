@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 
+import type { ToolComputeContext } from '@/types/hooks/computation'
 import type { SourceFormat } from '@/utils/parse-error-narrators'
 
 export type ConverterMode<M extends string> = {
@@ -30,7 +31,7 @@ export type ConvertOutput = {
 
 export type BidirectionalConverterProps<M extends string, R extends ConvertOutput = ConvertOutput> = {
   autoOpen?: boolean
-  compute: (input: { mode: M; source: string }) => Promise<R>
+  compute: (input: { mode: M; source: string }, context: ToolComputeContext) => Promise<R>
   description?: string
   /**
    * The initial result rendered before the first compute resolves. Required

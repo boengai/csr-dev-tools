@@ -202,7 +202,7 @@ describe('useToolInput (storageKey) — mount-time autorun', () => {
     })
 
     expect(compute).toHaveBeenCalledTimes(1)
-    expect(compute).toHaveBeenCalledWith('restored')
+    expect(compute).toHaveBeenCalledWith('restored', { signal: expect.any(AbortSignal) })
   })
 
   it('does NOT fire compute on mount when restored input passes isEmpty', async () => {
@@ -270,7 +270,7 @@ describe('useToolInput (storageKey) — delegation to useToolComputation', () =>
     })
 
     expect(compute).toHaveBeenCalledTimes(1)
-    expect(compute).toHaveBeenCalledWith('hello')
+    expect(compute).toHaveBeenCalledWith('hello', { signal: expect.any(AbortSignal) })
     expect(result.current.result).toBe('HELLO')
   })
 })

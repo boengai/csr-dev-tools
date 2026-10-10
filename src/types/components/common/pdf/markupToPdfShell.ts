@@ -1,3 +1,4 @@
+import type { ToolComputeContext } from '@/types/hooks/computation'
 import type { CompileResultDto } from '@/types/wasm/pdf'
 
 export type MarkupToPdfShellProps = {
@@ -6,7 +7,7 @@ export type MarkupToPdfShellProps = {
    * Source-to-PDF compile function. Today's adopters route through Typst
    * via `src/wasm/pdf.ts` (`compileHtmlToPdf` / `compileMarkdownToPdf`).
    */
-  compute: (source: string) => Promise<CompileResultDto> | CompileResultDto
+  compute: (source: string, context: ToolComputeContext) => Promise<CompileResultDto> | CompileResultDto
   description?: string
   /**
    * Slug interpolated into the download filename:
