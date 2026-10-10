@@ -59,14 +59,19 @@ const InputController = (props: InputControllerProps) => {
 export const FieldForm = ({ label, ...props }: FieldFormProps) => {
   const generatedId = useId()
   const inputId = props.id ?? generatedId
+  const labelId = `${inputId}-label`
+  // `<label htmlFor>` only names native labelable elements. Radix radio
+  // group / slider thumb and the CodeMirror contenteditable need an explicit
+  // aria-labelledby pointing at the visible label.
+  const needsLabelledBy = Boolean(label) && (props.type === 'code' || props.type === 'radio' || props.type === 'range')
   return (
     <fieldset className={fieldsetStyles({ grow: props.type === 'textarea' || props.type === 'code' })}>
       {label && (
-        <label className="flex min-h-8 shrink-0 items-center pl-2 text-gray-100" htmlFor={inputId}>
+        <label className="flex min-h-8 shrink-0 items-center pl-2 text-gray-100" htmlFor={inputId} id={labelId}>
           {label}
         </label>
       )}
-      <InputController {...props} id={inputId} />
+      <InputController {...props} {...(needsLabelledBy ? { 'aria-labelledby': labelId } : {})} id={inputId} />
     </fieldset>
   )
 }

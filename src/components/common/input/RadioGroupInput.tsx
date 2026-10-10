@@ -2,11 +2,24 @@ import { Indicator, Item, Root } from '@radix-ui/react-radio-group'
 
 import type { RadioGroupInputProps } from '@/types'
 
-export const RadioGroupInput = ({ disabled, name, onBlur, onChange, options, value }: RadioGroupInputProps) => {
+export const RadioGroupInput = ({
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  disabled,
+  id,
+  name,
+  onBlur,
+  onChange,
+  options,
+  value,
+}: RadioGroupInputProps) => {
   return (
     <Root
+      aria-label={ariaLabel}
+      aria-labelledby={ariaLabelledBy}
       className="flex flex-wrap items-center gap-4"
       disabled={disabled}
+      id={id}
       name={name}
       onBlur={onBlur}
       onValueChange={onChange}
