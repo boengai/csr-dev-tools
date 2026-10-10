@@ -117,14 +117,13 @@ async function buildGrid2x2(items: Array<ImageToPdfInput>): Promise<ImageToPdfRe
     const page = pdf.addPage([A4_W, A4_H])
     const slice = embedded.slice(pageStart, pageStart + PER_PAGE)
 
-    for (let idx = 0; idx < slice.length; idx++) {
+    for (const [idx, { image }] of slice.entries()) {
       const col = idx % COLS
       const row = Math.floor(idx / COLS)
       const cellX = MARGIN + col * (CELL_W + GAP)
       // PDF y-axis is bottom-up; row 0 is the top row
       const cellY = A4_H - MARGIN - (row + 1) * CELL_H - row * GAP
 
-      const { image } = slice[idx]
       const aspectImg = image.width / image.height
       const aspectCell = CELL_W / CELL_H
       let drawW: number

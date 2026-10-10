@@ -7,8 +7,8 @@ export const parseEnv = (input: string): EnvParseResult => {
   const entries: Array<{ key: string; value: string }> = []
   const warnings: Array<string> = []
 
-  for (let i = 0; i < lines.length; i++) {
-    const line = lines[i].trim()
+  for (const [i, rawLine] of lines.entries()) {
+    const line = rawLine.trim()
     if (line.length === 0 || line.startsWith('#')) continue
 
     const eqIndex = line.indexOf('=')

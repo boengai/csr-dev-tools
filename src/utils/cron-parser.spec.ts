@@ -54,6 +54,12 @@ describe('parseCron', () => {
     expect(result.error).toContain('minute')
   })
 
+  it('rejects a range with more than two bounds instead of dropping the tail', () => {
+    const result = parseCron('* 1-2-3 * * *')
+    expect(result.valid).toBe(false)
+    expect(result.error).toBe('Invalid hour field: "1-2-3"')
+  })
+
   it('returns requested number of next runs', () => {
     const result = parseCron('* * * * *', 10)
     expect(result.nextRuns).toHaveLength(10)

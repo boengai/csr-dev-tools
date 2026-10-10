@@ -30,11 +30,8 @@ export const validatePrefixLength = (prefix: number): boolean => {
 }
 
 export const parseCidr = (input: string): ParsedCidr | null => {
-  const parts = input.split('/')
-  if (parts.length !== 2) return null
-
-  const ip = parts[0]
-  const prefixStr = parts[1]
+  const [ip, prefixStr, ...extra] = input.split('/')
+  if (ip === undefined || prefixStr === undefined || extra.length > 0) return null
 
   if (!validateIpv4(ip)) return null
   if (!/^\d+$/.test(prefixStr)) return null

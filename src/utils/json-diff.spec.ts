@@ -13,7 +13,7 @@ describe('json diff utilities', () => {
       const result = JSON.parse(await deepSortJson(JSON.stringify({ b: { z: 1, a: 2 }, a: { y: 3, x: 4 } })))
       const outer = Object.keys(result as Record<string, unknown>)
       expect(outer).toEqual(['a', 'b'])
-      expect(Object.keys((result as Record<string, Record<string, unknown>>).a)).toEqual(['x', 'y'])
+      expect(Object.keys((result as { a: Record<string, unknown> }).a)).toEqual(['x', 'y'])
     })
 
     it('should sort arrays of primitives by value', async () => {

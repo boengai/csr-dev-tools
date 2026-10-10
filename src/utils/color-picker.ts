@@ -62,6 +62,7 @@ export const readCanvasColorAt = (canvas: HTMLCanvasElement, clientX: number, cl
   const scaleY = canvas.height / rect.height
   const x = Math.min(Math.max(Math.floor((clientX - rect.left) * scaleX), 0), canvas.width - 1)
   const y = Math.min(Math.max(Math.floor((clientY - rect.top) * scaleY), 0), canvas.height - 1)
-  const pixel = ctx.getImageData(x, y, 1, 1).data
-  return pixelToColor(pixel[0], pixel[1], pixel[2])
+  // A 1x1 read always yields exactly one RGBA quadruple.
+  const [r = 0, g = 0, b = 0] = ctx.getImageData(x, y, 1, 1).data
+  return pixelToColor(r, g, b)
 }

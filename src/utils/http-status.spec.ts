@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
+
 import { filterHttpStatusCodes, HTTP_STATUS_CODES } from './http-status'
 
 describe('http-status', () => {
@@ -24,7 +26,7 @@ describe('http-status', () => {
   it('filters by code "200"', () => {
     const result = filterHttpStatusCodes(HTTP_STATUS_CODES, '200')
     expect(result).toHaveLength(1)
-    expect(result[0].code).toBe(200)
+    expect(nth(result, 0).code).toBe(200)
   })
 
   it('filters by category', () => {

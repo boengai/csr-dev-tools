@@ -16,14 +16,14 @@ const isPlainObject = (value: unknown): value is Record<string, unknown> =>
   typeof value === 'object' && value !== null && !Array.isArray(value)
 
 export const decodeJwt = (token: string): DecodedJwt => {
-  const parts = token.split('.')
-  if (parts.length !== 3) {
+  const [encodedHeader, encodedPayload, signature, ...extra] = token.split('.')
+  if (encodedHeader === undefined || encodedPayload === undefined || signature === undefined || extra.length > 0) {
     throw new Error('Invalid JWT format — expected 3 dot-separated segments')
   }
 
   let header: Record<string, unknown>
   try {
-    const parsedHeader: unknown = JSON.parse(base64UrlDecode(parts[0]))
+    const parsedHeader: unknown = JSON.parse(base64UrlDecode(encodedHeader))
     if (!isPlainObject(parsedHeader)) throw new Error('not an object')
     header = parsedHeader
   } catch {
@@ -32,14 +32,14 @@ export const decodeJwt = (token: string): DecodedJwt => {
 
   let payload: Record<string, unknown>
   try {
-    const parsedPayload: unknown = JSON.parse(base64UrlDecode(parts[1]))
+    const parsedPayload: unknown = JSON.parse(base64UrlDecode(encodedPayload))
     if (!isPlainObject(parsedPayload)) throw new Error('not an object')
     payload = parsedPayload
   } catch {
     throw new Error('Invalid JWT payload — could not decode or parse')
   }
 
-  return { header, payload, signature: parts[2] }
+  return { header, payload, signature }
 }
 
 export const formatTimestampClaim = (value: number): string => {

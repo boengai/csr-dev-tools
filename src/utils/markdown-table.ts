@@ -15,21 +15,23 @@ const separatorCell = (align: ColumnAlignment, width: number): string => {
 }
 
 export const generateMarkdownTable = (data: Array<Array<string>>, alignments: Array<ColumnAlignment>): string => {
-  if (data.length === 0 || data[0].length === 0) return ''
+  const [header, ...body] = data.map((row) => row.map((cell) => escapeCell(cell.trim())))
+  if (header === undefined || header.length === 0) return ''
 
-  const colCount = data[0].length
-  const escaped = data.map((row) => row.map((cell) => escapeCell(cell.trim())))
+  const colCount = header.length
+  const escaped = [header, ...body]
 
   // Calculate column widths
   const widths: Array<number> = Array.from({ length: colCount }, (_, c) =>
     Math.max(3, ...escaped.map((row) => (row[c] ?? '').length)),
   )
 
-  const padCell = (text: string, width: number): string => text.padEnd(width)
+  // Cells beyond the header's column count have no computed width and stay unpadded.
+  const padCell = (text: string, column: number): string => text.padEnd(widths[column] ?? 0)
 
-  const headerRow = `| ${escaped[0].map((cell, i) => padCell(cell, widths[i])).join(' | ')} |`
+  const headerRow = `| ${header.map((cell, i) => padCell(cell, i)).join(' | ')} |`
   const separator = `| ${widths.map((w, i) => separatorCell(alignments[i] ?? 'left', w)).join(' | ')} |`
-  const dataRows = escaped.slice(1).map((row) => `| ${row.map((cell, i) => padCell(cell, widths[i])).join(' | ')} |`)
+  const dataRows = body.map((row) => `| ${row.map((cell, i) => padCell(cell, i)).join(' | ')} |`)
 
   return [headerRow, separator, ...dataRows].join('\n')
 }

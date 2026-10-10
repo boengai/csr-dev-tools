@@ -50,9 +50,7 @@ export const buildHighlightSegments = (text: string, matches: Array<RegexMatch>)
   const segments: Array<HighlightSegment> = []
   let position = 0
 
-  for (let i = 0; i < matches.length; i++) {
-    const match = matches[i]
-
+  for (const [i, match] of matches.entries()) {
     // Skip zero-length matches to avoid infinite loops
     if (match.fullMatch.length === 0) continue
 

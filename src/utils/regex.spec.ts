@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
 import { buildHighlightSegments, executeRegex, formatMatchesForCopy } from '@/utils'
 
 describe('regex utilities', () => {
@@ -8,25 +9,25 @@ describe('regex utilities', () => {
       const result = executeRegex('\\d+', 'g', 'abc 123 def 456')
       expect(result.error).toBeNull()
       expect(result.matches).toHaveLength(2)
-      expect(result.matches[0].fullMatch).toBe('123')
-      expect(result.matches[1].fullMatch).toBe('456')
+      expect(nth(result.matches, 0).fullMatch).toBe('123')
+      expect(nth(result.matches, 1).fullMatch).toBe('456')
     })
 
     it('should find only first match without global flag', () => {
       const result = executeRegex('\\d+', '', 'abc 123 def 456')
       expect(result.error).toBeNull()
       expect(result.matches).toHaveLength(1)
-      expect(result.matches[0].fullMatch).toBe('123')
+      expect(nth(result.matches, 0).fullMatch).toBe('123')
     })
 
     it('should extract numbered capture groups', () => {
       const result = executeRegex('(\\w+)@(\\w+)', 'g', 'user@host')
-      expect(result.matches[0].groups).toEqual(['user', 'host'])
+      expect(nth(result.matches, 0).groups).toEqual(['user', 'host'])
     })
 
     it('should extract named capture groups', () => {
       const result = executeRegex('(?<user>\\w+)@(?<domain>\\w+)', 'g', 'user@host')
-      expect(result.matches[0].namedGroups).toEqual({ domain: 'host', user: 'user' })
+      expect(nth(result.matches, 0).namedGroups).toEqual({ domain: 'host', user: 'user' })
     })
 
     it('should support case-insensitive flag', () => {
@@ -37,8 +38,8 @@ describe('regex utilities', () => {
     it('should support multiline flag', () => {
       const result = executeRegex('^\\w+', 'gm', 'hello\nworld')
       expect(result.matches).toHaveLength(2)
-      expect(result.matches[0].fullMatch).toBe('hello')
-      expect(result.matches[1].fullMatch).toBe('world')
+      expect(nth(result.matches, 0).fullMatch).toBe('hello')
+      expect(nth(result.matches, 1).fullMatch).toBe('world')
     })
 
     it('should return error for invalid pattern', () => {

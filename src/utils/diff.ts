@@ -47,42 +47,42 @@ export const computeSideBySideDiff = async (original: string, modified: string):
   let pendingRemoved: Array<string> = []
 
   const flushPending = async (addedLines: Array<string>) => {
-    const pairCount = Math.min(pendingRemoved.length, addedLines.length)
-
-    for (let i = 0; i < pairCount; i++) {
-      const { left, right } = await computeInlineSpans(pendingRemoved[i], addedLines[i])
+    // Pair removed/added lines positionally; leftovers on either side get an empty partner.
+    for (const [i, removedLine] of pendingRemoved.entries()) {
+      const addedLine = addedLines[i]
+      if (addedLine === undefined) {
+        rows.push({
+          leftContent: removedLine,
+          leftLineNum: leftNum++,
+          leftSpans: null,
+          leftType: 'removed',
+          rightContent: '',
+          rightLineNum: null,
+          rightSpans: null,
+          rightType: 'empty',
+        })
+        continue
+      }
+      const { left, right } = await computeInlineSpans(removedLine, addedLine)
       rows.push({
-        leftContent: pendingRemoved[i],
+        leftContent: removedLine,
         leftLineNum: leftNum++,
         leftSpans: left,
         leftType: 'removed',
-        rightContent: addedLines[i],
+        rightContent: addedLine,
         rightLineNum: rightNum++,
         rightSpans: right,
         rightType: 'added',
       })
     }
 
-    for (let i = pairCount; i < pendingRemoved.length; i++) {
-      rows.push({
-        leftContent: pendingRemoved[i],
-        leftLineNum: leftNum++,
-        leftSpans: null,
-        leftType: 'removed',
-        rightContent: '',
-        rightLineNum: null,
-        rightSpans: null,
-        rightType: 'empty',
-      })
-    }
-
-    for (let i = pairCount; i < addedLines.length; i++) {
+    for (const addedLine of addedLines.slice(pendingRemoved.length)) {
       rows.push({
         leftContent: '',
         leftLineNum: null,
         leftSpans: null,
         leftType: 'empty',
-        rightContent: addedLines[i],
+        rightContent: addedLine,
         rightLineNum: rightNum++,
         rightSpans: null,
         rightType: 'added',

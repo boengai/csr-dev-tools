@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { nth } from '@/test/nth'
 import { envToJson, envToYaml, jsonToEnv, parseEnv, yamlToEnv } from '@/utils'
 
 describe('env utilities', () => {
@@ -15,8 +16,8 @@ describe('env utilities', () => {
 
     it('should handle quoted values', () => {
       const { entries } = parseEnv('NAME="hello world"\nSINGLE=\'quoted\'')
-      expect(entries[0].value).toBe('hello world')
-      expect(entries[1].value).toBe('quoted')
+      expect(nth(entries, 0).value).toBe('hello world')
+      expect(nth(entries, 1).value).toBe('quoted')
     })
 
     it('should skip comments and empty lines', () => {
@@ -32,7 +33,7 @@ describe('env utilities', () => {
 
     it('should handle values with = signs', () => {
       const { entries } = parseEnv('URL=https://example.com?a=1&b=2')
-      expect(entries[0].value).toBe('https://example.com?a=1&b=2')
+      expect(nth(entries, 0).value).toBe('https://example.com?a=1&b=2')
     })
 
     it('should throw on empty input', () => {

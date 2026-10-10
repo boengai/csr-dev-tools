@@ -1,6 +1,7 @@
 // @vitest-environment jsdom
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type { BgRemovalResult, BgRemovalWorkerRequest } from '@/types/utils/background-removal'
 import type { WorkerRequest, WorkerResponse } from '@/types/wasm/worker-bridge'
 
@@ -170,9 +171,9 @@ describe('background-removal utilities', () => {
       const result = await removeBackground(blob)
 
       expect(result).toBeInstanceOf(Blob)
-      expect(requests[0].req.type).toBe('image/png')
-      expect(requests[0].req.bytes.byteLength).toBe(4)
-      expect(requests[0].transfer).toEqual([requests[0].req.bytes])
+      expect(nth(requests, 0).req.type).toBe('image/png')
+      expect(nth(requests, 0).req.bytes.byteLength).toBe(4)
+      expect(nth(requests, 0).transfer).toEqual([nth(requests, 0).req.bytes])
       expect(mock.canvas.width).toBe(2)
       expect(mock.canvas.height).toBe(2)
     })

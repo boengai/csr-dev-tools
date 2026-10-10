@@ -1,5 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { nth } from '@/test/nth'
 import type { RegexWorkerRequest } from '@/types/utils/regex'
 import type { WorkerRequest } from '@/types/wasm/worker-bridge'
 
@@ -60,7 +61,7 @@ describe('runRegex', () => {
     const assertion = expect(hung).rejects.toThrow(REGEX_TIMEOUT_MESSAGE)
     await vi.advanceTimersByTimeAsync(REGEX_TIMEOUT_MS)
     await assertion
-    expect(instances[0].terminated).toBe(true)
+    expect(nth(instances, 0).terminated).toBe(true)
 
     vi.useRealTimers()
     const result = await runRegex('a', 'g', 'aa')
@@ -75,7 +76,7 @@ describe('runRegex', () => {
     const fresh = await runRegex('a', 'g', 'aa')
 
     expect(fresh.matches).toHaveLength(2)
-    expect(instances[0].terminated).toBe(true)
+    expect(nth(instances, 0).terminated).toBe(true)
     const err = await staleOutcome
     expect(err).toBeInstanceOf(Error)
     expect((err as Error).message).not.toBe(REGEX_TIMEOUT_MESSAGE)
@@ -90,7 +91,7 @@ describe('runRegex', () => {
     const err = await outcome
     expect(err).toBeInstanceOf(Error)
     expect((err as Error).message).not.toBe(REGEX_TIMEOUT_MESSAGE)
-    expect(instances[0].terminated).toBe(true)
+    expect(nth(instances, 0).terminated).toBe(true)
   })
 
   it('runs synchronously when Worker is unavailable', async () => {

@@ -22,8 +22,10 @@ const REGISTRY_KEY_SET = new Set<string>(Object.values(FEATURE_KEY_TO_REGISTRY_K
 export const migrateLayoutValue = (value: Record<number, string | null>): Record<number, ToolRegistryKey | null> => {
   const migrated: Record<number, ToolRegistryKey | null> = {}
   for (const [position, key] of Object.entries(value)) {
-    if (key !== null && Object.hasOwn(FEATURE_KEY_TO_REGISTRY_KEY, key)) {
-      migrated[Number(position)] = FEATURE_KEY_TO_REGISTRY_KEY[key]
+    const legacyKey =
+      key !== null && Object.hasOwn(FEATURE_KEY_TO_REGISTRY_KEY, key) ? FEATURE_KEY_TO_REGISTRY_KEY[key] : undefined
+    if (legacyKey !== undefined) {
+      migrated[Number(position)] = legacyKey
     } else if (key !== null && REGISTRY_KEY_SET.has(key)) {
       migrated[Number(position)] = key as ToolRegistryKey
     } else {
