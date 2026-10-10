@@ -22,5 +22,5 @@
     "noUncheckedSideEffectImports": true,
     "types": ["node"]
   },
-  "include": ["vite.config.ts", "vite-plugins/**/*.ts"]
+  "include": ["playwright.config.ts", "vite.config.ts", "vite-plugins/**/*.ts", "vitest.config.ts"]
 }
