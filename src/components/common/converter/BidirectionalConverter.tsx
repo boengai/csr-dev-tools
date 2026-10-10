@@ -1,10 +1,14 @@
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 
-import { Button, CodeOutput, CopyButton, FieldForm, Pane, SplitPanel, ToggleButton } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { readJsonStorage, useInputLocalStorage, useToast, useToolFields, writeJsonStorage } from '@/hooks'
 import type { BidirectionalConverterProps, ConvertOutput } from '@/types'
 import { narrateParseError } from '@/utils/parse-error-narrators'
+
+import { CopyButton, ToggleButton } from '../button'
+import { ToolDialogFrame } from '../dialog/ToolDialogFrame'
+import { FieldForm } from '../form'
+import { Pane, SplitPanel } from '../layout'
+import { CodeOutput } from '../output'
 
 const sourceKey = (mode: string, prefix?: string) =>
   prefix ? `csr-dev-tools-${prefix}-${mode}-source` : `csr-dev-tools-${mode}-source`
@@ -31,16 +35,11 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
     `csr-dev-tools-${modeStorageKey}-mode`,
     modes[0].key,
   )
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   const { showError } = useToast()
 
-  const initialBag = useMemo(
-    () => ({ mode: persistedMode, source: readSource(persistedMode, sourceKeyPrefix) }),
-    // Initial bag is captured once on mount; mode changes after that are
-    // routed through setFieldsImmediate, not via re-running this memo.
-    // eslint-disable-next-line react-hooks/exhaustive-deps -- mount-only seed
-    [],
-  )
+  // Initial bag is captured once on mount (lazy initializer); mode changes
+  // after that are routed through setFieldsImmediate.
+  const [initialBag] = useState(() => ({ mode: persistedMode, source: readSource(persistedMode, sourceKeyPrefix) }))
 
   // Wrap compute so that, when the active mode declares a sourceFormat and the
   // source has a parse error matching that format, the thrown Error carries a
@@ -91,77 +90,63 @@ export function BidirectionalConverter<M extends string, R extends ConvertOutput
     setFieldsImmediate({ mode: m, source: restored })
   }
 
-  const openDialog = (m: M) => {
-    switchMode(m)
-    setDialogOpen(true)
-  }
-
   const handleReset = () => {
     setFieldsImmediate({ source: '' })
   }
 
   return (
-    <>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={description}
+      onAfterClose={onAfterDialogClose}
+      onReset={handleReset}
+      size="screen"
+      title={modeConfig.label}
+      triggers={[{ label: modeConfig.label }]}
+    >
       <div className="flex w-full grow flex-col gap-4">
-        {description && <p className="shrink-0 text-body-xs text-gray-400">{description}</p>}
-        <div className="flex grow flex-col items-center justify-center gap-2">
-          <Button block onClick={() => openDialog(mode)} variant="default">
-            {modeConfig.label}
-          </Button>
-        </div>
+        {modes.length > 1 && (
+          <div className="flex items-center gap-2">
+            <span className="text-body-xs text-gray-400">Mode</span>
+            {modes.map((m) => (
+              <ToggleButton
+                aria-label={`${m.label} mode`}
+                key={m.key}
+                onClick={() => switchMode(m.key)}
+                pressed={m.key === mode}
+              >
+                {m.label}
+              </ToggleButton>
+            ))}
+          </div>
+        )}
+        {sourceToolbarSlot ? sourceToolbarSlot({ mode, recompute }) : null}
+        {renderBanner?.(result)}
+        <SplitPanel>
+          <Pane>
+            <FieldForm
+              label={modeConfig.sourceLabel}
+              name="dialog-source"
+              onChange={handleSourceChange}
+              placeholder={modeConfig.sourcePlaceholder}
+              type="code"
+              value={source}
+            />
+          </Pane>
+          <Pane live>
+            <CodeOutput
+              label={
+                <span className="flex items-center gap-1">
+                  <span>{modeConfig.resultLabel}</span>
+                  <CopyButton label="result" value={result.output} />
+                </span>
+              }
+              placeholder={modeConfig.resultPlaceholder}
+              value={result.output}
+            />
+          </Pane>
+        </SplitPanel>
       </div>
-      <ToolDialogShell
-        onAfterDialogClose={onAfterDialogClose}
-        onOpenChange={setDialogOpen}
-        onReset={handleReset}
-        open={dialogOpen}
-        size="screen"
-        title={modeConfig.label}
-      >
-        <div className="flex w-full grow flex-col gap-4">
-          {modes.length > 1 && (
-            <div className="flex items-center gap-2">
-              <span className="text-body-xs text-gray-400">Mode</span>
-              {modes.map((m) => (
-                <ToggleButton
-                  aria-label={`${m.label} mode`}
-                  key={m.key}
-                  onClick={() => switchMode(m.key)}
-                  pressed={m.key === mode}
-                >
-                  {m.label}
-                </ToggleButton>
-              ))}
-            </div>
-          )}
-          {sourceToolbarSlot ? sourceToolbarSlot({ mode, recompute }) : null}
-          {renderBanner?.(result)}
-          <SplitPanel>
-            <Pane>
-              <FieldForm
-                label={modeConfig.sourceLabel}
-                name="dialog-source"
-                onChange={handleSourceChange}
-                placeholder={modeConfig.sourcePlaceholder}
-                type="code"
-                value={source}
-              />
-            </Pane>
-            <Pane live>
-              <CodeOutput
-                label={
-                  <span className="flex items-center gap-1">
-                    <span>{modeConfig.resultLabel}</span>
-                    <CopyButton label="result" value={result.output} />
-                  </span>
-                }
-                placeholder={modeConfig.resultPlaceholder}
-                value={result.output}
-              />
-            </Pane>
-          </SplitPanel>
-        </div>
-      </ToolDialogShell>
-    </>
+    </ToolDialogFrame>
   )
 }

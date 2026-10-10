@@ -1,26 +1,23 @@
-import { useNavigate } from '@tanstack/react-router'
-import { useCallback } from 'react'
+import { Link } from '@tanstack/react-router'
 
 import { ROUTE_PATH } from '@/constants'
-import { useSidebarStore } from '@/hooks'
 
-import { sidebarItemVariants } from './SidebarToolItem'
+import { sidebarItemClassName, sidebarLinkActiveOptions, useCloseSidebarOnNavigate } from './SidebarToolItem'
 
-export const SidebarHomeItem = ({ isActive = false }: { isActive?: boolean }) => {
-  const close = useSidebarStore((state) => state.close)
-  const navigate = useNavigate()
-
-  const handleClick = useCallback(() => {
-    navigate({ to: ROUTE_PATH.HOME })
-    close()
-  }, [close, navigate])
+export const SidebarHomeItem = () => {
+  const handleClick = useCloseSidebarOnNavigate()
 
   return (
-    <button className={sidebarItemVariants({ active: isActive })} onClick={handleClick} type="button">
+    <Link
+      activeOptions={sidebarLinkActiveOptions}
+      className={sidebarItemClassName}
+      onClick={handleClick}
+      to={ROUTE_PATH.HOME}
+    >
       <span aria-hidden="true" className="shrink-0">
         🏠
       </span>
       <span className="truncate">Home</span>
-    </button>
+    </Link>
   )
 }

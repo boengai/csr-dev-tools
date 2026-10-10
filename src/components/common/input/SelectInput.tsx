@@ -11,7 +11,7 @@ import {
   Value,
   Viewport,
 } from '@radix-ui/react-select'
-import { AnimatePresence, m } from 'motion/react'
+import { m } from 'motion/react'
 
 import type { SelectInputProps } from '@/types'
 import { cnMerge } from '@/utils'
@@ -20,8 +20,10 @@ import { CheckIcon, ChevronIcon } from '../icon'
 import { inputVariants } from './TextInput'
 
 export const SelectInput = ({
+  'aria-label': ariaLabel,
   block = true,
   disabled,
+  id,
   name,
   onBlur,
   onChange,
@@ -34,45 +36,48 @@ export const SelectInput = ({
 
   return (
     <Root disabled={disabled} name={name} onValueChange={onChange} value={value}>
-      <Trigger aria-label={name} className={cnMerge(wrapperClassName, 'group [&>span]:first:truncate')} onBlur={onBlur}>
+      <Trigger
+        aria-label={ariaLabel}
+        className={cnMerge(wrapperClassName, 'group [&>span]:first:truncate')}
+        id={id}
+        onBlur={onBlur}
+      >
         <Value placeholder={placeholder} />
         <Icon className="text-gray-400 transition-transform duration-500 group-data-[state=open]:rotate-180">
           <ChevronIcon size={size === 'compact' ? 16 : 20} />
         </Icon>
       </Trigger>
       <Portal>
-        <AnimatePresence>
-          <Content asChild className="popover z-50 max-h-[30dvh] w-(--radix-select-trigger-width)" position="popper">
-            <m.div
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 8 }}
-              initial={{ opacity: 0, scale: 0.9, y: 16 }}
-              transition={{
-                damping: 25,
-                opacity: { duration: 0.2 },
-                stiffness: 300,
-                type: 'spring',
-              }}
-            >
-              <Viewport>
-                {options.map((itm) => (
-                  <Item
-                    className="flex cursor-pointer items-center justify-between truncate px-4 py-2 transition-colors hover:bg-primary/50 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50 data-[state=checked]:pointer-events-none"
-                    disabled={itm.disabled}
-                    key={itm.value}
-                    value={itm.value}
-                  >
-                    <ItemText className="whitespace-nowrap">{itm.label}</ItemText>
-                    <ItemIndicator className="text-success">
-                      <CheckIcon size={20} />
-                    </ItemIndicator>
-                  </Item>
-                ))}
-              </Viewport>
-              <Arrow />
-            </m.div>
-          </Content>
-        </AnimatePresence>
+        {/* Radix unmounts Content on close itself, so only the enter animation runs (no exit/AnimatePresence). */}
+        <Content asChild className="popover z-50 max-h-[30dvh] w-(--radix-select-trigger-width)" position="popper">
+          <m.div
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            initial={{ opacity: 0, scale: 0.9, y: 16 }}
+            transition={{
+              damping: 25,
+              opacity: { duration: 0.2 },
+              stiffness: 300,
+              type: 'spring',
+            }}
+          >
+            <Viewport>
+              {options.map((itm) => (
+                <Item
+                  className="flex cursor-pointer items-center justify-between truncate px-4 py-2 transition-colors hover:bg-primary/50 data-[disabled=true]:cursor-not-allowed data-[disabled=true]:opacity-50 data-[state=checked]:pointer-events-none"
+                  disabled={itm.disabled}
+                  key={itm.value}
+                  value={itm.value}
+                >
+                  <ItemText className="whitespace-nowrap">{itm.label}</ItemText>
+                  <ItemIndicator className="text-success">
+                    <CheckIcon size={20} />
+                  </ItemIndicator>
+                </Item>
+              ))}
+            </Viewport>
+            <Arrow />
+          </m.div>
+        </Content>
       </Portal>
     </Root>
   )

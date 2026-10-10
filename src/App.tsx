@@ -1,12 +1,12 @@
 import { Link, Outlet, useLocation } from '@tanstack/react-router'
 import { domAnimation, LazyMotion } from 'motion/react'
-import { lazy, Suspense } from 'react'
+import { lazy, Suspense, useState } from 'react'
 
 import { NotoEmoji } from '@/components/common/emoji' // optimized import
-import { ArrowIcon, GitHubIcon, HamburgerIcon, SearchIcon } from '@/components/common/icon' // optimized import
+import { ArrowIcon, GearIcon, GitHubIcon, HamburgerIcon, SearchIcon } from '@/components/common/icon' // optimized import
 import { ROUTE_PATH } from '@/constants'
 import { useCommandPaletteStore, useKeyboardShortcut, usePersistSettings, useSidebarStore } from '@/hooks'
-import { loadNamed } from '@/utils'
+import { loadNamed, MOD_KEY_LABEL } from '@/utils'
 
 const TwinkleStarsAnimate = lazy(
   loadNamed(() => import('@/components/common/animate/TwinkleStarsAnimate'), 'TwinkleStarsAnimate'),
@@ -32,6 +32,14 @@ export default function App() {
   const openCommandPalette = useCommandPaletteStore((state) => state.open)
   const toggleCommandPalette = useCommandPaletteStore((state) => state.toggle)
   const showBackgroundAnimation = usePersistSettings((s) => s.value.showBackgroundAnimation)
+  const [settingsOpen, setSettingsOpen] = useState(false)
+  // The settings chunk is requested on first open only; the gear stays eager.
+  const [settingsRequested, setSettingsRequested] = useState(false)
+
+  const openSettings = () => {
+    setSettingsRequested(true)
+    setSettingsOpen(true)
+  }
 
   useKeyboardShortcut(
     (event) => (event.metaKey || event.ctrlKey) && event.key === 'k',
@@ -74,7 +82,7 @@ export default function App() {
             <SearchIcon />
             <span className="text-body-xs">Search</span>
             <kbd className="hidden rounded-sm border border-gray-800 bg-gray-950 px-1.5 py-0.5 text-body-xs tablet:inline-block">
-              {typeof navigator !== 'undefined' && /Mac/i.test(navigator.userAgent) ? '⌘K' : 'Ctrl+K'}
+              {MOD_KEY_LABEL}K
             </kbd>
           </button>
           <a
@@ -86,9 +94,21 @@ export default function App() {
           >
             <GitHubIcon />
           </a>
-          <Suspense>
-            <SettingsDialog />
-          </Suspense>
+          <button
+            aria-expanded={settingsOpen}
+            aria-haspopup="dialog"
+            aria-label="Settings"
+            className="flex size-10 items-center justify-center rounded text-gray-400 transition-colors hover:text-white"
+            onClick={openSettings}
+            type="button"
+          >
+            <GearIcon />
+          </button>
+          {settingsRequested && (
+            <Suspense>
+              <SettingsDialog onOpenChange={setSettingsOpen} open={settingsOpen} />
+            </Suspense>
+          )}
         </div>
       </header>
 

@@ -37,3 +37,25 @@ describe('useToast helpers', () => {
     expect(items.map((i) => i.type)).toEqual(['error', 'success', 'success'])
   })
 })
+
+describe('useToast dismiss + ids', () => {
+  it('mints unique ids for toasts created within the same millisecond', () => {
+    const ids = Array.from({ length: 5 }, () => useToast.getState().showSuccess('x'))
+    expect(new Set(ids).size).toBe(5)
+  })
+
+  it('dismiss removes only the matching item', () => {
+    const a = useToast.getState().showSuccess('a')
+    const b = useToast.getState().showError('b')
+
+    useToast.getState().dismiss(a)
+
+    expect(useToast.getState().items.map((i) => i.id)).toEqual([b])
+  })
+
+  it('dismiss of an unknown id is a no-op', () => {
+    useToast.getState().showSuccess('a')
+    useToast.getState().dismiss('nope')
+    expect(useToast.getState().items).toHaveLength(1)
+  })
+})

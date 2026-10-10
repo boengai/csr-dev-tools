@@ -1,49 +1,46 @@
 import { Content, List, Root, Trigger } from '@radix-ui/react-tabs'
 import { AnimatePresence, m } from 'motion/react'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import type { TabsProps } from '@/types'
 
 export const Tabs = ({ defaultValue, injected, items }: TabsProps) => {
-  // ref
   const listRef = useRef<HTMLDivElement>(null)
 
-  // state
   const [indicator, setIndicator] = useState({ translateX: 0, width: 30 })
+  // Tracks the active tab when uncontrolled (no `injected`); controlled
+  // callers own the value and this state is ignored.
+  const [uncontrolledValue, setUncontrolledValue] = useState(() => defaultValue ?? items[0].value)
+  const value = injected?.value ?? uncontrolledValue
 
   const navTriggers = useMemo(() => {
     return items.filter(({ trigger }) => trigger !== undefined)
   }, [items])
 
-  const updateIndicator = () => {
-    if (!listRef.current) {
-      return
-    }
-
-    const activeTab = listRef.current.querySelector<HTMLElement>('button[data-state="active"]')
-    if (!activeTab) {
-      return
-    }
-
-    setIndicator({ translateX: activeTab.offsetLeft, width: activeTab.clientWidth })
+  const handleValueChange = (next: string) => {
+    if (injected) injected.setValue(next)
+    else setUncontrolledValue(next)
   }
 
-  const handleValueChange = (value: string) => {
-    injected?.setValue(value)
-  }
+  // Re-measure whenever the active tab changes, and whenever the list or the
+  // active trigger resizes (viewport/font changes, label swaps).
+  // ResizeObserver delivers an initial notification on observe(), before paint.
+  useLayoutEffect(() => {
+    const list = listRef.current
+    if (!list) return
+    const activeTab = list.querySelector<HTMLElement>('[role="tab"][data-state="active"]')
+    if (!activeTab || typeof ResizeObserver === 'undefined') return
 
-  // update indicator when value changes or on mount
-  useEffect(() => {
-    updateIndicator()
-  }, [injected?.value])
+    const observer = new ResizeObserver(() => {
+      setIndicator({ translateX: activeTab.offsetLeft, width: activeTab.clientWidth })
+    })
+    observer.observe(list)
+    observer.observe(activeTab)
+    return () => observer.disconnect()
+  }, [value])
 
   return (
-    <Root
-      className="flex size-full grow flex-col"
-      defaultValue={defaultValue ?? items[0].value}
-      onValueChange={handleValueChange}
-      value={injected?.value}
-    >
+    <Root className="flex size-full grow flex-col" onValueChange={handleValueChange} value={value}>
       <List
         className="relative mb-2 flex w-full flex-row gap-2 px-2 data-[hidden=true]:hidden"
         data-hidden={navTriggers.length === 0}

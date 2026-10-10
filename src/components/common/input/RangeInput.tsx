@@ -3,7 +3,19 @@ import type { ChangeEvent } from 'react'
 
 import type { RangeInputProps } from '@/types'
 
-export const RangeInput = ({ disabled, id, max, min, name, onBlur, onChange, step = 1, value }: RangeInputProps) => {
+export const RangeInput = ({
+  'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
+  disabled,
+  id,
+  max,
+  min,
+  name,
+  onBlur,
+  onChange,
+  step = 1,
+  value,
+}: RangeInputProps) => {
   const numValue = Number(value)
   const clampedValue = Math.max(min, Math.min(max, Number.isNaN(numValue) ? min : numValue))
 
@@ -43,12 +55,13 @@ export const RangeInput = ({ disabled, id, max, min, name, onBlur, onChange, ste
           <Range className="absolute h-full rounded-full bg-primary" />
         </Track>
         <Thumb
-          aria-label={name}
+          aria-label={ariaLabel}
+          aria-labelledby={ariaLabelledBy}
           className="block size-4 rounded-full border border-gray-700 bg-gray-200 transition-colors hover:bg-white focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50"
         />
       </Root>
       <input
-        aria-label={name}
+        aria-label={ariaLabel}
         className="text-sm w-16 rounded border border-gray-700 bg-gray-950 px-2 py-1 text-center font-mono text-gray-300"
         disabled={disabled}
         id={id}

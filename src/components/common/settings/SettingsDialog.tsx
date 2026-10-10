@@ -1,31 +1,20 @@
-import { useState } from 'react'
-
 import { usePersistSettings } from '@/hooks'
+import type { SettingsDialogProps } from '@/types'
 
-import { Dialog } from '../dialog'
-import { GearIcon } from '../icon'
-import { SwitchInput } from '../input'
+import { Dialog } from '../dialog/Dialog'
+import { SwitchInput } from '../input/SwitchInput'
 
-export const SettingsDialog = () => {
-  const [open, setOpen] = useState(false)
+/**
+ * Settings body, lazy-loaded on first open. The gear trigger lives eagerly in
+ * the App header (no layout shift while this chunk loads); Radix restores
+ * focus to it on close since it held focus when the dialog mounted.
+ */
+export const SettingsDialog = ({ onOpenChange, open }: SettingsDialogProps) => {
   const showBackgroundAnimation = usePersistSettings((s) => s.value.showBackgroundAnimation)
   const setSetting = usePersistSettings((s) => s.setSetting)
 
   return (
-    <Dialog
-      injected={{ open, setOpen }}
-      size="small"
-      title="Settings"
-      trigger={
-        <button
-          aria-label="Settings"
-          className="flex size-10 items-center justify-center rounded text-gray-400 transition-colors hover:text-white"
-          type="button"
-        >
-          <GearIcon />
-        </button>
-      }
-    >
+    <Dialog injected={{ open, setOpen: onOpenChange }} size="small" title="Settings">
       <div className="flex flex-col gap-4">
         <div className="flex items-center justify-between gap-3">
           <label className="flex cursor-pointer flex-col gap-0.5" htmlFor="bg-animation">

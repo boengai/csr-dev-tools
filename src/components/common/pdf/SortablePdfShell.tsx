@@ -1,12 +1,14 @@
 import { DndContext } from '@dnd-kit/core'
 import { SortableContext } from '@dnd-kit/sortable'
-import { Fragment, useCallback, useEffect, useRef, useState } from 'react'
+import { Fragment, useCallback, useEffect, useState } from 'react'
 
-import { ErrorBanner, Pane, SplitPanel, UploadInput } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { useSortableItems, useToolComputation } from '@/hooks'
 import type { BytesPdfResult, SortablePdfShellProps } from '@/types'
 
+import { ErrorBanner } from '../banner'
+import { ToolDialogFrame } from '../dialog/ToolDialogFrame'
+import { UploadInput } from '../input/UploadInput'
+import { Pane, SplitPanel } from '../layout'
 import { DownloadPdfButton } from './DownloadPdfButton'
 import { PdfBytesPreview } from './PdfBytesPreview'
 
@@ -47,9 +49,9 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
     updateItem,
   } = useSortableItems<TItem>()
 
-  // Stabilised with useRef so handleReset's deps don't re-fire on every render.
-  const defaultExtrasRef = useRef<TExtras>((initialExtras ?? ({} as TExtras)) as TExtras)
-  const [extras, setExtrasState] = useState<TExtras>(defaultExtrasRef.current)
+  // Captured once (lazy initializer) so handleReset's deps don't re-fire on every render.
+  const [defaultExtras] = useState<TExtras>(() => initialExtras ?? ({} as TExtras))
+  const [extras, setExtrasState] = useState<TExtras>(defaultExtras)
 
   const setExtras = useCallback((partial: Partial<TExtras>) => {
     setExtrasState((prev) => ({ ...prev, ...partial }))
@@ -91,9 +93,9 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
 
   const handleReset = useCallback(() => {
     resetItems()
-    setExtrasState(defaultExtrasRef.current)
+    setExtrasState(defaultExtras)
     onReset?.()
-  }, [resetItems, onReset])
+  }, [defaultExtras, resetItems, onReset])
 
   // Stale output is suppressed on error: when `error != null`, the shell hides
   // both <PdfBytesPreview> and <DownloadPdfButton> and surfaces err.message in
@@ -107,6 +109,31 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
   // has the full pane) but NOT gated on hasResult — callers receive the slot
   // even before any items are added (e.g. to reflect stats or options).
   const hasResult = result.pdf.byteLength > 0
+
+  const extraCardsNode = renderExtraCards?.()
+  const hasExtraCards =
+    extraCardsNode != null && (!Array.isArray(extraCardsNode) || (extraCardsNode as Array<unknown>).length > 0)
+  const hasGridContent = items.length > 0 || hasExtraCards
+  const gridContent = hasGridContent ? (
+    <DndContext {...dndContextProps}>
+      <SortableContext {...sortableContextProps}>
+        <div className="flex flex-wrap gap-3">
+          {items.map((item, idx) => (
+            <Fragment key={item.id}>
+              {renderCard(item, {
+                position: idx + 1,
+                onRemove: () => removeItem(item.id),
+                update: (partial) => updateItem(item.id, partial),
+              })}
+            </Fragment>
+          ))}
+          {extraCardsNode}
+        </div>
+      </SortableContext>
+    </DndContext>
+  ) : (
+    (renderEmptyState?.() ?? null)
+  )
 
   return (
     <ToolDialogFrame
@@ -135,34 +162,7 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
               </ErrorBanner>
             )}
 
-            {(() => {
-              const extraCardsNode = renderExtraCards?.()
-              const hasExtraCards =
-                extraCardsNode != null &&
-                (!Array.isArray(extraCardsNode) || (extraCardsNode as Array<unknown>).length > 0)
-              const hasGridContent = items.length > 0 || hasExtraCards
-              if (hasGridContent) {
-                return (
-                  <DndContext {...dndContextProps}>
-                    <SortableContext {...sortableContextProps}>
-                      <div className="flex flex-wrap gap-3">
-                        {items.map((item, idx) => (
-                          <Fragment key={item.id}>
-                            {renderCard(item, {
-                              position: idx + 1,
-                              onRemove: () => removeItem(item.id),
-                              update: (partial) => updateItem(item.id, partial),
-                            })}
-                          </Fragment>
-                        ))}
-                        {extraCardsNode}
-                      </div>
-                    </SortableContext>
-                  </DndContext>
-                )
-              }
-              return renderEmptyState?.() ?? null
-            })()}
+            {gridContent}
           </Pane>
 
           <Pane live>
@@ -172,12 +172,7 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
               <>
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex-1">{renderControls?.({ extras, setExtras, result })}</div>
-                  {hasResult && (
-                    <DownloadPdfButton
-                      bytes={result.pdf}
-                      filename={`csr-dev-tools_${filenameSlug}_${Date.now()}.pdf`}
-                    />
-                  )}
+                  {hasResult && <DownloadPdfButton bytes={result.pdf} filenameSlug={filenameSlug} />}
                 </div>
                 {hasResult && <PdfBytesPreview bytes={result.pdf} />}
               </>

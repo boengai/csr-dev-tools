@@ -1,7 +1,7 @@
 import { tags } from '@lezer/highlight'
 import createTheme from '@uiw/codemirror-themes'
-import CodeMirror, { EditorView } from '@uiw/react-codemirror'
-import { useMemo } from 'react'
+import CodeMirror, { type BasicSetupOptions, EditorView } from '@uiw/react-codemirror'
+import { useCallback, useLayoutEffect, useMemo, useRef, useState } from 'react'
 
 import type { CodeInputProps } from '@/types'
 import { tv } from '@/utils'
@@ -76,6 +76,40 @@ const codeInputCompactTheme = EditorView.theme({
   },
 })
 
+// Module-level so @uiw/react-codemirror sees a stable `basicSetup` identity —
+// an inline object would dispatch `StateEffect.reconfigure` on every render.
+const editableBasicSetup: BasicSetupOptions = {
+  bracketMatching: true,
+  closeBrackets: true,
+  foldGutter: false,
+  highlightActiveLine: true,
+  highlightActiveLineGutter: true,
+  lineNumbers: true,
+  searchKeymap: true,
+}
+
+const readOnlyBasicSetup: BasicSetupOptions = {
+  ...editableBasicSetup,
+  highlightActiveLine: false,
+  highlightActiveLineGutter: false,
+}
+
+const isShallowEqual = <T,>(a: ReadonlyArray<T> | undefined, b: ReadonlyArray<T> | undefined): boolean => {
+  if (a === b) return true
+  if (!a || !b || a.length !== b.length) return false
+  return a.every((item, index) => Object.is(item, b[index]))
+}
+
+/** Keeps the previous array identity while its elements are unchanged, so inline `extensions={[x]}` doesn't reconfigure. */
+const useShallowStableArray = <T,>(next: Array<T> | undefined): Array<T> | undefined => {
+  const [stable, setStable] = useState(next)
+  if (!isShallowEqual(stable, next)) {
+    setStable(next)
+    return next
+  }
+  return stable
+}
+
 const wrapperVariants = tv({
   base: 'flex max-h-[90dvh] min-h-0 flex-col overflow-scroll [&_.cm-editor]:min-h-0 [&_.cm-editor]:flex-1 [&>div]:flex [&>div]:min-h-0 [&>div]:flex-1 [&>div]:flex-col',
   variants: {
@@ -96,10 +130,12 @@ const wrapperVariants = tv({
 
 export const CodeInput = ({
   'aria-label': ariaLabel,
+  'aria-labelledby': ariaLabelledBy,
   block = true,
   disabled = false,
   extensions: externalExtensions,
   height,
+  id,
   maxHeight,
   minHeight,
   name,
@@ -110,33 +146,47 @@ export const CodeInput = ({
   size = 'default',
   value = '',
 }: CodeInputProps) => {
+  const stableExternalExtensions = useShallowStableArray(externalExtensions)
+
+  // Latest-ref wrapper: CodeMirror gets one stable `onChange` for the
+  // component's lifetime, while still calling the newest parent callback.
+  const onChangeRef = useRef(onChange)
+  useLayoutEffect(() => {
+    onChangeRef.current = onChange
+  })
+  const handleChange = useCallback((next: string) => onChangeRef.current?.(next), [])
+
   const extensions = useMemo(() => {
-    const exts = [codeInputBaseTheme, EditorView.lineWrapping, ...(externalExtensions ?? [])]
+    // `.cm-content` is the focusable textbox, so the accessible name and the
+    // `<label htmlFor>` target id belong there rather than on the wrapper div.
+    const contentAttributes: Record<string, string> = {}
+    if (id) contentAttributes.id = id
+    if (ariaLabel) contentAttributes['aria-label'] = ariaLabel
+    if (ariaLabelledBy) contentAttributes['aria-labelledby'] = ariaLabelledBy
+
+    const exts = [
+      codeInputBaseTheme,
+      EditorView.lineWrapping,
+      EditorView.contentAttributes.of(contentAttributes),
+      ...(stableExternalExtensions ?? []),
+    ]
     if (size === 'compact') {
       exts.push(codeInputCompactTheme)
     }
     return exts
-  }, [externalExtensions, size])
+  }, [ariaLabel, ariaLabelledBy, id, size, stableExternalExtensions])
 
   return (
-    <div aria-label={ariaLabel} className={wrapperVariants({ block, disabled })} data-testid={`code-input-${name}`}>
+    <div className={wrapperVariants({ block, disabled })} data-testid={`code-input-${name}`}>
       <CodeMirror
-        basicSetup={{
-          bracketMatching: true,
-          closeBrackets: true,
-          foldGutter: false,
-          highlightActiveLine: !readOnly,
-          highlightActiveLineGutter: !readOnly,
-          lineNumbers: true,
-          searchKeymap: true,
-        }}
+        basicSetup={readOnly ? readOnlyBasicSetup : editableBasicSetup}
         editable={!disabled && !readOnly}
         extensions={extensions}
         height={height}
         maxHeight={maxHeight}
         minHeight={minHeight}
         onBlur={onBlur}
-        onChange={onChange}
+        onChange={handleChange}
         placeholder={placeholder}
         readOnly={readOnly}
         theme={codeInputTheme}
