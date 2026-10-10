@@ -72,6 +72,22 @@ describe('Sidebar', () => {
     expect(useSidebarStore.getState().isOpen).toBe(false)
   })
 
+  it('returns focus to the element that opened it', async () => {
+    await renderAt('/')
+    const opener = document.createElement('button')
+    document.body.append(opener)
+    opener.focus()
+
+    act(() => useSidebarStore.getState().open())
+    const dialog = await screen.findByRole('dialog', { name: 'Tool navigation' })
+    await waitFor(() => expect(dialog.contains(document.activeElement)).toBe(true))
+
+    fireEvent.keyDown(document.activeElement ?? dialog, { key: 'Escape' })
+
+    await waitFor(() => expect(document.activeElement).toBe(opener))
+    opener.remove()
+  })
+
   it('closes after a plain click on a tool link', async () => {
     await renderAt('/')
     act(() => useSidebarStore.getState().open())

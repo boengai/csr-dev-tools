@@ -6,6 +6,7 @@ import type { CompVariant, DialogProps, DialogVariants } from '@/types'
 import { tv } from '@/utils'
 
 import { XIcon } from '../icon'
+import { useReturnFocus } from './useReturnFocus'
 
 const contentVariants: CompVariant<DialogVariants> = tv({
   base: 'fixed top-[50%] left-[50%] z-50 flex -translate-1/2 flex-col overflow-hidden rounded-card border border-gray-800 bg-gray-900 shadow-[0_0_40px_12px] shadow-primary/30 outline-none',
@@ -36,6 +37,7 @@ export const Dialog = ({
   // a parent flipping `injected.open` itself does not fire `onAfterClose`.
   // Consumed after the exit animation so content doesn't flash empty mid-fade.
   const afterClosePendingRef = useRef(false)
+  const { capture, handleCloseAutoFocus } = useReturnFocus()
 
   const handleOpenChange = (open: boolean) => {
     afterClosePendingRef.current = !open
@@ -54,6 +56,7 @@ export const Dialog = ({
     // claimed focus via `autoFocus`.
     event.preventDefault()
     const content = contentRef.current
+    capture(content)
     if (content && !content.contains(document.activeElement)) {
       content.focus({ preventScroll: true })
     }
@@ -74,7 +77,7 @@ export const Dialog = ({
                 transition={{ duration: 0.2, ease: 'easeOut' }}
               />
             </Overlay>
-            <Content asChild onOpenAutoFocus={handleOpenAutoFocus}>
+            <Content asChild onCloseAutoFocus={handleCloseAutoFocus} onOpenAutoFocus={handleOpenAutoFocus}>
               <m.div
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 className={contentClassName}

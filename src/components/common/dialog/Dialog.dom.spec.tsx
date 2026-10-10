@@ -29,6 +29,20 @@ describe('Dialog', () => {
     await waitFor(() => expect(dialog.contains(document.activeElement)).toBe(true))
   })
 
+  it('returns focus to the opener after a user close', async () => {
+    render(<Harness open={false} />)
+    const opener = screen.getByText('toggle')
+    opener.focus()
+    fireEvent.click(opener)
+
+    const dialog = await screen.findByRole('dialog')
+    await waitFor(() => expect(dialog.contains(document.activeElement)).toBe(true))
+
+    fireEvent.click(screen.getByRole('button', { name: 'Close dialog' }))
+
+    await waitFor(() => expect(document.activeElement).toBe(opener))
+  })
+
   it('names the close control', () => {
     render(<Harness />)
     expect(screen.getByRole('button', { name: 'Close dialog' })).toBeInTheDocument()

@@ -5,6 +5,7 @@ import { CATEGORY_ORDER, groupToolsByCategory, TOOL_REGISTRY } from '@/constants
 import { useMediaQuery, useSidebarStore } from '@/hooks'
 import { tv } from '@/utils'
 
+import { useReturnFocus } from '../dialog/useReturnFocus'
 import { XIcon } from '../icon'
 import { SidebarCategory } from './SidebarCategory'
 import { SidebarHomeItem } from './SidebarHomeItem'
@@ -26,14 +27,17 @@ const VISIBLE_CATEGORIES = CATEGORY_ORDER.filter((category) => GROUPED_TOOLS[cat
 
 /**
  * Modal navigation drawer built on Radix Dialog (like CommandPalette): Radix
- * owns the focus trap, focus restore to the hamburger, Escape handling
- * (layer-aware, so Escape inside the CommandPalette doesn't also close this),
- * outside-click dismissal and `aria-hidden` on the rest of the page.
+ * owns the focus trap, Escape handling (layer-aware, so Escape inside the
+ * CommandPalette doesn't also close this), outside-click dismissal and
+ * `aria-hidden` on the rest of the page. Focus restore is explicit via
+ * useReturnFocus since the hamburger isn't a Radix Trigger.
  */
 export const Sidebar = () => {
   const close = useSidebarStore((state) => state.close)
   const isOpen = useSidebarStore((state) => state.isOpen)
   const isMobile = useMediaQuery('(max-width: 767px)')
+  // The hamburger lives outside the Root (no Radix Trigger), so restore focus explicitly.
+  const { capture, handleCloseAutoFocus } = useReturnFocus()
 
   return (
     <Root
@@ -54,7 +58,13 @@ export const Sidebar = () => {
                 transition={{ duration: 0.2, ease: 'easeOut' }}
               />
             </Overlay>
-            <Content aria-describedby={undefined} asChild forceMount>
+            <Content
+              aria-describedby={undefined}
+              asChild
+              forceMount
+              onCloseAutoFocus={handleCloseAutoFocus}
+              onOpenAutoFocus={(event) => capture(event.currentTarget)}
+            >
               <m.nav
                 animate={{ x: 0 }}
                 aria-label="Tool navigation"
