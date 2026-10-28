@@ -740,7 +740,9 @@ The hook owns:
   HTML or manifest JSON).
 - `openFilePicker()` — programmatically opens the OS file picker and routes
   the selection through `upload()`, replacing the per-Tool hidden
-  `<input>` + `fileInputRef` pattern.
+  `<input>` + `fileInputRef` pattern. It resolves with `upload()`'s result
+  (`false` on cancel): a Tool that generates on upload (Favicon) awaits it
+  and calls `regenerate()`; one with a Generate button (Splash) needn't.
 - `reset()` — bumps the stale-safety session so any in-flight regenerate
   cannot write back over the cleared state.
 

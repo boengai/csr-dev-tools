@@ -106,9 +106,11 @@ result is not delayed.
 - Letterboxed icons snap to whole pixels. Very thin content can lose up to
   half a pixel per edge.
 - Extreme reductions of opaque sources can produce alpha 254, as in Pillow.
-- WebKit now clips overhanging `cover` crops as Chrome and Firefox do (it used
-  to stretch them). Firefox now draws `viewBox`-only SVGs at full size on the
-  1:1 conversion path (it used to draw them at half size).
+- WebKit now clips overhanging source rects as Chrome and Firefox do (it used
+  to stretch them). Since `calculateDimensions('cover')` was fixed to crop
+  inside the image (2026-10-29), no current caller produces such a rect.
+  Firefox now draws `viewBox`-only SVGs at full size on the 1:1 conversion
+  path (it used to draw them at half size).
 
 ## Revisit when
 

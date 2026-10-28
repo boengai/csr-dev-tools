@@ -139,6 +139,37 @@ describe('image utilities', () => {
         // Source should be cropped
         expect(result.source.width).toBeLessThanOrEqual(1200)
       })
+
+      it.each([
+        // [label, source, target, expected centred crop]
+        ['a wider target', { height: 600, width: 1000 }, { height: 100, width: 300 }, [0, 133.333, 1000, 333.333]],
+        ['a much wider target', { height: 500, width: 1000 }, { height: 10, width: 100 }, [0, 200, 1000, 100]],
+        ['a taller target', { height: 600, width: 1001 }, { height: 150, width: 100 }, [300.5, 0, 400, 600]],
+      ])('crops a centred region inside the source for %s', (_, source, target, [x, y, width, height]) => {
+        const result = calculateDimensions(source, target, 'cover')
+
+        expect(result.source.x).toBeCloseTo(x ?? Number.NaN, 3)
+        expect(result.source.y).toBeCloseTo(y ?? Number.NaN, 3)
+        expect(result.source.width).toBeCloseTo(width ?? Number.NaN, 3)
+        expect(result.source.height).toBeCloseTo(height ?? Number.NaN, 3)
+      })
+
+      it('never crops outside the source, and keeps the target aspect ratio', () => {
+        const sizes = [1, 7, 100, 333, 600, 1000, 1001, 4000].flatMap((w) =>
+          [1, 9, 100, 500, 600, 1200, 3000].map((h) => ({ height: h, width: w })),
+        )
+        for (const source of sizes) {
+          for (const target of sizes) {
+            const crop = calculateDimensions(source, target, 'cover').source
+            const where = `${source.width}x${source.height} -> ${target.width}x${target.height}`
+            expect(crop.x, where).toBeGreaterThanOrEqual(0)
+            expect(crop.y, where).toBeGreaterThanOrEqual(0)
+            expect(crop.x + crop.width, where).toBeLessThanOrEqual(source.width + 1e-9)
+            expect(crop.y + crop.height, where).toBeLessThanOrEqual(source.height + 1e-9)
+            expect(crop.width / crop.height, where).toBeCloseTo(target.width / target.height, 6)
+          }
+        }
+      })
     })
 
     describe('stretch strategy', () => {

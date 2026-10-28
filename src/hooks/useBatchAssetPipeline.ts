@@ -145,20 +145,29 @@ export function useBatchAssetPipeline<TResults>(
     downloadBlob(blob, zipName)
   }, [])
 
-  const openFilePicker = useCallback(() => {
-    const input = document.createElement('input')
-    input.type = 'file'
-    input.accept = accept
-    input.style.display = 'none'
-    input.onchange = () => {
-      const fileList = input.files
-      const picked = fileList ? Array.from(fileList) : []
-      input.remove()
-      if (picked.length > 0) void upload(picked)
-    }
-    document.body.appendChild(input)
-    input.click()
-  }, [accept, upload])
+  const openFilePicker = useCallback(
+    () =>
+      new Promise<boolean>((resolve) => {
+        const input = document.createElement('input')
+        input.type = 'file'
+        input.accept = accept
+        input.style.display = 'none'
+        input.onchange = () => {
+          const fileList = input.files
+          const picked = fileList ? Array.from(fileList) : []
+          input.remove()
+          if (picked.length > 0) void upload(picked).then(resolve, () => resolve(false))
+          else resolve(false)
+        }
+        input.oncancel = () => {
+          input.remove()
+          resolve(false)
+        }
+        document.body.appendChild(input)
+        input.click()
+      }),
+    [accept, upload],
+  )
 
   const reset = useCallback(() => {
     // Bumping the sessions guarantees any in-flight regenerate / decode
