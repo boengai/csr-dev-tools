@@ -1,9 +1,18 @@
 // @vitest-environment jsdom
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
+import { THUMBNAIL_REDUCING_GAP } from '@/constants/image'
 import { nth } from '@/test/nth'
 
+import { createScaledDrawer } from './canvas'
 import { FAVICON_SIZES, generateFaviconLinkTags, generateFavicons } from './favicon'
+
+const { draw } = vi.hoisted(() => ({ draw: vi.fn() }))
+
+vi.mock('./canvas', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('./canvas')>()),
+  createScaledDrawer: vi.fn(() => draw),
+}))
 
 const createMockCanvas = () => {
   const ctx = {
@@ -93,6 +102,19 @@ describe('favicon utils', () => {
 
       expect(nth(results, 0).blob).toBeInstanceOf(Blob)
       expect(nth(results, 0).dataUrl).toBe('data:image/png;base64,mockdata')
+    })
+
+    it('draws every size through one thumbnail-gap drawer, so the source pixels are read once', async () => {
+      vi.mocked(createScaledDrawer).mockClear()
+      draw.mockClear()
+      vi.spyOn(document, 'createElement').mockReturnValue(createMockCanvas() as unknown as HTMLCanvasElement)
+
+      const image = new Image()
+      await generateFavicons(image, FAVICON_SIZES)
+
+      expect(createScaledDrawer).toHaveBeenCalledTimes(1)
+      expect(createScaledDrawer).toHaveBeenCalledWith(image, { reducingGap: THUMBNAIL_REDUCING_GAP })
+      expect(draw).toHaveBeenCalledTimes(FAVICON_SIZES.length)
     })
   })
 })

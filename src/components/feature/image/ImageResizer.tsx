@@ -47,6 +47,8 @@ export const ImageResizer = ({ onAfterClose }: ToolComponentProps) => {
   return (
     <ImageToolShell<ResizeControls>
       accept="image/*"
+      // Resampling a large photo takes a few hundred ms; don't redo it per keystroke.
+      controlsDebounceMs={250}
       description={toolEntry?.description}
       getDownloadFilename={({ controls, sourceName }) => parseFileName(sourceName, controls.format ?? undefined)}
       initialControls={INITIAL_CONTROLS}
@@ -106,7 +108,7 @@ export const ImageResizer = ({ onAfterClose }: ToolComponentProps) => {
           </div>
         )
       }}
-      renderPreview={({ controls, resultUrl, setControls, source, sourceUrl }) => (
+      renderPreview={({ controls, recompute, resultUrl, setControls, source, sourceUrl }) => (
         <div className="bg-grid-texture flex flex-col items-center justify-center gap-6 bg-black tablet:min-h-0 tablet:grow tablet:flex-row">
           <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
             <p className="shrink-0 text-body-sm font-medium text-gray-300">Original</p>
@@ -125,6 +127,8 @@ export const ImageResizer = ({ onAfterClose }: ToolComponentProps) => {
                     ratio: img.naturalWidth / Math.max(img.naturalHeight, 1),
                     width: img.naturalWidth,
                   })
+                  // Seeding isn't typing: show the first result without the debounce.
+                  recompute()
                 }}
                 src={sourceUrl}
               />

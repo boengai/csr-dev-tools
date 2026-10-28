@@ -12,6 +12,7 @@ import { UploadInput } from '../input/UploadInput'
 
 export function ImageToolShell<TControls extends object>({
   accept,
+  controlsDebounceMs,
   description,
   getDownloadFilename,
   initialControls,
@@ -32,7 +33,7 @@ export function ImageToolShell<TControls extends object>({
   const sourceRef = useRef(source)
   const initialRef = useRef(initialControls)
 
-  const { error, isPending, result, setInputImmediate } = useToolComputation<
+  const { error, isPending, result, setInput, setInputImmediate } = useToolComputation<
     ImageToolPipelineInput<TControls>,
     Blob | null
   >(
@@ -43,6 +44,7 @@ export function ImageToolShell<TControls extends object>({
     // Tool's process may return null when it has insufficient state to produce
     // a result (e.g. ImageCropper before the user finishes selecting a region).
     {
+      debounceMs: controlsDebounceMs,
       initial: null,
       isEmpty: ({ file }) => !file,
     },
@@ -67,9 +69,11 @@ export function ImageToolShell<TControls extends object>({
       const next = { ...controlsRef.current, ...partial }
       controlsRef.current = next
       setControlsState(next)
-      setInputImmediate({ controls: next, file: sourceRef.current })
+      const input = { controls: next, file: sourceRef.current }
+      if (controlsDebounceMs === undefined) setInputImmediate(input)
+      else setInput(input)
     },
-    [setInputImmediate],
+    [controlsDebounceMs, setInput, setInputImmediate],
   )
 
   const handleDownload = () => {

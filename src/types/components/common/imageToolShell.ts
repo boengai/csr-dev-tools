@@ -38,6 +38,14 @@ export type ImageToolShellProps<TControls extends object> = {
 
   initialControls: TControls
   /**
+   * Debounce re-processing after `setControls` by this many ms, for tools whose
+   * `process` is heavy enough that a run per keystroke stalls typing. Uploads
+   * and `recompute()` still process at once (call `recompute()` after a
+   * programmatic `setControls`, e.g. seeding from `<img onLoad>`, to skip the
+   * wait). Omit to process every change at once.
+   */
+  controlsDebounceMs?: number
+  /**
    * Produce the result Blob. `context.signal` aborts when a newer
    * file/controls change supersedes this run, or on unmount — check it
    * between expensive steps (decode, draw, encode) to skip stale work.

@@ -1,4 +1,6 @@
+import { THUMBNAIL_REDUCING_GAP } from '@/constants/image'
 import { IOS_DEVICES, MASKABLE_ICON_SIZES, MASKABLE_SAFE_ZONE_RATIO, PWA_ICON_SIZES } from '@/constants/splash-screen'
+import type { ScaledDrawer } from '@/types'
 import type { SplashScreenDevice } from '@/types/constants/splash-screen'
 import type {
   ManifestIconEntry,
@@ -8,7 +10,7 @@ import type {
   SplashScreenResult,
 } from '@/types/utils/splash-screen'
 
-import { canvasToBlob } from './canvas'
+import { canvasToBlob, createScaledDrawer } from './canvas'
 
 const slugify = (name: string) =>
   name
@@ -18,6 +20,7 @@ const slugify = (name: string) =>
     .replace(/(^-|-$)/g, '')
 
 const generateSplashScreen = async (
+  draw: ScaledDrawer,
   image: HTMLImageElement,
   device: SplashScreenDevice,
   orientation: SplashOrientation,
@@ -41,7 +44,7 @@ const generateSplashScreen = async (
   const scaledH = image.height * scale
   const x = (width - scaledW) / 2
   const y = (height - scaledH) / 2
-  ctx.drawImage(image, x, y, scaledW, scaledH)
+  draw(ctx, { height: image.height, width: image.width, x: 0, y: 0 }, { height: scaledH, width: scaledW, x, y })
 
   // Blob only — thumbnails render from object URLs, so no base64 copy of a
   // full-size (up to 2732x2048) canvas is ever held in memory.
@@ -53,6 +56,7 @@ const generateSplashScreen = async (
 }
 
 const generatePwaIcon = async (
+  draw: ScaledDrawer,
   image: HTMLImageElement,
   size: number,
   maskable: boolean,
@@ -75,14 +79,14 @@ const generatePwaIcon = async (
     const scaledH = image.height * scale
     const x = (size - scaledW) / 2
     const y = (size - scaledH) / 2
-    ctx.drawImage(image, x, y, scaledW, scaledH)
+    draw(ctx, { height: image.height, width: image.width, x: 0, y: 0 }, { height: scaledH, width: scaledW, x, y })
   } else {
     const scale = Math.min(size / image.width, size / image.height) * imageScale
     const scaledW = image.width * scale
     const scaledH = image.height * scale
     const x = (size - scaledW) / 2
     const y = (size - scaledH) / 2
-    ctx.drawImage(image, x, y, scaledW, scaledH)
+    draw(ctx, { height: image.height, width: image.width, x: 0, y: 0 }, { height: scaledH, width: scaledW, x, y })
   }
 
   const blob = await canvasToBlob(canvas)
@@ -102,11 +106,13 @@ export const generateAllAssets = async (
   const totalIcons = PWA_ICON_SIZES.length + MASKABLE_ICON_SIZES.length
   const total = totalSplash + totalIcons
   let current = 0
+  // One drawer for every asset, so the source pixels are read once.
+  const draw = createScaledDrawer(image, { reducingGap: THUMBNAIL_REDUCING_GAP })
 
   const splashScreens: Array<SplashScreenResult> = []
   for (const device of IOS_DEVICES) {
     for (const orientation of orientations) {
-      const result = await generateSplashScreen(image, device, orientation, bgColor, imageScale)
+      const result = await generateSplashScreen(draw, image, device, orientation, bgColor, imageScale)
       splashScreens.push(result)
       current++
       onProgress?.(current, total)
@@ -115,14 +121,14 @@ export const generateAllAssets = async (
 
   const icons: Array<PwaIconResult> = []
   for (const size of PWA_ICON_SIZES) {
-    const result = await generatePwaIcon(image, size, false, bgColor, imageScale)
+    const result = await generatePwaIcon(draw, image, size, false, bgColor, imageScale)
     icons.push(result)
     current++
     onProgress?.(current, total)
   }
 
   for (const size of MASKABLE_ICON_SIZES) {
-    const result = await generatePwaIcon(image, size, true, bgColor, imageScale)
+    const result = await generatePwaIcon(draw, image, size, true, bgColor, imageScale)
     icons.push(result)
     current++
     onProgress?.(current, total)
