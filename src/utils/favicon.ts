@@ -1,6 +1,8 @@
+import { THUMBNAIL_REDUCING_GAP } from '@/constants/image'
+import type { ScaledDrawer } from '@/types'
 import type { FaviconSize, FaviconResult } from '@/types/utils/favicon'
 
-import { canvasToBlob } from './canvas'
+import { canvasToBlob, createScaledDrawer } from './canvas'
 
 export const FAVICON_SIZES: Array<FaviconSize> = [
   { height: 16, name: 'favicon-16x16.png', rel: 'icon', width: 16 },
@@ -12,9 +14,14 @@ export const FAVICON_SIZES: Array<FaviconSize> = [
 ]
 
 /**
- * Resize an image to the given dimensions using Canvas API
+ * Letterbox an image into the given dimensions
  */
-const resizeToCanvas = (img: HTMLImageElement, width: number, height: number): HTMLCanvasElement => {
+const resizeToCanvas = (
+  draw: ScaledDrawer,
+  img: HTMLImageElement,
+  width: number,
+  height: number,
+): HTMLCanvasElement => {
   const canvas = document.createElement('canvas')
   canvas.width = width
   canvas.height = height
@@ -26,7 +33,7 @@ const resizeToCanvas = (img: HTMLImageElement, width: number, height: number): H
   const scaledH = img.height * scale
   const x = (width - scaledW) / 2
   const y = (height - scaledH) / 2
-  ctx.drawImage(img, x, y, scaledW, scaledH)
+  draw(ctx, { height: img.height, width: img.width, x: 0, y: 0 }, { height: scaledH, width: scaledW, x, y })
   return canvas
 }
 
@@ -38,9 +45,10 @@ export const generateFavicons = async (
   sizes: Array<FaviconSize> = FAVICON_SIZES,
 ): Promise<Array<FaviconResult>> => {
   const results: Array<FaviconResult> = []
+  const draw = createScaledDrawer(image, { reducingGap: THUMBNAIL_REDUCING_GAP })
 
   for (const size of sizes) {
-    const canvas = resizeToCanvas(image, size.width, size.height)
+    const canvas = resizeToCanvas(draw, image, size.width, size.height)
     const dataUrl = canvas.toDataURL('image/png')
     const blob = await canvasToBlob(canvas)
     results.push({ blob, dataUrl, size })

@@ -1,5 +1,6 @@
 import type { ImageFormat, ImageProcessingOptions, ImageProcessingResult } from '@/types'
 
+import { createCanvasContext, drawImageScaled } from './canvas'
 import { readFileAsDataUrl } from './file-read'
 
 /**
@@ -73,25 +74,6 @@ export const loadImageFromBlob = (blob: Blob): Promise<HTMLImageElement> => {
 
     img.src = url
   })
-}
-
-/**
- * Create canvas and get 2D context with error handling
- */
-const createCanvasContext = (
-  width: number,
-  height: number,
-): { canvas: HTMLCanvasElement; ctx: CanvasRenderingContext2D } => {
-  const canvas = document.createElement('canvas')
-  canvas.width = width
-  canvas.height = height
-
-  const ctx = canvas.getContext('2d')
-  if (!ctx) {
-    throw new Error('Failed to acquire 2D canvas context')
-  }
-
-  return { canvas, ctx }
 }
 
 /**
@@ -336,18 +318,7 @@ export const processImage = async (
       ctx.fillRect(0, 0, dimensions.canvas.width, dimensions.canvas.height)
     }
 
-    // Draw the image
-    ctx.drawImage(
-      img,
-      dimensions.source.x,
-      dimensions.source.y,
-      dimensions.source.width,
-      dimensions.source.height,
-      0,
-      0,
-      dimensions.canvas.width,
-      dimensions.canvas.height,
-    )
+    drawImageScaled(ctx, img, dimensions.source, { ...dimensions.canvas, x: 0, y: 0 })
 
     const dataUrl = canvasToDataUrl(canvas, targetFormat, options.quality)
 

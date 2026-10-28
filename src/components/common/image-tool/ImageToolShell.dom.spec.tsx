@@ -380,6 +380,96 @@ describe('ImageToolShell — process pipeline', () => {
     expect(lastCall[1]).toEqual({ a: 9, b: 8 })
   })
 
+  it('with controlsDebounceMs, processes a burst of setControls once, after the quiet period', async () => {
+    const process = vi.fn(echoProcess)
+    const captured: { setControls: ((p: Partial<{ a: number }>) => void) | null } = { setControls: null }
+    const renderControls = ({ setControls }: ImageToolShellControlsContext<{ a: number }>) => {
+      captured.setControls = setControls
+      return null
+    }
+    const { container } = render(
+      <ImageToolShell<{ a: number }>
+        accept="image/*"
+        controlsDebounceMs={250}
+        getDownloadFilename={() => 'out.png'}
+        initialControls={{ a: 1 }}
+        process={process}
+        renderControls={renderControls}
+        renderPreview={() => null}
+        title="debounce Shell"
+        uploadLabel="Upload"
+      />,
+    )
+    uploadFile(container, pngFile())
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    // An upload still processes immediately.
+    expect(process).toHaveBeenCalledTimes(1)
+
+    // Typing "1", "15", "150" into a field, 100ms apart.
+    await act(async () => {
+      captured.setControls?.({ a: 1 })
+      await vi.advanceTimersByTimeAsync(100)
+      captured.setControls?.({ a: 15 })
+      await vi.advanceTimersByTimeAsync(100)
+      captured.setControls?.({ a: 150 })
+      await vi.advanceTimersByTimeAsync(249)
+    })
+    expect(process).toHaveBeenCalledTimes(1)
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1)
+    })
+    expect(process).toHaveBeenCalledTimes(2)
+    expect(nth(nth(process.mock.calls, 1), 1)).toEqual({ a: 150 })
+  })
+
+  it('with controlsDebounceMs, recompute() right after setControls processes at once, and only once', async () => {
+    const process = vi.fn(echoProcess)
+    const captured: {
+      recompute: (() => void) | null
+      setControls: ((p: Partial<{ a: number }>) => void) | null
+    } = { recompute: null, setControls: null }
+    const renderControls = ({ recompute, setControls }: ImageToolShellControlsContext<{ a: number }>) => {
+      captured.recompute = recompute
+      captured.setControls = setControls
+      return null
+    }
+    const { container } = render(
+      <ImageToolShell<{ a: number }>
+        accept="image/*"
+        controlsDebounceMs={250}
+        getDownloadFilename={() => 'out.png'}
+        initialControls={{ a: 1 }}
+        process={process}
+        renderControls={renderControls}
+        renderPreview={() => null}
+        title="seed Shell"
+        uploadLabel="Upload"
+      />,
+    )
+    uploadFile(container, pngFile())
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    expect(process).toHaveBeenCalledTimes(1)
+
+    // ImageResizer seeds its controls from <img onLoad> this way.
+    await act(async () => {
+      captured.setControls?.({ a: 42 })
+      captured.recompute?.()
+      await vi.advanceTimersByTimeAsync(0)
+    })
+    expect(process).toHaveBeenCalledTimes(2)
+    expect(nth(nth(process.mock.calls, 1), 1)).toEqual({ a: 42 })
+
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(500)
+    })
+    expect(process).toHaveBeenCalledTimes(2)
+  })
+
   it('resets controls to initialControls when the dialog closes', async () => {
     const process = vi.fn(echoProcess)
     const captured: { setControls: ((p: Partial<{ a: number }>) => void) | null } = { setControls: null }
