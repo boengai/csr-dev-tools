@@ -4,7 +4,7 @@ import type { ImageFormat } from '@/types/constants'
  * Common options for image processing operations
  */
 export type ImageProcessingOptions = ImageProcessingStrategyOption & {
-  backgroundColor?: string // Background color for JPEG (defaults to white)
+  backgroundColor?: string // Fill behind transparent pixels for JPEG, which has no alpha (defaults to white)
   format?: ImageFormat
   height?: number
   maxHeight?: number

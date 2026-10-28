@@ -24,10 +24,17 @@ export const FaviconGenerator = ({ onAfterClose }: ToolComponentProps) => {
     successToastLabel: 'Favicons generated successfully',
   })
 
+  const generate = () => pipeline.regenerate(async (img) => generateFavicons(img))
+
   const handleUpload = async (files: Array<File>, openDialog: () => void) => {
     if (!(await pipeline.upload(files))) return
     openDialog()
-    await pipeline.regenerate(async (img) => generateFavicons(img))
+    await generate()
+  }
+
+  // No Generate button here (unlike the splash generator): a new source regenerates at once.
+  const handleUploadNew = async () => {
+    if (await pipeline.openFilePicker()) await generate()
   }
 
   const handleDownloadAll = async () => {
@@ -60,7 +67,7 @@ export const FaviconGenerator = ({ onAfterClose }: ToolComponentProps) => {
                 className="w-full max-w-40 rounded border border-gray-800"
                 src={pipeline.sourcePreview}
               />
-              <Button icon={<RefreshIcon />} onClick={pipeline.openFilePicker} size="small">
+              <Button icon={<RefreshIcon />} onClick={handleUploadNew} size="small">
                 Upload New
               </Button>
             </div>

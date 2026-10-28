@@ -1,7 +1,7 @@
 /**
  * @vitest-environment jsdom
  */
-import { act, renderHook } from '@testing-library/react'
+import { act, fireEvent, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { useToast } from '@/hooks/state/useToast'
@@ -46,7 +46,27 @@ afterEach(() => {
   URL.createObjectURL = ORIG_CREATE
   URL.revokeObjectURL = ORIG_REVOKE
   vi.clearAllMocks()
+  // A failed picker test must not leave its hidden input for the next one.
+  for (const input of document.body.querySelectorAll(':scope > input[type="file"]')) input.remove()
 })
+
+/** Open the picker, fire `event` on its hidden input, and return what the picker resolved with. */
+const pick = async (
+  result: { current: { openFilePicker: () => Promise<boolean> } },
+  fire: (input: HTMLInputElement) => void,
+): Promise<boolean | undefined> => {
+  let picking: Promise<boolean> | undefined
+  act(() => {
+    picking = result.current.openFilePicker()
+  })
+  const input = document.body.querySelector<HTMLInputElement>(':scope > input[type="file"]')
+  let ok: boolean | undefined
+  await act(async () => {
+    if (input) fire(input)
+    ok = await picking
+  })
+  return ok
+}
 
 const imageFile = (name = 'a.png') => new File(['x'], name, { type: 'image/png' })
 const textFile = (name = 'a.txt') => new File(['x'], name, { type: 'text/plain' })
@@ -352,6 +372,95 @@ describe('useBatchAssetPipeline', () => {
 
     expect(zipModule.buildZipBlob).toHaveBeenCalledWith(blobs)
     expect(downloadModule.downloadBlob).toHaveBeenCalledWith(expect.any(Blob), 'assets.zip')
+  })
+
+  it('openFilePicker() resolves true once the picked file is uploaded, so callers can regenerate', async () => {
+    const { result } = renderHook(() => useBatchAssetPipeline<Array<Blob>>(OPTIONS))
+
+    let picking: Promise<boolean> | undefined
+    act(() => {
+      picking = result.current.openFilePicker()
+    })
+    const input = document.body.querySelector<HTMLInputElement>(':scope > input[type="file"]')
+    expect(input?.accept).toBe('image/*')
+    let ok: boolean | undefined
+    await act(async () => {
+      if (input) fireEvent.change(input, { target: { files: [imageFile('new.png')] } })
+      ok = await picking
+    })
+
+    expect(ok).toBe(true)
+    expect(result.current.sourceFile?.name).toBe('new.png')
+    expect(document.body.querySelector(':scope > input[type="file"]')).toBeNull()
+  })
+
+  it('openFilePicker() resolves false when the picker is cancelled', async () => {
+    const { result } = renderHook(() => useBatchAssetPipeline<Array<Blob>>(OPTIONS))
+
+    let picking: Promise<boolean> | undefined
+    act(() => {
+      picking = result.current.openFilePicker()
+    })
+    const input = document.body.querySelector<HTMLInputElement>(':scope > input[type="file"]')
+    let ok: boolean | undefined
+    await act(async () => {
+      if (input) fireEvent(input, new Event('cancel'))
+      ok = await picking
+    })
+
+    expect(ok).toBe(false)
+    expect(result.current.sourceFile).toBeNull()
+    expect(document.body.querySelector(':scope > input[type="file"]')).toBeNull()
+  })
+
+  it('openFilePicker() resolves false for a picked file upload() rejects, so callers do not regenerate', async () => {
+    const { result } = renderHook(() => useBatchAssetPipeline<Array<Blob>>(OPTIONS))
+
+    const ok = await pick(result, (input) => fireEvent.change(input, { target: { files: [textFile('notes.txt')] } }))
+
+    expect(ok).toBe(false)
+    expect(result.current.sourceFile).toBeNull()
+    expect(document.body.querySelector(':scope > input[type="file"]')).toBeNull()
+  })
+
+  it('openFilePicker() resolves false for an empty selection', async () => {
+    const { result } = renderHook(() => useBatchAssetPipeline<Array<Blob>>(OPTIONS))
+
+    const ok = await pick(result, (input) => fireEvent.change(input, { target: { files: [] } }))
+
+    expect(ok).toBe(false)
+    expect(document.body.querySelector(':scope > input[type="file"]')).toBeNull()
+  })
+
+  it('openFilePicker() resolves only after the picked image is decoded and stored', async () => {
+    const { loadImageFromBlob } = await import('@/utils/image')
+    let finishDecode: (() => void) | undefined
+    const decoded = Object.assign(new Image(), { id: 'slow' })
+    vi.mocked(loadImageFromBlob).mockImplementationOnce(
+      () => new Promise<HTMLImageElement>((resolve) => (finishDecode = () => resolve(decoded))),
+    )
+    const { result } = renderHook(() => useBatchAssetPipeline<Array<Blob>>(OPTIONS))
+
+    let picking: Promise<boolean> | undefined
+    act(() => {
+      picking = result.current.openFilePicker()
+    })
+    const input = document.body.querySelector<HTMLInputElement>(':scope > input[type="file"]')
+    let settled = false
+    void picking?.then(() => (settled = true))
+    await act(async () => {
+      if (input) fireEvent.change(input, { target: { files: [imageFile('slow.png')] } })
+    })
+    // A caller that regenerates now would still read the previous source.
+    expect(settled).toBe(false)
+
+    let ok: boolean | undefined
+    await act(async () => {
+      finishDecode?.()
+      ok = await picking
+    })
+    expect(ok).toBe(true)
+    expect(result.current.sourceImage).toBe(decoded)
   })
 
   it('reset() clears all state', async () => {

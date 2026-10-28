@@ -59,8 +59,12 @@ export type UseBatchAssetPipelineResult<TResults> = {
    * verbatim, e.g. JSON manifests, HTML link tags).
    */
   downloadAll: (zipName: string, files: Record<string, Blob | string>) => Promise<void>
-  /** Open the OS file picker, then route the selection through `upload()`. */
-  openFilePicker: () => void
+  /**
+   * Open the OS file picker, then route the selection through `upload()`.
+   * Resolves with `upload()`'s result — `false` if the picker is cancelled —
+   * so a Tool that generates on upload can `regenerate()` after it.
+   */
+  openFilePicker: () => Promise<boolean>
   /** Clear sourceFile, sourceImage, results, progress, error, pending. */
   reset: () => void
 }

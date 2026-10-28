@@ -144,8 +144,8 @@ export const calculateDimensions = (
         throw new Error('Invalid dimensions: height cannot be zero for cover strategy')
       }
 
-      // Crop while maintaining minimum of source width or height
-      const minSourceDimension = Math.min(source.width, source.height)
+      // Crop the largest centred region with the target's aspect ratio. It always
+      // fits: only the axis that is too long for that ratio is cut.
       const sourceAspectRatio = source.width / source.height
       const targetAspectRatio = target.width / target.height
 
@@ -159,22 +159,13 @@ export const calculateDimensions = (
       }
 
       if (sourceAspectRatio > targetAspectRatio) {
-        // Source is wider, crop width - but ensure we maintain minimum dimension
-        cropSourceWidth = source.height * targetAspectRatio
-        // Ensure we don't go below minimum dimension
-        if (cropSourceWidth < minSourceDimension) {
-          cropSourceWidth = minSourceDimension
-          cropSourceHeight = cropSourceWidth / targetAspectRatio
-        }
+        // Source is wider: keep the full height, crop the width
+        cropSourceWidth = Math.min(source.width, source.height * targetAspectRatio)
         sourceX = (source.width - cropSourceWidth) / 2
       } else {
-        // Source is taller, crop height - but ensure we maintain minimum dimension
-        cropSourceHeight = source.width / targetAspectRatio
-        // Ensure we don't go below minimum dimension
-        if (cropSourceHeight < minSourceDimension) {
-          cropSourceHeight = minSourceDimension
-          cropSourceWidth = cropSourceHeight * targetAspectRatio
-        }
+        // Source is taller (or the same shape): keep the full width, crop the height
+        // min(): float error must not push the crop past the source when the shapes match
+        cropSourceHeight = Math.min(source.height, source.width / targetAspectRatio)
         sourceY = (source.height - cropSourceHeight) / 2
       }
 
@@ -314,7 +305,7 @@ export const processImage = async (
 
     // Fill background for JPEG to avoid transparency issues
     if (targetFormat === 'image/jpeg') {
-      ctx.fillStyle = options.backgroundColor ?? '#000000'
+      ctx.fillStyle = options.backgroundColor ?? '#ffffff'
       ctx.fillRect(0, 0, dimensions.canvas.width, dimensions.canvas.height)
     }
 
