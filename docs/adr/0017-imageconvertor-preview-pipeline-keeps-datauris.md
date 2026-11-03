@@ -1,6 +1,6 @@
 # ADR 0017 — `ImageConvertor`'s preview pipeline keeps dataURLs
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0026
 - **Date:** 2026-05-17
 
 ## Context

@@ -242,13 +242,13 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
   },
   {
     category: 'Image',
-    description: 'Convert images between PNG, JPG, WebP, GIF, BMP, and AVIF formats',
+    description: 'Convert one or many images between PNG, JPG, WebP, GIF, BMP, and AVIF formats',
     emoji: '🖼️',
     key: 'image-converter',
     name: 'Image Converter',
     seo: {
       description:
-        'Convert images between PNG, JPG, WebP, GIF, BMP, and AVIF formats online. Free browser-based image converter.',
+        'Batch convert images between PNG, JPG, WebP, GIF, BMP, and AVIF formats online. Per-file or ZIP download. Free browser-based image converter.',
     },
   },
   {
@@ -297,12 +297,13 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
   },
   {
     category: 'Image',
-    description: 'Resize images to custom dimensions with aspect ratio control',
+    description: 'Resize one or many images: fit within a max size, or set an exact size by cropping or stretching',
     emoji: '📐',
     key: 'image-resizer',
     name: 'Image Resizer',
     seo: {
-      description: 'Resize images to custom width and height dimensions online. Free browser-based image resizer.',
+      description:
+        'Batch resize images online: fit within a max width and height, or set an exact size by cropping to fill or stretching. Live preview, per-file or ZIP download. Free browser-based image resizer.',
     },
   },
   {

@@ -19,6 +19,26 @@ export const isValidImageFormat = (format: string): format is ImageFormat => {
   return VALID_IMAGE_FORMATS.has(format)
 }
 
+const ENCODABLE_FORMAT_CANDIDATES: Array<ImageFormat> = [
+  'image/png',
+  'image/jpeg',
+  'image/webp',
+  'image/gif',
+  'image/bmp',
+  'image/avif',
+]
+
+/**
+ * Formats this browser's canvas can actually encode. An unsupported type makes
+ * `toDataURL` silently fall back to PNG, so probe a 1×1 canvas for each.
+ */
+export const detectEncodableImageFormats = (): Array<ImageFormat> => {
+  const canvas = document.createElement('canvas')
+  canvas.width = 1
+  canvas.height = 1
+  return ENCODABLE_FORMAT_CANDIDATES.filter((format) => canvas.toDataURL(format).startsWith(`data:${format}`))
+}
+
 /**
  * Get safe ImageFormat with fallback
  */

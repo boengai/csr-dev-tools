@@ -1,160 +1,149 @@
-import { FieldForm } from '@/components/common'
-import { ImageToolShell } from '@/components/common/image-tool'
-import { IMAGE_LABEL, LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast } from '@/hooks'
-import type { ImageFormat, ResizeControls, ToolComponentProps } from '@/types'
-import { isValidImageFormat, parseDataUrlToBlob, parseFileName, resizeImage } from '@/utils'
+import { useState } from 'react'
 
-import { EMPTY_IMAGE } from './ImagePreview'
+import { FieldForm, ImageIcon, SelectInput } from '@/components/common'
+import { ImageBatchShell } from '@/components/common/image-batch'
+import { IMAGE_LABEL, LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
+import type { ImageFormat, ImageOutputFormat, ImageResizeMode, ImageResizerSettings, ToolComponentProps } from '@/types'
+import {
+  detectEncodableImageFormats,
+  isValidImageFormat,
+  parseDataUrlToBlob,
+  parseFileName,
+  processImage,
+} from '@/utils'
+
 import { ImageFormatSelectInput, ImageQualitySelectInput } from './input'
 
 const toolEntry = TOOL_REGISTRY_MAP['image-resizer']
 
-const INITIAL_CONTROLS: ResizeControls = {
-  format: null,
+const INITIAL_SETTINGS: ImageResizerSettings = {
+  format: 'original',
   height: null,
-  quality: null,
-  ratio: null,
+  mode: 'fit',
+  quality: '0.9',
   width: null,
 }
 
+const MODE_OPTIONS: Array<{ label: string; value: ImageResizeMode }> = [
+  { label: 'Fit within', value: 'fit' },
+  { label: 'Exact — crop to fill', value: 'cover' },
+  { label: 'Exact — stretch', value: 'stretch' },
+]
+
+const MODE_HINT: Record<ImageResizeMode, string> = {
+  cover:
+    'Every image becomes exactly width × height. It is scaled to cover the box and the overflow is cropped from the centre, so nothing is distorted.',
+  fit: 'Each image shrinks to fit within the box and keeps its aspect ratio. Leave a side blank to limit only the other; images already smaller are not enlarged.',
+  stretch:
+    'Every image becomes exactly width × height. Images with a different shape are stretched to fill, which distorts them.',
+}
+
+/** "Keep original" falls back to PNG when the browser can't encode the source's format (e.g. GIF, BMP). */
+const resolveFormat = (choice: ImageOutputFormat, file: File): ImageFormat => {
+  if (choice !== 'original') return choice
+  return isValidImageFormat(file.type) && detectEncodableImageFormats().includes(file.type) ? file.type : 'image/png'
+}
+
+const parseDimension = (value: string): number | null => {
+  const n = Math.round(Number(value))
+  return Number.isFinite(n) && n > 0 ? n : null
+}
+
 export const ImageResizer = ({ onAfterClose }: ToolComponentProps) => {
-  const showError = useToast((s) => s.showError)
+  const [settings, setSettings] = useState<ImageResizerSettings>(INITIAL_SETTINGS)
+  const { format, height, mode, quality, width } = settings
+  const isExact = mode !== 'fit'
+  // Fit needs one side; an exact size needs both.
+  const ready = isExact ? Boolean(width && height) : Boolean(width || height)
+  const showQuality = format === 'original' || LOSSY_FORMATS.has(format)
 
-  const process = async (file: File, c: ResizeControls): Promise<Blob | null> => {
-    if (!c.width || !c.height || !c.format) return null
-
-    let width = c.width
-    let height = c.height
-    const ratio = c.ratio ?? width / Math.max(height, 1)
-
-    // Preserve the minimum-1px fallback from the original (avoid collapse).
-    if (height * ratio <= 1) {
-      height = 10
-      width = Math.round(1 * ratio * 10)
-    } else if (width / ratio <= 1) {
-      width = 10
-      height = Math.round((1 / ratio) * 10)
-    }
-
-    const isLossyFormat = LOSSY_FORMATS.has(c.format)
-    const quality = isLossyFormat ? (c.quality ?? 0.8) : 1
-    const result = await resizeImage(file, { height, width }, { format: c.format, quality })
-    if (result.dataUrl === EMPTY_IMAGE) return null
-    return parseDataUrlToBlob(result.dataUrl)
+  const process = async (file: File) => {
+    const target = resolveFormat(format, file)
+    const base = { format: target, quality: LOSSY_FORMATS.has(target) ? Number(quality) : 1 }
+    const result =
+      mode === 'fit'
+        ? // processImage only scales down under maxWidth/maxHeight, so smaller images keep their size.
+          await processImage(file, {
+            ...base,
+            maxHeight: height ?? undefined,
+            maxWidth: width ?? undefined,
+            strategy: 'stretch',
+          })
+        : await processImage(file, { ...base, height: height ?? 1, strategy: mode, width: width ?? 1 })
+    return { blob: await parseDataUrlToBlob(result.dataUrl), height: result.height, width: result.width }
   }
 
   return (
-    <ImageToolShell<ResizeControls>
+    <ImageBatchShell
       accept="image/*"
-      // Resampling a large photo takes a few hundred ms; don't redo it per keystroke.
-      controlsDebounceMs={250}
+      actionIcon={<ImageIcon />}
+      actionLabel="Resize"
+      canProcess={ready}
       description={toolEntry?.description}
-      getDownloadFilename={({ controls, sourceName }) => parseFileName(sourceName, controls.format ?? undefined)}
-      initialControls={INITIAL_CONTROLS}
+      failureToastLabel="Image resizing failed — try a different format or smaller file"
+      getOutputName={(file) => parseFileName(file.name, resolveFormat(format, file))}
       onAfterClose={onAfterClose}
-      onRejectInvalidFile={() => showError('Upload a valid image file (PNG, JPEG, WebP, GIF, BMP, or AVIF)')}
+      previewKey={JSON.stringify(settings)}
       process={process}
-      renderControls={({ controls, setControls }) => {
-        const isLossy = controls.format ? LOSSY_FORMATS.has(controls.format) : false
-        const ready = Boolean(controls.width && controls.height && controls.format)
-        const setNumber = (key: 'height' | 'width', val: string) => {
-          const n = Number(val)
-          if (Number.isNaN(n) || n <= 0) {
-            setControls({ [key]: null } as Partial<ResizeControls>)
-            return
-          }
-          if (controls.ratio) {
-            const other = key === 'width' ? Math.round(n / controls.ratio) : Math.round(n * controls.ratio)
-            setControls(key === 'width' ? { height: other, width: n } : { height: n, width: other })
-            return
-          }
-          setControls({ [key]: n } as Partial<ResizeControls>)
-        }
-        return (
-          <>
-            <div className="flex w-full shrink-0 flex-col items-end gap-2 tablet:flex-row">
-              <div className="flex w-full gap-2">
-                <FieldForm
-                  disabled={!ready}
-                  label="Width"
-                  name="width"
-                  onChange={(val) => setNumber('width', val)}
-                  placeholder="1920"
-                  type="number"
-                  value={controls.width?.toString() ?? ''}
-                />
-                <FieldForm
-                  disabled={!ready}
-                  label="Height"
-                  name="height"
-                  onChange={(val) => setNumber('height', val)}
-                  placeholder="1080"
-                  type="number"
-                  value={controls.height?.toString() ?? ''}
-                />
-              </div>
-              <div className="flex w-full gap-2 *:w-full">
-                <ImageFormatSelectInput
-                  disabled={!ready}
-                  onChange={(val) => setControls({ format: val as ImageFormat })}
-                  value={controls.format ?? undefined}
-                />
-                <ImageQualitySelectInput
-                  disabled={!ready || !isLossy}
-                  onChange={(val) => setControls({ quality: Number(val) })}
-                  value={(isLossy ? controls.quality : 1)?.toString() ?? '1'}
-                />
-              </div>
-            </div>
-            {ready && controls.format && !isLossy && (
-              <p className="text-body-xs text-gray-500">
-                {IMAGE_LABEL[controls.format]} is lossless, so it has no quality setting. Choose JPEG or WebP to set
-                quality.
-              </p>
-            )}
-          </>
-        )
-      }}
-      renderPreview={({ controls, recompute, resultUrl, setControls, source, sourceUrl }) => (
-        <div className="bg-grid-texture flex flex-col items-center justify-center gap-6 bg-black tablet:min-h-0 tablet:grow tablet:flex-row">
-          <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
-            <p className="shrink-0 text-body-sm font-medium text-gray-300">Original</p>
-            <picture className="flex size-full grow flex-col items-center justify-center gap-4 tablet:max-h-full tablet:overflow-y-auto">
-              <img
-                alt="original"
-                className="w-full max-w-full tablet:max-h-full tablet:w-auto"
-                onLoad={(e) => {
-                  if (controls.width && controls.height) return
-                  const img = e.currentTarget
-                  const fileType = source.type as ImageFormat
-                  setControls({
-                    format: isValidImageFormat(fileType) ? fileType : ('image/jpeg' as ImageFormat),
-                    height: img.naturalHeight,
-                    quality: 1,
-                    ratio: img.naturalWidth / Math.max(img.naturalHeight, 1),
-                    width: img.naturalWidth,
-                  })
-                  // Seeding isn't typing: show the first result without the debounce.
-                  recompute()
-                }}
-                src={sourceUrl}
+      rejectToastLabel="Skipped files that are not images"
+      resultLabel="Resized"
+      settings={
+        <>
+          <div className="flex w-full flex-col gap-2 tablet:flex-row tablet:items-end">
+            <div className="flex w-full gap-2 tablet:w-2/5 tablet:shrink-0">
+              <FieldForm
+                label={isExact ? 'Width' : 'Max width'}
+                name="width"
+                onChange={(val) => setSettings((s) => ({ ...s, width: parseDimension(val) }))}
+                placeholder="1920"
+                type="number"
+                value={width?.toString() ?? ''}
               />
-            </picture>
+              <FieldForm
+                label={isExact ? 'Height' : 'Max height'}
+                name="height"
+                onChange={(val) => setSettings((s) => ({ ...s, height: parseDimension(val) }))}
+                placeholder="1080"
+                type="number"
+                value={height?.toString() ?? ''}
+              />
+            </div>
+            <div className="grid w-full grid-cols-1 gap-2 tablet:grid-cols-3">
+              <SelectInput
+                aria-label="Resize mode"
+                name="mode"
+                onChange={(val) => setSettings((s) => ({ ...s, mode: val as ImageResizeMode }))}
+                options={MODE_OPTIONS}
+                value={mode}
+              />
+              <ImageFormatSelectInput
+                includeOriginal
+                onChange={(val) => setSettings((s) => ({ ...s, format: val as ImageOutputFormat }))}
+                value={format}
+              />
+              <ImageQualitySelectInput
+                disabled={!showQuality}
+                onChange={(val) => setSettings((s) => ({ ...s, quality: val }))}
+                value={showQuality ? quality : '1'}
+              />
+            </div>
           </div>
-          <div className="tablet:border-t-none h-1 w-full border-t-2 border-dashed border-gray-700 tablet:h-full tablet:w-1 tablet:border-l-2" />
-          <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
-            <p className="shrink-0 text-body-sm font-medium text-gray-300">Resized</p>
-            {resultUrl ? (
-              <picture className="flex size-full grow flex-col items-center justify-center gap-4 tablet:max-h-full tablet:overflow-y-auto">
-                <img alt="resized" className="w-full max-w-full tablet:max-h-full tablet:w-auto" src={resultUrl} />
-              </picture>
-            ) : null}
-          </div>
-        </div>
-      )}
-      title="Adjust the size of your image"
+          <p className="text-body-xs text-gray-500">{MODE_HINT[mode]}</p>
+          {format === 'original' && (
+            <p className="text-body-xs text-gray-500">
+              Quality applies to JPEG, WebP, and AVIF images; other formats are lossless.
+            </p>
+          )}
+          {format !== 'original' && !showQuality && (
+            <p className="text-body-xs text-gray-500">
+              {IMAGE_LABEL[format]} is lossless, so it has no quality setting. Choose JPEG or WebP to set quality.
+            </p>
+          )}
+        </>
+      }
+      title="Adjust the size of your images"
       uploadLabel="Select images from your device"
+      zipPrefix="resized"
     />
   )
 }

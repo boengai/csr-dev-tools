@@ -1,13 +1,8 @@
-/**
- * @vitest-environment jsdom
- */
 import { act, fireEvent, render, screen } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { nth } from '@/test/nth'
 import { downloadBlob } from '@/utils/download'
 import { convertImageFormat } from '@/utils/image'
-import { buildZipBlob } from '@/utils/zip'
 
 import { ImageConvertor } from './ImageConvertor'
 
@@ -27,8 +22,11 @@ vi.mock('@/utils/download', async (importOriginal) => ({
 
 const png = (name: string, body = 'x') => new File([body], name, { type: 'image/png' })
 
+const ORIG_CREATE = URL.createObjectURL
+const ORIG_REVOKE = URL.revokeObjectURL
+
 const upload = (files: Array<File>) => {
-  const input = document.querySelector('input[type="file"]') as HTMLInputElement
+  const input = document.querySelector('input[name="images"]') as HTMLInputElement
   fireEvent.change(input, { target: { files } })
 }
 
@@ -41,6 +39,8 @@ const settle = async () => {
 
 beforeEach(() => {
   vi.useFakeTimers()
+  URL.createObjectURL = vi.fn(() => 'blob:test')
+  URL.revokeObjectURL = vi.fn()
   vi.mocked(convertImageFormat).mockResolvedValue('data:image/webp;base64,AAAA')
   vi.spyOn(HTMLCanvasElement.prototype, 'toDataURL').mockImplementation((type = 'image/png') => `data:${type};base64,`)
 })
@@ -49,31 +49,33 @@ afterEach(() => {
   vi.useRealTimers()
   vi.restoreAllMocks()
   vi.clearAllMocks()
+  URL.createObjectURL = ORIG_CREATE
+  URL.revokeObjectURL = ORIG_REVOKE
 })
 
 describe('ImageConvertor', () => {
-  it('converts without artificial delays', async () => {
+  it('converts without artificial delays and offers a per-file download', async () => {
     render(<ImageConvertor />)
     upload([png('a.png')])
     fireEvent.click(screen.getByRole('button', { name: 'Convert' }))
     await settle()
 
+    expect(convertImageFormat).toHaveBeenCalledWith(expect.any(File), 'image/webp', { quality: 0.8 })
+    fireEvent.click(screen.getByRole('button', { name: /^Download csr-dev-tools_a_\d+\.webp$/ }))
     expect(downloadBlob).toHaveBeenCalledOnce()
   })
 
-  it('keeps both outputs when two inputs share a base name', async () => {
+  it('converts every queued image', async () => {
     render(<ImageConvertor />)
-    upload([png('a.png', 'one'), png('a.png', 'two!')])
-    fireEvent.click(screen.getByRole('button', { name: 'Convert' }))
+    upload([png('a.png'), png('b.png')])
+    fireEvent.click(screen.getByRole('button', { name: 'Convert 2 images' }))
     await settle()
 
-    expect(buildZipBlob).toHaveBeenCalledOnce()
-    const names = Object.keys(nth(vi.mocked(buildZipBlob).mock.calls, 0)[0])
-    expect(names).toHaveLength(2)
-    expect(new Set(names).size).toBe(2)
+    expect(convertImageFormat).toHaveBeenCalledTimes(2)
+    expect(screen.getByRole('button', { name: 'Download ZIP' })).toBeInTheDocument()
   })
 
-  it('does not download after unmounting mid-run', async () => {
+  it('does not show results after unmounting mid-run', async () => {
     let finish: (v: string) => void = () => {}
     vi.mocked(convertImageFormat).mockImplementationOnce(
       () =>
@@ -92,9 +94,6 @@ describe('ImageConvertor', () => {
     unmount()
     finish('data:image/webp;base64,AAAA')
     await settle()
-    await act(async () => {
-      await vi.runAllTimersAsync()
-    })
 
     expect(downloadBlob).not.toHaveBeenCalled()
   })

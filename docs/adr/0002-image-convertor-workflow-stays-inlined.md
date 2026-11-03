@@ -1,6 +1,6 @@
 # ADR 0002 — ImageConvertor workflow stays inlined
 
-- **Status:** Accepted
+- **Status:** Superseded by ADR-0026
 - **Date:** 2026-05-15
 
 ## Context

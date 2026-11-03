@@ -296,7 +296,8 @@ runs when files are selected; the Tool decides when to invoke `openDialog()`
 results ready). Skipping the call keeps the dialog closed (e.g. on a
 validation rejection).
 
-Today's consumers: `FaviconGenerator`, `ImageToBase64`, `SplashScreenGenerator`.
+Today's consumers: `FaviconGenerator`, `ImageToBase64`, `SplashScreenGenerator`,
+and the [[Image batch shell]] (`ImageConvertor`, `ImageResizer`).
 
 Pick this when the Tool's "first interaction" is a file upload. Pick
 [[Tool dialog frame]] when the tile has button trigger(s). Pick
@@ -654,8 +655,9 @@ A Tool that takes a single uploaded `File` as source, runs a transformation,
 and produces a single `Blob` result for preview and download. Implemented by
 `<ImageToolShell>` (`src/components/common/image-tool/ImageToolShell.tsx`).
 
-Examples: `BackgroundRemover`, `ImageCropper`, `ImageResizer`. Does NOT fit:
-`ImageCompressor`/`ImageConvertor` (inline, no dialog), `PlaceholderImageGenerator`
+Examples: `BackgroundRemover`, `ImageCropper`. Does NOT fit:
+`ImageCompressor` (inline, no dialog), `ImageConvertor`/`ImageResizer`
+(many files in — see [[Image batch shell]]), `PlaceholderImageGenerator`
 (no source File — pure generation), `FaviconGenerator`/`SplashScreenGenerator`
 (produce a batch of results, not a single Blob).
 
@@ -676,8 +678,7 @@ run, so up-front decode is essential. Single-Blob consumers each own
 decode at the layer that has the right context — `ImageCropper` reads the
 preview `<img>` via `imgRef` (which ReactCrop needs DOM-attached anyway),
 `BackgroundRemover` delegates to `RawImage.fromBlob` inside
-`@huggingface/transformers`, and `ImageResizer` delegates to `resizeImage`
-/ `processImage` in `@/utils/image.ts`. The shell deliberately does not
+and `@huggingface/transformers`. The shell deliberately does not
 pre-decode.
 
 `renderControls` and `renderPreview` ctx both carry `{ controls,
@@ -698,6 +699,55 @@ populates `imgRef`.
 The shell auto-resets controls to `initialControls` on dialog close. The
 Tool's `onAfterClose` callback handles per-Tool non-controls cleanup
 (refs, UI-only state like the live drag `crop` in `ImageCropper`).
+
+## Image batch shell
+
+A Tool that takes **many** uploaded `File`s, applies the same Tool-owned
+settings to each, and produces one `Blob` per file. Implemented by
+`<ImageBatchShell>` (`src/components/common/image-batch/ImageBatchShell.tsx`).
+
+Today's adopters: `ImageConvertor`, `ImageResizer`.
+
+The page tile is the upload button; picking images opens the workspace in a
+full-screen dialog through [[Upload dialog frame]]. Closing the dialog clears
+the queue. Dialog steps: queue → processing → results. Both the queue and results
+steps use the same layout: settings on top, a large Original ┊ Result
+comparison filling the free space, the image list in a left-hand column
+(a horizontal strip under the comparison on mobile), and actions at the
+bottom.
+
+The shell owns the queue (append via "Add more images", remove per row,
+per-upload ids so the same file picked twice is two rows), size reads for
+the row labels, the run loop with progress, per-file results (click one to
+compare it, or download it), "Download ZIP" for two or more successes, and
+output-name dedupe within a run.
+
+Invariants:
+
+1. **One failure is not fatal** — `process` throwing marks only that file
+   failed (listed with its message, left out of the ZIP); the rest of the
+   batch still runs. Only when every file fails does the shell toast and
+   return to the queue.
+2. **Nothing auto-downloads** — the user picks a file or the ZIP from the
+   results step.
+3. **Stale-safe** — a reset or unmount mid-run stops the run after its next
+   `await` (via [[useStaleSafeAsync]]).
+
+In the queue step the comparison is a **live preview** of one image (the
+clicked row in the list, else the first): `process` re-runs on it through
+the [[Tool computation pipeline]]
+when the selection changes (immediately) or `previewKey` changes (debounced).
+Preview errors show inline in the panel, without a toast. The batch itself only runs
+on the action button.
+
+The Tool owns its settings state and passes the dialog `title`,
+`onAfterClose`, the rendered `settings` node,
+`previewKey` (changes whenever the settings do — e.g.
+`JSON.stringify(settings)`), `process(file, { width, height })`,
+`getOutputName(file)`, and `canProcess` (e.g. the resizer needs a max width
+or height; false also pauses the preview). Differs from
+[[Image tool shell]] (one file, live preview recomputed per control change)
+and [[Batch asset pipeline]] (one file in, many derived assets out).
 
 ## Batch asset pipeline
 
@@ -724,8 +774,7 @@ The hook owns:
   `imageFileToBase64`, `base64ToImageInfo` (decodes the dataUri via
   `fetch(dataUri).then(r => r.blob())` first), `applyBackground`
   (in `background-removal.ts`), `svgToPng` (in `mermaid-renderer.ts`),
-  and `ImageColorPicker`. ImageConvertor's preview loop deliberately
-  bypasses it — see ADR-0017.
+  `ImageColorPicker`, and the [[Image batch shell]]'s size reads.
 - The source `Blob` URL (`sourcePreview`) — derived via [[useBlobUrl]] so
   the revoke-previous-then-create-next + revoke-on-unmount lifecycle lives
   in one module shared with the [[Image tool shell]].
@@ -754,8 +803,8 @@ Does NOT fit:
 
 - Multi-source N-File Tools producing a single result — use
   [[Sortable item bag]] (today: `ImageToPdf`, `CombinePdf`).
-  `ImageConvertor` (N-in / N-out with a workflow state machine) is its
-  own shape, kept inlined per ADR-0002.
+  N-in / N-out Tools (`ImageConvertor`, `ImageResizer`) use the
+  [[Image batch shell]] (ADR-0026).
 - Inline (no-dialog) image Tools (`ImageCompressor`).
 - Single-Blob-out Tools — use [[Image tool shell]].
 
