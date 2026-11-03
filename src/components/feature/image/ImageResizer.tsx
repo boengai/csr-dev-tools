@@ -1,6 +1,6 @@
 import { FieldForm } from '@/components/common'
 import { ImageToolShell } from '@/components/common/image-tool'
-import { LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
+import { IMAGE_LABEL, LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import { useToast } from '@/hooks'
 import type { ImageFormat, ResizeControls, ToolComponentProps } from '@/types'
 import { isValidImageFormat, parseDataUrlToBlob, parseFileName, resizeImage } from '@/utils'
@@ -72,40 +72,48 @@ export const ImageResizer = ({ onAfterClose }: ToolComponentProps) => {
           setControls({ [key]: n } as Partial<ResizeControls>)
         }
         return (
-          <div className="flex w-full shrink-0 flex-col items-end gap-2 tablet:flex-row">
-            <div className="flex w-full gap-2">
-              <FieldForm
-                disabled={!ready}
-                label="Width"
-                name="width"
-                onChange={(val) => setNumber('width', val)}
-                placeholder="1920"
-                type="number"
-                value={controls.width?.toString() ?? ''}
-              />
-              <FieldForm
-                disabled={!ready}
-                label="Height"
-                name="height"
-                onChange={(val) => setNumber('height', val)}
-                placeholder="1080"
-                type="number"
-                value={controls.height?.toString() ?? ''}
-              />
+          <>
+            <div className="flex w-full shrink-0 flex-col items-end gap-2 tablet:flex-row">
+              <div className="flex w-full gap-2">
+                <FieldForm
+                  disabled={!ready}
+                  label="Width"
+                  name="width"
+                  onChange={(val) => setNumber('width', val)}
+                  placeholder="1920"
+                  type="number"
+                  value={controls.width?.toString() ?? ''}
+                />
+                <FieldForm
+                  disabled={!ready}
+                  label="Height"
+                  name="height"
+                  onChange={(val) => setNumber('height', val)}
+                  placeholder="1080"
+                  type="number"
+                  value={controls.height?.toString() ?? ''}
+                />
+              </div>
+              <div className="flex w-full gap-2 *:w-full">
+                <ImageFormatSelectInput
+                  disabled={!ready}
+                  onChange={(val) => setControls({ format: val as ImageFormat })}
+                  value={controls.format ?? undefined}
+                />
+                <ImageQualitySelectInput
+                  disabled={!ready || !isLossy}
+                  onChange={(val) => setControls({ quality: Number(val) })}
+                  value={(isLossy ? controls.quality : 1)?.toString() ?? '1'}
+                />
+              </div>
             </div>
-            <div className="flex w-full gap-2 *:w-full">
-              <ImageFormatSelectInput
-                disabled={!ready}
-                onChange={(val) => setControls({ format: val as ImageFormat })}
-                value={controls.format ?? undefined}
-              />
-              <ImageQualitySelectInput
-                disabled={!ready || !isLossy}
-                onChange={(val) => setControls({ quality: Number(val) })}
-                value={(isLossy ? controls.quality : 1)?.toString() ?? '1'}
-              />
-            </div>
-          </div>
+            {ready && controls.format && !isLossy && (
+              <p className="text-body-xs text-gray-500">
+                {IMAGE_LABEL[controls.format]} is lossless, so it has no quality setting. Choose JPEG or WebP to set
+                quality.
+              </p>
+            )}
+          </>
         )
       }}
       renderPreview={({ controls, recompute, resultUrl, setControls, source, sourceUrl }) => (
