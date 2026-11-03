@@ -4,6 +4,7 @@ import { expect, test } from '@playwright/test'
 const nonDialogImageTools = [
   { name: 'Image Compressor', route: '/tools/image-compressor' },
   { name: 'Image Converter', route: '/tools/image-converter' },
+  { name: 'Image Resizer', route: '/tools/image-resizer' },
 ]
 
 for (const tool of nonDialogImageTools) {
@@ -18,7 +19,6 @@ for (const tool of nonDialogImageTools) {
 // Image tools with upload button visible on page (dialog opens after upload)
 const uploadOnPageTools = [
   { name: 'Image Cropper', route: '/tools/image-cropper' },
-  { name: 'Image Resizer', route: '/tools/image-resizer' },
   { name: 'Image to Base64', route: '/tools/image-to-base64' },
 ]
 
