@@ -47,8 +47,8 @@ const severityStyles = tv({
   base: 'shrink-0',
   variants: {
     severity: {
-      error: 'text-red-400',
-      warning: 'text-yellow-400',
+      error: 'text-error',
+      warning: 'text-warning',
     },
   },
 })
@@ -202,7 +202,7 @@ export const TypescriptPlayground = ({ autoOpen, onAfterClose }: ToolComponentPr
               </ul>
             </>
           ) : (
-            <p className="text-green-400 text-body-xs">No errors</p>
+            <p className="text-body-xs text-success">No errors</p>
           )}
         </div>
       </div>

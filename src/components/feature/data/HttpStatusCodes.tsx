@@ -29,10 +29,10 @@ const CATEGORIES: Array<{ label: string; value: HttpStatusCategory | '' }> = [
 
 const CATEGORY_COLORS: Record<string, string> = {
   '1xx Informational': 'text-gray-400',
-  '2xx Success': 'text-green-400',
-  '3xx Redirection': 'text-blue-400',
-  '4xx Client Error': 'text-yellow-400',
-  '5xx Server Error': 'text-red-400',
+  '2xx Success': 'text-success',
+  '3xx Redirection': 'text-info',
+  '4xx Client Error': 'text-warning',
+  '5xx Server Error': 'text-error',
 }
 
 export const HttpStatusCodes = ({ autoOpen, onAfterClose }: ToolComponentProps) => {

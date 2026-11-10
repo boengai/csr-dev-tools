@@ -1,107 +1,75 @@
-import { Button, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { FieldForm, ToggleButton, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolFields } from '@/hooks'
 import type { JsonTsInput, ToolComponentProps } from '@/types'
 import { jsonToTypeScript } from '@/utils'
+import { narrateParseError } from '@/utils/parse-error-narrators'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-typescript']
 
-export const JsonToTypeScript = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const showError = useToast((s) => s.showError)
-  const showSuccess = useToast((s) => s.showSuccess)
+const INITIAL: JsonTsInput = { optionalProps: false, rootName: 'Root', source: '', useInterface: true }
 
-  const {
-    inputs,
-    recompute,
-    result: output,
-    setFields,
-    setFieldsImmediate,
-  } = useToolFields<JsonTsInput, string>({
-    compute: ({ source: val, rootName: root, useInterface: iface, optionalProps: optional }) =>
-      jsonToTypeScript(val, { optionalProperties: optional, rootName: root, useInterface: iface }),
-    debounceMs: 300,
-    initial: { source: '', rootName: 'Root', useInterface: true, optionalProps: false },
-    initialResult: '',
-    isEmpty: ({ source: val }) => !val.trim(),
-    storageKey: 'csr-dev-tools-json-to-typescript',
-  })
-  const { source, rootName, useInterface, optionalProps } = inputs
-
-  const handleGenerate = async () => {
-    if (!source.trim()) {
-      showError('Please enter JSON input')
-      return
-    }
-    try {
-      await jsonToTypeScript(source, { optionalProperties: optionalProps, rootName, useInterface })
-      recompute()
-      showSuccess('TypeScript generated successfully')
-    } catch {
-      showError('Invalid JSON input')
-    }
-  }
-
-  const handleSourceChange = (val: string) => setFields({ source: val })
-  const handleRootNameChange = (val: string) => setFields({ rootName: val })
-  const handleToggleInterface = () => setFieldsImmediate({ useInterface: !useInterface })
-  const handleToggleOptional = () => setFieldsImmediate({ optionalProps: !optionalProps })
-
-  // Partial reset: clears the option fields back to defaults, preserves source.
-  // The hook's reset() would also clear source, which is not the original behavior.
-  const handleReset = () => setFieldsImmediate({ rootName: 'Root', useInterface: true, optionalProps: false })
-
-  return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      onReset={handleReset}
-      title="JSON to TypeScript"
-      triggers={[
-        {
-          label: 'Convert JSON to TypeScript',
-          onOpen: () => {
-            if (source.trim()) recompute()
-          },
-        },
-      ]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
-        <div className="flex items-end gap-4">
-          <FieldForm label="Root Name" name="root-name" onChange={handleRootNameChange} type="text" value={rootName} />
-          <Button onClick={handleToggleInterface} type="button" variant="primary">
-            {useInterface ? 'interface' : 'type'}
-          </Button>
-          <Button onClick={handleToggleOptional} type="button" variant="primary">
-            optional?
-          </Button>
-          <Button onClick={handleGenerate} variant="primary">
-            Generate
-          </Button>
+export const JsonToTypeScript = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <TransformerShell<JsonTsInput>
+    autoOpen={autoOpen}
+    compute={async ({ optionalProps, rootName, source, useInterface }) => {
+      const narrated = await narrateParseError('json', source)
+      if (narrated != null) throw new Error(narrated)
+      try {
+        return await jsonToTypeScript(source, {
+          optionalProperties: optionalProps,
+          rootName: rootName.trim() || 'Root',
+          useInterface,
+        })
+      } catch {
+        throw new Error('Unable to generate TypeScript from this JSON')
+      }
+    }}
+    description={toolEntry?.description}
+    initial={INITIAL}
+    onAfterClose={onAfterClose}
+    renderControls={({ inputs, setFields, setFieldsImmediate }) => (
+      <>
+        <div className="sm:w-48 w-full">
+          <FieldForm
+            label="Root Name"
+            name="root-name"
+            onChange={(val: string) => setFields({ rootName: val })}
+            placeholder="Root"
+            type="text"
+            value={inputs.rootName}
+          />
         </div>
-        <SplitPanel>
-          <Pane>
-            <FieldForm
-              label="JSON Input"
-              name="json-source"
-              onChange={handleSourceChange}
-              placeholder={'{\n  "name": "John",\n  "age": 30\n}'}
-              type="code"
-              value={source}
-            />
-          </Pane>
-          <Pane live>
-            <div className="flex items-center gap-1">
-              <span className="text-body-xs font-medium text-gray-300">TypeScript Output</span>
-              <CopyButton label="TypeScript" value={output} />
-            </div>
-            <pre className="min-h-[300px] grow overflow-auto rounded-lg border-2 border-gray-900 bg-gray-950 p-4 font-mono text-body-sm text-gray-200">
-              {output || 'Paste JSON to generate TypeScript...'}
-            </pre>
-          </Pane>
-        </SplitPanel>
-      </div>
-    </ToolDialogFrame>
-  )
-}
+        <div className="flex flex-wrap gap-2">
+          <ToggleButton
+            aria-label="Emit interface declarations"
+            onClick={() => setFieldsImmediate({ useInterface: true })}
+            pressed={inputs.useInterface}
+          >
+            interface
+          </ToggleButton>
+          <ToggleButton
+            aria-label="Emit type aliases"
+            onClick={() => setFieldsImmediate({ useInterface: false })}
+            pressed={!inputs.useInterface}
+          >
+            type
+          </ToggleButton>
+          <ToggleButton
+            aria-label="Make properties optional"
+            onClick={() => setFieldsImmediate({ optionalProps: !inputs.optionalProps })}
+            pressed={inputs.optionalProps}
+          >
+            optional?
+          </ToggleButton>
+        </div>
+      </>
+    )}
+    resultLabel="TypeScript Output"
+    resultPlaceholder="Paste JSON to generate TypeScript types"
+    sourceLabel="JSON Input"
+    sourcePlaceholder={'{\n  "name": "John",\n  "age": 30\n}'}
+    storageKey="csr-dev-tools-json-to-typescript"
+    title="JSON to TypeScript"
+    triggerLabel="Convert JSON to TypeScript"
+  />
+)

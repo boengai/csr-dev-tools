@@ -20,6 +20,87 @@ A Tool typically composes:
   `useToolFields` — see [[Persisted tool input]]; `useInputLocalStorage` for
   bespoke bags) or SEO (`useToolSeo`).
 
+## Layout type
+
+The shape of a Tool's interaction, chosen from a closed set and declared as
+the required `layout` field on every `ToolRouteDefinition`
+(`src/constants/tool-routes.ts`). Each layout type maps 1:1 to a layout
+shell in `src/components/common/`; the shell is the UX spec, `docs/ux/`
+holds the drawing and journey for each (ADR-0027).
+
+| Layout type | Shell | Interaction |
+|---|---|---|
+| **Transformer** | [[Transformer shell]] | source input → output, one direction, deterministic; output kind `text` / `image` / `fields` / `markup` |
+| **Codec** | [[Codec shell]] | input → output in one of several directions (mode toggle) |
+| **Generator** | [[Generator shell]] | options → output; `random` mode waits for Generate, `live` mode reruns on every option change |
+| **File Processor** | [[File processor shell]] (single file or batch) | upload → process → download |
+| **Comparator** | [[Comparator shell]] | two inputs → their difference |
+| `custom` | — | opts out; `layoutOptOutAdr` must cite the ADR that says why. Custom Tools still show input errors in a `<ToolStatus>` |
+
+Rules the shells enforce (so a Tool cannot choose differently):
+
+- **Order, top to bottom:** header → mode row (Codec) → controls →
+  [[Tool status slot]] → work area (input left, output right; stacked on
+  mobile) → actions.
+- **Run timing:** deterministic and fast runs as you type (300 ms debounce);
+  random output waits for a Generate button (⌘/Ctrl+Enter); slow-on-purpose
+  work shows a busy state on that button — spinner + elapsed time, no
+  progress channel, ADR-0001.
+- **Buttons:** Copy sits in the output's label. Generate / Process sit under
+  the input, Download at the bottom of the output pane. ⌘/Ctrl+Enter
+  triggers Generate / Process while enabled (`ModEnterAction`, which also
+  shows the key hint).
+- **Empty state:** the output's placeholder (required), phrased as an
+  instruction ("Paste JSON to format it"), not a sample output; for File
+  Processors the upload area fills the work area and the tile is a plain
+  button.
+- **Errors:** see [[Tool status slot]]. Input errors never toast.
+- **Persistence and Reset:** text input persists per Tool (per mode for a
+  Codec); files never persist. Reset — run by the dialog frame when the
+  dialog closes, or by the tool page's close dot ([[Tool presentation]]);
+  there is no Reset button — clears the input and keeps controls.
+
+A Tool tagged with a layout but not yet built from its shell is listed in
+`LAYOUT_MIGRATION_PENDING` (`src/test/layout-migration.ts`). That list only
+shrinks: `src/test/layout-guard.spec.ts` fails if a listed Tool already
+renders its shell, and fails if a migrated Tool builds its own dialog. Each
+shell has a contract suite (`<Shell>.contract.dom.spec.tsx`) that runs over
+every migrated Tool of its layout.
+
+Not to be confused with **category** (`Code`, `Data`, `Image`…), which is
+how the dashboard groups Tools, not how they behave.
+
+## Tool status slot
+
+The one fixed spot — owned by the layout shell, between the controls and
+the work area — that answers "why is there no output?" and "the output is
+valid, but…". Implemented by `<ToolStatus>`
+(`src/components/common/banner/ToolStatus.tsx`), marked
+`data-slot="tool-status"`.
+
+Two kinds of message:
+
+- **Error** — the input could not be processed. The shell reads the
+  pipeline's `error` state and renders it automatically
+  (`role="alert"`); the output is cleared at render time so a stale
+  result never sits next to an error. Text: the shell's `errorLabel` when
+  set (fixed wording for libraries that throw implementation-leaking
+  messages), else the `Error`'s own message (e.g. from the
+  [[Parse-error narrator]]), else `errorFallback`.
+- **Notice** — the output is valid and stays, with something worth
+  knowing (`EnvFileConverter`'s skipped lines). The Tool supplies them via
+  the shell's `notices: (result) => Array<string>`; rendered with
+  `role="status"`. Hidden while there is an error.
+
+An error may carry one **action** (`<ToolStatus errorAction={{ label,
+onClick }}>`): a button beside it that fixes the input — Mermaid's
+Auto-fix. The [[Transformer shell]] exposes it as `errorAction`.
+
+A Tool can add notices but can never take over the error display: the
+shells pass no `errorLabel` / `errorFallback` / `onError` to the pipeline,
+so nothing toasts. Generalises ADR-0021 (which did this for the
+Transformer only) to every shell.
+
 ## Tool computation pipeline
 
 The debounced, stale-safe async transformation from a Tool's input to its
@@ -44,7 +125,7 @@ result dropped by invariant 2. Computes may ignore the second argument
 (`(input) => …` still type-checks). A rejection after abort, or any
 `AbortError`-named rejection, is silent: no `error`, no toast. Adopters
 that use it: `RegexTester` (signal → [[Worker bridge]] terminates a
-runaway pattern) and `BackgroundRemover` via the [[Image tool shell]]'s
+runaway pattern) and `BackgroundRemover` via the [[File processor shell]]'s
 `process(file, controls, { signal })` (skips the stale composite + PNG
 encode during colour-picker drags). This is **cancellation, not
 progress** — ADR-0001's "the pipeline does not carry progress" still
@@ -66,7 +147,7 @@ documented spelling.
 Use `recompute()` when the pipeline holds the input (the [[Tool field bag]]
 shape, or single-Input Tools that don't read external React state inside
 their compute closure). When a wrapper bridges React-side props or local
-state into the pipeline on every call — as `<ImageToolShell>` does with
+state into the pipeline on every call — as `<FileProcessorShell>` does with
 `{ file, controls }` — keep the inline `setInputImmediate({...})` wrapper:
 the pipeline's `inputRef` only sees what was last passed in, so a bare
 `recompute()` there would re-fire with stale React-side values.
@@ -85,8 +166,9 @@ exclusive; precedence `onError` > `errorFallback` > `errorLabel`):
 - `onError: (err, input) => …` — full callback. Pick this only when the
   handler needs the input bag (context-specific messages, e.g. HashGenerator
   branching on `algo`) or has side effects beyond toasting (e.g.
-  ColorConvertor clearing its display field). When set, the pipeline does
-  NOT toast on its behalf.
+  ColorConvertor clearing its mirrored fields while the [[Tool status
+  slot]] shows the error). When set, the pipeline does NOT toast on its
+  behalf.
 
 The hook reads `useToast.getState().showError` lazily inside the catch, so
 adopting the toast-emitting options does not subscribe the Tool component
@@ -124,7 +206,7 @@ the same "owns the input, no parallel `useState`" property, sized for one
 field. Keep the unwrapped `useToolComputation` only when the input is built
 fresh per change from external React state (the [[N-mirror broadcast]]
 shape) or when a wrapper bridges React-side props on every call (the
-[[Image tool shell]] shape).
+[[File processor shell]] shape).
 
 Carries one extra invariant beyond the pipeline:
 
@@ -182,14 +264,15 @@ across reloads (see [[Persisted tool input]]). Keep the unwrapped
 [[N-mirror broadcast]] adopters (the input is a discriminated bag
 rebuilt per keystroke from React state, not a mirror of it — today:
 `ColorConvertor`, `UnitPxToRem`, `AspectRatioCalculator`) and for
-shells that bridge React-side props on every call ([[Image tool shell]]
+shells that bridge React-side props on every call ([[File processor shell]]
 with `{ file, controls }`).
 
-Today's adopters: `MarkdownPreview`, `JwtDecoder`, `UrlParser`,
-`Base64ToImage`, `SshKeyFingerprint`, `CertificateDecoder`,
-`TextCaseConverter`, `WordCounter`, `CronExpressionParser`,
-`UserAgentParser`, `TimeUnixTimestamp` (UnixTimestampSection),
-`SvgViewer`.
+Today's adopters: `MarkdownPreview`, `Base64ToImage`,
+`TimeUnixTimestamp` (UnixTimestampSection), `SvgViewer`. (`JwtDecoder`,
+`UrlParser`, `SshKeyFingerprint`, `CertificateDecoder`,
+`CronExpressionParser`, `UserAgentParser`, `TextCaseConverter` and
+`WordCounter` moved onto the [[Transformer shell]], which wraps
+`useToolFields`.)
 
 ## Persisted tool input
 
@@ -233,13 +316,11 @@ Today's adopters with `storageKey`:
 
 - `useToolInput`: `ProtobufToJson`, `MermaidRenderer`,
   `GraphqlSchemaViewer`, and the [[Markup to PDF shell]].
-- `useToolFields`: `JsonSchemaValidator`, `JsonpathEvaluator`,
-  `JsonToTypeScript`, `TimezoneConverter`, the [[Formatter shell]] and
-  the [[Diff checker shell]].
+- `useToolFields`: `JsonSchemaValidator`, `JsonToTypeScript`,
+  `TimezoneConverter`, the [[Transformer shell]] and the
+  [[Comparator shell]].
 
-`JsonpathEvaluator` is the `autorunOnMount: true` adopter — it has no
-`isEmpty` rule but still wants the result populated on mount from the
-persisted bag. `TimezoneConverter` is the partial-persistence shape: its
+`TimezoneConverter` is the partial-persistence shape: its
 persisted bag holds the converter inputs, but `dateInput`/`timeInput`
 are overridden with "now" on mount via a follow-up
 `setFieldsImmediate({ dateInput, timeInput })` — the documented pattern
@@ -257,13 +338,31 @@ persisted `useToolFields` would re-fire `parseProtobufSchema` on every
 `encodeSource` keystroke, since the hook does not gate compute on which
 field changed. Its triad (`useInputLocalStorage` + a single
 `useToolComputation` over `schema` + `useMountOnce`) stays.
-`<BidirectionalConverter>` also stays bespoke: its source is keyed per
+`<CodecShell>` also stays bespoke: its source is keyed per
 mode, so the key is derived rather than static.
+
+## Tool presentation
+
+How a Tool is shown (ADR-0029). It is read from a React context
+(`useToolPresentation`, `src/components/common/dialog/ToolPresentation.tsx`):
+- `dialog` (the default): the dashboard tile opens the Tool in a dialog.
+- `page`: the Tool's own route (`/tools/<key>`) renders it inline in a
+  full-width page card, with the Tool's name as the page heading.
+
+Only the [[Tool dialog frame]] reads it, so every shell and frame-based Tool
+gets both presentations for free. On a page the frame registers its
+`onReset` with the page. The page card's close dot runs it and then goes
+home; leaving any other way keeps the saved input. A Tool's own children see
+`dialog` again, so a dialog a Tool opens itself stays a real one. Protobuf
+Codec and Data URI draw their own tiles around `<ToolDialogShell>` and keep
+real dialogs on every route.
 
 ## Tool dialog frame
 
-The page-level frame for a Tool whose interior lives in a dialog. Implemented
-by `<ToolDialogFrame>` (`src/components/common/dialog/ToolDialogFrame.tsx`).
+The page-level frame for a Tool: on the dashboard, a tile whose triggers open
+the Tool in a dialog. On the Tool's own route ([[Tool presentation]] `page`),
+it renders the Tool inline (`data-slot="tool-surface"`) with no tile.
+Implemented by `<ToolDialogFrame>` (`src/components/common/dialog/ToolDialogFrame.tsx`).
 
 Replaces the four-concern boilerplate every dialog Tool used to repeat:
 `useState(dialogOpen)`, the centered tile layout (description + button column),
@@ -274,39 +373,24 @@ the trigger button(s), and the controlled `<ToolDialogShell>` wiring
 Each trigger is `{ label, onOpen? }`. `onOpen` fires synchronously in the same
 React event that flips the dialog open, so any state seeded there (e.g.
 `mode: 'encrypt'` from the Encrypt button) is committed before the body
-renders. Two-trigger Tools (AES Encrypt/Decrypt, String Escape/Unescape)
-collapse their bespoke `openDialog(mode)` helper into one trigger entry per
-button.
+renders. Multi-trigger tiles (one button per mode) are being retired by
+ADR-0027: AES Encrypt/Decrypt and String Escape/Unescape already moved onto
+the [[Codec shell]] (one trigger plus an in-dialog toggle).
 
 `<ToolDialogShell>` remains the lower-level escape hatch — use it directly
-when the tile shape doesn't fit (multi-dialog Tools, etc.). `<ImageToolShell>`
-and `<BidirectionalConverter>` are unaffected; their tile shapes have their
-own concerns.
+when the tile shape doesn't fit (multi-dialog Tools, etc.). The layout
+shells (`<CodecShell>`, `<TransformerShell>`, `<ComparatorShell>`,
+`<FileProcessorShell>`) render this frame themselves.
 
 ## Upload dialog frame
 
-Sibling of [[Tool dialog frame]] for Tools whose tile IS a file-upload
-trigger rather than a button that opens an empty dialog. Implemented by
-`<UploadDialogFrame>` (`src/components/common/dialog/UploadDialogFrame.tsx`).
-
-The frame owns: tile (description + `<UploadInput>`), dialog open state,
-forwarding to `<ToolDialogShell>`. The Tool's `onUpload(files, openDialog)`
-runs when files are selected; the Tool decides when to invoke `openDialog()`
-— before async processing (to show a loading state) or after (to open with
-results ready). Skipping the call keeps the dialog closed (e.g. on a
-validation rejection).
-
-Today's consumers: `FaviconGenerator`, `ImageToBase64`, `SplashScreenGenerator`,
-and the [[Image batch shell]] (`ImageConvertor`, `ImageResizer`).
-
-Pick this when the Tool's "first interaction" is a file upload. Pick
-[[Tool dialog frame]] when the tile has button trigger(s). Pick
-[[Image tool shell]] when the Tool is single-File-in / single-Blob-out (per
-its own four invariants). When the Tool produces a batch of `Blob`s rather
-than a single one (FaviconGenerator, SplashScreenGenerator), compose this
-frame with the [[Batch asset pipeline]] hook — the frame owns the tile and
-dialog wiring; the hook owns the upload → process → results → ZIP/download
-behavior.
+_Removed (2026-11-10). `<UploadDialogFrame>` made the page tile itself the
+file picker, so the dialog opened only once a valid file was picked.
+ADR-0028 replaced that with one way in: a plain tile button and an upload
+area inside the dialog. Its last consumers (`FaviconGenerator`,
+`SplashScreenGenerator`, `ImageToBase64`) moved to the
+[[File processor shell]]'s `assets` and `text` outputs. Older ADRs (0016,
+0026, 0028) still use the name._
 
 ## Tool handoff
 
@@ -335,13 +419,23 @@ To add a channel: extend `HandoffChannel` in `src/types/utils/tool-handoff.ts`. 
 type-checker will flag any producer or consumer that uses a name not in the
 union.
 
-## Bidirectional converter
+## Codec shell
 
-A Tool that converts between two formats with mode-swap support — JSON ↔ CSV,
-HTML ↔ Markdown, encode/decode, etc. Implemented by `<BidirectionalConverter>`
-(`src/components/common/converter/BidirectionalConverter.tsx`).
+_Formerly "Bidirectional converter" / `<BidirectionalConverter>`; older ADRs
+use that name._
 
-The shell owns: the per-direction mode button pair, the dialog, per-mode source
+The shell for the **Codec** [[Layout type]]: a Tool that converts between
+formats with mode-swap support — JSON ↔ CSV, HTML ↔ Markdown, encode/decode,
+etc. Implemented by `<CodecShell>` (`src/components/common/codec/CodecShell.tsx`).
+
+A mode toggle is offered only when every direction takes the same kind of
+input (text ↔ text). Image ↔ Base64 stays two Tools because one direction
+takes a file. The tile has one trigger (the active mode); switching happens
+in the dialog. On the tool route, `?mode=<key>` opens straight into that
+mode — read once on mount when `autoOpen` is set, validated against `modes`,
+never written back.
+
+The shell owns: the in-dialog mode toggle, the dialog, per-mode source
 persistence (localStorage), mount-time hydration, mode switching, and the
 two-column source-input / result-output layout. The Tool's role narrows to
 its per-direction `compute` function plus per-direction labels/placeholders.
@@ -350,39 +444,45 @@ Tools with extras (entity-mode select, double-escape checkbox) plug into the
 `sourceToolbarSlot` render-prop, which receives `{ mode, recompute }` — the
 caller renders its extras and calls `recompute()` after their value changes.
 
-The result type is generic (`<R extends ConvertOutput>`) so Tools may
+The result type is generic (`<R extends CodecOutput>`) so Tools may
 extend the minimum `{ output: string }` shape with extra fields
-(`EnvResult` adds `warnings: Array<string>`). Tools whose compute can
-surface inline metadata about the source — warnings, validation notes
-— render it via the `renderBanner` slot (mirrors [[Diff checker shell]]).
-This keeps source-line references on screen while the user reads the
-result; [[Toast channel]] is the wrong category for that case because
-toasts dismiss before the user can act on the reference.
+(`EnvResult` adds `warnings: Array<string>`). Non-fatal metadata about a
+valid result is surfaced as [[Tool status slot]] notices via
+`notices: (result) => Array<string>`; compute rejections are shown by the
+shell as the slot's error.
 
-Each `ConverterMode<M>` may declare `sourceFormat: 'json' | 'yaml' | 'xml'
+Each `CodecMode<M>` may declare `sourceFormat: 'json' | 'yaml' | 'xml'
 | 'toml' | 'csv'`. When set, compute failures route through the
-[[Parse-error narrator]] before reaching `onError`. Omit for modes whose
-source isn't a parseable format (Base64, URL encoding, HTML entities) —
-those keep today's "toast `err.message`" behavior.
+[[Parse-error narrator]] before reaching the status slot. Omit for modes
+whose source isn't a parseable format (Base64, URL encoding, HTML entities) —
+their `err.message` is shown as-is (else `errorFallback`).
 
-`modes` is `ReadonlyArray<ConverterMode<M>>` (not a 2-tuple) to admit
+`modes` is `ReadonlyArray<CodecMode<M>>` (not a 2-tuple) to admit
 Tools that swap between more than two directions; `EnvFileConverter` is
 the four-mode adopter (`.env ↔ JSON`, `.env ↔ YAML`).
 
-`initialResult: R` is required (mirrors [[Diff checker shell]]) so
+`initialResult: R` is required (mirrors [[Comparator shell]]) so
 extended `R` types can't render with missing fields before the first
 compute resolves.
 
 Today's adopters: `EncodingBase64`, `UrlEncoder`, `JsonToYamlConverter`,
 `JsonToXmlConverter`, `JsonToTomlConverter`, `JsonToCsvConverter`,
 `HtmlEntityConverter`, `HtmlToMarkdownConverter`, `EscapedJsonStringifier`,
-`EnvFileConverter` (the only `renderBanner` user today).
+`EnvFileConverter` (the only `notices` user today), `StringEscapeUnescape`
+(format select in `sourceToolbarSlot`) and `AesEncryptDecrypt`.
+
+`persistSource={false}` opts a Codec out of source persistence for sensitive
+input — `AesEncryptDecrypt` never writes plaintext or ciphertext to
+localStorage. Its password lives in Tool state, is rendered through
+`sourceToolbarSlot`, triggers a debounced `recompute()` (key derivation is
+deliberately slow), and is cleared through `onClearInput` whenever the shell
+resets (on close); a blank password yields empty output, not an error.
 
 ## Parse-error narrator
 
 The single seam that owns the "translate a WASM compute failure into a
 human-readable `Invalid <FORMAT>: <reason>` message" concern across the
-[[Bidirectional converter]] family. Implemented by `narrateParseError`
+[[Codec shell]] family. Implemented by `narrateParseError`
 (`src/utils/parse-error-narrators.ts`).
 
 Owns a static `Record<SourceFormat, { label, get }>` mapping each known
@@ -412,7 +512,7 @@ input is actually malformed for the declared format.
 Today's adopters (via the shell): `JsonToYamlConverter`,
 `JsonToXmlConverter`, `JsonToTomlConverter`, `JsonToCsvConverter`.
 Standalone adopters (validate-first compute outside the shell):
-`JsonFormatter` (via the [[Formatter shell]]),
+`JsonFormatter` (via the [[Transformer shell]]),
 `YamlFormatter` (multi-field via `useToolFields`). Each wraps the
 narrator inline: `const narrated = await narrateParseError(fmt, val);
 if (narrated != null) throw new Error(narrated)`. The trailing
@@ -421,79 +521,288 @@ stays inline — it handles format failures on parse-valid input, which
 the narrator does not cover.
 
 Pick this when a Tool whose source is one of the five known formats
-runs a validate-first compute — whether via [[Bidirectional converter]]
+runs a validate-first compute — whether via [[Codec shell]]
 or standalone. The module is shaped for both call shapes (the shell
 gates on the narrator returning non-null; standalone callers do the
 same check inline).
 
-## Formatter shell
+## Transformer shell
 
-A Tool whose interaction is "paste source code → pick mode (or dialect)
-→ pick indent → see formatted/minified result." Implemented by
-`<FormatterShell>` (`src/components/common/formatter/FormatterShell.tsx`).
+_Formerly "Formatter shell" / `<FormatterShell>`; older ADRs use that name._
 
-Today's consumers: `CssFormatter`, `HtmlFormatter`, `SqlFormatter`,
-`JavaScriptMinifier`, `JsonFormatter`, `YamlFormatter`. All six route
-their compute through `src/wasm/formatter` (CSS/HTML/SQL/JS) or
-`src/utils` (`formatJson` / `formatYaml`); the JSON / YAML pair also
-wraps the compute through [[Parse-error narrator]] before reaching the
-shell's `errorFallback`.
+The shell for the **Transformer** [[Layout type]]: "paste source → pick
+controls → see the deterministic result as you type." Implemented by
+`<TransformerShell>` (`src/components/common/transformer/TransformerShell.tsx`),
+with the result side in `TransformerOutputPane.tsx`.
+
+**Output kind** (`outputKind`, default `'text'`) picks how the result
+renders. It is a closed set — there is no free-form output slot — and
+`compute` returns the matching shape (`TransformerOutputByKind`):
+
+| Kind | `compute` returns | Renders | Takes it away |
+|---|---|---|---|
+| `text` | `string` | `CodeOutput` block | Copy in the label |
+| `fields` | `Array<{ label, value, copy?, copyValue? }>` | [[Field list]] (values keep their line breaks) | Copy on each row; `copy: false` drops it (counts, stats); `copyValue` copies something other than what is shown; optional `copyAll` in the label |
+| `markup` | `string` (HTML/SVG) | rendered after the shell runs DOMPurify | Copy (the sanitised markup — what is shown) in the label |
+| `image` | `{ src, alt, filename, copy? } \| null` | preview | Download at the bottom of the pane; with `imageCopyLabel`, Copy and an icon Download both in the label |
+
+Each kind's empty value (`''`, `[]`, `null`) is its empty state: the
+shell shows the required `resultPlaceholder` (phrased as an instruction)
+and starts the pipeline from it. The output is cleared to that value
+while the pipeline has an error, for every kind. The output region is
+marked `data-slot="tool-output"`, `data-output-kind` and `data-has-value`
+so the layout contract can find it whatever the kind. Sanitising in the
+shell means no Tool can render unsanitised markup by forgetting to.
+
+Today's consumers:
+- `text`: `CssFormatter`, `HtmlFormatter`, `SqlFormatter`,
+  `JavaScriptMinifier`, `JsonFormatter`, `YamlFormatter`,
+  `HashGenerator`, `HmacGenerator`, `JsonToTypeScript`, `TextSortDedupe`,
+  `JsonSchemaValidator` (the validated JSON, formatted).
+- `fields`: `TextCaseConverter` (Copy per case), `WordCounter`
+  (`copy: false` on every row), `TimezoneConverter` (one row per target
+  zone), `TimeUnixTimestamp` (the timestamp as dates), `CertificateDecoder`,
+  `SshKeyFingerprint`, `UrlParser`, `UserAgentParser`,
+  `CronExpressionParser` (next runs as one multi-line row),
+  `JwtDecoder` (header / payload / signature as multi-line rows; the
+  payload row shows annotated timestamps and copies the raw JSON via
+  `copyValue`), `JsonpathEvaluator` (one row per match, `copyAll`
+  copies them as one JSON array).
+
+- `markup`: `MarkdownPreview`, `SvgViewer` (`markupBackground="light"`),
+  `MermaidRenderer`.
+- `image`: `QrCodeGenerator` (`imageCopyLabel="SVG"`), `Base64ToImage`.
+
+`copyAll: (result) => string` (`fields` only) puts a Copy button in the
+result label for a value built from all the rows; it is absent while the
+output is empty and disabled when it returns `''`. A row's status that
+deserves a [[Tool status slot]] notice (an expired certificate or JWT) is
+read back from its row in `notices`, since `notices` sees only the result.
+Utils that return their error as data (`parseUrl`, `parseCron`, JSONPath
+parse/eval) are turned into thrown errors inside the Tool's `compute`.
+
+**Additive props** (each optional; a Tool that doesn't pass one gets the
+plain shell):
+- `downloads: (result) => Array<{ label, filename, file }>` — files the
+  output can be saved as, as icon buttons in the output label beside Copy
+  (`SvgViewer`'s SVG, `MermaidRenderer`'s SVG and PNG). Disabled while
+  the output is empty; `file()` may be async (SVG → PNG), and a failure
+  toasts (the outcome of an action, not an input error).
+- `imageCopyLabel` (`image` only) — the image also has a text form
+  (`TransformerImage.copy`, QR code's SVG). Copy and an icon Download then
+  both sit in the label, and there is no Download under the preview.
+- `markupBackground: 'dark' | 'light'` (`markup` only, default dark) —
+  light for SVG drawn in dark ink (`SvgViewer`).
+- `secondSource: { field, label, placeholder, kind? }` — a second
+  required source input stacked under the first (`JsonSchemaValidator`'s
+  schema). Blank leaves the placeholder showing, like a blank source;
+  Reset clears it with the source.
+- `errorAction: (error, inputs) => { label, patch } | null` — a one-click
+  fix beside the error in the [[Tool status slot]] (`<ToolStatus
+  errorAction>`); clicking applies `patch` at once (`MermaidRenderer`'s
+  Auto-fix).
+- `prefill: () => Partial<I> | null` — called once after mount; its patch
+  wins over the restored input. For a handoff from another Tool (DB
+  Diagram → `MermaidRenderer`); a function so the consuming read runs
+  once even under StrictMode.
+
+The formatters route their compute through `src/wasm/formatter`
+(CSS/HTML/SQL/JS) or `src/utils` (`formatJson` / `formatYaml`); JSON, YAML
+and `JsonToTypeScript` also wrap the compute through
+[[Parse-error narrator]] so its message reaches the [[Tool status slot]]
+verbatim.
 
 The shell wraps `useToolFields` with `storageKey` ([[Persisted tool input]])
-internally, so all five field-bag invariants apply to the `compute` function. Persistence is
-required (every consumer gets its own `storageKey`) — a previous
-inconsistency where HtmlFormatter persisted but CSS/SQL/JS did not has
-been resolved by making persistence the default. JSON and YAML joined
-the family in a later pass; the pre-migration JSON key
-(`csr-dev-tools-json-formatter-source`, raw-string shape from the
-single-Input persisted hook of the time) was retired in favor of
-`csr-dev-tools-json-formatter` (JSON-bag shape) — reusing the old key
-would have corrupted on first read because the shape is different.
+internally, so all five field-bag invariants apply to the `compute`
+function. Persistence is the default: a Tool passes its own `storageKey`,
+or `persistInput={false}` instead when the input is sensitive (the props
+type is a union, so it must pick one). Opt-outs: `HashGenerator`,
+`JwtDecoder`, `CertificateDecoder`, `SshKeyFingerprint`, `UrlParser`
+(URLs can carry tokens) and `HmacGenerator` —
+its secret key is in the bag, and nothing in the bag may reach
+localStorage. `JwtDecoder`, `CertificateDecoder` and `SshKeyFingerprint`
+also opt out: they never saved their input, and tokens and keys are not
+newly persisted. `JsonpathEvaluator` moved to
+`csr-dev-tools-jsonpath-evaluator-v2` because its old bag
+(`{ jsonInput, expression }`) has no `source`. `JsonToTypeScript` kept its pre-shell key
+(`csr-dev-tools-json-to-typescript`, same bag shape); the other moved
+Tools had no key before and now save under `csr-dev-tools-<tool key>`.
+The pre-migration JSON Formatter key
+(`csr-dev-tools-json-formatter-source`, raw-string shape) was retired in
+favor of `csr-dev-tools-json-formatter` (JSON-bag shape) — reusing the old
+key would have corrupted on first read because the shape is different.
+Mermaid's raw-string key (`csr-dev-tools-mermaid-renderer-code`) was
+retired the same way for `csr-dev-tools-mermaid-renderer`. JSON Schema
+Validator and Timezone Converter kept their keys: each rewrites a
+pre-shell bag (`{ jsonData, jsonSchema }`; `{ dateInput, timeInput,
+sourceTz, targetTzIds }`) into the new shape once, before the shell
+reads it. Markdown, SVG Viewer, QR Code, Base64 → Image and Unix
+Timestamp saved nothing before the shell and pass `persistInput={false}`
+to keep it that way.
 
 The shell owns: the [[Tool dialog frame]] wiring, the source `FieldForm`
-panel, the result `CodeOutput` + `CopyButton` panel, the two-column
-layout, the error toast, the optional `renderBanner` slot that surfaces
-pipeline errors inline above the split (used by `JsonFormatter` and
-`YamlFormatter` to keep their [[Parse-error narrator]] message on
-screen instead of toast-truncated), and the partial-reset semantic
-(`reset` clears `source` only, preserves the control fields like
-`mode`/`dialect`/`indent`).
+panel (`sourceKind`: `'code'` (default, CodeMirror), `'textarea'` or
+`'text'`), the output pane for each kind, the two-column layout, the
+[[Tool status slot]] (pipeline errors inline above the split, output
+cleared while erroring; `notices: (result) => Array<string>` for
+non-fatal messages about a valid result, hidden while erroring), and the
+partial-reset semantic: `reset` — run by the dialog frame on close —
+clears `source` and keeps the control fields (`mode`/`dialect`/`indent`).
+`clearOnReset: Partial<I>` names controls that must not outlive the
+dialog; `HmacGenerator` passes `{ secretKey: '' }`.
 
-`renderBanner?: (error: unknown) => ReactNode` mirrors the same-named
-slot on [[Diff checker shell]] / [[Bidirectional converter]], but reads
-from the pipeline's `error` state rather than from `result` — formatter
-parse failures throw (no valid result), so the banner source is the
-rejected error. Setting the slot suppresses `errorFallback`/`errorLabel`
-toast routing — the banner replaces the toast (same content, two
-channels would duplicate). CSS/HTML/SQL/JS-minifier opt out and keep
-their `errorFallback`/`errorLabel` toast — their compute throws opaque
-errors that don't reward an inline display.
+`errorLabel` / `errorFallback` pick the status-slot wording, not a
+toast: CSS/HTML/SQL/JS-minifier and HMAC pass `errorLabel` because their
+facades throw opaque messages; JSON / YAML / JSON → TypeScript / Hash pass
+neither and throw their own user-facing `Error`. (ADR-0021's
+`renderBanner(error)` slot is superseded by the shell-owned slot —
+ADR-0027.)
 
 The Tool's role narrows to its `compute` function, its labels/placeholders,
-its `storageKey`, and a `renderControls` render-prop that receives
-`{ inputs, result, setFieldsImmediate }` — the Tool builds whatever
-controls it needs (mode select, dialect select, indent select, size-savings
-stat). `renderControls` is omitted entirely by JsonFormatter (no extra
-controls — its bag is `{ source: string }`). The shell hardcodes the
-layout container around the slot.
+its persistence choice, and a `renderControls` render-prop that receives
+`{ inputs, result, setFields, setFieldsImmediate }` — the Tool builds
+whatever controls it needs (mode select, algorithm toggles, size-savings
+or line-count stat). `setFieldsImmediate` is for selects and toggles;
+`setFields` is debounced like the source, for text boxes in the controls
+row (HMAC secret key, JSON → TypeScript root name). `result` is the
+displayed output (already cleared on error). `renderControls` is omitted
+entirely by JsonFormatter, TextCaseConverter and WordCounter. The shell
+hardcodes the layout container around the slot.
+
+A Tool with more than one required input keeps the extra ones in its
+controls and returns the kind's empty value from `compute` while they are
+blank — HMAC with no key shows the placeholder, not an error. Emptiness
+of the source is the shell's rule (`source.trim()` is empty), so a
+whitespace-only source never computes.
 
 `resultLabel` (optional, default `'Result'`) names the result pane
-header and the CopyButton's accessible label. CSS/HTML/SQL/JS take the
-default; JSON and YAML pass `'Formatted JSON'` / `'Formatted YAML'`
-because the bare "Result" reads too generically next to a syntax-aware
-output panel.
+header and the Copy / Download button's accessible label. It may be a
+function of the inputs when the label follows a control (`HashGenerator`:
+`` `${algo} Hash` ``; `HmacGenerator`: `` `HMAC-${algorithm} (${encoding})` ``).
 
-The shell's input type is generic over `<I extends { source: string }>` —
-each Tool has its own typed bag (`CssInput`, `HtmlInput`, `SqlInput`,
-`JsInput`, `YamlInput`, plus the trivial `{ source: string }` for
-JsonFormatter) with different mode/dialect/indent vocabularies. The
-constraint on `source` lets the shell own the input panel +
-reset/`isEmpty` logic.
+The shell is generic over `<I extends { source: string }, K extends
+TransformerOutputKind = 'text'>` — each Tool has its own typed bag
+(`CssInput`, `HashInput`, `HmacInput`, `JsonTsInput`, `TextSortInput`,
+plus the trivial `{ source: string }`) with different control
+vocabularies. The constraint on `source` lets the shell own the input
+panel + reset/`isEmpty` logic. `JsonToTypeScript` lost its Generate
+button and success toast when it moved: its output is deterministic, so
+under the [[Layout type]] run-timing rule it runs as you type.
 
-Does NOT fit `JsonToTypeScript`: that Tool drives compute from a button
-click rather than debounced input change, plus its control row is
-toggle buttons + a Generate action — a different interaction shape, not
-this family.
+Shapes chosen for the less obvious Tools (ADR-0027 step 3):
+- **JSON Schema Validator:** data is the source, the schema the
+  `secondSource`. Invalid data rejects with the error list (one per
+  line) — the status slot shows it and the output clears. Valid data
+  comes back formatted as the `text` output, with a "Valid" notice.
+- **Timezone Converter:** the source is the date and time as text
+  (`YYYY-MM-DD HH:mm`); a Now button, the source zone and the target-zone
+  chips (with ★ favourite and ✕ remove) are controls; the output is a
+  `fields` row per target zone.
+- **Unix Timestamp:** one source — the timestamp. The date and time
+  pickers in the controls show the source's local date and write a
+  timestamp back into it (keeping its unit), so "date → timestamp" is a
+  second way to set the source, not a second output. A Now button fills
+  it. The output is `fields` (format, seconds, GMT, local).
+- **QR Code:** deterministic, so a Transformer: the text is the source,
+  size / error correction / colours are controls.
+- **Mermaid:** opens empty (Reset clears the source, no default diagram);
+  examples are control buttons.
+
+## Generator shell
+
+The shell for the **Generator** [[Layout type]]: options in, output out,
+no source text. Implemented by `<GeneratorShell>`
+(`src/components/common/generator/GeneratorShell.tsx`); the drawing and
+journey are in `docs/ux/generator.md`.
+
+Two run modes, picked with the named `run` prop:
+
+- **`random`** — `{ mode: 'random', generateLabel, slow? }`. The output is
+  random, so it runs on open, on every option change, and on the
+  shell-drawn Generate button (under the options) or ⌘/Ctrl+Enter.
+  `slow: true` adds the busy state — spinner + elapsed time from
+  `useElapsedTimer`, button disabled, shortcut ignored, previous output
+  hidden — with no progress channel (ADR-0001).
+- **`live`** — `{ mode: 'live' }`. Same options ⇒ same output, so it runs
+  on open and on every option change; no button, no shortcut.
+
+The shell owns: the [[Tool dialog frame]] wiring, the [[Tool status slot]]
+(compute rejections, output cleared while erroring; `notices` for a valid
+result), the two-pane layout (options left, output right), the Generate
+button and shortcut, and the output pane. The Tool's role narrows to its
+`compute(options, { signal })`, its `initial` options bag, a
+`renderOptions` render-prop, and an `output` spec.
+
+The options bag is a [[Tool field bag]] (`useToolFields`, optionally
+persisted with `storageKey`; the output is never persisted).
+`renderOptions` receives `{ options, setOptions, setOptionsDebounced }`:
+`setOptions` reruns at once (toggles, selects, sliders);
+`setOptionsDebounced` waits for a 300 ms pause, so typing in a text option
+doesn't reroll per keystroke.
+
+The first run and the ⌘/Ctrl+Enter listener (`ModEnterAction`, wrapping
+the Generate button) live inside the dialog body, which exists only while the dialog is open — so a
+tile on the dashboard never generates (no RSA keygen for an unopened tile)
+and the shortcut only reaches the open Tool. Each compute is stamped with
+its run number; closing the dialog (the frame's reset) hides every result
+stamped before the close, including a slow run still in flight. Options
+stay; reopening generates again.
+
+`output` is one of six named kinds — no free-form output slot:
+
+- `text` → `compute` returns `string`; Copy in the label.
+- `list` → `Array<string>`; `label` + count and Copy all in the label,
+  Copy per row named by `itemLabel`.
+- `files` → `Array<{ filename, label, mimeType?, value }>`; one block per
+  file with Copy in its label, Download per file at the bottom of the
+  pane, plus Download all when there is more than one.
+- `fields` → `Array<{ label, value, copy?, copyValue? }>`; a
+  [[Field list]] with Copy per row (`copy: false` drops it, `copyValue`
+  copies something other than what is shown) — the same row type and
+  component as the Transformer's `fields`. For a Tool with one copyable
+  result and read-only facts about it (Crontab: expression, description,
+  next runs).
+- `image` → `{ alt, src, downloads }`; a preview with one Download button
+  per entry at the bottom of the pane, no Copy. Each download carries
+  `blob: () => Blob | Promise<Blob>`, built only on click (a PNG needs a
+  canvas; the preview never waits for it); a failed build toasts as a
+  failed download (Placeholder Image: PNG + SVG).
+- `swatches` → `{ swatches: Array<{ color, details, value }>, copyAll }`;
+  colour swatches that copy their `value` on click (named by `itemLabel`,
+  `details` shown on hover/focus), plus Copy all in the label named by
+  `copyAllLabel` (Color Palette: hex per swatch, CSS custom properties
+  for all — the old "Export CSS" button).
+
+The output region also carries `data-output-kind`, so the contract skips
+the label-Copy check for `image`.
+
+The output region is marked `data-slot="tool-output"` and carries
+`data-has-value` while it shows a value; the layout contract uses that
+(`opensWith: 'output'`, since generators open with a value rather than an
+empty state).
+
+"Generated N …" success toasts were dropped: the new output is on screen,
+so the toast only repeats it. Toasts stay for action outcomes (copied,
+downloaded). Tools clamp out-of-range numbers (a cleared number box
+emits `0`). Compute rejections shown in the status slot are corrupt saved
+options (a non-number, an unknown unit or key size, a damaged grid) and
+typed options the Tool can't use (a bad hex in Color Palette, a missing or
+over-4096 dimension in Placeholder Image).
+
+Today's adopters — `random`: `UuidGenerator`, `PasswordGenerator`
+(list), `RsaKeyGenerator` (files, `slow`). `live`: `LoremIpsumGenerator`
+and `MarkdownTableGenerator` (text; the cell grid is the options bag),
+`CrontabGenerator` (fields), `PlaceholderImageGenerator` (image),
+`ColorPaletteGenerator` (swatches). All persist their options.
+
+The reducers of ADR-0008 (Placeholder Image) and ADR-0013 (Markdown
+Table) survive as the options bag's transition function: the Tool
+dispatches with `setOptions(reducer(options, action))` (typed text via
+`setOptionsDebounced`), so the shell's bag stays the single state and the
+reducer keeps its bundled ops (hex-mirror parse; grid resize with
+alignments in lockstep). A restored bag the reducer can't read is a
+compute rejection; `renderOptions` draws a fresh grid / default field in
+its place so the editor never crashes, and the next edit replaces it.
 
 ## Markup to PDF shell
 
@@ -523,9 +832,9 @@ Carries three invariants beyond the pipeline's four:
    A future adopter cannot wire them to different sources.
 3. **Stale output is suppressed on error** — when the pipeline's `error`
    is non-null, the shell hides both `<DownloadPdfButton>` and
-   `<PdfSvgPreview>` and renders an inline `<ErrorBanner
-   variant="warning">` carrying `err.message` (or `'Failed to render
-   PDF'` when the rejection is not an `Error`). Prevents downloading
+   `<PdfSvgPreview>` and shows `err.message` (or `'Failed to render PDF'`
+   when the rejection is not an `Error`) in the [[Tool status slot]]
+   above the split. Prevents downloading
    bytes that don't match the displayed source. Distinct from the
    pipeline default — `useToolComputation` leaves `result` untouched on
    rejection, so without the shell the prior-success preview and download
@@ -575,16 +884,16 @@ Carries three invariants beyond the pipeline's four:
    A future adopter cannot wire them to different sources.
 3. **Stale output is suppressed on error** — when the pipeline's `error`
    is non-null, the shell hides both `<DownloadPdfButton>` and
-   `<PdfBytesPreview>` and renders an inline `<ErrorBanner variant="warning">`
-   carrying `err.message` (or `'Failed to generate PDF'` when the rejection
-   is not an `Error`). Prevents downloading bytes that don't match the
+   `<PdfBytesPreview>` and shows `err.message` (or `'Failed to generate
+   PDF'` when the rejection is not an `Error`) in the [[Tool status slot]]
+   above the split; skipped files are that slot's notice. Prevents downloading bytes that don't match the
    displayed source. Distinct from the pipeline default —
    `useToolComputation` leaves `result` untouched on rejection, so without
    the shell the prior-success preview and download silently linger.
 
 The shell does NOT pass `errorLabel` / `errorFallback` / `onError` to the
-underlying pipeline — the banner replaces the toast (same content, two
-channels would duplicate). Mirrors [[Formatter shell]]'s discipline (see
+underlying pipeline — the status slot replaces the toast (same content,
+two channels would duplicate). Mirrors [[Transformer shell]]'s discipline (see
 [[Toast channel]] section).
 
 The Tool's role narrows to:
@@ -612,7 +921,7 @@ button, the minting moves with it.
 `BytesPdfResult` is fixed at the shell's interface (not generic over `R`).
 Both adopters' result shapes are already byte-for-byte identical; a future
 adopter with a different result shape would not fit this shell. The
-asymmetry with [[Diff checker shell]] (generic `R extends DiffOutput`) is
+asymmetry with [[Comparator shell]] (generic `R extends DiffOutput`) is
 load-bearing: there, two adopters genuinely diverged (`JsonDiffChecker`
 adds `validationError`). Here they do not.
 
@@ -621,12 +930,14 @@ Does NOT fit: Tools whose source is markup rather than files (use
 non-PDF artifacts (no current shell — would warrant a new one); inline
 (non-dialog) PDF Tools (none today).
 
-## Diff checker shell
+## Comparator shell
 
-A Tool that compares two text-shaped inputs (`original`, `modified`) and
-renders the result as a side-by-side row grid plus a copyable unified
-diff. Implemented by `<DiffCheckerShell>`
-(`src/components/common/diff/DiffCheckerShell.tsx`).
+_Formerly "Diff checker shell" / `<DiffCheckerShell>`; older ADRs use that name._
+
+The shell for the **Comparator** [[Layout type]]: a Tool that compares two
+text-shaped inputs (`original`, `modified`) and renders the result as a
+side-by-side row grid plus a copyable unified diff. Implemented by
+`<ComparatorShell>` (`src/components/common/comparator/ComparatorShell.tsx`).
 
 Today's consumers: `TextDiffChecker` (plain text), `JsonDiffChecker`
 (validates + normalizes JSON before diffing).
@@ -640,133 +951,176 @@ inline-span highlighting), the unified-diff CopyButton, and the
 sticky-header column labels.
 
 The Tool's role narrows to its `compute` function, its labels (title,
-placeholders, error toast), its `storageKey`, and an optional
-`renderBanner` render-prop that receives the current `result` — Tools
-whose compute can return a validation error (e.g. invalid JSON) surface
-it through this slot; Tools without validation pass nothing.
+placeholders, status-slot wording via `errorLabel` / `errorFallback`), its
+`storageKey`, and optional `notices`. Invalid input is a compute
+rejection, not a result field: `JsonDiffChecker` throws the
+`getJsonDiffError` message and the shell shows it in the
+[[Tool status slot]] while clearing the diff.
 
 The result type is generic (`<R extends DiffOutput>`) so Tools may
-extend the minimum `{ rows, unifiedDiff }` shape with extra fields
-(`JsonDiffResult` adds `validationError`).
+extend the minimum `{ rows, unifiedDiff }` shape with extra fields.
 
-## Image tool shell
+## File processor shell
 
-A Tool that takes a single uploaded `File` as source, runs a transformation,
-and produces a single `Blob` result for preview and download. Implemented by
-`<ImageToolShell>` (`src/components/common/image-tool/ImageToolShell.tsx`).
+_Formerly "Image tool shell" / `<ImageToolShell>` and "Image batch shell" /
+`<ImageBatchShell>`; older ADRs use those names. ADR-0028 merged them. It
+also replaced the [[Upload dialog frame]]._
 
-Examples: `BackgroundRemover`, `ImageCropper`. Does NOT fit:
-`ImageCompressor` (inline, no dialog), `ImageConvertor`/`ImageResizer`
-(many files in — see [[Image batch shell]]), `PlaceholderImageGenerator`
-(no source File — pure generation), `FaviconGenerator`/`SplashScreenGenerator`
-(produce a batch of results, not a single Blob).
+The shell for the **File Processor** [[Layout type]]: upload a file, process
+it, download the result. Implemented by `<FileProcessorShell>`
+(`src/components/common/file-processor/FileProcessorShell.tsx`). The named
+prop `multiple` picks batch mode; otherwise one file goes in and `output`
+names what comes out — `file` (default: one `Blob`), `assets` or `text` (see
+"Derived outputs" below). All share the entry, the layout and the reset.
 
-The shell wraps the [[Tool computation pipeline]] internally, so all four of
-its invariants (debounced, stale-safe, empty-bypass, unmount-safe) apply to
-the `process` function. The shell **owns the controls bag** — mirroring
-[[Tool field bag]] semantics — alongside the dialog, the file UploadInput +
-MIME validation, source and result `Blob` URL lifecycles (via [[useBlobUrl]]),
-and the Download button + filename. The Tool declares `initialControls` and a
-`process(file, controls, { signal })` function; the bag's live value lives in the shell.
+Today's adopters: `BackgroundRemover`, `ImageCompressor`, `ImageCropper`
+(single, `file` output); `FaviconGenerator`, `SplashScreenGenerator`
+(single, `assets` output); `ImageToBase64` (single, `text` output);
+`ImageConvertor`, `ImageResizer` (batch).
+
+**One way in.** The tile is a plain button ([[Tool dialog frame]]); the
+dialog opens on an **upload area** that fills the work area until a file is
+added. The area takes a pick or a drop. A drop bypasses the picker's
+`accept`, so every pick and drop goes through the Tool's `validate` (default:
+match `accept` — MIME types, `type/*`, `.ext`). Validation stays per Tool
+(ADR-0016). A rejected file toasts `rejectToastLabel` (an action outcome);
+valid files in the same pick are still taken. On the tool route `autoOpen`
+opens straight onto the upload area.
+
+**Layout, after a file is added:** controls → [[Tool status slot]] → work
+area. The work area's input pane (source, or the queue) comes first — left
+on tablet+, above on mobile — with the button that brings or creates output
+under it ("Choose another image", Process). The output pane ends with
+Download. `noun` (e.g. `{ one: 'image', other: 'images' }`) names files in
+the shell's copy and in the input names (`image`, `images`, `images-add`).
+
+**Reset runs on close** (there is no Reset or "Start over" button): the
+shell drops the file or queue and the controls bag returns to its initial
+value, so reopening shows the upload area. Removing the last queued file
+also returns there.
+
+### Single mode (`multiple` omitted)
+
+One `File` in, one `Blob` out, recomputed live. The shell wraps the
+[[Tool computation pipeline]], so its four invariants (debounced,
+stale-safe, empty-bypass, unmount-safe) apply to `process(file, controls,
+{ signal })`. The shell **owns the controls bag** — mirroring [[Tool field
+bag]] semantics — alongside the source and result `Blob` URL lifecycles
+(via [[useBlobUrl]]) and Download + filename. A `process` rejection shows in
+the status slot (`errorLabel` / `errorFallback` word it), clears the result
+and hides Download; it never toasts. `process` may return null when the Tool
+has too little state yet (no crop region).
 
 `process` receives the raw `File`, not a pre-decoded `HTMLImageElement` —
-distinct from the sibling [[Batch asset pipeline]] which decodes once at
-upload and passes the decoded image to its process callback. The asymmetry
-is load-bearing: batch consumers (`FaviconGenerator`,
-`SplashScreenGenerator`) draw the same source to many canvas sizes per
-run, so up-front decode is essential. Single-Blob consumers each own
-decode at the layer that has the right context — `ImageCropper` reads the
-preview `<img>` via `imgRef` (which ReactCrop needs DOM-attached anyway),
-`BackgroundRemover` delegates to `RawImage.fromBlob` inside
-and `@huggingface/transformers`. The shell deliberately does not
-pre-decode.
+distinct from the [[Batch asset pipeline]], which decodes once at upload
+because its consumers draw one source to many canvas sizes. Single-Blob
+consumers own decode where they have the context: `ImageCropper` reads the
+preview `<img>` via `imgRef` (ReactCrop needs it DOM-attached anyway),
+`BackgroundRemover` delegates to `@huggingface/transformers`.
 
-`renderControls` and `renderPreview` ctx both carry `{ controls,
-setControls(partial) }`. `setControls` IS the recompute trigger — every
-partial merges into the live bag (ref-based, same-tick partials compose) and
-routes through the pipeline. A contributor cannot forget to recompute. ADR-0014
-records the migration from the prior React-side-owned shape (see ADR-0009 for
-the original design and why it was superseded).
+Render props: `renderControls`, `renderSource` (the input pane, e.g. the
+crop box) and `renderResult` (the output pane, above Download; also the
+pending phase). All carry `{ controls, setControls(partial), pending,
+recompute() }`; the source and result ctx add `{ error, source, sourceUrl,
+result, resultUrl }`. `setControls` IS the recompute trigger — every
+partial merges into the live bag (ref-based, same-tick partials compose)
+and routes through the pipeline (ADR-0014; ADR-0009 for the original
+design). `recompute()` is the escape hatch for a result that depends on
+state outside the bag (`ImageCropper`'s `imgRef`, `BackgroundRemover`'s
+cut-out cache), e.g. after `<img onLoad>`. `controlsDebounceMs` debounces
+`setControls` for heavy `process` functions. A new file — picked again in
+the dialog or after a reset — always starts from `initialControls`; Tools
+clear their own non-controls state in `onAfterClose`.
 
-The `renderPreview` ctx additionally carries `{ pending, error, source,
-sourceUrl, result, resultUrl }`; the Tool decides per-phase rendering instead
-of a separate processing slot. Both ctxs also expose `recompute()` for the
-escape-hatch case: a Tool whose result depends on non-controls React state
-(`ImageCropper`'s `imgRef`, `BackgroundRemover`'s `strippedCacheRef`) and
-needs to re-fire compute without changing the bag — e.g. after `<img onLoad>`
-populates `imgRef`.
+### Batch mode (`multiple`)
 
-The shell auto-resets controls to `initialControls` on dialog close. The
-Tool's `onAfterClose` callback handles per-Tool non-controls cleanup
-(refs, UI-only state like the live drag `crop` in `ImageCropper`).
+Many `File`s in, one `Blob` out per file, with the same Tool-owned settings.
+Steps: queue → processing → results. The input pane is the file list (a
+horizontal strip on mobile) with "Add more images" and Process under it;
+the output pane is a large Original ┊ Result comparison with Download (one
+result) or Download ZIP (two or more) at its bottom. Results list per-file
+downloads; "Change settings" returns to the queue with the same files.
 
-## Image batch shell
-
-A Tool that takes **many** uploaded `File`s, applies the same Tool-owned
-settings to each, and produces one `Blob` per file. Implemented by
-`<ImageBatchShell>` (`src/components/common/image-batch/ImageBatchShell.tsx`).
-
-Today's adopters: `ImageConvertor`, `ImageResizer`.
-
-The page tile is the upload button; picking images opens the workspace in a
-full-screen dialog through [[Upload dialog frame]]. Closing the dialog clears
-the queue. Dialog steps: queue → processing → results. Both the queue and results
-steps use the same layout: settings on top, a large Original ┊ Result
-comparison filling the free space, the image list in a left-hand column
-(a horizontal strip under the comparison on mobile), and actions at the
-bottom.
-
-The shell owns the queue (append via "Add more images", remove per row,
-per-upload ids so the same file picked twice is two rows), size reads for
-the row labels, the run loop with progress, per-file results (click one to
-compare it, or download it), "Download ZIP" for two or more successes, and
-output-name dedupe within a run.
+The shell owns the queue (per-upload ids, so the same file picked twice is
+two rows), size reads for the row labels, the run loop with progress,
+per-file results, ZIP, and output-name dedupe within a run.
 
 Invariants:
 
 1. **One failure is not fatal** — `process` throwing marks only that file
    failed (listed with its message, left out of the ZIP); the rest of the
-   batch still runs. Only when every file fails does the shell toast and
+   batch still runs, and a status-slot notice counts the failures. Only
+   when every file fails does the shell toast `failureToastLabel` and
    return to the queue.
-2. **Nothing auto-downloads** — the user picks a file or the ZIP from the
-   results step.
+2. **Nothing auto-downloads** — the user picks a file or the ZIP.
 3. **Stale-safe** — a reset or unmount mid-run stops the run after its next
    `await` (via [[useStaleSafeAsync]]).
 
-In the queue step the comparison is a **live preview** of one image (the
-clicked row in the list, else the first): `process` re-runs on it through
-the [[Tool computation pipeline]]
-when the selection changes (immediately) or `previewKey` changes (debounced).
-Preview errors show inline in the panel, without a toast. The batch itself only runs
-on the action button.
+In the queue step the comparison is a **live preview** of one file (the
+clicked row, else the first): `process` re-runs on it through the
+[[Tool computation pipeline]] when the selection changes (immediately) or
+`previewKey` changes (debounced 250 ms). A preview failure shows in the
+status slot, without a toast. The batch itself only runs on Process (or
+⌘/Ctrl+Enter, which lives in the queue step only, so it cannot start a
+second run mid-run; it does nothing while `canProcess` is false).
 
-The Tool owns its settings state and passes the dialog `title`,
-`onAfterClose`, the rendered `settings` node,
-`previewKey` (changes whenever the settings do — e.g.
-`JSON.stringify(settings)`), `process(file, { width, height })`,
-`getOutputName(file)`, and `canProcess` (e.g. the resizer needs a max width
-or height; false also pauses the preview). Differs from
-[[Image tool shell]] (one file, live preview recomputed per control change)
-and [[Batch asset pipeline]] (one file in, many derived assets out).
+The Tool owns its settings state and passes the rendered `settings` node,
+`previewKey` (e.g. `JSON.stringify(settings)`), `process(file, { width,
+height })`, `getOutputName(file)`, `zipPrefix`, and `canProcess` (false
+disables Process and pauses the preview, e.g. the resizer before a size is
+entered).
+
+### Derived outputs (`output: 'assets' | 'text'`)
+
+One image in, a set of outputs derived from it. Same entry, layout, status
+slot and reset as single mode; the named prop `output` picks the form of
+the output pane:
+
+- **`assets`** — many files from the one image (`FaviconGenerator`,
+  `SplashScreenGenerator`). `process` returns `{ assetGroups, textOutputs? }`.
+  Each asset is a card that downloads it (`name`); one group is a plain grid,
+  several are tabs. Download ZIP sits at the bottom of the output pane; an
+  asset's `zipPath` (default `name`) places it in the ZIP, so folders like
+  `ios-splash/` survive. `textOutputs` is the one named slot for copyable
+  text next to the assets (link tags, meta tags, manifest JSON); a text block
+  with a `zipPath` is also written into the ZIP.
+- **`text`** — labelled, read-only text blocks with Copy in each label and no
+  download (`ImageToBase64`). `process` returns `{ textOutputs }`.
+
+There is no free-form output slot. The source is decoded once when added,
+by the [[Batch asset pipeline]], and `process({ controls, file, image,
+report })` gets it. A file the browser cannot decode toasts
+`rejectToastLabel` (reading it failed); a `process` rejection shows in the
+status slot and hides the outputs, never a toast. The input pane is
+`renderSource` (the source, or a live preview of the controls, e.g.
+Splash's safe-zone mock-ups); controls are a shell-owned bag as in single
+mode, optional for Tools with none.
+
+Run timing: by default `process` runs when a file is added and on every
+control change. Slow work sets `actionLabel`: a Process button under the
+input runs it (so does ⌘/Ctrl+Enter, except while it runs), a control
+change waits for the next press, and while it runs the button shows `pendingLabel` with the progress `report(current, total)`
+gives (Splash: "Generating 12/40"). "Choose another image" keeps the
+controls and drops the old outputs; closing the dialog restores the initial
+controls.
 
 ## Batch asset pipeline
 
-The behavior sibling of [[Image tool shell]] for Tools that take a single
-uploaded `File` and produce a **batch** of derived `Blob` results — preview
-grid + per-asset download + ZIP. Implemented by `useBatchAssetPipeline`
+The behavior under the [[File processor shell]]'s derived outputs
+(`assets` / `text`): one uploaded image in, a set of derived results out.
+Implemented by `useBatchAssetPipeline`
 (`src/hooks/useBatchAssetPipeline.ts`).
 
-Today's consumers: `FaviconGenerator`, `SplashScreenGenerator`.
-
-A hook, not a UI shell, because the result-panel UI varies too much across
-consumers to live behind a render-prop (FaviconGenerator's flat grid vs
-SplashScreenGenerator's category tabs + meta-tag/manifest text blocks).
-The hook owns wiring; the Tool owns layout.
+Today's consumer: the shell's `DerivedFileProcessor`, and through it
+`FaviconGenerator`, `SplashScreenGenerator` and `ImageToBase64`. The hook
+owns the source and run wiring; the shell owns the layout (asset cards,
+tabs, text blocks, Download ZIP).
 
 The hook owns:
 
-- File upload + `mimePrefix` validation + reject toast (rejected uploads
-  leave state untouched).
+- File upload + optional `mimePrefix` validation + reject toast (rejected
+  uploads leave state untouched). The shell runs the Tool's `validate`
+  first and passes no `mimePrefix`; a failed decode still toasts.
 - Source decoding via `loadImageFromBlob` → `sourceImage: HTMLImageElement`.
   The canonical decode primitive: takes any `Blob` (File, SVG-as-Blob,
   segmenter-output-Blob), owns its objectURL revoke lifecycle, returns the
@@ -774,43 +1128,38 @@ The hook owns:
   `imageFileToBase64`, `base64ToImageInfo` (decodes the dataUri via
   `fetch(dataUri).then(r => r.blob())` first), `applyBackground`
   (in `background-removal.ts`), `svgToPng` (in `mermaid-renderer.ts`),
-  `ImageColorPicker`, and the [[Image batch shell]]'s size reads.
+  `ImageColorPicker`, and the [[File processor shell]]'s batch size reads.
 - The source `Blob` URL (`sourcePreview`) — derived via [[useBlobUrl]] so
   the revoke-previous-then-create-next + revoke-on-unmount lifecycle lives
-  in one module shared with the [[Image tool shell]].
+  in one module shared with the [[File processor shell]].
 - The `regenerate(process)` lifecycle: stale-safety via `useStaleSafeAsync`
   (newer call wins; older session's result and progress reports are dropped),
-  unmount-safety, success/failure toasts.
+  unmount-safety, and success / failure toasts when their labels are set.
+  The shell sets neither: a failure goes to its status slot via `error`.
 - A `progress` channel — the `process` callback receives a
   `report(current, total)` argument; stale-session reports are dropped.
 - `downloadOne(blob, name)` + `downloadAll(zipName, files)` (the caller
   flattens its generic `results` shape into a `Record<string, Blob | string>`
   map; strings are written verbatim into the ZIP for cases like meta-tag
   HTML or manifest JSON).
-- `openFilePicker()` — programmatically opens the OS file picker and routes
-  the selection through `upload()`, replacing the per-Tool hidden
-  `<input>` + `fileInputRef` pattern. It resolves with `upload()`'s result
-  (`false` on cancel): a Tool that generates on upload (Favicon) awaits it
-  and calls `regenerate()`; one with a Generate button (Splash) needn't.
 - `reset()` — bumps the stale-safety session so any in-flight regenerate
   cannot write back over the cleared state.
 
-The Tool owns: rendering (preview cards, tabs, controls), how to flatten
-generic `results` for ZIP, and any per-Tool extras (Splash's bg color +
-image scale controls + dimension warning + safe-zone overlay).
+The Tool owns `process` (what to derive) and its controls; the shell owns
+rendering and how a result is flattened for the ZIP (each asset's
+`zipPath`, plus text blocks that name one).
 
 Does NOT fit:
 
 - Multi-source N-File Tools producing a single result — use
   [[Sortable item bag]] (today: `ImageToPdf`, `CombinePdf`).
   N-in / N-out Tools (`ImageConvertor`, `ImageResizer`) use the
-  [[Image batch shell]] (ADR-0026).
-- Inline (no-dialog) image Tools (`ImageCompressor`).
-- Single-Blob-out Tools — use [[Image tool shell]].
+  [[File processor shell]] in batch mode (ADR-0026, ADR-0028).
+- Single-Blob-out Tools — use the [[File processor shell]]'s `file` output.
 
 The `regenerate` lifecycle echoes the [[Tool computation pipeline]] but
-sheds debounce + `isEmpty`-bypass: these Tools fire on a button click
-(or on upload), never on a debounced input. The stale-safety + unmount-safety
+sheds debounce + `isEmpty`-bypass: these Tools fire on upload, on a control
+change or on a Process button, never on a debounced input. The stale-safety + unmount-safety
 invariants are the same — just composed from `useStaleSafeAsync` directly
 rather than from the full pipeline.
 
@@ -843,8 +1192,8 @@ Owns three concerns that the two consumer Tools (`ImageToPdf`,
    mints ids via `crypto.randomUUID()` or its expansion step's output).
 2. **Skipped-files tracking** — `skipped: Array<string>` updated via
    `rejectFiles(names)`. The seam owns the state; the consumer Tool
-   decides whether to render `<ErrorBanner variant="warning">Skipped N
-   unsupported files: ...</ErrorBanner>` or another shape. Naming the
+   decides how to surface it (`SortablePdfShell` makes it a [[Tool status
+   slot]] notice: "Skipped N unsupported files: ..."). Naming the
    state concentrates "files came in, some accepted, some rejected" at
    one address.
 3. **dnd-kit envelope** — `dndContextProps` (`PointerSensor` +
@@ -868,8 +1217,9 @@ during read) stays inline — only one of two adopters needs it. Adopters
 await the expansion, then call `addItems(pageItems)` once resolved.
 
 Pick this when a Tool's input shape is "N files in, re-orderable, single
-result out." Pick [[Batch asset pipeline]] when it's the inverse (one
-file in, N results out). Pick [[Tool field bag]] when the inputs are a
+result out." Pick the [[File processor shell]]'s `assets` output when it's
+the inverse (one file in, N results out; it runs on the [[Batch asset
+pipeline]]). Pick [[Tool field bag]] when the inputs are a
 fixed keyed bag (no re-ordering, no add/remove).
 
 ## SortableCard
@@ -931,7 +1281,8 @@ lifecycle is decidable.
 
 Today's adopters:
 
-- [[Image tool shell]] — source `File` URL and result `Blob` URL.
+- [[File processor shell]] — source `File` URL and result `Blob` URL
+  (single mode), and one per thumbnail (batch mode).
 - [[Batch asset pipeline]] — source `File` URL (`sourcePreview`).
 
 `ImageColorPicker` previously adopted this hook for its preview URL but
@@ -1113,15 +1464,26 @@ Three categories cover every `showError` adopter:
   [[Tool field bag]] / [[Async action]]. The pipeline catches the
   rejection and calls `useToast.getState().showError` lazily inside the
   catch; the Tool component does not import `useToast` for this path.
-  The bulk of adopters (25+ today). Sites that need the input bag or
-  side effects beyond toasting (HashGenerator, ColorConvertor,
-  StringEscapeUnescape) still pass the full `onError: (err, input) => …`
-  callback and continue to `useToast()` at the call site.
-- **Inline validation rejections** — synchronous "your input is
-  unusable" rejections in event handlers (`'Maximum dimension is
-  ...'`, `'Please enter JSON input'`, `'Upload a valid image file'`).
-  These remain `useToast()` adopters because they fire outside any
-  pipeline.
+  **Being retired for input errors (ADR-0027):** a Tool built from a
+  layout shell never toasts an input error — the shell shows it in the
+  [[Tool status slot]]. Hand-built Tools still on this path are listed in
+  `LAYOUT_MIGRATION_PENDING` and move off it as they migrate. Toasts stay
+  for the *outcome of an action*: copied, downloaded, file read failed.
+  `custom`-layout Tools follow the same rule without a shell: each renders
+  its own `<ToolStatus>` from the pipeline's `error` (plus any error
+  returned as data), and `src/test/layout-guard.spec.ts` keeps
+  `<ErrorBanner>` and off-theme `text-red-*` / `text-yellow-*` classes out
+  of them. Hand-built sites that need the input bag (HashGenerator) still
+  pass the full `onError: (err, input) => …` callback and continue to
+  `useToast()` at the call site until they migrate.
+- **Inline validation rejections** — synchronous rejections in event
+  handlers (`'Maximum dimension is ...'`, `'Please enter JSON input'`,
+  `'Upload a valid image file'`). A rejected *file* (wrong type, unreadable)
+  stays a toast — it is the outcome of the upload action. A rejected
+  *typed value* is an input error and belongs in the [[Tool status slot]]
+  even outside a pipeline (`BcryptHasher`'s invalid-hash check keeps it in
+  local state and renders `<ToolStatus>`); the remaining toasting sites
+  move as their Tools migrate.
 - **Read / parse rejections** — file-read failures (`'Failed to read
   file'`), schema-parse errors not tied to a pipeline.
 
@@ -1143,10 +1505,10 @@ Does NOT fit: **validation errors that are part of the result the user
 is reading**. When the compute can fail in a way the user must inspect
 alongside their input (e.g., `JsonDiffChecker` showing "Invalid JSON at
 line 3" next to the two text panes), the error belongs inline — not in
-a toast that disappears. [[Diff checker shell]] exposes `renderBanner`
-exactly for this case; today's only consumer is `JsonDiffChecker`'s
-`validationError` field. A toast would lose the context (which input was
-malformed) and dismiss before the user could act on it.
+a toast that disappears. Every layout shell's [[Tool status slot]]
+exists exactly for this case (`JsonDiffChecker`'s "Invalid JSON" is one).
+A toast would lose the context (which input was malformed) and dismiss
+before the user could act on it.
 
 The surface is intentionally minimal — two methods, two colors. No
 `showInfo`, no `showWarning`, no `dismissable` / `persistent` /
@@ -1188,13 +1550,14 @@ adopters:
   content (e.g. `PlaceholderImageGenerator`'s preview, which can be
   smaller than the available pane height).
 - `scroll` — adds `overflow-y-auto` for panes whose content can grow
-  beyond viewport height (e.g. `JwtDecoder`'s decoded JSON).
+  beyond viewport height (no adopter today; `JwtDecoder` and
+  `JsonpathEvaluator` used it before moving to the [[Transformer shell]]).
 
 `SplitPanel` accepts any number of `Pane` children and interleaves the
 divider between consecutive panes. In practice every adopter is
 two-pane; the N-child handling is defensive, not a feature.
 
-[[Diff checker shell]] does NOT fit `SplitPanel`: its layout is "two
+[[Comparator shell]] does NOT fit `SplitPanel`: its layout is "two
 inputs side-by-side (no divider) + horizontal divider + single
 full-width diff output." The three inner pane envelopes (Original
 input, Modified input, Diff output) ARE standalone `<Pane>` adopters
@@ -1206,10 +1569,10 @@ layout the shell wants for its two inputs.
 Standalone `<Pane>` use is the documented path for any single result
 pane that needs the overflow envelope without a paired source pane
 (today's adopters include `LoremIpsumGenerator`, `PasswordGenerator`,
-`UuidGenerator`, `RegexTester`, `ImageToBase64`,
+`UuidGenerator`, `RegexTester`,
 `PlaceholderImageGenerator`, the encode dialog inside
 `DataUriGenerator`, and the three pane wrappers inside
-[[Diff checker shell]]).
+[[Comparator shell]]).
 
 Per the common-component rule, future variances must be a new named
 prop on `Pane`, not a `className` override.
@@ -1238,7 +1601,8 @@ padding (e.g., a `<table>` whose `<th>`/`<td>` already pad); pick
 
 Today's adopters:
 
-- `JsonpathEvaluator` (`<DisclosurePanel label="JSONPath Cheatsheet" padding="none">`)
+- `JsonpathEvaluator` (`<DisclosurePanel label="JSONPath Cheatsheet" padding="none">`,
+  in the [[Transformer shell]]'s controls row)
 - `MermaidRenderer` (`<DisclosurePanel label="Syntax Reference">`)
 
 Does NOT fit:
@@ -1258,58 +1622,32 @@ props on `<DisclosurePanel>`, not className overrides.
 
 ## Inline labeled row
 
-The single seam for the recurring horizontal `[label · mono-value + copy]`
-cell shape. Implemented by `<InlineLabeledRow>`
-(`src/components/common/output/InlineLabeledRow.tsx`).
+_Removed (2026-11-10). `<InlineLabeledRow>` was the horizontal
+label/value/copy cell for hand-built result rows; its last adopters moved
+onto the [[Transformer shell]]'s `fields` output kind (ADR-0027)._
 
-Owns: the chrome (`rounded border border-gray-800 bg-gray-950 px-3 py-2
-flex items-center justify-between gap-2`), the label slot
-(`text-body-xs text-gray-400`), the mono value slot
-(`font-mono text-body-xs text-gray-200`), the inline `<CopyButton>` on
-the right, and two conditional render rules:
+## Field list
 
-1. **Hide when display is empty** — if the computed display
-   (`displayValue ?? value`) is empty, render nothing. Lets callers
-   render a row per field without inline gating for "no value AND no
-   fallback" cases.
-2. **Hide copy button when value is empty** — if `value` is empty
-   (even when `displayValue` is a synthetic fallback like `"default"`
-   for a missing port), suppress the copy button. Nothing to copy.
+`<FieldList>` (`src/components/common/output/FieldList.tsx`): the
+label/value rows behind the `fields` output kind of both the
+[[Transformer shell]] and the [[Generator shell]]. Each row is an
+`OutputField` (`{ label, value, copy?, copyValue? }`; `TransformerField`
+and `GeneratorField` are aliases): a `<dt>` with the label and a Copy
+button named by it (`Copy <label> to clipboard`), and a `<dd>` with the
+value, line breaks kept. `copy: false` drops the button; `copyValue` is
+copied instead of the shown value. Labels may repeat (several SANs,
+several JSONPath matches).
 
-The caller's role narrows to three props:
+It renders only the rows. The pane label (Transformer's `copyAll`), the
+empty-state placeholder and the output region stay with each shell.
+Both shells render rows identically (small muted row labels, `p-2`
+values): the two pre-extraction styles were unified after a visual
+review, so a label/value row looks the same in every Tool.
 
-```ts
-type InlineLabeledRowProps = {
-  label: string
-  value: string                  // canonical (clipboard + display by default)
-  displayValue?: string          // override what's shown (defaults to value)
-}
-```
-
-Today's adopters:
-
-- `SshKeyFingerprint` (5 cells: Key Type, Bit Size, Comment, SHA256, MD5)
-- `UrlParser` (5 cells: Protocol, Hostname, Port, Path, Hash)
-
-Does NOT fit (kept bespoke per ADR-0007):
-
-- `CertificateDecoder`'s local `<ResultRow>` — has a `mono` toggle (not
-  all rows are mono) and a `copyValue` override (display text vs
-  clipboard text differ, e.g., `"2026-05-16 (in 5 days)"` displays,
-  `"2026-05-16"` copies). Extending to absorb it reintroduces the
-  4-knob unified shell ADR-0007 rejected.
-- `IpSubnetCalculator` — stacked label-above-value with conditional
-  RFC pill inside the value slot. Different shape.
-- `ChmodCalculator` — `<code>`-element value, no label. Different shape.
-- [[Mono output cell]] — the vertical sibling already in `common/output/`
-  for the "label + copy on top, value box below" shape (2 adopters:
-  `HashGenerator`, `HmacGenerator`).
-
-Per the common-component rule, future variances (a `mono` toggle, a
-`suffix` slot, an icon prefix) must be named props — not a `className`
-override. Adding a `mono?` toggle or `copyValue?` override re-opens
-ADR-0007's "shape unification" concern; revisit the ADR before crossing
-that line.
+The image preview box both shells' `image` kinds show is shared the same
+way as `<OutputImage>` (`{ alt, src }`); their Download buttons are not
+(Transformer: one primary Download or an icon button in the label;
+Generator: one button per encoded file, built on click).
 
 ## DiagramEditor
 
@@ -1536,12 +1874,12 @@ component cannot fire. Per-call-site concerns — input state, validation
 early-returns, success messaging — stay at the call site.
 
 Today's consumers: `BcryptHasher` (both `HashTab.handleHash` and
-`VerifyTab.handleVerify` — two button-fired async paths in one Tool),
-`RsaKeyGenerator.handleGenerate`, and `TypescriptPlayground`'s debounced
-transpile. All four previously hand-rolled the
-`setPending(true)/await/setResult/finally setPending(false)` dance and
-none had stale-safety; the `transpile` and RSA-generate paths also
-lacked unmount-safety guards.
+`VerifyTab.handleVerify` — two button-fired async paths in one Tool) and
+`TypescriptPlayground`'s debounced transpile. These, and
+`RsaKeyGenerator` before it moved to the [[Generator shell]], previously
+hand-rolled the `setPending(true)/await/setResult/finally
+setPending(false)` dance and none had stale-safety; the `transpile` and
+RSA-generate paths also lacked unmount-safety guards.
 
 Carries two invariants:
 
@@ -1558,7 +1896,8 @@ Carries two invariants:
 The hook is for button-fired (or one-shot mount-fired) work — not
 debounced input-driven compute. For debounced input → result transforms,
 use the [[Tool computation pipeline]]; for image upload → batch outputs,
-use the [[Batch asset pipeline]]. The action closure is captured fresh on
+use the [[File processor shell]]'s `assets` output (on the [[Batch asset
+pipeline]]). The action closure is captured fresh on
 every render via a ref, so callers don't need to memoize their input
 state or wrap the action in `useCallback`.
 

@@ -1,22 +1,22 @@
-import { DiffCheckerShell } from '@/components/common'
+import { ComparatorShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { JsonDiffResult, ToolComponentProps } from '@/types'
+import type { DiffOutput, ToolComponentProps } from '@/types'
 import { computeSideBySideDiff, createUnifiedDiff, getJsonDiffError, normalizeJson } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-diff-checker']
 
-const INITIAL_RESULT: JsonDiffResult = { rows: [], unifiedDiff: '', validationError: '' }
+const INITIAL_RESULT: DiffOutput = { rows: [], unifiedDiff: '' }
 
 export const JsonDiffChecker = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
-    <DiffCheckerShell<JsonDiffResult>
+    <ComparatorShell<DiffOutput>
       autoOpen={autoOpen}
       compute={async ({ original, modified }) => {
-        const origError = await getJsonDiffError(original, 'Original')
-        const modError = await getJsonDiffError(modified, 'Modified')
-        if (origError || modError) {
-          return { rows: [], unifiedDiff: '', validationError: (origError ?? modError) as string }
-        }
+        // Invalid JSON is an input error, not a result field: reject so the
+        // shell shows it in the status slot and clears the diff.
+        const validationError =
+          (await getJsonDiffError(original, 'Original')) ?? (await getJsonDiffError(modified, 'Modified'))
+        if (validationError) throw new Error(validationError)
 
         const normalizedOrig = original.trim().length === 0 ? '' : await normalizeJson(original)
         const normalizedMod = modified.trim().length === 0 ? '' : await normalizeJson(modified)
@@ -25,21 +25,14 @@ export const JsonDiffChecker = ({ autoOpen, onAfterClose }: ToolComponentProps) 
           computeSideBySideDiff(normalizedOrig, normalizedMod),
           createUnifiedDiff(normalizedOrig, normalizedMod),
         ])
-        return { rows: sideBySide, unifiedDiff: patch, validationError: '' }
+        return { rows: sideBySide, unifiedDiff: patch }
       }}
       description={toolEntry?.description}
-      errorLabel="Unable to compute JSON diff"
+      errorFallback="Unable to compute JSON diff"
       initialResult={INITIAL_RESULT}
       modifiedPlaceholder='{"key": "paste JSON here..."}'
       onAfterClose={onAfterClose}
       originalPlaceholder='{"key": "paste JSON here..."}'
-      renderBanner={(result) =>
-        result.validationError ? (
-          <p className="text-body-sm text-error" role="alert">
-            {result.validationError}
-          </p>
-        ) : null
-      }
       storageKey="csr-dev-tools-json-diff"
       title="JSON Diff Checker"
     />

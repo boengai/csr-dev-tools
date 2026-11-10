@@ -4,10 +4,9 @@ import 'react-image-crop/dist/ReactCrop.css'
 import ReactCrop, { type Crop, type PixelCrop } from 'react-image-crop'
 
 import { ToggleButton } from '@/components/common'
-import { ImageToolShell } from '@/components/common/image-tool'
-import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast } from '@/hooks'
-import type { CropControls, CropPreviewProps, CropRegion, ToolComponentProps } from '@/types'
+import { FileProcessorShell } from '@/components/common/file-processor'
+import { IMAGE_FILE_NOUN, TOOL_REGISTRY_MAP } from '@/constants'
+import type { CropControls, CropPreviewProps, CropRegion, CropResultProps, ToolComponentProps } from '@/types'
 import {
   ASPECT_RATIO_OPTIONS,
   canvasToBlob,
@@ -31,10 +30,9 @@ const cropImageCanvas = (image: HTMLImageElement, crop: CropRegion, mimeType: st
 
 const INITIAL_CONTROLS: CropControls = { aspectPreset: 'free', naturalCrop: null }
 
-export const ImageCropper = ({ onAfterClose }: ToolComponentProps) => {
+export const ImageCropper = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const imgRef = useRef<HTMLImageElement | null>(null)
   const [crop, setCrop] = useState<Crop | undefined>(undefined)
-  const showError = useToast((s) => s.showError)
 
   const captureNaturalCrop = (displayCrop: PixelCrop) => {
     const img = imgRef.current
@@ -49,8 +47,9 @@ export const ImageCropper = ({ onAfterClose }: ToolComponentProps) => {
   }
 
   return (
-    <ImageToolShell<CropControls>
+    <FileProcessorShell<CropControls>
       accept="image/*"
+      autoOpen={autoOpen}
       description={toolEntry?.description}
       getDownloadFilename={({ sourceName }) => {
         const base = sourceName.replace(/\.[^.]+$/, '')
@@ -58,6 +57,7 @@ export const ImageCropper = ({ onAfterClose }: ToolComponentProps) => {
         return `cropped-${base}.${ext}`
       }}
       initialControls={INITIAL_CONTROLS}
+      noun={IMAGE_FILE_NOUN}
       onAfterClose={() => {
         // Shell auto-resets the controls bag. Tool clears its non-controls
         // state (imgRef, the live drag `crop`) so a re-upload starts clean.
@@ -65,8 +65,8 @@ export const ImageCropper = ({ onAfterClose }: ToolComponentProps) => {
         setCrop(undefined)
         onAfterClose?.()
       }}
-      onRejectInvalidFile={() => showError('Please select an image file')}
       process={process}
+      rejectToastLabel="Please select an image file"
       renderControls={({ controls, setControls }) => (
         <div className="flex shrink-0 flex-wrap items-center justify-center gap-2">
           {ASPECT_RATIO_OPTIONS.map((option) => (
@@ -101,7 +101,8 @@ export const ImageCropper = ({ onAfterClose }: ToolComponentProps) => {
           )}
         </div>
       )}
-      renderPreview={({ controls, setControls, sourceUrl }) => (
+      renderResult={({ pending, resultUrl }) => <CropResult pending={pending} resultUrl={resultUrl} />}
+      renderSource={({ controls, setControls, sourceUrl }) => (
         <CropPreview
           aspectPreset={controls.aspectPreset}
           captureNaturalCrop={captureNaturalCrop}
@@ -122,6 +123,7 @@ export const ImageCropper = ({ onAfterClose }: ToolComponentProps) => {
         />
       )}
       title="Image Cropper"
+      triggerLabel="Crop Image"
       uploadLabel="Select image to crop"
     />
   )
@@ -154,5 +156,23 @@ const CropPreview = ({
         style={{ maxHeight: '65vh', maxWidth: '100%' }}
       />
     </ReactCrop>
+  </div>
+)
+
+const CropResult = ({ pending, resultUrl }: CropResultProps) => (
+  <div
+    aria-live="polite"
+    className="bg-grid-texture flex grow flex-col items-center justify-center gap-3 overflow-auto bg-black p-4"
+  >
+    <p className="shrink-0 text-body-sm font-medium text-gray-300">Cropped</p>
+    {resultUrl ? (
+      <img
+        alt="Cropped result"
+        className={`max-h-[65vh] max-w-full object-contain transition-opacity ${pending ? 'opacity-50' : ''}`}
+        src={resultUrl}
+      />
+    ) : (
+      <p className="text-center text-body-xs text-gray-500">Drag on the image to choose the area to keep.</p>
+    )}
   </div>
 )

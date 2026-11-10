@@ -1,6 +1,15 @@
 import { useState } from 'react'
 
-import { Button, CopyButton, DownloadIcon, FieldForm, Pane, SplitPanel, UploadInput } from '@/components/common'
+import {
+  Button,
+  CopyButton,
+  DownloadIcon,
+  FieldForm,
+  Pane,
+  SplitPanel,
+  ToolStatus,
+  UploadInput,
+} from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useDownload, useToast, useToolComputation } from '@/hooks'
@@ -8,6 +17,8 @@ import type { DataUriDecodeResult, DataUriEncodeResult, ToolComponentProps } fro
 import { fileToDataUri, formatFileSize, parseDataUri, parseDataUrlToBlob } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['data-uri-generator']
+
+const LARGE_FILE_NOTICE = 'File exceeds 30 KB — consider using a regular file reference for better performance'
 
 const getMimeExtension = (mimeType: string): string => {
   const sub = mimeType.split('/')[1] ?? 'bin'
@@ -27,15 +38,18 @@ export const DataUriGenerator = ({ onAfterClose }: ToolComponentProps) => {
   const [decodeInput, setDecodeInputValue] = useState('')
 
   const {
-    result: decodeResult,
+    error: decodeError,
+    result: lastDecodeResult,
     setInput: setDecodeInput,
     setInputImmediate: setDecodeInputImmediate,
   } = useToolComputation<string, DataUriDecodeResult | null>((val) => parseDataUri(val.trim()), {
     debounceMs: 300,
-    errorLabel: 'Invalid data URI format (e.g., data:image/png;base64,...)',
     initial: null,
     isEmpty: (val) => !val.trim(),
   })
+  // A rejected parse leaves the previous result in place; hide it so a stale
+  // preview (and its Download) never sits next to the error.
+  const decodeResult = decodeError != null ? null : lastDecodeResult
 
   const handleFileUpload = async (values: Array<File>) => {
     const file = values[0]
@@ -45,9 +59,6 @@ export const DataUriGenerator = ({ onAfterClose }: ToolComponentProps) => {
       const result = await fileToDataUri(file)
       setEncodeResult(result)
       setEncodeOpen(true)
-      if (result.isLargeFile) {
-        showError('File exceeds 30 KB — consider using a regular file reference for better performance')
-      }
     } catch {
       showError('Failed to read file')
     }
@@ -125,13 +136,10 @@ export const DataUriGenerator = ({ onAfterClose }: ToolComponentProps) => {
                   Original: {formatFileSize(encodeResult.originalSize)} — Encoded:{' '}
                   {formatFileSize(encodeResult.encodedSize)}
                 </p>
-                {encodeResult.isLargeFile && (
-                  <p className="text-amber-400 text-body-xs">
-                    File exceeds 30 KB — consider using a regular file reference for better performance
-                  </p>
-                )}
               </div>
             </div>
+
+            <ToolStatus error={null} notices={encodeResult.isLargeFile ? [LARGE_FILE_NOTICE] : undefined} />
 
             <div className="border-t-2 border-dashed border-gray-900" />
 
@@ -205,6 +213,7 @@ export const DataUriGenerator = ({ onAfterClose }: ToolComponentProps) => {
         title="Decode Data URI"
       >
         <div className="flex w-full grow flex-col gap-4">
+          <ToolStatus error={decodeError} errorLabel="Invalid data URI format (e.g., data:image/png;base64,...)" />
           <SplitPanel>
             <Pane>
               <FieldForm

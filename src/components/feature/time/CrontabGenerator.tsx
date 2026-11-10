@@ -1,9 +1,6 @@
-import { useMemo, useState } from 'react'
-
-import { CopyButton, FieldForm, TextInput } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { FieldForm, GeneratorShell, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { FieldEditorProps, ToolComponentProps } from '@/types'
+import type { FieldEditorProps, GeneratorField, ToolComponentProps } from '@/types'
 import {
   type CronFieldConfig,
   type CronFieldMode,
@@ -32,7 +29,48 @@ const MODES: Array<{ label: string; value: CronFieldMode }> = [
   { label: 'Interval', value: 'interval' },
 ]
 
+const NEXT_RUN_COUNT = 5
+
 const defaultField = (): CronFieldConfig => ({ mode: 'every' })
+
+const INITIAL_CONFIG: CrontabConfig = {
+  dayOfMonth: defaultField(),
+  dayOfWeek: defaultField(),
+  hour: defaultField(),
+  minute: defaultField(),
+  month: defaultField(),
+}
+
+const isOptionalNumber = (value: unknown) => value === undefined || Number.isFinite(value)
+
+const isFieldConfig = (value: unknown): value is CronFieldConfig => {
+  if (typeof value !== 'object' || value === null) return false
+  const { interval, mode, rangeEnd, rangeStart, values } = value as CronFieldConfig
+  return (
+    MODES.some((m) => m.value === mode) &&
+    (values === undefined || (Array.isArray(values) && values.every((v) => Number.isFinite(v)))) &&
+    isOptionalNumber(interval) &&
+    isOptionalNumber(rangeStart) &&
+    isOptionalNumber(rangeEnd)
+  )
+}
+
+// Deterministic: the same field settings always give the same expression, so
+// it runs live. Only corrupt saved options are an error — the editors can't
+// build an invalid field.
+const build = (config: CrontabConfig): Array<GeneratorField> => {
+  const bad = FIELDS.find(({ key }) => !isFieldConfig(config?.[key]))
+  if (bad) throw new Error(`The saved ${bad.label.toLowerCase()} setting is invalid — pick a mode for it again`)
+  const expression = buildCronExpression(config)
+  const nextRuns = getNextRuns(expression, NEXT_RUN_COUNT)
+  return [
+    { label: 'Cron expression', value: expression },
+    { copy: false, label: 'Description', value: describeCron(expression) },
+    ...(nextRuns.length > 0
+      ? [{ copy: false, label: `Next ${nextRuns.length} runs (UTC)`, value: nextRuns.join('\n') }]
+      : []),
+  ]
+}
 
 const modeButtonClass = (active: boolean) =>
   `rounded border px-1.5 py-0.5 text-[11px] font-mono ${
@@ -169,74 +207,39 @@ const FieldEditor = ({ config, fieldIndex, label, max, min, onChange }: FieldEdi
   )
 }
 
-export const CrontabGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const [config, setConfig] = useState<CrontabConfig>({
-    minute: defaultField(),
-    hour: defaultField(),
-    dayOfMonth: defaultField(),
-    month: defaultField(),
-    dayOfWeek: defaultField(),
-  })
-
-  const expression = useMemo(() => buildCronExpression(config), [config])
-  const description = useMemo(() => describeCron(expression), [expression])
-  const nextRuns = useMemo(() => getNextRuns(expression, 5), [expression])
-
-  const updateField = (key: (typeof FIELDS)[number]['key'], fieldConfig: CronFieldConfig) => {
-    setConfig((prev) => ({ ...prev, [key]: fieldConfig }))
-  }
-
-  return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      title="Crontab Generator"
-      triggers={[{ label: 'Build' }]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
-        {FIELDS.map(({ key, label, max, min }, i) => (
-          <FieldEditor
-            config={config[key]}
-            fieldIndex={i}
-            key={key}
-            label={label}
-            max={max}
-            min={min}
-            onChange={(fc) => updateField(key, fc)}
-          />
-        ))}
-
-        <div className="border-t border-dashed border-gray-800" />
-
-        <div>
-          <div className="flex items-center gap-2">
-            <span className="text-body-xs font-medium text-gray-400">Cron Expression</span>
-            <CopyButton label="cron expression" value={expression} />
-          </div>
-          <pre className="mt-1 rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono text-body-sm text-gray-200">
-            {expression}
-          </pre>
-        </div>
-
-        <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
-          <span className="text-body-xs font-medium text-gray-400">Description</span>
-          <p className="mt-1 text-body-sm text-gray-200">{description}</p>
-        </div>
-
-        {nextRuns.length > 0 && (
-          <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
-            <span className="text-body-xs font-medium text-gray-400">Next {nextRuns.length} runs (UTC)</span>
-            <ul className="mt-1 flex flex-col gap-1">
-              {nextRuns.map((run) => (
-                <li className="font-mono text-body-xs text-gray-300" key={run}>
-                  {run}
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
+export const CrontabGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <GeneratorShell
+    autoOpen={autoOpen}
+    compute={build}
+    description={toolEntry?.description}
+    initial={INITIAL_CONFIG}
+    onAfterClose={onAfterClose}
+    output={{
+      kind: 'fields',
+      label: 'Cron expression',
+      placeholder: 'Pick a mode for each field to build an expression',
+    }}
+    renderOptions={({ options, setOptions }) => (
+      <div className="flex flex-col gap-4">
+        {FIELDS.map(({ key, label, max, min }, i) => {
+          const config = options?.[key]
+          return (
+            <FieldEditor
+              config={isFieldConfig(config) ? config : defaultField()}
+              fieldIndex={i}
+              key={key}
+              label={label}
+              max={max}
+              min={min}
+              onChange={(fc) => setOptions({ [key]: fc })}
+            />
+          )
+        })}
       </div>
-    </ToolDialogFrame>
-  )
-}
+    )}
+    run={{ mode: 'live' }}
+    storageKey="csr-dev-tools-crontab-generator"
+    title="Crontab Generator"
+    triggerLabel="Build"
+  />
+)

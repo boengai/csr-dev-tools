@@ -12,6 +12,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Encrypt and decrypt text using AES-256-GCM with a password. 100% client-side encryption.',
     emoji: '🔐',
     key: 'aes-encrypt-decrypt',
+    layout: 'codec',
     name: 'AES Encrypt/Decrypt',
     seo: {
       description: 'Encrypt and decrypt text using AES-256-GCM with a password. 100% client-side encryption.',
@@ -22,6 +23,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Calculate dimensions while preserving aspect ratios. Convert between common ratios.',
     emoji: '📐',
     key: 'aspect-ratio-calculator',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'Aspect Ratio Calculator',
     seo: {
       description: 'Calculate image and video dimensions based on aspect ratio. Free online aspect ratio calculator.',
@@ -32,6 +35,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Remove image backgrounds using AI — fully in your browser',
     emoji: '✂️',
     key: 'background-remover',
+    layout: 'file-processor',
     name: 'Background Remover',
     seo: {
       description:
@@ -43,6 +47,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert Base64 strings to downloadable images',
     emoji: '🖼️',
     key: 'base64-to-image',
+    layout: 'transformer',
     name: 'Base64 to Image',
     seo: {
       description:
@@ -54,6 +59,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Encode and decode Base64 strings in the browser',
     emoji: '🔤',
     key: 'base64-codec',
+    layout: 'codec',
     name: 'Base64 Codec',
     seo: {
       description:
@@ -65,6 +71,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Visually create CSS box-shadow values with a live preview',
     emoji: '🔲',
     key: 'box-shadow-generator',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0006',
     name: 'Box Shadow Generator',
     seo: {
       description:
@@ -76,6 +84,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Visually create CSS keyframe animations with live preview and configurable timing',
     emoji: '🎬',
     key: 'css-animation-builder',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0006',
     name: 'CSS Animation Builder',
     seo: {
       description:
@@ -87,6 +97,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Visual CSS flexbox layout builder. Experiment with flex properties and copy the CSS.',
     emoji: '📐',
     key: 'css-flexbox-playground',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0006',
     name: 'Flexbox Playground',
     seo: {
       description: 'Visual CSS flexbox layout builder. Experiment with flex properties and copy the CSS.',
@@ -98,6 +110,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Beautify or minify CSS stylesheets',
     emoji: '🎨',
     key: 'css-formatter',
+    layout: 'transformer',
     name: 'CSS Formatter',
     seo: {
       description: 'Beautify or minify CSS stylesheets. Free online CSS formatter.',
@@ -109,6 +122,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Create CSS gradients visually with a live preview. Linear and radial gradients with multiple color stops.',
     emoji: '🌈',
     key: 'css-gradient-generator',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0006',
     name: 'Gradient Generator',
     seo: {
       description:
@@ -121,6 +136,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert colors between HEX, RGB, HSL, OKLCH, LAB, and LCH formats',
     emoji: '🎨',
     key: 'color-converter',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0019',
     name: 'Color Converter',
     seo: {
       description:
@@ -132,6 +149,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Generate harmonious color palettes from a base color using color theory.',
     emoji: '🎨',
     key: 'color-palette-generator',
+    layout: 'generator',
     name: 'Color Palette Generator',
     seo: {
       description:
@@ -144,6 +162,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Combine multiple PDFs into one. Drag-and-drop to reorder, see the merged result instantly. 100% client-side — your PDFs never leave your browser.',
     emoji: '📎',
     key: 'combine-pdf',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'Combine PDF',
     seo: {
       description:
@@ -155,6 +175,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Compute hash values from text using MD5, SHA-1, SHA-256, and SHA-512',
     emoji: '#️⃣',
     key: 'hash-generator',
+    layout: 'transformer',
     name: 'Hash Generator',
     seo: {
       description:
@@ -167,6 +188,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Paste a GraphQL schema (SDL) and browse its types, fields, arguments, and relationships. Explore Object, Input, Enum, Interface, Union, and Scalar types with clickable cross-references.',
     emoji: '📊',
     key: 'graphql-schema-viewer',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'GraphQL Schema Viewer',
     seo: {
       description:
@@ -179,6 +202,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Generate HMAC signatures using SHA-256, SHA-384, or SHA-512. Verify API signatures and webhook authentication.',
     emoji: '🔏',
     key: 'hmac-generator',
+    layout: 'transformer',
     name: 'HMAC Generator',
     seo: {
       description:
@@ -190,6 +214,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Format and beautify HTML with proper indentation, or minify for production',
     emoji: '📄',
     key: 'html-formatter',
+    layout: 'transformer',
     name: 'HTML Formatter',
     seo: {
       description: 'Format and beautify HTML with proper indentation, or minify for production.',
@@ -201,6 +226,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Convert HTML to a typeset PDF. Real ligatures, justified text, page geometry. Reuses our Typst→WASM engine — 100% client-side.',
     emoji: '📄',
     key: 'html-to-pdf',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'HTML to PDF',
     seo: {
       description:
@@ -212,6 +239,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert between HTML and Markdown. Transform web content to Markdown and back.',
     emoji: '🔄',
     key: 'html-to-markdown-converter',
+    layout: 'codec',
     name: 'HTML ↔ Markdown',
     seo: {
       description: 'Convert between HTML and Markdown. Transform web content to Markdown and back.',
@@ -223,6 +251,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'View and optimize SVG code with a live preview. Remove metadata and reduce file size.',
     emoji: '🖼️',
     key: 'svg-viewer',
+    layout: 'transformer',
     name: 'SVG Viewer',
     seo: {
       description: 'View and optimize SVG code with a live preview. Remove metadata and reduce file size.',
@@ -234,6 +263,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Generate iOS splash screens, Android/PWA icons (standard + maskable), and configuration files from a single image.',
     emoji: '📱',
     key: 'splash-screen-generator',
+    layout: 'file-processor',
     name: 'Splash Screen Generator',
     seo: {
       description:
@@ -245,6 +275,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert one or many images between PNG, JPG, WebP, GIF, BMP, and AVIF formats',
     emoji: '🖼️',
     key: 'image-converter',
+    layout: 'file-processor',
     name: 'Image Converter',
     seo: {
       description:
@@ -256,6 +287,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Compress JPEG and WebP images with a quality slider and live size preview',
     emoji: '🗜️',
     key: 'image-compressor',
+    layout: 'file-processor',
     name: 'Image Compressor',
     seo: {
       description:
@@ -267,6 +299,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Crop images using freeform selection or common aspect ratio presets',
     emoji: '✂️',
     key: 'image-cropper',
+    layout: 'file-processor',
     name: 'Image Cropper',
     seo: {
       description:
@@ -278,6 +311,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert images to Base64 data URIs for embedding in HTML or CSS',
     emoji: '🖼️',
     key: 'image-to-base64',
+    layout: 'file-processor',
     name: 'Image to Base64',
     seo: {
       description: 'Convert images to Base64 data URIs. Embed images directly in HTML or CSS.',
@@ -289,6 +323,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Combine multiple PNG or JPEG images into a single PDF, one image per page. 100% client-side — your images never leave your browser.',
     emoji: '📑',
     key: 'image-to-pdf',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'Image to PDF',
     seo: {
       description:
@@ -300,6 +336,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Resize one or many images: fit within a max size, or set an exact size by cropping or stretching',
     emoji: '📐',
     key: 'image-resizer',
+    layout: 'file-processor',
     name: 'Image Resizer',
     seo: {
       description:
@@ -312,6 +349,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Calculate IPv4 subnet details from CIDR notation or IP and subnet mask. Shows network address, broadcast, host range, and binary representation.',
     emoji: '🌐',
     key: 'ip-subnet-calculator',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'IP Subnet Calculator',
     seo: {
       description:
@@ -323,6 +362,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Minify or beautify JavaScript code. See size comparison and copy the result',
     emoji: '⚡',
     key: 'javascript-minifier',
+    layout: 'transformer',
     name: 'JavaScript Minifier',
     seo: {
       description: 'Minify or beautify JavaScript code. See size comparison and copy the result.',
@@ -333,6 +373,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Compare two JSON objects side-by-side with sorted keys and highlighted differences',
     emoji: '🔀',
     key: 'json-diff-checker',
+    layout: 'comparator',
     name: 'JSON Diff',
     seo: {
       description:
@@ -345,6 +386,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Format and validate JSON with clean indentation',
     emoji: '📋',
     key: 'json-formatter',
+    layout: 'transformer',
     name: 'JSON Formatter',
     seo: {
       description:
@@ -356,6 +398,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Validate JSON data against a JSON Schema (draft-07) and see detailed error paths',
     emoji: '✅',
     key: 'json-schema-validator',
+    layout: 'transformer',
     name: 'JSON Schema Validator',
     seo: {
       description:
@@ -367,6 +410,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert between JSON arrays and CSV spreadsheet format',
     emoji: '📊',
     key: 'json-to-csv-converter',
+    layout: 'codec',
     name: 'JSON ↔ CSV',
     seo: {
       description:
@@ -379,6 +423,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert between JSON and YAML configuration formats',
     emoji: '🔄',
     key: 'json-to-yaml-converter',
+    layout: 'codec',
     name: 'JSON ↔ YAML',
     seo: {
       description:
@@ -392,6 +437,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Evaluate JSONPath expressions against JSON data. See matched paths and values in real-time with a cheatsheet of common patterns.',
     emoji: '🎯',
     key: 'jsonpath-evaluator',
+    layout: 'transformer',
     name: 'JSONPath Evaluator',
     seo: {
       description:
@@ -403,6 +449,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Decode JWT tokens to inspect header and payload',
     emoji: '🔐',
     key: 'jwt-decoder',
+    layout: 'transformer',
     name: 'JWT Decoder',
     seo: {
       description:
@@ -414,6 +461,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Generate lorem ipsum placeholder text. Configure paragraphs, sentences, or words',
     emoji: '📜',
     key: 'lorem-ipsum-generator',
+    layout: 'generator',
     name: 'Lorem Ipsum Generator',
     seo: {
       description: 'Generate lorem ipsum placeholder text. Configure paragraphs, sentences, or words.',
@@ -424,6 +472,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Live Markdown preview with HTML output. Write and preview Markdown in your browser',
     emoji: '📝',
     key: 'markdown-preview',
+    layout: 'transformer',
     name: 'Markdown Preview',
     seo: {
       description: 'Live Markdown preview with HTML output. Write and preview Markdown in your browser.',
@@ -434,6 +483,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert numbers between binary, octal, decimal, and hexadecimal',
     emoji: '🔢',
     key: 'number-base-converter',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0019',
     name: 'Number Base Converter',
     seo: {
       description: 'Convert numbers between binary, octal, decimal, and hexadecimal. Free online base converter.',
@@ -444,6 +495,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Generate random passwords with configurable length and character types',
     emoji: '🔑',
     key: 'password-generator',
+    layout: 'generator',
     name: 'Password Generator',
     seo: {
       description:
@@ -455,6 +507,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Generate QR codes from text or URLs with customizable size, colors, and error correction',
     emoji: '📱',
     key: 'qr-code-generator',
+    layout: 'transformer',
     name: 'QR Code Generator',
     seo: {
       description:
@@ -466,6 +519,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert between PX and REM units with configurable base font size',
     emoji: '📏',
     key: 'px-to-rem',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0019',
     name: 'PX to REM',
     seo: {
       description:
@@ -477,6 +532,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Test regex patterns against sample text with live match highlighting',
     emoji: '🔍',
     key: 'regex-tester',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'Regex Tester',
     seo: {
       description:
@@ -489,6 +546,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Hash passwords with bcrypt and verify plaintext against bcrypt hashes. Adjust cost factor, view hash breakdown, and track elapsed time.',
     emoji: '🔒',
     key: 'bcrypt-hasher',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'Bcrypt Hasher',
     seo: {
       description:
@@ -500,6 +559,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Paste a PEM-encoded X.509 certificate to view its subject, issuer, validity, extensions, and more.',
     emoji: '📜',
     key: 'certificate-decoder',
+    layout: 'transformer',
     name: 'Certificate Decoder',
     seo: {
       description:
@@ -512,6 +572,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Convert between symbolic (rwxr-xr-x), octal (755), and visual chmod notations. Toggle permissions with an interactive checkbox grid and common presets.',
     emoji: '\u{1F6E1}\uFE0F',
     key: 'chmod-calculator',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'Chmod Calculator',
     seo: {
       description:
@@ -524,6 +586,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Generate RSA key pairs entirely in your browser using Web Crypto API. Download public and private keys in PEM format. Keys never leave your browser.',
     emoji: '🔐',
     key: 'rsa-key-generator',
+    layout: 'generator',
     name: 'RSA Key Generator',
     seo: {
       description:
@@ -535,6 +598,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Paste an SSH public key to view its SHA256 and MD5 fingerprints, key type, and bit size.',
     emoji: '🔑',
     key: 'ssh-key-fingerprint',
+    layout: 'transformer',
     name: 'SSH Key Fingerprint',
     seo: {
       description:
@@ -546,6 +610,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Escape and unescape strings for HTML, JavaScript, JSON, URL, and XML',
     emoji: '🔡',
     key: 'string-escape-unescape',
+    layout: 'codec',
     name: 'String Escape/Unescape',
     seo: {
       description: 'Escape and unescape strings for HTML, JavaScript, JSON, URL, and XML.',
@@ -556,6 +621,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Format SQL queries with proper indentation. Supports PostgreSQL, MySQL, SQLite, and more',
     emoji: '🗄️',
     key: 'sql-formatter',
+    layout: 'transformer',
     name: 'SQL Formatter',
     seo: {
       description: 'Format SQL queries with proper indentation. Supports PostgreSQL, MySQL, SQLite, and more.',
@@ -566,6 +632,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert text between camelCase, PascalCase, snake_case, kebab-case, and more',
     emoji: '🔤',
     key: 'text-case-converter',
+    layout: 'transformer',
     name: 'Text Case Converter',
     seo: {
       description:
@@ -577,6 +644,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Compare two text blocks and see line-by-line differences highlighted',
     emoji: '📝',
     key: 'text-diff-checker',
+    layout: 'comparator',
     name: 'Text Diff',
     seo: {
       description:
@@ -589,6 +657,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert between JSON and TOML formats. Perfect for Rust and Go config files.',
     emoji: '⚙️',
     key: 'json-to-toml-converter',
+    layout: 'codec',
     name: 'JSON ↔ TOML',
     seo: {
       description: 'Convert between JSON and TOML formats. Perfect for Rust and Go config files.',
@@ -601,6 +670,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Write TypeScript with real-time type checking, error squiggles, and hover info. See transpiled JavaScript output instantly. Powered by Monaco Editor.',
     emoji: '🏗️',
     key: 'typescript-playground',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'TypeScript Playground',
     seo: {
       description:
@@ -612,6 +683,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert between Unix timestamps and human-readable dates',
     emoji: '🕐',
     key: 'unix-timestamp',
+    layout: 'transformer',
     name: 'Unix Timestamp',
     seo: {
       description:
@@ -623,6 +695,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Encode and decode URL strings in the browser',
     emoji: '🔗',
     key: 'url-encoder-decoder',
+    layout: 'codec',
     name: 'URL Encoder/Decoder',
     seo: {
       description:
@@ -634,6 +707,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Generate random UUID v4 identifiers, single or in bulk',
     emoji: '🆔',
     key: 'uuid-generator',
+    layout: 'generator',
     name: 'UUID Generator',
     seo: {
       description:
@@ -645,6 +719,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Count words, characters, sentences, paragraphs, and reading time',
     emoji: '📊',
     key: 'word-counter',
+    layout: 'transformer',
     name: 'Word Counter',
     seo: {
       description: 'Count words, characters, sentences, paragraphs, and reading time. Free online word counter.',
@@ -655,6 +730,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert between JSON and XML formats. Free online JSON to XML and XML to JSON converter.',
     emoji: '📋',
     key: 'json-to-xml-converter',
+    layout: 'codec',
     name: 'JSON ↔ XML',
     seo: {
       description: 'Convert between JSON and XML formats. Free online JSON to XML and XML to JSON converter.',
@@ -666,6 +742,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Generate TypeScript interfaces or types from JSON. Paste JSON, get type-safe code.',
     emoji: '🏗️',
     key: 'json-to-typescript',
+    layout: 'transformer',
     name: 'JSON to TypeScript',
     seo: {
       description:
@@ -677,6 +754,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Parse cron expressions into human-readable text and see the next scheduled run times.',
     emoji: '⏰',
     key: 'cron-expression-parser',
+    layout: 'transformer',
     name: 'Cron Parser',
     seo: {
       description: 'Parse cron expressions into human-readable descriptions and preview the next scheduled run times.',
@@ -689,6 +767,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Visually build cron expressions with field selectors, human-readable descriptions, and next run times',
     emoji: '🕰️',
     key: 'crontab-generator',
+    layout: 'generator',
     name: 'Crontab Generator',
     seo: {
       description:
@@ -700,6 +779,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Visual CSS Grid layout builder. Define rows, columns, gaps, and placement — copy the CSS.',
     emoji: '🔲',
     key: 'css-grid-playground',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0006',
     name: 'Grid Playground',
     seo: {
       description: 'Visual CSS Grid layout builder. Experiment with grid properties and copy the CSS.',
@@ -711,6 +792,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Upload an image and click to extract colors. Get HEX, RGB, and HSL values.',
     emoji: '🎯',
     key: 'image-color-picker',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'Image Color Picker',
     seo: {
       description: 'Upload an image and click anywhere to extract colors. Get HEX, RGB, and HSL values instantly.',
@@ -721,6 +804,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Sort lines alphabetically, numerically, or by length. Remove duplicates and empty lines.',
     emoji: '🔀',
     key: 'text-sort-dedupe',
+    layout: 'transformer',
     name: 'Text Sort & Dedupe',
     seo: {
       description:
@@ -733,6 +817,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Convert date and time between timezones with searchable timezone selection, multiple simultaneous targets, and favorites. Handles DST automatically.',
     emoji: '🌍',
     key: 'timezone-converter',
+    layout: 'transformer',
     name: 'Timezone Converter',
     seo: {
       description:
@@ -745,6 +830,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Visually configure CSS border-radius with per-corner control. Supports symmetric and asymmetric modes.',
     emoji: '⬜',
     key: 'css-border-radius-generator',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0006',
     name: 'Border Radius Generator',
     seo: {
       description: 'Visual CSS border-radius editor with per-corner control, asymmetric mode, and live preview.',
@@ -756,6 +843,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Parse a URL into its components: protocol, host, port, path, query parameters, and fragment.',
     emoji: '🔗',
     key: 'url-parser',
+    layout: 'transformer',
     name: 'URL Parser',
     seo: {
       description: 'Break down URLs into protocol, hostname, port, path, query parameters, and hash fragment.',
@@ -766,6 +854,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Build Markdown tables visually with editable cells, configurable alignment, and instant output.',
     emoji: '📊',
     key: 'markdown-table-generator',
+    layout: 'generator',
     name: 'Markdown Table Generator',
     seo: {
       description: 'Visual Markdown table builder with editable cells, column alignment, and copy-to-clipboard.',
@@ -777,6 +866,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Convert Markdown to a typeset PDF. Real ligatures, justified text, page geometry. 100% client-side via Typst compiled to WASM.',
     emoji: '📄',
     key: 'markdown-to-pdf',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'Markdown to PDF',
     seo: {
       description:
@@ -789,6 +880,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Write Mermaid diagram syntax and see a live SVG preview. Supports flowchart, sequence, class, state, gantt, pie, and more. Export as SVG or PNG.',
     emoji: '🧜',
     key: 'mermaid-renderer',
+    layout: 'transformer',
     name: 'Mermaid Renderer',
     seo: {
       description:
@@ -800,6 +892,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Search and browse HTTP status codes with descriptions and common use cases.',
     emoji: '📡',
     key: 'http-status-codes',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'HTTP Status Codes',
     seo: {
       description: 'Searchable HTTP status code reference with descriptions, categories, and common use cases.',
@@ -811,6 +905,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Preview Open Graph social cards for Twitter, Facebook, and LinkedIn. Generate meta tags.',
     emoji: '🔖',
     key: 'og-preview',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'OG Preview',
     seo: {
       description:
@@ -822,6 +918,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Parse user agent strings into browser, OS, device type, and engine details.',
     emoji: '🕵️',
     key: 'user-agent-parser',
+    layout: 'transformer',
     name: 'User Agent Parser',
     seo: {
       description: 'Parse user agent strings to identify browser, operating system, device type, and rendering engine.',
@@ -832,6 +929,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Upload an image and generate favicons in all standard sizes. Download as ZIP with HTML link tags.',
     emoji: '🖼️',
     key: 'favicon-generator',
+    layout: 'file-processor',
     name: 'Favicon Generator',
     seo: {
       description:
@@ -843,6 +941,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Format and validate YAML with configurable indentation and key sorting',
     emoji: '📋',
     key: 'yaml-formatter',
+    layout: 'transformer',
     name: 'YAML Formatter',
     seo: {
       description:
@@ -854,6 +953,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert files to data URIs and decode data URIs back to files.',
     emoji: '🔗',
     key: 'data-uri-generator',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0020',
     name: 'Data URI Generator',
     seo: {
       description:
@@ -865,6 +966,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Design entity-relationship diagrams with an interactive visual canvas',
     emoji: '🗄️',
     key: 'db-diagram',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'DB Diagram',
     seo: {
       description:
@@ -876,6 +979,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Convert between .env, JSON, and YAML configuration formats',
     emoji: '🔄',
     key: 'env-file-converter',
+    layout: 'codec',
     name: 'ENV File Converter',
     seo: {
       description: 'Convert between .env, JSON, and YAML formats. Free online environment file converter.',
@@ -886,6 +990,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Escape JSON for embedding in strings and unescape back to formatted JSON',
     emoji: '🔤',
     key: 'escaped-json-stringifier',
+    layout: 'codec',
     name: 'Escaped JSON Stringifier',
     seo: {
       description: 'Escape and unescape JSON strings online. Stringify JSON for embedding in code or config files.',
@@ -896,6 +1001,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Encode text to HTML entities and decode HTML entities back to text',
     emoji: '🏷️',
     key: 'html-entity-converter',
+    layout: 'codec',
     name: 'HTML Entity Converter',
     seo: {
       description:
@@ -907,6 +1013,7 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
     description: 'Generate placeholder images with custom dimensions, colors, and text.',
     emoji: '🖼️',
     key: 'placeholder-image-generator',
+    layout: 'generator',
     name: 'Placeholder Image Generator',
     seo: {
       description:
@@ -919,6 +1026,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Encode JSON to protobuf binary (base64/hex/raw) and decode protobuf binary back to JSON using a .proto schema. Full round-trip codec for development and testing.',
     emoji: '🔄',
     key: 'protobuf-codec',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'Protobuf Codec',
     seo: {
       description:
@@ -931,6 +1040,8 @@ const TOOL_ROUTE_DEFINITIONS: Array<ToolRouteDefinition> = [
       'Paste .proto definitions and see corresponding JSON structures with default values. Browse message types, nested messages, enums, and repeated fields.',
     emoji: '📦',
     key: 'protobuf-to-json',
+    layout: 'custom',
+    layoutOptOutAdr: 'ADR-0027',
     name: 'Protobuf to JSON',
     seo: {
       description:

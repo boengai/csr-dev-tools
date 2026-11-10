@@ -14,6 +14,13 @@ export type ToolCategory =
   | 'Time'
   | 'Unit'
 
+/**
+ * The [[Layout type]] a tool is built from. Each non-`custom` value maps 1:1
+ * to a layout shell in `src/components/common/` (see CONTEXT.md → Layout type
+ * and `docs/ux/`). `custom` opts out and must cite the ADR that says why.
+ */
+export type ToolLayout = 'codec' | 'comparator' | 'custom' | 'file-processor' | 'generator' | 'transformer'
+
 export type ToolSeo = {
   description: string
   title: string
@@ -32,6 +39,13 @@ export type ToolRouteDefinition = {
   description: string
   emoji: string
   key: ToolRegistryKey
+  /** Required: every new tool picks a layout. Drives the layout contract suites. */
+  layout: ToolLayout
+  /**
+   * Set if and only if `layout` is `'custom'`: the ADR that justifies opting
+   * out of the layout shells, as `ADR-NNNN`. Enforced by `src/test/layout-guard.spec.ts`.
+   */
+  layoutOptOutAdr?: `ADR-${string}`
   name: string
   seo: {
     description: string

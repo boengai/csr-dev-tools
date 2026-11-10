@@ -16,4 +16,3 @@ export type MarkdownTableAction =
   | { type: 'CHANGE_ROWS'; payload: number }
   | { type: 'CHANGE_COLS'; payload: number }
   | { type: 'TOGGLE_ALIGN'; payload: number }
-  | { type: 'RESET' }

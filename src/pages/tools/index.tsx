@@ -1,10 +1,10 @@
 import { Navigate, useNavigate, useParams } from '@tanstack/react-router'
-import { Suspense } from 'react'
+import { Suspense, useCallback, useMemo, useRef } from 'react'
 
-import { Card, NotoEmoji } from '@/components'
+import { Card, NotoEmoji, ToolPresentationProvider } from '@/components'
 import { getToolEntry, ROUTE_PATH } from '@/constants'
 import { useToolSeo } from '@/hooks'
-import type { ToolRegistryEntry } from '@/types'
+import type { ToolPresentation, ToolRegistryEntry } from '@/types'
 
 export default function ToolsPage() {
   const { toolKey } = useParams({ strict: false })
@@ -26,24 +26,37 @@ const ToolsPageContent = ({ tool }: { tool: ToolRegistryEntry }) => {
     url: tool.routePath,
   })
 
+  // The Tool renders inline (ADR-0029). Its frame registers the reset it used
+  // to run when its dialog closed; the page's close control runs it before
+  // going home, so "close" still means "done with this Tool".
+  const resetRef = useRef<(() => void) | undefined>(undefined)
+  const registerReset = useCallback((reset: (() => void) | undefined) => {
+    resetRef.current = reset
+  }, [])
+  const presentation = useMemo<ToolPresentation>(() => ({ kind: 'page', registerReset }), [registerReset])
+
   const ToolComponent = tool.component
   const navigateHome = () => navigate({ to: ROUTE_PATH.HOME })
+  const handleClose = () => {
+    resetRef.current?.()
+    navigateHome()
+  }
 
   return (
-    <div className="flex grow flex-col items-center justify-center p-6 pb-[calc(1.5rem+var(--safe-area-inset-bottom))]">
-      <div className="flex max-h-full w-full max-w-[768px] flex-col">
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center">
-              <NotoEmoji emoji="flying-saucer" size={200} />
-            </div>
-          }
-        >
-          <Card onClose={navigateHome} title={tool.name}>
+    <div className="flex min-h-0 grow flex-col p-2 pb-[calc(0.5rem+var(--safe-area-inset-bottom))] tablet:p-4">
+      <Suspense
+        fallback={
+          <div className="flex grow items-center justify-center">
+            <NotoEmoji emoji="flying-saucer" size={200} />
+          </div>
+        }
+      >
+        <Card onClose={handleClose} title={tool.name} variant="page">
+          <ToolPresentationProvider value={presentation}>
             <ToolComponent autoOpen onAfterClose={navigateHome} />
-          </Card>
-        </Suspense>
-      </div>
+          </ToolPresentationProvider>
+        </Card>
+      </Suspense>
     </div>
   )
 }

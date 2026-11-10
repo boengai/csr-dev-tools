@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { copyButton, errorMessage, toast } from './helpers/selectors'
+import { copyButton, toast } from './helpers/selectors'
 
 test.describe('Aspect Ratio Calculator', () => {
   test.beforeEach(async ({ page }) => {
@@ -68,11 +68,13 @@ test.describe('Aspect Ratio Calculator', () => {
     await expect(heightInput).toHaveValue('1440', { timeout: 3000 })
   })
 
-  test('shows error toast on invalid width', async ({ page }) => {
+  test('shows invalid width in the status slot', async ({ page }) => {
     const widthInput = page.locator('input[name="width"]')
     await widthInput.fill('abc')
 
-    await expect(errorMessage.withText(page, 'Enter a valid width')).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-slot="tool-status"]').getByRole('alert')).toContainText('Enter a valid width', {
+      timeout: 3000,
+    })
   })
 
   test('clearing width clears dependent fields', async ({ page }) => {

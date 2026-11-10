@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useState, type ReactElement } from 'react'
 
-import { Button, CodeInput, CopyButton, SelectInput, Tabs, TextInput } from '@/components/common'
+import { Button, CodeInput, CopyButton, SelectInput, Tabs, TextInput, ToolStatus } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useAsyncAction, useElapsedTimer, useToast } from '@/hooks'
@@ -38,10 +38,10 @@ const COST_OPTIONS = Array.from({ length: BCRYPT_MAX_COST - MIN_COST + 1 }, (_, 
   return { label: labels[val] ?? String(val), value: String(val) }
 })
 
-// A user-initiated cancel rejects the pending call; don't toast it as a failure.
-const toastUnlessCancelled = (showError: (msg: string) => void, label: string) => (err: unknown) => {
+// A user-initiated cancel rejects the pending call; don't report it as a failure.
+const unlessCancelled = (report: (msg: string) => void, label: string) => (err: unknown) => {
   if (isWorkerAbortError(err, 'cancel')) return
-  showError(label)
+  report(label)
 }
 
 const handleCancel = () => {
@@ -65,6 +65,8 @@ const usePasswordVisibility = (): { suffix: ReactElement; type: 'password' | 'te
   }
 }
 
+const VERIFY_FAILED_MESSAGE = 'Verification failed. Please check inputs.'
+
 const INVALID_HASH_MESSAGE =
   'Invalid bcrypt hash. Expected format: $2a$/$2b$/$2y$ followed by cost and 53 characters (e.g., $2b$10$...)'
 
@@ -80,7 +82,8 @@ const HashTab = ({ onProcessingChange }: BcryptTabProps) => {
     result,
     run: handleHash,
   } = useAsyncAction<BcryptHashResult>(() => hashPassword(password, Number(rounds)), {
-    onError: toastUnlessCancelled(showError, 'Hashing failed. Please try again.'),
+    // Any password hashes, so a failure here is the action failing, not the input: toast it.
+    onError: unlessCancelled(showError, 'Hashing failed. Please try again.'),
   })
   const elapsedDisplay = useElapsedTimer(hashing)
 
@@ -89,6 +92,12 @@ const HashTab = ({ onProcessingChange }: BcryptTabProps) => {
   }, [hashing, onProcessingChange])
 
   const truncationWarning = useMemo(() => checkPasswordTruncation(password), [password])
+  const notices = [
+    ...(truncationWarning ? ['Password exceeds 72 bytes — bcrypt will truncate to first 72 bytes'] : []),
+    ...(Number(rounds) > BCRYPT_SLOW_COST
+      ? [`Cost ${rounds} is slow — each step doubles the hashing time and blocks a CPU core until it finishes.`]
+      : []),
+  ]
   const hashBreakdown = useMemo<BcryptHashComponents | null>(
     () => (result ? parseBcryptHash(result.hash) : null),
     [result],
@@ -116,12 +125,6 @@ const HashTab = ({ onProcessingChange }: BcryptTabProps) => {
         value={password}
       />
 
-      {truncationWarning && (
-        <p className="text-amber-400 text-body-xs">
-          Password exceeds 72 bytes — bcrypt will truncate to first 72 bytes
-        </p>
-      )}
-
       <SelectInput
         disabled={hashing}
         aria-label="Cost factor"
@@ -131,12 +134,6 @@ const HashTab = ({ onProcessingChange }: BcryptTabProps) => {
         placeholder="Cost factor"
         value={rounds}
       />
-
-      {Number(rounds) > BCRYPT_SLOW_COST && (
-        <p className="text-amber-400 text-body-xs">
-          Cost {rounds} is slow — each step doubles the hashing time and blocks a CPU core until it finishes.
-        </p>
-      )}
 
       <div className="flex gap-2">
         <div className="grow">
@@ -156,6 +153,8 @@ const HashTab = ({ onProcessingChange }: BcryptTabProps) => {
           Hashing... {elapsedDisplay.toFixed(1)}s
         </p>
       )}
+
+      <ToolStatus error={null} notices={notices} />
 
       <div aria-live="polite" className="flex flex-col gap-3">
         {result && !hashing && (
@@ -190,7 +189,7 @@ const HashTab = ({ onProcessingChange }: BcryptTabProps) => {
 const VerifyTab = ({ onProcessingChange }: BcryptTabProps) => {
   const [password, setPassword] = useState('')
   const [hashInput, setHashInput] = useState('')
-  const showError = useToast((s) => s.showError)
+  const [inputError, setInputError] = useState<string | null>(null)
   const passwordVisibility = usePasswordVisibility()
 
   const {
@@ -199,7 +198,7 @@ const VerifyTab = ({ onProcessingChange }: BcryptTabProps) => {
     result,
     run,
   } = useAsyncAction<BcryptVerifyResult>(() => verifyPassword(password, hashInput.trim()), {
-    onError: toastUnlessCancelled(showError, 'Verification failed. Please check inputs.'),
+    onError: unlessCancelled(setInputError, VERIFY_FAILED_MESSAGE),
   })
   const elapsedDisplay = useElapsedTimer(verifying)
 
@@ -210,6 +209,7 @@ const VerifyTab = ({ onProcessingChange }: BcryptTabProps) => {
   const handlePasswordChange = useCallback(
     (val: string) => {
       setPassword(val)
+      setInputError(null)
       reset()
     },
     [reset],
@@ -218,6 +218,7 @@ const VerifyTab = ({ onProcessingChange }: BcryptTabProps) => {
   const handleHashChange = useCallback(
     (val: string) => {
       setHashInput(val)
+      setInputError(null)
       reset()
     },
     [reset],
@@ -226,15 +227,18 @@ const VerifyTab = ({ onProcessingChange }: BcryptTabProps) => {
   const handleVerify = useCallback(async () => {
     const hash = hashInput.trim()
     if (!isValidBcryptHash(hash)) {
-      showError(INVALID_HASH_MESSAGE)
+      reset()
+      setInputError(INVALID_HASH_MESSAGE)
       return
     }
     if (exceedsMaxBcryptCost(hash)) {
-      showError(bcryptCostTooHighMessage(parseBcryptHash(hash).rounds))
+      reset()
+      setInputError(bcryptCostTooHighMessage(parseBcryptHash(hash).rounds))
       return
     }
+    setInputError(null)
     await run()
-  }, [hashInput, run, showError])
+  }, [hashInput, reset, run])
 
   return (
     <div className="flex w-full flex-col gap-4">
@@ -279,16 +283,18 @@ const VerifyTab = ({ onProcessingChange }: BcryptTabProps) => {
         </p>
       )}
 
+      <ToolStatus error={inputError} errorLabel={inputError ?? undefined} />
+
       <div aria-live="polite" className="flex flex-col gap-3">
         {result && !verifying && (
           <>
             {result.match ? (
-              <div className="border-green-800 bg-green-950 text-green-400 inline-flex items-center gap-1.5 rounded border px-2.5 py-1.5 text-body-xs font-medium">
+              <div className="inline-flex items-center gap-1.5 rounded border border-success/50 bg-success/10 px-2.5 py-1.5 text-body-xs font-medium text-success">
                 <span aria-hidden="true">✅</span>
                 <span>Password matches hash</span>
               </div>
             ) : (
-              <div className="border-red-800 bg-red-950 text-red-400 inline-flex items-center gap-1.5 rounded border px-2.5 py-1.5 text-body-xs font-medium">
+              <div className="inline-flex items-center gap-1.5 rounded border border-error/50 bg-error/10 px-2.5 py-1.5 text-body-xs font-medium text-error">
                 <span aria-hidden="true">❌</span>
                 <span>Password does not match</span>
               </div>

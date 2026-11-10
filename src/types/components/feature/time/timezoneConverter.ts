@@ -1,20 +1,10 @@
-import type { ConversionResult, TimezoneEntry } from '@/types/utils/timezone-converter'
+import type { TimezoneEntry } from '@/types/utils/timezone-converter'
 
-export type TargetResult = {
-  result: ConversionResult
-  timezoneId: string
-}
-
+/** `source` is the date and time, `YYYY-MM-DD HH:mm`, read in `sourceTz`. */
 export type TimezoneConverterInput = {
-  dateInput: string
+  source: string
   sourceTz: string
   targetTzIds: Array<string>
-  timeInput: string
-}
-
-export type TimezoneConverterOutput = {
-  error: string
-  results: Array<TargetResult>
 }
 
 export type TimezoneSearchPickerProps = {

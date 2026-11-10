@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test'
 
 import { colors } from './helpers/fixtures'
-import { card, copyButton, errorMessage, toast, toolInput } from './helpers/selectors'
+import { card, copyButton, toast, toolInput } from './helpers/selectors'
 
 test.describe('Color Converter', () => {
   test.beforeEach(async ({ page }) => {
@@ -25,11 +25,15 @@ test.describe('Color Converter', () => {
     await expect(toolInput.byLabel(page, 'LCH')).not.toHaveValue('')
   })
 
-  test('shows error for invalid hex input', async ({ page }) => {
+  test('shows error for invalid hex input in the status slot and clears the other formats', async ({ page }) => {
     const hexInput = toolInput.byLabel(page, 'Hex')
     await hexInput.fill(colors.invalid.hex)
 
-    await expect(errorMessage.withText(page, 'Enter a valid hex color')).toBeVisible({ timeout: 2000 })
+    await expect(page.locator('[data-slot="tool-status"]').getByRole('alert')).toContainText(
+      'Enter a valid hex color',
+      { timeout: 2000 },
+    )
+    await expect(toolInput.byLabel(page, 'RGB')).toHaveValue('')
   })
 
   test('copy button triggers toast notification', async ({ page }) => {

@@ -1,16 +1,16 @@
-import { BidirectionalConverter } from '@/components/common'
+import { CodecShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, JsonCsvConvertMode, ToolComponentProps } from '@/types'
+import type { CodecMode, JsonCsvConvertMode, ToolComponentProps } from '@/types'
 import { csvToJson, jsonToCsv } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-csv-converter']
 
-const MODES: [ConverterMode<JsonCsvConvertMode>, ConverterMode<JsonCsvConvertMode>] = [
+const MODES: [CodecMode<JsonCsvConvertMode>, CodecMode<JsonCsvConvertMode>] = [
   {
     key: 'json-to-csv',
     label: 'JSON → CSV',
     resultLabel: 'CSV Output',
-    resultPlaceholder: 'name,age\nAlice,30',
+    resultPlaceholder: 'Paste a JSON array to convert it to CSV',
     sourceFormat: 'json',
     sourceLabel: 'JSON Input',
     sourcePlaceholder: '[{"name":"Alice","age":30}]',
@@ -19,7 +19,7 @@ const MODES: [ConverterMode<JsonCsvConvertMode>, ConverterMode<JsonCsvConvertMod
     key: 'csv-to-json',
     label: 'CSV → JSON',
     resultLabel: 'JSON Output',
-    resultPlaceholder: '[\n  {\n    "name": "Alice"\n  }\n]',
+    resultPlaceholder: 'Paste CSV to convert it to JSON',
     sourceFormat: 'csv',
     sourceLabel: 'CSV Input',
     sourcePlaceholder: 'name,age\nAlice,30\nBob,25',
@@ -35,7 +35,7 @@ const compute = async ({ mode, source }: { mode: JsonCsvConvertMode; source: str
 }
 
 export const JsonToCsvConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
-  <BidirectionalConverter
+  <CodecShell
     autoOpen={autoOpen}
     compute={compute}
     description={toolEntry?.description}

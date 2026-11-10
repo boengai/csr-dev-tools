@@ -1,16 +1,16 @@
-import { BidirectionalConverter } from '@/components/common'
+import { CodecShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, JsonYamlConvertMode, ToolComponentProps } from '@/types'
+import type { CodecMode, JsonYamlConvertMode, ToolComponentProps } from '@/types'
 import { jsonToYaml, yamlToJson } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-yaml-converter']
 
-const MODES: [ConverterMode<JsonYamlConvertMode>, ConverterMode<JsonYamlConvertMode>] = [
+const MODES: [CodecMode<JsonYamlConvertMode>, CodecMode<JsonYamlConvertMode>] = [
   {
     key: 'json-to-yaml',
     label: 'JSON → YAML',
     resultLabel: 'YAML Output',
-    resultPlaceholder: 'name: John\nage: 30',
+    resultPlaceholder: 'Paste JSON to convert it to YAML',
     sourceFormat: 'json',
     sourceLabel: 'JSON Input',
     sourcePlaceholder: '{"name":"John","age":30}',
@@ -19,7 +19,7 @@ const MODES: [ConverterMode<JsonYamlConvertMode>, ConverterMode<JsonYamlConvertM
     key: 'yaml-to-json',
     label: 'YAML → JSON',
     resultLabel: 'JSON Output',
-    resultPlaceholder: '{\n  "name": "John",\n  "age": 30\n}',
+    resultPlaceholder: 'Paste YAML to convert it to JSON',
     sourceFormat: 'yaml',
     sourceLabel: 'YAML Input',
     sourcePlaceholder: 'name: John\nage: 30',
@@ -38,7 +38,7 @@ const compute = async ({
 }
 
 export const JsonToYamlConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
-  <BidirectionalConverter
+  <CodecShell
     autoOpen={autoOpen}
     compute={compute}
     description={toolEntry?.description}

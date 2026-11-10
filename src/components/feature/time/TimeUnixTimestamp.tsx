@@ -1,269 +1,100 @@
-import { AnimatePresence } from 'motion/react'
-import { useMemo, useState } from 'react'
-
-import { CopyButton, DataCellTable, FieldForm } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { Button, FieldForm, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolInput } from '@/hooks'
-import type { DateTime, ToolComponentProps } from '@/types'
-import { getDaysInMonth, isValidTimestamp } from '@/utils'
-
-const MONTH_LABELS = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-]
-
-const MONTH_OPTIONS = MONTH_LABELS.map((label, i) => ({
-  label: label,
-  value: i.toString(),
-}))
-
-const HOUR_OPTIONS = Array.from({ length: 24 }, (_, i) => {
-  const val = i.toString()
-  return { label: val, value: val }
-})
-
-const MIN_SEC_OPTIONS = Array.from({ length: 60 }, (_, i) => {
-  const val = i.toString()
-  return { label: val, value: val }
-})
-
-const renderWithCopy = (label: string) => (val: string) => (
-  <span className="flex items-center gap-1">
-    <span>{val}</span>
-    <CopyButton label={label} value={val} />
-  </span>
-)
-
-const UnixTimestampSection = () => {
-  // Example timestamp for the placeholder, captured once on mount (an impure
-  // `Date.now()` in render would change on every keystroke re-render).
-  const [placeholder] = useState(() => Date.now().toString())
-  const { input, result, setInput } = useToolInput<string, [format: string, gmt: string, local: string] | null>({
-    compute: (source) => {
-      if (!isValidTimestamp(source)) throw new Error('Enter a valid Unix timestamp (e.g., 1700000000)')
-      const inputNumber = Number(source)
-      // Auto-detect seconds vs milliseconds: > 100 billion implies ms (year 5138 in seconds is unrealistic).
-      const isMilliseconds = inputNumber > 100_000_000_000
-      const d = new Date(isMilliseconds ? inputNumber : inputNumber * 1_000)
-      return [isMilliseconds ? 'Milliseconds' : 'Seconds', d.toUTCString(), d.toString()]
-    },
-    debounceMs: 300,
-    errorFallback: 'Enter a valid Unix timestamp (e.g., 1700000000)',
-    initial: '',
-    initialResult: null,
-    isEmpty: (source) => source.length === 0,
-  })
-
-  return (
-    <section className="flex grow flex-col gap-2">
-      <div className="flex w-full items-end gap-2">
-        <FieldForm
-          label="Enter a Timestamp"
-          name="unixTimestamp"
-          onChange={setInput}
-          placeholder={placeholder}
-          type="text"
-          value={input}
-        />
-      </div>
-      <p className="text-center text-body-sm text-gray-500">
-        Supports Unix timestamps in seconds or milliseconds (auto-detected).
-      </p>
-      <div aria-live="polite">
-        <AnimatePresence mode="wait">
-          {result && (
-            <DataCellTable
-              rows={[
-                { label: 'Format', render: renderWithCopy('Format'), value: result[0] },
-                { label: 'GMT', render: renderWithCopy('GMT'), value: result[1] },
-                { label: 'Local', render: renderWithCopy('Local'), value: result[2] },
-              ]}
-            />
-          )}
-        </AnimatePresence>
-      </div>
-    </section>
-  )
-}
-
-const DateSection = () => {
-  const [input, setInput] = useState<DateTime<string>>(() => {
-    const d = new Date()
-    return {
-      day: d.getDate().toString(),
-      hour: d.getHours().toString(),
-      minute: d.getMinutes().toString(),
-      month: d.getMonth().toString(),
-      second: d.getSeconds().toString(),
-      year: d.getFullYear().toString(),
-    }
-  })
-  const [result, setResult] = useState<[timestamp: string, gmt: string, local: string]>(() => {
-    const d = new Date()
-    return [Math.floor(d.getTime() / 1000).toString(), d.toUTCString(), d.toString()]
-  })
-
-  // Lazy initializer: computed once on mount (impure reads stay out of render).
-  const [placeholder] = useState(() => {
-    const d = new Date()
-    return {
-      day: d.getDate().toString(),
-      hour: d.getHours().toString(),
-      minute: d.getMinutes().toString(),
-      month: MONTH_LABELS[d.getMonth()],
-      second: d.getSeconds().toString(),
-      year: d.getFullYear().toString(),
-    }
-  })
-
-  const dayOptions = useMemo(() => {
-    const daysInMonth = getDaysInMonth(Number(input.year), Number(input.month) + 1)
-
-    return Array.from({ length: daysInMonth }, (_, i) => {
-      const val = (i + 1).toString()
-      return {
-        label: val,
-        value: val,
-      }
-    })
-  }, [input.year, input.month])
-
-  const handleChange = (key: keyof DateTime, value: string) => {
-    const newInput = { ...input, [key]: value }
-    if ((key === 'month' || key === 'year') && newInput.day) {
-      newInput.day = Math.min(
-        Number(newInput.day),
-        getDaysInMonth(Number(newInput.year), Number(newInput.month) + 1),
-      ).toString()
-    }
-    setInput(newInput)
-
-    if (!newInput.year || !newInput.month || !newInput.day) {
-      return
-    }
-
-    const d = new Date(
-      Number(newInput.year),
-      Number(newInput.month),
-      Number(newInput.day),
-      Number(newInput.hour),
-      Number(newInput.minute),
-      Number(newInput.second),
-    )
-    setResult([Math.floor(d.getTime() / 1000).toString(), d.toUTCString(), d.toString()])
-  }
-
-  return (
-    <section className="flex grow flex-col gap-2">
-      <div className="flex flex-col justify-between gap-1 desktop:flex-row [&>div>fieldset]:w-1/3">
-        <div className="flex w-full justify-between gap-1 desktop:w-1/2">
-          <FieldForm
-            label="Year"
-            name="year"
-            onChange={(val) => handleChange('year', val)}
-            placeholder={placeholder.year}
-            type="number"
-            value={input.year}
-          />
-          <FieldForm
-            disabled={!input.year}
-            label="Month"
-            name="month"
-            onChange={(value) => handleChange('month', value)}
-            options={MONTH_OPTIONS}
-            placeholder={placeholder.month}
-            type="select"
-            value={input.month}
-          />
-          <FieldForm
-            disabled={!input.month}
-            label="Day"
-            name="day"
-            onChange={(value) => handleChange('day', value)}
-            options={dayOptions}
-            placeholder={placeholder.day}
-            type="select"
-            value={input.day}
-          />
-        </div>
-        <div className="flex w-full justify-between gap-1 desktop:w-1/2">
-          <FieldForm
-            label="Hour"
-            name="hour"
-            onChange={(value) => handleChange('hour', value)}
-            options={HOUR_OPTIONS}
-            placeholder={placeholder.hour}
-            type="select"
-            value={input.hour}
-          />
-          <FieldForm
-            label="Minute"
-            name="minute"
-            onChange={(value) => handleChange('minute', value)}
-            options={MIN_SEC_OPTIONS}
-            placeholder={placeholder.minute}
-            type="select"
-            value={input.minute}
-          />
-          <FieldForm
-            label="Second"
-            name="second"
-            onChange={(value) => handleChange('second', value)}
-            options={MIN_SEC_OPTIONS}
-            placeholder={placeholder.second}
-            type="select"
-            value={input.second}
-          />
-        </div>
-      </div>
-      <div aria-live="polite">
-        <AnimatePresence mode="wait">
-          {result.length > 0 && (
-            <DataCellTable
-              rows={[
-                {
-                  label: 'Unix Timestamp',
-                  render: renderWithCopy('Unix Timestamp'),
-                  value: result[0],
-                },
-                { label: 'GMT', render: renderWithCopy('GMT'), value: result[1] },
-                { label: 'Local', render: renderWithCopy('Local'), value: result[2] },
-              ]}
-            />
-          )}
-        </AnimatePresence>
-      </div>
-    </section>
-  )
-}
+import type { ToolComponentProps, TransformerField } from '@/types'
+import { isValidTimestamp } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['unix-timestamp']
 
-export const TimeUnixTimestamp = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      title="Unix Timestamp"
-      triggers={[{ label: 'Convert' }]}
-    >
-      <div className="flex grow flex-col gap-4">
-        <UnixTimestampSection />
-        <hr />
-        <DateSection />
-      </div>
-    </ToolDialogFrame>
-  )
+const INITIAL = { source: '' }
+
+const INVALID = 'Enter a valid Unix timestamp in seconds or milliseconds (e.g. 1700000000)'
+
+// > 100 billion implies ms (year 5138 in seconds is unrealistic).
+const isMilliseconds = (value: number): boolean => value > 100_000_000_000
+
+/** The source as a Date, or null when it is not a valid timestamp. */
+const parseTimestamp = (source: string): Date | null => {
+  const trimmed = source.trim()
+  if (!isValidTimestamp(trimmed)) return null
+  const n = Number(trimmed)
+  return new Date(isMilliseconds(n) ? n : n * 1_000)
 }
+
+const pad = (n: number): string => String(n).padStart(2, '0')
+
+const localDate = (d: Date): string => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+
+const localTime = (d: Date): string => `${pad(d.getHours())}:${pad(d.getMinutes())}`
+
+const computeDates = ({ source }: { source: string }): Array<TransformerField> => {
+  const d = parseTimestamp(source)
+  if (!d) throw new Error(INVALID)
+  const ms = isMilliseconds(Number(source.trim()))
+  return [
+    { copy: false, label: 'Format', value: ms ? 'Milliseconds' : 'Seconds' },
+    { label: 'Unix Timestamp (seconds)', value: String(Math.floor(d.getTime() / 1_000)) },
+    { label: 'GMT', value: d.toUTCString() },
+    { label: 'Local', value: d.toString() },
+  ]
+}
+
+/**
+ * One source, two ways in: type a timestamp, or pick a local date and time.
+ * The pickers show the source's date and write a timestamp back into it (in
+ * the source's unit), so the output is always "this timestamp as dates".
+ */
+export const TimeUnixTimestamp = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <TransformerShell<{ source: string }, 'fields'>
+    autoOpen={autoOpen}
+    compute={computeDates}
+    description={toolEntry?.description}
+    initial={INITIAL}
+    onAfterClose={onAfterClose}
+    outputKind="fields"
+    // Never saved before the shell; kept that way.
+    persistInput={false}
+    renderControls={({ inputs, setFieldsImmediate }) => {
+      const current = parseTimestamp(inputs.source)
+      const inMs = current != null && isMilliseconds(Number(inputs.source.trim()))
+      const writeDate = (date: string, time: string) => {
+        const [y, mo, day] = date.split('-').map(Number)
+        const [h, mi] = time.split(':').map(Number)
+        const d = new Date(y ?? 0, (mo ?? 1) - 1, day ?? 1, h ?? 0, mi ?? 0, current?.getSeconds() ?? 0)
+        if (Number.isNaN(d.getTime())) return
+        setFieldsImmediate({ source: String(inMs ? d.getTime() : Math.floor(d.getTime() / 1_000)) })
+      }
+      return (
+        <>
+          <FieldForm
+            label="Date (local)"
+            name="unix-date"
+            onChange={(val: string) => val && writeDate(val, current ? localTime(current) : '00:00')}
+            type="date"
+            value={current ? localDate(current) : ''}
+          />
+          <FieldForm
+            label="Time (local)"
+            name="unix-time"
+            onChange={(val: string) => val && writeDate(current ? localDate(current) : localDate(new Date()), val)}
+            type="time"
+            value={current ? localTime(current) : ''}
+          />
+          <Button
+            onClick={() => setFieldsImmediate({ source: String(Math.floor(Date.now() / 1_000)) })}
+            size="small"
+            variant="primary"
+          >
+            Now
+          </Button>
+        </>
+      )
+    }}
+    resultLabel="Dates"
+    resultPlaceholder="Enter a Unix timestamp, or pick a date and time above, to convert it"
+    sourceKind="text"
+    sourceLabel="Unix Timestamp"
+    sourcePlaceholder="1700000000 (seconds or milliseconds)"
+    title="Unix Timestamp"
+    triggerLabel="Convert"
+  />
+)

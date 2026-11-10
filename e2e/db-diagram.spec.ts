@@ -15,11 +15,7 @@ async function fillCodeInput(page: import('@playwright/test').Page, testId: stri
  * Helper: select a value in a Radix Select (combobox) that lives inside
  * the element identified by `parentTestId`.
  */
-async function selectRadixOption(
-  page: import('@playwright/test').Page,
-  parentTestId: string,
-  optionText: string,
-) {
+async function selectRadixOption(page: import('@playwright/test').Page, parentTestId: string, optionText: string) {
   const trigger = page.getByTestId(parentTestId).locator('[role="combobox"]')
   await trigger.click()
   await page.locator('[role="option"]').filter({ hasText: optionText }).click()
@@ -163,7 +159,8 @@ test.describe('DB Diagram', () => {
     // Wait for autosave to complete (editor debounces 3s before writing to localStorage)
     await expect
       .poll(
-        () => page.evaluate(() => localStorage.getItem('csr-dev-tools-db-diagrams')?.includes('persisted_table') ?? false),
+        () =>
+          page.evaluate(() => localStorage.getItem('csr-dev-tools-db-diagrams')?.includes('persisted_table') ?? false),
         { timeout: 8000 },
       )
       .toBe(true)
@@ -313,11 +310,7 @@ test.describe('DB Diagram', () => {
     await expect(page.getByTestId('import-sql-panel')).toBeVisible()
     await page.locator('#import-sql-panel-merge').check()
 
-    await fillCodeInput(
-      page,
-      'code-input-import-sql-panel-input',
-      'CREATE TABLE imported_table (id INT PRIMARY KEY);',
-    )
+    await fillCodeInput(page, 'code-input-import-sql-panel-input', 'CREATE TABLE imported_table (id INT PRIMARY KEY);')
     await page.getByTestId('import-sql-panel-submit').click()
 
     // Should now have 2 tables (1 existing + 1 imported)
@@ -341,10 +334,7 @@ test.describe('DB Diagram', () => {
 
     // Export JSON via Export dropdown -- capture download
     await page.getByTestId('export-dropdown-btn').click()
-    const [download] = await Promise.all([
-      page.waitForEvent('download'),
-      page.getByTestId('export-json-btn').click(),
-    ])
+    const [download] = await Promise.all([page.waitForEvent('download'), page.getByTestId('export-json-btn').click()])
     const path = await download.path()
     expect(path).toBeTruthy()
 

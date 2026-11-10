@@ -5,7 +5,7 @@ import { Fragment, useCallback, useEffect, useState } from 'react'
 import { useSortableItems, useToolComputation } from '@/hooks'
 import type { BytesPdfResult, SortablePdfShellProps } from '@/types'
 
-import { ErrorBanner } from '../banner'
+import { ToolStatus } from '../banner'
 import { ToolDialogFrame } from '../dialog/ToolDialogFrame'
 import { UploadInput } from '../input/UploadInput'
 import { Pane, SplitPanel } from '../layout'
@@ -58,8 +58,8 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
   }, [])
 
   // No error handler is passed — the pipeline populates `error` without
-  // toasting. The shell renders the inline banner. Mirrors MarkupToPdfShell's
-  // discipline (banner replaces toast — see CONTEXT.md → "Toast channel").
+  // toasting. The shell renders it in the [[Tool status slot]]. Mirrors
+  // MarkupToPdfShell's discipline (see CONTEXT.md → "Toast channel").
   const { error, result, setInput } = useToolComputation<{ items: Array<TItem>; extras: TExtras }, BytesPdfResult>(
     (input) => compute(input.items, input.extras),
     {
@@ -99,14 +99,17 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
 
   // Stale output is suppressed on error: when `error != null`, the shell hides
   // both <PdfBytesPreview> and <DownloadPdfButton> and surfaces err.message in
-  // an inline banner. Prevents downloading bytes that don't match the displayed
-  // source. See CONTEXT.md → "Sortable PDF shell" invariant 3.
+  // the [[Tool status slot]]. Prevents downloading bytes that don't match the
+  // displayed source. See CONTEXT.md → "Sortable PDF shell" invariant 3.
   const hasError = error !== null
-  const errorMessage = error instanceof Error ? error.message : 'Failed to generate PDF'
+  const skippedNotice =
+    skipped.length > 0
+      ? [`Skipped ${skipped.length} unsupported file${skipped.length === 1 ? '' : 's'}: ${skipped.join(', ')}`]
+      : undefined
 
   // Both download and preview are gated on non-empty bytes. renderControls is
-  // gated on !hasError (suppressed during pipeline error so the inline banner
-  // has the full pane) but NOT gated on hasResult — callers receive the slot
+  // gated on !hasError (suppressed during pipeline error, along with the rest
+  // of the output pane) but NOT gated on hasResult — callers receive the slot
   // even before any items are added (e.g. to reflect stats or options).
   const hasResult = result.pdf.byteLength > 0
 
@@ -145,6 +148,7 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
       triggers={triggers}
     >
       <div className="flex min-h-0 w-full grow flex-col gap-4">
+        <ToolStatus error={error} errorFallback="Failed to generate PDF" notices={skippedNotice} />
         <SplitPanel>
           <Pane>
             <UploadInput
@@ -156,19 +160,11 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
               onChange={handleUpload}
             />
 
-            {skipped.length > 0 && (
-              <ErrorBanner variant="warning">
-                Skipped {skipped.length} unsupported file{skipped.length === 1 ? '' : 's'}: {skipped.join(', ')}
-              </ErrorBanner>
-            )}
-
             {gridContent}
           </Pane>
 
           <Pane live>
-            {hasError ? (
-              <ErrorBanner variant="warning">{errorMessage}</ErrorBanner>
-            ) : (
+            {!hasError && (
               <>
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex-1">{renderControls?.({ extras, setExtras, result })}</div>

@@ -1,7 +1,4 @@
-import { useReducer } from 'react'
-
-import { CopyButton, FieldForm, TextInput } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { FieldForm, GeneratorShell, TextInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { MarkdownTableAction, MarkdownTableState, ToolComponentProps } from '@/types'
 import { type ColumnAlignment, generateMarkdownTable } from '@/utils'
@@ -74,131 +71,130 @@ const reducer = (state: MarkdownTableState, action: MarkdownTableAction): Markdo
         ...state,
         alignments: state.alignments.map((a, i) => (i === action.payload ? NEXT_ALIGN[a] : a)),
       }
-    case 'RESET':
-      return createInitialState()
   }
 }
 
-export const MarkdownTableGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const [state, dispatch] = useReducer(reducer, undefined, createInitialState)
-  const { alignments, cols, data, rows } = state
-
-  const output = generateMarkdownTable(data, alignments)
-
-  const updateCell = (r: number, c: number, val: string) => {
-    dispatch({ type: 'UPDATE_CELL', payload: { r, c, val } })
-  }
-
-  const handleRowsChange = (n: number) => {
-    dispatch({ type: 'CHANGE_ROWS', payload: n })
-  }
-
-  const handleColsChange = (n: number) => {
-    dispatch({ type: 'CHANGE_COLS', payload: n })
-  }
-
-  const toggleAlign = (c: number) => {
-    dispatch({ type: 'TOGGLE_ALIGN', payload: c })
-  }
-
-  const handleReset = () => {
-    dispatch({ type: 'RESET' })
-  }
-
+const isTableState = (state: unknown): state is MarkdownTableState => {
+  if (typeof state !== 'object' || state === null) return false
+  const { alignments, cols, data, rows } = state as MarkdownTableState
   return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      onReset={handleReset}
-      title="Markdown Table Generator"
-      triggers={[{ label: 'Build Table' }]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
-        <div className="flex items-center gap-4">
-          <div className="w-24">
-            <FieldForm
-              label="Rows"
-              max={20}
-              min={2}
-              name="table-rows"
-              onChange={(val: string) => handleRowsChange(Number(val))}
-              type="number"
-              value={String(rows)}
-            />
-          </div>
-          <div className="w-24">
-            <FieldForm
-              label="Cols"
-              max={10}
-              min={2}
-              name="table-cols"
-              onChange={(val: string) => handleColsChange(Number(val))}
-              type="number"
-              value={String(cols)}
-            />
-          </div>
-        </div>
-
-        <div className="overflow-auto">
-          <table className="w-full border-collapse">
-            <thead>
-              <tr>
-                {Array.from({ length: cols }).map((_, c) => {
-                  const align = alignments[c] ?? 'left'
-                  return (
-                    <th className="border border-gray-800 p-1" key={c}>
-                      <button
-                        className="w-full rounded bg-gray-900 px-2 py-1 text-body-xs text-gray-400 hover:text-primary"
-                        onClick={() => toggleAlign(c)}
-                        title={`Align: ${align}`}
-                        type="button"
-                      >
-                        {ALIGN_ICON[align]}
-                      </button>
-                    </th>
-                  )
-                })}
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((row, r) => (
-                <tr key={r}>
-                  {row.map((cell, c) => (
-                    <td
-                      className="border border-gray-800 p-1 data-[state=header]:[&_input]:font-bold data-[state=header]:[&_input]:text-gray-100"
-                      data-state={r === 0 ? 'header' : 'body'}
-                      key={c}
-                    >
-                      <TextInput
-                        aria-label={r === 0 ? `Header column ${c + 1}` : `Row ${r}, column ${c + 1}`}
-                        name={`cell-${r}-${c}`}
-                        onChange={(value) => updateCell(r, c, value)}
-                        placeholder={r === 0 ? `Header ${c + 1}` : ''}
-                        type="text"
-                        value={cell}
-                        size="compact"
-                      />
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        <div className="border-t-2 border-dashed border-gray-900" />
-
-        <div className="flex flex-col gap-1">
-          <div className="flex items-center gap-1">
-            <span className="text-body-xs font-medium text-gray-400">Markdown</span>
-            <CopyButton label="Markdown" value={output} />
-          </div>
-          <pre className="max-h-[200px] overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono text-body-xs text-gray-300">
-            {output || 'Fill in cells to generate Markdown...'}
-          </pre>
-        </div>
-      </div>
-    </ToolDialogFrame>
+    Number.isInteger(rows) &&
+    Number.isInteger(cols) &&
+    Array.isArray(data) &&
+    data.length === rows &&
+    data.every((row) => Array.isArray(row) && row.length === cols && row.every((cell) => typeof cell === 'string')) &&
+    Array.isArray(alignments) &&
+    alignments.length === cols &&
+    alignments.every((a) => a in NEXT_ALIGN)
   )
 }
+
+// Deterministic: the same grid always gives the same Markdown, so it runs
+// live. Only corrupt saved options are an error — the grid editor keeps rows,
+// columns and alignments in step.
+const build = (state: MarkdownTableState): string => {
+  if (!isTableState(state)) throw new Error('The saved table is damaged — change any cell to start a new one')
+  return generateMarkdownTable(state.data, state.alignments)
+}
+
+export const MarkdownTableGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <GeneratorShell
+    autoOpen={autoOpen}
+    compute={build}
+    description={toolEntry?.description}
+    initial={createInitialState()}
+    onAfterClose={onAfterClose}
+    output={{ kind: 'text', label: 'Markdown', placeholder: 'Fill in the cells to build a Markdown table' }}
+    renderOptions={({ options, setOptions, setOptionsDebounced }) => {
+      // ADR-0013: the reducer stays, as the bag's transition function. A
+      // damaged saved bag edits from a fresh grid instead of crashing.
+      const state = isTableState(options) ? options : createInitialState()
+      const { alignments, cols, data, rows } = state
+      const dispatch = (action: MarkdownTableAction) => setOptions(reducer(state, action))
+      // Typing in a cell waits for a pause before rebuilding.
+      const updateCell = (r: number, c: number, val: string) =>
+        setOptionsDebounced(reducer(state, { payload: { c, r, val }, type: 'UPDATE_CELL' }))
+
+      return (
+        <>
+          <div className="flex items-center gap-4">
+            <div className="w-24">
+              <FieldForm
+                label="Rows"
+                max={20}
+                min={2}
+                name="table-rows"
+                onChange={(val: string) => dispatch({ payload: Number(val), type: 'CHANGE_ROWS' })}
+                type="number"
+                value={String(rows)}
+              />
+            </div>
+            <div className="w-24">
+              <FieldForm
+                label="Cols"
+                max={10}
+                min={2}
+                name="table-cols"
+                onChange={(val: string) => dispatch({ payload: Number(val), type: 'CHANGE_COLS' })}
+                type="number"
+                value={String(cols)}
+              />
+            </div>
+          </div>
+
+          <div className="overflow-auto">
+            <table className="w-full border-collapse">
+              <thead>
+                <tr>
+                  {Array.from({ length: cols }).map((_, c) => {
+                    const align = alignments[c] ?? 'left'
+                    return (
+                      <th className="border border-gray-800 p-1" key={c}>
+                        <button
+                          aria-label={`Column ${c + 1} alignment: ${align}`}
+                          className="w-full rounded bg-gray-900 px-2 py-1 text-body-xs text-gray-400 hover:text-primary"
+                          onClick={() => dispatch({ payload: c, type: 'TOGGLE_ALIGN' })}
+                          title={`Align: ${align}`}
+                          type="button"
+                        >
+                          {ALIGN_ICON[align]}
+                        </button>
+                      </th>
+                    )
+                  })}
+                </tr>
+              </thead>
+              <tbody>
+                {data.map((row, r) => (
+                  <tr key={r}>
+                    {row.map((cell, c) => (
+                      <td
+                        className="border border-gray-800 p-1 data-[state=header]:[&_input]:font-bold data-[state=header]:[&_input]:text-gray-100"
+                        data-state={r === 0 ? 'header' : 'body'}
+                        key={c}
+                      >
+                        <TextInput
+                          aria-label={r === 0 ? `Header column ${c + 1}` : `Row ${r}, column ${c + 1}`}
+                          name={`cell-${r}-${c}`}
+                          onChange={(value) => updateCell(r, c, value)}
+                          placeholder={r === 0 ? `Header ${c + 1}` : ''}
+                          size="compact"
+                          type="text"
+                          value={cell}
+                        />
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </>
+      )
+    }}
+    run={{ mode: 'live' }}
+    storageKey="csr-dev-tools-markdown-table-generator"
+    title="Markdown Table Generator"
+    triggerLabel="Build Table"
+  />
+)

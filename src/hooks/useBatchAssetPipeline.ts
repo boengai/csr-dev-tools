@@ -15,22 +15,23 @@ import { useBlobUrl } from './useBlobUrl'
 import { useStaleSafeAsync } from './useStaleSafeAsync'
 
 /**
- * Batch asset pipeline — owns the wiring shared by Tools that upload a single
- * image source and produce a batch of derived `Blob` results (e.g.
- * FaviconGenerator, SplashScreenGenerator). Composes:
+ * Batch asset pipeline — owns the wiring for one uploaded image source that
+ * produces a batch of derived results. Its consumer is the derived-output mode
+ * of the File processor shell (FaviconGenerator, SplashScreenGenerator,
+ * ImageToBase64). Composes:
  *
  *   - `useStaleSafeAsync` for race-free `regenerate()`
  *   - `loadImageFromBlob` for source decoding
  *   - `useBlobUrl` for the source preview URL lifecycle
  *   - `downloadBlob` / `buildZipBlob` for output
- *   - `useToast` for the reject / success / failure messages
+ *   - `useToast` for the reject message and the optional success / failure ones
  *
  * See CONTEXT.md → "Batch asset pipeline".
  */
 export function useBatchAssetPipeline<TResults>(
   options: UseBatchAssetPipelineOptions,
 ): UseBatchAssetPipelineResult<TResults> {
-  const { accept, failureToastLabel, mimePrefix, rejectToastLabel, successToastLabel } = options
+  const { failureToastLabel, mimePrefix, rejectToastLabel, successToastLabel } = options
 
   const [sourceFile, setSourceFile] = useState<File | null>(null)
   const [sourceImage, setSourceImage] = useState<HTMLImageElement | null>(null)
@@ -129,7 +130,7 @@ export function useBatchAssetPipeline<TResults>(
           setError(err)
           setProgress(null)
           setPending(false)
-          showError(failureToastLabel)
+          if (failureToastLabel) showError(failureToastLabel)
         })
       }
     },
@@ -144,30 +145,6 @@ export function useBatchAssetPipeline<TResults>(
     const blob = await buildZipBlob(files)
     downloadBlob(blob, zipName)
   }, [])
-
-  const openFilePicker = useCallback(
-    () =>
-      new Promise<boolean>((resolve) => {
-        const input = document.createElement('input')
-        input.type = 'file'
-        input.accept = accept
-        input.style.display = 'none'
-        input.onchange = () => {
-          const fileList = input.files
-          const picked = fileList ? Array.from(fileList) : []
-          input.remove()
-          if (picked.length > 0) void upload(picked).then(resolve, () => resolve(false))
-          else resolve(false)
-        }
-        input.oncancel = () => {
-          input.remove()
-          resolve(false)
-        }
-        document.body.appendChild(input)
-        input.click()
-      }),
-    [accept, upload],
-  )
 
   const reset = useCallback(() => {
     // Bumping the sessions guarantees any in-flight regenerate / decode
@@ -187,7 +164,6 @@ export function useBatchAssetPipeline<TResults>(
     downloadAll,
     downloadOne,
     error,
-    openFilePicker,
     pending,
     progress,
     regenerate,

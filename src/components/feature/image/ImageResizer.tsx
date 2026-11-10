@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
 import { FieldForm, ImageIcon, SelectInput } from '@/components/common'
-import { ImageBatchShell } from '@/components/common/image-batch'
-import { IMAGE_LABEL, LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
+import { FileProcessorShell } from '@/components/common/file-processor'
+import { IMAGE_FILE_NOUN, IMAGE_LABEL, LOSSY_FORMATS, TOOL_REGISTRY_MAP } from '@/constants'
 import type { ImageFormat, ImageOutputFormat, ImageResizeMode, ImageResizerSettings, ToolComponentProps } from '@/types'
 import {
   detectEncodableImageFormats,
@@ -49,7 +49,7 @@ const parseDimension = (value: string): number | null => {
   return Number.isFinite(n) && n > 0 ? n : null
 }
 
-export const ImageResizer = ({ onAfterClose }: ToolComponentProps) => {
+export const ImageResizer = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [settings, setSettings] = useState<ImageResizerSettings>(INITIAL_SETTINGS)
   const { format, height, mode, quality, width } = settings
   const isExact = mode !== 'fit'
@@ -74,14 +74,17 @@ export const ImageResizer = ({ onAfterClose }: ToolComponentProps) => {
   }
 
   return (
-    <ImageBatchShell
+    <FileProcessorShell
       accept="image/*"
       actionIcon={<ImageIcon />}
       actionLabel="Resize"
+      autoOpen={autoOpen}
       canProcess={ready}
       description={toolEntry?.description}
       failureToastLabel="Image resizing failed — try a different format or smaller file"
       getOutputName={(file) => parseFileName(file.name, resolveFormat(format, file))}
+      multiple
+      noun={IMAGE_FILE_NOUN}
       onAfterClose={onAfterClose}
       previewKey={JSON.stringify(settings)}
       process={process}
@@ -141,7 +144,8 @@ export const ImageResizer = ({ onAfterClose }: ToolComponentProps) => {
           )}
         </>
       }
-      title="Adjust the size of your images"
+      title="Image Resizer"
+      triggerLabel="Resize Images"
       uploadLabel="Select images from your device"
       zipPrefix="resized"
     />

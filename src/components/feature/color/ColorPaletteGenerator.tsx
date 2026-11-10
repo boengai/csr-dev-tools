@@ -1,10 +1,6 @@
-import { m } from 'motion/react'
-
-import { Button, ColorInput, CopyButton, FieldForm, SelectInput } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { ColorInput, CopyButton, FieldForm, GeneratorShell, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useCopyToClipboard, useToolFields } from '@/hooks'
-import type { PaletteInput, ToolComponentProps } from '@/types'
+import type { GeneratorSwatches, PaletteInput, ToolComponentProps } from '@/types'
 import { formatPaletteAsCss, generatePalette, type HarmonyType, type PaletteColor } from '@/utils'
 
 const HARMONY_OPTIONS: Array<{ label: string; value: HarmonyType }> = [
@@ -15,8 +11,9 @@ const HARMONY_OPTIONS: Array<{ label: string; value: HarmonyType }> = [
   { label: 'Monochromatic', value: 'monochromatic' },
 ]
 
-const DEFAULT_COLOR = '#3b82f6'
-const DEFAULT_HARMONY: HarmonyType = 'analogous'
+const INITIAL: PaletteInput = { harmony: 'analogous', hex: '#3b82f6' }
+const HEX_PATTERN = /^#?([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/
+const INVALID_HEX = 'Enter a valid hex color (e.g., #3B82F6)'
 
 const toPickerHex = (hex: string): string => {
   if (/^#[0-9a-fA-F]{6}$/.test(hex)) return hex
@@ -24,110 +21,77 @@ const toPickerHex = (hex: string): string => {
   return m ? `#${m[1]}${m[1]}${m[2]}${m[2]}${m[3]}${m[3]}` : '#000000'
 }
 
+const formatHsl = (hsl: PaletteColor['hsl']) => `hsl(${Math.round(hsl.h)} ${Math.round(hsl.s)}% ${Math.round(hsl.l)}%)`
+
+// Deterministic: the same colour and harmony always give the same palette, so
+// it runs live. A bad hex (typed, or corrupt saved options) is an input error
+// for the status slot.
+const generate = async ({ harmony, hex }: PaletteInput): Promise<GeneratorSwatches> => {
+  if (typeof hex !== 'string' || !HEX_PATTERN.test(hex.trim())) throw new Error(INVALID_HEX)
+  if (!HARMONY_OPTIONS.some((o) => o.value === harmony)) throw new Error('Pick a harmony type')
+  let palette: Array<PaletteColor>
+  try {
+    palette = await generatePalette(hex.trim(), harmony)
+  } catch {
+    throw new Error(INVALID_HEX)
+  }
+  return {
+    copyAll: formatPaletteAsCss(palette),
+    swatches: palette.map((color) => ({
+      color: color.hex,
+      details: [color.hex, color.rgb, formatHsl(color.hsl)],
+      value: color.hex,
+    })),
+  }
+}
+
 const toolEntry = TOOL_REGISTRY_MAP['color-palette-generator']
 
-export const ColorPaletteGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const copyToClipboard = useCopyToClipboard()
+export const ColorPaletteGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <GeneratorShell
+    autoOpen={autoOpen}
+    compute={generate}
+    description={toolEntry?.description}
+    initial={INITIAL}
+    onAfterClose={onAfterClose}
+    output={{
+      copyAllLabel: 'palette as CSS',
+      itemLabel: 'color',
+      kind: 'swatches',
+      label: 'Palette',
+      placeholder: 'Pick a base color to generate a palette',
+    }}
+    renderOptions={({ options, setOptions, setOptionsDebounced }) => (
+      <>
+        <ColorInput
+          aria-label="Color picker"
+          onChange={(hex: string) => setOptionsDebounced({ hex })}
+          size="full"
+          value={toPickerHex(typeof options.hex === 'string' ? options.hex : '')}
+        />
 
-  const {
-    inputs,
-    result: palette,
-    setFields,
-    setFieldsImmediate,
-  } = useToolFields<PaletteInput, Array<PaletteColor>>({
-    autorunOnMount: true,
-    compute: ({ hex, harmony }) => generatePalette(hex, harmony),
-    debounceMs: 300,
-    errorLabel: 'Enter a valid hex color (e.g., #3B82F6)',
-    initial: { hex: DEFAULT_COLOR, harmony: DEFAULT_HARMONY },
-    initialResult: [],
-    isEmpty: ({ hex }) => !hex.trim(),
-  })
-  const { hex: hexInput, harmony: harmonyType } = inputs
+        <FieldForm
+          label="Hex Color"
+          name="hex-color"
+          onChange={(hex: string) => setOptionsDebounced({ hex })}
+          placeholder="#3b82f6"
+          suffix={<CopyButton label="Hex" value={String(options.hex ?? '')} />}
+          type="text"
+          value={String(options.hex ?? '')}
+        />
 
-  const handleHexChange = (value: string) => setFields({ hex: value })
-  const handlePickerChange = (hex: string) => setFields({ hex })
-  const handleHarmonyChange = (value: string) => setFieldsImmediate({ harmony: value as HarmonyType })
-
-  const handleCopyCss = () => copyToClipboard(formatPaletteAsCss(palette))
-
-  const formatHsl = (hsl: PaletteColor['hsl']) =>
-    `hsl(${Math.round(hsl.h)} ${Math.round(hsl.s)}% ${Math.round(hsl.l)}%)`
-
-  return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      title="Color Palette Generator"
-      triggers={[{ label: 'Generate' }]}
-    >
-      <div className="flex size-full grow flex-col gap-4">
-        <div className="flex flex-col gap-3">
-          <ColorInput
-            aria-label="Color picker"
-            onChange={handlePickerChange}
-            size="full"
-            value={toPickerHex(hexInput)}
-          />
-
-          <FieldForm
-            label="Hex Color"
-            name="hex-color"
-            onChange={handleHexChange}
-            placeholder="#3b82f6"
-            suffix={<CopyButton label="Hex" value={hexInput} />}
-            type="text"
-            value={hexInput}
-          />
-
-          <SelectInput
-            aria-label="Harmony type"
-            name="harmony-type"
-            onChange={handleHarmonyChange}
-            options={HARMONY_OPTIONS}
-            value={harmonyType}
-          />
-        </div>
-
-        <div aria-live="polite" className="flex flex-col gap-3">
-          {palette.length > 0 && (
-            <div className="grid grid-cols-1 gap-2 tablet:grid-cols-5">
-              {palette.map((color, i) => (
-                <m.button
-                  animate={{ opacity: 1, scale: 1 }}
-                  aria-label={`Copy color ${color.hex}`}
-                  className="group focus-visible:ring-blue-500 relative flex min-h-24 cursor-pointer flex-col items-center justify-end overflow-hidden rounded-lg border border-gray-700 p-2 transition-shadow hover:shadow-lg focus-visible:ring-2 focus-visible:outline-none"
-                  initial={{ opacity: 0, scale: 0.9 }}
-                  key={color.hex}
-                  onClick={() => copyToClipboard(color.hex)}
-                  style={{ backgroundColor: color.hex }}
-                  tabIndex={0}
-                  transition={{ delay: i * 0.05, duration: 0.2, ease: 'easeOut' }}
-                  type="button"
-                >
-                  <div className="pointer-events-none absolute inset-0 bg-black/0 transition-colors group-hover:bg-black/40" />
-                  <div className="relative z-10 flex flex-col items-center gap-0.5 text-center opacity-0 group-focus-within:opacity-100 group-hover:opacity-100">
-                    <span className="rounded bg-black/60 px-1.5 py-0.5 text-body-xs font-medium text-white">
-                      {color.hex}
-                    </span>
-                    <span className="rounded bg-black/60 px-1.5 py-0.5 text-body-xs text-white">{color.rgb}</span>
-                    <span className="rounded bg-black/60 px-1.5 py-0.5 text-body-xs text-white">
-                      {formatHsl(color.hsl)}
-                    </span>
-                  </div>
-                </m.button>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {palette.length > 0 && (
-          <Button aria-label="Export CSS custom properties" onClick={handleCopyCss} variant="primary">
-            Export CSS
-          </Button>
-        )}
-      </div>
-    </ToolDialogFrame>
-  )
-}
+        <SelectInput
+          aria-label="Harmony type"
+          name="harmony-type"
+          onChange={(value: string) => setOptions({ harmony: value as HarmonyType })}
+          options={HARMONY_OPTIONS}
+          value={options.harmony}
+        />
+      </>
+    )}
+    run={{ mode: 'live' }}
+    storageKey="csr-dev-tools-color-palette-generator"
+    title="Color Palette Generator"
+    triggerLabel="Generate"
+  />
+)

@@ -1,134 +1,48 @@
-import { useState } from 'react'
-
-import { CopyButton, FieldForm, Pane } from '@/components/common'
-import { UploadDialogFrame } from '@/components/common/dialog/UploadDialogFrame'
-import { UploadInput } from '@/components/common/input'
-import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import { formatBase64Size, formatFileSize, type ImageBase64Result, imageFileToBase64 } from '@/utils'
+import { FileProcessorShell } from '@/components/common/file-processor'
+import { IMAGE_FILE_NOUN, TOOL_REGISTRY_MAP } from '@/constants'
+import type { FileProcessorDerivedInput, FileProcessorTextResult, ToolComponentProps } from '@/types'
+import { formatBase64Size, formatFileSize, imageFileToBase64 } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['image-to-base64']
 
-export const ImageToBase64 = ({ onAfterClose }: ToolComponentProps) => {
-  const [result, setResult] = useState<ImageBase64Result | null>(null)
-  const showError = useToast((s) => s.showError)
-
-  const handleUpload = async (files: Array<File>, openDialog: () => void) => {
-    const file = files[0]
-    if (!file) return
-
-    if (!file.type.startsWith('image/')) {
-      showError('Please select an image file')
-      return
-    }
-
-    try {
-      const data = await imageFileToBase64(file)
-      setResult(data)
-      openDialog()
-    } catch {
-      showError('Failed to convert image')
-    }
+const process = async ({ file }: FileProcessorDerivedInput<object>): Promise<FileProcessorTextResult> => {
+  const result = await imageFileToBase64(file)
+  return {
+    textOutputs: [
+      { label: 'Data URI', value: result.dataUri },
+      { details: formatBase64Size(result.base64Length), label: 'Base64', value: result.base64Only },
+      { label: 'HTML tag', value: result.htmlTag },
+    ],
   }
-
-  const handleReset = () => {
-    setResult(null)
-  }
-
-  return (
-    <UploadDialogFrame
-      accept="image/*"
-      buttonLabel="Select image"
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      onReset={handleReset}
-      onUpload={handleUpload}
-      title="Image to Base64"
-      uploadInputName="image-to-base64"
-    >
-      {result && (
-        <div className="flex w-full grow flex-col gap-4">
-          <div className="flex items-start gap-4">
-            <img
-              alt={result.fileName}
-              className="max-h-24 max-w-24 shrink-0 rounded-lg border border-gray-800 object-contain"
-              src={result.dataUri}
-            />
-            <div className="flex flex-col gap-1">
-              <p className="text-body-sm text-gray-300">
-                {result.fileName} — {result.width}x{result.height} — {formatFileSize(result.originalSize)}
-              </p>
-              <p className="text-body-xs text-gray-500">Base64 length: {formatBase64Size(result.base64Length)}</p>
-            </div>
-          </div>
-
-          <div className="border-t-2 border-dashed border-gray-900" />
-
-          <Pane gap="md" live>
-            <div className="flex min-h-0 flex-col gap-2">
-              <FieldForm
-                disabled
-                label={
-                  <span className="flex items-center gap-1">
-                    <span>Data URI</span>
-                    <CopyButton label="data URI" value={result.dataUri} />
-                  </span>
-                }
-                name="data-uri"
-                placeholder=""
-                rows={4}
-                type="textarea"
-                value={result.dataUri}
-              />
-            </div>
-
-            <div className="flex min-h-0 flex-col gap-2">
-              <FieldForm
-                disabled
-                label={
-                  <span className="flex items-center gap-1">
-                    <span>Base64 Only</span>
-                    <CopyButton label="base64" value={result.base64Only} />
-                  </span>
-                }
-                name="base64-only"
-                placeholder=""
-                rows={4}
-                type="textarea"
-                value={result.base64Only}
-              />
-            </div>
-
-            <div className="flex min-h-0 flex-col gap-2">
-              <FieldForm
-                disabled
-                label={
-                  <span className="flex items-center gap-1">
-                    <span>HTML Tag</span>
-                    <CopyButton label="HTML tag" value={result.htmlTag} />
-                  </span>
-                }
-                name="html-tag"
-                placeholder=""
-                rows={3}
-                type="textarea"
-                value={result.htmlTag}
-              />
-            </div>
-          </Pane>
-
-          {/* Swap the source without closing (close navigates home). Dialog is
-              already open, so re-upload just reprocesses — pass a no-op opener. */}
-          <UploadInput
-            accept="image/*"
-            button={{ block: true, children: 'Choose another image' }}
-            multiple={false}
-            name="image-to-base64-replace"
-            onChange={(files) => void handleUpload(files, () => {})}
-          />
-        </div>
-      )}
-    </UploadDialogFrame>
-  )
 }
+
+export const ImageToBase64 = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <FileProcessorShell
+    accept="image/*"
+    autoOpen={autoOpen}
+    description={toolEntry?.description}
+    errorLabel="Failed to convert image"
+    noun={IMAGE_FILE_NOUN}
+    onAfterClose={onAfterClose}
+    output="text"
+    pendingLabel="Converting…"
+    placeholder="Add an image to encode it as Base64"
+    process={process}
+    rejectToastLabel="Please select an image file"
+    renderSource={({ image, source, sourceUrl }) => (
+      <div className="flex grow flex-col items-center justify-center gap-2 p-4">
+        <img
+          alt={source.name}
+          className="max-h-60 max-w-full rounded-lg border border-gray-800 object-contain"
+          src={sourceUrl}
+        />
+        <p className="text-center text-body-xs text-gray-500">
+          {source.name} — {image.naturalWidth}x{image.naturalHeight} — {formatFileSize(source.size)}
+        </p>
+      </div>
+    )}
+    title="Image to Base64"
+    triggerLabel="Encode Image"
+    uploadLabel="Select image to encode"
+  />
+)

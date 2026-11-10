@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 
 import type { PdfBytesPreviewProps, PdfBytesPreviewRendered } from '@/types'
 
+import { ErrorBanner } from '../banner'
+
 let pdfjsPromise: Promise<typeof import('pdfjs-dist')> | null = null
 
 /** Loads pdf.js + wires its worker once; concurrent callers (StrictMode's double effect) share one import. */
@@ -85,11 +87,9 @@ export const PdfBytesPreview = ({ bytes }: PdfBytesPreviewProps) => {
         <span className="text-body-xs font-medium text-gray-300">PDF preview</span>
         {isRendering && <span className="text-body-xs text-gray-500">Rendering…</span>}
       </div>
-      {error !== null && (
-        <p className="text-red-400 text-body-xs" role="alert">
-          {error}
-        </p>
-      )}
+      {/* Not an input error: the PDF was built (Download still works) but this
+          preview couldn't render it, so the message stays with the preview. */}
+      {error !== null && <ErrorBanner>{error}</ErrorBanner>}
       <div className="flex min-h-0 grow flex-col gap-3 overflow-auto rounded-lg border-2 border-gray-900 bg-gray-100 p-3">
         {pages.map((dataUrl, i) => (
           // Page number is the page's identity — the list is rebuilt wholesale per buffer.

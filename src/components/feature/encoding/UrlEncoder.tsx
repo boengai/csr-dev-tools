@@ -1,17 +1,17 @@
 import { useCallback } from 'react'
 
-import { BidirectionalConverter } from '@/components/common'
+import { CodecShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, ToolComponentProps, UrlMode } from '@/types'
+import type { CodecMode, ToolComponentProps, UrlMode } from '@/types'
 
 const toolEntry = TOOL_REGISTRY_MAP['url-encoder-decoder']
 
-const MODES: [ConverterMode<UrlMode>, ConverterMode<UrlMode>] = [
+const MODES: [CodecMode<UrlMode>, CodecMode<UrlMode>] = [
   {
     key: 'encode',
     label: 'URL Encode',
     resultLabel: 'Result',
-    resultPlaceholder: 'hello%20world%26foo%3Dbar',
+    resultPlaceholder: 'Enter text to URL-encode it',
     sourceLabel: 'Source',
     sourcePlaceholder: 'hello world&foo=bar',
   },
@@ -19,7 +19,7 @@ const MODES: [ConverterMode<UrlMode>, ConverterMode<UrlMode>] = [
     key: 'decode',
     label: 'URL Decode',
     resultLabel: 'Result',
-    resultPlaceholder: 'hello world&foo=bar',
+    resultPlaceholder: 'Paste URL-encoded text to decode it',
     sourceLabel: 'Source',
     sourcePlaceholder: 'hello%20world%26foo%3Dbar',
   },
@@ -43,7 +43,7 @@ export const UrlEncoder = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   )
 
   return (
-    <BidirectionalConverter
+    <CodecShell
       autoOpen={autoOpen}
       compute={compute}
       description={toolEntry?.description}

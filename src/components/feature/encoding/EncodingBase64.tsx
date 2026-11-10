@@ -1,18 +1,18 @@
 import { useCallback } from 'react'
 
-import { BidirectionalConverter } from '@/components/common'
+import { CodecShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { Base64Mode, ConverterMode, ToolComponentProps } from '@/types'
+import type { Base64Mode, CodecMode, ToolComponentProps } from '@/types'
 import { decodeBase64, encodeBase64, isValidBase64 } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['base64-codec']
 
-const MODES: [ConverterMode<Base64Mode>, ConverterMode<Base64Mode>] = [
+const MODES: [CodecMode<Base64Mode>, CodecMode<Base64Mode>] = [
   {
     key: 'encode',
     label: 'Base64 Encode',
     resultLabel: 'Result',
-    resultPlaceholder: 'SGVsbG8sIFdvcmxkIQ==',
+    resultPlaceholder: 'Enter text to encode it as Base64',
     sourceLabel: 'Source',
     sourcePlaceholder: 'Hello, World!',
   },
@@ -20,7 +20,7 @@ const MODES: [ConverterMode<Base64Mode>, ConverterMode<Base64Mode>] = [
     key: 'decode',
     label: 'Base64 Decode',
     resultLabel: 'Result',
-    resultPlaceholder: 'Hello, World!',
+    resultPlaceholder: 'Paste Base64 to decode it',
     sourceLabel: 'Source',
     sourcePlaceholder: 'SGVsbG8sIFdvcmxkIQ==',
   },
@@ -48,7 +48,7 @@ export const EncodingBase64 = ({ autoOpen, onAfterClose }: ToolComponentProps) =
   )
 
   return (
-    <BidirectionalConverter
+    <CodecShell
       autoOpen={autoOpen}
       compute={compute}
       description={toolEntry?.description}

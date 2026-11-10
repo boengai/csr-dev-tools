@@ -2,7 +2,7 @@ import { useToolInput } from '@/hooks'
 import type { MarkupToPdfShellProps } from '@/types'
 import type { CompileResultDto } from '@/types/wasm/pdf'
 
-import { ErrorBanner } from '../banner'
+import { ToolStatus } from '../banner'
 import { ToolDialogFrame } from '../dialog/ToolDialogFrame'
 import { FieldForm } from '../form'
 import { Pane, SplitPanel } from '../layout'
@@ -44,11 +44,10 @@ export const MarkupToPdfShell = ({
   const handleReset = () => setInputImmediate('')
 
   // Stale output is suppressed on error: when `error != null`, the shell hides
-  // both <PdfSvgPreview> and <DownloadPdfButton> and surfaces err.message in an
-  // inline banner. Prevents downloading bytes that don't match the displayed
-  // source. See CONTEXT.md → "Markup to PDF shell" invariant 3.
+  // both <PdfSvgPreview> and <DownloadPdfButton> and surfaces err.message in
+  // the [[Tool status slot]]. Prevents downloading bytes that don't match the
+  // displayed source. See CONTEXT.md → "Markup to PDF shell" invariant 3.
   const hasError = error !== null
-  const errorMessage = error instanceof Error ? error.message : 'Failed to render PDF'
 
   return (
     <ToolDialogFrame
@@ -60,6 +59,7 @@ export const MarkupToPdfShell = ({
       triggers={[{ label: triggerLabel }]}
     >
       <div className="flex min-h-0 w-full grow flex-col gap-4">
+        <ToolStatus error={error} errorFallback="Failed to render PDF" />
         <SplitPanel>
           <Pane>
             <FieldForm
@@ -77,11 +77,7 @@ export const MarkupToPdfShell = ({
               <span className="text-body-xs font-medium text-gray-300">Preview</span>
               {!hasError && <DownloadPdfButton bytes={result.pdf} filenameSlug={filenameSlug} />}
             </div>
-            {hasError ? (
-              <ErrorBanner variant="warning">{errorMessage}</ErrorBanner>
-            ) : (
-              <PdfSvgPreview pages={result.svgs} />
-            )}
+            {!hasError && <PdfSvgPreview pages={result.svgs} />}
           </Pane>
         </SplitPanel>
       </div>

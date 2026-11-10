@@ -10,9 +10,7 @@ test.describe('Placeholder Image Generator', () => {
 
   test('renders tool with title and description', async ({ page }) => {
     await expect(card.title(page, 'Placeholder Image Generator')).toBeVisible()
-    await expect(
-      page.getByText('Generate placeholder images with custom dimensions, colors, and text.'),
-    ).toBeVisible()
+    await expect(page.getByText('Generate placeholder images with custom dimensions, colors, and text.')).toBeVisible()
   })
 
   test('shows preview image with default dimensions', async ({ page }) => {
@@ -52,13 +50,29 @@ test.describe('Placeholder Image Generator', () => {
 
   test('selects a preset and populates dimensions', async ({ page }) => {
     await page.locator('[role="combobox"]').click()
-    await page.locator('[role="option"]').filter({ hasText: /^Banner/ }).click()
+    await page
+      .locator('[role="option"]')
+      .filter({ hasText: /^Banner/ })
+      .click()
 
     const widthInput = page.locator('input[name="placeholder-width"]')
     const heightInput = page.locator('input[name="placeholder-height"]')
 
     await expect(widthInput).toHaveValue('1200', { timeout: 3000 })
     await expect(heightInput).toHaveValue('630', { timeout: 3000 })
+  })
+
+  test('shows bad dimensions in the status slot instead of a toast', async ({ page }) => {
+    const widthInput = page.locator('input[name="placeholder-width"]')
+    await widthInput.clear()
+    await widthInput.fill('5000')
+
+    await expect(page.locator('[data-slot="tool-status"]').getByRole('alert')).toHaveText(
+      'Maximum dimension is 4096x4096',
+      { timeout: 3000 },
+    )
+    await expect(page.locator('img[alt*="Placeholder preview"]')).toHaveCount(0)
+    await expect(page.getByRole('button', { name: 'Download PNG' })).toHaveCount(0)
   })
 
   test('Download PNG triggers download with toast', async ({ page }) => {

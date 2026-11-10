@@ -1,4 +1,4 @@
-import { FieldForm, FormatterShell } from '@/components/common'
+import { FieldForm, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { JsInput, ToolComponentProps } from '@/types'
 import { formatJs, minifyJs } from '@/wasm/formatter'
@@ -9,7 +9,7 @@ const INITIAL: JsInput = { source: '', mode: 'minify', indent: 2 }
 
 export const JavaScriptMinifier = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
-    <FormatterShell<JsInput>
+    <TransformerShell<JsInput>
       autoOpen={autoOpen}
       compute={({ source, mode, indent }) => (mode === 'beautify' ? formatJs(source, indent) : minifyJs(source))}
       description={toolEntry?.description}
@@ -55,7 +55,7 @@ export const JavaScriptMinifier = ({ autoOpen, onAfterClose }: ToolComponentProp
           </>
         )
       }}
-      resultPlaceholder="Processed JavaScript will appear here"
+      resultPlaceholder="Paste JavaScript to minify or beautify it"
       sourceLabel="JavaScript Input"
       sourcePlaceholder="function hello() { return 'world'; }"
       storageKey="csr-dev-tools-javascript-minifier"

@@ -1,8 +1,7 @@
 import { ReactFlowProvider, useReactFlow } from '@xyflow/react'
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
-import { Button } from '@/components/common'
-import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
+import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { DiagramEditor } from '@/diagram/editor'
 import { gridLayoutPositions } from '@/diagram/layout'
@@ -183,7 +182,6 @@ const MobileBlocker = () => (
 // DbDiagram — public export, owns the Dialog shell
 // ---------------------------------------------------------------------------
 export const DbDiagram = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const [dialogOpen, setDialogOpen] = useState(autoOpen ?? false)
   // Match Tailwind's `tablet:` breakpoint (48rem) so the JS gate aligns with the
   // CSS utility prefix used elsewhere in the codebase. `ssrDefault: true` keeps
   // the prerender output rendering the workspace (desktop assumption) — same as
@@ -191,24 +189,15 @@ export const DbDiagram = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const isTabletOrLarger = useMediaQuery('(min-width: 48rem)', true)
 
   return (
-    <div className="flex w-full grow flex-col gap-4">
-      {toolEntry?.description && <p className="shrink-0 text-body-xs text-gray-400">{toolEntry.description}</p>}
-
-      <div className="flex grow flex-col items-center justify-center gap-2">
-        <Button block onClick={() => setDialogOpen(true)} variant="primary">
-          Open DB Diagram
-        </Button>
-      </div>
-
-      <ToolDialogShell
-        onAfterClose={onAfterClose}
-        onOpenChange={setDialogOpen}
-        open={dialogOpen}
-        size="screen"
-        title="DB Diagram"
-      >
-        {isTabletOrLarger ? <DiagramWorkspace /> : <MobileBlocker />}
-      </ToolDialogShell>
-    </div>
+    <ToolDialogFrame
+      autoOpen={autoOpen}
+      description={toolEntry?.description}
+      onAfterClose={onAfterClose}
+      size="screen"
+      title="DB Diagram"
+      triggers={[{ label: 'Open DB Diagram' }]}
+    >
+      {isTabletOrLarger ? <DiagramWorkspace /> : <MobileBlocker />}
+    </ToolDialogFrame>
   )
 }

@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { dedupeFileName, formatFileSize, parseFileName } from './file'
+import { dedupeFileName, formatFileSize, matchesAccept, parseFileName } from './file'
 
 describe('parseFileName', () => {
   beforeEach(() => {
@@ -70,5 +70,29 @@ describe('dedupeFileName', () => {
   it('handles names without an extension and dotfiles', () => {
     expect(dedupeFileName('README', (n) => n === 'README')).toBe('README-1')
     expect(dedupeFileName('.env', (n) => n === '.env')).toBe('.env-1')
+  })
+})
+
+describe('matchesAccept', () => {
+  const file = (name: string, type: string) => new File(['x'], name, { type })
+
+  it('matches exact MIME types, case-insensitively', () => {
+    expect(matchesAccept(file('a.png', 'image/png'), 'image/png, image/jpeg')).toBe(true)
+    expect(matchesAccept(file('a.png', 'IMAGE/PNG'), 'image/png')).toBe(true)
+    expect(matchesAccept(file('a.gif', 'image/gif'), 'image/png,image/jpeg')).toBe(false)
+  })
+
+  it('matches type/* wildcards', () => {
+    expect(matchesAccept(file('a.gif', 'image/gif'), 'image/*')).toBe(true)
+    expect(matchesAccept(file('a.txt', 'text/plain'), 'image/*')).toBe(false)
+  })
+
+  it('matches .ext suffixes against the file name', () => {
+    expect(matchesAccept(file('icon.SVG', ''), '.svg')).toBe(true)
+    expect(matchesAccept(file('icon.png', ''), '.svg')).toBe(false)
+  })
+
+  it('takes anything when accept is empty', () => {
+    expect(matchesAccept(file('a.bin', ''), '')).toBe(true)
   })
 })

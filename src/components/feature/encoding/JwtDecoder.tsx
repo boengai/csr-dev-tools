@@ -1,25 +1,19 @@
-import { CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { Button, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolInput } from '@/hooks'
-import type { JwtDecoded, JwtExpirationStatus, ToolComponentProps } from '@/types'
+import type { JwtExpirationStatus, ToolComponentProps, TransformerField } from '@/types'
 import { decodeJwt, formatPayloadWithTimestamps, getExpirationStatus, isValidJwt } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['jwt-decoder']
 
-const EMPTY_DECODED: JwtDecoded = {
-  expiration: { kind: 'no-exp' },
-  header: '',
-  payload: '',
-  payloadCopy: '',
-  signature: '',
-}
+const INITIAL: { source: string } = { source: '' }
 
 const INVALID_JWT_MESSAGE = 'Enter a valid JWT token (e.g., eyJhbGciOiJIUzI1NiJ9...)'
 const DECODE_FAILURE_MESSAGE = 'JWT contains invalid header or payload — could not decode segments'
 
-// A non-expiring sample (`exp` set in year 33658) so the "Load sample" button
-// reliably demonstrates the decode pipeline + the "valid" badge.
+const EXPIRY_LABEL = 'Expiry'
+
+// A non-expiring sample (`exp` set in year 2286) so "Load sample" reliably
+// demonstrates the decode pipeline.
 const SAMPLE_JWT =
   'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJleHAiOjk5OTk5OTk5OTl9.dummy-sig'
 
@@ -30,121 +24,61 @@ const formatRelativeSeconds = (seconds: number): string => {
   return `${Math.round(seconds / 86400)}d`
 }
 
-const ExpirationBadge = ({ status }: { status: JwtExpirationStatus }) => {
-  if (status.kind === 'no-exp') return null
-  if (status.kind === 'expired') {
-    return (
-      <p className="rounded border border-error/50 bg-error/10 px-3 py-2 text-body-xs text-error" role="status">
-        Expired {formatRelativeSeconds(status.secondsAgo)} ago (exp: {status.expiredAt})
-      </p>
-    )
+// Only the expired wording starts with "Expired"; `notices` relies on that.
+const expiryField = (status: JwtExpirationStatus): Array<TransformerField> => {
+  if (status.kind === 'no-exp') return []
+  const value =
+    status.kind === 'expired'
+      ? `Expired ${formatRelativeSeconds(status.secondsAgo)} ago (exp: ${status.expiredAt})`
+      : `Valid — expires in ${formatRelativeSeconds(status.secondsUntil)} (${status.expiresAt})`
+  return [{ copy: false, label: EXPIRY_LABEL, value }]
+}
+
+const decodeSegments = (token: string) => {
+  try {
+    return decodeJwt(token)
+  } catch {
+    throw new Error(DECODE_FAILURE_MESSAGE)
   }
-  return (
-    <p className="rounded border border-success/50 bg-success/10 px-3 py-2 text-body-xs text-success" role="status">
-      Valid — expires in {formatRelativeSeconds(status.secondsUntil)} ({status.expiresAt})
-    </p>
-  )
 }
 
-export const JwtDecoder = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const {
-    input: source,
-    result: decoded,
-    setInput,
-    reset,
-  } = useToolInput<string, JwtDecoded>({
-    compute: (val) => {
-      if (!isValidJwt(val)) throw new Error(INVALID_JWT_MESSAGE)
-      try {
-        const { header, payload, signature } = decodeJwt(val)
-        return {
-          expiration: getExpirationStatus(payload),
-          header: JSON.stringify(header, null, 2),
-          payload: formatPayloadWithTimestamps(payload),
-          payloadCopy: JSON.stringify(payload, null, 2),
-          signature,
-        }
-      } catch {
-        throw new Error(DECODE_FAILURE_MESSAGE)
-      }
-    },
-    debounceMs: 300,
-    errorFallback: DECODE_FAILURE_MESSAGE,
-    initial: '',
-    initialResult: EMPTY_DECODED,
-    isEmpty: (val) => val.length === 0,
-  })
-
-  return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      onReset={reset}
-      title="JWT Decoder"
-      triggers={[{ label: 'Decode' }]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
-        <ExpirationBadge status={decoded.expiration} />
-        <SplitPanel>
-          <Pane>
-            <FieldForm
-              label={
-                <span className="flex items-center gap-2">
-                  <span>JWT Token</span>
-                  <button
-                    className="cursor-pointer rounded border border-gray-700 px-2 py-0.5 text-body-xs text-gray-400 transition-colors hover:border-primary hover:text-primary"
-                    onClick={() => setInput(SAMPLE_JWT)}
-                    type="button"
-                  >
-                    Load sample
-                  </button>
-                </span>
-              }
-              name="dialog-source"
-              onChange={setInput}
-              placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-              type="code"
-              value={source}
-            />
-          </Pane>
-
-          <Pane live scroll>
-            <CodeOutput
-              label={
-                <span className="flex items-center gap-1">
-                  <span>Header</span>
-                  <CopyButton label="header" value={decoded.header} />
-                </span>
-              }
-              placeholder='{"alg": "HS256", "typ": "JWT"}'
-              value={decoded.header}
-            />
-
-            <CodeOutput
-              label={
-                <span className="flex items-center gap-1">
-                  <span>Payload</span>
-                  <CopyButton label="payload" value={decoded.payloadCopy} />
-                </span>
-              }
-              placeholder='{"sub": "1234567890", "name": "John Doe"}'
-              value={decoded.payload}
-            />
-
-            <CodeOutput
-              label={
-                <span className="flex items-center gap-1">
-                  <span>Signature (not verified — client-side only)</span>
-                  <CopyButton label="signature" value={decoded.signature} />
-                </span>
-              }
-              placeholder="Base64URL signature string"
-              value={decoded.signature}
-            />
-          </Pane>
-        </SplitPanel>
-      </div>
-    </ToolDialogFrame>
-  )
+const decode = (token: string): Array<TransformerField> => {
+  if (!isValidJwt(token)) throw new Error(INVALID_JWT_MESSAGE)
+  const { header, payload, signature } = decodeSegments(token)
+  return [
+    ...expiryField(getExpirationStatus(payload)),
+    { label: 'Header', value: JSON.stringify(header, null, 2) },
+    // Shown with human-readable timestamps; Copy takes the raw JSON.
+    { copyValue: JSON.stringify(payload, null, 2), label: 'Payload', value: formatPayloadWithTimestamps(payload) },
+    { label: 'Signature (not verified — client-side only)', value: signature },
+  ]
 }
+
+export const JwtDecoder = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <TransformerShell<{ source: string }, 'fields'>
+    autoOpen={autoOpen}
+    compute={({ source }) => decode(source.trim())}
+    description={toolEntry?.description}
+    errorFallback={DECODE_FAILURE_MESSAGE}
+    initial={INITIAL}
+    notices={(fields) => {
+      const expiry = fields.find((f) => f.label === EXPIRY_LABEL)?.value
+      return expiry?.startsWith('Expired') ? [expiry] : []
+    }}
+    onAfterClose={onAfterClose}
+    outputKind="fields"
+    // Tokens are not newly persisted: nothing pasted here reaches localStorage.
+    persistInput={false}
+    renderControls={({ setFieldsImmediate }) => (
+      <Button onClick={() => setFieldsImmediate({ source: SAMPLE_JWT })} size="small">
+        Load sample
+      </Button>
+    )}
+    resultLabel="Decoded"
+    resultPlaceholder="Paste a JWT to decode it"
+    sourceLabel="JWT Token"
+    sourcePlaceholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    title="JWT Decoder"
+    triggerLabel="Decode"
+  />
+)

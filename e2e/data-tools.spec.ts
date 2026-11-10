@@ -1,10 +1,15 @@
 import { expect, test } from '@playwright/test'
 
+import { toolSurface } from './helpers/selectors'
+
 test.describe('HTTP Status Codes', () => {
   test('searches for 404 and finds Not Found', async ({ page }) => {
     await page.goto('/tools/http-status-codes')
 
-    const searchInput = page.locator('fieldset').filter({ has: page.locator('label:text-is("Search")') }).locator('input')
+    const searchInput = page
+      .locator('fieldset')
+      .filter({ has: page.locator('label:text-is("Search")') })
+      .locator('input')
     await searchInput.fill('404')
 
     await expect(page.getByText('Not Found')).toBeVisible({ timeout: 3000 })
@@ -16,7 +21,10 @@ test.describe('OG Preview', () => {
   test('fills title and sees preview update', async ({ page }) => {
     await page.goto('/tools/og-preview')
 
-    const titleInput = page.locator('fieldset').filter({ has: page.locator('label:text-is("og:title")') }).locator('input')
+    const titleInput = page
+      .locator('fieldset')
+      .filter({ has: page.locator('label:text-is("og:title")') })
+      .locator('input')
     await titleInput.fill('My Test Page')
 
     // Preview cards should show the title
@@ -31,7 +39,8 @@ test.describe('User Agent Parser', () => {
     await page.getByRole('button', { name: 'Use my UA' }).click()
 
     // Should show parsed browser info
-    await expect(page.getByText('Browser', { exact: true })).toBeVisible({ timeout: 3000 })
-    await expect(page.getByText('OS', { exact: true })).toBeVisible()
+    const output = toolSurface(page).locator('[data-slot="tool-output"]')
+    await expect(output.getByText('Browser', { exact: true })).toBeVisible({ timeout: 3000 })
+    await expect(output.getByText('OS', { exact: true })).toBeVisible()
   })
 })

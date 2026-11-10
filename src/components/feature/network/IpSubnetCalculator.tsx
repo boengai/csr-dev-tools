@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import { CopyButton, ErrorBanner, FieldForm, Tabs } from '@/components/common'
+import { CopyButton, FieldForm, Tabs, ToolStatus } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { BinaryDisplayProps, InputMode, SubnetComputeInput, ToolComponentProps } from '@/types'
@@ -164,8 +164,7 @@ export const IpSubnetCalculator = ({ autoOpen, onAfterClose }: ToolComponentProp
               ]}
             />
 
-            {/* Error Display */}
-            {error && <ErrorBanner variant="warning">{error}</ErrorBanner>}
+            <ToolStatus error={error || null} errorLabel={error || undefined} />
 
             {/* Preset Buttons */}
             <div className="flex flex-wrap gap-1.5" role="group" aria-label="Common prefix lengths">

@@ -42,8 +42,8 @@ test.describe('Navigation', () => {
   test('tool routes load without error', async ({ page }) => {
     for (const route of TOOL_ROUTES) {
       await page.goto(route)
-      // Each tool page should have an h3 heading (the tool title)
-      await expect(page.locator('h3').first()).toBeVisible({ timeout: 5000 })
+      // Each tool page has an h1 heading: the tool's name (ADR-0029)
+      await expect(page.locator('h1').first()).toBeVisible({ timeout: 5000 })
       // No crash - page should not show an error boundary
       await expect(page.getByText('Something went wrong')).not.toBeVisible()
     }

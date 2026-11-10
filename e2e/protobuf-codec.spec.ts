@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { codeInput } from './helpers/selectors'
+import { codeInput, toolSurface } from './helpers/selectors'
 
 const SAMPLE_PROTO = `syntax = "proto3";
 
@@ -17,13 +17,13 @@ test.describe('Protobuf Codec', () => {
 
   test('action selection opens encode dialog', async ({ page }) => {
     await page.getByRole('button', { name: /^Encode$/ }).click()
-    await expect(page.locator('[role="dialog"]')).toBeVisible()
+    await expect(toolSurface(page)).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Protobuf Encode' })).toBeVisible()
   })
 
   test('action selection opens decode dialog', async ({ page }) => {
     await page.getByRole('button', { name: /^Decode$/ }).click()
-    await expect(page.locator('[role="dialog"]')).toBeVisible()
+    await expect(toolSurface(page)).toBeVisible()
     await expect(page.getByRole('heading', { name: 'Protobuf Decode' })).toBeVisible()
   })
 
@@ -32,7 +32,7 @@ test.describe('Protobuf Codec', () => {
 
     await codeInput.fill(page, 'proto-schema', SAMPLE_PROTO)
 
-    const dropdown = page.locator('[role="dialog"] [role="combobox"]')
+    const dropdown = toolSurface(page).locator('[role="combobox"]')
     await expect(dropdown).toBeVisible({ timeout: 5000 })
     await expect(dropdown).toContainText('Person')
   })
@@ -42,11 +42,11 @@ test.describe('Protobuf Codec', () => {
 
     await codeInput.fill(page, 'proto-schema', SAMPLE_PROTO)
 
-    await expect(page.locator('[role="dialog"] [role="combobox"]')).toContainText('Person', { timeout: 5000 })
+    await expect(toolSurface(page).locator('[role="combobox"]')).toContainText('Person', { timeout: 5000 })
 
     await codeInput.fill(page, 'dialog-source', '{"name": "Alice", "age": 30, "active": true}')
 
-    const output = page.locator('[role="dialog"] pre[data-has-value]').first()
+    const output = toolSurface(page).locator('pre[data-has-value]').first()
     await expect(output).toBeVisible({ timeout: 5000 })
   })
 
@@ -56,46 +56,47 @@ test.describe('Protobuf Codec', () => {
 
     await codeInput.fill(page, 'proto-schema', SAMPLE_PROTO)
 
-    await expect(page.locator('[role="dialog"] [role="combobox"]')).toContainText('Person', { timeout: 5000 })
+    await expect(toolSurface(page).locator('[role="combobox"]')).toContainText('Person', { timeout: 5000 })
 
     await codeInput.fill(page, 'dialog-source', '{"name": "Alice", "age": 30, "active": true}')
 
-    const output = page.locator('[role="dialog"] pre[data-has-value]').first()
+    const output = toolSurface(page).locator('pre[data-has-value]').first()
     await expect(output).toBeVisible({ timeout: 5000 })
     const encodedValue = await output.textContent()
 
     // Close dialog and open decode
     await page.keyboard.press('Escape')
-    await expect(page.locator('[role="dialog"]')).not.toBeVisible()
+    await expect(toolSurface(page)).not.toBeVisible()
 
     await page.getByRole('button', { name: /^Decode$/ }).click()
 
     // Schema is shared state — already populated from encode step
-    await expect(page.locator('[role="dialog"] [role="combobox"]')).toContainText('Person', { timeout: 5000 })
+    await expect(toolSurface(page).locator('[role="combobox"]')).toContainText('Person', { timeout: 5000 })
 
     // DecodeContent uses textarea for source input
-    const decodeSourceInput = page.locator('[role="dialog"] textarea[name="dialog-source"]')
+    const decodeSourceInput = toolSurface(page).locator('textarea[name="dialog-source"]')
     await decodeSourceInput.fill(encodedValue ?? '')
 
-    const decodeOutput = page.locator('[role="dialog"] pre[data-has-value]').first()
+    const decodeOutput = toolSurface(page).locator('pre[data-has-value]').first()
     await expect(decodeOutput).toBeVisible({ timeout: 5000 })
     await expect(decodeOutput).toContainText('Alice')
   })
 
-  test('error toast on bad input', async ({ page }) => {
+  test('shows bad input in the status slot and clears the result', async ({ page }) => {
     await page.getByRole('button', { name: /^Decode$/ }).click()
 
     await codeInput.fill(page, 'proto-schema', SAMPLE_PROTO)
 
-    await expect(page.locator('[role="dialog"] [role="combobox"]')).toContainText('Person', { timeout: 5000 })
+    await expect(toolSurface(page).locator('[role="combobox"]')).toContainText('Person', { timeout: 5000 })
 
     // DecodeContent uses textarea for source input
-    const sourceInput = page.locator('[role="dialog"] textarea[name="dialog-source"]')
+    const sourceInput = toolSurface(page).locator('textarea[name="dialog-source"]')
     await sourceInput.fill('!!!invalid-base64!!!')
 
-    // Expect a toast error to appear
-    const toast = page.locator('[role="status"]')
-    await expect(toast).toBeVisible({ timeout: 5000 })
+    // Input errors render in the dialog's status slot, never as a toast
+    const dialog = toolSurface(page)
+    await expect(dialog.locator('[data-slot="tool-status"]').getByRole('alert')).toBeVisible({ timeout: 5000 })
+    await expect(toolSurface(page).locator('pre[data-has-value]')).toHaveCount(0)
   })
 
   test('existing protobuf-to-json tool remains accessible', async ({ page }) => {
@@ -118,11 +119,11 @@ test.describe('Protobuf Codec', () => {
 
     await codeInput.fill(page, 'proto-schema', SAMPLE_PROTO)
 
-    await expect(page.locator('[role="dialog"] [role="combobox"]')).toContainText('Person', { timeout: 5000 })
+    await expect(toolSurface(page).locator('[role="combobox"]')).toContainText('Person', { timeout: 5000 })
 
     await codeInput.fill(page, 'dialog-source', '{"name": "Alice", "age": 30, "active": true}')
 
-    const output = page.locator('[role="dialog"] pre[data-has-value]').first()
+    const output = toolSurface(page).locator('pre[data-has-value]').first()
     await expect(output).toBeVisible({ timeout: 5000 })
 
     const downloadBtn = page.getByRole('button', { name: /Download encoded result/ })
@@ -134,26 +135,26 @@ test.describe('Protobuf Codec', () => {
     await page.getByRole('button', { name: /^Encode$/ }).click()
 
     await codeInput.fill(page, 'proto-schema', SAMPLE_PROTO)
-    await expect(page.locator('[role="dialog"] [role="combobox"]')).toContainText('Person', { timeout: 5000 })
+    await expect(toolSurface(page).locator('[role="combobox"]')).toContainText('Person', { timeout: 5000 })
 
     await codeInput.fill(page, 'dialog-source', '{"name": "Alice", "age": 30, "active": true}')
 
-    const output = page.locator('[role="dialog"] pre[data-has-value]').first()
+    const output = toolSurface(page).locator('pre[data-has-value]').first()
     await expect(output).toBeVisible({ timeout: 5000 })
     const encodedValue = await output.textContent()
 
     // Switch to decode
     await page.keyboard.press('Escape')
-    await expect(page.locator('[role="dialog"]')).not.toBeVisible()
+    await expect(toolSurface(page)).not.toBeVisible()
     await page.getByRole('button', { name: /^Decode$/ }).click()
 
-    await expect(page.locator('[role="dialog"] [role="combobox"]')).toContainText('Person', { timeout: 5000 })
+    await expect(toolSurface(page).locator('[role="combobox"]')).toContainText('Person', { timeout: 5000 })
 
     // DecodeContent uses textarea for source input
-    const decodeSourceInput = page.locator('[role="dialog"] textarea[name="dialog-source"]')
+    const decodeSourceInput = toolSurface(page).locator('textarea[name="dialog-source"]')
     await decodeSourceInput.fill(encodedValue ?? '')
 
-    const decodeOutput = page.locator('[role="dialog"] pre[data-has-value]').first()
+    const decodeOutput = toolSurface(page).locator('pre[data-has-value]').first()
     await expect(decodeOutput).toBeVisible({ timeout: 5000 })
 
     const downloadBtn = page.getByRole('button', { name: /Download decoded JSON/ })

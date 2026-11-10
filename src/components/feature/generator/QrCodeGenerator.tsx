@@ -1,173 +1,103 @@
-import { Button, ColorInput, CopyButton, DownloadIcon, FieldForm, Pane, SplitPanel } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { ColorInput, FieldForm, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDownload, useToolFields } from '@/hooks'
-import type { QrErrorCorrectionLevel, QrInput, QrResult, ToolComponentProps } from '@/types'
+import type { QrErrorCorrectionLevel, QrInput, ToolComponentProps, TransformerImage } from '@/types'
 import { generateQrCodeDataUrl, generateQrCodeSvgString } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['qr-code-generator']
 
-// Seed with a real value so the dialog renders a working QR the moment it
-// opens — the empty-state copy is reserved for the rare case the user clears
-// the field, which is more meaningful than greeting first-time visitors with
-// a "type something to see anything" wall.
-const INITIAL_INPUT: QrInput = {
+const INITIAL: QrInput = {
   background: '#ffffff',
   errorCorrection: 'M',
   foreground: '#000000',
   size: 256,
-  text: 'https://example.com',
+  source: '',
 }
 
-const EMPTY_RESULT: QrResult = { dataUrl: '', svgString: '' }
-
-export const QrCodeGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const { downloadDataUrl } = useDownload()
-
-  const {
-    inputs: { background, errorCorrection, foreground, size, text },
-    reset,
-    result: { dataUrl, svgString },
-    setFields,
-    setFieldsImmediate,
-  } = useToolFields<QrInput, QrResult>({
-    autorunOnMount: true,
-    compute: async ({ background: bg, errorCorrection: ec, foreground: fg, size: s, text: t }) => {
-      const [url, svg] = await Promise.all([
-        generateQrCodeDataUrl(t, {
-          background: bg,
-          errorCorrectionLevel: ec,
-          foreground: fg,
-          size: s,
-        }),
-        generateQrCodeSvgString(t, {
-          background: bg,
-          errorCorrectionLevel: ec,
-          foreground: fg,
-          size: s,
-        }),
-      ])
-      return { dataUrl: url, svgString: svg }
-    },
-    debounceMs: 300,
-    errorLabel: 'Failed to generate QR code',
-    initial: INITIAL_INPUT,
-    initialResult: EMPTY_RESULT,
-    isEmpty: ({ text: t }) => !t,
-  })
-
-  const handleTextChange = (val: string) => {
-    setFields({ text: val })
-  }
-
-  // Debounced (not immediate): dragging the slider fires a value change per
-  // pointer frame. Each compute regenerates the QR via two WASM calls whose
-  // PNG data-URL is a large base64 string (~380KB at 256px, ~4x at 512px), so
-  // an immediate path churns one big allocation per frame and spikes RAM. The
-  // size label + thumb still update synchronously via setInputs; only the
-  // expensive WASM regen waits for the drag to settle.
-  const handleSizeChange = (val: string) => {
-    setFields({ size: Number(val) })
-  }
-
-  const handleEcChange = (val: string) => {
-    setFieldsImmediate({ errorCorrection: val as QrErrorCorrectionLevel })
-  }
-
-  const handleFgChange = (val: string) => {
-    setFieldsImmediate({ foreground: val })
-  }
-
-  const handleBgChange = (val: string) => {
-    setFieldsImmediate({ background: val })
-  }
-
-  const handleDownload = () => {
-    if (!dataUrl) return
-    downloadDataUrl(dataUrl, 'qr-code.png')
-  }
-
-  return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      onReset={reset}
-      title="QR Code Generator"
-      triggers={[{ label: 'Generate QR Code' }]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
-        <SplitPanel>
-          <Pane gap="lg">
-            <FieldForm
-              label="Text or URL"
-              name="qr-text"
-              onChange={handleTextChange}
-              placeholder="https://example.com"
-              type="text"
-              value={text}
-            />
-
-            <FieldForm
-              label={`Size: ${size}px`}
-              max={512}
-              min={128}
-              name="qr-size"
-              onChange={handleSizeChange}
-              type="range"
-              value={String(size)}
-            />
-
-            <FieldForm
-              label="Error Correction"
-              name="qr-ec"
-              onChange={handleEcChange}
-              options={[
-                { label: 'Low (L)', value: 'L' },
-                { label: 'Medium (M)', value: 'M' },
-                { label: 'Quartile (Q)', value: 'Q' },
-                { label: 'High (H)', value: 'H' },
-              ]}
-              type="select"
-              value={errorCorrection}
-            />
-
-            <div className="flex gap-4">
-              <div className="flex flex-col gap-1">
-                <label className="text-body-sm font-medium text-gray-400" htmlFor="qr-fg">
-                  Foreground
-                </label>
-                <ColorInput id="qr-fg" onChange={handleFgChange} value={foreground} />
-              </div>
-              <div className="flex flex-col gap-1">
-                <label className="text-body-sm font-medium text-gray-400" htmlFor="qr-bg">
-                  Background
-                </label>
-                <ColorInput id="qr-bg" onChange={handleBgChange} value={background} />
-              </div>
-            </div>
-          </Pane>
-
-          <Pane align="center" gap="lg" live>
-            {dataUrl ? (
-              <>
-                <img alt="QR Code" className="rounded-lg" height={size} src={dataUrl} width={size} />
-                <div className="flex w-full gap-2">
-                  <Button block icon={<DownloadIcon />} onClick={handleDownload} variant="primary">
-                    Download PNG
-                  </Button>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-body-sm text-gray-400">SVG</span>
-                  <CopyButton label="SVG string" value={svgString} />
-                </div>
-              </>
-            ) : (
-              <p className="text-body-sm text-gray-500">Enter text to generate a QR code</p>
-            )}
-          </Pane>
-        </SplitPanel>
-      </div>
-    </ToolDialogFrame>
-  )
+const computeQr = async ({
+  background,
+  errorCorrection,
+  foreground,
+  size,
+  source,
+}: QrInput): Promise<TransformerImage> => {
+  const options = { background, errorCorrectionLevel: errorCorrection, foreground, size }
+  const [src, svg] = await Promise.all([
+    generateQrCodeDataUrl(source, options),
+    generateQrCodeSvgString(source, options),
+  ])
+  return { alt: 'QR Code', copy: svg, filename: 'qr-code.png', src }
 }
+
+// Same text and options give the same code, so it is a Transformer: it
+// redraws as you type. Download (PNG) and Copy (SVG) both sit in the label.
+export const QrCodeGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <TransformerShell<QrInput, 'image'>
+    autoOpen={autoOpen}
+    compute={computeQr}
+    description={toolEntry?.description}
+    errorLabel="Unable to make a QR code from this text — it may be too long"
+    imageCopyLabel="SVG"
+    initial={INITIAL}
+    onAfterClose={onAfterClose}
+    outputKind="image"
+    // Never saved before the shell (a QR text can be a Wi-Fi password); kept that way.
+    persistInput={false}
+    renderControls={({ inputs, setFields, setFieldsImmediate }) => (
+      <>
+        <div className="w-48">
+          {/* Debounced: dragging fires a change per frame, and each redraw
+              allocates a large PNG data URL. The label still tracks the thumb. */}
+          <FieldForm
+            label={`Size: ${inputs.size}px`}
+            max={512}
+            min={128}
+            name="qr-size"
+            onChange={(val: string) => setFields({ size: Number(val) })}
+            type="range"
+            value={String(inputs.size)}
+          />
+        </div>
+        <FieldForm
+          label="Error Correction"
+          name="qr-ec"
+          onChange={(val: string) => setFieldsImmediate({ errorCorrection: val as QrErrorCorrectionLevel })}
+          options={[
+            { label: 'Low (L)', value: 'L' },
+            { label: 'Medium (M)', value: 'M' },
+            { label: 'Quartile (Q)', value: 'Q' },
+            { label: 'High (H)', value: 'H' },
+          ]}
+          type="select"
+          value={inputs.errorCorrection}
+        />
+        <div className="flex flex-col gap-1">
+          <label className="text-body-sm font-medium text-gray-400" htmlFor="qr-fg">
+            Foreground
+          </label>
+          <ColorInput
+            id="qr-fg"
+            onChange={(val: string) => setFieldsImmediate({ foreground: val })}
+            value={inputs.foreground}
+          />
+        </div>
+        <div className="flex flex-col gap-1">
+          <label className="text-body-sm font-medium text-gray-400" htmlFor="qr-bg">
+            Background
+          </label>
+          <ColorInput
+            id="qr-bg"
+            onChange={(val: string) => setFieldsImmediate({ background: val })}
+            value={inputs.background}
+          />
+        </div>
+      </>
+    )}
+    resultLabel="QR Code"
+    resultPlaceholder="Type text or a URL on the left to make its QR code"
+    sourceKind="text"
+    sourceLabel="Text or URL"
+    sourcePlaceholder="https://example.com"
+    title="QR Code Generator"
+    triggerLabel="Generate QR Code"
+  />
+)

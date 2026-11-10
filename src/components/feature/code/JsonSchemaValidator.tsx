@@ -1,99 +1,70 @@
-import { FieldForm, Pane, SplitPanel } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { useState } from 'react'
+
+import { TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolFields } from '@/hooks'
-import type { JsonSchemaValidatorInput, ToolComponentProps, ValidationResult } from '@/types'
+import { readJsonStorage, writeJsonStorage } from '@/hooks'
+import type { JsonSchemaValidatorInput, ToolComponentProps, ValidationError } from '@/types'
 import { validateJsonSchema } from '@/utils/json-schema'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-schema-validator']
 
-export const JsonSchemaValidator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const { inputs, recompute, result, setFields } = useToolFields<JsonSchemaValidatorInput, ValidationResult | null>({
-    compute: ({ jsonData: data, jsonSchema: schema }) => validateJsonSchema(data, schema),
-    debounceMs: 300,
-    initial: { jsonData: '', jsonSchema: '' },
-    initialResult: null,
-    isEmpty: ({ jsonData: data, jsonSchema: schema }) => data.trim().length === 0 || schema.trim().length === 0,
-    storageKey: 'csr-dev-tools-json-schema-validator',
-  })
-  const { jsonData, jsonSchema } = inputs
+const STORAGE_KEY = 'csr-dev-tools-json-schema-validator'
 
-  const handleDataChange = (val: string) => setFields({ jsonData: val })
-  const handleSchemaChange = (val: string) => setFields({ jsonSchema: val })
-  // Re-fires compute with the current bag (preserves pre-migration behavior); does NOT clear fields. The hook's `reset()` would clear — intentionally not used here.
-  const handleRevalidate = () => recompute()
+const INITIAL: JsonSchemaValidatorInput = { schema: '', source: '' }
+
+// Bags saved before the shell were `{ jsonData, jsonSchema }`; carry them over
+// once so the shell restores them instead of a bag with no `source`.
+const migrateStoredBag = (): true => {
+  const stored = readJsonStorage<Record<string, unknown> | null>(STORAGE_KEY, null)
+  if (stored && typeof stored === 'object' && !('source' in stored)) {
+    writeJsonStorage<JsonSchemaValidatorInput>(STORAGE_KEY, {
+      schema: typeof stored.jsonSchema === 'string' ? stored.jsonSchema : '',
+      source: typeof stored.jsonData === 'string' ? stored.jsonData : '',
+    })
+  }
+  return true
+}
+
+const describeErrors = (errors: Array<ValidationError>): string => {
+  // A parse or schema-compile failure is one message with no path.
+  const [first] = errors
+  if (errors.length === 1 && first && (first.keyword === 'parse' || first.keyword === 'schema')) return first.message
+  const lines = errors.map((err) => `${err.path} — ${err.message} (keyword: ${err.keyword})`)
+  return [`${errors.length} validation error${errors.length === 1 ? '' : 's'}:`, ...lines].join('\n')
+}
+
+// Invalid data rejects, so the error list lands in the status slot and the
+// output clears. Valid data comes back formatted, with a "valid" notice.
+const computeValidation = ({ schema, source }: JsonSchemaValidatorInput): string => {
+  const result = validateJsonSchema(source, schema)
+  if (!result.valid) throw new Error(describeErrors(result.errors ?? []))
+  return JSON.stringify(JSON.parse(source), null, 2)
+}
+
+export const JsonSchemaValidator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
+  useState(migrateStoredBag)
 
   return (
-    <ToolDialogFrame
+    <TransformerShell<JsonSchemaValidatorInput>
       autoOpen={autoOpen}
+      compute={computeValidation}
       description={toolEntry?.description}
+      errorFallback="Unable to validate this JSON"
+      initial={INITIAL}
+      notices={(result) => (result ? ['Valid — the JSON conforms to the schema'] : [])}
       onAfterClose={onAfterClose}
-      onReset={handleRevalidate}
+      resultLabel="Validated JSON"
+      resultPlaceholder="Paste JSON data and a JSON Schema on the left to validate the data"
+      secondSource={{
+        field: 'schema',
+        label: 'JSON Schema',
+        placeholder: '{"type": "object", "properties": {"name": {"type": "string"}}}',
+      }}
+      sourceLabel="JSON Data"
+      sourcePlaceholder='{"name": "John", "age": 30}'
+      storageKey={STORAGE_KEY}
       title="JSON Schema Validator"
-      triggers={[
-        {
-          label: 'Validate',
-          onOpen: () => {
-            if (jsonData.trim() && jsonSchema.trim()) {
-              recompute()
-            }
-          },
-        },
-      ]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
-        <SplitPanel>
-          <Pane>
-            <FieldForm
-              label="JSON Data"
-              name="json-data"
-              onChange={handleDataChange}
-              placeholder='{"name": "John", "age": 30}'
-              type="code"
-              value={jsonData}
-            />
-          </Pane>
-
-          <Pane>
-            <FieldForm
-              label="JSON Schema"
-              name="json-schema"
-              onChange={handleSchemaChange}
-              placeholder='{"type": "object", "properties": {"name": {"type": "string"}}}'
-              type="code"
-              value={jsonSchema}
-            />
-          </Pane>
-        </SplitPanel>
-
-        <div aria-live="polite">
-          {result?.valid && (
-            <div className="border-green-800 bg-green-950 rounded-lg border p-3">
-              <p className="text-green-400 text-body-sm">✅ Valid — JSON conforms to the schema</p>
-            </div>
-          )}
-
-          {result && !result.valid && result.errors && result.errors[0]?.keyword === 'parse' && (
-            <div className="border-red-800 bg-red-950 rounded-lg border p-3">
-              <p className="text-red-400 text-body-sm">❌ {result.errors[0].message}</p>
-            </div>
-          )}
-
-          {result && !result.valid && result.errors && result.errors[0]?.keyword !== 'parse' && (
-            <div className="border-red-800 bg-red-950 rounded-lg border p-3">
-              <p className="text-red-400 mb-2 text-body-sm font-medium">❌ Validation Errors</p>
-              <ul className="flex flex-col gap-1">
-                {result.errors.map((err) => (
-                  <li className="text-red-300 font-mono text-body-xs" key={`${err.path}-${err.keyword}-${err.message}`}>
-                    <span className="text-red-400">{err.path}</span> — {err.message}{' '}
-                    <span className="text-red-500">(keyword: {err.keyword})</span>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
-        </div>
-      </div>
-    </ToolDialogFrame>
+      triggerLabel="Validate"
+    />
   )
 }

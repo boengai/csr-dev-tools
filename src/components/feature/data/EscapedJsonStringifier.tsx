@@ -1,18 +1,19 @@
 import { useCallback, useState } from 'react'
 
-import { BidirectionalConverter, CheckboxInput } from '@/components/common'
+import { CodecShell, CheckboxInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, EscapedJsonConvertMode, ToolComponentProps } from '@/types'
+import type { CodecMode, EscapedJsonConvertMode, ToolComponentProps } from '@/types'
 import { parseStringifiedJson, stringifyJson } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['escaped-json-stringifier']
 
-const MODES: [ConverterMode<EscapedJsonConvertMode>, ConverterMode<EscapedJsonConvertMode>] = [
+const MODES: [CodecMode<EscapedJsonConvertMode>, CodecMode<EscapedJsonConvertMode>] = [
   {
     key: 'stringify',
     label: 'Stringify JSON',
     resultLabel: 'Escaped Output',
-    resultPlaceholder: '{\\"name\\":\\"John\\",\\"age\\":30}',
+    resultPlaceholder: 'Paste JSON to escape it as a string',
+    sourceFormat: 'json',
     sourceLabel: 'JSON Input',
     sourcePlaceholder: '{"name":"John","age":30}',
   },
@@ -20,7 +21,7 @@ const MODES: [ConverterMode<EscapedJsonConvertMode>, ConverterMode<EscapedJsonCo
     key: 'parse',
     label: 'Parse Escaped JSON',
     resultLabel: 'Parsed JSON',
-    resultPlaceholder: '{\n  "name": "John"\n}',
+    resultPlaceholder: 'Paste an escaped JSON string to parse it',
     sourceLabel: 'Escaped String Input',
     sourcePlaceholder: '{\\"name\\":\\"John\\",\\"age\\":30}',
   },
@@ -38,7 +39,7 @@ export const EscapedJsonStringifier = ({ autoOpen, onAfterClose }: ToolComponent
   )
 
   return (
-    <BidirectionalConverter
+    <CodecShell
       autoOpen={autoOpen}
       compute={compute}
       description={toolEntry?.description}

@@ -18,3 +18,8 @@ export type CropPreviewProps = {
   setCrop: (c: Crop) => void
   sourceUrl: string
 }
+
+export type CropResultProps = {
+  pending: boolean
+  resultUrl: string | null
+}

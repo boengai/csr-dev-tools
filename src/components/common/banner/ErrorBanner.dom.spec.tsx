@@ -9,13 +9,13 @@ describe('ErrorBanner', () => {
     render(<ErrorBanner>Something broke</ErrorBanner>)
     const banner = screen.getByRole('alert')
     expect(banner).toHaveTextContent('Something broke')
-    expect(banner.className).toContain('text-red-400')
+    expect(banner.className).toContain('text-error')
   })
 
   it('uses yellow text for warning variant', () => {
     render(<ErrorBanner variant="warning">Slow down</ErrorBanner>)
     const banner = screen.getByRole('alert')
-    expect(banner.className).toContain('text-yellow-400')
+    expect(banner.className).toContain('text-warning')
   })
 
   it('accepts JSX children', () => {

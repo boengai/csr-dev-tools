@@ -29,6 +29,8 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## Adding a New Tool
 
+> **Start from a layout shell.** Every tool declares a required `layout` (`transformer`, `codec`, `comparator`, `generator`, `file-processor`, or `custom` with an ADR) in `src/constants/tool-routes.ts`, and is built from that layout's shell. Read [docs/ux/README.md](docs/ux/README.md) and ADR-0027 first; `CLAUDE.md` → "Adding a new tool" has the current registration steps. The hand-built example below predates the shells and the `tool-routes.ts` split.
+
 Follow these 8 steps to add a tool. The example below adds a fictional "Hash Generator" tool in a `generator` domain.
 
 ### Step 1: Create the Tool Component

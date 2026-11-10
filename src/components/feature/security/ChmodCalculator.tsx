@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react'
 
-import { Button, CheckboxInput, CopyButton, ErrorBanner, TextInput } from '@/components/common'
+import { Button, CheckboxInput, CopyButton, TextInput, ToolStatus } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
@@ -98,6 +98,7 @@ export const ChmodCalculator = ({ autoOpen, onAfterClose }: ToolComponentProps) 
     [updateFromState],
   )
 
+  const inputError = octalError || symbolicError || null
   const description = stateToDescription(state)
   const command = `chmod ${stateToOctal(state)} filename`
 
@@ -132,22 +133,23 @@ export const ChmodCalculator = ({ autoOpen, onAfterClose }: ToolComponentProps) 
 
         {/* Octal and Symbolic Inputs */}
         <div className="flex flex-col gap-4 tablet:flex-row">
-          <label className="flex flex-1 flex-col gap-1">
+          <label className="flex flex-1 flex-col gap-1" htmlFor="chmod-octal-input">
             <span className="text-body-xs font-medium text-gray-400">Octal</span>
             <TextInput
+              id="chmod-octal-input"
               name="octal-input"
               onChange={handleOctalChange}
               placeholder="755"
               type="text"
               value={octalInput}
             />
-            {octalError && <ErrorBanner variant="warning">{octalError}</ErrorBanner>}
           </label>
 
-          <label className="flex flex-1 flex-col gap-1">
+          <label className="flex flex-1 flex-col gap-1" htmlFor="chmod-symbolic-input">
             <span className="text-body-xs font-medium text-gray-400">Symbolic</span>
             <div className="[&_input]:font-mono">
               <TextInput
+                id="chmod-symbolic-input"
                 name="symbolic-input"
                 onChange={handleSymbolicChange}
                 placeholder="rwxr-xr-x"
@@ -155,9 +157,10 @@ export const ChmodCalculator = ({ autoOpen, onAfterClose }: ToolComponentProps) 
                 value={symbolicInput}
               />
             </div>
-            {symbolicError && <ErrorBanner variant="warning">{symbolicError}</ErrorBanner>}
           </label>
         </div>
+
+        <ToolStatus error={inputError} errorLabel={inputError ?? undefined} />
 
         {/* Checkbox Grid */}
         <div className="overflow-x-auto">

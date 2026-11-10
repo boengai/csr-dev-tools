@@ -1,18 +1,18 @@
 import { useCallback, useState } from 'react'
 
-import { BidirectionalConverter, SelectInput } from '@/components/common'
+import { CodecShell, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, EntityMode, HtmlEntityConvertMode, ToolComponentProps } from '@/types'
+import type { CodecMode, EntityMode, HtmlEntityConvertMode, ToolComponentProps } from '@/types'
 import { decodeHtmlEntities, encodeHtmlEntities } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['html-entity-converter']
 
-const MODES: [ConverterMode<HtmlEntityConvertMode>, ConverterMode<HtmlEntityConvertMode>] = [
+const MODES: [CodecMode<HtmlEntityConvertMode>, CodecMode<HtmlEntityConvertMode>] = [
   {
     key: 'encode',
     label: 'Encode HTML Entities',
     resultLabel: 'Encoded Output',
-    resultPlaceholder: '&lt;div class=&quot;hello&quot;&gt;&amp;copy; 2024&lt;/div&gt;',
+    resultPlaceholder: 'Enter text to encode it as HTML entities',
     sourceLabel: 'Text Input',
     sourcePlaceholder: '<div class="hello">&copy; 2024</div>',
   },
@@ -20,7 +20,7 @@ const MODES: [ConverterMode<HtmlEntityConvertMode>, ConverterMode<HtmlEntityConv
     key: 'decode',
     label: 'Decode HTML Entities',
     resultLabel: 'Decoded Output',
-    resultPlaceholder: '<div>&copy; 2024</div>',
+    resultPlaceholder: 'Paste HTML entities to decode them',
     sourceLabel: 'HTML Entity Input',
     sourcePlaceholder: '&lt;div&gt;&amp;copy; 2024&lt;/div&gt;',
   },
@@ -43,7 +43,7 @@ export const HtmlEntityConverter = ({ autoOpen, onAfterClose }: ToolComponentPro
   )
 
   return (
-    <BidirectionalConverter
+    <CodecShell
       autoOpen={autoOpen}
       compute={compute}
       description={toolEntry?.description}

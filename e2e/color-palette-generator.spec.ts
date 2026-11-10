@@ -33,7 +33,10 @@ test.describe('Color Palette Generator', () => {
   test('updates palette when harmony type is changed', async ({ page }) => {
     // Open the select and choose Complementary
     await page.locator('[role="combobox"]').click()
-    await page.locator('[role="option"]').filter({ hasText: /^Complementary$/ }).click()
+    await page
+      .locator('[role="option"]')
+      .filter({ hasText: /^Complementary$/ })
+      .click()
 
     const swatches = page.locator('button[aria-label^="Copy color"]')
     await expect(swatches).toHaveCount(5, { timeout: 3000 })
@@ -46,10 +49,22 @@ test.describe('Color Palette Generator', () => {
     await expect(toast.copied(page)).toBeVisible({ timeout: 3000 })
   })
 
-  test('copies CSS custom properties when Export CSS is clicked', async ({ page }) => {
-    await page.getByRole('button', { name: 'Export CSS' }).click()
+  test('copies CSS custom properties from the palette label', async ({ page }) => {
+    await page.getByRole('button', { name: 'Copy palette as CSS to clipboard' }).click()
 
     await expect(toast.copied(page)).toBeVisible({ timeout: 3000 })
+  })
+
+  test('shows an invalid hex in the status slot and clears the palette', async ({ page }) => {
+    const hexInput = page.locator('input[name="hex-color"]')
+    await hexInput.clear()
+    await hexInput.fill('#zzz')
+
+    await expect(page.locator('[data-slot="tool-status"]').getByRole('alert')).toHaveText(
+      'Enter a valid hex color (e.g., #3B82F6)',
+      { timeout: 3000 },
+    )
+    await expect(page.locator('button[aria-label^="Copy color"]')).toHaveCount(0)
   })
 
   test('color picker updates hex input and palette', async ({ page }) => {

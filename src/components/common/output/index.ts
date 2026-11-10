@@ -1,3 +1,3 @@
 export * from './CodeOutput'
-export * from './InlineLabeledRow'
-export * from './MonoOutputCell'
+export * from './FieldList'
+export * from './OutputImage'

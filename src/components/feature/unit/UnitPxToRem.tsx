@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 
-import { CopyButton, FieldForm } from '@/components/common'
+import { CopyButton, FieldForm, ToolStatus } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolComputation } from '@/hooks'
+import { useToolComputation } from '@/hooks'
 import type { PxRemInput, PxRemLastEdited, PxRemOutput, ToolComponentProps } from '@/types'
 import { solvePxRem } from '@/utils'
 
@@ -11,22 +11,26 @@ const toolEntry = TOOL_REGISTRY_MAP['px-to-rem']
 
 const INITIAL_BAG = { base: '16', lastEdited: 'px' as PxRemLastEdited, px: '', rem: '' }
 
-const INVALID_BASE_MSG = 'Base font size must be a positive number (e.g., 16)'
-
 export const UnitPxToRem = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const showError = useToast((s) => s.showError)
   const [fields, setFields] = useState(INITIAL_BAG)
 
-  const { result, setInput, setInputImmediate } = useToolComputation<PxRemInput, PxRemOutput | null>(solvePxRem, {
-    debounceMs: 300,
-    errorFallback: 'Invalid input',
-    initial: null,
-    isEmpty: ({ px, rem, source }) => {
-      if (source === 'px') return !px.trim()
-      if (source === 'rem') return !rem.trim()
-      return false
+  const { error, result, setInput, setInputImmediate } = useToolComputation<PxRemInput, PxRemOutput | null>(
+    solvePxRem,
+    {
+      debounceMs: 300,
+      initial: null,
+      isEmpty: ({ px, rem, source }) => {
+        if (source === 'px') return !px.trim()
+        if (source === 'rem') return !rem.trim()
+        return false
+      },
+      // Clear the derived side so a stale conversion never sits next to the error.
+      onError: (_err, { lastEdited, source }) => {
+        const typed = source === 'base' ? lastEdited : source
+        setFields((prev) => ({ ...prev, [typed === 'px' ? 'rem' : 'px']: '' }))
+      },
     },
-  })
+  )
 
   useEffect(() => {
     if (result) {
@@ -67,11 +71,7 @@ export const UnitPxToRem = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
 
   const handleBaseChange = (val: string) => {
     setFields((prev) => ({ ...prev, base: val }))
-    const baseNum = Number(val)
-    if (val.trim() === '' || Number.isNaN(baseNum) || baseNum <= 0) {
-      showError(INVALID_BASE_MSG)
-      return
-    }
+    // `solvePxRem` rejects a non-positive base, so the status slot shows it.
     setInput({ base: val, lastEdited: fields.lastEdited, px: fields.px, rem: fields.rem, source: 'base' })
   }
 
@@ -86,6 +86,8 @@ export const UnitPxToRem = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
       triggers={[{ label: 'Convert' }]}
     >
       <div className="flex w-full grow flex-col items-center justify-center gap-4">
+        <ToolStatus error={error} errorFallback="Invalid input" />
+
         <div aria-live="polite" className="flex w-full items-center *:w-1/2">
           <FieldForm
             label="PX"

@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { card, toast } from './helpers/selectors'
+import { card, toast, toolSurface } from './helpers/selectors'
 
 test.describe('Data URI Generator', () => {
   test.beforeEach(async ({ page }) => {
@@ -10,9 +10,7 @@ test.describe('Data URI Generator', () => {
 
   test('renders tool with title and description', async ({ page }) => {
     await expect(card.title(page, 'Data URI Generator')).toBeVisible()
-    await expect(
-      page.getByText('Convert files to data URIs and decode data URIs back to files.'),
-    ).toBeVisible()
+    await expect(page.getByText('Convert files to data URIs and decode data URIs back to files.')).toBeVisible()
   })
 
   test('upload a small PNG image → dialog opens, data URI displayed, file size shown', async ({ page }) => {
@@ -20,15 +18,14 @@ test.describe('Data URI Generator', () => {
     await page.getByRole('button', { name: /select file to encode/i }).click()
     const fileChooser = await fileChooserPromise
 
-    const pngBase64 =
-      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+    const pngBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
     await fileChooser.setFiles({
       buffer: Buffer.from(pngBase64, 'base64'),
       mimeType: 'image/png',
       name: 'test.png',
     })
 
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
     await expect(dialog.getByText('test.png — image/png')).toBeVisible()
     await expect(dialog.locator('textarea').first()).toBeVisible()
@@ -39,15 +36,14 @@ test.describe('Data URI Generator', () => {
     await page.getByRole('button', { name: /select file to encode/i }).click()
     const fileChooser = await fileChooserPromise
 
-    const pngBase64 =
-      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+    const pngBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
     await fileChooser.setFiles({
       buffer: Buffer.from(pngBase64, 'base64'),
       mimeType: 'image/png',
       name: 'test.png',
     })
 
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
     await expect(dialog.getByText('HTML <img> Tag')).toBeVisible()
   })
@@ -57,15 +53,14 @@ test.describe('Data URI Generator', () => {
     await page.getByRole('button', { name: /select file to encode/i }).click()
     const fileChooser = await fileChooserPromise
 
-    const pngBase64 =
-      'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
+    const pngBase64 = 'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='
     await fileChooser.setFiles({
       buffer: Buffer.from(pngBase64, 'base64'),
       mimeType: 'image/png',
       name: 'test.png',
     })
 
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
     await expect(dialog.getByText('CSS url()')).toBeVisible()
   })
@@ -73,7 +68,7 @@ test.describe('Data URI Generator', () => {
   test('click Decode button → dialog opens, paste data URI → MIME type and size displayed', async ({ page }) => {
     await page.getByRole('button', { name: /decode data uri/i }).click()
 
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     const textarea = dialog.locator('textarea').first()
@@ -86,7 +81,7 @@ test.describe('Data URI Generator', () => {
   test('paste image data URI in decode → image preview shown', async ({ page }) => {
     await page.getByRole('button', { name: /decode data uri/i }).click()
 
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     const pngDataUri =
@@ -100,7 +95,7 @@ test.describe('Data URI Generator', () => {
   test('decode mode → click Download → download triggers with toast', async ({ page }) => {
     await page.getByRole('button', { name: /decode data uri/i }).click()
 
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     const textarea = dialog.locator('textarea').first()
@@ -116,7 +111,7 @@ test.describe('Data URI Generator', () => {
     await expect(toast.message(page, 'Downloaded decoded.txt')).toBeVisible({ timeout: 3000 })
   })
 
-  test('upload a file larger than 30KB → warning toast shown', async ({ page }) => {
+  test('upload a file larger than 30KB → notice shown in the status slot', async ({ page }) => {
     const fileChooserPromise = page.waitForEvent('filechooser')
     await page.getByRole('button', { name: /select file to encode/i }).click()
     const fileChooser = await fileChooserPromise
@@ -128,11 +123,27 @@ test.describe('Data URI Generator', () => {
       name: 'large-file.bin',
     })
 
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
-    await expect(
-      toast.message(page, 'File exceeds 30 KB — consider using a regular file reference for better performance').first(),
-    ).toBeVisible({ timeout: 3000 })
+    await expect(dialog.locator('[data-slot="tool-status"]').getByRole('status')).toHaveText(
+      'File exceeds 30 KB — consider using a regular file reference for better performance',
+      { timeout: 3000 },
+    )
+  })
+
+  test('decode mode → invalid data URI → error in the status slot, no preview', async ({ page }) => {
+    await page.getByRole('button', { name: /decode data uri/i }).click()
+
+    const dialog = toolSurface(page)
+    await expect(dialog).toBeVisible({ timeout: 5000 })
+
+    await dialog.locator('textarea').first().fill('not a data uri')
+
+    await expect(dialog.locator('[data-slot="tool-status"]').getByRole('alert')).toContainText(
+      'Invalid data URI format',
+      { timeout: 3000 },
+    )
+    await expect(dialog.getByRole('button', { name: /download decoded file/i })).toHaveCount(0)
   })
 
   test('mobile viewport responsiveness', async ({ page }) => {

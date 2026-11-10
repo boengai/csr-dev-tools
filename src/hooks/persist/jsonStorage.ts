@@ -7,7 +7,7 @@
  * Adopters today: `useInputLocalStorage`, `useDebouncedJsonWrite` (the
  * writer behind `useToolInput` / `useToolFields`'s `storageKey`), the
  * `storageKey` seed read in those two hooks, plus
- * `BidirectionalConverter` for its per-mode source storage where the key
+ * `CodecShell` for its per-mode source storage where the key
  * is derived from the current mode rather than being static.
  *
  * Plain functions (not hooks). React-side state ownership stays with

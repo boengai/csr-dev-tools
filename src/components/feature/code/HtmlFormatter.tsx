@@ -1,4 +1,4 @@
-import { FieldForm, FormatterShell } from '@/components/common'
+import { FieldForm, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { HtmlInput, ToolComponentProps } from '@/types'
 import { formatHtml, minifyHtml } from '@/wasm/formatter'
@@ -9,7 +9,7 @@ const INITIAL: HtmlInput = { source: '', mode: 'beautify', indent: 2 }
 
 export const HtmlFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
-    <FormatterShell<HtmlInput>
+    <TransformerShell<HtmlInput>
       autoOpen={autoOpen}
       compute={({ source, mode, indent }) => (mode === 'beautify' ? formatHtml(source, indent) : minifyHtml(source))}
       description={toolEntry?.description}
@@ -45,7 +45,7 @@ export const HtmlFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) =>
           )}
         </>
       )}
-      resultPlaceholder="Formatted HTML will appear here"
+      resultPlaceholder="Paste HTML to format or minify it"
       sourceLabel="HTML Input"
       sourcePlaceholder="<div><p>Hello World</p></div>"
       storageKey="csr-dev-tools-html-formatter"

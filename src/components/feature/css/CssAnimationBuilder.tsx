@@ -119,7 +119,7 @@ export const CssAnimationBuilder = ({ autoOpen, onAfterClose }: ToolComponentPro
                   {config.keyframes.length > 2 && (
                     <button
                       aria-label={`Remove keyframe ${i + 1}`}
-                      className="text-red-400 hover:text-red-300 text-body-xs"
+                      className="text-body-xs text-error hover:text-error/80"
                       onClick={() => removeKeyframe(i)}
                       type="button"
                     >

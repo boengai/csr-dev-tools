@@ -1,16 +1,23 @@
 /**
  * @vitest-environment jsdom
  */
-import { act, fireEvent, render, screen } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, fireEvent, render, screen, within } from '@testing-library/react'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { MermaidRenderer } from './MermaidRenderer'
 
+// Mermaid can't lay out in jsdom. Valid input renders a marker SVG; a first
+// line without a diagram type rejects like the real parser does.
 vi.mock('@/utils/mermaid-renderer', () => ({
   initializeMermaid: vi.fn(),
-  renderMermaid: vi.fn(async () => ({ diagramType: 'flowchart', svg: '<svg data-testid="diagram"></svg>' })),
+  renderMermaid: vi.fn(async (code: string) => {
+    if (!/^(flowchart|sequenceDiagram)\b/.test(code.trim())) throw new Error('No diagram type detected')
+    return { diagramType: 'flowchart', svg: '<svg data-testid="diagram"></svg>' }
+  }),
   svgToPng: vi.fn(),
 }))
+
+const STORAGE_KEY = 'csr-dev-tools-mermaid-renderer'
 
 const flush = async () => {
   await act(async () => {
@@ -21,6 +28,18 @@ const flush = async () => {
   })
 }
 
+const statusSlot = () => {
+  const slot = document.querySelector<HTMLElement>('[data-slot="tool-status"]')
+  if (!slot) throw new Error('no status slot')
+  return slot
+}
+
+beforeAll(() => {
+  // CodeMirror measures text ranges; jsdom has no layout.
+  Range.prototype.getClientRects ??= () => [] as unknown as DOMRectList
+  Range.prototype.getBoundingClientRect ??= () => new DOMRect()
+})
+
 beforeEach(() => {
   localStorage.clear()
   vi.useFakeTimers()
@@ -30,10 +49,17 @@ afterEach(() => {
   vi.useRealTimers()
 })
 
-describe('MermaidRenderer preview', () => {
-  it('shows the diagram computed while the dialog was closed once it opens', async () => {
+describe('MermaidRenderer', () => {
+  it('opens on the placeholder, with no default diagram', async () => {
+    render(<MermaidRenderer autoOpen />)
+    await flush()
+    expect(screen.getByText('Write Mermaid syntax, or pick an example, to see the diagram')).toBeInTheDocument()
+    expect(screen.queryByTestId('diagram')).not.toBeInTheDocument()
+  })
+
+  it('shows the diagram computed from the saved source once it opens', async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ source: 'flowchart TD\n    A --> B' }))
     render(<MermaidRenderer />)
-    // Persisted-input autorun renders the default diagram while the dialog is closed.
     await flush()
 
     fireEvent.click(screen.getByRole('button', { name: 'Render' }))
@@ -42,17 +68,50 @@ describe('MermaidRenderer preview', () => {
     expect(screen.getByTestId('diagram')).toBeInTheDocument()
   })
 
-  it('still shows the diagram after closing and reopening', async () => {
+  it('renders an example picked from the controls', async () => {
     render(<MermaidRenderer autoOpen />)
     await flush()
-    expect(screen.getByTestId('diagram')).toBeInTheDocument()
 
-    fireEvent.keyDown(document.activeElement ?? document.body, { key: 'Escape' })
+    fireEvent.click(screen.getByRole('button', { name: 'Use Sequence example' }))
     await flush()
+
+    expect(screen.getByTestId('diagram')).toBeInTheDocument()
+  })
+
+  it('shows a syntax error in the status slot with an Auto-fix that repairs the source', async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ source: 'A --> B' }))
+    render(<MermaidRenderer autoOpen />)
+    await flush()
+
+    expect(within(statusSlot()).getByRole('alert').textContent).toBe('No diagram type detected')
     expect(screen.queryByTestId('diagram')).not.toBeInTheDocument()
 
-    fireEvent.click(screen.getByRole('button', { name: 'Render' }))
+    fireEvent.click(within(statusSlot()).getByRole('button', { name: /^Auto-fix/ }))
     await flush()
+
+    expect(within(statusSlot()).queryByRole('alert')).toBeNull()
     expect(screen.getByTestId('diagram')).toBeInTheDocument()
+  })
+
+  it('takes a DB Diagram handoff over the saved source', async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ source: 'not a diagram' }))
+    localStorage.setItem('csr-dev-tools-handoff-mermaid-renderer', 'flowchart LR\n    users --> orders')
+    render(<MermaidRenderer autoOpen />)
+    await flush()
+
+    expect(within(statusSlot()).queryByRole('alert')).toBeNull()
+    expect(screen.getByTestId('diagram')).toBeInTheDocument()
+  })
+})
+
+describe('MermaidRenderer — legacy draft', () => {
+  it('moves a pre-migration draft into the shell key once', async () => {
+    localStorage.clear()
+    localStorage.setItem('csr-dev-tools-mermaid-renderer-code', JSON.stringify('flowchart TD\n    A --> B'))
+    render(<MermaidRenderer autoOpen />)
+    await flush()
+
+    expect(JSON.parse(localStorage.getItem(STORAGE_KEY) ?? '{}')).toEqual({ source: 'flowchart TD\n    A --> B' })
+    expect(localStorage.getItem('csr-dev-tools-mermaid-renderer-code')).toBeNull()
   })
 })

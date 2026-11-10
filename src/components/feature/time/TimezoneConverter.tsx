@@ -1,16 +1,9 @@
-import { AnimatePresence, m } from 'motion/react'
 import { useEffect, useId, useMemo, useRef, useState } from 'react'
 
-import { Button, CopyButton, EmptyState, ErrorBanner, FieldForm, TextInput } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { Button, TextInput, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { readJsonStorage, useKeyboardListNav, useMountOnce, useToolFields, writeJsonStorage } from '@/hooks'
-import type {
-  TimezoneConverterInput,
-  TimezoneConverterOutput,
-  TimezoneSearchPickerProps,
-  ToolComponentProps,
-} from '@/types'
+import { readJsonStorage, useKeyboardListNav, writeJsonStorage } from '@/hooks'
+import type { TimezoneConverterInput, TimezoneSearchPickerProps, ToolComponentProps, TransformerField } from '@/types'
 import {
   buildTimezoneIndex,
   convertTimezone,
@@ -21,31 +14,51 @@ import {
   tv,
 } from '@/utils'
 
+const STORAGE_KEY = 'csr-dev-tools-timezone-converter'
 const FAVORITES_KEY = 'csr-dev-tools-timezone-favorites'
 
 const loadFavorites = (): Array<string> => readJsonStorage<Array<string>>(FAVORITES_KEY, [])
 
 const saveFavorites = (favorites: Array<string>): void => writeJsonStorage(FAVORITES_KEY, favorites)
 
-function formatNowDate(): string {
-  const d = new Date()
-  const y = d.getFullYear()
-  const m = String(d.getMonth() + 1).padStart(2, '0')
-  const day = String(d.getDate()).padStart(2, '0')
-  return `${y}-${m}-${day}`
-}
+const pad = (n: number): string => String(n).padStart(2, '0')
 
-function formatNowTime(): string {
+/** Now, as the source text: `YYYY-MM-DD HH:mm` in local time. */
+const formatNow = (): string => {
   const d = new Date()
-  const h = String(d.getHours()).padStart(2, '0')
-  const min = String(d.getMinutes()).padStart(2, '0')
-  return `${h}:${min}`
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
 const DEFAULT_TARGETS = ['UTC', 'America/New_York', 'Europe/London', 'Asia/Tokyo']
 
-function getInitialTargets(localTz: string): Array<string> {
-  return DEFAULT_TARGETS.filter((tz) => tz !== localTz).slice(0, 3)
+const getInitialTargets = (localTz: string): Array<string> => DEFAULT_TARGETS.filter((tz) => tz !== localTz).slice(0, 3)
+
+// Bags saved before the shell were `{ dateInput, timeInput, sourceTz, targetTzIds }`.
+// Keep the zones; the date and time were always replaced by "now" on open.
+const migrateStoredBag = (): true => {
+  const stored = readJsonStorage<Record<string, unknown> | null>(STORAGE_KEY, null)
+  if (stored && typeof stored === 'object' && !('source' in stored) && typeof stored.sourceTz === 'string') {
+    writeJsonStorage<TimezoneConverterInput>(STORAGE_KEY, {
+      source: '',
+      sourceTz: stored.sourceTz,
+      targetTzIds: Array.isArray(stored.targetTzIds) ? stored.targetTzIds.filter((t) => typeof t === 'string') : [],
+    })
+  }
+  return true
+}
+
+const cityOf = (tzId: string): string => (tzId.split('/').pop() ?? tzId).replace(/_/g, ' ')
+
+const DATE_TIME = /^(\d{4}-\d{1,2}-\d{1,2})[ T](\d{1,2}:\d{2}(?::\d{2})?)$/
+
+const computeConversion = ({ source, sourceTz, targetTzIds }: TimezoneConverterInput): Array<TransformerField> => {
+  const match = DATE_TIME.exec(source.trim())
+  const parsed = match ? parseDateTimeInput(match[1] ?? '', match[2] ?? '', sourceTz) : null
+  if (!parsed) throw new Error('Enter a date and time as YYYY-MM-DD HH:mm (e.g. 2026-11-10 14:30)')
+  return targetTzIds.map((tzId) => {
+    const { abbreviation, date, offset, time } = convertTimezone(parsed, sourceTz, tzId)
+    return { label: `${cityOf(tzId)} — ${abbreviation}, ${offset}`, value: `${date} ${time} ${abbreviation}` }
+  })
 }
 
 const toolEntry = TOOL_REGISTRY_MAP['timezone-converter']
@@ -64,7 +77,7 @@ const favoriteButtonStyles = tv({
   base: 'p-1 text-body-sm',
   variants: {
     favorite: {
-      true: 'text-yellow-400',
+      true: 'text-warning',
       false: 'text-gray-600 hover:text-gray-400',
     },
   },
@@ -188,61 +201,13 @@ const TimezoneSearchPicker = ({
   )
 }
 
-const INITIAL_OUTPUT: TimezoneConverterOutput = { error: '', results: [] }
-
-const computeConversion = ({
-  dateInput,
-  sourceTz,
-  targetTzIds,
-  timeInput,
-}: TimezoneConverterInput): TimezoneConverterOutput => {
-  if (!dateInput || !timeInput) return { error: '', results: [] }
-
-  const parsed = parseDateTimeInput(dateInput, timeInput, sourceTz)
-  if (!parsed) return { error: 'Invalid date or time input', results: [] }
-
-  return {
-    error: '',
-    results: targetTzIds.map((tzId) => ({
-      result: convertTimezone(parsed, sourceTz, tzId),
-      timezoneId: tzId,
-    })),
-  }
-}
-
 export const TimezoneConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const initialInput = useMemo<TimezoneConverterInput>(() => {
+  useState(migrateStoredBag)
+
+  const initial = useMemo<TimezoneConverterInput>(() => {
     const sourceTz = getLocalTimezone()
-    return {
-      dateInput: formatNowDate(),
-      sourceTz,
-      targetTzIds: getInitialTargets(sourceTz),
-      timeInput: formatNowTime(),
-    }
+    return { source: '', sourceTz, targetTzIds: getInitialTargets(sourceTz) }
   }, [])
-
-  const { inputs, result, setFields, setFieldsImmediate } = useToolFields<
-    TimezoneConverterInput,
-    TimezoneConverterOutput
-  >({
-    compute: computeConversion,
-    debounceMs: 300,
-    initial: initialInput,
-    initialResult: INITIAL_OUTPUT,
-    storageKey: 'csr-dev-tools-timezone-converter',
-  })
-
-  const { dateInput, sourceTz, targetTzIds, timeInput } = inputs
-  const { error, results } = result
-
-  // Persisted bag may hold stale date/time from last session. Override them with
-  // "now" on mount; sourceTz + targetTzIds keep their persisted values. This
-  // setFieldsImmediate also kicks the compute (the hook doesn't autorun without
-  // an `isEmpty` gate, which doesn't fit this Tool's defaults-from-`getLocalTimezone`
-  // initial bag).
-  useMountOnce(() => {
-    setFieldsImmediate({ dateInput: formatNowDate(), timeInput: formatNowTime() })
-  })
 
   // UI-only state lives outside the input bag.
   const [favorites, setFavorites] = useState<Array<string>>(loadFavorites)
@@ -250,175 +215,123 @@ export const TimezoneConverter = ({ autoOpen, onAfterClose }: ToolComponentProps
 
   const index = useMemo(() => buildTimezoneIndex(), [])
 
-  const handleNow = () => {
-    setFieldsImmediate({ dateInput: formatNowDate(), timeInput: formatNowTime() })
-  }
-
-  const handleAddTarget = (id: string) => {
-    setShowAddPicker(false)
-    if (targetTzIds.includes(id)) return
-    // Clicks commit immediately (like Now); only typed date/time edits debounce.
-    setFieldsImmediate({ targetTzIds: [...targetTzIds, id] })
-  }
-
-  const handleRemoveTarget = (id: string) => {
-    setFieldsImmediate({ targetTzIds: targetTzIds.filter((tz) => tz !== id) })
-  }
-
   const handleToggleFavorite = (id: string) => {
     const next = favorites.includes(id) ? favorites.filter((f) => f !== id) : [...favorites, id]
     saveFavorites(next)
     setFavorites(next)
   }
 
-  const sourceEntry = useMemo(() => index.find((e) => e.id === sourceTz), [index, sourceTz])
-
   return (
-    <ToolDialogFrame
+    <TransformerShell<TimezoneConverterInput, 'fields'>
       autoOpen={autoOpen}
+      compute={computeConversion}
       description={toolEntry?.description}
+      initial={initial}
       onAfterClose={onAfterClose}
-      title="Timezone Converter"
-      triggers={[{ label: 'Convert' }]}
-    >
-      <div className="flex grow flex-col gap-4">
-        <div className="flex flex-col gap-4 tablet:flex-row">
-          {/* Source Section */}
-          <section className="flex flex-col gap-3 tablet:w-2/5">
-            <h3 className="text-body-sm font-semibold text-gray-300">Source</h3>
-
-            <div>
-              <label className="mb-1 block text-body-xs text-gray-500" htmlFor="source-timezone-search">
-                Timezone
-              </label>
-              {sourceEntry && (
-                <div className="mb-1 flex items-center gap-1">
-                  <span className="rounded bg-gray-800 px-2 py-0.5 text-body-xs text-gray-200">
-                    {sourceEntry.city} ({sourceEntry.abbreviation})
-                  </span>
-                </div>
-              )}
-              <TimezoneSearchPicker
-                favorites={favorites}
-                id="source-timezone-search"
-                index={index}
-                onSelect={(id) => setFields({ sourceTz: id })}
-                placeholder="Search timezones..."
-              />
-            </div>
-
-            <div className="flex gap-2">
-              <FieldForm
-                label="Date"
-                name="tz-date"
-                onChange={(val: string) => setFields({ dateInput: val })}
-                type="date"
-                value={dateInput}
-              />
-              <FieldForm
-                label="Time"
-                name="tz-time"
-                onChange={(val: string) => setFields({ timeInput: val })}
-                type="time"
-                value={timeInput}
-              />
-            </div>
-
-            <Button block data-testid="now-button" onClick={handleNow} variant="primary">
-              Now
-            </Button>
-
-            {error && <ErrorBanner>{error}</ErrorBanner>}
-          </section>
-
-          {/* Target Timezones Section */}
-          <section className="flex flex-col gap-3 tablet:w-3/5">
-            <div className="flex items-center justify-between">
-              <h3 className="text-body-sm font-semibold text-gray-300">Target Timezones</h3>
-              <button
-                aria-label="Add target timezone"
-                className="rounded bg-gray-700 px-3 py-1 text-body-xs text-gray-200 hover:bg-gray-600"
-                data-testid="add-timezone-button"
-                onClick={() => setShowAddPicker((prev) => !prev)}
-                type="button"
-              >
-                + Add Timezone
-              </button>
-            </div>
-
-            {showAddPicker && (
-              <div className="rounded border border-gray-700 bg-gray-900/50 p-2">
+      outputKind="fields"
+      renderControls={({ inputs, setFieldsImmediate }) => {
+        const sourceEntry = index.find((e) => e.id === inputs.sourceTz)
+        const handleAddTarget = (id: string) => {
+          setShowAddPicker(false)
+          if (inputs.targetTzIds.includes(id)) return
+          setFieldsImmediate({ targetTzIds: [...inputs.targetTzIds, id] })
+        }
+        return (
+          <div className="flex w-full flex-col gap-3">
+            <div className="flex flex-wrap items-end gap-4">
+              <div className="flex w-full flex-col gap-1 tablet:w-72">
+                <label className="text-body-xs text-gray-500" htmlFor="source-timezone-search">
+                  Source timezone
+                  {sourceEntry && (
+                    <span className="ml-2 rounded bg-gray-800 px-2 py-0.5 text-gray-200">
+                      {sourceEntry.city} ({sourceEntry.abbreviation})
+                    </span>
+                  )}
+                </label>
                 <TimezoneSearchPicker
-                  aria-label="Search timezones to add"
                   favorites={favorites}
+                  id="source-timezone-search"
                   index={index}
-                  onSelect={handleAddTarget}
-                  placeholder="Search to add timezone..."
+                  onSelect={(id) => setFieldsImmediate({ sourceTz: id })}
+                  placeholder="Search timezones..."
                 />
               </div>
-            )}
+              <Button
+                data-testid="now-button"
+                onClick={() => setFieldsImmediate({ source: formatNow() })}
+                size="small"
+                variant="primary"
+              >
+                Now
+              </Button>
+            </div>
 
-            <div aria-live="polite" className="flex flex-col gap-2">
-              {results.length === 0 && targetTzIds.length === 0 && (
-                <EmptyState>Add a target timezone to see conversions</EmptyState>
-              )}
-              <AnimatePresence mode="popLayout">
-                {results.map(({ result: tzResult, timezoneId }) => {
-                  const entry = index.find((e) => e.id === timezoneId)
-                  const isFav = favorites.includes(timezoneId)
-                  const copyValue = `${tzResult.date} ${tzResult.time} ${tzResult.abbreviation}`
+            <div className="flex flex-col gap-2">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="text-body-xs text-gray-500">Target timezones</span>
+                {inputs.targetTzIds.map((tzId) => {
+                  const city = index.find((e) => e.id === tzId)?.city ?? cityOf(tzId)
+                  const isFav = favorites.includes(tzId)
                   return (
-                    <m.div
-                      animate={{ opacity: 1, y: 0 }}
-                      className="flex items-center justify-between rounded border border-gray-700 bg-gray-900 p-3"
-                      exit={{ opacity: 0, y: -10 }}
-                      initial={{ opacity: 0, y: 10 }}
-                      key={timezoneId}
-                      layout
-                      role="status"
+                    <span
+                      className="flex items-center gap-1 rounded bg-gray-800 py-0.5 pl-2 text-body-xs text-gray-200"
+                      key={tzId}
                     >
-                      <div className="flex flex-col gap-0.5">
-                        <div className="text-body-sm font-medium text-gray-200">
-                          {entry?.city ?? timezoneId}
-                          <span className="ml-1 text-gray-500">
-                            {tzResult.abbreviation}, {tzResult.offset}
-                          </span>
-                        </div>
-                        <div className="text-body-md font-semibold text-gray-100">
-                          {tzResult.date} {tzResult.time}
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <CopyButton label={entry?.city ?? timezoneId} value={copyValue} />
-                        <button
-                          aria-label={
-                            isFav
-                              ? `Remove ${entry?.city ?? timezoneId} from favorites`
-                              : `Add ${entry?.city ?? timezoneId} to favorites`
-                          }
-                          className={favoriteButtonStyles({ favorite: isFav })}
-                          onClick={() => handleToggleFavorite(timezoneId)}
-                          type="button"
-                        >
-                          {isFav ? '★' : '☆'}
-                        </button>
-                        <button
-                          aria-label={`Remove ${entry?.city ?? timezoneId}`}
-                          className="hover:text-red-400 p-1 text-body-sm text-gray-600"
-                          onClick={() => handleRemoveTarget(timezoneId)}
-                          type="button"
-                        >
-                          ✕
-                        </button>
-                      </div>
-                    </m.div>
+                      {city}
+                      <button
+                        aria-label={isFav ? `Remove ${city} from favorites` : `Add ${city} to favorites`}
+                        className={favoriteButtonStyles({ favorite: isFav })}
+                        onClick={() => handleToggleFavorite(tzId)}
+                        type="button"
+                      >
+                        {isFav ? '★' : '☆'}
+                      </button>
+                      <button
+                        aria-label={`Remove ${city}`}
+                        className="p-1 text-body-xs text-gray-500 hover:text-error"
+                        onClick={() =>
+                          setFieldsImmediate({ targetTzIds: inputs.targetTzIds.filter((tz) => tz !== tzId) })
+                        }
+                        type="button"
+                      >
+                        ✕
+                      </button>
+                    </span>
                   )
                 })}
-              </AnimatePresence>
+                <Button
+                  aria-label="Add target timezone"
+                  data-testid="add-timezone-button"
+                  onClick={() => setShowAddPicker((prev) => !prev)}
+                  size="small"
+                  variant="secondary"
+                >
+                  + Add Timezone
+                </Button>
+              </div>
+              {showAddPicker && (
+                <div className="w-full tablet:w-72">
+                  <TimezoneSearchPicker
+                    aria-label="Search timezones to add"
+                    favorites={favorites}
+                    index={index}
+                    onSelect={handleAddTarget}
+                    placeholder="Search to add timezone..."
+                  />
+                </div>
+              )}
             </div>
-          </section>
-        </div>
-      </div>
-    </ToolDialogFrame>
+          </div>
+        )
+      }}
+      resultLabel="Converted times"
+      resultPlaceholder="Enter a date and time (or press Now) to see it in each target timezone"
+      sourceKind="text"
+      sourceLabel="Date and time"
+      sourcePlaceholder="2026-11-10 14:30"
+      storageKey={STORAGE_KEY}
+      title="Timezone Converter"
+      triggerLabel="Convert"
+    />
   )
 }

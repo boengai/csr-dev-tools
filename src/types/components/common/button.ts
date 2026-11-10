@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactElement } from 'react'
+import type { ButtonHTMLAttributes, ReactElement, ReactNode } from 'react'
 
 export type ButtonProps = Partial<ButtonVariants> &
   Pick<
@@ -14,6 +14,18 @@ export type ButtonVariants = {
   block: boolean
   size: 'default' | 'large' | 'small'
   variant: 'default' | 'error' | 'info' | 'primary' | 'secondary' | 'success' | 'text' | 'warning'
+}
+
+/**
+ * A primary action bound to ⌘/Ctrl+Enter while it is mounted (so only while
+ * its dialog is open), with the key hint beside it.
+ */
+export type ModEnterActionProps = {
+  /** The action's `<Button>`. */
+  children: ReactNode
+  /** While true the shortcut is swallowed and does nothing (busy, or not ready). */
+  disabled?: boolean
+  onTrigger: () => void
 }
 
 export type CopyButtonProps = Partial<CopyButtonVariants> & {

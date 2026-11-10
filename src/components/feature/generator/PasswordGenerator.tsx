@@ -1,123 +1,99 @@
-import { useRef, useState } from 'react'
-
-import { Button, CopyButton, FieldForm, Pane, ToggleButton } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { FieldForm, GeneratorShell, ToggleButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import { DEFAULT_PASSWORD_OPTIONS, generatePassword, type PasswordOptions } from '@/utils'
+import type { PasswordCharSet, PasswordGeneratorOptions, ToolComponentProps } from '@/types'
+import { DEFAULT_PASSWORD_OPTIONS, generatePassword } from '@/utils'
 
-const CHAR_TOGGLES: Array<{
-  key: keyof Pick<PasswordOptions, 'digits' | 'lowercase' | 'symbols' | 'uppercase'>
-  label: string
-}> = [
+const CHAR_TOGGLES: Array<{ key: PasswordCharSet; label: string }> = [
   { key: 'uppercase', label: 'ABC' },
   { key: 'lowercase', label: 'abc' },
   { key: 'digits', label: '123' },
   { key: 'symbols', label: '!@#' },
 ]
 
+const LENGTH = { max: 128, min: 8 }
+const COUNT = { max: 20, min: 1 }
+
 const toolEntry = TOOL_REGISTRY_MAP['password-generator']
 
-export const PasswordGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const [options, setOptions] = useState<PasswordOptions>(DEFAULT_PASSWORD_OPTIONS)
-  const [count, setCount] = useState(1)
-  const nextPwId = useRef(1)
-  const [passwords, setPasswords] = useState(() => [{ _id: 0, value: generatePassword(DEFAULT_PASSWORD_OPTIONS) }])
-  const showSuccess = useToast((s) => s.showSuccess)
+const isNumber = (value: unknown): value is number => typeof value === 'number' && Number.isFinite(value)
 
-  const handleGenerate = () => {
-    setPasswords(Array.from({ length: count }, () => ({ _id: nextPwId.current++, value: generatePassword(options) })))
-    showSuccess(`Generated ${count} password${count > 1 ? 's' : ''}`)
-  }
+// Out-of-range numbers (e.g. a cleared number box) are clamped — the length by
+// generatePassword. Only corrupt saved options are an error.
+const generate = async (options: PasswordGeneratorOptions): Promise<Array<string>> => {
+  if (!isNumber(options.length) || !isNumber(options.count)) throw new Error('Length and count must be numbers')
+  if (!CHAR_TOGGLES.some(({ key }) => options[key])) throw new Error('Pick at least one character set')
+  const count = Math.min(COUNT.max, Math.max(COUNT.min, Math.floor(options.count)))
+  return Array.from({ length: count }, () => generatePassword(options))
+}
 
-  const handleLengthChange = (value: string) => {
-    const parsed = Number(value)
-    if (Number.isNaN(parsed)) return
-    setOptions((prev) => ({ ...prev, length: parsed }))
-  }
+const parseNumber = (val: string): number | null => {
+  const parsed = Number(val)
+  return Number.isNaN(parsed) ? null : parsed
+}
 
-  const handleCountChange = (value: string) => {
-    const parsed = Number(value)
-    if (Number.isNaN(parsed)) return
-    setCount(parsed)
-  }
-
-  const handleToggle = (key: keyof Pick<PasswordOptions, 'digits' | 'lowercase' | 'symbols' | 'uppercase'>) => {
-    const activeCount = [options.uppercase, options.lowercase, options.digits, options.symbols].filter(Boolean).length
-    if (options[key] && activeCount <= 1) return
-    setOptions((prev) => ({ ...prev, [key]: !prev[key] }))
-  }
-
-  return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      title="Password Generator"
-      triggers={[{ label: 'Generate' }]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
-        <div className="flex shrink-0 items-end gap-3">
-          <div className="flex w-3/5 flex-col gap-3">
-            <FieldForm
-              label="Length"
-              max={128}
-              min={8}
-              name="pw-length"
-              onChange={handleLengthChange}
-              type="range"
-              value={String(options.length)}
-            />
-            <FieldForm
-              label="Count"
-              max={20}
-              min={1}
-              name="pw-count"
-              onChange={handleCountChange}
-              type="range"
-              value={String(count)}
-            />
-          </div>
-          <div className="flex w-2/5 flex-col gap-3">
-            <div className="grid grid-cols-2 gap-2">
-              {CHAR_TOGGLES.map(({ key, label }) => (
-                <ToggleButton
-                  aria-label={`Toggle ${label}`}
-                  key={key}
-                  onClick={() => handleToggle(key)}
-                  pressed={options[key]}
-                >
-                  {label}
-                </ToggleButton>
-              ))}
-            </div>
-            <Button block onClick={handleGenerate} variant="default">
-              Generate
-            </Button>
-          </div>
-        </div>
-        <div className="border-t-2 border-dashed border-gray-900" />
-        <Pane live>
-          <div className="flex items-center gap-2">
-            <span className="text-body-sm font-medium text-gray-400">Generated Passwords ({passwords.length})</span>
-            {passwords.length > 0 && (
-              <CopyButton label="all passwords" value={passwords.map((p) => p.value).join('\n')} />
-            )}
-          </div>
-          <div className="flex max-h-80 flex-col gap-1 overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3">
-            {passwords.map((pw, i) => (
-              <div className="flex items-center justify-between gap-2" key={pw._id}>
-                <span className="text-sm font-mono break-all text-gray-300">
-                  {passwords.length > 1 && <span className="text-gray-600">{i + 1}. </span>}
-                  {pw.value}
-                </span>
-                <CopyButton label={`password ${i + 1}`} value={pw.value} />
-              </div>
+export const PasswordGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <GeneratorShell
+    autoOpen={autoOpen}
+    compute={generate}
+    description={toolEntry?.description}
+    initial={{ ...DEFAULT_PASSWORD_OPTIONS, count: 1 }}
+    onAfterClose={onAfterClose}
+    output={{
+      itemLabel: 'password',
+      kind: 'list',
+      label: 'Passwords',
+      placeholder: 'Press Generate to create passwords',
+    }}
+    renderOptions={({ options, setOptions }) => {
+      // The last enabled character set can't be switched off.
+      const activeCount = CHAR_TOGGLES.filter(({ key }) => options[key]).length
+      return (
+        <>
+          <FieldForm
+            label="Length"
+            max={LENGTH.max}
+            min={LENGTH.min}
+            name="pw-length"
+            onChange={(val: string) => {
+              const length = parseNumber(val)
+              if (length !== null) setOptions({ length })
+            }}
+            type="range"
+            value={String(options.length)}
+          />
+          <FieldForm
+            label="Count"
+            max={COUNT.max}
+            min={COUNT.min}
+            name="pw-count"
+            onChange={(val: string) => {
+              const count = parseNumber(val)
+              if (count !== null) setOptions({ count })
+            }}
+            type="range"
+            value={String(options.count)}
+          />
+          <div className="grid grid-cols-4 gap-2">
+            {CHAR_TOGGLES.map(({ key, label }) => (
+              <ToggleButton
+                aria-label={`Toggle ${label}`}
+                key={key}
+                onClick={() => {
+                  if (options[key] && activeCount <= 1) return
+                  setOptions({ [key]: !options[key] } as Partial<PasswordGeneratorOptions>)
+                }}
+                pressed={options[key]}
+              >
+                {label}
+              </ToggleButton>
             ))}
           </div>
-        </Pane>
-      </div>
-    </ToolDialogFrame>
-  )
-}
+        </>
+      )
+    }}
+    run={{ generateLabel: 'Generate', mode: 'random' }}
+    storageKey="csr-dev-tools-password-generator"
+    title="Password Generator"
+    triggerLabel="Generate"
+  />
+)

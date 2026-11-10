@@ -1,14 +1,17 @@
 import { expect, test } from '@playwright/test'
 
 import { dataConversionData } from './helpers/fixtures'
-import { codeInputIn } from './helpers/selectors'
+import { codeInputIn, toolSurface } from './helpers/selectors'
 
 test.describe('JSON to CSV Converter', () => {
   test('converts JSON array to CSV', async ({ page }) => {
     await page.goto('/tools/json-to-csv-converter')
     // Click the JSON → CSV button to open dialog
-    await page.getByRole('button', { name: /JSON.*CSV/i }).first().click()
-    const dialog = page.locator('[role="dialog"]')
+    await page
+      .getByRole('button', { name: /JSON.*CSV/i })
+      .first()
+      .click()
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, dataConversionData.jsonArray)
@@ -22,8 +25,11 @@ test.describe('JSON to YAML Converter', () => {
   test('converts JSON to YAML', async ({ page }) => {
     await page.goto('/tools/json-to-yaml-converter')
     // Click the JSON → YAML button to open dialog
-    await page.getByRole('button', { name: /JSON.*YAML/i }).first().click()
-    const dialog = page.locator('[role="dialog"]')
+    await page
+      .getByRole('button', { name: /JSON.*YAML/i })
+      .first()
+      .click()
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, dataConversionData.jsonForYaml)
@@ -37,8 +43,11 @@ test.describe('JSON to XML Converter', () => {
   test('converts XML to JSON', async ({ page }) => {
     await page.goto('/tools/json-to-xml-converter')
     // Click the XML → JSON button to open dialog
-    await page.getByRole('button', { name: /XML.*JSON/i }).first().click()
-    const dialog = page.locator('[role="dialog"]')
+    await page
+      .getByRole('button', { name: /XML.*JSON/i })
+      .first()
+      .click()
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await expect(dialog.locator('.cm-editor').first()).toBeVisible({ timeout: 3000 })
@@ -53,8 +62,11 @@ test.describe('JSON to TOML Converter', () => {
   test('converts TOML to JSON', async ({ page }) => {
     await page.goto('/tools/json-to-toml-converter')
     // Click the TOML → JSON button to open dialog
-    await page.getByRole('button', { name: /TOML.*JSON/i }).first().click()
-    const dialog = page.locator('[role="dialog"]')
+    await page
+      .getByRole('button', { name: /TOML.*JSON/i })
+      .first()
+      .click()
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await expect(dialog.locator('.cm-editor').first()).toBeVisible({ timeout: 3000 })
@@ -68,7 +80,7 @@ test.describe('JSON to TOML Converter', () => {
 test.describe('HTML to Markdown Converter', () => {
   test('converts HTML to Markdown', async ({ page }) => {
     await page.goto('/tools/html-to-markdown-converter')
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, dataConversionData.htmlForMd)

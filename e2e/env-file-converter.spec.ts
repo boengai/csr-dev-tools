@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { codeInputIn } from './helpers/selectors'
+import { codeInputIn, toolSurface } from './helpers/selectors'
 
 test.describe('ENV File Converter', () => {
   test.beforeEach(async ({ page }) => {
@@ -8,7 +8,7 @@ test.describe('ENV File Converter', () => {
   })
 
   test('converts .env to JSON', async ({ page }) => {
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, 'FOO=bar\nBAZ=123')
@@ -18,10 +18,13 @@ test.describe('ENV File Converter', () => {
   })
 
   test('converts JSON to .env', async ({ page }) => {
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
     // Dispatch click on mode button behind dialog overlay to switch mode
-    await page.locator('button', { hasText: /JSON → \.env/i }).first().dispatchEvent('click')
+    await page
+      .locator('button', { hasText: /JSON → \.env/i })
+      .first()
+      .dispatchEvent('click')
 
     await codeInputIn.fill(page, dialog, '{"FOO":"bar","BAZ":"123"}')
 

@@ -1,13 +1,13 @@
-import { useState } from 'react'
-
-import { Button, CopyButton, DownloadIcon, RangeInput, RefreshIcon, Tabs } from '@/components/common'
-import { UploadDialogFrame } from '@/components/common/dialog/UploadDialogFrame'
-import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useBatchAssetPipeline, useBlobUrl } from '@/hooks'
+import { RangeInput } from '@/components/common'
+import { FileProcessorShell } from '@/components/common/file-processor'
+import { IMAGE_FILE_NOUN, TOOL_REGISTRY_MAP } from '@/constants'
 import type {
-  IconPreviewCardProps,
-  SplashPreviewCardProps,
-  SplashScreenGeneratorOutput,
+  FileProcessorAsset,
+  FileProcessorAssetsResult,
+  FileProcessorDerivedInput,
+  SplashControls,
+  SplashScreenResult,
+  SplashSourcePreviewProps,
   ToolComponentProps,
 } from '@/types'
 import { generateAllAssets } from '@/utils'
@@ -15,19 +15,48 @@ import { generateAllAssets } from '@/utils'
 const toolEntry = TOOL_REGISTRY_MAP['splash-screen-generator']
 const ACCEPT = 'image/png,image/jpeg,image/webp,image/svg+xml'
 
-const flattenForZip = (output: SplashScreenGeneratorOutput): Record<string, Blob | string> => {
-  const files: Record<string, Blob | string> = {
-    'apple-splash-meta.html': output.metaTags,
-    'manifest-icons.json': output.manifestJson,
+const INITIAL_CONTROLS: SplashControls = { backgroundColor: '#ffffff', imageScale: '50' }
+
+const splashAsset = (splash: SplashScreenResult): FileProcessorAsset => {
+  const { device, orientation } = splash
+  const [width, height] = orientation === 'portrait' ? [device.width, device.height] : [device.height, device.width]
+  return {
+    blob: splash.blob,
+    caption: device.name,
+    details: [`${width}x${height}`, orientation],
+    name: splash.fileName,
+    zipPath: `ios-splash/${splash.fileName}`,
   }
-  for (const splash of output.splashScreens) {
-    files[`ios-splash/${splash.fileName}`] = splash.blob
+}
+
+const process = async ({
+  controls,
+  image,
+  report,
+}: FileProcessorDerivedInput<SplashControls>): Promise<FileProcessorAssetsResult> => {
+  const output = await generateAllAssets(image, controls.backgroundColor, Number(controls.imageScale) / 100, report)
+  const splashFor = (category: 'ipad' | 'iphone') =>
+    output.splashScreens.filter((s) => s.device.category === category).map(splashAsset)
+  return {
+    assetGroups: [
+      { assets: splashFor('iphone'), label: 'iPhone splash' },
+      { assets: splashFor('ipad'), label: 'iPad splash' },
+      {
+        assets: output.icons.map((icon) => ({
+          blob: icon.blob,
+          caption: `${icon.size}x${icon.size}`,
+          details: icon.maskable ? ['maskable'] : undefined,
+          name: icon.fileName,
+          zipPath: `${icon.maskable ? 'icons/maskable' : 'icons'}/${icon.fileName}`,
+        })),
+        label: 'Android icons',
+      },
+    ],
+    textOutputs: [
+      { label: 'iOS meta tags', value: output.metaTags, zipPath: 'apple-splash-meta.html' },
+      { label: 'Manifest icons JSON', value: output.manifestJson, zipPath: 'manifest-icons.json' },
+    ],
   }
-  for (const icon of output.icons) {
-    const dir = icon.maskable ? 'icons/maskable' : 'icons'
-    files[`${dir}/${icon.fileName}`] = icon.blob
-  }
-  return files
 }
 
 const computeSafeZoneBorder = (backgroundColor: string): string => {
@@ -39,316 +68,116 @@ const computeSafeZoneBorder = (backgroundColor: string): string => {
   return luminance > 0.5 ? 'rgba(0,0,0,0.5)' : 'rgba(255,255,255,0.6)'
 }
 
-export const SplashScreenGenerator = ({ onAfterClose }: ToolComponentProps) => {
-  const pipeline = useBatchAssetPipeline<SplashScreenGeneratorOutput>({
-    accept: ACCEPT,
-    failureToastLabel: 'Failed to generate assets',
-    mimePrefix: 'image/',
-    rejectToastLabel: 'Please select an image file',
-    successToastLabel: 'All assets generated successfully',
-  })
+export const SplashScreenGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <FileProcessorShell<SplashControls>
+    accept={ACCEPT}
+    actionLabel="Generate All Assets"
+    autoOpen={autoOpen}
+    description={toolEntry?.description}
+    errorLabel="Could not generate assets from this image"
+    initialControls={INITIAL_CONTROLS}
+    noun={IMAGE_FILE_NOUN}
+    onAfterClose={onAfterClose}
+    output="assets"
+    pendingLabel="Generating"
+    placeholder="Set the background and scale, then press Generate All Assets"
+    process={process}
+    rejectToastLabel="Please select an image file"
+    renderControls={({ controls, setControls }) => (
+      <div className="flex shrink-0 flex-wrap items-end gap-6">
+        <div className="flex items-center gap-2">
+          <label className="text-body-sm text-gray-300" htmlFor="bg-color">
+            Background Color
+          </label>
+          <input
+            className="h-8 w-12 cursor-pointer rounded border border-gray-700 bg-transparent"
+            id="bg-color"
+            onChange={(e) => setControls({ backgroundColor: e.target.value })}
+            type="color"
+            value={controls.backgroundColor}
+          />
+          <span className="text-body-xs text-gray-500">{controls.backgroundColor}</span>
+        </div>
+        <div className="flex min-w-60 flex-col gap-1">
+          <label className="text-body-sm text-gray-300" htmlFor="image-scale">
+            Image Scale ({controls.imageScale}%)
+          </label>
+          <RangeInput
+            aria-label="Image scale"
+            id="image-scale"
+            max={100}
+            min={10}
+            name="image-scale"
+            onChange={(imageScale) => setControls({ imageScale })}
+            step={5}
+            value={controls.imageScale}
+          />
+          <span className="text-body-xs text-gray-500">80% aligns with maskable safe zone</span>
+        </div>
+      </div>
+    )}
+    renderSource={({ controls, image, sourceUrl }) => (
+      <SplashSourcePreview
+        backgroundColor={controls.backgroundColor}
+        image={image}
+        imageScale={controls.imageScale}
+        sourceUrl={sourceUrl}
+      />
+    )}
+    title="Splash Screen Generator"
+    triggerLabel="Generate Splash Screens"
+    uploadLabel="Select image to generate splash screens"
+    // The picker offers ACCEPT; a drop of any other image type is still read (ADR-0016).
+    validate={(file) => file.type.startsWith('image/')}
+    zipPrefix="splash-screen-assets"
+  />
+)
 
-  const [backgroundColor, setBackgroundColor] = useState('#ffffff')
-  const [imageScale, setImageScale] = useState('50')
-  const [activeTab, setActiveTab] = useState('ios-splash')
-
-  const handleUpload = async (files: Array<File>, openDialog: () => void) => {
-    if (!(await pipeline.upload(files))) return
-    openDialog()
-  }
-
-  const handleGenerate = async () => {
-    const scale = Number(imageScale) / 100
-    await pipeline.regenerate((img, report) => generateAllAssets(img, backgroundColor, scale, report))
-  }
-
-  const handleDownloadAll = async () => {
-    if (!pipeline.results) return
-    await pipeline.downloadAll('splash-screen-assets.zip', flattenForZip(pipeline.results))
-  }
-
-  const resetState = () => {
-    pipeline.reset()
-    setBackgroundColor('#ffffff')
-    setImageScale('50')
-    setActiveTab('ios-splash')
-  }
-
-  const { progress, results, sourceImage, sourcePreview } = pipeline
-  const dimensionWarning = sourceImage ? sourceImage.width < 512 || sourceImage.height < 512 : false
-  const safeZoneBorderColor = computeSafeZoneBorder(backgroundColor)
-
-  const iosSplashContent = results && (
-    <div className="flex flex-col gap-4">
-      {(['iphone', 'ipad'] as const).map((category) => {
-        const devices = results.splashScreens.filter((s) => s.device.category === category)
-        if (devices.length === 0) return null
-        return (
-          <div className="flex flex-col gap-2" key={category}>
-            <p className="text-body-sm font-medium text-gray-300 capitalize">{category}s</p>
-            <div className="grid grid-cols-2 gap-3 tablet:grid-cols-4 desktop:grid-cols-6">
-              {devices.map((splash) => (
-                <SplashPreviewCard
-                  key={splash.fileName}
-                  onDownload={() => pipeline.downloadOne(splash.blob, splash.fileName)}
-                  splash={splash}
-                />
-              ))}
+/** Live preview of the controls on the source: maskable icon, portrait and landscape splash. */
+const SplashSourcePreview = ({ backgroundColor, image, imageScale, sourceUrl }: SplashSourcePreviewProps) => {
+  const scaled = { height: `${imageScale}%`, width: `${imageScale}%` }
+  const tooSmall = image.naturalWidth < 512 || image.naturalHeight < 512
+  return (
+    <div className="flex grow flex-col items-center justify-center gap-3 p-4">
+      <div className="flex flex-row items-end gap-3">
+        <div className="flex flex-col items-center gap-1">
+          <div
+            className="relative flex size-24 items-center justify-center overflow-hidden rounded border border-gray-800"
+            style={{ backgroundColor }}
+          >
+            <img alt="maskable icon" className="object-contain" src={sourceUrl} style={scaled} />
+            <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+              <div
+                className="rounded-full border-2 border-dashed"
+                style={{ borderColor: computeSafeZoneBorder(backgroundColor), height: '80%', width: '80%' }}
+              />
             </div>
           </div>
-        )
-      })}
-    </div>
-  )
-
-  const androidIconsContent = results && (
-    <div className="flex flex-col gap-4">
-      <div className="grid grid-cols-3 gap-4 tablet:grid-cols-5 desktop:grid-cols-8">
-        {results.icons.map((icon) => (
-          <IconPreviewCard
-            icon={icon}
-            key={icon.fileName}
-            onDownload={() => pipeline.downloadOne(icon.blob, icon.fileName)}
-          />
-        ))}
-      </div>
-    </div>
-  )
-
-  const pwaConfigContent = results && (
-    <div className="flex flex-col gap-6">
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <p className="text-body-sm font-medium text-gray-300">iOS Meta Tags</p>
-          <CopyButton label="meta tags" value={results.metaTags} />
+          <span className="text-body-xs text-gray-500">Icon</span>
         </div>
-        <pre className="max-h-64 overflow-auto rounded border border-gray-800 bg-black p-3 text-body-xs text-gray-300">
-          <code>{results.metaTags}</code>
-        </pre>
-      </div>
-      <div className="flex flex-col gap-2">
-        <div className="flex items-center gap-2">
-          <p className="text-body-sm font-medium text-gray-300">Manifest Icons JSON</p>
-          <CopyButton label="manifest JSON" value={results.manifestJson} />
-        </div>
-        <pre className="max-h-64 overflow-auto rounded border border-gray-800 bg-black p-3 text-body-xs text-gray-300">
-          <code>{results.manifestJson}</code>
-        </pre>
-      </div>
-    </div>
-  )
-
-  return (
-    <UploadDialogFrame
-      accept={ACCEPT}
-      buttonLabel="Select image to generate splash screens"
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      onReset={resetState}
-      onUpload={handleUpload}
-      title="Splash Screen Generator"
-      uploadInputName="splash-source"
-    >
-      <div className="flex grow flex-col gap-6 overflow-y-auto">
-        {/* Source preview + controls */}
-        <div className="flex flex-col gap-4 tablet:flex-row tablet:items-start">
-          {sourcePreview && (
-            <div className="flex shrink-0 flex-col gap-3">
-              <p className="text-body-sm font-medium text-gray-300">Preview</p>
-              <div className="flex flex-row items-end gap-3">
-                {/* Maskable icon preview */}
-                <div className="flex flex-col items-center gap-1">
-                  <div
-                    className="relative flex size-24 items-center justify-center overflow-hidden rounded border border-gray-800"
-                    style={{ backgroundColor }}
-                  >
-                    <img
-                      alt="maskable icon"
-                      className="object-contain"
-                      src={sourcePreview}
-                      style={{ height: `${imageScale}%`, width: `${imageScale}%` }}
-                    />
-                    <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-                      <div
-                        className="rounded-full border-2 border-dashed"
-                        style={{ borderColor: safeZoneBorderColor, height: '80%', width: '80%' }}
-                      />
-                    </div>
-                  </div>
-                  <span className="text-body-xs text-gray-500">Icon</span>
-                </div>
-                {/* Portrait splash preview */}
-                <div className="flex flex-col items-center gap-1">
-                  <div
-                    className="relative flex items-center justify-center overflow-hidden rounded border border-gray-800"
-                    style={{ backgroundColor, height: 128, width: 59 }}
-                  >
-                    <img
-                      alt="portrait splash"
-                      className="object-contain"
-                      src={sourcePreview}
-                      style={{ height: `${imageScale}%`, width: `${imageScale}%` }}
-                    />
-                  </div>
-                  <span className="text-body-xs text-gray-500">Portrait</span>
-                </div>
-                {/* Landscape splash preview */}
-                <div className="flex flex-col items-center gap-1">
-                  <div
-                    className="relative flex items-center justify-center overflow-hidden rounded border border-gray-800"
-                    style={{ backgroundColor, height: 59, width: 128 }}
-                  >
-                    <img
-                      alt="landscape splash"
-                      className="object-contain"
-                      src={sourcePreview}
-                      style={{ height: `${imageScale}%`, width: `${imageScale}%` }}
-                    />
-                  </div>
-                  <span className="text-body-xs text-gray-500">Landscape</span>
-                </div>
-              </div>
-              <span className="text-body-xs text-gray-500">Dashed circle = maskable safe zone (80%)</span>
-              {dimensionWarning && (
-                <span className="text-yellow-400 text-body-xs">
-                  Source is smaller than 512x512 — quality may suffer
-                </span>
-              )}
-            </div>
-          )}
-
-          <div className="flex flex-col gap-3">
-            <div className="flex items-center gap-2">
-              <label className="text-body-sm text-gray-300" htmlFor="bg-color">
-                Background Color
-              </label>
-              <input
-                className="h-8 w-12 cursor-pointer rounded border border-gray-700 bg-transparent"
-                id="bg-color"
-                onChange={(e) => setBackgroundColor(e.target.value)}
-                type="color"
-                value={backgroundColor}
-              />
-              <span className="text-body-xs text-gray-500">{backgroundColor}</span>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="text-body-sm text-gray-300" htmlFor="image-scale">
-                Image Scale ({imageScale}%)
-              </label>
-              <RangeInput
-                id="image-scale"
-                max={100}
-                min={10}
-                aria-label="Image scale"
-                name="image-scale"
-                onChange={setImageScale}
-                step={5}
-                value={imageScale}
-              />
-              <span className="text-body-xs text-gray-500">80% aligns with maskable safe zone</span>
-            </div>
-
-            <div className="flex gap-2">
-              <Button disabled={pipeline.pending || !sourceImage} onClick={handleGenerate} variant="primary">
-                {pipeline.pending
-                  ? `Generating ${progress?.current ?? 0}/${progress?.total ?? '...'}`
-                  : 'Generate All Assets'}
-              </Button>
-              <Button icon={<RefreshIcon />} onClick={pipeline.openFilePicker} size="small">
-                Upload New
-              </Button>
-            </div>
+        <div className="flex flex-col items-center gap-1">
+          <div
+            className="relative flex items-center justify-center overflow-hidden rounded border border-gray-800"
+            style={{ backgroundColor, height: 128, width: 59 }}
+          >
+            <img alt="portrait splash" className="object-contain" src={sourceUrl} style={scaled} />
           </div>
+          <span className="text-body-xs text-gray-500">Portrait</span>
         </div>
-
-        {/* Results tabs */}
-        {results && (
-          <>
-            <Tabs
-              injected={{ setValue: setActiveTab, value: activeTab }}
-              items={[
-                {
-                  content: iosSplashContent,
-                  // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
-                  trigger: <button type="button">iOS Splash</button>,
-                  value: 'ios-splash',
-                },
-                {
-                  content: androidIconsContent,
-                  // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
-                  trigger: <button type="button">Android Icons</button>,
-                  value: 'android-icons',
-                },
-                {
-                  content: pwaConfigContent,
-                  // raw button: Radix Tabs trigger — Tabs owns data-state="active" styling, Button would break it
-                  trigger: <button type="button">PWA Config</button>,
-                  value: 'pwa-config',
-                },
-              ]}
-            />
-            <Button block icon={<DownloadIcon />} onClick={handleDownloadAll} variant="primary">
-              Download All (ZIP)
-            </Button>
-          </>
-        )}
+        <div className="flex flex-col items-center gap-1">
+          <div
+            className="relative flex items-center justify-center overflow-hidden rounded border border-gray-800"
+            style={{ backgroundColor, height: 59, width: 128 }}
+          >
+            <img alt="landscape splash" className="object-contain" src={sourceUrl} style={scaled} />
+          </div>
+          <span className="text-body-xs text-gray-500">Landscape</span>
+        </div>
       </div>
-    </UploadDialogFrame>
-  )
-}
-
-// Each card owns its thumbnail object URL via useBlobUrl, so it's revoked when
-// the card unmounts (reset, new results, closing the dialog).
-const SplashPreviewCard = ({ onDownload, splash }: SplashPreviewCardProps) => {
-  const thumbnailUrl = useBlobUrl(splash.blob)
-  return (
-    // raw button: card-style download tile with image content; Button's min-h-8 and motion would distort the grid card layout
-    <button
-      className="flex cursor-pointer flex-col items-center gap-1 rounded border border-gray-800 p-2 transition-colors hover:border-gray-600"
-      onClick={onDownload}
-      title={`Download ${splash.fileName}`}
-      type="button"
-    >
-      <div className="bg-grid-texture flex items-center justify-center rounded p-1">
-        {thumbnailUrl && (
-          <img alt={`${splash.device.name} ${splash.orientation}`} className="max-h-16 max-w-12" src={thumbnailUrl} />
-        )}
-      </div>
-      <span className="text-body-xs text-gray-400">{splash.device.name}</span>
-      <span className="text-body-xs text-gray-500">
-        {splash.orientation === 'portrait' ? splash.device.width : splash.device.height}x
-        {splash.orientation === 'portrait' ? splash.device.height : splash.device.width}
-      </span>
-      <span className="text-body-xs text-gray-600 capitalize">{splash.orientation}</span>
-    </button>
-  )
-}
-
-const IconPreviewCard = ({ icon, onDownload }: IconPreviewCardProps) => {
-  const thumbnailUrl = useBlobUrl(icon.blob)
-  return (
-    // raw button: card-style download tile with image content; Button's min-h-8 and motion would distort the grid card layout
-    <button
-      className="flex cursor-pointer flex-col items-center gap-1 rounded border border-gray-800 p-2 transition-colors hover:border-gray-600"
-      onClick={onDownload}
-      title={`Download ${icon.fileName}`}
-      type="button"
-    >
-      <div className="bg-grid-texture flex items-center justify-center rounded p-2">
-        {thumbnailUrl && (
-          <img
-            alt={`${icon.size}x${icon.size}`}
-            height={Math.min(icon.size, 64)}
-            src={thumbnailUrl}
-            width={Math.min(icon.size, 64)}
-          />
-        )}
-      </div>
-      <span className="text-body-xs text-gray-400">
-        {icon.size}x{icon.size}
-      </span>
-      {icon.maskable && <span className="text-yellow-400 text-body-xs">maskable</span>}
-    </button>
+      <span className="text-body-xs text-gray-500">Dashed circle = maskable safe zone (80%)</span>
+      {tooSmall && (
+        <span className="text-body-xs text-warning">Source is smaller than 512x512 — quality may suffer</span>
+      )}
+    </div>
   )
 }

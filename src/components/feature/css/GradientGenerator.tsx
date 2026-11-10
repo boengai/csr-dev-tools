@@ -135,7 +135,7 @@ export const GradientGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps
                 {config.stops.length > 2 && (
                   <button
                     aria-label={`Remove stop ${index + 1}`}
-                    className="text-xs text-red-400 hover:text-red-300 rounded border border-gray-700 px-2 py-0.5"
+                    className="text-xs rounded border border-gray-700 px-2 py-0.5 text-error hover:text-error/80"
                     onClick={() => removeStop(index)}
                     type="button"
                   >

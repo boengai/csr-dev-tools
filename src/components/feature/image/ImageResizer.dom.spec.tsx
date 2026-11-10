@@ -71,7 +71,7 @@ afterEach(() => {
 
 describe('ImageResizer', () => {
   it('needs a max width or height before resizing', () => {
-    render(<ImageResizer />)
+    render(<ImageResizer autoOpen />)
     upload([new File(['x'], 'a.png', { type: 'image/png' })])
 
     expect(screen.getByRole('button', { name: 'Resize' })).toBeDisabled()
@@ -80,7 +80,7 @@ describe('ImageResizer', () => {
   })
 
   it('fits every image within the box, keeping each original format by default', async () => {
-    render(<ImageResizer />)
+    render(<ImageResizer autoOpen />)
     upload([
       new File(['x'], 'a.png', { type: 'image/png' }),
       new File(['x'], 'b.jpg', { type: 'image/jpeg' }),
@@ -101,14 +101,14 @@ describe('ImageResizer', () => {
   })
 
   it('explains the quality setting while keeping original formats', () => {
-    render(<ImageResizer />)
+    render(<ImageResizer autoOpen />)
     upload([new File(['x'], 'a.png', { type: 'image/png' })])
 
     expect(screen.getByText(/Quality applies to JPEG, WebP, and AVIF images/)).toBeInTheDocument()
   })
 
   it('resizes to an exact size with crop-to-fill, and needs both sides', async () => {
-    render(<ImageResizer />)
+    render(<ImageResizer autoOpen />)
     upload([new File(['x'], 'a.png', { type: 'image/png' }), new File(['x'], 'b.png', { type: 'image/png' })])
     pickMode('Exact — crop to fill')
 
@@ -129,7 +129,7 @@ describe('ImageResizer', () => {
   })
 
   it('stretches to an exact size', async () => {
-    render(<ImageResizer />)
+    render(<ImageResizer autoOpen />)
     upload([new File(['x'], 'a.png', { type: 'image/png' })])
     pickMode('Exact — stretch')
     expect(screen.getByText(/stretched to fill/)).toBeInTheDocument()

@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 
-import { Button, CodeInput, EmptyState, ErrorBanner, TextInput } from '@/components/common'
+import { Button, CodeInput, EmptyState, TextInput, ToolStatus } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolInput } from '@/hooks'
@@ -230,6 +230,7 @@ export const GraphqlSchemaViewer = ({ autoOpen, onAfterClose }: ToolComponentPro
   const [filter, setFilter] = useState('')
 
   const {
+    error: computeError,
     input,
     result: parseResult,
     setInput,
@@ -244,15 +245,16 @@ export const GraphqlSchemaViewer = ({ autoOpen, onAfterClose }: ToolComponentPro
       return { schema: null, parseError: result.error }
     },
     debounceMs: 300,
-    errorLabel: 'Failed to parse schema',
     initial: '',
     initialResult: { schema: null, parseError: null },
     isEmpty: (value) => !value.trim(),
     storageKey: 'csr-dev-tools-graphql-schema-viewer-input',
   })
 
-  const schemaInfo = parseResult.schema
-  const error = parseResult.parseError
+  // A rejected compute leaves the previous result in place; hide it so a
+  // stale schema never sits next to the error.
+  const error = computeError != null ? 'Failed to parse schema' : parseResult.parseError
+  const schemaInfo = computeError != null ? null : parseResult.schema
 
   const handleChange = (value: string) => setInput(value)
 
@@ -319,7 +321,7 @@ export const GraphqlSchemaViewer = ({ autoOpen, onAfterClose }: ToolComponentPro
           value={input}
         />
 
-        {error && <ErrorBanner>{error}</ErrorBanner>}
+        <ToolStatus error={error} errorLabel={error ?? undefined} />
 
         {!schemaInfo && !error && (
           <div className="flex flex-col items-center gap-3 py-8 text-center">

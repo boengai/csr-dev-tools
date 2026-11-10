@@ -1,123 +1,74 @@
 import DOMPurify from 'dompurify'
 import { useState } from 'react'
 
-import { Button, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { Button, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolInput } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import { downloadBlob, optimizeSvg, type SvgOptimizeResult } from '@/utils'
+import type { SvgOptimizeResult, ToolComponentProps } from '@/types'
+import { optimizeSvg } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['svg-viewer']
 
-const sanitize = (svg: string): string => DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true } })
+const INITIAL = { source: '' }
+
+const byteSize = (text: string): number => new Blob([text]).size
+
+// Sanitised here too (not only by the shell) so Download saves the same safe SVG.
+const computeSvg = ({ source }: { source: string }): string => {
+  const safe = DOMPurify.sanitize(source, { USE_PROFILES: { svg: true } })
+  if (!/<svg[\s>]/i.test(safe)) throw new Error('No <svg> element found — paste SVG markup that starts with <svg')
+  return safe
+}
 
 export const SvgViewer = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const [optimizeResult, setOptimizeResult] = useState<SvgOptimizeResult | null>(null)
-
-  const {
-    input: source,
-    result: safeSvg,
-    setInput,
-    setInputImmediate,
-    reset,
-  } = useToolInput<string, string>({
-    compute: (val) => sanitize(val),
-    debounceMs: 300,
-    initial: '',
-    initialResult: '',
-    isEmpty: (val) => !val,
-  })
-
-  const handleSourceChange = (val: string) => {
-    setOptimizeResult(null)
-    setInput(val)
-  }
-
-  const handleOptimize = () => {
-    if (!source) return
-    const result = optimizeSvg(source)
-    setOptimizeResult(result)
-    setInputImmediate(result.optimized)
-  }
-
-  const handleDownload = () => {
-    const content = sanitize(optimizeResult?.optimized ?? source)
-    if (!content) return
-    const blob = new Blob([content], { type: 'image/svg+xml' })
-    downloadBlob(blob, 'optimized.svg')
-  }
-
-  const handleReset = () => {
-    setOptimizeResult(null)
-    reset()
-  }
-
-  const displaySvg = optimizeResult?.optimized ?? source
+  // The last Optimize run; its stats show while the source is still its output.
+  const [optimized, setOptimized] = useState<SvgOptimizeResult | null>(null)
 
   return (
-    <ToolDialogFrame
+    <TransformerShell<{ source: string }, 'markup'>
       autoOpen={autoOpen}
+      compute={computeSvg}
       description={toolEntry?.description}
+      downloads={(svg) => [
+        { file: () => new Blob([svg], { type: 'image/svg+xml' }), filename: 'image.svg', label: 'SVG' },
+      ]}
+      initial={INITIAL}
+      // Dark-ink SVG would vanish on the dark pane.
+      markupBackground="light"
       onAfterClose={onAfterClose}
-      onReset={handleReset}
-      title="SVG Viewer & Optimizer"
-      triggers={[{ label: 'Open SVG Viewer' }]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
-        <SplitPanel>
-          <Pane>
-            <FieldForm
-              label="SVG Code"
-              name="svg-source"
-              onChange={handleSourceChange}
-              placeholder='<svg xmlns="http://www.w3.org/2000/svg" ...>'
-              type="code"
-              value={source}
-            />
-
-            <div className="flex items-center gap-2">
-              <Button onClick={handleOptimize} variant="default">
-                Optimize
-              </Button>
-              <Button onClick={handleDownload} variant="default">
-                Download
-              </Button>
-            </div>
-
-            {optimizeResult && (
-              <div
-                aria-live="polite"
-                className="text-sm flex flex-col gap-1 rounded border border-gray-800 bg-gray-950 p-3"
-              >
-                <span className="text-gray-400">
-                  Original: <span className="text-gray-100">{optimizeResult.originalSize} bytes</span>
-                </span>
-                <span className="text-gray-400">
-                  Optimized: <span className="text-gray-100">{optimizeResult.optimizedSize} bytes</span>
-                </span>
-                <span className="text-gray-400">
-                  Saved: <span className="text-green-400">{optimizeResult.savings}</span>
-                </span>
-              </div>
+      outputKind="markup"
+      // Never saved before the shell; kept that way.
+      persistInput={false}
+      renderControls={({ inputs, setFieldsImmediate }) => {
+        const stats = optimized?.optimized === inputs.source ? optimized : null
+        return (
+          <>
+            <Button
+              disabled={!inputs.source.trim()}
+              onClick={() => {
+                const next = optimizeSvg(inputs.source)
+                setOptimized(next)
+                setFieldsImmediate({ source: next.optimized })
+              }}
+              size="small"
+            >
+              Optimize
+            </Button>
+            {stats ? (
+              <p className="text-body-xs text-gray-500">
+                Optimized: {stats.originalSize} B → {stats.optimizedSize} B (saved {stats.savings})
+              </p>
+            ) : (
+              inputs.source && <p className="text-body-xs text-gray-500">Size: {byteSize(inputs.source)} B</p>
             )}
-          </Pane>
-
-          <Pane>
-            <div className="flex items-center gap-2">
-              <span className="text-body-sm font-medium text-gray-400">Preview</span>
-              {displaySvg && <CopyButton label="SVG" value={sanitize(displaySvg)} />}
-            </div>
-            <div
-              className="flex flex-1 items-center justify-center rounded-lg border border-gray-800 bg-white p-4"
-              // `safeSvg` is the DOMPurify-sanitized compute result.
-              dangerouslySetInnerHTML={{ __html: safeSvg }}
-              style={{ minHeight: '200px' }}
-            />
-            {source && <span className="text-body-xs text-gray-500">Size: {new Blob([source]).size} bytes</span>}
-          </Pane>
-        </SplitPanel>
-      </div>
-    </ToolDialogFrame>
+          </>
+        )
+      }}
+      resultLabel="Preview"
+      resultPlaceholder="Paste SVG markup on the left to preview it here"
+      sourceLabel="SVG Code"
+      sourcePlaceholder='<svg xmlns="http://www.w3.org/2000/svg" ...>'
+      title="SVG Viewer & Optimizer"
+      triggerLabel="Open SVG Viewer"
+    />
   )
 }

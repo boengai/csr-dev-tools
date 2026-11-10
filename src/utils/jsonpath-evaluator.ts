@@ -58,11 +58,4 @@ export function evaluateJsonPath(data: unknown, expression: string): JsonPathEva
   }
 }
 
-export function formatResultValue(value: unknown): string {
-  if (value === null) return 'null'
-  if (typeof value === 'object') return JSON.stringify(value, null, 2)
-  if (typeof value === 'string') return `"${value}"`
-  return String(value)
-}
-
 export type { JsonPathResult, JsonPathEvaluation, JsonParseResult } from '@/types/utils/jsonpath-evaluator'

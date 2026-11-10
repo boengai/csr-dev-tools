@@ -70,10 +70,9 @@ test.describe('GraphQL Schema Viewer', () => {
   test('renders tool with title and description', async ({ page }) => {
     await expect(card.title(page, 'GraphQL Schema Viewer')).toBeVisible()
     await expect(
-      page.getByText(
-        'Paste a GraphQL schema (SDL) and browse its types, fields, arguments, and relationships.',
-        { exact: false },
-      ),
+      page.getByText('Paste a GraphQL schema (SDL) and browse its types, fields, arguments, and relationships.', {
+        exact: false,
+      }),
     ).toBeVisible()
   })
 

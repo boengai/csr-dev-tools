@@ -1,15 +1,15 @@
-import { BidirectionalConverter } from '@/components/common'
+import { CodecShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, JsonXmlConvertMode, ToolComponentProps } from '@/types'
+import type { CodecMode, JsonXmlConvertMode, ToolComponentProps } from '@/types'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-xml-converter']
 
-const MODES: [ConverterMode<JsonXmlConvertMode>, ConverterMode<JsonXmlConvertMode>] = [
+const MODES: [CodecMode<JsonXmlConvertMode>, CodecMode<JsonXmlConvertMode>] = [
   {
     key: 'xml-to-json',
     label: 'XML → JSON',
     resultLabel: 'JSON Output',
-    resultPlaceholder: '{\n  "root": {\n    "name": "John",\n    "age": 30\n  }\n}',
+    resultPlaceholder: 'Paste XML to convert it to JSON',
     sourceFormat: 'xml',
     sourceLabel: 'XML Input',
     sourcePlaceholder: '<root>\n  <name>John</name>\n  <age>30</age>\n</root>',
@@ -18,7 +18,7 @@ const MODES: [ConverterMode<JsonXmlConvertMode>, ConverterMode<JsonXmlConvertMod
     key: 'json-to-xml',
     label: 'JSON → XML',
     resultLabel: 'XML Output',
-    resultPlaceholder: '<root>\n  <name>John</name>\n  <age>30</age>\n</root>',
+    resultPlaceholder: 'Paste JSON to convert it to XML',
     sourceFormat: 'json',
     sourceLabel: 'JSON Input',
     sourcePlaceholder: '{\n  "root": {\n    "name": "John",\n    "age": 30\n  }\n}',
@@ -32,7 +32,7 @@ const compute = async ({ mode, source }: { mode: JsonXmlConvertMode; source: str
 }
 
 export const JsonToXmlConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
-  <BidirectionalConverter
+  <CodecShell
     autoOpen={autoOpen}
     compute={compute}
     description={toolEntry?.description}

@@ -1,4 +1,4 @@
-import { FieldForm, FormatterShell } from '@/components/common'
+import { FieldForm, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { CssInput, ToolComponentProps } from '@/types'
 import { formatCss, minifyCss } from '@/wasm/formatter'
@@ -9,7 +9,7 @@ const INITIAL: CssInput = { source: '', mode: 'beautify', indent: 2 }
 
 export const CssFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
-    <FormatterShell<CssInput>
+    <TransformerShell<CssInput>
       autoOpen={autoOpen}
       compute={({ source, mode, indent }) => (mode === 'beautify' ? formatCss(source, indent) : minifyCss(source))}
       description={toolEntry?.description}
@@ -45,7 +45,7 @@ export const CssFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) => 
           )}
         </>
       )}
-      resultPlaceholder="Formatted CSS will appear here"
+      resultPlaceholder="Paste CSS to format or minify it"
       sourceLabel="CSS Input"
       sourcePlaceholder="body { color: red; margin: 0; }"
       storageKey="csr-dev-tools-css-formatter"

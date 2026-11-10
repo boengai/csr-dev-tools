@@ -10,6 +10,7 @@ import {
   Pane,
   SelectInput,
   SplitPanel,
+  ToolStatus,
   UploadInput,
 } from '@/components/common'
 import { ToolDialogShell } from '@/components/common/dialog/ToolDialogShell'
@@ -85,7 +86,7 @@ export const DIRECTION_PROFILES: Record<ProtobufDirection, DirectionProfile> = {
       },
       ariaLabel: 'Download encoded result',
     },
-    resultPlaceholder: 'Encoded output will appear here...',
+    resultPlaceholder: 'Paste a .proto schema, pick a message type and enter JSON to encode it',
   },
 
   decode: {
@@ -138,7 +139,7 @@ export const DIRECTION_PROFILES: Record<ProtobufDirection, DirectionProfile> = {
       },
       ariaLabel: 'Download decoded JSON',
     },
-    resultPlaceholder: '{ "name": "Alice" }',
+    resultPlaceholder: 'Paste a .proto schema, pick a message type and paste encoded data to decode it',
     selectSize: 'compact',
   },
 }
@@ -155,6 +156,8 @@ const INITIAL_STATE: PersistedState = {
   encodeSource: '',
   schema: '',
 }
+
+const NO_MESSAGE_TYPES: Array<string> = []
 
 const FORMAT_OPTIONS = [
   { label: 'Base64', value: 'base64' },
@@ -192,6 +195,7 @@ const ProtobufContent = ({
   onSchemaChange,
   onSourceChange,
   schema,
+  schemaError,
   selectedMessageType,
   source,
 }: ProtobufContentProps) => {
@@ -200,9 +204,13 @@ const ProtobufContent = ({
   const { downloadBlob } = useDownload()
   const profile = DIRECTION_PROFILES[direction]
 
-  const { result, setInput, setInputImmediate } = useToolComputation<CodecInput, string>(profile.computeFn, {
+  const {
+    error: codecError,
+    result: lastResult,
+    setInput,
+    setInputImmediate,
+  } = useToolComputation<CodecInput, string>(profile.computeFn, {
     debounceMs: 300,
-    errorFallback: profile.defaultErrorMsg,
     initial: '',
     isEmpty: ({ schema: schemaVal, msgType, source: sourceVal }) => !schemaVal.trim() || !msgType || !sourceVal.trim(),
   })
@@ -216,6 +224,10 @@ const ProtobufContent = ({
     setInputImmediate({ schema, msgType: selectedMessageType, source, format })
     // eslint-disable-next-line react/exhaustive-deps -- source/format edits route through their own handlers
   }, [messageTypes, selectedMessageType])
+
+  // A schema error outranks a codec error; either hides the stale output.
+  const error = schemaError ?? codecError
+  const result = error != null ? '' : lastResult
 
   const handleSourceChange = useCallback(
     (value: string) => {
@@ -318,6 +330,7 @@ const ProtobufContent = ({
           />
         </div>
       </div>
+      <ToolStatus error={error} errorFallback={profile.defaultErrorMsg} errorLabel={schemaError ?? undefined} />
       <SplitPanel>
         <Pane>
           <CodeInput
@@ -399,7 +412,6 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
   // The user's explicit pick; the effective selection is derived against the
   // latest parse so a schema edit keeps the pick while it still exists.
   const [chosenMessageType, setChosenMessageType] = useState('')
-  const showError = useToast((s) => s.showError)
 
   const update = useCallback(
     (patch: Partial<PersistedState>) => {
@@ -409,6 +421,7 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
   )
 
   const {
+    error: schemaComputeError,
     result: schemaResult,
     setInput: setSchemaInput,
     setInputImmediate: setSchemaInputImmediate,
@@ -417,28 +430,22 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
       const { parseProtobufSchema } = await import('@/wasm/parsers')
       const parsed = await parseProtobufSchema(value)
       if (parsed.success) {
-        return { messageTypes: parsed.schema.messages.map((m) => m.name), toastError: null }
+        return { error: null, messageTypes: parsed.schema.messages.map((m) => m.name) }
       }
-      return { messageTypes: [], toastError: `Schema error: ${parsed.error}` }
+      return { error: `Schema error: ${parsed.error}`, messageTypes: [] }
     },
     {
       debounceMs: 300,
-      errorLabel: 'Failed to parse proto schema',
-      initial: { messageTypes: [], toastError: null },
+      initial: { error: null, messageTypes: [] },
       isEmpty: (value) => !value.trim(),
     },
   )
 
-  const messageTypes = schemaResult.messageTypes
+  // A rejected parse leaves the previous result in place; drop its message
+  // types so the codec can't run against a stale schema.
+  const schemaError = schemaComputeError != null ? 'Failed to parse proto schema' : schemaResult.error
+  const messageTypes = schemaComputeError != null ? NO_MESSAGE_TYPES : schemaResult.messageTypes
   const selectedMessageType = messageTypes.includes(chosenMessageType) ? chosenMessageType : (messageTypes[0] ?? '')
-
-  // Surface parse-validation toasts on each new parse result.
-  useEffect(() => {
-    if (schemaResult.toastError) {
-      showError(schemaResult.toastError)
-    }
-    // eslint-disable-next-line react/exhaustive-deps -- toast is stable; intentionally fire only on result change
-  }, [schemaResult])
 
   useMountOnce(() => {
     if (persisted.schema) setSchemaInputImmediate(persisted.schema)
@@ -469,6 +476,7 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
     onSchemaChange: handleSchemaChange,
     onSourceChange: (v) => update({ encodeSource: v }),
     schema: persisted.schema,
+    schemaError,
     selectedMessageType,
     source: persisted.encodeSource,
   }
@@ -481,6 +489,7 @@ export const ProtobufCodec = (_props: ToolComponentProps) => {
     onSchemaChange: handleSchemaChange,
     onSourceChange: (v) => update({ decodeSource: v }),
     schema: persisted.schema,
+    schemaError,
     selectedMessageType,
     source: persisted.decodeSource,
   }

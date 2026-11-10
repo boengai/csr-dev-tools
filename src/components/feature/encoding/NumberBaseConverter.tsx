@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { CopyButton, ErrorBanner, FieldForm } from '@/components/common'
+import { CopyButton, FieldForm, ToolStatus } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolComputation } from '@/hooks'
@@ -17,32 +17,39 @@ const BASE_FIELDS: Array<BaseField> = [
 
 const EMPTY_VALUES: Record<string, string> = { binary: '', decimal: '', hex: '', octal: '' }
 
-const INITIAL_RESULT: BaseResult = { values: null, error: '' }
+const INITIAL_RESULT: BaseResult = { values: null }
 
 export const NumberBaseConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [values, setValues] = useState<Record<string, string>>(EMPTY_VALUES)
 
-  const { result, setInput } = useToolComputation<BaseInput, BaseResult>(
+  const { error, result, setInput } = useToolComputation<BaseInput, BaseResult>(
     async ({ val, fromBase, fromName }) => {
       if (!(await isValidForBase(val, fromBase))) {
-        return { values: null, error: `Invalid character for base ${fromBase.toString()}` }
+        throw new Error(`Invalid character for base ${fromBase.toString()}`)
       }
 
       const newValues: Record<string, string> = {}
-      for (const field of BASE_FIELDS) {
-        if (field.name === fromName) {
-          newValues[field.name] = val
-        } else {
-          newValues[field.name] = await convertBase(val, fromBase, field.base)
+      try {
+        for (const field of BASE_FIELDS) {
+          if (field.name === fromName) {
+            newValues[field.name] = val
+          } else {
+            newValues[field.name] = await convertBase(val, fromBase, field.base)
+          }
         }
+      } catch {
+        throw new Error('Conversion failed — please check your input')
       }
-      return { values: newValues, error: '' }
+      return { values: newValues }
     },
     {
       debounceMs: 300,
-      errorLabel: 'Conversion failed — please check your input',
       initial: INITIAL_RESULT,
       isEmpty: ({ val }) => val.trim().length === 0,
+      // Clear the other bases so stale conversions never sit next to the error.
+      onError: (_err, { fromName }) => {
+        setValues((prev) => ({ ...EMPTY_VALUES, [fromName]: prev[fromName] ?? '' }))
+      },
     },
   )
 
@@ -66,8 +73,6 @@ export const NumberBaseConverter = ({ autoOpen, onAfterClose }: ToolComponentPro
     setInput({ val, fromBase: field.base, fromName: field.name })
   }
 
-  const error = result.error
-
   return (
     <ToolDialogFrame
       autoOpen={autoOpen}
@@ -77,7 +82,7 @@ export const NumberBaseConverter = ({ autoOpen, onAfterClose }: ToolComponentPro
       triggers={[{ label: 'Convert' }]}
     >
       <div className="flex w-full grow flex-col gap-4">
-        {error && <ErrorBanner>{error}</ErrorBanner>}
+        <ToolStatus error={error} />
 
         <div aria-live="polite" className="flex w-full grow flex-col gap-4">
           {BASE_FIELDS.map((field) => (

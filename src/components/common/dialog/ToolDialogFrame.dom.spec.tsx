@@ -7,6 +7,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { nth } from '@/test/nth'
 
 import { ToolDialogFrame } from './ToolDialogFrame'
+import { ToolPresentationProvider, useToolPresentation } from './ToolPresentation'
 
 describe('ToolDialogFrame', () => {
   it('renders the description and trigger labels in the tile; dialog body hidden until open', () => {
@@ -112,5 +113,47 @@ describe('ToolDialogFrame', () => {
       </ToolDialogFrame>,
     )
     expect(container.querySelectorAll('p').length).toBe(0)
+  })
+})
+
+describe('ToolDialogFrame — page presentation (ADR-0029)', () => {
+  const renderOnPage = (registerReset = vi.fn(), children = <p>tool body</p>) =>
+    render(
+      <ToolPresentationProvider value={{ kind: 'page', registerReset }}>
+        <ToolDialogFrame
+          description="What it does"
+          onReset={() => undefined}
+          title="Hashes"
+          triggers={[{ label: 'Hash It' }]}
+        >
+          {children}
+        </ToolDialogFrame>
+      </ToolPresentationProvider>,
+    )
+
+  it('renders the Tool inline with its description, no tile trigger and no dialog', () => {
+    renderOnPage()
+
+    expect(screen.getByText('tool body')).toBeTruthy()
+    expect(screen.getByText('What it does')).toBeTruthy()
+    expect(screen.queryByRole('button', { name: 'Hash It' })).toBeNull()
+    expect(screen.queryByRole('dialog')).toBeNull()
+    expect(screen.getByRole('region', { name: 'Hashes' }).getAttribute('data-slot')).toBe('tool-surface')
+  })
+
+  it('registers its reset with the page, and unregisters on unmount', () => {
+    const registerReset = vi.fn()
+    const { unmount } = renderOnPage(registerReset)
+
+    expect(registerReset).toHaveBeenCalledWith(expect.any(Function))
+    unmount()
+    expect(registerReset).toHaveBeenLastCalledWith(undefined)
+  })
+
+  it("hands 'dialog' back to its children, so a dialog they open stays a real one", () => {
+    const Probe = () => <p>child sees {useToolPresentation().kind}</p>
+    renderOnPage(vi.fn(), <Probe />)
+
+    expect(screen.getByText('child sees dialog')).toBeTruthy()
   })
 })

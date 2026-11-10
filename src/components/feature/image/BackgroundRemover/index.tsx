@@ -1,12 +1,10 @@
-import { useCallback, useRef } from 'react'
+import { type CSSProperties, useCallback, useRef } from 'react'
 
-import { ImageToolShell } from '@/components/common/image-tool'
-import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast } from '@/hooks'
-import type { BgControls, ToolComponentProps, ToolComputeContext } from '@/types'
+import { FileProcessorShell } from '@/components/common/file-processor'
+import { IMAGE_FILE_NOUN, TOOL_REGISTRY_MAP } from '@/constants'
+import type { BackgroundRemoverPaneProps, BgControls, ToolComponentProps, ToolComputeContext } from '@/types'
 import { applyBackground, removeBackground } from '@/utils'
 
-import { BackgroundRemoverError } from './Error'
 import { BackgroundRemoverProcessing } from './Processing'
 import { BackgroundRemoverResult } from './Result'
 
@@ -14,9 +12,13 @@ const toolEntry = TOOL_REGISTRY_MAP['background-remover']
 
 const INITIAL_CONTROLS: BgControls = { bgOption: 'transparent', customColor: '#ff0000' }
 
-export const BackgroundRemover = ({ onAfterClose }: ToolComponentProps) => {
+const TRANSPARENT_CHECKERBOARD: CSSProperties = {
+  backgroundImage: 'repeating-conic-gradient(#808080 0% 25%, transparent 0% 50%)',
+  backgroundSize: '16px 16px',
+}
+
+export const BackgroundRemover = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const strippedCacheRef = useRef<{ file: File; stripped: Blob } | null>(null)
-  const showError = useToast((s) => s.showError)
 
   const process = useCallback(
     async (file: File, { bgOption: bg, customColor: c }: BgControls, { signal }: ToolComputeContext) => {
@@ -36,14 +38,21 @@ export const BackgroundRemover = ({ onAfterClose }: ToolComponentProps) => {
   )
 
   return (
-    <ImageToolShell<BgControls>
+    <FileProcessorShell<BgControls>
       accept="image/png,image/jpeg,image/webp"
+      autoOpen={autoOpen}
       description={toolEntry?.description}
+      errorLabel="Background removal failed. Try a different image."
       getDownloadFilename={() => 'background-removed.png'}
       initialControls={INITIAL_CONTROLS}
-      onAfterClose={onAfterClose}
-      onRejectInvalidFile={() => showError('Please select an image file (PNG, JPG, or WEBP)')}
+      noun={IMAGE_FILE_NOUN}
+      onAfterClose={() => {
+        // The shell is back on the upload area; drop the cut-out of the old file with it.
+        strippedCacheRef.current = null
+        onAfterClose?.()
+      }}
       process={process}
+      rejectToastLabel="Please select an image file (PNG, JPG, or WEBP)"
       renderControls={({ controls, setControls }) => (
         <BackgroundRemoverResult
           bgOption={controls.bgOption}
@@ -52,43 +61,40 @@ export const BackgroundRemover = ({ onAfterClose }: ToolComponentProps) => {
           onColorChange={(v) => setControls({ customColor: v })}
         />
       )}
-      renderPreview={({ controls, error, pending, resultUrl, sourceUrl }) => {
+      renderResult={({ controls, pending, resultUrl }) => {
         if (pending) return <BackgroundRemoverProcessing downloading={false} progress={0} />
-        if (error) return <BackgroundRemoverError onReset={() => (strippedCacheRef.current = null)} />
         if (!resultUrl) return null
         return (
-          <div
-            aria-live="polite"
-            className="bg-grid-texture flex flex-col items-center justify-center gap-6 bg-black tablet:min-h-0 tablet:grow tablet:flex-row"
-          >
-            <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
-              <p className="shrink-0 text-body-sm font-medium text-gray-300">Original</p>
-              <picture className="flex size-full grow flex-col items-center justify-center gap-4 tablet:max-h-full tablet:overflow-y-auto">
-                <img alt="original" className="w-full max-w-full tablet:max-h-full tablet:w-auto" src={sourceUrl} />
-              </picture>
-            </div>
-            <div className="tablet:border-t-none h-1 w-full border-t-2 border-dashed border-gray-700 tablet:h-full tablet:w-1 tablet:border-l-2" />
-            <div className="flex w-full grow flex-col items-center justify-center gap-4 p-4 tablet:size-full tablet:max-h-full">
-              <p className="shrink-0 text-body-sm font-medium text-gray-300">Result</p>
-              <picture
-                className="flex size-full grow flex-col items-center justify-center gap-4 rounded tablet:max-h-full tablet:overflow-y-auto"
-                style={
-                  controls.bgOption === 'transparent'
-                    ? {
-                        backgroundImage: 'repeating-conic-gradient(#808080 0% 25%, transparent 0% 50%)',
-                        backgroundSize: '16px 16px',
-                      }
-                    : undefined
-                }
-              >
-                <img alt="result" className="w-full max-w-full tablet:max-h-full tablet:w-auto" src={resultUrl} />
-              </picture>
-            </div>
-          </div>
+          <BackgroundRemoverPane caption="Result">
+            <picture
+              className="flex size-full grow flex-col items-center justify-center gap-4 rounded tablet:max-h-full tablet:overflow-y-auto"
+              style={controls.bgOption === 'transparent' ? TRANSPARENT_CHECKERBOARD : undefined}
+            >
+              <img alt="result" className="w-full max-w-full tablet:max-h-full tablet:w-auto" src={resultUrl} />
+            </picture>
+          </BackgroundRemoverPane>
         )
       }}
+      renderSource={({ sourceUrl }) => (
+        <BackgroundRemoverPane caption="Original">
+          <picture className="flex size-full grow flex-col items-center justify-center gap-4 tablet:max-h-full tablet:overflow-y-auto">
+            <img alt="original" className="w-full max-w-full tablet:max-h-full tablet:w-auto" src={sourceUrl} />
+          </picture>
+        </BackgroundRemoverPane>
+      )}
       title="Background Remover"
+      triggerLabel="Remove Background"
       uploadLabel="Select image to remove background"
     />
   )
 }
+
+const BackgroundRemoverPane = ({ caption, children }: BackgroundRemoverPaneProps) => (
+  <div
+    aria-live="polite"
+    className="bg-grid-texture flex grow flex-col items-center justify-center gap-4 bg-black p-4 tablet:min-h-0"
+  >
+    <p className="shrink-0 text-body-sm font-medium text-gray-300">{caption}</p>
+    {children}
+  </div>
+)

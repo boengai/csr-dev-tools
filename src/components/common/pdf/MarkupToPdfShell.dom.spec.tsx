@@ -14,7 +14,7 @@ import { MarkupToPdfShell } from './MarkupToPdfShell'
 // fireEvent.change in jsdom). The shell's interesting behavior is the pipeline
 // state → UI mapping, not CodeMirror integration — so we drive the shell by
 // mocking the pipeline hook (useToolInput)'s return value. Mirrors the pattern in
-// BidirectionalConverter.dom.spec.tsx and the now-retired per-Tool specs.
+// CodecShell.dom.spec.tsx and the now-retired per-Tool specs.
 
 const EMPTY_RESULT: CompileResultDto = { svgs: [], pdf: new Uint8Array(0) }
 const NONEMPTY_RESULT: CompileResultDto = {

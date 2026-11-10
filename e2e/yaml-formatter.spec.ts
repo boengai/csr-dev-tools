@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { codeInputIn, copyButton, toast } from './helpers/selectors'
+import { codeInputIn, copyButton, toast, toolSurface } from './helpers/selectors'
 
 test.describe('YAML Formatter', () => {
   test.beforeEach(async ({ page }) => {
@@ -8,17 +8,16 @@ test.describe('YAML Formatter', () => {
   })
 
   test('renders tool with title and description', async ({ page }) => {
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
-    // Card title is aria-hidden behind the dialog; use CSS locator
-    await expect(page.locator('h3').filter({ hasText: 'YAML Formatter' })).toBeVisible({ timeout: 5000 })
+    await expect(page.getByRole('heading', { level: 1, name: 'YAML Formatter' })).toBeVisible({ timeout: 5000 })
     await expect(
       page.locator('text=Format and validate YAML with configurable indentation and key sorting'),
     ).toBeVisible()
   })
 
   test('formats valid YAML input', async ({ page }) => {
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, 'name: John\nage: 30\ntags:\n  - dev\n  - tools')
@@ -27,17 +26,19 @@ test.describe('YAML Formatter', () => {
     await expect(output).toBeVisible({ timeout: 3000 })
   })
 
-  test('shows error toast for invalid YAML', async ({ page }) => {
-    const dialog = page.locator('[role="dialog"]')
+  test('shows invalid YAML in the status slot', async ({ page }) => {
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, 'key: [unclosed')
 
-    await expect(page.getByText(/Invalid YAML/).first()).toBeVisible({ timeout: 3000 })
+    await expect(dialog.locator('[data-slot="tool-status"]').getByRole('alert')).toContainText(/Invalid YAML/, {
+      timeout: 3000,
+    })
   })
 
   test('copy button triggers toast notification', async ({ page }) => {
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, 'name: John\nage: 30')
@@ -50,7 +51,7 @@ test.describe('YAML Formatter', () => {
   })
 
   test('sort keys option reorders keys alphabetically', async ({ page }) => {
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await dialog.getByLabel('Sort Keys').check()

@@ -1,111 +1,90 @@
-import { expect, test } from '@playwright/test'
+import { expect, type Page, test } from '@playwright/test'
 
 import { codeInput } from './helpers/selectors'
+
+const SOURCE = 'dialog-source'
 
 test.describe('Mermaid Renderer', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/tools/mermaid-renderer')
     // Dialog auto-opens; wait for the CodeMirror editor inside it
-    const editor = codeInput.byName(page, 'mermaid-input').locator('.cm-editor')
+    const editor = codeInput.byName(page, SOURCE).locator('.cm-editor')
     await expect(editor).toBeVisible({ timeout: 10000 })
   })
+
+  const preview = (page: Page) => page.locator('[data-slot="tool-output"][data-has-value]')
 
   test('navigate to /tools/mermaid-renderer, verify title and description', async ({ page }) => {
     await expect(page.getByText('Mermaid Syntax', { exact: true })).toBeVisible()
     await expect(page.getByText('Write Mermaid diagram syntax and see a live SVG preview')).toBeVisible()
   })
 
-  test('loading state — initially shows loading skeleton, then editor becomes available (AC #1)', async ({
-    page,
-  }) => {
-    await page.goto('/tools/mermaid-renderer')
-    const editor = codeInput.byName(page, 'mermaid-input').locator('.cm-editor')
-    await expect(editor).toBeVisible({ timeout: 10000 })
+  test('opens on the placeholder, with no default diagram', async ({ page }) => {
+    await expect(page.getByText('Write Mermaid syntax, or pick an example, to see the diagram')).toBeVisible()
+    await expect(preview(page)).toHaveCount(0)
   })
 
-  test('default sample code renders a flowchart SVG preview on load (AC #2)', async ({ page }) => {
-    const previewContainer = page.locator('[aria-live="polite"]')
-    await expect(previewContainer.locator('svg').first()).toBeVisible({ timeout: 10000 })
+  test('type valid Mermaid syntax → SVG preview updates after debounce', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'sequenceDiagram\n    Alice->>Bob: Hello')
+    await expect(preview(page).locator('svg').first()).toBeVisible({ timeout: 10000 })
   })
 
-  test('type valid Mermaid syntax → SVG preview updates after debounce (AC #2)', async ({ page }) => {
-    await codeInput.fill(page, 'mermaid-input', 'sequenceDiagram\n    Alice->>Bob: Hello')
-
-    const previewContainer = page.locator('[aria-live="polite"]')
-    await expect(previewContainer.locator('svg').first()).toBeVisible({ timeout: 10000 })
+  test('pick an example → it renders', async ({ page }) => {
+    await page.getByRole('button', { name: 'Use Flowchart example' }).click()
+    await expect(preview(page).locator('svg').first()).toBeVisible({ timeout: 10000 })
+    for (const label of ['Sequence', 'Class', 'State', 'Gantt', 'Pie']) {
+      await expect(page.getByRole('button', { name: `Use ${label} example` })).toBeVisible()
+    }
   })
 
-  test('type invalid syntax → error message appears with role="alert" (AC #3)', async ({ page }) => {
-    await codeInput.fill(page, 'mermaid-input', 'this is not valid mermaid syntax !!!')
+  test('type invalid syntax → error in the status slot, output cleared', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'this is not valid mermaid syntax !!!')
 
-    const errorAlert = page.locator('[role="alert"]')
+    const errorAlert = page.locator('[data-slot="tool-status"] [role="alert"]')
     await expect(errorAlert).toBeVisible({ timeout: 10000 })
+    await expect(preview(page)).toHaveCount(0)
   })
 
-  test('fix invalid syntax → error clears and SVG preview appears (AC #3)', async ({ page }) => {
-    await codeInput.fill(page, 'mermaid-input', 'this is not valid mermaid syntax !!!')
-    const errorAlert = page.locator('[role="alert"]')
+  test('Auto-fix in the status slot repairs a missing diagram type', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'A --> B')
+    const status = page.locator('[data-slot="tool-status"]')
+    await expect(status.getByRole('alert')).toBeVisible({ timeout: 10000 })
+
+    await status.getByRole('button', { name: /^Auto-fix/ }).click()
+    await expect(status.getByRole('alert')).toHaveCount(0, { timeout: 10000 })
+    await expect(preview(page).locator('svg').first()).toBeVisible({ timeout: 10000 })
+  })
+
+  test('fix invalid syntax → error clears and SVG preview appears', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'this is not valid mermaid syntax !!!')
+    const errorAlert = page.locator('[data-slot="tool-status"] [role="alert"]')
     await expect(errorAlert).toBeVisible({ timeout: 10000 })
 
-    await codeInput.fill(page, 'mermaid-input', 'flowchart TD\n    A --> B')
-    const previewContainer = page.locator('[aria-live="polite"]')
-    await expect(previewContainer.locator('svg').first()).toBeVisible({ timeout: 10000 })
+    await codeInput.fill(page, SOURCE, 'flowchart TD\n    A --> B')
+    await expect(preview(page).locator('svg').first()).toBeVisible({ timeout: 10000 })
     await expect(errorAlert).not.toBeVisible()
   })
 
-  test('click "Export SVG" button → download triggered (AC #4)', async ({ page }) => {
-    const previewContainer = page.locator('[aria-live="polite"]')
-    await expect(previewContainer.locator('svg').first()).toBeVisible({ timeout: 10000 })
+  test('Download SVG in the output label → download triggered', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'flowchart TD\n    A --> B')
+    await expect(preview(page).locator('svg').first()).toBeVisible({ timeout: 10000 })
 
     const [download] = await Promise.all([
       page.waitForEvent('download'),
-      page.getByRole('button', { name: 'Export SVG' }).click(),
+      page.getByRole('button', { name: 'Download SVG' }).click(),
     ])
     expect(download.suggestedFilename()).toBe('mermaid-diagram.svg')
   })
 
-  test('click "Export PNG" button → download triggered (AC #5)', async ({ page }) => {
-    const previewContainer = page.locator('[aria-live="polite"]')
-    await expect(previewContainer.locator('svg').first()).toBeVisible({ timeout: 10000 })
+  test('Download PNG in the output label → download triggered', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'flowchart TD\n    A --> B')
+    await expect(preview(page).locator('svg').first()).toBeVisible({ timeout: 10000 })
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 15000 }),
-      page.getByRole('button', { name: 'Export PNG' }).click(),
+      page.getByRole('button', { name: 'Download PNG' }).click(),
     ])
     expect(download.suggestedFilename()).toBe('mermaid-diagram.png')
-  })
-
-  test('toggle syntax reference panel → reference examples are visible with CopyButton (AC #6)', async ({
-    page,
-  }) => {
-    const toggle = page.getByRole('button', { name: 'Syntax Reference' })
-    await toggle.click()
-
-    // Use specific button selectors to avoid strict mode violations
-    await expect(page.getByRole('button', { name: 'Use Flowchart example' })).toBeVisible({ timeout: 5000 })
-    await expect(page.getByRole('button', { name: 'Use Sequence example' })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Use Class example' })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Use State example' })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Use Gantt example' })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Use Pie example' })).toBeVisible()
-  })
-
-  test('click CopyButton on a syntax reference example → text is copied to clipboard', async ({
-    page,
-    context,
-  }) => {
-    await context.grantPermissions(['clipboard-read', 'clipboard-write'])
-
-    const toggle = page.getByRole('button', { name: 'Syntax Reference' })
-    await toggle.click()
-    await expect(page.getByRole('button', { name: 'Use Flowchart example' })).toBeVisible({ timeout: 5000 })
-
-    // Click the CopyButton for the Flowchart example
-    const copyButtons = page.locator('[aria-label*="Copy"]')
-    await copyButtons.first().click()
-
-    const clipboardText = await page.evaluate(() => navigator.clipboard.readText())
-    expect(clipboardText).toContain('flowchart')
   })
 
   test('mobile viewport (375px) responsiveness — editor and preview stack vertically', async ({ page }) => {
@@ -114,17 +93,12 @@ test.describe('Mermaid Renderer', () => {
     await expect(page.getByText('Mermaid Syntax', { exact: true })).toBeVisible()
     await expect(page.getByText('Preview', { exact: true })).toBeVisible()
 
-    const editor = codeInput.byName(page, 'mermaid-input').locator('.cm-editor')
+    const editor = codeInput.byName(page, SOURCE).locator('.cm-editor')
     await expect(editor).toBeVisible()
   })
 
-  test('export buttons are disabled when no SVG is available (empty/invalid input)', async ({ page }) => {
-    await codeInput.fill(page, 'mermaid-input', '')
-
-    const exportSvgButton = page.getByRole('button', { name: 'Export SVG' })
-    const exportPngButton = page.getByRole('button', { name: 'Export PNG' })
-
-    await expect(exportSvgButton).toBeDisabled({ timeout: 5000 })
-    await expect(exportPngButton).toBeDisabled({ timeout: 5000 })
+  test('downloads are disabled when there is no diagram (empty/invalid input)', async ({ page }) => {
+    await expect(page.getByRole('button', { name: 'Download SVG' })).toBeDisabled({ timeout: 5000 })
+    await expect(page.getByRole('button', { name: 'Download PNG' })).toBeDisabled({ timeout: 5000 })
   })
 })

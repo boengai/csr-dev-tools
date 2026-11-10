@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 
 import { nth } from '@/test/nth'
 
-import { createCachedJsonParser, evaluateJsonPath, formatResultValue, parseJsonInput } from './jsonpath-evaluator'
+import { createCachedJsonParser, evaluateJsonPath, parseJsonInput } from './jsonpath-evaluator'
 
 describe('jsonpath-evaluator', () => {
   describe('createCachedJsonParser', () => {
@@ -234,38 +234,6 @@ describe('jsonpath-evaluator', () => {
       if (!result.success) {
         expect(result.error).toBeTruthy()
       }
-    })
-  })
-
-  describe('formatResultValue', () => {
-    it('formats an object as indented JSON', () => {
-      const result = formatResultValue({ key: 'value' })
-      expect(result).toBe(JSON.stringify({ key: 'value' }, null, 2))
-    })
-
-    it('formats an array as indented JSON', () => {
-      const result = formatResultValue([1, 2, 3])
-      expect(result).toBe(JSON.stringify([1, 2, 3], null, 2))
-    })
-
-    it('formats a string with quotes', () => {
-      expect(formatResultValue('hello')).toBe('"hello"')
-    })
-
-    it('formats a number as string', () => {
-      expect(formatResultValue(42)).toBe('42')
-    })
-
-    it('formats boolean true', () => {
-      expect(formatResultValue(true)).toBe('true')
-    })
-
-    it('formats boolean false', () => {
-      expect(formatResultValue(false)).toBe('false')
-    })
-
-    it('formats null', () => {
-      expect(formatResultValue(null)).toBe('null')
     })
   })
 })

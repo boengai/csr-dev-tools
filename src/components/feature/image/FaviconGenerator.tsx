@@ -1,132 +1,52 @@
-import { Button, CopyButton, DownloadIcon, RefreshIcon } from '@/components/common'
-import { UploadDialogFrame } from '@/components/common/dialog/UploadDialogFrame'
-import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useBatchAssetPipeline } from '@/hooks'
-import type { FaviconResult, ToolComponentProps } from '@/types'
+import { FileProcessorShell } from '@/components/common/file-processor'
+import { IMAGE_FILE_NOUN, TOOL_REGISTRY_MAP } from '@/constants'
+import type { FileProcessorAssetsResult, FileProcessorDerivedInput, ToolComponentProps } from '@/types'
 import { generateFaviconLinkTags, generateFavicons } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['favicon-generator']
 const linkTags = generateFaviconLinkTags()
 const ACCEPT = 'image/png,image/jpeg,image/webp,image/svg+xml'
 
-const flattenForZip = (results: Array<FaviconResult>): Record<string, Blob> => {
-  const files: Record<string, Blob> = {}
-  for (const r of results) files[r.size.name] = r.blob
-  return files
+const process = async ({ image }: FileProcessorDerivedInput<object>): Promise<FileProcessorAssetsResult> => {
+  const favicons = await generateFavicons(image)
+  return {
+    assetGroups: [
+      {
+        assets: favicons.map(({ blob, size }) => ({ blob, caption: `${size.width}x${size.height}`, name: size.name })),
+        label: 'Favicons',
+      },
+    ],
+    // The link tags are the same for every source; they are not part of the ZIP.
+    textOutputs: [{ label: 'HTML link tags', value: linkTags }],
+  }
 }
 
-export const FaviconGenerator = ({ onAfterClose }: ToolComponentProps) => {
-  const pipeline = useBatchAssetPipeline<Array<FaviconResult>>({
-    accept: ACCEPT,
-    failureToastLabel: 'Failed to generate favicons',
-    mimePrefix: 'image/',
-    rejectToastLabel: 'Please select an image file',
-    successToastLabel: 'Favicons generated successfully',
-  })
-
-  const generate = () => pipeline.regenerate(async (img) => generateFavicons(img))
-
-  const handleUpload = async (files: Array<File>, openDialog: () => void) => {
-    if (!(await pipeline.upload(files))) return
-    openDialog()
-    await generate()
-  }
-
-  // No Generate button here (unlike the splash generator): a new source regenerates at once.
-  const handleUploadNew = async () => {
-    if (await pipeline.openFilePicker()) await generate()
-  }
-
-  const handleDownloadAll = async () => {
-    if (!pipeline.results) return
-    await pipeline.downloadAll('favicons.zip', flattenForZip(pipeline.results))
-  }
-
-  const results = pipeline.results ?? []
-
-  return (
-    <UploadDialogFrame
-      accept={ACCEPT}
-      buttonLabel="Select image to generate favicons"
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      onReset={pipeline.reset}
-      onUpload={handleUpload}
-      title="Favicon Generator"
-      uploadInputName="favicon-source"
-    >
-      <div className="flex grow flex-col gap-6 overflow-y-auto">
-        {/* Source + Generated grid */}
-        <div className="flex flex-col gap-6 tablet:flex-row">
-          {/* Source image */}
-          {pipeline.sourcePreview && (
-            <div className="flex shrink-0 flex-col items-center gap-2">
-              <p className="text-body-sm font-medium text-gray-300">Source Image</p>
-              <img
-                alt="source"
-                className="w-full max-w-40 rounded border border-gray-800"
-                src={pipeline.sourcePreview}
-              />
-              <Button icon={<RefreshIcon />} onClick={handleUploadNew} size="small">
-                Upload New
-              </Button>
-            </div>
-          )}
-
-          {/* Generated favicons grid */}
-          {results.length > 0 && (
-            <div className="flex grow flex-col gap-3">
-              <p className="text-body-sm font-medium text-gray-300">Generated Favicons</p>
-              <div className="grid grid-cols-3 gap-4 tablet:grid-cols-6">
-                {/* raw button: card-style download tile with image content; Button's min-h-8 and motion would distort the grid card layout */}
-                {results.map((result) => (
-                  <button
-                    className="flex cursor-pointer flex-col items-center gap-1 rounded border border-gray-800 p-2 transition-colors hover:border-gray-600"
-                    key={result.size.name}
-                    onClick={() => pipeline.downloadOne(result.blob, result.size.name)}
-                    title={`Download ${result.size.name}`}
-                    type="button"
-                  >
-                    <div className="bg-grid-texture flex items-center justify-center rounded p-2">
-                      <img
-                        alt={`${result.size.width}x${result.size.height}`}
-                        height={Math.min(result.size.height, 64)}
-                        src={result.dataUrl}
-                        width={Math.min(result.size.width, 64)}
-                      />
-                    </div>
-                    <span className="text-body-xs text-gray-400">
-                      {result.size.width}x{result.size.height}
-                    </span>
-                  </button>
-                ))}
-              </div>
-              <Button block icon={<DownloadIcon />} onClick={handleDownloadAll} variant="primary">
-                Download All (ZIP)
-              </Button>
-            </div>
-          )}
-
-          {pipeline.pending && (
-            <div className="flex grow items-center justify-center">
-              <p className="text-body-sm text-gray-400">Generating favicons...</p>
-            </div>
-          )}
-        </div>
-
-        {/* Link tags */}
-        {results.length > 0 && (
-          <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <p className="text-body-sm font-medium text-gray-300">HTML Link Tags</p>
-              <CopyButton label="link tags" value={linkTags} />
-            </div>
-            <pre className="overflow-x-auto rounded border border-gray-800 bg-black p-3 text-body-xs text-gray-300">
-              <code>{linkTags}</code>
-            </pre>
-          </div>
-        )}
+export const FaviconGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <FileProcessorShell
+    accept={ACCEPT}
+    autoOpen={autoOpen}
+    description={toolEntry?.description}
+    errorLabel="Could not generate favicons from this image"
+    noun={IMAGE_FILE_NOUN}
+    onAfterClose={onAfterClose}
+    output="assets"
+    pendingLabel="Generating favicons…"
+    placeholder="Add an image to generate its favicons"
+    process={process}
+    rejectToastLabel="Please select an image file"
+    renderSource={({ image, source, sourceUrl }) => (
+      <div className="flex grow flex-col items-center justify-center gap-2 p-4">
+        <img alt="source" className="max-h-60 max-w-full rounded border border-gray-800" src={sourceUrl} />
+        <p className="text-center text-body-xs text-gray-500">
+          {source.name} — {image.naturalWidth}x{image.naturalHeight}
+        </p>
       </div>
-    </UploadDialogFrame>
-  )
-}
+    )}
+    title="Favicon Generator"
+    triggerLabel="Generate Favicons"
+    uploadLabel="Select image to generate favicons"
+    // The picker offers ACCEPT; a drop of any other image type is still read (ADR-0016).
+    validate={(file) => file.type.startsWith('image/')}
+    zipPrefix="favicons"
+  />
+)

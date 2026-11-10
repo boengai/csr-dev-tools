@@ -1,4 +1,4 @@
-import { FormatterShell } from '@/components/common'
+import { TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
 import { formatJson } from '@/utils'
@@ -10,7 +10,7 @@ const INITIAL: { source: string } = { source: '' }
 
 export const JsonFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
-    <FormatterShell<{ source: string }>
+    <TransformerShell<{ source: string }>
       autoOpen={autoOpen}
       compute={async ({ source }) => {
         const narrated = await narrateParseError('json', source)
@@ -24,15 +24,8 @@ export const JsonFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) =>
       description={toolEntry?.description}
       initial={INITIAL}
       onAfterClose={onAfterClose}
-      renderBanner={(error) =>
-        error instanceof Error ? (
-          <p className="text-body-sm text-error" role="alert">
-            {error.message}
-          </p>
-        ) : null
-      }
       resultLabel="Formatted JSON"
-      resultPlaceholder={'{\n  "name": "John",\n  "age": 30,\n  "tags": [\n    "dev",\n    "tools"\n  ]\n}'}
+      resultPlaceholder="Paste JSON to format it"
       sourceLabel="JSON Input"
       sourcePlaceholder='{"name":"John","age":30,"tags":["dev","tools"]}'
       storageKey="csr-dev-tools-json-formatter"

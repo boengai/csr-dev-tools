@@ -1,9 +1,7 @@
-import { CopyButton, FieldForm, ToggleButton } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { FieldForm, ToggleButton, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolFields } from '@/hooks'
 import type { TextSortInput, ToolComponentProps } from '@/types'
-import { sortAndProcessText, type SortMode, type TextSortResult } from '@/utils'
+import { type SortMode, sortAndProcessText } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['text-sort-dedupe']
 
@@ -15,84 +13,67 @@ const SORT_OPTIONS = [
   { label: 'Numeric', value: 'numeric' },
 ]
 
-const INITIAL_INPUT: TextSortInput = {
-  input: '',
+const TOGGLES = [
+  { field: 'removeDuplicates', label: 'Dedupe' },
+  { field: 'removeEmpty', label: 'No Empty' },
+  { field: 'trimLines', label: 'Trim' },
+] as const
+
+const INITIAL: TextSortInput = {
   removeDuplicates: false,
   removeEmpty: false,
   sortMode: 'az',
+  source: '',
   trimLines: false,
 }
 
-export const TextSortDedupe = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const { inputs, result, setFields } = useToolFields<TextSortInput, TextSortResult | null>({
-    compute: ({ input: text, removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }) =>
-      sortAndProcessText(text, { removeDuplicates: dedup, removeEmpty: empty, sortMode: mode, trimLines: trim }),
-    debounceMs: 300,
-    initial: INITIAL_INPUT,
-    initialResult: null,
-    isEmpty: ({ input: text }) => !text.trim(),
-  })
+const countLines = (text: string) => text.replace(/\r\n/g, '\n').split('\n').length
 
-  const { input, removeDuplicates, removeEmpty, sortMode, trimLines } = inputs
-
-  return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      title="Text Sort & Dedupe"
-      triggers={[{ label: 'Sort' }]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
+export const TextSortDedupe = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <TransformerShell<TextSortInput>
+    autoOpen={autoOpen}
+    compute={({ removeDuplicates, removeEmpty, sortMode, source, trimLines }) =>
+      sortAndProcessText(source, { removeDuplicates, removeEmpty, sortMode, trimLines }).output
+    }
+    description={toolEntry?.description}
+    initial={INITIAL}
+    onAfterClose={onAfterClose}
+    renderControls={({ inputs, result, setFieldsImmediate }) => (
+      <>
         <FieldForm
-          label="Input (one item per line)"
-          name="sort-input"
-          onChange={(val) => setFields({ input: val })}
-          placeholder={'banana\napple\ncherry\napple'}
-          rows={8}
-          type="textarea"
-          value={input}
+          label="Sort"
+          name="sort-mode"
+          onChange={(val: string) => setFieldsImmediate({ sortMode: val as SortMode })}
+          options={SORT_OPTIONS}
+          type="select"
+          value={inputs.sortMode}
         />
-
-        <div className="flex flex-wrap items-center gap-3">
-          <FieldForm
-            label="Sort"
-            name="sort-mode"
-            onChange={(val) => setFields({ sortMode: val as SortMode })}
-            options={SORT_OPTIONS}
-            type="select"
-            value={sortMode}
-          />
-          {[
-            { current: removeDuplicates, field: 'removeDuplicates' as const, label: 'Dedupe' },
-            { current: removeEmpty, field: 'removeEmpty' as const, label: 'No Empty' },
-            { current: trimLines, field: 'trimLines' as const, label: 'Trim' },
-          ].map(({ current, field, label }) => (
+        <div className="flex flex-wrap items-center gap-2">
+          {TOGGLES.map(({ field, label }) => (
             <ToggleButton
               key={field}
-              onClick={() => setFields({ [field]: !current } as Partial<TextSortInput>)}
-              pressed={current}
+              onClick={() => setFieldsImmediate({ [field]: !inputs[field] })}
+              pressed={inputs[field]}
               variant="subtle"
             >
               {label}
             </ToggleButton>
           ))}
         </div>
-
-        {result && (
-          <div aria-live="polite" className="flex flex-col gap-2">
-            <div className="flex items-center gap-2">
-              <span className="text-body-xs text-gray-400">
-                {result.lineCountBefore} → {result.lineCountAfter} lines
-              </span>
-              <CopyButton label="result" value={result.output} />
-            </div>
-            <pre className="max-h-[300px] overflow-auto rounded-lg border border-gray-800 bg-gray-950 p-3 font-mono text-body-sm text-gray-200">
-              {result.output}
-            </pre>
-          </div>
+        {result !== '' && (
+          <span className="flex min-h-10 items-center text-body-xs text-gray-400">
+            {countLines(inputs.source)} → {countLines(result)} lines
+          </span>
         )}
-      </div>
-    </ToolDialogFrame>
-  )
-}
+      </>
+    )}
+    resultLabel="Sorted lines"
+    resultPlaceholder="Paste lines to sort and dedupe them"
+    sourceKind="textarea"
+    sourceLabel="Input (one item per line)"
+    sourcePlaceholder={'banana\napple\ncherry\napple'}
+    storageKey="csr-dev-tools-text-sort-dedupe"
+    title="Text Sort & Dedupe"
+    triggerLabel="Sort"
+  />
+)

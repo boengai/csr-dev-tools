@@ -1,13 +1,13 @@
-import { Button, CodeOutput, CopyButton, FieldForm, Pane, SplitPanel } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { useCallback, useState } from 'react'
+
+import { CodecShell, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToast, useToolFields } from '@/hooks'
-import type { EscapeInput, ToolComponentProps } from '@/types'
+import type { CodecMode, EscapeDirection, ToolComponentProps } from '@/types'
 import { type EscapeMode, escapeString, unescapeString } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['string-escape-unescape']
 
-const MODE_OPTIONS = [
+const FORMAT_OPTIONS = [
   { label: 'HTML', value: 'html' },
   { label: 'JavaScript', value: 'javascript' },
   { label: 'JSON', value: 'json' },
@@ -15,89 +15,61 @@ const MODE_OPTIONS = [
   { label: 'XML', value: 'xml' },
 ]
 
-const INITIAL_INPUT: EscapeInput = { direction: 'escape', mode: 'html', source: '' }
+const MODES: [CodecMode<EscapeDirection>, CodecMode<EscapeDirection>] = [
+  {
+    key: 'escape',
+    label: 'Escape',
+    resultLabel: 'Escaped Output',
+    resultPlaceholder: 'Enter text to escape it for the selected format',
+    sourceLabel: 'Text Input',
+    sourcePlaceholder: '<a href="x">Tom & "Jerry"</a>',
+  },
+  {
+    key: 'unescape',
+    label: 'Unescape',
+    resultLabel: 'Unescaped Output',
+    resultPlaceholder: 'Paste escaped text to turn it back into plain text',
+    sourceLabel: 'Escaped Input',
+    sourcePlaceholder: '&lt;a href=&quot;x&quot;&gt;Tom &amp; &quot;Jerry&quot;&lt;/a&gt;',
+  },
+]
 
 export const StringEscapeUnescape = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const showError = useToast((s) => s.showError)
+  const [format, setFormat] = useState<EscapeMode>('html')
 
-  const { inputs, reset, result, setFields, setFieldsImmediate } = useToolFields<EscapeInput, string>({
-    compute: ({ direction: dir, mode: m, source: val }) =>
-      dir === 'escape' ? escapeString(val, m) : unescapeString(val, m),
-    debounceMs: 300,
-    initial: INITIAL_INPUT,
-    initialResult: '',
-    isEmpty: ({ source: val }) => val.length === 0,
-    onError: (_err, { direction: dir }) => {
-      showError(`Unable to ${dir} — input contains invalid sequences`)
+  const compute = useCallback(
+    async ({ mode, source }: { mode: EscapeDirection; source: string }): Promise<{ output: string }> => {
+      try {
+        return { output: mode === 'escape' ? escapeString(source, format) : unescapeString(source, format) }
+      } catch {
+        throw new Error(`Unable to ${mode} — input contains invalid sequences`)
+      }
     },
-  })
-
-  const { direction, mode, source } = inputs
+    [format],
+  )
 
   return (
-    <ToolDialogFrame
+    <CodecShell<EscapeDirection>
       autoOpen={autoOpen}
+      compute={compute}
       description={toolEntry?.description}
+      initialResult={{ output: '' }}
+      modeStorageKey="string-escape-unescape"
+      modes={MODES}
       onAfterClose={onAfterClose}
-      onReset={reset}
-      title={direction === 'escape' ? 'String Escape' : 'String Unescape'}
-      triggers={[
-        { label: 'Escape', onOpen: () => setFieldsImmediate({ direction: 'escape', source: '' }) },
-        { label: 'Unescape', onOpen: () => setFieldsImmediate({ direction: 'unescape', source: '' }) },
-      ]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
-        <div className="flex items-center gap-3">
-          <FieldForm
-            label="Mode"
-            name="mode"
-            onChange={(val) => setFields({ mode: val as EscapeMode })}
-            options={MODE_OPTIONS}
-            type="select"
-            value={mode}
-          />
-          <div className="flex items-center gap-2">
-            <Button
-              onClick={() => setFields({ direction: 'escape' })}
-              variant={direction === 'escape' ? 'default' : 'primary'}
-            >
-              Escape
-            </Button>
-            <Button
-              onClick={() => setFields({ direction: 'unescape' })}
-              variant={direction === 'unescape' ? 'default' : 'primary'}
-            >
-              Unescape
-            </Button>
-          </div>
-        </div>
-
-        <SplitPanel>
-          <Pane>
-            <FieldForm
-              label="Source"
-              name="dialog-source"
-              onChange={(val) => setFields({ source: val })}
-              placeholder="Enter text to escape or unescape..."
-              type="code"
-              value={source}
-            />
-          </Pane>
-
-          <Pane live>
-            <CodeOutput
-              label={
-                <span className="flex items-center gap-1">
-                  <span>Result</span>
-                  <CopyButton label="result" value={result} />
-                </span>
-              }
-              placeholder="Result will appear here..."
-              value={result}
-            />
-          </Pane>
-        </SplitPanel>
-      </div>
-    </ToolDialogFrame>
+      sourceKeyPrefix="string-escape"
+      sourceToolbarSlot={({ recompute }) => (
+        <SelectInput
+          aria-label="Escape format"
+          name="escape-format-select"
+          onChange={(val) => {
+            setFormat(val as EscapeMode)
+            recompute()
+          }}
+          options={FORMAT_OPTIONS}
+          value={format}
+        />
+      )}
+    />
   )
 }

@@ -1,15 +1,15 @@
-import { BidirectionalConverter } from '@/components/common'
+import { CodecShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, HtmlMdConvertMode, ToolComponentProps } from '@/types'
+import type { CodecMode, HtmlMdConvertMode, ToolComponentProps } from '@/types'
 
 const toolEntry = TOOL_REGISTRY_MAP['html-to-markdown-converter']
 
-const MODES: [ConverterMode<HtmlMdConvertMode>, ConverterMode<HtmlMdConvertMode>] = [
+const MODES: [CodecMode<HtmlMdConvertMode>, CodecMode<HtmlMdConvertMode>] = [
   {
     key: 'html-to-markdown',
     label: 'HTML → Markdown',
     resultLabel: 'Markdown Output',
-    resultPlaceholder: '# Hello\n\nThis is **bold** text.',
+    resultPlaceholder: 'Paste HTML to convert it to Markdown',
     sourceLabel: 'HTML Input',
     sourcePlaceholder: '<h1>Hello</h1>\n<p>This is <strong>bold</strong> text.</p>',
   },
@@ -17,7 +17,7 @@ const MODES: [ConverterMode<HtmlMdConvertMode>, ConverterMode<HtmlMdConvertMode>
     key: 'markdown-to-html',
     label: 'Markdown → HTML',
     resultLabel: 'HTML Output',
-    resultPlaceholder: '<h1>Hello</h1>\n<p>This is <strong>bold</strong> text.</p>',
+    resultPlaceholder: 'Write Markdown to convert it to HTML',
     sourceLabel: 'Markdown Input',
     sourcePlaceholder: '# Hello\n\nThis is **bold** text.',
   },
@@ -30,7 +30,7 @@ const compute = async ({ mode, source }: { mode: HtmlMdConvertMode; source: stri
 }
 
 export const HtmlToMarkdownConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
-  <BidirectionalConverter
+  <CodecShell
     autoOpen={autoOpen}
     compute={compute}
     description={toolEntry?.description}
@@ -38,6 +38,5 @@ export const HtmlToMarkdownConverter = ({ autoOpen, onAfterClose }: ToolComponen
     modeStorageKey="html-to-markdown"
     modes={MODES}
     onAfterClose={onAfterClose}
-    onError={() => undefined}
   />
 )

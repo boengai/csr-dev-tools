@@ -1,10 +1,6 @@
-import { useMemo, useReducer } from 'react'
-
-import { Button, ColorInput, DownloadIcon, FieldForm, Pane, SelectInput } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { ColorInput, FieldForm, GeneratorShell, SelectInput } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useDownload, useToast } from '@/hooks'
-import type { PlaceholderImageAction, PlaceholderImageState, ToolComponentProps } from '@/types'
+import type { GeneratorImage, PlaceholderImageAction, PlaceholderImageState, ToolComponentProps } from '@/types'
 import {
   canvasToBlob,
   generatePlaceholderCanvas,
@@ -18,6 +14,7 @@ const DEFAULT_HEIGHT = '600'
 const DEFAULT_BG_COLOR = '#cccccc'
 const DEFAULT_TEXT_COLOR = '#666666'
 const MAX_DIMENSION = 4096
+const HEX_PATTERN = /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/
 
 const PRESET_OPTIONS = PLACEHOLDER_PRESETS.map((p) => ({
   label: `${p.label} (${p.width}x${p.height})`,
@@ -28,25 +25,6 @@ const toPickerHex = (hex: string): string => {
   if (/^#[0-9a-fA-F]{6}$/.test(hex)) return hex
   const m = hex.match(/^#([0-9a-fA-F])([0-9a-fA-F])([0-9a-fA-F])$/)
   return m ? `#${m[1]}${m[1]}${m[2]}${m[2]}${m[3]}${m[3]}` : '#000000'
-}
-
-const buildOptions = (
-  width: string,
-  height: string,
-  bgColor: string,
-  textColor: string,
-  text: string,
-): PlaceholderOptions | null => {
-  const w = Math.round(Number(width))
-  const h = Math.round(Number(height))
-  if (!width || !height || !Number.isFinite(w) || !Number.isFinite(h)) return null
-  if (w <= 0 || h <= 0) return null
-  return { bgColor, height: h, text, textColor, width: w }
-}
-
-const buildPreviewUri = (options: PlaceholderOptions): string => {
-  const svg = generatePlaceholderSvg(options)
-  return `data:image/svg+xml,${encodeURIComponent(svg)}`
 }
 
 const toolEntry = TOOL_REGISTRY_MAP['placeholder-image-generator']
@@ -60,6 +38,8 @@ const initialState: PlaceholderImageState = {
   width: DEFAULT_WIDTH,
 }
 
+// ADR-0008: the reducer stays, as the transition function of the shell's
+// options bag (the hex fields only commit a colour once it parses).
 const reducer = (state: PlaceholderImageState, action: PlaceholderImageAction): PlaceholderImageState => {
   switch (action.type) {
     case 'SET_WIDTH':
@@ -72,7 +52,7 @@ const reducer = (state: PlaceholderImageState, action: PlaceholderImageAction): 
       return { ...state, bgColor: action.hex, bgHexInput: action.hex }
     case 'SET_BG_HEX': {
       const next = { ...state, bgHexInput: action.value }
-      if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(action.value)) {
+      if (HEX_PATTERN.test(action.value)) {
         next.bgColor = toPickerHex(action.value)
       }
       return next
@@ -81,7 +61,7 @@ const reducer = (state: PlaceholderImageState, action: PlaceholderImageAction): 
       return { ...state, textColor: action.hex, textHexInput: action.hex }
     case 'SET_TEXT_COLOR_HEX': {
       const next = { ...state, textHexInput: action.value }
-      if (/^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(action.value)) {
+      if (HEX_PATTERN.test(action.value)) {
         next.textColor = toPickerHex(action.value)
       }
       return next
@@ -91,177 +71,159 @@ const reducer = (state: PlaceholderImageState, action: PlaceholderImageAction): 
   }
 }
 
-export const PlaceholderImageGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const [state, dispatch] = useReducer(reducer, initialState)
-  const { bgColor, bgHexInput, height, text, textColor, textHexInput, width } = state
-  const showError = useToast((s) => s.showError)
-  const { downloadBlob, downloadSvg } = useDownload()
+const parseDimension = (value: unknown): number => (typeof value === 'string' && value.trim() ? Number(value) : NaN)
 
-  const previewUri = useMemo(() => {
-    const opts = buildOptions(width, height, bgColor, textColor, text)
-    return opts ? buildPreviewUri(opts) : ''
-  }, [width, height, bgColor, textColor, text])
-
-  const handleWidthChange = (val: string) => dispatch({ type: 'SET_WIDTH', value: val })
-  const handleHeightChange = (val: string) => dispatch({ type: 'SET_HEIGHT', value: val })
-  const handleTextChange = (val: string) => dispatch({ type: 'SET_TEXT', value: val })
-  const handleBgPickerChange = (hex: string) => dispatch({ type: 'SET_BG_PICKER', hex })
-  const handleBgHexChange = (val: string) => dispatch({ type: 'SET_BG_HEX', value: val })
-  const handleTextColorPickerChange = (hex: string) => dispatch({ type: 'SET_TEXT_COLOR_PICKER', hex })
-  const handleTextColorHexChange = (val: string) => dispatch({ type: 'SET_TEXT_COLOR_HEX', value: val })
-
-  const handlePresetChange = (val: string) => {
-    const [w = '', h = ''] = val.split('x')
-    dispatch({ type: 'SET_PRESET', height: h, width: w })
+const toPlaceholderOptions = ({
+  bgColor,
+  height,
+  text,
+  textColor,
+  width,
+}: PlaceholderImageState): PlaceholderOptions => {
+  const w = Math.round(parseDimension(width))
+  const h = Math.round(parseDimension(height))
+  if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) {
+    throw new Error('Enter valid dimensions (e.g., 800 x 600)')
   }
+  if (w > MAX_DIMENSION || h > MAX_DIMENSION) throw new Error(`Maximum dimension is ${MAX_DIMENSION}x${MAX_DIMENSION}`)
+  if (typeof bgColor !== 'string' || !HEX_PATTERN.test(bgColor)) throw new Error('Pick a valid background color')
+  if (typeof textColor !== 'string' || !HEX_PATTERN.test(textColor)) throw new Error('Pick a valid text color')
+  return { bgColor, height: h, text: typeof text === 'string' ? text : '', textColor, width: w }
+}
 
-  const validateDimensions = (): PlaceholderOptions | null => {
-    const w = Math.round(Number(width))
-    const h = Math.round(Number(height))
-    if (!Number.isFinite(w) || !Number.isFinite(h) || w <= 0 || h <= 0) {
-      showError('Enter valid dimensions (e.g., 800 x 600)')
-      return null
-    }
-    if (w > MAX_DIMENSION || h > MAX_DIMENSION) {
-      showError(`Maximum dimension is ${MAX_DIMENSION}x${MAX_DIMENSION}`)
-      return null
-    }
-    return { bgColor, height: h, text, textColor, width: w }
+// Deterministic: the same options always give the same image, so it runs
+// live. Bad dimensions are an input error for the status slot. The PNG is
+// drawn on a canvas only when its Download is clicked.
+const generate = (state: PlaceholderImageState): GeneratorImage => {
+  const options = toPlaceholderOptions(state)
+  const svg = generatePlaceholderSvg(options)
+  const displayText = options.text || `${options.width}x${options.height}`
+  const name = `placeholder-${options.width}x${options.height}`
+  return {
+    alt: `Placeholder preview: ${displayText}, background ${options.bgColor}, text ${options.textColor}`,
+    downloads: [
+      {
+        blob: () => canvasToBlob(generatePlaceholderCanvas(options)),
+        filename: `${name}.png`,
+        label: 'Download PNG',
+      },
+      {
+        blob: () => new Blob([svg], { type: 'image/svg+xml' }),
+        filename: `${name}.svg`,
+        label: 'Download SVG',
+      },
+    ],
+    src: `data:image/svg+xml,${encodeURIComponent(svg)}`,
   }
+}
 
-  const handleDownloadPng = async () => {
-    const opts = validateDimensions()
-    if (!opts) return
-    try {
-      const canvas = generatePlaceholderCanvas(opts)
-      const blob = await canvasToBlob(canvas)
-      downloadBlob(blob, `placeholder-${opts.width}x${opts.height}.png`)
-    } catch {
-      showError('Failed to generate PNG')
-    }
-  }
+const asText = (value: unknown): string => (typeof value === 'string' ? value : '')
 
-  const handleDownloadSvg = () => {
-    const opts = validateDimensions()
-    if (!opts) return
-    const svg = generatePlaceholderSvg(opts)
-    downloadSvg(svg, `placeholder-${opts.width}x${opts.height}.svg`)
-  }
+export const PlaceholderImageGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <GeneratorShell
+    autoOpen={autoOpen}
+    compute={generate}
+    description={toolEntry?.description}
+    initial={initialState}
+    onAfterClose={onAfterClose}
+    output={{ kind: 'image', label: 'Preview', placeholder: 'Enter a width and height to preview the image' }}
+    renderOptions={({ options, setOptions, setOptionsDebounced }) => {
+      // Picks and presets redraw at once; typed values wait for a pause.
+      const dispatch = (action: PlaceholderImageAction) => setOptions(reducer(options, action))
+      const dispatchTyped = (action: PlaceholderImageAction) => setOptionsDebounced(reducer(options, action))
+      const width = asText(options.width)
+      const height = asText(options.height)
 
-  const displayText = text || `${width || '0'}x${height || '0'}`
-
-  return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      title="Placeholder Image Generator"
-      triggers={[{ label: 'Generate' }]}
-    >
-      <div className="flex size-full grow flex-col gap-4">
-        <div className="flex grow flex-col gap-6 overflow-y-auto tablet:flex-row">
-          <div className="flex shrink-0 flex-col gap-3 tablet:flex-1 tablet:shrink tablet:overflow-y-auto">
-            <div className="flex gap-3">
-              <FieldForm
-                label="Width"
-                name="placeholder-width"
-                onChange={handleWidthChange}
-                placeholder="800"
-                type="text"
-                value={width}
-              />
-              <FieldForm
-                label="Height"
-                name="placeholder-height"
-                onChange={handleHeightChange}
-                placeholder="600"
-                type="text"
-                value={height}
-              />
-            </div>
-
-            <SelectInput
-              aria-label="Preset size"
-              name="placeholder-preset"
-              onChange={handlePresetChange}
-              options={PRESET_OPTIONS}
-              placeholder="Preset sizes"
-            />
-
-            <div className="flex flex-col gap-1">
-              <label className="text-body-sm font-medium text-gray-400" htmlFor="placeholder-bg-color">
-                Background Color
-              </label>
-              <div className="flex items-center gap-2">
-                <ColorInput id="placeholder-bg-color" onChange={handleBgPickerChange} value={toPickerHex(bgColor)} />
-                <FieldForm
-                  aria-label="Background hex value"
-                  label=""
-                  name="placeholder-bg-hex"
-                  onChange={handleBgHexChange}
-                  placeholder="#cccccc"
-                  type="text"
-                  value={bgHexInput}
-                />
-              </div>
-            </div>
-
-            <div className="flex flex-col gap-1">
-              <label className="text-body-sm font-medium text-gray-400" htmlFor="placeholder-text-color">
-                Text Color
-              </label>
-              <div className="flex items-center gap-2">
-                <ColorInput
-                  id="placeholder-text-color"
-                  onChange={handleTextColorPickerChange}
-                  value={toPickerHex(textColor)}
-                />
-                <FieldForm
-                  aria-label="Text color hex value"
-                  label=""
-                  name="placeholder-text-color-hex"
-                  onChange={handleTextColorHexChange}
-                  placeholder="#666666"
-                  type="text"
-                  value={textHexInput}
-                />
-              </div>
-            </div>
-
+      return (
+        <>
+          <div className="flex gap-3">
             <FieldForm
-              label="Custom Text"
-              name="placeholder-text"
-              onChange={handleTextChange}
-              placeholder={`${width || '800'}x${height || '600'}`}
+              label="Width"
+              name="placeholder-width"
+              onChange={(value: string) => dispatchTyped({ type: 'SET_WIDTH', value })}
+              placeholder="800"
               type="text"
-              value={text}
+              value={width}
+            />
+            <FieldForm
+              label="Height"
+              name="placeholder-height"
+              onChange={(value: string) => dispatchTyped({ type: 'SET_HEIGHT', value })}
+              placeholder="600"
+              type="text"
+              value={height}
             />
           </div>
 
-          <div className="border-t-2 border-dashed border-gray-900 tablet:border-t-0 tablet:border-l-2" />
+          <SelectInput
+            aria-label="Preset size"
+            name="placeholder-preset"
+            onChange={(value: string) => {
+              const [w = '', h = ''] = value.split('x')
+              dispatch({ height: h, type: 'SET_PRESET', width: w })
+            }}
+            options={PRESET_OPTIONS}
+            placeholder="Preset sizes"
+          />
 
-          <Pane align="center" gap="md" justify="center" live>
-            {previewUri ? (
-              <img
-                alt={`Placeholder preview: ${displayText}, background ${bgColor}, text ${textColor}`}
-                className="max-h-full max-w-full border border-gray-700 object-contain"
-                src={previewUri}
+          <div className="flex flex-col gap-1">
+            <label className="text-body-sm font-medium text-gray-400" htmlFor="placeholder-bg-color">
+              Background Color
+            </label>
+            <div className="flex items-center gap-2">
+              <ColorInput
+                id="placeholder-bg-color"
+                onChange={(hex: string) => dispatch({ hex, type: 'SET_BG_PICKER' })}
+                value={toPickerHex(asText(options.bgColor))}
               />
-            ) : (
-              <p className="text-body-sm text-gray-500">Enter dimensions to preview</p>
-            )}
-          </Pane>
-        </div>
+              <FieldForm
+                aria-label="Background hex value"
+                label=""
+                name="placeholder-bg-hex"
+                onChange={(value: string) => dispatchTyped({ type: 'SET_BG_HEX', value })}
+                placeholder="#cccccc"
+                type="text"
+                value={asText(options.bgHexInput)}
+              />
+            </div>
+          </div>
 
-        <div className="flex w-full shrink-0 gap-8 [&>button]:w-[calc(50%-1rem)]">
-          <Button aria-label="Download PNG image" icon={<DownloadIcon />} onClick={handleDownloadPng} variant="primary">
-            Download PNG
-          </Button>
-          <Button aria-label="Download SVG image" icon={<DownloadIcon />} onClick={handleDownloadSvg} variant="default">
-            Download SVG
-          </Button>
-        </div>
-      </div>
-    </ToolDialogFrame>
-  )
-}
+          <div className="flex flex-col gap-1">
+            <label className="text-body-sm font-medium text-gray-400" htmlFor="placeholder-text-color">
+              Text Color
+            </label>
+            <div className="flex items-center gap-2">
+              <ColorInput
+                id="placeholder-text-color"
+                onChange={(hex: string) => dispatch({ hex, type: 'SET_TEXT_COLOR_PICKER' })}
+                value={toPickerHex(asText(options.textColor))}
+              />
+              <FieldForm
+                aria-label="Text color hex value"
+                label=""
+                name="placeholder-text-color-hex"
+                onChange={(value: string) => dispatchTyped({ type: 'SET_TEXT_COLOR_HEX', value })}
+                placeholder="#666666"
+                type="text"
+                value={asText(options.textHexInput)}
+              />
+            </div>
+          </div>
+
+          <FieldForm
+            label="Custom Text"
+            name="placeholder-text"
+            onChange={(value: string) => dispatchTyped({ type: 'SET_TEXT', value })}
+            placeholder={`${width || '800'}x${height || '600'}`}
+            type="text"
+            value={asText(options.text)}
+          />
+        </>
+      )
+    }}
+    run={{ mode: 'live' }}
+    storageKey="csr-dev-tools-placeholder-image-generator"
+    title="Placeholder Image Generator"
+    triggerLabel="Generate"
+  />
+)

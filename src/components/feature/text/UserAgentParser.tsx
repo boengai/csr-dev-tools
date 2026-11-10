@@ -1,82 +1,51 @@
-import { Button, CopyButton, FieldForm } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { Button, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolInput } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import { parseUserAgent, type UserAgentResult } from '@/utils'
+import type { ToolComponentProps, TransformerField } from '@/types'
+import { parseUserAgent } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['user-agent-parser']
 
-const EMPTY: UserAgentResult = {
-  browser: { name: '', version: '' },
-  device: '',
-  engine: { name: '', version: '' },
-  os: { name: '', version: '' },
-}
+const INITIAL: { source: string } = { source: '' }
 
-const ResultRow = ({ label, value }: { label: string; value: string }) => (
-  <div className="flex items-center justify-between gap-2 rounded border border-gray-800 bg-gray-950 px-3 py-2">
-    <span className="text-body-xs text-gray-400">{label}</span>
-    <div className="flex items-center gap-1">
-      <span className="font-mono text-body-xs text-gray-200">{value || '—'}</span>
-      {value && <CopyButton label={label} value={value} />}
-    </div>
-  </div>
+const fmt = (name: string, version: string) => (version ? `${name} ${version}` : name)
+
+/** A part the parser could not find reads as `—`, with nothing to copy. */
+const row = (label: string, value: string): TransformerField =>
+  value ? { label, value } : { copy: false, label, value: '—' }
+
+export const UserAgentParser = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <TransformerShell<{ source: string }, 'fields'>
+    autoOpen={autoOpen}
+    compute={({ source }) => {
+      const { browser, device, engine, os } = parseUserAgent(source)
+      return [
+        row('Browser', fmt(browser.name, browser.version)),
+        row('OS', fmt(os.name, os.version)),
+        row('Device', device),
+        row('Engine', fmt(engine.name, engine.version)),
+      ]
+    }}
+    description={toolEntry?.description}
+    initial={INITIAL}
+    onAfterClose={onAfterClose}
+    outputKind="fields"
+    renderControls={({ setFieldsImmediate }) => (
+      <Button
+        onClick={() => {
+          if (typeof navigator !== 'undefined') setFieldsImmediate({ source: navigator.userAgent })
+        }}
+        size="small"
+      >
+        Use my UA
+      </Button>
+    )}
+    resultLabel="Parsed"
+    resultPlaceholder="Paste a user agent string, or use yours, to parse it"
+    sourceKind="text"
+    sourceLabel="User Agent String"
+    sourcePlaceholder="Mozilla/5.0 (Windows NT 10.0; Win64; x64) ..."
+    storageKey="csr-dev-tools-user-agent-parser"
+    title="User Agent Parser"
+    triggerLabel="Parse"
+  />
 )
-
-export const UserAgentParser = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const { input, result, setInput, setInputImmediate } = useToolInput<string, UserAgentResult>({
-    compute: (val) => parseUserAgent(val),
-    debounceMs: 300,
-    initial: '',
-    initialResult: EMPTY,
-    isEmpty: (val) => !val.trim(),
-  })
-
-  const handleUseMyUa = () => {
-    if (typeof navigator !== 'undefined') {
-      setInputImmediate(navigator.userAgent)
-    }
-  }
-
-  const fmt = (name: string, version: string) => (version ? `${name} ${version}` : name)
-
-  return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      title="User Agent Parser"
-      triggers={[{ label: 'Parse' }]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
-        <div className="flex items-end gap-2">
-          <div className="grow">
-            <FieldForm
-              label="User Agent String"
-              name="ua-input"
-              onChange={setInput}
-              placeholder="Mozilla/5.0 (Windows NT 10.0; Win64; x64) ..."
-              type="text"
-              value={input}
-            />
-          </div>
-          <Button onClick={handleUseMyUa} variant="primary">
-            Use my UA
-          </Button>
-        </div>
-
-        {result.browser.name && <div className="border-t-2 border-dashed border-gray-900" />}
-
-        {result.browser.name && (
-          <div className="flex flex-col gap-2">
-            <ResultRow label="Browser" value={fmt(result.browser.name, result.browser.version)} />
-            <ResultRow label="OS" value={fmt(result.os.name, result.os.version)} />
-            <ResultRow label="Device" value={result.device} />
-            <ResultRow label="Engine" value={fmt(result.engine.name, result.engine.version)} />
-          </div>
-        )}
-      </div>
-    </ToolDialogFrame>
-  )
-}

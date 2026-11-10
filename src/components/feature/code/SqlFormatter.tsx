@@ -1,4 +1,4 @@
-import { FieldForm, FormatterShell } from '@/components/common'
+import { FieldForm, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { SqlInput, ToolComponentProps } from '@/types'
 import { formatSql, type SqlFormatDialect } from '@/wasm/formatter'
@@ -9,7 +9,7 @@ const INITIAL: SqlInput = { source: '', dialect: 'sql', indent: 2 }
 
 export const SqlFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
-    <FormatterShell<SqlInput>
+    <TransformerShell<SqlInput>
       autoOpen={autoOpen}
       compute={({ source, dialect, indent }) => formatSql(source, dialect, indent)}
       description={toolEntry?.description}
@@ -45,7 +45,7 @@ export const SqlFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) => 
           />
         </>
       )}
-      resultPlaceholder="Formatted SQL will appear here"
+      resultPlaceholder="Paste SQL to format it"
       sourceLabel="SQL Input"
       sourcePlaceholder="SELECT id, name FROM users WHERE active = 1 ORDER BY name"
       storageKey="csr-dev-tools-sql-formatter"

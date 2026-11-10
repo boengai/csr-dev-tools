@@ -1,4 +1,4 @@
-import type { ImageFormat } from '@/types'
+import type { FileProcessorNoun, ImageFormat } from '@/types'
 
 export const IMAGE_LABEL: Record<ImageFormat, string> = {
   'image/avif': 'AVIF',
@@ -29,3 +29,6 @@ export const COMPRESSIBLE_FORMATS: ReadonlySet<string> = new Set(['image/jpeg', 
  * or more (below that neither gap pre-reduces).
  */
 export const THUMBNAIL_REDUCING_GAP = 2
+
+/** How the [[File processor shell]] names the files of an image Tool. */
+export const IMAGE_FILE_NOUN: FileProcessorNoun = { one: 'image', other: 'images' }

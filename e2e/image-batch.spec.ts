@@ -18,6 +18,7 @@ const makePng = async (page: Page, width: number, height: number, color: string)
   return Buffer.from(base64, 'base64')
 }
 
+/** The tool route opens the dialog on its upload area (`images`); once queued, "Add more images" is `images-add`. */
 const pickImages = async (page: Page, inputName: string, files: Array<{ name: string; buffer: Buffer }>) => {
   await page
     .locator(`input[name="${inputName}"]`)
@@ -123,7 +124,8 @@ test.describe('Image Converter batch', () => {
 
     const results = page.getByRole('list', { name: 'Results' })
     await expect(results.getByRole('listitem')).toHaveCount(3)
-    await expect(page.getByText(/2 of 3 images ready · 1 failed/)).toBeVisible()
+    await expect(page.getByText('2 of 3 images ready')).toBeVisible()
+    await expect(page.getByText('1 image could not be processed and is left out of the download.')).toBeVisible()
     await expect(results.getByText(/^Failed:/)).toBeVisible()
     await expect(results.getByRole('button', { name: /^Download csr-dev-tools_a_\d+\.webp$/ })).toBeVisible()
 

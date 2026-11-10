@@ -1,4 +1,4 @@
-import { DiffCheckerShell } from '@/components/common'
+import { ComparatorShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { TextDiffResult, ToolComponentProps } from '@/types'
 import { computeSideBySideDiff, createUnifiedDiff } from '@/utils'
@@ -9,7 +9,7 @@ const INITIAL_RESULT: TextDiffResult = { rows: [], unifiedDiff: '' }
 
 export const TextDiffChecker = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
-    <DiffCheckerShell<TextDiffResult>
+    <ComparatorShell<TextDiffResult>
       autoOpen={autoOpen}
       compute={async ({ original, modified }) => {
         const [sideBySide, patch] = await Promise.all([

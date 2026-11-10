@@ -57,3 +57,24 @@ export const dedupeFileName = (name: string, isTaken: (candidate: string) => boo
   while (isTaken(`${stem}-${n}${ext}`)) n++
   return `${stem}-${n}${ext}`
 }
+
+/**
+ * Whether `file` satisfies an `<input accept>` string: comma-separated MIME
+ * types (`image/png`), `type/*` wildcards, or `.ext` suffixes. An empty
+ * `accept` takes anything. Dropped files bypass the picker's filter, so
+ * shells re-check them with this.
+ */
+export const matchesAccept = (file: File, accept: string): boolean => {
+  const tokens = accept
+    .split(',')
+    .map((t) => t.trim().toLowerCase())
+    .filter(Boolean)
+  if (tokens.length === 0) return true
+  const type = file.type.toLowerCase()
+  const name = file.name.toLowerCase()
+  return tokens.some((token) => {
+    if (token.startsWith('.')) return name.endsWith(token)
+    if (token.endsWith('/*')) return type.startsWith(token.slice(0, -1))
+    return type === token
+  })
+}

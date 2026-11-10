@@ -18,12 +18,14 @@ export type ContentProps = {
   onSchemaChange: (value: string) => void
   onSourceChange: (value: string) => void
   schema: string
+  /** The schema's parse error, shown in the dialog's [[Tool status slot]] ahead of codec errors. */
+  schemaError: string | null
   selectedMessageType: string
   source: string
 }
 
 export type CodecInput = { format: OutputFormat; msgType: string; schema: string; source: string }
-export type SchemaParseOutput = { messageTypes: Array<string>; toastError: string | null }
+export type SchemaParseOutput = { error: string | null; messageTypes: Array<string> }
 
 export type ProtobufDirection = 'encode' | 'decode'
 

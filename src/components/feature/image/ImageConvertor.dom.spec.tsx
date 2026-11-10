@@ -55,7 +55,7 @@ afterEach(() => {
 
 describe('ImageConvertor', () => {
   it('converts without artificial delays and offers a per-file download', async () => {
-    render(<ImageConvertor />)
+    render(<ImageConvertor autoOpen />)
     upload([png('a.png')])
     fireEvent.click(screen.getByRole('button', { name: 'Convert' }))
     await settle()
@@ -66,7 +66,7 @@ describe('ImageConvertor', () => {
   })
 
   it('converts every queued image', async () => {
-    render(<ImageConvertor />)
+    render(<ImageConvertor autoOpen />)
     upload([png('a.png'), png('b.png')])
     fireEvent.click(screen.getByRole('button', { name: 'Convert 2 images' }))
     await settle()
@@ -83,7 +83,7 @@ describe('ImageConvertor', () => {
           finish = resolve
         }),
     )
-    const { unmount } = render(<ImageConvertor />)
+    const { unmount } = render(<ImageConvertor autoOpen />)
     upload([png('a.png')])
     fireEvent.click(screen.getByRole('button', { name: 'Convert' }))
     await act(async () => {

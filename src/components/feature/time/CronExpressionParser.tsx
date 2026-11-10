@@ -1,85 +1,52 @@
-import { CopyButton, ErrorBanner, FieldForm } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { ToggleButton, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolInput } from '@/hooks'
 import type { ToolComponentProps } from '@/types'
-import { type CronParseResult, CRON_PRESETS, parseCron } from '@/utils'
+import { CRON_PRESETS, parseCron } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['cron-expression-parser']
 
-const EMPTY_RESULT: CronParseResult = { description: '', error: null, nextRuns: [], valid: false }
+const INITIAL: { source: string } = { source: '' }
 
-export const CronExpressionParser = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const {
-    input: expression,
-    result,
-    setInput,
-    setInputImmediate,
-  } = useToolInput<string, CronParseResult>({
-    compute: (val) => parseCron(val, 10),
-    debounceMs: 300,
-    initial: '',
-    initialResult: EMPTY_RESULT,
-    isEmpty: (val) => !val.trim(),
-  })
+const NEXT_RUN_COUNT = 10
 
-  return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      title="Cron Parser"
-      triggers={[{ label: 'Parse' }]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
-        <FieldForm
-          label="Cron Expression"
-          name="cron-input"
-          onChange={setInput}
-          placeholder="* * * * *"
-          type="text"
-          value={expression}
-        />
-
-        <div className="flex flex-wrap gap-2">
-          {/* raw button: micro preset chip (px-2 py-1 text-body-xs), smaller than Button size="small" floor */}
-          {CRON_PRESETS.map((preset) => (
-            <button
-              className="rounded border border-gray-800 px-2 py-1 text-body-xs text-gray-400 hover:border-primary hover:text-primary"
-              key={preset.expression}
-              onClick={() => setInputImmediate(preset.expression)}
-              type="button"
-            >
-              {preset.label}
-            </button>
-          ))}
-        </div>
-
-        {result.error && <ErrorBanner>{result.error}</ErrorBanner>}
-
-        {result.valid && (
-          <div className="flex flex-col gap-3">
-            <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
-              <div className="flex items-center gap-1">
-                <span className="text-body-xs font-medium text-gray-400">Description</span>
-                <CopyButton label="description" value={result.description} />
-              </div>
-              <p className="mt-1 text-body-sm text-gray-200">{result.description}</p>
-            </div>
-
-            <div className="rounded-lg border border-gray-800 bg-gray-950 p-3">
-              <span className="text-body-xs font-medium text-gray-400">Next {result.nextRuns.length} runs (UTC)</span>
-              <ul className="mt-1 flex flex-col gap-1">
-                {result.nextRuns.map((run) => (
-                  <li className="font-mono text-body-xs text-gray-300" key={run}>
-                    {run}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </div>
-        )}
+export const CronExpressionParser = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <TransformerShell<{ source: string }, 'fields'>
+    autoOpen={autoOpen}
+    compute={({ source }) => {
+      const result = parseCron(source, NEXT_RUN_COUNT)
+      // parseCron returns its error as data; the shell shows thrown errors in the status slot.
+      if (!result.valid) throw new Error(result.error ?? 'Invalid cron expression')
+      return [
+        { label: 'Description', value: result.description },
+        // One row, one run per line: Copy takes the whole schedule.
+        { label: `Next ${result.nextRuns.length} runs (UTC)`, value: result.nextRuns.join('\n') },
+      ]
+    }}
+    description={toolEntry?.description}
+    initial={INITIAL}
+    onAfterClose={onAfterClose}
+    outputKind="fields"
+    renderControls={({ inputs, setFieldsImmediate }) => (
+      <div className="flex flex-wrap gap-2">
+        {CRON_PRESETS.map((preset) => (
+          <ToggleButton
+            aria-label={`Use preset: ${preset.label}`}
+            key={preset.expression}
+            onClick={() => setFieldsImmediate({ source: preset.expression })}
+            pressed={inputs.source.trim() === preset.expression}
+          >
+            {preset.label}
+          </ToggleButton>
+        ))}
       </div>
-    </ToolDialogFrame>
-  )
-}
+    )}
+    resultLabel="Schedule"
+    resultPlaceholder="Enter a cron expression, or pick a preset, to see when it runs"
+    sourceKind="text"
+    sourceLabel="Cron Expression"
+    sourcePlaceholder="* * * * *"
+    storageKey="csr-dev-tools-cron-expression-parser"
+    title="Cron Parser"
+    triggerLabel="Parse"
+  />
+)

@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { Button, CopyButton, FieldForm, Pane, ToggleButton } from '@/components/common'
+import { Button, CopyButton, FieldForm, Pane, ToggleButton, ToolStatus } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolFields } from '@/hooks'
@@ -107,7 +107,7 @@ export const RegexTester = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
     inputs,
     isPending: loading,
     reset,
-    result: computed,
+    result: lastComputed,
     setFields,
   } = useToolFields<RegexInput, RegexComputed>({
     // The pipeline aborts `signal` when a newer input supersedes this run, on
@@ -119,17 +119,18 @@ export const RegexTester = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
       return { regex: r, segments: buildHighlightSegments(text, r.matches) }
     },
     debounceMs: 300,
-    errorFallback: 'Invalid regex',
     initial: INITIAL_INPUT,
     initialResult: INITIAL_COMPUTED,
     isEmpty: ({ pattern: pat, testString: text }) => pat.trim() === '' || text.trim() === '',
   })
 
   const { flags, pattern, testString } = inputs
+  // A rejected compute leaves the previous result in place; hide it so stale
+  // matches never sit next to the error.
+  const computed = error != null ? INITIAL_COMPUTED : lastComputed
   const matches = computed.regex?.matches ?? []
   const matchCount = matches.length
   const copyText = computed.regex ? formatMatchesForCopy(matches) : ''
-  const errorMessage = error instanceof Error ? error.message : null
 
   return (
     <ToolDialogFrame
@@ -196,14 +197,11 @@ export const RegexTester = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
           />
         </div>
 
+        <ToolStatus error={error} errorFallback="Invalid regex" />
+
         <div className="border-t-2 border-dashed border-gray-900" />
 
         <Pane live>
-          {errorMessage && (
-            <p className="rounded border border-error/50 bg-error/10 px-3 py-2 text-body-xs text-error" role="alert">
-              {errorMessage}
-            </p>
-          )}
           <div className="flex items-center gap-2">
             <span className="text-body-sm font-medium text-gray-400">
               {loading

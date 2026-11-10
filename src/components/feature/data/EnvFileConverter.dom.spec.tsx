@@ -17,7 +17,7 @@ afterEach(() => {
 
 describe('EnvFileConverter — warnings render as inline banner, not toast', () => {
   it('renders the warning text inline when source contains a malformed line', async () => {
-    // Seed the per-mode source key that BidirectionalConverter.openDialog reads
+    // Seed the per-mode source key that CodecShell.openDialog reads
     // when the user clicks a mode button.
     localStorage.setItem('csr-dev-tools-env-to-json-source', JSON.stringify('GOOD=1\nMALFORMED_NO_EQ\nALSO_GOOD=2'))
 

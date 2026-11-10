@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 
-import { codeInputIn } from './helpers/selectors'
+import { codeInputIn, toolSurface } from './helpers/selectors'
 
 test.describe('HTML Entity Converter', () => {
   test.beforeEach(async ({ page }) => {
@@ -8,7 +8,7 @@ test.describe('HTML Entity Converter', () => {
   })
 
   test('encodes special characters to HTML entities', async ({ page }) => {
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, '<div>')
@@ -18,7 +18,7 @@ test.describe('HTML Entity Converter', () => {
   })
 
   test('decodes HTML entities back to text', async ({ page }) => {
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
     // Dispatch click on mode button behind dialog overlay to switch mode
     await page.locator('button', { hasText: 'Decode HTML Entities' }).first().dispatchEvent('click')

@@ -1,6 +1,6 @@
 # ADR 0026 — Image batch shell for many-files-in / many-Blobs-out Tools
 
-- **Status:** Accepted
+- **Status:** Accepted; the two-shell split is superseded by ADR-0028 (`<ImageBatchShell>` is now `<FileProcessorShell multiple>`)
 - **Date:** 2026-11-03
 - **Supersedes:** ADR-0002, ADR-0017
 - **Also affects:** ADR-0001, ADR-0004, ADR-0016 (their notes on the inlined converter describe the old code)

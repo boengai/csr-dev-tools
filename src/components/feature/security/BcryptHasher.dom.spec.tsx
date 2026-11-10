@@ -96,6 +96,26 @@ describe('BcryptHasher', () => {
     expect(mocks.cancelBcrypt).toHaveBeenCalledTimes(1)
   })
 
+  it('shows an invalid hash in the status slot, not as a toast, and clears it on edit', async () => {
+    render(<BcryptHasher autoOpen />)
+    await act(async () => {
+      fireEvent.mouseDown(screen.getByRole('tab', { name: 'Verify' }))
+    })
+
+    fireEvent.change(screen.getByLabelText('Password to verify'), { target: { value: 'pw' } })
+    await act(async () => {
+      fireEvent.click(screen.getByRole('button', { name: 'Verify Password' }))
+    })
+
+    expect(screen.getByRole('alert')).toHaveTextContent(/^Invalid bcrypt hash/)
+    expect(screen.getByRole('alert').closest('[data-slot="tool-status"]')).not.toBeNull()
+    expect(errorToasts()).toEqual([])
+    expect(mocks.verifyPassword).not.toHaveBeenCalled()
+
+    fireEvent.change(screen.getByLabelText('Password to verify'), { target: { value: 'pw2' } })
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
+  })
+
   it('labels the Verify tab inputs and masks its password', async () => {
     render(<BcryptHasher autoOpen />)
     await act(async () => {

@@ -1,11 +1,20 @@
-import { expect, test } from '@playwright/test'
+import { expect, type Page, test } from '@playwright/test'
 
-import { card, codeInput, copyButton, toast } from './helpers/selectors'
+import { card, copyButton, toast, toolSurface } from './helpers/selectors'
+
+// GeneratorShell (random + slow): a key pair is generated when the dialog
+// opens, and again on Generate / ⌘+Enter / a key-size change.
+const dialog = (page: Page) => toolSurface(page)
+const generateButton = (page: Page) => dialog(page).getByRole('button', { exact: true, name: 'Generate key pair' })
+const keyBlock = (page: Page, label: string) =>
+  dialog(page).locator('fieldset').filter({ hasText: label }).locator('pre')
+const publicKey = (page: Page) => keyBlock(page, 'Public key (SPKI)')
+const privateKey = (page: Page) => keyBlock(page, 'Private key (PKCS#8)')
 
 test.describe('RSA Key Generator', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/tools/rsa-key-generator')
-    await expect(page.getByRole('button', { name: 'Generate RSA key pair' })).toBeVisible({ timeout: 5000 })
+    await expect(generateButton(page)).toBeVisible({ timeout: 5000 })
   })
 
   test('renders tool with title, description, and security banner', async ({ page }) => {
@@ -20,90 +29,69 @@ test.describe('RSA Key Generator', () => {
     ).toBeVisible()
   })
 
-  test('default key size is 2048 and generate button is enabled', async ({ page }) => {
-    const button2048 = page.getByRole('button', { name: '2048 bits' })
-    await expect(button2048).toHaveAttribute('aria-pressed', 'true')
-
-    const generateButton = page.getByRole('button', { name: 'Generate RSA key pair' })
-    await expect(generateButton).toBeEnabled()
+  test('default key size is 2048 and a key pair is generated on open', async ({ page }) => {
+    await expect(dialog(page).getByRole('button', { name: '2048 bits' })).toHaveAttribute('aria-pressed', 'true')
+    await expect(publicKey(page)).toContainText('-----BEGIN PUBLIC KEY-----', { timeout: 5000 })
+    await expect(privateKey(page)).toContainText('-----BEGIN PRIVATE KEY-----')
+    await expect(generateButton(page)).toBeEnabled()
   })
 
-  test('generate 2048-bit keys → shows valid PEM public and private keys', async ({ page }) => {
-    await page.getByRole('button', { name: 'Generate RSA key pair' }).click()
+  test('switching to 4096 bits regenerates both keys', async ({ page }) => {
+    await expect(publicKey(page)).toContainText('-----BEGIN PUBLIC KEY-----', { timeout: 5000 })
+    const first = await publicKey(page).textContent()
 
-    const publicKeyCm = codeInput.content(page, 'public-key-output')
-    const privateKeyCm = codeInput.content(page, 'private-key-output')
+    await dialog(page).getByRole('button', { name: '4096 bits' }).click()
 
-    await expect(publicKeyCm).toBeVisible({ timeout: 5000 })
-    await expect(privateKeyCm).toBeVisible()
-
-    await expect(publicKeyCm).toContainText('-----BEGIN PUBLIC KEY-----')
-    await expect(privateKeyCm).toContainText('-----BEGIN PRIVATE KEY-----')
-  })
-
-  test('generate 4096-bit keys → both keys generated', async ({ page }) => {
-    await page.getByRole('button', { name: '4096 bits' }).click()
-    await page.getByRole('button', { name: 'Generate RSA key pair' }).click()
-
-    const publicKeyCm = codeInput.content(page, 'public-key-output')
-    await expect(publicKeyCm).toBeVisible({ timeout: 10000 })
-
-    await expect(publicKeyCm).toContainText('-----BEGIN PUBLIC KEY-----')
-
-    const privateKeyCm = codeInput.content(page, 'private-key-output')
-    await expect(privateKeyCm).toContainText('-----BEGIN PRIVATE KEY-----')
+    await expect(async () => {
+      expect(await publicKey(page).textContent()).not.toBe(first)
+    }).toPass({ timeout: 10000 })
+    await expect(publicKey(page)).toContainText('-----BEGIN PUBLIC KEY-----', { timeout: 10000 })
+    await expect(privateKey(page)).toContainText('-----BEGIN PRIVATE KEY-----')
   })
 
   test('CopyButton on public key copies PEM text', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await expect(publicKey(page)).toContainText('-----BEGIN PUBLIC KEY-----', { timeout: 5000 })
 
-    await page.getByRole('button', { name: 'Generate RSA key pair' }).click()
-    await expect(codeInput.content(page, 'public-key-output')).toBeVisible({ timeout: 5000 })
-
-    await copyButton.byLabel(page, 'public key').click()
+    await copyButton.byLabel(page, 'Public key (SPKI)').click()
     await expect(toast.copied(page)).toBeVisible({ timeout: 3000 })
   })
 
   test('CopyButton on private key copies PEM text', async ({ page, context }) => {
     await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+    await expect(privateKey(page)).toContainText('-----BEGIN PRIVATE KEY-----', { timeout: 5000 })
 
-    await page.getByRole('button', { name: 'Generate RSA key pair' }).click()
-    await expect(codeInput.content(page, 'private-key-output')).toBeVisible({ timeout: 5000 })
-
-    await copyButton.byLabel(page, 'private key').click()
+    await copyButton.byLabel(page, 'Private key (PKCS#8)').click()
     await expect(toast.copied(page)).toBeVisible({ timeout: 3000 })
   })
 
-  test('download buttons trigger file downloads', async ({ page }) => {
-    await page.getByRole('button', { name: 'Generate RSA key pair' }).click()
-    await expect(codeInput.content(page, 'public-key-output')).toBeVisible({ timeout: 5000 })
+  test('download buttons at the bottom of the output trigger file downloads', async ({ page }) => {
+    await expect(publicKey(page)).toContainText('-----BEGIN PUBLIC KEY-----', { timeout: 5000 })
 
     const [download] = await Promise.all([
       page.waitForEvent('download'),
-      page.getByRole('button', { name: 'Download public key' }).click(),
+      dialog(page).getByRole('button', { name: 'Download public.pem' }).click(),
     ])
     expect(download.suggestedFilename()).toBe('public.pem')
+    await expect(dialog(page).getByRole('button', { name: 'Download all' })).toBeVisible()
   })
 
-  test('generating a second time replaces previous keys', async ({ page }) => {
-    await page.getByRole('button', { name: 'Generate RSA key pair' }).click()
-    const publicKeyCm = codeInput.content(page, 'public-key-output')
-    await expect(publicKeyCm).toBeVisible({ timeout: 5000 })
-    const firstPublicKey = await publicKeyCm.textContent()
+  test('Generate replaces the previous keys', async ({ page }) => {
+    await expect(publicKey(page)).toContainText('-----BEGIN PUBLIC KEY-----', { timeout: 5000 })
+    const first = await publicKey(page).textContent()
 
-    await page.getByRole('button', { name: 'Generate RSA key pair' }).click()
-    // Wait for the new key to appear (the value should change)
+    await generateButton(page).click()
     await expect(async () => {
-      const newKey = await publicKeyCm.textContent()
-      expect(newKey).not.toBe(firstPublicKey)
+      expect(await publicKey(page).textContent()).not.toBe(first)
     }).toPass({ timeout: 5000 })
+    await expect(publicKey(page)).toContainText('-----BEGIN PUBLIC KEY-----', { timeout: 5000 })
   })
 
   test('mobile viewport (375px) responsiveness', async ({ page }) => {
     await page.setViewportSize({ height: 812, width: 375 })
 
-    await expect(page.getByRole('button', { name: '2048 bits' })).toBeVisible()
-    await expect(page.getByRole('button', { name: 'Generate RSA key pair' })).toBeVisible()
+    await expect(dialog(page).getByRole('button', { name: '2048 bits' })).toBeVisible()
+    await expect(generateButton(page)).toBeVisible()
     await expect(
       page.getByText('Keys are generated entirely in your browser. No data is sent to any server.'),
     ).toBeVisible()

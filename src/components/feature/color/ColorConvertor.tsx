@@ -1,10 +1,10 @@
 import { m } from 'motion/react'
 import { useEffect, useState } from 'react'
 
-import { ColorInput, CopyButton, FieldForm, NotoEmoji } from '@/components/common'
+import { ColorInput, CopyButton, FieldForm, NotoEmoji, ToolStatus } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useMountOnce, useToast, useToolComputation } from '@/hooks'
+import { useMountOnce, useToolComputation } from '@/hooks'
 import type { ColorFormat, ColorFormatField, ColorInputWrapperProps, ConvertInput, ToolComponentProps } from '@/types'
 import { convertColor } from '@/wasm/color'
 
@@ -61,20 +61,26 @@ const toolEntry = TOOL_REGISTRY_MAP['color-converter']
 
 export const ColorConvertor = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [color, setColor] = useState<Record<ColorFormat, string>>(emptyColors)
-  const showError = useToast((s) => s.showError)
 
   const {
+    error,
     result: converted,
     setInput,
     setInputImmediate,
   } = useToolComputation<ConvertInput, Record<ColorFormat, string> | null>(
-    async ({ value, format }) => convertColor(value, format),
+    async ({ value, format }) => {
+      try {
+        return await convertColor(value, format)
+      } catch {
+        throw new Error(ERROR_MESSAGES[format])
+      }
+    },
     {
       debounceMs: 300,
       initial: null,
       isEmpty: ({ value }) => !value.trim(),
+      // Clear the mirrored formats so stale conversions never sit next to the error.
       onError: (_err, { format, value }) => {
-        showError(ERROR_MESSAGES[format])
         setColor({ ...emptyColors, [format]: value })
       },
     },
@@ -114,8 +120,10 @@ export const ColorConvertor = ({ autoOpen, onAfterClose }: ToolComponentProps) =
           aria-label="Color picker"
           onChange={handlePickerChange}
           size="full"
-          value={color.hex || '#000000'}
+          // <input type="color"> only accepts #rrggbb; anything else (a half-typed hex) warns.
+          value={/^#[0-9a-f]{6}$/i.test(color.hex) ? color.hex : '#000000'}
         />
+        <ToolStatus error={error} />
         <div aria-live="polite" className="flex flex-wrap gap-4">
           {FORMATS.map(({ format, label, placeholder }) => (
             <InputWrapper key={format} color={color[format]}>

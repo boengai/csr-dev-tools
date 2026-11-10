@@ -1,56 +1,15 @@
-import { CodeInput, CopyButton } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useToolInput } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import { type CertificateExtension, type CertificateInfo, cnMerge, tv, type ValidityStatus } from '@/utils'
+import type { CertificateInfo, ToolComponentProps, TransformerField } from '@/types'
 
 const toolEntry = TOOL_REGISTRY_MAP['certificate-decoder']
 
-const resultValueStyles = tv({
-  base: 'truncate text-body-xs text-gray-200',
-  variants: {
-    mono: {
-      true: 'font-mono',
-      false: '',
-    },
-  },
-})
+const INITIAL: { source: string } = { source: '' }
 
-const ResultRow = ({
-  copyValue,
-  label,
-  mono = true,
-  value,
-}: {
-  copyValue?: string
-  label: string
-  mono?: boolean
-  value: string
-}) => (
-  <div className="flex items-center justify-between gap-2 rounded border border-gray-800 bg-gray-950 px-3 py-2">
-    <span className="shrink-0 text-body-xs text-gray-400">{label}</span>
-    <div className="flex items-center gap-1 overflow-hidden">
-      <span className={resultValueStyles({ mono })}>{value}</span>
-      <CopyButton label={label} value={copyValue ?? value} />
-    </div>
-  </div>
-)
-
-const VALIDITY_CONFIG: Record<ValidityStatus, { icon: string; label: string; style: string }> = {
-  expired: { icon: '✗', label: 'Expired', style: 'border-red-800 bg-red-950 text-red-400' },
-  'malformed-dates': {
-    icon: '⚠',
-    label: 'Malformed dates',
-    style: 'border-red-800 bg-red-950 text-red-400',
-  },
-  'not-yet-valid': { icon: '○', label: 'Not yet valid', style: 'border-amber-800 bg-amber-950 text-amber-400' },
-  valid: { icon: '✓', label: 'Valid', style: 'border-green-800 bg-green-950 text-green-400' },
-}
+const VALIDITY_LABEL = 'Validity'
 
 const formatRelativeTime = (date: Date) => {
-  const now = new Date()
-  const diff = date.getTime() - now.getTime()
+  const diff = date.getTime() - Date.now()
   const absDays = Math.abs(Math.round(diff / (1000 * 60 * 60 * 24)))
 
   if (absDays === 0) return 'today'
@@ -58,141 +17,63 @@ const formatRelativeTime = (date: Date) => {
   return `${absDays} day${absDays !== 1 ? 's' : ''} ago`
 }
 
-const ValidityBadge = ({
-  notAfter,
-  notBefore,
-  status,
-}: {
-  notAfter: Date
-  notBefore: Date
-  status: ValidityStatus
-}) => {
-  const config = VALIDITY_CONFIG[status]
-  const relativeText =
-    status === 'expired'
-      ? `expired ${formatRelativeTime(notAfter)}`
-      : status === 'not-yet-valid'
-        ? `starts ${formatRelativeTime(notBefore)}`
-        : status === 'malformed-dates'
-          ? 'notBefore is after notAfter'
-          : `expires ${formatRelativeTime(notAfter)}`
+const isoDate = (date: Date) => date.toISOString().slice(0, 10)
 
-  return (
-    <div
-      className={cnMerge(
-        'inline-flex items-center gap-1.5 rounded border px-2.5 py-1 text-body-xs font-medium',
-        config.style,
-      )}
-    >
-      <span aria-hidden="true">{config.icon}</span>
-      <span>
-        {config.label} ({relativeText})
-      </span>
-    </div>
-  )
+// Only the valid wording starts with "Valid —"; `notices` relies on that.
+const describeValidity = ({ notAfter, notBefore, validityStatus }: CertificateInfo): string => {
+  if (validityStatus === 'expired') return `Expired — expired ${formatRelativeTime(notAfter)}`
+  if (validityStatus === 'not-yet-valid') return `Not yet valid — starts ${formatRelativeTime(notBefore)}`
+  if (validityStatus === 'malformed-dates') return 'Malformed dates — notBefore is after notAfter'
+  return `Valid — expires ${formatRelativeTime(notAfter)}`
 }
 
-const ExtensionItem = ({ ext }: { ext: CertificateExtension }) => (
-  <div className="rounded border border-gray-800 bg-gray-950 px-3 py-2">
-    <div className="flex items-center gap-2">
-      <span className="text-body-xs font-medium text-gray-300">{ext.name}</span>
-      {ext.critical && (
-        <span className="bg-amber-900/50 text-amber-400 rounded px-1.5 py-0.5 text-[10px] font-medium">Critical</span>
-      )}
-    </div>
-    <p className="mt-1 font-mono text-body-xs break-all text-gray-400">{ext.value}</p>
-  </div>
-)
+const toFields = (info: CertificateInfo): Array<TransformerField> => [
+  { copy: false, label: VALIDITY_LABEL, value: describeValidity(info) },
+  { label: 'Subject', value: info.subject },
+  { label: 'Issuer', value: info.issuer },
+  { label: 'Serial Number', value: info.serialNumber },
+  {
+    copyValue: isoDate(info.notBefore),
+    label: 'Not Before',
+    value: `${isoDate(info.notBefore)} (${formatRelativeTime(info.notBefore)})`,
+  },
+  {
+    copyValue: isoDate(info.notAfter),
+    label: 'Not After',
+    value: `${isoDate(info.notAfter)} (${formatRelativeTime(info.notAfter)})`,
+  },
+  {
+    label: 'Public Key',
+    value: info.publicKeySize > 0 ? `${info.publicKeyAlgorithm} ${info.publicKeySize} bits` : info.publicKeyAlgorithm,
+  },
+  { label: 'Signature Algorithm', value: info.signatureAlgorithm },
+  ...info.extensions.map((ext) => ({ label: ext.critical ? `${ext.name} (critical)` : ext.name, value: ext.value })),
+]
 
-export const CertificateDecoder = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const {
-    input,
-    result,
-    isPending: loading,
-    setInput,
-    reset,
-  } = useToolInput<string, CertificateInfo | null>({
-    compute: async (val) => {
+export const CertificateDecoder = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <TransformerShell<{ source: string }, 'fields'>
+    autoOpen={autoOpen}
+    compute={async ({ source }) => {
       const { parsePemCertificate } = await import('@/utils/certificate-decoder')
-      return parsePemCertificate(val.trim())
-    },
-    debounceMs: 300,
-    errorFallback: 'Certificate format not recognized',
-    initial: '',
-    initialResult: null,
-    isEmpty: (val) => !val.trim(),
-  })
-
-  return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      onReset={reset}
-      title="Certificate Decoder"
-      triggers={[{ label: 'Decode Certificate' }]}
-    >
-      <div className="flex w-full grow flex-col gap-4">
-        <CodeInput
-          aria-label="PEM certificate input"
-          minHeight="200px"
-          name="certificate-input"
-          onChange={setInput}
-          placeholder="Paste PEM-encoded certificate here..."
-          value={input}
-        />
-
-        {loading && input.trim() && (
-          <p className="text-body-xs text-gray-400" role="status">
-            Decoding...
-          </p>
-        )}
-
-        <div aria-live="polite" className="flex flex-col gap-3">
-          {result && !loading && (
-            <>
-              <ValidityBadge notAfter={result.notAfter} notBefore={result.notBefore} status={result.validityStatus} />
-
-              <div className="flex flex-col gap-2">
-                <ResultRow label="Subject" mono={false} value={result.subject} />
-                <ResultRow label="Issuer" mono={false} value={result.issuer} />
-                <ResultRow label="Serial Number" value={result.serialNumber} />
-                <ResultRow
-                  copyValue={result.notBefore.toISOString().slice(0, 10)}
-                  label="Not Before"
-                  mono={false}
-                  value={`${result.notBefore.toISOString().slice(0, 10)} (${formatRelativeTime(result.notBefore)})`}
-                />
-                <ResultRow
-                  copyValue={result.notAfter.toISOString().slice(0, 10)}
-                  label="Not After"
-                  mono={false}
-                  value={`${result.notAfter.toISOString().slice(0, 10)} (${formatRelativeTime(result.notAfter)})`}
-                />
-                <ResultRow
-                  label="Public Key"
-                  mono={false}
-                  value={
-                    result.publicKeySize > 0
-                      ? `${result.publicKeyAlgorithm} ${result.publicKeySize} bits`
-                      : result.publicKeyAlgorithm
-                  }
-                />
-                <ResultRow label="Signature Algorithm" mono={false} value={result.signatureAlgorithm} />
-              </div>
-
-              {result.extensions.length > 0 && (
-                <div className="flex flex-col gap-2">
-                  <h3 className="text-body-xs font-medium text-gray-300">Extensions</h3>
-                  {result.extensions.map((ext) => (
-                    <ExtensionItem ext={ext} key={`${ext.oid}-${ext.name}`} />
-                  ))}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-    </ToolDialogFrame>
-  )
-}
+      return toFields(await parsePemCertificate(source.trim()))
+    }}
+    description={toolEntry?.description}
+    errorFallback="Certificate format not recognized"
+    initial={INITIAL}
+    // An expired / not-yet-valid certificate still decodes; say so above the work area.
+    notices={(fields) => {
+      const validity = fields.find((f) => f.label === VALIDITY_LABEL)?.value
+      return validity && !validity.startsWith('Valid —') ? [validity] : []
+    }}
+    onAfterClose={onAfterClose}
+    outputKind="fields"
+    // Certificates are not newly persisted: nothing pasted here reaches localStorage.
+    persistInput={false}
+    resultLabel="Certificate"
+    resultPlaceholder="Paste a PEM certificate to decode it"
+    sourceLabel="PEM certificate"
+    sourcePlaceholder="-----BEGIN CERTIFICATE-----"
+    title="Certificate Decoder"
+    triggerLabel="Decode Certificate"
+  />
+)

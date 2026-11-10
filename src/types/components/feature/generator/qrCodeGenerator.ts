@@ -5,7 +5,6 @@ export type QrInput = {
   errorCorrection: QrErrorCorrectionLevel
   foreground: string
   size: number
-  text: string
+  /** The text or URL to encode. */
+  source: string
 }
-
-export type QrResult = { dataUrl: string; svgString: string }

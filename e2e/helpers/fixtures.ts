@@ -81,4 +81,3 @@ export const dataConversionData = {
   toml: '[database]\nserver = "192.168.1.1"\nport = 5432',
   htmlForMd: '<h1>Title</h1><p>Hello <strong>world</strong></p>',
 }
-

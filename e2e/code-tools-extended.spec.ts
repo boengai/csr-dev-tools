@@ -1,12 +1,12 @@
 import { expect, test } from '@playwright/test'
 
 import { codeFormattingData } from './helpers/fixtures'
-import { codeInputIn } from './helpers/selectors'
+import { codeInput, codeInputIn, toolSurface } from './helpers/selectors'
 
 test.describe('HTML Formatter', () => {
   test('formats HTML input', async ({ page }) => {
     await page.goto('/tools/html-formatter')
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, codeFormattingData.html)
@@ -17,13 +17,16 @@ test.describe('HTML Formatter', () => {
 
   test('minifies HTML input', async ({ page }) => {
     await page.goto('/tools/html-formatter')
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     // Switch to minify mode
     const trigger = dialog.locator('[role="combobox"]').first()
     await trigger.click()
-    await page.locator('[role="option"]').filter({ hasText: /minify/i }).click()
+    await page
+      .locator('[role="option"]')
+      .filter({ hasText: /minify/i })
+      .click()
 
     await codeInputIn.fill(page, dialog, '<div>\n  <p>hello</p>\n</div>')
 
@@ -35,7 +38,7 @@ test.describe('HTML Formatter', () => {
 test.describe('CSS Formatter', () => {
   test('formats CSS input', async ({ page }) => {
     await page.goto('/tools/css-formatter')
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, codeFormattingData.css)
@@ -46,12 +49,15 @@ test.describe('CSS Formatter', () => {
 
   test('minifies CSS input', async ({ page }) => {
     await page.goto('/tools/css-formatter')
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     const trigger = dialog.locator('[role="combobox"]').first()
     await trigger.click()
-    await page.locator('[role="option"]').filter({ hasText: /minify/i }).click()
+    await page
+      .locator('[role="option"]')
+      .filter({ hasText: /minify/i })
+      .click()
 
     await codeInputIn.fill(page, dialog, 'body {\n  color: red;\n  margin: 0;\n}')
 
@@ -63,7 +69,7 @@ test.describe('CSS Formatter', () => {
 test.describe('JavaScript Minifier', () => {
   test('minifies JavaScript input', async ({ page }) => {
     await page.goto('/tools/javascript-minifier')
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, codeFormattingData.js)
@@ -74,12 +80,15 @@ test.describe('JavaScript Minifier', () => {
 
   test('beautifies JavaScript input', async ({ page }) => {
     await page.goto('/tools/javascript-minifier')
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     const trigger = dialog.locator('[role="combobox"]').first()
     await trigger.click()
-    await page.locator('[role="option"]').filter({ hasText: /beautify/i }).click()
+    await page
+      .locator('[role="option"]')
+      .filter({ hasText: /beautify/i })
+      .click()
 
     await codeInputIn.fill(page, dialog, 'function hello(){return"world"}')
 
@@ -91,7 +100,7 @@ test.describe('JavaScript Minifier', () => {
 test.describe('SQL Formatter', () => {
   test('formats SQL input', async ({ page }) => {
     await page.goto('/tools/sql-formatter')
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, codeFormattingData.sql)
@@ -102,12 +111,15 @@ test.describe('SQL Formatter', () => {
 
   test('formats SQL with dialect change', async ({ page }) => {
     await page.goto('/tools/sql-formatter')
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     const trigger = dialog.locator('[role="combobox"]').first()
     await trigger.click()
-    await page.locator('[role="option"]').filter({ hasText: /postgresql/i }).click()
+    await page
+      .locator('[role="option"]')
+      .filter({ hasText: /postgresql/i })
+      .click()
 
     await codeInputIn.fill(page, dialog, 'select * from users limit 10')
 
@@ -119,38 +131,70 @@ test.describe('SQL Formatter', () => {
 test.describe('Markdown Preview', () => {
   test('renders markdown preview', async ({ page }) => {
     await page.goto('/tools/markdown-preview')
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, codeFormattingData.markdown)
 
     // Should render the heading in preview
-    await expect(dialog.getByText('Hello').first()).toBeVisible({ timeout: 3000 })
+    const preview = dialog.locator('[data-slot="tool-output"][data-has-value]')
+    await expect(preview.getByRole('heading', { name: 'Hello' })).toBeVisible({ timeout: 3000 })
   })
 })
 
 test.describe('JSON to TypeScript', () => {
   test('converts JSON to TypeScript interface', async ({ page }) => {
     await page.goto('/tools/json-to-typescript')
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await codeInputIn.fill(page, dialog, codeFormattingData.jsonForTs)
 
-    // Should show interface/type output
-    const output = dialog.locator('.cm-editor, pre, code').nth(1)
-    await expect(output).toBeVisible({ timeout: 3000 })
+    // Runs as you type — there is no Generate button.
+    const output = dialog.locator('pre[data-has-value]')
+    await expect(output).toContainText('interface Root', { timeout: 5000 })
+
+    await dialog.getByRole('button', { name: 'Emit type aliases' }).click()
+    await expect(output).toContainText('type Root', { timeout: 5000 })
+  })
+
+  test('shows invalid JSON in the status slot and clears the output', async ({ page }) => {
+    await page.goto('/tools/json-to-typescript')
+    const dialog = toolSurface(page)
+    await expect(dialog).toBeVisible({ timeout: 5000 })
+
+    await codeInputIn.fill(page, dialog, '{bad')
+
+    await expect(dialog.locator('[data-slot="tool-status"]').getByRole('alert')).toContainText('Invalid JSON', {
+      timeout: 5000,
+    })
+    await expect(dialog.locator('pre[data-has-value]')).toHaveCount(0)
   })
 })
 
 test.describe('JSON Schema Validator', () => {
   test('shows two code editor areas', async ({ page }) => {
     await page.goto('/tools/json-schema-validator')
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     const editors = dialog.locator('.cm-editor')
     await expect(editors.first()).toBeVisible()
     await expect(editors.nth(1)).toBeVisible()
+  })
+
+  test('valid data shows a notice; invalid data lists its errors in the status slot', async ({ page }) => {
+    await page.goto('/tools/json-schema-validator')
+    const dialog = toolSurface(page)
+    await expect(dialog).toBeVisible({ timeout: 5000 })
+
+    const status = dialog.locator('[data-slot="tool-status"]')
+    await codeInput.fill(page, 'dialog-source-schema', '{"type": "object", "required": ["name"]}')
+    await codeInput.fill(page, 'dialog-source', '{"name": "John"}')
+    await expect(status.getByRole('status')).toContainText('Valid', { timeout: 5000 })
+
+    await codeInput.fill(page, 'dialog-source', '{"age": 30}')
+    await expect(status.getByRole('alert')).toContainText('validation error', { timeout: 5000 })
+    await expect(dialog.locator('pre[data-has-value]')).toHaveCount(0)
   })
 })

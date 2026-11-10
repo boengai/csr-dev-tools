@@ -1,4 +1,4 @@
-import { CheckboxInput, FieldForm, FormatterShell } from '@/components/common'
+import { CheckboxInput, FieldForm, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps, YamlInput } from '@/types'
 import { formatYaml } from '@/utils'
@@ -15,7 +15,7 @@ const INDENT_OPTIONS = [
 
 export const YamlFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   return (
-    <FormatterShell<YamlInput>
+    <TransformerShell<YamlInput>
       autoOpen={autoOpen}
       compute={async ({ source, indent, sortKeys }) => {
         const narrated = await narrateParseError('yaml', source)
@@ -29,13 +29,6 @@ export const YamlFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) =>
       description={toolEntry?.description}
       initial={INITIAL}
       onAfterClose={onAfterClose}
-      renderBanner={(error) =>
-        error instanceof Error ? (
-          <p className="text-body-sm text-error" role="alert">
-            {error.message}
-          </p>
-        ) : null
-      }
       renderControls={({ inputs, setFieldsImmediate }) => (
         <>
           <FieldForm
@@ -61,7 +54,7 @@ export const YamlFormatter = ({ autoOpen, onAfterClose }: ToolComponentProps) =>
         </>
       )}
       resultLabel="Formatted YAML"
-      resultPlaceholder={'name: John\nage: 30\ntags:\n  - dev\n  - tools'}
+      resultPlaceholder="Paste YAML to format it"
       sourceLabel="YAML Input"
       sourcePlaceholder={'name: John\nage: 30\ntags:\n  - dev\n  - tools'}
       storageKey="csr-dev-tools-yaml-formatter"

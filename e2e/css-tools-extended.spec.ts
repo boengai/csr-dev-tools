@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test'
 
+import { toolSurface } from './helpers/selectors'
+
 test.describe('CSS Flexbox Playground', () => {
   test('shows flexbox preview and controls', async ({ page }) => {
     await page.goto('/tools/css-flexbox-playground')
@@ -19,7 +21,7 @@ test.describe('CSS Grid Playground', () => {
 test.describe('CSS Animation Builder', () => {
   test('shows animation controls in dialog', async ({ page }) => {
     await page.goto('/tools/css-animation-builder')
-    const dialog = page.locator('[role="dialog"]')
+    const dialog = toolSurface(page)
     await expect(dialog).toBeVisible({ timeout: 5000 })
 
     await expect(dialog.getByText(/animation|keyframe|duration/i).first()).toBeVisible({ timeout: 3000 })

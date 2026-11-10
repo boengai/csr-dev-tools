@@ -173,6 +173,8 @@ pnpm test:e2e:headed
 
 ## Adding a New Tool
 
+> Every tool declares a required `layout` in `src/constants/tool-routes.ts` and is built from that layout's shell — see [docs/ux/README.md](ux/README.md), ADR-0027, and `CLAUDE.md` → "Adding a new tool" for the current steps.
+
 1. **Create utility** in `src/utils/<name>.ts` with pure logic functions
 2. **Create types** in `src/types/utils/<name>.ts` for any types the utility needs
 3. **Create tests** in `src/utils/<name>.spec.ts` (co-located)

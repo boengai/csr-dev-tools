@@ -1,18 +1,20 @@
 import { expect, test } from '@playwright/test'
 
 import { textToolData } from './helpers/fixtures'
+import { toolSurface } from './helpers/selectors'
 
 test.describe('Text Case Converter', () => {
   test('opens dialog and converts text cases', async ({ page }) => {
     await page.goto('/tools/text-case-converter')
     // Dialog auto-opens on dedicated route
-    const textarea = page.locator('[role="dialog"] textarea').first()
+    const textarea = toolSurface(page).locator('textarea').first()
     await expect(textarea).toBeVisible({ timeout: 5000 })
     await textarea.fill(textToolData.caseInput)
 
-    // Verify at least one conversion result appears
-    await expect(page.getByText('camelCase', { exact: true })).toBeVisible({ timeout: 3000 })
-    await expect(page.getByText('snake_case', { exact: true })).toBeVisible()
+    // One row per case, each with its own Copy button.
+    await expect(page.getByText('helloWorldExample', { exact: true })).toBeVisible({ timeout: 3000 })
+    await expect(page.getByText('hello_world_example', { exact: true })).toBeVisible()
+    await expect(page.getByRole('button', { name: 'Copy camelCase to clipboard' })).toBeEnabled()
   })
 })
 
@@ -20,13 +22,16 @@ test.describe('Word Counter', () => {
   test('opens dialog and counts words', async ({ page }) => {
     await page.goto('/tools/word-counter')
     // Dialog auto-opens on dedicated route
-    const textarea = page.locator('[role="dialog"] textarea').first()
+    const textarea = toolSurface(page).locator('textarea').first()
     await expect(textarea).toBeVisible({ timeout: 5000 })
     await textarea.fill(textToolData.wordCountInput)
 
-    // Verify word count stats appear
-    await expect(page.getByText('Words', { exact: true })).toBeVisible({ timeout: 3000 })
-    await expect(page.getByText('Characters', { exact: true }).first()).toBeVisible()
+    // Stats replace the placeholder; counts have no Copy button.
+    const output = toolSurface(page).locator('[data-slot="tool-output"]')
+    await expect(output).toHaveAttribute('data-has-value', '', { timeout: 3000 })
+    await expect(output.getByText('Words', { exact: true })).toBeVisible()
+    await expect(output.getByText('14', { exact: true })).toBeVisible()
+    await expect(output.getByRole('button', { name: /^Copy / })).toHaveCount(0)
   })
 })
 
@@ -34,10 +39,15 @@ test.describe('Text Sort & Dedupe', () => {
   test('sorts multiline text', async ({ page }) => {
     await page.goto('/tools/text-sort-dedupe')
 
-    const textarea = page.locator('fieldset').filter({ has: page.locator('label:text-is("Input (one item per line)")') }).locator('textarea')
+    const textarea = page
+      .locator('fieldset')
+      .filter({ has: page.locator('label:text-is("Input (one item per line)")') })
+      .locator('textarea')
     await textarea.fill(textToolData.sortInput)
 
-    // Verify sorted output appears in the pre element
-    await expect(page.locator('pre').first()).toContainText('apple', { timeout: 3000 })
+    // Sorted output fills the shell's output block.
+    await expect(toolSurface(page).locator('pre[data-has-value]')).toHaveText(textToolData.sortedOutput, {
+      timeout: 3000,
+    })
   })
 })

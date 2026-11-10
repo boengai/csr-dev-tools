@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react'
+
 export type BgOption = 'custom' | 'transparent' | 'white'
 
 export type BackgroundRemoverResultProps = {
@@ -5,4 +7,9 @@ export type BackgroundRemoverResultProps = {
   customColor: string
   onBgChange: (option: BgOption) => void
   onColorChange: (color: string) => void
+}
+
+export type BackgroundRemoverPaneProps = {
+  caption: string
+  children: ReactNode
 }

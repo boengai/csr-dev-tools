@@ -1,12 +1,7 @@
-import { m } from 'motion/react'
-import { useCallback, useState } from 'react'
-
-import { Button, CodeInput, CopyButton } from '@/components/common'
-import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
+import { GeneratorShell, ToggleButton } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import { useAsyncAction, useDownload, useToast } from '@/hooks'
-import type { ToolComponentProps } from '@/types'
-import { generateRsaKeyPair, type RsaKeyPair, type RsaKeySize } from '@/utils'
+import type { GeneratorFile, RsaKeyGeneratorOptions, RsaKeySize, ToolComponentProps } from '@/types'
+import { generateRsaKeyPair } from '@/utils'
 
 const toolEntry = TOOL_REGISTRY_MAP['rsa-key-generator']
 
@@ -15,63 +10,30 @@ const KEY_SIZES: Array<{ label: string; value: RsaKeySize }> = [
   { label: '4096 bits', value: 4096 },
 ]
 
-export const RsaKeyGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  const [keySize, setKeySize] = useState<RsaKeySize>(2048)
-  const showError = useToast((s) => s.showError)
-  const showSuccess = useToast((s) => s.showSuccess)
-  const { downloadPemFile } = useDownload()
+const PEM_MIME = 'application/x-pem-file'
 
-  const {
-    pending: generating,
-    reset,
-    result: keyPair,
-    run,
-  } = useAsyncAction<RsaKeyPair>(() => generateRsaKeyPair(keySize), {
-    errorLabel: 'Key generation failed. Please try again.',
+const generate = async ({ keySize }: RsaKeyGeneratorOptions): Promise<Array<GeneratorFile>> => {
+  if (!KEY_SIZES.some((s) => s.value === keySize)) throw new Error('Key size must be 2048 or 4096 bits')
+  if (!crypto.subtle) throw new Error('RSA key generation requires a secure context (HTTPS)')
+  const pair = await generateRsaKeyPair(keySize).catch(() => {
+    throw new Error('Key generation failed. Please try again.')
   })
+  return [
+    { filename: 'public.pem', label: 'Public key (SPKI)', mimeType: PEM_MIME, value: pair.publicKey },
+    { filename: 'private.pem', label: 'Private key (PKCS#8)', mimeType: PEM_MIME, value: pair.privateKey },
+  ]
+}
 
-  const handleGenerate = useCallback(async () => {
-    if (!crypto.subtle) {
-      showError('RSA key generation requires a secure context (HTTPS)')
-      return
-    }
-    const result = await run()
-    if (result) {
-      showSuccess(`Generated ${keySize}-bit RSA key pair`)
-    }
-  }, [keySize, run, showError, showSuccess])
-
-  const handleDownloadPublic = () => {
-    if (keyPair) downloadPemFile(keyPair.publicKey, 'public.pem')
-  }
-
-  const handleDownloadPrivate = () => {
-    if (keyPair) downloadPemFile(keyPair.privateKey, 'private.pem')
-  }
-
-  const handleDownloadAll = () => {
-    if (keyPair) {
-      downloadPemFile(keyPair.publicKey, 'public.pem')
-      setTimeout(() => downloadPemFile(keyPair.privateKey, 'private.pem'), 100)
-    }
-  }
-
-  const handleReset = useCallback(() => {
-    setKeySize(2048)
-    reset()
-  }, [reset])
-
-  return (
-    <ToolDialogFrame
-      autoOpen={autoOpen}
-      description={toolEntry?.description}
-      onAfterClose={onAfterClose}
-      onReset={handleReset}
-      title="RSA Key Generator"
-      triggers={[{ label: 'Generate RSA Key Pair' }]}
-    >
-      <div className="flex w-full grow flex-col gap-6">
-        {/* Security Banner */}
+export const RsaKeyGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
+  <GeneratorShell
+    autoOpen={autoOpen}
+    compute={generate}
+    description={toolEntry?.description}
+    initial={{ keySize: 2048 }}
+    onAfterClose={onAfterClose}
+    output={{ kind: 'files', placeholder: 'Press Generate to create a key pair' }}
+    renderOptions={({ options, setOptions }) => (
+      <>
         <div className="border-teal-800 bg-teal-950/50 flex items-center gap-3 rounded border px-4 py-3" role="note">
           <span aria-hidden="true" className="text-lg">
             🔒
@@ -80,96 +42,26 @@ export const RsaKeyGenerator = ({ autoOpen, onAfterClose }: ToolComponentProps) 
             Keys are generated entirely in your browser. No data is sent to any server.
           </p>
         </div>
-
-        {/* Key Size Selector + Generate */}
-        <div className="flex flex-col gap-4 tablet:flex-row tablet:items-end">
-          <fieldset className="flex flex-col gap-2">
-            <span className="text-body-xs font-medium text-gray-400">Key Size</span>
-            <div className="flex gap-2" aria-label="RSA key size">
-              {KEY_SIZES.map((option) => (
-                <button
-                  key={option.value}
-                  aria-pressed={keySize === option.value}
-                  className="rounded border px-4 py-2 text-body-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none data-[state=active]:border-primary data-[state=active]:bg-primary/20 data-[state=active]:text-white data-[state=inactive]:border-gray-700 data-[state=inactive]:bg-transparent data-[state=inactive]:text-gray-400 data-[state=inactive]:hover:border-gray-500"
-                  data-state={keySize === option.value ? 'active' : 'inactive'}
-                  onClick={() => setKeySize(option.value)}
-                  type="button"
-                >
-                  {option.label}
-                </button>
-              ))}
-            </div>
-            <p className="text-body-xs text-gray-500">2048: ~50-150ms | 4096: ~400-1000ms</p>
-          </fieldset>
-
-          <Button aria-label="Generate RSA key pair" disabled={generating} onClick={handleGenerate} variant="primary">
-            {generating ? (
-              <span className="flex items-center gap-2">
-                <m.span
-                  animate={{ rotate: 360 }}
-                  aria-label="Generating RSA key pair"
-                  className="inline-block h-4 w-4 rounded-full border-2 border-white/30 border-t-white"
-                  role="status"
-                  transition={{ duration: 0.8, ease: 'linear', repeat: Infinity }}
-                />
-                Generating...
-              </span>
-            ) : (
-              'Generate Key Pair'
-            )}
-          </Button>
-        </div>
-
-        {/* Output Section */}
-        {keyPair && (
-          <div aria-live="polite" className="flex flex-col gap-6">
-            {/* Public Key */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <span className="text-body-xs font-medium text-gray-400">Public Key (SPKI/PEM)</span>
-                <div className="flex gap-2">
-                  <CopyButton label="public key" value={keyPair.publicKey} />
-                  <Button aria-label="Download public key" onClick={handleDownloadPublic} size="small">
-                    Download
-                  </Button>
-                </div>
-              </div>
-              <CodeInput
-                aria-label="Public key"
-                minHeight="150px"
-                name="public-key-output"
-                readOnly
-                value={keyPair.publicKey}
-              />
-            </div>
-
-            {/* Private Key */}
-            <div className="flex flex-col gap-2">
-              <div className="flex items-center justify-between">
-                <span className="text-body-xs font-medium text-gray-400">Private Key (PKCS#8/PEM)</span>
-                <div className="flex gap-2">
-                  <CopyButton label="private key" value={keyPair.privateKey} />
-                  <Button aria-label="Download private key" onClick={handleDownloadPrivate} size="small">
-                    Download
-                  </Button>
-                </div>
-              </div>
-              <CodeInput
-                aria-label="Private key"
-                minHeight="360px"
-                name="private-key-output"
-                readOnly
-                value={keyPair.privateKey}
-              />
-            </div>
-
-            {/* Download All */}
-            <Button aria-label="Download all keys" onClick={handleDownloadAll}>
-              Download All Keys
-            </Button>
+        <fieldset className="flex flex-col gap-2">
+          <span className="text-body-xs font-medium text-gray-400">Key size</span>
+          <div aria-label="RSA key size" className="flex gap-2" role="group">
+            {KEY_SIZES.map((option) => (
+              <ToggleButton
+                key={option.value}
+                onClick={() => setOptions({ keySize: option.value })}
+                pressed={options.keySize === option.value}
+              >
+                {option.label}
+              </ToggleButton>
+            ))}
           </div>
-        )}
-      </div>
-    </ToolDialogFrame>
-  )
-}
+          <p className="text-body-xs text-gray-500">2048: ~50–150 ms · 4096: ~0.4–1 s</p>
+        </fieldset>
+      </>
+    )}
+    run={{ generateLabel: 'Generate key pair', mode: 'random', slow: true }}
+    storageKey="csr-dev-tools-rsa-key-generator"
+    title="RSA Key Generator"
+    triggerLabel="Generate RSA Key Pair"
+  />
+)

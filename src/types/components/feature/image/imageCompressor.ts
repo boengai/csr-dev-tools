@@ -1,8 +1,11 @@
-export type OriginalInfo = {
-  height: number
-  name: string
-  size: number
-  width: number
-}
+/** Image Compressor's controls bag: JPEG/WebP quality, 1–100. */
+export type CompressControls = { quality: number }
 
-export type CompressInput = { file: File | null; quality: number }
+export type CompressSourceProps = { source: File; sourceUrl: string }
+
+export type CompressResultProps = {
+  pending: boolean
+  result: Blob | null
+  resultUrl: string | null
+  source: File
+}

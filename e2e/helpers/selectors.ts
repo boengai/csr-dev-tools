@@ -5,8 +5,7 @@ import type { Page } from '@playwright/test'
 export const sidebar = {
   toggleButton: (page: Page) => page.getByLabel('Toggle navigation'),
   nav: (page: Page) => page.locator('nav[aria-label="Tool navigation"]'),
-  toolLink: (page: Page, name: string) =>
-    page.locator('nav[aria-label="Tool navigation"]').getByRole('link', { name }),
+  toolLink: (page: Page, name: string) => page.locator('nav[aria-label="Tool navigation"]').getByRole('link', { name }),
 }
 
 // --- Command Palette ---
@@ -90,9 +89,12 @@ export const card = {
   title: (page: Page, title: string) => page.getByRole('heading', { name: title }),
 }
 
-// --- Error Messages (toast-based, Radix Toast uses role="status") ---
+// --- Tool surface ---
 
-export const errorMessage = {
-  any: (page: Page) => page.getByRole('status'),
-  withText: (page: Page, text: string) => page.getByRole('status').filter({ hasText: text }),
-}
+/**
+ * Where a Tool's UI lives: inline on its own route (`data-slot="tool-surface"`,
+ * ADR-0029) or in a dialog opened from a tile (dashboard, and the two Tools
+ * that keep their own tile: Protobuf Codec, Data URI). The last match wins,
+ * so a dialog opened over an inline Tool is the one returned.
+ */
+export const toolSurface = (page: Page) => page.locator('[role="dialog"], [data-slot="tool-surface"]').last()

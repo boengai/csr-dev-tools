@@ -8,8 +8,6 @@ export type BatchAssetProcess<TResults> = (
 ) => Promise<TResults>
 
 export type UseBatchAssetPipelineOptions = {
-  /** MIME allow-list for the file `<input accept>` attribute. */
-  accept: string
   /**
    * Optional runtime gate beyond the input filter (e.g. `'image/'`). The
    * uploaded file's `type` must start with this prefix; otherwise the reject
@@ -20,8 +18,11 @@ export type UseBatchAssetPipelineOptions = {
   rejectToastLabel: string
   /** Toast label after a successful regenerate. Omit for no success toast. */
   successToastLabel?: string
-  /** Toast label after a failed regenerate. */
-  failureToastLabel: string
+  /**
+   * Toast label after a failed regenerate. Omit for no toast — the caller
+   * shows `error` itself (the [[File processor shell]] puts it in its status slot).
+   */
+  failureToastLabel?: string
 }
 
 export type UseBatchAssetPipelineResult<TResults> = {
@@ -48,7 +49,7 @@ export type UseBatchAssetPipelineResult<TResults> = {
    * Run `process` against the current `sourceImage`. No-op if there is no
    * sourceImage. Drops the result of a stale call if a newer regenerate has
    * started since (same for `report()` calls from a stale session). Fires
-   * the success or failure toast.
+   * the success or failure toast when its label is set.
    */
   regenerate: (process: BatchAssetProcess<TResults>) => Promise<void>
   /** Download a single result blob. */
@@ -59,12 +60,6 @@ export type UseBatchAssetPipelineResult<TResults> = {
    * verbatim, e.g. JSON manifests, HTML link tags).
    */
   downloadAll: (zipName: string, files: Record<string, Blob | string>) => Promise<void>
-  /**
-   * Open the OS file picker, then route the selection through `upload()`.
-   * Resolves with `upload()`'s result — `false` if the picker is cancelled —
-   * so a Tool that generates on upload can `regenerate()` after it.
-   */
-  openFilePicker: () => Promise<boolean>
   /** Clear sourceFile, sourceImage, results, progress, error, pending. */
   reset: () => void
 }

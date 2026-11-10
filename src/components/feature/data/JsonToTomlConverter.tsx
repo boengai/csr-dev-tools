@@ -1,15 +1,15 @@
-import { BidirectionalConverter } from '@/components/common'
+import { CodecShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
-import type { ConverterMode, JsonTomlConvertMode, ToolComponentProps } from '@/types'
+import type { CodecMode, JsonTomlConvertMode, ToolComponentProps } from '@/types'
 
 const toolEntry = TOOL_REGISTRY_MAP['json-to-toml-converter']
 
-const MODES: [ConverterMode<JsonTomlConvertMode>, ConverterMode<JsonTomlConvertMode>] = [
+const MODES: [CodecMode<JsonTomlConvertMode>, CodecMode<JsonTomlConvertMode>] = [
   {
     key: 'toml-to-json',
     label: 'TOML → JSON',
     resultLabel: 'JSON Output',
-    resultPlaceholder: '{\n  "server": {\n    "host": "localhost",\n    "port": 8080\n  }\n}',
+    resultPlaceholder: 'Paste TOML to convert it to JSON',
     sourceFormat: 'toml',
     sourceLabel: 'TOML Input',
     sourcePlaceholder: '[server]\nhost = "localhost"\nport = 8080',
@@ -18,7 +18,7 @@ const MODES: [ConverterMode<JsonTomlConvertMode>, ConverterMode<JsonTomlConvertM
     key: 'json-to-toml',
     label: 'JSON → TOML',
     resultLabel: 'TOML Output',
-    resultPlaceholder: '[server]\nhost = "localhost"\nport = 8080',
+    resultPlaceholder: 'Paste JSON to convert it to TOML',
     sourceFormat: 'json',
     sourceLabel: 'JSON Input',
     sourcePlaceholder: '{\n  "server": {\n    "host": "localhost",\n    "port": 8080\n  }\n}',
@@ -38,7 +38,7 @@ const compute = async ({
 }
 
 export const JsonToTomlConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => (
-  <BidirectionalConverter
+  <CodecShell
     autoOpen={autoOpen}
     compute={compute}
     description={toolEntry?.description}

@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 
-import { CopyButton, FieldForm } from '@/components/common'
+import { CopyButton, FieldForm, ToolStatus } from '@/components/common'
 import { ToolDialogFrame } from '@/components/common/dialog/ToolDialogFrame'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import { useToolComputation } from '@/hooks'
@@ -48,11 +48,10 @@ const INITIAL_FIELDS: AspectRatioFields = {
 export const AspectRatioCalculator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   const [fields, setFields] = useState<AspectRatioFields>(INITIAL_FIELDS)
 
-  const { result, setInput, setInputImmediate } = useToolComputation<AspectRatioInput, AspectRatioOutput | null>(
+  const { error, result, setInput, setInputImmediate } = useToolComputation<AspectRatioInput, AspectRatioOutput | null>(
     solveAspectRatio,
     {
       debounceMs: 300,
-      errorFallback: 'Invalid input',
       initial: null,
       isEmpty: ({ height, ratio, source, width }) => {
         if (source === 'width') return !width.trim()
@@ -170,6 +169,8 @@ export const AspectRatioCalculator = ({ autoOpen, onAfterClose }: ToolComponentP
       triggers={[{ label: 'Calculate' }]}
     >
       <div className="flex w-full grow flex-col items-center justify-center gap-4">
+        <ToolStatus error={error} errorFallback="Invalid input" />
+
         <div aria-live="polite" className="flex w-full flex-col gap-4">
           <div className="flex w-full items-center gap-2 *:min-w-0 *:flex-1">
             <FieldForm

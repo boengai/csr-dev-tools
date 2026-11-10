@@ -84,18 +84,16 @@ test.describe('Bcrypt Hasher', () => {
     await expect(page.getByText('Password does not match')).toBeVisible({ timeout: 15000 })
   })
 
-  test('enter invalid hash format → error toast shown', async ({ page }) => {
+  test('enter invalid hash format → error shown in the status slot', async ({ page }) => {
     await page.getByRole('tab', { name: 'verify' }).click()
     await page.getByPlaceholder('Enter password...').fill('test')
     await codeInput.fill(page, 'verify-hash', 'not-a-valid-hash')
     await page.getByRole('button', { name: 'Verify Password' }).click()
 
-    await expect(
-      toast.message(
-        page,
-        'Invalid bcrypt hash. Expected format: $2a$/$2b$/$2y$ followed by cost and 53 characters (e.g., $2b$10$...)',
-      ),
-    ).toBeVisible({ timeout: 3000 })
+    await expect(page.locator('[data-slot="tool-status"]').getByRole('alert')).toHaveText(
+      'Invalid bcrypt hash. Expected format: $2a$/$2b$/$2y$ followed by cost and 53 characters (e.g., $2b$10$...)',
+      { timeout: 3000 },
+    )
   })
 
   test('click CopyButton for hash → clipboard contains hash value', async ({ page, context }) => {
