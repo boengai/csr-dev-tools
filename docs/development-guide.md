@@ -218,7 +218,7 @@ Never use `sm:`, `md:`, `lg:`, `xl:`, or `2xl:` — they have no effect.
 ## Git Conventions
 
 - **Commit prefixes**: Emoji-based (e.g., `📝:` docs, `🤖:` automation, `🐛:` bugfix)
-- **Branch strategy**: Feature branches off `main`
+- **Branch strategy**: see [CONTRIBUTING.md](../CONTRIBUTING.md#branches)
 
 ## Design System
 

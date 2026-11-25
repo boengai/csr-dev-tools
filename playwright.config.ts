@@ -19,7 +19,8 @@ export default defineConfig({
     },
   ],
   webServer: {
-    command: 'pnpm dev',
+    // CI has already built the WASM; `pnpm dev` would recompile it and time out.
+    command: process.env.CI ? 'pnpm exec vite --port 5173' : 'pnpm dev',
     url: 'http://localhost:5173',
     reuseExistingServer: !process.env.CI,
   },

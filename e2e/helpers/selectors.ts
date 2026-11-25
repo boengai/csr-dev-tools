@@ -51,7 +51,7 @@ export const codeInput = {
   fill: async (page: Page, name: string, text: string) => {
     const cm = page.getByTestId(`code-input-${name}`).locator('.cm-content')
     await cm.click()
-    await page.keyboard.press('Meta+A')
+    await page.keyboard.press('ControlOrMeta+A')
     await page.keyboard.insertText(text)
   },
 }
@@ -63,7 +63,7 @@ export const codeInputIn = {
   fill: async (page: Page, container: ReturnType<Page['locator']>, text: string) => {
     const cm = container.locator('.cm-content').first()
     await cm.click()
-    await page.keyboard.press('Meta+A')
+    await page.keyboard.press('ControlOrMeta+A')
     await page.keyboard.insertText(text)
   },
 }

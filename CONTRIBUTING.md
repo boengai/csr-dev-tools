@@ -27,6 +27,21 @@ pnpm dev
 
 Open [http://localhost:5173](http://localhost:5173) in your browser.
 
+## Branches
+
+| Branch | Holds | Takes |
+|--------|-------|-------|
+| `main` | The production React site | Bug fixes only, until the Dioxus cutover. A check fails any pull request that changes the set of tool keys. |
+| `develop` | The Dioxus migration ([issue 5](https://github.com/boengai/csr-dev-tools/issues/5)) | Migration work. It merges into `main` once, at cutover. The React app stays buildable here until the go/no-go decision. |
+| `spike/dioxus` | The disposable spike, cut from `develop` | Never merges. Only what go/no-go keeps is brought over. |
+
+- Both `main` and `develop` change through pull requests, and the `ci` check must pass. `main` also requires `tool-freeze`.
+- Squash-merge your own work.
+- **A fix reaches `develop` after it lands on `main`**: open a `main` → `develop` pull request and use a **merge commit**, not a squash or a cherry-pick. If the tool is already ported, port the fix in the same pull request. For that, or to resolve conflicts, branch from `develop`, merge `main` into it, and open the pull request from there.
+- At cutover, remove `tool-freeze` from the `main` ruleset and delete `tool-freeze.yml` and its script.
+
+Pushes to `develop` and `spike/dioxus` deploy to <https://develop.csr-dev-tools.pages.dev> and <https://spike-dioxus.csr-dev-tools.pages.dev>. Neither is indexed. Production deploys are started by hand from `main`.
+
 ## Adding a New Tool
 
 > **Start from a layout shell.** Every tool declares a required `layout` (`transformer`, `codec`, `comparator`, `generator`, `file-processor`, or `custom` with an ADR) in `src/constants/tool-routes.ts`, and is built from that layout's shell. Read [docs/ux/README.md](docs/ux/README.md) and ADR-0027 first; `CLAUDE.md` → "Adding a new tool" has the current registration steps. The hand-built example below predates the shells and the `tool-routes.ts` split.
@@ -446,21 +461,25 @@ Copy this checklist into your PR description:
 - [ ] E2E test written (`e2e/{tool-key}.spec.ts`)
 - [ ] `pnpm lint` passes
 - [ ] `pnpm format:check` passes
+- [ ] `pnpm typecheck` passes
 - [ ] `pnpm test` passes
 - [ ] `pnpm build` succeeds
 ```
 
 ## CI/CD Quality Gates
 
-Every pull request runs through these automated checks:
+Every pull request runs through these automated checks. CI also runs on each push to `main` and `develop`:
 
 **CI Pipeline** (`.github/workflows/ci.yml`):
 
 1. **Lint** — `pnpm lint` (oxlint)
 2. **Format Check** — `pnpm format:check` (oxfmt)
-3. **Unit Tests** — `pnpm test` (Vitest)
-4. **Build** — `pnpm build` (TypeScript + Vite)
-5. **E2E Tests** — `pnpm test:e2e` (Playwright, Chromium)
+3. **Typecheck** — `pnpm typecheck`
+4. **Unit Tests** — `pnpm test` (Vitest)
+5. **Build** — `pnpm build` (TypeScript + Vite)
+6. **E2E Tests** — `pnpm test:e2e` (Playwright, Chromium)
+
+**Tool Freeze** (`.github/workflows/tool-freeze.yml`), on pull requests into `main` only: the set of tool keys must not change.
 
 **Lighthouse CI** (`.github/workflows/lighthouse.yml`):
 
@@ -468,4 +487,4 @@ Every pull request runs through these automated checks:
 - Accessibility >= 90
 - SEO >= 90
 
-All checks must pass before a PR can be merged.
+The CI pipeline, and Tool Freeze for `main`, must pass before a PR can be merged. Lighthouse is not required yet.

@@ -100,7 +100,7 @@ test.describe('String Escape/Unescape', () => {
     await dialog.getByRole('combobox', { name: 'Escape format' }).click()
     await page.getByRole('option', { name: 'URL' }).click()
     await dialog.locator('.cm-content').first().click()
-    await page.keyboard.press('Meta+A')
+    await page.keyboard.press('ControlOrMeta+A')
     await page.keyboard.insertText('%E0%A4%A')
 
     await expect(dialog.locator('[data-slot="tool-status"]').getByRole('alert')).toHaveText(

@@ -2,7 +2,6 @@ name: Deploy to Cloudflare Pages Production
 
 on:
   workflow_dispatch:
-    branches: [main]
 
 permissions:
   contents: read
@@ -10,6 +9,8 @@ permissions:
 
 jobs:
   deploy:
+    # workflow_dispatch has no branch filter; any branch can start this.
+    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     name: Deploy
     steps:
