@@ -113,7 +113,7 @@ Largest difference between the three runs' medians, per metric, over all pages.
 
 `pnpm build` writes 60,790,536 bytes in 416 files. 26,861,777 of those are `ort-wasm-simd-threaded.asyncify`, which the deploy deletes. The deployed site is 33,928,759 bytes in 415 files, of which the PDF crate's WebAssembly is 21,858,158.
 
-Seconds on the machine above, three builds each. Compare a Dioxus build with the first row, which had Low Power Mode off.
+Seconds on the machine above, three builds each. Compare a Dioxus build with the first row, which had Low Power Mode off. Other programs were still using some CPU: a wait for an idle machine timed out before that row was taken.
 
 | Conditions | Cold total | of which `wasm:build` | Warm total | of which `wasm:build` |
 |------------|-----------:|----------------------:|-----------:|----------------------:|
