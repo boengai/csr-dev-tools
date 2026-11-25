@@ -12,6 +12,8 @@ const builds = new Map<string, Array<Results>>()
 for (const path of process.argv.slice(2)) {
   const results: Results = JSON.parse(readFileSync(path, 'utf-8'))
   const { site } = results.environment
+  const other = builds.get(site)?.find((r) => r.dist.sha256 !== results.dist.sha256)
+  if (other) throw new Error(`"${site}" names two different builds; give each its own --site`)
   builds.set(site, [...(builds.get(site) ?? []), results])
 }
 const pageKeys = [...new Set([...builds.values()].flat().flatMap((r) => r.environment.pages))]
@@ -49,7 +51,18 @@ const pooled = (spreads: Array<Spread | undefined>, format: (n: number) => strin
 for (const formFactor of ['mobile', 'desktop'] as const) {
   table(
     `Lighthouse, ${formFactor}`,
-    ['Performance', 'Accessibility', 'Best practices', 'SEO', 'FCP ms', 'LCP ms', 'TBT ms', 'CLS', 'Speed Index ms'],
+    [
+      'Performance',
+      'Accessibility',
+      'Best practices',
+      'SEO',
+      'FCP ms',
+      'LCP ms',
+      'TBT ms',
+      'CLS',
+      'Speed Index ms',
+      'CPU index',
+    ],
     (runs, page) => {
       const results = runs.map((r) => r.lighthouse[page]?.[formFactor]).filter((r) => r !== undefined)
       if (results.length === 0) return undefined
@@ -68,6 +81,10 @@ for (const formFactor of ['mobile', 'desktop'] as const) {
         ...['fcp', 'lcp', 'tbt'].map((name) => metric(name)),
         metric('cls', thousandths),
         metric('si'),
+        pooled(
+          results.map((r) => r.benchmarkIndex),
+          whole,
+        ),
       ]
     },
   )
@@ -85,53 +102,37 @@ table('Time to usable, ms', ['Ready', 'First result', 'Ready, repeat load'], (ru
 })
 
 for (const [phase, title] of [
-  ['load', 'First load, kB compressed / uncompressed'],
-  ['afterResult', 'First load and first result, kB compressed / uncompressed'],
+  ['load', 'First load, kB compressed / uncompressed (requests)'],
+  ['afterResult', 'First load and first result, kB compressed / uncompressed (requests)'],
 ] as const) {
-  table(
-    title,
-    [
-      'HTML',
-      'CSS',
-      'JS',
-      'WASM',
-      'Image and other',
-      'Own total',
-      'Own requests',
-      'Third party',
-      'Third-party requests',
-    ],
-    (runs, page) => {
-      // Bytes are measured once per run and do not depend on timing.
-      const summary = runs.find((r) => r.bytes[page])?.bytes[page]?.[phase]
-      if (!summary) return undefined
-      const { byKind, firstParty, thirdParty } = summary
-      const sizes = (...counts: Array<{ decoded: number; transferred: number }>) =>
-        `${kb(counts.reduce((n, c) => n + c.transferred, 0))} / ${kb(counts.reduce((n, c) => n + c.decoded, 0))}`
-      return [
-        sizes(byKind.html),
-        sizes(byKind.css),
-        sizes(byKind.js),
-        sizes(byKind.wasm),
-        sizes(byKind.image, byKind.font, byKind.other),
-        sizes(firstParty),
-        firstParty.requests,
-        sizes(thirdParty),
-        thirdParty.requests,
-      ]
-    },
-  )
+  table(title, ['HTML', 'CSS', 'JS', 'WASM', 'Image and other', 'Own total', 'Third party'], (runs, page) => {
+    // Bytes are measured once per run and do not depend on timing.
+    const summary = runs.find((r) => r.bytes[page])?.bytes[page]?.[phase]
+    if (!summary) return undefined
+    const { byKind, firstParty, thirdParty } = summary
+    const sizes = (...counts: Array<{ decoded: number; requests: number; transferred: number }>) => {
+      const total = (key: 'decoded' | 'requests' | 'transferred') => counts.reduce((n, c) => n + c[key], 0)
+      return `${kb(total('transferred'))} / ${kb(total('decoded'))} (${total('requests')})`
+    }
+    return [
+      sizes(byKind.html),
+      sizes(byKind.css),
+      sizes(byKind.js),
+      sizes(byKind.wasm),
+      sizes(byKind.image, byKind.font, byKind.other),
+      sizes(firstParty),
+      sizes(thirdParty),
+    ]
+  })
 }
 
 for (const [site, runs] of builds) {
-  const dists = new Map(runs.map(({ dist }) => [dist.sha256, dist]))
-  for (const dist of dists.values()) {
-    process.stdout.write(`### Build output: ${site}\n\n`)
-    process.stdout.write(`${whole(dist.bytes)} bytes in ${dist.files} files, sha256 ${dist.sha256}\n\n`)
-    const sizes = Object.entries(dist.byExtension).sort(([, a], [, b]) => b.bytes - a.bytes)
-    process.stdout.write(sizes.map(([ext, e]) => `- ${ext}: ${whole(e.bytes)} bytes in ${e.files} files`).join('\n'))
-    process.stdout.write('\n\n')
-  }
+  const dist = runs[0]?.dist
+  if (!dist) continue
+  process.stdout.write(`### Build output: ${site}\n\n`)
+  process.stdout.write(`${whole(dist.bytes)} bytes in ${dist.files} files, sha256 ${dist.sha256}\n\n`)
+  const sizes = Object.entries(dist.byExtension).sort(([, a], [, b]) => b.bytes - a.bytes)
+  process.stdout.write(sizes.map(([ext, e]) => `- ${ext}: ${whole(e.bytes)} bytes in ${e.files} files`).join('\n'))
   const failures = runs.flatMap((r) => r.failures)
-  process.stdout.write(`Failed measurements: ${failures.length === 0 ? 'none' : failures.join('; ')}\n\n`)
+  process.stdout.write(`\n\nFailed measurements: ${failures.length === 0 ? 'none' : failures.join('; ')}\n\n`)
 }

@@ -63,9 +63,9 @@ export const measureLighthouse = async (
         `--only-categories=${CATEGORIES.join(',')}`,
         `--chrome-flags=--headless=new ${chromeFlag}`,
         ...(formFactor === 'desktop' ? ['--preset=desktop'] : []),
-        // Lighthouse's default simulates the throttle from an unthrottled load, and its estimate of first paint leaves
-        // out code a script fetches: 1.5 MB more wasm before first paint moved the simulated FCP from 1,620 to 1,625 ms
-        // and the real one from 2.9 to 11.4 s.
+        // Lighthouse's default simulates the throttle from an unthrottled load, and its FCP leaves out the scripts and
+        // WebAssembly that paint these pages: 1.5 MB more before first paint moved the simulated FCP from 1,620 to
+        // 1,625 ms and the real one from 2.9 to 11.4 s.
         '--throttling-method=devtools',
         `--throttling.cpuSlowdownMultiplier=${throttle.cpuSlowdown}`,
         `--throttling.downloadThroughputKbps=${throttle.downloadKbps}`,

@@ -6,23 +6,25 @@
 
 ```bash
 pnpm install --frozen-lockfile
-pnpm exec playwright install chromium
+PLAYWRIGHT_SKIP_BROWSER_GC=1 pnpm exec playwright install chromium   # without the variable it can delete other projects' browsers
 node e2e/perf/measure.ts <dist> <out.json> --site "<name and commit of the build>"
 node e2e/perf/report.ts <out.json> [<other.json>...]   # Markdown tables, builds side by side
 ```
 
 | Option | Default | Meaning |
 |--------|---------|---------|
+| `--site` | required | Names the build in the report. Runs with the same label are pooled, so give each build, and each session you do not want pooled, its own. |
 | `--runs` | 5 | Rounds. Each round measures every page once, so drift on the machine spreads over all pages. |
-| `--pages` | all seven | Comma-separated keys. The spike has three: `--pages hash-generator,escaped-json-stringifier,image-converter` |
+| `--pages` | all | Comma-separated keys. The spike has three: `--pages hash-generator,escaped-json-stringifier,image-converter` |
 
 A failed measurement is recorded in `failures`, the run continues, and the exit code is 1. Results are written after every step.
 
 Rules for numbers that will be compared:
 
-- **Measure both builds in one session on one machine**, React first. Timings depend on the CPU, the Chromium version and the live Google Fonts and gstatic responses. Do not compare a new run with a table from another day.
-- **Serve what is deployed.** The deploy workflows delete `dist/assets/ort-wasm-*.wasm`; delete it before measuring. Keep `dist/_headers`: without it the repeat load is slower.
-- **Keep the machine awake and quiet**: AC power, lid open, `caffeinate -dims` on macOS. A run that slept in the middle must be discarded.
+- **Measure both builds in one session on one machine.** Timings depend on the CPU, the Chromium version and the live Google Fonts and gstatic responses. Do not compare a new run with a table from another day. Alternate the builds (React, other, React, other) so drift falls on both.
+- **Name the React commit.** The recorded baseline is `c3983f81`, built as described in [react-baseline.md](react-baseline.md). `main` still takes fixes, so later commits differ. The `dist` hash in the report identifies a build, but only repeats on the same paths and toolchain, because the WebAssembly files contain absolute paths.
+- **Serve what is deployed.** The deploy workflows delete `dist/assets/ort-wasm-*.wasm`; delete it before measuring. Keep `dist/_headers`: without it the repeat load is slower. React's rule caches `/assets/*` only. A build that puts hashed files elsewhere, such as `/wasm/`, needs a rule for that path, or its repeat load is about 1.1 s slower. Never give one to unhashed names.
+- **Keep the machine awake, quiet and on AC power**, lid open, with `caffeinate -dims` on macOS. Discard a run that slept or changed power source. Check that the CPU index in the report (Lighthouse's `benchmarkIndex`) is the same for both builds: on the baseline machine it is about 3,300 on AC and 2,350 on battery, where macOS had Low Power Mode on.
 - `playwright` and `lighthouse` versions are pinned. `lighthouse` runs through `pnpm dlx`, so its own dependencies can drift. The one that matters, `speedline-core`, affects Speed Index and through it the performance score.
 
 ## What is measured
@@ -31,7 +33,7 @@ The site is served by `pages-server.ts`, which copies Cloudflare Pages: HTTP/2, 
 
 Tool pages are requested with the trailing slash (`/tools/<key>/`). Without it Pages answers with a redirect, which adds a round trip for both builds.
 
-**Lighthouse.** Mobile and desktop, with the throttle applied in the browser (`--throttling-method=devtools`), not simulated. Simulated throttling, Lighthouse's default and what `lighthouserc.cjs` uses, cannot judge this migration. Its first paint leaves out code fetched by a script, so 1.5 MB more WebAssembly before first paint moved the simulated FCP from 1,620 to 1,625 ms while the real one went from 2.9 to 11.4 s.
+**Lighthouse.** Mobile and desktop, with the throttle applied in the browser (`--throttling-method=devtools`), not simulated. Simulated throttling, Lighthouse's default and what `lighthouserc.cjs` uses, cannot be trusted for FCP and Speed Index here: it leaves out the scripts and WebAssembly that paint these pages. 1.5 MB more WebAssembly before first paint moved the simulated FCP from 1,620 to 1,625 ms while the real one went from 2.9 to 11.4 s, and the simulated score only from 77 to 74. Simulated LCP does react (6.5 to 14.0 s).
 
 | Profile | Latency per request | Download | Upload | CPU | Device |
 |---------|--------------------:|---------:|-------:|----:|--------|
@@ -40,7 +42,7 @@ Tool pages are requested with the trailing slash (`/tools/<key>/`). Without it P
 
 Both are Lighthouse's own profiles in the form DevTools applies.
 
-**Bytes.** A cold load in a fresh browser context, unthrottled, until the network has been quiet for 2 s. The second table adds everything loaded up to the first result, which is where lazily loaded WebAssembly shows up. Compressed bytes are response bodies, without headers. This site's own requests are split by type; third-party requests (Google Fonts, the gstatic emoji image) are a separate total.
+**Bytes.** A cold load in a fresh browser context, unthrottled, until the network has been quiet for 2 s. The second table adds everything loaded up to the first result, which is where lazily loaded WebAssembly shows up. Compressed bytes are response bodies, without headers. This site's own requests are split by type; third-party requests (Google Fonts, the gstatic emoji image) are a separate total. Every request, with its uncompressed size, is listed under `requests` in the results. A router that rewrites the URL while the page loads can make Chrome fetch the icon twice, so for such a build allow one request and the icon's size (5.2 kB).
 
 **Time to usable.** Mobile profile, fresh context, milliseconds since navigation start.
 
@@ -69,7 +71,7 @@ A build that ships body markup or a placeholder before its code runs could satis
 | JSON Diff | `.cm-content`, two | type in both | `[aria-label="Diff output"]` * |
 | Number Base Converter | `input[name="decimal"]` | type in it | `input[name="hex"]` |
 
-Adding a page means adding an entry to `PERF_PAGES`. A page that starts a worker is listed under `workers` in the results, because the worker's own requests are not counted.
+Adding a page means adding an entry to `PERF_PAGES` and a row to this table. A page that starts a worker is listed under `workers` in the results, because the worker's own requests are not counted.
 
 ## Build time
 

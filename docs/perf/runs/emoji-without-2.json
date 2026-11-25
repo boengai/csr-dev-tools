@@ -1,0 +1,2641 @@
+{
+  "bytes": {
+    "hash-generator": {
+      "afterResult": {
+        "byKind": {
+          "html": {
+            "decoded": 4793,
+            "requests": 1,
+            "transferred": 1494
+          },
+          "css": {
+            "decoded": 69593,
+            "requests": 1,
+            "transferred": 12180
+          },
+          "js": {
+            "decoded": 1103186,
+            "requests": 67,
+            "transferred": 377902
+          },
+          "wasm": {
+            "decoded": 18579,
+            "requests": 1,
+            "transferred": 8747
+          },
+          "font": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "image": {
+            "decoded": 15086,
+            "requests": 1,
+            "transferred": 5175
+          },
+          "other": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          }
+        },
+        "firstParty": {
+          "decoded": 1211237,
+          "requests": 71,
+          "transferred": 405498
+        },
+        "thirdParty": {
+          "decoded": 24154,
+          "requests": 3,
+          "transferred": 20098
+        }
+      },
+      "load": {
+        "byKind": {
+          "html": {
+            "decoded": 4793,
+            "requests": 1,
+            "transferred": 1494
+          },
+          "css": {
+            "decoded": 69593,
+            "requests": 1,
+            "transferred": 12180
+          },
+          "js": {
+            "decoded": 1098211,
+            "requests": 64,
+            "transferred": 375755
+          },
+          "wasm": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "font": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "image": {
+            "decoded": 15086,
+            "requests": 1,
+            "transferred": 5175
+          },
+          "other": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          }
+        },
+        "firstParty": {
+          "decoded": 1187683,
+          "requests": 67,
+          "transferred": 394604
+        },
+        "thirdParty": {
+          "decoded": 24154,
+          "requests": 3,
+          "transferred": 20098
+        }
+      },
+      "requests": [
+        {
+          "decoded": 4793,
+          "kind": "html",
+          "thirdParty": false,
+          "transferred": 1494,
+          "url": "/tools/hash-generator/"
+        },
+        {
+          "decoded": 233095,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 74114,
+          "url": "/assets/index-DfQRew4H.js"
+        },
+        {
+          "decoded": 69593,
+          "kind": "css",
+          "thirdParty": false,
+          "transferred": 12180,
+          "url": "/assets/index-BuxX8yBJ.css"
+        },
+        {
+          "decoded": 1291,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 696,
+          "url": "/assets/rolldown-runtime-C0FnF6B9.js"
+        },
+        {
+          "decoded": 7876,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 3048,
+          "url": "/assets/react-DiVRNtpo.js"
+        },
+        {
+          "decoded": 184,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 138,
+          "url": "/assets/useRouter-HDKcHJs9.js"
+        },
+        {
+          "decoded": 1659,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 734,
+          "url": "/assets/with-selector-_6SoeCjN.js"
+        },
+        {
+          "decoded": 55416,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 20339,
+          "url": "/assets/route-21gt-w8M.js"
+        },
+        {
+          "decoded": 5138,
+          "kind": "css",
+          "thirdParty": true,
+          "transferred": 1082,
+          "url": "https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        },
+        {
+          "decoded": 115,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 103,
+          "url": "/assets/is-html-element-CtocdrOo.js"
+        },
+        {
+          "decoded": 46148,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 18023,
+          "url": "/assets/App-CKroWyUQ.js"
+        },
+        {
+          "decoded": 31783,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 11943,
+          "url": "/assets/NotoEmoji-IrroZWGI.js"
+        },
+        {
+          "decoded": 15086,
+          "kind": "image",
+          "thirdParty": false,
+          "transferred": 5175,
+          "url": "/favicon/favicon.ico"
+        },
+        {
+          "decoded": 363,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 252,
+          "url": "/assets/ArrowIcon-CqlnC8xM.js"
+        },
+        {
+          "decoded": 684,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 399,
+          "url": "/assets/react-CSQywkwT.js"
+        },
+        {
+          "decoded": 1916,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 952,
+          "url": "/assets/middleware-ZXcm-2wU.js"
+        },
+        {
+          "decoded": 480,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 315,
+          "url": "/assets/useKeyboardShortcut-CClQkO9q.js"
+        },
+        {
+          "decoded": 204,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 153,
+          "url": "/assets/useLatestRef-D1pXriMT.js"
+        },
+        {
+          "decoded": 221,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 148,
+          "url": "/assets/createToggleStore-B7tLqtDw.js"
+        },
+        {
+          "decoded": 1968,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 997,
+          "url": "/assets/tools-DI-V0vzP.js"
+        },
+        {
+          "decoded": 1390,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 670,
+          "url": "/assets/Card-BAEZ-4uY.js"
+        },
+        {
+          "decoded": 375,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 231,
+          "url": "/assets/ToolPresentation-DFZmu0eH.js"
+        },
+        {
+          "decoded": 7227,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 3135,
+          "url": "/assets/react-BE3XCuOA.js"
+        },
+        {
+          "decoded": 59014,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 14006,
+          "url": "/assets/tool-registry-BAvMU9O8.js"
+        },
+        {
+          "decoded": 3356,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1422,
+          "url": "/assets/Sidebar-gn7e5TmX.js"
+        },
+        {
+          "decoded": 62455,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 20505,
+          "url": "/assets/dist-BErzPkWe.js"
+        },
+        {
+          "decoded": 361,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 248,
+          "url": "/assets/XIcon-BuNW9o94.js"
+        },
+        {
+          "decoded": 440,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 267,
+          "url": "/assets/useMediaQuery-rSYC1rzd.js"
+        },
+        {
+          "decoded": 416,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 273,
+          "url": "/assets/useReturnFocus-vWdOY-2-.js"
+        },
+        {
+          "decoded": 892,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 439,
+          "url": "/assets/ToggleButton-BO1AZ5HY.js"
+        },
+        {
+          "decoded": 1817,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1023,
+          "url": "/assets/HashGenerator-DAZ_4YQV.js"
+        },
+        {
+          "decoded": 22869,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 8516,
+          "url": "/assets/dist-DjZ1Dw3r.js"
+        },
+        {
+          "decoded": 33666,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 13500,
+          "url": "/assets/TransformerShell-BhJGDyZ8.js"
+        },
+        {
+          "decoded": 2545,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1175,
+          "url": "/assets/CopyButton-iOBi52qO.js"
+        },
+        {
+          "decoded": 328,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 234,
+          "url": "/assets/CheckIcon-CKmzsevm.js"
+        },
+        {
+          "decoded": 372,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 246,
+          "url": "/assets/useToast-DklTbwvX.js"
+        },
+        {
+          "decoded": 428,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 277,
+          "url": "/assets/DownloadIcon-CDy5l0RE.js"
+        },
+        {
+          "decoded": 373,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 211,
+          "url": "/assets/useDownload-PmHr-V8Y.js"
+        },
+        {
+          "decoded": 395,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 225,
+          "url": "/assets/download-CcBPUl2L.js"
+        },
+        {
+          "decoded": 1248,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 601,
+          "url": "/assets/useToolFields-BvcHMKRi.js"
+        },
+        {
+          "decoded": 326,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 212,
+          "url": "/assets/useMountOnce-D4M3pe11.js"
+        },
+        {
+          "decoded": 190,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 127,
+          "url": "/assets/jsonStorage-CVQ5ByvB.js"
+        },
+        {
+          "decoded": 810,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 403,
+          "url": "/assets/useDebouncedJsonWrite-DDdlXkzf.js"
+        },
+        {
+          "decoded": 894,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 486,
+          "url": "/assets/ToolStatus-CqRsoA_8.js"
+        },
+        {
+          "decoded": 1780,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 782,
+          "url": "/assets/useToolComputation-DbmMzv_G.js"
+        },
+        {
+          "decoded": 2136,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 903,
+          "url": "/assets/ToolDialogShell-DXHqiV1J.js"
+        },
+        {
+          "decoded": 1273,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 658,
+          "url": "/assets/ToolDialogFrame-DiL4SYoD.js"
+        },
+        {
+          "decoded": 2991,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1358,
+          "url": "/assets/Dialog-C43st9sI.js"
+        },
+        {
+          "decoded": 2198,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 974,
+          "url": "/assets/FieldForm-BXJZFj5H.js"
+        },
+        {
+          "decoded": 782,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 457,
+          "url": "/assets/dist-C3qLRqr0.js"
+        },
+        {
+          "decoded": 556,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 372,
+          "url": "/assets/dist-0Hu8DWVt.js"
+        },
+        {
+          "decoded": 528,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 295,
+          "url": "/assets/dist-DLdrJTO9.js"
+        },
+        {
+          "decoded": 1215,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 678,
+          "url": "/assets/TextInput-WwirgujX.js"
+        },
+        {
+          "decoded": 7176,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 2687,
+          "url": "/assets/dist-MUETFCu8.js"
+        },
+        {
+          "decoded": 4503,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1964,
+          "url": "/assets/dist-D7nyA1WY.js"
+        },
+        {
+          "decoded": 1057,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 609,
+          "url": "/assets/UploadInput-DJOYJ-VR.js"
+        },
+        {
+          "decoded": 4155,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1760,
+          "url": "/assets/SwitchInput-13kqlolC.js"
+        },
+        {
+          "decoded": 45280,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 16739,
+          "url": "/assets/SelectInput-BMVK4DOn.js"
+        },
+        {
+          "decoded": 6879,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 2660,
+          "url": "/assets/RadioGroupInput-BItUWKWJ.js"
+        },
+        {
+          "decoded": 11144,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 4393,
+          "url": "/assets/RangeInput-DPjKgK5V.js"
+        },
+        {
+          "decoded": 478,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 299,
+          "url": "/assets/SplitPanel-BEDWcSYN.js"
+        },
+        {
+          "decoded": 561,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 324,
+          "url": "/assets/Pane-m5zPO-y3.js"
+        },
+        {
+          "decoded": 578,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 360,
+          "url": "/assets/CodeOutput-CHElEoSY.js"
+        },
+        {
+          "decoded": 944,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 474,
+          "url": "/assets/OutputImage-CyXlmuqK.js"
+        },
+        {
+          "decoded": 4291,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1750,
+          "url": "/assets/CommandPalette-CmjbIT-f.js"
+        },
+        {
+          "decoded": 774,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 458,
+          "url": "/assets/useKeyboardListNav-BAEaXr1w.js"
+        },
+        {
+          "decoded": 11879,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 4491,
+          "url": "/assets/ToastProvider-Drxy02Yz.js"
+        },
+        {
+          "decoded": 399463,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 129524,
+          "url": "/assets/CodeInput-CEFgnqeD.js"
+        },
+        {
+          "decoded": 9464,
+          "kind": "font",
+          "thirdParty": true,
+          "transferred": 9464,
+          "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dPIFZifjKcF5UAWdDRYEF8RXi4EwQ.woff2"
+        },
+        {
+          "decoded": 9552,
+          "kind": "font",
+          "thirdParty": true,
+          "transferred": 9552,
+          "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dMIFZifjKcF5UAWdDRaPpZUFWaHi6WZ3Q.woff2"
+        },
+        {
+          "decoded": 107,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 88,
+          "url": "/assets/hash-CQ5WaYfo.js"
+        },
+        {
+          "decoded": 1925,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 774,
+          "url": "/assets/init-C8kNi64G.js"
+        },
+        {
+          "decoded": 2943,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1285,
+          "url": "/assets/hash-Crea-RQ8.js"
+        },
+        {
+          "decoded": 18579,
+          "kind": "wasm",
+          "thirdParty": false,
+          "transferred": 8747,
+          "url": "/assets/hash_bg-BtNfCEQf.wasm"
+        }
+      ],
+      "workers": []
+    },
+    "escaped-json-stringifier": {
+      "afterResult": {
+        "byKind": {
+          "html": {
+            "decoded": 4702,
+            "requests": 1,
+            "transferred": 1457
+          },
+          "css": {
+            "decoded": 69593,
+            "requests": 1,
+            "transferred": 12180
+          },
+          "js": {
+            "decoded": 1075130,
+            "requests": 66,
+            "transferred": 366579
+          },
+          "wasm": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "font": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "image": {
+            "decoded": 15086,
+            "requests": 1,
+            "transferred": 5175
+          },
+          "other": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          }
+        },
+        "firstParty": {
+          "decoded": 1164511,
+          "requests": 69,
+          "transferred": 385391
+        },
+        "thirdParty": {
+          "decoded": 24154,
+          "requests": 3,
+          "transferred": 20098
+        }
+      },
+      "load": {
+        "byKind": {
+          "html": {
+            "decoded": 4702,
+            "requests": 1,
+            "transferred": 1457
+          },
+          "css": {
+            "decoded": 69593,
+            "requests": 1,
+            "transferred": 12180
+          },
+          "js": {
+            "decoded": 1075130,
+            "requests": 66,
+            "transferred": 366579
+          },
+          "wasm": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "font": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "image": {
+            "decoded": 15086,
+            "requests": 1,
+            "transferred": 5175
+          },
+          "other": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          }
+        },
+        "firstParty": {
+          "decoded": 1164511,
+          "requests": 69,
+          "transferred": 385391
+        },
+        "thirdParty": {
+          "decoded": 24154,
+          "requests": 3,
+          "transferred": 20098
+        }
+      },
+      "requests": [
+        {
+          "decoded": 4702,
+          "kind": "html",
+          "thirdParty": false,
+          "transferred": 1457,
+          "url": "/tools/escaped-json-stringifier/"
+        },
+        {
+          "decoded": 69593,
+          "kind": "css",
+          "thirdParty": false,
+          "transferred": 12180,
+          "url": "/assets/index-BuxX8yBJ.css"
+        },
+        {
+          "decoded": 1291,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 696,
+          "url": "/assets/rolldown-runtime-C0FnF6B9.js"
+        },
+        {
+          "decoded": 7876,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 3048,
+          "url": "/assets/react-DiVRNtpo.js"
+        },
+        {
+          "decoded": 184,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 138,
+          "url": "/assets/useRouter-HDKcHJs9.js"
+        },
+        {
+          "decoded": 1659,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 734,
+          "url": "/assets/with-selector-_6SoeCjN.js"
+        },
+        {
+          "decoded": 55416,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 20339,
+          "url": "/assets/route-21gt-w8M.js"
+        },
+        {
+          "decoded": 233095,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 74114,
+          "url": "/assets/index-DfQRew4H.js"
+        },
+        {
+          "decoded": 5138,
+          "kind": "css",
+          "thirdParty": true,
+          "transferred": 1082,
+          "url": "https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        },
+        {
+          "decoded": 46148,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 18023,
+          "url": "/assets/App-CKroWyUQ.js"
+        },
+        {
+          "decoded": 684,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 399,
+          "url": "/assets/react-CSQywkwT.js"
+        },
+        {
+          "decoded": 115,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 103,
+          "url": "/assets/is-html-element-CtocdrOo.js"
+        },
+        {
+          "decoded": 480,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 315,
+          "url": "/assets/useKeyboardShortcut-CClQkO9q.js"
+        },
+        {
+          "decoded": 363,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 252,
+          "url": "/assets/ArrowIcon-CqlnC8xM.js"
+        },
+        {
+          "decoded": 1916,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 952,
+          "url": "/assets/middleware-ZXcm-2wU.js"
+        },
+        {
+          "decoded": 31783,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 11943,
+          "url": "/assets/NotoEmoji-IrroZWGI.js"
+        },
+        {
+          "decoded": 204,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 153,
+          "url": "/assets/useLatestRef-D1pXriMT.js"
+        },
+        {
+          "decoded": 221,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 148,
+          "url": "/assets/createToggleStore-B7tLqtDw.js"
+        },
+        {
+          "decoded": 1968,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 997,
+          "url": "/assets/tools-DI-V0vzP.js"
+        },
+        {
+          "decoded": 1390,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 670,
+          "url": "/assets/Card-BAEZ-4uY.js"
+        },
+        {
+          "decoded": 375,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 231,
+          "url": "/assets/ToolPresentation-DFZmu0eH.js"
+        },
+        {
+          "decoded": 7227,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 3135,
+          "url": "/assets/react-BE3XCuOA.js"
+        },
+        {
+          "decoded": 59014,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 14006,
+          "url": "/assets/tool-registry-BAvMU9O8.js"
+        },
+        {
+          "decoded": 15086,
+          "kind": "image",
+          "thirdParty": false,
+          "transferred": 5175,
+          "url": "/favicon/favicon.ico"
+        },
+        {
+          "decoded": 3356,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1422,
+          "url": "/assets/Sidebar-gn7e5TmX.js"
+        },
+        {
+          "decoded": 361,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 248,
+          "url": "/assets/XIcon-BuNW9o94.js"
+        },
+        {
+          "decoded": 440,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 267,
+          "url": "/assets/useMediaQuery-rSYC1rzd.js"
+        },
+        {
+          "decoded": 416,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 273,
+          "url": "/assets/useReturnFocus-vWdOY-2-.js"
+        },
+        {
+          "decoded": 22869,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 8516,
+          "url": "/assets/dist-DjZ1Dw3r.js"
+        },
+        {
+          "decoded": 62455,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 20505,
+          "url": "/assets/dist-BErzPkWe.js"
+        },
+        {
+          "decoded": 1837,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 911,
+          "url": "/assets/EscapedJsonStringifier-C7FEAPhS.js"
+        },
+        {
+          "decoded": 4681,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 2011,
+          "url": "/assets/CheckboxInput-PnF5nPxw.js"
+        },
+        {
+          "decoded": 782,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 457,
+          "url": "/assets/dist-C3qLRqr0.js"
+        },
+        {
+          "decoded": 2899,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1442,
+          "url": "/assets/CodecShell-BWm3gI3M.js"
+        },
+        {
+          "decoded": 2545,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1175,
+          "url": "/assets/CopyButton-iOBi52qO.js"
+        },
+        {
+          "decoded": 328,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 234,
+          "url": "/assets/CheckIcon-CKmzsevm.js"
+        },
+        {
+          "decoded": 372,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 246,
+          "url": "/assets/useToast-DklTbwvX.js"
+        },
+        {
+          "decoded": 190,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 127,
+          "url": "/assets/jsonStorage-CVQ5ByvB.js"
+        },
+        {
+          "decoded": 313,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 224,
+          "url": "/assets/useInputLocalStorage-D2v9Czl8.js"
+        },
+        {
+          "decoded": 586,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 337,
+          "url": "/assets/parse-error-narrators-CxIM5CIm.js"
+        },
+        {
+          "decoded": 1925,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 774,
+          "url": "/assets/init-C8kNi64G.js"
+        },
+        {
+          "decoded": 1782,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 588,
+          "url": "/assets/parsers-B0EcV4v6.js"
+        },
+        {
+          "decoded": 519,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 247,
+          "url": "/assets/json-tools-DJZAo7P-.js"
+        },
+        {
+          "decoded": 1248,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 601,
+          "url": "/assets/useToolFields-BvcHMKRi.js"
+        },
+        {
+          "decoded": 1780,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 782,
+          "url": "/assets/useToolComputation-DbmMzv_G.js"
+        },
+        {
+          "decoded": 810,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 403,
+          "url": "/assets/useDebouncedJsonWrite-DDdlXkzf.js"
+        },
+        {
+          "decoded": 894,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 486,
+          "url": "/assets/ToolStatus-CqRsoA_8.js"
+        },
+        {
+          "decoded": 326,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 212,
+          "url": "/assets/useMountOnce-D4M3pe11.js"
+        },
+        {
+          "decoded": 2136,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 903,
+          "url": "/assets/ToolDialogShell-DXHqiV1J.js"
+        },
+        {
+          "decoded": 892,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 439,
+          "url": "/assets/ToggleButton-BO1AZ5HY.js"
+        },
+        {
+          "decoded": 1273,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 658,
+          "url": "/assets/ToolDialogFrame-DiL4SYoD.js"
+        },
+        {
+          "decoded": 2991,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1358,
+          "url": "/assets/Dialog-C43st9sI.js"
+        },
+        {
+          "decoded": 2198,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 974,
+          "url": "/assets/FieldForm-BXJZFj5H.js"
+        },
+        {
+          "decoded": 556,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 372,
+          "url": "/assets/dist-0Hu8DWVt.js"
+        },
+        {
+          "decoded": 528,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 295,
+          "url": "/assets/dist-DLdrJTO9.js"
+        },
+        {
+          "decoded": 1215,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 678,
+          "url": "/assets/TextInput-WwirgujX.js"
+        },
+        {
+          "decoded": 7176,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 2687,
+          "url": "/assets/dist-MUETFCu8.js"
+        },
+        {
+          "decoded": 4503,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1964,
+          "url": "/assets/dist-D7nyA1WY.js"
+        },
+        {
+          "decoded": 1057,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 609,
+          "url": "/assets/UploadInput-DJOYJ-VR.js"
+        },
+        {
+          "decoded": 4155,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1760,
+          "url": "/assets/SwitchInput-13kqlolC.js"
+        },
+        {
+          "decoded": 6879,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 2660,
+          "url": "/assets/RadioGroupInput-BItUWKWJ.js"
+        },
+        {
+          "decoded": 561,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 324,
+          "url": "/assets/Pane-m5zPO-y3.js"
+        },
+        {
+          "decoded": 478,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 299,
+          "url": "/assets/SplitPanel-BEDWcSYN.js"
+        },
+        {
+          "decoded": 45280,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 16739,
+          "url": "/assets/SelectInput-BMVK4DOn.js"
+        },
+        {
+          "decoded": 578,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 360,
+          "url": "/assets/CodeOutput-CHElEoSY.js"
+        },
+        {
+          "decoded": 11144,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 4393,
+          "url": "/assets/RangeInput-DPjKgK5V.js"
+        },
+        {
+          "decoded": 774,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 458,
+          "url": "/assets/useKeyboardListNav-BAEaXr1w.js"
+        },
+        {
+          "decoded": 4291,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1750,
+          "url": "/assets/CommandPalette-CmjbIT-f.js"
+        },
+        {
+          "decoded": 11879,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 4491,
+          "url": "/assets/ToastProvider-Drxy02Yz.js"
+        },
+        {
+          "decoded": 399463,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 129524,
+          "url": "/assets/CodeInput-CEFgnqeD.js"
+        },
+        {
+          "decoded": 9464,
+          "kind": "font",
+          "thirdParty": true,
+          "transferred": 9464,
+          "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dPIFZifjKcF5UAWdDRYEF8RXi4EwQ.woff2"
+        },
+        {
+          "decoded": 9552,
+          "kind": "font",
+          "thirdParty": true,
+          "transferred": 9552,
+          "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dMIFZifjKcF5UAWdDRaPpZUFWaHi6WZ3Q.woff2"
+        }
+      ],
+      "workers": []
+    },
+    "image-converter": {
+      "afterResult": {
+        "byKind": {
+          "html": {
+            "decoded": 4798,
+            "requests": 1,
+            "transferred": 1467
+          },
+          "css": {
+            "decoded": 69593,
+            "requests": 1,
+            "transferred": 12180
+          },
+          "js": {
+            "decoded": 675266,
+            "requests": 59,
+            "transferred": 235502
+          },
+          "wasm": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "font": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "image": {
+            "decoded": 15086,
+            "requests": 1,
+            "transferred": 5175
+          },
+          "other": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          }
+        },
+        "firstParty": {
+          "decoded": 764743,
+          "requests": 62,
+          "transferred": 254324
+        },
+        "thirdParty": {
+          "decoded": 14602,
+          "requests": 2,
+          "transferred": 10546
+        }
+      },
+      "load": {
+        "byKind": {
+          "html": {
+            "decoded": 4798,
+            "requests": 1,
+            "transferred": 1467
+          },
+          "css": {
+            "decoded": 69593,
+            "requests": 1,
+            "transferred": 12180
+          },
+          "js": {
+            "decoded": 675266,
+            "requests": 59,
+            "transferred": 235502
+          },
+          "wasm": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "font": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "image": {
+            "decoded": 15086,
+            "requests": 1,
+            "transferred": 5175
+          },
+          "other": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          }
+        },
+        "firstParty": {
+          "decoded": 764743,
+          "requests": 62,
+          "transferred": 254324
+        },
+        "thirdParty": {
+          "decoded": 14602,
+          "requests": 2,
+          "transferred": 10546
+        }
+      },
+      "requests": [
+        {
+          "decoded": 4798,
+          "kind": "html",
+          "thirdParty": false,
+          "transferred": 1467,
+          "url": "/tools/image-converter/"
+        },
+        {
+          "decoded": 1291,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 696,
+          "url": "/assets/rolldown-runtime-C0FnF6B9.js"
+        },
+        {
+          "decoded": 184,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 138,
+          "url": "/assets/useRouter-HDKcHJs9.js"
+        },
+        {
+          "decoded": 7876,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 3048,
+          "url": "/assets/react-DiVRNtpo.js"
+        },
+        {
+          "decoded": 1659,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 734,
+          "url": "/assets/with-selector-_6SoeCjN.js"
+        },
+        {
+          "decoded": 69593,
+          "kind": "css",
+          "thirdParty": false,
+          "transferred": 12180,
+          "url": "/assets/index-BuxX8yBJ.css"
+        },
+        {
+          "decoded": 55416,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 20339,
+          "url": "/assets/route-21gt-w8M.js"
+        },
+        {
+          "decoded": 233095,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 74114,
+          "url": "/assets/index-DfQRew4H.js"
+        },
+        {
+          "decoded": 5138,
+          "kind": "css",
+          "thirdParty": true,
+          "transferred": 1082,
+          "url": "https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        },
+        {
+          "decoded": 115,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 103,
+          "url": "/assets/is-html-element-CtocdrOo.js"
+        },
+        {
+          "decoded": 31783,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 11943,
+          "url": "/assets/NotoEmoji-IrroZWGI.js"
+        },
+        {
+          "decoded": 46148,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 18023,
+          "url": "/assets/App-CKroWyUQ.js"
+        },
+        {
+          "decoded": 363,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 252,
+          "url": "/assets/ArrowIcon-CqlnC8xM.js"
+        },
+        {
+          "decoded": 480,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 315,
+          "url": "/assets/useKeyboardShortcut-CClQkO9q.js"
+        },
+        {
+          "decoded": 1916,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 952,
+          "url": "/assets/middleware-ZXcm-2wU.js"
+        },
+        {
+          "decoded": 684,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 399,
+          "url": "/assets/react-CSQywkwT.js"
+        },
+        {
+          "decoded": 204,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 153,
+          "url": "/assets/useLatestRef-D1pXriMT.js"
+        },
+        {
+          "decoded": 221,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 148,
+          "url": "/assets/createToggleStore-B7tLqtDw.js"
+        },
+        {
+          "decoded": 1968,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 997,
+          "url": "/assets/tools-DI-V0vzP.js"
+        },
+        {
+          "decoded": 1390,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 670,
+          "url": "/assets/Card-BAEZ-4uY.js"
+        },
+        {
+          "decoded": 375,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 231,
+          "url": "/assets/ToolPresentation-DFZmu0eH.js"
+        },
+        {
+          "decoded": 7227,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 3135,
+          "url": "/assets/react-BE3XCuOA.js"
+        },
+        {
+          "decoded": 59014,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 14006,
+          "url": "/assets/tool-registry-BAvMU9O8.js"
+        },
+        {
+          "decoded": 15086,
+          "kind": "image",
+          "thirdParty": false,
+          "transferred": 5175,
+          "url": "/favicon/favicon.ico"
+        },
+        {
+          "decoded": 3356,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1422,
+          "url": "/assets/Sidebar-gn7e5TmX.js"
+        },
+        {
+          "decoded": 361,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 248,
+          "url": "/assets/XIcon-BuNW9o94.js"
+        },
+        {
+          "decoded": 440,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 267,
+          "url": "/assets/useMediaQuery-rSYC1rzd.js"
+        },
+        {
+          "decoded": 416,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 273,
+          "url": "/assets/useReturnFocus-vWdOY-2-.js"
+        },
+        {
+          "decoded": 62455,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 20505,
+          "url": "/assets/dist-BErzPkWe.js"
+        },
+        {
+          "decoded": 22869,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 8516,
+          "url": "/assets/dist-DjZ1Dw3r.js"
+        },
+        {
+          "decoded": 1447,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 799,
+          "url": "/assets/ImageConvertor-Y8wRJzXZ.js"
+        },
+        {
+          "decoded": 428,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 277,
+          "url": "/assets/DownloadIcon-CDy5l0RE.js"
+        },
+        {
+          "decoded": 328,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 234,
+          "url": "/assets/CheckIcon-CKmzsevm.js"
+        },
+        {
+          "decoded": 372,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 246,
+          "url": "/assets/useToast-DklTbwvX.js"
+        },
+        {
+          "decoded": 2545,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1175,
+          "url": "/assets/CopyButton-iOBi52qO.js"
+        },
+        {
+          "decoded": 1057,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 609,
+          "url": "/assets/UploadInput-DJOYJ-VR.js"
+        },
+        {
+          "decoded": 2136,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 903,
+          "url": "/assets/ToolDialogShell-DXHqiV1J.js"
+        },
+        {
+          "decoded": 21663,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 7094,
+          "url": "/assets/FileProcessorShell-DVBYsHeX.js"
+        },
+        {
+          "decoded": 2991,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1358,
+          "url": "/assets/Dialog-C43st9sI.js"
+        },
+        {
+          "decoded": 4145,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1646,
+          "url": "/assets/image-ZRpizl_n.js"
+        },
+        {
+          "decoded": 229,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 163,
+          "url": "/assets/file-read-CIMsQrCh.js"
+        },
+        {
+          "decoded": 395,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 225,
+          "url": "/assets/download-CcBPUl2L.js"
+        },
+        {
+          "decoded": 6584,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 3002,
+          "url": "/assets/canvas-CWatGXYR.js"
+        },
+        {
+          "decoded": 835,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 496,
+          "url": "/assets/file-BK2fG_na.js"
+        },
+        {
+          "decoded": 273,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 194,
+          "url": "/assets/useStaleSafeAsync-DAwP8dYs.js"
+        },
+        {
+          "decoded": 1780,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 782,
+          "url": "/assets/useToolComputation-DbmMzv_G.js"
+        },
+        {
+          "decoded": 280,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 204,
+          "url": "/assets/useBlobUrl-VM2r6zFD.js"
+        },
+        {
+          "decoded": 894,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 486,
+          "url": "/assets/ToolStatus-CqRsoA_8.js"
+        },
+        {
+          "decoded": 463,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 308,
+          "url": "/assets/ModEnterAction-CeyQPtsu.js"
+        },
+        {
+          "decoded": 1273,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 658,
+          "url": "/assets/ToolDialogFrame-DiL4SYoD.js"
+        },
+        {
+          "decoded": 578,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 360,
+          "url": "/assets/CodeOutput-CHElEoSY.js"
+        },
+        {
+          "decoded": 4859,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1992,
+          "url": "/assets/Tabs-CEr1n6yL.js"
+        },
+        {
+          "decoded": 4503,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1964,
+          "url": "/assets/dist-D7nyA1WY.js"
+        },
+        {
+          "decoded": 1421,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 773,
+          "url": "/assets/ImageQualitySelectInput-lsihEVTf.js"
+        },
+        {
+          "decoded": 7176,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 2687,
+          "url": "/assets/dist-MUETFCu8.js"
+        },
+        {
+          "decoded": 556,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 372,
+          "url": "/assets/dist-0Hu8DWVt.js"
+        },
+        {
+          "decoded": 782,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 457,
+          "url": "/assets/dist-C3qLRqr0.js"
+        },
+        {
+          "decoded": 528,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 295,
+          "url": "/assets/dist-DLdrJTO9.js"
+        },
+        {
+          "decoded": 1215,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 678,
+          "url": "/assets/TextInput-WwirgujX.js"
+        },
+        {
+          "decoded": 774,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 458,
+          "url": "/assets/useKeyboardListNav-BAEaXr1w.js"
+        },
+        {
+          "decoded": 4291,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 1750,
+          "url": "/assets/CommandPalette-CmjbIT-f.js"
+        },
+        {
+          "decoded": 11879,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 4491,
+          "url": "/assets/ToastProvider-Drxy02Yz.js"
+        },
+        {
+          "decoded": 45280,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 16739,
+          "url": "/assets/SelectInput-BMVK4DOn.js"
+        },
+        {
+          "decoded": 9464,
+          "kind": "font",
+          "thirdParty": true,
+          "transferred": 9464,
+          "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dPIFZifjKcF5UAWdDRYEF8RXi4EwQ.woff2"
+        }
+      ],
+      "workers": []
+    }
+  },
+  "dist": {
+    "byExtension": {
+      "none": {
+        "bytes": 3981,
+        "files": 1
+      },
+      ".js": {
+        "bytes": 8993598,
+        "files": 300
+      },
+      ".css": {
+        "bytes": 89783,
+        "files": 3
+      },
+      ".wasm": {
+        "bytes": 23115030,
+        "files": 15
+      },
+      ".mjs": {
+        "bytes": 1264342,
+        "files": 1
+      },
+      ".xml": {
+        "bytes": 729,
+        "files": 2
+      },
+      ".png": {
+        "bytes": 36765,
+        "files": 4
+      },
+      ".ico": {
+        "bytes": 15086,
+        "files": 1
+      },
+      ".svg": {
+        "bytes": 3190,
+        "files": 1
+      },
+      ".html": {
+        "bytes": 405125,
+        "files": 85
+      },
+      ".json": {
+        "bytes": 851,
+        "files": 1
+      },
+      ".txt": {
+        "bytes": 245,
+        "files": 1
+      }
+    },
+    "bytes": 33928725,
+    "files": 415,
+    "sha256": "0f4ca1c499bf7a5498ccf15522693435c7c24443abf0d50fc0102530b7375bc2"
+  },
+  "environment": {
+    "chromium": "156.0.8078.4",
+    "cpu": "Apple M3 Pro",
+    "date": "2026-11-25T18:35:14.907Z",
+    "harnessCommit": "b211644b4a8960bbbb47ba1f5ae0f5a8adb7c864",
+    "lighthouse": "lighthouse@13.6.0",
+    "node": "v24.13.1",
+    "pages": [
+      "hash-generator",
+      "escaped-json-stringifier",
+      "image-converter"
+    ],
+    "platform": "darwin-arm64",
+    "runs": 3,
+    "site": "Same, without the loading emoji",
+    "throttle": {
+      "desktop": {
+        "cpuSlowdown": 1,
+        "downloadKbps": 9216,
+        "latencyMs": 150,
+        "uploadKbps": 9216
+      },
+      "mobile": {
+        "cpuSlowdown": 4,
+        "downloadKbps": 1474.56,
+        "latencyMs": 562.5,
+        "uploadKbps": 675
+      }
+    }
+  },
+  "failures": [],
+  "lighthouse": {
+    "hash-generator": {
+      "mobile": {
+        "benchmarkIndex": {
+          "max": 3409.5,
+          "median": 3396,
+          "min": 3370,
+          "runs": [
+            3396,
+            3370,
+            3409.5
+          ]
+        },
+        "categories": {
+          "performance": {
+            "max": 75,
+            "median": 75,
+            "min": 75,
+            "runs": [
+              75,
+              75,
+              75
+            ]
+          },
+          "accessibility": {
+            "max": 96,
+            "median": 96,
+            "min": 96,
+            "runs": [
+              96,
+              96,
+              96
+            ]
+          },
+          "best-practices": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          },
+          "seo": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          }
+        },
+        "lcpElements": [
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">"
+        ],
+        "metrics": {
+          "cls": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0
+            ]
+          },
+          "fcp": {
+            "max": 2918.032,
+            "median": 2908.52,
+            "min": 2904.386,
+            "runs": [
+              2904.386,
+              2918.032,
+              2908.52
+            ]
+          },
+          "lcp": {
+            "max": 5010.514,
+            "median": 5010.509,
+            "min": 5000.532,
+            "runs": [
+              5000.532,
+              5010.514,
+              5010.509
+            ]
+          },
+          "si": {
+            "max": 3970,
+            "median": 3965,
+            "min": 3950,
+            "runs": [
+              3950,
+              3970,
+              3965
+            ]
+          },
+          "tbt": {
+            "max": 3.6859999999996944,
+            "median": 0.2680000000000291,
+            "min": 0,
+            "runs": [
+              0.2680000000000291,
+              0,
+              3.6859999999996944
+            ]
+          }
+        }
+      },
+      "desktop": {
+        "benchmarkIndex": {
+          "max": 3419,
+          "median": 3411.5,
+          "min": 3341,
+          "runs": [
+            3341,
+            3419,
+            3411.5
+          ]
+        },
+        "categories": {
+          "performance": {
+            "max": 96,
+            "median": 95,
+            "min": 94,
+            "runs": [
+              96,
+              94,
+              95
+            ]
+          },
+          "accessibility": {
+            "max": 96,
+            "median": 96,
+            "min": 96,
+            "runs": [
+              96,
+              96,
+              96
+            ]
+          },
+          "best-practices": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          },
+          "seo": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          }
+        },
+        "lcpElements": [
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">"
+        ],
+        "metrics": {
+          "cls": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0
+            ]
+          },
+          "fcp": {
+            "max": 721.206,
+            "median": 695.869,
+            "min": 692.654,
+            "runs": [
+              692.654,
+              695.869,
+              721.206
+            ]
+          },
+          "lcp": {
+            "max": 1477.113,
+            "median": 1343.246,
+            "min": 1296.724,
+            "runs": [
+              1296.724,
+              1477.113,
+              1343.246
+            ]
+          },
+          "si": {
+            "max": 1217,
+            "median": 1211,
+            "min": 1182,
+            "runs": [
+              1182,
+              1211,
+              1217
+            ]
+          },
+          "tbt": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "escaped-json-stringifier": {
+      "mobile": {
+        "benchmarkIndex": {
+          "max": 3415.5,
+          "median": 3391,
+          "min": 3337.5,
+          "runs": [
+            3337.5,
+            3391,
+            3415.5
+          ]
+        },
+        "categories": {
+          "performance": {
+            "max": 74,
+            "median": 74,
+            "min": 74,
+            "runs": [
+              74,
+              74,
+              74
+            ]
+          },
+          "accessibility": {
+            "max": 96,
+            "median": 96,
+            "min": 96,
+            "runs": [
+              96,
+              96,
+              96
+            ]
+          },
+          "best-practices": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          },
+          "seo": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          }
+        },
+        "lcpElements": [
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">"
+        ],
+        "metrics": {
+          "cls": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0
+            ]
+          },
+          "fcp": {
+            "max": 2908.591,
+            "median": 2900.065,
+            "min": 2895.927,
+            "runs": [
+              2895.927,
+              2908.591,
+              2900.065
+            ]
+          },
+          "lcp": {
+            "max": 5298.565,
+            "median": 5296.362,
+            "min": 5292.471,
+            "runs": [
+              5296.362,
+              5298.565,
+              5292.471
+            ]
+          },
+          "si": {
+            "max": 3847,
+            "median": 3845,
+            "min": 3838,
+            "runs": [
+              3838,
+              3847,
+              3845
+            ]
+          },
+          "tbt": {
+            "max": 11.784999999999854,
+            "median": 5.403000000000247,
+            "min": 3.233999999999469,
+            "runs": [
+              11.784999999999854,
+              3.233999999999469,
+              5.403000000000247
+            ]
+          }
+        }
+      },
+      "desktop": {
+        "benchmarkIndex": {
+          "max": 3418.5,
+          "median": 3417,
+          "min": 3413.5,
+          "runs": [
+            3418.5,
+            3413.5,
+            3417
+          ]
+        },
+        "categories": {
+          "performance": {
+            "max": 94,
+            "median": 94,
+            "min": 94,
+            "runs": [
+              94,
+              94,
+              94
+            ]
+          },
+          "accessibility": {
+            "max": 96,
+            "median": 96,
+            "min": 96,
+            "runs": [
+              96,
+              96,
+              96
+            ]
+          },
+          "best-practices": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          },
+          "seo": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          }
+        },
+        "lcpElements": [
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">"
+        ],
+        "metrics": {
+          "cls": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0
+            ]
+          },
+          "fcp": {
+            "max": 731.555,
+            "median": 721.884,
+            "min": 711.953,
+            "runs": [
+              711.953,
+              731.555,
+              721.884
+            ]
+          },
+          "lcp": {
+            "max": 1543.113,
+            "median": 1524.344,
+            "min": 1516.73,
+            "runs": [
+              1524.344,
+              1516.73,
+              1543.113
+            ]
+          },
+          "si": {
+            "max": 1207,
+            "median": 1190,
+            "min": 1175,
+            "runs": [
+              1175,
+              1207,
+              1190
+            ]
+          },
+          "tbt": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "image-converter": {
+      "mobile": {
+        "benchmarkIndex": {
+          "max": 3420,
+          "median": 3409.5,
+          "min": 3401,
+          "runs": [
+            3420,
+            3409.5,
+            3401
+          ]
+        },
+        "categories": {
+          "performance": {
+            "max": 78,
+            "median": 78,
+            "min": 78,
+            "runs": [
+              78,
+              78,
+              78
+            ]
+          },
+          "accessibility": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          },
+          "best-practices": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          },
+          "seo": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          }
+        },
+        "lcpElements": [
+          "<span class=\"flex items-center justify-center gap-x-2 [&amp;&gt;svg]:shrink-0\">",
+          "<span class=\"flex items-center justify-center gap-x-2 [&amp;&gt;svg]:shrink-0\">",
+          "<span class=\"flex items-center justify-center gap-x-2 [&amp;&gt;svg]:shrink-0\">"
+        ],
+        "metrics": {
+          "cls": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0
+            ]
+          },
+          "fcp": {
+            "max": 2916.774,
+            "median": 2904.025,
+            "min": 2875.897,
+            "runs": [
+              2875.897,
+              2904.025,
+              2916.774
+            ]
+          },
+          "lcp": {
+            "max": 4494.998,
+            "median": 4474.423,
+            "min": 4449.244,
+            "runs": [
+              4449.244,
+              4474.423,
+              4494.998
+            ]
+          },
+          "si": {
+            "max": 3857,
+            "median": 3837,
+            "min": 3813,
+            "runs": [
+              3813,
+              3837,
+              3857
+            ]
+          },
+          "tbt": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      "desktop": {
+        "benchmarkIndex": {
+          "max": 3405.5,
+          "median": 3403,
+          "min": 3315.5,
+          "runs": [
+            3405.5,
+            3403,
+            3315.5
+          ]
+        },
+        "categories": {
+          "performance": {
+            "max": 98,
+            "median": 96,
+            "min": 96,
+            "runs": [
+              96,
+              96,
+              98
+            ]
+          },
+          "accessibility": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          },
+          "best-practices": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          },
+          "seo": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100
+            ]
+          }
+        },
+        "lcpElements": [
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">"
+        ],
+        "metrics": {
+          "cls": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0
+            ]
+          },
+          "fcp": {
+            "max": 716.354,
+            "median": 712.141,
+            "min": 711.753,
+            "runs": [
+              711.753,
+              712.141,
+              716.354
+            ]
+          },
+          "lcp": {
+            "max": 1318.831,
+            "median": 1317.365,
+            "min": 1035.253,
+            "runs": [
+              1317.365,
+              1318.831,
+              1035.253
+            ]
+          },
+          "si": {
+            "max": 1026,
+            "median": 1025,
+            "min": 1022,
+            "runs": [
+              1022,
+              1025,
+              1026
+            ]
+          },
+          "tbt": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    }
+  },
+  "usable": {
+    "hash-generator": {
+      "firstResult": {
+        "max": 7512.5,
+        "median": 7088.699999988079,
+        "min": 7074.300000011921,
+        "runs": [
+          7512.5,
+          7088.699999988079,
+          7074.300000011921
+        ]
+      },
+      "ready": {
+        "max": 5349.099999964237,
+        "median": 4909.5,
+        "min": 4898,
+        "runs": [
+          5349.099999964237,
+          4909.5,
+          4898
+        ]
+      },
+      "repeatReady": {
+        "max": 1036.199999988079,
+        "median": 1033.300000011921,
+        "min": 1030.5,
+        "runs": [
+          1036.199999988079,
+          1030.5,
+          1033.300000011921
+        ]
+      }
+    },
+    "escaped-json-stringifier": {
+      "firstResult": {
+        "max": 5310.099999964237,
+        "median": 5298.100000023842,
+        "min": 5285.100000023842,
+        "runs": [
+          5310.099999964237,
+          5285.100000023842,
+          5298.100000023842
+        ]
+      },
+      "ready": {
+        "max": 4892.099999964237,
+        "median": 4879.300000011921,
+        "min": 4873.400000035763,
+        "runs": [
+          4892.099999964237,
+          4873.400000035763,
+          4879.300000011921
+        ]
+      },
+      "repeatReady": {
+        "max": 1074.199999988079,
+        "median": 1056.2000000476837,
+        "min": 1049.699999988079,
+        "runs": [
+          1074.199999988079,
+          1049.699999988079,
+          1056.2000000476837
+        ]
+      }
+    },
+    "image-converter": {
+      "firstResult": {
+        "max": 4600.199999988079,
+        "median": 4594.300000011921,
+        "min": 4321.899999976158,
+        "runs": [
+          4600.199999988079,
+          4594.300000011921,
+          4321.899999976158
+        ]
+      },
+      "ready": {
+        "max": 4414.699999988079,
+        "median": 4408.100000023842,
+        "min": 4123.699999988079,
+        "runs": [
+          4414.699999988079,
+          4408.100000023842,
+          4123.699999988079
+        ]
+      },
+      "repeatReady": {
+        "max": 1023,
+        "median": 1021.8000000119209,
+        "min": 1021.5999999642372,
+        "runs": [
+          1023,
+          1021.8000000119209,
+          1021.5999999642372
+        ]
+      }
+    }
+  }
+}

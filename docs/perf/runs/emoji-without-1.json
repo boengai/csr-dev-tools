@@ -47,7 +47,7 @@
         "thirdParty": {
           "decoded": 24154,
           "requests": 3,
-          "transferred": 20101
+          "transferred": 20098
         }
       },
       "load": {
@@ -96,7 +96,7 @@
         "thirdParty": {
           "decoded": 24154,
           "requests": 3,
-          "transferred": 20101
+          "transferred": 20098
         }
       },
       "requests": [
@@ -106,6 +106,13 @@
           "thirdParty": false,
           "transferred": 1494,
           "url": "/tools/hash-generator/"
+        },
+        {
+          "decoded": 233095,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 74114,
+          "url": "/assets/index-DfQRew4H.js"
         },
         {
           "decoded": 69593,
@@ -143,13 +150,6 @@
           "url": "/assets/with-selector-_6SoeCjN.js"
         },
         {
-          "decoded": 233095,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 74114,
-          "url": "/assets/index-DfQRew4H.js"
-        },
-        {
           "decoded": 55416,
           "kind": "js",
           "thirdParty": false,
@@ -160,15 +160,8 @@
           "decoded": 5138,
           "kind": "css",
           "thirdParty": true,
-          "transferred": 1085,
+          "transferred": 1082,
           "url": "https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-        },
-        {
-          "decoded": 115,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 103,
-          "url": "/assets/is-html-element-CtocdrOo.js"
         },
         {
           "decoded": 46148,
@@ -190,6 +183,13 @@
           "thirdParty": false,
           "transferred": 5175,
           "url": "/favicon/favicon.ico"
+        },
+        {
+          "decoded": 115,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 103,
+          "url": "/assets/is-html-element-CtocdrOo.js"
         },
         {
           "decoded": 363,
@@ -241,11 +241,11 @@
           "url": "/assets/tools-DI-V0vzP.js"
         },
         {
-          "decoded": 59014,
+          "decoded": 1390,
           "kind": "js",
           "thirdParty": false,
-          "transferred": 14006,
-          "url": "/assets/tool-registry-BAvMU9O8.js"
+          "transferred": 670,
+          "url": "/assets/Card-BAEZ-4uY.js"
         },
         {
           "decoded": 375,
@@ -255,18 +255,18 @@
           "url": "/assets/ToolPresentation-DFZmu0eH.js"
         },
         {
-          "decoded": 1390,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 670,
-          "url": "/assets/Card-BAEZ-4uY.js"
-        },
-        {
           "decoded": 7227,
           "kind": "js",
           "thirdParty": false,
           "transferred": 3135,
           "url": "/assets/react-BE3XCuOA.js"
+        },
+        {
+          "decoded": 59014,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 14006,
+          "url": "/assets/tool-registry-BAvMU9O8.js"
         },
         {
           "decoded": 3356,
@@ -276,18 +276,18 @@
           "url": "/assets/Sidebar-gn7e5TmX.js"
         },
         {
-          "decoded": 62455,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 20505,
-          "url": "/assets/dist-BErzPkWe.js"
-        },
-        {
           "decoded": 361,
           "kind": "js",
           "thirdParty": false,
           "transferred": 248,
           "url": "/assets/XIcon-BuNW9o94.js"
+        },
+        {
+          "decoded": 62455,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 20505,
+          "url": "/assets/dist-BErzPkWe.js"
         },
         {
           "decoded": 440,
@@ -304,13 +304,6 @@
           "url": "/assets/useReturnFocus-vWdOY-2-.js"
         },
         {
-          "decoded": 1817,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 1023,
-          "url": "/assets/HashGenerator-DAZ_4YQV.js"
-        },
-        {
           "decoded": 892,
           "kind": "js",
           "thirdParty": false,
@@ -318,18 +311,11 @@
           "url": "/assets/ToggleButton-BO1AZ5HY.js"
         },
         {
-          "decoded": 22869,
+          "decoded": 1817,
           "kind": "js",
           "thirdParty": false,
-          "transferred": 8516,
-          "url": "/assets/dist-DjZ1Dw3r.js"
-        },
-        {
-          "decoded": 2545,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 1175,
-          "url": "/assets/CopyButton-iOBi52qO.js"
+          "transferred": 1023,
+          "url": "/assets/HashGenerator-DAZ_4YQV.js"
         },
         {
           "decoded": 328,
@@ -339,11 +325,11 @@
           "url": "/assets/CheckIcon-CKmzsevm.js"
         },
         {
-          "decoded": 428,
+          "decoded": 2545,
           "kind": "js",
           "thirdParty": false,
-          "transferred": 277,
-          "url": "/assets/DownloadIcon-CDy5l0RE.js"
+          "transferred": 1175,
+          "url": "/assets/CopyButton-iOBi52qO.js"
         },
         {
           "decoded": 372,
@@ -353,11 +339,25 @@
           "url": "/assets/useToast-DklTbwvX.js"
         },
         {
+          "decoded": 22869,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 8516,
+          "url": "/assets/dist-DjZ1Dw3r.js"
+        },
+        {
           "decoded": 33666,
           "kind": "js",
           "thirdParty": false,
           "transferred": 13500,
           "url": "/assets/TransformerShell-BhJGDyZ8.js"
+        },
+        {
+          "decoded": 428,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 277,
+          "url": "/assets/DownloadIcon-CDy5l0RE.js"
         },
         {
           "decoded": 373,
@@ -465,13 +465,6 @@
           "url": "/assets/dist-DLdrJTO9.js"
         },
         {
-          "decoded": 7176,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 2687,
-          "url": "/assets/dist-MUETFCu8.js"
-        },
-        {
           "decoded": 1215,
           "kind": "js",
           "thirdParty": false,
@@ -479,11 +472,11 @@
           "url": "/assets/TextInput-WwirgujX.js"
         },
         {
-          "decoded": 1057,
+          "decoded": 7176,
           "kind": "js",
           "thirdParty": false,
-          "transferred": 609,
-          "url": "/assets/UploadInput-DJOYJ-VR.js"
+          "transferred": 2687,
+          "url": "/assets/dist-MUETFCu8.js"
         },
         {
           "decoded": 4503,
@@ -491,6 +484,13 @@
           "thirdParty": false,
           "transferred": 1964,
           "url": "/assets/dist-D7nyA1WY.js"
+        },
+        {
+          "decoded": 1057,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 609,
+          "url": "/assets/UploadInput-DJOYJ-VR.js"
         },
         {
           "decoded": 4155,
@@ -507,20 +507,6 @@
           "url": "/assets/Pane-m5zPO-y3.js"
         },
         {
-          "decoded": 6879,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 2660,
-          "url": "/assets/RadioGroupInput-BItUWKWJ.js"
-        },
-        {
-          "decoded": 478,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 299,
-          "url": "/assets/SplitPanel-BEDWcSYN.js"
-        },
-        {
           "decoded": 944,
           "kind": "js",
           "thirdParty": false,
@@ -535,6 +521,13 @@
           "url": "/assets/CodeOutput-CHElEoSY.js"
         },
         {
+          "decoded": 6879,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 2660,
+          "url": "/assets/RadioGroupInput-BItUWKWJ.js"
+        },
+        {
           "decoded": 11144,
           "kind": "js",
           "thirdParty": false,
@@ -542,11 +535,11 @@
           "url": "/assets/RangeInput-DPjKgK5V.js"
         },
         {
-          "decoded": 774,
+          "decoded": 478,
           "kind": "js",
           "thirdParty": false,
-          "transferred": 458,
-          "url": "/assets/useKeyboardListNav-BAEaXr1w.js"
+          "transferred": 299,
+          "url": "/assets/SplitPanel-BEDWcSYN.js"
         },
         {
           "decoded": 4291,
@@ -556,11 +549,11 @@
           "url": "/assets/CommandPalette-CmjbIT-f.js"
         },
         {
-          "decoded": 45280,
+          "decoded": 774,
           "kind": "js",
           "thirdParty": false,
-          "transferred": 16739,
-          "url": "/assets/SelectInput-BMVK4DOn.js"
+          "transferred": 458,
+          "url": "/assets/useKeyboardListNav-BAEaXr1w.js"
         },
         {
           "decoded": 11879,
@@ -570,6 +563,13 @@
           "url": "/assets/ToastProvider-Drxy02Yz.js"
         },
         {
+          "decoded": 45280,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 16739,
+          "url": "/assets/SelectInput-BMVK4DOn.js"
+        },
+        {
           "decoded": 399463,
           "kind": "js",
           "thirdParty": false,
@@ -577,18 +577,18 @@
           "url": "/assets/CodeInput-CEFgnqeD.js"
         },
         {
-          "decoded": 9552,
-          "kind": "font",
-          "thirdParty": true,
-          "transferred": 9552,
-          "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dMIFZifjKcF5UAWdDRaPpZUFWaHi6WZ3Q.woff2"
-        },
-        {
           "decoded": 9464,
           "kind": "font",
           "thirdParty": true,
           "transferred": 9464,
           "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dPIFZifjKcF5UAWdDRYEF8RXi4EwQ.woff2"
+        },
+        {
+          "decoded": 9552,
+          "kind": "font",
+          "thirdParty": true,
+          "transferred": 9552,
+          "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dMIFZifjKcF5UAWdDRaPpZUFWaHi6WZ3Q.woff2"
         },
         {
           "decoded": 107,
@@ -668,7 +668,7 @@
         "thirdParty": {
           "decoded": 24154,
           "requests": 3,
-          "transferred": 20101
+          "transferred": 20098
         }
       },
       "load": {
@@ -717,7 +717,7 @@
         "thirdParty": {
           "decoded": 24154,
           "requests": 3,
-          "transferred": 20101
+          "transferred": 20098
         }
       },
       "requests": [
@@ -729,18 +729,18 @@
           "url": "/tools/escaped-json-stringifier/"
         },
         {
-          "decoded": 69593,
-          "kind": "css",
-          "thirdParty": false,
-          "transferred": 12180,
-          "url": "/assets/index-BuxX8yBJ.css"
-        },
-        {
           "decoded": 1291,
           "kind": "js",
           "thirdParty": false,
           "transferred": 696,
           "url": "/assets/rolldown-runtime-C0FnF6B9.js"
+        },
+        {
+          "decoded": 69593,
+          "kind": "css",
+          "thirdParty": false,
+          "transferred": 12180,
+          "url": "/assets/index-BuxX8yBJ.css"
         },
         {
           "decoded": 7876,
@@ -781,7 +781,7 @@
           "decoded": 5138,
           "kind": "css",
           "thirdParty": true,
-          "transferred": 1085,
+          "transferred": 1082,
           "url": "https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
         },
         {
@@ -799,25 +799,18 @@
           "url": "/assets/ArrowIcon-CqlnC8xM.js"
         },
         {
-          "decoded": 31783,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 11943,
-          "url": "/assets/NotoEmoji-IrroZWGI.js"
-        },
-        {
-          "decoded": 46148,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 18023,
-          "url": "/assets/App-CKroWyUQ.js"
-        },
-        {
           "decoded": 684,
           "kind": "js",
           "thirdParty": false,
           "transferred": 399,
           "url": "/assets/react-CSQywkwT.js"
+        },
+        {
+          "decoded": 480,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 315,
+          "url": "/assets/useKeyboardShortcut-CClQkO9q.js"
         },
         {
           "decoded": 1916,
@@ -827,11 +820,18 @@
           "url": "/assets/middleware-ZXcm-2wU.js"
         },
         {
-          "decoded": 480,
+          "decoded": 46148,
           "kind": "js",
           "thirdParty": false,
-          "transferred": 315,
-          "url": "/assets/useKeyboardShortcut-CClQkO9q.js"
+          "transferred": 18023,
+          "url": "/assets/App-CKroWyUQ.js"
+        },
+        {
+          "decoded": 31783,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 11943,
+          "url": "/assets/NotoEmoji-IrroZWGI.js"
         },
         {
           "decoded": 204,
@@ -862,18 +862,18 @@
           "url": "/assets/Card-BAEZ-4uY.js"
         },
         {
-          "decoded": 375,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 231,
-          "url": "/assets/ToolPresentation-DFZmu0eH.js"
-        },
-        {
           "decoded": 7227,
           "kind": "js",
           "thirdParty": false,
           "transferred": 3135,
           "url": "/assets/react-BE3XCuOA.js"
+        },
+        {
+          "decoded": 375,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 231,
+          "url": "/assets/ToolPresentation-DFZmu0eH.js"
         },
         {
           "decoded": 59014,
@@ -897,18 +897,18 @@
           "url": "/assets/Sidebar-gn7e5TmX.js"
         },
         {
-          "decoded": 440,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 267,
-          "url": "/assets/useMediaQuery-rSYC1rzd.js"
-        },
-        {
           "decoded": 361,
           "kind": "js",
           "thirdParty": false,
           "transferred": 248,
           "url": "/assets/XIcon-BuNW9o94.js"
+        },
+        {
+          "decoded": 440,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 267,
+          "url": "/assets/useMediaQuery-rSYC1rzd.js"
         },
         {
           "decoded": 416,
@@ -918,18 +918,18 @@
           "url": "/assets/useReturnFocus-vWdOY-2-.js"
         },
         {
-          "decoded": 22869,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 8516,
-          "url": "/assets/dist-DjZ1Dw3r.js"
-        },
-        {
           "decoded": 62455,
           "kind": "js",
           "thirdParty": false,
           "transferred": 20505,
           "url": "/assets/dist-BErzPkWe.js"
+        },
+        {
+          "decoded": 22869,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 8516,
+          "url": "/assets/dist-DjZ1Dw3r.js"
         },
         {
           "decoded": 1837,
@@ -1058,6 +1058,13 @@
           "url": "/assets/ToolStatus-CqRsoA_8.js"
         },
         {
+          "decoded": 2136,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 903,
+          "url": "/assets/ToolDialogShell-DXHqiV1J.js"
+        },
+        {
           "decoded": 2991,
           "kind": "js",
           "thirdParty": false,
@@ -1070,13 +1077,6 @@
           "thirdParty": false,
           "transferred": 439,
           "url": "/assets/ToggleButton-BO1AZ5HY.js"
-        },
-        {
-          "decoded": 2136,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 903,
-          "url": "/assets/ToolDialogShell-DXHqiV1J.js"
         },
         {
           "decoded": 1273,
@@ -1107,13 +1107,6 @@
           "url": "/assets/dist-0Hu8DWVt.js"
         },
         {
-          "decoded": 528,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 295,
-          "url": "/assets/dist-DLdrJTO9.js"
-        },
-        {
           "decoded": 4503,
           "kind": "js",
           "thirdParty": false,
@@ -1121,11 +1114,18 @@
           "url": "/assets/dist-D7nyA1WY.js"
         },
         {
-          "decoded": 1057,
+          "decoded": 45280,
           "kind": "js",
           "thirdParty": false,
-          "transferred": 609,
-          "url": "/assets/UploadInput-DJOYJ-VR.js"
+          "transferred": 16739,
+          "url": "/assets/SelectInput-BMVK4DOn.js"
+        },
+        {
+          "decoded": 528,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 295,
+          "url": "/assets/dist-DLdrJTO9.js"
         },
         {
           "decoded": 1215,
@@ -1133,6 +1133,13 @@
           "thirdParty": false,
           "transferred": 678,
           "url": "/assets/TextInput-WwirgujX.js"
+        },
+        {
+          "decoded": 1057,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 609,
+          "url": "/assets/UploadInput-DJOYJ-VR.js"
         },
         {
           "decoded": 4155,
@@ -1149,20 +1156,6 @@
           "url": "/assets/Pane-m5zPO-y3.js"
         },
         {
-          "decoded": 6879,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 2660,
-          "url": "/assets/RadioGroupInput-BItUWKWJ.js"
-        },
-        {
-          "decoded": 11144,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 4393,
-          "url": "/assets/RangeInput-DPjKgK5V.js"
-        },
-        {
           "decoded": 478,
           "kind": "js",
           "thirdParty": false,
@@ -1170,11 +1163,11 @@
           "url": "/assets/SplitPanel-BEDWcSYN.js"
         },
         {
-          "decoded": 45280,
+          "decoded": 6879,
           "kind": "js",
           "thirdParty": false,
-          "transferred": 16739,
-          "url": "/assets/SelectInput-BMVK4DOn.js"
+          "transferred": 2660,
+          "url": "/assets/RadioGroupInput-BItUWKWJ.js"
         },
         {
           "decoded": 578,
@@ -1182,6 +1175,13 @@
           "thirdParty": false,
           "transferred": 360,
           "url": "/assets/CodeOutput-CHElEoSY.js"
+        },
+        {
+          "decoded": 11144,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 4393,
+          "url": "/assets/RangeInput-DPjKgK5V.js"
         },
         {
           "decoded": 4291,
@@ -1275,7 +1275,7 @@
         "thirdParty": {
           "decoded": 14602,
           "requests": 2,
-          "transferred": 10548
+          "transferred": 10546
         }
       },
       "load": {
@@ -1324,7 +1324,7 @@
         "thirdParty": {
           "decoded": 14602,
           "requests": 2,
-          "transferred": 10548
+          "transferred": 10546
         }
       },
       "requests": [
@@ -1336,13 +1336,6 @@
           "url": "/tools/image-converter/"
         },
         {
-          "decoded": 7876,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 3048,
-          "url": "/assets/react-DiVRNtpo.js"
-        },
-        {
           "decoded": 1291,
           "kind": "js",
           "thirdParty": false,
@@ -1350,18 +1343,18 @@
           "url": "/assets/rolldown-runtime-C0FnF6B9.js"
         },
         {
-          "decoded": 55416,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 20339,
-          "url": "/assets/route-21gt-w8M.js"
-        },
-        {
           "decoded": 69593,
           "kind": "css",
           "thirdParty": false,
           "transferred": 12180,
           "url": "/assets/index-BuxX8yBJ.css"
+        },
+        {
+          "decoded": 7876,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 3048,
+          "url": "/assets/react-DiVRNtpo.js"
         },
         {
           "decoded": 184,
@@ -1378,6 +1371,13 @@
           "url": "/assets/with-selector-_6SoeCjN.js"
         },
         {
+          "decoded": 55416,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 20339,
+          "url": "/assets/route-21gt-w8M.js"
+        },
+        {
           "decoded": 233095,
           "kind": "js",
           "thirdParty": false,
@@ -1388,7 +1388,7 @@
           "decoded": 5138,
           "kind": "css",
           "thirdParty": true,
-          "transferred": 1084,
+          "transferred": 1082,
           "url": "https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
         },
         {
@@ -1427,18 +1427,18 @@
           "url": "/assets/react-CSQywkwT.js"
         },
         {
-          "decoded": 1916,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 952,
-          "url": "/assets/middleware-ZXcm-2wU.js"
-        },
-        {
           "decoded": 480,
           "kind": "js",
           "thirdParty": false,
           "transferred": 315,
           "url": "/assets/useKeyboardShortcut-CClQkO9q.js"
+        },
+        {
+          "decoded": 1916,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 952,
+          "url": "/assets/middleware-ZXcm-2wU.js"
         },
         {
           "decoded": 204,
@@ -1511,18 +1511,18 @@
           "url": "/assets/XIcon-BuNW9o94.js"
         },
         {
-          "decoded": 416,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 273,
-          "url": "/assets/useReturnFocus-vWdOY-2-.js"
-        },
-        {
           "decoded": 440,
           "kind": "js",
           "thirdParty": false,
           "transferred": 267,
           "url": "/assets/useMediaQuery-rSYC1rzd.js"
+        },
+        {
+          "decoded": 416,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 273,
+          "url": "/assets/useReturnFocus-vWdOY-2-.js"
         },
         {
           "decoded": 22869,
@@ -1567,18 +1567,18 @@
           "url": "/assets/CopyButton-iOBi52qO.js"
         },
         {
-          "decoded": 372,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 246,
-          "url": "/assets/useToast-DklTbwvX.js"
-        },
-        {
           "decoded": 428,
           "kind": "js",
           "thirdParty": false,
           "transferred": 277,
           "url": "/assets/DownloadIcon-CDy5l0RE.js"
+        },
+        {
+          "decoded": 372,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 246,
+          "url": "/assets/useToast-DklTbwvX.js"
         },
         {
           "decoded": 1057,
@@ -1616,18 +1616,18 @@
           "url": "/assets/file-read-CIMsQrCh.js"
         },
         {
-          "decoded": 6584,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 3002,
-          "url": "/assets/canvas-CWatGXYR.js"
-        },
-        {
           "decoded": 395,
           "kind": "js",
           "thirdParty": false,
           "transferred": 225,
           "url": "/assets/download-CcBPUl2L.js"
+        },
+        {
+          "decoded": 6584,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 3002,
+          "url": "/assets/canvas-CWatGXYR.js"
         },
         {
           "decoded": 835,
@@ -1721,18 +1721,18 @@
           "url": "/assets/dist-C3qLRqr0.js"
         },
         {
-          "decoded": 528,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 295,
-          "url": "/assets/dist-DLdrJTO9.js"
-        },
-        {
           "decoded": 556,
           "kind": "js",
           "thirdParty": false,
           "transferred": 372,
           "url": "/assets/dist-0Hu8DWVt.js"
+        },
+        {
+          "decoded": 528,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 295,
+          "url": "/assets/dist-DLdrJTO9.js"
         },
         {
           "decoded": 1215,
@@ -1742,18 +1742,18 @@
           "url": "/assets/TextInput-WwirgujX.js"
         },
         {
-          "decoded": 774,
-          "kind": "js",
-          "thirdParty": false,
-          "transferred": 458,
-          "url": "/assets/useKeyboardListNav-BAEaXr1w.js"
-        },
-        {
           "decoded": 4291,
           "kind": "js",
           "thirdParty": false,
           "transferred": 1750,
           "url": "/assets/CommandPalette-CmjbIT-f.js"
+        },
+        {
+          "decoded": 774,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 458,
+          "url": "/assets/useKeyboardListNav-BAEaXr1w.js"
         },
         {
           "decoded": 11879,
@@ -1838,8 +1838,8 @@
   "environment": {
     "chromium": "156.0.8078.4",
     "cpu": "Apple M3 Pro",
-    "date": "2026-11-25T15:43:32.854Z",
-    "harnessCommit": "f7c19998b1b27810478f9019f541a35d0447260e",
+    "date": "2026-11-25T18:18:25.097Z",
+    "harnessCommit": "b211644b4a8960bbbb47ba1f5ae0f5a8adb7c864",
     "lighthouse": "lighthouse@13.6.0",
     "node": "v24.13.1",
     "pages": [
@@ -1848,8 +1848,8 @@
       "image-converter"
     ],
     "platform": "darwin-arm64",
-    "runs": 5,
-    "site": "React main c3983f81 without the loading emoji",
+    "runs": 3,
+    "site": "Same, without the loading emoji",
     "throttle": {
       "desktop": {
         "cpuSlowdown": 1,
@@ -1870,28 +1870,24 @@
     "hash-generator": {
       "mobile": {
         "benchmarkIndex": {
-          "max": 2362,
-          "median": 2341,
-          "min": 2336.5,
+          "max": 3393.5,
+          "median": 3391,
+          "min": 3382,
           "runs": [
-            2351.5,
-            2336.5,
-            2341,
-            2362,
-            2338
+            3382,
+            3391,
+            3393.5
           ]
         },
         "categories": {
           "performance": {
-            "max": 74,
-            "median": 74,
-            "min": 73,
+            "max": 75,
+            "median": 75,
+            "min": 74,
             "runs": [
               74,
-              74,
-              73,
-              74,
-              74
+              75,
+              75
             ]
           },
           "accessibility": {
@@ -1899,8 +1895,6 @@
             "median": 96,
             "min": 96,
             "runs": [
-              96,
-              96,
               96,
               96,
               96
@@ -1913,8 +1907,6 @@
             "runs": [
               100,
               100,
-              100,
-              100,
               100
             ]
           },
@@ -1925,15 +1917,11 @@
             "runs": [
               100,
               100,
-              100,
-              100,
               100
             ]
           }
         },
         "lcpElements": [
-          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
-          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">"
@@ -1946,82 +1934,68 @@
             "runs": [
               0,
               0,
-              0,
-              0,
               0
             ]
           },
           "fcp": {
-            "max": 3036.231,
-            "median": 2993.114,
-            "min": 2972.281,
+            "max": 2912.326,
+            "median": 2886.582,
+            "min": 2879.258,
             "runs": [
-              2972.281,
-              2993.114,
-              2996.354,
-              3036.231,
-              2991.259
+              2912.326,
+              2879.258,
+              2886.582
             ]
           },
           "lcp": {
-            "max": 5430.787,
-            "median": 5133.879,
-            "min": 5107.283,
+            "max": 5317.239,
+            "median": 4986.681,
+            "min": 4978.881,
             "runs": [
-              5107.283,
-              5157.102,
-              5430.787,
-              5133.879,
-              5124.334
+              5317.239,
+              4978.881,
+              4986.681
             ]
           },
           "si": {
-            "max": 4048,
-            "median": 4036,
-            "min": 4016,
+            "max": 3974,
+            "median": 3930,
+            "min": 3930,
             "runs": [
-              4016,
-              4048,
-              4036,
-              4045,
-              4030
+              3974,
+              3930,
+              3930
             ]
           },
           "tbt": {
-            "max": 39.98400000000038,
-            "median": 37.16399999999976,
-            "min": 30.428999999999178,
+            "max": 7.296999938964291,
+            "median": 6.502999999999702,
+            "min": 5.583999999999833,
             "runs": [
-              30.428999999999178,
-              37.45300000000043,
-              36.10799996948208,
-              37.16399999999976,
-              39.98400000000038
+              7.296999938964291,
+              5.583999999999833,
+              6.502999999999702
             ]
           }
         }
       },
       "desktop": {
         "benchmarkIndex": {
-          "max": 2363.5,
-          "median": 2353,
-          "min": 2326,
+          "max": 3390,
+          "median": 3377,
+          "min": 3315.5,
           "runs": [
-            2363.5,
-            2326,
-            2357.5,
-            2331.5,
-            2353
+            3377,
+            3390,
+            3315.5
           ]
         },
         "categories": {
           "performance": {
             "max": 96,
             "median": 95,
-            "min": 94,
+            "min": 95,
             "runs": [
-              96,
-              94,
               96,
               95,
               95
@@ -2034,8 +2008,6 @@
             "runs": [
               96,
               96,
-              96,
-              96,
               96
             ]
           },
@@ -2044,8 +2016,6 @@
             "median": 100,
             "min": 100,
             "runs": [
-              100,
-              100,
               100,
               100,
               100
@@ -2058,15 +2028,11 @@
             "runs": [
               100,
               100,
-              100,
-              100,
               100
             ]
           }
         },
         "lcpElements": [
-          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
-          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">"
@@ -2079,45 +2045,37 @@
             "runs": [
               0,
               0,
-              0,
-              0,
               0
             ]
           },
           "fcp": {
-            "max": 860.384,
-            "median": 734.43,
-            "min": 695.601,
+            "max": 726.721,
+            "median": 722.901,
+            "min": 691.836,
             "runs": [
-              710.334,
-              860.384,
-              695.601,
-              734.43,
-              794.351
+              691.836,
+              722.901,
+              726.721
             ]
           },
           "lcp": {
-            "max": 1462.696,
-            "median": 1333.836,
-            "min": 1294.117,
+            "max": 1351.971,
+            "median": 1335.171,
+            "min": 1305.782,
             "runs": [
-              1312.656,
-              1462.696,
-              1294.117,
-              1333.836,
-              1392.289
+              1305.782,
+              1351.971,
+              1335.171
             ]
           },
           "si": {
-            "max": 1350,
-            "median": 1224,
-            "min": 1192,
+            "max": 1234,
+            "median": 1212,
+            "min": 1184,
             "runs": [
-              1202,
-              1350,
-              1192,
-              1224,
-              1289
+              1184,
+              1234,
+              1212
             ]
           },
           "tbt": {
@@ -2125,8 +2083,6 @@
             "median": 0,
             "min": 0,
             "runs": [
-              0,
-              0,
               0,
               0,
               0
@@ -2138,28 +2094,24 @@
     "escaped-json-stringifier": {
       "mobile": {
         "benchmarkIndex": {
-          "max": 2359.5,
-          "median": 2350.5,
-          "min": 2328,
+          "max": 3383,
+          "median": 3381.5,
+          "min": 3366.5,
           "runs": [
-            2350.5,
-            2357,
-            2328,
-            2359.5,
-            2349
+            3366.5,
+            3383,
+            3381.5
           ]
         },
         "categories": {
           "performance": {
-            "max": 73,
-            "median": 72,
-            "min": 72,
+            "max": 74,
+            "median": 74,
+            "min": 74,
             "runs": [
-              73,
-              72,
-              72,
-              73,
-              72
+              74,
+              74,
+              74
             ]
           },
           "accessibility": {
@@ -2167,8 +2119,6 @@
             "median": 96,
             "min": 96,
             "runs": [
-              96,
-              96,
               96,
               96,
               96
@@ -2181,8 +2131,6 @@
             "runs": [
               100,
               100,
-              100,
-              100,
               100
             ]
           },
@@ -2193,15 +2141,11 @@
             "runs": [
               100,
               100,
-              100,
-              100,
               100
             ]
           }
         },
         "lcpElements": [
-          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
-          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">"
@@ -2214,84 +2158,70 @@
             "runs": [
               0,
               0,
-              0,
-              0,
               0
             ]
           },
           "fcp": {
-            "max": 3037.168,
-            "median": 3003.553,
-            "min": 2991.755,
+            "max": 2904.34,
+            "median": 2894.748,
+            "min": 2886.653,
             "runs": [
-              2991.755,
-              3037.168,
-              3002.743,
-              3003.553,
-              3034.02
+              2904.34,
+              2894.748,
+              2886.653
             ]
           },
           "lcp": {
-            "max": 5483.271,
-            "median": 5479.461,
-            "min": 5425.191,
+            "max": 5298.399,
+            "median": 5289.68,
+            "min": 5275.694,
             "runs": [
-              5451.137,
-              5479.761,
-              5483.271,
-              5425.191,
-              5479.461
+              5298.399,
+              5275.694,
+              5289.68
             ]
           },
           "si": {
-            "max": 3987,
-            "median": 3969,
-            "min": 3921,
+            "max": 3846,
+            "median": 3836,
+            "min": 3835,
             "runs": [
-              3946,
-              3980,
-              3969,
-              3921,
-              3987
+              3846,
+              3835,
+              3836
             ]
           },
           "tbt": {
-            "max": 115.39699999999993,
-            "median": 81.78299999999945,
-            "min": 52.1949999999988,
+            "max": 14.182999999999993,
+            "median": 7.7150000000001455,
+            "min": 4.280999999999949,
             "runs": [
-              81.78299999999945,
-              73.92099999999937,
-              115.39699999999993,
-              52.1949999999988,
-              95.95200000000023
+              7.7150000000001455,
+              4.280999999999949,
+              14.182999999999993
             ]
           }
         }
       },
       "desktop": {
         "benchmarkIndex": {
-          "max": 2358.5,
-          "median": 2346.5,
-          "min": 2342,
+          "max": 3379,
+          "median": 3373.5,
+          "min": 3346.5,
           "runs": [
-            2343,
-            2346.5,
-            2342,
-            2358.5,
-            2349.5
+            3379,
+            3373.5,
+            3346.5
           ]
         },
         "categories": {
           "performance": {
             "max": 94,
             "median": 94,
-            "min": 92,
+            "min": 94,
             "runs": [
               94,
               94,
-              94,
-              92,
               94
             ]
           },
@@ -2302,8 +2232,6 @@
             "runs": [
               96,
               96,
-              96,
-              96,
               96
             ]
           },
@@ -2312,8 +2240,6 @@
             "median": 100,
             "min": 100,
             "runs": [
-              100,
-              100,
               100,
               100,
               100
@@ -2326,15 +2252,11 @@
             "runs": [
               100,
               100,
-              100,
-              100,
               100
             ]
           }
         },
         "lcpElements": [
-          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
-          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">"
@@ -2347,45 +2269,37 @@
             "runs": [
               0,
               0,
-              0,
-              0,
               0
             ]
           },
           "fcp": {
-            "max": 831.69,
-            "median": 733.167,
-            "min": 703.342,
+            "max": 719.143,
+            "median": 678.443,
+            "min": 677.288,
             "runs": [
-              717.543,
-              733.99,
-              703.342,
-              831.69,
-              733.167
+              677.288,
+              719.143,
+              678.443
             ]
           },
           "lcp": {
-            "max": 1621.594,
-            "median": 1523.705,
-            "min": 1491.644,
+            "max": 1510.283,
+            "median": 1487.398,
+            "min": 1475.794,
             "runs": [
-              1523.705,
-              1523.247,
-              1491.644,
-              1621.594,
-              1529.188
+              1475.794,
+              1510.283,
+              1487.398
             ]
           },
           "si": {
-            "max": 1328,
-            "median": 1218,
-            "min": 1169,
+            "max": 1184,
+            "median": 1152,
+            "min": 1148,
             "runs": [
-              1185,
-              1228,
-              1169,
-              1328,
-              1218
+              1152,
+              1184,
+              1148
             ]
           },
           "tbt": {
@@ -2393,8 +2307,6 @@
             "median": 0,
             "min": 0,
             "runs": [
-              0,
-              0,
               0,
               0,
               0
@@ -2406,28 +2318,24 @@
     "image-converter": {
       "mobile": {
         "benchmarkIndex": {
-          "max": 2363.5,
-          "median": 2350.5,
-          "min": 2340,
+          "max": 3393,
+          "median": 3383.5,
+          "min": 3346,
           "runs": [
-            2347,
-            2350.5,
-            2340,
-            2363.5,
-            2355
+            3393,
+            3383.5,
+            3346
           ]
         },
         "categories": {
           "performance": {
-            "max": 77,
-            "median": 76,
-            "min": 75,
+            "max": 78,
+            "median": 78,
+            "min": 76,
             "runs": [
               76,
-              77,
-              75,
-              76,
-              77
+              78,
+              78
             ]
           },
           "accessibility": {
@@ -2435,8 +2343,6 @@
             "median": 100,
             "min": 100,
             "runs": [
-              100,
-              100,
               100,
               100,
               100
@@ -2449,8 +2355,6 @@
             "runs": [
               100,
               100,
-              100,
-              100,
               100
             ]
           },
@@ -2461,15 +2365,11 @@
             "runs": [
               100,
               100,
-              100,
-              100,
               100
             ]
           }
         },
         "lcpElements": [
-          "<span class=\"flex items-center justify-center gap-x-2 [&amp;&gt;svg]:shrink-0\">",
-          "<span class=\"flex items-center justify-center gap-x-2 [&amp;&gt;svg]:shrink-0\">",
           "<span class=\"flex items-center justify-center gap-x-2 [&amp;&gt;svg]:shrink-0\">",
           "<span class=\"flex items-center justify-center gap-x-2 [&amp;&gt;svg]:shrink-0\">",
           "<span class=\"flex items-center justify-center gap-x-2 [&amp;&gt;svg]:shrink-0\">"
@@ -2482,45 +2382,37 @@
             "runs": [
               0,
               0,
-              0,
-              0,
               0
             ]
           },
           "fcp": {
-            "max": 3040.977,
-            "median": 2986.423,
-            "min": 2948.68,
+            "max": 2923.919,
+            "median": 2923.135,
+            "min": 2901.582,
             "runs": [
-              2986.423,
-              2972.941,
-              3040.977,
-              2948.68,
-              2995.357
+              2923.135,
+              2901.582,
+              2923.919
             ]
           },
           "lcp": {
-            "max": 4914.482,
-            "median": 4836.081,
-            "min": 4574.571,
+            "max": 4796.901,
+            "median": 4491.23,
+            "min": 4477.996,
             "runs": [
-              4839.986,
-              4574.571,
-              4914.482,
-              4836.081,
-              4583.1
+              4796.901,
+              4477.996,
+              4491.23
             ]
           },
           "si": {
-            "max": 3942,
-            "median": 3911,
-            "min": 3878,
+            "max": 3847,
+            "median": 3846,
+            "min": 3834,
             "runs": [
-              3878,
-              3911,
-              3942,
-              3887,
-              3926
+              3847,
+              3834,
+              3846
             ]
           },
           "tbt": {
@@ -2530,8 +2422,6 @@
             "runs": [
               0,
               0,
-              0,
-              0,
               0
             ]
           }
@@ -2539,15 +2429,13 @@
       },
       "desktop": {
         "benchmarkIndex": {
-          "max": 2362,
-          "median": 2340.5,
-          "min": 2337,
+          "max": 3411,
+          "median": 3389,
+          "min": 3340.5,
           "runs": [
-            2362,
-            2345.5,
-            2340,
-            2340.5,
-            2337
+            3389,
+            3411,
+            3340.5
           ]
         },
         "categories": {
@@ -2556,8 +2444,6 @@
             "median": 96,
             "min": 96,
             "runs": [
-              96,
-              96,
               96,
               96,
               96
@@ -2570,8 +2456,6 @@
             "runs": [
               100,
               100,
-              100,
-              100,
               100
             ]
           },
@@ -2580,8 +2464,6 @@
             "median": 100,
             "min": 100,
             "runs": [
-              100,
-              100,
               100,
               100,
               100
@@ -2594,15 +2476,11 @@
             "runs": [
               100,
               100,
-              100,
-              100,
               100
             ]
           }
         },
         "lcpElements": [
-          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
-          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">",
           "<p class=\"shrink-0 text-body-xs text-gray-400\">"
@@ -2615,45 +2493,37 @@
             "runs": [
               0,
               0,
-              0,
-              0,
               0
             ]
           },
           "fcp": {
-            "max": 737.126,
-            "median": 735.323,
-            "min": 696.778,
+            "max": 732.42,
+            "median": 701.775,
+            "min": 687.804,
             "runs": [
-              696.778,
-              704.8,
-              735.323,
-              737.126,
-              736.632
+              701.775,
+              732.42,
+              687.804
             ]
           },
           "lcp": {
-            "max": 1344.195,
-            "median": 1328.37,
-            "min": 1307.043,
+            "max": 1330.641,
+            "median": 1306.91,
+            "min": 1282.82,
             "runs": [
-              1307.043,
-              1323.583,
-              1328.37,
-              1344.195,
-              1343.585
+              1306.91,
+              1330.641,
+              1282.82
             ]
           },
           "si": {
-            "max": 1056,
-            "median": 1049,
-            "min": 1013,
+            "max": 1044,
+            "median": 1016,
+            "min": 999,
             "runs": [
-              1013,
-              1013,
-              1049,
-              1055,
-              1056
+              1016,
+              1044,
+              999
             ]
           },
           "tbt": {
@@ -2661,8 +2531,6 @@
             "median": 0,
             "min": 0,
             "runs": [
-              0,
-              0,
               0,
               0,
               0
@@ -2675,115 +2543,97 @@
   "usable": {
     "hash-generator": {
       "firstResult": {
-        "max": 7383.300000011921,
-        "median": 7228,
-        "min": 7152.100000023842,
+        "max": 7078.699999988079,
+        "median": 7058.300000011921,
+        "min": 7057.600000023842,
         "runs": [
-          7152.100000023842,
-          7228.699999988079,
-          7228,
-          7186,
-          7383.300000011921
+          7058.300000011921,
+          7057.600000023842,
+          7078.699999988079
         ]
       },
       "ready": {
-        "max": 5009.900000035763,
-        "median": 4987.199999988079,
-        "min": 4959.900000035763,
+        "max": 4902.300000011921,
+        "median": 4896.300000011921,
+        "min": 4895.099999964237,
         "runs": [
-          4959.900000035763,
-          5002.300000011921,
-          4987.199999988079,
-          4962.100000023842,
-          5009.900000035763
+          4895.099999964237,
+          4896.300000011921,
+          4902.300000011921
         ]
       },
       "repeatReady": {
-        "max": 1214.699999988079,
-        "median": 1158.1000000238419,
-        "min": 1096.800000011921,
+        "max": 1042.300000011921,
+        "median": 1031.8999999761581,
+        "min": 1030.3999999761581,
         "runs": [
-          1096.800000011921,
-          1158.1000000238419,
-          1151.199999988079,
-          1160.7999999523163,
-          1214.699999988079
+          1031.8999999761581,
+          1030.3999999761581,
+          1042.300000011921
         ]
       }
     },
     "escaped-json-stringifier": {
       "firstResult": {
-        "max": 5587.5,
-        "median": 5435.099999964237,
-        "min": 5415.700000047684,
+        "max": 5275.800000011921,
+        "median": 5275.600000023842,
+        "min": 5266.400000035763,
         "runs": [
-          5474.699999988079,
-          5417.599999964237,
-          5435.099999964237,
-          5415.700000047684,
-          5587.5
+          5266.400000035763,
+          5275.800000011921,
+          5275.600000023842
         ]
       },
       "ready": {
-        "max": 5033.899999976158,
-        "median": 4953.799999952316,
-        "min": 4938.800000011921,
+        "max": 4860.699999988079,
+        "median": 4858.699999988079,
+        "min": 4854.300000011921,
         "runs": [
-          4968.399999976158,
-          4953.799999952316,
-          4942.899999976158,
-          4938.800000011921,
-          5033.899999976158
+          4854.300000011921,
+          4858.699999988079,
+          4860.699999988079
         ]
       },
       "repeatReady": {
-        "max": 1207.6000000238419,
-        "median": 1167,
-        "min": 1147.699999988079,
+        "max": 1055.6000000238419,
+        "median": 1055.2999999523163,
+        "min": 1047.3999999761581,
         "runs": [
-          1167,
-          1148.699999988079,
-          1182.7999999523163,
-          1147.699999988079,
-          1207.6000000238419
+          1055.6000000238419,
+          1047.3999999761581,
+          1055.2999999523163
         ]
       }
     },
     "image-converter": {
       "firstResult": {
-        "max": 4843.400000035763,
-        "median": 4721.800000011921,
-        "min": 4454.700000047684,
+        "max": 4633,
+        "median": 4627.799999952316,
+        "min": 4345.600000023842,
         "runs": [
-          4495,
-          4792.099999964237,
-          4843.400000035763,
-          4721.800000011921,
-          4454.700000047684
+          4627.799999952316,
+          4345.600000023842,
+          4633
         ]
       },
       "ready": {
-        "max": 4478.800000011921,
-        "median": 4447.300000011921,
-        "min": 4151.600000023842,
+        "max": 4415.900000035763,
+        "median": 4412.599999964237,
+        "min": 4115.200000047684,
         "runs": [
-          4161.300000011921,
-          4457.800000011921,
-          4478.800000011921,
-          4447.300000011921,
-          4151.600000023842
+          4412.599999964237,
+          4115.200000047684,
+          4415.900000035763
         ]
       },
       "repeatReady": {
-        "max": 1169.5,
-        "median": 1103.6000000238419,
-        "min": 1084.6000000238419,
+        "max": 1032.2000000476837,
+        "median": 1032.1000000238419,
+        "min": 1025.8999999761581,
         "runs": [
-          1103.6000000238419,
-          1169.5,
-          1144.6000000238419,
-          1088.3999999761581,
-          1084.6000000238419
+          1025.8999999761581,
+          1032.1000000238419,
+          1032.2000000476837
         ]
       }
     }
