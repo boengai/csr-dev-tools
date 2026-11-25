@@ -357,6 +357,23 @@ home; leaving any other way keeps the saved input. A Tool's own children see
 Codec and Data URI draw their own tiles around `<ToolDialogShell>` and keep
 real dialogs on every route.
 
+## Head-stamped page
+
+A page whose static HTML carries that page's own title, description, Open
+Graph and Twitter text and URLs, and canonical link, with an empty root
+element. The client renders the whole body. The home page is one, and so is
+every Tool's `/tools/<key>` page; a Tool page's images, keywords and structured
+data are the home page's.
+
+## Body-prerendered page
+
+A page whose static HTML also contains the rendered body markup. The site has
+none. Whether the client hydrates that markup or replaces it is a separate
+choice.
+
+_Avoid_: "prerendered page" on its own, which does not say which of the two
+is meant.
+
 ## Tool dialog frame
 
 The page-level frame for a Tool: on the dashboard, a tile whose triggers open
@@ -1308,22 +1325,23 @@ Owns three concerns:
    one frame on mobile.
 2. **Subscription with cleanup** — listens for `change`, removes the
    listener on unmount or when `query` changes.
-3. **Prerender control via `ssrDefault`** — when `window` is absent
-   (Vite's prerender pass, Node tests, SSR), the initial value falls
-   back to `ssrDefault` (default `false`). Adopters whose layout differs
-   by viewport pick the *desktop* default explicitly so the prerendered
-   HTML matches the hydration value for the desktop majority — see
+3. **Fallback via `ssrDefault`** — when `window.matchMedia` is absent
+   (Node tests, jsdom without a `matchMedia` stub), the initial value
+   falls back to `ssrDefault` (default `false`). It never decides what
+   ships: every page is a [[Head-stamped page]], so no component is
+   rendered at build time and nothing hydrates. Adopters whose layout
+   differs by viewport still pick the *desktop* default explicitly — see
    [[DiagramEditor]]'s tablet gate for the canonical adopter.
 
 Today's adopters:
 
 - `<DbDiagram>` — `useMediaQuery('(min-width: 48rem)', true)`. The
-  `MobileBlocker` ships only on hydration when the viewport is sub-tablet;
-  `ssrDefault: true` keeps the prerender rendering the workspace.
+  `MobileBlocker` renders only when the viewport is sub-tablet;
+  `ssrDefault: true` renders the workspace where `matchMedia` is absent.
 - `<Sidebar>` — `useMediaQuery('(max-width: 767px)')`. The mobile width
   class is purely additive (`w-full` vs `w-[260px]`), so `ssrDefault: false`
-  (desktop layout assumed) is correct; the hydration step fixes the value
-  for mobile users without a layout flash.
+  (desktop layout assumed) is correct; in a browser the first render already
+  reads the real viewport, so mobile users see no layout flash.
 
 Both adopters query the Tailwind `tablet:` breakpoint (48rem ↔ 767px) —
 same boundary, opposite directions. The query string is spelled out at

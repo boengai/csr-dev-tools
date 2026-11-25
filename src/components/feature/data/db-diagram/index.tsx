@@ -183,9 +183,9 @@ const MobileBlocker = () => (
 // ---------------------------------------------------------------------------
 export const DbDiagram = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   // Match Tailwind's `tablet:` breakpoint (48rem) so the JS gate aligns with the
-  // CSS utility prefix used elsewhere in the codebase. `ssrDefault: true` keeps
-  // the prerender output rendering the workspace (desktop assumption) — same as
-  // the pre-extraction `useIsTabletOrLarger` did.
+  // CSS utility prefix used elsewhere in the codebase. `ssrDefault: true` renders
+  // the workspace where `matchMedia` is absent (desktop assumption) — same as the
+  // pre-extraction `useIsTabletOrLarger` did.
   const isTabletOrLarger = useMediaQuery('(min-width: 48rem)', true)
 
   return (
