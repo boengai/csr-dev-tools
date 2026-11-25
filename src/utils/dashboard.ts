@@ -1,36 +1,32 @@
+import { TOOL_ROUTES } from '@/constants/tool-routes'
 import type { ToolRegistryKey } from '@/types'
 
-const FEATURE_KEY_TO_REGISTRY_KEY: Record<string, ToolRegistryKey> = {
-  BASE64_ENCODER: 'base64-codec',
-  COLOR_CONVERTER: 'color-converter',
-  IMAGE_CONVERTOR: 'image-converter',
-  IMAGE_RESIZER: 'image-resizer',
-  PX_TO_REM: 'px-to-rem',
-  UNIX_TIMESTAMP: 'unix-timestamp',
-  'base64-encoder': 'base64-codec',
-}
+import { isRecord } from './restore-json'
 
-const REGISTRY_KEY_SET = new Set<string>(Object.values(FEATURE_KEY_TO_REGISTRY_KEY))
+const RENAMED_KEYS = new Map<unknown, ToolRegistryKey>([
+  ['BASE64_ENCODER', 'base64-codec'],
+  ['COLOR_CONVERTER', 'color-converter'],
+  ['IMAGE_CONVERTOR', 'image-converter'],
+  ['IMAGE_RESIZER', 'image-resizer'],
+  ['PX_TO_REM', 'px-to-rem'],
+  ['UNIX_TIMESTAMP', 'unix-timestamp'],
+  ['base64-encoder', 'base64-codec'],
+  ['toml-to-json-converter', 'json-to-toml-converter'],
+  ['xml-to-json-converter', 'json-to-xml-converter'],
+])
 
 /**
- * Migrates layout values from old feature keys to new registry keys.
- * - Old feature keys (e.g., BASE64_ENCODER) → new registry keys (e.g., 'base64-encoder')
- * - Already-valid registry keys → preserved as-is
- * - Unknown keys → cleared to null
- * - Null positions → preserved as null
+ * Migrates a stored layout of version 1 or older to current registry keys.
+ * - Feature keys (e.g., BASE64_ENCODER) and renamed registry keys → current registry keys
+ * - Current registry keys → preserved as-is
+ * - Unknown or non-text keys and null positions → null
+ * - Anything but an object → an empty layout
  */
-export const migrateLayoutValue = (value: Record<number, string | null>): Record<number, ToolRegistryKey | null> => {
+export const migrateLayoutValue = (value: unknown): Record<number, ToolRegistryKey | null> => {
   const migrated: Record<number, ToolRegistryKey | null> = {}
-  for (const [position, key] of Object.entries(value)) {
-    const legacyKey =
-      key !== null && Object.hasOwn(FEATURE_KEY_TO_REGISTRY_KEY, key) ? FEATURE_KEY_TO_REGISTRY_KEY[key] : undefined
-    if (legacyKey !== undefined) {
-      migrated[Number(position)] = legacyKey
-    } else if (key !== null && REGISTRY_KEY_SET.has(key)) {
-      migrated[Number(position)] = key as ToolRegistryKey
-    } else {
-      migrated[Number(position)] = null
-    }
+  for (const [position, stored] of Object.entries(isRecord(value) ? value : {})) {
+    const current = RENAMED_KEYS.get(stored) ?? stored
+    migrated[Number(position)] = TOOL_ROUTES.find(({ key }) => key === current)?.key ?? null
   }
   return migrated
 }
