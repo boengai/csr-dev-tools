@@ -285,8 +285,9 @@ were folded in; see ADR-0024).
 With `storageKey` set, the hook:
 
 1. **Seeds once on mount** — `readJsonStorage(storageKey, initial)` in a
-   lazy `useState` initializer. Absent or corrupt JSON falls back to
-   `initial`. Later changes to `storageKey` do not re-read.
+   lazy `useState` initializer. The stored JSON is laid over `initial`
+   (below); absent or unparseable JSON gives `initial`. Later changes to
+   `storageKey` do not re-read.
 2. **Writes back trailing-debounced** — `setInput` / `setFields` queue a
    write on the same delay as the pipeline (`debounceMs`, default 300ms),
    so a burst of keystrokes costs one `JSON.stringify` + `setItem`.
@@ -312,23 +313,51 @@ merge) are untouched — persistence lives beside the pipeline, not in it.
 A clear to empty still persists even though compute short-circuits on
 `isEmpty`.
 
+**The restore rule** (`restoreJson`, `src/utils/restore-json.ts`;
+ADR-0030). A stored value is laid over its default: a value of the
+default's JSON type is kept, and anything missing or of another type
+becomes the default. This goes field by field through objects and item by
+item through lists:
+
+- A field the default does not name is kept as stored and written back
+  with the bag.
+- A list item that is not of the type of the default's first item is
+  dropped. A stored empty list stays empty.
+- Where the default is a number, text is kept too (`indent: 'tab'`, or a
+  count the Tool itself reports).
+
+Only the type is checked: an unknown mode or an out-of-range number still
+reaches the Tool. Reading never writes, so a damaged part stays in storage
+until the next write of that key. Three limits:
+
+- A default of `null` never restores. No adopter has one.
+- An empty default list restores text items only.
+- Nested fields the default omits are unchecked, so the Tool must guard
+  them (Crontab's `isFieldConfig`). At the top level the types prevent
+  this: `initial` is `Required<F>` on `useToolFields` and on the
+  Transformer and Generator shells.
+
+The rule runs inside `readJsonStorage`, so it also covers
+`useInputLocalStorage`, the [[Codec shell]]'s sources and Timezone
+Converter's favorites. The two Zustand stores call it as they rehydrate.
+`settings` is laid over its defaults whole. `feature_layout` is restored
+slot by slot, because a closed widget is saved as `null`: `null` and text
+are kept, and any other slot takes its default, if it has one. A layout
+saved at version 1 or older is migrated first (`migrateLayoutValue`): a
+key that still exists is kept, a renamed key becomes its current name, and
+any other key becomes `null`.
+
 Today's adopters with `storageKey`:
 
-- `useToolInput`: `ProtobufToJson`, `MermaidRenderer`,
-  `GraphqlSchemaViewer`, and the [[Markup to PDF shell]].
-- `useToolFields`: `JsonSchemaValidator`, `JsonToTypeScript`,
-  `TimezoneConverter`, the [[Transformer shell]] and the
-  [[Comparator shell]].
+- `useToolInput`: `ProtobufToJson`, `GraphqlSchemaViewer`, and the
+  [[Markup to PDF shell]].
+- `useToolFields`: the [[Transformer shell]], the [[Comparator shell]]
+  and the [[Generator shell]].
 
-`TimezoneConverter` is the partial-persistence shape: its
-persisted bag holds the converter inputs, but `dateInput`/`timeInput`
-are overridden with "now" on mount via a follow-up
-`setFieldsImmediate({ dateInput, timeInput })` — the documented pattern
-for "persist some fields, recompute others on each mount."
-`MermaidRenderer` absorbs a [[Tool handoff]] prefill on mount via its
-own `useMountOnce`, which overrides the hook's autorun by calling
-`setInputImmediate(prefill)`; this relies on the hook's `useMountOnce`
-being registered (and so firing) before the component's own.
+A [[Tool handoff]] prefill (the Transformer shell's `prefill`) is applied
+in the shell's own `useMountOnce` and overrides the hook's autorun. This
+relies on the hook's `useMountOnce` being registered (and so firing)
+before the shell's.
 
 `ProtobufCodec` deliberately does NOT adopt `storageKey` (per ADR-0005).
 Its shape — one persisted 5-field bag in which only `schema` drives
@@ -453,8 +482,10 @@ never written back.
 
 The shell owns: the in-dialog mode toggle, the dialog, per-mode source
 persistence (localStorage), mount-time hydration, mode switching, and the
-two-column source-input / result-output layout. The Tool's role narrows to
-its per-direction `compute` function plus per-direction labels/placeholders.
+two-column source-input / result-output layout. A stored mode the Tool
+doesn't have opens the first mode, and stays stored until the user
+switches. The Tool's role narrows to its per-direction `compute` function
+plus per-direction labels/placeholders.
 
 Tools with extras (entity-mode select, double-escape checkbox) plug into the
 `sourceToolbarSlot` render-prop, which receives `{ mode, recompute }` — the
@@ -640,7 +671,9 @@ localStorage. `JwtDecoder`, `CertificateDecoder` and `SshKeyFingerprint`
 also opt out: they never saved their input, and tokens and keys are not
 newly persisted. `JsonpathEvaluator` moved to
 `csr-dev-tools-jsonpath-evaluator-v2` because its old bag
-(`{ jsonInput, expression }`) has no `source`. `JsonToTypeScript` kept its pre-shell key
+(`{ jsonInput, expression }`) has no `source`; on mount it moves that bag
+from its old key once, unless the new key is already set.
+`JsonToTypeScript` kept its pre-shell key
 (`csr-dev-tools-json-to-typescript`, same bag shape); the other moved
 Tools had no key before and now save under `csr-dev-tools-<tool key>`.
 The pre-migration JSON Formatter key
@@ -649,12 +682,13 @@ favor of `csr-dev-tools-json-formatter` (JSON-bag shape) — reusing the old
 key would have corrupted on first read because the shape is different.
 Mermaid's raw-string key (`csr-dev-tools-mermaid-renderer-code`) was
 retired the same way for `csr-dev-tools-mermaid-renderer`. JSON Schema
-Validator and Timezone Converter kept their keys: each rewrites a
-pre-shell bag (`{ jsonData, jsonSchema }`; `{ dateInput, timeInput,
-sourceTz, targetTzIds }`) into the new shape once, before the shell
-reads it. Markdown, SVG Viewer, QR Code, Base64 → Image and Unix
-Timestamp saved nothing before the shell and pass `persistInput={false}`
-to keep it that way.
+Validator and Timezone Converter kept their keys. JSON Schema Validator
+moves a pre-shell `jsonData` / `jsonSchema` into `source` / `schema` once,
+before the shell reads them. A pre-shell Timezone bag (`{ dateInput,
+timeInput, sourceTz, targetTzIds }`) needs no migration: it reads as an
+empty `source` with its zones. Markdown, SVG Viewer, QR Code, Base64 →
+Image and Unix Timestamp saved nothing before the shell and pass
+`persistInput={false}` to keep it that way.
 
 The shell owns: the [[Tool dialog frame]] wiring, the source `FieldForm`
 panel (`sourceKind`: `'code'` (default, CodeMirror), `'textarea'` or
@@ -800,9 +834,10 @@ empty state).
 "Generated N …" success toasts were dropped: the new output is on screen,
 so the toast only repeats it. Toasts stay for action outcomes (copied,
 downloaded). Tools clamp out-of-range numbers (a cleared number box
-emits `0`). Compute rejections shown in the status slot are corrupt saved
-options (a non-number, an unknown unit or key size, a damaged grid) and
-typed options the Tool can't use (a bad hex in Color Palette, a missing or
+emits `0`). Compute rejections shown in the status slot are saved options
+that pass the restore rule ([[Persisted tool input]]) but can't be used (an
+unknown unit or key size, text for a count, a damaged grid) and typed
+options the Tool can't use (a bad hex in Color Palette, a missing or
 over-4096 dimension in Placeholder Image).
 
 Today's adopters — `random`: `UuidGenerator`, `PasswordGenerator`
@@ -1726,6 +1761,10 @@ saveDiagram, deleteDiagram, generateId }`) decouples the editor from
 localStorage. `localStorageDiagramStorage` is the production adapter;
 `createInMemoryDiagramStorage()` is the test double — counters on `saves`
 and `deletes` make autosave behavior unit-testable without DOM.
+
+Reads from localStorage salvage item by item and never write
+(`src/diagram/codecs/restore.ts`, built on the restore rule of [[Persisted
+tool input]]); saving one diagram leaves the others as found.
 
 ## Diagram export panel
 

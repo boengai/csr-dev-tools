@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware'
 
 import type { UsePersistFeatureLayout } from '@/types'
 import { migrateLayoutValue } from '@/utils'
+import { restoreJson } from '@/utils/restore-json'
 
 export const usePersistFeatureLayout: UseBoundStore<StoreApi<UsePersistFeatureLayout>> =
   create<UsePersistFeatureLayout>()(
@@ -22,6 +23,12 @@ export const usePersistFeatureLayout: UseBoundStore<StoreApi<UsePersistFeatureLa
         },
       }),
       {
+        // `restoreJson` per slot: a closed widget is saved as `null`, which no default shows.
+        merge: (stored, current) => {
+          const { value } = restoreJson(stored, { value: {} })
+          const slots = Object.entries(value).filter(([, key]) => key === null || typeof key === 'string')
+          return { ...current, value: { ...current.value, ...Object.fromEntries(slots) } }
+        },
         migrate: (persistedState, version) => {
           if (version <= 1) {
             const state = persistedState as UsePersistFeatureLayout

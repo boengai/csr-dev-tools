@@ -19,7 +19,7 @@ const TYPE_MAP: Record<ColumnType, Record<SqlDialect, string>> = {
 }
 
 export function mapColumnType(type: ColumnType, dialect: SqlDialect): string {
-  return TYPE_MAP[type][dialect]
+  return TYPE_MAP[type]?.[dialect] ?? type
 }
 
 export function generateCreateTable(table: DiagramSchema['tables'][0], dialect: SqlDialect): string {

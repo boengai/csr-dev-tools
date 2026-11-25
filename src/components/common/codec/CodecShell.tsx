@@ -21,11 +21,13 @@ const writeSource = (mode: string, value: string, prefix?: string): void =>
 
 const DEFAULT_ERROR = 'Conversion failed — please check your input'
 
+const findMode = <M extends string>(modes: CodecModes<M>, key: string | null): M | undefined =>
+  modes.find((m) => m.key === key)?.key
+
 /** `?mode=<key>` deep link, validated against the tool's own modes. */
-const readModeParam = <M extends string>(modes: CodecModes<M>): M | null => {
-  if (typeof window === 'undefined') return null
-  const param = new URLSearchParams(window.location.search).get('mode')
-  return modes.find((m) => m.key === param)?.key ?? null
+const readModeParam = <M extends string>(modes: CodecModes<M>): M | undefined => {
+  if (typeof window === 'undefined') return undefined
+  return findMode(modes, new URLSearchParams(window.location.search).get('mode'))
 }
 
 export function CodecShell<M extends string, R extends CodecOutput = CodecOutput>({
@@ -53,7 +55,7 @@ export function CodecShell<M extends string, R extends CodecOutput = CodecOutput
   // the tool route wins over the persisted mode for this mount only — it is
   // never written back to the URL.
   const [initialBag] = useState(() => {
-    const initialMode = (autoOpen ? readModeParam(modes) : null) ?? persistedMode
+    const initialMode = (autoOpen ? readModeParam(modes) : undefined) ?? findMode(modes, persistedMode) ?? modes[0].key
     return { mode: initialMode, source: persistSource ? readSource(initialMode, sourceKeyPrefix) : '' }
   })
 
