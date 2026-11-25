@@ -58,7 +58,7 @@ describe('MarkdownTableGenerator', () => {
   })
 
   it('recovers from a damaged saved table: the editor shows a fresh grid and an edit replaces it', async () => {
-    localStorage.setItem('csr-dev-tools-markdown-table-generator', JSON.stringify({ cols: 3, data: 'x', rows: 3 }))
+    localStorage.setItem('csr-dev-tools-markdown-table-generator', JSON.stringify({ cols: 3, data: [['x']], rows: 3 }))
     render(<MarkdownTableGenerator autoOpen />)
     await flush()
     expect(screen.getByRole('alert').textContent).toMatch(/damaged/)
@@ -68,5 +68,24 @@ describe('MarkdownTableGenerator', () => {
     await flush(300)
     expect(screen.queryByRole('alert')).toBeNull()
     expect(markdown()).toContain('ok')
+  })
+
+  it('reports an alignment named after an object built-in as a damaged table', async () => {
+    localStorage.setItem(
+      'csr-dev-tools-markdown-table-generator',
+      JSON.stringify({
+        alignments: ['__proto__', 'left'],
+        cols: 2,
+        data: [
+          ['A', 'B'],
+          ['1', '2'],
+        ],
+        rows: 2,
+      }),
+    )
+    render(<MarkdownTableGenerator autoOpen />)
+    await flush()
+    expect(screen.getByRole('alert').textContent).toMatch(/damaged/)
+    expect(markdown()).not.toContain('| A')
   })
 })

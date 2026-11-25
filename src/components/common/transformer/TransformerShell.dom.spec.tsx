@@ -1,9 +1,10 @@
 /**
  * @vitest-environment jsdom
  */
-import { act, fireEvent, render, screen, within } from '@testing-library/react'
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { act, fireEvent, render, screen, waitFor, within } from '@testing-library/react'
+import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { CssFormatter } from '@/components/feature/code/CssFormatter'
 import type { TransformerField, TransformerImage } from '@/types'
 
 import { FieldForm } from '../form'
@@ -43,6 +44,12 @@ const output = () => {
   if (!out) throw new Error('no output region')
   return out
 }
+
+beforeAll(() => {
+  // CodeMirror measures text ranges; jsdom has no layout.
+  Range.prototype.getClientRects ??= () => [] as unknown as DOMRectList
+  Range.prototype.getBoundingClientRect ??= () => new DOMRect()
+})
 
 beforeEach(() => {
   localStorage.clear()
@@ -176,6 +183,17 @@ describe('TransformerShell — controls', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Open' }))
 
     expect(screen.getByTestId('state').textContent).toBe('b||')
+  })
+})
+
+describe('TransformerShell — damaged saved input', () => {
+  it('keeps the good fields: a saved tab indent still formats beside a bad mode', async () => {
+    // The formatter reads its wasm from disk.
+    vi.useRealTimers()
+    localStorage.setItem('csr-dev-tools-css-formatter', JSON.stringify({ indent: 'tab', mode: 7, source: 'a{b:c}' }))
+    render(<CssFormatter autoOpen />)
+
+    await waitFor(() => expect(output().querySelector('pre')?.textContent).toContain('a {\n\tb: c'))
   })
 })
 

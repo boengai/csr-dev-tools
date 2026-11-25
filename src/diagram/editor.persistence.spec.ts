@@ -1,12 +1,14 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { entry, nth } from '@/test/nth'
-import type { DiagramSchema } from '@/types'
+import type { DiagramSchema, DiagramStore, RelationshipType, TableColumn } from '@/types'
+import { isRecord } from '@/utils/restore-json'
 
 import { DiagramStorageError } from './codecs/storage'
 import { DiagramEditor } from './editor'
+import { documentToSchema } from './operations/export'
 import { createInitialDocument } from './state'
-import { createInMemoryDiagramStorage } from './storage'
+import { createInMemoryDiagramStorage, localStorageDiagramStorage } from './storage'
 
 const createTestDoc = () => createInitialDocument()
 
@@ -491,4 +493,159 @@ describe('DiagramEditor storage failures', () => {
     expect(storage.loadDiagram('d1')).not.toBe(null)
     expect(storage.loadIndex()).toHaveLength(1)
   })
+})
+
+describe('DiagramEditor on a damaged store', () => {
+  const STORAGE_KEY = 'csr-dev-tools-db-diagrams'
+  const BACKUP_KEY = 'csr-dev-tools-db-diagrams-corrupt-backup'
+  // `undefined` deletes what it replaces.
+  const JUNK: Array<unknown> = [null, 42, 'junk', 'toString', [], [null, 7, {}], {}, { toString: 1 }, true, undefined]
+
+  const column = (id: string, type: TableColumn['type']): TableColumn => ({
+    constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: true, isUnique: true },
+    id,
+    name: `column ${id}`,
+    type,
+  })
+  const relationship = (id: string, relationType: RelationshipType): DiagramSchema['relationships'][number] => ({
+    id,
+    relationType,
+    sourceColumnId: 'c_1',
+    sourceTableId: 't_1',
+    targetColumnId: 'c_0',
+    targetTableId: 't_0',
+  })
+  // Each list holds ids the restore would make for its other items, as a
+  // diagram saved after an earlier restore does.
+  const SHOP: DiagramSchema = {
+    relationships: [relationship('r_1', '1:N'), relationship('r_0', 'N:M')],
+    tables: [
+      { columns: [column('c_1', 'UUID'), column('c_0', 'SERIAL')], id: 't_1', name: 'users', position: { x: 0, y: 0 } },
+      { columns: [column('c_0', 'INT')], id: 't_0', name: 'orders', position: { x: 300, y: 0 } },
+    ],
+  }
+  const STORE: DiagramStore = {
+    diagrams: { blog: usersSchema(), shop: SHOP },
+    index: ['blog', 'shop'].map((id, i) => ({
+      createdAt: '2026-05-01T00:00:00Z',
+      id,
+      name: id,
+      tableCount: 2,
+      updatedAt: `2026-05-0${i + 1}T00:00:00Z`,
+    })),
+  }
+
+  const pathsIn = (value: unknown): Array<Array<string>> =>
+    typeof value === 'object' && value !== null
+      ? [[], ...Object.entries(value).flatMap(([key, child]) => pathsIn(child).map((path) => [key, ...path]))]
+      : [[]]
+
+  const damage = (value: unknown, [key, ...rest]: Array<string>, junk: unknown): unknown => {
+    if (key === undefined) return junk
+    const next = Object.entries(value as object).map(([k, child]) => [k, k === key ? damage(child, rest, junk) : child])
+    return Array.isArray(value)
+      ? next.map(([, child]) => child).filter((child) => child !== undefined)
+      : Object.fromEntries(next)
+  }
+
+  const stored = new Map<string, string>()
+  const setItem = vi.fn((key: string, value: string) => stored.set(key, value))
+
+  const seed = (raw: string | undefined): void => {
+    stored.clear()
+    if (raw !== undefined) stored.set(STORAGE_KEY, raw)
+    setItem.mockClear()
+  }
+  const parse = (raw: string | undefined): unknown => (raw === undefined ? null : JSON.parse(raw))
+  const diagramsIn = (raw: string | undefined): unknown => {
+    const store = parse(raw)
+    return isRecord(store) ? store.diagrams : undefined
+  }
+
+  const openEditor = () =>
+    new DiagramEditor({ storage: { ...localStorageDiagramStorage, generateId: () => 'new-diagram' } })
+
+  const expectUniqueIds = (items: Array<{ id: string }>) => {
+    expect(new Set(items.map(({ id }) => id)).size).toBe(items.length)
+  }
+
+  const exportEverything = (editor: DiagramEditor) => {
+    const exported = documentToSchema(editor.getDocument())
+    expectUniqueIds(exported.tables)
+    expectUniqueIds(exported.relationships)
+    for (const { columns } of exported.tables) expectUniqueIds(columns)
+    editor.toDbml()
+    for (const dialect of ['mysql', 'postgresql', 'sqlite'] as const) editor.toSql(dialect)
+    editor.toMermaid()
+    editor.toTypeScript()
+  }
+
+  const readEverything = (raw: string | undefined): Array<string> => {
+    seed(raw)
+    const editor = openEditor()
+    editor.bootstrap()
+    exportEverything(editor)
+    const ids = editor.listDiagrams().map(({ id }) => id)
+    for (const id of ids) {
+      editor.loadDiagram(id)
+      exportEverything(editor)
+    }
+    expect(setItem).not.toHaveBeenCalled()
+    return ids
+  }
+
+  const editDiagram = (raw: string | undefined, id: string) => {
+    seed(raw)
+    const editor = openEditor()
+    editor.loadDiagram(id)
+    const tablesBefore = editor.getDocument().tableOrder
+    const added = editor.addTable({ name: 'added' })
+    editor.flush()
+    expect(editor.getStorageStatus()).toBe('ok')
+    expect(tablesBefore).not.toContain(added)
+
+    const savedId = editor.getDocument().diagramId ?? ''
+    editor.renameDiagram(savedId, 'Renamed')
+    expect(editor.getStorageStatus()).toBe('ok')
+
+    const reopened = openEditor()
+    reopened.loadDiagram(savedId)
+    expect(reopened.getDocument()).toMatchObject({
+      diagramId: savedId,
+      diagramName: 'Renamed',
+      tableOrder: [...tablesBefore, added],
+    })
+
+    const before = diagramsIn(raw)
+    if (isRecord(before)) {
+      expect(diagramsIn(stored.get(STORAGE_KEY))).toEqual({ ...before, [savedId]: expect.anything() })
+    } else {
+      expect(stored.get(BACKUP_KEY)).toBe(raw)
+    }
+  }
+
+  beforeEach(() => {
+    vi.useFakeTimers({ now: new Date('2026-06-01T00:00:00Z') })
+    vi.stubGlobal('localStorage', { getItem: (key: string) => stored.get(key) ?? null, setItem })
+  })
+  afterEach(() => {
+    vi.useRealTimers()
+    vi.unstubAllGlobals()
+  })
+
+  it.each(pathsIn(STORE).map((path) => ({ path, where: path.join('.') || 'the whole store' })))(
+    'reads without writing, then saves an edit, whatever is stored at $where',
+    ({ path }) => {
+      for (const junk of JUNK) {
+        const raw = JSON.stringify(damage(STORE, path, junk)) as string | undefined
+        expect(
+          () => {
+            const ids = readEverything(raw)
+            for (const id of [...ids, 'not-listed']) editDiagram(raw, id)
+          },
+          `stored: ${JSON.stringify(junk) ?? 'nothing'}`,
+        ).not.toThrow()
+      }
+    },
+  )
 })

@@ -87,7 +87,7 @@ journey
     New result: 5: Shell
     Press Generate or ⌘↵ for another (random): 5: User
   section Bad options
-    Saved options are corrupt: 2: User
+    Saved options can't be used: 2: User
     Status slot shows why; output clears: 4: Shell
   section Leave
     Copy the output from its label: 5: User
