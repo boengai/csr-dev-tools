@@ -1,0 +1,33 @@
+name: Tool Freeze
+
+on:
+  pull_request:
+    branches: [main]
+    # edited: changing a pull request's base branch to main must run this.
+    types: [opened, synchronize, reopened, edited]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: tool-freeze-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  tool-freeze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      # Not HEAD^1: the merge commit can still be on the old base after a base change.
+      - name: Compare tool keys with main
+        run: |
+          git fetch --depth=1 origin main
+          .github/scripts/check-tool-freeze.sh FETCH_HEAD

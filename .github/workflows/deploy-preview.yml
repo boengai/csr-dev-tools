@@ -1,0 +1,79 @@
+name: Deploy to Cloudflare Pages Preview
+
+# No pull_request trigger, so a fork can never reach the Cloudflare secrets.
+on:
+  push:
+    branches: [develop, spike/dioxus]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: preview-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    name: Deploy
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "24"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            wasm/target
+          key: rust-${{ runner.os }}-${{ hashFiles('wasm/Cargo.lock') }}
+          restore-keys: |
+            rust-${{ runner.os }}-
+
+      - name: Install wasm-pack
+        run: cargo install wasm-pack --locked
+
+      - name: Install wasm-opt (binaryen)
+        run: |
+          curl -sSL https://github.com/WebAssembly/binaryen/releases/download/version_129/binaryen-version_129-x86_64-linux.tar.gz | tar xz -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP/binaryen-version_129/bin" >> "$GITHUB_PATH"
+
+      - name: Build
+        run: pnpm run build
+
+      # ponytail: transformers.js loads ORT wasm from jsdelivr at runtime; the bundled copy
+      # (>25 MiB) is dead weight and exceeds the Pages per-file limit.
+      - name: Drop unused ONNX Runtime wasm
+        run: rm -f dist/assets/ort-wasm-*.wasm
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=csr-dev-tools --branch=${{ github.ref_name }}
+
+      - name: Check the preview is not indexed
+        env:
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          # Pages serves branch a/b at the alias a-b.
+          curl -sSI --fail --retry 10 --retry-delay 5 --retry-all-errors \
+            "https://${BRANCH//\//-}.csr-dev-tools.pages.dev/" | grep -i '^x-robots-tag:.*noindex'
