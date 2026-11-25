@@ -356,6 +356,23 @@ describe('CodecShell — mode persistence', () => {
   })
 })
 
+describe('CodecShell — unknown stored mode', () => {
+  it('opens the first mode with its saved source, and leaves the stored mode alone', async () => {
+    localStorage.setItem('csr-dev-tools-test-mode', JSON.stringify('zzz'))
+    localStorage.setItem('csr-dev-tools-a-to-b-source', JSON.stringify('hello'))
+    const compute = vi.fn(upperCompute)
+    render(<CodecShell autoOpen compute={compute} initialResult={{ output: '' }} modes={MODES} modeStorageKey="test" />)
+    await act(async () => {
+      await vi.advanceTimersByTimeAsync(1)
+    })
+
+    expect(compute).toHaveBeenLastCalledWith({ mode: 'a-to-b', source: 'hello' }, { signal: expect.any(AbortSignal) })
+    expect(screen.getByText('HELLO')).toBeTruthy()
+    expect(screen.getByRole('button', { name: 'A → B mode' }).getAttribute('aria-pressed')).toBe('true')
+    expect(localStorage.getItem('csr-dev-tools-test-mode')).toBe('"zzz"')
+  })
+})
+
 describe('CodecShell — parse-error narration', () => {
   beforeEach(() => {
     vi.mocked(narrateParseError).mockReset()
@@ -496,6 +513,16 @@ describe('CodecShell — ?mode= deep link', () => {
 
     expect(screen.getByText('B Input')).toBeTruthy()
     expect(screen.getByRole('button', { name: 'B → A mode' }).getAttribute('aria-pressed')).toBe('true')
+  })
+
+  it('lets ?mode= win over an unknown stored mode', () => {
+    localStorage.setItem('csr-dev-tools-test-mode', JSON.stringify('zzz'))
+    window.history.replaceState(null, '', '/tools/test?mode=b-to-a')
+    render(
+      <CodecShell autoOpen compute={upperCompute} initialResult={{ output: '' }} modes={MODES} modeStorageKey="test" />,
+    )
+
+    expect(screen.getByText('B Input')).toBeTruthy()
   })
 
   it('ignores ?mode= on a Codec that was not auto-opened', () => {

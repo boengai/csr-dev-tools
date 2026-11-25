@@ -114,6 +114,12 @@ describe('db-diagram-sql', () => {
       expect(mapColumnType('BLOB', 'mysql')).toBe('BLOB')
       expect(mapColumnType('BLOB', 'sqlite')).toBe('BLOB')
     })
+
+    it.each(['CHAR', 'toString', '__proto__'])('keeps a type it does not know: %s', (type) => {
+      for (const dialect of ['mysql', 'postgresql', 'sqlite'] as const) {
+        expect(mapColumnType(type as ColumnType, dialect)).toBe(type)
+      }
+    })
   })
 
   describe('generateCreateTable', () => {

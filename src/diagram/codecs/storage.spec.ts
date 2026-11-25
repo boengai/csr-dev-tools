@@ -272,4 +272,200 @@ describe('db-diagram-storage', () => {
       expect(stored.diagrams['diagram-1']).toEqual(makeSampleSchema())
     })
   })
+
+  describe('partly damaged store', () => {
+    const DAMAGED = {
+      diagrams: {
+        a: {
+          relationships: [{ id: 'r', sourceTableId: 't2', targetTableId: 'gone' }],
+          tables: [{ columns: [{ name: 'a', type: 'CHAR' }, 7], name: 'users' }, { columns: 'x', id: 't2' }, null],
+        },
+        b: null,
+        c: {},
+      },
+      index: 7,
+    }
+    const column = (id: string, name: string) => ({ ...nth(nth(makeSampleSchema().tables, 0).columns, 0), id, name })
+    const table = (id: string, columns: Array<unknown>) => ({ columns, id, name: id, position: { x: 1, y: 2 } })
+    const seed = (store: unknown) => mockStorage.set(STORAGE_KEY, JSON.stringify(store))
+    const loadSeeded = (schema: unknown): DiagramSchema => {
+      seed({ diagrams: { a: schema }, index: [] })
+      const loaded = loadDiagram('a')
+      if (!loaded) throw new Error('Expected the seeded diagram to load')
+      return loaded
+    }
+
+    it('keeps the readable tables and columns and fills in the rest', () => {
+      seed(DAMAGED)
+      expect(loadDiagram('a')).toEqual({
+        relationships: [],
+        tables: [
+          {
+            columns: [
+              {
+                constraints: { isForeignKey: false, isNullable: false, isPrimaryKey: false, isUnique: false },
+                id: 'c_0',
+                name: 'a',
+                type: 'CHAR',
+              },
+            ],
+            id: 't_0',
+            name: 'users',
+            position: { x: 0, y: 0 },
+          },
+          { columns: [], id: 't2', name: 'table', position: { x: 0, y: 0 } },
+        ],
+      })
+    })
+
+    it.each([[null], [42], ['text'], [true], [[]], [[{}]]])('does not open %j stored as a diagram', (diagram) => {
+      seed({ diagrams: { b: diagram }, index: [] })
+      expect(loadDiagram('b')).toBeNull()
+    })
+
+    it('opens a diagram without lists as an empty one', () => {
+      seed(DAMAGED)
+      expect(loadDiagram('c')).toEqual({ relationships: [], tables: [] })
+    })
+
+    it('lists again the readable diagrams whose index entries were lost', () => {
+      seed(DAMAGED)
+      expect(loadDiagramIndex().map(({ id }) => id)).toEqual(['a', 'c'])
+    })
+
+    it('keeps the good index entries beside damaged ones', () => {
+      const good = nth(makeSampleIndex(), 0)
+      seed({ diagrams: { 'diagram-1': {}, lost: {} }, index: [null, { name: 'no id' }, good, { id: 'bare', name: 7 }] })
+      expect(loadDiagramIndex()).toEqual([
+        good,
+        expect.objectContaining({ id: 'bare', name: 'Untitled Diagram' }),
+        expect.objectContaining({ id: 'lost', name: 'Untitled Diagram' }),
+      ])
+    })
+
+    it('lists a lost diagram as older than the known ones', () => {
+      const good = nth(makeSampleIndex(), 0)
+      seed({ diagrams: { 'diagram-1': {}, lost: {} }, index: [good] })
+      expect(nth(loadDiagramIndex(), 1).updatedAt < good.updatedAt).toBe(true)
+    })
+
+    it("still lists a diagram whose entry was relabelled with another diagram's id", () => {
+      seed({
+        diagrams: { a: {}, b: {} },
+        index: [
+          { id: 'b', name: 'A' },
+          { id: 'b', name: 'B' },
+        ],
+      })
+      expect(loadDiagramIndex().map(({ id, name }) => [id, name])).toEqual([
+        ['b', 'A'],
+        ['b', 'B'],
+        ['a', 'Untitled Diagram'],
+      ])
+    })
+
+    it('never writes while reading', () => {
+      seed(DAMAGED)
+      localStorageMock.setItem.mockClear()
+      loadDiagramIndex()
+      for (const id of ['a', 'b', 'c']) loadDiagram(id)
+      expect(localStorageMock.setItem).not.toHaveBeenCalled()
+      expect(mockStorage.get(STORAGE_KEY)).toBe(JSON.stringify(DAMAGED))
+    })
+
+    it('leaves the damaged diagrams as stored when another one is saved', () => {
+      seed(DAMAGED)
+      saveDiagram('c', makeSampleSchema())
+
+      const stored: DiagramStore = JSON.parse(mockStorage.get(STORAGE_KEY)!)
+      expect(stored.diagrams).toEqual({ ...DAMAGED.diagrams, c: makeSampleSchema() })
+      expect(mockStorage.has(BACKUP_KEY)).toBe(false)
+    })
+
+    it('keeps store fields it does not know when a diagram is saved', () => {
+      seed({ diagrams: {}, index: [], later: 1 })
+      saveDiagram('c', makeSampleSchema())
+      expect(JSON.parse(mockStorage.get(STORAGE_KEY)!).later).toBe(1)
+    })
+
+    it('reads a constraint that is not stored as not set', () => {
+      const schema = loadSeeded({
+        tables: [table('t1', [{ ...column('c1', 'id'), constraints: { isPrimaryKey: true } }])],
+      })
+      expect(nth(nth(schema.tables, 0).columns, 0).constraints).toEqual({
+        isForeignKey: false,
+        isNullable: false,
+        isPrimaryKey: true,
+        isUnique: false,
+      })
+    })
+
+    it('never gives an item without an id the id of another item', () => {
+      const schema = loadSeeded({
+        relationships: [
+          { sourceColumnId: 'c_0', sourceTableId: 't_0', targetColumnId: 'c_1', targetTableId: 't_0' },
+          { id: 'r_0', sourceColumnId: 'c_0', sourceTableId: 't_0', targetColumnId: 'c_1', targetTableId: 't_0' },
+        ],
+        tables: [
+          { name: 'users' },
+          table('t_0', [
+            { name: 'email' },
+            column('c_0', 'id'),
+            column('c_1', 'age'),
+            column('c_0_', 'x'),
+            { name: 'phone' },
+          ]),
+        ],
+      })
+
+      const [users, orders] = schema.tables
+      expect(users).toMatchObject({ name: 'users' })
+      expect(orders).toMatchObject({ id: 't_0', name: 't_0' })
+      expect(users?.id).not.toBe('t_0')
+      expect(new Set(orders?.columns.map(({ id }) => id)).size).toBe(5)
+      expect(new Set(schema.relationships.map(({ id }) => id)).size).toBe(2)
+    })
+
+    it('keeps a relationship to a table and column whose stored id is blank', () => {
+      const link = {
+        id: 'r',
+        relationType: '1:N',
+        sourceColumnId: '',
+        sourceTableId: '',
+        targetColumnId: 'c2',
+        targetTableId: 't2',
+      }
+      const schema = loadSeeded({
+        relationships: [link],
+        tables: [table('', [column('', 'id')]), table('t2', [column('c2', 'user_id')])],
+      })
+      expect(schema.relationships).toEqual([link])
+    })
+
+    it('keeps a relationship whose column is gone and drops one whose table is gone', () => {
+      const link = {
+        id: 'good',
+        relationType: '1:N',
+        sourceColumnId: 'c1',
+        sourceTableId: 't1',
+        targetColumnId: 'c2',
+        targetTableId: 't2',
+      }
+      const schema = loadSeeded({
+        relationships: [
+          { ...link, id: 'no-column', sourceColumnId: '' },
+          { ...link, id: 'no-source', sourceTableId: 'gone' },
+          link,
+          { ...link, id: 'no-target', targetTableId: 7 },
+        ],
+        tables: [table('t1', [column('c1', 'id')]), table('t2', [column('c2', 'user_id')])],
+      })
+      expect(schema.relationships).toEqual([{ ...link, id: 'no-column', sourceColumnId: '' }, link])
+    })
+
+    it('places a table with an unusable coordinate at zero', () => {
+      const schema = loadSeeded({ tables: [{ ...table('t1', []), position: { x: 'left', y: 5 } }] })
+      expect(nth(schema.tables, 0).position).toEqual({ x: 0, y: 5 })
+    })
+  })
 })

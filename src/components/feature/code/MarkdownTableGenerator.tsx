@@ -85,7 +85,7 @@ const isTableState = (state: unknown): state is MarkdownTableState => {
     data.every((row) => Array.isArray(row) && row.length === cols && row.every((cell) => typeof cell === 'string')) &&
     Array.isArray(alignments) &&
     alignments.length === cols &&
-    alignments.every((a) => a in NEXT_ALIGN)
+    alignments.every((a) => Object.hasOwn(NEXT_ALIGN, a))
   )
 }
 

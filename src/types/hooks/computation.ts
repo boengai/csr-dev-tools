@@ -68,7 +68,7 @@ export type UseToolFieldsOptions<F, R> = {
   compute: (input: F, context: ToolComputeContext) => R | Promise<R>
   debounceMs?: number
   /** Initial input bag — also the value `reset()` restores. */
-  initial: F
+  initial: Required<F>
   /** Initial result, used until the first compute resolves and after `reset()` short-circuits via `isEmpty`. */
   initialResult: R
   isEmpty?: (input: F) => boolean
@@ -80,9 +80,9 @@ export type UseToolFieldsOptions<F, R> = {
   onError?: (error: unknown, input: F) => void
   /**
    * Opt-in persistence. When set, the input is seeded once on mount from this
-   * localStorage key (JSON; falls back to `initial` if absent or corrupt) and
-   * written back trailing-debounced on every change (same delay as
-   * `debounceMs`), flushed on unmount and `pagehide`. Also enables the
+   * localStorage key (JSON; laid over `initial`; see CONTEXT.md → Persisted
+   * tool input) and written back trailing-debounced on every change (same delay
+   * as `debounceMs`), flushed on unmount and `pagehide`. Also enables the
    * restored-value autorun: compute fires on mount when `isEmpty` is provided
    * AND the restored value is non-empty. `reset()` still restores `initial`.
    */
@@ -140,9 +140,9 @@ export type UseToolInputOptions<I, R> = {
   onError?: (error: unknown, input: I) => void
   /**
    * Opt-in persistence. When set, the input is seeded once on mount from this
-   * localStorage key (JSON; falls back to `initial` if absent or corrupt) and
-   * written back trailing-debounced on every change (same delay as
-   * `debounceMs`), flushed on unmount and `pagehide`. Also enables the
+   * localStorage key (JSON; laid over `initial`; see CONTEXT.md → Persisted
+   * tool input) and written back trailing-debounced on every change (same delay
+   * as `debounceMs`), flushed on unmount and `pagehide`. Also enables the
    * restored-value autorun: compute fires on mount when `isEmpty` is provided
    * AND the restored value is non-empty. `reset()` still restores `initial`.
    */

@@ -74,7 +74,7 @@ export type DiagramSchema = {
 }
 
 export type DiagramStore = {
-  diagrams: Record<string, DiagramSchema>
+  diagrams: Record<string, unknown>
   index: Array<DiagramIndexEntry>
 }
 

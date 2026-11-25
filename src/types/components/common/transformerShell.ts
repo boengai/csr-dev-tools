@@ -145,7 +145,7 @@ export type TransformerShellProps<
      * label, Download as an icon button (docs/ux → Buttons).
      */
     imageCopyLabel?: string
-    initial: I
+    initial: Required<I>
     /** Background behind `markup` output (default `'dark'`); `'light'` for SVG drawn in dark ink. */
     markupBackground?: 'dark' | 'light'
     /**

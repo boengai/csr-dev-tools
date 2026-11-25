@@ -15,11 +15,15 @@ const INITIAL: JsonSchemaValidatorInput = { schema: '', source: '' }
 // Bags saved before the shell were `{ jsonData, jsonSchema }`; carry them over
 // once so the shell restores them instead of a bag with no `source`.
 const migrateStoredBag = (): true => {
-  const stored = readJsonStorage<Record<string, unknown> | null>(STORAGE_KEY, null)
-  if (stored && typeof stored === 'object' && !('source' in stored)) {
+  const { jsonData, jsonSchema, schema, source } = readJsonStorage(STORAGE_KEY, {
+    ...INITIAL,
+    jsonData: '',
+    jsonSchema: '',
+  })
+  if (jsonData || jsonSchema) {
     writeJsonStorage<JsonSchemaValidatorInput>(STORAGE_KEY, {
-      schema: typeof stored.jsonSchema === 'string' ? stored.jsonSchema : '',
-      source: typeof stored.jsonData === 'string' ? stored.jsonData : '',
+      schema: schema || jsonSchema,
+      source: source || jsonData,
     })
   }
   return true
