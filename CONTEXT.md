@@ -360,19 +360,18 @@ real dialogs on every route.
 ## Head-stamped page
 
 A page whose static HTML carries that page's own title, description, Open
-Graph and Twitter text and URLs, and canonical link, with an empty root
+Graph text and URL, Twitter text, and canonical link, with an empty root
 element. The client renders the whole body. The home page is one, and so is
 every Tool's `/tools/<key>` page; a Tool page's images, keywords and structured
-data are the home page's.
+data are the home page's. Tool pages are stamped by `renderRouteHtml`
+(`vite-plugins/prerender.ts`). Distinct from a [[Body-prerendered page]];
+"prerendered page" on its own does not say which of the two is meant.
 
 ## Body-prerendered page
 
 A page whose static HTML also contains the rendered body markup. The site has
 none. Whether the client hydrates that markup or replaces it is a separate
-choice.
-
-_Avoid_: "prerendered page" on its own, which does not say which of the two
-is meant.
+choice. Distinct from a [[Head-stamped page]].
 
 ## Tool dialog frame
 
