@@ -71,7 +71,7 @@ test.describe('Comparator journey (JSON Diff)', () => {
     await expect(dialog.locator('[data-slot="empty-state"]')).toHaveCount(0, { timeout: 3000 })
 
     await editors.nth(0).click()
-    await page.keyboard.press('Meta+A')
+    await page.keyboard.press('ControlOrMeta+A')
     await page.keyboard.insertText('{"a":')
     await expect(statusAlert(dialog)).toBeVisible({ timeout: 3000 })
     await expect(dialog.locator('[data-slot="empty-state"]')).toBeVisible()
