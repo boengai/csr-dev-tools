@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
+import { TOOL_ROUTES } from '@/constants/tool-routes'
 import { isValidLayoutValue, migrateLayoutValue } from '@/utils'
 
 describe('dashboard utilities', () => {
@@ -24,12 +25,21 @@ describe('dashboard utilities', () => {
       })
     })
 
-    it('should preserve already-migrated registry keys', () => {
-      const current = {
-        0: 'image-converter',
-        1: 'unix-timestamp',
-        2: 'base64-codec',
+    it('should migrate renamed registry keys to their current keys', () => {
+      const renamed = {
+        0: 'base64-encoder',
+        1: 'toml-to-json-converter',
+        2: 'xml-to-json-converter',
       }
+      expect(migrateLayoutValue(renamed)).toEqual({
+        0: 'base64-codec',
+        1: 'json-to-toml-converter',
+        2: 'json-to-xml-converter',
+      })
+    })
+
+    it('should preserve every current registry key', () => {
+      const current = Object.fromEntries(TOOL_ROUTES.map(({ key }, position) => [position, key]))
       expect(migrateLayoutValue(current)).toEqual(current)
     })
 
@@ -87,15 +97,29 @@ describe('dashboard utilities', () => {
       })
     })
 
-    it('should handle corrupted localStorage data by clearing non-string values to null', () => {
-      const corrupted = {
-        0: undefined,
-        1: 42,
-        2: true,
-      } as unknown as Record<number, string | null>
-      const result = migrateLayoutValue(corrupted)
-      expect(result).toEqual({ 0: null, 1: null, 2: null })
+    it('should clear non-text keys to null and migrate the keys beside them', () => {
+      const corrupted = { 0: undefined, 1: 42, 2: true, 3: { toString: 1 }, 4: ['px-to-rem'], 5: 'BASE64_ENCODER' }
+      expect(migrateLayoutValue(corrupted)).toEqual({
+        0: null,
+        1: null,
+        2: null,
+        3: null,
+        4: null,
+        5: 'base64-codec',
+      })
     })
+
+    it('should clear keys that name an object prototype member to null', () => {
+      const value = { 0: 'constructor', 1: 'toString' }
+      expect(migrateLayoutValue(value)).toEqual({ 0: null, 1: null })
+    })
+
+    it.each([{ value: null }, { value: 42 }, { value: 'px-to-rem' }, { value: ['px-to-rem'] }])(
+      'should return an empty layout for $value',
+      ({ value }) => {
+        expect(migrateLayoutValue(value)).toEqual({})
+      },
+    )
   })
 
   describe('isValidLayoutValue', () => {

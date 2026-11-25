@@ -140,7 +140,7 @@ export type GeneratorShellProps<O extends object, K extends GeneratorOutputKind>
   compute: (options: O, context: ToolComputeContext) => Promise<GeneratorResults[K]> | GeneratorResults[K]
   description?: string
   errorFallback?: string
-  initial: O
+  initial: Required<O>
   /** Messages about a valid result, shown in the status slot; the output stays. */
   notices?: (result: GeneratorResults[K]) => Array<string>
   onAfterClose?: () => void

@@ -33,20 +33,6 @@ const DEFAULT_TARGETS = ['UTC', 'America/New_York', 'Europe/London', 'Asia/Tokyo
 
 const getInitialTargets = (localTz: string): Array<string> => DEFAULT_TARGETS.filter((tz) => tz !== localTz).slice(0, 3)
 
-// Bags saved before the shell were `{ dateInput, timeInput, sourceTz, targetTzIds }`.
-// Keep the zones; the date and time were always replaced by "now" on open.
-const migrateStoredBag = (): true => {
-  const stored = readJsonStorage<Record<string, unknown> | null>(STORAGE_KEY, null)
-  if (stored && typeof stored === 'object' && !('source' in stored) && typeof stored.sourceTz === 'string') {
-    writeJsonStorage<TimezoneConverterInput>(STORAGE_KEY, {
-      source: '',
-      sourceTz: stored.sourceTz,
-      targetTzIds: Array.isArray(stored.targetTzIds) ? stored.targetTzIds.filter((t) => typeof t === 'string') : [],
-    })
-  }
-  return true
-}
-
 const cityOf = (tzId: string): string => (tzId.split('/').pop() ?? tzId).replace(/_/g, ' ')
 
 const DATE_TIME = /^(\d{4}-\d{1,2}-\d{1,2})[ T](\d{1,2}:\d{2}(?::\d{2})?)$/
@@ -202,8 +188,6 @@ const TimezoneSearchPicker = ({
 }
 
 export const TimezoneConverter = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
-  useState(migrateStoredBag)
-
   const initial = useMemo<TimezoneConverterInput>(() => {
     const sourceTz = getLocalTimezone()
     return { source: '', sourceTz, targetTzIds: getInitialTargets(sourceTz) }

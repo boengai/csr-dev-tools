@@ -1,8 +1,10 @@
+import { restoreJson } from '@/utils/restore-json'
+
 /**
  * JSON-on-localStorage primitives with the project's standard try-catch
- * policy: read returns the JSON-encoded value if present and parseable,
- * fall back to a default otherwise; write swallows quota errors so the
- * in-memory state stays the source of truth.
+ * policy: read lays the stored value over the default (`restoreJson`), which
+ * also stands in for an absent or unparseable one; write swallows quota errors
+ * so the in-memory state stays the source of truth.
  *
  * Adopters today: `useInputLocalStorage`, `useDebouncedJsonWrite` (the
  * writer behind `useToolInput` / `useToolFields`'s `storageKey`), the
@@ -17,7 +19,7 @@
 export function readJsonStorage<T>(key: string, fallback: T): T {
   try {
     const item = localStorage.getItem(key)
-    return item !== null ? (JSON.parse(item) as T) : fallback
+    return item !== null ? restoreJson(JSON.parse(item), fallback) : fallback
   } catch {
     return fallback
   }

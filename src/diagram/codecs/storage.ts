@@ -5,6 +5,9 @@ import type {
   DiagramStore,
   DiagramStoreReadResult,
 } from '@/types'
+import { isRecord } from '@/utils/restore-json'
+
+import { restoreIndex, restoreSchema } from './restore'
 
 const STORAGE_KEY = 'csr-dev-tools-db-diagrams'
 // An unreadable store is copied here once before the first write replaces it,
@@ -21,9 +24,6 @@ export class DiagramStorageError extends Error {
   }
 }
 
-const isRecord = (value: unknown): value is Record<string, unknown> =>
-  typeof value === 'object' && value !== null && !Array.isArray(value)
-
 const isQuotaError = (error: unknown): boolean =>
   error instanceof DOMException &&
   (error.name === 'QuotaExceededError' || error.name === 'NS_ERROR_DOM_QUOTA_REACHED' || error.code === 22)
@@ -39,8 +39,9 @@ const readStore = (): DiagramStoreReadResult => {
   if (raw === null) return { kind: 'ok', store: { diagrams: {}, index: [] } }
   try {
     const parsed: unknown = JSON.parse(raw)
-    if (isRecord(parsed) && Array.isArray(parsed.index) && isRecord(parsed.diagrams)) {
-      return { kind: 'ok', store: parsed as DiagramStore }
+    if (isRecord(parsed) && isRecord(parsed.diagrams)) {
+      const { diagrams, index } = parsed
+      return { kind: 'ok', store: { ...parsed, diagrams, index: restoreIndex(index, diagrams) } }
     }
   } catch {
     // fall through to corrupt
@@ -106,7 +107,8 @@ export function saveDiagramIndex(index: Array<DiagramIndexEntry>): void {
 
 export function loadDiagram(id: string): DiagramSchema | null {
   const { diagrams } = readStoreOrEmpty()
-  return Object.hasOwn(diagrams, id) ? (diagrams[id] ?? null) : null
+  const stored = Object.hasOwn(diagrams, id) ? diagrams[id] : null
+  return isRecord(stored) ? restoreSchema(stored) : null
 }
 
 export function saveDiagram(id: string, schema: DiagramSchema): void {
