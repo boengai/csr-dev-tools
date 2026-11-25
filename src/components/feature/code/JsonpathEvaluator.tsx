@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { Button, DisclosurePanel, FieldForm, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
+import { readJsonStorage } from '@/hooks'
 import type { JsonPathEvalInput, ToolComponentProps, TransformerField } from '@/types'
 import { createCachedJsonParser, evaluateJsonPath } from '@/utils/jsonpath-evaluator'
 
@@ -50,8 +51,33 @@ const CHEATSHEET_ENTRIES = [
 
 const INITIAL: JsonPathEvalInput = { expression: '$.store.book[*].author', source: '' }
 
-// A new key: the bag under the old one (`{ jsonInput, expression }`) has no `source`.
 const STORAGE_KEY = 'csr-dev-tools-jsonpath-evaluator-v2'
+// Before the TransformerShell migration the bag was `{ expression, jsonInput }` here.
+const LEGACY_STORAGE_KEY = 'csr-dev-tools-jsonpath-evaluator'
+
+/** Moves a pre-migration bag to the shell's key once, so it isn't lost. */
+const migrateLegacyBag = (): void => {
+  try {
+    const stored = localStorage.getItem(LEGACY_STORAGE_KEY)
+    if (stored === null || localStorage.getItem(STORAGE_KEY) !== null) return
+    const { expression, jsonInput } = readJsonStorage(LEGACY_STORAGE_KEY, {
+      expression: INITIAL.expression,
+      jsonInput: INITIAL.source,
+    })
+    // Junk, or the same as opening fresh.
+    if (expression === INITIAL.expression && jsonInput === INITIAL.source) return
+    // Removed first: storage may not have room for both copies.
+    localStorage.removeItem(LEGACY_STORAGE_KEY)
+    try {
+      // Not `writeJsonStorage`, which swallows a failed write.
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({ expression, source: jsonInput } satisfies JsonPathEvalInput))
+    } catch {
+      localStorage.setItem(LEGACY_STORAGE_KEY, stored)
+    }
+  } catch {
+    // Storage unavailable: the tool opens with its defaults.
+  }
+}
 
 // Each match row copies its value as JSON; Copy all joins those into one array.
 // The "No matches" row has no `copyValue`, so there is nothing to copy.
@@ -61,6 +87,8 @@ const copyAllMatches = (fields: Array<TransformerField>): string => {
 }
 
 export const JsonpathEvaluator = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
+  // Runs once, before the shell reads storage on mount.
+  useState(migrateLegacyBag)
   // Expression keystrokes re-run compute; the document is only re-parsed when it changes.
   const [parseJson] = useState(createCachedJsonParser)
 
