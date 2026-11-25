@@ -9,13 +9,15 @@ import { brotliCompressSync, constants } from 'node:zlib'
 
 /**
  * Serves a built site the way Cloudflare Pages does, so a local run loads the
- * same bytes over the same protocol: HTTP/2, brotli, `_headers`, a 308 to the
- * trailing slash for a directory, and the home page for an unknown URL.
+ * same bodies: HTTP/2, brotli, `_headers`, a 308 to the trailing slash for a
+ * directory, and the home page for an unknown URL. Pages also sends larger
+ * response headers, HTTP/3 and early hints; those are not reproduced.
  */
 
-// The level Pages compresses with: a 233,095-byte chunk is 74,026-74,082 bytes
-// on csr-dev-tools.pages.dev and 74,095 at level 4 (75,443 at 3, 69,942 at 5).
-const BROTLI_QUALITY = 4
+// What Pages compresses with, found by comparing with csr-dev-tools.pages.dev.
+// Quality: a 233,095-byte chunk is 74,026-74,082 bytes there, 74,095 at 4, 75,443 at 3, 69,942 at 5.
+// Window: its streams declare 18 bits. Node's default of 22 makes a 21 MB wasm 9% smaller than Pages sends it.
+const BROTLI_PARAMS = { [constants.BROTLI_PARAM_LGWIN]: 18, [constants.BROTLI_PARAM_QUALITY]: 4 }
 
 const CONTENT_TYPES: Record<string, string> = {
   '.css': 'text/css; charset=utf-8',
@@ -101,9 +103,7 @@ export const startPagesServer = async (distDir: string) => {
     const ext = extname(path)
     const asset = {
       body,
-      brotli: NOT_COMPRESSED.has(ext)
-        ? null
-        : brotliCompressSync(body, { params: { [constants.BROTLI_PARAM_QUALITY]: BROTLI_QUALITY } }),
+      brotli: NOT_COMPRESSED.has(ext) ? null : brotliCompressSync(body, { params: BROTLI_PARAMS }),
       contentType: CONTENT_TYPES[ext] ?? 'application/octet-stream',
       etag: `"${createHash('sha256').update(body).digest('hex').slice(0, 32)}"`,
     }
@@ -111,7 +111,7 @@ export const startPagesServer = async (distDir: string) => {
     return asset
   }
 
-  const server = createSecureServer({ allowHTTP1: true, cert, key }, (req, res) => {
+  const server = createSecureServer({ cert, key }, (req, res) => {
     const url = new URL(req.url, 'https://localhost')
     const requested = resolve(dist, `.${decodeURIComponent(url.pathname)}`)
     if (requested !== dist && !requested.startsWith(dist + sep)) {
@@ -148,8 +148,7 @@ export const startPagesServer = async (distDir: string) => {
     headers['content-length'] = body.length
     if (body === asset.brotli) headers['content-encoding'] = 'br'
     res.writeHead(200, headers)
-    if (req.method === 'HEAD') res.end()
-    else res.end(body)
+    res.end(body)
   })
 
   await new Promise<void>((done) => server.listen(0, 'localhost', done))

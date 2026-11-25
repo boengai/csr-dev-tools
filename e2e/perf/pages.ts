@@ -9,16 +9,15 @@ export type PerfPage = {
   /** `h1` of a tool page. An unknown URL is answered with the home page, so this catches measuring the wrong page. */
   heading?: string
   key: string
-  layout: string
   path: string
-  /** The controls the visitor needs are on screen. */
+  /** The controls the visitor needs can be operated. They may still be fading in. */
   ready: DomCondition
   /** The correct result of `act` is on screen. */
   result: DomCondition
 }
 
-// The DOM contract the e2e specs rely on, so the same conditions hold for a
-// build in another framework that passes those specs.
+// Most of these hooks are the ones the e2e specs use. A build in another framework must keep all of them;
+// docs/perf/README.md lists the ones no spec covers.
 const SURFACE = '[data-slot="tool-surface"]'
 const OUTPUT = `${SURFACE} pre[data-has-value]`
 
@@ -40,7 +39,6 @@ export const PERF_PAGES: Array<PerfPage> = [
   {
     act: (page) => clickButton(page, 'Format'),
     key: 'home',
-    layout: 'home',
     path: '/',
     ready: { count: 6, selector: '[data-testid="dashboard-widget"] h3' },
     result: { selector: '[role="dialog"] .cm-content' },
@@ -53,7 +51,6 @@ export const PERF_PAGES: Array<PerfPage> = [
     },
     heading: 'Hash Generator',
     key: 'hash-generator',
-    layout: 'transformer',
     path: '/tools/hash-generator/',
     ready: { selector: `${SURFACE} textarea` },
     result: { selector: OUTPUT, text: '65a8e27d8879283831b664bd8b7f0ad4' },
@@ -62,7 +59,6 @@ export const PERF_PAGES: Array<PerfPage> = [
     act: (page) => typeIntoEditor(page, 0, '{"name":"John"}'),
     heading: 'Escaped JSON Stringifier',
     key: 'escaped-json-stringifier',
-    layout: 'codec',
     path: '/tools/escaped-json-stringifier/',
     ready: { selector: `${SURFACE} .cm-content` },
     result: { selector: OUTPUT, text: '\\"name\\"' },
@@ -76,17 +72,16 @@ export const PERF_PAGES: Array<PerfPage> = [
     },
     heading: 'Image Converter',
     key: 'image-converter',
-    layout: 'file-processor',
     path: '/tools/image-converter/',
     ready: { selector: `${SURFACE} [aria-label="Upload area"] button` },
-    result: { count: 2, selector: '[aria-label="Results"] li' },
+    // A failed conversion is also a row in Results; only a converted file has a download button.
+    result: { count: 2, selector: '[aria-label="Results"] button[aria-label^="Download csr-dev-tools_"]' },
   },
   {
     // A random generator fills its output on open, so there is nothing to type.
     act: async () => {},
     heading: 'UUID Generator',
     key: 'uuid-generator',
-    layout: 'generator',
     path: '/tools/uuid-generator/',
     ready: { selector: `${SURFACE} button`, text: 'Generate' },
     result: { selector: `${SURFACE} button[aria-label="Copy all UUIDs to clipboard"]` },
@@ -98,7 +93,6 @@ export const PERF_PAGES: Array<PerfPage> = [
     },
     heading: 'JSON Diff',
     key: 'json-diff-checker',
-    layout: 'comparator',
     path: '/tools/json-diff-checker/',
     ready: { count: 2, selector: `${SURFACE} .cm-content` },
     result: { selector: `${SURFACE} [aria-label="Diff output"]`, text: '"a": 2' },
@@ -107,7 +101,6 @@ export const PERF_PAGES: Array<PerfPage> = [
     act: (page) => page.locator(`${SURFACE} input[name="decimal"]`).fill('42'),
     heading: 'Number Base Converter',
     key: 'number-base-converter',
-    layout: 'custom',
     path: '/tools/number-base-converter/',
     ready: { selector: `${SURFACE} input[name="decimal"]` },
     result: { selector: `${SURFACE} input[name="hex"]`, text: '2a' },
