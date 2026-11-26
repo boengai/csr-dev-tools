@@ -1,0 +1,77 @@
+name: Dioxus spike
+
+# The spike's own job (issue 18). It builds dioxus/ and runs the React site's
+# journeys for the three ported tools against that build, unchanged.
+on:
+  push:
+    branches: [spike/dioxus]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dioxus-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dioxus:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: wasm32-unknown-unknown
+
+      - name: Cache Rust dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            dioxus/target
+          key: dioxus-${{ runner.os }}-${{ hashFiles('dioxus/Cargo.lock') }}
+          restore-keys: |
+            dioxus-${{ runner.os }}-
+
+      # The release binary, not `cargo install`: compiling dx takes longer than the job.
+      - name: Install dx 0.7.10
+        run: |
+          curl -sSL -o "$RUNNER_TEMP/dx.tar.gz" https://github.com/DioxusLabs/dioxus/releases/download/v0.7.10/dx-x86_64-unknown-linux-gnu.tar.gz
+          echo "4363e4ed2a3f1eb7f4d38d2d59aed59ce43271c44c16b425e92c89a64761fbe7  $RUNNER_TEMP/dx.tar.gz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/dx.tar.gz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
+
+      - name: Logic tests
+        run: cargo test --manifest-path dioxus/Cargo.toml -p csr-logic
+
+      - name: Build
+        run: dioxus/scripts/build.sh
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: React journeys and spike checks against the Dioxus build
+        run: pnpm exec playwright test -c dioxus/playwright.config.ts
+
+      - name: Upload build
+        uses: actions/upload-artifact@v4
+        with:
+          name: dioxus-dist
+          path: dioxus/dist/
+          retention-days: 7

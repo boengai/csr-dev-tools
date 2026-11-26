@@ -15,7 +15,7 @@ concurrency:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     name: Deploy
     steps:
       - uses: actions/checkout@v4
@@ -36,39 +36,35 @@ jobs:
         with:
           targets: wasm32-unknown-unknown
 
+      # On spike/dioxus the Build step is the Dioxus build (issue 18), so the
+      # preview address serves the spike. develop keeps its own copy of this file.
       - name: Cache Rust dependencies
         uses: actions/cache@v4
         with:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            wasm/target
-          key: rust-${{ runner.os }}-${{ hashFiles('wasm/Cargo.lock') }}
+            dioxus/target
+          key: dioxus-${{ runner.os }}-${{ hashFiles('dioxus/Cargo.lock') }}
           restore-keys: |
-            rust-${{ runner.os }}-
+            dioxus-${{ runner.os }}-
 
-      - name: Install wasm-pack
-        run: cargo install wasm-pack --locked
-
-      - name: Install wasm-opt (binaryen)
+      - name: Install dx 0.7.10
         run: |
-          curl -sSL https://github.com/WebAssembly/binaryen/releases/download/version_129/binaryen-version_129-x86_64-linux.tar.gz | tar xz -C "$RUNNER_TEMP"
-          echo "$RUNNER_TEMP/binaryen-version_129/bin" >> "$GITHUB_PATH"
+          curl -sSL -o "$RUNNER_TEMP/dx.tar.gz" https://github.com/DioxusLabs/dioxus/releases/download/v0.7.10/dx-x86_64-unknown-linux-gnu.tar.gz
+          echo "4363e4ed2a3f1eb7f4d38d2d59aed59ce43271c44c16b425e92c89a64761fbe7  $RUNNER_TEMP/dx.tar.gz" | sha256sum -c -
+          tar -xzf "$RUNNER_TEMP/dx.tar.gz" -C "$RUNNER_TEMP"
+          echo "$RUNNER_TEMP" >> "$GITHUB_PATH"
 
       - name: Build
-        run: pnpm run build
-
-      # ponytail: transformers.js loads ORT wasm from jsdelivr at runtime; the bundled copy
-      # (>25 MiB) is dead weight and exceeds the Pages per-file limit.
-      - name: Drop unused ONNX Runtime wasm
-        run: rm -f dist/assets/ort-wasm-*.wasm
+        run: dioxus/scripts/build.sh
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=csr-dev-tools --branch=${{ github.ref_name }}
+          command: pages deploy dioxus/dist --project-name=csr-dev-tools --branch=${{ github.ref_name }}
 
       - name: Check the preview is not indexed
         env:
