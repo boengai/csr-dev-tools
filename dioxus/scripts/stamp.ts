@@ -4,11 +4,14 @@
 // both builds stamp the same tags the same way. Run after every build: any
 // wasm change renames the JS file the pages load.
 //
-//   node dioxus/scripts/stamp.ts <dist> [--preload-wasm]
+//   node dioxus/scripts/stamp.ts <dist> [--preload-wasm[=all|main|low]]
 //
 // `--preload-wasm` is the first FCP/LCP remedy of issue 26: each tool page
 // preloads the main WebAssembly module and its own route module, which the
 // loader would otherwise request only after the JS (and the main module) ran.
+// `all` (the default) preloads both at normal priority, `main` only the main
+// module, `low` the route module at `fetchpriority="low"` so it does not compete
+// with the main module before first paint.
 import { mkdirSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 
@@ -17,16 +20,20 @@ import { renderRouteHtml } from '../../vite-plugins/prerender.ts'
 import { SPIKE_TOOL_KEYS } from './spike-tools.ts'
 
 const dist = resolve(process.argv[2] ?? 'dioxus/dist')
-const preloadWasm = process.argv.includes('--preload-wasm')
+const preloadArg = process.argv.find((a) => a.startsWith('--preload-wasm'))
+const preloadWasm = preloadArg !== undefined
+const preloadMode = preloadArg?.split('=')[1] ?? 'all'
+if (!['all', 'main', 'low'].includes(preloadMode)) throw new Error(`[stamp] unknown --preload-wasm=${preloadMode}`)
 const assets = readdirSync(resolve(dist, 'assets'))
 const pascal = (key: string) => key.replace(/(^|-)([a-z])/g, (_, __, c: string) => c.toUpperCase())
 const preloadTags = (key: string) => {
   const main = assets.find((f) => /^csr-dev-tools-dioxus_bg-.*\.wasm$/.test(f))
   const route = assets.find((f) => new RegExp(`^module_\\d+_route${pascal(key)}[0-9a-f]{32}-.*\\.wasm$`).test(f))
-  return [main, route]
-    .filter(Boolean)
-    .map((f) => `<link rel="preload" href="/assets/${f}" as="fetch" type="application/wasm" crossorigin>`)
-    .join('')
+  const tag = (f: string, priority = '') =>
+    `<link rel="preload" href="/assets/${f}" as="fetch" type="application/wasm" crossorigin${priority}>`
+  if (!main || !route) throw new Error(`[stamp] no main or route module to preload for ${key}`)
+  if (preloadMode === 'main') return tag(main)
+  return tag(main) + tag(route, preloadMode === 'low' ? ' fetchpriority="low"' : '')
 }
 const template = readFileSync(resolve(dist, 'index.html'), 'utf-8')
 

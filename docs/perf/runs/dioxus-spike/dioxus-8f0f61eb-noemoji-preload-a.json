@@ -1,0 +1,1506 @@
+{
+  "bytes": {
+    "hash-generator": {
+      "afterResult": {
+        "byKind": {
+          "html": {
+            "decoded": 4847,
+            "requests": 1,
+            "transferred": 1554
+          },
+          "css": {
+            "decoded": 28959,
+            "requests": 1,
+            "transferred": 6390
+          },
+          "js": {
+            "decoded": 66913,
+            "requests": 1,
+            "transferred": 15850
+          },
+          "wasm": {
+            "decoded": 595693,
+            "requests": 2,
+            "transferred": 242003
+          },
+          "font": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "image": {
+            "decoded": 15086,
+            "requests": 1,
+            "transferred": 5175
+          },
+          "other": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          }
+        },
+        "firstParty": {
+          "decoded": 711498,
+          "requests": 6,
+          "transferred": 270972
+        },
+        "thirdParty": {
+          "decoded": 24154,
+          "requests": 3,
+          "transferred": 20101
+        }
+      },
+      "load": {
+        "byKind": {
+          "html": {
+            "decoded": 4847,
+            "requests": 1,
+            "transferred": 1554
+          },
+          "css": {
+            "decoded": 28959,
+            "requests": 1,
+            "transferred": 6390
+          },
+          "js": {
+            "decoded": 66913,
+            "requests": 1,
+            "transferred": 15850
+          },
+          "wasm": {
+            "decoded": 595693,
+            "requests": 2,
+            "transferred": 242003
+          },
+          "font": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "image": {
+            "decoded": 15086,
+            "requests": 1,
+            "transferred": 5175
+          },
+          "other": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          }
+        },
+        "firstParty": {
+          "decoded": 711498,
+          "requests": 6,
+          "transferred": 270972
+        },
+        "thirdParty": {
+          "decoded": 24154,
+          "requests": 3,
+          "transferred": 20101
+        }
+      },
+      "requests": [
+        {
+          "decoded": 4847,
+          "kind": "html",
+          "thirdParty": false,
+          "transferred": 1554,
+          "url": "/tools/hash-generator/"
+        },
+        {
+          "decoded": 28959,
+          "kind": "css",
+          "thirdParty": false,
+          "transferred": 6390,
+          "url": "/assets/tailwind-dxh92aabdf877657555.css"
+        },
+        {
+          "decoded": 530594,
+          "kind": "wasm",
+          "thirdParty": false,
+          "transferred": 214446,
+          "url": "/assets/csr-dev-tools-dioxus_bg-dxh61c8e4be91a77d9a.wasm"
+        },
+        {
+          "decoded": 65099,
+          "kind": "wasm",
+          "thirdParty": false,
+          "transferred": 27557,
+          "url": "/assets/module_1_routeHashGenerator89e9299ec003f75ef938a31dbd1df260-dxhbd897640dd252bd.wasm"
+        },
+        {
+          "decoded": 66913,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 15850,
+          "url": "/assets/csr-dev-tools-dioxus-dxhd5e257177be9f9.js"
+        },
+        {
+          "decoded": 5138,
+          "kind": "css",
+          "thirdParty": true,
+          "transferred": 1085,
+          "url": "https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        },
+        {
+          "decoded": 9464,
+          "kind": "font",
+          "thirdParty": true,
+          "transferred": 9464,
+          "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dPIFZifjKcF5UAWdDRYEF8RXi4EwQ.woff2"
+        },
+        {
+          "decoded": 9552,
+          "kind": "font",
+          "thirdParty": true,
+          "transferred": 9552,
+          "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dMIFZifjKcF5UAWdDRaPpZUFWaHi6WZ3Q.woff2"
+        },
+        {
+          "decoded": 15086,
+          "kind": "image",
+          "thirdParty": false,
+          "transferred": 5175,
+          "url": "/favicon/favicon.ico"
+        }
+      ],
+      "workers": []
+    },
+    "escaped-json-stringifier": {
+      "afterResult": {
+        "byKind": {
+          "html": {
+            "decoded": 4765,
+            "requests": 1,
+            "transferred": 1517
+          },
+          "css": {
+            "decoded": 28959,
+            "requests": 1,
+            "transferred": 6390
+          },
+          "js": {
+            "decoded": 561016,
+            "requests": 2,
+            "transferred": 157241
+          },
+          "wasm": {
+            "decoded": 622758,
+            "requests": 2,
+            "transferred": 254593
+          },
+          "font": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "image": {
+            "decoded": 15086,
+            "requests": 1,
+            "transferred": 5175
+          },
+          "other": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          }
+        },
+        "firstParty": {
+          "decoded": 1232584,
+          "requests": 7,
+          "transferred": 424916
+        },
+        "thirdParty": {
+          "decoded": 24154,
+          "requests": 3,
+          "transferred": 20101
+        }
+      },
+      "load": {
+        "byKind": {
+          "html": {
+            "decoded": 4765,
+            "requests": 1,
+            "transferred": 1517
+          },
+          "css": {
+            "decoded": 28959,
+            "requests": 1,
+            "transferred": 6390
+          },
+          "js": {
+            "decoded": 561016,
+            "requests": 2,
+            "transferred": 157241
+          },
+          "wasm": {
+            "decoded": 622758,
+            "requests": 2,
+            "transferred": 254593
+          },
+          "font": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "image": {
+            "decoded": 15086,
+            "requests": 1,
+            "transferred": 5175
+          },
+          "other": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          }
+        },
+        "firstParty": {
+          "decoded": 1232584,
+          "requests": 7,
+          "transferred": 424916
+        },
+        "thirdParty": {
+          "decoded": 24154,
+          "requests": 3,
+          "transferred": 20101
+        }
+      },
+      "requests": [
+        {
+          "decoded": 4765,
+          "kind": "html",
+          "thirdParty": false,
+          "transferred": 1517,
+          "url": "/tools/escaped-json-stringifier/"
+        },
+        {
+          "decoded": 28959,
+          "kind": "css",
+          "thirdParty": false,
+          "transferred": 6390,
+          "url": "/assets/tailwind-dxh92aabdf877657555.css"
+        },
+        {
+          "decoded": 530594,
+          "kind": "wasm",
+          "thirdParty": false,
+          "transferred": 214446,
+          "url": "/assets/csr-dev-tools-dioxus_bg-dxh61c8e4be91a77d9a.wasm"
+        },
+        {
+          "decoded": 92164,
+          "kind": "wasm",
+          "thirdParty": false,
+          "transferred": 40147,
+          "url": "/assets/module_0_routeEscapedJsonStringifier2cfc75172feda39bcb1450eaefe49930-dxh5ff22bc27fb9a57.wasm"
+        },
+        {
+          "decoded": 66913,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 15850,
+          "url": "/assets/csr-dev-tools-dioxus-dxhd5e257177be9f9.js"
+        },
+        {
+          "decoded": 494103,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 141391,
+          "url": "/assets/codemirror-bridge-dxhf7a65f74dca5d99.js"
+        },
+        {
+          "decoded": 5138,
+          "kind": "css",
+          "thirdParty": true,
+          "transferred": 1085,
+          "url": "https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        },
+        {
+          "decoded": 9464,
+          "kind": "font",
+          "thirdParty": true,
+          "transferred": 9464,
+          "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dPIFZifjKcF5UAWdDRYEF8RXi4EwQ.woff2"
+        },
+        {
+          "decoded": 9552,
+          "kind": "font",
+          "thirdParty": true,
+          "transferred": 9552,
+          "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dMIFZifjKcF5UAWdDRaPpZUFWaHi6WZ3Q.woff2"
+        },
+        {
+          "decoded": 15086,
+          "kind": "image",
+          "thirdParty": false,
+          "transferred": 5175,
+          "url": "/favicon/favicon.ico"
+        }
+      ],
+      "workers": []
+    },
+    "image-converter": {
+      "afterResult": {
+        "byKind": {
+          "html": {
+            "decoded": 4854,
+            "requests": 1,
+            "transferred": 1524
+          },
+          "css": {
+            "decoded": 28959,
+            "requests": 1,
+            "transferred": 6390
+          },
+          "js": {
+            "decoded": 66913,
+            "requests": 1,
+            "transferred": 15850
+          },
+          "wasm": {
+            "decoded": 886279,
+            "requests": 2,
+            "transferred": 355011
+          },
+          "font": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "image": {
+            "decoded": 15086,
+            "requests": 1,
+            "transferred": 5175
+          },
+          "other": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          }
+        },
+        "firstParty": {
+          "decoded": 1002091,
+          "requests": 6,
+          "transferred": 383950
+        },
+        "thirdParty": {
+          "decoded": 14602,
+          "requests": 2,
+          "transferred": 10549
+        }
+      },
+      "load": {
+        "byKind": {
+          "html": {
+            "decoded": 4854,
+            "requests": 1,
+            "transferred": 1524
+          },
+          "css": {
+            "decoded": 28959,
+            "requests": 1,
+            "transferred": 6390
+          },
+          "js": {
+            "decoded": 66913,
+            "requests": 1,
+            "transferred": 15850
+          },
+          "wasm": {
+            "decoded": 886279,
+            "requests": 2,
+            "transferred": 355011
+          },
+          "font": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          },
+          "image": {
+            "decoded": 15086,
+            "requests": 1,
+            "transferred": 5175
+          },
+          "other": {
+            "decoded": 0,
+            "requests": 0,
+            "transferred": 0
+          }
+        },
+        "firstParty": {
+          "decoded": 1002091,
+          "requests": 6,
+          "transferred": 383950
+        },
+        "thirdParty": {
+          "decoded": 14602,
+          "requests": 2,
+          "transferred": 10549
+        }
+      },
+      "requests": [
+        {
+          "decoded": 4854,
+          "kind": "html",
+          "thirdParty": false,
+          "transferred": 1524,
+          "url": "/tools/image-converter/"
+        },
+        {
+          "decoded": 28959,
+          "kind": "css",
+          "thirdParty": false,
+          "transferred": 6390,
+          "url": "/assets/tailwind-dxh92aabdf877657555.css"
+        },
+        {
+          "decoded": 530594,
+          "kind": "wasm",
+          "thirdParty": false,
+          "transferred": 214446,
+          "url": "/assets/csr-dev-tools-dioxus_bg-dxh61c8e4be91a77d9a.wasm"
+        },
+        {
+          "decoded": 355685,
+          "kind": "wasm",
+          "thirdParty": false,
+          "transferred": 140565,
+          "url": "/assets/module_3_routeImageConverter52e3d290b21b4ef34f50c3a8d6b090ec-dxh4a4d1bea253a34ec.wasm"
+        },
+        {
+          "decoded": 66913,
+          "kind": "js",
+          "thirdParty": false,
+          "transferred": 15850,
+          "url": "/assets/csr-dev-tools-dioxus-dxhd5e257177be9f9.js"
+        },
+        {
+          "decoded": 5138,
+          "kind": "css",
+          "thirdParty": true,
+          "transferred": 1085,
+          "url": "https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&display=swap"
+        },
+        {
+          "decoded": 9464,
+          "kind": "font",
+          "thirdParty": true,
+          "transferred": 9464,
+          "url": "https://fonts.gstatic.com/s/spacemono/v17/i7dPIFZifjKcF5UAWdDRYEF8RXi4EwQ.woff2"
+        },
+        {
+          "decoded": 15086,
+          "kind": "image",
+          "thirdParty": false,
+          "transferred": 5175,
+          "url": "/favicon/favicon.ico"
+        }
+      ],
+      "workers": []
+    }
+  },
+  "dist": {
+    "byExtension": {
+      "none": {
+        "bytes": 3981,
+        "files": 1
+      },
+      ".wasm": {
+        "bytes": 1053768,
+        "files": 7
+      },
+      ".js": {
+        "bytes": 562206,
+        "files": 3
+      },
+      ".css": {
+        "bytes": 28959,
+        "files": 1
+      },
+      ".xml": {
+        "bytes": 729,
+        "files": 2
+      },
+      ".png": {
+        "bytes": 36765,
+        "files": 4
+      },
+      ".ico": {
+        "bytes": 15086,
+        "files": 1
+      },
+      ".svg": {
+        "bytes": 3190,
+        "files": 1
+      },
+      ".html": {
+        "bytes": 19334,
+        "files": 4
+      },
+      ".json": {
+        "bytes": 851,
+        "files": 1
+      },
+      ".txt": {
+        "bytes": 245,
+        "files": 1
+      }
+    },
+    "bytes": 1725114,
+    "files": 26,
+    "sha256": "0cca4607b14e838ecd7204834d982eb70075bda2d6fb7e42b1b5c9ae1be95ca8"
+  },
+  "environment": {
+    "chromium": "156.0.8078.4",
+    "cpu": "Apple M3 Pro",
+    "date": "2026-11-26T05:48:52.427Z",
+    "harnessCommit": "c57f991a6ccafa57651050a48359f50073c81b3b",
+    "lighthouse": "lighthouse@13.6.0",
+    "node": "v24.13.1",
+    "pages": [
+      "hash-generator",
+      "escaped-json-stringifier",
+      "image-converter"
+    ],
+    "platform": "darwin-arm64",
+    "runs": 5,
+    "site": "Dioxus 8f0f61eb, no emoji, wasm preload",
+    "throttle": {
+      "desktop": {
+        "cpuSlowdown": 1,
+        "downloadKbps": 9216,
+        "latencyMs": 150,
+        "uploadKbps": 9216
+      },
+      "mobile": {
+        "cpuSlowdown": 4,
+        "downloadKbps": 1474.56,
+        "latencyMs": 562.5,
+        "uploadKbps": 675
+      }
+    }
+  },
+  "failures": [],
+  "lighthouse": {
+    "hash-generator": {
+      "mobile": {
+        "benchmarkIndex": {
+          "max": 3407,
+          "median": 3379.5,
+          "min": 3296.5,
+          "runs": [
+            3296.5,
+            3407,
+            3379.5,
+            3348.5,
+            3387
+          ]
+        },
+        "categories": {
+          "performance": {
+            "max": 90,
+            "median": 90,
+            "min": 90,
+            "runs": [
+              90,
+              90,
+              90,
+              90,
+              90
+            ]
+          },
+          "accessibility": {
+            "max": 96,
+            "median": 96,
+            "min": 96,
+            "runs": [
+              96,
+              96,
+              96,
+              96,
+              96
+            ]
+          },
+          "best-practices": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          },
+          "seo": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          }
+        },
+        "lcpElements": [
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">"
+        ],
+        "metrics": {
+          "cls": {
+            "max": 0.0001655560626078273,
+            "median": 0.0001655560626078273,
+            "min": 0.0001655560626078273,
+            "runs": [
+              0.0001655560626078273,
+              0.0001655560626078273,
+              0.0001655560626078273,
+              0.0001655560626078273,
+              0.0001655560626078273
+            ]
+          },
+          "fcp": {
+            "max": 2738.502,
+            "median": 2727.419,
+            "min": 2711.771,
+            "runs": [
+              2738.502,
+              2727.419,
+              2711.771,
+              2734.13,
+              2716.339
+            ]
+          },
+          "lcp": {
+            "max": 3066.718,
+            "median": 3049.628,
+            "min": 3040.661,
+            "runs": [
+              3057.211,
+              3048.695,
+              3049.628,
+              3066.718,
+              3040.661
+            ]
+          },
+          "si": {
+            "max": 2459,
+            "median": 2439,
+            "min": 2418,
+            "runs": [
+              2459,
+              2439,
+              2418,
+              2441,
+              2424
+            ]
+          },
+          "tbt": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      "desktop": {
+        "benchmarkIndex": {
+          "max": 3401.5,
+          "median": 3342.5,
+          "min": 3335,
+          "runs": [
+            3395,
+            3401.5,
+            3338,
+            3335,
+            3342.5
+          ]
+        },
+        "categories": {
+          "performance": {
+            "max": 99,
+            "median": 99,
+            "min": 99,
+            "runs": [
+              99,
+              99,
+              99,
+              99,
+              99
+            ]
+          },
+          "accessibility": {
+            "max": 96,
+            "median": 96,
+            "min": 96,
+            "runs": [
+              96,
+              96,
+              96,
+              96,
+              96
+            ]
+          },
+          "best-practices": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          },
+          "seo": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          }
+        },
+        "lcpElements": [
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">"
+        ],
+        "metrics": {
+          "cls": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "fcp": {
+            "max": 622.796,
+            "median": 604.224,
+            "min": 588.496,
+            "runs": [
+              588.496,
+              622.796,
+              591.121,
+              619.506,
+              604.224
+            ]
+          },
+          "lcp": {
+            "max": 787.601,
+            "median": 769.293,
+            "min": 750.259,
+            "runs": [
+              751.505,
+              787.601,
+              750.259,
+              785.839,
+              769.293
+            ]
+          },
+          "si": {
+            "max": 733,
+            "median": 715,
+            "min": 698,
+            "runs": [
+              699,
+              733,
+              698,
+              715,
+              719
+            ]
+          },
+          "tbt": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "escaped-json-stringifier": {
+      "mobile": {
+        "benchmarkIndex": {
+          "max": 3420,
+          "median": 3404.5,
+          "min": 3200.5,
+          "runs": [
+            3420,
+            3409.5,
+            3404.5,
+            3404,
+            3200.5
+          ]
+        },
+        "categories": {
+          "performance": {
+            "max": 89,
+            "median": 89,
+            "min": 88,
+            "runs": [
+              88,
+              89,
+              89,
+              89,
+              89
+            ]
+          },
+          "accessibility": {
+            "max": 96,
+            "median": 96,
+            "min": 96,
+            "runs": [
+              96,
+              96,
+              96,
+              96,
+              96
+            ]
+          },
+          "best-practices": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          },
+          "seo": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          }
+        },
+        "lcpElements": [
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">"
+        ],
+        "metrics": {
+          "cls": {
+            "max": 0.0001655560626078273,
+            "median": 0.0001655560626078273,
+            "min": 0.0001655560626078273,
+            "runs": [
+              0.0001655560626078273,
+              0.0001655560626078273,
+              0.0001655560626078273,
+              0.0001655560626078273,
+              0.0001655560626078273
+            ]
+          },
+          "fcp": {
+            "max": 2827.51,
+            "median": 2781.677,
+            "min": 2764.533,
+            "runs": [
+              2827.51,
+              2764.533,
+              2788.64,
+              2772.907,
+              2781.677
+            ]
+          },
+          "lcp": {
+            "max": 3163.564,
+            "median": 3100.746,
+            "min": 3087.155,
+            "runs": [
+              3163.564,
+              3100.746,
+              3125.285,
+              3087.155,
+              3095.088
+            ]
+          },
+          "si": {
+            "max": 2787,
+            "median": 2732,
+            "min": 2715,
+            "runs": [
+              2787,
+              2715,
+              2741,
+              2722,
+              2732
+            ]
+          },
+          "tbt": {
+            "max": 22.59400000000005,
+            "median": 20.209000000000742,
+            "min": 17.682999999999993,
+            "runs": [
+              18.921000000000276,
+              22.59400000000005,
+              21.96600000000035,
+              17.682999999999993,
+              20.209000000000742
+            ]
+          }
+        }
+      },
+      "desktop": {
+        "benchmarkIndex": {
+          "max": 3414,
+          "median": 3401.5,
+          "min": 3329,
+          "runs": [
+            3414,
+            3413.5,
+            3401.5,
+            3365.5,
+            3329
+          ]
+        },
+        "categories": {
+          "performance": {
+            "max": 99,
+            "median": 99,
+            "min": 99,
+            "runs": [
+              99,
+              99,
+              99,
+              99,
+              99
+            ]
+          },
+          "accessibility": {
+            "max": 96,
+            "median": 96,
+            "min": 96,
+            "runs": [
+              96,
+              96,
+              96,
+              96,
+              96
+            ]
+          },
+          "best-practices": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          },
+          "seo": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          }
+        },
+        "lcpElements": [
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">"
+        ],
+        "metrics": {
+          "cls": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "fcp": {
+            "max": 645.774,
+            "median": 628.652,
+            "min": 606.641,
+            "runs": [
+              632.477,
+              626.129,
+              606.641,
+              645.774,
+              628.652
+            ]
+          },
+          "lcp": {
+            "max": 819.969,
+            "median": 799.899,
+            "min": 779.916,
+            "runs": [
+              801.908,
+              799.358,
+              779.916,
+              819.969,
+              799.899
+            ]
+          },
+          "si": {
+            "max": 769,
+            "median": 766,
+            "min": 731,
+            "runs": [
+              769,
+              766,
+              731,
+              766,
+              749
+            ]
+          },
+          "tbt": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    },
+    "image-converter": {
+      "mobile": {
+        "benchmarkIndex": {
+          "max": 3423,
+          "median": 3358.5,
+          "min": 3279.5,
+          "runs": [
+            3423,
+            3401,
+            3339,
+            3358.5,
+            3279.5
+          ]
+        },
+        "categories": {
+          "performance": {
+            "max": 83,
+            "median": 83,
+            "min": 82,
+            "runs": [
+              83,
+              83,
+              82,
+              83,
+              83
+            ]
+          },
+          "accessibility": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          },
+          "best-practices": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          },
+          "seo": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          }
+        },
+        "lcpElements": [
+          "<span class=\"flex items-center justify-center gap-x-2 [&amp;&gt;svg]:shrink-0\">",
+          "<span class=\"flex items-center justify-center gap-x-2 [&amp;&gt;svg]:shrink-0\">",
+          "<span class=\"flex items-center justify-center gap-x-2 [&amp;&gt;svg]:shrink-0\">",
+          "<span class=\"flex items-center justify-center gap-x-2 [&amp;&gt;svg]:shrink-0\">",
+          "<span class=\"flex items-center justify-center gap-x-2 [&amp;&gt;svg]:shrink-0\">"
+        ],
+        "metrics": {
+          "cls": {
+            "max": 0.000118533840669734,
+            "median": 0.000118533840669734,
+            "min": 0.000118533840669734,
+            "runs": [
+              0.000118533840669734,
+              0.000118533840669734,
+              0.000118533840669734,
+              0.000118533840669734,
+              0.000118533840669734
+            ]
+          },
+          "fcp": {
+            "max": 3358.556,
+            "median": 3326.053,
+            "min": 3307.22,
+            "runs": [
+              3358.556,
+              3319.836,
+              3349.187,
+              3307.22,
+              3326.053
+            ]
+          },
+          "lcp": {
+            "max": 3735.591,
+            "median": 3672.814,
+            "min": 3660.73,
+            "runs": [
+              3710.663,
+              3660.73,
+              3735.591,
+              3665.806,
+              3672.814
+            ]
+          },
+          "si": {
+            "max": 3104,
+            "median": 3076,
+            "min": 3063,
+            "runs": [
+              3104,
+              3066,
+              3095,
+              3063,
+              3076
+            ]
+          },
+          "tbt": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      },
+      "desktop": {
+        "benchmarkIndex": {
+          "max": 3407.5,
+          "median": 3390.5,
+          "min": 3327.5,
+          "runs": [
+            3327.5,
+            3404.5,
+            3355,
+            3390.5,
+            3407.5
+          ]
+        },
+        "categories": {
+          "performance": {
+            "max": 99,
+            "median": 99,
+            "min": 99,
+            "runs": [
+              99,
+              99,
+              99,
+              99,
+              99
+            ]
+          },
+          "accessibility": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          },
+          "best-practices": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          },
+          "seo": {
+            "max": 100,
+            "median": 100,
+            "min": 100,
+            "runs": [
+              100,
+              100,
+              100,
+              100,
+              100
+            ]
+          }
+        },
+        "lcpElements": [
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">",
+          "<p class=\"shrink-0 text-body-xs text-gray-400\">"
+        ],
+        "metrics": {
+          "cls": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          },
+          "fcp": {
+            "max": 733.623,
+            "median": 726.159,
+            "min": 685.25,
+            "runs": [
+              728.056,
+              726.159,
+              685.25,
+              733.623,
+              706.071
+            ]
+          },
+          "lcp": {
+            "max": 906.967,
+            "median": 884.791,
+            "min": 855.367,
+            "runs": [
+              884.791,
+              900.972,
+              855.367,
+              906.967,
+              874.216
+            ]
+          },
+          "si": {
+            "max": 831,
+            "median": 820,
+            "min": 786,
+            "runs": [
+              820,
+              824,
+              786,
+              831,
+              801
+            ]
+          },
+          "tbt": {
+            "max": 0,
+            "median": 0,
+            "min": 0,
+            "runs": [
+              0,
+              0,
+              0,
+              0,
+              0
+            ]
+          }
+        }
+      }
+    }
+  },
+  "usable": {
+    "hash-generator": {
+      "firstResult": {
+        "max": 3097.300000011921,
+        "median": 3084.600000023842,
+        "min": 3077.800000011921,
+        "runs": [
+          3097.300000011921,
+          3084.600000023842,
+          3085.300000011921,
+          3078.699999988079,
+          3077.800000011921
+        ]
+      },
+      "ready": {
+        "max": 2699.600000023842,
+        "median": 2690.300000011921,
+        "min": 2683.800000011921,
+        "runs": [
+          2699.600000023842,
+          2690.300000011921,
+          2694.699999988079,
+          2685.600000023842,
+          2683.800000011921
+        ]
+      },
+      "repeatReady": {
+        "max": 746.3000000119209,
+        "median": 711.8999999761581,
+        "min": 691,
+        "runs": [
+          722.6999999880791,
+          706.3000000119209,
+          711.8999999761581,
+          746.3000000119209,
+          691
+        ]
+      }
+    },
+    "escaped-json-stringifier": {
+      "firstResult": {
+        "max": 4604.700000047684,
+        "median": 4591.699999988079,
+        "min": 4560.199999988079,
+        "runs": [
+          4603.599999964237,
+          4560.199999988079,
+          4591.699999988079,
+          4571.300000011921,
+          4604.700000047684
+        ]
+      },
+      "ready": {
+        "max": 4193.399999976158,
+        "median": 4190.099999964237,
+        "min": 4174.600000023842,
+        "runs": [
+          4193.399999976158,
+          4190.099999964237,
+          4188.299999952316,
+          4174.600000023842,
+          4192
+        ]
+      },
+      "repeatReady": {
+        "max": 802.8000000119209,
+        "median": 757,
+        "min": 749,
+        "runs": [
+          754.9000000357628,
+          749,
+          759.1999999880791,
+          757,
+          802.8000000119209
+        ]
+      }
+    },
+    "image-converter": {
+      "firstResult": {
+        "max": 3502.5,
+        "median": 3476.800000011921,
+        "min": 3469,
+        "runs": [
+          3476.800000011921,
+          3469,
+          3473,
+          3502.5,
+          3483.100000023842
+        ]
+      },
+      "ready": {
+        "max": 3296.7999999523163,
+        "median": 3295.300000011921,
+        "min": 3291.399999976158,
+        "runs": [
+          3295.699999988079,
+          3295,
+          3295.300000011921,
+          3296.7999999523163,
+          3291.399999976158
+        ]
+      },
+      "repeatReady": {
+        "max": 729.1999999880791,
+        "median": 714.7000000476837,
+        "min": 709.3999999761581,
+        "runs": [
+          709.3999999761581,
+          716.5999999642372,
+          729.1999999880791,
+          714.7000000476837,
+          713.3000000119209
+        ]
+      }
+    }
+  }
+}

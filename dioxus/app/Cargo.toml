@@ -13,6 +13,9 @@ web = ["dioxus/web"]
 emoji = []
 # Code splitting. Only turned on with `dx build --wasm-split`; on its own it breaks the app (#5062).
 split = ["dioxus/wasm-split", "dioxus-router/wasm-split"]
+# A native `<select>` in place of the dioxus-primitives one: measures what the
+# primitive costs the Image Converter chunk (the "smaller module" remedy, issue 26).
+native-select = []
 
 [dependencies]
 dioxus = { version = "=0.7.10", default-features = false, features = ["router", "macro", "html", "signals", "hooks", "mounted", "document", "asset", "cli-config", "launch", "logger"] }

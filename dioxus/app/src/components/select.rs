@@ -1,6 +1,7 @@
 //! The overlay primitive the spike tries (issue 11): `dioxus-primitives`'
 //! select, styled like React's Radix `SelectInput`.
 use dioxus::prelude::*;
+#[cfg(not(feature = "native-select"))]
 use dioxus_primitives::select as primitive;
 
 use crate::icons::ChevronDownIcon;
@@ -11,6 +12,7 @@ pub struct SelectItem {
     pub label: String,
 }
 
+#[cfg(not(feature = "native-select"))]
 #[component]
 pub fn Select(
     aria_label: String,
@@ -51,6 +53,34 @@ pub fn Select(
                     }
                 }
             }
+        }
+    }
+}
+
+/// The `native-select` build: a styled `<select>`, no popup code at all.
+#[cfg(feature = "native-select")]
+#[component]
+pub fn Select(
+    aria_label: String,
+    name: String,
+    value: String,
+    items: Vec<SelectItem>,
+    #[props(default)] disabled: bool,
+    onchange: EventHandler<String>,
+) -> Element {
+    rsx! {
+        div { class: "relative w-full",
+            select {
+                "aria-label": aria_label,
+                name,
+                disabled,
+                class: "w-full cursor-pointer appearance-none rounded-sm border border-gray-700 bg-gray-950 px-4 py-2 text-gray-200 transition-colors focus:border-primary focus:shadow-[0_0_0_2px_oklch(0.55_0.22_310/0.15)] disabled:cursor-not-allowed disabled:opacity-50",
+                onchange: move |e| onchange.call(e.value()),
+                for item in items {
+                    option { key: "{item.value}", value: "{item.value}", selected: item.value == value, "{item.label}" }
+                }
+            }
+            span { class: "pointer-events-none absolute top-1/2 right-3 -translate-y-1/2 text-gray-400", ChevronDownIcon {} }
         }
     }
 }

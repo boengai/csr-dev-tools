@@ -5,6 +5,7 @@
 #
 #   --no-split   one WebAssembly module instead of one per route
 #   --no-emoji   drop the Noto emoji images, for budget runs (docs/perf/budgets.md)
+#   --features   extra cargo features, comma-separated (e.g. native-select)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -12,11 +13,13 @@ APP="$ROOT/dioxus/app"
 OUT="$ROOT/dioxus/dist"
 SPLIT=1
 EMOJI=1
+EXTRA=""
 while [ $# -gt 0 ]; do
   case "$1" in
     --no-split) SPLIT=0 ;;
     --no-emoji) EMOJI=0 ;;
     --out) OUT="$2"; shift ;;
+    --features) EXTRA=",$2"; shift ;;
     *) echo "unknown option $1" >&2; exit 2 ;;
   esac
   shift
@@ -31,6 +34,7 @@ pnpm exec tailwindcss -i "$APP/style/tailwind.css" -o "$APP/assets/generated/tai
 
 FEATURES="web"
 [ "$EMOJI" = 1 ] && FEATURES="$FEATURES,emoji"
+FEATURES="$FEATURES$EXTRA"
 ARGS=(build --release --platform web --debug-symbols false --no-default-features --features "$FEATURES")
 [ "$SPLIT" = 1 ] && ARGS=(build --release --platform web --debug-symbols false --wasm-split --no-default-features --features "$FEATURES,split")
 
