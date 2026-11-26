@@ -1,6 +1,6 @@
 # Measuring a build
 
-`e2e/perf/` measures a built site: Lighthouse, bytes and requests, and time until a tool is usable. It works on any `dist` directory that keeps the DOM hooks below, so the React site and a Dioxus build are measured the same way. Results are in [react-baseline.md](react-baseline.md).
+`e2e/perf/` measures a built site: Lighthouse, bytes and requests, and time until a tool is usable. It works on any `dist` directory that keeps the DOM hooks below, so the React site and a Dioxus build are measured the same way. Results are in [react-baseline.md](react-baseline.md). The budgets a Dioxus build must meet against React, measured in the same session, are in [budgets.md](budgets.md).
 
 ## Run it
 
