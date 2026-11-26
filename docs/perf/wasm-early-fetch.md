@@ -10,6 +10,8 @@ The answer to [Safari downloads preloaded WebAssembly twice](https://github.com/
 - It passed every budget against React, and the remedy's adoption rule against the preload-tag build, in a session that counts.
 - It needs one `'sha256-…'` hash in the `script-src` of `_headers`. The same script as a file in `/assets` needs no CSP change, but it **fails** the FCP budget.
 
+**To decide:** the issue says the fix must not "loosen the CSP". The hash allows exactly one more script, with fixed bytes, and no `'unsafe-inline'`. This file treats that as not loosening, but it is an addition to the policy, and the only variant without it fails. It needs a yes from the maintainer before the issue closes.
+
 **Still owed:** a check in real Safari on macOS and iOS with the network panel. Everything here was measured in Playwright's WebKit build (Playwright 1.64), not Safari.
 
 ## What WebKit does with a preload tag
@@ -62,7 +64,7 @@ Each tool page names its early modules in a `<meta>` and runs this script, both 
 })()
 ```
 
-What matters in it:
+This is `dioxus/js/wasm-early-fetch.js` as measured, at `f68cef16`. What matters in it:
 
 - **It is the same request the loader would make**, a plain `fetch(url)`, so there is nothing for an engine to match or miss.
 - **`window.fetch` is wrapped only until each early response has been handed over once.** The loader's URLs are hard-coded in `dx`'s output, so the hand-off is done at `fetch` and the loader is not patched. A later call for the same URL, a call with options, and a failed early request all go to the real `fetch`.
