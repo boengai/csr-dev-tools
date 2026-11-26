@@ -32,8 +32,8 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 | Branch | Holds | Takes |
 |--------|-------|-------|
 | `main` | The production React site | Bug fixes only, until the Dioxus cutover. A check fails any pull request that changes the set of tool keys. |
-| `develop` | The Dioxus migration ([issue 5](https://github.com/boengai/csr-dev-tools/issues/5)) | Migration work. It merges into `main` once, at cutover. The React app stays buildable here until the go/no-go decision. |
-| `spike/dioxus` | The disposable spike, cut from `develop` | Never merges. Only what go/no-go keeps is brought over. |
+| `develop` | The Dioxus migration ([issue 5](https://github.com/boengai/csr-dev-tools/issues/5)) | Migration work. It merges into `main` once, at cutover. Go/no-go said go (ADR-0031). The React app stays buildable here until the map decides when to retire it. |
+| `spike/dioxus` | The disposable spike, cut from `develop` | Never merges. Go/no-go kept none of its code; it stays as a reference (ADR-0031). |
 
 - Both `main` and `develop` change through pull requests, and the `ci` check must pass. `main` also requires `tool-freeze`.
 - Squash-merge your own work.

@@ -1,6 +1,6 @@
 # Performance budgets
 
-What a Dioxus build must meet to count as "no measured regression" against the React site, decided in [What are the performance budgets?](https://github.com/boengai/csr-dev-tools/issues/17). They were set before the spike was measured. The method is in [README.md](README.md) and the React numbers in [react-baseline.md](react-baseline.md).
+What a Dioxus build must meet to count as "no measured regression" against the React site, decided in [What are the performance budgets?](https://github.com/boengai/csr-dev-tools/issues/17). They were set before the spike was measured, and one rule was amended at [Go or no-go?](https://github.com/boengai/csr-dev-tools/issues/19) (see "Noisy React runs"). The method is in [README.md](README.md) and the React numbers in [react-baseline.md](react-baseline.md).
 
 ## How a build is compared
 
@@ -61,6 +61,11 @@ Discard a session and measure again if any of these happens:
 - **Noisy React runs.** React's three run medians spread by more than twice the baseline noise on any budgeted page: FCP over 3.8%, LCP over 10%, Ready over 1.8%, or Ready on repeat load over 9.6%.
   - Spread is the highest of the three run medians minus the lowest, divided by the lowest. This is how the baseline's Noise table was computed.
   - The pooled report does not show per-run medians. Run `node e2e/perf/report.ts <run>.json` once per React file, or read `lighthouse[page].mobile.metrics.{fcp,lcp}.median` and `usable[page].{ready,repeatReady}.median` from each file.
+  - **One exception: React's Image Converter LCP.** Its single loads land near 4,210, 4,520 or 4,780 ms, so its run medians spread about 6 to 13% in every spike session, whatever the session's quality.
+    - If it is the only React number over its limit, the session still counts.
+    - Image Converter's LCP budget is then checked against React's **lowest** run median, the strictest of the three, instead of its pooled median.
+    - The CPU index and power rules still apply.
+    - Decided in [Go or no-go?](https://github.com/boengai/csr-dev-tools/issues/19), which ADR-0031 records.
 
 ## What a miss means
 
@@ -88,7 +93,7 @@ Timings on a CI runner are noisy and cannot be compared with the baseline. `ligh
 
   The 2% rule catches a sudden jump, and the ceiling file stops slow creep. To raise a ceiling, edit the file in the same pull request so review sees the change.
 
-  The three spike pages take their ceilings from the go build. Every other page gets its ceiling from the pull request that first ports it, and both rules apply from the next pull request on. Pages not yet ported are not checked.
+  Every page gets its ceiling from the pull request that first ports it to `develop`. That includes the three spike pages, because no spike code is kept (ADR-0031). Both rules apply from the next pull request on. Pages not yet ported are not checked.
 - **When.** It is built with the first Dioxus code on `develop` after go, not before. The harness cannot run it today. It needs three things:
   - a bytes-only entry point, because `measure.ts` runs Lighthouse and the usable step every round;
   - a page list covering every tool, because `PERF_PAGES` has seven;
@@ -96,4 +101,4 @@ Timings on a CI runner are noisy and cannot be compared with the baseline. `ligh
 - **Lighthouse CI** stays a pull request check that is not required.
 - **Timing budgets** are checked by hand with the harness, at the milestones above.
 
-No ADR. The numbers are cheap to change, so this file and the issue are the record.
+These rules have no ADR of their own. The numbers are cheap to change, so this file and the issues are the record. ADR-0031 cites the Image Converter LCP exception because the go decision depends on it.
