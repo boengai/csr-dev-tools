@@ -34,9 +34,10 @@
 //   covers them all and no `'unsafe-inline'` is needed. `script` writes it to
 //   /assets instead, which leaves the CSP alone and costs a request. Measured
 //   on the mobile profile, that request puts FCP 3.6 to 11.6% above React and
-//   Ready 11 to 16% above the link build, so it fails the budget; `inline`
-//   is within 1.3% of the link build on both (docs/perf/wasm-early-fetch.md
-//   on `develop`).
+//   Ready 11 to 16% above the link build, so it fails the budget. `inline`
+//   is within 0.3% of the link build on Ready and 1.3% on FCP
+//   (docs/perf/wasm-early-fetch.md on `develop`). `script` and `link` stay
+//   only so that measurement can be repeated.
 import { createHash } from 'node:crypto'
 import { mkdirSync, readdirSync, readFileSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
