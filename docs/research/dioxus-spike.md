@@ -1,14 +1,18 @@
 # Spike: one shell and three tools in Dioxus
 
-The answer to [Spike: one shell and two tools in Dioxus](https://github.com/boengai/csr-dev-tools/issues/18), measured 2026-11-26. The code is [`dioxus/` on the `spike/dioxus` branch](https://github.com/boengai/csr-dev-tools/tree/spike/dioxus/dioxus). That branch never merges; [Go or no-go?](https://github.com/boengai/csr-dev-tools/issues/19) decides what is kept.
+The answer to [Spike: one shell and two tools in Dioxus](https://github.com/boengai/csr-dev-tools/issues/18), measured 2026-11-26. The code is [`dioxus/` on the `spike/dioxus` branch](https://github.com/boengai/csr-dev-tools/tree/spike/dioxus/dioxus); the link works once the branch is pushed, which has not happened yet. That branch never merges; [Go or no-go?](https://github.com/boengai/csr-dev-tools/issues/19) decides what is kept.
 
 ## Answer
 
-**Yes, it works, and the adopted build meets every budget on all three pages,** with one caveat on Image Converter: the session that measured it there broke the rule against noisy React runs. React's LCP on that page is trimodal, and the margin is wide, but a valid confirmation run on AC power is still owed. Dioxus 0.7.10 runs a real slice of the site: an app shell, one route per tool split into its own WebAssembly module, the three layout shells and three tools (Hash Generator, Escaped JSON Stringifier, Image Converter), and head-stamped, client-rendered tool pages. The React site's Playwright journeys for those tools pass **unchanged**, 6 of 6.
+**Yes, it works. The adopted build met every budget on all three pages, but that verdict is provisional,** because the session that measured it does not count. In that session (session 3), React's Image Converter LCP run medians spread 13.1%, past the 10% noisy-React limit, and `budgets.md` discards a whole session when React is noisy on any budgeted page. No valid session has measured the adopted build yet, so a full re-run on AC power is owed before the verdict and the remedy's adoption stand.
+
+The margins are wide, and session 1, which is valid, measured an earlier build (`8f0f61eb`) whose preload is the same as the adopted build's on Hash Generator and Escaped JSON. There that build passed every budget. React's LCP on Image Converter is trimodal, so this rule may keep failing on that page for reasons that have nothing to do with the session; [Go or no-go?](https://github.com/boengai/csr-dev-tools/issues/19) may need to amend it for that page.
+
+Dioxus 0.7.10 runs a real slice of the site: an app shell, one route per tool split into its own WebAssembly module, the three layout shells and three tools (Hash Generator, Escaped JSON Stringifier, Image Converter), and head-stamped, client-rendered tool pages. The React site's Playwright journeys for those tools pass **unchanged**, 6 of 6.
 
 - **As built, it missed one budget.** FCP was 7.7 to 8.4% above React on every page, against a 5% limit. Nothing contentful paints until the main WebAssembly module has downloaded and run, and the loader requests that module only after its JavaScript has run.
 - **The first remedy fixed it.** That remedy is a WebAssembly preload, the first step of the remedy order in [issue 26](https://github.com/boengai/csr-dev-tools/issues/26). The build preloads the main module, and the page's route module too when that is small (`auto`).
-- **With the preload, FCP is 4.5 to 11.6% below React,** LCP is 6.7 to 41.3% below, Ready is 11.4 to 45.1% below, and Ready on repeat load is about 30% below. TBT stays within 13 ms of React, CLS is 0, and the accessibility, best-practices and SEO scores are equal.
+- **With the preload (session 3), FCP is 4.5 to 11.6% below React,** LCP is 6.7 to 41.3% below, Ready is 11.4 to 45.1% below, and Ready on repeat load is about 30% below. TBT stays within 13 ms of React, CLS is 0, and the accessibility, best-practices and SEO scores are equal.
 - **The main WebAssembly file is 530,968 bytes uncompressed** in the budget build (532,038 with the emoji images), and 215 kB with brotli.
 
 What did not work, or works only with caveats:
@@ -17,6 +21,13 @@ What did not work, or works only with caveats:
 - Split chunks are not reproducible between builds: names and bytes change every time, so every deploy invalidates the cache for every chunk.
 - Code shared between routes is copied into each route module.
 - Preloading a large route module beside the main one makes FCP worse: Image Converter went from −11% to +14% against React.
+
+Not done yet:
+
+- The branch is not pushed. The Dioxus CI job, `ci.yml` on this branch and the preview deploy have never run.
+- The checks that keep the React app buildable on this branch were run locally (typecheck, 3,019 unit tests, lint, format, `vite build`) but not in CI.
+- Build time, which is tracked only, was not measured.
+- The valid re-run described above.
 
 Details and numbers follow.
 
@@ -38,7 +49,7 @@ Dioxus **0.7.10** (the only stable line, [issue 6](https://github.com/boengai/cs
 | Styling | `dioxus/scripts/template.ts` | Tailwind **4.3.3** (`@tailwindcss/cli`, not dx's 4.1.5) over `src/index.css`, with `source(none)` and `@source` on the Rust files. Variants are enums returning whole literals. No component takes a `class` prop. |
 | Build | `dioxus/scripts/build.sh` | Tool metadata is generated from `src/constants/tool-routes.ts`, then `dx build --release --platform web --debug-symbols false --wasm-split`. Fails if any module still has DWARF. Copies `public/` (favicon, manifest, `_headers` with the `/assets/*` cache rule) and stamps with `--preload auto`. `--no-emoji` drops the Noto emoji images for budget runs. |
 | Tests | `dioxus/playwright.config.ts` | Runs `e2e/crypto-tools.spec.ts`, `e2e/escaped-json-stringifier.spec.ts`, `e2e/image-tools.spec.ts` and `e2e/image-batch.spec.ts`, **unchanged**, grepped to the three tools, against the built site. Also runs `dioxus/e2e/` (head tags; the debounce, empty-input and mode-switch fixes). 11 of 11 pass. |
-| CI and preview | `.github/workflows/dioxus.yml`, `deploy-preview.yml`, `ci.yml` | A prebuilt dx 0.7.10 with its checksum checked, then the logic tests, the build and the journeys. On this branch the preview deploy builds Dioxus, so `spike-dioxus.csr-dev-tools.pages.dev` serves the spike. `ci.yml` also runs on this branch, so the React app stays checked. **Not run yet: the branch has not been pushed.** |
+| CI and preview | `.github/workflows/dioxus.yml`, `deploy-preview.yml`, `ci.yml` | A prebuilt dx 0.7.10 with its checksum checked, then the logic tests, the build and the journeys. On this branch the preview deploy is set to build Dioxus, so once the branch is pushed, `spike-dioxus.csr-dev-tools.pages.dev` will serve the spike. `ci.yml` also runs on this branch, so the React app stays checked. **Not run yet: the branch has not been pushed.** |
 
 Not ported, because no budget or journey needs them: the sidebar, command palette, settings dialog, background animation and the dashboard home page. The spike's home page is a list of the three tools and is not measured. React's tool pages load the sidebar, palette, settings and toast code lazily, after first paint, so leaving them out mainly lowers Dioxus's bytes; their effect on the timings was not measured.
 
@@ -46,7 +57,7 @@ Not ported, because no budget or journey needs them: the sidebar, command palett
 
 ### How it was measured
 
-Every number below follows [`docs/perf/budgets.md`](../perf/budgets.md) and [`docs/perf/README.md`](../perf/README.md):
+Every number below was measured by the method in [`docs/perf/budgets.md`](../perf/budgets.md) and [`docs/perf/README.md`](../perf/README.md). Sessions 2 and 3 break its noisy-React rule; the session table says how each is used.
 
 - **Setup:** `e2e/perf/measure.ts` on the three spike pages, mobile profile, with the throttle applied in the browser.
 - **Samples:** three runs of five rounds per build, the builds alternating in one session, so each number is the median of 15 with its range.
@@ -59,31 +70,31 @@ The raw results, reports, power, CPU and sleep logs are in [`docs/perf/runs/diox
 | Session | Builds, alternating | Pages | Valid? |
 |---|---|---|---|
 | 1, 12:23–14:46 | React; Dioxus `8f0f61eb` with no preload; Dioxus `8f0f61eb` preloading main + route module; then both as shipped | all three | Yes. Largest React spread: Image Converter LCP 5.96% (limit 10%). Pooled CPU index within 1.2%. No sleep, AC throughout. |
-| 2, 14:47–16:00 | React; four preload modes; native select (`58812d93`) | Image Converter | **No**: React LCP spread 13.2%. Used only to choose the remedy. |
-| 3, 16:03–18:26 | React; Dioxus `7b865710` with no preload; Dioxus `7b865710` with the `auto` preload; then both as shipped | all three | Hash Generator and Escaped JSON: yes (largest React spread 3.3%). Image Converter: **no**, React LCP spread 13.1%. Pooled CPU index within 0.4%. No sleep. |
+| 2, 14:47–16:00 | React; Dioxus `8f0f61eb` with three preload modes (main + route, main + route at low priority, main only); native select (`58812d93`) with main only and with main + route at low priority | Image Converter | **No**: React LCP spread 13.2%. No sleep in its window (checked afterwards with `pmset -g log`; the count in its log covers the whole day). Used only to choose the remedy. |
+| 3, 16:03–18:26 | React; Dioxus `7b865710` with no preload; Dioxus `7b865710` with the `auto` preload; then both as shipped | all three | **No**: `budgets.md` discards the whole session when React is noisy on any page, and React's Image Converter LCP spread 13.1%. On the other two pages the largest React spread was 3.3%. Pooled CPU index within 1.2% between React and either Dioxus build (0.4% against the `auto` build). No sleep. Its numbers are the best available for the adopted build, and they are provisional. |
 | 4, 18:26–18:52 | React; Dioxus `7b865710` with no preload; Dioxus `7b865710` with `auto` | Image Converter | **No, and discarded**: the Mac slept at 18:43 and 18:52 and ran on battery from 18:47; the run stopped part-way. Kept in `discarded-image-converter-session-4/`. **A valid Image Converter session is still owed.** |
 
 **React's Image Converter LCP is trimodal.** Its LCP element is always the upload button's label. Single loads land near 4,210, 4,520 or 4,780 ms, so a five-sample run median can fall on any of the three, and the spread between run medians swings between 6 and 13%. The rule against noisy React runs therefore fails on this page for reasons unrelated to the session's quality. Dioxus's Image Converter LCP is 4,263 ms, within 1.3% of React's fastest mode, so the verdict on that page does not depend on which mode React lands on.
 
 ### Budgets: the adopted build against React
 
-Session 3, Dioxus `7b865710` with the `auto` preload. **The Image Converter row is from session 3, which breaks the noisy-React rule on that page (above)**, so it stands until a valid re-run on AC power confirms it. Each cell compares Dioxus's median with React's.
+Session 3, Dioxus `7b865710` with the `auto` preload. **All three rows are provisional:** session 3 breaks the noisy-React rule (on Image Converter), so by `budgets.md` none of its rows count until a valid re-run on AC power confirms them. Each cell compares Dioxus's median with React's.
 
 | Page | FCP (≤ +5%) | LCP (≤ +10%) | Ready (≤ +5%) | Ready, repeat (≤ +10%) | TBT (≤ +50 ms) | CLS (≤ 0.01) | A11y / BP / SEO |
 |---|---|---|---|---|---|---|---|
 | Hash Generator | 2,717 vs 2,919: **−6.9%** | 3,049 vs 5,029: **−39.4%** | 2,697 vs 4,914: **−45.1%** | 711 vs 1,036: **−31.4%** | 0 vs 6 | 0 | 96/100/100, equal |
 | Escaped JSON Stringifier | 2,785 vs 2,916: **−4.5%** | 3,123 vs 5,319: **−41.3%** | 4,194 vs 4,894: **−14.3%** | 754 vs 1,061: **−28.9%** | 21 vs 8 (+13) | 0 | 96/100/100, equal |
-| Image Converter (session 3, see above) | 2,574 vs 2,912: **−11.6%** | 4,263 vs 4,570: **−6.7%** | 3,909 vs 4,414: **−11.4%** | 713 vs 1,032: **−30.9%** | 0 vs 0 | 0 | 100/100/100, equal |
+| Image Converter | 2,574 vs 2,912: **−11.6%** | 4,263 vs 4,570: **−6.7%** | 3,909 vs 4,414: **−11.4%** | 713 vs 1,032: **−30.9%** | 0 vs 0 | 0 | 100/100/100, equal |
 
-Every budget passes on every page. Lighthouse performance scores (tracked only) are 90, 89 and 81 for Dioxus, against 75, 74 and 77 for React.
+Every budget passes on every page in this (provisional) session. Lighthouse performance scores (tracked only) are 90, 89 and 81 for Dioxus, against 75, 74 and 77 for React.
 
-**The remedy passes its adoption rule** (budgets.md: Ready no more than 1% above, and First result no more than 3.6% above, the same build without the remedy, in the same session):
+**The remedy passes its adoption rule** in the same session, so this too is provisional (budgets.md: Ready no more than 1% above, and First result no more than 3.6% above, the same build without the remedy, in the same session):
 
 | Page | Ready with preload vs without | First result with preload vs without |
 |---|---|---|
 | Hash Generator | 2,697 vs 3,876 (−30.4%) | 3,087 vs 4,270 (−27.7%) |
 | Escaped JSON Stringifier | 4,194 vs 4,712 (−11.0%) | 4,596 vs 5,127 (−10.4%) |
-| Image Converter (session 3) | 3,909 vs 4,483 (−12.8%) | 4,085 vs 4,677 (−12.7%) |
+| Image Converter | 3,909 vs 4,483 (−12.8%) | 4,085 vs 4,677 (−12.7%) |
 
 ### How the remedy was found
 
@@ -105,11 +116,11 @@ Preloading the main module **and** the route module fixed FCP on two pages and b
 | Escaped JSON Stringifier | +8.0% | **−4.2%** | 4,708 → 4,191 |
 | Image Converter | +8.4% | **+14.0% ✗** | 4,473 → 3,297 |
 
-Image Converter's route module is 356 kB raw (141 kB brotli), most of it the `dioxus-primitives` select. Preloaded beside the main module, it shares the slow-4G link with it before first paint. Session 2 compared the options on that page only. That session is invalid by the noisy-React rule, so it was used only to choose:
+Image Converter's route module was 356 kB raw (141 kB brotli) in `8f0f61eb` (359 kB in `7b865710`), more than half of it the `dioxus-primitives` select. Preloaded beside the main module, it shares the slow-4G link with it before first paint. Session 2 compared the options on that page only. That session is invalid by the noisy-React rule, so it was used only to choose:
 
 | Image Converter build | FCP vs React | LCP vs React | Ready vs React |
 |---|---|---|---|
-| Main + route preloaded | +14.2% | −23.1% | −25.2% |
+| Main + route preloaded | +14.2% | −23.2% | −25.2% |
 | Main + route, route at `fetchpriority="low"` | +13.9% | −23.4% | −25.4% |
 | **Main only** | **−11.1%** | −10.8% | −11.5% |
 | Native select, main only | −11.9% | −18.4% | −19.8% |
@@ -127,7 +138,7 @@ Session 3, one run of five rounds each, Dioxus `7b865710` against React `4f82adf
 | Escaped JSON Stringifier | 2,791 vs 2,918 | 3,112 vs 6,015 | 4,865 vs 5,577 | 748 vs 1,062 |
 | Image Converter | 2,565 vs 2,929 | 4,953 vs 4,601 (+7.6%) | 4,553 vs 4,510 (+1.0%) | 711 vs 1,033 |
 
-With the emoji, Image Converter's LCP and Ready come out slightly above React. The 621.9 kB saucer image from `fonts.gstatic.com` competes with the main module for bandwidth. Hash Generator and Escaped JSON, whose route modules are preloaded, barely notice it.
+With the emoji, Image Converter's LCP and Ready come out slightly above React, because the 621.9 kB saucer image from `fonts.gstatic.com` competes with the main module for bandwidth. Hash Generator barely notices it. Escaped JSON's LCP is unchanged, but its Ready rises from 4,194 to 4,865 ms (+16%), still below React's 5,577 as shipped.
 
 ### Sizes
 
@@ -145,7 +156,7 @@ The budget build, `7b865710`. Main WebAssembly file: **530,968 bytes uncompresse
 
 - **Shared code is copied, not shared.** `CopyButton`'s strings sit in both the Hash Generator and the Escaped JSON route modules. The split build totals 1,057,751 bytes of wasm against 905,311 for the same code unsplit (`build.sh --no-split`), 17% more. A page still loads less with splitting: 596 kB on Hash Generator against 905 kB. *The splitter's shared-chunk pass is a no-op* (issue 8), and 84 tools would multiply this.
 - **The modules hold real code.** Each tool's own strings ("Hash computation failed", "Invalid escaped JSON string", "Image conversion failed") appear only in its route module, never in the main module, so the split modules are not empty trampolines (PR 6113).
-- **The primitive select costs 192 kB raw** (67 kB brotli) on Image Converter's route module: 356 kB with it, 164 kB with a native `<select>`.
+- **The primitive select costs 192 kB raw** (67 kB brotli) on Image Converter's route module: measured on the session-2 builds, 356 kB with it (`8f0f61eb`) and 164 kB with a native `<select>` (`58812d93`). The budget build's module with the primitive is 359 kB.
 - **Chunks are not reproducible.** Two builds from the same tree gave the same main module, but the route modules differed in both name hash and bytes, so the loader JS differed too (issue 6090).
 - **First-load bytes against React** (own total, brotli, no emoji):
   - Hash Generator: 271 against 395 kB, 6 requests against 68.
@@ -178,7 +189,7 @@ Build time (tracked only) was not measured: by the time the sessions ended the m
   | Tab while open | stays in the list | closes and moves to the next control |
   | Type "b" (no option starts with b) | stays | jumps to "JPEG" (fuzzy match) |
 
-  Losing focus after every pick fails WCAG 2.4.3 for keyboard users, and the primitive costs 192 kB raw on the page. Patch or fork it before relying on it; a native `<select>` is the cheap fallback.
+  Losing focus after every pick fails WCAG 2.4.3 for keyboard users, and the primitive costs about 192 kB raw on the page. Patch or fork it before relying on it; a native `<select>` is the cheap fallback.
 - **Split chunks change name and bytes on every build** (issue 6090), so a deploy invalidates every chunk in every visitor's cache, and a tab left open across a deploy requests chunk names that no longer exist. Not solved here.
 - **Duplicated shared code across route modules** (+17% at three tools). It needs `#[wasm_split]` boundaries or a shared-component chunk before 84 tools.
 - **A large route module cannot be preloaded** without hurting FCP. The `auto` rule is a threshold, not a design.
@@ -191,7 +202,7 @@ Build time (tracked only) was not measured: by the time the sessions ended the m
 - **dx is hard to install on this Mac.** `cargo install dioxus-cli` fails to find Homebrew's OpenSSL 3, and the prebuilt macOS binary links `openssl@3`, which is not installed here. Building against `OPENSSL_DIR=/opt/homebrew/opt/openssl@4` works. CI uses the Linux release binary.
 - **Debug symbols are on by default** (hazards doc): hello world is 772 kB without `--debug-symbols false` and 431 kB with it. Old hashed files also stay in dx's output directory, so `build.sh` deletes it first.
 - **dx's own `wasm-opt` ran correctly.** Running `wasm-opt -Oz` again saves only 0.15%. The DWARF guard in `build.sh` exists for the case where it does not.
-- **FCP is a WebAssembly waterfall, not a rendering cost.** Rendering is fast once the main module is in: Ready beat React even without a preload.
+- **FCP is a WebAssembly waterfall, not a rendering cost.** Rendering is fast once the main module is in. Even without a preload, Ready beat React on Hash Generator and Escaped JSON, and was within 1.6% of it on Image Converter.
 - **`fetchpriority="low"` on a preload did nothing.**
 - **Lighthouse accessibility depended on which shell parts exist.** Without the toast region, the Dioxus page applied fewer passing audits, so its one shared failure (gray-on-black contrast in the algorithm toggles, present in React too) weighed more, and it scored 95 against 96. Porting the toast region made the scores equal.
 - **React's Image Converter LCP is trimodal**, which makes the noisy-React rule fail on that page in two of three sessions.
