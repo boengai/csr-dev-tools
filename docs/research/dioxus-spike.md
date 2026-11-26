@@ -27,6 +27,8 @@ Not done yet:
 - Build time, which is tracked only, was not measured.
 - A valid session for the adopted build. None is planned; #19 decides (see above).
 
+**Changed after the spike (2026-11-27, [issue 35](https://github.com/boengai/csr-dev-tools/issues/35)):** WebKit downloaded every preloaded module twice, so `stamp.ts` no longer writes preload tags. A small inline script, first in the head, calls `fetch()` for the same modules and hands the promise to the loader. It is checked in Chromium and WebKit by `dioxus/e2e/wasm-downloads.spec.ts`, and it passed the budgets and the adoption rule against the preload-tag build. The record is `docs/perf/wasm-early-fetch.md` on `develop`. Where this document says "preload", the numbers are for the tags.
+
 Details and numbers follow.
 
 ## What was built
