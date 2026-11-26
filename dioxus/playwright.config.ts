@@ -18,6 +18,14 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
     { name: 'spike', testDir: './e2e', use: { ...devices['Desktop Chrome'] } },
+    // Issue 35: WebKit handles a WebAssembly preload differently, so the download
+    // check runs there too. WebKit has no clipboard permissions to grant.
+    {
+      name: 'spike-webkit',
+      testDir: './e2e',
+      testMatch: 'wasm-downloads.spec.ts',
+      use: { ...devices['Desktop Safari'], permissions: [] },
+    },
   ],
   reporter: [['list']],
   // No retries: a flaky journey is a finding, not noise.

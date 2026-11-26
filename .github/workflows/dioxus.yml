@@ -63,8 +63,9 @@ jobs:
       - name: Build
         run: dioxus/scripts/build.sh
 
-      - name: Install Playwright Chromium
-        run: pnpm exec playwright install --with-deps chromium
+      # WebKit for the WebAssembly download check (issue 35).
+      - name: Install Playwright Chromium and WebKit
+        run: pnpm exec playwright install --with-deps chromium webkit
 
       - name: React journeys and spike checks against the Dioxus build
         run: pnpm exec playwright test -c dioxus/playwright.config.ts

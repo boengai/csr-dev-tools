@@ -1,13 +1,15 @@
 #!/usr/bin/env bash
 # Builds the Dioxus spike into dioxus/dist, ready to serve or deploy.
 #
-#   dioxus/scripts/build.sh [--no-split] [--no-emoji] [--features <list>] [--preload <mode>] [--out <dir>]
+#   dioxus/scripts/build.sh [--no-split] [--no-emoji] [--features <list>] [--preload <mode>] [--preload-via <how>] [--out <dir>]
 #
 #   --no-split   one WebAssembly module instead of one per route
 #   --no-emoji   drop the Noto emoji images, for budget runs (docs/perf/budgets.md)
 #   --features   extra cargo features, comma-separated (e.g. native-select)
 #   --preload    how tool pages preload WebAssembly: auto, all, main, low or none
 #                (stamp.ts; the default is the remedy the spike adopted)
+#   --preload-via  how the download starts early: inline, script or link
+#                (stamp.ts; link downloads every module twice in WebKit, issue 35)
 #   --out        output directory (default dioxus/dist)
 set -euo pipefail
 
@@ -18,12 +20,14 @@ SPLIT=1
 EMOJI=1
 EXTRA=""
 PRELOAD="auto"
+PRELOAD_VIA="inline"
 while [ $# -gt 0 ]; do
   case "$1" in
     --no-split) SPLIT=0 ;;
     --no-emoji) EMOJI=0 ;;
     --features) EXTRA=",$2"; shift ;;
     --preload) PRELOAD="$2"; shift ;;
+    --preload-via) PRELOAD_VIA="$2"; shift ;;
     # Resolved from the caller's directory, before the `cd` below.
     --out) OUT="$(mkdir -p "$2" && cd "$2" && pwd)"; shift ;;
     *) echo "unknown option $1" >&2; exit 2 ;;
@@ -31,6 +35,7 @@ while [ $# -gt 0 ]; do
   shift
 done
 case "$PRELOAD" in auto|all|main|low|none) ;; *) echo "unknown --preload $PRELOAD" >&2; exit 2 ;; esac
+case "$PRELOAD_VIA" in inline|script|link) ;; *) echo "unknown --preload-via $PRELOAD_VIA" >&2; exit 2 ;; esac
 DX="${DX:-dx}"
 
 cd "$ROOT"
@@ -70,7 +75,7 @@ cp -R "$PUBLIC/." "$OUT/"
 if [ "$PRELOAD" = none ]; then
   node dioxus/scripts/stamp.ts "$OUT" --no-preload
 else
-  node dioxus/scripts/stamp.ts "$OUT" "--preload-wasm=$PRELOAD"
+  node dioxus/scripts/stamp.ts "$OUT" "--preload-wasm=$PRELOAD" "--preload-via=$PRELOAD_VIA"
 fi
 MAIN_WASM="$(ls "$OUT"/assets/csr-dev-tools-dioxus_bg-*.wasm)"
 echo "[build] main wasm: $(wc -c < "$MAIN_WASM" | tr -d ' ') bytes uncompressed"
