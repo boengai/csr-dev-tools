@@ -3,7 +3,7 @@ import { defineConfig, devices } from '@playwright/test'
 // Runs the React site's own journeys for the three spike tools, unchanged,
 // against the built Dioxus site (issue 18), plus the spike's own checks.
 //   pnpm exec playwright test -c dioxus/playwright.config.ts
-// Build first: dioxus/scripts/build.sh
+// Build first: dioxus/scripts/build.sh. DIOXUS_DIST=<dir> tests another build.
 const PORT = 5174
 
 export default defineConfig({
@@ -28,7 +28,7 @@ export default defineConfig({
     trace: 'retain-on-failure',
   },
   webServer: {
-    command: `node dioxus/scripts/serve.ts dioxus/dist ${PORT}`,
+    command: `node dioxus/scripts/serve.ts ${process.env.DIOXUS_DIST ?? 'dioxus/dist'} ${PORT}`,
     cwd: '..',
     reuseExistingServer: !process.env.CI,
     url: `http://localhost:${PORT}`,
