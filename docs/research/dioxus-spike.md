@@ -4,9 +4,9 @@ The answer to [Spike: one shell and two tools in Dioxus](https://github.com/boen
 
 ## Answer
 
-**Yes, it works. The adopted build met every budget on all three pages, but that verdict is provisional,** because the session that measured it does not count. In that session (session 3), React's Image Converter LCP run medians spread 13.1%, past the 10% noisy-React limit, and `budgets.md` discards a whole session when React is noisy on any budgeted page. No valid session has measured the adopted build yet, so a full re-run on AC power is owed before the verdict and the remedy's adoption stand.
+**Yes, it works. The adopted build met every budget on all three pages, but that verdict is provisional,** because the session that measured it does not count. In that session (session 3), React's Image Converter LCP run medians spread 13.1%, past the 10% noisy-React limit, and `budgets.md` discards a whole session when React is noisy on any budgeted page. No valid session has measured the adopted build yet, so the verdict and the remedy's adoption stay provisional until #19 rules on the evidence.
 
-The margins are wide, and session 1, which is valid, measured an earlier build (`8f0f61eb`) whose preload is the same as the adopted build's on Hash Generator and Escaped JSON. There that build passed every budget. React's LCP on Image Converter is trimodal, and it broke the noisy-React rule in three of the four sessions that measured it (13.2%, 13.1%, 13.05%; session 1 passed at 5.96%). Another re-run is therefore likely to be void for the same reason. The rule needs a decision for that page in [What are the performance budgets?](https://github.com/boengai/csr-dev-tools/issues/17) or [Go or no-go?](https://github.com/boengai/csr-dev-tools/issues/19).
+The margins are wide, and session 1, which is valid, measured an earlier build (`8f0f61eb`) whose preload is the same as the adopted build's on Hash Generator and Escaped JSON. There that build passed every budget. React's LCP on Image Converter is trimodal, and it broke the noisy-React rule in three of the four sessions that measured it (13.2%, 13.1%, 13.05%; session 1 passed at 5.96%). Another re-run is therefore likely to be void for the same reason. **Decided 2026-11-26: the verdict stays provisional.** No further re-run is planned. Whether the rule changes for that page, and whether the session-3 numbers are good enough, are questions for [Go or no-go?](https://github.com/boengai/csr-dev-tools/issues/19).
 
 Dioxus 0.7.10 runs a real slice of the site: an app shell, one route per tool split into its own WebAssembly module, the three layout shells and three tools (Hash Generator, Escaped JSON Stringifier, Image Converter), and head-stamped, client-rendered tool pages. The React site's Playwright journeys for those tools pass **unchanged**, 6 of 6.
 
@@ -27,7 +27,7 @@ Not done yet:
 - The branch is not pushed. The Dioxus CI job, `ci.yml` on this branch and the preview deploy have never run.
 - The checks that keep the React app buildable on this branch were run locally (typecheck, 3,019 unit tests, lint, format, `vite build`) but not in CI.
 - Build time, which is tracked only, was not measured.
-- The valid re-run described above.
+- A valid session for the adopted build. None is planned; #19 decides (see above).
 
 Details and numbers follow.
 
