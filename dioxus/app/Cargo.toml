@@ -1,0 +1,36 @@
+[package]
+name = "csr-dev-tools-dioxus"
+version = "0.0.0"
+edition.workspace = true
+license.workspace = true
+publish = false
+
+[features]
+default = ["web", "emoji"]
+web = ["dioxus/web"]
+# The Noto emoji images (loading saucer, processing robot). Budget runs build
+# without them, as the React build drops them (docs/perf/budgets.md).
+emoji = []
+# Code splitting. Only turned on with `dx build --wasm-split`; on its own it breaks the app (#5062).
+split = ["dioxus/wasm-split", "dioxus-router/wasm-split"]
+
+[dependencies]
+dioxus = { version = "=0.7.10", default-features = false, features = ["router", "macro", "html", "signals", "hooks", "mounted", "document", "asset", "cli-config", "launch", "logger"] }
+dioxus-router = { version = "=0.7.10", default-features = false }
+wasm-bindgen = "0.2"
+wasm-bindgen-futures = "0.4"
+js-sys = "0.3"
+# `Location`: dioxus-web 0.7.10 calls `window.location()` without enabling the
+# feature itself and only compiles when another crate turns it on.
+web-sys = { version = "0.3", features = [
+    "Location", "Document", "Window", "Element", "HtmlElement", "HtmlHeadElement", "HtmlMetaElement",
+    "HtmlLinkElement", "NodeList", "HtmlInputElement", "FileList", "File", "Blob", "BlobPropertyBag", "Url",
+    "UrlSearchParams", "HtmlCanvasElement", "CanvasRenderingContext2d", "HtmlImageElement", "HtmlAnchorElement",
+    "Crypto", "SubtleCrypto", "Navigator", "Clipboard", "Event", "EventTarget", "DataTransfer", "DragEvent", "Storage",
+] }
+futures-channel = "0.3"
+csr-logic = { path = "../logic" }
+# The existing MD5 crate (wasm/crates/hash). SHA-* go through WebCrypto, as in React.
+hash = { path = "../../wasm/crates/hash" }
+# git only: the crates.io release is an empty 0.0.0 placeholder (issue 11).
+dioxus-primitives = { git = "https://github.com/DioxusLabs/components", rev = "09d6a913cd1fbcd258b6a5d97bd780b1808b5c0a", default-features = false }

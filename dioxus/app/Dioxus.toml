@@ -1,0 +1,8 @@
+[application]
+name = "csr-dev-tools-dioxus"
+# No `tailwind.css` at the crate root: dx would run its own Tailwind 4.1.5 and
+# ignore its errors. dioxus/scripts/build.sh runs Tailwind 4.3.3 instead.
+
+[web.app]
+title = "CSR - Free Web Developer Tools Collection | Color Converter, Base64 Codec, Image Tools"
+base_path = ""

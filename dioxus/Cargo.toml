@@ -1,0 +1,26 @@
+# Own workspace, so `wasm/Cargo.toml`'s `codegen-units = 1` (which can panic the
+# wasm-split pass, DioxusLabs/dioxus#4769) is not inherited.
+[workspace]
+members = ["app", "logic"]
+resolver = "3"
+
+[workspace.package]
+edition = "2024"
+license = "MIT"
+
+[profile.release]
+opt-level = "z"
+lto = true
+debug = false
+panic = "abort"
+
+# `dx build --release --platform web` uses this profile when it exists; it is
+# spelled out so the build never silently picks up another one.
+[profile.wasm-release]
+inherits = "release"
+
+# `--wasm-split` needs LTO and relocations; dx forces `debug = true` for it and
+# skips stripping, so this profile exists to make that explicit and measurable.
+[profile.wasm-split-release]
+inherits = "release"
+debug = true

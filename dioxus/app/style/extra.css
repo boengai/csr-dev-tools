@@ -1,0 +1,13 @@
+/* Appended to src/index.css for the Dioxus build. */
+
+/* The page card's entrance, which React does with motion (Card.tsx). */
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
