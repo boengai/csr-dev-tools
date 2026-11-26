@@ -47,4 +47,6 @@ createServer((req, res) => {
   const headers: Record<string, string> = { 'content-type': TYPES[extname(path)] ?? 'application/octet-stream' }
   for (const rule of rules) if (url.pathname.startsWith(rule.prefix)) for (const [k, v] of rule.headers) headers[k] = v
   res.writeHead(200, headers).end(readFileSync(path))
-}).listen(port, () => console.log(`[serve] ${dist} on http://localhost:${port}`))
+}).listen(port, () => 
+  // eslint-disable-next-line no-console -- CLI script output
+  console.log(`[serve] ${dist} on http://localhost:${port}`))

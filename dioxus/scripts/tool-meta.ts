@@ -56,4 +56,5 @@ ${home.map((v) => `    ${rust(v)},`).join('\n')}
 ];
 `,
 )
+// eslint-disable-next-line no-console -- CLI script output
 console.log(`[tool-meta] wrote ${entries.length} tools to ${out}`)

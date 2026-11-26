@@ -35,8 +35,9 @@ const preloadTags = (key: string) => {
   const route = assets.find((f) => new RegExp(`^module_\\d+_route${pascal(key)}[0-9a-f]{32}-.*\\.wasm$`).test(f))
   const tag = (f: string, priority = '') =>
     `<link rel="preload" href="/assets/${f}" as="fetch" type="application/wasm" crossorigin${priority}>`
-  if (!main || !route) throw new Error(`[stamp] no main or route module to preload for ${key}`)
-  if (preloadMode === 'main') return tag(main)
+  if (!main) throw new Error(`[stamp] no main module to preload for ${key}`)
+  // An unsplit build (--no-split) has no route modules: the main one holds every tool.
+  if (!route || preloadMode === 'main') return tag(main)
   if (preloadMode === 'auto' && statSync(resolve(dist, 'assets', route)).size > AUTO_ROUTE_LIMIT) return tag(main)
   return tag(main) + tag(route, preloadMode === 'low' ? ' fetchpriority="low"' : '')
 }
@@ -69,4 +70,5 @@ for (const key of SPIKE_TOOL_KEYS) {
     }),
   )
 }
+// eslint-disable-next-line no-console -- CLI script output
 console.log(`[stamp] wrote ${SPIKE_TOOL_KEYS.length} tool pages into ${dist}`)

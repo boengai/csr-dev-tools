@@ -32,4 +32,5 @@ let css = readFileSync(resolve(root, 'src/index.css'), 'utf-8')
 css = replaceOnce(css, /@import 'tailwindcss';/, "@import 'tailwindcss' source(none);\n@source '../src';", 'tailwind import')
 css += '\n' + readFileSync(resolve(app, 'style/extra.css'), 'utf-8')
 writeFileSync(resolve(app, 'style/tailwind.css'), css)
+// eslint-disable-next-line no-console -- CLI script output
 console.log('[template] wrote dioxus/app/index.html and dioxus/app/style/tailwind.css')
