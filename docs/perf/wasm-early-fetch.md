@@ -12,7 +12,7 @@ The answer to [Safari downloads preloaded WebAssembly twice](https://github.com/
 
 **To decide:** the issue says the fix must not "loosen the CSP". The hash allows exactly one more script, with fixed bytes, and no `'unsafe-inline'`. This file treats that as not loosening, but it is an addition to the policy, and the only variant without it fails. It needs a yes from the maintainer before the issue closes.
 
-**Still owed:** a check in real Safari on macOS and iOS with the network panel. Everything here was measured in Playwright's WebKit build (Playwright 1.64), not Safari.
+**Still owed:** a check in real Safari on macOS and iOS with the network panel. Everything here was measured in Playwright's WebKit build (Playwright 1.64), not Safari. Safari 27.2 on the measuring Mac refused WebDriver, because "Allow remote automation" is off, and that setting was left alone.
 
 ## What WebKit does with a preload tag
 
@@ -30,7 +30,7 @@ No form of the tag changes that. On Hash Generator, with both responses held for
 | the spike's, with `href` spelled as the loader spells it (`/./assets/…`) | 2 | 1 |
 | `rel="prefetch"` | 1 | 2 |
 
-WebKit's single request under `rel="prefetch"` is the loader's own: it does not start the download early.
+WebKit made one request under `rel="prefetch"`. Whether that request started early was not checked. Chromium doubles it either way, so it is not a remedy.
 
 ## The remedy
 
@@ -96,9 +96,10 @@ The whole Dioxus Playwright run passes with the inline script, 17 of 17. The Dio
 
 By the method in [budgets.md](budgets.md): mobile profile, no emoji, four builds alternating in one session, three runs of five rounds, so each number is the median of 15.
 
-- **Builds:** React `4f82adf8`, and one `dx` output (Dioxus `7b865710`, the spike's adopted build) stamped three ways: preload tags, inline script, script file. The stamped pages are the only difference between the three.
+- **Builds:** React `4f82adf8`, the tip of `main`, and one `dx` output (Dioxus `7b865710`, the spike's adopted build) stamped three ways: preload tags, inline script, script file. The stamped pages are the only difference between the three.
 - **Session:** 2026-11-27, 01:02 to 03:30, MacBook with an M3 Pro, AC power throughout, `caffeinate -dims`, no sleep or wake event, no failed measurement.
 - **It counts.** Pooled mobile CPU index medians are within 0.6% between builds. React's run medians spread at most 0.6% on FCP, 0.4% on Ready and 0.6% on repeat Ready. On LCP they spread 5.4% and 0.3% on the first two pages and 14.0% on Image Converter, which is the one exception `budgets.md` allows: that LCP is checked against React's lowest run median, 4,198 ms.
+- **Not measured:** the builds as shipped, with their emoji images. `budgets.md` asks for that in the same session, tracked only. The stamped head is the only thing that changed, and the spike's as-shipped runs stand for the rest.
 - **Raw results:** [runs/issue-35/](runs/issue-35), with the pooled tables in [report.md](runs/issue-35/report.md).
 
 ### Inline script against React
