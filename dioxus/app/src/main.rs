@@ -108,8 +108,9 @@ fn AppShell() -> Element {
 
 /// The tool route's frame (React `pages/tools`), inside each tool's chunk.
 #[component]
-fn ToolPage(name: &'static str, children: Element) -> Element {
+fn ToolPage(tool_key: &'static str, children: Element) -> Element {
     let nav = navigator();
+    let name = meta::tool(tool_key).name;
     rsx! {
         div { class: "flex min-h-0 grow flex-col p-2 pb-[calc(0.5rem+var(--safe-area-inset-bottom))] tablet:p-4",
             PageCard { title: name, onclose: move |_| { nav.push(Route::Home {}); }, {children} }
@@ -119,17 +120,17 @@ fn ToolPage(name: &'static str, children: Element) -> Element {
 
 #[component]
 fn HashGenerator() -> Element {
-    rsx! { ToolPage { name: "Hash Generator", tools::HashGenerator {} } }
+    rsx! { ToolPage { tool_key: "hash-generator", tools::HashGenerator {} } }
 }
 
 #[component]
 fn EscapedJsonStringifier() -> Element {
-    rsx! { ToolPage { name: "Escaped JSON Stringifier", tools::EscapedJsonStringifier {} } }
+    rsx! { ToolPage { tool_key: "escaped-json-stringifier", tools::EscapedJsonStringifier {} } }
 }
 
 #[component]
 fn ImageConverter() -> Element {
-    rsx! { ToolPage { name: "Image Converter", tools::ImageConverter {} } }
+    rsx! { ToolPage { tool_key: "image-converter", tools::ImageConverter {} } }
 }
 
 /// Not part of the spike's measurements: links to the three tools.

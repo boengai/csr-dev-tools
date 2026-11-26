@@ -69,9 +69,20 @@ jobs:
       - name: React journeys and spike checks against the Dioxus build
         run: pnpm exec playwright test -c dioxus/playwright.config.ts
 
+      # A failed journey is a finding (no retries): keep its trace to look at.
+      - name: Upload Playwright traces
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: dioxus-playwright
+          path: dioxus/test-results/
+          retention-days: 7
+
       - name: Upload build
+        if: ${{ always() }}
         uses: actions/upload-artifact@v4
         with:
           name: dioxus-dist
+          if-no-files-found: ignore
           path: dioxus/dist/
           retention-days: 7

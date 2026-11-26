@@ -15,6 +15,5 @@ export default defineConfig({
     minify: true,
     outDir: resolve(import.meta.dirname, '../app/assets/generated'),
   },
-  configFile: false,
   publicDir: false,
 })

@@ -34,7 +34,9 @@ pub fn HashGenerator() -> Element {
             compute(text, algo).await
         }
     });
+    // Empty bypass: a cleared input clears the output at once, not after the debounce.
     let (output, error) = match result.read().clone() {
+        _ if source.read().trim().is_empty() => (String::new(), None),
         Some(Ok(out)) => (out, None),
         Some(Err(e)) => (String::new(), Some(e)),
         None => (String::new(), None),
@@ -42,7 +44,7 @@ pub fn HashGenerator() -> Element {
 
     rsx! {
         TransformerShell {
-            title: "Hash Generator",
+            title: tool.name,
             description: tool.description,
             controls: rsx! {
                 div { class: "flex flex-wrap gap-2",

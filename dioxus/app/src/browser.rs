@@ -133,13 +133,12 @@ pub async fn encode_image(url: &str, mime: &str, quality: f64) -> Result<(Blob, 
     ctx.draw_image_with_html_image_element(&img, 0.0, 0.0).map_err(|_| "draw failed")?;
 
     let (tx, rx) = futures_channel::oneshot::channel::<Option<Blob>>();
-    let mut tx = Some(tx);
-    let callback = Closure::<dyn FnMut(Option<Blob>)>::new(move |blob: Option<Blob>| {
-        if let Some(tx) = tx.take() {
-            let _ = tx.send(blob);
-        }
+    // Owned by JS and freed after its one call: if this future is dropped while the
+    // browser is still encoding (the tool unmounted), the callback stays valid.
+    let callback = Closure::once_into_js(move |blob: Option<Blob>| {
+        let _ = tx.send(blob);
     });
-    c.to_blob_with_type_and_encoder_options(callback.as_ref().unchecked_ref(), mime, &quality.into())
+    c.to_blob_with_type_and_encoder_options(callback.unchecked_ref(), mime, &quality.into())
         .map_err(|_| "encode failed")?;
     let blob = rx.await.ok().flatten().ok_or("The browser could not encode this format")?;
     Ok((blob, w, h))
@@ -152,4 +151,31 @@ pub fn encodable_formats() -> Vec<&'static str> {
         .into_iter()
         .filter(|f| c.to_data_url_with_type(f).is_ok_and(|url| url.starts_with(&format!("data:{f}"))))
         .collect()
+}
+
+/// The object URLs one component created. Each is revoked when the component
+/// stops using it, and whatever is left when the component unmounts (the
+/// set is dropped with it), so leaving a tool does not pin its images in memory.
+#[derive(Default)]
+pub struct ObjectUrls(std::cell::RefCell<Vec<String>>);
+
+impl ObjectUrls {
+    pub fn create(&self, blob: &Blob) -> String {
+        let url = object_url(blob);
+        self.0.borrow_mut().push(url.clone());
+        url
+    }
+
+    pub fn revoke(&self, url: &str) {
+        revoke(url);
+        self.0.borrow_mut().retain(|u| u != url);
+    }
+}
+
+impl Drop for ObjectUrls {
+    fn drop(&mut self) {
+        for url in self.0.get_mut().drain(..) {
+            revoke(&url);
+        }
+    }
 }

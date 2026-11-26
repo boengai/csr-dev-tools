@@ -1,0 +1,19 @@
+{
+  // The spike's TypeScript (scripts run by Node with type stripping, the editor
+  // bridge, the Playwright config and checks). `pnpm typecheck` includes it.
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "erasableSyntaxOnly": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noEmit": true,
+    "skipLibCheck": true,
+    "types": ["node"]
+  },
+  "include": ["./**/*.ts"],
+  "exclude": ["./target/**", "./dist*/**", "./app/assets/**"]
+}

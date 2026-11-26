@@ -4,7 +4,8 @@ import { defineConfig } from 'vitest/config'
 // jsdom, everything else under node. A `@vitest-environment` docblock still
 // overrides the project default for one-off cases.
 const DOM_SPECS = ['**/*.dom.spec.ts', '**/*.dom.spec.tsx']
-const EXCLUDE = ['e2e/**', 'node_modules/**']
+// dioxus/ holds the Dioxus spike's Playwright specs (issue 18), not unit tests.
+const EXCLUDE = ['dioxus/**', 'e2e/**', 'node_modules/**']
 
 export default defineConfig({
   resolve: {

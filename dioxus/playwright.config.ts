@@ -30,7 +30,8 @@ export default defineConfig({
   webServer: {
     command: `node dioxus/scripts/serve.ts ${process.env.DIOXUS_DIST ?? 'dioxus/dist'} ${PORT}`,
     cwd: '..',
-    reuseExistingServer: !process.env.CI,
+    // Never reuse: an old server on the port would serve another build than DIOXUS_DIST.
+    reuseExistingServer: false,
     url: `http://localhost:${PORT}`,
   },
 })

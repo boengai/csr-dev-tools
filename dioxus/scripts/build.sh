@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 # Builds the Dioxus spike into dioxus/dist, ready to serve or deploy.
 #
-#   dioxus/scripts/build.sh [--no-split] [--no-emoji] [--out <dir>]
+#   dioxus/scripts/build.sh [--no-split] [--no-emoji] [--features <list>] [--preload <mode>] [--out <dir>]
 #
 #   --no-split   one WebAssembly module instead of one per route
 #   --no-emoji   drop the Noto emoji images, for budget runs (docs/perf/budgets.md)
 #   --features   extra cargo features, comma-separated (e.g. native-select)
+#   --preload    how tool pages preload WebAssembly: auto, all, main, low or none
+#                (stamp.ts; the default is the remedy the spike adopted)
+#   --out        output directory (default dioxus/dist)
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -14,16 +17,20 @@ OUT="$ROOT/dioxus/dist"
 SPLIT=1
 EMOJI=1
 EXTRA=""
+PRELOAD="auto"
 while [ $# -gt 0 ]; do
   case "$1" in
     --no-split) SPLIT=0 ;;
     --no-emoji) EMOJI=0 ;;
-    --out) OUT="$2"; shift ;;
     --features) EXTRA=",$2"; shift ;;
+    --preload) PRELOAD="$2"; shift ;;
+    # Resolved from the caller's directory, before the `cd` below.
+    --out) OUT="$(mkdir -p "$2" && cd "$2" && pwd)"; shift ;;
     *) echo "unknown option $1" >&2; exit 2 ;;
   esac
   shift
 done
+case "$PRELOAD" in auto|all|main|low|none) ;; *) echo "unknown --preload $PRELOAD" >&2; exit 2 ;; esac
 DX="${DX:-dx}"
 
 cd "$ROOT"
@@ -34,21 +41,25 @@ pnpm exec tailwindcss -i "$APP/style/tailwind.css" -o "$APP/assets/generated/tai
 
 FEATURES="web"
 [ "$EMOJI" = 1 ] && FEATURES="$FEATURES,emoji"
+[ "$SPLIT" = 1 ] && FEATURES="$FEATURES,split"
 FEATURES="$FEATURES$EXTRA"
 ARGS=(build --release --platform web --debug-symbols false --no-default-features --features "$FEATURES")
-[ "$SPLIT" = 1 ] && ARGS=(build --release --platform web --debug-symbols false --wasm-split --no-default-features --features "$FEATURES,split")
+[ "$SPLIT" = 1 ] && ARGS+=(--wasm-split)
 
 PUBLIC="$ROOT/dioxus/target/dx/csr-dev-tools-dioxus/release/web/public"
 # Old hashed files stay in dx's output otherwise.
 rm -rf "$PUBLIC"
 (cd "$APP" && "$DX" "${ARGS[@]}")
 
-# wasm-opt failures exit 0 and ship unoptimised wasm with DWARF (hazards doc).
-MAIN_WASM="$(ls "$PUBLIC"/assets/csr-dev-tools-dioxus_bg-*.wasm)"
-if strings "$MAIN_WASM" | grep -q -E '^\.debug_(info|line)$|debug_info'; then
-  echo "[build] $MAIN_WASM still has debug info: wasm-opt did not run" >&2
-  exit 1
-fi
+# A wasm-opt failure exits 0 and ships unoptimised wasm with DWARF (hazards doc).
+# `grep -c` reads all its input: `grep -q` would SIGPIPE `strings` under pipefail
+# and turn a match into a failed condition.
+for wasm in "$PUBLIC"/assets/*.wasm; do
+  if [ "$(strings "$wasm" | grep -c -E '\.debug_(info|line|abbrev)' || true)" != 0 ]; then
+    echo "[build] $wasm still has debug info: wasm-opt did not run" >&2
+    exit 1
+  fi
+done
 
 rm -rf "$OUT"
 mkdir -p "$OUT"
@@ -56,5 +67,10 @@ mkdir -p "$OUT"
 # /assets/* cache rule and the CSP). There is no public/index.html to collide.
 cp -R "$ROOT/public/." "$OUT/"
 cp -R "$PUBLIC/." "$OUT/"
-node dioxus/scripts/stamp.ts "$OUT"
+if [ "$PRELOAD" = none ]; then
+  node dioxus/scripts/stamp.ts "$OUT"
+else
+  node dioxus/scripts/stamp.ts "$OUT" "--preload-wasm=$PRELOAD"
+fi
+MAIN_WASM="$(ls "$OUT"/assets/csr-dev-tools-dioxus_bg-*.wasm)"
 echo "[build] main wasm: $(wc -c < "$MAIN_WASM" | tr -d ' ') bytes uncompressed"

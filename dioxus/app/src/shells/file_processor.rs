@@ -110,6 +110,8 @@ pub fn BatchFileProcessor(
     let mut results = use_signal(Vec::<RowResult>::new);
     let mut run = use_signal(|| 0u64);
     let mut dragging = use_signal(|| false);
+    // Every object URL this shell makes; whatever is left is revoked on unmount.
+    let urls = use_hook(|| CopyValue::new(browser::ObjectUrls::default()));
 
     // Live preview of one queued file with the current settings.
     let mut preview = use_signal(|| None::<Result<(Processed, String), String>>);
@@ -124,6 +126,9 @@ pub fn BatchFileProcessor(
         let generation = *preview_generation.peek() + 1;
         preview_generation.set(generation);
         let Some(item) = preview_target else {
+            if let Some(Ok((_, url))) = preview.peek().as_ref() {
+                urls.read().revoke(url);
+            }
             preview.set(None);
             last_preview_id.set(None);
             return;
@@ -144,12 +149,11 @@ pub fn BatchFileProcessor(
             if *preview_generation.peek() != generation {
                 return;
             }
-            if let Some(Ok((old, url))) = preview.peek().as_ref() {
-                let _ = old;
-                browser::revoke(url);
+            if let Some(Ok((_, url))) = preview.peek().as_ref() {
+                urls.read().revoke(url);
             }
             preview.set(Some(out.map(|p| {
-                let url = browser::object_url(&p.blob);
+                let url = urls.read().create(&p.blob);
                 (p, url)
             })));
             preview_pending.set(false);
@@ -171,7 +175,7 @@ pub fn BatchFileProcessor(
         for file in valid {
             let id = next_id();
             next_id.set(id + 1);
-            let url = browser::object_url(&file);
+            let url = urls.read().create(&file);
             added.push(Item { id, file, url, width: 0, height: 0 });
         }
         items.write().extend(added.iter().cloned());
@@ -197,7 +201,7 @@ pub fn BatchFileProcessor(
         run.set(this_run);
         for r in results.peek().iter() {
             if let Outcome::Done { url, .. } = &r.outcome {
-                browser::revoke(url);
+                urls.read().revoke(url);
             }
         }
         results.set(Vec::new());
@@ -218,7 +222,7 @@ pub fn BatchFileProcessor(
                         // Two inputs can share a base name: keep both.
                         let name = dedupe(&output_name.call(item.file.name()), |n| taken.iter().any(|t| t == n));
                         taken.push(name.clone());
-                        let url = browser::object_url(&p.blob);
+                        let url = urls.read().create(&p.blob);
                         Outcome::Done { name, blob: p.blob, url, width: p.width, height: p.height }
                     }
                     Err(e) => Outcome::Failed(e),
@@ -389,7 +393,7 @@ pub fn BatchFileProcessor(
                         p { class: "shrink-0 text-body-sm text-gray-400", "{count_label(count, noun)}" }
                         ul { "aria-label": "Selected {noun.other}", class: row_list,
                             for item in list {
-                                {queue_row(item, preview_id, selected, items)}
+                                {queue_row(item, preview_id, selected, items, urls)}
                             }
                         }
                         div { class: "shrink-0",
@@ -437,7 +441,13 @@ pub fn BatchFileProcessor(
     }
 }
 
-fn queue_row(item: Item, preview_id: Option<u64>, mut selected: Signal<Option<u64>>, mut items: Signal<Vec<Item>>) -> Element {
+fn queue_row(
+    item: Item,
+    preview_id: Option<u64>,
+    mut selected: Signal<Option<u64>>,
+    mut items: Signal<Vec<Item>>,
+    urls: CopyValue<browser::ObjectUrls>,
+) -> Element {
     let is_selected = Some(item.id) == preview_id;
     let id = item.id;
     let name = item.file.name();
@@ -463,7 +473,7 @@ fn queue_row(item: Item, preview_id: Option<u64>, mut selected: Signal<Option<u6
                 onclick: move |_| {
                     let url = item.url.clone();
                     items.write().retain(|i| i.id != id);
-                    browser::revoke(&url);
+                    urls.read().revoke(&url);
                 },
                 XIcon { size: 12 }
             }

@@ -59,3 +59,11 @@ test('client-side navigation leaves exactly the stamped tags of the current page
   await expect(page.locator('h1')).toHaveText(/Dioxus spike/)
   expect(await readHead(page)).toEqual(home)
 })
+
+test('leaving a deep-linked tool restores the home page tags, not the tool page ones', async ({ page }) => {
+  const home = await stampedHead(page, '/')
+  await stampedHead(page, '/tools/image-converter/')
+  await page.getByRole('link', { name: 'Back to home' }).click()
+  await expect(page.locator('h1')).toHaveText(/Dioxus spike/)
+  expect(await readHead(page)).toEqual(home)
+})

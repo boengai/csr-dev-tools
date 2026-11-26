@@ -1,13 +1,14 @@
 // Writes dioxus/app/src/generated/tools.rs from src/constants/tool-routes.ts, so
 // the Dioxus build reads names, descriptions and SEO text from the same source
 // as the React build and the head-stamping step.
-import { mkdirSync, writeFileSync } from 'node:fs'
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { dirname, resolve } from 'node:path'
 
 import { TOOL_ROUTES } from '../../src/constants/tool-routes.ts'
 import { SPIKE_TOOL_KEYS } from './spike-tools.ts'
 
 const out = resolve(import.meta.dirname, '../app/src/generated/tools.rs')
+const indexHtml = readFileSync(resolve(import.meta.dirname, '../../index.html'), 'utf-8')
 const rust = (s: string) => JSON.stringify(s)
 
 const entries = SPIKE_TOOL_KEYS.map((key) => {
@@ -23,6 +24,22 @@ const entries = SPIKE_TOOL_KEYS.map((key) => {
     },`
 })
 
+// The home page's head, in head.rs TAGS order: what leaving the tools restores, also
+// after a deep link to a tool page, whose own head is all the browser has seen.
+const homeTag = (pattern: RegExp, what: string) =>
+  pattern.exec(indexHtml)?.[1] ?? ((): never => { throw new Error(`[tool-meta] index.html has no ${what}`) })()
+const attr = (selector: string, value: string) => new RegExp(`<${selector}[^>]*${value}="([^"]*)"`)
+const home = [
+  homeTag(/<meta name="description"\s+content="([^"]*)"/, 'description'),
+  homeTag(attr('meta property="og:title"', 'content'), 'og:title'),
+  homeTag(/<meta property="og:description"\s+content="([^"]*)"/, 'og:description'),
+  homeTag(attr('meta property="og:url"', 'content'), 'og:url'),
+  homeTag(attr('meta name="twitter:title"', 'content'), 'twitter:title'),
+  homeTag(/<meta name="twitter:description"\s+content="([^"]*)"/, 'twitter:description'),
+  homeTag(attr('link rel="canonical"', 'href'), 'canonical'),
+]
+const homeTitle = homeTag(/<title>([^<]*)<\/title>/, '<title>')
+
 mkdirSync(dirname(out), { recursive: true })
 writeFileSync(
   out,
@@ -31,6 +48,11 @@ use crate::meta::ToolMeta;
 
 pub const TOOLS: [ToolMeta; ${entries.length}] = [
 ${entries.join('\n')}
+];
+
+pub const HOME_TITLE: &str = ${rust(homeTitle)};
+pub const HOME_TAGS: [&str; 7] = [
+${home.map((v) => `    ${rust(v)},`).join('\n')}
 ];
 `,
 )

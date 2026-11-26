@@ -3,7 +3,7 @@
 #[path = "generated/tools.rs"]
 mod generated;
 
-pub use generated::TOOLS;
+pub use generated::{HOME_TAGS, HOME_TITLE, TOOLS};
 
 pub const SITE_ORIGIN: &str = "https://csr-dev-tools.pages.dev";
 

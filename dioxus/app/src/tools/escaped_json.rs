@@ -47,7 +47,7 @@ pub fn EscapedJsonStringifier() -> Element {
     });
     let mut source = use_signal(|| browser::read_json_string(&source_key(mode.peek().key)).unwrap_or_default());
     let mut double = use_signal(|| false);
-    let settled = use_debounced(source, 300);
+    let mut settled = use_debounced(source, 300);
 
     let result = use_memo(move || {
         let text = settled();
@@ -59,7 +59,9 @@ pub fn EscapedJsonStringifier() -> Element {
             _ => escaped_json::parse(&text),
         }
     });
+    // Empty bypass: a cleared input clears the output at once, not after the debounce.
     let (output, error) = match result() {
+        _ if source.read().trim().is_empty() => (String::new(), None),
         Ok(out) => (out, None),
         Err(e) => (String::new(), Some(e)),
     };
@@ -74,8 +76,12 @@ pub fn EscapedJsonStringifier() -> Element {
                     return;
                 }
                 browser::write_json_string(MODE_KEY, m.key);
+                // Mode and source change together, like React's setFieldsImmediate: the new
+                // mode never computes over the other mode's text while the debounce waits.
+                let restored = browser::read_json_string(&source_key(m.key)).unwrap_or_default();
+                settled.set(restored.clone());
                 mode.set(m);
-                source.set(browser::read_json_string(&source_key(m.key)).unwrap_or_default());
+                source.set(restored);
             },
             toolbar: rsx! {
                 if mode().key == "stringify" {

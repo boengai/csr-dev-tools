@@ -67,7 +67,7 @@ pub fn ImageConverter() -> Element {
 
     rsx! {
         BatchFileProcessor {
-            title: "Image Converter",
+            title: tool.name,
             description: tool.description,
             accept: "image/*",
             action_label: "Convert",
