@@ -68,7 +68,7 @@ mkdir -p "$OUT"
 cp -R "$ROOT/public/." "$OUT/"
 cp -R "$PUBLIC/." "$OUT/"
 if [ "$PRELOAD" = none ]; then
-  node dioxus/scripts/stamp.ts "$OUT"
+  node dioxus/scripts/stamp.ts "$OUT" --no-preload
 else
   node dioxus/scripts/stamp.ts "$OUT" "--preload-wasm=$PRELOAD"
 fi

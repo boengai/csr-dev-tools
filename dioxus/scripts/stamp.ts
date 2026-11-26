@@ -4,7 +4,10 @@
 // both builds stamp the same tags the same way. Run after every build: any
 // wasm change renames the JS file the pages load.
 //
-//   node dioxus/scripts/stamp.ts <dist> [--preload-wasm[=auto|all|main|low]]
+//   node dioxus/scripts/stamp.ts <dist> [--preload-wasm=auto|all|main|low | --no-preload]
+//
+// With no option it uses `auto`, as build.sh does: re-stamping a build must not
+// silently drop its preloads (that voided session 5, docs/research/dioxus-spike.md).
 //
 // `--preload-wasm` is the first FCP/LCP remedy of issue 26: each tool page
 // preloads the main WebAssembly module and its own route module, which the
@@ -24,7 +27,7 @@ import { SPIKE_TOOL_KEYS } from './spike-tools.ts'
 
 const dist = resolve(process.argv[2] ?? 'dioxus/dist')
 const preloadArg = process.argv.find((a) => a.startsWith('--preload-wasm'))
-const preloadWasm = preloadArg !== undefined
+const preloadWasm = !process.argv.includes('--no-preload')
 const preloadMode = preloadArg?.split('=')[1] ?? 'auto'
 const AUTO_ROUTE_LIMIT = 128 * 1024
 if (!['auto', 'all', 'main', 'low'].includes(preloadMode)) throw new Error(`[stamp] unknown --preload-wasm=${preloadMode}`)
