@@ -1,6 +1,6 @@
 # Spike: one shell and three tools in Dioxus
 
-The answer to [Spike: one shell and two tools in Dioxus](https://github.com/boengai/csr-dev-tools/issues/18), measured 2026-11-26. The code is [`dioxus/` on the `spike/dioxus` branch](https://github.com/boengai/csr-dev-tools/tree/spike/dioxus/dioxus); the link works once the branch is pushed, which has not happened yet. That branch never merges; [Go or no-go?](https://github.com/boengai/csr-dev-tools/issues/19) decides what is kept.
+The answer to [Spike: one shell and two tools in Dioxus](https://github.com/boengai/csr-dev-tools/issues/18), measured 2026-11-26. The code is [`dioxus/` on the `spike/dioxus` branch](https://github.com/boengai/csr-dev-tools/tree/spike/dioxus/dioxus). That branch never merges; [Go or no-go?](https://github.com/boengai/csr-dev-tools/issues/19) decides what is kept.
 
 ## Answer
 
@@ -24,8 +24,6 @@ What did not work, or works only with caveats:
 
 Not done yet:
 
-- The branch is not pushed. The Dioxus CI job, `ci.yml` on this branch and the preview deploy have never run.
-- The checks that keep the React app buildable on this branch were run locally (typecheck, 3,019 unit tests, lint, format, `vite build`) but not in CI.
 - Build time, which is tracked only, was not measured.
 - A valid session for the adopted build. None is planned; #19 decides (see above).
 
@@ -49,7 +47,7 @@ Dioxus **0.7.10** (the only stable line, [issue 6](https://github.com/boengai/cs
 | Styling | `dioxus/scripts/template.ts` | Tailwind **4.3.3** (`@tailwindcss/cli`, not dx's 4.1.5) over `src/index.css`, with `source(none)` and `@source` on the Rust files. Variants are enums returning whole literals. No component takes a `class` prop. |
 | Build | `dioxus/scripts/build.sh` | Tool metadata is generated from `src/constants/tool-routes.ts`, then `dx build --release --platform web --debug-symbols false --wasm-split`. Fails if any module still has DWARF. Copies `public/` (favicon, manifest, `_headers` with the `/assets/*` cache rule) and stamps with `--preload auto`. `--no-emoji` drops the Noto emoji images for budget runs. |
 | Tests | `dioxus/playwright.config.ts` | Runs `e2e/crypto-tools.spec.ts`, `e2e/escaped-json-stringifier.spec.ts`, `e2e/image-tools.spec.ts` and `e2e/image-batch.spec.ts`, **unchanged**, grepped to the three tools, against the built site. Also runs `dioxus/e2e/` (head tags; the debounce, empty-input and mode-switch fixes). 11 of 11 pass. |
-| CI and preview | `.github/workflows/dioxus.yml`, `deploy-preview.yml`, `ci.yml` | A prebuilt dx 0.7.10 with its checksum checked, then the logic tests, the build and the journeys. On this branch the preview deploy is set to build Dioxus, so once the branch is pushed, `spike-dioxus.csr-dev-tools.pages.dev` will serve the spike. `ci.yml` also runs on this branch, so the React app stays checked. **Not run yet: the branch has not been pushed.** |
+| CI and preview | `.github/workflows/dioxus.yml`, `deploy-preview.yml`, `ci.yml` | A prebuilt dx 0.7.10 with its checksum checked, then the logic tests, the build and the journeys. On this branch the preview deploy builds Dioxus, so [spike-dioxus.csr-dev-tools.pages.dev](https://spike-dioxus.csr-dev-tools.pages.dev/tools/hash-generator/) serves the spike. `ci.yml` also runs on this branch, so the React app stays checked. **All three passed on the first push** (`f1346a0d`, 2026-11-27): [Dioxus spike](https://github.com/boengai/csr-dev-tools/actions/runs/45863746463), [CI](https://github.com/boengai/csr-dev-tools/actions/runs/45863746249), [preview deploy](https://github.com/boengai/csr-dev-tools/actions/runs/45863746362). The preview serves the stamped pages with their preloads and `x-robots-tag: noindex`, and the three tools work there with no console errors. |
 
 Not ported, because no budget or journey needs them: the sidebar, command palette, settings dialog, background animation and the dashboard home page. The spike's home page is a list of the three tools and is not measured. React's tool pages load the sidebar, palette, settings and toast code lazily, after first paint, so leaving them out mainly lowers Dioxus's bytes; their effect on the timings was not measured.
 
@@ -195,7 +193,6 @@ Build time (tracked only) was not measured: by the time the sessions ended the m
 - **Duplicated shared code across route modules** (+17% at three tools). It needs `#[wasm_split]` boundaries or a shared-component chunk before 84 tools.
 - **A large route module cannot be preloaded** without hurting FCP. The `auto` rule is a threshold, not a design.
 - **dx downloads its own `wasm-opt` and `wasm-bindgen` at build time.** Only dx itself is pinned and checksum-checked in CI.
-- **CI and the preview deploy have not run**, because the branch is not pushed.
 
 ## Surprises
 
