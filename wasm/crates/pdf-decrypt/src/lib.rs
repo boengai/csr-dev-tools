@@ -41,7 +41,7 @@ pub fn decrypt(bytes: &[u8]) -> Result<Vec<u8>, DecryptError> {
     if doc.is_encrypted() {
         return Err(DecryptError::PasswordRequired);
     }
-    if has_unread_crypt_filter(&doc) {
+    if has_stream_decrypted_with_wrong_filter(&doc) {
         return Err(DecryptError::UnsupportedCryptFilter);
     }
     doc.trailer.remove(b"Encrypt");
@@ -55,7 +55,7 @@ const IDENTITY: &[u8] = b"Identity";
 
 /// Whether lopdf decrypted any stream with a crypt filter other than its own.
 /// A file that was not encrypted was not decrypted, so nothing changed.
-fn has_unread_crypt_filter(doc: &Document) -> bool {
+fn has_stream_decrypted_with_wrong_filter(doc: &Document) -> bool {
     let Some(state) = doc.encryption_state.as_ref() else {
         return false;
     };
@@ -63,7 +63,15 @@ fn has_unread_crypt_filter(doc: &Document) -> bool {
     doc.objects
         .values()
         .filter_map(|object| object.as_stream().ok())
-        .any(|stream| crypt_filter_unread(stream, default))
+        .filter(|stream| lopdf_decrypts(stream, state))
+        .any(|stream| decrypted_with_wrong_filter(stream, default))
+}
+
+/// lopdf leaves a cross-reference stream as it is, and a metadata stream
+/// too when the file keeps its metadata clear (`/EncryptMetadata false`).
+fn lopdf_decrypts(stream: &Stream, state: &EncryptionState) -> bool {
+    !stream.dict.has_type(b"XRef")
+        && (state.encrypt_metadata() || !stream.dict.has_type(b"Metadata"))
 }
 
 /// The name of the filter lopdf decrypts a stream with when it does not read
@@ -82,7 +90,7 @@ fn default_stream_filter(state: &EncryptionState) -> Option<&[u8]> {
 
 /// Whether lopdf decrypts this stream with `default` although its `/Crypt`
 /// filter names another (or one this can't resolve, as a reference).
-fn crypt_filter_unread(stream: &Stream, default: Option<&[u8]>) -> bool {
+fn decrypted_with_wrong_filter(stream: &Stream, default: Option<&[u8]>) -> bool {
     let Ok(filters) = stream.filters() else {
         return false;
     };
@@ -195,23 +203,23 @@ mod tests {
             Object::Array(vec![named("Identity")]),
             Object::Array(vec![Object::Null]),
         ] {
-            assert!(crypt_filter_unread(&crypt_stream(params), STD_CF));
+            assert!(decrypted_with_wrong_filter(&crypt_stream(params), STD_CF));
         }
         let mut bare = crypt_stream(Object::Null);
         bare.dict.remove(b"DecodeParms");
-        assert!(crypt_filter_unread(&bare, STD_CF));
+        assert!(decrypted_with_wrong_filter(&bare, STD_CF));
         // Named in an array, but not the default.
-        assert!(crypt_filter_unread(
+        assert!(decrypted_with_wrong_filter(
             &crypt_stream(Object::Array(vec![named("StdCF")])),
             Some(IDENTITY)
         ));
         // Below V4 the default is RC4, which no stream names.
-        assert!(crypt_filter_unread(
+        assert!(decrypted_with_wrong_filter(
             &crypt_stream(Object::Array(vec![named("Identity")])),
             None
         ));
         // A reference is not followed.
-        assert!(crypt_filter_unread(
+        assert!(decrypted_with_wrong_filter(
             &crypt_stream(Object::Reference((9, 0))),
             STD_CF
         ));
@@ -220,19 +228,31 @@ mod tests {
     #[test]
     fn passes_a_stream_lopdf_decrypts_with_its_own_filter() {
         // The form lopdf reads.
-        assert!(!crypt_filter_unread(
+        assert!(!decrypted_with_wrong_filter(
             &crypt_stream(named("Identity")),
             STD_CF
         ));
         // Another form, naming the default lopdf applies anyway.
-        assert!(!crypt_filter_unread(
+        assert!(!decrypted_with_wrong_filter(
             &crypt_stream(Object::Array(vec![named("StdCF")])),
             STD_CF
         ));
-        assert!(!crypt_filter_unread(
+        assert!(!decrypted_with_wrong_filter(
             &crypt_stream(Object::Array(vec![Object::Null])),
             Some(IDENTITY)
         ));
+    }
+
+    #[test]
+    fn ignores_streams_lopdf_never_decrypts() {
+        // AES-128: lopdf decrypted it while loading, with StdCF by default.
+        let mut doc = Document::load_mem(AES_128).unwrap();
+        assert!(!has_stream_decrypted_with_wrong_filter(&doc));
+        let mut xref = crypt_stream(Object::Null);
+        xref.dict.remove(b"DecodeParms");
+        xref.dict.set("Type", Object::Name(b"XRef".to_vec()));
+        doc.add_object(xref);
+        assert!(!has_stream_decrypted_with_wrong_filter(&doc));
     }
 
     /// RC4 by default (V4), with page 1's content left clear and exempted by
