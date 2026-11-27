@@ -9,7 +9,6 @@ import {
   readKeyList,
   readStorage,
   readStoredJson,
-  type RecordedWrite,
   recordedWriteLog,
   recordedWrites,
   recordWrites,
@@ -55,20 +54,6 @@ const requirePorted = (...tools: Array<string>): void => {
   test.skip(missing.length > 0, `not in this build: ${missing.join(', ')}`)
 }
 
-/**
- * Writes the log holds beyond the seed. Init scripts run in no set order, so
- * the seed's own writes may or may not be logged; each is discounted once.
- */
-const writesBeyond = async (page: Page, seed: StorageSnapshot): Promise<Array<RecordedWrite>> => {
-  const pending = Object.entries(seed).filter(([, raw]) => raw !== null)
-  return (await recordedWriteLog(page)).filter(({ key, value }) => {
-    const at = pending.findIndex(([k, raw]) => k === key && raw === value)
-    if (at < 0) return true
-    pending.splice(at, 1)
-    return false
-  })
-}
-
 const golden = readGolden()
 const { keys, neverSaved } = readKeyList()
 /**
@@ -110,7 +95,7 @@ test.describe('Saved inputs', () => {
       await driver.ready(page)
       await driver.shows(page, restored)
       // Reading never writes or deletes (ADR-0032 Decision 4): opening changed nothing, not even the same value back.
-      expect(await writesBeyond(page, seed)).toEqual([])
+      expect(await recordedWriteLog(page)).toEqual([])
 
       await driver.edit(page, restored)
       await driver.checkEdited(page, restored)
