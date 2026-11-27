@@ -20,31 +20,47 @@ const LOAD_TIMEOUT = 90_000
 const ROUTE_TOOLS = ['hash-generator', 'escaped-json-stringifier', 'json-diff-checker', 'number-base-converter']
 const routeTool = ROUTE_TOOLS.map((key) => parityTools().find((tool) => tool.key === key)).find(Boolean)
 
-// The home page arrives with the app shell, so its indicator is the robot in each widget until the
-// widget's Tool fills it; on a Tool route, the flying saucer shows until the Tool does.
-// The indicator must be drawn (its image decoded), not just laid out, before the app shows.
-const PAGES: Array<{ app: string; emoji: string; indicator: string; name: string; path: string }> = [
+// Each page fills in slot by slot: the home page arrives with the app shell, and each dashboard widget
+// shows its own robot until its Tool fills it; on a Tool route, `main` shows the flying saucer until
+// the Tool does. In every slot the indicator must be drawn (its image decoded), not just laid out,
+// before that slot's content shows.
+type LoadingPage = {
+  /** What fills a slot, inside it. */
+  content: string
+  emoji: string
+  indicator: string
+  name: string
+  path: string
+  /** The parts of the page that load on their own, each with its own indicator. */
+  slot: string
+}
+
+const PAGES: Array<LoadingPage> = [
   {
-    app: '[data-testid="dashboard-widget"] article',
+    content: 'article',
     emoji: WIDGET_LOADING_EMOJI,
     indicator: WIDGET_LOADING,
     name: 'home page',
     path: '/',
+    slot: '[data-testid="dashboard-widget"]',
   },
   ...(routeTool
     ? [
         {
-          app: '[data-slot="tool-surface"]',
+          content: '[data-slot="tool-surface"]',
           emoji: TOOL_LOADING_EMOJI,
           indicator: TOOL_LOADING,
           name: 'Tool route',
           path: routeTool.routePath,
+          slot: 'main',
         },
       ]
     : []),
 ]
 
-type LoadingRecord = { appAt: null | number; cls: number; indicatorAt: null | number; indicatorDrawnAt: null | number }
+/** Per slot, in document order: when its indicator was visible, drawn, and when its content showed. */
+type SlotRecord = { appAt: null | number; drawnAt: null | number; indicatorAt: null | number }
+type LoadingRecord = { cls: number; slots: Array<SlotRecord> }
 
 test.use(deviceOptions('Pixel 7'))
 
@@ -75,11 +91,11 @@ const throttle = async (page: Page): Promise<CDPSession> => {
   return cdp
 }
 
-/** Records, from the first byte, when the indicator and the app first appear and the layout shift. */
-const record = async (page: Page, app: string, indicator: string, emoji: string): Promise<void> => {
+/** Records, from the first byte, the layout shift and, per slot, when its indicator and content appear. */
+const record = async (page: Page, { content, emoji, indicator, slot }: LoadingPage): Promise<void> => {
   await page.addInitScript(
-    ({ app, emoji, indicator }) => {
-      const r: LoadingRecord = { appAt: null, cls: 0, indicatorAt: null, indicatorDrawnAt: null }
+    ({ content, emoji, indicator, slot }) => {
+      const r: LoadingRecord = { cls: 0, slots: [] }
       Object.assign(window, { __loading: r })
       new PerformanceObserver((list) => {
         for (const entry of list.getEntries() as Array<PerformanceEntry & { hadRecentInput: boolean; value: number }>)
@@ -91,27 +107,29 @@ const record = async (page: Page, app: string, indicator: string, emoji: string)
         const box = el.getBoundingClientRect()
         return box.width > 0 && box.height > 0
       }
+      // Drawn: the image's bytes have arrived and decoded, so the visitor sees the emoji, not an empty
+      // box. `currentSrc` is the file actually drawn: a <picture> source can win over the <img> src.
+      const drawn = (el: Element | null) =>
+        el instanceof HTMLImageElement &&
+        seen(el) &&
+        el.complete &&
+        el.naturalWidth > 0 &&
+        el.currentSrc.includes(`/${emoji}/`)
       const check = () => {
-        const shown = document.querySelector(indicator)
-        if (r.indicatorAt === null && seen(shown)) r.indicatorAt = performance.now()
-        // Drawn: the image's bytes have arrived and decoded, so the visitor sees the emoji, not an empty
-        // box. `currentSrc` is the file actually drawn: a <picture> source can win over the <img> src.
-        if (
-          r.indicatorDrawnAt === null &&
-          seen(shown) &&
-          shown instanceof HTMLImageElement &&
-          shown.complete &&
-          shown.naturalWidth > 0 &&
-          shown.currentSrc.includes(`/${emoji}/`)
-        )
-          r.indicatorDrawnAt = performance.now()
-        if (r.appAt === null && document.querySelector(app)) r.appAt = performance.now()
+        const now = performance.now()
+        document.querySelectorAll(slot).forEach((el, i) => {
+          const s = (r.slots[i] ??= { appAt: null, drawnAt: null, indicatorAt: null })
+          const shown = el.querySelector(indicator)
+          if (s.indicatorAt === null && seen(shown)) s.indicatorAt = now
+          if (s.drawnAt === null && drawn(shown)) s.drawnAt = now
+          if (s.appAt === null && el.querySelector(content)) s.appAt = now
+        })
       }
       new MutationObserver(check).observe(document, { attributes: true, childList: true, subtree: true })
       // An image finishing its download is no DOM mutation; `load` does not bubble, so listen in capture.
       document.addEventListener('load', check, true)
     },
-    { app, emoji, indicator },
+    { content, emoji, indicator, slot },
   )
 }
 
@@ -123,12 +141,14 @@ if (!routeTool) {
   test.skip(`loading a Tool route (none of ${ROUTE_TOOLS.join(', ')} is in this run)`, () => {})
 }
 
-for (const { app, emoji, indicator, name, path } of PAGES) {
+for (const loading of PAGES) {
+  const { content, indicator, name, path, slot } = loading
+  const app = `${slot} ${content}`
   test.describe(`loading the ${name}`, () => {
     test('shows the loading indicator first, then fills the root without a layout shift', async ({ page }) => {
       await stubEmoji(page)
       await throttle(page)
-      await record(page, app, indicator, emoji)
+      await record(page, loading)
       await page.goto(path, { waitUntil: 'commit' })
       await expect(page.locator(app).first()).toBeVisible({ timeout: LOAD_TIMEOUT })
       await page.waitForLoadState('load', { timeout: LOAD_TIMEOUT })
@@ -137,12 +157,16 @@ for (const { app, emoji, indicator, name, path } of PAGES) {
       await expect(page.locator(indicator), 'the page has filled in').toHaveCount(0, { timeout: LOAD_TIMEOUT })
       await page.waitForTimeout(2_000)
 
-      const { appAt, cls, indicatorAt, indicatorDrawnAt } = await readRecord(page)
-      expect(indicatorAt, 'the loading indicator showed').not.toBeNull()
-      expect(appAt, 'the app showed').not.toBeNull()
-      expect(indicatorAt!, 'the loading indicator showed before the app').toBeLessThan(appAt!)
-      expect(indicatorDrawnAt, 'the loading indicator image was drawn').not.toBeNull()
-      expect(indicatorDrawnAt!, 'the loading indicator image was drawn before the app').toBeLessThan(appAt!)
+      const { cls, slots } = await readRecord(page)
+      expect(slots.length, 'slots that loaded').toBe(await page.locator(slot).count())
+      slots.forEach(({ appAt, drawnAt, indicatorAt }, i) => {
+        const where = `${name}, slot ${i + 1} of ${slots.length}`
+        expect(appAt, `${where}: its content showed`).not.toBeNull()
+        expect(indicatorAt, `${where}: its loading indicator showed`).not.toBeNull()
+        expect(indicatorAt!, `${where}: its loading indicator showed before its content`).toBeLessThan(appAt!)
+        expect(drawnAt, `${where}: its loading indicator image was drawn`).not.toBeNull()
+        expect(drawnAt!, `${where}: its loading indicator image was drawn before its content`).toBeLessThan(appAt!)
+      })
       expect(cls, 'cumulative layout shift').toBeLessThanOrEqual(CLS_LIMIT)
     })
 

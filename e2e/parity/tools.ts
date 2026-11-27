@@ -18,7 +18,11 @@ export const parityToolFilter = (): ReadonlySet<string> | null => {
 /** Every Tool this run covers, in registry order. */
 export const parityTools = (): Array<ToolRoute> => {
   const filter = parityToolFilter()
-  return filter ? TOOL_ROUTES.filter((tool) => filter.has(tool.key)) : TOOL_ROUTES
+  if (!filter) return TOOL_ROUTES
+  // A typo must not shrink the run unnoticed: every key has to name a Tool.
+  const unknown = [...filter].filter((key) => !TOOL_ROUTES.some((tool) => tool.key === key))
+  if (unknown.length > 0) throw new Error(`PARITY_TOOLS names no Tool: ${unknown.join(', ')}`)
+  return TOOL_ROUTES.filter((tool) => filter.has(tool.key))
 }
 
 export const isShellLayout = (layout: ToolLayout): layout is ShellLayout => layout !== 'custom'

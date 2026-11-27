@@ -1,9 +1,13 @@
 import { defineConfig, devices } from '@playwright/test'
 
+import { DIOXUS_ONLY } from './e2e/parity/tags'
+
 export default defineConfig({
   testDir: './e2e',
   // The parity harness has its own run, with no retries: playwright.parity.config.ts.
   testIgnore: ['parity/**'],
+  // A check a `ux-improvement` adds fails on React by design (docs/ux/parity.md → Improvements).
+  grepInvert: new RegExp(DIOXUS_ONLY),
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 1,

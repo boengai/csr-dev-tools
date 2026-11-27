@@ -33,6 +33,9 @@ export type LayoutSpec = {
   tile?: (tile: Locator) => Promise<void>
 }
 
+/** The shell's source field: the code editor's wrapper, or a plain field named `dialog-source`. */
+const SOURCE_FIELD = '[data-testid="code-input-dialog-source"], [name="dialog-source"]'
+
 const COPY_ACTION = { inEmptyState: true, name: /^Copy .*to clipboard$/ }
 
 /** `[data-slot="tool-output"]`, for the shells that mark their output themselves. */
@@ -277,16 +280,24 @@ export const expectOpenContract = async (surface: Locator, spec: LayoutSpec): Pr
   }
 
   const out = await spec.output(surface)
-  // The status slot sits above the work area.
-  const outHandle = await out.elementHandle()
-  expect(
-    await slot.evaluate(
-      (s, o) => Boolean(o && s.compareDocumentPosition(o) & Node.DOCUMENT_POSITION_FOLLOWING),
-      outHandle,
-    ),
-    'the status slot comes before the output',
-  ).toBe(true)
-  await outHandle?.dispose()
+  // The status slot sits above the work area: before the output, and before the source field where
+  // the shell has one, so it can't sit between the two.
+  const source = surface.locator(SOURCE_FIELD).first()
+  for (const [part, locator] of [
+    ['the output', out],
+    ['the source field', source],
+  ] as const) {
+    if (part === 'the source field' && (await source.count()) === 0) continue
+    const handle = await locator.elementHandle()
+    expect(
+      await slot.evaluate(
+        (s, o) => Boolean(o && s.compareDocumentPosition(o) & Node.DOCUMENT_POSITION_FOLLOWING),
+        handle,
+      ),
+      `the status slot comes before ${part}`,
+    ).toBe(true)
+    await handle?.dispose()
+  }
 
   // The action that takes the output away lives with the output. File output offers none before there is any.
   const expectsLabelCopy = spec.expectsLabelCopy ?? (() => true)
