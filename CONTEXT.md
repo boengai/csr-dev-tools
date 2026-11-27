@@ -402,6 +402,19 @@ A page whose static HTML also contains the rendered body markup. The site has
 none. Whether the client hydrates that markup or replaces it is a separate
 choice. Distinct from a [[Head-stamped page]].
 
+## UX parity
+
+A ported Tool behaves as the same Tool on `main` does. Until cutover, the
+React site on `main` is the reference, not the drawings in `docs/ux/`. The
+rules are in `docs/ux/parity.md`.
+
+- **Parity harness:** the automated checks that prove it, added to the React
+  suite and run against `main` before Dioxus is held to them.
+- **A11y baseline:** the committed list of accessibility failures React
+  already has. A Dioxus build may not add one.
+- **`ux-improvement`:** any intended change away from `main`, filed as its
+  own issue and never part of a port PR.
+
 ## Tool dialog frame
 
 The page-level frame for a Tool: on the dashboard, a tile whose triggers open
