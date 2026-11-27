@@ -7,7 +7,7 @@ import { EDIT, readStoredJson, textOf, touchText, typeAtEnd } from './contract.t
  * and the persistence journeys both use them, so they cannot drift apart.
  *
  * A driver reads and edits the page only through the DOM contract of
- * `docs/ux/parity.md`: roles, accessible names, labels, `data-slot` values
+ * `docs/ux/parity.md` (on `develop`): roles, accessible names, labels, `data-slot` values
  * and test ids. The journeys must run unchanged against the Dioxus build.
  */
 export type Driver = {
@@ -17,6 +17,8 @@ export type Driver = {
   edit: (page: Page, restored: Restored) => Promise<void>
   /** The keys this Tool writes. Its journey seeds each one's golden current value. */
   keys: Array<string>
+  /** Codec only: the Tool's modes, in its own order. The first is the default. */
+  modes?: Array<string>
   /** Codec only: the mode the Tool opened in. */
   readMode?: (page: Page) => Promise<string>
   /** Waits until the Tool has read storage and shows its input. */
@@ -145,14 +147,21 @@ const codecTool = (tool: string, modeKey: string, prefix: string | null, modes: 
         [modeStorageKey]: other(restored).key,
         [sourceKey(at.key)]: String(restored[sourceKey(at.key)]) + EDIT,
       })
-      // Switching modes shows that mode's own saved source.
+      // The other sources are untouched, and each mode shows its own.
+      const untouched = modes.filter((m) => m.key !== at.key)
+      await expectStored(page, Object.fromEntries(untouched.map((m) => [sourceKey(m.key), restored[sourceKey(m.key)]])))
       await expectText(source(page), String(restored[sourceKey(other(restored).key)]))
+      for (const m of untouched.filter((u) => u.key !== other(restored).key)) {
+        await button(page, m).click()
+        await expectText(source(page), String(restored[sourceKey(m.key)]))
+      }
     },
     edit: async (page, restored) => {
       await typeAtEnd(page, source(page), EDIT)
       await button(page, other(restored)).click()
     },
     keys: [modeStorageKey, ...modes.map((m) => sourceKey(m.key))],
+    modes: modes.map((m) => m.key),
     readMode: async (page) => {
       for (const m of modes) {
         if ((await button(page, m).getAttribute('aria-pressed')) === 'true') return m.key
@@ -170,6 +179,10 @@ const codecTool = (tool: string, modeKey: string, prefix: string | null, modes: 
     touch: async (page) => {
       for (const m of [...modes.slice(1), modes[0] as CodecMode]) {
         await button(page, m).click()
+        await expect(button(page, m)).toHaveAttribute('aria-pressed', 'true')
+        // Wait for the editor to swap in this mode's saved source, or the touch lands in the old one.
+        const saved = await readStoredJson(page, sourceKey(m.key))
+        if (typeof saved === 'string' && saved !== '') await expectText(source(page), saved)
         await touchText(page, source(page))
       }
     },
@@ -439,10 +452,9 @@ export const DRIVERS: Array<Driver> = [
     ready: (page) => expect(page.getByRole('checkbox', { name: /^Start with/ })).toBeVisible(),
     route: '/tools/lorem-ipsum-generator',
     shows: (page, restored) =>
-      expect(page.getByRole('checkbox', { name: /^Start with/ })).toHaveAttribute(
-        'aria-checked',
-        String(field(restored[`${P}lorem-ipsum-generator`], 'startWithLorem')),
-      ),
+      expect(page.getByRole('checkbox', { name: /^Start with/ })).toBeChecked({
+        checked: Boolean(field(restored[`${P}lorem-ipsum-generator`], 'startWithLorem')),
+      }),
     tool: 'lorem-ipsum-generator',
     touch: async (page) => {
       await page.getByRole('checkbox', { name: /^Start with/ }).click()
@@ -486,11 +498,14 @@ export const DRIVERS: Array<Driver> = [
     keys: [`${P}password-generator`],
     ready: (page) => expect(pressedToggle(page, 'Toggle ABC')).toBeVisible(),
     route: '/tools/password-generator',
-    shows: (page, restored) =>
-      expect(pressedToggle(page, 'Toggle ABC')).toHaveAttribute(
-        'aria-pressed',
-        String(field(restored[`${P}password-generator`], 'uppercase')),
-      ),
+    // The golden current value turns digits off and sets the length; see `write`.
+    shows: async (page, restored) => {
+      const value = restored[`${P}password-generator`]
+      await expect(pressedToggle(page, 'Toggle 123')).toHaveAttribute('aria-pressed', String(field(value, 'digits')))
+      await expect(page.getByRole('spinbutton', { exact: true, name: 'Length' })).toHaveValue(
+        String(field(value, 'length')),
+      )
+    },
     tool: 'password-generator',
     touch: async (page) => {
       await pressedToggle(page, 'Toggle ABC').click()
@@ -626,6 +641,7 @@ export const DRIVERS: Array<Driver> = [
       await typeAtEnd(page, page.getByTestId('code-input-dialog-source').getByRole('textbox'), 'plain')
     },
     keys: [`${P}aes-encrypt-decrypt-mode`],
+    modes: ['encrypt', 'decrypt'],
     readMode: async (page) =>
       (await page.getByRole('button', { exact: true, name: 'Decrypt mode' }).getAttribute('aria-pressed')) === 'true'
         ? 'decrypt'
@@ -672,12 +688,13 @@ export const DRIVERS: Array<Driver> = [
       const before = restored[key] as { diagrams: Record<string, unknown>; index: Array<{ id: string; name: string }> }
       const [entry] = before.index
       if (!entry) throw new Error('db-diagram: the golden store has no diagram')
+      // Every field of the entry keeps its value and type; only the name and the edit time change.
       await expect
-        .poll(async () => {
-          const stored = (await readStoredJson(page, key)) as typeof before | undefined
-          return stored && { diagrams: stored.diagrams, names: stored.index.map((e) => [e.id, e.name]) }
+        .poll(() => readStoredJson(page, key))
+        .toEqual({
+          diagrams: before.diagrams,
+          index: [{ ...entry, name: entry.name + EDIT, updatedAt: expect.any(String) }],
         })
-        .toEqual({ diagrams: before.diagrams, names: [[entry.id, entry.name + EDIT]] })
     },
     edit: async (page) => {
       await page.getByTestId('diagram-name').click()
@@ -748,10 +765,7 @@ export const DRIVERS: Array<Driver> = [
     route: '/',
     shows: (page, restored) => {
       const value = restored.settings as { state: { value: { showBackgroundAnimation: boolean } } }
-      return expect(backgroundSwitch(page)).toHaveAttribute(
-        'aria-checked',
-        String(value.state.value.showBackgroundAnimation),
-      )
+      return expect(backgroundSwitch(page)).toBeChecked({ checked: value.state.value.showBackgroundAnimation })
     },
     tool: 'settings',
     write: (page) => backgroundSwitch(page).click(),

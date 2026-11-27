@@ -223,8 +223,14 @@ await pool(
   (driver) =>
     withPage(browser, null, async (page) => {
       await open(page, driver)
+      // Read from the app as it opens: the Zustand stores, DB Diagram, and the mode a Codec opens in.
+      const opened: Record<string, unknown> = {}
       for (const key of driver.keys.map(stored).filter(needsApp)) {
-        if (key.reader !== 'codec-mode') defaults[key.key] = JSON.parse(await restore(page, key, null, defaults))
+        opened[key.key] = JSON.parse(await restore(page, key, null, defaults))
+        if (key.reader !== 'codec-mode') defaults[key.key] = opened[key.key]
+        if (key.reader === 'codec-mode' && JSON.stringify(key.modes) !== JSON.stringify(driver.modes)) {
+          problems.push(`${key.key}: keys.json lists modes ${key.modes}, the driver ${driver.modes}`)
+        }
       }
       if (!driver.touch) return
       await driver.touch(page)
@@ -234,6 +240,10 @@ await pool(
         const raw = storage[key]
         if (raw === undefined) problems.push(`${driver.tool}: touching it did not write ${key}`)
         else defaults[key] = JSON.parse(raw)
+        // A Codec's default mode is the one it opens in; touching it must save that one.
+        if (key in opened && !isDeepStrictEqual(defaults[key], opened[key])) {
+          problems.push(`${key}: opens in ${JSON.stringify(opened[key])} but touching it saved ${raw}`)
+        }
       }
     }),
 )
@@ -252,6 +262,8 @@ const entry = (
   const { deliberate, ...rest } = extra
   if (!deliberate && !wellFormed(react)) problems.push(`${id}: React keeps a lone surrogate; mark it deliberate`)
   if (deliberate && isDeepStrictEqual(deliberate.expected, react)) problems.push(`${id}: deliberate, but React agrees`)
+  if (deliberate && !wellFormed(deliberate.expected))
+    problems.push(`${id}: the deliberate value holds a lone surrogate`)
   return {
     id,
     key: key.key,

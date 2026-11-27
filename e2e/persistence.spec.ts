@@ -2,13 +2,13 @@ import { expect, type Page, test } from '@playwright/test'
 
 import { toolSurface } from './helpers/selectors'
 import { EDIT, readGolden, readKeyList, readStorage, seedStorage, typeAtEnd } from './stored-values/contract.ts'
-import { DRIVERS } from './stored-values/drivers.ts'
+import { DRIVERS, expectStored } from './stored-values/drivers.ts'
 
 /**
  * The persistence journeys of the stored-value contract (ADR-0032 Decision 8,
  * e2e/stored-values/README.md). Each seeds a value React wrote, checks it
  * shows, edits it, and checks the stored text keeps React's shape. They read
- * the page only through the DOM contract of docs/ux/parity.md, so they run
+ * the page only through the DOM contract of docs/ux/parity.md (on develop), so they run
  * unchanged against the Dioxus build: that is the rollback proof.
  */
 
@@ -60,9 +60,7 @@ test.describe('Saved inputs', () => {
       .toBeNull()
 
     await typeAtEnd(page, source, EDIT)
-    await expect
-      .poll(() => page.evaluate(() => localStorage.getItem('csr-dev-tools-mermaid-renderer')))
-      .toBe(JSON.stringify({ source: handoff + EDIT }))
+    await expectStored(page, { 'csr-dev-tools-mermaid-renderer': { source: handoff + EDIT } })
     await expectOnlyListedKeys(page)
   })
 

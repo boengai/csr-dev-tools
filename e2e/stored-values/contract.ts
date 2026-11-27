@@ -58,7 +58,8 @@ export type GoldenEntry = {
   /** JSON text of what React restores, when it differs from `expected`. */
   react?: string
   reader: StoredReader
-  shape: 'current' | 'damaged' | 'older'
+  /** `handoff`: a value `main` writes (DB Diagram's export), seeded by hand because no UI path reaches it from here. */
+  shape: 'current' | 'damaged' | 'handoff' | 'older'
   /** Every `csr-dev-tools-` key after the tool opened, when opening it writes (migrations, the handoff). */
   storageAfterOpen?: StorageSnapshot
   /** DB Diagram only: storage after one save over the restored store. */

@@ -39,7 +39,7 @@ The unit spec reads every key the React source can write (its key literals, each
 `golden.json` has `defaults`, the value each key restores to when nothing is stored, and `entries`. Each entry is one stored state and the value it restores to:
 
 - `stored`: the raw stored text, by key, before the Tool opens.
-- `shape`: `current` (what `main` writes today), `older` (a shape a migration reads) or `damaged`.
+- `shape`: `current` (what `main` writes today), `older` (a shape a migration reads), `damaged`, or `handoff` (the Mermaid handoff, which `main` writes from DB Diagram's export; it is seeded by hand).
 - `provenance`:
   - `written-by-react`: React wrote `stored` when the capture drove its UI. Every `current` entry is one.
   - `seeded`: `stored` was written by hand, in `seeds.ts`. `main` cannot write older shapes or damage.
@@ -90,7 +90,8 @@ It takes about two minutes. It fixes the clock, the time zone and `Math.random` 
 - a Tool writes a key that is not on the key list;
 - a listed key gets no current shape or no default;
 - React keeps a lone surrogate in an entry that is not marked deliberate;
-- an entry is marked deliberate but React already agrees with it.
+- an entry is marked deliberate but React already agrees with it, or its hand-written value holds a lone surrogate;
+- a Codec's `modes` in `keys.json` differ from its driver's, or the mode it opens in is not the one its default saves.
 
 On a dev server that has only just started, a route can compile more slowly than an `expect` timeout. Run it again.
 

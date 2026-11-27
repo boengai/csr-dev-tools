@@ -16,7 +16,7 @@ export type Seed = {
   key: string
   /** Open the Tool to restore: a migration or the handoff runs when it opens and writes. */
   open?: true
-  shape: 'damaged' | 'older'
+  shape: 'damaged' | 'handoff' | 'older'
   stored: StorageSnapshot
 }
 
@@ -141,6 +141,14 @@ export const SEEDS: Array<Seed> = [
   // --- Codec ---
   one('base64-codec/unknown-mode', `${P}base64-mode`, '"zzz"', { open: true }),
   one('base64-codec/mode-number', `${P}base64-mode`, '42', { open: true }),
+  // Issue 15: an unknown mode used to hide the saved encode source.
+  {
+    id: 'base64-codec/unknown-mode-with-source',
+    key: `${P}base64-encode-source`,
+    open: true,
+    shape: 'damaged',
+    stored: { [`${P}base64-encode-source`]: json('aGk='), [`${P}base64-mode`]: '"zzz"' },
+  },
   one('base64-codec/source-number', `${P}base64-encode-source`, '42'),
 
   // --- The three per-tool migrations ---
@@ -167,6 +175,27 @@ export const SEEDS: Array<Seed> = [
     open: true,
     shape: 'damaged',
     stored: { [`${P}mermaid-renderer-code`]: '42' },
+  },
+  {
+    id: 'mermaid-renderer/legacy-draft-unparseable',
+    key: `${P}mermaid-renderer`,
+    open: true,
+    shape: 'damaged',
+    stored: { [`${P}mermaid-renderer-code`]: '{bad' },
+  },
+  {
+    id: 'json-schema-validator/source-and-legacy-data',
+    key: `${P}json-schema-validator`,
+    open: true,
+    shape: 'older',
+    stored: { [`${P}json-schema-validator`]: json({ jsonData: '{"old":1}', schema: '', source: '{"new":1}' }) },
+  },
+  {
+    id: 'json-schema-validator/legacy-with-extra-field',
+    key: `${P}json-schema-validator`,
+    open: true,
+    shape: 'older',
+    stored: { [`${P}json-schema-validator`]: json({ extra: 1, jsonData: '{"a":1}', jsonSchema: '{}' }) },
   },
   {
     id: 'json-schema-validator/before-the-shell',
@@ -219,7 +248,7 @@ export const SEEDS: Array<Seed> = [
     id: 'mermaid-renderer/handoff-over-draft',
     key: `${P}mermaid-renderer`,
     open: true,
-    shape: 'older',
+    shape: 'handoff',
     stored: {
       [`${P}handoff-mermaid-renderer`]: 'erDiagram\n  users {\n    INT id\n  }',
       [`${P}mermaid-renderer`]: json({ source: 'flowchart LR\n  C --> D' }),
@@ -252,6 +281,27 @@ export const SEEDS: Array<Seed> = [
     open: true,
     shape: 'older',
     stored: { feature_layout: layout({ 0: 'base64-encoder', 1: 'json-formatter', 2: null, 3: 'zzz' }, 0) },
+  },
+  {
+    id: 'feature_layout/version-1-slot-not-a-string',
+    key: 'feature_layout',
+    open: true,
+    shape: 'older',
+    stored: { feature_layout: layout({ 0: 7, 1: 'uuid-generator' }, 1) },
+  },
+  {
+    id: 'feature_layout/version-1-value-null',
+    key: 'feature_layout',
+    open: true,
+    shape: 'older',
+    stored: { feature_layout: layout(null, 1) },
+  },
+  {
+    id: 'feature_layout/version-1-position-not-a-number',
+    key: 'feature_layout',
+    open: true,
+    shape: 'older',
+    stored: { feature_layout: layout({ 0: 'uuid-generator', x: 'json-formatter' }, 1) },
   },
   {
     id: 'feature_layout/version-1-renamed-keys',

@@ -580,7 +580,7 @@
       "format": "json",
       "legacy": true,
       "written": false,
-      "note": "A JSON string. Moved to …-mermaid-renderer as {source} when that key is absent, then deleted."
+      "note": "A JSON string. When …-mermaid-renderer is absent, a string moves there as {source}, any other JSON value is dropped, and the old key is deleted. Unparseable text is left in place."
     },
     {
       "key": "csr-dev-tools-jsonpath-evaluator",

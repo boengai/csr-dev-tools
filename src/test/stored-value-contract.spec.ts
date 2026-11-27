@@ -50,9 +50,9 @@ const keysInSource = (): Map<string, string> => {
         }
       }
     }
-    // The two Zustand stores.
-    for (const [, name] of text.matchAll(/^\s+name: '([a-z_]+)',$/gm)) {
-      if (file.includes(join('hooks', 'persist'))) add(name as string, file)
+    // A Zustand `persist` store, wherever it lives, is keyed by its `name`.
+    if (text.includes("from 'zustand/middleware'")) {
+      for (const [, name] of text.matchAll(/\bname:\s*['"`]([^'"`]+)['"`]/g)) add(name as string, file)
     }
   }
   const channels = readFileSync(join(ROOT, 'src', 'types', 'utils', 'tool-handoff.ts'), 'utf8')
@@ -97,6 +97,12 @@ describe('stored-value contract', () => {
 
   it('expects no lone surrogate, which a Rust String cannot hold', () => {
     const lone = /[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/
-    expect(golden.entries.filter((e) => lone.test(JSON.stringify(e.expected) ?? '')).map((e) => e.id)).toEqual([])
+    // Walks the parsed value: JSON.stringify escapes a lone surrogate, which would hide it.
+    const holdsLone = (value: unknown): boolean =>
+      typeof value === 'string'
+        ? lone.test(value)
+        : typeof value === 'object' && value !== null && Object.values(value).some(holdsLone)
+    expect(holdsLone({ source: 'a\ud83d' })).toBe(true)
+    expect(golden.entries.filter((e) => holdsLone(e.expected)).map((e) => e.id)).toEqual([])
   })
 })

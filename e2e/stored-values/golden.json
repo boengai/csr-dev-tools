@@ -1,5 +1,5 @@
 {
-  "capturedFrom": "React, 00d49b28",
+  "capturedFrom": "React, fa39e43e",
   "defaults": {
     "csr-dev-tools-aes-encrypt-decrypt-mode": "encrypt",
     "csr-dev-tools-base64-decode-source": "",
@@ -264,6 +264,18 @@
         "csr-dev-tools-base64-mode": "\"zzz\""
       },
       "expected": "encode"
+    },
+    {
+      "id": "base64-codec/unknown-mode-with-source",
+      "key": "csr-dev-tools-base64-encode-source",
+      "reader": "codec-source",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-base64-encode-source": "\"aGk=\"",
+        "csr-dev-tools-base64-mode": "\"zzz\""
+      },
+      "expected": "aGk="
     },
     {
       "id": "crontab-generator/empty-object",
@@ -1811,6 +1823,33 @@
       }
     },
     {
+      "id": "feature_layout/version-1-position-not-a-number",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"uuid-generator\",\"x\":\"json-formatter\"}},\"version\":1}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "uuid-generator",
+            "1": "uuid-generator",
+            "2": "base64-codec",
+            "3": "jwt-decoder",
+            "4": "unix-timestamp",
+            "5": "regex-tester",
+            "NaN": "json-formatter"
+          }
+        },
+        "version": 2
+      },
+      "storageAfterOpen": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"uuid-generator\",\"1\":\"uuid-generator\",\"2\":\"base64-codec\",\"3\":\"jwt-decoder\",\"4\":\"unix-timestamp\",\"5\":\"regex-tester\",\"NaN\":\"json-formatter\"}},\"version\":2}"
+      }
+    },
+    {
       "id": "feature_layout/version-1-renamed-keys",
       "key": "feature_layout",
       "reader": "zustand",
@@ -1834,6 +1873,58 @@
       },
       "storageAfterOpen": {
         "feature_layout": "{\"state\":{\"value\":{\"0\":\"json-to-toml-converter\",\"1\":\"json-to-xml-converter\",\"2\":\"base64-codec\",\"3\":\"jwt-decoder\",\"4\":\"unix-timestamp\",\"5\":\"regex-tester\"}},\"version\":2}"
+      }
+    },
+    {
+      "id": "feature_layout/version-1-slot-not-a-string",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":7,\"1\":\"uuid-generator\"}},\"version\":1}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": null,
+            "1": "uuid-generator",
+            "2": "base64-codec",
+            "3": "jwt-decoder",
+            "4": "unix-timestamp",
+            "5": "regex-tester"
+          }
+        },
+        "version": 2
+      },
+      "storageAfterOpen": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":null,\"1\":\"uuid-generator\",\"2\":\"base64-codec\",\"3\":\"jwt-decoder\",\"4\":\"unix-timestamp\",\"5\":\"regex-tester\"}},\"version\":2}"
+      }
+    },
+    {
+      "id": "feature_layout/version-1-value-null",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "{\"state\":{\"value\":null},\"version\":1}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "json-formatter",
+            "1": "uuid-generator",
+            "2": "base64-codec",
+            "3": "jwt-decoder",
+            "4": "unix-timestamp",
+            "5": "regex-tester"
+          }
+        },
+        "version": 2
+      },
+      "storageAfterOpen": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"json-formatter\",\"1\":\"uuid-generator\",\"2\":\"base64-codec\",\"3\":\"jwt-decoder\",\"4\":\"unix-timestamp\",\"5\":\"regex-tester\"}},\"version\":2}"
       }
     },
     {
@@ -2093,6 +2184,40 @@
       }
     },
     {
+      "id": "json-schema-validator/legacy-with-extra-field",
+      "key": "csr-dev-tools-json-schema-validator",
+      "reader": "fields",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-schema-validator": "{\"extra\":1,\"jsonData\":\"{\\\"a\\\":1}\",\"jsonSchema\":\"{}\"}"
+      },
+      "expected": {
+        "schema": "{}",
+        "source": "{\"a\":1}"
+      },
+      "storageAfterOpen": {
+        "csr-dev-tools-json-schema-validator": "{\"schema\":\"{}\",\"source\":\"{\\\"a\\\":1}\"}"
+      }
+    },
+    {
+      "id": "json-schema-validator/source-and-legacy-data",
+      "key": "csr-dev-tools-json-schema-validator",
+      "reader": "fields",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-schema-validator": "{\"jsonData\":\"{\\\"old\\\":1}\",\"schema\":\"\",\"source\":\"{\\\"new\\\":1}\"}"
+      },
+      "expected": {
+        "schema": "",
+        "source": "{\"new\":1}"
+      },
+      "storageAfterOpen": {
+        "csr-dev-tools-json-schema-validator": "{\"schema\":\"\",\"source\":\"{\\\"new\\\":1}\"}"
+      }
+    },
+    {
       "id": "jsonpath-evaluator/legacy-and-v2",
       "key": "csr-dev-tools-jsonpath-evaluator-v2",
       "reader": "fields",
@@ -2216,7 +2341,7 @@
       "id": "mermaid-renderer/handoff-over-draft",
       "key": "csr-dev-tools-mermaid-renderer",
       "reader": "fields",
-      "shape": "older",
+      "shape": "handoff",
       "provenance": "seeded",
       "stored": {
         "csr-dev-tools-handoff-mermaid-renderer": "erDiagram\n  users {\n    INT id\n  }",
@@ -2272,6 +2397,19 @@
         "source": ""
       },
       "storageAfterOpen": {}
+    },
+    {
+      "id": "mermaid-renderer/legacy-draft-unparseable",
+      "key": "csr-dev-tools-mermaid-renderer",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-mermaid-renderer-code": "{bad"
+      },
+      "expected": {
+        "source": ""
+      }
     },
     {
       "id": "password-generator/empty-object",
