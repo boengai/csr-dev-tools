@@ -50,6 +50,9 @@ const both = (a: RegExp, b: RegExp): RegExp =>
 export const defineParityConfig = ({ baseURL, build, journeys = {}, tools, webServer }: ParityConfigOptions) => {
   // Read by the specs at collection time, in the runner and in every worker (each loads this config).
   process.env.PARITY_BUILD = build
+  // An empty list would join to an empty filter, which means every Tool: say which, or leave it out.
+  if (tools?.length === 0)
+    throw new Error('defineParityConfig: `tools` is empty; list the ported Tools, or omit it for every Tool')
   if (tools && !process.env.PARITY_TOOLS) process.env.PARITY_TOOLS = tools.join(',')
 
   const grepInvert = build === 'react' ? new RegExp(DIOXUS_ONLY) : undefined

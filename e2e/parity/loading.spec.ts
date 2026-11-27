@@ -1,7 +1,14 @@
 import { type CDPSession, expect, type Page, test } from '@playwright/test'
 
 import { SLOW_4G } from '../perf/throttle'
-import { deviceOptions, TOOL_LOADING, TOOL_LOADING_EMOJI, WIDGET_LOADING, WIDGET_LOADING_EMOJI } from './page'
+import {
+  deviceOptions,
+  NOTO_EMOJI_BASE,
+  TOOL_LOADING,
+  TOOL_LOADING_EMOJI,
+  WIDGET_LOADING,
+  WIDGET_LOADING_EMOJI,
+} from './page'
 import { parityTools } from './tools'
 
 /**
@@ -69,9 +76,7 @@ test.use(deviceOptions('Pixel 7'))
 // (docs/ux/parity.md → The reference), so an indicator pointing anywhere else is still never drawn.
 const EMOJI_STUB = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64')
 const stubEmoji = (page: Page) =>
-  page.route('https://fonts.gstatic.com/s/e/notoemoji/**', (route) =>
-    route.fulfill({ body: EMOJI_STUB, contentType: 'image/gif' }),
-  )
+  page.route(`${NOTO_EMOJI_BASE}**`, (route) => route.fulfill({ body: EMOJI_STUB, contentType: 'image/gif' }))
 
 test.beforeEach(({ browserName }) => {
   test.skip(browserName !== 'chromium', 'the slow-4G throttle is applied through CDP')
@@ -94,7 +99,7 @@ const throttle = async (page: Page): Promise<CDPSession> => {
 /** Records, from the first byte, the layout shift and, per slot, when its indicator and content appear. */
 const record = async (page: Page, { content, emoji, indicator, slot }: LoadingPage): Promise<void> => {
   await page.addInitScript(
-    ({ content, emoji, indicator, slot }) => {
+    ({ base, content, emoji, indicator, slot }) => {
       const r: LoadingRecord = { cls: 0, slots: [] }
       Object.assign(window, { __loading: r })
       new PerformanceObserver((list) => {
@@ -108,13 +113,14 @@ const record = async (page: Page, { content, emoji, indicator, slot }: LoadingPa
         return box.width > 0 && box.height > 0
       }
       // Drawn: the image's bytes have arrived and decoded, so the visitor sees the emoji, not an empty
-      // box. `currentSrc` is the file actually drawn: a <picture> source can win over the <img> src.
+      // box. `currentSrc` is the file actually drawn (a <picture> source can win over the <img> src), and it
+      // must be that emoji from the source both builds use, not a stand-in from another host.
       const drawn = (el: Element | null) =>
         el instanceof HTMLImageElement &&
         seen(el) &&
         el.complete &&
         el.naturalWidth > 0 &&
-        el.currentSrc.includes(`/${emoji}/`)
+        el.currentSrc.startsWith(`${base}${emoji}/`)
       const check = () => {
         const now = performance.now()
         document.querySelectorAll(slot).forEach((el, i) => {
@@ -129,7 +135,7 @@ const record = async (page: Page, { content, emoji, indicator, slot }: LoadingPa
       // An image finishing its download is no DOM mutation; `load` does not bubble, so listen in capture.
       document.addEventListener('load', check, true)
     },
-    { content, emoji, indicator, slot },
+    { base: NOTO_EMOJI_BASE, content, emoji, indicator, slot },
   )
 }
 

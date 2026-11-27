@@ -3,7 +3,10 @@ import { devices, expect, type Page } from '@playwright/test'
 /** How long a Tool may take to appear once its page loads. */
 export const TOOL_TIMEOUT = 15_000
 
-// The loading indicators are Noto emoji images, kept in both builds (docs/ux/parity.md → The reference).
+// The loading indicators are Noto emoji images, kept in both builds with the same source (docs/ux/parity.md →
+// The reference).
+/** Where both builds load the Noto emoji from: `<base><code point>/512.webp` (or `.gif`). */
+export const NOTO_EMOJI_BASE = 'https://fonts.gstatic.com/s/e/notoemoji/latest/'
 /** The flying saucer's Noto code point: shows until the page, or the Tool on its route, is ready. */
 export const TOOL_LOADING_EMOJI = '1f6f8'
 /** The robot's Noto code point: shows in a dashboard widget until its Tool fills it. */
