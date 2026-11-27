@@ -100,6 +100,15 @@ describe('combinePdfPages', () => {
     expect(await pageTexts(again.pdf)).toEqual([PAGE_ONE_TEXT])
   })
 
+  it('does not read an encrypted file again once its decrypted bytes are kept', async () => {
+    const file = await fixture('aes-128.pdf')
+    await combinePdfPages([{ file, pageIndex: 0 }])
+    const read = vi.spyOn(file, 'arrayBuffer')
+    const again = await combinePdfPages([{ file, pageIndex: 1 }, { file, pageIndex: 0 }])
+    expect(read).not.toHaveBeenCalled()
+    expect(await pageTexts(again.pdf)).toEqual(['Encrypted fixture page two', PAGE_ONE_TEXT])
+  })
+
   it('names each skipped file once, even when two share a name', async () => {
     const first = await fixture('locked.pdf')
     const second = await fixture('locked.pdf')

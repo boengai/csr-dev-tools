@@ -40,21 +40,24 @@ function decryptOnce(file: File, bytes: Uint8Array): Promise<Uint8Array | null> 
  * declares `/Encrypt` never reaches `copyPages`.
  */
 async function loadSource(file: File): Promise<PDFDocument | null> {
-  let bytes: Uint8Array
-  try {
-    bytes = new Uint8Array(await file.arrayBuffer())
-  } catch {
-    // The file can't be read any more, e.g. it changed on disk after upload.
-    return null
-  }
-  if (!decryptedBytes.has(file)) {
+  // An encrypted file seen before isn't read again: its decrypted bytes are kept.
+  let decrypting = decryptedBytes.get(file)
+  if (!decrypting) {
+    let bytes: Uint8Array
+    try {
+      bytes = new Uint8Array(await file.arrayBuffer())
+    } catch {
+      // The file can't be read any more, e.g. it changed on disk after upload.
+      return null
+    }
     try {
       return await PDFDocument.load(bytes)
     } catch {
       // Not loadable as is: try the decrypt step below.
     }
+    decrypting = decryptOnce(file, bytes)
   }
-  const decrypted = await decryptOnce(file, bytes)
+  const decrypted = await decrypting
   if (!decrypted) return null
   try {
     return await PDFDocument.load(decrypted)
