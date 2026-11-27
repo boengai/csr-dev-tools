@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises'
+
 import { expect, type Page, test } from '@playwright/test'
 
 import { codeInput } from './helpers/selectors'
@@ -123,6 +125,23 @@ test.describe('Mermaid Renderer', () => {
     expect(download.suggestedFilename()).toBe('mermaid-diagram.png')
   })
 
+  // Journey's root <svg> has `width="100%"`, which the PNG export read as 100px
+  // wide and squashed the diagram into.
+  test('journey diagram downloads as a PNG with the diagram’s proportions', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'journey\n  title Day\n  section Morning\n    Coffee: 5: Me')
+    const viewBox = await diagram(page).getAttribute('viewBox', { timeout: 10000 })
+    const [, , boxWidth = 0, boxHeight = 0] = (viewBox ?? '').split(/[\s,]+/).map(Number)
+
+    const [download] = await Promise.all([
+      page.waitForEvent('download', { timeout: 15000 }),
+      page.getByRole('button', { name: 'Download PNG' }).click(),
+    ])
+    // A PNG's IHDR chunk holds its width and height at bytes 16 and 20.
+    const png = await readFile((await download.path())!)
+    const ratio = png.readUInt32BE(16) / png.readUInt32BE(20)
+    expect(ratio).toBeCloseTo(boxWidth / boxHeight, 1)
+  })
+
   // `toBeVisible` ignores colour: the title used to be painted its box's fill.
   test("journey section title is not painted its section box's colour", async ({ page }) => {
     await codeInput.fill(page, SOURCE, 'journey\n  title Day\n  section Morning\n    Coffee: 5: Me')
@@ -144,6 +163,15 @@ test.describe('Mermaid Renderer', () => {
       "A math label ($$…$$) can't be drawn, so it's left out of the diagram.",
     )
     await expect(diagram(page).locator('text', { hasText: 'Hello' }).first()).toBeVisible()
+  })
+
+  test('KaTeX class label → the same notice, the rest of the class diagram still drawn', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'classDiagram\n    class Shape["$$\\pi r^2$$"]\n    Shape <|-- Circle')
+    await expect(diagram(page)).toBeVisible({ timeout: 10000 })
+    await expect(page.locator('[data-slot="tool-status"] [role="status"]')).toHaveText(
+      "A math label ($$…$$) can't be drawn, so it's left out of the diagram.",
+    )
+    await expect(diagram(page).locator('text', { hasText: 'Circle' }).first()).toBeVisible()
   })
 
   test('pick an example → it renders', async ({ page }) => {

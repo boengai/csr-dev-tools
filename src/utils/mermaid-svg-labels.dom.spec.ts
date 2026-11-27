@@ -13,6 +13,9 @@ const parse = (svg: string): SVGSVGElement => {
 
 const lines = (text: Element): Array<string> => [...text.querySelectorAll('tspan')].map((t) => t.textContent ?? '')
 
+// A stand-in for canvas text measurement: 10px a character, whatever the font.
+const tenPxPerChar = (text: string): number => text.length * 10
+
 // Shapes below are copied from what mermaid 12.1.0 draws.
 describe('redrawHtmlLabels', () => {
   it('redraws an event-modeling box label as SVG text centred in its box', () => {
@@ -60,7 +63,7 @@ describe('redrawHtmlLabels', () => {
           '<foreignObject class="venn-text-node-fo" width="100" height="200" x="50" y="100" overflow="visible">' +
           '<span class="venn-text-node" xmlns="http://www.w3.org/1999/xhtml" style="display: flex; color: red;">React</span>' +
           '</foreignObject>' +
-          '<foreignObject class="venn-text-node-fo" width="100" height="200" x="150" y="100" overflow="visible">' +
+          '<foreignObject class="venn-text-node-fo" width="200" height="200" x="150" y="100" overflow="visible">' +
           '<span class="venn-text-node" xmlns="http://www.w3.org/1999/xhtml" style="display: flex;">Design Systems</span>' +
           '</foreignObject></g></svg>',
       ),
@@ -86,6 +89,51 @@ describe('redrawHtmlLabels', () => {
     const text = svg.querySelector('g > text')!
     expect(lines(text)).toEqual(['DB text'])
     expect([text.getAttribute('x'), text.getAttribute('y')]).toEqual(['40', '40'])
+  })
+
+  it('wraps a label at its box width, as the HTML label did', () => {
+    const svg = parse(
+      redrawHtmlLabels(
+        '<svg><g class="venn-text-area">' +
+          '<foreignObject class="venn-text-node-fo" width="100" height="200" x="0" y="0" overflow="visible">' +
+          '<span class="venn-text-node" xmlns="http://www.w3.org/1999/xhtml" style="display: flex; white-space: normal;">' +
+          'Design Systems Team</span></foreignObject></g></svg>',
+        tenPxPerChar,
+      ),
+    )
+
+    const text = svg.querySelector('text')!
+    // "Design Systems" is 140px, wider than the 100px box.
+    expect(lines(text)).toEqual(['Design', 'Systems', 'Team'])
+    expect([...text.querySelectorAll('tspan')].map((t) => t.getAttribute('dy'))).toEqual(['-1.2em', '1.2em', '1.2em'])
+  })
+
+  it('keeps a word wider than the box whole, on a line of its own', () => {
+    const svg = parse(
+      redrawHtmlLabels(
+        '<svg><g><foreignObject width="50" height="80"><div xmlns="http://www.w3.org/1999/xhtml">' +
+          'a Kubernetes b</div></foreignObject></g></svg>',
+        tenPxPerChar,
+      ),
+    )
+
+    expect(lines(svg.querySelector('text')!)).toEqual(['a', 'Kubernetes', 'b'])
+  })
+
+  it("stops an architecture iconText label at its line clamp, ending in '…'", () => {
+    // Mermaid sets the clamp to the lines that fit in the icon square.
+    const svg = parse(
+      redrawHtmlLabels(
+        '<svg><g><foreignObject width="80" height="80">' +
+          '<div class="node-icon-text" xmlns="http://www.w3.org/1999/xhtml" style="height: 80px;">' +
+          '<div style="-webkit-line-clamp: 2;">one two three four five</div></div>' +
+          '</foreignObject></g></svg>',
+        tenPxPerChar,
+      ),
+    )
+
+    // Unclamped: "one two" / "three" / "four five".
+    expect(lines(svg.querySelector('text')!)).toEqual(['one two', 'three…'])
   })
 
   it('leaves a label alone when its <switch> already has an SVG text fallback', () => {

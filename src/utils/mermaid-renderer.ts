@@ -57,7 +57,11 @@ export async function svgToPng(svgString: string, scale = 2): Promise<string> {
   const widthAttr = svgEl.getAttribute('width')
   const heightAttr = svgEl.getAttribute('height')
 
-  if (widthAttr && heightAttr) {
+  // Only plain or px lengths: mermaid often sets `width="100%"` (journey also
+  // sets a px height), and parsing that as 100px squashes the PNG.
+  const isAbsolute = (length: string | null): length is string => /^\s*\d+(?:\.\d+)?(?:px)?\s*$/.test(length ?? '')
+
+  if (isAbsolute(widthAttr) && isAbsolute(heightAttr)) {
     width = parseFloat(widthAttr)
     height = parseFloat(heightAttr)
   } else if (viewBox) {
