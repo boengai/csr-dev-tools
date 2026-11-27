@@ -100,6 +100,19 @@ describe('combinePdfPages', () => {
     expect(await pageTexts(again.pdf)).toEqual([PAGE_ONE_TEXT])
   })
 
+  it('skips a file that can no longer be read, and keeps the other files', async () => {
+    // A File whose bytes are gone, as when it changes on disk after upload.
+    const gone = new File([], 'gone.pdf', { type: 'application/pdf' })
+    vi.spyOn(gone, 'arrayBuffer').mockRejectedValue(new DOMException('gone', 'NotReadableError'))
+    const plain = await fixture('plain.pdf')
+    const result = await combinePdfPages([
+      { file: gone, pageIndex: 0 },
+      { file: plain, pageIndex: 0 },
+    ])
+    expect(result.skipped).toEqual(['gone.pdf'])
+    expect(await pageTexts(result.pdf)).toEqual([PAGE_ONE_TEXT])
+  })
+
   it('fails the merge, rather than skipping the file, when the decrypt step cannot load', async () => {
     const encrypted = await fixture('aes-128.pdf')
     const plain = await fixture('plain.pdf')

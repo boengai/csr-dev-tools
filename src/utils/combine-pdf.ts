@@ -29,8 +29,8 @@ function decryptOnce(file: File, bytes: Uint8Array): Promise<Uint8Array | null> 
 /**
  * Load a source PDF for copying. pdf-lib can't decrypt, and copying pages out
  * of a still-encrypted document writes blank pages, so an encrypted file is
- * decrypted first. Resolves to null when the file can't be used (it needs a
- * password, or isn't a PDF): the caller skips it. Rejects when the decrypt
+ * decrypted first. Resolves to null when the file can't be used (it can't be
+ * read, needs a password, or isn't a PDF): the caller skips it. Rejects when the decrypt
  * step can't load, so the merge fails rather than quietly dropping a file.
  *
  * Any failed load goes to the decrypt step, not only pdf-lib's
@@ -40,7 +40,13 @@ function decryptOnce(file: File, bytes: Uint8Array): Promise<Uint8Array | null> 
  * declares `/Encrypt` never reaches `copyPages`.
  */
 async function loadSource(file: File): Promise<PDFDocument | null> {
-  const bytes = new Uint8Array(await file.arrayBuffer())
+  let bytes: Uint8Array
+  try {
+    bytes = new Uint8Array(await file.arrayBuffer())
+  } catch {
+    // The file can't be read any more, e.g. it changed on disk after upload.
+    return null
+  }
   if (!decryptedBytes.has(file)) {
     try {
       return await PDFDocument.load(bytes)
