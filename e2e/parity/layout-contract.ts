@@ -247,10 +247,17 @@ export const applyBadInput = async (page: Page, surface: Locator, fixture: BadIn
 const showsPlaceholder = async (surface: Locator, spec: LayoutSpec): Promise<boolean> =>
   (await spec.output(surface)).evaluate(spec.showsPlaceholder)
 
-/** For a layout that opens with output (Generator): waits for the first value. */
+/**
+ * For a layout that opens with output (Generator): waits for the first value,
+ * marked `data-has-value` on the output (the DOM contract). An empty region with
+ * no placeholder is not a value.
+ */
 export const waitForOpenOutput = async (surface: Locator, spec: LayoutSpec): Promise<void> => {
-  if (spec.opensWith === 'output')
-    await expect.poll(() => showsPlaceholder(surface, spec), { timeout: 12_000 }).toBe(false)
+  if (spec.opensWith !== 'output') return
+  await expect(await spec.output(surface), 'the output has a value').toHaveAttribute('data-has-value', {
+    timeout: 12_000,
+  })
+  expect(await showsPlaceholder(surface, spec), 'the output shows a value, not its placeholder').toBe(false)
 }
 
 /**
@@ -283,12 +290,19 @@ export const expectOpenContract = async (surface: Locator, spec: LayoutSpec): Pr
 
   // The action that takes the output away lives with the output. File output offers none before there is any.
   const expectsLabelCopy = spec.expectsLabelCopy ?? (() => true)
-  if (expectsLabelCopy(await out.getAttribute('data-output-kind'))) {
+  const kind = await out.getAttribute('data-output-kind')
+  const holder = out.locator(
+    'xpath=ancestor-or-self::*[self::fieldset or (self::section and not(@data-slot="tool-surface")) or @data-slot="tool-output"][1]',
+  )
+  if (kind === 'image' && spec.opensWith === 'output') {
+    // An image takes the output away with Download, once there is one (a Generator opens with one).
+    expect(
+      await holder.getByRole('button', { name: /^Download/ }).count(),
+      'a Download button with the image',
+    ).toBeGreaterThan(0)
+  } else if (expectsLabelCopy(kind)) {
     const { inEmptyState, name } = spec.outputAction
     if (inEmptyState || spec.opensWith === 'output') {
-      const holder = out.locator(
-        'xpath=ancestor-or-self::*[self::fieldset or (self::section and not(@data-slot="tool-surface")) or @data-slot="tool-output"][1]',
-      )
       expect(await holder.getByRole('button', { name }).count(), `a ${name} button with the output`).toBeGreaterThan(0)
     } else {
       await expect(surface.getByRole('button', { name })).toHaveCount(0)

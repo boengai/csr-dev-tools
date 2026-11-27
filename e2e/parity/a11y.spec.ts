@@ -7,7 +7,7 @@ import BASELINE from './a11y-baseline.json' with { type: 'json' }
 import {
   applyBadInput,
   badInput,
-  DIALOG_TOOL,
+  dialogToolFor,
   LAYOUT_SPECS,
   openInDialog,
   openOnRoute,
@@ -78,16 +78,20 @@ test.describe('axe', () => {
     await expectNoNewViolations(page, 'home')
   })
 
-  // The dashboard dialog, once per layout, for the dialog Tools this build has. Only those have
-  // baseline entries: a fallback Tool would be held to another Tool's failures.
+  // The dashboard dialog, once per layout, on the Tool the contract suite opens there (`dialogToolFor`:
+  // DIALOG_TOOL, or on a build without it the first Tool of that layout). The recording covers the
+  // dialog of every Tool with a layout, so whichever Tool a build falls back to has its own entry.
   const tools = parityTools()
-  for (const layout of SHELL_LAYOUTS) {
-    const dialogTool = tools.find((tool) => tool.key === DIALOG_TOOL[layout])
-    if (!dialogTool) continue
+  const dialogTools = RECORD
+    ? tools.filter((tool) => isShellLayout(tool.layout))
+    : SHELL_LAYOUTS.map(dialogToolFor).filter((tool) => tool !== undefined)
+  for (const dialogTool of dialogTools) {
+    if (!isShellLayout(dialogTool.layout)) continue
+    const spec = LAYOUT_SPECS[dialogTool.layout]
     test(`dashboard dialog: ${dialogTool.key}`, async ({ page }) => {
       await seedDashboard(page, dialogTool)
       await page.goto('/')
-      await waitForOpenOutput(await openInDialog(page, dialogTool), LAYOUT_SPECS[layout])
+      await waitForOpenOutput(await openInDialog(page, dialogTool), spec)
       await expectNoNewViolations(page, `dashboard-dialog:${dialogTool.key}`)
     })
   }

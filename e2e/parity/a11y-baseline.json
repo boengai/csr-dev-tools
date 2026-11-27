@@ -54,8 +54,50 @@
   "css-formatter:open": {
     "color-contrast": 2
   },
+  "dashboard-dialog:aes-encrypt-decrypt": {
+    "color-contrast": 4
+  },
   "dashboard-dialog:base64-codec": {
     "color-contrast": 4
+  },
+  "dashboard-dialog:base64-to-image": {
+    "color-contrast": 1
+  },
+  "dashboard-dialog:certificate-decoder": {
+    "color-contrast": 2
+  },
+  "dashboard-dialog:cron-expression-parser": {
+    "color-contrast": 9
+  },
+  "dashboard-dialog:crontab-generator": {
+    "color-contrast": 23
+  },
+  "dashboard-dialog:css-formatter": {
+    "color-contrast": 2
+  },
+  "dashboard-dialog:env-file-converter": {
+    "color-contrast": 6
+  },
+  "dashboard-dialog:escaped-json-stringifier": {
+    "color-contrast": 4
+  },
+  "dashboard-dialog:hash-generator": {
+    "color-contrast": 5
+  },
+  "dashboard-dialog:hmac-generator": {
+    "color-contrast": 6
+  },
+  "dashboard-dialog:html-entity-converter": {
+    "color-contrast": 4
+  },
+  "dashboard-dialog:html-formatter": {
+    "color-contrast": 2
+  },
+  "dashboard-dialog:html-to-markdown-converter": {
+    "color-contrast": 4
+  },
+  "dashboard-dialog:javascript-minifier": {
+    "color-contrast": 2
   },
   "dashboard-dialog:json-diff-checker": {
     "color-contrast": 3
@@ -63,8 +105,91 @@
   "dashboard-dialog:json-formatter": {
     "color-contrast": 2
   },
+  "dashboard-dialog:json-schema-validator": {
+    "color-contrast": 3
+  },
+  "dashboard-dialog:json-to-csv-converter": {
+    "color-contrast": 4
+  },
+  "dashboard-dialog:json-to-toml-converter": {
+    "color-contrast": 4
+  },
+  "dashboard-dialog:json-to-typescript": {
+    "color-contrast": 5
+  },
+  "dashboard-dialog:json-to-xml-converter": {
+    "color-contrast": 4
+  },
+  "dashboard-dialog:json-to-yaml-converter": {
+    "color-contrast": 4
+  },
+  "dashboard-dialog:jsonpath-evaluator": {
+    "color-contrast": 2
+  },
+  "dashboard-dialog:jwt-decoder": {
+    "color-contrast": 2
+  },
+  "dashboard-dialog:markdown-preview": {
+    "color-contrast": 2
+  },
+  "dashboard-dialog:mermaid-renderer": {
+    "color-contrast": 3
+  },
+  "dashboard-dialog:password-generator": {
+    "color-contrast": 4
+  },
+  "dashboard-dialog:qr-code-generator": {
+    "color-contrast": 1
+  },
+  "dashboard-dialog:rsa-key-generator": {
+    "color-contrast": 4,
+    "scrollable-region-focusable": 1
+  },
+  "dashboard-dialog:sql-formatter": {
+    "color-contrast": 2
+  },
+  "dashboard-dialog:ssh-key-fingerprint": {
+    "color-contrast": 2
+  },
+  "dashboard-dialog:string-escape-unescape": {
+    "color-contrast": 4
+  },
+  "dashboard-dialog:svg-viewer": {
+    "color-contrast": 2
+  },
+  "dashboard-dialog:text-case-converter": {
+    "color-contrast": 1
+  },
+  "dashboard-dialog:text-diff-checker": {
+    "color-contrast": 3
+  },
+  "dashboard-dialog:text-sort-dedupe": {
+    "color-contrast": 4
+  },
+  "dashboard-dialog:timezone-converter": {
+    "color-contrast": 3,
+    "label-content-name-mismatch": 1
+  },
+  "dashboard-dialog:unix-timestamp": {
+    "color-contrast": 1
+  },
+  "dashboard-dialog:url-encoder-decoder": {
+    "color-contrast": 4
+  },
+  "dashboard-dialog:url-parser": {
+    "color-contrast": 1
+  },
+  "dashboard-dialog:user-agent-parser": {
+    "color-contrast": 1
+  },
   "dashboard-dialog:uuid-generator": {
     "color-contrast": 1
+  },
+  "dashboard-dialog:word-counter": {
+    "color-contrast": 1
+  },
+  "dashboard-dialog:yaml-formatter": {
+    "color-contrast": 2
   },
   "env-file-converter:bad-input": {
     "color-contrast": 6

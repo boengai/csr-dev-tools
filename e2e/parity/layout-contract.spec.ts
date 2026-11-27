@@ -40,6 +40,8 @@ for (const layout of SHELL_LAYOUTS) {
           await seedDashboard(page, tool)
           await page.goto('/')
           await tile(dashboardTile(page, tool))
+          // ...and that button opens the Tool in the dialog.
+          await openInDialog(page, tool)
         })
       }
 
