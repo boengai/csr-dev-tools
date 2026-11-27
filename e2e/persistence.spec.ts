@@ -2,6 +2,7 @@ import { expect, type Page, test } from '@playwright/test'
 
 import { TOOL_ROUTES } from '../src/constants/tool-routes'
 import { toolSurface } from './helpers/selectors'
+import { parityToolFilter } from './parity/tools'
 import {
   EDIT,
   readGolden,
@@ -36,6 +37,18 @@ const nameOf = (key: string): string => {
   return name
 }
 
+/**
+ * Skips a journey unless every Tool it opens is in this run (`PARITY_TOOLS`,
+ * set by `defineParityConfig`). A title naming two Tools matches either
+ * Tool's `journeys.grep`, so the name filter alone is not enough. The
+ * dashboard and settings are app-wide, so always run.
+ */
+const requirePorted = (...tools: Array<string>): void => {
+  const filter = parityToolFilter()
+  const missing = tools.filter((tool) => !['dashboard', 'settings'].includes(tool) && filter && !filter.has(tool))
+  test.skip(missing.length > 0, `not in this build: ${missing.join(', ')}`)
+}
+
 const golden = readGolden()
 const { keys, neverSaved } = readKeyList()
 /** Keys the site may write. A legacy key it only reads and deletes (`written: false`) is not one. */
@@ -61,6 +74,7 @@ const expectOnlyListedKeys = async (page: Page): Promise<void> => {
 test.describe('Saved inputs', () => {
   for (const driver of DRIVERS) {
     test(`${nameOf(driver.tool)}: restores what React saved, and saves an edit in the same shape`, async ({ page }) => {
+      requirePorted(driver.tool)
       const entries = driver.keys.map(currentShape)
       const restored = Object.fromEntries(entries.map((e) => [e.key, e.expected]))
       await recordWrites(page)
@@ -77,6 +91,7 @@ test.describe('Saved inputs', () => {
   }
 
   test(`${nameOf('json-formatter')}: a field the Tool does not name is kept and saved back`, async ({ page }) => {
+    requirePorted('json-formatter')
     const driver = DRIVERS.find((d) => d.tool === 'json-formatter')
     const entry = golden.entries.find((e) => e.id === 'json-formatter/extra-field')
     if (!driver || !entry) throw new Error('needs the json-formatter driver and its extra-field golden entry')
@@ -97,6 +112,7 @@ test.describe('Saved inputs', () => {
     context,
     page,
   }) => {
+    requirePorted('db-diagram', 'mermaid-renderer')
     await recordWrites(context)
     await page.goto('/tools/db-diagram')
     await page.getByTestId('add-table-btn').click()
@@ -143,6 +159,7 @@ test.describe('Saved inputs', () => {
   test(`${nameOf('mermaid-renderer')}: a ${nameOf('db-diagram')} handoff wins over the saved draft and is read once`, async ({
     page,
   }) => {
+    requirePorted('mermaid-renderer')
     const handoff = 'erDiagram\n  users {\n    INT id\n  }'
     await seedStorage(page, {
       'csr-dev-tools-handoff-mermaid-renderer': handoff,
@@ -169,6 +186,7 @@ test.describe('Saved inputs', () => {
   test(`${nameOf('jsonpath-evaluator')}: when the migrated write fails, the old draft is put back`, async ({
     page,
   }) => {
+    requirePorted('jsonpath-evaluator')
     const driver = DRIVERS.find((d) => d.tool === 'jsonpath-evaluator')
     const legacy = golden.entries.find((e) => e.id === 'jsonpath-evaluator/legacy-bag')
     if (!driver || !legacy) throw new Error('needs the jsonpath-evaluator driver and its legacy-bag golden entry')
@@ -194,6 +212,7 @@ test.describe('Saved inputs', () => {
   test(`${nameOf('base64-codec')}: a saved mode it does not know opens the first mode, with that mode's saved source`, async ({
     page,
   }) => {
+    requirePorted('base64-codec')
     const driver = DRIVERS.find((d) => d.tool === 'base64-codec')
     const mode = golden.entries.find((e) => e.id === 'base64-codec/unknown-mode')
     const source = golden.entries.find((e) => e.id === 'base64-codec/unknown-mode-with-source')
@@ -208,6 +227,7 @@ test.describe('Saved inputs', () => {
   })
 
   test(`${nameOf('db-diagram')}: an unreadable store is backed up before the first save over it`, async ({ page }) => {
+    requirePorted('db-diagram')
     await recordWrites(page)
     const unreadable = '{bad'
     await seedStorage(page, { 'csr-dev-tools-db-diagrams': unreadable })
@@ -248,6 +268,7 @@ test.describe('Saved inputs', () => {
 
   for (const { keys: allowed = [], tool } of neverSaved) {
     test(`${nameOf(tool)}: saves no input`, async ({ page }) => {
+      requirePorted(tool)
       await recordWrites(page)
       await page.goto(`/tools/${tool}`)
       const surface = toolSurface(page)
