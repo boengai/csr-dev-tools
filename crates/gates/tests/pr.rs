@@ -2,6 +2,7 @@
 //!
 //! - `GATES_PR_TITLE` and `GATES_PR_BODY`: the PR's title and body;
 //! - `GATES_PR_HEAD_REF`: the PR's source branch;
+//! - `GATES_BASE_REF`: the PR's base as a remote ref, such as `origin/develop`;
 //! - `GATES_NUMSTAT`: a file holding `git diff --numstat --no-renames` from
 //!   the merge base;
 //! - `GATES_BASE_MANIFEST`: a file holding the root `Cargo.toml` at the merge
@@ -16,7 +17,7 @@ use std::path::Path;
 
 use gates::pr_body::{check_body, template_name};
 use gates::pr_kind::{ChangedFile, Kind, check_paths, parse_title, size_warning};
-use gates::pr_source::{added_member, check_sync_source};
+use gates::pr_source::{added_member, check_sync_source, merges_main};
 
 fn var(name: &str) -> Result<String, String> {
     env::var(name).map_err(|_| format!("{name} is not set; CI sets it"))
@@ -29,7 +30,10 @@ fn root() -> &'static Path {
 /// The PR's kind, from its title, and a sync PR's source checked too.
 fn kind() -> Result<Kind, String> {
     let kind = parse_title(&var("GATES_PR_TITLE")?).map_err(|finding| finding.to_string())?;
-    match check_sync_source(&kind, &var("GATES_PR_HEAD_REF")?) {
+    // Only a sync PR needs the ancestry: it runs git on the checkout.
+    let is_main_merge = kind == Kind::Sync
+        && merges_main(root(), "origin/main", &var("GATES_BASE_REF")?, "HEAD^2")?;
+    match check_sync_source(&kind, &var("GATES_PR_HEAD_REF")?, is_main_merge) {
         Some(finding) => Err(finding.to_string()),
         None => Ok(kind),
     }
@@ -64,10 +68,14 @@ fn pr_paths() {
             ))
         })
         .collect();
-    assert!(!files.is_empty(), "the numstat file lists no changed file");
     if let Some(warning) = size_warning(&files) {
         println!("::warning::{warning}");
     }
+    if kind == Kind::Sync {
+        // A sync may change anything, even nothing at all.
+        return;
+    }
+    assert!(!files.is_empty(), "the numstat file lists no changed file");
     let mut context = gates::tree::path_context(root()).unwrap();
     if files.iter().any(|file| file.path == "Cargo.toml") {
         let base = fs::read_to_string(var("GATES_BASE_MANIFEST").unwrap()).unwrap();

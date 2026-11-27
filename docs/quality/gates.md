@@ -298,7 +298,7 @@ There is one template per kind in `docs/quality/pr/`, except `sync`, which needs
 
 `pr-body` checks:
 
-- **the title's kind prefix,** and for `sync`, that the PR comes from `main`;
+- **the title's kind prefix,** and for `sync`, that the PR comes from `main`, or from a branch that brings `main` commits the base lacks (a sync with conflicts to resolve);
 - **nothing inside an HTML comment counts,** since GitHub hides it;
 - **the kind's required headings** (each template's `##` headings);
 - **for `port` and `shell`:** a filled case-mapping table;

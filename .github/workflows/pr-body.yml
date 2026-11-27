@@ -32,7 +32,11 @@ jobs:
       - name: Merge base
         env:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
-        run: echo "MERGE_BASE=$(git merge-base "origin/$BASE_REF" HEAD^2)" >>"$GITHUB_ENV"
+        run: |
+          echo "MERGE_BASE=$(git merge-base "origin/$BASE_REF" HEAD^2)" >>"$GITHUB_ENV"
+          # A sync PR from a branch must bring main commits the base lacks;
+          # pr_source::brings_main checks it against this ref.
+          echo "GATES_BASE_REF=origin/$BASE_REF" >>"$GITHUB_ENV"
 
       - name: Setup Rust (rust-toolchain.toml)
         run: rustup toolchain install

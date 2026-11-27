@@ -72,11 +72,20 @@ fn a_foundation_pr_may_add_its_own_crate_to_the_workspace() {
 }
 
 #[test]
-fn a_sync_comes_from_main() {
-    assert_eq!(check_sync_source(&Kind::Sync, "main"), None);
+fn a_sync_comes_from_main_or_brings_main_commits() {
+    // Straight from main, as a conflict-free sync is opened. This holds by the
+    // branch name alone.
+    assert_eq!(check_sync_source(&Kind::Sync, "main", false), None);
+    // From a branch that merges main into develop, to resolve conflicts.
     assert_eq!(
-        check_sync_source(&Kind::Sync, "my-topic").map(|f| f.rule),
+        check_sync_source(&Kind::Sync, "sync/main-into-develop", true),
+        None
+    );
+    // A topic branch that only borrows the title, even once develop holds
+    // main's tip: it brings no main commit develop lacks.
+    assert_eq!(
+        check_sync_source(&Kind::Sync, "my-topic", false).map(|f| f.rule),
         Some("pr-kind")
     );
-    assert_eq!(check_sync_source(&Kind::Docs, "my-topic"), None);
+    assert_eq!(check_sync_source(&Kind::Docs, "my-topic", false), None);
 }
