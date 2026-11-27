@@ -1,0 +1,63 @@
+M1-arxiv-attention             pdf-lib  check=ok pages=15 annots={"Link-GoTo-named":95,"Link-URI":18} cat=
+M1-arxiv-attention             hw       check=ok pages=15 annots={} cat= | size×0.672 geo=[] lost={"Link-GoTo-named":95,"Link-URI":18} catLost=
+M1-arxiv-attention             lo       check=ok pages=15 annots={"Link-GoTo-named":95,"Link-URI":18} cat= | size×0.624 geo=[] lost={} catLost=
+M1-irs-fw9                     pdf-lib  check=ok pages=6 annots={"Widget":23} cat=
+M1-irs-fw9                     hw       check=ok pages=6 annots={} cat= | size×0.439 geo=[] lost={"Widget":23} catLost=
+M1-irs-fw9                     lo       check=ok pages=6 annots={"Widget":23} cat= | size×0.446 geo=[] lost={} catLost=
+M1-irs-f1040                   pdf-lib  check=ok pages=2 annots={"Widget":199} cat=
+M1-irs-f1040                   hw       check=ok pages=2 annots={} cat= | size×0.251 geo=[] lost={"Widget":199} catLost=
+M1-irs-f1040                   lo       check=ok pages=2 annots={"Widget":199} cat= | size×0.499 geo=[] lost={} catLost=
+M1-markup-annots               pdf-lib  check=ok pages=2 annots={"Text":1,"Highlight":1,"FreeText":1,"Link-URI":1,"Link-GoTo-explicit-dangling":2} cat=
+M1-markup-annots               hw       check=ok pages=2 annots={} cat= | size×0.398 geo=[] lost={"Text":1,"Highlight":1,"FreeText":1,"Link-URI":1,"Link-GoTo-explicit-dangling":2} catLost=
+M1-markup-annots               lo       check=ok pages=2 annots={"Text":1,"Highlight":1,"FreeText":1,"Link-URI":1,"Link-GoTo-explicit-ok":2} cat= | size×0.561 geo=[] lost={"Link-GoTo-explicit-dangling":2} catLost=
+M1-enc-rc4-128-empty           pdf-lib  check=errors pages=15 annots={"Link-GoTo-named":95,"Link-URI":18} cat=
+M1-enc-rc4-128-empty           hw       check=ok pages=15 annots={} cat= | size×0.694 geo=[] lost={"Link-GoTo-named":95,"Link-URI":18} catLost=
+M1-enc-rc4-128-empty           lo       check=ok pages=15 annots={"Link-GoTo-named":95,"Link-URI":18} cat= | size×0.618 geo=[] lost={} catLost=
+M1-enc-aes-128-empty           pdf-lib  check=errors pages=15 annots={"Link-GoTo-named":95,"Link-URI":18} cat=
+M1-enc-aes-128-empty           hw       check=ok pages=15 annots={} cat= | size×0.675 geo=[] lost={"Link-GoTo-named":95,"Link-URI":18} catLost=
+M1-enc-aes-128-empty           lo       check=ok pages=15 annots={"Link-GoTo-named":95,"Link-URI":18} cat= | size×0.601 geo=[] lost={} catLost=
+M1-enc-aes-256-empty           pdf-lib  check=errors pages=15 annots={"Link-GoTo-named":95,"Link-URI":18} cat=
+M1-enc-aes-256-empty           hw       check=ok pages=15 annots={} cat= | size×0.675 geo=[] lost={"Link-GoTo-named":95,"Link-URI":18} catLost=
+M1-enc-aes-256-empty           lo       check=ok pages=15 annots={"Link-GoTo-named":95,"Link-URI":18} cat= | size×0.601 geo=[] lost={} catLost=
+M1-edge-std14-rotate-crop      pdf-lib  check=ok pages=3 annots={} cat=
+M1-edge-std14-rotate-crop      hw       check=ok pages=3 annots={} cat= | size×2.106 geo=[] lost={} catLost=
+M1-edge-std14-rotate-crop      lo       check=ok pages=3 annots={} cat= | size×0.947 geo=[] lost={} catLost=
+M1-inherited-attrs             pdf-lib  check=ok pages=3 annots={} cat=
+M1-inherited-attrs             hw       check=ok pages=3 annots={} cat= | size×1.472 geo=[] lost={} catLost=
+M1-inherited-attrs             lo       check=ok pages=3 annots={} cat= | size×0.82 geo=[] lost={} catLost=
+M1-tool-markdown-to-pdf        pdf-lib  check=ok pages=1 annots={"Link-URI":1} cat=
+M1-tool-markdown-to-pdf        hw       check=ok pages=1 annots={} cat= | size×1.117 geo=[] lost={"Link-URI":1} catLost=
+M1-tool-markdown-to-pdf        lo       check=ok pages=1 annots={"Link-URI":1} cat= | size×0.993 geo=[] lost={} catLost=
+M1-tool-image-to-pdf           pdf-lib  check=ok pages=3 annots={} cat=
+M1-tool-image-to-pdf           hw       check=ok pages=3 annots={} cat= | size×1.002 geo=[] lost={} catLost=
+M1-tool-image-to-pdf           lo       check=ok pages=3 annots={} cat= | size×0.999 geo=[] lost={} catLost=
+M1-tool-image-to-pdf-grid      pdf-lib  check=ok pages=1 annots={} cat=
+M1-tool-image-to-pdf-grid      hw       check=ok pages=1 annots={} cat= | size×1 geo=[] lost={} catLost=
+M1-tool-image-to-pdf-grid      lo       check=ok pages=1 annots={} cat= | size×0.999 geo=[] lost={} catLost=
+M1-tool-combine-pdf            pdf-lib  check=ok pages=4 annots={"Widget":23,"Link-GoTo-named":3} cat=
+M1-tool-combine-pdf            hw       check=ok pages=4 annots={} cat= | size×1.023 geo=[] lost={"Widget":23,"Link-GoTo-named":3} catLost=
+M1-tool-combine-pdf            lo       check=ok pages=4 annots={"Widget":23,"Link-GoTo-named":3} cat= | size×0.997 geo=[] lost={} catLost=
+M1-naca-scan                   pdf-lib  check=ok pages=40 annots={} cat=
+M1-naca-scan                   hw       check=ok pages=40 annots={} cat= | size×0.966 geo=[] lost={} catLost=
+M1-naca-scan                   lo       check=ok pages=40 annots={} cat= | size×0.999 geo=[] lost={} catLost=
+M1-ia-origin-scan              pdf-lib  check=ok pages=568 annots={} cat=
+M1-ia-origin-scan              hw       check=ok pages=568 annots={} cat= | size×1.007 geo=[] lost={} catLost=
+M1-ia-origin-scan              lo       check=ok pages=568 annots={} cat= | size×0.999 geo=[] lost={} catLost=
+M2-interleaved                 pdf-lib  check=ok pages=5 annots={"Widget":94,"Link-GoTo-named":3,"Text":1,"Highlight":1,"FreeText":1,"Link-URI":1,"Link-GoTo-explicit-dangling":1} cat=
+M2-interleaved                 hw       check=ok pages=5 annots={} cat= | size×0.827 geo=[] lost={"Widget":94,"Link-GoTo-named":3,"Text":1,"Highlight":1,"FreeText":1,"Link-URI":1,"Link-GoTo-explicit-dangling":1} catLost=
+M2-interleaved                 lo       check=ok pages=5 annots={"Widget":94,"Link-GoTo-named":3,"Text":1,"Highlight":1,"FreeText":1,"Link-URI":1,"Link-GoTo-explicit-dangling":1} cat= | size×0.855 geo=[] lost={} catLost=
+M3-arxiv-subset-reversed       pdf-lib  check=ok pages=5 annots={"Link-GoTo-named":22,"Link-URI":4} cat=
+M3-arxiv-subset-reversed       hw       check=ok pages=5 annots={} cat= | size×0.746 geo=[] lost={"Link-GoTo-named":22,"Link-URI":4} catLost=
+M3-arxiv-subset-reversed       lo       check=ok pages=5 annots={"Link-GoTo-named":22,"Link-URI":4} cat= | size×0.696 geo=[] lost={} catLost=
+M3-markup-reversed             pdf-lib  check=ok pages=2 annots={"Link-GoTo-explicit-dangling":2,"Text":1,"Highlight":1,"FreeText":1,"Link-URI":1} cat=
+M3-markup-reversed             hw       check=ok pages=2 annots={} cat= | size×0.397 geo=[] lost={"Link-GoTo-explicit-dangling":2,"Text":1,"Highlight":1,"FreeText":1,"Link-URI":1} catLost=
+M3-markup-reversed             lo       check=ok pages=2 annots={"Link-GoTo-explicit-ok":2,"Text":1,"Highlight":1,"FreeText":1,"Link-URI":1} cat= | size×0.56 geo=[] lost={"Link-GoTo-explicit-dangling":2} catLost=
+M4-iso32000-all                pdf-lib  check=errors pages=756 annots={"Link-URI":51,"Link-GoTo-named":3915} cat=
+M4-iso32000-all                hw       check=ok pages=756 annots={} cat= | size×0.281 geo=[] lost={"Link-URI":51,"Link-GoTo-named":3915} catLost=
+M4-iso32000-all                lo       check=ok pages=756 annots={"Link-URI":51,"Link-GoTo-named":3915} cat= | size×0.396 geo=[] lost={} catLost=
+M5-encrypted                   pdf-lib  check=errors pages=24 annots={"Link-GoTo-named":210,"Link-URI":21} cat=
+M5-encrypted                   hw       check=ok pages=24 annots={} cat= | size×0.697 geo=[] lost={"Link-GoTo-named":210,"Link-URI":21} catLost=
+M5-encrypted                   lo       check=ok pages=24 annots={"Link-GoTo-named":210,"Link-URI":21} cat= | size×0.633 geo=[] lost={} catLost=
+M6-failures                    pdf-lib  check=errors pages=3 annots={"Widget":23} cat=
+M6-failures                    hw       check=ok pages=2 annots={} cat= | size×0.604 geo=["p2 media: 0 0 612 792 vs 0 0 611.98 791.97","p2 crop: 0 0 612 792 vs 0 0 611.98 791.97","p3: missing"] lost={"Widget":23} catLost=
+M6-failures                    lo       check=ok pages=2 annots={"Widget":23} cat= | size×0.581 geo=["p2 media: 0 0 612 792 vs 0 0 611.98 791.97","p2 crop: 0 0 612 792 vs 0 0 611.98 791.97","p3: missing"] lost={"Widget":23} catLost=

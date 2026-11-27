@@ -1,0 +1,25 @@
+# brotli q11 (Node zlib); raw / gzip-9 / brotli
+pkg-hw/merge_trial_bg.wasm 323767 152472 129118
+pkg-hw/merge_trial.js 8978 2475 2217
+pkg-lo/merge_trial_bg.wasm 789104 361081 281097
+pkg-lo/merge_trial.js 9528 2635 2350
+assets/es-BheLaEK_.js 470638 191566 175135
+
+# pdf-lib share of the shipped chunk (attrib-chunk.cjs over the sourcemap build)
+  217207 pdf-lib
+  130013 @pdf-lib/standard-fonts
+   45451 pako
+   34190 @dnd-kit/core
+   24704 @pdf-lib/upng
+    5939 @dnd-kit/sortable
+    2932 @dnd-kit/utilities
+    2403 tslib
+    2168 app:src/components/common/pdf/SortablePdfShell.tsx
+    1666 app:src/components/common/pdf/PdfBytesPreview.tsx
+    1374 (unmapped)
+    1138 app:src/components/common/list/SortableCard.tsx
+     839 app:src/hooks/useSortableItems.ts
+     539 @dnd-kit/accessibility
+pdf-lib + deps: raw 419847 brotli 160340
+rest of chunk : raw 50788 brotli 15391
+whole chunk   : raw 470678 brotli 175188

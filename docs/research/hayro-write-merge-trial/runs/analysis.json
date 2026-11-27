@@ -1,0 +1,1501 @@
+[
+  {
+    "id": "M1-arxiv-attention",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 15,
+      "annotKinds": {
+        "Link-GoTo-named": 95,
+        "Link-URI": 18
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 15,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.672,
+        "geometry": [],
+        "annotLost": {
+          "Link-GoTo-named": 95,
+          "Link-URI": 18
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 15,
+      "annotKinds": {
+        "Link-GoTo-named": 95,
+        "Link-URI": 18
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.624,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-irs-fw9",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 6,
+      "annotKinds": {
+        "Widget": 23
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 6,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.439,
+        "geometry": [],
+        "annotLost": {
+          "Widget": 23
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 6,
+      "annotKinds": {
+        "Widget": 23
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.446,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-irs-f1040",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 2,
+      "annotKinds": {
+        "Widget": 199
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 2,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.251,
+        "geometry": [],
+        "annotLost": {
+          "Widget": 199
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 2,
+      "annotKinds": {
+        "Widget": 199
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.499,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-markup-annots",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 2,
+      "annotKinds": {
+        "Text": 1,
+        "Highlight": 1,
+        "FreeText": 1,
+        "Link-URI": 1,
+        "Link-GoTo-explicit-dangling": 2
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 2,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.398,
+        "geometry": [],
+        "annotLost": {
+          "Text": 1,
+          "Highlight": 1,
+          "FreeText": 1,
+          "Link-URI": 1,
+          "Link-GoTo-explicit-dangling": 2
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 2,
+      "annotKinds": {
+        "Text": 1,
+        "Highlight": 1,
+        "FreeText": 1,
+        "Link-URI": 1,
+        "Link-GoTo-explicit-ok": 2
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.561,
+        "geometry": [],
+        "annotLost": {
+          "Link-GoTo-explicit-dangling": 2
+        },
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-enc-rc4-128-empty",
+    "pdf-lib": {
+      "check": "errors",
+      "checkMsg": [
+        "WARNING: <out>/pdf-lib/M1-enc-rc4-128-empty.pdf (offset 11324): error decoding stream data for object 10 0: stream inflate: inflate: data: incorrect header check",
+        "WARNING: <out>/pdf-lib/M1-enc-rc4-128-empty.pdf (offset 11324): stream will be re-processed without filtering to avoid data loss",
+        "WARNING: <out>/pdf-lib/M1-enc-rc4-128-empty.pdf (offset 3226): error decoding stream data for object 9 0: stream inflate: inflate: data: incorrect header check"
+      ],
+      "pageCount": 15,
+      "annotKinds": {
+        "Link-GoTo-named": 95,
+        "Link-URI": 18
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 15,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.694,
+        "geometry": [],
+        "annotLost": {
+          "Link-GoTo-named": 95,
+          "Link-URI": 18
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 15,
+      "annotKinds": {
+        "Link-GoTo-named": 95,
+        "Link-URI": 18
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.618,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-enc-aes-128-empty",
+    "pdf-lib": {
+      "check": "errors",
+      "checkMsg": [
+        "WARNING: <out>/pdf-lib/M1-enc-aes-128-empty.pdf (offset 11403): error decoding stream data for object 10 0: stream inflate: inflate: data: incorrect header check",
+        "WARNING: <out>/pdf-lib/M1-enc-aes-128-empty.pdf (offset 11403): stream will be re-processed without filtering to avoid data loss",
+        "WARNING: <out>/pdf-lib/M1-enc-aes-128-empty.pdf (offset 3281): error decoding stream data for object 9 0: stream inflate: inflate: data: incorrect header check"
+      ],
+      "pageCount": 15,
+      "annotKinds": {
+        "Link-GoTo-named": 95,
+        "Link-URI": 18
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 15,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.675,
+        "geometry": [],
+        "annotLost": {
+          "Link-GoTo-named": 95,
+          "Link-URI": 18
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 15,
+      "annotKinds": {
+        "Link-GoTo-named": 95,
+        "Link-URI": 18
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.601,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-enc-aes-256-empty",
+    "pdf-lib": {
+      "check": "errors",
+      "checkMsg": [
+        "WARNING: <out>/pdf-lib/M1-enc-aes-256-empty.pdf (offset 11403): error decoding stream data for object 10 0: stream inflate: inflate: data: incorrect header check",
+        "WARNING: <out>/pdf-lib/M1-enc-aes-256-empty.pdf (offset 11403): stream will be re-processed without filtering to avoid data loss",
+        "WARNING: <out>/pdf-lib/M1-enc-aes-256-empty.pdf (offset 3281): error decoding stream data for object 9 0: stream inflate: inflate: data: incorrect header check"
+      ],
+      "pageCount": 15,
+      "annotKinds": {
+        "Link-GoTo-named": 95,
+        "Link-URI": 18
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 15,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.675,
+        "geometry": [],
+        "annotLost": {
+          "Link-GoTo-named": 95,
+          "Link-URI": 18
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 15,
+      "annotKinds": {
+        "Link-GoTo-named": 95,
+        "Link-URI": 18
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.601,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-edge-std14-rotate-crop",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 3,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 3,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 2.106,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 3,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.947,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-inherited-attrs",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 3,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 3,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 1.472,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 3,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.82,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-tool-markdown-to-pdf",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 1,
+      "annotKinds": {
+        "Link-URI": 1
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 1,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 1.117,
+        "geometry": [],
+        "annotLost": {
+          "Link-URI": 1
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 1,
+      "annotKinds": {
+        "Link-URI": 1
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.993,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-tool-image-to-pdf",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 3,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 3,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 1.002,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 3,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.999,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-tool-image-to-pdf-grid",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 1,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 1,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 1,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 1,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.999,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-tool-combine-pdf",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 4,
+      "annotKinds": {
+        "Widget": 23,
+        "Link-GoTo-named": 3
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 4,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 1.023,
+        "geometry": [],
+        "annotLost": {
+          "Widget": 23,
+          "Link-GoTo-named": 3
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 4,
+      "annotKinds": {
+        "Widget": 23,
+        "Link-GoTo-named": 3
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.997,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-naca-scan",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 40,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 40,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.966,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 40,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.999,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M1-ia-origin-scan",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 568,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 568,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 1.007,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 568,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.999,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M2-interleaved",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 5,
+      "annotKinds": {
+        "Widget": 94,
+        "Link-GoTo-named": 3,
+        "Text": 1,
+        "Highlight": 1,
+        "FreeText": 1,
+        "Link-URI": 1,
+        "Link-GoTo-explicit-dangling": 1
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 5,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.827,
+        "geometry": [],
+        "annotLost": {
+          "Widget": 94,
+          "Link-GoTo-named": 3,
+          "Text": 1,
+          "Highlight": 1,
+          "FreeText": 1,
+          "Link-URI": 1,
+          "Link-GoTo-explicit-dangling": 1
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 5,
+      "annotKinds": {
+        "Widget": 94,
+        "Link-GoTo-named": 3,
+        "Text": 1,
+        "Highlight": 1,
+        "FreeText": 1,
+        "Link-URI": 1,
+        "Link-GoTo-explicit-dangling": 1
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.855,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M3-arxiv-subset-reversed",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 5,
+      "annotKinds": {
+        "Link-GoTo-named": 22,
+        "Link-URI": 4
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 5,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.746,
+        "geometry": [],
+        "annotLost": {
+          "Link-GoTo-named": 22,
+          "Link-URI": 4
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 5,
+      "annotKinds": {
+        "Link-GoTo-named": 22,
+        "Link-URI": 4
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.696,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M3-markup-reversed",
+    "pdf-lib": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 2,
+      "annotKinds": {
+        "Link-GoTo-explicit-dangling": 2,
+        "Text": 1,
+        "Highlight": 1,
+        "FreeText": 1,
+        "Link-URI": 1
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 2,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.397,
+        "geometry": [],
+        "annotLost": {
+          "Link-GoTo-explicit-dangling": 2,
+          "Text": 1,
+          "Highlight": 1,
+          "FreeText": 1,
+          "Link-URI": 1
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 2,
+      "annotKinds": {
+        "Link-GoTo-explicit-ok": 2,
+        "Text": 1,
+        "Highlight": 1,
+        "FreeText": 1,
+        "Link-URI": 1
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.56,
+        "geometry": [],
+        "annotLost": {
+          "Link-GoTo-explicit-dangling": 2
+        },
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M4-iso32000-all",
+    "pdf-lib": {
+      "check": "errors",
+      "checkMsg": [
+        "WARNING: <out>/pdf-lib/M4-iso32000-all.pdf (offset 703): error decoding stream data for object 8 0: stream inflate: inflate: data: incorrect header check",
+        "WARNING: <out>/pdf-lib/M4-iso32000-all.pdf (offset 703): stream will be re-processed without filtering to avoid data loss",
+        "WARNING: <out>/pdf-lib/M4-iso32000-all.pdf (offset 4518): error decoding stream data for object 11 0: stream inflate: inflate: data: incorrect header check"
+      ],
+      "pageCount": 756,
+      "annotKinds": {
+        "Link-URI": 51,
+        "Link-GoTo-named": 3915
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 756,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.281,
+        "geometry": [],
+        "annotLost": {
+          "Link-URI": 51,
+          "Link-GoTo-named": 3915
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 756,
+      "annotKinds": {
+        "Link-URI": 51,
+        "Link-GoTo-named": 3915
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.396,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M5-encrypted",
+    "pdf-lib": {
+      "check": "errors",
+      "checkMsg": [
+        "WARNING: <out>/pdf-lib/M5-encrypted.pdf (offset 11324): error decoding stream data for object 10 0: stream inflate: inflate: data: incorrect header check",
+        "WARNING: <out>/pdf-lib/M5-encrypted.pdf (offset 11324): stream will be re-processed without filtering to avoid data loss",
+        "WARNING: <out>/pdf-lib/M5-encrypted.pdf (offset 3226): error decoding stream data for object 9 0: stream inflate: inflate: data: incorrect header check"
+      ],
+      "pageCount": 24,
+      "annotKinds": {
+        "Link-GoTo-named": 210,
+        "Link-URI": 21
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 24,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.697,
+        "geometry": [],
+        "annotLost": {
+          "Link-GoTo-named": 210,
+          "Link-URI": 21
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 24,
+      "annotKinds": {
+        "Link-GoTo-named": 210,
+        "Link-URI": 21
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.633,
+        "geometry": [],
+        "annotLost": {},
+        "catalogLost": []
+      }
+    }
+  },
+  {
+    "id": "M6-failures",
+    "pdf-lib": {
+      "check": "errors",
+      "checkMsg": [
+        "WARNING: <out>/pdf-lib/M6-failures.pdf (offset 11403): error decoding stream data for object 10 0: stream inflate: inflate: data: incorrect header check",
+        "WARNING: <out>/pdf-lib/M6-failures.pdf (offset 11403): stream will be re-processed without filtering to avoid data loss",
+        "WARNING: <out>/pdf-lib/M6-failures.pdf (offset 3281): error decoding stream data for object 9 0: stream inflate: inflate: data: incorrect header check"
+      ],
+      "pageCount": 3,
+      "annotKinds": {
+        "Widget": 23
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false
+    },
+    "hw": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 2,
+      "annotKinds": {},
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.604,
+        "geometry": [
+          "p2 media: 0 0 612 792 vs 0 0 611.98 791.97",
+          "p2 crop: 0 0 612 792 vs 0 0 611.98 791.97",
+          "p3: missing"
+        ],
+        "annotLost": {
+          "Widget": 23
+        },
+        "catalogLost": []
+      }
+    },
+    "lo": {
+      "check": "ok",
+      "checkMsg": [
+        "No syntax or stream encoding errors found; the file may still contain",
+        "errors that qpdf cannot detect"
+      ],
+      "pageCount": 2,
+      "annotKinds": {
+        "Widget": 23
+      },
+      "catalog": {
+        "/AcroForm": false,
+        "/Outlines": false,
+        "/Names": false,
+        "/Dests": false
+      },
+      "encrypted": false,
+      "vsBase": {
+        "sizeRatio": 0.581,
+        "geometry": [
+          "p2 media: 0 0 612 792 vs 0 0 611.98 791.97",
+          "p2 crop: 0 0 612 792 vs 0 0 611.98 791.97",
+          "p3: missing"
+        ],
+        "annotLost": {
+          "Widget": 23
+        },
+        "catalogLost": []
+      }
+    }
+  }
+]
