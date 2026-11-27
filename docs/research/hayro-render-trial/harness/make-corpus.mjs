@@ -13,7 +13,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { deflateSync } from 'node:zlib'
 
-import { degrees, PDFDocument, StandardFonts, rgb } from 'pdf-lib'
+import { degrees, PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 
 const [corpusDir, photoPath] = process.argv.slice(2).map((p) => resolve(p))
 if (!corpusDir || !photoPath) throw new Error('usage: make-corpus.mjs <corpusDir> <photo.jpg>')
@@ -134,7 +134,12 @@ result.free()
   let y = 800
   for (const name of Object.values(StandardFonts)) {
     const font = await doc.embedFont(name) // standard 14: referenced, not embedded
-    const text = name === StandardFonts.Symbol ? 'αβγδπθω ∑∞≠' : name === StandardFonts.ZapfDingbats ? '✓✔✕✖★✈' :`${name}: The quick brown fox 0123`
+    const text =
+      name === StandardFonts.Symbol
+        ? 'αβγδπθω ∑∞≠'
+        : name === StandardFonts.ZapfDingbats
+          ? '✓✔✕✖★✈'
+          : `${name}: The quick brown fox 0123`
     page.drawText(text, { font, size: 18, x: 40, y })
     y -= 34
   }
@@ -155,11 +160,36 @@ result.free()
 {
   const ucs2 = (s) => [...s].map((ch) => ch.codePointAt(0).toString(16).padStart(4, '0')).join('')
   const fonts = [
-    ['KozMinPr6N-Regular', 'UniJIS-UCS2-H', 'Japan1', 6, `<${ucs2('日本語のテキスト、ひらがなカタカナ')}>`],
-    ['STSong-Light', 'UniGB-UCS2-H', 'GB1', 4, `<${ucs2('简体中文文本测试')}>`],
-    ['MSung-Light', 'UniCNS-UCS2-H', 'CNS1', 4, `<${ucs2('繁體中文文本測試')}>`],
-    ['HYSMyeongJo-Medium', 'UniKS-UCS2-H', 'Korea1', 2, `<${ucs2('한국어 텍스트')}>`],
-    ['Ryumin-Light', '90ms-RKSJ-H', 'Japan1', 2, '<93FA967B8CEA>'], // 日本語 in Shift-JIS
+    {
+      cmap: 'UniJIS-UCS2-H',
+      name: 'KozMinPr6N-Regular',
+      ordering: 'Japan1',
+      supplement: 6,
+      text: `<${ucs2('日本語のテキスト、ひらがなカタカナ')}>`,
+    },
+    {
+      cmap: 'UniGB-UCS2-H',
+      name: 'STSong-Light',
+      ordering: 'GB1',
+      supplement: 4,
+      text: `<${ucs2('简体中文文本测试')}>`,
+    },
+    {
+      cmap: 'UniCNS-UCS2-H',
+      name: 'MSung-Light',
+      ordering: 'CNS1',
+      supplement: 4,
+      text: `<${ucs2('繁體中文文本測試')}>`,
+    },
+    {
+      cmap: 'UniKS-UCS2-H',
+      name: 'HYSMyeongJo-Medium',
+      ordering: 'Korea1',
+      supplement: 2,
+      text: `<${ucs2('한국어 텍스트')}>`,
+    },
+    // 日本語 in Shift-JIS
+    { cmap: '90ms-RKSJ-H', name: 'Ryumin-Light', ordering: 'Japan1', supplement: 2, text: '<93FA967B8CEA>' },
   ]
   const objs = []
   const add = (s) => objs.push(s) // object number = index + 1
@@ -167,13 +197,20 @@ result.free()
   add('<< /Type /Pages /Kids [3 0 R] /Count 1 >>')
   const fontRes = fonts.map((_, i) => `/F${i} ${5 + i * 3} 0 R`).join(' ')
   add(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << ${fontRes} >> >> /Contents 4 0 R >>`)
-  const content = fonts.map(([, , , , text], i) => `BT /F${i} 28 Tf 40 ${780 - i * 60} Td ${text} Tj ET`).join('\n')
+  const content = fonts.map(({ text }, i) => `BT /F${i} 28 Tf 40 ${780 - i * 60} Td ${text} Tj ET`).join('\n')
   add(`<< /Length ${Buffer.byteLength(content)} >>\nstream\n${content}\nendstream`)
-  fonts.forEach(([name, enc, ord, supp], i) => {
+  fonts.forEach(({ cmap, name, ordering, supplement }, i) => {
     const base = 5 + i * 3
-    add(`<< /Type /Font /Subtype /Type0 /BaseFont /${name} /Encoding /${enc} /DescendantFonts [${base + 1} 0 R] >>`)
-    add(`<< /Type /Font /Subtype /CIDFontType0 /BaseFont /${name} /CIDSystemInfo << /Registry (Adobe) /Ordering (${ord}) /Supplement ${supp} >> /FontDescriptor ${base + 2} 0 R /DW 1000 >>`)
-    add(`<< /Type /FontDescriptor /FontName /${name} /Flags 6 /FontBBox [-100 -200 1100 900] /ItalicAngle 0 /Ascent 880 /Descent -120 /CapHeight 700 /StemV 80 >>`)
+    add(`<< /Type /Font /Subtype /Type0 /BaseFont /${name} /Encoding /${cmap} /DescendantFonts [${base + 1} 0 R] >>`)
+    add(
+      `<< /Type /Font /Subtype /CIDFontType0 /BaseFont /${name}` +
+        ` /CIDSystemInfo << /Registry (Adobe) /Ordering (${ordering}) /Supplement ${supplement} >>` +
+        ` /FontDescriptor ${base + 2} 0 R /DW 1000 >>`,
+    )
+    add(
+      `<< /Type /FontDescriptor /FontName /${name} /Flags 6 /FontBBox [-100 -200 1100 900]` +
+        ' /ItalicAngle 0 /Ascent 880 /Descent -120 /CapHeight 700 /StemV 80 >>',
+    )
   })
   let body = '%PDF-1.7\n%\xe2\xe3\xcf\xd3\n'
   const offsets = []

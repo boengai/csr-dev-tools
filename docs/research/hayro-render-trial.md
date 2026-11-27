@@ -1,6 +1,6 @@
 # Can hayro render PDFs in place of pdf.js?
 
-Trial for GitHub issue [#42](https://github.com/boengai/csr-dev-tools/issues/42), the first of the three trials in ADR-0033. Date: 2026-11-27. Repo state: `develop` at `bc2e3879`. React's PDF code (`src/utils/image-to-pdf.ts`, `src/utils/combine-pdf.ts`, `src/components/common/pdf/`, `wasm/crates/pdf`) is identical on `main` and `develop`. The corpus and pass bar were written into #42 before any run, and the user approved them.
+Trial for GitHub issue [#42](https://github.com/boengai/csr-dev-tools/issues/42), the first of the three trials in ADR-0033. Date: 2026-11-27. Repo state: `develop` at `bc2e3879`. The branch is never merged. React's PDF code (`src/utils/image-to-pdf.ts`, `src/utils/combine-pdf.ts`, `src/components/common/pdf/`, `wasm/crates/pdf`) is identical on `main` and `develop`. The corpus and pass bar were written into #42 before any run, and the user approved them.
 
 ## Answer
 
@@ -45,6 +45,8 @@ Sizes are brotli quality 11 (Node `zlib`). Gzip -9 is shown for reference.
 | hayro, embeds on, `+simd128` (wasm only) | 3,113,633 | | 1,246,945 |
 | hayro, no embeds (wasm only) | 3,420,990 | 1,147,495 | 831,783 |
 
+The `wasm-bindgen` glue is byte-identical in all three builds (7,779 raw, 2,034 brotli), so each total in the answer table adds 2,034.
+
 Where hayro's bytes go: the embed build before `wasm-opt` (5,080,120 bytes with the name section), rolled up per crate by `twiggy`.
 
 | Part | Bytes | Share |
@@ -52,11 +54,11 @@ Where hayro's bytes go: the embed build before `wasm-opt` (5,080,120 bytes with 
 | Data segments: the standard-14 fonts, predefined CMaps and tables | 1,188,731 | 23.4% |
 | `fearless_simd`: the scalar `Fallback` level, monomorphised per caller | 830,757 | 16.4% |
 | Name section (removed by `wasm-opt`) | 597,034 | 11.8% |
+| `hayro_jbig2` + `hayro_jpeg2000` + `zune_jpeg` | 402,789 | 7.9% |
 | `vello_cpu` | 364,706 | 7.2% |
+| `read_fonts` + `skrifa` (font parsing, hinting) | 343,727 | 6.8% |
 | `core` | 237,063 | 4.7% |
 | `hayro_syntax` | 231,472 | 4.6% |
-| `read_fonts` + `skrifa` (font parsing, hinting) | 343,727 | 6.8% |
-| `hayro_jbig2` + `hayro_jpeg2000` + `zune_jpeg` | 402,789 | 7.9% |
 | `hayro_interpret` | 154,812 | 3.0% |
 | `moxcms` (ICC colour) | 112,754 | 2.2% |
 | everything else | 616,275 | 12.1% |
@@ -66,7 +68,9 @@ Three things stand out:
   - pdf.js on `main` gets the same coverage nowhere. It is called without `standardFontDataUrl` or `cMapUrl`, so non-embedded standard fonts fall back to system fonts, and predefined CMaps don't load.
   - Turning the embeds off would make hayro worse than pdf.js on exactly those files, which "no worse than" forbids.
 - **`fearless_simd` is linked twice.** hayro 0.9.0 and its JBIG2 and JPEG 2000 decoders use 1.3.0, while `vello_cpu` 0.3.0 (pinned by hayro 0.9.0) uses 0.7.0 (`cargo tree -d`). `vello_cpu` 0.4.0 was released on 2026-11-11.
-- **Even its own decoders don't win.** Without embeds, hayro is still 2× the size of pdf.js, which also carries its own JBIG2 and JPEG 2000 decoders.
+- **No single part explains the gap.** Without embeds, hayro is still 2× the size of pdf.js.
+  - pdf.js on `main` sets no `wasmUrl`, so its JPEG 2000 path (`openjpeg.wasm`, or the JS fallback) is never served. JPX images probably don't decode on `main` today. This was not checked, because the parity axis didn't run.
+  - hayro's own decoders account for 402,789 bytes before compression.
 
 **Typst's copy doesn't offset this.** `wasm/crates/pdf` already resolves hayro 0.4.0 through `typst-svg`, but that is a different version in a different wasm module. Under ADR-0033 and ADR-0035, the Typst compile runs as its own Rust worker package, so a renderer on the tool's page shares no code with it.
 
@@ -76,7 +80,7 @@ Three things stand out:
 - a fresh wasm instance for each file;
 - every page rendered at scale 0.6.
 
-A page fails if it takes over 10 s, the file fails if its linear memory ends over 1 GiB, and any `WebAssembly.RuntimeError` counts as a trap. The raw output is [`runs/no-trap-0.6.json`](hayro-render-trial/runs/no-trap-0.6.json).
+A page fails if it takes over 10 s, the file fails if its linear memory ends over 1 GiB, and any `WebAssembly.RuntimeError` counts as a trap. Each `pass` field comes from `judge()` in the script. That rule was tightened after review and re-applied to this run with `--rejudge`, without re-rendering: every page must also render with no `Err`, and a `fail-*` input passes only by returning `Err`. The raw output is [`runs/no-trap-0.6.json`](hayro-render-trial/runs/no-trap-0.6.json).
 
 | File | Opens | Pages rendered | Slowest page | Whole file | Linear memory | Trap |
 |---|---|---:|---:|---:|---:|---|
@@ -121,13 +125,15 @@ ADR-0033 specified the pdf.js facade as `page_count(bytes)` and `render_page(byt
 
 That is the shape pdf.js has too (`getDocument` and then `getPage`). The stateless form would re-parse the cross-reference table of a 22 MB, 756-page file for every page, and lose the font and glyph caches between pages.
 
-This doesn't change the verdict, since pdf.js stays. But the bridge facade for pdf.js should take a handle (`open(bytes) -> Doc`, `page_count`, `render_page(index, scale)`, `close`). That way a later hayro win can still swap the implementation without touching tool code.
+This doesn't change the verdict, since pdf.js stays. The facade should take a handle (`open(bytes) -> Doc`, `page_count`, `render_page(index, scale)`, `close`). That way a later hayro win can still swap the implementation without touching tool code.
+
+**This is a proposal, not a decision.** Changing the facade means amending ADR-0033, which is the user's call.
 
 ## Corpus
 
 The corpus files are not committed. Downloaded files are pinned by sha256. Generated files are made by [`harness/make-corpus.mjs`](hayro-render-trial/harness/make-corpus.mjs), and their hashes change on every run, because pdf-lib stamps dates and qpdf draws fresh IDs and keys.
 
-| # | File | Pages | Bytes | Source | sha256 |
+| #42 item | File | Pages | Bytes | Source | sha256 |
 |---|---|---:|---:|---|---|
 | 1 | `naca-scan.pdf` | 40 | 31,869,028 | NASA NTRS [19930091906](https://ntrs.nasa.gov/api/citations/19930091906/downloads/19930091906.pdf), JPEG scans with a 436-byte MacBinary prefix before `%PDF-` | `125be2f8a3f67e2d946628e2016aaac518a791af87dfd8d090c36893fa18c351` |
 | 1 | `ia-origin-scan.pdf` | 568 | 25,372,662 | Internet Archive [originofspecies00darwuoft](https://archive.org/download/originofspecies00darwuoft/originofspecies00darwuoft.pdf), JBIG2 + JPX | `6f04f39b2a590a7864c4e9d24fa17da24dea26f4e0a8b8cbc70fc11484c2aa3c` |
@@ -139,7 +145,7 @@ The corpus files are not committed. Downloaded files are pinned by sha256. Gener
 | 6 | `cjk-kokugakuin-embedded.pdf` | 37 | 9,429,246 | [kokugakuin.ac.jp](https://www.kokugakuin.ac.jp/assets/uploads/2022/03/59559b225ee19507a25dc5cf7a5af29f.pdf), embedded MS Mincho/Gothic, Identity-H | `df51a35c487d18eb1ad8bfc6ec30e411366fc9129aff80843f1201ca4f742cfc` |
 | 6 | `cjk-nonembedded-predefined-cmaps.pdf` | 1 | 3,574 | hand-written: non-embedded KozMinPr6N, STSong, MSung, HYSMyeongJo and Ryumin with UniJIS/UniGB/UniCNS/UniKS-UCS2-H and 90ms-RKSJ-H | generated |
 | 7 | `tool-markdown-to-pdf.pdf` | 1 | | `compile_markdown` from `wasm/crates/pdf` (Typst 0.14.2) | generated |
-| 7 | `tool-image-to-pdf.pdf`, `tool-image-to-pdf-grid.pdf` | 3, 1 | | `imagesToPdf` from `src/utils/image-to-pdf.ts`: a JPEG (Apollo 8 *Earthrise*, Wikimedia, sha256 `da22ac0b…333e0`), a PNG with alpha, and a page rotated 90° | generated |
+| 7 | `tool-image-to-pdf.pdf`, `tool-image-to-pdf-grid.pdf` | 3, 1 | | `imagesToPdf` from `src/utils/image-to-pdf.ts`: a JPEG (Apollo 8 *Earthrise*, public domain, [Wikimedia 1280px](https://upload.wikimedia.org/wikipedia/commons/thumb/a/a8/NASA-Apollo8-Dec24-Earthrise.jpg/1280px-NASA-Apollo8-Dec24-Earthrise.jpg), sha256 `da22ac0b5fdbc1ebf1c080c8481d80e2b8b1ea22e2e7fee7215ab0c819e333e0`), a PNG with alpha, and a page rotated 90° | generated |
 | 7 | `tool-combine-pdf.pdf` | 4 | | `combinePdfPages` from `src/utils/combine-pdf.ts` over files 2, 3 and 7 | generated |
 | 8 | `edge-std14-rotate-crop.pdf` | 3 | | pdf-lib: all 14 standard fonts unembedded, `/Rotate 90`, a CropBox | generated |
 | 9 | `fail-locked-aes-256.pdf`, `fail-truncated.pdf`, `fail-not-a-pdf.pdf` | | | user password `secret`; the first half of file 2; the JPEG | generated |
@@ -153,6 +159,7 @@ The corpus files are not committed. Downloaded files are pinned by sha256. Gener
 ## How to reproduce
 
 ```sh
+pnpm install
 brew install qpdf
 bash wasm/scripts/build.sh --dev pdf
 node docs/research/hayro-render-trial/harness/make-corpus.mjs <corpus> <photo.jpg>   # after downloading the pinned files into <corpus>
@@ -160,6 +167,7 @@ CARGO_TARGET_DIR=<tmp> wasm-pack build docs/research/hayro-render-trial/harness/
   --target web --release --out-dir <pkg> --out-name hayro_trial
 wasm-opt -Oz --strip-debug <pkg>/hayro_trial_bg.wasm -o <pkg>/hayro_trial_bg.wasm
 node docs/research/hayro-render-trial/harness/no-trap.mjs <pkg> <corpus> <out.json> 0.6
+node docs/research/hayro-render-trial/harness/per-page.mjs <pkg> <corpus>/arxiv-attention.pdf 0.6
 ```
 
 Add `-- --no-default-features` to the `wasm-pack` line for the build without embeds. For the SIMD build, set `RUSTFLAGS="-C target-feature=+simd128"` and pass `--enable-simd` to `wasm-opt`.

@@ -9,23 +9,68 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { performance } from 'node:perf_hooks'
+import { pathToFileURL } from 'node:url'
 
 const [pkgDir, corpusDir, outPath] = process.argv.slice(2, 5).map((p) => resolve(p))
 const scale = Number(process.argv[5] ?? 0.6)
 const PAGE_LIMIT_MS = 10_000
 const MEMORY_LIMIT = 1024 ** 3
 
+// A trap is a wasm RuntimeError (panic, unreachable, OOM) or a V8 stack
+// overflow, which surfaces as a RangeError rather than a RuntimeError.
+const isTrap = (e) =>
+  e instanceof WebAssembly.RuntimeError || (e instanceof RangeError && /call stack/i.test(e.message))
+
+// The bar: no trap, no page over 10 s, memory readable and under 1 GiB. A
+// `fail-*` input passes only by returning Err from open; any other input
+// must open and render every page without an Err.
+export const judge = (row) => {
+  if (row.trap !== null) return false
+  if (row.file.startsWith('fail-')) return row.open !== 'ok'
+  return (
+    row.open === 'ok' &&
+    row.errors.length === 0 &&
+    row.rendered === row.pages &&
+    row.maxPageMs <= PAGE_LIMIT_MS &&
+    row.peakMemory !== null &&
+    row.peakMemory <= MEMORY_LIMIT
+  )
+}
+
+// `--rejudge <out.json>` re-applies judge() to a recorded run without re-rendering.
+if (process.argv[2] === '--rejudge') {
+  const runPath = resolve(process.argv[3])
+  const run = JSON.parse(readFileSync(runPath, 'utf8'))
+  for (const row of run.results) row.pass = judge(row)
+  writeFileSync(runPath, `${JSON.stringify(run, null, 2)}\n`)
+  console.log(run.results.map((r) => `${r.file} pass=${r.pass}`).join('\n'))
+  process.exit(0)
+}
+
 const wasmBytes = readFileSync(join(pkgDir, 'hayro_trial_bg.wasm'))
-const glueUrl = new URL(`file://${join(pkgDir, 'hayro_trial.js')}`)
+const glueUrl = pathToFileURL(join(pkgDir, 'hayro_trial.js'))
 
 const results = []
-for (const name of readdirSync(corpusDir).filter((f) => f.endsWith('.pdf')).sort()) {
+for (const name of readdirSync(corpusDir)
+  .filter((f) => f.endsWith('.pdf'))
+  .sort()) {
   // A fresh module record per file, so its wasm instance is fresh too.
   glueUrl.search = `?file=${encodeURIComponent(name)}`
   const glue = await import(glueUrl.href)
   glue.initSync({ module: wasmBytes })
 
-  const row = { file: name, scale, open: null, pages: 0, rendered: 0, maxPageMs: 0, totalMs: 0, peakMemory: 0, trap: null, errors: [] }
+  const row = {
+    file: name,
+    scale,
+    open: null,
+    pages: 0,
+    rendered: 0,
+    maxPageMs: 0,
+    totalMs: 0,
+    peakMemory: 0,
+    trap: null,
+    errors: [],
+  }
   const t0 = performance.now()
   let doc
   try {
@@ -33,7 +78,7 @@ for (const name of readdirSync(corpusDir).filter((f) => f.endsWith('.pdf')).sort
     row.open = 'ok'
     row.pages = doc.page_count()
   } catch (e) {
-    if (e instanceof WebAssembly.RuntimeError) row.trap = `open: ${e.message}`
+    if (isTrap(e)) row.trap = `open: ${e.message}`
     else row.open = `Err: ${e.message ?? e}`
   }
   if (doc) {
@@ -46,7 +91,7 @@ for (const name of readdirSync(corpusDir).filter((f) => f.endsWith('.pdf')).sort
         if (w === 0 || h === 0 || out.length !== 4 + w * h * 4) row.errors.push(`page ${i}: bad pixmap ${w}x${h}`)
         else row.rendered++
       } catch (e) {
-        if (e instanceof WebAssembly.RuntimeError) {
+        if (isTrap(e)) {
           row.trap = `page ${i}: ${e.message}`
           break
         }
@@ -57,15 +102,17 @@ for (const name of readdirSync(corpusDir).filter((f) => f.endsWith('.pdf')).sort
     try {
       row.peakMemory = glue.memory_bytes()
     } catch {
-      // The instance trapped; its memory size is still readable from the export below.
+      row.peakMemory = null // unreadable after a trap; judge() fails the file
     }
   }
   row.totalMs = Math.round(performance.now() - t0)
   row.maxPageMs = Math.round(row.maxPageMs)
-  row.pass = row.trap === null && row.maxPageMs <= PAGE_LIMIT_MS && row.peakMemory <= MEMORY_LIMIT
+  row.pass = judge(row)
   results.push(row)
+  const mib = row.peakMemory === null ? '?' : (row.peakMemory / 2 ** 20).toFixed(0)
   console.log(
-    `${name.padEnd(40)} open=${row.open ?? '-'} pages=${row.rendered}/${row.pages} maxPage=${row.maxPageMs}ms total=${row.totalMs}ms mem=${(row.peakMemory / 2 ** 20).toFixed(0)}MiB trap=${row.trap ?? 'none'} errs=${row.errors.length}`,
+    `${name.padEnd(40)} open=${row.open ?? '-'} pages=${row.rendered}/${row.pages} maxPage=${row.maxPageMs}ms` +
+      ` total=${row.totalMs}ms mem=${mib}MiB trap=${row.trap ?? 'none'} errs=${row.errors.length} pass=${row.pass}`,
   )
 }
 writeFileSync(outPath, `${JSON.stringify({ node: process.version, scale, results }, null, 2)}\n`)
