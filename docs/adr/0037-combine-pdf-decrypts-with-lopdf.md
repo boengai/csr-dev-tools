@@ -62,9 +62,12 @@ whole merge. The thumbnails looked right throughout, because pdf.js decrypts.
 - **A broken but unencrypted PDF** also goes through lopdf now. If lopdf
   can read it, it is merged where it used to be skipped.
 - **Unusual crypt filters:** lopdf reads a stream's own `/Crypt` filter
-  only from a `/DecodeParms` dictionary. Given an array or a reference it
-  falls back to the document default and can leave the stream encrypted, so
-  the crate reports such a file and the merge skips it by name. None was
+  only from a direct `/DecodeParms` dictionary. Given an array, a
+  reference or no parameters at all (which means Identity), it decrypts the
+  stream with the document default instead. Unless that default is the
+  stream's own filter, the stream comes out scrambled or still encrypted, so
+  the crate reports such a file and the merge skips it by name (issue 69:
+  a clear stream marked Identity in an array was scrambled). None was
   seen in RC4-128, AES-128, AES-256 or ISO 32000.
 - **Non-empty passwords are not asked for.** The upload already rejects
   such a file, because pdf.js cannot draw its thumbnails.

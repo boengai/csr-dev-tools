@@ -1,3 +1,4 @@
+use lopdf::encryption::EncryptionState;
 use lopdf::{Dictionary, Document, Object, Stream};
 use wasm_bindgen::prelude::*;
 
@@ -31,9 +32,10 @@ impl DecryptError {
 /// the common "owner password only" files. A file that needs a real user
 /// password stays encrypted after the load and is reported, never written out.
 ///
-/// lopdf reads a stream's own `/Crypt` filter only from a `/DecodeParms`
-/// dictionary. Given any other form it falls back to the document default and
-/// can leave the stream encrypted, so such a file is reported, not written out.
+/// lopdf reads a stream's own `/Crypt` filter only from a direct `/DecodeParms`
+/// dictionary. Given any other form, or none, it decrypts the stream with the
+/// document default, which scrambles a stream meant for another filter (a
+/// clear `/Identity` one, say). Such a file is reported, not written out.
 pub fn decrypt(bytes: &[u8]) -> Result<Vec<u8>, DecryptError> {
     let mut doc = Document::load_mem(bytes).map_err(|_| DecryptError::Unreadable)?;
     if doc.is_encrypted() {
@@ -49,39 +51,65 @@ pub fn decrypt(bytes: &[u8]) -> Result<Vec<u8>, DecryptError> {
     Ok(out)
 }
 
-/// Whether any stream names a crypt filter, other than Identity, in a form lopdf
-/// does not read (a `/DecodeParms` array or reference).
+const IDENTITY: &[u8] = b"Identity";
+
+/// Whether lopdf decrypted any stream with a crypt filter other than its own.
+/// A file that was not encrypted was not decrypted, so nothing changed.
 fn has_unread_crypt_filter(doc: &Document) -> bool {
+    let Some(state) = doc.encryption_state.as_ref() else {
+        return false;
+    };
+    let default = default_stream_filter(state);
     doc.objects
         .values()
         .filter_map(|object| object.as_stream().ok())
-        .any(crypt_filter_unread)
+        .any(|stream| crypt_filter_unread(stream, default))
 }
 
-fn crypt_filter_unread(stream: &Stream) -> bool {
+/// The name of the filter lopdf decrypts a stream with when it does not read
+/// the stream's own: the document default. `None` when no stream can name it
+/// (RC4 below V4, or a default missing from `/CF`, which lopdf runs as RC4).
+fn default_stream_filter(state: &EncryptionState) -> Option<&[u8]> {
+    if state.version() < 4 {
+        return None;
+    }
+    let name = state.default_stream_filter();
+    if name.is_empty() || name == IDENTITY {
+        return Some(IDENTITY);
+    }
+    state.crypt_filters().contains_key(name).then_some(name)
+}
+
+/// Whether lopdf decrypts this stream with `default` although its `/Crypt`
+/// filter names another (or one this can't resolve, as a reference).
+fn crypt_filter_unread(stream: &Stream, default: Option<&[u8]>) -> bool {
     let Ok(filters) = stream.filters() else {
         return false;
     };
     let Some(index) = filters.iter().position(|name| *name == b"Crypt") else {
         return false;
     };
-    match stream.dict.get(b"DecodeParms") {
-        // No parameters means Identity; a dictionary is the form lopdf reads.
-        Err(_) | Ok(Object::Dictionary(_)) => false,
+    let own = match stream.dict.get(b"DecodeParms") {
+        // The form lopdf reads.
+        Ok(Object::Dictionary(_)) => return false,
+        // No parameters for the crypt filter means Identity.
+        Err(_) => Some(IDENTITY),
         Ok(Object::Array(params)) => match params.get(index) {
-            None | Some(Object::Null) => false,
-            Some(Object::Dictionary(dict)) => names_a_real_filter(dict),
-            Some(_) => true,
+            None | Some(Object::Null) => Some(IDENTITY),
+            Some(Object::Dictionary(params)) => Some(filter_name(params)),
+            Some(_) => None,
         },
-        Ok(_) => true,
-    }
+        Ok(_) => None,
+    };
+    own.is_none() || own != default
 }
 
-fn names_a_real_filter(params: &Dictionary) -> bool {
+/// The crypt filter a `/Crypt` parameter dictionary names; Identity when none.
+fn filter_name(params: &Dictionary) -> &[u8] {
     params
         .get(b"Name")
         .and_then(Object::as_name)
-        .is_ok_and(|name| name != b"Identity")
+        .unwrap_or(IDENTITY)
 }
 
 /// Rewrite a PDF without its encryption. Throws when the file is unreadable,
@@ -158,37 +186,66 @@ mod tests {
         Object::Dictionary(dict)
     }
 
-    #[test]
-    fn flags_a_crypt_filter_named_in_a_params_array() {
-        assert!(crypt_filter_unread(&crypt_stream(Object::Array(vec![
-            named("StdCF")
-        ]))));
-        assert!(crypt_filter_unread(&crypt_stream(Object::Reference((
-            9, 0
-        )))));
-    }
+    const STD_CF: Option<&[u8]> = Some(b"StdCF");
 
     #[test]
-    fn passes_the_crypt_filters_lopdf_reads_or_that_change_nothing() {
-        assert!(!crypt_filter_unread(&crypt_stream(named("StdCF"))));
-        assert!(!crypt_filter_unread(&crypt_stream(Object::Array(vec![
-            named("Identity")
-        ]))));
-        assert!(!crypt_filter_unread(&crypt_stream(Object::Array(vec![
-            Object::Null
-        ]))));
+    fn flags_a_stream_lopdf_would_decrypt_with_another_filter() {
+        // Its own filter is Identity, but lopdf applies the default.
+        for params in [
+            Object::Array(vec![named("Identity")]),
+            Object::Array(vec![Object::Null]),
+        ] {
+            assert!(crypt_filter_unread(&crypt_stream(params), STD_CF));
+        }
         let mut bare = crypt_stream(Object::Null);
         bare.dict.remove(b"DecodeParms");
-        assert!(!crypt_filter_unread(&bare));
+        assert!(crypt_filter_unread(&bare, STD_CF));
+        // Named in an array, but not the default.
+        assert!(crypt_filter_unread(
+            &crypt_stream(Object::Array(vec![named("StdCF")])),
+            Some(IDENTITY)
+        ));
+        // Below V4 the default is RC4, which no stream names.
+        assert!(crypt_filter_unread(
+            &crypt_stream(Object::Array(vec![named("Identity")])),
+            None
+        ));
+        // A reference is not followed.
+        assert!(crypt_filter_unread(
+            &crypt_stream(Object::Reference((9, 0))),
+            STD_CF
+        ));
     }
 
     #[test]
-    fn reports_a_document_with_an_unread_crypt_filter() {
-        let mut doc = Document::load_mem(PLAIN).unwrap();
-        doc.add_object(crypt_stream(Object::Array(vec![named("StdCF")])));
-        let mut bytes = Vec::new();
-        doc.save_to(&mut bytes).unwrap();
-        assert_eq!(decrypt(&bytes), Err(DecryptError::UnsupportedCryptFilter));
+    fn passes_a_stream_lopdf_decrypts_with_its_own_filter() {
+        // The form lopdf reads.
+        assert!(!crypt_filter_unread(
+            &crypt_stream(named("Identity")),
+            STD_CF
+        ));
+        // Another form, naming the default lopdf applies anyway.
+        assert!(!crypt_filter_unread(
+            &crypt_stream(Object::Array(vec![named("StdCF")])),
+            STD_CF
+        ));
+        assert!(!crypt_filter_unread(
+            &crypt_stream(Object::Array(vec![Object::Null])),
+            Some(IDENTITY)
+        ));
+    }
+
+    /// RC4 by default (V4), with page 1's content left clear and exempted by
+    /// `/Identity` in a `/DecodeParms` array. qpdf reads page 1 intact.
+    const RC4_IDENTITY_ARRAY: &[u8] =
+        include_bytes!("../../../../src/test/fixtures/pdf/rc4-identity-array.pdf");
+
+    #[test]
+    fn reports_a_clear_stream_lopdf_would_decrypt_with_the_default_filter() {
+        assert_eq!(
+            decrypt(RC4_IDENTITY_ARRAY),
+            Err(DecryptError::UnsupportedCryptFilter)
+        );
     }
 
     #[test]
