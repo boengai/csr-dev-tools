@@ -119,11 +119,11 @@ decided in conversation on 2026-11-27.
 - **React's wasm output changes only by the `wasm/` prefix** in its
   panic-path strings. That is accepted.
 
-### 2. Nine crate kinds, with dependencies in one direction
+### 2. Nine crate layers, with dependencies in one direction
 
 | Crate | Path | Package | May depend on |
 |---|---|---|---|
-| App | `crates/app` | `app` | every workspace crate, directly |
+| App | `crates/app` | `app` | every crate under `crates/` except workers, directly; never `wasm/crates` |
 | Tool | `crates/tools/<key>` | `tool-<key>` | `ui`, `platform`, `bridges`, `registry`, `logic-*`; never another Tool, never `app` |
 | UI | `crates/ui` | `ui` | `platform`, `bridges`, `registry`, `persist` |
 | Platform layer | `crates/platform` | `platform` | `web-sys`, `js-sys`, `wasm-bindgen` |
@@ -133,8 +133,8 @@ decided in conversation on 2026-11-27.
 | Logic | `crates/logic/<name>` | `logic-<name>` | pure third-party crates only |
 | Worker | `crates/workers/<name>` | `worker-<name>` | `logic-*`, `wasm-bindgen`; never a dependency of `app` |
 
-- **`app` depends directly on every workspace crate,** even the ones only
-  a Tool uses. `dx serve` ignores edits to crates the app reaches only
+- **`app` depends directly on every crate under `crates/` except the
+  workers,** even the ones only a Tool uses. `dx serve` ignores edits to crates the app reaches only
   through another crate.
 - **"No browser crates" means direct dependencies.** A transitive
   `getrandom` → `js-sys` on wasm32 is allowed. Randomness that a logic
@@ -230,7 +230,7 @@ decided in conversation on 2026-11-27.
   beside the generated file, because `tool-routes.ts` has no keys.
   - Every key and key pattern is a `StorageKey` that can only be built
     there. Keys stay literal: `json-diff-checker` keeps `json-diff`.
-  - The table covers the keys no single Tool owns: the dashboard layout,
+  - It also covers the keys no single Tool owns: the dashboard layout,
     scroll positions, the model cache and the Mermaid handoff.
   - A shell's `storage_key` takes a `StorageKey`, so a key missing from
     the table does not compile. ADR-0032's test, that the build cannot
@@ -253,8 +253,8 @@ decided in conversation on 2026-11-27.
 - **Each Tool crate declares exactly one Tool entry,** a hand-written
   `wasm_split::lazy_loader!` loader.
   - Its module name is the snake_case key (`hash_generator`), and its
-    entry is `<PascalName>Entry`.
-  - It takes no props. A Tool reads its presentation and the other shared
+    entry is the PascalCase of the key plus `Entry` (`HashGeneratorEntry`).
+  - It takes no props. A Tool reads its Tool presentation and the other shared
     state from `ui` contexts.
   - A `ui` macro declares the loader, so that the entry returns a
     `ToolView` (section 9). Whether `lazy_loader!` works when re-exported
@@ -273,7 +273,7 @@ decided in conversation on 2026-11-27.
   settings and toast region get their own loaders in `app`. Main holds
   only the shell, the router, the registry data, `platform`'s core and the
   primitives drawn at first paint.
-- **On a stamped Tool page,** the inline early-fetch script (issue 35)
+- **On a stamped Tool page,** the inline early-fetch script ([issue 35](https://github.com/boengai/csr-dev-tools/issues/35))
   starts the Tool's module alongside main, under the `auto` size rule in
   `docs/perf/budgets.md`. The stamper finds the module by the loader's
   module name.
@@ -290,7 +290,7 @@ decided in conversation on 2026-11-27.
 - **`platform` is the Platform layer.**
   - It has one module per capability, never per Tool: storage adapter,
     clipboard, downloads, files, URLs and object URLs, canvas and codecs,
-    WebCrypto, `Intl`, collation and local time, timers, head tags, and
+    WebCrypto, `Intl`, collation, local time, timers, head tags, and
     ADR-0033's typed worker bridge.
   - Its public API hands out only opaque types (`FileRef`, `BlobRef`,
     `ObjectUrl`, `ElementRef`). Conversions to `web-sys` types are
@@ -300,7 +300,8 @@ decided in conversation on 2026-11-27.
     `as_web_event` or `get_web_file`.
   - It compiles for the host target, where each call returns
     `Unsupported`. That lets `ui` and Tools build and run native tests.
-    Browser behaviour is checked by the Playwright suites.
+    Browser behaviour is checked by the Playwright suites of
+    [#24](https://github.com/boengai/csr-dev-tools/issues/24).
 - **`bridges` holds the Bridge facades,** one Rust module per Engine
   bridge.
   - Its `js/` directory is ADR-0033's one directory. It holds every
@@ -319,14 +320,14 @@ decided in conversation on 2026-11-27.
     [#22](https://github.com/boengai/csr-dev-tools/issues/22)'s.
   - `components`: Button, CopyButton and the rest.
   - `shells`: the five layout shells.
-  - `frame`: `ToolFrame`, which holds presentation (page or dialog), the
+  - `frame`: `ToolFrame`, which holds the Tool presentation (page or dialog), the
     title, the description and reset registration.
   - `kits`: the family parts in `CONTEXT.md`, such as the Markup to PDF
     and Sortable PDF shells, CSS output, SortableCard, the Batch asset
     pipeline and the Field list.
-  - `hooks`: the Tool computation pipeline, the field bag, Persisted tool
+  - `hooks`: the Tool computation pipeline, the Tool field bag, Persisted tool
     input and Tool handoff.
-- **Shared state is defined in `ui`.** The Toast channel, presentation,
+- **Shared state is defined in `ui`.** The Toast channel, Tool presentation,
   settings and navigation are context types defined in `ui` and provided
   by `app`. Tools never name an `app` type.
 - **Every Tool renders inside a frame.** A Tool entry returns a sealed
@@ -336,7 +337,7 @@ decided in conversation on 2026-11-27.
 - **Family code lives in `ui/kits`,** so the rule that no Tool imports
   another never pushes copies into Tools.
 - **`ui` stays one crate** until an edit to it is measured as too slow on
-  real Tools.
+  real Tools. With 84 stub Tools a `ui` edit rebuilt in 9.4 s.
 
 ### 10. `persist`
 
@@ -350,14 +351,14 @@ decided in conversation on 2026-11-27.
   ([#38](https://github.com/boengai/csr-dev-tools/issues/38)).
 - **It defines a `Store` trait.** `platform` implements it over
   `localStorage` and `sessionStorage`, and `ui` wires the two together
-  behind a shell's `storage_key` and the hook for a bespoke field bag.
+  behind a shell's `storage_key` and the hook for a bespoke Tool field bag.
 
 ### 11. The files that are not Rust
 
 | What | Where |
 |---|---|
 | dx configuration | `crates/app/Dioxus.toml`. No `tailwind.css` at the app crate root: dx would run its own Tailwind 4.1.5 and ignore its errors. |
-| Stylesheet | Generated into `crates/ui`, because `asset!()` cannot reach outside its crate, and exported as a `pub static` `Asset`. The input and theme are #22's. The scan covers `crates/**/*.rs`. Generated files that hold class names never sit under a gitignored path, because Tailwind skips them. |
+| Stylesheet | The Tailwind input lives in `crates/ui/style/`, because `asset!()` cannot reach outside its crate, and the generated CSS is exported as a `pub static` `Asset`. Which theme file the input imports until cutover is #22's (its draft names `src/index.css`). The scan is `@source "../../**/*.rs"`. Generated files that hold class names never sit under a gitignored path, because Tailwind skips them. |
 | Build, stamping and registry generator | TypeScript in `scripts/dioxus/` |
 | Engine bridges | `crates/bridges/js/` (section 8) |
 | End-to-end specs | The shared `e2e/` (`docs/ux/parity.md`). There is no `dioxus/e2e`. |
@@ -388,6 +389,7 @@ decided in conversation on 2026-11-27.
   - Logic packages are `logic-<name>`, and worker packages
     `worker-<name>`.
   - Files and modules are snake_case.
+  - Route variants are the PascalCase of the key.
   - In `ui`, one component per file.
   - A Tool's module and entry follow section 7.
 - **The CLAUDE.md "Adding a new tool" recipe** is rewritten with the first
@@ -402,7 +404,7 @@ crates/
   bridges/            Bridge facades; js/ = the Engine bridges (pnpm package)
   logic/<name>/       logic-<name>: pure Rust, native tests
   persist/            restore path, Store trait
-  platform/           Platform layer: the only web-sys/js-sys user
+  platform/           Platform layer: browser APIs, opaque types out
   registry/           generated.rs (from tool-routes.ts), storage.rs
   tools/<key>/        tool-<key>: one Tool entry, glue only
   ui/                 primitives, components, shells, frame, kits, hooks, stylesheet
@@ -466,7 +468,7 @@ src/                  React, until cutover
 - **Handed on:**
   - lint levels and byte ceilings → #25;
   - the stylesheet input and theme → #22;
-  - the sitemap, moving `src/index.css`, and deleting the registry
+  - the sitemap, moving the theme file out of `src/`, and deleting the registry
     generator and the wasm wrappers → Cutover;
   - how worker packages are built → the map's Workers item;
   - contributor and agent docs → the map's docs item.
@@ -481,7 +483,7 @@ src/                  React, until cutover
   - `lazy_loader!` re-exported through `ui`;
   - a macro shared between crates that emits the Routable enum;
   - `platform`'s host-target build.
-- The spike's `codegen-units` panic (DioxusLabs/dioxus#4769) did not
+- The spike's `codegen-units` panic ([DioxusLabs/dioxus#4769](https://github.com/DioxusLabs/dioxus/issues/4769)) did not
   reproduce at `codegen-units = 16`. That does not show it is safe on the
   real app.
 - The 14 `wasm/` crates other than `shared` and `hash` were resolved under

@@ -1560,8 +1560,9 @@ _Avoid_: web API wrapper, shim
 
 The Rust code that wraps [[Platform API]]s and sits beside the
 [[Bridge facade]]s. It is the only code that touches the browser; Tool logic
-stays browser-free. In the Dioxus build it is the `platform` crate, whose
-public API hands out opaque types, never raw `web-sys` ones (ADR-0035).
+stays browser-free. In the Dioxus build it is the `platform` crate. It and
+the `bridges` crate are the only crates that depend on browser crates, and
+its public API hands out opaque types, never raw `web-sys` ones (ADR-0035).
 _Avoid_: boundary layer, web layer
 
 ## Engine trial
@@ -1611,15 +1612,16 @@ compile-time rule (ADR-0035).
 
 The list in the `app` crate of the Tools that have a [[Tool crate]]. It
 generates the routes and the exhaustive match from Tool key to
-[[Tool entry]]. Only these Tools get head-stamped pages in the Dioxus build.
+[[Tool entry]]. Only these Tools get head-stamped pages in the Dioxus build
+(ADR-0035).
 
 ## Logic crate
 
 A pure-Rust crate, `crates/logic/<name>` (package `logic-<name>`), that
 holds a domain's Tool logic with a typed Rust API and native tests. It
 depends on no Dioxus and no browser crate. An existing `wasm/crates/<name>`
-becomes a thin `wasm-bindgen` wrapper over its Logic crate before its first
-Dioxus port (ADR-0035).
+that a Dioxus Tool or worker needs becomes a thin `wasm-bindgen` wrapper
+over its Logic crate before its first Dioxus port (ADR-0035).
 _Avoid_: core crate, engine crate
 
 ## Storage key table
