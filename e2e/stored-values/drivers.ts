@@ -317,6 +317,12 @@ const openProtobufDecode = async (page: Page): Promise<void> => {
   await expect(textbox(page, PROTOBUF_DECODE_INPUT)).toBeVisible()
 }
 
+type DiagramColumn = {
+  constraints: { isForeignKey: boolean; isNullable: boolean; isPrimaryKey: boolean; isUnique: boolean }
+  name: string
+  type: string
+}
+
 const pressedToggle = (page: Page, name: string): Locator => page.getByRole('button', { exact: true, name })
 
 export const DRIVERS: Array<Driver> = [
@@ -868,14 +874,34 @@ export const DRIVERS: Array<Driver> = [
     route: '/tools/db-diagram',
     shows: async (page, restored) => {
       const store = restored[`${P}db-diagrams`] as {
-        diagrams: Record<string, { tables: Array<{ name: string }> }>
+        diagrams: Record<string, { tables: Array<{ columns: Array<DiagramColumn>; name: string }> }>
         index: Array<{ id: string; name: string }>
       }
       const [entry] = store.index
       if (!entry) throw new Error('db-diagram: the golden store has no diagram')
       await expect(page.getByTestId('diagram-name')).toHaveText(entry.name)
+      // Each table, and each of its columns: name, type and constraints.
       for (const table of store.diagrams[entry.id]?.tables ?? []) {
-        await expect(page.getByRole('button', { name: table.name }).first()).toBeVisible()
+        const node = page.getByRole('group').filter({ has: page.getByRole('button', { name: table.name }) })
+        await expect(node.getByRole('button', { name: table.name }).first()).toBeVisible()
+        for (const [i, column] of table.columns.entries()) {
+          await expectText(node.getByRole('textbox', { exact: true, name: `Column ${i + 1} name` }), column.name)
+          await expect(node.getByRole('combobox', { exact: true, name: `Column ${i + 1} type` })).toHaveText(
+            column.type,
+          )
+          const { isForeignKey, isNullable, isPrimaryKey, isUnique } = column.constraints
+          for (const [name, on] of [
+            ['Primary key', isPrimaryKey],
+            ['Foreign key', isForeignKey],
+            ['Not null', !isNullable],
+            ['Unique', isUnique],
+          ] as const) {
+            await expect(node.getByRole('button', { exact: true, name }).nth(i)).toHaveAttribute(
+              'aria-pressed',
+              String(on),
+            )
+          }
+        }
       }
     },
     tool: 'db-diagram',

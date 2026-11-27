@@ -10,7 +10,17 @@ import { join, relative } from 'node:path'
 import { describe, expect, it } from 'vitest'
 
 type ContractKey = { key: string; legacy?: boolean; owner: string; reader: string }
-type ContractEntry = { deliberate?: string; expected: unknown; id: string; key: string; react?: string; shape: string }
+type ContractEntry = {
+  deliberate?: string
+  expected: unknown
+  id: string
+  key: string
+  react?: string
+  shape: string
+  storageAfterOpen?: Record<string, string | null>
+  storageAfterWrite?: Record<string, string | null>
+  stored: Record<string, string | null>
+}
 
 const ROOT = join(__dirname, '..', '..')
 const CONTRACT_DIR = join(ROOT, 'e2e', 'stored-values')
@@ -115,6 +125,16 @@ describe('stored-value contract', () => {
 
   it('has golden values only for listed keys', () => {
     expect(golden.entries.filter((e) => !listed.has(e.key)).map((e) => e.id)).toEqual([])
+  })
+
+  it('names only listed keys in every snapshot of storage', () => {
+    const offList = golden.entries.flatMap((e) =>
+      [e.stored, e.storageAfterOpen ?? {}, e.storageAfterWrite ?? {}]
+        .flatMap((snapshot) => Object.keys(snapshot))
+        .filter((key) => !listed.has(key))
+        .map((key) => `${e.id}: ${key}`),
+    )
+    expect(offList).toEqual([])
   })
 
   it.each(RESTORED.map(({ key }) => key))('has a current shape and a default for %s', (key) => {

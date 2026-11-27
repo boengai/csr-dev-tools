@@ -359,6 +359,10 @@ await pool(
       // What a Codec shows as it opens, before touching it switches modes and reads storage again.
       const shownOnOpen = key.reader === 'codec-source' && driver.readSource ? await driver.readSource(page) : null
       const opening = isDeepStrictEqual(storageAfterOpen, sortKeys(seed.stored)) ? {} : { storageAfterOpen }
+      // A seed may hold any key; what opening the Tool adds must be one the site may write.
+      for (const k of offList(storageAfterOpen).filter((k) => !(k in seed.stored))) {
+        problems.push(`${seed.id}: opening it wrote ${k}, which the key list does not let it write`)
+      }
       let reactText: string
       if (needsApp(key)) {
         reactText = await restore(page, key, null, defaults)
@@ -375,7 +379,11 @@ await pool(
       let writing = {}
       if (key.reader === 'diagram') {
         await diagramWriteInPage(page)
-        writing = { storageAfterWrite: await snapshot(page) }
+        const storageAfterWrite = await snapshot(page)
+        for (const k of offList(storageAfterWrite).filter((k) => !(k in seed.stored))) {
+          problems.push(`${seed.id}: saving it wrote ${k}, which the key list does not let it write`)
+        }
+        writing = { storageAfterWrite }
       }
       entries.push(
         entry(seed.id, key, seed.shape, seed.stored, reactText, {
