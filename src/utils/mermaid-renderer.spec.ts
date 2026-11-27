@@ -22,7 +22,7 @@ describe('mermaid-renderer', () => {
       const { default: mermaid } = await import('mermaid')
       initializeMermaid()
       expect(mermaid.initialize).toHaveBeenCalledWith({
-        flowchart: { useMaxWidth: true },
+        flowchart: { htmlLabels: false, useMaxWidth: true },
         htmlLabels: false,
         logLevel: 'error',
         secure: ['htmlLabels'],

@@ -48,6 +48,33 @@ test.describe('Mermaid Renderer', () => {
       labels: ['Active', 'finish', 'Done'],
     },
     { code: 'mindmap\n  Root\n    Leaf', kind: 'mindmap', labels: ['Root', 'Leaf'] },
+    // These renderers draw HTML labels whatever `htmlLabels` says; the
+    // renderer redraws them as SVG text before sanitizing (#52).
+    {
+      code: "eventmodeling\n\ntf 01 ui CartUI\ntf 02 cmd AddItem [[AddItem01]]\n\ndata AddItem01 {\n  description: 'john'\n}",
+      kind: 'event-modeling',
+      labels: ['CartUI', 'AddItem', 'description'],
+    },
+    {
+      code: 'venn-beta\n  set A["Frontend"]\n    text A1["React"]\n  set B["Backend"]\n  union A,B["Shared"]\n    text AB1["OpenAPI"]',
+      kind: 'venn',
+      labels: ['Frontend', 'React', 'Shared', 'OpenAPI'],
+    },
+    {
+      code: 'architecture-beta\n    service db "DB"[Database]\n    service api(server)[API]\n    db:R -- L:api',
+      kind: 'architecture',
+      labels: ['DB', 'Database', 'API'],
+    },
+    {
+      code: 'swimlane-beta LR\n  subgraph Customer\n    Browse[Browse]\n  end\n  subgraph Warehouse\n    Ship[Ship]\n  end\n  Browse --> Ship',
+      kind: 'swimlane',
+      labels: ['Customer', 'Warehouse', 'Browse', 'Ship'],
+    },
+    {
+      code: 'journey\n  title Day\n  section Morning\n    Coffee: 5: Me',
+      kind: 'journey',
+      labels: ['Morning', 'Coffee'],
+    },
   ]
 
   // Frontmatter config is merged over the site config, so a diagram must not be
@@ -81,6 +108,42 @@ test.describe('Mermaid Renderer', () => {
     await codeInput.fill(page, SOURCE, '---\nconfig:\n  theme: forest\n---\nflowchart TD\n    A[Start] --> B[Finish]')
     // Forest's node fill; the site's dark theme does not use it.
     await expect(diagram(page).locator('style')).toContainText('#cde498', { timeout: 10000 })
+  })
+
+  // The redrawn labels must keep the SVG loadable as an image: event-modeling
+  // data has `&nbsp;`, which is not an XML entity.
+  test('event-modeling diagram with data downloads as PNG', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, LABELLED_DIAGRAMS.find(({ kind }) => kind === 'event-modeling')!.code)
+    await expect(diagram(page)).toBeVisible({ timeout: 10000 })
+
+    const [download] = await Promise.all([
+      page.waitForEvent('download', { timeout: 15000 }),
+      page.getByRole('button', { name: 'Download PNG' }).click(),
+    ])
+    expect(download.suggestedFilename()).toBe('mermaid-diagram.png')
+  })
+
+  // `toBeVisible` ignores colour: the title used to be painted its box's fill.
+  test("journey section title is not painted its section box's colour", async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'journey\n  title Day\n  section Morning\n    Coffee: 5: Me')
+    const svg = diagram(page)
+    await expect(svg).toBeVisible({ timeout: 10000 })
+
+    const fill = (selector: string) =>
+      svg
+        .locator(selector)
+        .first()
+        .evaluate((el) => getComputedStyle(el).fill)
+    expect(await fill('text.journey-section')).not.toBe(await fill('rect.journey-section'))
+  })
+
+  test('KaTeX labels it cannot draw → a notice in the status slot, diagram still shown', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'sequenceDiagram\n    Alice->>Bob: $$x^2$$\n    Bob->>Alice: Hello')
+    await expect(diagram(page)).toBeVisible({ timeout: 10000 })
+    await expect(page.locator('[data-slot="tool-status"] [role="status"]')).toHaveText(
+      "A math label ($$…$$) can't be drawn, so it's left out of the diagram.",
+    )
+    await expect(diagram(page).locator('text', { hasText: 'Hello' }).first()).toBeVisible()
   })
 
   test('pick an example → it renders', async ({ page }) => {

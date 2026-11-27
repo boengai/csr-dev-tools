@@ -3,13 +3,16 @@ import mermaid from 'mermaid'
 
 import type { MermaidRenderResult } from '@/types/utils/mermaid-renderer'
 import { loadImageFromBlob } from '@/utils/image'
+import { redrawHtmlLabels } from '@/utils/mermaid-svg-labels'
 
 let initialized = false
 
 export function initializeMermaid(): void {
   if (initialized) return
   mermaid.initialize({
-    flowchart: { useMaxWidth: true },
+    // Swimlane's cluster labels still read this deprecated key, which
+    // defaults to true, so the root `htmlLabels` below doesn't reach them.
+    flowchart: { htmlLabels: false, useMaxWidth: true },
     // HTML labels live in <foreignObject>, which the sanitizer strips and which
     // taints the PNG export's canvas. SVG <text> labels survive both.
     htmlLabels: false,
@@ -35,7 +38,8 @@ export async function renderMermaid(code: string, id: string): Promise<MermaidRe
     throw new Error('Empty diagram input')
   }
   const { svg, diagramType } = await mermaid.render(id, sanitizedCode)
-  const cleanSvg = DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true, svgFilters: true } })
+  // Some labels are HTML whatever `htmlLabels` says; the sanitizer would strip them.
+  const cleanSvg = DOMPurify.sanitize(redrawHtmlLabels(svg), { USE_PROFILES: { svg: true, svgFilters: true } })
   return { diagramType, svg: cleanSvg }
 }
 
