@@ -1,7 +1,7 @@
 import { expect, type Page, test } from '@playwright/test'
 
 import { toolSurface } from './helpers/selectors'
-import { EDIT, readGolden, readKeyList, readStorage, seedStorage, typeAtEnd } from './stored-values/contract.ts'
+import { EDIT, readGolden, readKeyList, readStorage, seedStorage, textOf, typeAtEnd } from './stored-values/contract.ts'
 import { DRIVERS, expectStored } from './stored-values/drivers.ts'
 
 /**
@@ -44,6 +44,46 @@ test.describe('Saved inputs', () => {
       await expectOnlyListedKeys(page)
     })
   }
+
+  test('json-formatter: a field the Tool does not name is kept and saved back', async ({ page }) => {
+    const driver = DRIVERS.find((d) => d.tool === 'json-formatter')
+    const entry = golden.entries.find((e) => e.id === 'json-formatter/extra-field')
+    if (!driver || !entry) throw new Error('needs the json-formatter driver and its extra-field golden entry')
+    const restored = { [entry.key]: entry.expected }
+    expect(entry.expected).toHaveProperty('extra')
+    await seedStorage(page, entry.stored)
+
+    await page.goto(driver.route)
+    await driver.ready(page)
+    await driver.shows(page, restored)
+
+    await driver.edit(page, restored)
+    // The whole bag is compared, so a dropped `extra` fails here.
+    await driver.checkEdited(page, restored)
+  })
+
+  test('db-diagram: Open in Mermaid Renderer hands the diagram over through storage', async ({ context, page }) => {
+    await page.goto('/tools/db-diagram')
+    await page.getByTestId('add-table-btn').click()
+    await page.getByTestId('export-dropdown-btn').click()
+    await page.getByTestId('export-mermaid-btn').click()
+    await expect(page.getByTestId('mermaid-panel-output')).toContainText('erDiagram')
+    const exported = await textOf(page.getByTestId('mermaid-panel-output'))
+
+    const [renderer] = await Promise.all([
+      context.waitForEvent('page'),
+      page.getByTestId('open-mermaid-renderer-btn').click(),
+    ])
+    // The renderer opens on the exported diagram, and the handoff is gone once read.
+    const words = (text: string) => text.split(/\s+/).filter(Boolean)
+    const source = renderer.getByRole('textbox', { exact: true, name: 'Mermaid Syntax' })
+    await expect(source).toBeVisible()
+    await expect.poll(async () => words(await textOf(source))).toEqual(words(exported))
+    await expect
+      .poll(() => renderer.evaluate(() => localStorage.getItem('csr-dev-tools-handoff-mermaid-renderer')))
+      .toBeNull()
+    await expectOnlyListedKeys(renderer)
+  })
 
   test('mermaid-renderer: a DB Diagram handoff wins over the saved draft and is read once', async ({ page }) => {
     const handoff = 'erDiagram\n  users {\n    INT id\n  }'

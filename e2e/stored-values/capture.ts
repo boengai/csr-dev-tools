@@ -153,7 +153,7 @@ const wellFormed = (value: unknown): boolean =>
     : Array.isArray(value)
       ? value.every(wellFormed)
       : typeof value === 'object' && value !== null
-        ? Object.values(value).every(wellFormed)
+        ? Object.entries(value).every(([name, field]) => wellFormed(name) && wellFormed(field))
         : true
 
 const offList = (storage: StorageSnapshot): Array<string> => Object.keys(storage).filter((k) => !keyOf.has(k))

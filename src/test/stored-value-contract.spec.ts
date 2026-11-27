@@ -97,12 +97,15 @@ describe('stored-value contract', () => {
 
   it('expects no lone surrogate, which a Rust String cannot hold', () => {
     const lone = /[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/
-    // Walks parsed values: JSON.stringify escapes a lone surrogate, which would hide it.
+    // Walks parsed names and values: JSON.stringify escapes a lone surrogate, which would hide it.
     const holdsLone = (value: unknown): boolean =>
       typeof value === 'string'
         ? lone.test(value)
-        : typeof value === 'object' && value !== null && Object.values(value).some(holdsLone)
+        : typeof value === 'object' &&
+          value !== null &&
+          Object.entries(value).some(([name, field]) => holdsLone(name) || holdsLone(field))
     expect(holdsLone({ source: 'a\ud83d' })).toBe(true)
+    expect(holdsLone({ 'a\ud83d': '' })).toBe(true)
     // Anywhere in the file: one would make all of it unreadable to serde_json.
     expect(golden.entries.filter((e) => holdsLone(e)).map((e) => e.id)).toEqual([])
     expect(holdsLone(golden.defaults)).toBe(false)
