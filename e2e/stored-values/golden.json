@@ -1378,7 +1378,7 @@
         ]
       },
       "storageAfterWrite": {
-        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[{\"id\":\"r2\",\"relationType\":\"1:N\",\"sourceColumnId\":\"users_gone\",\"sourceTableId\":\"users\",\"targetColumnId\":\"posts_user_id\",\"targetTableId\":\"posts\"}],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"posts_id\",\"name\":\"id\",\"type\":\"INT\"},{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":false,\"isUnique\":false},\"id\":\"posts_user_id\",\"name\":\"user_id\",\"type\":\"INT\"}],\"id\":\"posts\",\"name\":\"posts\",\"position\":{\"x\":40,\"y\":40}},{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"users_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"users\",\"name\":\"users\",\"position\":{\"x\":340,\"y\":40}}]}},\"index\":[{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"Blog\",\"tableCount\":1,\"updatedAt\":\"2026-11-02T00:00:00.000Z\"}]}"
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[{\"id\":\"r2\",\"relationType\":\"1:N\",\"sourceColumnId\":\"users_gone\",\"sourceTableId\":\"users\",\"targetColumnId\":\"posts_user_id\",\"targetTableId\":\"posts\"}],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"posts_id\",\"name\":\"id\",\"type\":\"INT\"},{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":false,\"isUnique\":false},\"id\":\"posts_user_id\",\"name\":\"user_id\",\"type\":\"INT\"}],\"id\":\"posts\",\"name\":\"posts\",\"position\":{\"x\":40,\"y\":40}},{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"users_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"users\",\"name\":\"users\",\"position\":{\"x\":340,\"y\":40}}]}},\"index\":[{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"Blog\",\"tableCount\":2,\"updatedAt\":\"2026-11-27T09:00:00.000Z\"}]}"
       }
     },
     {
@@ -1408,7 +1408,7 @@
         ]
       },
       "storageAfterWrite": {
-        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[],\"tables\":[]}},\"index\":[{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"Empty\",\"tableCount\":1,\"updatedAt\":\"2026-11-02T00:00:00.000Z\"}]}"
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[],\"tables\":[]}},\"index\":[{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"Empty\",\"tableCount\":0,\"updatedAt\":\"2026-11-27T09:00:00.000Z\"}]}"
       }
     },
     {
@@ -1460,7 +1460,7 @@
         ]
       },
       "storageAfterWrite": {
-        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"users_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"users\",\"name\":\"users\",\"position\":{\"x\":40,\"y\":40}}]}},\"index\":[{\"createdAt\":\"1970-01-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"Untitled Diagram\",\"tableCount\":0,\"updatedAt\":\"1970-01-01T00:00:00.000Z\"}]}"
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"users_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"users\",\"name\":\"users\",\"position\":{\"x\":40,\"y\":40}}]}},\"index\":[{\"createdAt\":\"1970-01-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"Untitled Diagram\",\"tableCount\":1,\"updatedAt\":\"2026-11-27T09:00:00.000Z\"}]}"
       }
     },
     {
@@ -1563,7 +1563,7 @@
         ]
       },
       "storageAfterWrite": {
-        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"users_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"users\",\"name\":\"users\",\"position\":{\"x\":40,\"y\":40}}]},\"d2\":{\"relationships\":[],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"posts_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"posts\",\"name\":\"posts\",\"position\":{\"x\":40,\"y\":40}}]}},\"index\":[{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"One\",\"tableCount\":1,\"updatedAt\":\"1970-01-01T00:00:00.000Z\"},{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d2\",\"name\":\"Two\",\"tableCount\":1,\"updatedAt\":\"1970-01-01T00:00:00.000Z\"}]}"
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"users_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"users\",\"name\":\"users\",\"position\":{\"x\":40,\"y\":40}}]},\"d2\":{\"relationships\":[],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"posts_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"posts\",\"name\":\"posts\",\"position\":{\"x\":40,\"y\":40}}]}},\"index\":[{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"One\",\"tableCount\":1,\"updatedAt\":\"2026-11-27T09:00:00.000Z\"},{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d2\",\"name\":\"Two\",\"tableCount\":1,\"updatedAt\":\"2026-11-27T09:00:00.000Z\"}]}"
       }
     },
     {

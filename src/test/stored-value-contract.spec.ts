@@ -60,7 +60,41 @@ const keysInSource = (): Map<string, string> => {
   return found
 }
 
+/** Comments stripped, so a comment that mentions localStorage is not a caller. */
+const code = (text: string): string => text.replace(/\/\*[\s\S]*?\*\//g, '').replace(/(^|\s)\/\/.*$/gm, '$1')
+
+/**
+ * The files that call `localStorage` directly. A new one fails the spec until
+ * its keys are on the key list and it is added here.
+ */
+const STORAGE_CALLERS = [
+  join('src', 'components', 'feature', 'code', 'JsonpathEvaluator.tsx'),
+  join('src', 'components', 'feature', 'code', 'MermaidRenderer.tsx'),
+  join('src', 'diagram', 'codecs', 'storage.ts'),
+  join('src', 'hooks', 'persist', 'jsonStorage.ts'),
+  join('src', 'utils', 'tool-handoff.ts'),
+]
+
 describe('stored-value contract', () => {
+  it('knows every file that calls localStorage directly', () => {
+    const callers = sourceFiles(join(ROOT, 'src'))
+      .filter((file) => !file.includes(join('src', 'test')))
+      .filter((file) => /\blocalStorage\s*(\.|\[)/.test(code(readFileSync(file, 'utf8'))))
+      .map((file) => relative(ROOT, file))
+    expect(callers.sort()).toEqual([...STORAGE_CALLERS].sort())
+  })
+
+  it('lists every literal key passed to localStorage, with or without the prefix', () => {
+    const unlisted: Array<string> = []
+    for (const file of sourceFiles(join(ROOT, 'src'))) {
+      const text = code(readFileSync(file, 'utf8'))
+      for (const [, key] of text.matchAll(/localStorage\.(?:getItem|removeItem|setItem)\(\s*['"`]([^'"`]+)['"`]/g)) {
+        if (!listed.has(key as string)) unlisted.push(`${key} (${relative(ROOT, file)})`)
+      }
+    }
+    expect(unlisted).toEqual([])
+  })
+
   it('lists each key once', () => {
     expect(keyList.keys.length).toBe(listed.size)
   })

@@ -130,21 +130,37 @@ const diagramInPage = (page: Page): Promise<string> =>
   }, DIAGRAM_STORE)
 
 /** One save over the restored store, as any edit makes. */
-/** Saves each listed diagram as the app loads it, then the index: what storage holds once each has been edited. */
+/**
+ * Saves each listed diagram as the app loads it, as its autosave does
+ * (`performAutosave` in src/diagram/editor.ts): the entry's table count is
+ * recounted and `updatedAt` is now, on the capture's fixed clock. Then the
+ * index. What storage holds once each diagram has been edited.
+ */
 const diagramWriteInPage = (page: Page): Promise<void> =>
   page.evaluate(async (url) => {
-    const { loadDiagram, loadDiagramIndex, saveDiagram, saveDiagramIndex } = (await import(/* @vite-ignore */ url)) as {
-      loadDiagram: (id: string) => unknown
-      loadDiagramIndex: () => Array<{ id: string }>
-      saveDiagram: (id: string, schema: unknown) => void
+    type Entry = { createdAt: string; id: string; name: string; tableCount: number; updatedAt: string }
+    const { loadDiagram, loadDiagramIndex, saveDiagramIndex, saveDiagramWithIndex } = (await import(
+      /* @vite-ignore */ url
+    )) as {
+      loadDiagram: (id: string) => { tables: Array<unknown> } | null
+      loadDiagramIndex: () => Array<Entry>
       saveDiagramIndex: (index: unknown) => void
+      saveDiagramWithIndex: (id: string, schema: unknown, entry: (previous: Entry | undefined) => Entry) => unknown
     }
+    const now = new Date().toISOString()
     const index = loadDiagramIndex()
-    for (const { id } of index) {
+    for (const { id, name } of index) {
       const schema = loadDiagram(id)
-      if (schema !== null) saveDiagram(id, schema)
+      if (schema === null) continue
+      saveDiagramWithIndex(id, schema, (previous) => ({
+        createdAt: previous?.createdAt ?? now,
+        id,
+        name,
+        tableCount: schema.tables.length,
+        updatedAt: now,
+      }))
     }
-    saveDiagramIndex(index)
+    saveDiagramIndex(loadDiagramIndex())
   }, DIAGRAM_STORE)
 
 const snapshot = async (page: Page): Promise<StorageSnapshot> => sortKeys(await readStorage(page))
@@ -386,9 +402,15 @@ if (problems.length > 0) {
 
 // The main commit the React source comes from: a branch commit would not survive a squash merge.
 const git = (...args: Array<string>) => execFileSync('git', args, { encoding: 'utf8' }).trim()
-const commit = git('rev-parse', '--short', git('merge-base', 'HEAD', 'origin/main'))
+const base = git('merge-base', 'HEAD', 'origin/main')
+const commit = git('rev-parse', '--short', base)
+// The dev server serves the working tree: say so when its React source is not main's.
+// Specs and src/test are not app code.
+const changed = git('diff', '--name-only', base, '--', 'src', ':!src/test', ':!*.spec.ts', ':!*.spec.tsx')
 const golden: Golden = {
-  capturedFrom: `React main, ${commit}`,
+  capturedFrom: changed
+    ? `React main ${commit}, with src/ changed: ${changed.split('\n').join(', ')}`
+    : `React main, ${commit}`,
   defaults: sortKeys(defaults),
   entries: entries.sort((a, b) => a.id.localeCompare(b.id)),
   environment: CAPTURE_ENVIRONMENT,
