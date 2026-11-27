@@ -10,7 +10,7 @@ The answer to [Safari downloads preloaded WebAssembly twice](https://github.com/
 - It passed every budget against React, and the remedy's adoption rule against the preload-tag build, in a session that counts.
 - It needs one `'sha256-…'` hash in the `script-src` of `_headers`. The same script as a file in `/assets` needs no CSP change, but it **fails** the FCP budget.
 
-**To decide:** the issue says the fix must not "loosen the CSP". The hash allows exactly one more script, with fixed bytes, and no `'unsafe-inline'`. This file treats that as not loosening, but it is an addition to the policy, and the only variant without it fails. It needs a yes from the maintainer before the issue closes.
+**Decided 2026-11-27: the hash is accepted.** The issue says the fix must not "loosen the CSP". The hash allows exactly one more script, with fixed bytes, and no `'unsafe-inline'`. The maintainer agreed this is not loosening; the only variant without a hash fails the budget.
 
 **Still owed:** a check on a real iPhone. Safari on macOS and in the iOS Simulator are confirmed below. The budgets and the Playwright test ran in Playwright's WebKit build (Playwright 1.64).
 
@@ -169,6 +169,6 @@ On slow 4G the extra request costs about 440 ms before any module starts. It is 
 
 ## What the port must keep
 
-- The inline script and its `<meta>`, first in the head of every tool page, with its hash added to `script-src` by the build.
+- The inline script and its `<meta>`, first in the head of every tool page, with its hash added to `script-src` by the build. The hash is computed from the script's bytes, so it changes whenever the script does; never add `'unsafe-inline'` instead.
 - The two-engine download test, running in CI.
 - No `<link rel="preload">` for a `.wasm` file.
