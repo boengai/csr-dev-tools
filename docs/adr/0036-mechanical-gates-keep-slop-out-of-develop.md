@@ -378,8 +378,10 @@ checked three of the items above on 2026-11-27, with rustc 1.100.0:
   (`crates/gates/fixtures/clippy`).
 - **`taiki-e/install-action` has no manifest for jscpd or dx** (v2.90.11).
   Both come through the action's pinned `cargo-binstall` fallback, at
-  `jscpd@5.4.3` and `dioxus-cli@0.7.10`. cargo-deny, cargo-shear and
-  cargo-mutants have prebuilt, checksummed manifests.
+  `jscpd@5.4.3` and `dioxus-cli@0.7.10`. That pins their version but not
+  a checksum, so ADR-0031's condition 3 holds only partly for these two.
+  cargo-deny, cargo-shear and cargo-mutants have prebuilt, checksummed
+  manifests.
 
 Two findings changed the build:
 

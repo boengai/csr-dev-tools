@@ -52,7 +52,7 @@ fn clean_members_raise_nothing() {
         !found.iter().any(|line| line
             .split(' ')
             .nth(1)
-            .is_some_and(|at| at == "platform" || at == "worker-pdf")),
+            .is_some_and(|at| at == "platform" || at == "worker-pdf" || at == "logic-table")),
         "{found:#?}"
     );
 }

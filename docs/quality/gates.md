@@ -32,7 +32,7 @@ It runs on `opened`, `edited`, `synchronize` and `reopened`, so editing the body
 
 ### Pinned tools
 
-Each tool comes from `taiki-e/install-action`, pinned to a commit SHA, so it is installed against a checksum (ADR-0031, condition 3). The action has no manifest for jscpd or dx, so those two come from crates.io through its pinned `cargo-binstall` fallback.
+Each tool comes from `taiki-e/install-action`, pinned to a commit SHA, so it is installed against a checksum (ADR-0031, condition 3). The action has no manifest for jscpd or dx, so those two come from crates.io through its pinned `cargo-binstall` fallback, at an exact version but without the action's checksum. A manifest for either in the action is the fix.
 
 | Tool | Version |
 |---|---|

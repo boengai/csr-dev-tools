@@ -82,6 +82,8 @@ jobs:
           echo "GATED=$(echo "$packages" | sed 's/^/-p /' | tr '\n' ' ')" >>"$GITHUB_ENV"
 
       # 1. The path check, the gate-file mixing check and the size warning.
+      # Every gate after it runs even when an earlier one fails (`!cancelled()`),
+      # so one red gate never hides the others.
       - name: Path check by PR kind
         env:
           GATES_PR_TITLE: ${{ github.event.pull_request.title }}
@@ -93,6 +95,7 @@ jobs:
       # dx fmt goes file by file: run over a whole crate it would also rewrite
       # the gates crate's must-fail fixtures.
       - name: Formatting
+        if: ${{ !cancelled() }}
         run: |
           root="$(pwd)/"
           for package in $(crates/gates/scripts/gated-packages.sh); do
@@ -112,34 +115,43 @@ jobs:
 
       # 3. Clippy, for the host and wasm32, with every warning denied.
       - name: Clippy (host)
+        if: ${{ !cancelled() }}
         run: cargo clippy $GATED --all-targets -- -D warnings
       - name: Clippy (wasm32)
+        if: ${{ !cancelled() }}
         run: cargo clippy $GATED --all-targets --target wasm32-unknown-unknown -- -D warnings
 
       # 4. Tests, the gates crate's included: its tests run each custom
       # check's must-fail fixture, and the real tree through every check.
       - name: Tests
+        if: ${{ !cancelled() }}
         run: cargo test $GATED
 
       # 5. The must-fail Clippy fixture: every denied lint and banned method fires.
       - name: Clippy fixture fails
+        if: ${{ !cancelled() }}
         run: crates/gates/scripts/clippy-fixture.sh
 
       # 6. Dependencies and copied code.
       - name: cargo-deny
+        if: ${{ !cancelled() }}
         run: crates/gates/scripts/deny.sh
       - name: cargo-shear
+        if: ${{ !cancelled() }}
         run: cargo shear --deny-warnings $GATED
       - name: jscpd
+        if: ${{ !cancelled() }}
         run: jscpd --config .jscpd.json
 
       # 7. Mutation testing on the changed lines.
       - name: cargo-mutants --in-diff
+        if: ${{ !cancelled() }}
         run: crates/gates/scripts/mutants.sh "$MERGE_BASE" HEAD^2
 
       # 8 and 9 need code that is not on `develop` yet. Each step fails once
       # that code lands without its gate, rather than passing over nothing.
       - name: TypeScript gates (bridges and scripts/dioxus)
+        if: ${{ !cancelled() }}
         run: |
           for dir in crates/bridges/js scripts/dioxus; do
             if [[ -e "$dir" ]]; then
@@ -149,6 +161,7 @@ jobs:
           done
           echo "No crates/bridges/js or scripts/dioxus yet."
       - name: Dioxus build, byte ceilings and the CSP run
+        if: ${{ !cancelled() }}
         run: |
           if [[ -e crates/app ]]; then
             echo "::error::crates/app exists: build the Dioxus build, byte and CSP gates (#57)"

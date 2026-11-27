@@ -121,3 +121,20 @@ pub fn check_tool_sets(sets: &ToolSets) -> Vec<Finding> {
     }
     findings
 }
+
+/// Every entry read from `tool-routes.ts` has a key and a layout: a blank
+/// field means the file's layout drifted from what the parser reads.
+pub fn check_routes_read(routes: &[Route]) -> Vec<Finding> {
+    routes
+        .iter()
+        .enumerate()
+        .filter(|(_, route)| route.key.is_empty() || route.layout.is_empty())
+        .map(|(index, route)| {
+            let message = format!(
+                "entry {} has no key or no layout: has tool-routes.ts changed shape?",
+                index + 1
+            );
+            Finding::new("registry-read", &route.key, 0, message)
+        })
+        .collect()
+}

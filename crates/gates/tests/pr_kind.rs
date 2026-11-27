@@ -275,3 +275,11 @@ fn no_lockfile_counts_towards_the_size_warning() {
     ];
     assert_eq!(size_warning(&files), None);
 }
+
+#[test]
+fn a_docs_pr_changes_no_gate_file() {
+    assert_eq!(
+        rules("docs: x", &["docs/perf/byte-ceilings.json"]).unwrap(),
+        vec!["gate-file-mixing"]
+    );
+}

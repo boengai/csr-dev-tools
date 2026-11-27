@@ -57,19 +57,27 @@ pub fn check_body(kind: &Kind, body: &str, template: Option<&str>) -> Vec<Findin
             "`## Automated review` lists no finding or outcome",
         ));
     }
-    let hand_check = section(&body, HAND_CHECK);
-    let unticked = hand_check
+    // Every box the template lists must be in the body, ticked.
+    let ticked: Vec<&str> = section(&body, HAND_CHECK)
         .lines()
-        .filter(|line| line.trim_start().starts_with("- [ ]"))
-        .count();
-    let ticked = hand_check.lines().any(|line| {
-        line.trim_start().starts_with("- [x]") || line.trim_start().starts_with("- [X]")
-    });
-    if unticked > 0 || !ticked {
-        let message = format!(
-            "{unticked} hand-check box(es) unticked: the maintainer ticks them before merging"
-        );
-        findings.push(Finding::new("pr-body-hand-check", "body", 0, message));
+        .filter_map(|line| {
+            line.trim_start()
+                .strip_prefix("- [x] ")
+                .or_else(|| line.trim_start().strip_prefix("- [X] "))
+        })
+        .map(str::trim)
+        .collect();
+    for item in section(template, HAND_CHECK)
+        .lines()
+        .filter_map(|line| line.trim_start().strip_prefix("- [ ] "))
+    {
+        if !ticked.contains(&item.trim()) {
+            let message = format!(
+                "\"{}\" is not ticked: the maintainer ticks it before merging",
+                item.trim()
+            );
+            findings.push(Finding::new("pr-body-hand-check", "body", 0, message));
+        }
     }
     findings
 }

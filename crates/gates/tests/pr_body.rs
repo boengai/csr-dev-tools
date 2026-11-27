@@ -84,3 +84,13 @@ fn every_template_names_the_shared_sections() {
         assert!(text.contains("\n## Hand check\n"), "{name}");
     }
 }
+
+#[test]
+fn every_hand_check_box_of_the_template_is_ticked() {
+    let found = rules(&Kind::Gates, "gates-two-boxes.md").unwrap();
+    assert_eq!(found.len(), 1, "{found:#?}");
+    assert!(
+        found[0].starts_with("pr-body-hand-check") && found[0].contains("Read the diff"),
+        "{found:#?}"
+    );
+}

@@ -2,4 +2,4 @@
 # breaks one rule, named in its manifest's comment.
 [workspace]
 resolver = "3"
-members = ["crates/app", "crates/ui", "crates/persist", "crates/registry", "crates/platform", "crates/logic/*", "crates/tools/*", "crates/workers/*", "crates/stray"]
+members = ["crates/app", "crates/ui", "crates/persist", "crates/registry", "crates/platform", "crates/logic/*", "crates/tools/*", "crates/workers/*", "crates/stray", "wasm/crates/*"]

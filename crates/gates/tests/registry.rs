@@ -96,3 +96,13 @@ fn the_four_sets_must_agree() {
     assert_eq!(found.len(), 1);
     assert!(found[0].message.contains("registry key"));
 }
+
+#[test]
+fn an_entry_without_a_key_or_layout_fails() {
+    let routes = parse_tool_routes("  {\n    key: 'a',\n  },\n  {\n    layout: 'custom',\n  },\n");
+    let found: Vec<String> = gates::registry::check_routes_read(&routes)
+        .iter()
+        .map(|f| f.message.clone())
+        .collect();
+    assert_eq!(found.len(), 2, "{found:#?}");
+}

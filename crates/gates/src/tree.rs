@@ -7,7 +7,9 @@ use std::path::Path;
 
 use crate::paths::{PORTED_LIST, TOOL_ROUTES};
 use crate::pr_kind::PathContext;
-use crate::registry::{Route, ToolSets, check_opt_out_adrs, check_tool_sets, parse_tool_routes};
+use crate::registry::{
+    Route, ToolSets, check_opt_out_adrs, check_routes_read, check_tool_sets, parse_tool_routes,
+};
 use crate::sources::{FileContext, SourceFile, check_file, check_tool_entries};
 use crate::workspace::{Layer, Member, Workspace};
 use crate::{Finding, layers, manifests};
@@ -18,6 +20,7 @@ pub fn check_tree(root: &Path) -> Result<Vec<Finding>, String> {
     let routes = read_routes(root)?;
     let mut findings = layers::check(&workspace);
     findings.extend(manifests::check_inheritance(&workspace));
+    findings.extend(check_routes_read(&routes));
     findings.extend(check_opt_out_adrs(&routes, &adr_files(root)?));
     let sets = tool_sets(&workspace, &routes, &mut findings);
     findings.extend(check_tool_sets(&sets));

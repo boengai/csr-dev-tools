@@ -178,9 +178,10 @@ fn allowed(kind: &Kind, path: &str, proof_tool: &str, ctx: &PathContext) -> bool
                 || path == "Cargo.lock"
         }
         Kind::Docs => {
-            (path.starts_with("docs/") && !path.starts_with("docs/quality/"))
-                || matches!(path, "CONTEXT.md" | "CONTRIBUTING.md" | "CLAUDE.md")
-                || path.starts_with(".claude/")
+            !is_gate_file(path)
+                && ((path.starts_with("docs/") && !path.starts_with("docs/quality/"))
+                    || matches!(path, "CONTEXT.md" | "CONTRIBUTING.md" | "CLAUDE.md")
+                    || path.starts_with(".claude/"))
         }
         Kind::Sync => true,
     }

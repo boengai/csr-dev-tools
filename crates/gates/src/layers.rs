@@ -62,7 +62,10 @@ fn check_dependency(workspace: &Workspace, member: &Member, dep: &Dependency) ->
     if member.layer == Layer::Gates {
         return None;
     }
-    let allowed = match workspace.member(name) {
+    // A path dependency is a member; a registry one is third-party even when it
+    // shares a member's name, as crates.io `csv` shares React's `csv`.
+    let internal = dep.path.as_ref().and_then(|_| workspace.member(name));
+    let allowed = match internal {
         Some(target) => internal_allowed(&member.layer, &target.layer, name),
         None => external_allowed(&member.layer, name),
     };

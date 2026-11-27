@@ -82,7 +82,6 @@ impl Layer {
     }
 }
 
-/// One workspace member.
 #[derive(Clone, Debug)]
 pub struct Member {
     /// Its directory relative to the workspace root, with `/` separators.

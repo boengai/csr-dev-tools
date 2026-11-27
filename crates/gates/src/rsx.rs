@@ -42,7 +42,15 @@ impl Visit<'_> for RsxVisitor {
         {
             return;
         }
-        match syn::parse2::<CallBody>(mac.tokens.clone()) {
+        self.call(mac.tokens.clone());
+    }
+}
+
+impl RsxVisitor {
+    /// One `rsx!` body, then each `rsx!` nested in its expressions: in a
+    /// `{…}` child, a closure or a `match` arm, which `CallBody` keeps as tokens.
+    fn call(&mut self, tokens: TokenStream) {
+        match syn::parse2::<CallBody>(tokens.clone()) {
             Ok(body) => self.body(&body.body),
             Err(error) => self.found.push((
                 "parse",
@@ -50,10 +58,11 @@ impl Visit<'_> for RsxVisitor {
                 format!("cannot parse rsx!: {error}"),
             )),
         }
+        for nested in nested_rsx(tokens) {
+            self.call(nested);
+        }
     }
-}
 
-impl RsxVisitor {
     fn body(&mut self, body: &TemplateBody) {
         for node in &body.roots {
             self.node(node);
@@ -144,6 +153,31 @@ fn token_rules(context: &FileContext, text: &str) -> Vec<RuleHit> {
         ("off-theme-text", at, "a custom Tool uses no text-red-* or text-yellow-* class: use the theme's error and warning colours".to_owned())
     });
     app_only.chain(off_theme).collect()
+}
+
+/// The bodies of the `rsx!` calls in `tokens`, outermost only: each one's
+/// own nested calls are found when it is checked.
+fn nested_rsx(tokens: TokenStream) -> Vec<TokenStream> {
+    let mut bodies = Vec::new();
+    let trees: Vec<TokenTree> = tokens.into_iter().collect();
+    for (index, tree) in trees.iter().enumerate() {
+        let is_call = matches!(tree, TokenTree::Ident(ident) if ident == "rsx")
+            && matches!(trees.get(index + 1), Some(TokenTree::Punct(punct)) if punct.as_char() == '!');
+        match (is_call, trees.get(index + 2), tree) {
+            (true, Some(TokenTree::Group(group)), _) => bodies.push(group.stream()),
+            (false, _, TokenTree::Group(group)) if !follows_rsx_bang(&trees, index) => {
+                bodies.extend(nested_rsx(group.stream()));
+            }
+            _ => {}
+        }
+    }
+    bodies
+}
+
+fn follows_rsx_bang(trees: &[TokenTree], index: usize) -> bool {
+    index >= 2
+        && matches!(trees.get(index - 1), Some(TokenTree::Punct(punct)) if punct.as_char() == '!')
+        && matches!(trees.get(index - 2), Some(TokenTree::Ident(ident)) if ident == "rsx")
 }
 
 fn walk(tokens: TokenStream, visit: &mut impl FnMut(&TokenTree)) {
