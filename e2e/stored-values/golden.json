@@ -1,5 +1,5 @@
 {
-  "capturedFrom": "React, bb2f106b",
+  "capturedFrom": "React, 00d49b28",
   "defaults": {
     "csr-dev-tools-aes-encrypt-decrypt-mode": "encrypt",
     "csr-dev-tools-base64-decode-source": "",
@@ -1898,6 +1898,19 @@
       }
     },
     {
+      "id": "json-formatter/emoji",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-formatter": "{\"source\":\"a😀\"}"
+      },
+      "expected": {
+        "source": "a😀"
+      }
+    },
+    {
       "id": "json-formatter/empty-object",
       "key": "csr-dev-tools-json-formatter",
       "reader": "fields",
@@ -2020,13 +2033,13 @@
       }
     },
     {
-      "id": "json-formatter/surrogate-pair",
+      "id": "json-formatter/surrogate-pair-escaped",
       "key": "csr-dev-tools-json-formatter",
       "reader": "fields",
       "shape": "damaged",
       "provenance": "seeded",
       "stored": {
-        "csr-dev-tools-json-formatter": "{\"source\":\"a😀\"}"
+        "csr-dev-tools-json-formatter": "{\"source\":\"a\\ud83d\\ude00\"}"
       },
       "expected": {
         "source": "a😀"

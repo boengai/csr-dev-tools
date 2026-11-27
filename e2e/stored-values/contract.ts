@@ -75,7 +75,7 @@ export type Golden = {
 
 const here = dirname(fileURLToPath(import.meta.url))
 
-export const KEY_LIST_PATH = join(here, 'keys.json')
+const KEY_LIST_PATH = join(here, 'keys.json')
 export const GOLDEN_PATH = join(here, 'golden.json')
 
 export const readKeyList = (): KeyList => JSON.parse(readFileSync(KEY_LIST_PATH, 'utf8')) as KeyList

@@ -57,6 +57,8 @@ What `expected` is, by reader:
 | `zustand` | The envelope `{state: {value}, version}`, as the store writes it | The app loads, and its own store is read. |
 | `diagram` | `{index, diagrams}`: the restored index, and each listed diagram as it loads | The app's own `loadDiagramIndex` and `loadDiagram`. |
 
+Markdown Table checks its grid as one value, but not when it reads it. React holds the bag as `restoreJson` restores it, so that is what `expected` records. A grid that does not match `rows` and `cols` then shows "The saved table is damaged" in the status slot, and the first edit starts from a fresh grid (`markdown-table-generator/grid-mismatch`).
+
 A default is what a Tool writes back, unchanged, when it opens on empty storage. For the Zustand stores and DB Diagram it is what the app reads from empty storage.
 
 Values are compared as JSON values, not as text, so neither build is bound to the other's key order or spacing.

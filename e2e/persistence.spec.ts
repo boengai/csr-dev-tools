@@ -1,5 +1,6 @@
 import { expect, type Page, test } from '@playwright/test'
 
+import { toolSurface } from './helpers/selectors'
 import { EDIT, readGolden, readKeyList, readStorage, seedStorage, typeAtEnd } from './stored-values/contract.ts'
 import { DRIVERS } from './stored-values/drivers.ts'
 
@@ -86,7 +87,7 @@ test.describe('Saved inputs', () => {
   for (const { keys: allowed = [], tool } of neverSaved) {
     test(`${tool}: saves no input`, async ({ page }) => {
       await page.goto(`/tools/${tool}`)
-      const surface = page.locator('[data-slot="tool-surface"]')
+      const surface = toolSurface(page)
       await expect(surface).toBeVisible()
 
       const fields = surface.getByRole('textbox')

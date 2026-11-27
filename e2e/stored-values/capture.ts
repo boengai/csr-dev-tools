@@ -104,13 +104,18 @@ const restoreInPage = (page: Page, raw: string | null, fallback: unknown): Promi
 /** The Zustand store as the app holds it, in the envelope it writes. */
 const zustandInPage = (page: Page, key: StoredKey): Promise<string> =>
   page.evaluate(
-    async ({ url, version }) => {
+    async ({ name, url, version }) => {
       const mod = (await import(/* @vite-ignore */ url)) as Record<string, { getState: () => { value: unknown } }>
-      const store = Object.values(mod)[0]
-      if (!store) throw new Error(`no store in ${url}`)
+      const store = mod[name]
+      if (!store) throw new Error(`no ${name} in ${url}`)
       return JSON.stringify({ state: { value: store.getState().value }, version })
     },
-    { url: key.key === 'feature_layout' ? LAYOUT_STORE : SETTINGS_STORE, version: key.envelopeVersion ?? 0 },
+    {
+      ...(key.key === 'feature_layout'
+        ? { name: 'usePersistFeatureLayout', url: LAYOUT_STORE }
+        : { name: 'usePersistSettings', url: SETTINGS_STORE }),
+      version: key.envelopeVersion ?? 0,
+    },
   )
 
 /** DB Diagram as the app reads it: the restored index, and each listed diagram restored. */
@@ -174,9 +179,9 @@ const restore = async (page: Page, key: StoredKey, raw: string | null, defaults:
 /** Readers that need the app running on a page rather than one pure call. */
 const needsApp = (key: StoredKey): boolean => ['codec-mode', 'diagram', 'zustand'].includes(key.reader)
 
-/** Runs `run` over `items`, `size` at a time. A failure is recorded under the item's name, and the rest go on. */
 const problems: Array<string> = []
 
+/** Runs `run` over `items`, `size` at a time. A failure is recorded under the item's name, and the rest go on. */
 const pool = async <T>(items: Array<T>, size: number, name: (item: T) => string, run: (item: T) => Promise<void>) => {
   let next = 0
   await Promise.all(

@@ -197,6 +197,44 @@ const dashboardWidget = (page: Page, name: string): Locator =>
 
 const backgroundSwitch = (page: Page): Locator => page.getByRole('switch', { name: /^Background animation/ })
 
+/** Timezone Converter saves its bag and, under its own key, the favourite zones. */
+const timezoneConverter: Driver = (() => {
+  const favorites = `${P}timezone-favorites`
+  const city = (zone: string) => (zone.split('/').pop() ?? zone).replace(/_/g, ' ')
+  const base = textTool({
+    field: 'source',
+    key: `${P}timezone-converter`,
+    label: 'Date and time',
+    otherKeys: [favorites],
+    sample: '2026-11-10 14:30',
+    tool: 'timezone-converter',
+    touchControls: async (page) => {
+      await page.getByRole('button', { exact: true, name: 'Add UTC to favorites' }).click()
+      await page.getByRole('button', { exact: true, name: 'Remove UTC from favorites' }).click()
+    },
+    writeControls: (page) => page.getByRole('button', { exact: true, name: 'Add UTC to favorites' }).click(),
+  })
+  return {
+    ...base,
+    checkEdited: async (page, restored) => {
+      await base.checkEdited(page, restored)
+      await expectStored(page, { [favorites]: [...(restored[favorites] as Array<string>), 'Europe/London'] })
+    },
+    edit: async (page, restored) => {
+      await base.edit(page, restored)
+      await page.getByRole('button', { exact: true, name: 'Add London to favorites' }).click()
+    },
+    shows: async (page, restored) => {
+      await base.shows(page, restored)
+      for (const zone of restored[favorites] as Array<string>) {
+        await expect(
+          page.getByRole('button', { exact: true, name: `Remove ${city(zone)} from favorites` }),
+        ).toBeVisible()
+      }
+    },
+  }
+})()
+
 const pressedToggle = (page: Page, name: string): Locator => page.getByRole('button', { exact: true, name })
 
 export const DRIVERS: Array<Driver> = [
@@ -325,19 +363,7 @@ export const DRIVERS: Array<Driver> = [
       await page.getByRole('button', { exact: true, name: 'Dedupe' }).click()
     },
   }),
-  textTool({
-    field: 'source',
-    key: `${P}timezone-converter`,
-    label: 'Date and time',
-    otherKeys: [`${P}timezone-favorites`],
-    sample: '2026-11-10 14:30',
-    tool: 'timezone-converter',
-    touchControls: async (page) => {
-      await page.getByRole('button', { exact: true, name: 'Add UTC to favorites' }).click()
-      await page.getByRole('button', { exact: true, name: 'Remove UTC from favorites' }).click()
-    },
-    writeControls: (page) => page.getByRole('button', { exact: true, name: 'Add UTC to favorites' }).click(),
-  }),
+  timezoneConverter,
 
   // --- Comparator tools ---
   textTool({
@@ -670,7 +696,7 @@ export const DRIVERS: Array<Driver> = [
       if (!entry) throw new Error('db-diagram: the golden store has no diagram')
       await expect(page.getByTestId('diagram-name')).toHaveText(entry.name)
       for (const table of store.diagrams[entry.id]?.tables ?? []) {
-        await expect(page.getByRole('button', { name: new RegExp(`${table.name}$`) }).first()).toBeVisible()
+        await expect(page.getByRole('button', { name: table.name }).first()).toBeVisible()
       }
     },
     tool: 'db-diagram',
