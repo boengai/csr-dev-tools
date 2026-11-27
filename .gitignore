@@ -30,6 +30,8 @@ dist-ssr
 # Playwright
 test-results/
 playwright-report/
+playwright-report-parity-*/
+parity-screenshots/
 blob-report/
 playwright/.cache/
 .playwright-mcp/

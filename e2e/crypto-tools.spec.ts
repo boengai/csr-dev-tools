@@ -72,6 +72,8 @@ test.describe('AES Encrypt/Decrypt', () => {
     const encrypted = (await cipher.textContent()) ?? ''
 
     await dialog.getByRole('button', { name: 'Decrypt mode' }).click()
+    // Switching mode clears the source. Wait for it, as a visitor would, before pasting.
+    await expect(dialog.locator('.cm-content').first()).not.toContainText('top secret')
     await dialog.locator('.cm-content').first().click()
     await page.keyboard.insertText(encrypted)
     await expect(dialog.locator('pre[data-has-value]')).toHaveText('top secret', { timeout: 10000 })

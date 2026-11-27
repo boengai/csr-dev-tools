@@ -3,6 +3,8 @@ import { expect } from 'vitest'
 
 import { describeLayoutContract } from '@/test/layout-contract'
 
+import { LAYOUT_ERROR_FIXTURES } from '../../../../e2e/parity/layout-fixtures'
+
 describeLayoutContract('file-processor', {
   extra: (dialog) => {
     // The upload area is the only way in, and it takes a file.
@@ -11,7 +13,7 @@ describeLayoutContract('file-processor', {
     // Nothing to process yet: no Process / "Choose another" input pane.
     expect(dialog.querySelector('[data-slot="tool-input"]')).toBeNull()
   },
-  fixtures: {},
+  fixtures: LAYOUT_ERROR_FIXTURES['file-processor'],
   // The shell's own spec covers the error path with a failing `process`.
   fixturesUnavailable: 'files are never persisted, so there is no stored bad input — see FileProcessorShell.dom.spec',
   output: (dialog) => {

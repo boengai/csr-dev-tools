@@ -14,31 +14,8 @@ import { afterEach, beforeAll, describe, expect, it } from 'vitest'
 import { TOOL_REGISTRY } from '@/constants'
 import type { ToolLayout, ToolRegistryEntry, ToolRegistryKey } from '@/types'
 
+import type { LayoutErrorFixture, LayoutFixtureStep } from '../../e2e/parity/layout-fixtures'
 import { LAYOUT_MIGRATION_PENDING } from './layout-migration'
-
-/**
- * One action on the opened dialog, run in order:
- * - `click`: the button with this accessible name (e.g. a mode toggle).
- * - `select` / `option`: open the combobox with this accessible name, pick the option.
- * - `type`: replace a field's text. `field` is `'source'` (default, the shell's
- *   source editor of any kind) or another field's accessible name.
- */
-export type LayoutFixtureStep =
-  | { click: string }
-  | { option: string; select: string }
-  | { field?: string; type: string }
-
-/**
- * Bad input for the error path, one of:
- * - `storage` and/or `steps`: localStorage entries (JSON-encoded on write) seeded
- *   before the dialog opens, then steps run on it. Tools that never save their
- *   input use `steps` alone.
- * - `never`: why this tool's input cannot be invalid. Reported as a `todo` that says so.
- */
-export type LayoutErrorFixture =
-  | { never: string }
-  | { steps: Array<LayoutFixtureStep>; storage?: Record<string, unknown> }
-  | { steps?: Array<LayoutFixtureStep>; storage: Record<string, unknown> }
 
 type LayoutContractOptions = {
   /**

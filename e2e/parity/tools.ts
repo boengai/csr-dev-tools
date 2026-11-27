@@ -1,0 +1,33 @@
+/**
+ * The Tools the parity harness runs over, read from the registry
+ * (`src/constants/tool-routes.ts`), so a Tool joins the suites with no
+ * per-Tool test work. `PARITY_TOOLS` (comma-separated keys, set by
+ * `defineParityConfig`) narrows them to the Tools another build has ported.
+ */
+import { TOOL_ROUTES } from '../../src/constants/tool-routes'
+import type { ToolRoute } from '../../src/types/constants/tool-registry'
+import type { ShellLayout } from './layout-fixtures'
+
+/** The Tool keys this run is limited to, or `null` for every Tool. */
+export const parityToolFilter = (): ReadonlySet<string> | null => {
+  const raw = process.env.PARITY_TOOLS?.trim()
+  if (!raw) return null
+  return new Set(raw.split(',').map((key) => key.trim()))
+}
+
+/** Every Tool this run covers, in registry order. */
+export const parityTools = (): Array<ToolRoute> => {
+  const filter = parityToolFilter()
+  return filter ? TOOL_ROUTES.filter((tool) => filter.has(tool.key)) : TOOL_ROUTES
+}
+
+export const toolsWithLayout = (layout: ShellLayout): Array<ToolRoute> =>
+  parityTools().filter((tool) => tool.layout === layout)
+
+export const SHELL_LAYOUTS: ReadonlyArray<ShellLayout> = [
+  'codec',
+  'comparator',
+  'file-processor',
+  'generator',
+  'transformer',
+]
