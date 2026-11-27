@@ -100,6 +100,17 @@ describe('combinePdfPages', () => {
     expect(await pageTexts(again.pdf)).toEqual([PAGE_ONE_TEXT])
   })
 
+  it('names each skipped file once, even when two share a name', async () => {
+    const first = await fixture('locked.pdf')
+    const second = await fixture('locked.pdf')
+    const result = await combinePdfPages([
+      { file: first, pageIndex: 0 },
+      { file: second, pageIndex: 0 },
+      { file: first, pageIndex: 1 },
+    ])
+    expect(result.skipped).toEqual(['locked.pdf', 'locked.pdf'])
+  })
+
   it('skips a file that can no longer be read, and keeps the other files', async () => {
     // A File whose bytes are gone, as when it changes on disk after upload.
     const gone = new File([], 'gone.pdf', { type: 'application/pdf' })

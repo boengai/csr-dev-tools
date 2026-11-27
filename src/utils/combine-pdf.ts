@@ -68,7 +68,7 @@ async function loadSource(file: File): Promise<PDFDocument | null> {
  * Each input ref names a source file + a 0-based page index. The same file may
  * appear multiple times with different page indices; this loads each file once
  * (cached by File reference) and copies pages in order. Files that fail to load,
- * or that need a password to open, land in `skipped` (deduplicated).
+ * or that need a password to open, land in `skipped`, once per file.
  *
  * Known limitations:
  * - Many-page perf: rendering 100+ page thumbnails will be slow and memory-heavy.
@@ -87,7 +87,7 @@ export async function combinePdfPages(items: Array<CombinePdfPageRef>): Promise<
   // Files that failed this call. Not kept between calls: the decrypt step also
   // fails when its WASM can not be fetched, and a later merge may succeed.
   const failed = new Set<File>()
-  const skippedSet = new Set<string>()
+  const skipped: Array<string> = []
 
   for (const { file, pageIndex } of items) {
     if (failed.has(file)) continue
@@ -96,14 +96,14 @@ export async function combinePdfPages(items: Array<CombinePdfPageRef>): Promise<
       const lower = file.name.toLowerCase()
       if (!lower.endsWith('.pdf')) {
         failed.add(file)
-        skippedSet.add(file.name)
+        skipped.push(file.name)
         continue
       }
       // A rejection here means the decrypt step didn't load: fail the merge.
       const source = await loadSource(file)
       if (!source) {
         failed.add(file)
-        skippedSet.add(file.name)
+        skipped.push(file.name)
         continue
       }
       src = source
@@ -114,7 +114,6 @@ export async function combinePdfPages(items: Array<CombinePdfPageRef>): Promise<
     merged.addPage(copied)
   }
 
-  const skipped = Array.from(skippedSet)
   // pdf-lib saves an empty document with one blank page, which would offer a
   // download of nothing. Return no bytes, so the shell shows only the skips.
   if (merged.getPageCount() === 0) return { ...EMPTY_RESULT, skipped }
