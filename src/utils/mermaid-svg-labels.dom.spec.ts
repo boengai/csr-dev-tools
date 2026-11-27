@@ -187,6 +187,21 @@ describe('redrawHtmlLabels', () => {
     expect(lines(svg.querySelector('text')!)).toEqual(['supercal', 'ifragil…'])
   })
 
+  it('trims a clamped line by whole characters, so an emoji is never cut in half', () => {
+    const svg = parse(
+      redrawHtmlLabels(
+        '<svg><g><foreignObject width="80" height="80">' +
+          '<div class="node-icon-text" xmlns="http://www.w3.org/1999/xhtml" style="height: 80px;">' +
+          '<div style="-webkit-line-clamp: 1;">abcdef😀 next</div></div>' +
+          '</foreignObject></g></svg>',
+        tenPxPerChar,
+      ),
+    )
+
+    // The emoji is two UTF-16 units: dropping one would leave 'abcdef\uD83D…', which fits.
+    expect(lines(svg.querySelector('text')!)).toEqual(['abcdef…'])
+  })
+
   it('does not copy a colour that loads a URL', () => {
     const svg = parse(
       redrawHtmlLabels(

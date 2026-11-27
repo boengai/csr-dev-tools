@@ -104,7 +104,8 @@ const clampRows = (rows: Array<MermaidLabelRow>, clamp: number, fits: MermaidLab
   const last = kept[clamp - 1]
   if (!last) return kept
   let text = last.text
-  while (text && !fits(`${text}…`, last.bold)) text = text.slice(0, -1).trimEnd()
+  // Drops a code point, not a UTF-16 unit: half an emoji is a lone surrogate in the SVG.
+  while (text && !fits(`${text}…`, last.bold)) text = [...text].slice(0, -1).join('').trimEnd()
   kept[clamp - 1] = { bold: last.bold, text: `${text}…` }
   return kept
 }
