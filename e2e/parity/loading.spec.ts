@@ -1,7 +1,7 @@
 import { type CDPSession, expect, type Page, test } from '@playwright/test'
 
 import { SLOW_4G } from '../perf/throttle'
-import { deviceOptions, TOOL_LOADING, WIDGET_LOADING } from './page'
+import { deviceOptions, TOOL_LOADING, TOOL_LOADING_EMOJI, WIDGET_LOADING, WIDGET_LOADING_EMOJI } from './page'
 import { parityTools } from './tools'
 
 /**
@@ -23,9 +23,10 @@ const routeTool = ROUTE_TOOLS.map((key) => parityTools().find((tool) => tool.key
 // The home page arrives with the app shell, so its indicator is the robot in each widget until the
 // widget's Tool fills it; on a Tool route, the flying saucer shows until the Tool does.
 // The indicator must be drawn (its image decoded), not just laid out, before the app shows.
-const PAGES: Array<{ app: string; indicator: string; name: string; path: string }> = [
+const PAGES: Array<{ app: string; emoji: string; indicator: string; name: string; path: string }> = [
   {
     app: '[data-testid="dashboard-widget"] article',
+    emoji: WIDGET_LOADING_EMOJI,
     indicator: WIDGET_LOADING,
     name: 'home page',
     path: '/',
@@ -34,6 +35,7 @@ const PAGES: Array<{ app: string; indicator: string; name: string; path: string 
     ? [
         {
           app: '[data-slot="tool-surface"]',
+          emoji: TOOL_LOADING_EMOJI,
           indicator: TOOL_LOADING,
           name: 'Tool route',
           path: routeTool.routePath,
@@ -74,9 +76,9 @@ const throttle = async (page: Page): Promise<CDPSession> => {
 }
 
 /** Records, from the first byte, when the indicator and the app first appear and the layout shift. */
-const record = async (page: Page, app: string, indicator: string): Promise<void> => {
+const record = async (page: Page, app: string, indicator: string, emoji: string): Promise<void> => {
   await page.addInitScript(
-    ({ app, indicator }) => {
+    ({ app, emoji, indicator }) => {
       const r: LoadingRecord = { appAt: null, cls: 0, indicatorAt: null, indicatorDrawnAt: null }
       Object.assign(window, { __loading: r })
       new PerformanceObserver((list) => {
@@ -92,13 +94,15 @@ const record = async (page: Page, app: string, indicator: string): Promise<void>
       const check = () => {
         const shown = document.querySelector(indicator)
         if (r.indicatorAt === null && seen(shown)) r.indicatorAt = performance.now()
-        // Drawn: the image's bytes have arrived and decoded, so the visitor sees the emoji, not an empty box.
+        // Drawn: the image's bytes have arrived and decoded, so the visitor sees the emoji, not an empty
+        // box. `currentSrc` is the file actually drawn: a <picture> source can win over the <img> src.
         if (
           r.indicatorDrawnAt === null &&
           seen(shown) &&
           shown instanceof HTMLImageElement &&
           shown.complete &&
-          shown.naturalWidth > 0
+          shown.naturalWidth > 0 &&
+          shown.currentSrc.includes(`/${emoji}/`)
         )
           r.indicatorDrawnAt = performance.now()
         if (r.appAt === null && document.querySelector(app)) r.appAt = performance.now()
@@ -107,7 +111,7 @@ const record = async (page: Page, app: string, indicator: string): Promise<void>
       // An image finishing its download is no DOM mutation; `load` does not bubble, so listen in capture.
       document.addEventListener('load', check, true)
     },
-    { app, indicator },
+    { app, emoji, indicator },
   )
 }
 
@@ -119,12 +123,12 @@ if (!routeTool) {
   test.skip(`loading a Tool route (none of ${ROUTE_TOOLS.join(', ')} is in this run)`, () => {})
 }
 
-for (const { app, indicator, name, path } of PAGES) {
+for (const { app, emoji, indicator, name, path } of PAGES) {
   test.describe(`loading the ${name}`, () => {
     test('shows the loading indicator first, then fills the root without a layout shift', async ({ page }) => {
       await stubEmoji(page)
       await throttle(page)
-      await record(page, app, indicator)
+      await record(page, app, indicator, emoji)
       await page.goto(path, { waitUntil: 'commit' })
       await expect(page.locator(app).first()).toBeVisible({ timeout: LOAD_TIMEOUT })
       await page.waitForLoadState('load', { timeout: LOAD_TIMEOUT })

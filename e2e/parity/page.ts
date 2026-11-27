@@ -4,10 +4,12 @@ import { devices, expect, type Page } from '@playwright/test'
 export const TOOL_TIMEOUT = 15_000
 
 // The loading indicators are Noto emoji images, kept in both builds (docs/ux/parity.md → The reference).
-/** The flying saucer (1f6f8): shows until the page, or the Tool on its route, is ready. */
-export const TOOL_LOADING = 'img[src*="/1f6f8/"]'
-/** The robot (1f916): shows in a dashboard widget until its Tool fills it. */
-export const WIDGET_LOADING = 'img[src*="/1f916/"]'
+/** The flying saucer's Noto code point: shows until the page, or the Tool on its route, is ready. */
+export const TOOL_LOADING_EMOJI = '1f6f8'
+/** The robot's Noto code point: shows in a dashboard widget until its Tool fills it. */
+export const WIDGET_LOADING_EMOJI = '1f916'
+export const TOOL_LOADING = `img[src*="/${TOOL_LOADING_EMOJI}/"]`
+export const WIDGET_LOADING = `img[src*="/${WIDGET_LOADING_EMOJI}/"]`
 
 /** A device's options for `test.use` or `browser.newContext`, which take no browser type. */
 export const deviceOptions = (name: string) => {
