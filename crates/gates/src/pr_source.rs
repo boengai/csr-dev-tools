@@ -35,34 +35,35 @@ fn members(manifest: &Table) -> Option<&Vec<Value>> {
 
 /// A `sync` PR skips the path and body checks, so its title alone is not
 /// enough. It comes from `main` itself, or, when the sync has conflicts to
-/// resolve, from a branch that brings `main` commits the base lacks
-/// (`brings_main`). "Contains main's tip" would not do: once a sync lands,
-/// every branch cut from `develop` contains it.
-pub fn check_sync_source(kind: &Kind, head_ref: &str, brings_main: bool) -> Option<Finding> {
-    (*kind == Kind::Sync && head_ref != "main" && !brings_main).then(|| {
+/// resolve, from a branch that merges `main` into the base (`merges_main`).
+pub fn check_sync_source(kind: &Kind, head_ref: &str, merges_main: bool) -> Option<Finding> {
+    (*kind == Kind::Sync && head_ref != "main" && !merges_main).then(|| {
         Finding::new(
             "pr-kind",
             head_ref,
             0,
-            "a `chore: sync main into develop` PR comes from `main`, or from a branch that brings main commits develop lacks",
+            "a `chore: sync main into develop` PR comes from `main`, or from a branch that merges main into develop",
         )
     })
 }
 
-/// Whether `head` brings `main` commits `base` lacks: the point where `head`
-/// meets `main` is not already in `base`. Any git error is an `Err`, never a
-/// pass. `repo` is the checkout; the refs are anything `git` resolves.
-pub fn brings_main(repo: &Path, main: &str, base: &str, head: &str) -> Result<bool, String> {
-    let meet = git(repo, &["merge-base", main, head])?;
-    let output = Command::new("git")
-        .args(["merge-base", "--is-ancestor", meet.trim(), base])
-        .current_dir(repo)
-        .output()
-        .map_err(|error| format!("cannot run git: {error}"))?;
+/// Whether `head` is a merge of `main` into `base`, as a sync branch is:
+/// it brings `main` commits `base` lacks, and `base` commits `main` lacks.
+/// A branch cut from `base` brings nothing from `main`; a branch cut from
+/// `main` merges nothing of `base`. Any git error is an `Err`, never a pass.
+/// `repo` is the checkout; the refs are anything `git` resolves.
+pub fn merges_main(repo: &Path, main: &str, base: &str, head: &str) -> Result<bool, String> {
+    let main_meet = git(repo, &["merge-base", main, head])?;
+    let base_meet = git(repo, &["merge-base", base, head])?;
+    Ok(!is_ancestor(repo, main_meet.trim(), base)? && !is_ancestor(repo, base_meet.trim(), main)?)
+}
+
+fn is_ancestor(repo: &Path, commit: &str, of: &str) -> Result<bool, String> {
+    let output = command(repo, &["merge-base", "--is-ancestor", commit, of])?;
     // --is-ancestor exits 0 for yes, 1 for no, and anything else on error.
     match output.status.code() {
-        Some(0) => Ok(false),
-        Some(1) => Ok(true),
+        Some(0) => Ok(true),
+        Some(1) => Ok(false),
         _ => Err(format!(
             "git merge-base --is-ancestor failed: {}",
             String::from_utf8_lossy(&output.stderr).trim()
@@ -71,11 +72,7 @@ pub fn brings_main(repo: &Path, main: &str, base: &str, head: &str) -> Result<bo
 }
 
 fn git(repo: &Path, args: &[&str]) -> Result<String, String> {
-    let output = Command::new("git")
-        .args(args)
-        .current_dir(repo)
-        .output()
-        .map_err(|error| format!("cannot run git: {error}"))?;
+    let output = command(repo, args)?;
     if output.status.success() {
         Ok(String::from_utf8_lossy(&output.stdout).into_owned())
     } else {
@@ -85,4 +82,16 @@ fn git(repo: &Path, args: &[&str]) -> Result<String, String> {
             String::from_utf8_lossy(&output.stderr).trim()
         ))
     }
+}
+
+/// git in `repo`, whatever `GIT_DIR` the caller has set.
+fn command(repo: &Path, args: &[&str]) -> Result<std::process::Output, String> {
+    Command::new("git")
+        .args(args)
+        .current_dir(repo)
+        .env_remove("GIT_DIR")
+        .env_remove("GIT_WORK_TREE")
+        .env_remove("GIT_INDEX_FILE")
+        .output()
+        .map_err(|error| format!("cannot run git: {error}"))
 }

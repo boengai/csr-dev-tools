@@ -76,7 +76,7 @@ fn a_sync_comes_from_main_or_brings_main_commits() {
     // Straight from main, as a conflict-free sync is opened. This holds by the
     // branch name alone.
     assert_eq!(check_sync_source(&Kind::Sync, "main", false), None);
-    // From a branch that brings main commits develop lacks, to resolve conflicts.
+    // From a branch that merges main into develop, to resolve conflicts.
     assert_eq!(
         check_sync_source(&Kind::Sync, "sync/main-into-develop", true),
         None

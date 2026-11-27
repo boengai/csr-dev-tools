@@ -17,7 +17,7 @@ use std::path::Path;
 
 use gates::pr_body::{check_body, template_name};
 use gates::pr_kind::{ChangedFile, Kind, check_paths, parse_title, size_warning};
-use gates::pr_source::{added_member, brings_main, check_sync_source};
+use gates::pr_source::{added_member, check_sync_source, merges_main};
 
 fn var(name: &str) -> Result<String, String> {
     env::var(name).map_err(|_| format!("{name} is not set; CI sets it"))
@@ -31,9 +31,9 @@ fn root() -> &'static Path {
 fn kind() -> Result<Kind, String> {
     let kind = parse_title(&var("GATES_PR_TITLE")?).map_err(|finding| finding.to_string())?;
     // Only a sync PR needs the ancestry: it runs git on the checkout.
-    let brings_main = kind == Kind::Sync
-        && brings_main(root(), "origin/main", &var("GATES_BASE_REF")?, "HEAD^2")?;
-    match check_sync_source(&kind, &var("GATES_PR_HEAD_REF")?, brings_main) {
+    let is_main_merge = kind == Kind::Sync
+        && merges_main(root(), "origin/main", &var("GATES_BASE_REF")?, "HEAD^2")?;
+    match check_sync_source(&kind, &var("GATES_PR_HEAD_REF")?, is_main_merge) {
         Some(finding) => Err(finding.to_string()),
         None => Ok(kind),
     }
@@ -55,6 +55,10 @@ fn report(findings: &[gates::Finding]) -> String {
 )]
 fn pr_paths() {
     let kind = kind().unwrap();
+    if kind == Kind::Sync {
+        // A sync may change anything, even nothing at all.
+        return;
+    }
     let numstat = fs::read_to_string(var("GATES_NUMSTAT").unwrap()).unwrap();
     let files: Vec<ChangedFile> = numstat
         .lines()
