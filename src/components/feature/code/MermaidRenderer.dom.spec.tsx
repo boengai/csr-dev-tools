@@ -7,12 +7,15 @@ import { afterEach, beforeAll, beforeEach, describe, expect, it, vi } from 'vite
 import { MermaidRenderer } from './MermaidRenderer'
 
 // Mermaid can't lay out in jsdom. Valid input renders a marker SVG; a first
-// line without a diagram type rejects like the real parser does.
+// line without a diagram type rejects like the real parser does. Each `$$…$$`
+// is stamped as a hidden math label, as the real renderer does.
 vi.mock('@/utils/mermaid-renderer', () => ({
   initializeMermaid: vi.fn(),
   renderMermaid: vi.fn(async (code: string) => {
     if (!/^(flowchart|sequenceDiagram)\b/.test(code.trim())) throw new Error('No diagram type detected')
-    return { diagramType: 'flowchart', svg: '<svg data-testid="diagram"></svg>' }
+    const math = code.match(/\$\$[^$]*\$\$/g)?.length ?? 0
+    const stamp = math > 0 ? ` data-hidden-math-labels="${math}"` : ''
+    return { diagramType: 'flowchart', svg: `<svg data-testid="diagram"${stamp}></svg>` }
   }),
   svgToPng: vi.fn(),
 }))
@@ -91,6 +94,34 @@ describe('MermaidRenderer', () => {
 
     expect(within(statusSlot()).queryByRole('alert')).toBeNull()
     expect(screen.getByTestId('diagram')).toBeInTheDocument()
+  })
+
+  it('says in the status slot when math labels are left out, and still shows the diagram', async () => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ source: 'sequenceDiagram\n    A->>B: $$x^2$$' }))
+    render(<MermaidRenderer autoOpen />)
+    await flush()
+
+    expect(within(statusSlot()).getByRole('status').textContent).toBe(
+      "A math label ($$…$$) can't be drawn, so it's left out of the diagram.",
+    )
+    expect(screen.getByTestId('diagram')).toBeInTheDocument()
+
+    fireEvent.click(screen.getByRole('button', { name: 'Use Sequence example' }))
+    await flush()
+    expect(within(statusSlot()).queryByRole('status')).toBeNull()
+  })
+
+  it('counts the left-out math labels in the notice', async () => {
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify({ source: 'sequenceDiagram\n    A->>B: $$x^2$$\n    Note over A: $$y$$' }),
+    )
+    render(<MermaidRenderer autoOpen />)
+    await flush()
+
+    expect(within(statusSlot()).getByRole('status').textContent).toBe(
+      "2 math labels ($$…$$) can't be drawn, so they're left out of the diagram.",
+    )
   })
 
   it('takes a DB Diagram handoff over the saved source', async () => {

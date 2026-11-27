@@ -1,3 +1,5 @@
+import { readFile } from 'node:fs/promises'
+
 import { expect, type Page, test } from '@playwright/test'
 
 import { codeInput } from './helpers/selectors'
@@ -48,6 +50,38 @@ test.describe('Mermaid Renderer', () => {
       labels: ['Active', 'finish', 'Done'],
     },
     { code: 'mindmap\n  Root\n    Leaf', kind: 'mindmap', labels: ['Root', 'Leaf'] },
+    // These renderers draw HTML labels whatever `htmlLabels` says; the
+    // renderer redraws them as SVG text before sanitizing (#52). They never
+    // read `htmlLabels`, so the frontmatter variants below would add nothing.
+    {
+      code: "eventmodeling\n\ntf 01 ui CartUI\ntf 02 cmd AddItem [[AddItem01]]\n\ndata AddItem01 {\n  description: 'john'\n}",
+      ignoresHtmlLabels: true,
+      kind: 'event-modeling',
+      labels: ['CartUI', 'AddItem', 'description'],
+    },
+    {
+      code: 'venn-beta\n  set A["Frontend"]\n    text A1["React"]\n  set B["Backend"]\n  union A,B["Shared"]\n    text AB1["OpenAPI"]',
+      ignoresHtmlLabels: true,
+      kind: 'venn',
+      labels: ['Frontend', 'React', 'Shared', 'OpenAPI'],
+    },
+    {
+      code: 'architecture-beta\n    service db "DB"[Database]\n    service api(server)[API]\n    db:R -- L:api',
+      ignoresHtmlLabels: true,
+      kind: 'architecture',
+      labels: ['DB', 'Database', 'API'],
+    },
+    {
+      code: 'swimlane-beta LR\n  subgraph Customer\n    Browse[Browse]\n  end\n  subgraph Warehouse\n    Ship[Ship]\n  end\n  Browse --> Ship',
+      kind: 'swimlane',
+      labels: ['Customer', 'Warehouse', 'Browse', 'Ship'],
+    },
+    {
+      code: 'journey\n  title Day\n  section Morning\n    Coffee: 5: Me',
+      ignoresHtmlLabels: true,
+      kind: 'journey',
+      labels: ['Morning', 'Coffee'],
+    },
   ]
 
   // Frontmatter config is merged over the site config, so a diagram must not be
@@ -62,8 +96,8 @@ test.describe('Mermaid Renderer', () => {
     },
   ]
 
-  for (const { code, kind, labels } of LABELLED_DIAGRAMS) {
-    for (const { frontmatter, titleSuffix } of FRONTMATTERS) {
+  for (const { code, ignoresHtmlLabels, kind, labels } of LABELLED_DIAGRAMS) {
+    for (const { frontmatter, titleSuffix } of ignoresHtmlLabels ? FRONTMATTERS.slice(0, 1) : FRONTMATTERS) {
       test(`${kind} diagram${titleSuffix} draws its labels as SVG text`, async ({ page }) => {
         await codeInput.fill(page, SOURCE, frontmatter + code)
         const svg = diagram(page)
@@ -77,10 +111,110 @@ test.describe('Mermaid Renderer', () => {
     }
   }
 
+  // The redraw would also rescue these titles, so the loop above can't tell
+  // whether `flowchart.htmlLabels: false` is set: mermaid's own SVG labels
+  // (rotated with the lane) are what it buys.
+  test("swimlane lane titles are mermaid's own SVG labels", async ({ page }) => {
+    await codeInput.fill(
+      page,
+      SOURCE,
+      'swimlane-beta LR\n  subgraph Customer\n    Browse[Browse]\n  end\n  subgraph Warehouse\n    Ship[Ship]\n  end\n  Browse --> Ship',
+    )
+    const svg = diagram(page)
+    await expect(svg).toBeVisible({ timeout: 10000 })
+    for (const lane of ['Customer', 'Warehouse']) {
+      await expect(svg.locator('tspan.text-outer-tspan', { hasText: lane })).toHaveCount(1)
+    }
+  })
+
+  // Measured with the browser's canvas: the icon is 80px and clips its text.
+  test('a long architecture iconText stays inside its icon, cut at the line clamp', async ({ page }) => {
+    await codeInput.fill(
+      page,
+      SOURCE,
+      'architecture-beta\n    service db "Supercalifragilistic primary relational database cluster with replicas"[Database]',
+    )
+    const text = diagram(page).locator('text', { hasText: 'Supercal' })
+    await expect(text).toBeVisible({ timeout: 10000 })
+
+    // The preview pane's letter-spacing isn't in the downloaded SVG, which is
+    // what the label is measured for; drop it to measure the same text.
+    const rows = await text.locator('tspan').evaluateAll((tspans) => {
+      for (const t of tspans) (t as SVGTSpanElement).style.letterSpacing = 'normal'
+      return tspans.map((t) => ({ text: t.textContent ?? '', width: (t as SVGTSpanElement).getComputedTextLength() }))
+    })
+    // Mermaid's clamp for an 80px icon at 16px: floor(78 / 16) lines.
+    expect(rows.length).toBe(4)
+    expect(rows.at(-1)?.text).toMatch(/…$/)
+    for (const { width } of rows) expect(width).toBeLessThanOrEqual(80)
+  })
+
   test('frontmatter theme still applies', async ({ page }) => {
     await codeInput.fill(page, SOURCE, '---\nconfig:\n  theme: forest\n---\nflowchart TD\n    A[Start] --> B[Finish]')
     // Forest's node fill; the site's dark theme does not use it.
     await expect(diagram(page).locator('style')).toContainText('#cde498', { timeout: 10000 })
+  })
+
+  // The redrawn labels must keep the SVG loadable as an image: event-modeling
+  // data has `&nbsp;`, which is not an XML entity.
+  test('event-modeling diagram with data downloads as PNG', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, LABELLED_DIAGRAMS.find(({ kind }) => kind === 'event-modeling')!.code)
+    await expect(diagram(page)).toBeVisible({ timeout: 10000 })
+
+    const [download] = await Promise.all([
+      page.waitForEvent('download', { timeout: 15000 }),
+      page.getByRole('button', { name: 'Download PNG' }).click(),
+    ])
+    expect(download.suggestedFilename()).toBe('mermaid-diagram.png')
+  })
+
+  // Journey's root <svg> has `width="100%"`, which the PNG export read as 100px
+  // wide and squashed the diagram into.
+  test('journey diagram downloads as a PNG with the diagram’s proportions', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'journey\n  title Day\n  section Morning\n    Coffee: 5: Me')
+    const viewBox = await diagram(page).getAttribute('viewBox', { timeout: 10000 })
+    const [, , boxWidth = 0, boxHeight = 0] = (viewBox ?? '').split(/[\s,]+/).map(Number)
+
+    const [download] = await Promise.all([
+      page.waitForEvent('download', { timeout: 15000 }),
+      page.getByRole('button', { name: 'Download PNG' }).click(),
+    ])
+    // A PNG's IHDR chunk holds its width and height at bytes 16 and 20.
+    const png = await readFile((await download.path())!)
+    const ratio = png.readUInt32BE(16) / png.readUInt32BE(20)
+    expect(ratio).toBeCloseTo(boxWidth / boxHeight, 1)
+  })
+
+  // `toBeVisible` ignores colour: the title used to be painted its box's fill.
+  test("journey section title is not painted its section box's colour", async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'journey\n  title Day\n  section Morning\n    Coffee: 5: Me')
+    const svg = diagram(page)
+    await expect(svg).toBeVisible({ timeout: 10000 })
+
+    const fill = (selector: string) =>
+      svg
+        .locator(selector)
+        .first()
+        .evaluate((el) => getComputedStyle(el).fill)
+    expect(await fill('text.journey-section')).not.toBe(await fill('rect.journey-section'))
+  })
+
+  test('KaTeX labels it cannot draw → a notice in the status slot, diagram still shown', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'sequenceDiagram\n    Alice->>Bob: $$x^2$$\n    Bob->>Alice: Hello')
+    await expect(diagram(page)).toBeVisible({ timeout: 10000 })
+    await expect(page.locator('[data-slot="tool-status"] [role="status"]')).toHaveText(
+      "A math label ($$…$$) can't be drawn, so it's left out of the diagram.",
+    )
+    await expect(diagram(page).locator('text', { hasText: 'Hello' }).first()).toBeVisible()
+  })
+
+  test('KaTeX class label → the same notice, the rest of the class diagram still drawn', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, 'classDiagram\n    class Shape["$$\\pi r^2$$"]\n    Shape <|-- Circle')
+    await expect(diagram(page)).toBeVisible({ timeout: 10000 })
+    await expect(page.locator('[data-slot="tool-status"] [role="status"]')).toHaveText(
+      "A math label ($$…$$) can't be drawn, so it's left out of the diagram.",
+    )
+    await expect(diagram(page).locator('text', { hasText: 'Circle' }).first()).toBeVisible()
   })
 
   test('pick an example → it renders', async ({ page }) => {
