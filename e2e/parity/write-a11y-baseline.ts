@@ -7,6 +7,9 @@
 import { globSync, readFileSync, writeFileSync } from 'node:fs'
 import { fileURLToPath } from 'node:url'
 
+// The baseline is rewritten whole, so a recording limited to some Tools would drop the others' entries.
+if (process.env.PARITY_TOOLS) throw new Error('Record the a11y baseline with every Tool: unset PARITY_TOOLS.')
+
 const OUTPUT = fileURLToPath(new URL('../../test-results/parity-react', import.meta.url))
 const BASELINE = fileURLToPath(new URL('./a11y-baseline.json', import.meta.url))
 

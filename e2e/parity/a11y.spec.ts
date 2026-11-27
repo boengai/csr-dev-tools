@@ -17,7 +17,7 @@ import {
 } from './layout-contract'
 import { LAYOUT_ERROR_FIXTURES } from './layout-fixtures'
 import { settle, TOOL_TIMEOUT, WIDGET_LOADING } from './page'
-import { isShellLayout, parityTools, SHELL_LAYOUTS } from './tools'
+import { isShellLayout, parityToolFilter, parityTools, SHELL_LAYOUTS } from './tools'
 
 /**
  * axe on every Tool route (on open, and in the bad-input state from the layout
@@ -33,6 +33,11 @@ type A11yBaseline = Record<string, Record<string, number>>
 
 const TAGS = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']
 const RECORD = !!process.env.PARITY_A11Y_RECORD
+// The baseline is rewritten whole from the recording, so it must record every page, from React.
+// A page left out would lose its entry, and the next full run would fail on its known failures.
+if (RECORD && (parityToolFilter() || process.env.PARITY_BUILD !== 'react')) {
+  throw new Error('Record the a11y baseline from the React build with every Tool: unset PARITY_TOOLS.')
+}
 const baseline: A11yBaseline = BASELINE
 
 /** Runs axe and holds the result to the baseline (or, when recording, writes it down). */
