@@ -23,6 +23,7 @@ describe('mermaid-renderer', () => {
       initializeMermaid()
       expect(mermaid.initialize).toHaveBeenCalledWith({
         flowchart: { useMaxWidth: true },
+        htmlLabels: false,
         logLevel: 'error',
         securityLevel: 'strict',
         startOnLoad: false,

@@ -10,6 +10,9 @@ export function initializeMermaid(): void {
   if (initialized) return
   mermaid.initialize({
     flowchart: { useMaxWidth: true },
+    // HTML labels live in <foreignObject>, which the sanitizer strips and which
+    // taints the PNG export's canvas. SVG <text> labels survive both.
+    htmlLabels: false,
     logLevel: 'error',
     securityLevel: 'strict',
     startOnLoad: false,

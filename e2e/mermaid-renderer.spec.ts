@@ -13,6 +13,8 @@ test.describe('Mermaid Renderer', () => {
   })
 
   const preview = (page: Page) => page.locator('[data-slot="tool-output"][data-has-value]')
+  // The rendered diagram. A bare `svg` would also match the copy button's icon.
+  const diagram = (page: Page) => preview(page).locator('svg[id^="mermaid-render-"]')
 
   test('navigate to /tools/mermaid-renderer, verify title and description', async ({ page }) => {
     await expect(page.getByText('Mermaid Syntax', { exact: true })).toBeVisible()
@@ -26,12 +28,43 @@ test.describe('Mermaid Renderer', () => {
 
   test('type valid Mermaid syntax → SVG preview updates after debounce', async ({ page }) => {
     await codeInput.fill(page, SOURCE, 'sequenceDiagram\n    Alice->>Bob: Hello')
-    await expect(preview(page).locator('svg').first()).toBeVisible({ timeout: 10000 })
+    await expect(diagram(page)).toBeVisible({ timeout: 10000 })
   })
+
+  // Labels drawn as HTML in <foreignObject> are stripped by the sanitizer, so
+  // each diagram must draw its node and edge labels as SVG text. Single words:
+  // SVG labels split into one <tspan> per word.
+  const LABELLED_DIAGRAMS = [
+    { code: 'flowchart TD\n    A[Start] -->|go| B[Finish]', kind: 'flowchart', labels: ['Start', 'go', 'Finish'] },
+    {
+      code: 'classDiagram\n    Animal <|-- Duck : inherits\n    Duck : +swim()',
+      kind: 'class',
+      labels: ['Animal', 'inherits', 'Duck', 'swim'],
+    },
+    { code: 'erDiagram\n    CUSTOMER ||--o{ ORDER : places', kind: 'ER', labels: ['CUSTOMER', 'places', 'ORDER'] },
+    {
+      code: 'stateDiagram-v2\n    [*] --> Active\n    Active --> Done : finish',
+      kind: 'state',
+      labels: ['Active', 'finish', 'Done'],
+    },
+  ]
+
+  for (const { code, kind, labels } of LABELLED_DIAGRAMS) {
+    test(`${kind} diagram draws its labels as SVG text`, async ({ page }) => {
+      await codeInput.fill(page, SOURCE, code)
+      const svg = diagram(page)
+      await expect(svg).toBeVisible({ timeout: 10000 })
+
+      for (const label of labels) {
+        await expect(svg.locator('text', { hasText: label }).first()).toBeVisible()
+      }
+      await expect(svg.locator('foreignObject')).toHaveCount(0)
+    })
+  }
 
   test('pick an example → it renders', async ({ page }) => {
     await page.getByRole('button', { name: 'Use Flowchart example' }).click()
-    await expect(preview(page).locator('svg').first()).toBeVisible({ timeout: 10000 })
+    await expect(diagram(page)).toBeVisible({ timeout: 10000 })
     for (const label of ['Sequence', 'Class', 'State', 'Gantt', 'Pie']) {
       await expect(page.getByRole('button', { name: `Use ${label} example` })).toBeVisible()
     }
@@ -52,7 +85,7 @@ test.describe('Mermaid Renderer', () => {
 
     await status.getByRole('button', { name: /^Auto-fix/ }).click()
     await expect(status.getByRole('alert')).toHaveCount(0, { timeout: 10000 })
-    await expect(preview(page).locator('svg').first()).toBeVisible({ timeout: 10000 })
+    await expect(diagram(page)).toBeVisible({ timeout: 10000 })
   })
 
   test('fix invalid syntax → error clears and SVG preview appears', async ({ page }) => {
@@ -61,13 +94,13 @@ test.describe('Mermaid Renderer', () => {
     await expect(errorAlert).toBeVisible({ timeout: 10000 })
 
     await codeInput.fill(page, SOURCE, 'flowchart TD\n    A --> B')
-    await expect(preview(page).locator('svg').first()).toBeVisible({ timeout: 10000 })
+    await expect(diagram(page)).toBeVisible({ timeout: 10000 })
     await expect(errorAlert).not.toBeVisible()
   })
 
   test('Download SVG in the output label → download triggered', async ({ page }) => {
     await codeInput.fill(page, SOURCE, 'flowchart TD\n    A --> B')
-    await expect(preview(page).locator('svg').first()).toBeVisible({ timeout: 10000 })
+    await expect(diagram(page)).toBeVisible({ timeout: 10000 })
 
     const [download] = await Promise.all([
       page.waitForEvent('download'),
@@ -78,7 +111,7 @@ test.describe('Mermaid Renderer', () => {
 
   test('Download PNG in the output label → download triggered', async ({ page }) => {
     await codeInput.fill(page, SOURCE, 'flowchart TD\n    A --> B')
-    await expect(preview(page).locator('svg').first()).toBeVisible({ timeout: 10000 })
+    await expect(diagram(page)).toBeVisible({ timeout: 10000 })
 
     const [download] = await Promise.all([
       page.waitForEvent('download', { timeout: 15000 }),
