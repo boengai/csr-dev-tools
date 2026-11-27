@@ -121,3 +121,5 @@ A `ux-improvement` is any intended change away from `main`.
   - updates the page in this folder,
   - removes the baseline entry,
   - tags the check it adds as Dioxus-only, with a tag the harness defines.
+
+The five foundation differences in [ADR-0034](../adr/0034-ui-foundation-on-the-platform.md#9-foundation-differences) come with the UI primitives. They are not `ux-improvement`s, and port PRs may include them. The primitive journeys check only what both builds share.
