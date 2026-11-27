@@ -2,7 +2,8 @@ import type { MermaidLabelRow } from '@/types/utils/mermaid-svg-labels'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 
-// Stamped on the root <svg> so the count travels with the markup to the notice.
+// Stamped on the root <svg>: the shell hands its `notices` only the markup
+// string, so the count travels in it. DOMPurify keeps `data-` attributes.
 const HIDDEN_MATH_ATTR = 'data-hidden-math-labels'
 const HIDDEN_MATH_PATTERN = new RegExp(`^\\s*<svg\\b[^>]*\\s${HIDDEN_MATH_ATTR}="(\\d+)"`)
 const LINE_HEIGHT_EM = 1.2
@@ -20,6 +21,7 @@ const em = (value: number): string => `${Math.round(value * 100) / 100}em`
  */
 const labelRows = (fo: Element): Array<MermaidLabelRow> => {
   const raw: Array<MermaidLabelRow> = []
+  // A row starts bold and stays bold only while all its text is in <b>/<strong>.
   const breakRow = () => raw.push({ bold: true, text: '' })
   const append = (part: string, bold: boolean) => {
     const row = raw.at(-1)
@@ -100,13 +102,16 @@ const redrawAsText = (fo: Element): void => {
 }
 
 /**
- * Some mermaid renderers draw labels as HTML in `<foreignObject>` whatever
- * `htmlLabels` says. The sanitizer strips those, and they would taint the PNG
- * export's canvas, so this redraws them as SVG `<text>` first. Run it on
- * mermaid's output before sanitizing.
+ * Makes mermaid's labels survive the sanitizer. Run it on mermaid's output
+ * before sanitizing.
+ * - Some renderers draw labels as HTML in `<foreignObject>` whatever
+ *   `htmlLabels` says. The sanitizer strips those, and they would taint the
+ *   PNG export's canvas, so they are redrawn as SVG `<text>`.
+ * - KaTeX labels are counted instead (see `countHiddenMathLabels`).
+ * - Journey section titles get back a readable fill.
  */
 export const redrawHtmlLabels = (svg: string): string => {
-  if (!svg.includes('<foreignObject')) return svg
+  if (!svg.includes('<foreignObject') && !svg.includes('journey-section')) return svg
   const root = new DOMParser().parseFromString(svg, 'text/html').querySelector('svg')
   if (!root) return svg
 

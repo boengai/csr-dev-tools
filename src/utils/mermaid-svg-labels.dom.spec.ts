@@ -116,6 +116,17 @@ describe('redrawHtmlLabels', () => {
     expect(title.style.textAnchor).toBe('middle')
     expect(svg.querySelector<SVGRectElement>('rect.journey-section')!.style.fill).toBe('')
   })
+
+  it('fixes the journey section title fill when the labels are SVG text only (`textPlacement: tspan`)', () => {
+    const svg = parse(
+      redrawHtmlLabels(
+        '<svg><g><rect class="journey-section section-type-0"></rect>' +
+          '<text class="journey-section section-type-0"><tspan>Morning</tspan></text></g></svg>',
+      ),
+    )
+
+    expect(svg.querySelector<SVGTextElement>('text.journey-section')!.style.fill).toBe('inherit')
+  })
 })
 
 describe('countHiddenMathLabels', () => {
