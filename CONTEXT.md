@@ -1560,7 +1560,8 @@ _Avoid_: web API wrapper, shim
 
 The Rust code that wraps [[Platform API]]s and sits beside the
 [[Bridge facade]]s. It is the only code that touches the browser; Tool logic
-stays browser-free.
+stays browser-free. In the Dioxus build it is the `platform` crate, whose
+public API hands out opaque types, never raw `web-sys` ones (ADR-0035).
 _Avoid_: boundary layer, web layer
 
 ## Engine trial
@@ -1576,6 +1577,57 @@ _Avoid_: spike (the spike was issue 18), experiment
 HTML or SVG that has passed through a sanitising [[Bridge facade]] once, and
 the only markup a Tool may render as raw HTML.
 _Avoid_: safe HTML, clean HTML
+
+## Crate layer
+
+One of the nine kinds of crate in the Dioxus workspace: app, [[Tool crate]],
+ui, platform ([[Platform layer]]), bridges ([[Bridge facade]]s), persist,
+registry, [[Logic crate]] and worker. Each layer may depend only on the
+layers ADR-0035 lists for it, and a test over `cargo metadata` checks it.
+_Avoid_: module, package (when the layer is meant)
+
+## Tool crate
+
+The crate that holds one Tool's UI in the Dioxus build:
+`crates/tools/<key>`, package `tool-<key>`. It holds glue only (its logic
+lives in a [[Logic crate]]), declares one [[Tool entry]], and never depends
+on another Tool crate (ADR-0035).
+
+## Tool entry
+
+A Tool's lazily loaded root: one hand-written loader per [[Tool crate]],
+whose module is the snake_case Tool key. The Tool route, the dashboard
+dialog and the command palette all render it through `ui::LazyTool`, and it
+returns a [[Tool view]] (ADR-0035).
+_Avoid_: route chunk, lazy component
+
+## Tool view
+
+The sealed value a [[Tool entry]] returns, which only a layout shell or
+`ToolFrame` can build. It makes "every Tool renders inside the frame" a
+compile-time rule (ADR-0035).
+
+## Ported Tool list
+
+The list in the `app` crate of the Tools that have a [[Tool crate]]. It
+generates the routes and the exhaustive match from Tool key to
+[[Tool entry]]. Only these Tools get head-stamped pages in the Dioxus build.
+
+## Logic crate
+
+A pure-Rust crate, `crates/logic/<name>` (package `logic-<name>`), that
+holds a domain's Tool logic with a typed Rust API and native tests. It
+depends on no Dioxus and no browser crate. An existing `wasm/crates/<name>`
+becomes a thin `wasm-bindgen` wrapper over its Logic crate before its first
+Dioxus port (ADR-0035).
+_Avoid_: core crate, engine crate
+
+## Storage key table
+
+The hand-written list in the registry crate of every `localStorage` and
+`sessionStorage` key and key pattern the Dioxus build may write, spelled as
+today. A shell's `storage_key` takes a value from it, so an unlisted key
+does not compile (ADR-0035, ADR-0032).
 
 ## Toast channel
 
