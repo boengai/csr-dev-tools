@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig, devices, type PlaywrightTestConfig } from '@playwright/test'
 
 import type { ToolRegistryKey } from '../../src/types/constants/tool-registry'
-import { CONTRACT, DIOXUS_ONLY } from './tags'
+import { APP_WIDE, CONTRACT, DIOXUS_ONLY } from './tags'
 
 export type ParityBuild = 'dioxus' | 'react'
 
@@ -56,10 +56,15 @@ export const defineParityConfig = ({ baseURL, build, journeys = {}, tools, webSe
   if (tools && !process.env.PARITY_TOOLS) process.env.PARITY_TOOLS = tools.join(',')
 
   const grepInvert = build === 'react' ? new RegExp(DIOXUS_ONLY) : undefined
+  // A run filtered to its ported Tools still runs the app-wide journeys, which every build has.
+  const PERSISTENCE = 'persistence.spec.ts'
   const journeyFiles = {
     testIgnore: ['parity/**', 'perf/**'],
-    ...(journeys.testMatch ? { testMatch: journeys.testMatch } : {}),
+    ...(journeys.testMatch ? { testMatch: [...new Set([...journeys.testMatch, PERSISTENCE])] } : {}),
   }
+  const journeyGrep = journeys.grep
+    ? new RegExp(`(?:${journeys.grep.source})|${APP_WIDE}`, journeys.grep.flags.replace('g', ''))
+    : undefined
   // The journeys' mobile tests. The DB diagram's "375px viewport" test is left out: its
   // `beforeEach` needs the desktop canvas, which a phone never shows, so it runs in `journeys`.
   const mobile = /mobile viewport/
@@ -71,7 +76,7 @@ export const defineParityConfig = ({ baseURL, build, journeys = {}, tools, webSe
     projects: [
       {
         ...journeyFiles,
-        grep: journeys.grep,
+        grep: journeyGrep,
         grepInvert,
         name: 'journeys',
         use: { ...devices['Desktop Chrome'], permissions: CLIPBOARD },

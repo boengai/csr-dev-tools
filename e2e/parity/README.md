@@ -60,7 +60,7 @@ test('the copy button has a name', { tag: DIOXUS_ONLY }, async ({ page }) => { .
 
 ## Pointing it at another build
 
-`defineParityConfig` (`config.ts`) builds the whole run for one build. The Dioxus config calls it with its own server and its ported Tools, as the spike's `dioxus/playwright.config.ts` did:
+`defineParityConfig` (`config.ts`) builds the whole run for one build. The Dioxus config calls it with its own server and its ported Tools, as the spike's `dioxus/playwright.config.ts` did. A filtered run still runs the stored-value contract's app-wide journeys: `persistence.spec.ts` is always matched, and titles tagged `@app-wide` (the dashboard layout, settings) always pass the grep.
 
 ```ts
 import { defineParityConfig } from '../e2e/parity/config'

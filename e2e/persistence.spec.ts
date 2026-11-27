@@ -2,6 +2,7 @@ import { expect, type Page, test } from '@playwright/test'
 
 import { TOOL_ROUTES } from '../src/constants/tool-routes'
 import { toolSurface } from './helpers/selectors'
+import { APP_WIDE } from './parity/tags'
 import { parityToolFilter } from './parity/tools'
 import {
   EDIT,
@@ -31,7 +32,8 @@ import { DRIVERS, expectStored } from './stored-values/drivers.ts'
  * the ported Tools (`journeys.grep`, e2e/parity/config.ts) picks it up.
  */
 const nameOf = (key: string): string => {
-  const app: Record<string, string> = { dashboard: 'Dashboard layout', settings: 'Settings' }
+  // App-wide: every build has them, so a parity run filtered by Tool name still runs them (APP_WIDE).
+  const app: Record<string, string> = { dashboard: `Dashboard layout ${APP_WIDE}`, settings: `Settings ${APP_WIDE}` }
   const name = TOOL_ROUTES.find((tool) => tool.key === key)?.name ?? app[key]
   if (!name) throw new Error(`no Tool or app feature named ${key}`)
   return name
@@ -51,8 +53,13 @@ const requirePorted = (...tools: Array<string>): void => {
 
 const golden = readGolden()
 const { keys, neverSaved } = readKeyList()
-/** Keys the site may write. A legacy key it only reads and deletes (`written: false`) is not one. */
-const listed = new Set(keys.filter(({ written }) => written !== false).map(({ key }) => key))
+/**
+ * Keys the site may write in a normal visit. A legacy key it only reads
+ * (`written: false`) is not one, and neither is a key written only in one
+ * case the list names (JSONPath's put-back after a failed migration, which
+ * its own journey forces).
+ */
+const listed = new Set(keys.filter(({ written }) => written === undefined || written === true).map(({ key }) => key))
 
 const currentShape = (key: string) => {
   const entry = golden.entries.find((e) => e.key === key && e.shape === 'current')

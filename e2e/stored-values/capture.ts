@@ -180,9 +180,16 @@ const wellFormed = (value: unknown): boolean =>
         ? Object.entries(value).every(([name, field]) => wellFormed(name) && wellFormed(field))
         : true
 
-/** Keys written that the site may not write: off the list, or a legacy key it only reads (`written: false`). */
+/**
+ * Keys written that the site may not write in a normal visit: off the list,
+ * a legacy key it only reads (`written: false`), or one written only in a
+ * case the list names (`written` is a note).
+ */
 const offList = (storage: StorageSnapshot): Array<string> =>
-  Object.keys(storage).filter((k) => !keyOf.has(k) || keyOf.get(k)?.written === false)
+  Object.keys(storage).filter((k) => {
+    const written = keyOf.get(k)?.written
+    return !keyOf.has(k) || (written !== undefined && written !== true)
+  })
 
 /** What React restores for `key`, as JSON text, with the tool already open on `page` where needed. */
 const restore = async (page: Page, key: StoredKey, raw: string | null, defaults: Record<string, unknown>) => {
