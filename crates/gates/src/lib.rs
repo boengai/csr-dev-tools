@@ -9,6 +9,7 @@ pub mod manifests;
 pub mod paths;
 pub mod pr_body;
 pub mod pr_kind;
+pub mod pr_source;
 pub mod registry;
 pub mod rsx;
 pub mod sources;

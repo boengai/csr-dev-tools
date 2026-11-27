@@ -27,7 +27,8 @@ pub fn check_body(kind: &Kind, body: &str, template: Option<&str>) -> Vec<Findin
     let Some(template) = template else {
         return Vec::new();
     };
-    let body = body.replace("\r\n", "\n");
+    // Text inside an HTML comment is hidden on GitHub, so it never counts.
+    let body = strip_comments(&body.replace("\r\n", "\n"));
     let mut findings = Vec::new();
     for heading in headings(template) {
         if !headings(&body).contains(&heading) {
@@ -108,19 +109,26 @@ fn strip_comments(text: &str) -> String {
     kept
 }
 
-/// A table row after the header and separator, with every cell filled.
+/// A table row after the header and separator, with as many cells as the
+/// header and every one filled.
 fn has_filled_row(section: &str) -> bool {
-    section
+    let cells = |row: &str| -> Vec<String> {
+        row.trim()
+            .trim_matches('|')
+            .split('|')
+            .map(|cell| cell.trim().to_owned())
+            .collect()
+    };
+    let rows: Vec<&str> = section
         .lines()
         .filter(|line| line.trim_start().starts_with('|'))
+        .collect();
+    let Some(header) = rows.first() else {
+        return false;
+    };
+    let columns = cells(header).len();
+    rows.iter()
         .skip(2)
-        .any(|row| {
-            let cells: Vec<&str> = row
-                .trim()
-                .trim_matches('|')
-                .split('|')
-                .map(str::trim)
-                .collect();
-            cells.iter().all(|cell| !cell.is_empty())
-        })
+        .map(|row| cells(row))
+        .any(|row| row.len() == columns && row.iter().all(|cell| !cell.is_empty()))
 }

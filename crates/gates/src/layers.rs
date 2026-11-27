@@ -20,7 +20,24 @@ const BROWSER: [&str; 4] = ["web-sys", "js-sys", "wasm-bindgen", "wasm-bindgen-f
 pub fn check(workspace: &Workspace) -> Vec<Finding> {
     let mut findings = Vec::new();
     for member in &workspace.members {
-        if matches!(member.layer, Layer::Fixture | Layer::Wasm { .. }) {
+        if member.layer == Layer::Fixture {
+            continue;
+        }
+        if let Layer::Wasm { .. } = member.layer {
+            // A split wrapper is gated: the crate ban holds for it too.
+            if workspace
+                .gated()
+                .iter()
+                .any(|gated| gated.name() == member.name())
+            {
+                findings.extend(
+                    member
+                        .package
+                        .dependencies
+                        .iter()
+                        .filter_map(|dep| banned(member, dep)),
+                );
+            }
             continue;
         }
         if member.layer == Layer::Unknown {
@@ -52,12 +69,19 @@ fn edge(member: &Member, message: String) -> Finding {
     Finding::new("layers", member.name(), 0, message)
 }
 
-fn check_dependency(workspace: &Workspace, member: &Member, dep: &Dependency) -> Option<Finding> {
+fn banned(member: &Member, dep: &Dependency) -> Option<Finding> {
     let name = dep.name.as_str();
-    if BANNED.contains(&name) {
+    BANNED.contains(&name).then(|| {
         let message =
             format!("{name} is banned (ADR-0034): build the primitive or the motion in `ui`");
-        return Some(Finding::new("banned-crate", member.name(), 0, message));
+        Finding::new("banned-crate", member.name(), 0, message)
+    })
+}
+
+fn check_dependency(workspace: &Workspace, member: &Member, dep: &Dependency) -> Option<Finding> {
+    let name = dep.name.as_str();
+    if let Some(finding) = banned(member, dep) {
+        return Some(finding);
     }
     if member.layer == Layer::Gates {
         return None;
@@ -114,12 +138,19 @@ fn check_features(member: &Member) -> Option<Finding> {
     if member.layer == Layer::App {
         return None;
     }
-    let turns_on_web = member
+    // [features] names a dependency by the alias it goes by in this manifest.
+    let aliases: Vec<&str> = member
         .package
-        .features
-        .values()
-        .flatten()
-        .any(|feature| matches!(feature.as_str(), "dioxus/web" | "dioxus?/web"));
+        .dependencies
+        .iter()
+        .filter(|dep| dep.name == "dioxus")
+        .map(|dep| dep.rename.as_deref().unwrap_or("dioxus"))
+        .collect();
+    let turns_on_web = member.package.features.values().flatten().any(|feature| {
+        aliases
+            .iter()
+            .any(|alias| *feature == format!("{alias}/web") || *feature == format!("{alias}?/web"))
+    });
     turns_on_web.then(|| {
         edge(
             member,

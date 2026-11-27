@@ -52,21 +52,39 @@ pub fn check_tree(root: &Path) -> Result<Vec<Finding>, String> {
 pub fn path_context(root: &Path) -> Result<PathContext, String> {
     let workspace =
         Workspace::load(root).map_err(|error| format!("cannot read the workspace: {error}"))?;
-    let mut logic_users: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
+    Ok(PathContext {
+        logic_users: logic_users(&workspace),
+        ..PathContext::default()
+    })
+}
+
+/// Each logic crate (by `<name>`) and the Tools that use it, directly or
+/// through other logic crates.
+pub fn logic_users(workspace: &Workspace) -> BTreeMap<String, BTreeSet<String>> {
+    let logic_deps = |member: &Member| -> Vec<String> {
+        member
+            .package
+            .dependencies
+            .iter()
+            .filter_map(|dep| dep.name.strip_prefix("logic-"))
+            .map(str::to_owned)
+            .collect()
+    };
+    let mut users: BTreeMap<String, BTreeSet<String>> = BTreeMap::new();
     for member in &workspace.members {
         let Layer::Tool { key } = &member.layer else {
             continue;
         };
-        for dep in &member.package.dependencies {
-            if let Some(name) = dep.name.strip_prefix("logic-") {
-                logic_users
-                    .entry(name.to_owned())
-                    .or_default()
-                    .insert(key.clone());
+        let mut pending = logic_deps(member);
+        while let Some(name) = pending.pop() {
+            if users.entry(name.clone()).or_default().insert(key.clone())
+                && let Some(logic) = workspace.member(&format!("logic-{name}"))
+            {
+                pending.extend(logic_deps(logic));
             }
         }
     }
-    Ok(PathContext { logic_users })
+    users
 }
 
 fn read_routes(root: &Path) -> Result<Vec<Route>, String> {

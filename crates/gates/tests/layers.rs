@@ -32,6 +32,8 @@ fn the_layers_fixture_fails_on_every_planted_edge() {
         ("layers", "tool-alpha", "web-sys"),
         ("banned-crate", "tool-alpha", "dioxus-motion"),
         ("layers", "tool-gamma", "tool-beta"),
+        ("layers", "tool-gamma", "[features]"),
+        ("banned-crate", "wrapped", "dioxus-motion"),
         ("layers", "stray", "not in any layer"),
     ];
     for (rule, at, needle) in expect {
@@ -55,4 +57,12 @@ fn clean_members_raise_nothing() {
             .is_some_and(|at| at == "platform" || at == "worker-pdf" || at == "logic-table")),
         "{found:#?}"
     );
+}
+
+#[test]
+fn a_tool_uses_the_logic_its_logic_uses() {
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures/workspaces/logic-users");
+    let users = gates::tree::logic_users(&Workspace::load(&root).unwrap());
+    let shared: Vec<&String> = users["shared"].iter().collect();
+    assert_eq!(shared, vec!["alpha"]);
 }

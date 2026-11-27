@@ -1,0 +1,4 @@
+# tool-alpha reaches logic-shared only through logic-alpha.
+[workspace]
+resolver = "3"
+members = ["crates/tools/*", "crates/logic/*"]

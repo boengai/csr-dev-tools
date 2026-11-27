@@ -51,6 +51,7 @@ fn each_fixture_fails_its_own_rule() {
         ("style_string.rs", logic(), "style-string", 5),
         ("style_element.rs", logic(), "style-element", 5),
         ("nested_rsx_style.rs", logic(), "style-string", 6),
+        ("rsx_in_macro.rs", logic(), "style-string", 4),
         ("component_lazy.rs", logic(), "component-lazy", 2),
         ("component_too_long.rs", logic(), "component-size", 2),
         ("file_too_long.rs", logic(), "file-size", 0),

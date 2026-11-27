@@ -16,19 +16,21 @@ Pull requests into `develop` need three checks: `ci` (React, shared with `main`)
 
 ### `dioxus` (`.github/workflows/dioxus.yml`, on `develop` only)
 
-1. The path check: the PR's kind against the files it changes ("PR kinds").
-2. Formatting.
-3. Clippy over the gated packages with `--all-targets`, for both `wasm32-unknown-unknown` and the host, with `-- -D warnings`. `build.warnings = "deny"` is not used: cargo warns about every `wasm/` crate's missing `[lints]` table, selected or not, and that setting would fail every run.
-4. `cargo test` over the explicit package list, the `gates` crate included.
-5. The must-fail fixtures.
-6. cargo-deny, cargo-shear and jscpd.
-7. cargo-mutants `--in-diff`.
-8. oxlint and oxfmt over `crates/bridges/js` and `scripts/dioxus`, and the npm licence check.
-9. The Dioxus build, the byte check, and the Playwright run under the post-migration CSP.
+1. Formatting.
+2. Clippy over the gated packages with `--all-targets`, for both `wasm32-unknown-unknown` and the host, with `-- -D warnings`. `build.warnings = "deny"` is not used: cargo warns about every `wasm/` crate's missing `[lints]` table, selected or not, and that setting would fail every run.
+3. `cargo test` over the explicit package list, the `gates` crate included.
+4. The must-fail fixtures.
+5. cargo-deny, cargo-shear and jscpd.
+6. cargo-mutants `--in-diff`.
+7. oxlint and oxfmt over `crates/bridges/js` and `scripts/dioxus`, and the npm licence check.
+8. The Dioxus build, the byte check, and the Playwright run under the post-migration CSP.
 
 ### `pr-body` (`.github/workflows/pr-body.yml`, on `develop` only)
 
-It runs on `opened`, `edited`, `synchronize` and `reopened`, so editing the body never reruns `dioxus`. See "The PR body".
+It runs on `opened`, `edited`, `synchronize` and `reopened`, so editing the title or body never reruns `dioxus`. It holds two checks:
+
+1. The path check: the PR's kind against the files it changes ("PR kinds"). It lives here, not in `dioxus`, because the kind comes from the title, and a retitled PR must be judged again.
+2. The title and body. See "The PR body".
 
 ### Pinned tools
 
@@ -269,6 +271,8 @@ These extend the byte check in `docs/perf/budgets.md` → "CI on `develop`". The
 
 The PR that first ships a file sets its row.
 
+Not built yet: the path check sees only file names, so it cannot tell a `port` PR's own new rows from an edit to another Tool's ceiling. That row check is built with the ceiling file and its byte check.
+
 ## PR kinds
 
 The title starts with the kind. The path check fails a PR that changes a file outside its kind's set. `Cargo.lock` may change in any kind except `docs`.
@@ -278,7 +282,7 @@ The title starts with the kind. The path check fails a PR that changes a file ou
 | `port` | `port(<key>): …` | `crates/tools/<key>/**`; logic it adds for that Tool in `crates/logic/<name>/**` (never a change to logic another ported Tool already uses); one line each in `crates/app/Cargo.toml` and the Ported Tool list; that Tool's new rows in the ceiling file, `storage.rs` and the #38 goldens; its line in the Dioxus spec filter |
 | `split` | `split(<crate>): …` | `crates/logic/<name>/**` and `wasm/crates/<name>/**` |
 | `shell` | `shell(<layout>): …` | one shell and the `ui` parts only it needs, under `crates/ui/**`, plus one Tool's `port` set |
-| `foundation` | `ui(…)`, `platform(…)`, `bridge(…)`, `persist(…)`, `registry(…)`, `worker(…)`, `app(…)`, `logic(…)` | one primitive, kit, capability, bridge or part, in that crate; `crates/app/Cargo.toml`; for a bridge, `crates/bridges/js/**`; for the registry generator, `scripts/dioxus/**`. Never a Tool crate |
+| `foundation` | `ui(…)`, `platform(…)`, `bridge(…)`, `persist(…)`, `registry(…)`, `worker(…)`, `app(…)`, `logic(…)` | one primitive, kit, capability, bridge or part, in that crate; `crates/app/Cargo.toml`; the root `Cargo.toml` only to add that crate as a workspace member, when that is its only change (the PR that brings in `crates/ui`, `crates/app` and the other single crates); for a bridge, `crates/bridges/js/**`; for the registry generator, `scripts/dioxus/**`. Never a Tool crate |
 | `gates` | `gates: …` | gate files, `docs/quality/**`, and an ADR that records the change; or `Cargo.lock` alone, for `cargo update` |
 | `docs` | `docs: …` | `docs/**` except `docs/quality/**`, plus `CONTEXT.md`, `CONTRIBUTING.md`, `CLAUDE.md` and `.claude/**` |
 | `sync` | `chore: sync main into develop …` | anything, as a merge commit from `main` |
@@ -292,11 +296,12 @@ There is one template per kind in `docs/quality/pr/`, except `sync`, which needs
 
 `pr-body` checks:
 
-- **the title's kind prefix;**
+- **the title's kind prefix,** and for `sync`, that the PR comes from `main`;
+- **nothing inside an HTML comment counts,** since GitHub hides it;
 - **the kind's required headings** (each template's `##` headings);
 - **for `port` and `shell`:** a filled case-mapping table;
 - **for every kind but `sync`:** a non-empty `## Automated review`;
-- **that every box under `## Hand check` is ticked.** The maintainer ticks them as the last step before merging, and agents never tick them. This is a reminder, not a guarantee.
+- **that every box in the template's `## Hand check` is in the body, ticked.** The maintainer ticks them as the last step before merging, and agents never tick them. This is a reminder, not a guarantee.
 
 ## Review
 

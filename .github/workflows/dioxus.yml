@@ -81,17 +81,10 @@ jobs:
           echo "Gated packages: $packages"
           echo "GATED=$(echo "$packages" | sed 's/^/-p /' | tr '\n' ' ')" >>"$GITHUB_ENV"
 
-      # 1. The path check, the gate-file mixing check and the size warning.
-      # Every gate after it runs even when an earlier one fails (`!cancelled()`),
-      # so one red gate never hides the others.
-      - name: Path check by PR kind
-        env:
-          GATES_PR_TITLE: ${{ github.event.pull_request.title }}
-        run: |
-          git diff --numstat --no-renames "$MERGE_BASE" HEAD^2 >"$RUNNER_TEMP/numstat"
-          GATES_NUMSTAT="$RUNNER_TEMP/numstat" cargo test -p gates --test pr -- --ignored --exact pr_paths --nocapture
-
-      # 2. Formatting: dx fmt where there is rsx!, then cargo fmt, then no diff.
+      # The path check (gates.md step 1) runs in pr-body.yml, which reruns
+      # when the title changes. Every gate here runs even when an earlier one
+      # fails (`!cancelled()`), so one red gate never hides the others.
+      # Formatting: dx fmt where there is rsx!, then cargo fmt, then no diff.
       # dx fmt goes file by file: run over a whole crate it would also rewrite
       # the gates crate's must-fail fixtures.
       - name: Formatting

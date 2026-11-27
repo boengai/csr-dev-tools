@@ -40,6 +40,11 @@ impl Visit<'_> for RsxVisitor {
             .last()
             .is_none_or(|last| last.ident != "rsx")
         {
+            // syn keeps another macro's arguments as tokens: an rsx! in a
+            // vec![…] or a format! is found there.
+            for body in nested_rsx(mac.tokens.clone()) {
+                self.call(body);
+            }
             return;
         }
         self.call(mac.tokens.clone());

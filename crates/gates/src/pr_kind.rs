@@ -64,6 +64,9 @@ impl ChangedFile {
 pub struct PathContext {
     /// For each logic crate (by `<name>`), the keys of the Tools that use it.
     pub logic_users: BTreeMap<String, BTreeSet<String>>,
+    /// The one member the PR adds to the root manifest, when that is the
+    /// manifest's only change (`pr_source::added_member`).
+    pub added_member: Option<String>,
 }
 
 /// Reads the PR kind from the title's prefix.
@@ -165,11 +168,17 @@ fn allowed(kind: &Kind, path: &str, proof_tool: &str, ctx: &PathContext) -> bool
         }
         Kind::Shell { .. } => path.starts_with("crates/ui/") || in_port_set(proof_tool, path, ctx),
         Kind::Foundation { layer, part } => {
+            let roots = foundation_roots(layer, part);
+            let adds_own_member = path == "Cargo.toml"
+                && ctx.added_member.as_deref().is_some_and(|member| {
+                    roots
+                        .iter()
+                        .any(|root| root.trim_end_matches('/') == member)
+                });
             path == APP_MANIFEST
                 || path == "Cargo.lock"
-                || foundation_roots(layer, part)
-                    .iter()
-                    .any(|root| path.starts_with(root))
+                || adds_own_member
+                || roots.iter().any(|root| path.starts_with(root))
         }
         Kind::Gates => {
             is_gate_file(path)

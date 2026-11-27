@@ -94,3 +94,17 @@ fn every_hand_check_box_of_the_template_is_ticked() {
         "{found:#?}"
     );
 }
+
+#[test]
+fn ticks_inside_an_html_comment_do_not_count() {
+    let found = rules(&port(), "port-hidden-ticks.md").unwrap();
+    assert_eq!(found.len(), 7, "{found:#?}");
+    assert!(found.iter().all(|f| f.starts_with("pr-body-hand-check")));
+}
+
+#[test]
+fn a_case_row_without_its_rust_test_fails() {
+    let found = rules(&port(), "port-short-row.md").unwrap();
+    assert_eq!(found.len(), 1, "{found:#?}");
+    assert!(found[0].starts_with("pr-body-cases"));
+}
