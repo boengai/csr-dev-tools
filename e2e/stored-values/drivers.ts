@@ -778,8 +778,11 @@ export const DRIVERS: Array<Driver> = [
       await expect(textbox(page, 'Proto schema input')).toBeVisible()
     },
     route: '/tools/protobuf-codec',
-    shows: (page, restored) =>
-      expectText(textbox(page, 'Proto schema input'), String(field(restored[`${P}protobuf-codec-input`], 'schema'))),
+    shows: async (page, restored) => {
+      const value = restored[`${P}protobuf-codec-input`]
+      await expectText(textbox(page, 'Proto schema input'), String(field(value, 'schema')))
+      await expectText(textbox(page, 'JSON input'), String(field(value, 'encodeSource')))
+    },
     tool: 'protobuf-codec',
     touch: (page) => touchText(page, textbox(page, 'Proto schema input')),
     write: async (page) => {

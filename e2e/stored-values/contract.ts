@@ -116,8 +116,9 @@ const WRITES_KEY = 'stored-value-contract-writes'
  * including writes a Tool deletes again before the test reads storage. The
  * log lives in `sessionStorage`, so it survives navigation within the tab.
  */
-export const recordWrites = async (page: Page): Promise<void> => {
-  await page.addInitScript((logKey: string) => {
+/** On a context, it also covers the tabs a page opens. */
+export const recordWrites = async (target: BrowserContext | Page): Promise<void> => {
+  await target.addInitScript((logKey: string) => {
     const setItem = Storage.prototype.setItem
     Storage.prototype.setItem = function (key: string, value: string) {
       if (this === localStorage) {

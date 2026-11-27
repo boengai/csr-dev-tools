@@ -80,6 +80,7 @@ test.describe('Saved inputs', () => {
   })
 
   test('db-diagram: Open in Mermaid Renderer hands the diagram over through storage', async ({ context, page }) => {
+    await recordWrites(context)
     await page.goto('/tools/db-diagram')
     await page.getByTestId('add-table-btn').click()
     await page.getByTestId('export-dropdown-btn').click()
@@ -114,6 +115,7 @@ test.describe('Saved inputs', () => {
     await expect
       .poll(() => renderer.evaluate(() => localStorage.getItem('csr-dev-tools-handoff-mermaid-renderer')))
       .toBeNull()
+    await expectOnlyListedKeys(page)
     await expectOnlyListedKeys(renderer)
   })
 
@@ -181,6 +183,7 @@ test.describe('Saved inputs', () => {
   })
 
   test('db-diagram: an unreadable store is backed up before the first save over it', async ({ page }) => {
+    await recordWrites(page)
     const unreadable = '{bad'
     await seedStorage(page, { 'csr-dev-tools-db-diagrams': unreadable })
     // Records the order of writes, so the backup is seen to land before the store is replaced.
