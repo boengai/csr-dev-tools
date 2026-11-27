@@ -1,6 +1,9 @@
 //! What the path check reads beyond file names: the root manifest's change,
 //! and where a sync PR comes from.
 
+use std::path::Path;
+use std::process::Command;
+
 use toml::{Table, Value};
 
 use crate::Finding;
@@ -44,4 +47,42 @@ pub fn check_sync_source(kind: &Kind, head_ref: &str, brings_main: bool) -> Opti
             "a `chore: sync main into develop` PR comes from `main`, or from a branch that brings main commits develop lacks",
         )
     })
+}
+
+/// Whether `head` brings `main` commits `base` lacks: the point where `head`
+/// meets `main` is not already in `base`. Any git error is an `Err`, never a
+/// pass. `repo` is the checkout; the refs are anything `git` resolves.
+pub fn brings_main(repo: &Path, main: &str, base: &str, head: &str) -> Result<bool, String> {
+    let meet = git(repo, &["merge-base", main, head])?;
+    let output = Command::new("git")
+        .args(["merge-base", "--is-ancestor", meet.trim(), base])
+        .current_dir(repo)
+        .output()
+        .map_err(|error| format!("cannot run git: {error}"))?;
+    // --is-ancestor exits 0 for yes, 1 for no, and anything else on error.
+    match output.status.code() {
+        Some(0) => Ok(false),
+        Some(1) => Ok(true),
+        _ => Err(format!(
+            "git merge-base --is-ancestor failed: {}",
+            String::from_utf8_lossy(&output.stderr).trim()
+        )),
+    }
+}
+
+fn git(repo: &Path, args: &[&str]) -> Result<String, String> {
+    let output = Command::new("git")
+        .args(args)
+        .current_dir(repo)
+        .output()
+        .map_err(|error| format!("cannot run git: {error}"))?;
+    if output.status.success() {
+        Ok(String::from_utf8_lossy(&output.stdout).into_owned())
+    } else {
+        Err(format!(
+            "git {} failed: {}",
+            args.join(" "),
+            String::from_utf8_lossy(&output.stderr).trim()
+        ))
+    }
 }
