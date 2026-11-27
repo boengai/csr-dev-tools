@@ -22,7 +22,7 @@ CI runs `pnpm test:parity` in the `ci` job, after the React site's own e2e run (
 | `journeys` | Desktop Chrome | the journeys: `e2e/*.spec.ts` and `e2e/platform/` |
 | `harness` | Desktop Chrome | `layout-contract.spec.ts`, `a11y.spec.ts`, `loading.spec.ts` |
 | `phone-contract` | Pixel 7 (touch, `isMobile`) | `layout-contract.spec.ts` |
-| `phone-journeys` | Pixel 7 | the journeys' mobile tests (titles with "mobile viewport" or "375px viewport") |
+| `phone-journeys` | Pixel 7 | the journeys' mobile tests (titles with "mobile viewport"; the DB Diagram's 375px test starts from its desktop canvas, so it runs in `journeys`) |
 | `webkit` | Desktop Safari | `layout-contract.spec.ts` |
 | `screenshots` | Desktop Chrome and Pixel 7 | `screenshots.spec.ts`, for the Tools in `SCREENSHOT_TOOLS` |
 

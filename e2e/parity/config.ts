@@ -39,7 +39,7 @@ const both = (a: RegExp, b: RegExp): RegExp => new RegExp(`^(?=.*(?:${a.source})
  * | `journeys`       | Desktop Chrome        | the journeys                                |
  * | `harness`        | Desktop Chrome        | layout contract, axe, loading check         |
  * | `phone-contract` | Pixel 7               | layout contract                             |
- * | `phone-journeys` | Pixel 7               | the journeys' mobile (375px viewport) tests |
+ * | `phone-journeys` | Pixel 7               | the journeys' mobile tests                  |
  * | `webkit`         | Desktop Safari        | layout contract                             |
  * | `screenshots`    | Desktop Chrome, Pixel 7 | the Tools in `SCREENSHOT_TOOLS` (CI evidence) |
  *
@@ -56,8 +56,9 @@ export const defineParityConfig = ({ baseURL, build, journeys = {}, tools, webSe
     testIgnore: ['parity/**', 'perf/**'],
     ...(journeys.testMatch ? { testMatch: journeys.testMatch } : {}),
   }
-  // The journeys' mobile tests: most say "mobile viewport", the DB diagram's says "375px viewport".
-  const mobile = /mobile viewport|375px viewport/
+  // The journeys' mobile tests. The DB diagram's "375px viewport" test is left out: its
+  // `beforeEach` needs the desktop canvas, which a phone never shows, so it runs in `journeys`.
+  const mobile = /mobile viewport/
 
   return defineConfig({
     forbidOnly: !!process.env.CI,
