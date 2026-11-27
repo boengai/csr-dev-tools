@@ -91,3 +91,41 @@ fn a_git_error_is_an_error_not_a_sync() {
     assert!(merges_main(&repo, "main", "no-such-ref", "sync").is_err());
     fs::remove_dir_all(&repo).unwrap();
 }
+
+/// A criss-cross history, where `main` and `pr` have two merge bases: `b1`,
+/// which `base` holds and which git reports first, and `a1`, which `base`
+/// lacks. (`pr`, not `head`: on a case-insensitive disk `head` is `HEAD`.)
+fn criss_cross(name: &str) -> Result<PathBuf, String> {
+    let repo = std::env::temp_dir().join(format!("gates-{name}-{}", std::process::id()));
+    if repo.exists() {
+        fs::remove_dir_all(&repo).map_err(|error| error.to_string())?;
+    }
+    fs::create_dir_all(&repo).map_err(|error| error.to_string())?;
+    git(&repo, &["init", "-q", "-b", "a"])?;
+    git(&repo, &["commit", "-q", "--allow-empty", "-m", "x"])?;
+    git(&repo, &["branch", "b"])?;
+    git(&repo, &["commit", "-q", "--allow-empty", "-m", "a1"])?;
+    git(&repo, &["branch", "a1"])?;
+    git(&repo, &["switch", "-q", "b"])?;
+    git(&repo, &["commit", "-q", "--allow-empty", "-m", "b1"])?;
+    git(&repo, &["branch", "base"])?;
+    git(&repo, &["merge", "-q", "--no-ff", "--no-edit", "a1"])?;
+    git(&repo, &["switch", "-q", "-c", "main", "a1"])?;
+    git(&repo, &["merge", "-q", "--no-ff", "--no-edit", "base"])?;
+    git(&repo, &["switch", "-q", "base"])?;
+    git(
+        &repo,
+        &["commit", "-q", "--allow-empty", "-m", "work on base"],
+    )?;
+    git(&repo, &["switch", "-q", "-c", "pr", "b"])?;
+    git(&repo, &["merge", "-q", "--no-ff", "--no-edit", "base"])?;
+    Ok(repo)
+}
+
+#[test]
+fn every_merge_base_counts_not_only_the_one_git_picks() {
+    let repo = criss_cross("criss-cross").unwrap();
+    // pr brings a1, a main commit base lacks, and holds base's own work.
+    assert_eq!(merges_main(&repo, "main", "base", "pr"), Ok(true));
+    fs::remove_dir_all(&repo).unwrap();
+}

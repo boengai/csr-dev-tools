@@ -53,9 +53,19 @@ pub fn check_sync_source(kind: &Kind, head_ref: &str, merges_main: bool) -> Opti
 /// `main` merges nothing of `base`. Any git error is an `Err`, never a pass.
 /// `repo` is the checkout; the refs are anything `git` resolves.
 pub fn merges_main(repo: &Path, main: &str, base: &str, head: &str) -> Result<bool, String> {
-    let main_meet = git(repo, &["merge-base", main, head])?;
-    let base_meet = git(repo, &["merge-base", base, head])?;
-    Ok(!is_ancestor(repo, main_meet.trim(), base)? && !is_ancestor(repo, base_meet.trim(), main)?)
+    Ok(brings(repo, main, head, base)? && brings(repo, base, head, main)?)
+}
+
+/// Whether `head` holds commits of `from` that `without` lacks. Every merge
+/// base counts: in a criss-cross history git reports one of several, and the
+/// one it picks may already be in `without` while another is not.
+fn brings(repo: &Path, from: &str, head: &str, without: &str) -> Result<bool, String> {
+    for meet in git(repo, &["merge-base", "--all", from, head])?.lines() {
+        if !is_ancestor(repo, meet.trim(), without)? {
+            return Ok(true);
+        }
+    }
+    Ok(false)
 }
 
 fn is_ancestor(repo: &Path, commit: &str, of: &str) -> Result<bool, String> {

@@ -55,10 +55,6 @@ fn report(findings: &[gates::Finding]) -> String {
 )]
 fn pr_paths() {
     let kind = kind().unwrap();
-    if kind == Kind::Sync {
-        // A sync may change anything, even nothing at all.
-        return;
-    }
     let numstat = fs::read_to_string(var("GATES_NUMSTAT").unwrap()).unwrap();
     let files: Vec<ChangedFile> = numstat
         .lines()
@@ -72,10 +68,14 @@ fn pr_paths() {
             ))
         })
         .collect();
-    assert!(!files.is_empty(), "the numstat file lists no changed file");
     if let Some(warning) = size_warning(&files) {
         println!("::warning::{warning}");
     }
+    if kind == Kind::Sync {
+        // A sync may change anything, even nothing at all.
+        return;
+    }
+    assert!(!files.is_empty(), "the numstat file lists no changed file");
     let mut context = gates::tree::path_context(root()).unwrap();
     if files.iter().any(|file| file.path == "Cargo.toml") {
         let base = fs::read_to_string(var("GATES_BASE_MANIFEST").unwrap()).unwrap();
