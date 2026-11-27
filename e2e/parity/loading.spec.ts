@@ -22,19 +22,32 @@ const routeTool = ROUTE_TOOLS.map((key) => parityTools().find((tool) => tool.key
 
 // The home page arrives with the app shell, so its indicator is the robot in each widget until the
 // widget's Tool fills it; on a Tool route, the flying saucer shows until the Tool does.
-const PAGES: Array<{ app: string; indicator: string; name: string; path: string }> = [
+// `drawnBeforeApp`: whether the indicator's image is drawn, not just laid out, before the app shows.
+// Measured on React under slow 4G: the robot (341 KB) is drawn about 2.7 s before the dashboard fills;
+// the saucer (622 KB) shares the line with the Tool's code and is never drawn before the Tool shows,
+// so React leaves an empty box there. Each page is held to what React does (docs/ux/parity.md).
+const PAGES: Array<{ app: string; drawnBeforeApp: boolean; indicator: string; name: string; path: string }> = [
   {
     app: '[data-testid="dashboard-widget"] article',
+    drawnBeforeApp: true,
     indicator: WIDGET_LOADING,
     name: 'home page',
     path: '/',
   },
   ...(routeTool
-    ? [{ app: '[data-slot="tool-surface"]', indicator: TOOL_LOADING, name: 'Tool route', path: routeTool.routePath }]
+    ? [
+        {
+          app: '[data-slot="tool-surface"]',
+          drawnBeforeApp: false,
+          indicator: TOOL_LOADING,
+          name: 'Tool route',
+          path: routeTool.routePath,
+        },
+      ]
     : []),
 ]
 
-type LoadingRecord = { appAt: null | number; cls: number; indicatorAt: null | number }
+type LoadingRecord = { appAt: null | number; cls: number; indicatorAt: null | number; indicatorDrawnAt: null | number }
 
 test.use(deviceOptions('Pixel 7'))
 
@@ -60,7 +73,7 @@ const throttle = async (page: Page): Promise<CDPSession> => {
 const record = async (page: Page, app: string, indicator: string): Promise<void> => {
   await page.addInitScript(
     ({ app, indicator }) => {
-      const r: LoadingRecord = { appAt: null, cls: 0, indicatorAt: null }
+      const r: LoadingRecord = { appAt: null, cls: 0, indicatorAt: null, indicatorDrawnAt: null }
       Object.assign(window, { __loading: r })
       new PerformanceObserver((list) => {
         for (const entry of list.getEntries() as Array<PerformanceEntry & { hadRecentInput: boolean; value: number }>)
@@ -73,10 +86,22 @@ const record = async (page: Page, app: string, indicator: string): Promise<void>
         return box.width > 0 && box.height > 0
       }
       const check = () => {
-        if (r.indicatorAt === null && seen(document.querySelector(indicator))) r.indicatorAt = performance.now()
+        const shown = document.querySelector(indicator)
+        if (r.indicatorAt === null && seen(shown)) r.indicatorAt = performance.now()
+        // Drawn: the image's bytes have arrived and decoded, so the visitor sees the emoji, not an empty box.
+        if (
+          r.indicatorDrawnAt === null &&
+          seen(shown) &&
+          shown instanceof HTMLImageElement &&
+          shown.complete &&
+          shown.naturalWidth > 0
+        )
+          r.indicatorDrawnAt = performance.now()
         if (r.appAt === null && document.querySelector(app)) r.appAt = performance.now()
       }
       new MutationObserver(check).observe(document, { attributes: true, childList: true, subtree: true })
+      // An image finishing its download is no DOM mutation; `load` does not bubble, so listen in capture.
+      document.addEventListener('load', check, true)
     },
     { app, indicator },
   )
@@ -90,7 +115,7 @@ if (!routeTool) {
   test.skip(`loading a Tool route (none of ${ROUTE_TOOLS.join(', ')} is in this run)`, () => {})
 }
 
-for (const { app, indicator, name, path } of PAGES) {
+for (const { app, drawnBeforeApp, indicator, name, path } of PAGES) {
   test.describe(`loading the ${name}`, () => {
     test('shows the loading indicator first, then fills the root without a layout shift', async ({ page }) => {
       await throttle(page)
@@ -103,10 +128,17 @@ for (const { app, indicator, name, path } of PAGES) {
       await expect(page.locator(indicator), 'the page has filled in').toHaveCount(0, { timeout: LOAD_TIMEOUT })
       await page.waitForTimeout(2_000)
 
-      const { appAt, cls, indicatorAt } = await readRecord(page)
+      const { appAt, cls, indicatorAt, indicatorDrawnAt } = await readRecord(page)
       expect(indicatorAt, 'the loading indicator showed').not.toBeNull()
       expect(appAt, 'the app showed').not.toBeNull()
       expect(indicatorAt!, 'the loading indicator showed before the app').toBeLessThan(appAt!)
+      if (drawnBeforeApp) {
+        expect(indicatorDrawnAt, 'the loading indicator image was drawn').not.toBeNull()
+        expect(indicatorDrawnAt!, 'the loading indicator image was drawn before the app').toBeLessThan(appAt!)
+      } else {
+        const drawn = indicatorDrawnAt !== null && indicatorDrawnAt < appAt! ? 'drawn' : 'not drawn (as on React)'
+        test.info().annotations.push({ description: `indicator image ${drawn} before the app`, type: 'loading' })
+      }
       expect(cls, 'cumulative layout shift').toBeLessThanOrEqual(CLS_LIMIT)
     })
 
