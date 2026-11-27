@@ -6,6 +6,10 @@
   takes a document handle. See [the amendment](#amendment-2026-11-27-the-hayro-trial).
   Trial 2 (hayro-write) failed too, so pdf-lib stays for the merge. See
   [its amendment](#amendment-2026-11-27-the-hayro-write-trial).
+- **Amended:** 2026-11-28. Trial 3 (tract) passed with a port condition, so
+  tract replaces transformers.js. The ONNX Runtime exception ends when
+  background-remover's port ships. See
+  [its amendment](#amendment-2026-11-28-the-tract-trial).
 
 ## Context
 
@@ -85,6 +89,7 @@ notes themselves are not kept in the repo.
 | `react-image-crop` | a hand-built Dioxus component |
 | `@dnd-kit/*` | a hand-built sortable grid, not `dioxus-dnd` (ADR-0031's "own primitives" condition) |
 | `@xyflow/react` | a hand-built graph canvas for db-diagram, with no trial, as its own build issue. `@xyflow/system` is the fallback only if a written bar for pan and zoom feel fails |
+| `@huggingface/transformers` and ONNX Runtime (background removal) | `tract-onnx` running MODNet fp32 in a Rust worker. The tract trial (#44) passed, under a memory condition (see [the amendment](#amendment-2026-11-28-the-tract-trial)) |
 
 **Kept as JavaScript, behind the boundary below:**
 
@@ -128,7 +133,9 @@ and a pass bar written before it starts. They run in this order:
    run as a second candidate. **Both failed on 2026-11-27,** so pdf-lib
    stays for the merge (see
    [the amendment](#amendment-2026-11-27-the-hayro-write-trial)).
-3. `tract-onnx` with MODNet in place of transformers.js.
+3. `tract-onnx` with MODNet in place of transformers.js. **Passed on
+   2026-11-28,** with a port condition, so tract replaces it (see
+   [the amendment](#amendment-2026-11-28-the-tract-trial)).
 
 If a trial fails, the JS engine stays behind the boundary. A trial must
 finish before its tools are ported, not before porting starts.
@@ -243,8 +250,9 @@ The facades decided now:
   - any `new URL('…', import.meta.url)`.
 
   A computed `import()` is allowed only from a per-bridge allow-list, with
-  a comment naming the URL it reaches. There are three: Monaco's diff
-  module, pdf.js's fallback worker and ONNX Runtime's module. Each bridge
+  a comment naming the URL it reaches. There are two: Monaco's diff
+  module and pdf.js's fallback worker. ONNX Runtime's module left the
+  list when the tract trial passed. Each bridge
   also declares the exact files its build emits, and any other file fails
   CI.
 - **CodeMirror** ships as two full bundles: a plain one, and one with JSON
@@ -306,11 +314,10 @@ The facades decided now:
      because it must run JS `RegExp`.
   3. **Library-owned workers** (Monaco, pdf.js), which live inside their
      bridges.
-  4. **A JS library run in our worker** (transformers.js, while the tract
-     trial has not won). It is a self-contained entry module from the
-     same build, spawned by the worker bridge. ONNX Runtime still comes
-     from jsdelivr, as a written
-     exception, because its `.wasm` is over the Pages file limit.
+  4. **A JS library run in our worker.** It is a self-contained entry
+     module from the same build, spawned by the worker bridge. No tool
+     uses this kind now: transformers.js was its only user, and the tract
+     trial passed, so background removal is a Rust worker (kind 1).
 - **The same work runs in workers as today:** regex, bcrypt, the PDF
   compile and model inference. Pixel work, including the Rust resample
   and the background-removal compositing, runs on the main thread. A tool
@@ -374,9 +381,11 @@ Each bridge's tool journey must run with zero `securitypolicyviolation`
 events under the post-migration CSP:
 
 - no `'unsafe-eval'`;
-- jsdelivr and `blob:` only for the ONNX Runtime exception.
+- no jsdelivr and no `script-src blob:`, once background-remover's port
+  ships. They were allowed only for the ONNX Runtime exception.
 
-The background-remover journey decides whether `'unsafe-eval'` can go.
+The background-remover journey decides whether `'unsafe-eval'` can go
+(see [the tract amendment](#amendment-2026-11-28-the-tract-trial)).
 When the headers change belongs to cutover. The mechanical gate that runs
 this check belongs to [#25](https://github.com/boengai/csr-dev-tools/issues/25).
 
@@ -421,18 +430,20 @@ this check belongs to [#25](https://github.com/boengai/csr-dev-tools/issues/25).
 
   Neither page is budgeted, so each byte ceiling is set by its first port
   PR.
-- **Waiting on a trial:** background-remover. Its port is not blocked.
-  combine-pdf no longer waits on anything: both PDF trials failed, so it
-  ports with the pdf.js bridge for its previews and the pdf-lib bridge for
-  its merge. The image-to-pdf previews port with the pdf.js bridge.
+- **No tool waits on a trial.** combine-pdf ports with the pdf.js bridge
+  for its previews and the pdf-lib bridge for its merge, and the
+  image-to-pdf previews port with the pdf.js bridge. background-remover
+  ports as a Rust worker running tract, under the memory condition in
+  [the tract amendment](#amendment-2026-11-28-the-tract-trial).
 - **Handed to their owners, with no decision here:**
   - **The map's Cutover item:** removing CSP sources and fixing the stale
     [`public/_headers`](../../public/_headers) comments.
     - **Once Monaco is self-hosted:** its jsdelivr entries in
       `script-src`, `style-src` and `font-src`, and `worker-src blob:`.
       Monaco is the only user of `worker-src blob:`.
-    - **Only if the ONNX Runtime exception ends:** `script-src blob:` and
-      jsdelivr in `script-src` and `connect-src`.
+    - **When background-remover's port ships, which ends the ONNX Runtime
+      exception:** `script-src blob:`, and the jsdelivr entries in
+      `script-src` and `connect-src` that Monaco does not need.
     - **Once `ajv` is gone and the background-remover journey passes
       without it (Decision 6):** `'unsafe-eval'`.
     - **Depending on how the port reads data URIs:** `connect-src data:`.
@@ -442,8 +453,10 @@ this check belongs to [#25](https://github.com/boengai/csr-dev-tools/issues/25).
   - **[#24](https://github.com/boengai/csr-dev-tools/issues/24):** the
     playground's e2e rework, including its silent `if (m)` guard, and
     adding the playground to the perf pages.
-  - **The tract trial and the background-remover hard-tool decision:**
-    self-hosting the MODNet model, or changing its dtype.
+  - **The background-remover hard-tool decision:** whether to self-host
+    the MODNet model. This also decides the `huggingface.co` entries in
+    `connect-src`. The trial found no case for changing its dtype (see
+    [the tract amendment](#amendment-2026-11-28-the-tract-trial)).
   - **The byte check in [#25](https://github.com/boengai/csr-dev-tools/issues/25):**
     a ceiling for each bridge and worker file. The
     planned check skips requests made inside workers.
@@ -539,9 +552,72 @@ a pass. Both candidates failed, so pdf-lib stays behind its engine bridge
   matched pdf-lib's page geometry on every page of M1–M5. In M6, the only
   difference is the blank page pdf-lib writes for the locked file.
 
+## Amendment, 2026-11-28: the tract trial
+
+[Issue 44](https://github.com/boengai/csr-dev-tools/issues/44) ran trial 3
+against a corpus and a pass bar written into the ticket before any run.
+Each check meant "no worse than transformers.js on `main`". tract
+passed every judged check, under a port condition the maintainer ruled
+on in #44, so it replaces transformers.js and ONNX Runtime
+([write-up](https://github.com/boengai/csr-dev-tools/blob/research/tract-bg-removal-trial/docs/research/tract-bg-removal-trial.md)).
+
+- **The judged build** is `tract-onnx` 0.23.10, running MODNet's fp32
+  model in a Rust worker. It is built with `+simd128` and no threads.
+  - **Why not the agreed pin:** that was 0.22.6, and it cannot load the
+    model, because support for `Resize` with `pytorch_half_pixel`
+    only arrived in 0.23.5. The maintainer ruled to judge 0.23.10 instead.
+  - **What it runs on each image:** the normalisation and the uint8
+    conversion run in Rust.
+  - **What runs in the worker:** both of the mask's resizes (canvas
+    `drawImage`) and the full-size alpha composite. That matches what
+    transformers.js does in its worker on `main`. The colour composite
+    stays on the main thread (Decision 4).
+  - **The plan cache:** tract cannot keep H and W symbolic through
+    MODNet's `Resize`, so it optimises a plan for each new input size.
+    That costs about 100 ms, and the judged latency figures include it.
+- **The results:**
+
+  | Check | Bar | tract |
+  |---|---|---|
+  | Mask fidelity | ≥ 45 dB, or ≥ the floor | 59.7–96.4 dB PSNR, no pixel off by more than 1/255 |
+  | Cold start | ≤ 1.25× | 0.88× |
+  | Warm latency | ≤ 1.25× | up to **1.23×** |
+  | Bytes (brotli) | ≤ transformers.js | 2,301,198 against 4,155,073 for transformers.js with ONNX Runtime's `.mjs` and `.wasm` (0.55×) |
+
+- **Port condition: memory.** tract's wasm memory grows with the model
+  input's width and never shrinks.
+  - **How far it grows:** the corpus panorama, a 3104×512 input, peaks
+    at 946 MiB, under the bar's 1 GiB. A 16384×512 input reaches 3.55 GiB,
+    and on 0.23.11 it traps where ONNX Runtime finishes.
+  - **What the port must do:** cap the model input, either with an error
+    or with a documented downscale, and recycle the worker after a run
+    that grew its memory.
+- **The latency margin is thin.** The port PR re-measures latency against
+  the 1.25× bar, with the same alternating method.
+- **No case for changing the model's dtype** (reported, not judged).
+  tract cannot load the published `model_quantized.onnx`. ONNX Runtime's
+  q8 masks score 5.4–43.1 dB against fp32 and visibly lose foreground.
+- **Self-hosting is possible.** The fp32 model is 25,888,640 bytes, which
+  is 325,760 under the Pages per-file limit. Whether to self-host stays
+  with the background-remover decision.
+- **`'unsafe-eval'`:**
+  - **Today's journey:** the React journey passes under the shipped CSP
+    without `'unsafe-eval'`. ONNX Runtime's embind `Function(…)` was
+    not reached in it. That narrows the open question in Context but does
+    not prove the path is never taken.
+  - **The tract glue** has no `eval` and no `Function`, so after the
+    port only `ajv` needs `'unsafe-eval'`.
+- **Deviations from the bar:**
+  - The noise floor came from WebKit instead of Firefox, which would not
+    launch on the trial machine. It decided nothing, because every image
+    cleared 45 dB.
+  - ONNX Runtime's memory was not measured, so the 1 GiB line was applied
+    as an absolute limit.
+  - The bad-input cases ran in Node, on the same wasm build.
+  - Cold start was measured on the vite dev server.
+
 ## Revisit when
 
-- A trial passes or fails.
 - A hayro release, with its standard fonts and CMaps compiled in or
   fetched on demand, is no larger than pdf.js in brotli bytes (417,068
   for pdfjs-dist 6.4.299). That reopens trial 1 on that release. The
@@ -555,4 +631,10 @@ a pass. Both candidates failed, so pdf-lib stays behind its engine bridge
 - A Rust code editor or a TypeScript language service reaches the
   browser.
 - `dx` gains npm bundling, a worker build step, or chunk-aware hashing.
-- ONNX Runtime's `.wasm` fits under the Pages per-file limit.
+- The background-remover port cannot meet the tract amendment's memory
+  condition, or misses the trial's 1.25× latency bar. That reopens trial
+  3.
+- A tract release keeps H and W symbolic through MODNet's `Resize`, or
+  loads the published q8 model.
+- `Xenova/modnet`'s `model.onnx` changes, which means checking it again
+  against the Pages per-file limit before self-hosting.
