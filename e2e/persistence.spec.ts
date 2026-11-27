@@ -312,14 +312,20 @@ test.describe('Saved inputs', () => {
         await page.keyboard.press('ControlOrMeta+A')
         await page.keyboard.insertText(sample)
       }
+      // A password field has no textbox role; it gets the sample too (AES).
+      for (const field of await surface.locator('input[type="password"]').all()) await field.fill(sample)
+      // The output holds a value: the Tool processed the input. A Codec's output is a `pre`.
       const output = surface.locator('[data-slot="tool-output"]').first()
       if ((await output.count()) > 0) await expect(output).toHaveAttribute('data-has-value')
+      else await expect(surface.locator('pre[data-has-value]').first()).toBeVisible({ timeout: 15_000 })
       // Leaving the page flushes any pending save.
       await page.goto('/')
 
       // Includes any write the Tool deleted again before leaving.
       const written = await writtenKeys(page)
       expect(written.filter((key) => !allowed.includes(key))).toEqual([])
+      // Not even a key it may write (AES's mode) ever held the input.
+      expect((await recordedWriteLog(page)).filter(({ value }) => value.includes(sample))).toEqual([])
     })
   }
 })

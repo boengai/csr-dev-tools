@@ -304,8 +304,10 @@ const timezoneConverter: Driver = (() => {
   }
 })()
 
-/** What the AES journey types: a password, ciphertext in Decrypt, plain text in Encrypt. */
-const AES_TYPED = ['secret-pass', 'U2FsdGVkX19jaXBoZXJ0ZXh0', 'plain-text'] as const
+/** What the AES journey types, and the ciphertext it gets back, by page. */
+const AES_PASSWORD = 'secret-pass'
+const AES_PLAINTEXT = 'plain-text'
+const aesCiphertext = new WeakMap<Page, Array<string>>()
 
 const PROTOBUF_FORMATS: Record<string, string> = { base64: 'Base64', binary: 'Binary', hex: 'Hex' }
 const PROTOBUF_DECODE_INPUT = 'Paste encoded protobuf data...'
@@ -774,27 +776,36 @@ export const DRIVERS: Array<Driver> = [
       await expectStored(page, { [`${P}aes-encrypt-decrypt-mode`]: 'encrypt' })
       // Leaving flushes any pending save, so the checks that follow see it.
       await page.goto('/')
-      // No write ever held the password or the text, even under a listed key and overwritten later.
-      const leaked = (await recordedWriteLog(page)).filter(({ value }) =>
-        AES_TYPED.some((typed) => value.includes(typed)),
-      )
+      // No write ever held the password, the text or the ciphertext, even under a listed key and overwritten later.
+      const secrets = [AES_PASSWORD, AES_PLAINTEXT, ...(aesCiphertext.get(page) ?? [])]
+      const leaked = (await recordedWriteLog(page)).filter(({ value }) => secrets.some((s) => value.includes(s)))
       expect(leaked).toEqual([])
       // The mode key only ever held a mode.
       const modes = (await recordedWriteLog(page)).filter(({ key }) => key === `${P}aes-encrypt-decrypt-mode`)
       expect(modes.map(({ value }) => value).filter((v) => v !== '"encrypt"' && v !== '"decrypt"')).toEqual([])
     },
-    // Types a password and text in both modes: it opens in Decrypt (the golden value), then switches.
+    // A full round trip, so a write made only when encryption or decryption succeeds is caught:
+    // it opens in Decrypt (the golden value), encrypts, decrypts that ciphertext, and ends in Encrypt.
     edit: async (page) => {
       const source = page.getByTestId('code-input-dialog-source').getByRole('textbox')
+      const output = page.locator('pre[data-has-value]')
+      const mode = async (name: string) => {
+        await page.getByRole('button', { exact: true, name }).click()
+        await expect(page.getByRole('button', { exact: true, name })).toHaveAttribute('aria-pressed', 'true')
+      }
       // By label: a password input has no textbox role in ARIA.
-      await page.getByLabel('Password', { exact: true }).fill(AES_TYPED[0])
-      await typeAtEnd(page, source, AES_TYPED[1])
-      await page.getByRole('button', { exact: true, name: 'Encrypt mode' }).click()
-      await expect(page.getByRole('button', { exact: true, name: 'Encrypt mode' })).toHaveAttribute(
-        'aria-pressed',
-        'true',
-      )
-      await typeAtEnd(page, source, AES_TYPED[2])
+      await page.getByLabel('Password', { exact: true }).fill(AES_PASSWORD)
+      await mode('Encrypt mode')
+      await replaceText(page, source, AES_PLAINTEXT)
+      // 600k PBKDF2 iterations: encryption takes a moment.
+      await expect(output).toBeVisible({ timeout: 15_000 })
+      const ciphertext = (await textOf(output)).trim()
+      expect(ciphertext).not.toBe('')
+      aesCiphertext.set(page, [ciphertext])
+      await mode('Decrypt mode')
+      await replaceText(page, source, ciphertext)
+      await expect.poll(() => textOf(output), { timeout: 15_000 }).toContain(AES_PLAINTEXT)
+      await mode('Encrypt mode')
     },
     keys: [`${P}aes-encrypt-decrypt-mode`],
     modes: ['encrypt', 'decrypt'],
