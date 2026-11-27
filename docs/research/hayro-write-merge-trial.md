@@ -14,14 +14,15 @@ This is the trial for GitHub issue [#43](https://github.com/boengai/csr-dev-tool
 | Interactive content | **fail**: every annotation is dropped (links, widgets, markup) | pass, and better: explicit GoTo links now resolve |
 | Output size, ≤1.10× in total and no merge above 1.5× | 0.80× in total, but **fail**: 2.11× on `edge-std14-rotate-crop` (4,616 vs 2,192 B) | pass: 0.82× in total, worst merge 1.00× |
 | Bytes, ≤ pdf-lib's 160,340 B brotli | pass: **131,335** (0.82×) | **fail: 283,447 (1.77×)** |
-| No trap | pass | **fail**: a file with a user password isn't reported in `skipped`, and its pages are dropped silently |
+| No trap | pass | **fails the bar's own line** ("Locked … inputs land in `skipped`"): a file with a user password loads without error, its pages are dropped silently, and it never reaches `skipped`. pdf-lib doesn't skip it either (it writes a blank page), so against `main` this is a different failure rather than a clearly worse one. The verdict rests on bytes. |
 | Encrypted inputs | pass, and better: decrypts where pdf-lib writes blank pages | pass, and better: the same |
 | `qpdf --check` | pass | pass |
-| Page geometry: count, order, MediaBox, CropBox, Rotate | pass | pass |
+| Page geometry: count, order, MediaBox, CropBox, Rotate | pass (M6: see below) | pass (M6: see below) |
 | Page fidelity, rendered | not run | not run |
 
 **Not run: the render check.** The plan was pdf.js in GPU Chrome at 0.6, page by page. Both candidates had already failed, and a render diff could not turn either result into a pass, so the user chose to skip it (2026-11-27, recorded in #43). Two structural checks stand in for it, though neither replaces it:
-- Page geometry matched pdf-lib's on every page of every merge.
+- Page geometry matched pdf-lib's on every page of M1–M5.
+- In M6, pdf-lib has one extra page: the blank page it writes for the locked file. `analyze.mjs` compares page i with page i, so `runs/analysis.txt` shows M6 as misaligned. That includes a false `lost={"Widget":23}` for B, which in fact keeps all 23 fw9 widgets. Without that blank page, M6 has the same pages in the same order. This is better than `main`, and it is recorded as a behaviour change.
 - pdf.js text extraction of page 1 is identical for both candidates on every encrypted merge.
 
 **A finding about `main` (a bug, separate from the trial).** combine-pdf writes **blank pages** for any input encrypted with an empty user password. That covers ISO 32000, RC4-128, AES-128 and AES-256.
@@ -52,7 +53,7 @@ Sizes are brotli quality 11 (Node `zlib`). Data: [`runs/bytes.txt`](hayro-write-
 
 **How pdf-lib's share was measured:**
 - pdf-lib has no chunk of its own. Vite places it in a chunk shared by combine-pdf and image-to-pdf.
-- The app was rebuilt with `--sourcemap`, which produced the same chunk hash.
+- The app was rebuilt with `--sourcemap`, which produced the same chunk file name and hash. That build's chunk is 40 bytes longer, at 470,678 raw and 175,188 brotli, only because of the `sourceMappingURL` comment.
 - [`harness/attrib-chunk.cjs`](hayro-write-merge-trial/harness/attrib-chunk.cjs) assigned each byte to its source module through the sourcemap.
 - It counted these modules: `pdf-lib` 217,207, `@pdf-lib/standard-fonts` 130,013, `pako` 45,451, `@pdf-lib/upng` 24,704 and `tslib` 2,403.
 - Those bytes were then compressed together with brotli.
@@ -116,6 +117,7 @@ Output size (bytes) and annotations kept, against pdf-lib:
 | M1 IA scan (JBIG2, JPX) | 568 | 25,146,977 | 25,323,383 | 25,116,804 | none | | |
 | M2 interleaved | 5 | 429,967 | 355,530 | 367,607 | 94 Widget, 7 links, 3 markup | 0 | all |
 | M3 arxiv reversed subset | 5 | 843,235 | 628,839 | 586,581 | 4 URI, 22 named GoTo | 0 | all |
+| M3 markup reversed (added: both GoTo directions between selected pages) | 2 | 3,223 | 1,280 | 1,805 | as M1 markup | 0 | all (GoTo now resolves) |
 | M4 ISO 32000, all | 756 | 17,187,155, **blank pages** | 4,829,942 | 6,802,694 | 51 URI, 3,915 named GoTo | 0 | all |
 | M5 encrypted mix | 24 | 3,692,078, **blank pages** | 2,575,201 | 2,336,816 | 21 URI, 210 named GoTo | 0 | all |
 | **Total M1–M5** | | 92,224,745 | 73,614,454 (0.80×) | 75,421,257 (0.82×) | | | |
@@ -127,6 +129,8 @@ Output size (bytes) and annotations kept, against pdf-lib:
 - **A:** it outputs 2 pages, and `skipped` holds all three bad files.
 - **B:** it outputs 2 pages, and `skipped` holds only the truncated and non-PDF files.
 - **All three:** page 99 is ignored, and nothing trapped.
+
+**Reading `runs/analysis.txt`:** in M1 markup and M3 markup, B shows `lost={"Link-GoTo-explicit-dangling":2}`. Those two links weren't lost: they now resolve, and they are counted as `Link-GoTo-explicit-ok`.
 
 **No timeout, OOM or trap (pass for both, apart from B's locked-file case above):**
 - **Speed:** no candidate merge took over 1.6 s. The slowest was lopdf on M5, at 1,582 ms. pdf-lib took 3,125 ms on M4.
