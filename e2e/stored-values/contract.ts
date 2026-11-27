@@ -112,24 +112,34 @@ export const seedStorage = async (context: BrowserContext | Page, stored: Storag
 const WRITES_KEY = 'stored-value-contract-writes'
 
 /** One `localStorage` write, as `recordWrites` saw it. */
-export type RecordedWrite = { key: string; value: string }
+/** `value` is `null` for a removal (`removeItem`, or `clear` for each key it held). */
+export type RecordedWrite = { key: string; value: string | null }
 
 /**
- * Records every `localStorage` write, key and value, for the rest of the
- * test. That includes writes a Tool deletes or overwrites before the test
+ * Records every `localStorage` write and removal, key and value, for the
+ * rest of the test. That includes writes a Tool deletes or overwrites before the test
  * reads storage. The log lives in `sessionStorage`, so it survives
  * navigation within the tab. On a context, it also covers the tabs a page
  * opens.
  */
 export const recordWrites = async (target: BrowserContext | Page): Promise<void> => {
   await target.addInitScript((logKey: string) => {
-    const setItem = Storage.prototype.setItem
+    const { clear, removeItem, setItem } = Storage.prototype
+    const log = (entries: Array<{ key: string; value: string | null }>) => {
+      const before = JSON.parse(sessionStorage.getItem(logKey) ?? '[]') as Array<unknown>
+      setItem.call(sessionStorage, logKey, JSON.stringify([...before, ...entries]))
+    }
     Storage.prototype.setItem = function (key: string, value: string) {
-      if (this === localStorage) {
-        const log = JSON.parse(sessionStorage.getItem(logKey) ?? '[]') as Array<{ key: string; value: string }>
-        setItem.call(sessionStorage, logKey, JSON.stringify([...log, { key, value: String(value) }]))
-      }
+      if (this === localStorage) log([{ key, value: String(value) }])
       setItem.call(this, key, value)
+    }
+    Storage.prototype.removeItem = function (key: string) {
+      if (this === localStorage && localStorage.getItem(key) !== null) log([{ key, value: null }])
+      removeItem.call(this, key)
+    }
+    Storage.prototype.clear = function () {
+      if (this === localStorage) log(Object.keys(localStorage).map((key) => ({ key, value: null })))
+      clear.call(this)
     }
   }, WRITES_KEY)
 }
@@ -138,9 +148,9 @@ export const recordWrites = async (target: BrowserContext | Page): Promise<void>
 export const recordedWriteLog = (page: Page): Promise<Array<RecordedWrite>> =>
   page.evaluate((logKey) => JSON.parse(sessionStorage.getItem(logKey) ?? '[]') as Array<RecordedWrite>, WRITES_KEY)
 
-/** The keys `recordWrites` has seen written, in order. */
+/** The keys `recordWrites` has seen written (not removed), in order. */
 export const recordedWrites = async (page: Page): Promise<Array<string>> =>
-  (await recordedWriteLog(page)).map(({ key }) => key)
+  (await recordedWriteLog(page)).filter(({ value }) => value !== null).map(({ key }) => key)
 
 /** Every `localStorage` entry, as raw text. */
 export const readStorage = (page: Page): Promise<Record<string, string>> =>

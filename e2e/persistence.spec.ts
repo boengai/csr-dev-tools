@@ -108,7 +108,7 @@ test.describe('Saved inputs', () => {
       await page.goto(driver.route)
       await driver.ready(page)
       await driver.shows(page, restored)
-      // Reading never writes (ADR-0032 Decision 4): opening wrote nothing, not even the same value back.
+      // Reading never writes or deletes (ADR-0032 Decision 4): opening changed nothing, not even the same value back.
       expect(await writesBeyond(page, seed)).toEqual([])
 
       await driver.edit(page, restored)
@@ -176,7 +176,7 @@ test.describe('Saved inputs', () => {
     await expect.poll(() => renderer.evaluate((k) => localStorage.getItem(k), handoffKey)).toBeNull()
     // DB Diagram itself wrote the handoff, as the exported text: not the renderer's draft directly.
     const handoffWrites = (await recordedWriteLog(page)).filter(({ key }) => key === handoffKey)
-    expect(handoffWrites.map(({ value }) => lines(value))).toEqual([lines(exported)])
+    expect(handoffWrites.map(({ value }) => lines(value ?? ''))).toEqual([lines(exported)])
     const draftWrites = (await recordedWriteLog(page)).filter(({ key }) => key === 'csr-dev-tools-mermaid-renderer')
     expect(draftWrites).toEqual([])
     await expectOnlyListedKeys(page)
@@ -325,7 +325,7 @@ test.describe('Saved inputs', () => {
       const written = await writtenKeys(page)
       expect(written.filter((key) => !allowed.includes(key))).toEqual([])
       // Not even a key it may write (AES's mode) ever held the input.
-      expect((await recordedWriteLog(page)).filter(({ value }) => value.includes(sample))).toEqual([])
+      expect((await recordedWriteLog(page)).filter(({ value }) => value?.includes(sample))).toEqual([])
     })
   }
 })

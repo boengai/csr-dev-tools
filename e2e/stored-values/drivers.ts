@@ -778,7 +778,7 @@ export const DRIVERS: Array<Driver> = [
       await page.goto('/')
       // No write ever held the password, the text or the ciphertext, even under a listed key and overwritten later.
       const secrets = [AES_PASSWORD, AES_PLAINTEXT, ...(aesCiphertext.get(page) ?? [])]
-      const leaked = (await recordedWriteLog(page)).filter(({ value }) => secrets.some((s) => value.includes(s)))
+      const leaked = (await recordedWriteLog(page)).filter(({ value }) => secrets.some((s) => value?.includes(s)))
       expect(leaked).toEqual([])
       // The mode key only ever held a mode.
       const modes = (await recordedWriteLog(page)).filter(({ key }) => key === `${P}aes-encrypt-decrypt-mode`)
