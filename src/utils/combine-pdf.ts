@@ -6,6 +6,13 @@ import { decryptPdf } from '@/wasm/pdf-decrypt'
 const EMPTY_RESULT: CombinePdfResult = { pdf: new Uint8Array(0), pageCount: 0, skipped: [] }
 
 /**
+ * Decrypted bytes of the encrypted files seen so far. The merge reruns on every
+ * re-order, and decrypting a large file takes seconds, so each file is
+ * decrypted once. An entry goes when its File does.
+ */
+const decryptedBytes = new WeakMap<File, Uint8Array>()
+
+/**
  * Load a source PDF for copying. pdf-lib can't decrypt, and copying pages out
  * of a still-encrypted document writes blank pages, so an encrypted file is
  * decrypted first. Rejects when the file needs a password: the caller skips it.
@@ -13,14 +20,21 @@ const EMPTY_RESULT: CombinePdfResult = { pdf: new Uint8Array(0), pageCount: 0, s
  * Any failed load goes to the decrypt step, not only pdf-lib's
  * `EncryptedPDFError`: pdf-lib ships ES5 classes, so `instanceof` can't tell
  * that error from another. The decrypt step rejects a file that isn't a PDF,
- * and the second load is as strict as the first, so nothing still encrypted
- * gets through.
+ * and the second load is as strict as the first, so a document that still
+ * declares `/Encrypt` never reaches `copyPages`.
  */
-async function loadSource(bytes: Uint8Array): Promise<PDFDocument> {
+async function loadSource(file: File): Promise<PDFDocument> {
+  const known = decryptedBytes.get(file)
+  if (known) return PDFDocument.load(known)
+
+  const bytes = new Uint8Array(await file.arrayBuffer())
   try {
     return await PDFDocument.load(bytes)
   } catch {
-    return PDFDocument.load(await decryptPdf(bytes))
+    const decrypted = await decryptPdf(bytes)
+    const doc = await PDFDocument.load(decrypted)
+    decryptedBytes.set(file, decrypted)
+    return doc
   }
 }
 
@@ -37,7 +51,8 @@ async function loadSource(bytes: Uint8Array): Promise<PDFDocument> {
  * - No "add the same page twice": users can't currently duplicate a page within
  *   the combined output. Could be added later via a "duplicate" affordance.
  * - Source PDFs are loaded once per combinePdfPages call via the loaded Map (not
- *   cached across calls). Acceptable for the debounced merge cadence.
+ *   cached across calls). Acceptable for the debounced merge cadence. Only the
+ *   decrypted bytes of an encrypted file are kept between calls.
  */
 export async function combinePdfPages(items: Array<CombinePdfPageRef>): Promise<CombinePdfResult> {
   if (items.length === 0) return EMPTY_RESULT
@@ -55,8 +70,7 @@ export async function combinePdfPages(items: Array<CombinePdfPageRef>): Promise<
         continue
       }
       try {
-        const bytes = new Uint8Array(await file.arrayBuffer())
-        src = await loadSource(bytes)
+        src = await loadSource(file)
         loaded.set(file, src)
       } catch {
         skippedSet.add(file.name)

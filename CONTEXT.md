@@ -937,7 +937,8 @@ Carries three invariants beyond the pipeline's four:
    is non-null, the shell hides both `<DownloadPdfButton>` and
    `<PdfBytesPreview>` and shows `err.message` (or `'Failed to generate
    PDF'` when the rejection is not an `Error`) in the [[Tool status slot]]
-   above the split; skipped files are that slot's notice. Prevents downloading bytes that don't match the
+   above the split; skipped files are that slot's notice, both the ones the
+   upload rejected and the ones in the result's `skipped`. Prevents downloading bytes that don't match the
    displayed source. Distinct from the pipeline default —
    `useToolComputation` leaves `result` untouched on rejection, so without
    the shell the prior-success preview and download silently linger.

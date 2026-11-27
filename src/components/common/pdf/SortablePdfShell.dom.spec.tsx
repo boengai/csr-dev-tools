@@ -157,6 +157,21 @@ describe('SortablePdfShell', () => {
     expect(screen.getByText(/Skipped 1 unsupported file: note\.txt/i)).toBeInTheDocument()
   })
 
+  it('names the files the pipeline skipped, alongside the ones the upload rejected', () => {
+    mockHook.mockImplementation(() =>
+      baseReturn({ result: { ...NONEMPTY_RESULT, skipped: ['locked.png', 'note.txt'] } }),
+    )
+    renderShell()
+
+    const txt = new File(['b'], 'note.txt', { type: 'text/plain' })
+    const input = screen.getByLabelText(/Select files/i) as HTMLInputElement
+    Object.defineProperty(input, 'files', { value: [txt], configurable: true })
+    fireEvent.change(input)
+
+    // note.txt is named once although both the upload and the pipeline skipped it.
+    expect(screen.getByText('Skipped 2 unsupported files: note.txt, locked.png')).toBeInTheDocument()
+  })
+
   it('passes initialExtras to renderControls ctx', () => {
     const renderControls = vi.fn((_ctx) => <span data-testid="controls" />)
     renderShell({

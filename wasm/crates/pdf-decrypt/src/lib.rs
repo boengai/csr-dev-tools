@@ -4,7 +4,7 @@ use wasm_bindgen::prelude::*;
 /// Why a PDF could not be turned into an unencrypted one.
 #[derive(Debug, PartialEq, Eq)]
 pub enum DecryptError {
-    /// The bytes are not a PDF lopdf can read.
+    /// The bytes are not a PDF lopdf can read, or it could not write them back.
     Unreadable,
     /// The file is encrypted and the empty password does not open it.
     PasswordRequired,
@@ -24,6 +24,9 @@ impl DecryptError {
 /// lopdf decrypts with the empty user password while it loads, which covers
 /// the common "owner password only" files. A file that needs a real user
 /// password stays encrypted after the load and is reported, never written out.
+///
+/// lopdf leaves alone a stream it has no key or filter for, so a file with an
+/// unusual crypt filter can still come out with unreadable streams.
 pub fn decrypt(bytes: &[u8]) -> Result<Vec<u8>, DecryptError> {
     let mut doc = Document::load_mem(bytes).map_err(|_| DecryptError::Unreadable)?;
     if doc.is_encrypted() {

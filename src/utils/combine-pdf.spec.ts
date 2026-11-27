@@ -1,8 +1,16 @@
 import { readFile } from 'node:fs/promises'
 
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+
+import { decryptPdf } from '@/wasm/pdf-decrypt'
 
 import { combinePdfPages } from './combine-pdf'
+
+// The real decrypt step, wrapped so a test can count its calls.
+vi.mock('@/wasm/pdf-decrypt', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('@/wasm/pdf-decrypt')>()
+  return { decryptPdf: vi.fn(actual.decryptPdf) }
+})
 
 const PAGE_ONE_TEXT = 'Encrypted fixture page one'
 
@@ -64,5 +72,14 @@ describe('combinePdfPages', () => {
     ])
     expect(result.skipped).toEqual([])
     expect(await pageTexts(result.pdf)).toEqual(['Encrypted fixture page two', PAGE_ONE_TEXT])
+  })
+
+  it('decrypts a file once, however often its pages are combined', async () => {
+    const file = await fixture('aes-128.pdf')
+    vi.mocked(decryptPdf).mockClear()
+    await combinePdfPages([{ file, pageIndex: 0 }])
+    const again = await combinePdfPages([{ file, pageIndex: 0 }])
+    expect(decryptPdf).toHaveBeenCalledTimes(1)
+    expect(await pageTexts(again.pdf)).toEqual([PAGE_ONE_TEXT])
   })
 })
