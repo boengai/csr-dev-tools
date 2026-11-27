@@ -1,0 +1,132 @@
+import { fileURLToPath } from 'node:url'
+
+import { defineConfig, devices, type PlaywrightTestConfig } from '@playwright/test'
+
+import type { ToolRegistryKey } from '../../src/types/constants/tool-registry'
+import { CONTRACT, DIOXUS_ONLY } from './tags'
+
+export type ParityBuild = 'dioxus' | 'react'
+
+export type ParityConfigOptions = {
+  /** Where the build under test is served. */
+  baseURL: string
+  /** Which build this is. The React run leaves out the `@dioxus-only` checks. */
+  build: ParityBuild
+  /**
+   * The journeys (`e2e/*.spec.ts`, `e2e/platform/`) this build runs: the
+   * React spec files, filtered to the ported Tools, never edited
+   * (docs/ux/parity.md → The Playwright specs). Default: all of them.
+   */
+  journeys?: { grep?: RegExp; testMatch?: Array<string> }
+  /** The Tool keys this build has. The harness runs over these only. Default: every Tool. */
+  tools?: Array<ToolRegistryKey>
+  /** Serves the build. Leave it out when `baseURL` is already up. */
+  webServer?: PlaywrightTestConfig['webServer']
+}
+
+const E2E_DIR = fileURLToPath(new URL('..', import.meta.url))
+const HARNESS = ['parity/layout-contract.spec.ts', 'parity/a11y.spec.ts', 'parity/loading.spec.ts']
+const CLIPBOARD: Array<string> = ['clipboard-read', 'clipboard-write']
+
+/** Matches a title that matches both. */
+const both = (a: RegExp, b: RegExp): RegExp =>
+  new RegExp(`^(?=.*(?:${a.source}))(?=.*(?:${b.source}))`, b.flags.replace('g', ''))
+
+/**
+ * The parity run for one build (docs/ux/parity.md → The parity harness):
+ *
+ * | Project          | Device                | Runs                                        |
+ * |------------------|-----------------------|---------------------------------------------|
+ * | `journeys`       | Desktop Chrome        | the journeys                                |
+ * | `persistence`    | Desktop Chrome        | the stored-value contract's journeys        |
+ * | `harness`        | Desktop Chrome        | layout contract, axe, loading check         |
+ * | `phone-contract` | Pixel 7               | layout contract                             |
+ * | `phone-journeys` | Pixel 7               | the journeys' mobile tests                  |
+ * | `webkit`         | Desktop Safari        | layout contract                             |
+ * | `screenshots`    | Desktop Chrome, Pixel 7 | the Tools in `SCREENSHOT_TOOLS` (CI evidence) |
+ *
+ * No retries: a flaky check is a finding, not noise. The React site's own
+ * run (`playwright.config.ts`) keeps its retries.
+ */
+export const defineParityConfig = ({ baseURL, build, journeys = {}, tools, webServer }: ParityConfigOptions) => {
+  // Read by the specs at collection time, in the runner and in every worker (each loads this config).
+  process.env.PARITY_BUILD = build
+  // An empty list would join to an empty filter, which means every Tool: say which, or leave it out.
+  if (tools?.length === 0)
+    throw new Error('defineParityConfig: `tools` is empty; list the ported Tools, or omit it for every Tool')
+  if (tools && !process.env.PARITY_TOOLS) process.env.PARITY_TOOLS = tools.join(',')
+
+  const grepInvert = build === 'react' ? new RegExp(DIOXUS_ONLY) : undefined
+  // The stored-value contract's journeys run in their own project: they pick the ported Tools
+  // from PARITY_TOOLS (`requirePorted`), not from `journeys.grep`, which names Tools as their specs do.
+  const PERSISTENCE = 'persistence.spec.ts'
+  const journeyFiles = {
+    testIgnore: ['parity/**', 'perf/**', PERSISTENCE],
+    ...(journeys.testMatch ? { testMatch: journeys.testMatch } : {}),
+  }
+  // The journeys' mobile tests. The DB diagram's "375px viewport" test is left out: its
+  // `beforeEach` needs the desktop canvas, which a phone never shows, so it runs in `journeys`.
+  const mobile = /mobile viewport/
+
+  return defineConfig({
+    forbidOnly: !!process.env.CI,
+    fullyParallel: true,
+    outputDir: fileURLToPath(new URL(`../../test-results/parity-${build}`, import.meta.url)),
+    projects: [
+      {
+        ...journeyFiles,
+        grep: journeys.grep,
+        grepInvert,
+        name: 'journeys',
+        use: { ...devices['Desktop Chrome'], permissions: CLIPBOARD },
+      },
+      {
+        grepInvert,
+        name: 'persistence',
+        testMatch: PERSISTENCE,
+        use: { ...devices['Desktop Chrome'], permissions: CLIPBOARD },
+      },
+      {
+        grepInvert,
+        name: 'harness',
+        testMatch: HARNESS,
+        use: { ...devices['Desktop Chrome'], permissions: CLIPBOARD },
+      },
+      {
+        grep: new RegExp(CONTRACT),
+        grepInvert,
+        name: 'phone-contract',
+        testMatch: 'parity/layout-contract.spec.ts',
+        use: { ...devices['Pixel 7'], permissions: CLIPBOARD },
+      },
+      {
+        ...journeyFiles,
+        grep: journeys.grep ? both(mobile, journeys.grep) : mobile,
+        grepInvert,
+        name: 'phone-journeys',
+        use: { ...devices['Pixel 7'], permissions: CLIPBOARD },
+      },
+      {
+        grep: new RegExp(CONTRACT),
+        grepInvert,
+        name: 'webkit',
+        testMatch: 'parity/layout-contract.spec.ts',
+        // WebKit has no clipboard permissions to grant; the contract suite never copies.
+        use: { ...devices['Desktop Safari'] },
+      },
+      {
+        name: 'screenshots',
+        testMatch: 'parity/screenshots.spec.ts',
+        use: { ...devices['Desktop Chrome'] },
+      },
+    ],
+    reporter: process.env.CI
+      ? [['list'], ['html', { open: 'never', outputFolder: `playwright-report-parity-${build}` }]]
+      : [['list']],
+    retries: 0,
+    testDir: E2E_DIR,
+    use: { baseURL, trace: 'retain-on-failure' },
+    webServer,
+    workers: process.env.CI ? 2 : undefined,
+  })
+}

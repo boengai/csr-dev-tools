@@ -3,7 +3,7 @@ import { useState } from 'react'
 import { Button, TransformerShell } from '@/components/common'
 import { TOOL_REGISTRY_MAP } from '@/constants'
 import type { ToolComponentProps } from '@/types'
-import { consumeHandoff, suggestMermaidFix } from '@/utils'
+import { consumeHandoff, countHiddenMathLabels, suggestMermaidFix } from '@/utils'
 import { initializeMermaid, renderMermaid, svgToPng } from '@/utils/mermaid-renderer'
 
 const toolEntry = TOOL_REGISTRY_MAP['mermaid-renderer']
@@ -51,6 +51,17 @@ const computeMermaid = async ({ source }: { source: string }): Promise<string> =
 
 const dataUrlToBlob = async (dataUrl: string): Promise<Blob> => (await fetch(dataUrl)).blob()
 
+// KaTeX labels can only be drawn as HTML, which the sanitizer strips.
+const hiddenMathNotices = (svg: string): Array<string> => {
+  const count = countHiddenMathLabels(svg)
+  if (count === 0) return []
+  return [
+    count === 1
+      ? "A math label ($$…$$) can't be drawn, so it's left out of the diagram."
+      : `${count} math labels ($$…$$) can't be drawn, so they're left out of the diagram.`,
+  ]
+}
+
 export const MermaidRenderer = ({ autoOpen, onAfterClose }: ToolComponentProps) => {
   // Runs once, before the shell reads storage on mount.
   useState(migrateLegacyDraft)
@@ -70,6 +81,7 @@ export const MermaidRenderer = ({ autoOpen, onAfterClose }: ToolComponentProps) 
       }}
       errorFallback="Invalid Mermaid syntax"
       initial={INITIAL}
+      notices={hiddenMathNotices}
       onAfterClose={onAfterClose}
       outputKind="markup"
       // DB Diagram hands its schema over as Mermaid ER syntax.
