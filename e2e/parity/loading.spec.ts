@@ -2,6 +2,7 @@ import { type CDPSession, expect, type Page, test } from '@playwright/test'
 
 import { SLOW_4G } from '../perf/throttle'
 import { deviceOptions, TOOL_LOADING, WIDGET_LOADING } from './page'
+import { parityTools } from './tools'
 
 /**
  * The loading check (docs/ux/parity.md → Waiting and loading), once per page
@@ -14,22 +15,24 @@ import { deviceOptions, TOOL_LOADING, WIDGET_LOADING } from './page'
 const CLS_LIMIT = 0.01
 const LOAD_TIMEOUT = 90_000
 
+// The Tool route: the first of these this run has. They are the performance budget's Tool pages
+// (docs/perf/budgets.md, on develop) that open on a field to focus, so the CLS budget applies to them.
+const ROUTE_TOOLS = ['hash-generator', 'escaped-json-stringifier', 'json-diff-checker', 'number-base-converter']
+const routeTool = ROUTE_TOOLS.map((key) => parityTools().find((tool) => tool.key === key)).find(Boolean)
+
 // The home page arrives with the app shell, so its indicator is the robot in each widget until the
 // widget's Tool fills it; on a Tool route, the flying saucer shows until the Tool does.
-const PAGES = [
+const PAGES: Array<{ app: string; indicator: string; name: string; path: string }> = [
   {
     app: '[data-testid="dashboard-widget"] article',
     indicator: WIDGET_LOADING,
     name: 'home page',
     path: '/',
   },
-  {
-    app: '[data-slot="tool-surface"]',
-    indicator: TOOL_LOADING,
-    name: 'Tool route',
-    path: '/tools/json-formatter',
-  },
-] as const
+  ...(routeTool
+    ? [{ app: '[data-slot="tool-surface"]', indicator: TOOL_LOADING, name: 'Tool route', path: routeTool.routePath }]
+    : []),
+]
 
 type LoadingRecord = { appAt: null | number; cls: number; indicatorAt: null | number }
 

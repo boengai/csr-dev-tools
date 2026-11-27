@@ -7,7 +7,7 @@ import BASELINE from './a11y-baseline.json' with { type: 'json' }
 import {
   applyBadInput,
   badInput,
-  dashboardDialogTool,
+  DIALOG_TOOL,
   openInDialog,
   openOnRoute,
   seedBadInput,
@@ -15,7 +15,7 @@ import {
 } from './layout-contract'
 import { LAYOUT_ERROR_FIXTURES } from './layout-fixtures'
 import { settle, TOOL_TIMEOUT, WIDGET_LOADING } from './page'
-import { isShellLayout, parityTools } from './tools'
+import { isShellLayout, parityTools, SHELL_LAYOUTS } from './tools'
 
 /**
  * axe on every Tool route (on open, and in the bad-input state from the layout
@@ -71,17 +71,21 @@ test.describe('axe', () => {
     await expectNoNewViolations(page, 'home')
   })
 
-  const dialogTool = dashboardDialogTool()
-  if (dialogTool) {
-    test(`dashboard dialog (${dialogTool.key})`, async ({ page }) => {
+  // The dashboard dialog, once per layout, for the dialog Tools this build has. Only those have
+  // baseline entries: a fallback Tool would be held to another Tool's failures.
+  const tools = parityTools()
+  for (const layout of SHELL_LAYOUTS) {
+    const dialogTool = tools.find((tool) => tool.key === DIALOG_TOOL[layout])
+    if (!dialogTool) continue
+    test(`dashboard dialog: ${dialogTool.key}`, async ({ page }) => {
       await seedDashboard(page, dialogTool)
       await page.goto('/')
       await openInDialog(page, dialogTool)
-      await expectNoNewViolations(page, 'dashboard-dialog')
+      await expectNoNewViolations(page, `dashboard-dialog:${dialogTool.key}`)
     })
   }
 
-  for (const tool of parityTools()) {
+  for (const tool of tools) {
     test.describe(tool.key, () => {
       test('on open', async ({ page }) => {
         await page.goto(tool.routePath)

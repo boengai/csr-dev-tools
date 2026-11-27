@@ -54,8 +54,17 @@
   "css-formatter:open": {
     "color-contrast": 2
   },
-  "dashboard-dialog": {
+  "dashboard-dialog:base64-codec": {
+    "color-contrast": 4
+  },
+  "dashboard-dialog:json-diff-checker": {
+    "color-contrast": 3
+  },
+  "dashboard-dialog:json-formatter": {
     "color-contrast": 2
+  },
+  "dashboard-dialog:uuid-generator": {
+    "color-contrast": 1
   },
   "env-file-converter:bad-input": {
     "color-contrast": 6

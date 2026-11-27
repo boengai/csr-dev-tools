@@ -9,7 +9,7 @@ import { expect, type Locator, type Page } from '@playwright/test'
 import type { ToolRegistryKey, ToolRoute } from '../../src/types/constants/tool-registry'
 import type { BadInputFixture, LayoutErrorFixture, LayoutFixtureStep, ShellLayout } from './layout-fixtures'
 import { TOOL_TIMEOUT } from './page'
-import { SHELL_LAYOUTS, toolsWithLayout } from './tools'
+import { toolsWithLayout } from './tools'
 
 export type LayoutSpec = {
   /** Whether this output carries Copy in its label, by its `data-output-kind` (default: always). */
@@ -141,10 +141,6 @@ export const dialogToolFor = (layout: ShellLayout): ToolRoute | undefined => {
   const tools = toolsWithLayout(layout)
   return tools.find((tool) => tool.key === DIALOG_TOOL[layout]) ?? tools[0]
 }
-
-/** The one dashboard dialog axe checks: the Transformer's, else the first layout this run has. */
-export const dashboardDialogTool = (): ToolRoute | undefined =>
-  (['transformer', ...SHELL_LAYOUTS] as const).map(dialogToolFor).find(Boolean)
 
 /** Writes localStorage entries before any page script runs. Values are JSON-encoded, as the Tools store them. */
 export const seedStorage = async (page: Page, entries: Record<string, unknown>): Promise<void> => {
