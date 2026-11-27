@@ -4,8 +4,13 @@
 
 <!-- What changes for the reader, and the issue or decision it records. -->
 
+## Automated review
+
+<!-- Each `code-review` finding and its outcome: fixed, or why not. -->
+
 ## Hand check
 
-<!-- The maintainer ticks this before merging. Agents never tick it. -->
+<!-- The maintainer ticks these before merging. Agents never tick them. -->
 
+- [ ] The `## Automated review` findings read
 - [ ] Read the diff: each change is one I would have chosen

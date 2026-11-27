@@ -1,4 +1,4 @@
-<!-- Title: gates: <what changes in what CI accepts>. Gate files only (docs/quality/gates.md → PR kinds). -->
+<!-- Title: gates: <what changes in what CI accepts>. Gate files only, or Cargo.lock alone for cargo update (docs/quality/gates.md → PR kinds). -->
 
 ## What
 
@@ -21,4 +21,6 @@
 <!-- The maintainer ticks these before merging. Agents never tick them. -->
 
 - [ ] The change makes the gate no weaker than the reason above needs
+- [ ] Every new dependency's licence, release and byte cost accepted
+- [ ] The `## Automated review` findings read
 - [ ] Read the diff: each change is one I would have chosen

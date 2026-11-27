@@ -109,8 +109,8 @@ owns that priority. It was decided in conversation on 2026-11-27.
   - the `gates` crate (section 6);
   - the byte-ceiling file, the a11y baseline and the post-migration CSP;
   - the workflows, and the PR templates the body check reads.
-- **A port PR may change a gate file only by adding rows for its own
-  Tool,** such as its byte ceilings. Any other change to a gate file is a
+- **A `port` or `shell` PR may change a gate file only by adding rows for
+  its own Tool,** such as its byte ceilings. Any other change to a gate file is a
   PR of its own, of kind `gates`. A CI check fails a PR that mixes gate
   files with other code.
 - **An exemption is an `#[expect(lint, reason = "…")]`** on the smallest
@@ -119,14 +119,14 @@ owns that priority. It was decided in conversation on 2026-11-27.
 
 ### 4. PR kinds, bounded by paths
 
-- **Every PR has a kind, named by its title prefix,** and a CI check
+- **Every PR has a kind, told by its title prefix,** and a CI check
   matches the files it changes against that kind. The kinds are `port`,
   `split`, `shell`, `foundation`, `gates`, `docs` and `sync`.
-  `docs/quality/gates.md` lists each kind's paths.
+  `docs/quality/gates.md` lists each kind's prefixes and paths.
 - **A `port(<key>)` PR ports exactly one Tool.** It touches ADR-0035's
-  set of files, the logic crates that Tool uses, and new rows for that
-  Tool only. Any change to `ui`, `platform`, `bridges` or `persist` lands
-  first, in its own PR.
+  set of files, the logic it adds for that Tool, and new rows for that
+  Tool only. Any change to `ui`, `platform`, `bridges` or `persist`, or to
+  logic another ported Tool already uses, lands first, in its own PR.
 - **A `split(<crate>)` PR moves a `wasm/` crate's logic into
   `logic-<name>`** and leaves the thin wrapper. It holds no Dioxus Tool,
   and React's tests prove it. This changes ADR-0035's consequence that
@@ -134,9 +134,11 @@ owns that priority. It was decided in conversation on 2026-11-27.
   own PR, merged before the port.
 - **A `shell(<layout>)` PR adds one shell and its first Tool,** as proof.
   A shell with no user is untested design.
-- **There is no hard cap on lines.** The path rule is the bound. A CI
-  warning, not a failure, shows above 1,000 changed lines, not counting
-  generated files and lockfiles.
+- **There is no hard cap on lines.** The path rule is the bound, and a
+  large diff only raises a warning.
+- **The workspace skeleton PR,** which adds the gates themselves, is the
+  one PR the path check and the mixing rule cannot judge. It is reviewed
+  by hand.
 
 ### 5. Lints
 
@@ -155,11 +157,15 @@ owns that priority. It was decided in conversation on 2026-11-27.
     `print_stderr`, `let_underscore_must_use`);
   - exemptions (`allow_attributes`, `allow_attributes_without_reason`).
 - **rustc:** `unsafe_code` is forbidden everywhere, and `unreachable_pub`
-  is denied. No tool reliably finds unused `pub` items, so the public
+  is denied. `forbid` cannot be lifted by an `#[expect]`, so if `platform`
+  ever needs unsafe code, a `gates` PR changes the level. No tool reliably finds unused `pub` items, so the public
   surface is kept minimal instead.
 - **`clippy.toml` bans methods.** It bans the browser escapes ADR-0035
   names: both `eval` paths, `as_web_event`, `try_as_web_event`,
-  `get_web_file` and the event-data `downcast` methods. It also bans the
+  `get_web_file` and the event-data `downcast` methods. ADR-0033's rule
+  that Tool code never imports `wasm_bindgen`, `js_sys` or `web_sys` needs
+  no lint of its own: ADR-0035's allowlist keeps those crates out of a
+  Tool's dependencies. It also bans the
   `std` calls that panic on `wasm32-unknown-unknown`. `platform`'s own
   conversions use an `#[expect]` at each call site. `platform` has no
   `clippy.toml` of its own, because a nested one replaces the root one
@@ -226,7 +232,8 @@ A gate that silently matches nothing looks the same as one that passes.
   --body-file`. The check requires:
   - the kind prefix;
   - the kind's headings;
-  - a port's case-mapping table and its automated-review section;
+  - for a `port` or `shell` PR, the case-mapping table;
+  - for every kind but `sync`, the automated-review section;
   - the hand-check boxes, which the maintainer ticks.
 
 ### 10. Review and merge
@@ -234,14 +241,14 @@ A gate that silently matches nothing looks the same as one that passes.
 - **The automated reviewer runs first.** The agent that wrote the PR runs
   the `code-review` skill against `develop` before opening it. The
   findings and their outcomes go in the PR body. It looks for what no gate
-  can see:
+  can see, for example (the full checklist is in `docs/quality/gates.md`):
   - comments that restate the code;
   - names that say nothing;
   - options and parameters added "in case";
   - empty `#[expect]` reasons;
   - style written from a timer.
 - **Only the maintainer merges into `develop`.** Agents never merge. The
-  merge is the human gate: the parity hand check from `parity.md`, every
+  merge is the human check: the parity hand check from `parity.md`, every
   new `#[expect]`, every gate-file change and new dependency, and one
   read of the diff.
 
@@ -250,9 +257,10 @@ A gate that silently matches nothing looks the same as one that passes.
 - **Formatting:** stable rustfmt only. CI runs `dx fmt` in each crate that
   has `rsx!`, then `cargo fmt --all`, then `git diff --exit-code`. An
   `error` line from `dx fmt` fails the job too.
-- **Dependencies:** adding a crate is a `gates` PR. cargo-deny checks
-  `app`'s tree for duplicate versions, and every tree for sources,
-  licences and advisories. cargo-shear and cargo's `unused_dependencies`
+- **Dependencies:** adding a crate, or running `cargo update`, is a
+  `gates` PR. cargo-deny checks `app`'s tree for duplicate versions, and
+  every tree for sources, licences and advisories. It does not check the
+  layers: ADR-0035's allowlist is the only layer gate. cargo-shear and cargo's `unused_dependencies`
   lint find unused dependencies.
 - **Copied code:** jscpd runs over `crates/` and starts at zero clones,
   with no baseline. A clone is fixed by moving the code down into
@@ -262,6 +270,8 @@ A gate that silently matches nothing looks the same as one that passes.
   `securitypolicyviolation` event. This is ADR-0033 Decision 6.
 - **Bytes:** every wasm module, bridge file and worker file gets a row in
   the ceiling file described in `docs/perf/budgets.md`, under its rules.
+  Because the ceiling file is a gate file, raising a ceiling is now a
+  `gates` PR, not an edit inside the PR that needs it.
 
 ### 12. When the gates are built
 
@@ -305,7 +315,9 @@ A gate that silently matches nothing looks the same as one that passes.
 - **A port PR's reach is mechanical:** one Tool crate, the logic it uses,
   and its own rows. A missing `ui` part means a `foundation` or `shell` PR
   first.
-- **Gate changes are visible.** They never arrive inside a port.
+- **Gate changes are visible.** They never arrive inside a port. This
+  changes one rule in `docs/perf/budgets.md`: a ceiling is no longer
+  raised in the same PR.
 - **Agents cannot merge,** so the maintainer's hand check is on the path
   of every Tool.
 - **Some slop is caught only by review:** comments that restate the code,
@@ -328,6 +340,9 @@ A gate that silently matches nothing looks the same as one that passes.
 - The `const` layout assertion inside the `ui` entry macro was not built.
   Neither was its error text through `lazy_loader!`.
 - cargo-mutants' run time on a real logic crate was not measured.
+- Whether `taiki-e/install-action` has a prebuilt jscpd was not checked.
+  jscpd 5 is also a crates.io crate, so a pinned `cargo binstall` is the
+  fallback.
 - jscpd's false-positive rate on real Tool glue is unknown.
 - Whether `build.warnings = "deny"` also turns warnings from dependencies
   into errors was not checked.

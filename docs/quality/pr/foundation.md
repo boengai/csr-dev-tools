@@ -1,4 +1,4 @@
-<!-- Title: ui(…), platform(…), bridge(…), persist(…), registry(…), worker(…) or app(…): one primitive, kit, capability, bridge or part. No Tool crate (docs/quality/gates.md → PR kinds). -->
+<!-- Title: ui(…), platform(…), bridge(…), persist(…), registry(…), worker(…), app(…) or logic(…): one primitive, kit, capability, bridge or part. No Tool crate (docs/quality/gates.md → PR kinds). -->
 
 ## What
 
@@ -25,4 +25,5 @@
 <!-- The maintainer ticks these before merging. Agents never tick them. -->
 
 - [ ] Every new `#[expect]` reason accepted
+- [ ] The `## Automated review` findings read
 - [ ] Read the diff: each new item is one I would have chosen

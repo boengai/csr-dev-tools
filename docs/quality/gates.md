@@ -32,7 +32,7 @@ It runs on `opened`, `edited`, `synchronize` and `reopened`, so editing the body
 
 ### Pinned tools
 
-Each tool comes from `taiki-e/install-action`, pinned to a commit SHA, so it is installed against a checksum (ADR-0031, condition 3).
+Each tool comes from `taiki-e/install-action`, pinned to a commit SHA, so it is installed against a checksum (ADR-0031, condition 3). If the action has no prebuilt jscpd, it comes from crates.io through a pinned `cargo binstall`.
 
 | Tool | Version |
 |---|---|
@@ -51,7 +51,7 @@ A gate file decides what CI accepts:
 - the byte-ceiling file that `docs/perf/budgets.md` describes, the a11y baseline ([#41](https://github.com/boengai/csr-dev-tools/issues/41)), the post-migration CSP;
 - `.github/workflows/**`, and the PR templates in `docs/quality/pr/`.
 
-A `port` or `shell` PR may add rows for its own Tool to the ceiling file. Any other change to a gate file is a `gates` PR, and a `gates` PR changes nothing else (see "PR kinds").
+A `port` or `shell` PR may add rows for its own Tool to the ceiling file. Any other change to a gate file, raising a ceiling included, is a `gates` PR. A `gates` PR changes only gate files, `docs/quality/**` and the ADR that records it (see "PR kinds").
 
 ## Exemptions
 
@@ -66,7 +66,7 @@ A `port` or `shell` PR may add rows for its own Tool to the ceiling file. Any ot
 
 ```toml
 [workspace.lints.rust]
-unsafe_code = "forbid"
+unsafe_code = "forbid"          # `#[expect]` cannot lift `forbid`; a `gates` PR changes it if `platform` needs unsafe
 unreachable_pub = "deny"
 
 [workspace.lints.clippy]
@@ -231,7 +231,7 @@ ADR-0034's "no style written from a timer or an animation-frame loop" has no mec
 ### A port PR includes
 
 - **Logic tests:** every case in the Tool's React spec (`src/utils/*.spec.ts`) has a native Rust test in its logic crate, with the same input and the same expected output. The PR body maps each case to its test.
-- **Its journeys on Dioxus:** the Tool is removed from the Dioxus spec filter, so its React journeys run there unchanged. The contract suite and axe pick it up from the registry.
+- **Its journeys on Dioxus:** the Tool is removed from the Dioxus spec filter (the `testMatch` and `grep` list in the Dioxus Playwright config that keeps unported Tools out of the Dioxus run, `docs/ux/parity.md`), so its React journeys run there unchanged. The contract suite and axe pick it up from the registry.
 - **Saved inputs:** if the Tool saves input, its #38 golden values and its rows in `crates/registry/src/storage.rs`.
 - **No new Playwright spec.** Specs come from `main` (`docs/ux/parity.md`).
 
@@ -245,13 +245,13 @@ ADR-0034's "no style written from a timer or an animation-frame loop" has no mec
 
 ## CSP
 
-- **The post-migration CSP** is a gate file (ADR-0033 §6 and "Handed on"). The Dioxus Playwright project serves `dist-dioxus` with it.
+- **The post-migration CSP** is a gate file (ADR-0033 Decision 6 and "Handed on"). The Dioxus Playwright project serves `dist-dioxus` with it.
 - **A shared fixture**, for the Dioxus project only, fails any test that sees a `securitypolicyviolation` event.
 - **It covers every journey,** not only those of Tools with an Engine bridge.
 
 ## Byte ceilings
 
-These extend the byte check in `docs/perf/budgets.md` → "CI on `develop`". The same ceiling file and the same rules apply: 2% over the base branch, and the committed ceiling. Its rows are:
+These extend the byte check in `docs/perf/budgets.md` → "CI on `develop`". The same ceiling file and the same two limits apply: 2% over the base branch, and the committed ceiling. The ceiling file is a gate file, so raising a ceiling is a `gates` PR. Its rows are:
 
 - each page (already in `budgets.md`);
 - the main wasm module, and each Tool module, keyed by the loader's module name (`hash_generator`), not the file hash;
@@ -266,16 +266,16 @@ The title starts with the kind. The path check fails a PR that changes a file ou
 
 | Kind | Title | May change |
 |---|---|---|
-| `port` | `port(<key>): …` | `crates/tools/<key>/**`; the logic crates that Tool uses (`crates/logic/<name>/**`); one line each in `crates/app/Cargo.toml` and the Ported Tool list; that Tool's new rows in the ceiling file, `storage.rs` and the #38 goldens; its line in the Dioxus spec filter |
+| `port` | `port(<key>): …` | `crates/tools/<key>/**`; logic it adds for that Tool in `crates/logic/<name>/**` (never a change to logic another ported Tool already uses); one line each in `crates/app/Cargo.toml` and the Ported Tool list; that Tool's new rows in the ceiling file, `storage.rs` and the #38 goldens; its line in the Dioxus spec filter |
 | `split` | `split(<crate>): …` | `crates/logic/<name>/**` and `wasm/crates/<name>/**` |
-| `shell` | `shell(<layout>): …` | `crates/ui/**`, plus one Tool's `port` set |
-| `foundation` | `ui(…)`, `platform(…)`, `bridge(…)`, `persist(…)`, `registry(…)`, `worker(…)`, `app(…)` | that crate, `crates/app/Cargo.toml`; for a bridge, `crates/bridges/js/**`; for the registry generator, `scripts/dioxus/**`. Never a Tool crate |
-| `gates` | `gates: …` | gate files, `docs/quality/**`, and an ADR that records the change |
+| `shell` | `shell(<layout>): …` | one shell and the `ui` parts only it needs, under `crates/ui/**`, plus one Tool's `port` set |
+| `foundation` | `ui(…)`, `platform(…)`, `bridge(…)`, `persist(…)`, `registry(…)`, `worker(…)`, `app(…)`, `logic(…)` | one primitive, kit, capability, bridge or part, in that crate; `crates/app/Cargo.toml`; for a bridge, `crates/bridges/js/**`; for the registry generator, `scripts/dioxus/**`. Never a Tool crate |
+| `gates` | `gates: …` | gate files, `docs/quality/**`, and an ADR that records the change; or `Cargo.lock` alone, for `cargo update` |
 | `docs` | `docs: …` | `docs/**` except `docs/quality/**`, plus `CONTEXT.md`, `CONTRIBUTING.md`, `CLAUDE.md` and `.claude/**` |
 | `sync` | `chore: sync main into develop …` | anything, as a merge commit from `main` |
 
 - **No hard cap on lines.** A CI warning, not a failure, shows above 1,000 changed lines, not counting generated files and lockfiles.
-- **The first workspace skeleton PR,** which adds the gates themselves, is a `gates` PR, and its path check is the one it adds.
+- **The workspace skeleton PR,** which adds the gates themselves along with the first crates, is the one PR the path check and the mixing rule cannot judge. It is titled `gates: …` and reviewed by hand.
 
 ## The PR body
 
@@ -285,7 +285,8 @@ There is one template per kind in `docs/quality/pr/`, except `sync`, which needs
 
 - **the title's kind prefix;**
 - **the kind's required headings** (each template's `##` headings);
-- **for `port` and `shell`:** a filled case-mapping table and a non-empty `## Automated review`;
+- **for `port` and `shell`:** a filled case-mapping table;
+- **for every kind but `sync`:** a non-empty `## Automated review`;
 - **that every box under `## Hand check` is ticked.** The maintainer ticks them as the last step before merging, and agents never tick them. This is a reminder, not a guarantee.
 
 ## Review

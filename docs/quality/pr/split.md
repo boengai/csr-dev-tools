@@ -30,4 +30,5 @@
 
 - [ ] The wrapper's package name and exports are unchanged for React
 - [ ] Every new `#[expect]` reason accepted
+- [ ] The `## Automated review` findings read
 - [ ] Read the diff: each real change is one I would have chosen

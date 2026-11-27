@@ -36,4 +36,6 @@
 - [ ] The golden path and one error case, driven by hand on the preview
 - [ ] Feel: motion, focus rings, hover and pressed states, the debounce
 - [ ] Every new `#[expect]` reason accepted
+- [ ] Every new row (ceilings, storage keys, goldens) accepted
+- [ ] The `## Automated review` findings read
 - [ ] Read the diff: each new item is one I would have chosen
