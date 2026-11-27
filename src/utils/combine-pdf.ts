@@ -6,11 +6,24 @@ import { decryptPdf } from '@/wasm/pdf-decrypt'
 const EMPTY_RESULT: CombinePdfResult = { pdf: new Uint8Array(0), pageCount: 0, skipped: [] }
 
 /**
- * Decrypted bytes of the encrypted files seen so far. The merge reruns on every
- * re-order, and decrypting a large file takes seconds, so each file is
- * decrypted once. An entry goes when its File does.
+ * Decryptions of the encrypted files seen so far, finished or still running.
+ * The merge reruns on every re-order, possibly before the last run ends, and
+ * decrypting a large file takes seconds, so each file is decrypted once. A
+ * failed decryption is dropped, so the next merge tries again. An entry goes
+ * when its File does.
  */
-const decryptedBytes = new WeakMap<File, Uint8Array>()
+const decryptedBytes = new WeakMap<File, Promise<Uint8Array>>()
+
+function decryptOnce(file: File, bytes: Uint8Array): Promise<Uint8Array> {
+  const known = decryptedBytes.get(file)
+  if (known) return known
+  const decrypting = decryptPdf(bytes)
+  decryptedBytes.set(file, decrypting)
+  decrypting.catch(() => {
+    if (decryptedBytes.get(file) === decrypting) decryptedBytes.delete(file)
+  })
+  return decrypting
+}
 
 /**
  * Load a source PDF for copying. pdf-lib can't decrypt, and copying pages out
@@ -25,16 +38,13 @@ const decryptedBytes = new WeakMap<File, Uint8Array>()
  */
 async function loadSource(file: File): Promise<PDFDocument> {
   const known = decryptedBytes.get(file)
-  if (known) return PDFDocument.load(known)
+  if (known) return PDFDocument.load(await known)
 
   const bytes = new Uint8Array(await file.arrayBuffer())
   try {
     return await PDFDocument.load(bytes)
   } catch {
-    const decrypted = await decryptPdf(bytes)
-    const doc = await PDFDocument.load(decrypted)
-    decryptedBytes.set(file, decrypted)
-    return doc
+    return PDFDocument.load(await decryptOnce(file, bytes))
   }
 }
 

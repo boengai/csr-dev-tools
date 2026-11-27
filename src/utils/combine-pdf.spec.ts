@@ -99,4 +99,16 @@ describe('combinePdfPages', () => {
     expect(decryptPdf).toHaveBeenCalledTimes(1)
     expect(await pageTexts(again.pdf)).toEqual([PAGE_ONE_TEXT])
   })
+
+  it('decrypts a file once when a second merge starts before the first ends', async () => {
+    const file = await fixture('rc4-128.pdf')
+    vi.mocked(decryptPdf).mockClear()
+    const [first, second] = await Promise.all([
+      combinePdfPages([{ file, pageIndex: 0 }]),
+      combinePdfPages([{ file, pageIndex: 0 }]),
+    ])
+    expect(decryptPdf).toHaveBeenCalledTimes(1)
+    expect(await pageTexts(first.pdf)).toEqual([PAGE_ONE_TEXT])
+    expect(await pageTexts(second.pdf)).toEqual([PAGE_ONE_TEXT])
+  })
 })
