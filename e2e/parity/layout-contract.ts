@@ -29,12 +29,27 @@ export type LayoutSpec = {
    * Runs in the page, so it may use nothing but its argument.
    */
   showsPlaceholder: (output: Element) => boolean
+  /**
+   * The first field the status slot must come before (beside the output). `source`: the source field,
+   * for shells whose options toolbar sits above the slot, as on React (Codec, Transformer). `any`:
+   * every field and option (Comparator, Generator).
+   */
+  statusAbove?: 'any' | 'source'
   /** Checks on the closed dashboard tile. */
   tile?: (tile: Locator) => Promise<void>
 }
 
 /** The shell's source field: the code editor's wrapper, or a plain field named `dialog-source`. */
 const SOURCE_FIELD = '[data-testid="code-input-dialog-source"], [name="dialog-source"]'
+
+/** Anything a visitor fills in or sets: text fields and editors, and the option controls by role. */
+const ANY_FIELD = [
+  'textarea',
+  '[contenteditable="true"]',
+  'input:not([type="hidden"]):not([type="file"])',
+  'select',
+  ...['checkbox', 'combobox', 'radio', 'slider', 'spinbutton', 'switch', 'textbox'].map((role) => `[role="${role}"]`),
+].join(', ')
 
 const COPY_ACTION = { inEmptyState: true, name: /^Copy .*to clipboard$/ }
 
@@ -77,6 +92,7 @@ export const LAYOUT_SPECS: Record<ShellLayout, LayoutSpec> = {
   },
   comparator: {
     opensWith: 'placeholder',
+    statusAbove: 'any',
     output: slottedOutput,
     outputAction: COPY_ACTION,
     showsPlaceholder: (out) => out.querySelector('[data-slot="empty-state"]') !== null,
@@ -108,6 +124,7 @@ export const LAYOUT_SPECS: Record<ShellLayout, LayoutSpec> = {
     // `image` takes the output away with Download, not Copy.
     expectsLabelCopy: (kind) => kind !== 'image',
     opensWith: 'output',
+    statusAbove: 'any',
     output: slottedOutput,
     outputAction: COPY_ACTION,
     showsPlaceholder: (out) => !out.hasAttribute('data-has-value') && (out.textContent ?? '').trim().length > 0,
@@ -280,14 +297,14 @@ export const expectOpenContract = async (surface: Locator, spec: LayoutSpec): Pr
   }
 
   const out = await spec.output(surface)
-  // The status slot sits above the work area: before the output, and before the source field where
-  // the shell has one, so it can't sit between the two.
-  const source = surface.locator(SOURCE_FIELD).first()
+  // The status slot sits above the work area: before the output, and before the input where the Tool
+  // has one (see `statusAbove`), so it can't sit between the input and the output.
+  const firstField = surface.locator(spec.statusAbove === 'any' ? ANY_FIELD : SOURCE_FIELD).first()
   for (const [part, locator] of [
     ['the output', out],
-    ['the source field', source],
+    ['the first field', firstField],
   ] as const) {
-    if (part === 'the source field' && (await source.count()) === 0) continue
+    if (part === 'the first field' && (await firstField.count()) === 0) continue
     const handle = await locator.elementHandle()
     expect(
       await slot.evaluate(

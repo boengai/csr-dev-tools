@@ -121,14 +121,30 @@ const record = async (page: Page, { content, emoji, indicator, slot }: LoadingPa
         el.complete &&
         el.naturalWidth > 0 &&
         el.currentSrc.startsWith(`${base}${emoji}/`)
+      // Seen or drawn only counts once it reaches a frame: the check is confirmed in the next animation
+      // frame, which runs just before that frame paints, with the indicator still in the page. An
+      // indicator the content replaces before then was never on screen.
+      // One pending set per test, so a pending "seen" never swallows a "drawn".
+      const pending = new Map<(el: Element) => boolean, WeakSet<Element>>([
+        [seen, new WeakSet()],
+        [drawn, new WeakSet()],
+      ])
+      const onScreen = (el: Element, holds: (el: Element) => boolean, mark: (at: number) => void) => {
+        const waiting = pending.get(holds)!
+        if (waiting.has(el)) return
+        waiting.add(el)
+        requestAnimationFrame((at) => {
+          waiting.delete(el)
+          if (el.isConnected && holds(el)) mark(at)
+        })
+      }
       const check = () => {
-        const now = performance.now()
         document.querySelectorAll(slot).forEach((el, i) => {
           const s = (r.slots[i] ??= { appAt: null, drawnAt: null, indicatorAt: null })
           const shown = el.querySelector(indicator)
-          if (s.indicatorAt === null && seen(shown)) s.indicatorAt = now
-          if (s.drawnAt === null && drawn(shown)) s.drawnAt = now
-          if (s.appAt === null && el.querySelector(content)) s.appAt = now
+          if (shown && s.indicatorAt === null && seen(shown)) onScreen(shown, seen, (at) => (s.indicatorAt ??= at))
+          if (shown && s.drawnAt === null && drawn(shown)) onScreen(shown, drawn, (at) => (s.drawnAt ??= at))
+          if (s.appAt === null && el.querySelector(content)) s.appAt = performance.now()
         })
       }
       new MutationObserver(check).observe(document, { attributes: true, childList: true, subtree: true })
