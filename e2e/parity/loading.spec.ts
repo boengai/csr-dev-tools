@@ -66,11 +66,17 @@ const record = async (page: Page, app: string, indicator: string): Promise<void>
         for (const entry of list.getEntries() as Array<PerformanceEntry & { hadRecentInput: boolean; value: number }>)
           if (!entry.hadRecentInput) r.cls += entry.value
       }).observe({ buffered: true, type: 'layout-shift' })
+      // The indicator counts once a visitor can see it: rendered with a size, not hidden or transparent.
+      const seen = (el: Element | null) => {
+        if (!el?.checkVisibility({ opacityProperty: true, visibilityProperty: true })) return false
+        const box = el.getBoundingClientRect()
+        return box.width > 0 && box.height > 0
+      }
       const check = () => {
-        if (r.indicatorAt === null && document.querySelector(indicator)) r.indicatorAt = performance.now()
+        if (r.indicatorAt === null && seen(document.querySelector(indicator))) r.indicatorAt = performance.now()
         if (r.appAt === null && document.querySelector(app)) r.appAt = performance.now()
       }
-      new MutationObserver(check).observe(document, { childList: true, subtree: true })
+      new MutationObserver(check).observe(document, { attributes: true, childList: true, subtree: true })
     },
     { app, indicator },
   )
@@ -78,6 +84,11 @@ const record = async (page: Page, app: string, indicator: string): Promise<void>
 
 const readRecord = (page: Page): Promise<LoadingRecord> =>
   page.evaluate(() => (window as unknown as { __loading: LoadingRecord }).__loading)
+
+if (!routeTool) {
+  // Not silently dropped: a build with none of the budget's Tool pages yet has no Tool route to load.
+  test.skip(`loading a Tool route (none of ${ROUTE_TOOLS.join(', ')} is in this run)`, () => {})
+}
 
 for (const { app, indicator, name, path } of PAGES) {
   test.describe(`loading the ${name}`, () => {

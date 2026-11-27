@@ -17,21 +17,27 @@ export const deviceOptions = (name: string) => {
 
 /**
  * Waits until the page has stopped arriving: the flying-saucer loading
- * indicator is gone and nothing is still fading or sliding in (cards and the
- * dialog animate opacity and scale on mount). axe reads colours through opacity, and a
+ * indicator is gone, nothing is still fading or sliding in (cards and the
+ * dialog animate opacity and scale on mount), and no loading skeleton or
+ * spinner is still pulsing. axe reads colours through opacity, and a
  * screenshot taken mid-fade is not evidence of anything.
  */
 export const settle = async (page: Page): Promise<void> => {
   await expect(page.locator(TOOL_LOADING), 'the loading indicator is gone').toHaveCount(0, { timeout: TOOL_TIMEOUT })
   // Two frames, so an animation that starts on mount exists before it is sampled.
   await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))))
+  // No animation still running, endless ones included: an endless one is a loading skeleton or
+  // spinner (an editor still loading), not the settled page. A focused field's blinking caret, a
+  // few pixels wide, is the one endless animation a settled page keeps.
   await page.waitForFunction(
     () =>
-      document
-        .getAnimations()
-        .every((a) => a.playState !== 'running' || a.effect?.getComputedTiming().endTime === Infinity),
+      document.getAnimations().every((a) => {
+        if (a.playState !== 'running') return true
+        const target = (a.effect as KeyframeEffect | null)?.target
+        return target instanceof Element && target.getBoundingClientRect().width <= 4
+      }),
     undefined,
-    { timeout: 10_000 },
+    { timeout: TOOL_TIMEOUT },
   )
   await expect
     .poll(() =>
