@@ -15,8 +15,8 @@ in conversation on 2026-11-27.
 - **What is stored.** [Issue 15](https://github.com/boengai/csr-dev-tools/issues/15)
   lists 74 `localStorage` keys across 44 tools, two `sessionStorage`
   entries (TanStack Router's scroll positions and reload guard) and one
-  Cache Storage entry. It was read at `c3983f81`, before #30. It also lists what is awkward to read from
-  Rust: keys that cannot be derived from tool keys, `indent` as a number
+  Cache Storage entry. It was read at `c3983f81`, before #30. It also
+  lists what is awkward to read from Rust: keys that cannot be derived from tool keys, `indent` as a number
   or `"tab"`, numbers stored as text, the Zustand envelope, unchecked
   enums, all diagrams in one value, and a lone UTF-16 surrogate that
   `serde_json` refuses.
@@ -86,7 +86,7 @@ in conversation on 2026-11-27.
    - **Half an emoji becomes U+FFFD.** A Rust `String` cannot hold a lone
      surrogate, so it cannot round-trip. A pure-Rust pass before
      `serde_json` rewrites an unpaired `\uD800`–`\uDFFF` escape to
-     `�`. It leaves an escaped backslash (`\\ud83d`) alone. The rest
+     `\uFFFD`. It leaves an escaped backslash (`\\ud83d`) alone. The rest
      of the value is kept.
 
    The special readers of ADR-0030 stay:
