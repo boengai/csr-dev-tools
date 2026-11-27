@@ -124,8 +124,9 @@ and a pass bar written before it starts. They run in this order:
 
 1. `hayro` rendering in place of `pdfjs-dist`. **Failed on 2026-11-27,**
    so pdf.js stays (see [the amendment](#amendment-2026-11-27-the-hayro-trial)).
-2. `hayro-write` merge in place of `pdf-lib`'s `copyPages`. **Failed on
-   2026-11-27,** so pdf-lib stays for the merge (see
+2. `hayro-write` merge in place of `pdf-lib`'s `copyPages`, with `lopdf`
+   run as a second candidate. **Both failed on 2026-11-27,** so pdf-lib
+   stays for the merge (see
    [the amendment](#amendment-2026-11-27-the-hayro-write-trial)).
 3. `tract-onnx` with MODNet in place of transformers.js.
 
@@ -503,8 +504,8 @@ check meant "no worse than pdf-lib on `main`", and being better counted as
 a pass. Both candidates failed, so pdf-lib stays behind its engine bridge
 ([write-up](https://github.com/boengai/csr-dev-tools/blob/research/hayro-write-merge-trial/docs/research/hayro-write-merge-trial.md)).
 
-- **hayro-write 0.9.0 fails on annotations.** It rebuilds each page from
-  its MediaBox, CropBox, Rotate, `/Group`, content stream and Resources,
+- **hayro-write 0.9.0 fails on annotations and output size.** It
+  rebuilds each page from its MediaBox, CropBox, Rotate, `/Group`, content stream and Resources,
   and never writes `/Annots`.
   - So every link, form widget and markup annotation is lost. pdf-lib
     keeps them all.
@@ -518,20 +519,25 @@ a pass. Both candidates failed, so pdf-lib stays behind its engine bridge
   pdf-lib.
   - Its encoding and decryption dependencies stay linked even with default
     features off.
-  - It keeps every annotation, and output was 0.82× pdf-lib's size over
-    the corpus.
+  - It keeps every annotation. Its output was 0.82× pdf-lib's size over
+    merges M1–M5, or 0.97× without the encrypted inputs, for which
+    pdf-lib's output is blank.
   - It loads a file locked with a user password without an error, and
     drops that file's pages without reporting it.
 - **Both decrypt files with an empty user password.** Today pdf-lib's
   `ignoreEncryption` writes blank pages for them. That is a bug on
   `main`, filed as [#61](https://github.com/boengai/csr-dev-tools/issues/61).
-  It is fixed there first, and the pdf-lib bridge copies the fix.
+  As with #45 and #46, it is fixed on `main` first, and the pdf-lib
+  bridge copies the fix.
+- **What pdf-lib's merge keeps today:** every page annotation, but none of
+  the catalog: `/AcroForm`, `/Outlines`, `/Names` and `/Dests` are all
+  dropped. So no GoTo link in a merged file works, and form fields lose
+  their `/AcroForm`. The port keeps this behaviour, since it is the
+  parity baseline.
 - **Not run:** the rendered page-fidelity check. Both candidates had
-  already failed, and the user chose to skip it. Page geometry matched
-  pdf-lib's on every page.
-- **Left to the first port:** the facade returns only bytes, but
-  combine-pdf also shows the page count and the files it skipped. The
-  trial's harness returned all three.
+  already failed, and it could not change the verdict. Both candidates
+  matched pdf-lib's page geometry on every page of M1–M5. In M6, the only
+  difference is the blank page pdf-lib writes for the locked file.
 
 ## Revisit when
 
@@ -542,9 +548,9 @@ a pass. Both candidates failed, so pdf-lib stays behind its engine bridge
   timeout, OOM and trap check is re-run, and the three unrun checks would
   then have to pass.
 - A hayro-write release copies `/Annots` and fits the output-size bar, or
-  lopdf makes encoding and decryption optional and comes within 160,340
-  bytes brotli. That reopens trial 2, and the render check would then have
-  to run.
+  lopdf makes encoding and decryption optional, comes within 160,340
+  bytes brotli, and returns an error for a file it cannot decrypt. That
+  reopens trial 2, and the render check would then have to run.
 - `mmdr` gains a wasm build and full diagram coverage.
 - A Rust code editor or a TypeScript language service reaches the
   browser.
