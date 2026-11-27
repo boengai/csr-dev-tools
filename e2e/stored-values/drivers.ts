@@ -756,10 +756,17 @@ export const DRIVERS: Array<Driver> = [
       // Leaving flushes any pending save, so the key-list check that follows sees it.
       await page.goto('/')
     },
+    // Types a password and text in both modes: it opens in Decrypt (the golden value), then switches.
     edit: async (page) => {
+      const source = page.getByTestId('code-input-dialog-source').getByRole('textbox')
       await textbox(page, 'Password').fill('secret')
+      await typeAtEnd(page, source, 'U2FsdGVkX19jaXBoZXJ0ZXh0')
       await page.getByRole('button', { exact: true, name: 'Encrypt mode' }).click()
-      await typeAtEnd(page, page.getByTestId('code-input-dialog-source').getByRole('textbox'), 'plain')
+      await expect(page.getByRole('button', { exact: true, name: 'Encrypt mode' })).toHaveAttribute(
+        'aria-pressed',
+        'true',
+      )
+      await typeAtEnd(page, source, 'plain')
     },
     keys: [`${P}aes-encrypt-decrypt-mode`],
     modes: ['encrypt', 'decrypt'],
