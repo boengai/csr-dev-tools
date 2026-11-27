@@ -1,6 +1,7 @@
 # ADR 0030 — Stored values are laid over their defaults
 
-- **Status:** Accepted
+- **Status:** Accepted; Decisions 4 and 5 are narrowed for the Dioxus
+  build by ADR-0032
 - **Date:** 2026-11-25
 
 ## Context

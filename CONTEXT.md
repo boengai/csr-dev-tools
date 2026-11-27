@@ -370,6 +370,30 @@ field changed. Its triad (`useInputLocalStorage` + a single
 `<CodecShell>` also stays bespoke: its source is keyed per
 mode, so the key is derived rather than static.
 
+The Dioxus build reads and writes every key the site stores, in the shapes
+it has today, so a rollback to React loses nothing. It is stricter by type than the restore
+rule, and replaces half an emoji with U+FFFD (ADR-0032). Both builds are
+tested against the [[Stored-value contract]].
+
+## Stored-value contract
+
+The committed data that says what the site may store, and how a stored
+value reads back (ADR-0032). Both the React and the Dioxus build are tested
+against it for as long as a rollback to React is possible. It has two
+parts:
+
+- **The key list:** every `localStorage` key and key pattern the site may
+  write. A key that is not on it must not be written, which stops a Tool
+  that saves nothing today from starting to save.
+- **Golden values:** raw stored text captured from the React build on
+  `main`, covering each key's current shape, its older shapes and damaged
+  values, each with the value it should restore to.
+
+A fix that changes a stored shape updates the contract in the same change.
+Distinct from [[Persisted tool input]], one of the React mechanisms that
+write these values (the Zustand stores and the DB Diagram store are the
+others).
+
 ## Tool presentation
 
 How a Tool is shown (ADR-0029). It is read from a React context
