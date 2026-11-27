@@ -17,12 +17,14 @@ export const deviceOptions = (name: string) => {
 
 /**
  * Waits until the page has stopped arriving: the flying-saucer loading
- * indicator is gone and nothing is still fading or sliding in (cards animate
- * opacity and scale on mount). axe reads colours through opacity, and a
+ * indicator is gone and nothing is still fading or sliding in (cards and the
+ * dialog animate opacity and scale on mount). axe reads colours through opacity, and a
  * screenshot taken mid-fade is not evidence of anything.
  */
 export const settle = async (page: Page): Promise<void> => {
   await expect(page.locator(TOOL_LOADING), 'the loading indicator is gone').toHaveCount(0, { timeout: TOOL_TIMEOUT })
+  // Two frames, so an animation that starts on mount exists before it is sampled.
+  await page.evaluate(() => new Promise((done) => requestAnimationFrame(() => requestAnimationFrame(done))))
   await page.waitForFunction(
     () =>
       document
@@ -32,6 +34,10 @@ export const settle = async (page: Page): Promise<void> => {
     { timeout: 10_000 },
   )
   await expect
-    .poll(() => page.locator('article').evaluateAll((cards) => cards.every((c) => getComputedStyle(c).opacity === '1')))
+    .poll(() =>
+      page
+        .locator('article, [role="dialog"]')
+        .evaluateAll((surfaces) => surfaces.every((s) => getComputedStyle(s).opacity === '1')),
+    )
     .toBe(true)
 }

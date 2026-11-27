@@ -29,7 +29,8 @@ const HARNESS = ['parity/layout-contract.spec.ts', 'parity/a11y.spec.ts', 'parit
 const CLIPBOARD: Array<string> = ['clipboard-read', 'clipboard-write']
 
 /** Matches a title that matches both. */
-const both = (a: RegExp, b: RegExp): RegExp => new RegExp(`^(?=.*(?:${a.source}))(?=.*(?:${b.source}))`)
+const both = (a: RegExp, b: RegExp): RegExp =>
+  new RegExp(`^(?=.*(?:${a.source}))(?=.*(?:${b.source}))`, b.flags.replace('g', ''))
 
 /**
  * The parity run for one build (docs/ux/parity.md → The parity harness):

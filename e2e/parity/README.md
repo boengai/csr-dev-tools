@@ -72,6 +72,7 @@ export default defineParityConfig({
   journeys: { grep: /JSON Formatter/, testMatch: ['code-tools.spec.ts'] },
   // The harness (contract, axe, screenshots) runs over these Tools only.
   tools: ['json-formatter'],
-  webServer: { command: 'node dioxus/scripts/serve.ts dioxus/dist 5174', reuseExistingServer: false, url: 'http://localhost:5174' },
+  // Paths in the command are relative to `cwd`, which defaults to this config's folder.
+  webServer: { command: 'node dioxus/scripts/serve.ts dioxus/dist 5174', cwd: '..', reuseExistingServer: false, url: 'http://localhost:5174' },
 })
 ```

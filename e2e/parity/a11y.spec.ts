@@ -8,10 +8,12 @@ import {
   applyBadInput,
   badInput,
   DIALOG_TOOL,
+  LAYOUT_SPECS,
   openInDialog,
   openOnRoute,
   seedBadInput,
   seedDashboard,
+  waitForOpenOutput,
 } from './layout-contract'
 import { LAYOUT_ERROR_FIXTURES } from './layout-fixtures'
 import { settle, TOOL_TIMEOUT, WIDGET_LOADING } from './page'
@@ -80,7 +82,7 @@ test.describe('axe', () => {
     test(`dashboard dialog: ${dialogTool.key}`, async ({ page }) => {
       await seedDashboard(page, dialogTool)
       await page.goto('/')
-      await openInDialog(page, dialogTool)
+      await waitForOpenOutput(await openInDialog(page, dialogTool), LAYOUT_SPECS[layout])
       await expectNoNewViolations(page, `dashboard-dialog:${dialogTool.key}`)
     })
   }
@@ -92,6 +94,10 @@ test.describe('axe', () => {
         await expect(page.getByRole('heading', { exact: true, level: 1, name: tool.name })).toBeVisible({
           timeout: TOOL_TIMEOUT,
         })
+        // A Generator is checked with its first value, as a visitor first sees it settle.
+        if (isShellLayout(tool.layout)) {
+          await waitForOpenOutput(page.locator('[data-slot="tool-surface"]'), LAYOUT_SPECS[tool.layout])
+        }
         await expectNoNewViolations(page, `${tool.key}:open`)
       })
 

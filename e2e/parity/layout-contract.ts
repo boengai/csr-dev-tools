@@ -110,8 +110,9 @@ export const LAYOUT_SPECS: Record<ShellLayout, LayoutSpec> = {
     showsPlaceholder: (out) => !out.hasAttribute('data-has-value') && (out.textContent ?? '').trim().length > 0,
   },
   transformer: {
-    // `fields` puts Copy on each row; `image` takes the output away with Download.
-    expectsLabelCopy: (kind) => kind === 'text' || kind === 'markup',
+    // `fields` puts Copy on each row; `image` takes the output away with Download. No kind means
+    // text, as the shell defaults it, so a port that drops the attribute is still held to Copy.
+    expectsLabelCopy: (kind) => kind === null || kind === 'text' || kind === 'markup',
     opensWith: 'placeholder',
     output: slottedOutput,
     outputAction: COPY_ACTION,
@@ -246,6 +247,12 @@ export const applyBadInput = async (page: Page, surface: Locator, fixture: BadIn
 const showsPlaceholder = async (surface: Locator, spec: LayoutSpec): Promise<boolean> =>
   (await spec.output(surface)).evaluate(spec.showsPlaceholder)
 
+/** For a layout that opens with output (Generator): waits for the first value. */
+export const waitForOpenOutput = async (surface: Locator, spec: LayoutSpec): Promise<void> => {
+  if (spec.opensWith === 'output')
+    await expect.poll(() => showsPlaceholder(surface, spec), { timeout: 12_000 }).toBe(false)
+}
+
 /**
  * The open Tool: status slot above the work area, the placeholder (or, for a
  * Generator, a value) in the output, the output's action beside it, no alert.
@@ -258,7 +265,7 @@ export const expectOpenContract = async (surface: Locator, spec: LayoutSpec): Pr
     // The empty state is the output's own placeholder, phrased by the Tool.
     expect(await showsPlaceholder(surface, spec), 'the output shows its placeholder').toBe(true)
   } else {
-    await expect.poll(() => showsPlaceholder(surface, spec), { timeout: 12_000 }).toBe(false)
+    await waitForOpenOutput(surface, spec)
     expect(((await (await spec.output(surface)).textContent()) ?? '').trim()).not.toBe('')
   }
 

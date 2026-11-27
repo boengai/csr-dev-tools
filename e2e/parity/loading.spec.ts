@@ -87,7 +87,9 @@ for (const { app, indicator, name, path } of PAGES) {
       await page.goto(path, { waitUntil: 'commit' })
       await expect(page.locator(app).first()).toBeVisible({ timeout: LOAD_TIMEOUT })
       await page.waitForLoadState('load', { timeout: LOAD_TIMEOUT })
-      // Late shifts (fonts, tiles filling in) land after `load`.
+      // Filled in: no indicator left (every widget on the home page). A build may fetch code after
+      // `load`, so this, not `load`, ends the fill. Then late shifts (fonts) get a moment to land.
+      await expect(page.locator(indicator), 'the page has filled in').toHaveCount(0, { timeout: LOAD_TIMEOUT })
       await page.waitForTimeout(2_000)
 
       const { appAt, cls, indicatorAt } = await readRecord(page)
@@ -101,8 +103,11 @@ for (const { app, indicator, name, path } of PAGES) {
       page,
     }) => {
       const errors: Array<string> = []
+      const origin = new URL(test.info().project.use.baseURL!).origin
       page.on('console', (message) => {
-        if (message.type() === 'error') errors.push(message.text())
+        // A third-party request that fails (the web font, the emoji images) is the network, not the app.
+        const from = message.location().url
+        if (message.type() === 'error' && (!from || from.startsWith(origin))) errors.push(message.text())
       })
       page.on('pageerror', (error) => errors.push(error.message))
 

@@ -125,7 +125,7 @@ jobs:
 
       # Evidence for the reviewer, not a gate.
       - name: Screenshot Touched Tools
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         continue-on-error: true
         run: |
           tools=$(node e2e/parity/touched-tools.ts HEAD^1)
@@ -135,7 +135,7 @@ jobs:
           fi
 
       - name: Upload Screenshots
-        if: ${{ github.event_name == 'pull_request' }}
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
