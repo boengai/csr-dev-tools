@@ -109,6 +109,7 @@ A page fails if it takes over 10 s, the file fails if its linear memory ends ove
 - The largest linear memory was 90 MiB, on the NACA scan.
 - The 756-page file and the 568-page JBIG2/JPX scan completed.
 - Empty-password decryption works at R3 (the real ISO 32000 file and the RC4 variant), R4 (AES-128) and R6 (AES-256), whatever hayro's README says.
+  - Checked directly with [`harness/decrypt-check.mjs`](hayro-render-trial/harness/decrypt-check.mjs). Pages 1 and 3 of each encrypted copy render byte-identical to the plain file's, and four ISO 32000 pages carry 2,043 to 24,072 dark pixels each ([`runs/decrypt-check-0.6.txt`](hayro-render-trial/runs/decrypt-check-0.6.txt)).
 - The locked, truncated and non-PDF inputs return `Err` rather than trapping.
 
 Limits of this result:
