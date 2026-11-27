@@ -467,18 +467,18 @@ build (ADR-0034). It mounts a `<dialog role="dialog">`, calls
 `showModal()`, locks scroll and remembers focus. On close it plays the exit
 through a [[Delayed unmount]], then calls `close()`, unmounts the children,
 returns focus and fires `onAfterClose`. A closed modal frame is not in the
-DOM.
+DOM. Distinct from the [[Tool dialog frame]], which decides whether a Tool
+opens in a dialog at all; in the Dioxus build its dialog is a modal frame.
 
 - **Toast host:** the slot inside the topmost open modal frame where the
-  toast list draws. Outside a modal, the toast list draws on the page.
+  [[Toast channel]]'s toasts draw. Outside a modal they draw on the page.
   Without the host, a toast would be inert under the modal.
 
 ## Delayed unmount
 
-The only motion work Rust does in the Dioxus build (ADR-0034). It sets an
-"exiting" attribute, waits for `transitionend` or a timeout, then removes
-the node. Everything else that moves is CSS: `transition-*`, `@keyframes`,
-and `starting:` for entries. Rust never writes a style on every frame.
+How the Dioxus build plays an exit (ADR-0034): Rust sets an "exiting"
+attribute, waits for `transitionend` or a timeout, then removes the node.
+It is the only motion work Rust does; everything else that moves is CSS.
 
 ## Tool dialog frame
 

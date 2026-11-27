@@ -115,14 +115,11 @@ What else a port PR must contain, the PR template and the merge gates are decide
 
 A `ux-improvement` is any intended change away from `main`.
 
-The five foundation differences in
-[ADR-0034](../adr/0034-ui-foundation-on-the-platform.md#9-foundation-differences)
-are not `ux-improvement`s, and port PRs may include them. The primitive
-journeys check only what both builds share.
-
 - It is filed as an issue labelled `ux-improvement`, and it is never part of a port PR.
 - It waits until after cutover.
 - **One exception, for fixing an a11y baseline entry.** The fix may land on `develop` before cutover, as its own PR after that Tool's port. That PR:
   - updates the page in this folder,
   - removes the baseline entry,
   - tags the check it adds as Dioxus-only, with a tag the harness defines.
+
+The five foundation differences in [ADR-0034](../adr/0034-ui-foundation-on-the-platform.md#9-foundation-differences) come with the UI primitives. They are not `ux-improvement`s, and port PRs may include them. The primitive journeys check only what both builds share.

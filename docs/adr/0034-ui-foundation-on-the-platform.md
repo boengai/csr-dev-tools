@@ -5,6 +5,8 @@
 
 ## Context
 
+The map ([issue 5](https://github.com/boengai/csr-dev-tools/issues/5))
+puts "nice UX" among its four priorities.
 [What is the UI foundation?](https://github.com/boengai/csr-dev-tools/issues/22)
 asks which common components, styling approach and motion approach every
 Tool in the Dioxus build is made from. It was decided in conversation on
@@ -27,8 +29,8 @@ Tool in the Dioxus build is made from. It was decided in conversation on
 - **Styling and motion research**
   ([issue 12](https://github.com/boengai/csr-dev-tools/issues/12)):
   - Tailwind v4 works in Dioxus when class names are written whole.
-  - The repo's 26 `tv()` calls use only variants and defaults, so enums
-    cover them.
+  - The `tv()` calls (26 by that research's count) use only variants and
+    defaults, so enums cover them.
   - Most `motion/react` use can be plain CSS.
   - `dioxus-motion` has one maintainer and writes inline styles every
     frame, which slips past the reduced-motion reset.
@@ -48,8 +50,8 @@ Tool in the Dioxus build is made from. It was decided in conversation on
   - The e2e `toolSurface` helper (105 uses) and the performance harness
     find dialogs with the CSS selector `[role="dialog"]`. CSS selectors
     also match hidden nodes, so a closed dialog has to be gone from the
-    DOM. The same goes for the 15 `[role="combobox"]` and `[role="option"]`
-    selectors.
+    DOM. The same goes for the 15 `[role="combobox"]` and 8
+    `[role="option"]` selectors.
   - Toasts fire inside tool dialogs. Copy is the common case.
   - Nothing ties `motion/react` to `prefers-reduced-motion`, so every
     animation on the site ignores the reduced-motion reset in
@@ -258,6 +260,8 @@ The rules that follow from it:
   delayed swap would leave the button empty for 150 ms.
 - **The Generator spinner stops** under reduced motion. Its
   elapsed-seconds text still updates.
+- **The settings switch for the background animation carries over**
+  unchanged.
 - **Any code that waits for an animation to end has a timeout,** so a
   skipped animation never leaves a node behind.
 
@@ -309,19 +313,20 @@ are already CSS and carry over unchanged.
 
 - **Redesigned (DOM or ARIA changes):** Dialog, Sidebar and CommandPalette
   (on the modal frame), SelectInput, DropdownMenu, Tabs, ToastProvider,
-  CheckboxInput, SwitchInput, RadioGroupInput, RangeInput.
-- **Unchanged, with stricter props:** SelectInput and TextAreaInput
-  (named variants instead of `cnMerge`); Button, TextInput, TextAreaInput
-  and UploadInput (explicit fields instead of spreads); the triggers of
-  Tabs and DropdownMenu (named props).
+  CheckboxInput, SwitchInput, RadioGroupInput, RangeInput. As part of the
+  redesign, SelectInput's `cnMerge` becomes a named variant, and the
+  triggers of Tabs and DropdownMenu become named props.
+- **Unchanged, with stricter props:** TextAreaInput (a named variant
+  instead of `cnMerge`, and explicit fields instead of a spread); Button,
+  TextInput and UploadInput (explicit fields instead of spreads).
 - **Unchanged:** the five layout shells and their parts, plus:
   - the tool dialog frame and shell, and ToolPresentation;
   - ErrorBanner and ToolStatus;
-  - Button, CopyButton, ToggleButton and ModEnterAction;
+  - CopyButton, ToggleButton and ModEnterAction;
   - Card, SearchInput and CssOutputCell;
   - the outputs, Pane and SplitPanel;
   - BrowsableItemList, EmptyState, ProgressBar and SettingsDialog;
-  - the sidebar items, NotoEmoji, TwinkleStarsAnimate and 13 icons;
+  - the sidebar items, NotoEmoji, TwinkleStarsAnimate and 14 icons;
   - DisclosurePanel, MarkupToPdfShell, PdfSvgPreview and
     DownloadPdfButton.
 
@@ -389,6 +394,8 @@ are already CSS and carry over unchanged.
     starts really checking once checkboxes are native;
   - a native range adds a second `<input>` to its fieldset, so the number
     input must stay the one the label names;
+  - native radios group by name across the page, so each group's name
+    must be unique;
   - bcrypt's tab labels must keep the text "Hash" and "Verify";
   - toast text must sit in one node only.
 - **The lint for these rules belongs to
@@ -416,5 +423,4 @@ are already CSS and carry over unchanged.
   2027). Enter animations could then count as behaviour.
 - CSS anchor positioning becomes Baseline. It would replace the flip and
   shift code.
-- The select misses its byte ceiling on more than a few pages.
 - Dioxus 0.8 ships a stable release (ADR-0031).
