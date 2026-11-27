@@ -220,19 +220,25 @@ test.describe('Saved inputs', () => {
     if (!driver || !legacy) throw new Error('needs the jsonpath-evaluator driver and its legacy-bag golden entry')
     const legacyKey = 'csr-dev-tools-jsonpath-evaluator'
     await seedStorage(page, legacy.stored)
-    // Storage refuses the new key, as a full quota would.
-    await page.addInitScript(() => {
+    // Storage refuses the new key, as a full quota would, and counts each refusal.
+    const refusalsKey = 'jsonpath-v2-refusals'
+    await page.addInitScript((countKey: string) => {
       const setItem = Storage.prototype.setItem
       Storage.prototype.setItem = function (key: string, value: string) {
         if (this === localStorage && key === 'csr-dev-tools-jsonpath-evaluator-v2') {
+          setItem.call(sessionStorage, countKey, String(Number(sessionStorage.getItem(countKey) ?? 0) + 1))
           throw new DOMException('The quota has been exceeded.', 'QuotaExceededError')
         }
         setItem.call(this, key, value)
       }
-    })
+    }, refusalsKey)
 
     await page.goto(driver.route)
     await driver.ready(page)
+    // The migration ran and its write failed: a build that skips it leaves the old draft too.
+    await expect
+      .poll(() => page.evaluate((k) => Number(sessionStorage.getItem(k) ?? 0), refusalsKey))
+      .toBeGreaterThan(0)
     await expect.poll(() => page.evaluate((k) => localStorage.getItem(k), legacyKey)).toBe(legacy.stored[legacyKey])
     expect(await page.evaluate(() => localStorage.getItem('csr-dev-tools-jsonpath-evaluator-v2'))).toBeNull()
   })
