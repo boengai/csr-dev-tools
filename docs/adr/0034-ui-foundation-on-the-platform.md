@@ -128,6 +128,17 @@ fits.
 | Command palette search | our own combobox, as today's `SearchInput` already is |
 | Sortable grid (CombinePdf, ImageToPdf) | our own. Its behaviour list starts from what dnd-kit's defaults give today: Space to pick up, arrows to move, Space to drop, Escape to cancel, and spoken instructions and announcements. Pointer drag follows section 6 |
 
+**Browser calls go through the platform layer** (ADR-0033), the only Rust
+code that touches the browser. That covers every `web-sys` call made by
+the primitives and by CssAnimationBuilder in this ADR:
+- `showModal()` and `close()`;
+- focus, and measuring an element;
+- `set_property`;
+- the constructed stylesheet.
+
+Where this ADR says "our own `web-sys` code", it means a platform-layer
+wrapper.
+
 ### 3. One modal frame
 
 Dialog, the Sidebar and the CommandPalette share one **modal frame**. It
