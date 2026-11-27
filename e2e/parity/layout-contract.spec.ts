@@ -1,10 +1,9 @@
 import { expect, test } from '@playwright/test'
 
-import type { ToolRoute } from '../../src/types/constants/tool-registry'
 import {
   badInput,
-  DIALOG_TOOL,
   dashboardTile,
+  dialogToolFor,
   expectBadInputContract,
   expectOpenContract,
   LAYOUT_SPECS,
@@ -14,7 +13,7 @@ import {
   seedBadInput,
   seedDashboard,
 } from './layout-contract'
-import { LAYOUT_ERROR_FIXTURES, type ShellLayout } from './layout-fixtures'
+import { LAYOUT_ERROR_FIXTURES } from './layout-fixtures'
 import { CONTRACT } from './tags'
 import { SHELL_LAYOUTS, toolsWithLayout } from './tools'
 
@@ -23,9 +22,6 @@ import { SHELL_LAYOUTS, toolsWithLayout } from './tools'
  * its route, plus one Tool per layout in the dashboard dialog. The Tool list
  * and layouts come from the registry; the bad input from `layout-fixtures.ts`.
  */
-
-const dialogToolFor = (layout: ShellLayout, tools: Array<ToolRoute>): ToolRoute | undefined =>
-  tools.find((tool) => tool.key === DIALOG_TOOL[layout]) ?? tools[0]
 
 for (const layout of SHELL_LAYOUTS) {
   const spec = LAYOUT_SPECS[layout]
@@ -38,6 +34,15 @@ for (const layout of SHELL_LAYOUTS) {
 
   test.describe(`${layout} layout contract`, { tag: CONTRACT }, () => {
     for (const tool of tools) {
+      const { tile } = spec
+      if (tile) {
+        test(`${tool.key} on the dashboard: its tile is one button that opens the dialog`, async ({ page }) => {
+          await seedDashboard(page, tool)
+          await page.goto('/')
+          await tile(dashboardTile(page, tool))
+        })
+      }
+
       test.describe(`${tool.key} on its route`, () => {
         test(opening, async ({ page }) => {
           await expectOpenContract(await openOnRoute(page, tool), spec)
@@ -56,13 +61,12 @@ for (const layout of SHELL_LAYOUTS) {
       })
     }
 
-    const dialogTool = dialogToolFor(layout, tools)
+    const dialogTool = dialogToolFor(layout)
     if (!dialogTool) return
     test.describe(`${dialogTool.key} in the dashboard dialog`, () => {
       test(opening, async ({ page }) => {
         await seedDashboard(page, dialogTool)
         await page.goto('/')
-        if (spec.tile) await spec.tile(dashboardTile(page, dialogTool))
         await expectOpenContract(await openInDialog(page, dialogTool), spec)
       })
 

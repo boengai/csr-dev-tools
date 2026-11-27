@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url'
 
 import { defineConfig, devices, type PlaywrightTestConfig } from '@playwright/test'
 
+import type { ToolRegistryKey } from '../../src/types/constants/tool-registry'
 import { CONTRACT, DIOXUS_ONLY } from './tags'
 
 export type ParityBuild = 'dioxus' | 'react'
@@ -18,7 +19,7 @@ export type ParityConfigOptions = {
    */
   journeys?: { grep?: RegExp; testMatch?: Array<string> }
   /** The Tool keys this build has. The harness runs over these only. Default: every Tool. */
-  tools?: Array<string>
+  tools?: Array<ToolRegistryKey>
   /** Serves the build. Leave it out when `baseURL` is already up. */
   webServer?: PlaywrightTestConfig['webServer']
 }
@@ -38,7 +39,7 @@ const both = (a: RegExp, b: RegExp): RegExp => new RegExp(`^(?=.*(?:${a.source})
  * | `journeys`       | Desktop Chrome        | the journeys                                |
  * | `harness`        | Desktop Chrome        | layout contract, axe, loading check         |
  * | `phone-contract` | Pixel 7               | layout contract                             |
- * | `phone-journeys` | Pixel 7               | the journeys' mobile tests                  |
+ * | `phone-journeys` | Pixel 7               | the journeys' mobile (375px viewport) tests |
  * | `webkit`         | Desktop Safari        | layout contract                             |
  * | `screenshots`    | Desktop Chrome, Pixel 7 | the Tools in `SCREENSHOT_TOOLS` (CI evidence) |
  *
@@ -55,7 +56,8 @@ export const defineParityConfig = ({ baseURL, build, journeys = {}, tools, webSe
     testIgnore: ['parity/**', 'perf/**'],
     ...(journeys.testMatch ? { testMatch: journeys.testMatch } : {}),
   }
-  const mobile = /mobile viewport/
+  // The journeys' mobile tests: most say "mobile viewport", the DB diagram's says "375px viewport".
+  const mobile = /mobile viewport|375px viewport/
 
   return defineConfig({
     forbidOnly: !!process.env.CI,

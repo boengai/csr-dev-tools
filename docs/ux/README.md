@@ -103,8 +103,10 @@ The shells enforce these, so a Tool can't choose differently.
   - a migrated Tool builds its own dialog
   - an opt-out has no ADR
 - `<Shell>.contract.dom.spec.tsx` runs the same UX checks over every
-  migrated Tool of that layout. Each Tool can add a bad-input fixture so
-  the error path is checked too.
+  migrated Tool of that layout, and `e2e/parity/layout-contract.spec.ts`
+  runs them in a real browser. Each Tool can add a bad-input fixture to
+  `e2e/parity/layout-fixtures.ts`, which both read, so the error path is
+  checked too.
 - A fixture is typed (`LayoutErrorFixture`): saved input seeded into
   `storage`, `steps` (click, select, type) run on the open dialog for
   Tools that save nothing, or `never: <reason>` when no input is invalid,
@@ -118,7 +120,7 @@ Tool:
 
 1. Rebuild it on its shell.
 2. Delete its line from the pending list. The guard fails until you do.
-3. Add an error fixture to the shell's contract suite.
+3. Add an error fixture to `e2e/parity/layout-fixtures.ts`.
 4. Reword its placeholder as an instruction.
 5. Check it in a browser on the happy path and one error case.
 

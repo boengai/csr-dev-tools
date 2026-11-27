@@ -10,7 +10,8 @@ import { fileURLToPath } from 'node:url'
 const OUTPUT = fileURLToPath(new URL('../../test-results/parity-react', import.meta.url))
 const BASELINE = fileURLToPath(new URL('./a11y-baseline.json', import.meta.url))
 
-const pages: Record<string, Array<string>> = {}
+// Per page, the rules it fails and on how many elements.
+const pages: Record<string, Record<string, number>> = {}
 for (const file of globSync('**/a11y.json', { cwd: OUTPUT })) {
   Object.assign(pages, JSON.parse(readFileSync(`${OUTPUT}/${file}`, 'utf8')))
 }
@@ -19,8 +20,9 @@ if (Object.keys(pages).length === 0) throw new Error(`No a11y.json under ${OUTPU
 // Only pages that fail something: a page that is missing has an empty baseline.
 const failing = Object.fromEntries(
   Object.entries(pages)
-    .filter(([, rules]) => rules.length > 0)
-    .sort(([a], [b]) => a.localeCompare(b)),
+    .filter(([, rules]) => Object.keys(rules).length > 0)
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([page, rules]) => [page, Object.fromEntries(Object.entries(rules).sort(([a], [b]) => a.localeCompare(b)))]),
 )
 writeFileSync(BASELINE, `${JSON.stringify(failing, null, 2)}\n`)
 process.stdout.write(

@@ -1,289 +1,289 @@
 {
-  "aes-encrypt-decrypt:bad-input": [
-    "color-contrast"
-  ],
-  "aes-encrypt-decrypt:open": [
-    "color-contrast"
-  ],
-  "base64-codec:bad-input": [
-    "color-contrast"
-  ],
-  "base64-codec:open": [
-    "color-contrast"
-  ],
-  "base64-to-image:bad-input": [
-    "color-contrast"
-  ],
-  "base64-to-image:open": [
-    "color-contrast"
-  ],
-  "box-shadow-generator:open": [
-    "color-contrast"
-  ],
-  "certificate-decoder:bad-input": [
-    "color-contrast"
-  ],
-  "certificate-decoder:open": [
-    "color-contrast"
-  ],
-  "color-palette-generator:bad-input": [
-    "color-contrast"
-  ],
-  "combine-pdf:open": [
-    "color-contrast"
-  ],
-  "cron-expression-parser:bad-input": [
-    "color-contrast"
-  ],
-  "cron-expression-parser:open": [
-    "color-contrast"
-  ],
-  "crontab-generator:bad-input": [
-    "color-contrast"
-  ],
-  "crontab-generator:open": [
-    "color-contrast"
-  ],
-  "css-animation-builder:open": [
-    "color-contrast",
-    "scrollable-region-focusable"
-  ],
-  "css-border-radius-generator:open": [
-    "color-contrast"
-  ],
-  "css-formatter:open": [
-    "color-contrast"
-  ],
-  "dashboard-dialog": [
-    "color-contrast"
-  ],
-  "env-file-converter:bad-input": [
-    "color-contrast"
-  ],
-  "env-file-converter:open": [
-    "color-contrast"
-  ],
-  "escaped-json-stringifier:bad-input": [
-    "color-contrast"
-  ],
-  "escaped-json-stringifier:open": [
-    "color-contrast"
-  ],
-  "graphql-schema-viewer:open": [
-    "color-contrast"
-  ],
-  "hash-generator:open": [
-    "color-contrast"
-  ],
-  "hmac-generator:open": [
-    "color-contrast"
-  ],
-  "html-entity-converter:open": [
-    "color-contrast"
-  ],
-  "html-formatter:open": [
-    "color-contrast"
-  ],
-  "html-to-markdown-converter:open": [
-    "color-contrast"
-  ],
-  "html-to-pdf:open": [
-    "color-contrast"
-  ],
-  "http-status-codes:open": [
-    "color-contrast",
-    "scrollable-region-focusable"
-  ],
-  "image-color-picker:open": [
-    "color-contrast"
-  ],
-  "ip-subnet-calculator:open": [
-    "color-contrast"
-  ],
-  "javascript-minifier:open": [
-    "color-contrast"
-  ],
-  "json-diff-checker:bad-input": [
-    "color-contrast"
-  ],
-  "json-diff-checker:open": [
-    "color-contrast"
-  ],
-  "json-formatter:bad-input": [
-    "color-contrast"
-  ],
-  "json-formatter:open": [
-    "color-contrast"
-  ],
-  "json-schema-validator:bad-input": [
-    "color-contrast"
-  ],
-  "json-schema-validator:open": [
-    "color-contrast"
-  ],
-  "json-to-csv-converter:bad-input": [
-    "color-contrast"
-  ],
-  "json-to-csv-converter:open": [
-    "color-contrast"
-  ],
-  "json-to-toml-converter:bad-input": [
-    "color-contrast"
-  ],
-  "json-to-toml-converter:open": [
-    "color-contrast"
-  ],
-  "json-to-typescript:bad-input": [
-    "color-contrast"
-  ],
-  "json-to-typescript:open": [
-    "color-contrast"
-  ],
-  "json-to-xml-converter:bad-input": [
-    "color-contrast"
-  ],
-  "json-to-xml-converter:open": [
-    "color-contrast"
-  ],
-  "json-to-yaml-converter:bad-input": [
-    "color-contrast"
-  ],
-  "json-to-yaml-converter:open": [
-    "color-contrast"
-  ],
-  "jsonpath-evaluator:bad-input": [
-    "color-contrast"
-  ],
-  "jsonpath-evaluator:open": [
-    "color-contrast"
-  ],
-  "jwt-decoder:bad-input": [
-    "color-contrast"
-  ],
-  "jwt-decoder:open": [
-    "color-contrast"
-  ],
-  "lorem-ipsum-generator:bad-input": [
-    "color-contrast"
-  ],
-  "markdown-preview:open": [
-    "color-contrast"
-  ],
-  "markdown-table-generator:bad-input": [
-    "color-contrast"
-  ],
-  "markdown-to-pdf:open": [
-    "color-contrast"
-  ],
-  "mermaid-renderer:bad-input": [
-    "color-contrast"
-  ],
-  "mermaid-renderer:open": [
-    "color-contrast"
-  ],
-  "og-preview:open": [
-    "color-contrast"
-  ],
-  "password-generator:bad-input": [
-    "color-contrast"
-  ],
-  "password-generator:open": [
-    "color-contrast"
-  ],
-  "placeholder-image-generator:bad-input": [
-    "color-contrast"
-  ],
-  "protobuf-to-json:open": [
-    "color-contrast"
-  ],
-  "qr-code-generator:bad-input": [
-    "color-contrast"
-  ],
-  "qr-code-generator:open": [
-    "color-contrast"
-  ],
-  "regex-tester:open": [
-    "color-contrast"
-  ],
-  "rsa-key-generator:bad-input": [
-    "color-contrast"
-  ],
-  "rsa-key-generator:open": [
-    "color-contrast",
-    "scrollable-region-focusable"
-  ],
-  "sql-formatter:open": [
-    "color-contrast"
-  ],
-  "ssh-key-fingerprint:bad-input": [
-    "color-contrast"
-  ],
-  "ssh-key-fingerprint:open": [
-    "color-contrast"
-  ],
-  "string-escape-unescape:bad-input": [
-    "color-contrast"
-  ],
-  "string-escape-unescape:open": [
-    "color-contrast"
-  ],
-  "svg-viewer:bad-input": [
-    "color-contrast"
-  ],
-  "svg-viewer:open": [
-    "color-contrast"
-  ],
-  "text-case-converter:open": [
-    "color-contrast"
-  ],
-  "text-diff-checker:open": [
-    "color-contrast"
-  ],
-  "text-sort-dedupe:open": [
-    "color-contrast"
-  ],
-  "timezone-converter:bad-input": [
-    "color-contrast",
-    "label-content-name-mismatch"
-  ],
-  "timezone-converter:open": [
-    "color-contrast",
-    "label-content-name-mismatch"
-  ],
-  "unix-timestamp:bad-input": [
-    "color-contrast"
-  ],
-  "unix-timestamp:open": [
-    "color-contrast"
-  ],
-  "url-encoder-decoder:bad-input": [
-    "color-contrast"
-  ],
-  "url-encoder-decoder:open": [
-    "color-contrast"
-  ],
-  "url-parser:bad-input": [
-    "color-contrast"
-  ],
-  "url-parser:open": [
-    "color-contrast"
-  ],
-  "user-agent-parser:open": [
-    "color-contrast"
-  ],
-  "uuid-generator:bad-input": [
-    "color-contrast"
-  ],
-  "uuid-generator:open": [
-    "color-contrast"
-  ],
-  "word-counter:open": [
-    "color-contrast"
-  ],
-  "yaml-formatter:bad-input": [
-    "color-contrast"
-  ],
-  "yaml-formatter:open": [
-    "color-contrast"
-  ]
+  "aes-encrypt-decrypt:bad-input": {
+    "color-contrast": 4
+  },
+  "aes-encrypt-decrypt:open": {
+    "color-contrast": 4
+  },
+  "base64-codec:bad-input": {
+    "color-contrast": 4
+  },
+  "base64-codec:open": {
+    "color-contrast": 4
+  },
+  "base64-to-image:bad-input": {
+    "color-contrast": 2
+  },
+  "base64-to-image:open": {
+    "color-contrast": 1
+  },
+  "box-shadow-generator:open": {
+    "color-contrast": 1
+  },
+  "certificate-decoder:bad-input": {
+    "color-contrast": 2
+  },
+  "certificate-decoder:open": {
+    "color-contrast": 2
+  },
+  "color-palette-generator:bad-input": {
+    "color-contrast": 2
+  },
+  "combine-pdf:open": {
+    "color-contrast": 2
+  },
+  "cron-expression-parser:bad-input": {
+    "color-contrast": 10
+  },
+  "cron-expression-parser:open": {
+    "color-contrast": 9
+  },
+  "crontab-generator:bad-input": {
+    "color-contrast": 22
+  },
+  "crontab-generator:open": {
+    "color-contrast": 23
+  },
+  "css-animation-builder:open": {
+    "color-contrast": 2,
+    "scrollable-region-focusable": 1
+  },
+  "css-border-radius-generator:open": {
+    "color-contrast": 2
+  },
+  "css-formatter:open": {
+    "color-contrast": 2
+  },
+  "dashboard-dialog": {
+    "color-contrast": 2
+  },
+  "env-file-converter:bad-input": {
+    "color-contrast": 6
+  },
+  "env-file-converter:open": {
+    "color-contrast": 6
+  },
+  "escaped-json-stringifier:bad-input": {
+    "color-contrast": 4
+  },
+  "escaped-json-stringifier:open": {
+    "color-contrast": 4
+  },
+  "graphql-schema-viewer:open": {
+    "color-contrast": 2
+  },
+  "hash-generator:open": {
+    "color-contrast": 5
+  },
+  "hmac-generator:open": {
+    "color-contrast": 6
+  },
+  "html-entity-converter:open": {
+    "color-contrast": 4
+  },
+  "html-formatter:open": {
+    "color-contrast": 2
+  },
+  "html-to-markdown-converter:open": {
+    "color-contrast": 4
+  },
+  "html-to-pdf:open": {
+    "color-contrast": 2
+  },
+  "http-status-codes:open": {
+    "color-contrast": 10,
+    "scrollable-region-focusable": 1
+  },
+  "image-color-picker:open": {
+    "color-contrast": 1
+  },
+  "ip-subnet-calculator:open": {
+    "color-contrast": 12
+  },
+  "javascript-minifier:open": {
+    "color-contrast": 2
+  },
+  "json-diff-checker:bad-input": {
+    "color-contrast": 2
+  },
+  "json-diff-checker:open": {
+    "color-contrast": 3
+  },
+  "json-formatter:bad-input": {
+    "color-contrast": 2
+  },
+  "json-formatter:open": {
+    "color-contrast": 2
+  },
+  "json-schema-validator:bad-input": {
+    "color-contrast": 2
+  },
+  "json-schema-validator:open": {
+    "color-contrast": 3
+  },
+  "json-to-csv-converter:bad-input": {
+    "color-contrast": 4
+  },
+  "json-to-csv-converter:open": {
+    "color-contrast": 4
+  },
+  "json-to-toml-converter:bad-input": {
+    "color-contrast": 4
+  },
+  "json-to-toml-converter:open": {
+    "color-contrast": 4
+  },
+  "json-to-typescript:bad-input": {
+    "color-contrast": 5
+  },
+  "json-to-typescript:open": {
+    "color-contrast": 5
+  },
+  "json-to-xml-converter:bad-input": {
+    "color-contrast": 4
+  },
+  "json-to-xml-converter:open": {
+    "color-contrast": 4
+  },
+  "json-to-yaml-converter:bad-input": {
+    "color-contrast": 4
+  },
+  "json-to-yaml-converter:open": {
+    "color-contrast": 4
+  },
+  "jsonpath-evaluator:bad-input": {
+    "color-contrast": 2
+  },
+  "jsonpath-evaluator:open": {
+    "color-contrast": 2
+  },
+  "jwt-decoder:bad-input": {
+    "color-contrast": 2
+  },
+  "jwt-decoder:open": {
+    "color-contrast": 2
+  },
+  "lorem-ipsum-generator:bad-input": {
+    "color-contrast": 2
+  },
+  "markdown-preview:open": {
+    "color-contrast": 2
+  },
+  "markdown-table-generator:bad-input": {
+    "color-contrast": 2
+  },
+  "markdown-to-pdf:open": {
+    "color-contrast": 2
+  },
+  "mermaid-renderer:bad-input": {
+    "color-contrast": 3
+  },
+  "mermaid-renderer:open": {
+    "color-contrast": 3
+  },
+  "og-preview:open": {
+    "color-contrast": 2
+  },
+  "password-generator:bad-input": {
+    "color-contrast": 6
+  },
+  "password-generator:open": {
+    "color-contrast": 4
+  },
+  "placeholder-image-generator:bad-input": {
+    "color-contrast": 2
+  },
+  "protobuf-to-json:open": {
+    "color-contrast": 2
+  },
+  "qr-code-generator:bad-input": {
+    "color-contrast": 2
+  },
+  "qr-code-generator:open": {
+    "color-contrast": 1
+  },
+  "regex-tester:open": {
+    "color-contrast": 2
+  },
+  "rsa-key-generator:bad-input": {
+    "color-contrast": 6
+  },
+  "rsa-key-generator:open": {
+    "color-contrast": 4,
+    "scrollable-region-focusable": 1
+  },
+  "sql-formatter:open": {
+    "color-contrast": 2
+  },
+  "ssh-key-fingerprint:bad-input": {
+    "color-contrast": 2
+  },
+  "ssh-key-fingerprint:open": {
+    "color-contrast": 2
+  },
+  "string-escape-unescape:bad-input": {
+    "color-contrast": 4
+  },
+  "string-escape-unescape:open": {
+    "color-contrast": 4
+  },
+  "svg-viewer:bad-input": {
+    "color-contrast": 3
+  },
+  "svg-viewer:open": {
+    "color-contrast": 2
+  },
+  "text-case-converter:open": {
+    "color-contrast": 1
+  },
+  "text-diff-checker:open": {
+    "color-contrast": 3
+  },
+  "text-sort-dedupe:open": {
+    "color-contrast": 4
+  },
+  "timezone-converter:bad-input": {
+    "color-contrast": 4,
+    "label-content-name-mismatch": 1
+  },
+  "timezone-converter:open": {
+    "color-contrast": 3,
+    "label-content-name-mismatch": 1
+  },
+  "unix-timestamp:bad-input": {
+    "color-contrast": 2
+  },
+  "unix-timestamp:open": {
+    "color-contrast": 1
+  },
+  "url-encoder-decoder:bad-input": {
+    "color-contrast": 4
+  },
+  "url-encoder-decoder:open": {
+    "color-contrast": 4
+  },
+  "url-parser:bad-input": {
+    "color-contrast": 2
+  },
+  "url-parser:open": {
+    "color-contrast": 1
+  },
+  "user-agent-parser:open": {
+    "color-contrast": 1
+  },
+  "uuid-generator:bad-input": {
+    "color-contrast": 3
+  },
+  "uuid-generator:open": {
+    "color-contrast": 1
+  },
+  "word-counter:open": {
+    "color-contrast": 1
+  },
+  "yaml-formatter:bad-input": {
+    "color-contrast": 2
+  },
+  "yaml-formatter:open": {
+    "color-contrast": 2
+  }
 }

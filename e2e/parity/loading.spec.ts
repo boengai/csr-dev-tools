@@ -1,6 +1,7 @@
-import { type CDPSession, devices, expect, type Page, test } from '@playwright/test'
+import { type CDPSession, expect, type Page, test } from '@playwright/test'
 
 import { SLOW_4G } from '../perf/throttle'
+import { deviceOptions, TOOL_LOADING, WIDGET_LOADING } from './page'
 
 /**
  * The loading check (docs/ux/parity.md → Waiting and loading), once per page
@@ -13,19 +14,18 @@ import { SLOW_4G } from '../perf/throttle'
 const CLS_LIMIT = 0.01
 const LOAD_TIMEOUT = 90_000
 
-// The loading indicators are Noto emoji images, kept in both builds (docs/ux/parity.md → The reference).
 // The home page arrives with the app shell, so its indicator is the robot in each widget until the
 // widget's Tool fills it; on a Tool route, the flying saucer shows until the Tool does.
 const PAGES = [
   {
     app: '[data-testid="dashboard-widget"] article',
-    indicator: 'img[src*="/1f916/"]',
+    indicator: WIDGET_LOADING,
     name: 'home page',
     path: '/',
   },
   {
     app: '[data-slot="tool-surface"]',
-    indicator: 'img[src*="/1f6f8/"]',
+    indicator: TOOL_LOADING,
     name: 'Tool route',
     path: '/tools/json-formatter',
   },
@@ -33,8 +33,7 @@ const PAGES = [
 
 type LoadingRecord = { appAt: null | number; cls: number; indicatorAt: null | number }
 
-const { defaultBrowserType: _browser, ...pixel7 } = devices['Pixel 7']
-test.use(pixel7)
+test.use(deviceOptions('Pixel 7'))
 
 test.beforeEach(({ browserName }) => {
   test.skip(browserName !== 'chromium', 'the slow-4G throttle is applied through CDP')

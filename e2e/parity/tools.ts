@@ -5,7 +5,7 @@
  * `defineParityConfig`) narrows them to the Tools another build has ported.
  */
 import { TOOL_ROUTES } from '../../src/constants/tool-routes'
-import type { ToolRoute } from '../../src/types/constants/tool-registry'
+import type { ToolLayout, ToolRoute } from '../../src/types/constants/tool-registry'
 import type { ShellLayout } from './layout-fixtures'
 
 /** The Tool keys this run is limited to, or `null` for every Tool. */
@@ -20,6 +20,8 @@ export const parityTools = (): Array<ToolRoute> => {
   const filter = parityToolFilter()
   return filter ? TOOL_ROUTES.filter((tool) => filter.has(tool.key)) : TOOL_ROUTES
 }
+
+export const isShellLayout = (layout: ToolLayout): layout is ShellLayout => layout !== 'custom'
 
 export const toolsWithLayout = (layout: ShellLayout): Array<ToolRoute> =>
   parityTools().filter((tool) => tool.layout === layout)

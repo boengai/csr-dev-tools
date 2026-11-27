@@ -30,6 +30,9 @@ export type LayoutErrorFixture =
   | { steps: Array<LayoutFixtureStep>; storage?: Record<string, unknown> }
   | { steps?: Array<LayoutFixtureStep>; storage: Record<string, unknown> }
 
+/** A fixture that has bad input to apply: `storage`, `steps` or both. */
+export type BadInputFixture = Exclude<LayoutErrorFixture, { never: string }>
+
 export type ShellLayout = Exclude<ToolLayout, 'custom'>
 
 export type LayoutErrorFixtures = Partial<Record<ToolRegistryKey, LayoutErrorFixture>>

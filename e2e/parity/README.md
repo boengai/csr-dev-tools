@@ -22,7 +22,7 @@ CI runs `pnpm test:parity` in the `ci` job, after the React site's own e2e run (
 | `journeys` | Desktop Chrome | the journeys: `e2e/*.spec.ts` and `e2e/platform/` |
 | `harness` | Desktop Chrome | `layout-contract.spec.ts`, `a11y.spec.ts`, `loading.spec.ts` |
 | `phone-contract` | Pixel 7 (touch, `isMobile`) | `layout-contract.spec.ts` |
-| `phone-journeys` | Pixel 7 | the journeys' mobile tests (titles with "mobile viewport") |
+| `phone-journeys` | Pixel 7 | the journeys' mobile tests (titles with "mobile viewport" or "375px viewport") |
 | `webkit` | Desktop Safari | `layout-contract.spec.ts` |
 | `screenshots` | Desktop Chrome and Pixel 7 | `screenshots.spec.ts`, for the Tools in `SCREENSHOT_TOOLS` |
 
@@ -30,7 +30,7 @@ No project retries: a flaky check is a finding, not noise.
 
 ## The parts
 
-- **Layout contract** (`layout-contract.spec.ts`, `layout-contract.ts`). Reads every Tool and its layout from `src/constants/tool-routes.ts`. For each Tool with a layout, on its route: the status slot sits above the work area, the output shows its placeholder (a Generator shows a value), the action that takes the output away sits with the output, no alert shows, and the bad input shows in the status slot and clears the output. One Tool per layout runs again in the dashboard dialog. These are the checks of the jsdom suites (`src/test/layout-contract.tsx`), which stay on `main` until cutover.
+- **Layout contract** (`layout-contract.spec.ts`, `layout-contract.ts`). Reads every Tool and its layout from `src/constants/tool-routes.ts`. For each Tool with a layout, on its route: the status slot sits above the work area, the output shows its placeholder (a Generator shows a value), the action that takes the output away sits with the output, no alert shows, and the bad input shows in the status slot and clears the output. One Tool per layout runs again in the dashboard dialog, and each File Processor's dashboard tile is checked to be one plain button. These are the checks of the jsdom suites (`src/test/layout-contract.tsx`), which stay on `main` until cutover.
 - **Bad-input fixtures** (`layout-fixtures.ts`). The `LayoutErrorFixture` data (`storage`, `steps`, `never`), read by both the jsdom suites and this harness. A Tool whose input cannot be invalid has `never` and a reason, and its error-path test is skipped with that reason in the title.
 - **Loading check** (`loading.spec.ts`). The home page and a Tool route, on a Pixel 7 under the perf harness's slow-4G throttle (`e2e/perf/throttle.ts`, the same file as on `develop`), applied through CDP, so Chromium only. The Noto emoji loading indicator shows before the app: the robot in each dashboard widget, or the flying saucer on a Tool route. The page fills in with a layout shift of at most 0.01, the CLS budget. Keys and taps while it loads cause no console error, and afterwards the first field takes focus.
 - **axe** (`a11y.spec.ts`). Runs with tags `wcag2a`, `wcag2aa`, `wcag21a` and `wcag21aa` on every Tool route when it opens, and again in the bad-input state from the contract's fixture. It also runs on the home page and in the dashboard dialog. It waits for the loading indicator and the cards' fade-in to finish first, because axe reads colour through opacity.
@@ -38,9 +38,9 @@ No project retries: a flaky check is a finding, not noise.
 
 ## The a11y baseline
 
-`a11y-baseline.json` lists the axe failures React has today. Each entry is a page (`home`, `dashboard-dialog`, `<tool>:open`, `<tool>:bad-input`) with the rule ids it fails. A page that is not listed fails nothing. A run fails when a page fails a rule that is not on its list. A rule on the list that no longer fails is noted on the test as an annotation, not a failure.
+`a11y-baseline.json` lists the axe failures React has today. Each entry is a page (`home`, `dashboard-dialog`, `<tool>:open`, `<tool>:bad-input`) with the rule ids it fails and on how many elements. A page that is not listed fails nothing. A run fails when a page fails a rule that is not on its list, or fails it on more elements than listed. A rule that fails on fewer elements than listed is noted on the test as an annotation, not a failure.
 
-Entries are rule ids, not element selectors, so the list holds across two builds whose markup differs.
+Entries count elements rather than naming them by selector, so the list holds across two builds whose markup differs, while a new failing element still fails the run.
 
 To regenerate it, against React only:
 

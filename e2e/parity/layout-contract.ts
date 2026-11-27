@@ -6,8 +6,10 @@
  */
 import { expect, type Locator, type Page } from '@playwright/test'
 
-import type { ToolRoute } from '../../src/types/constants/tool-registry'
-import type { LayoutErrorFixture, LayoutFixtureStep, ShellLayout } from './layout-fixtures'
+import type { ToolRegistryKey, ToolRoute } from '../../src/types/constants/tool-registry'
+import type { BadInputFixture, LayoutErrorFixture, LayoutFixtureStep, ShellLayout } from './layout-fixtures'
+import { TOOL_TIMEOUT } from './page'
+import { SHELL_LAYOUTS, toolsWithLayout } from './tools'
 
 export type LayoutSpec = {
   /** Whether this output carries Copy in its label, by its `data-output-kind` (default: always). */
@@ -126,7 +128,7 @@ export const LAYOUT_SPECS: Record<ShellLayout, LayoutSpec> = {
  * default dashboard where there is one. Another build falls back to the first
  * ported Tool of that layout.
  */
-export const DIALOG_TOOL: Record<ShellLayout, string> = {
+export const DIALOG_TOOL: Record<ShellLayout, ToolRegistryKey> = {
   codec: 'base64-codec',
   comparator: 'json-diff-checker',
   'file-processor': 'image-converter',
@@ -134,7 +136,15 @@ export const DIALOG_TOOL: Record<ShellLayout, string> = {
   transformer: 'json-formatter',
 }
 
-const TOOL_TIMEOUT = 15_000
+/** The Tool of `layout` that this run opens in the dashboard dialog, if it has any Tool of that layout. */
+export const dialogToolFor = (layout: ShellLayout): ToolRoute | undefined => {
+  const tools = toolsWithLayout(layout)
+  return tools.find((tool) => tool.key === DIALOG_TOOL[layout]) ?? tools[0]
+}
+
+/** The one dashboard dialog axe checks: the Transformer's, else the first layout this run has. */
+export const dashboardDialogTool = (): ToolRoute | undefined =>
+  (['transformer', ...SHELL_LAYOUTS] as const).map(dialogToolFor).find(Boolean)
 
 /** Writes localStorage entries before any page script runs. Values are JSON-encoded, as the Tools store them. */
 export const seedStorage = async (page: Page, entries: Record<string, unknown>): Promise<void> => {
@@ -215,9 +225,8 @@ export const runStep = async (page: Page, surface: Locator, step: LayoutFixtureS
 }
 
 /** The fixture's bad input, or `null` when the Tool has none to apply. */
-export const badInput = (
-  fixture: LayoutErrorFixture | undefined,
-): Exclude<LayoutErrorFixture, { never: string }> | null => (fixture && !('never' in fixture) ? fixture : null)
+export const badInput = (fixture: LayoutErrorFixture | undefined): BadInputFixture | null =>
+  fixture && !('never' in fixture) ? fixture : null
 
 /** Why a Tool has no bad input, for the skipped error-path test's title. */
 export const noBadInputReason = (fixture: LayoutErrorFixture | undefined, spec: LayoutSpec): string =>
@@ -226,16 +235,12 @@ export const noBadInputReason = (fixture: LayoutErrorFixture | undefined, spec: 
     : (spec.fixturesUnavailable ?? 'needs a bad-input fixture')
 
 /** Seeds the fixture's storage. Call before the Tool opens. */
-export const seedBadInput = async (page: Page, fixture: Exclude<LayoutErrorFixture, { never: string }>) => {
+export const seedBadInput = async (page: Page, fixture: BadInputFixture) => {
   if (fixture.storage) await seedStorage(page, fixture.storage)
 }
 
 /** Runs the fixture's steps on the open Tool and waits for the error in the status slot. */
-export const applyBadInput = async (
-  page: Page,
-  surface: Locator,
-  fixture: Exclude<LayoutErrorFixture, { never: string }>,
-): Promise<Locator> => {
+export const applyBadInput = async (page: Page, surface: Locator, fixture: BadInputFixture): Promise<Locator> => {
   for (const step of fixture.steps ?? []) await runStep(page, surface, step)
   const alert = statusSlot(surface).getByRole('alert').first()
   await expect(alert).toBeVisible({ timeout: 12_000 })
@@ -298,7 +303,7 @@ export const expectBadInputContract = async (
   page: Page,
   surface: Locator,
   spec: LayoutSpec,
-  fixture: Exclude<LayoutErrorFixture, { never: string }>,
+  fixture: BadInputFixture,
 ): Promise<void> => {
   const alert = await applyBadInput(page, surface, fixture)
   expect(((await alert.textContent()) ?? '').trim()).not.toBe('')

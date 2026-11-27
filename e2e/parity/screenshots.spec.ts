@@ -1,8 +1,8 @@
 import { mkdirSync } from 'node:fs'
 
-import { devices, expect, test } from '@playwright/test'
+import { expect, test } from '@playwright/test'
 
-import { settle } from './settle'
+import { deviceOptions, settle, TOOL_TIMEOUT } from './page'
 import { parityTools } from './tools'
 
 /**
@@ -21,10 +21,9 @@ const wanted = new Set(
 )
 const DIR = process.env.PARITY_SCREENSHOT_DIR ?? `parity-screenshots/${process.env.PARITY_BUILD ?? 'react'}`
 
-const withoutBrowser = ({ defaultBrowserType: _browser, ...options }: (typeof devices)[string]) => options
 const DEVICES = [
-  ['desktop', withoutBrowser(devices['Desktop Chrome'])],
-  ['phone', withoutBrowser(devices['Pixel 7'])],
+  ['desktop', deviceOptions('Desktop Chrome')],
+  ['phone', deviceOptions('Pixel 7')],
 ] as const
 
 for (const tool of parityTools().filter((t) => wanted.has(t.key))) {
@@ -35,7 +34,7 @@ for (const tool of parityTools().filter((t) => wanted.has(t.key))) {
       const page = await context.newPage()
       await page.goto(tool.routePath)
       await expect(page.getByRole('heading', { exact: true, level: 1, name: tool.name })).toBeVisible({
-        timeout: 15_000,
+        timeout: TOOL_TIMEOUT,
       })
       await settle(page)
       await page.screenshot({ fullPage: true, path: `${DIR}/${tool.key}-${label}.png` })
