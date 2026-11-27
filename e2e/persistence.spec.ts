@@ -10,14 +10,17 @@ import {
   readKeyList,
   readStorage,
   readStoredJson,
+  type RecordedWrite,
   recordedWriteLog,
   recordedWrites,
   recordWrites,
   seedStorage,
+  type StorageSnapshot,
   textOf,
   typeAtEnd,
 } from './stored-values/contract.ts'
 import { DRIVERS, expectStored } from './stored-values/drivers.ts'
+import { NEVER_SAVED_SAMPLES } from './stored-values/samples.ts'
 
 /**
  * The persistence journeys of the stored-value contract (ADR-0032 Decision 8,
@@ -49,6 +52,20 @@ const requirePorted = (...tools: Array<string>): void => {
   const filter = parityToolFilter()
   const missing = tools.filter((tool) => !['dashboard', 'settings'].includes(tool) && filter && !filter.has(tool))
   test.skip(missing.length > 0, `not in this build: ${missing.join(', ')}`)
+}
+
+/**
+ * Writes the log holds beyond the seed. Init scripts run in no set order, so
+ * the seed's own writes may or may not be logged; each is discounted once.
+ */
+const writesBeyond = async (page: Page, seed: StorageSnapshot): Promise<Array<RecordedWrite>> => {
+  const pending = Object.entries(seed).filter(([, raw]) => raw !== null)
+  return (await recordedWriteLog(page)).filter(({ key, value }) => {
+    const at = pending.findIndex(([k, raw]) => k === key && raw === value)
+    if (at < 0) return true
+    pending.splice(at, 1)
+    return false
+  })
 }
 
 const golden = readGolden()
@@ -84,12 +101,15 @@ test.describe('Saved inputs', () => {
       requirePorted(driver.tool)
       const entries = driver.keys.map(currentShape)
       const restored = Object.fromEntries(entries.map((e) => [e.key, e.expected]))
+      const seed: StorageSnapshot = Object.assign({}, ...entries.map((e) => e.stored))
       await recordWrites(page)
-      await seedStorage(page, Object.assign({}, ...entries.map((e) => e.stored)))
+      await seedStorage(page, seed)
 
       await page.goto(driver.route)
       await driver.ready(page)
       await driver.shows(page, restored)
+      // Reading never writes (ADR-0032 Decision 4): opening wrote nothing, not even the same value back.
+      expect(await writesBeyond(page, seed)).toEqual([])
 
       await driver.edit(page, restored)
       await driver.checkEdited(page, restored)
@@ -281,13 +301,19 @@ test.describe('Saved inputs', () => {
       const surface = toolSurface(page)
       await expect(surface).toBeVisible()
 
+      // Valid input, so a write made only once the input is processed is caught too.
+      const sample = NEVER_SAVED_SAMPLES[tool]
+      if (sample === undefined) throw new Error(`no valid sample for ${tool} in samples.ts`)
       const fields = surface.getByRole('textbox')
       await expect(fields.first()).toBeVisible()
       for (const field of await fields.all()) {
         if (!(await field.isEditable())) continue
         await field.click()
-        await page.keyboard.insertText('x')
+        await page.keyboard.press('ControlOrMeta+A')
+        await page.keyboard.insertText(sample)
       }
+      const output = surface.locator('[data-slot="tool-output"]').first()
+      if ((await output.count()) > 0) await expect(output).toHaveAttribute('data-has-value')
       // Leaving the page flushes any pending save.
       await page.goto('/')
 
