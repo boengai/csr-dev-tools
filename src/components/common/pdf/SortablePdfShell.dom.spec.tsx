@@ -172,6 +172,14 @@ describe('SortablePdfShell', () => {
     expect(screen.getByText('Skipped 2 unsupported files: note.txt, locked.png')).toBeInTheDocument()
   })
 
+  it('names the skipped files, with no download, when the pipeline kept nothing', () => {
+    mockHook.mockImplementation(() => baseReturn({ result: { ...EMPTY_RESULT, skipped: ['locked.pdf'] } }))
+    renderShell()
+    expect(screen.getByText('Skipped 1 unsupported file: locked.pdf')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^Download$/i })).toBeNull()
+    expect(screen.queryByText(/PDF preview/i)).toBeNull()
+  })
+
   it('passes initialExtras to renderControls ctx', () => {
     const renderControls = vi.fn((_ctx) => <span data-testid="controls" />)
     renderShell({

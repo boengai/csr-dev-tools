@@ -1,4 +1,4 @@
-use lopdf::Document;
+use lopdf::{Dictionary, Document, Object, Stream};
 use wasm_bindgen::prelude::*;
 
 /// Why a PDF could not be turned into an unencrypted one.
@@ -8,6 +8,9 @@ pub enum DecryptError {
     Unreadable,
     /// The file is encrypted and the empty password does not open it.
     PasswordRequired,
+    /// A stream names its own crypt filter in a form lopdf does not read, so
+    /// it would come out still encrypted.
+    UnsupportedCryptFilter,
 }
 
 impl DecryptError {
@@ -15,6 +18,9 @@ impl DecryptError {
         match self {
             DecryptError::Unreadable => "not a readable PDF",
             DecryptError::PasswordRequired => "the PDF needs a password",
+            DecryptError::UnsupportedCryptFilter => {
+                "the PDF uses encryption this tool can't remove"
+            }
         }
     }
 }
@@ -25,12 +31,16 @@ impl DecryptError {
 /// the common "owner password only" files. A file that needs a real user
 /// password stays encrypted after the load and is reported, never written out.
 ///
-/// lopdf leaves alone a stream it has no key or filter for, so a file with an
-/// unusual crypt filter can still come out with unreadable streams.
+/// lopdf reads a stream's own `/Crypt` filter only from a `/DecodeParms`
+/// dictionary. Given any other form it falls back to the document default and
+/// can leave the stream encrypted, so such a file is reported, not written out.
 pub fn decrypt(bytes: &[u8]) -> Result<Vec<u8>, DecryptError> {
     let mut doc = Document::load_mem(bytes).map_err(|_| DecryptError::Unreadable)?;
     if doc.is_encrypted() {
         return Err(DecryptError::PasswordRequired);
+    }
+    if has_unread_crypt_filter(&doc) {
+        return Err(DecryptError::UnsupportedCryptFilter);
     }
     doc.trailer.remove(b"Encrypt");
     let mut out = Vec::new();
@@ -39,8 +49,43 @@ pub fn decrypt(bytes: &[u8]) -> Result<Vec<u8>, DecryptError> {
     Ok(out)
 }
 
-/// Rewrite a PDF without its encryption. Throws when the file is unreadable
-/// or needs a password.
+/// Whether any stream names a crypt filter, other than Identity, in a form lopdf
+/// does not read (a `/DecodeParms` array or reference).
+fn has_unread_crypt_filter(doc: &Document) -> bool {
+    doc.objects
+        .values()
+        .filter_map(|object| object.as_stream().ok())
+        .any(crypt_filter_unread)
+}
+
+fn crypt_filter_unread(stream: &Stream) -> bool {
+    let Ok(filters) = stream.filters() else {
+        return false;
+    };
+    let Some(index) = filters.iter().position(|name| *name == b"Crypt") else {
+        return false;
+    };
+    match stream.dict.get(b"DecodeParms") {
+        // No parameters means Identity; a dictionary is the form lopdf reads.
+        Err(_) | Ok(Object::Dictionary(_)) => false,
+        Ok(Object::Array(params)) => match params.get(index) {
+            None | Some(Object::Null) => false,
+            Some(Object::Dictionary(dict)) => names_a_real_filter(dict),
+            Some(_) => true,
+        },
+        Ok(_) => true,
+    }
+}
+
+fn names_a_real_filter(params: &Dictionary) -> bool {
+    params
+        .get(b"Name")
+        .and_then(Object::as_name)
+        .is_ok_and(|name| name != b"Identity")
+}
+
+/// Rewrite a PDF without its encryption. Throws when the file is unreadable,
+/// needs a password, or uses a crypt filter lopdf would leave encrypted.
 #[wasm_bindgen]
 pub fn decrypt_pdf(bytes: &[u8]) -> Result<Vec<u8>, JsError> {
     decrypt(bytes).map_err(|e| JsError::new(e.message()))
@@ -94,6 +139,56 @@ mod tests {
     #[test]
     fn reports_a_file_that_needs_a_password() {
         assert_eq!(decrypt(LOCKED), Err(DecryptError::PasswordRequired));
+    }
+
+    /// A stream filtered by `/Crypt` with the given `/DecodeParms`.
+    fn crypt_stream(params: Object) -> Stream {
+        let mut dict = Dictionary::new();
+        dict.set(
+            "Filter",
+            Object::Array(vec![Object::Name(b"Crypt".to_vec())]),
+        );
+        dict.set("DecodeParms", params);
+        Stream::new(dict, b"ciphertext".to_vec())
+    }
+
+    fn named(filter: &str) -> Object {
+        let mut dict = Dictionary::new();
+        dict.set("Name", Object::Name(filter.as_bytes().to_vec()));
+        Object::Dictionary(dict)
+    }
+
+    #[test]
+    fn flags_a_crypt_filter_named_in_a_params_array() {
+        assert!(crypt_filter_unread(&crypt_stream(Object::Array(vec![
+            named("StdCF")
+        ]))));
+        assert!(crypt_filter_unread(&crypt_stream(Object::Reference((
+            9, 0
+        )))));
+    }
+
+    #[test]
+    fn passes_the_crypt_filters_lopdf_reads_or_that_change_nothing() {
+        assert!(!crypt_filter_unread(&crypt_stream(named("StdCF"))));
+        assert!(!crypt_filter_unread(&crypt_stream(Object::Array(vec![
+            named("Identity")
+        ]))));
+        assert!(!crypt_filter_unread(&crypt_stream(Object::Array(vec![
+            Object::Null
+        ]))));
+        let mut bare = crypt_stream(Object::Null);
+        bare.dict.remove(b"DecodeParms");
+        assert!(!crypt_filter_unread(&bare));
+    }
+
+    #[test]
+    fn reports_a_document_with_an_unread_crypt_filter() {
+        let mut doc = Document::load_mem(PLAIN).unwrap();
+        doc.add_object(crypt_stream(Object::Array(vec![named("StdCF")])));
+        let mut bytes = Vec::new();
+        doc.save_to(&mut bytes).unwrap();
+        assert_eq!(decrypt(&bytes), Err(DecryptError::UnsupportedCryptFilter));
     }
 
     #[test]

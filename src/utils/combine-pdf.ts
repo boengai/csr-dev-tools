@@ -59,13 +59,18 @@ export async function combinePdfPages(items: Array<CombinePdfPageRef>): Promise<
 
   const merged = await PDFDocument.create()
   const loaded = new Map<File, PDFDocument>()
+  // Files that failed this call. Not kept between calls: the decrypt step also
+  // fails when its WASM can not be fetched, and a later merge may succeed.
+  const failed = new Set<File>()
   const skippedSet = new Set<string>()
 
   for (const { file, pageIndex } of items) {
+    if (failed.has(file)) continue
     let src = loaded.get(file)
     if (!src) {
       const lower = file.name.toLowerCase()
       if (!lower.endsWith('.pdf')) {
+        failed.add(file)
         skippedSet.add(file.name)
         continue
       }
@@ -73,6 +78,7 @@ export async function combinePdfPages(items: Array<CombinePdfPageRef>): Promise<
         src = await loadSource(file)
         loaded.set(file, src)
       } catch {
+        failed.add(file)
         skippedSet.add(file.name)
         continue
       }
@@ -82,8 +88,12 @@ export async function combinePdfPages(items: Array<CombinePdfPageRef>): Promise<
     merged.addPage(copied)
   }
 
+  const skipped = Array.from(skippedSet)
+  // pdf-lib saves an empty document with one blank page, which would offer a
+  // download of nothing. Return no bytes, so the shell shows only the skips.
+  if (merged.getPageCount() === 0) return { ...EMPTY_RESULT, skipped }
   const pdfBytes = await merged.save()
-  return { pdf: pdfBytes, pageCount: merged.getPageCount(), skipped: Array.from(skippedSet) }
+  return { pdf: pdfBytes, pageCount: merged.getPageCount(), skipped }
 }
 
 /**

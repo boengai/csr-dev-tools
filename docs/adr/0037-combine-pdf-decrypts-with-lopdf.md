@@ -58,11 +58,18 @@ whole merge. The thumbnails looked right throughout, because pdf.js decrypts.
   pays nothing.
 - **A broken but unencrypted PDF** also goes through lopdf now. If lopdf
   can read it, it is merged where it used to be skipped.
-- **Unusual crypt filters:** lopdf leaves alone a stream it has no key or
-  filter for. Such a stream would still come out unreadable. None was seen
-  in RC4-128, AES-128, AES-256 or ISO 32000.
+- **Unusual crypt filters:** lopdf reads a stream's own `/Crypt` filter
+  only from a `/DecodeParms` dictionary. Given an array or a reference it
+  falls back to the document default and can leave the stream encrypted, so
+  the crate reports such a file and the merge skips it by name. None was
+  seen in RC4-128, AES-128, AES-256 or ISO 32000.
 - **Non-empty passwords are not asked for.** The upload already rejects
   such a file, because pdf.js cannot draw its thumbnails.
+- **Attachment-only encryption is skipped.** A file that encrypts only its
+  attachments (`StmF` and `StrF` Identity, `AuthEvent /EFOpen`) opens in
+  pdf.js without a password, so it shows page cards, but lopdf needs the
+  password, so the merge skips it by name. The old `ignoreEncryption` path
+  copied its clear pages.
 - **Memory:** an encrypted file is held about three times while it loads
   (source, decrypted bytes, parsed document), and its decrypted bytes stay
   until the file is removed.

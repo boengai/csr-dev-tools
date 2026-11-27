@@ -63,6 +63,23 @@ describe('combinePdfPages', () => {
     expect(await pageTexts(result.pdf)).toEqual([PAGE_ONE_TEXT])
   })
 
+  it('tries a locked file once per merge, however many of its pages are picked', async () => {
+    const locked = await fixture('locked.pdf')
+    vi.mocked(decryptPdf).mockClear()
+    await combinePdfPages([
+      { file: locked, pageIndex: 0 },
+      { file: locked, pageIndex: 1 },
+      { file: locked, pageIndex: 0 },
+    ])
+    expect(decryptPdf).toHaveBeenCalledTimes(1)
+  })
+
+  it('returns no PDF when every file is skipped, rather than a blank page', async () => {
+    const locked = await fixture('locked.pdf')
+    const result = await combinePdfPages([{ file: locked, pageIndex: 0 }])
+    expect(result).toEqual({ pdf: new Uint8Array(0), pageCount: 0, skipped: ['locked.pdf'] })
+  })
+
   it('combines encrypted and plain pages in the given order', async () => {
     const encrypted = await fixture('aes-256-objstm.pdf')
     const plain = await fixture('plain.pdf')
