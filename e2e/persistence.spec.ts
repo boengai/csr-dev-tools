@@ -75,10 +75,16 @@ test.describe('Saved inputs', () => {
       page.getByTestId('open-mermaid-renderer-btn').click(),
     ])
     // The renderer opens on the exported diagram, and the handoff is gone once read.
-    const words = (text: string) => text.split(/\s+/).filter(Boolean)
+    // Line by line, so a handoff that loses the line breaks fails; indentation may differ.
+    const lines = (text: string) =>
+      text
+        .split('\n')
+        .map((line) => line.trim())
+        .filter(Boolean)
     const source = renderer.getByRole('textbox', { exact: true, name: 'Mermaid Syntax' })
     await expect(source).toBeVisible()
-    await expect.poll(async () => words(await textOf(source))).toEqual(words(exported))
+    expect(lines(exported).length).toBeGreaterThan(1)
+    await expect.poll(async () => lines(await textOf(source))).toEqual(lines(exported))
     await expect
       .poll(() => renderer.evaluate(() => localStorage.getItem('csr-dev-tools-handoff-mermaid-renderer')))
       .toBeNull()
@@ -121,17 +127,19 @@ test.describe('Saved inputs', () => {
   })
 
   test('db-diagram: an unreadable store is backed up before the first save over it', async ({ page }) => {
-    await seedStorage(page, { 'csr-dev-tools-db-diagrams': '{bad' })
+    const unreadable = '{bad'
+    await seedStorage(page, { 'csr-dev-tools-db-diagrams': unreadable })
     // Records the order of writes, so the backup is seen to land before the store is replaced.
-    await page.addInitScript(() => {
+    // Init scripts run in no set order, so the seed's own write may be recorded too; it is skipped.
+    await page.addInitScript((seed: string) => {
       const setItem = Storage.prototype.setItem
       const order: Array<string> = []
       Object.defineProperty(window, 'storedValueWrites', { value: order })
       Storage.prototype.setItem = function (key: string, value: string) {
-        if (this === localStorage) order.push(key)
+        if (this === localStorage && !(key === 'csr-dev-tools-db-diagrams' && value === seed)) order.push(key)
         setItem.call(this, key, value)
       }
-    })
+    }, unreadable)
     const diagramWrites = () =>
       page.evaluate(() =>
         (window as unknown as { storedValueWrites: Array<string> }).storedValueWrites.filter((k) =>
@@ -146,7 +154,7 @@ test.describe('Saved inputs', () => {
       .poll(() => page.evaluate(() => localStorage.getItem('csr-dev-tools-db-diagrams-corrupt-backup')), {
         timeout: 10_000,
       })
-      .toBe('{bad')
+      .toBe(unreadable)
     await expect.poll(diagramWrites).toContain('csr-dev-tools-db-diagrams')
     expect((await diagramWrites())[0]).toBe('csr-dev-tools-db-diagrams-corrupt-backup')
     const store = await page.evaluate(
