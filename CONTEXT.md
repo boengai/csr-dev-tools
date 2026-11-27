@@ -445,10 +445,11 @@ rules are in `docs/ux/parity.md`.
 ## UI primitive
 
 An interactive common component in the Dioxus build whose keyboard, focus
-and announcement behaviour we own (ADR-0034). There are ten: dialog,
+and announcement behaviour we own (ADR-0034). There are eleven: dialog,
 select, dropdown menu, tabs, toast, checkbox, switch, radio group, slider,
-and the command palette's combobox. Each is written from scratch and built
-on the browser's own element where one has the right role and keys.
+the command palette's combobox, and the sortable grid. Each is written from
+scratch and built on the browser's own element where one has the right role
+and keys.
 
 - **Behaviour list:** a primitive's written keys, focus moves and
   announcements, made before it is built. The bar is Radix as it behaves on

@@ -87,11 +87,15 @@ Tool in the Dioxus build is made from. It was decided in conversation on
 
 ### 1. Primitives are ours
 
-- **Every interactive primitive is written from scratch.** That covers
-  the nine Radix replacements (dialog, select, dropdown menu, tabs,
-  toast, checkbox, switch, radio group, slider) and the command palette's
-  combobox. No code is copied from `dioxus-primitives`, and it is not a
-  dependency. Radix and `dioxus-primitives` may be read for reference.
+- **Every interactive primitive is written from scratch.** There are
+  eleven:
+  - the nine Radix replacements: dialog, select, dropdown menu, tabs,
+    toast, checkbox, switch, radio group and slider;
+  - the command palette's combobox;
+  - the sortable grid that replaces dnd-kit (ADR-0033).
+
+  No code is copied from `dioxus-primitives`, and it is not a dependency.
+  Radix and `dioxus-primitives` may be read for reference.
 - **Whoever owns a primitive's code owns its accessibility.** No library
   does.
 - **The bar** is Radix's behaviour as it is today, and never below the
@@ -122,6 +126,7 @@ fits.
 | Tabs | our own `tablist`, `tab` and `tabpanel` |
 | Toast region | our own region and live announcement |
 | Command palette search | our own combobox, as today's `SearchInput` already is |
+| Sortable grid (CombinePdf, ImageToPdf) | our own. Its behaviour list starts from what dnd-kit's defaults give today: Space to pick up, arrows to move, Space to drop, Escape to cancel, and spoken instructions and announcements. Pointer drag follows section 6 |
 
 ### 3. One modal frame
 
@@ -164,9 +169,10 @@ The rules that follow from it:
   - Tab while the list is open stays in the list.
 
   How it is placed:
-  - The listbox sits in the top layer with the `popover` attribute. It
-    stays a DOM descendant of the select, so it also works inside a
-    modal.
+  - The listbox sits in the top layer with `popover="manual"`
+    ([section 7](#7-what-behaviour-may-depend-on)). Our own code closes
+    it on an outside click. It stays a DOM descendant of the select, so
+    it also works inside a modal.
   - A few lines of our own `web-sys` code place it under the trigger and
     flip or shift it to stay on screen, and set a `--trigger-width`
     variable.
@@ -178,9 +184,10 @@ The rules that follow from it:
 - **Dropdown menu.** It follows the WAI-ARIA menu button pattern, with
   `menu` and `menuitem` roles.
   - Items that show a state are `menuitemradio` with `aria-checked`.
-  - The menu sits in the top layer with `popover="auto"`, placed by the
+  - The menu sits in the top layer with `popover="manual"`, placed by the
     same code as the select.
-  - A click outside closes it and still reaches what was clicked.
+  - Our own code closes it on an outside click, and the click still
+    reaches what was clicked.
   - It is unmounted while closed.
 - **Tabs.** It follows the WAI-ARIA tabs pattern, with automatic
   activation as in Radix.
@@ -271,7 +278,16 @@ The rules that follow from it:
 ### 7. What behaviour may depend on
 
 - **Behaviour depends only on Baseline "widely available" features.**
-  `<dialog>`, `inert` and `popover` qualify as of 2026-11-27.
+  `<dialog>` (since March 2022) and `inert` (since April 2023) qualify
+  (MDN, read 2026-11-27).
+- **`popover` is the one named exception.**
+  - It is Baseline "newly available" only since January 2025, and should
+    become widely available around July 2027. What holds it back is an
+    iOS Safari bug in dismissing popovers by touch.
+  - We use only `popover="manual"` and close popups with our own code, so
+    that bug doesn't reach us.
+  - In a browser without `popover`, a popup renders in place and still
+    works, though an `overflow` ancestor may clip it.
 - **Newer features are decoration only.** `@starting-style`,
   `transition-behavior: allow-discrete`, `interpolate-size` and anchor
   positioning are among them. Where a browser lacks one, the effect
@@ -364,7 +380,8 @@ are already CSS and carry over unchanged.
 - **Decided by
   [issue 21](https://github.com/boengai/csr-dev-tools/issues/21):**
   - CodeInput (CodeMirror and Monaco);
-  - dnd-kit in SortableCard and in SortablePdfShell's grid;
+  - dnd-kit in SortableCard and in SortablePdfShell's grid, which becomes
+    the sortable grid primitive (section 1);
   - pdf.js in PdfBytesPreview;
   - DOMPurify in TransformerOutputPane;
   - jszip in the ZIP builders.
@@ -415,6 +432,9 @@ are already CSS and carry over unchanged.
 - **Floating UI through interop, or CSS anchor positioning,** to place
   popups. The first is a JavaScript dependency for a few lines of maths.
   The second isn't Baseline yet.
+- **`position: fixed` instead of `popover`.** It breaks inside our
+  animated dialogs: a `transform` on the dialog makes the dialog the
+  containing block, so its `overflow` clips the popup.
 - **`dioxus-motion`.** One maintainer, and it writes inline styles every
   frame, which bypasses the reduced-motion reset.
 - **Exits with `allow-discrete`.** Those exits play only where it is
@@ -434,10 +454,11 @@ are already CSS and carry over unchanged.
 
 ## Consequences
 
-- **We own the accessibility of ten primitives.** The browser carries
-  most of the dialog, checkbox, switch, radio and slider behaviour. Four
-  widgets need hand-written ARIA and keyboard code: select, tabs, menu
-  and toast. The palette's combobox already is hand-written in React.
+- **We own the accessibility of eleven primitives.** The browser carries
+  most of the dialog, checkbox, switch, radio and slider behaviour. Five
+  need hand-written ARIA and keyboard code: select, tabs, menu, toast and
+  the sortable grid. The palette's combobox already is hand-written in
+  React.
 - **The parity harness
   ([issue 41](https://github.com/boengai/csr-dev-tools/issues/41)) gets
   each primitive's keyboard and focus journey from its behaviour list.**
