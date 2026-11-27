@@ -504,9 +504,11 @@ export const DRIVERS: Array<Driver> = [
       await harmony.shows(page, field(value, 'harmony'))
     },
     tool: 'color-palette-generator',
+    // Leaves the harmony it opened with, whatever that is.
     touch: async (page) => {
-      await pick(page, 'Harmony type', 'Triadic')
-      await pick(page, 'Harmony type', 'Analogous')
+      const opened = await page.getByRole('combobox', { exact: true, name: 'Harmony type' }).innerText()
+      await pick(page, 'Harmony type', opened === 'Triadic' ? 'Analogous' : 'Triadic')
+      await pick(page, 'Harmony type', opened)
     },
     write: async (page) => {
       await replaceText(page, textbox(page, 'Hex Color'), '#10b981')
@@ -530,7 +532,14 @@ export const DRIVERS: Array<Driver> = [
       )
     },
     tool: 'crontab-generator',
-    touch: (page) => page.getByRole('button', { exact: true, name: 'Every' }).first().click(),
+    // The mode buttons show no pressed state, so this checks the expression is unchanged instead.
+    touch: async (page) => {
+      const expression = page.getByRole('region', { name: 'Cron expression' }).getByRole('definition').first()
+      const opened = await expression.innerText()
+      await page.getByRole('button', { exact: true, name: 'Every' }).first().click()
+      const after = await expression.innerText()
+      if (after !== opened) throw new Error(`crontab-generator: touching it changed ${opened} to ${after}`)
+    },
     write: async (page) => {
       await page.getByRole('button', { exact: true, name: 'Interval' }).nth(0).click()
       await page.getByRole('button', { exact: true, name: 'Interval' }).nth(1).click()
@@ -644,9 +653,12 @@ export const DRIVERS: Array<Driver> = [
       return expect(pressedToggle(page, `${keySize} bits`)).toHaveAttribute('aria-pressed', 'true')
     },
     tool: 'rsa-key-generator',
+    // Leaves the key size it opened with.
     touch: async (page) => {
-      await pressedToggle(page, '4096 bits').click()
-      await pressedToggle(page, '2048 bits').click()
+      const opened =
+        (await pressedToggle(page, '4096 bits').getAttribute('aria-pressed')) === 'true' ? '4096 bits' : '2048 bits'
+      await pressedToggle(page, opened === '2048 bits' ? '4096 bits' : '2048 bits').click()
+      await pressedToggle(page, opened).click()
     },
     write: (page) => pressedToggle(page, '4096 bits').click(),
   },
@@ -664,9 +676,12 @@ export const DRIVERS: Array<Driver> = [
         String(field(restored[`${P}uuid-generator`], 'count')),
       ),
     tool: 'uuid-generator',
+    // Leaves the count it opened with.
     touch: async (page) => {
-      await page.getByRole('spinbutton', { exact: true, name: 'Count' }).fill('2')
-      await page.getByRole('spinbutton', { exact: true, name: 'Count' }).fill('1')
+      const count = page.getByRole('spinbutton', { exact: true, name: 'Count' })
+      const opened = await count.inputValue()
+      await count.fill(opened === '2' ? '3' : '2')
+      await count.fill(opened)
     },
     write: (page) => page.getByRole('spinbutton', { exact: true, name: 'Count' }).fill('3'),
   },
