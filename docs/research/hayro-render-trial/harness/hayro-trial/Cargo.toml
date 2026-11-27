@@ -1,0 +1,27 @@
+# Throwaway trial crate for issue #42. Not part of any workspace.
+[package]
+name = "hayro-trial"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+[lib]
+crate-type = ["cdylib"]
+
+[features]
+default = ["embed"]
+# The build that is judged: standard-14 fonts and predefined CMaps compiled in.
+embed = ["hayro/embed-fonts", "hayro/embed-cmaps"]
+
+[dependencies]
+hayro = { version = "=0.9.0", default-features = false }
+self_cell = "=1.3.0"
+wasm-bindgen = "=0.2.130"
+
+[profile.release]
+lto = "fat"
+opt-level = "z"
+strip = "debuginfo"
+codegen-units = 1
+
+[workspace]
