@@ -130,13 +130,21 @@ const diagramInPage = (page: Page): Promise<string> =>
   }, DIAGRAM_STORE)
 
 /** One save over the restored store, as any edit makes. */
+/** Saves each listed diagram as the app loads it, then the index: what storage holds once each has been edited. */
 const diagramWriteInPage = (page: Page): Promise<void> =>
   page.evaluate(async (url) => {
-    const { loadDiagramIndex, saveDiagramIndex } = (await import(/* @vite-ignore */ url)) as {
-      loadDiagramIndex: () => unknown
+    const { loadDiagram, loadDiagramIndex, saveDiagram, saveDiagramIndex } = (await import(/* @vite-ignore */ url)) as {
+      loadDiagram: (id: string) => unknown
+      loadDiagramIndex: () => Array<{ id: string }>
+      saveDiagram: (id: string, schema: unknown) => void
       saveDiagramIndex: (index: unknown) => void
     }
-    saveDiagramIndex(loadDiagramIndex())
+    const index = loadDiagramIndex()
+    for (const { id } of index) {
+      const schema = loadDiagram(id)
+      if (schema !== null) saveDiagram(id, schema)
+    }
+    saveDiagramIndex(index)
   }, DIAGRAM_STORE)
 
 const snapshot = async (page: Page): Promise<StorageSnapshot> => sortKeys(await readStorage(page))

@@ -307,6 +307,16 @@ const timezoneConverter: Driver = (() => {
 /** What the AES journey types: a password, ciphertext in Decrypt, plain text in Encrypt. */
 const AES_TYPED = ['secret-pass', 'U2FsdGVkX19jaXBoZXJ0ZXh0', 'plain-text'] as const
 
+const PROTOBUF_FORMATS: Record<string, string> = { base64: 'Base64', binary: 'Binary', hex: 'Hex' }
+const PROTOBUF_DECODE_INPUT = 'Paste encoded protobuf data...'
+
+/** Closes the Encode dialog (Close keeps the input) and opens Decode. */
+const openProtobufDecode = async (page: Page): Promise<void> => {
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { exact: true, name: 'Decode' }).click()
+  await expect(textbox(page, PROTOBUF_DECODE_INPUT)).toBeVisible()
+}
+
 const pressedToggle = (page: Page, name: string): Locator => page.getByRole('button', { exact: true, name })
 
 export const DRIVERS: Array<Driver> = [
@@ -812,16 +822,25 @@ export const DRIVERS: Array<Driver> = [
       await expect(textbox(page, 'Proto schema input')).toBeVisible()
     },
     route: '/tools/protobuf-codec',
+    // Checks the Encode dialog, then the Decode dialog's own format and data.
     shows: async (page, restored) => {
       const value = restored[`${P}protobuf-codec-input`]
       await expectText(textbox(page, 'Proto schema input'), String(field(value, 'schema')))
       await expectText(textbox(page, 'JSON input'), String(field(value, 'encodeSource')))
+      await openProtobufDecode(page)
+      const format = PROTOBUF_FORMATS[String(field(value, 'decodeFormat'))]
+      if (format === undefined) throw new Error(`protobuf-codec: no label for ${String(field(value, 'decodeFormat'))}`)
+      await expect(page.getByRole('radio', { exact: true, name: format })).toBeChecked()
+      await expectText(textbox(page, PROTOBUF_DECODE_INPUT), String(field(value, 'decodeSource')))
     },
     tool: 'protobuf-codec',
     touch: (page) => touchText(page, textbox(page, 'Proto schema input')),
     write: async (page) => {
       await typeAtEnd(page, textbox(page, 'Proto schema input'), 'syntax = "proto3";\nmessage A { int32 a = 1; }')
       await typeAtEnd(page, textbox(page, 'JSON input'), '{"a":1}')
+      await openProtobufDecode(page)
+      await page.getByRole('radio', { exact: true, name: 'Hex' }).click()
+      await typeAtEnd(page, textbox(page, PROTOBUF_DECODE_INPUT), '0801')
     },
   },
   {

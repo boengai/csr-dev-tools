@@ -46,7 +46,7 @@ The unit spec reads every key the React source can write (its key literals, each
 - `expected`: what both builds restore. Except for a deliberate difference, it is captured from React, never typed.
 - `deliberate` and `react`: where the Dioxus build differs on purpose (ADR-0032 Decision 4: strict by type, and U+FFFD for a lone surrogate). `deliberate` says why, `expected` is written by hand in `seeds.ts`, and `react` keeps what React restores, as JSON text. `react` is text because React keeps a lone surrogate, which no strict JSON reader accepts.
 - `storageAfterOpen`: every key after the Tool opened, present only when opening it wrote something: a migration, the handoff, or the layout store writing version 2 back.
-- `storageAfterWrite` (DB Diagram only): every key after one save over the restored store. It shows when the corrupt backup is written.
+- `storageAfterWrite` (DB Diagram only): every key after each listed diagram is saved as the app loads it, then the index. It shows what a save leaves (a relationship whose table is gone is dropped) and when the corrupt backup is written.
 
 What `expected` is, by reader:
 
