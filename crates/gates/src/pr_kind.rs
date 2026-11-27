@@ -121,27 +121,17 @@ pub fn check_paths(kind: &Kind, files: &[ChangedFile], ctx: &PathContext) -> Vec
     if *kind == Kind::Sync {
         return Vec::new();
     }
-    let mut findings: Vec<Finding> = files
+    // A shell PR's one proof Tool: the first Tool it touches. Files of any
+    // other Tool fall outside that Tool's `port` set.
+    let proof_tool = files
         .iter()
-        .filter(|file| !allowed(kind, &file.path, ctx))
+        .find_map(|file| tool_key(&file.path))
+        .unwrap_or_default();
+    files
+        .iter()
+        .filter(|file| !allowed(kind, &file.path, proof_tool, ctx))
         .map(|file| outside_kind(kind, &file.path))
-        .collect();
-    if let Kind::Shell { .. } = kind {
-        let tools: BTreeSet<&str> = files
-            .iter()
-            .filter_map(|file| tool_key(&file.path))
-            .collect();
-        if tools.len() > 1 {
-            let list = tools.into_iter().collect::<Vec<_>>().join(", ");
-            findings.push(Finding::new(
-                "pr-paths",
-                "shell",
-                0,
-                format!("a shell PR ports one Tool as proof, not {list}"),
-            ));
-        }
-    }
-    findings
+        .collect()
 }
 
 fn outside_kind(kind: &Kind, path: &str) -> Finding {
@@ -165,17 +155,15 @@ fn outside_kind(kind: &Kind, path: &str) -> Finding {
     }
 }
 
-fn allowed(kind: &Kind, path: &str, ctx: &PathContext) -> bool {
+fn allowed(kind: &Kind, path: &str, proof_tool: &str, ctx: &PathContext) -> bool {
     match kind {
         Kind::Port { key } => in_port_set(key, path, ctx),
         Kind::Split { name } => {
-            logic_name(path) == Some(name.as_str())
+            path == "Cargo.lock"
+                || logic_name(path) == Some(name.as_str())
                 || path.starts_with(&format!("wasm/crates/{name}/"))
         }
-        Kind::Shell { .. } => {
-            path.starts_with("crates/ui/")
-                || tool_key(path).is_some_and(|key| in_port_set(key, path, ctx))
-        }
+        Kind::Shell { .. } => path.starts_with("crates/ui/") || in_port_set(proof_tool, path, ctx),
         Kind::Foundation { layer, part } => {
             path == APP_MANIFEST
                 || path == "Cargo.lock"

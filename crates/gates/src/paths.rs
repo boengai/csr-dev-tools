@@ -45,7 +45,8 @@ pub fn is_gate_file(path: &str) -> bool {
 
 /// Lockfiles and generated files, which the size warning does not count.
 pub fn is_generated(path: &str) -> bool {
-    matches!(path, "Cargo.lock" | "pnpm-lock.yaml" | REGISTRY_GENERATED)
+    let name = path.rsplit('/').next().unwrap_or(path);
+    matches!(name, "Cargo.lock" | "pnpm-lock.yaml") || path == REGISTRY_GENERATED
 }
 
 /// The key of the Tool crate a path is in, if any.

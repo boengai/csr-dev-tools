@@ -18,6 +18,11 @@ pub mod workspace;
 
 use std::fmt;
 
+/// A rule broken in a file before the file is known: the rule id, the 1-based
+/// line (0 for none) and the message. `sources::check_file` makes it a
+/// [`Finding`].
+pub type RuleHit = (&'static str, usize, String);
+
 /// One rule broken at one place.
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Finding {

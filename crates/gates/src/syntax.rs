@@ -6,6 +6,7 @@ use syn::spanned::Spanned;
 use syn::visit::{self, Visit};
 use syn::{Attribute, Fields, FnArg, ItemFn, ItemStruct, Pat};
 
+use crate::RuleHit;
 use crate::sources::FileContext;
 use crate::workspace::Layer;
 
@@ -15,8 +16,6 @@ pub const MAX_COMPONENT_LINES: usize = 80;
 
 /// Props a common component never takes (ADR-0034).
 const BANNED_PROPS: [&str; 2] = ["class", "style"];
-
-type Raw = (&'static str, usize, String);
 
 pub fn line(span: Span) -> usize {
     span.start().line
@@ -42,7 +41,7 @@ fn is_cfg_test(attr: &Attribute) -> bool {
             .is_ok_and(|list| list.tokens.to_string() == "test")
 }
 
-pub fn check(context: &FileContext, file: &syn::File) -> Vec<Raw> {
+pub fn check(context: &FileContext, file: &syn::File) -> Vec<RuleHit> {
     let mut visitor = Visitor {
         context,
         found: Vec::new(),
@@ -88,7 +87,7 @@ impl Visit<'_> for EntryCounter {
 
 struct Visitor<'a> {
     context: &'a FileContext,
-    found: Vec<Raw>,
+    found: Vec<RuleHit>,
 }
 
 fn last_segment_is(attr: &Attribute, name: &str) -> bool {
@@ -146,7 +145,7 @@ impl Visitor<'_> {
     }
 }
 
-fn ui_props(span: Span, name: &str) -> Raw {
+fn ui_props(span: Span, name: &str) -> RuleHit {
     (
         "ui-props",
         line(span),

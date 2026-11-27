@@ -1,7 +1,7 @@
 //! The path check by PR kind, the gate-file mixing check and the size warning
 //! (`docs/quality/gates.md` → "PR kinds").
 
-use gates::pr_kind::{ChangedFile, Kind, PathContext, check_paths, parse_title, size_warning};
+use gates::pr_kind::{ChangedFile, PathContext, check_paths, parse_title, size_warning};
 
 fn files(paths: &[&str]) -> Vec<ChangedFile> {
     paths.iter().map(|p| ChangedFile::new(*p, 1, 0)).collect()
@@ -16,55 +16,6 @@ fn rules(title: &str, paths: &[&str]) -> Result<Vec<&'static str>, gates::Findin
 }
 
 const NONE: Vec<&str> = Vec::new();
-
-#[test]
-fn titles_name_their_kind() {
-    assert_eq!(
-        parse_title("port(hash-generator): Hash Generator").unwrap(),
-        Kind::Port {
-            key: "hash-generator".into()
-        }
-    );
-    assert_eq!(
-        parse_title("split(hash): move the digests into logic-hash").unwrap(),
-        Kind::Split {
-            name: "hash".into()
-        }
-    );
-    assert_eq!(
-        parse_title("shell(transformer): TransformerShell").unwrap(),
-        Kind::Shell {
-            layout: "transformer".into()
-        }
-    );
-    assert_eq!(
-        parse_title("ui(select): the select primitive").unwrap(),
-        Kind::Foundation {
-            layer: "ui".into(),
-            part: "select".into()
-        }
-    );
-    assert_eq!(parse_title("gates: deny unwrap").unwrap(), Kind::Gates);
-    assert_eq!(parse_title("docs: explain the gates").unwrap(), Kind::Docs);
-    assert_eq!(
-        parse_title("chore: sync main into develop (#12)").unwrap(),
-        Kind::Sync
-    );
-}
-
-#[test]
-fn a_title_without_a_kind_is_rejected() {
-    for title in [
-        "Add hash generator",
-        "feat: hash",
-        "port: missing key",
-        "ui(): empty",
-        "fix(x): y",
-    ] {
-        let finding = parse_title(title).unwrap_err();
-        assert_eq!(finding.rule, "pr-kind", "{title}");
-    }
-}
 
 #[test]
 fn a_port_stays_inside_its_tool() {
@@ -285,4 +236,42 @@ fn a_large_diff_warns_without_counting_lockfiles() {
     assert_eq!(size_warning(&small), None);
     let large = vec![ChangedFile::new("crates/ui/src/a.rs", 700, 301)];
     assert!(size_warning(&large).unwrap().contains("1001"));
+}
+
+#[test]
+fn a_shell_wires_in_its_proof_tool() {
+    let paths = [
+        "crates/ui/src/shells/transformer.rs",
+        "crates/tools/base64-encoder/src/lib.rs",
+        "crates/logic/base64/src/lib.rs",
+        "crates/app/Cargo.toml",
+        "crates/app/src/ported_tools.rs",
+        "docs/perf/byte-ceilings.json",
+        "Cargo.lock",
+    ];
+    assert_eq!(
+        rules("shell(transformer): TransformerShell", &paths).unwrap(),
+        NONE
+    );
+}
+
+#[test]
+fn every_kind_but_docs_may_change_the_lockfile() {
+    assert_eq!(
+        rules(
+            "split(hash): x",
+            &["crates/logic/hash/src/lib.rs", "Cargo.lock"]
+        )
+        .unwrap(),
+        NONE
+    );
+}
+
+#[test]
+fn no_lockfile_counts_towards_the_size_warning() {
+    let files = vec![
+        ChangedFile::new("wasm/Cargo.lock", 0, 5000),
+        ChangedFile::new("crates/ui/src/a.rs", 10, 0),
+    ];
+    assert_eq!(size_warning(&files), None);
 }

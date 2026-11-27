@@ -10,6 +10,7 @@ use dioxus_rsx::{
 use proc_macro2::{TokenStream, TokenTree};
 use syn::visit::Visit;
 
+use crate::RuleHit;
 use crate::sources::FileContext;
 use crate::syntax::line;
 
@@ -17,9 +18,7 @@ use crate::syntax::line;
 /// builds no dialog of its own (the React layout guard).
 const APP_ONLY: [&str; 4] = ["Dialog", "dialog", "ModalFrame", "modal_frame"];
 
-type Raw = (&'static str, usize, String);
-
-pub fn check(context: &FileContext, text: &str, file: &syn::File) -> Vec<Raw> {
+pub fn check(context: &FileContext, text: &str, file: &syn::File) -> Vec<RuleHit> {
     let mut visitor = RsxVisitor { found: Vec::new() };
     visitor.visit_file(file);
     let mut found = visitor.found;
@@ -30,7 +29,7 @@ pub fn check(context: &FileContext, text: &str, file: &syn::File) -> Vec<Raw> {
 }
 
 struct RsxVisitor {
-    found: Vec<Raw>,
+    found: Vec<RuleHit>,
 }
 
 impl Visit<'_> for RsxVisitor {
@@ -117,7 +116,7 @@ impl RsxVisitor {
 
 /// Rules over every token, macros included: app-only `ui` items and
 /// off-theme text colours in a Tool.
-fn token_rules(context: &FileContext, text: &str) -> Vec<Raw> {
+fn token_rules(context: &FileContext, text: &str) -> Vec<RuleHit> {
     let Ok(tokens) = text.parse::<TokenStream>() else {
         return Vec::new();
     };

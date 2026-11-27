@@ -2,9 +2,9 @@
 //! rules"). Text and comment rules live here; syntax rules in
 //! [`crate::syntax`] and `rsx!` rules in [`crate::rsx`].
 
-use crate::Finding;
 use crate::comments::{CommentKind, comments};
 use crate::workspace::Layer;
+use crate::{Finding, RuleHit};
 use crate::{rsx, syntax};
 
 /// A source file is at most this many lines, not counting its test module.
@@ -93,9 +93,7 @@ pub fn check_tool_entries(crate_name: &str, files: &[SourceFile]) -> Vec<Finding
     )]
 }
 
-type Raw = (&'static str, usize, String);
-
-fn comment_rules(text: &str) -> Vec<Raw> {
+fn comment_rules(text: &str) -> Vec<RuleHit> {
     let found = comments(text);
     let mut raw = Vec::new();
     for comment in &found {
@@ -136,7 +134,7 @@ fn names_marker_without_issue(text: &str, marker: &str) -> bool {
 
 /// A run of whole-line `//` comments that parses as Rust items, or as
 /// statements that each end in `;` or a block.
-fn commented_out_code(found: &[crate::comments::Comment]) -> Vec<Raw> {
+fn commented_out_code(found: &[crate::comments::Comment]) -> Vec<RuleHit> {
     let mut raw = Vec::new();
     let mut run: Vec<&crate::comments::Comment> = Vec::new();
     let mut flush = |run: &mut Vec<&crate::comments::Comment>| {
@@ -190,7 +188,7 @@ fn parses_as_code(code: &str) -> bool {
     })
 }
 
-fn mutants_skip_without_reason(text: &str, found: &[crate::comments::Comment]) -> Vec<Raw> {
+fn mutants_skip_without_reason(text: &str, found: &[crate::comments::Comment]) -> Vec<RuleHit> {
     text.lines()
         .enumerate()
         .filter(|(_, line)| line.trim_start().starts_with("#[mutants::skip]"))
