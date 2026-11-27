@@ -2,6 +2,8 @@
 
 - **Status:** Accepted
 - **Date:** 2026-11-27
+- **Amended:** 2026-11-27. Trial 1 (hayro) failed, and the pdf.js facade
+  takes a document handle. See [the amendment](#amendment-2026-11-27-the-hayro-trial).
 
 ## Context
 
@@ -90,6 +92,7 @@ notes themselves are not kept in the repo.
 | Monaco | It keeps the playground's diagnostics, emit, completion and hover. No Rust option keeps IntelliSense, so the `tsrs` trial is cancelled. |
 | `mermaid` | `mmdr` covers 23 of 32 diagram types and has no wasm build. It gets no trial until that changes. |
 | DOMPurify | It sanitises with the same parser that renders the result. On a security boundary, Rust-first gives way, so the `ammonia` trial is cancelled. |
+| `pdfjs-dist` | The hayro trial (#42) failed on bytes: hayro 0.9.0 is 3.26× the size of pdf.js in brotli bytes (see [the amendment](#amendment-2026-11-27-the-hayro-trial)). |
 | `jsonpath-plus` | Parity means today's syntax: `^`, `~`, `@string()` and the shorthands. RFC 9535 crates drop them, and saved expressions would change meaning. The trial is cancelled. |
 
 **Platform APIs, reached through `web-sys` / `js-sys` with no JS file:**
@@ -116,7 +119,8 @@ call JS.
 **Three trials**, each its own research ticket on the map, with a corpus
 and a pass bar written before it starts. They run in this order:
 
-1. `hayro` rendering in place of `pdfjs-dist`.
+1. `hayro` rendering in place of `pdfjs-dist`. **Failed on 2026-11-27,**
+   so pdf.js stays (see [the amendment](#amendment-2026-11-27-the-hayro-trial)).
 2. `hayro-write` merge in place of `pdf-lib`'s `copyPages`.
 3. `tract-onnx` with MODNet in place of transformers.js.
 
@@ -126,8 +130,10 @@ finish before its tools are ported, not before porting starts.
 ### 2. The boundary
 
 - **Bridges.** All kept JS lives in one directory, as one TypeScript
-  **engine bridge** per library. Each bridge exports a tiny API: either
-  `mount` / `update` / `destroy` with an opaque handle, or pure functions.
+  **engine bridge** per library. Each bridge exports a tiny API: either an
+  opaque handle with its own lifecycle, or pure functions. The lifecycle is
+  `mount` / `update` / `destroy` for an engine that mounts into the page,
+  and `open` / `close` for one opened document (pdf.js).
 - **Facades.** Each bridge is bound once, by a typed
   `#[wasm_bindgen(module = …)]` **bridge facade** in Rust.
 - **Tool code.** Tool and shell code calls only facades and the platform
@@ -192,8 +198,24 @@ The facades decided now:
 - **jsonpath-plus:** `evaluate(json_text, path) -> [{path, value_json}]`,
   with `JSON.parse` and `JSON.stringify(v, null, 2)` inside the bridge and
   `eval: 'safe'` pinned.
-- **pdf.js and pdf-lib,** specified now whatever the trials decide:
-  `page_count(bytes)`, `render_page(bytes, index, scale)` and
+- **pdf.js** takes a document handle: `open(bytes) -> Result<Doc, BridgeError>`,
+  then `doc.page_count()`, `doc.render_page(index, scale)` with a 0-based
+  `index`, and `doc.close()`.
+  - `Doc` is an opaque handle for one opened file, not a pdf.js object.
+    The file is parsed once, and all its pages share one set of font and
+    glyph caches. pdf.js and hayro both work this way, so either can sit
+    behind it.
+  - `render_page` returns `Result<_, BridgeError>` with the page as a PNG
+    image, which is what `PdfBytesPreview` and combine-pdf's thumbnails
+    show today. Whether it crosses as a data URL or a platform object URL
+    is left to the first port.
+  - `close` frees the document inside pdf.js's worker, and dropping the
+    handle does the same. `PdfBytesPreview` does this today with
+    `loadingTask.destroy()`. combine-pdf's thumbnails never free theirs,
+    and the port closes them too.
+  - This replaces the stateless `page_count(bytes)` and
+    `render_page(bytes, index, scale)` (amended 2026-11-27).
+- **pdf-lib,** specified now whatever the hayro-write trial decides:
   `merge([{bytes, pages}]) -> bytes`.
 
 ### 3. Build, bundle and load
@@ -393,9 +415,10 @@ this check belongs to [#25](https://github.com/boengai/csr-dev-tools/issues/25).
 
   Neither page is budgeted, so each byte ceiling is set by its first port
   PR.
-- **Waiting on a trial:** the combine-pdf and image-to-pdf previews, the
-  combine-pdf merge, and background-remover. Each has a facade now, so its
-  port is not blocked.
+- **Waiting on a trial:** the combine-pdf merge and background-remover.
+  Each has a facade now, so its port is not blocked. The combine-pdf and
+  image-to-pdf previews no longer wait: the hayro trial failed, so they
+  port with the pdf.js bridge.
 - **Handed to their owners, with no decision here:**
   - **The map's Cutover item:** removing CSP sources and fixing the stale
     [`public/_headers`](../../public/_headers) comments.
@@ -421,9 +444,60 @@ this check belongs to [#25](https://github.com/boengai/csr-dev-tools/issues/25).
   - **The map's item on the existing `wasm/` crates:** the Typst and
     bcrypt crates as Rust workers.
 
+## Amendment, 2026-11-27: the hayro trial
+
+[Issue 42](https://github.com/boengai/csr-dev-tools/issues/42) ran trial 1
+against a corpus and a pass bar written into the ticket before any run.
+Every check had to pass. **The bytes check failed,** so pdf.js stays
+behind its engine bridge
+([write-up](https://github.com/boengai/csr-dev-tools/blob/research/hayro-render-trial/docs/research/hayro-render-trial.md)).
+
+- **The judged build** is hayro 0.9.0 with its standard fonts and CMaps
+  compiled in: 1,358,095 bytes brotli. pdfjs-dist 6.4.299's
+  `pdf.min.mjs` plus `pdf.worker.min.mjs` are 417,068 bytes brotli, so
+  hayro is 3.3× the size.
+- **Even without the fonts and CMaps** it is 833,817 bytes, 2× pdf.js.
+  - That build has no fonts to fall back on for non-embedded standard
+    fonts, and no predefined CMaps. pdf.js falls back to system fonts. So
+    it is not the build the bar judges.
+  - It is still 1.6× pdf.js plus its optional `jbig2.wasm` and
+    `openjpeg.wasm` (517,422 bytes, which `main` does not ship). That is
+    the reading most favourable to hayro.
+- **The two largest parts** are the compiled-in fonts and CMaps (524,278
+  bytes brotli, more than all of pdf.js) and `fearless_simd`. Its scalar
+  fallback is monomorphised per caller (830,757 bytes before compression),
+  and the crate is linked in two versions, 1.3.0 and 0.7.0. No single part
+  explains the gap.
+- **The hayro the app already ships doesn't offset this.**
+  `wasm/crates/pdf` pulls in hayro 0.4.0 through Typst, but that is a
+  different version in the separate Typst worker. It shares no code with a
+  renderer on the Tool's page.
+- **The no timeout, OOM or trap check passed** on all 19 corpus files,
+  run in Node at scale 0.6.
+  - Nothing trapped, ran out of memory or took over 10 s on a page. Peak
+    linear memory was 90 MiB.
+  - The margin on time is thin: the arXiv paper's figure pages took up to
+    9.2 s on a loaded machine.
+  - Files with an empty user password decrypt with RC4-128 (R3), AES-128
+    (R4) and AES-256 (R6).
+  - Locked, truncated and non-PDF input returns an error.
+- **Not run:** visual parity, render time and main-thread blocking. Once
+  bytes had failed, none of them could change the verdict.
+
+The trial's harness rendered from a document handle, which is also how
+pdf.js works. With the stateless facade, every page would re-parse the
+file and lose the font and glyph caches. That is why the pdf.js facade in
+Decision 2 now takes a handle, whichever engine is behind it. A later hayro
+release can still replace the implementation without touching Tool code.
+
 ## Revisit when
 
 - A trial passes or fails.
+- A hayro release, with its standard fonts and CMaps compiled in or
+  fetched on demand, is no larger than pdf.js in brotli bytes (417,068
+  for pdfjs-dist 6.4.299). That reopens trial 1 on that release. The
+  timeout, OOM and trap check is re-run, and the three unrun checks would
+  then have to pass.
 - `mmdr` gains a wasm build and full diagram coverage.
 - A Rust code editor or a TypeScript language service reaches the
   browser.
