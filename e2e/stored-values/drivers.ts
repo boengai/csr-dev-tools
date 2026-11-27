@@ -1,6 +1,6 @@
 import { expect, type Locator, type Page } from '@playwright/test'
 
-import { EDIT, readStoredJson, textOf, touchText, typeAtEnd } from './contract.ts'
+import { EDIT, readStoredJson, recordedWriteLog, textOf, touchText, typeAtEnd } from './contract.ts'
 
 /**
  * One driver per Tool (or app feature) that saves input. The capture script
@@ -303,6 +303,9 @@ const timezoneConverter: Driver = (() => {
     },
   }
 })()
+
+/** What the AES journey types: a password, ciphertext in Decrypt, plain text in Encrypt. */
+const AES_TYPED = ['secret-pass', 'U2FsdGVkX19jaXBoZXJ0ZXh0', 'plain-text'] as const
 
 const pressedToggle = (page: Page, name: string): Locator => page.getByRole('button', { exact: true, name })
 
@@ -753,20 +756,28 @@ export const DRIVERS: Array<Driver> = [
     // Only the mode is saved; the text and the password never are.
     checkEdited: async (page) => {
       await expectStored(page, { [`${P}aes-encrypt-decrypt-mode`]: 'encrypt' })
-      // Leaving flushes any pending save, so the key-list check that follows sees it.
+      // Leaving flushes any pending save, so the checks that follow see it.
       await page.goto('/')
+      // No write ever held the password or the text, even under a listed key and overwritten later.
+      const leaked = (await recordedWriteLog(page)).filter(({ value }) =>
+        AES_TYPED.some((typed) => value.includes(typed)),
+      )
+      expect(leaked).toEqual([])
+      // The mode key only ever held a mode.
+      const modes = (await recordedWriteLog(page)).filter(({ key }) => key === `${P}aes-encrypt-decrypt-mode`)
+      expect(modes.map(({ value }) => value).filter((v) => v !== '"encrypt"' && v !== '"decrypt"')).toEqual([])
     },
     // Types a password and text in both modes: it opens in Decrypt (the golden value), then switches.
     edit: async (page) => {
       const source = page.getByTestId('code-input-dialog-source').getByRole('textbox')
-      await textbox(page, 'Password').fill('secret')
-      await typeAtEnd(page, source, 'U2FsdGVkX19jaXBoZXJ0ZXh0')
+      await textbox(page, 'Password').fill(AES_TYPED[0])
+      await typeAtEnd(page, source, AES_TYPED[1])
       await page.getByRole('button', { exact: true, name: 'Encrypt mode' }).click()
       await expect(page.getByRole('button', { exact: true, name: 'Encrypt mode' })).toHaveAttribute(
         'aria-pressed',
         'true',
       )
-      await typeAtEnd(page, source, 'plain')
+      await typeAtEnd(page, source, AES_TYPED[2])
     },
     keys: [`${P}aes-encrypt-decrypt-mode`],
     modes: ['encrypt', 'decrypt'],
