@@ -93,7 +93,7 @@ export const TypescriptPlayground = ({ autoOpen, onAfterClose }: ToolComponentPr
       noEmit: false,
       skipLibCheck: true,
       strict: true,
-      target: monaco.languages.typescript.ScriptTarget.ES2022,
+      target: monaco.languages.typescript.ScriptTarget.ESNext,
     })
   }
 

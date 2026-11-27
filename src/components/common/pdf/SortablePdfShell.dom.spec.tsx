@@ -157,6 +157,38 @@ describe('SortablePdfShell', () => {
     expect(screen.getByText(/Skipped 1 unsupported file: note\.txt/i)).toBeInTheDocument()
   })
 
+  it('names the files the pipeline skipped, alongside the ones the upload rejected', () => {
+    mockHook.mockImplementation(() => baseReturn({ result: { ...NONEMPTY_RESULT, skipped: ['locked.png'] } }))
+    renderShell()
+
+    const txt = new File(['b'], 'note.txt', { type: 'text/plain' })
+    const input = screen.getByLabelText(/Select files/i) as HTMLInputElement
+    Object.defineProperty(input, 'files', { value: [txt], configurable: true })
+    fireEvent.change(input)
+
+    expect(screen.getByText('Skipped 2 unsupported files: note.txt, locked.png')).toBeInTheDocument()
+  })
+
+  it('counts two rejected uploads that share a name as two files', () => {
+    renderShell()
+
+    const first = new File(['a'], 'note.txt', { type: 'text/plain' })
+    const second = new File(['b'], 'note.txt', { type: 'text/plain' })
+    const input = screen.getByLabelText(/Select files/i) as HTMLInputElement
+    Object.defineProperty(input, 'files', { value: [first, second], configurable: true })
+    fireEvent.change(input)
+
+    expect(screen.getByText('Skipped 2 unsupported files: note.txt, note.txt')).toBeInTheDocument()
+  })
+
+  it('names the skipped files, with no download, when the pipeline kept nothing', () => {
+    mockHook.mockImplementation(() => baseReturn({ result: { ...EMPTY_RESULT, skipped: ['locked.pdf'] } }))
+    renderShell()
+    expect(screen.getByText('Skipped 1 unsupported file: locked.pdf')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /^Download$/i })).toBeNull()
+    expect(screen.queryByText(/PDF preview/i)).toBeNull()
+  })
+
   it('passes initialExtras to renderControls ctx', () => {
     const renderControls = vi.fn((_ctx) => <span data-testid="controls" />)
     renderShell({

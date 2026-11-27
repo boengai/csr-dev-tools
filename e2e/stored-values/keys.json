@@ -1,0 +1,637 @@
+{
+  "about": "The stored-value contract, part 1: every localStorage key the site may write (ADR-0032 Decision 8). See e2e/stored-values/README.md.",
+  "reference": "React main",
+  "patterns": [
+    {
+      "name": "codec-mode",
+      "pattern": "csr-dev-tools-<modeStorageKey>-mode",
+      "note": "A Codec tool's mode, a JSON string. Must be one of the tool's modes, or the first mode opens."
+    },
+    {
+      "name": "codec-source",
+      "pattern": "csr-dev-tools-[<sourceKeyPrefix>-]<mode>-source",
+      "note": "A Codec tool's source for one mode, a JSON string."
+    },
+    {
+      "name": "handoff",
+      "pattern": "csr-dev-tools-handoff-<channel>",
+      "note": "A cross-tool handoff, raw text. The only channel is mermaid-renderer."
+    }
+  ],
+  "keys": [
+    {
+      "key": "feature_layout",
+      "owner": "dashboard",
+      "reader": "zustand",
+      "envelopeVersion": 2,
+      "format": "json"
+    },
+    {
+      "key": "settings",
+      "owner": "settings",
+      "reader": "zustand",
+      "envelopeVersion": 0,
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-json-formatter",
+      "owner": "json-formatter",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-cron-expression-parser",
+      "owner": "cron-expression-parser",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-mermaid-renderer",
+      "owner": "mermaid-renderer",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-text-case-converter",
+      "owner": "text-case-converter",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-user-agent-parser",
+      "owner": "user-agent-parser",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-word-counter",
+      "owner": "word-counter",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-css-formatter",
+      "owner": "css-formatter",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-html-formatter",
+      "owner": "html-formatter",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-javascript-minifier",
+      "owner": "javascript-minifier",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-sql-formatter",
+      "owner": "sql-formatter",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-yaml-formatter",
+      "owner": "yaml-formatter",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-json-to-typescript",
+      "owner": "json-to-typescript",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-json-schema-validator",
+      "owner": "json-schema-validator",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-text-sort-dedupe",
+      "owner": "text-sort-dedupe",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-timezone-converter",
+      "owner": "timezone-converter",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-jsonpath-evaluator-v2",
+      "owner": "jsonpath-evaluator",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-json-diff",
+      "owner": "json-diff-checker",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-text-diff",
+      "owner": "text-diff-checker",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-color-palette-generator",
+      "owner": "color-palette-generator",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-crontab-generator",
+      "owner": "crontab-generator",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-lorem-ipsum-generator",
+      "owner": "lorem-ipsum-generator",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-markdown-table-generator",
+      "owner": "markdown-table-generator",
+      "reader": "markdown-table",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-password-generator",
+      "owner": "password-generator",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-placeholder-image-generator",
+      "owner": "placeholder-image-generator",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-rsa-key-generator",
+      "owner": "rsa-key-generator",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-uuid-generator",
+      "owner": "uuid-generator",
+      "reader": "fields",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-html-to-pdf",
+      "owner": "html-to-pdf",
+      "reader": "input",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-markdown-to-pdf",
+      "owner": "markdown-to-pdf",
+      "reader": "input",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-graphql-schema-viewer-input",
+      "owner": "graphql-schema-viewer",
+      "reader": "input",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-protobuf-to-json-input",
+      "owner": "protobuf-to-json",
+      "reader": "input",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-base64-mode",
+      "owner": "base64-codec",
+      "reader": "codec-mode",
+      "pattern": "codec-mode",
+      "format": "json",
+      "modes": [
+        "encode",
+        "decode"
+      ]
+    },
+    {
+      "key": "csr-dev-tools-base64-encode-source",
+      "owner": "base64-codec",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "encode"
+    },
+    {
+      "key": "csr-dev-tools-base64-decode-source",
+      "owner": "base64-codec",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "decode"
+    },
+    {
+      "key": "csr-dev-tools-url-encoder-mode",
+      "owner": "url-encoder-decoder",
+      "reader": "codec-mode",
+      "pattern": "codec-mode",
+      "format": "json",
+      "modes": [
+        "encode",
+        "decode"
+      ]
+    },
+    {
+      "key": "csr-dev-tools-url-encoder-encode-source",
+      "owner": "url-encoder-decoder",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "encode"
+    },
+    {
+      "key": "csr-dev-tools-url-encoder-decode-source",
+      "owner": "url-encoder-decoder",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "decode"
+    },
+    {
+      "key": "csr-dev-tools-html-entity-mode",
+      "owner": "html-entity-converter",
+      "reader": "codec-mode",
+      "pattern": "codec-mode",
+      "format": "json",
+      "modes": [
+        "encode",
+        "decode"
+      ]
+    },
+    {
+      "key": "csr-dev-tools-html-entity-encode-source",
+      "owner": "html-entity-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "encode"
+    },
+    {
+      "key": "csr-dev-tools-html-entity-decode-source",
+      "owner": "html-entity-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "decode"
+    },
+    {
+      "key": "csr-dev-tools-escaped-json-mode",
+      "owner": "escaped-json-stringifier",
+      "reader": "codec-mode",
+      "pattern": "codec-mode",
+      "format": "json",
+      "modes": [
+        "stringify",
+        "parse"
+      ]
+    },
+    {
+      "key": "csr-dev-tools-escaped-json-stringify-source",
+      "owner": "escaped-json-stringifier",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "stringify"
+    },
+    {
+      "key": "csr-dev-tools-escaped-json-parse-source",
+      "owner": "escaped-json-stringifier",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "parse"
+    },
+    {
+      "key": "csr-dev-tools-string-escape-unescape-mode",
+      "owner": "string-escape-unescape",
+      "reader": "codec-mode",
+      "pattern": "codec-mode",
+      "format": "json",
+      "modes": [
+        "escape",
+        "unescape"
+      ]
+    },
+    {
+      "key": "csr-dev-tools-string-escape-escape-source",
+      "owner": "string-escape-unescape",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "escape"
+    },
+    {
+      "key": "csr-dev-tools-string-escape-unescape-source",
+      "owner": "string-escape-unescape",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "unescape"
+    },
+    {
+      "key": "csr-dev-tools-json-to-csv-mode",
+      "owner": "json-to-csv-converter",
+      "reader": "codec-mode",
+      "pattern": "codec-mode",
+      "format": "json",
+      "modes": [
+        "json-to-csv",
+        "csv-to-json"
+      ]
+    },
+    {
+      "key": "csr-dev-tools-json-to-csv-source",
+      "owner": "json-to-csv-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "json-to-csv"
+    },
+    {
+      "key": "csr-dev-tools-csv-to-json-source",
+      "owner": "json-to-csv-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "csv-to-json"
+    },
+    {
+      "key": "csr-dev-tools-json-to-toml-mode",
+      "owner": "json-to-toml-converter",
+      "reader": "codec-mode",
+      "pattern": "codec-mode",
+      "format": "json",
+      "modes": [
+        "toml-to-json",
+        "json-to-toml"
+      ]
+    },
+    {
+      "key": "csr-dev-tools-toml-to-json-source",
+      "owner": "json-to-toml-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "toml-to-json"
+    },
+    {
+      "key": "csr-dev-tools-json-to-toml-source",
+      "owner": "json-to-toml-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "json-to-toml"
+    },
+    {
+      "key": "csr-dev-tools-json-to-xml-mode",
+      "owner": "json-to-xml-converter",
+      "reader": "codec-mode",
+      "pattern": "codec-mode",
+      "format": "json",
+      "modes": [
+        "xml-to-json",
+        "json-to-xml"
+      ]
+    },
+    {
+      "key": "csr-dev-tools-xml-to-json-source",
+      "owner": "json-to-xml-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "xml-to-json"
+    },
+    {
+      "key": "csr-dev-tools-json-to-xml-source",
+      "owner": "json-to-xml-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "json-to-xml"
+    },
+    {
+      "key": "csr-dev-tools-json-to-yaml-mode",
+      "owner": "json-to-yaml-converter",
+      "reader": "codec-mode",
+      "pattern": "codec-mode",
+      "format": "json",
+      "modes": [
+        "json-to-yaml",
+        "yaml-to-json"
+      ]
+    },
+    {
+      "key": "csr-dev-tools-json-to-yaml-source",
+      "owner": "json-to-yaml-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "json-to-yaml"
+    },
+    {
+      "key": "csr-dev-tools-yaml-to-json-source",
+      "owner": "json-to-yaml-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "yaml-to-json"
+    },
+    {
+      "key": "csr-dev-tools-html-to-markdown-mode",
+      "owner": "html-to-markdown-converter",
+      "reader": "codec-mode",
+      "pattern": "codec-mode",
+      "format": "json",
+      "modes": [
+        "html-to-markdown",
+        "markdown-to-html"
+      ]
+    },
+    {
+      "key": "csr-dev-tools-html-to-markdown-source",
+      "owner": "html-to-markdown-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "html-to-markdown"
+    },
+    {
+      "key": "csr-dev-tools-markdown-to-html-source",
+      "owner": "html-to-markdown-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "markdown-to-html"
+    },
+    {
+      "key": "csr-dev-tools-env-file-converter-mode",
+      "owner": "env-file-converter",
+      "reader": "codec-mode",
+      "pattern": "codec-mode",
+      "format": "json",
+      "modes": [
+        "env-to-json",
+        "env-to-yaml",
+        "json-to-env",
+        "yaml-to-env"
+      ]
+    },
+    {
+      "key": "csr-dev-tools-env-to-json-source",
+      "owner": "env-file-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "env-to-json"
+    },
+    {
+      "key": "csr-dev-tools-env-to-yaml-source",
+      "owner": "env-file-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "env-to-yaml"
+    },
+    {
+      "key": "csr-dev-tools-json-to-env-source",
+      "owner": "env-file-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "json-to-env"
+    },
+    {
+      "key": "csr-dev-tools-yaml-to-env-source",
+      "owner": "env-file-converter",
+      "reader": "codec-source",
+      "pattern": "codec-source",
+      "format": "json",
+      "mode": "yaml-to-env"
+    },
+    {
+      "key": "csr-dev-tools-aes-encrypt-decrypt-mode",
+      "owner": "aes-encrypt-decrypt",
+      "reader": "codec-mode",
+      "pattern": "codec-mode",
+      "format": "json",
+      "modes": [
+        "encrypt",
+        "decrypt"
+      ]
+    },
+    {
+      "key": "csr-dev-tools-db-diagrams",
+      "owner": "db-diagram",
+      "reader": "diagram",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-db-diagrams-corrupt-backup",
+      "owner": "db-diagram",
+      "reader": "none",
+      "format": "text",
+      "note": "The unreadable store text, copied once before the first save over it. Never read back."
+    },
+    {
+      "key": "csr-dev-tools-protobuf-codec-input",
+      "owner": "protobuf-codec",
+      "reader": "value",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-timezone-favorites",
+      "owner": "timezone-converter",
+      "reader": "value",
+      "format": "json"
+    },
+    {
+      "key": "csr-dev-tools-handoff-mermaid-renderer",
+      "owner": "mermaid-renderer",
+      "writer": "db-diagram",
+      "reader": "handoff",
+      "pattern": "handoff",
+      "format": "text",
+      "note": "Raw Mermaid text, not JSON. Read once and deleted; wins over the saved draft."
+    },
+    {
+      "key": "csr-dev-tools-mermaid-renderer-code",
+      "owner": "mermaid-renderer",
+      "reader": "migration-source",
+      "format": "json",
+      "legacy": true,
+      "written": false,
+      "note": "A JSON string. When …-mermaid-renderer is absent, a string moves there as {source}, any other JSON value is dropped, and the old key is deleted. Unparseable text is left in place."
+    },
+    {
+      "key": "csr-dev-tools-jsonpath-evaluator",
+      "owner": "jsonpath-evaluator",
+      "reader": "migration-source",
+      "format": "json",
+      "legacy": true,
+      "written": "only to put the old value back when the -v2 write fails",
+      "note": "{expression, jsonInput}. Moved to …-jsonpath-evaluator-v2 when that key is absent and the value is neither junk nor the default, then deleted."
+    }
+  ],
+  "neverSaved": [
+    {
+      "tool": "hash-generator"
+    },
+    {
+      "tool": "hmac-generator"
+    },
+    {
+      "tool": "jwt-decoder"
+    },
+    {
+      "tool": "certificate-decoder"
+    },
+    {
+      "tool": "ssh-key-fingerprint"
+    },
+    {
+      "tool": "url-parser"
+    },
+    {
+      "tool": "qr-code-generator"
+    },
+    {
+      "tool": "markdown-preview"
+    },
+    {
+      "tool": "base64-to-image"
+    },
+    {
+      "tool": "svg-viewer"
+    },
+    {
+      "tool": "unix-timestamp"
+    },
+    {
+      "tool": "aes-encrypt-decrypt",
+      "note": "Its mode is saved; its text and password never are.",
+      "keys": [
+        "csr-dev-tools-aes-encrypt-decrypt-mode"
+      ]
+    }
+  ]
+}

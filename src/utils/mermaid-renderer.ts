@@ -3,14 +3,23 @@ import mermaid from 'mermaid'
 
 import type { MermaidRenderResult } from '@/types/utils/mermaid-renderer'
 import { loadImageFromBlob } from '@/utils/image'
+import { redrawHtmlLabels } from '@/utils/mermaid-svg-labels'
 
 let initialized = false
 
 export function initializeMermaid(): void {
   if (initialized) return
   mermaid.initialize({
-    flowchart: { useMaxWidth: true },
+    // Swimlane's cluster labels still read this deprecated key, which
+    // defaults to true, so the root `htmlLabels` below doesn't reach them.
+    flowchart: { htmlLabels: false, useMaxWidth: true },
+    // HTML labels live in <foreignObject>, which the sanitizer strips and which
+    // taints the PNG export's canvas. SVG <text> labels survive both.
+    htmlLabels: false,
     logLevel: 'error',
+    // Mermaid adds these keys to its secure list, so frontmatter cannot set them
+    // and a diagram cannot turn HTML labels back on.
+    secure: ['htmlLabels'],
     securityLevel: 'strict',
     startOnLoad: false,
     suppressErrorRendering: true,
@@ -29,7 +38,8 @@ export async function renderMermaid(code: string, id: string): Promise<MermaidRe
     throw new Error('Empty diagram input')
   }
   const { svg, diagramType } = await mermaid.render(id, sanitizedCode)
-  const cleanSvg = DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true, svgFilters: true } })
+  // Some labels are HTML whatever `htmlLabels` says; the sanitizer would strip them.
+  const cleanSvg = DOMPurify.sanitize(redrawHtmlLabels(svg), { USE_PROFILES: { svg: true, svgFilters: true } })
   return { diagramType, svg: cleanSvg }
 }
 
@@ -47,7 +57,11 @@ export async function svgToPng(svgString: string, scale = 2): Promise<string> {
   const widthAttr = svgEl.getAttribute('width')
   const heightAttr = svgEl.getAttribute('height')
 
-  if (widthAttr && heightAttr) {
+  // Only plain or px lengths: mermaid often sets `width="100%"` (journey also
+  // sets a px height), and parsing that as 100px squashes the PNG.
+  const isAbsolute = (length: string | null): length is string => /^\s*\d+(?:\.\d+)?(?:px)?\s*$/.test(length ?? '')
+
+  if (isAbsolute(widthAttr) && isAbsolute(heightAttr)) {
     width = parseFloat(widthAttr)
     height = parseFloat(heightAttr)
   } else if (viewBox) {

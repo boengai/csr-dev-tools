@@ -15,6 +15,7 @@ export type JsonToolsWasm = typeof import('../../../wasm/pkg/json-tools/json-too
 export type MarkdownWasm = typeof import('../../../wasm/pkg/markdown/markdown.js')
 export type NumberBaseWasm = typeof import('../../../wasm/pkg/number-base/number-base.js')
 export type ParsersWasm = typeof import('../../../wasm/pkg/parsers/parsers.js')
+export type PdfDecryptWasm = typeof import('../../../wasm/pkg/pdf-decrypt/pdf-decrypt.js')
 export type PdfWasm = typeof import('../../../wasm/pkg/pdf/pdf.js')
 export type QrcodeWasm = typeof import('../../../wasm/pkg/qrcode/qrcode.js')
 export type UuidWasm = typeof import('../../../wasm/pkg/uuid/uuid.js')

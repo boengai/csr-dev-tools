@@ -16,9 +16,11 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
+    "test:parity": "playwright test -c playwright.parity.config.ts",
+    "test:parity:a11y-baseline": "PARITY_A11Y_RECORD=1 playwright test -c playwright.parity.config.ts --project=harness parity/a11y.spec.ts && node e2e/parity/write-a11y-baseline.ts",
     "wasm:build": "cd wasm && ./scripts/build.sh",
     "wasm:build:dev": "cd wasm && ./scripts/build.sh --dev",
-    "wasm:test": "cargo test -p bcrypt@0.1.0 -p certificate@0.1.0 -p color@0.1.0 -p csv@0.1.0 -p diff@0.1.0 -p formatter@0.1.0 -p hash@0.1.0 -p hmac@0.1.0 -p json-tools@0.1.0 -p markdown@0.1.0 -p number-base@0.1.0 -p parsers@0.1.0 -p pdf@0.1.0 -p qrcode@0.1.0 -p shared@0.1.0 -p uuid@0.1.0"
+    "wasm:test": "cargo test -p bcrypt@0.1.0 -p certificate@0.1.0 -p color@0.1.0 -p csv@0.1.0 -p diff@0.1.0 -p formatter@0.1.0 -p hash@0.1.0 -p hmac@0.1.0 -p json-tools@0.1.0 -p markdown@0.1.0 -p number-base@0.1.0 -p parsers@0.1.0 -p pdf@0.1.0 -p pdf-decrypt@0.1.0 -p qrcode@0.1.0 -p shared@0.1.0 -p uuid@0.1.0"
   },
   "dependencies": {
     "@codemirror/lang-json": "6.0.2",
@@ -62,6 +64,7 @@
     "zustand": "5.0.15"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@playwright/test": "1.64.0",
     "@tailwindcss/vite": "4.3.3",
     "@testing-library/jest-dom": "7.0.1",

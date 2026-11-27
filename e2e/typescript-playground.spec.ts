@@ -61,6 +61,15 @@ test.describe('TypeScript Playground', () => {
     await expect(jsViewLines).toContainText('x = 42', { timeout: 10000 })
   })
 
+  test('transpiled JS keeps modern syntax instead of downleveling to ES5', async ({ page }) => {
+    await setTsEditorContent(page, 'const y = (a: number) => a * 2')
+
+    const jsViewLines = page.locator('[aria-label="JavaScript output (read-only)"] .view-lines')
+    await expect(jsViewLines).toContainText('const y = (a) => a * 2', { timeout: 10000 })
+    await expect(jsViewLines).not.toContainText('var y')
+    await expect(jsViewLines).not.toContainText('function')
+  })
+
   test('TypeScript with type error → error list shows error with line number (AC #4)', async ({ page }) => {
     // Set code with type error
     await setTsEditorContent(page, 'const x: number = "hello"')
