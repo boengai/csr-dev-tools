@@ -360,7 +360,7 @@ decided in conversation on 2026-11-27.
 | What | Where |
 |---|---|
 | dx configuration | `crates/app/Dioxus.toml`. No `tailwind.css` at the app crate root: dx would run its own Tailwind 4.1.5 and ignore its errors. |
-| Stylesheet | The Tailwind input lives in `crates/ui/style/`, because `asset!()` cannot reach outside its crate, and the generated CSS is exported as a `pub static` `Asset`. Which theme file the input imports until cutover is #22's. The scan is `@source "../../**/*.rs"`. Generated files that hold class names never sit under a gitignored path, because Tailwind skips them. |
+| Stylesheet | The input is `src/index.css`, as ADR-0034 decides. Tailwind writes the generated CSS into `crates/ui`, because `asset!()` cannot reach outside its crate, and `ui` exports it as a `pub static` `Asset`. Its `@source` scan covers `crates/**/*.rs`. Generated files that hold class names never sit under a gitignored path, because Tailwind skips them. |
 | Build, stamping and registry generator | TypeScript in `scripts/dioxus/` |
 | Engine bridges | `crates/bridges/js/` (section 8) |
 | End-to-end specs | The shared `e2e/` (`docs/ux/parity.md`). There is no `dioxus/e2e`. |
@@ -470,7 +470,7 @@ src/                  React, until cutover
 - **Handed on:**
   - lint levels and byte ceilings → #25;
   - the stylesheet input and theme → #22;
-  - the sitemap, moving the theme file out of `src/`, and deleting the registry
+  - the sitemap, moving `src/index.css` out of `src/`, and deleting the registry
     generator and the wasm wrappers → Cutover;
   - how worker packages are built → the map's Workers item;
   - contributor and agent docs → the map's docs item.
