@@ -2,7 +2,7 @@ import { expect, type Page, test } from '@playwright/test'
 
 import { TOOL_ROUTES } from '../src/constants/tool-routes'
 import { toolSurface } from './helpers/selectors'
-import { parityToolFilter } from './parity/tools'
+import { parityToolFilter, parityTools } from './parity/tools'
 import {
   EDIT,
   readGolden,
@@ -46,6 +46,9 @@ const nameOf = (key: string): string => {
  * Tool's `journeys.grep`, so the name filter alone is not enough. The
  * dashboard and settings are app-wide, so always run.
  */
+// Throws on a PARITY_TOOLS key that names no Tool, so a typo fails the run instead of skipping journeys.
+parityTools()
+
 const requirePorted = (...tools: Array<string>): void => {
   const filter = parityToolFilter()
   const missing = tools.filter((tool) => !['dashboard', 'settings'].includes(tool) && filter && !filter.has(tool))

@@ -47,7 +47,8 @@ const keysInSource = (): Map<string, string> => {
   const add = (key: string, file: string) => found.set(key, relative(ROOT, file))
   for (const file of sourceFiles(join(ROOT, 'src'))) {
     if (file.includes(`${join('src', 'test')}`)) continue
-    const text = readFileSync(file, 'utf8')
+    // Comments stripped: a retired key left in a comment is not a key the source can write.
+    const text = code(readFileSync(file, 'utf8'))
     for (const [, key] of text.matchAll(/['"`](csr-dev-tools-[a-z0-9-]*[a-z0-9])['"`]/g)) add(key as string, file)
     // A literal key handed to localStorage or the shared persistence helpers, prefixed or not. A template
     // literal (`csr-dev-tools-${…}`) is a pattern, read from its parts below.
