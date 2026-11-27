@@ -16,6 +16,8 @@
     "test:e2e": "playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
+    "test:parity": "playwright test -c playwright.parity.config.ts",
+    "test:parity:a11y-baseline": "PARITY_A11Y_RECORD=1 playwright test -c playwright.parity.config.ts --project=harness parity/a11y.spec.ts && node e2e/parity/write-a11y-baseline.ts",
     "wasm:build": "cd wasm && ./scripts/build.sh",
     "wasm:build:dev": "cd wasm && ./scripts/build.sh --dev",
     "wasm:test": "cd wasm && cargo test"
@@ -62,6 +64,7 @@
     "zustand": "5.0.15"
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@playwright/test": "1.64.0",
     "@tailwindcss/vite": "4.3.3",
     "@testing-library/jest-dom": "7.0.1",

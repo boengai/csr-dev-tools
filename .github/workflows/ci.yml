@@ -18,10 +18,13 @@ jobs:
     # sync pull request, which has the same head commit and requires `ci`.
     name: ${{ github.event_name == 'push' && 'ci (push)' || 'ci' }}
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 60
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # A pull request's merge commit and its base parent, for the Tools it touches (screenshots).
+          fetch-depth: 2
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -85,11 +88,16 @@ jobs:
         uses: actions/cache@v4
         with:
           path: ~/.cache/ms-playwright
-          key: playwright-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          key: playwright-chromium-webkit-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
 
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
-        run: pnpm exec playwright install --with-deps chromium
+        run: pnpm exec playwright install --with-deps chromium webkit
+
+      # The cache holds the browsers, not the system libraries WebKit needs.
+      - name: Install WebKit System Dependencies
+        if: steps.playwright-cache.outputs.cache-hit == 'true'
+        run: pnpm exec playwright install-deps webkit
 
       - name: E2E Tests
         run: pnpm test:e2e
@@ -101,3 +109,37 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 7
+
+      # The UX parity harness against the built React site, no retries
+      # (docs/ux/parity.md, e2e/parity/README.md).
+      - name: UX Parity
+        run: pnpm test:parity
+
+      - name: Upload Parity Report
+        uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        with:
+          name: playwright-report-parity
+          path: playwright-report-parity-react/
+          retention-days: 7
+
+      # Evidence for the reviewer, not a gate.
+      - name: Screenshot Touched Tools
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        continue-on-error: true
+        run: |
+          tools=$(node e2e/parity/touched-tools.ts HEAD^1)
+          echo "Tools this pull request touches: ${tools:-none}"
+          if [ -n "$tools" ]; then
+            SCREENSHOT_TOOLS="$tools" pnpm test:parity --project=screenshots
+          fi
+
+      - name: Upload Screenshots
+        if: ${{ !cancelled() && github.event_name == 'pull_request' }}
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: parity-screenshots
+          path: parity-screenshots/
+          if-no-files-found: ignore
+          retention-days: 14
