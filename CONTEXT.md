@@ -1490,6 +1490,56 @@ by every facade in `src/wasm/` (worker-isolated or not). The bridge
 layers on top of (or beside) `loadWasm` for the subset of facades whose
 compute is heavy enough to warrant worker isolation.
 
+## Engine
+
+A library or browser built-in that does a Tool's real work: an editor, a
+renderer, a parser, a model runtime, a codec. UI-framework glue (React,
+Radix, the router, stores, motion) is not an Engine. In the Dioxus build
+each Engine is replaced by Rust, kept behind an [[Engine bridge]], or
+reached as a [[Platform API]] (ADR-0033).
+_Avoid_: library, dependency (when the split matters)
+
+## Engine bridge
+
+The only form a kept JavaScript [[Engine]] may take in the Dioxus build: one
+module per library, which no Tool code calls except through its
+[[Bridge facade]]. Which Engines have one is recorded in ADR-0033.
+_Avoid_: JS island, interop module, wrapper
+
+## Bridge facade
+
+The typed Rust API over one [[Engine bridge]], shaped around the Tool's
+outputs rather than the library's objects, so that replacing the Engine
+leaves Tool code unchanged.
+
+## Platform API
+
+A browser built-in that a Tool's Rust code reaches without a JavaScript
+file of ours: image codecs, canvas, WebCrypto, `Intl`, locale-aware
+comparison and local time.
+_Avoid_: web API wrapper, shim
+
+## Platform layer
+
+The Rust code that wraps [[Platform API]]s and sits beside the
+[[Bridge facade]]s. It is the only code that touches the browser; Tool logic
+stays browser-free.
+_Avoid_: boundary layer, web layer
+
+## Engine trial
+
+A time-boxed comparison of a Rust candidate against the JavaScript
+[[Engine]] it would replace, judged on a corpus and a pass bar written
+before it starts. A failed trial keeps the Engine behind its
+[[Engine bridge]].
+_Avoid_: spike (the spike was issue 18), experiment
+
+## Sanitised markup
+
+HTML or SVG that has passed through a sanitising [[Bridge facade]] once, and
+the only markup a Tool may render as raw HTML.
+_Avoid_: safe HTML, clean HTML
+
 ## Toast channel
 
 The ephemeral notification channel for events that happen *to* a user
