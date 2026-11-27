@@ -136,6 +136,70 @@ describe('redrawHtmlLabels', () => {
     expect(lines(svg.querySelector('text')!)).toEqual(['one two', 'three…'])
   })
 
+  it('measures each row in the font the HTML label had: the root rule, bold, or a nearer font-size', () => {
+    const fonts = new Map<string, string>()
+    const spy = (text: string, font: string) => {
+      fonts.set(text, font)
+      return 0
+    }
+    redrawHtmlLabels(
+      '<svg id="d"><style>#d{font-family:Inter, sans-serif;font-size:20px;fill:#ccc;}</style>' +
+        '<g><foreignObject width="500" height="80"><div xmlns="http://www.w3.org/1999/xhtml"><b>Name</b><br>data</div></foreignObject></g>' +
+        // Venn sets its text-node size on the group around them.
+        '<g class="venn-text-area" font-size="24px"><foreignObject width="500" height="80">' +
+        '<span class="venn-text-node" xmlns="http://www.w3.org/1999/xhtml">Venn</span></foreignObject></g></svg>',
+      spy,
+    )
+
+    expect(fonts.get('Name')).toBe('bold 20px Inter, sans-serif')
+    expect(fonts.get('data')).toBe('20px Inter, sans-serif')
+    expect(fonts.get('Venn')).toBe('24px Inter, sans-serif')
+  })
+
+  it('breaks lines where the HTML did: inline <code> stays in the line, stacked blocks leave no gap', () => {
+    const svg = parse(
+      redrawHtmlLabels(
+        '<svg><g><foreignObject width="500" height="80"><div xmlns="http://www.w3.org/1999/xhtml">use <code>pnpm</code> now</div></foreignObject></g>' +
+          '<g><foreignObject width="500" height="80"><div xmlns="http://www.w3.org/1999/xhtml"><div>one</div><div>two</div></div></foreignObject></g></svg>',
+        tenPxPerChar,
+      ),
+    )
+
+    const [inline, stacked] = svg.querySelectorAll('text')
+    expect(lines(inline!)).toEqual(['use pnpm now'])
+    expect(lines(stacked!)).toEqual(['one', 'two'])
+    expect([...stacked!.querySelectorAll('tspan')].map((t) => t.getAttribute('dy'))).toEqual(['-0.6em', '1.2em'])
+  })
+
+  it('keeps a clamped label inside its box: long words break, and the last line makes room for the ellipsis', () => {
+    // The HTML clips at the icon (`overflow: hidden`); SVG text would spill out.
+    const svg = parse(
+      redrawHtmlLabels(
+        '<svg><g><foreignObject width="80" height="80">' +
+          '<div class="node-icon-text" xmlns="http://www.w3.org/1999/xhtml" style="height: 80px;">' +
+          '<div style="-webkit-line-clamp: 2;">supercalifragilistic is long</div></div>' +
+          '</foreignObject></g></svg>',
+        tenPxPerChar,
+      ),
+    )
+
+    // 80px holds 8 characters, '…' included.
+    expect(lines(svg.querySelector('text')!)).toEqual(['supercal', 'ifragil…'])
+  })
+
+  it('does not copy a colour that loads a URL', () => {
+    const svg = parse(
+      redrawHtmlLabels(
+        '<svg><g><foreignObject width="100" height="100">' +
+          '<span xmlns="http://www.w3.org/1999/xhtml" style="color: var(--x, url(https://example.invalid/a.png));">React</span>' +
+          '</foreignObject></g></svg>',
+        tenPxPerChar,
+      ),
+    )
+
+    expect(svg.querySelector('text')!.getAttribute('fill')).toBeNull()
+  })
+
   it('leaves a label alone when its <switch> already has an SVG text fallback', () => {
     const input =
       '<svg><switch><foreignObject x="150" y="50" width="150" height="50">' +

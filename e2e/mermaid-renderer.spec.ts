@@ -51,19 +51,23 @@ test.describe('Mermaid Renderer', () => {
     },
     { code: 'mindmap\n  Root\n    Leaf', kind: 'mindmap', labels: ['Root', 'Leaf'] },
     // These renderers draw HTML labels whatever `htmlLabels` says; the
-    // renderer redraws them as SVG text before sanitizing (#52).
+    // renderer redraws them as SVG text before sanitizing (#52). They never
+    // read `htmlLabels`, so the frontmatter variants below would add nothing.
     {
       code: "eventmodeling\n\ntf 01 ui CartUI\ntf 02 cmd AddItem [[AddItem01]]\n\ndata AddItem01 {\n  description: 'john'\n}",
+      ignoresHtmlLabels: true,
       kind: 'event-modeling',
       labels: ['CartUI', 'AddItem', 'description'],
     },
     {
       code: 'venn-beta\n  set A["Frontend"]\n    text A1["React"]\n  set B["Backend"]\n  union A,B["Shared"]\n    text AB1["OpenAPI"]',
+      ignoresHtmlLabels: true,
       kind: 'venn',
       labels: ['Frontend', 'React', 'Shared', 'OpenAPI'],
     },
     {
       code: 'architecture-beta\n    service db "DB"[Database]\n    service api(server)[API]\n    db:R -- L:api',
+      ignoresHtmlLabels: true,
       kind: 'architecture',
       labels: ['DB', 'Database', 'API'],
     },
@@ -74,6 +78,7 @@ test.describe('Mermaid Renderer', () => {
     },
     {
       code: 'journey\n  title Day\n  section Morning\n    Coffee: 5: Me',
+      ignoresHtmlLabels: true,
       kind: 'journey',
       labels: ['Morning', 'Coffee'],
     },
@@ -91,8 +96,8 @@ test.describe('Mermaid Renderer', () => {
     },
   ]
 
-  for (const { code, kind, labels } of LABELLED_DIAGRAMS) {
-    for (const { frontmatter, titleSuffix } of FRONTMATTERS) {
+  for (const { code, ignoresHtmlLabels, kind, labels } of LABELLED_DIAGRAMS) {
+    for (const { frontmatter, titleSuffix } of ignoresHtmlLabels ? FRONTMATTERS.slice(0, 1) : FRONTMATTERS) {
       test(`${kind} diagram${titleSuffix} draws its labels as SVG text`, async ({ page }) => {
         await codeInput.fill(page, SOURCE, frontmatter + code)
         const svg = diagram(page)
@@ -105,6 +110,44 @@ test.describe('Mermaid Renderer', () => {
       })
     }
   }
+
+  // The redraw would also rescue these titles, so the loop above can't tell
+  // whether `flowchart.htmlLabels: false` is set: mermaid's own SVG labels
+  // (rotated with the lane) are what it buys.
+  test("swimlane lane titles are mermaid's own SVG labels", async ({ page }) => {
+    await codeInput.fill(
+      page,
+      SOURCE,
+      'swimlane-beta LR\n  subgraph Customer\n    Browse[Browse]\n  end\n  subgraph Warehouse\n    Ship[Ship]\n  end\n  Browse --> Ship',
+    )
+    const svg = diagram(page)
+    await expect(svg).toBeVisible({ timeout: 10000 })
+    for (const lane of ['Customer', 'Warehouse']) {
+      await expect(svg.locator('tspan.text-outer-tspan', { hasText: lane })).toHaveCount(1)
+    }
+  })
+
+  // Measured with the browser's canvas: the icon is 80px and clips its text.
+  test('a long architecture iconText stays inside its icon, cut at the line clamp', async ({ page }) => {
+    await codeInput.fill(
+      page,
+      SOURCE,
+      'architecture-beta\n    service db "Supercalifragilistic primary relational database cluster with replicas"[Database]',
+    )
+    const text = diagram(page).locator('text', { hasText: 'Supercal' })
+    await expect(text).toBeVisible({ timeout: 10000 })
+
+    // The preview pane's letter-spacing isn't in the downloaded SVG, which is
+    // what the label is measured for; drop it to measure the same text.
+    const rows = await text.locator('tspan').evaluateAll((tspans) => {
+      for (const t of tspans) (t as SVGTSpanElement).style.letterSpacing = 'normal'
+      return tspans.map((t) => ({ text: t.textContent ?? '', width: (t as SVGTSpanElement).getComputedTextLength() }))
+    })
+    // Mermaid's clamp for an 80px icon at 16px: floor(78 / 16) lines.
+    expect(rows.length).toBe(4)
+    expect(rows.at(-1)?.text).toMatch(/…$/)
+    for (const { width } of rows) expect(width).toBeLessThanOrEqual(80)
+  })
 
   test('frontmatter theme still applies', async ({ page }) => {
     await codeInput.fill(page, SOURCE, '---\nconfig:\n  theme: forest\n---\nflowchart TD\n    A[Start] --> B[Finish]')

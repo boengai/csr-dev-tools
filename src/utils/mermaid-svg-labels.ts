@@ -1,4 +1,4 @@
-import type { MermaidLabelRow, MermaidTextMeasure } from '@/types/utils/mermaid-svg-labels'
+import type { MermaidLabelFits, MermaidLabelRow, MermaidTextMeasure } from '@/types/utils/mermaid-svg-labels'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
 // Mermaid's own defaults, used when the diagram's root style doesn't say.
@@ -12,8 +12,10 @@ const ESTIMATED_CHAR_EM = 0.6
 const HIDDEN_MATH_ATTR = 'data-hidden-math-labels'
 const HIDDEN_MATH_PATTERN = new RegExp(`^\\s*<svg\\b[^>]*\\s${HIDDEN_MATH_ATTR}="(\\d+)"`)
 const LINE_HEIGHT_EM = 1.2
-// Elements that start a new line in the HTML label.
-const BLOCK_TAGS = new Set(['code', 'div', 'li', 'p', 'pre'])
+// Elements that start a new line in the HTML label, besides any styled
+// `display: block|flex|table` (event-modeling's data <code>).
+const BLOCK_TAGS = new Set(['div', 'li', 'p', 'pre'])
+const BLOCK_DISPLAY = /display:\s*(?:block|flex|table)(?![-\w])/
 
 const numberAttr = (el: Element, name: string): number => parseFloat(el.getAttribute(name) ?? '') || 0
 
@@ -33,7 +35,7 @@ const measureWithCanvas: MermaidTextMeasure = (text, font) => {
   return measureContext.measureText(text).width
 }
 
-/** The font the HTML labels inherited from the diagram's root rule (`#id{font-family:…;font-size:…}`). */
+/** The font labels inherit from the diagram's root rule (`#id{font-family:…;font-size:…}`). */
 const rootFont = (root: Element): { family: string; size: string } => {
   const id = root.getAttribute('id')
   const css = root.querySelector('style')?.textContent ?? ''
@@ -42,37 +44,68 @@ const rootFont = (root: Element): { family: string; size: string } => {
   return { family: value('font-family') ?? DEFAULT_FONT_FAMILY, size: value('font-size') ?? DEFAULT_FONT_SIZE }
 }
 
+/** A `font-size` set between the label and the root (venn sets one on its text-node group). */
+const nearerFontSize = (fo: Element, root: Element): string | undefined => {
+  for (let el = fo.parentElement; el && el !== root; el = el.parentElement) {
+    const size =
+      el.getAttribute('font-size') ?? /font-size:\s*([^;]+)/.exec(el.getAttribute('style') ?? '')?.[1]?.trim()
+    if (size) return /^\d+(?:\.\d+)?$/.test(size) ? `${size}px` : size
+  }
+  return undefined
+}
+
+/** Architecture's iconText sets `-webkit-line-clamp` (and clips): its line limit, or 0 for none. */
+const lineClamp = (fo: Element): number => {
+  for (const el of fo.querySelectorAll('[style]')) {
+    const clamp = /-webkit-line-clamp:\s*(\d+)/.exec(el.getAttribute('style') ?? '')?.[1]
+    if (clamp) return parseInt(clamp, 10)
+  }
+  return 0
+}
+
 /**
  * Breaks a row into lines no wider than `maxWidth`, at spaces, as the HTML
- * label wrapped. A word wider than the box keeps a line of its own.
+ * label wrapped. A word wider than the box keeps a line of its own, unless
+ * `breakWords`: a clipped label breaks it by character instead, so it stays
+ * inside the box.
  */
-const wrapRow = (row: MermaidLabelRow, maxWidth: number, fits: (text: string, bold: boolean) => boolean) => {
+const wrapRow = (row: MermaidLabelRow, maxWidth: number, fits: MermaidLabelFits, breakWords: boolean) => {
   if (row.text === '' || maxWidth <= 0 || fits(row.text, row.bold)) return [row]
   const lines: Array<MermaidLabelRow> = []
   let line = ''
+  const flush = () => {
+    if (line) lines.push({ bold: row.bold, text: line })
+    line = ''
+  }
   for (const word of row.text.split(' ')) {
     const candidate = line ? `${line} ${word}` : word
-    if (line && !fits(candidate, row.bold)) {
-      lines.push({ bold: row.bold, text: line })
-      line = word
-    } else {
+    if (fits(candidate, row.bold)) {
       line = candidate
+      continue
+    }
+    flush()
+    if (!breakWords || fits(word, row.bold)) {
+      line = word
+      continue
+    }
+    for (const char of word) {
+      if (line && !fits(line + char, row.bold)) flush()
+      line += char
     }
   }
-  lines.push({ bold: row.bold, text: line })
+  flush()
   return lines
 }
 
-/** Architecture's iconText sets `-webkit-line-clamp`: at most that many lines, the last ending in '…'. */
-const clampRows = (fo: Element, rows: Array<MermaidLabelRow>): Array<MermaidLabelRow> => {
-  const clampStyle = [...fo.querySelectorAll('[style]')].find((el) =>
-    /-webkit-line-clamp/.test(el.getAttribute('style') ?? ''),
-  )
-  const clamp = parseInt(/-webkit-line-clamp:\s*(\d+)/.exec(clampStyle?.getAttribute('style') ?? '')?.[1] ?? '', 10)
+/** At most `clamp` lines; the last ends in '…', trimmed until it fits, as line-clamp shows it. */
+const clampRows = (rows: Array<MermaidLabelRow>, clamp: number, fits: MermaidLabelFits): Array<MermaidLabelRow> => {
   if (!clamp || rows.length <= clamp) return rows
   const kept = rows.slice(0, clamp)
   const last = kept[clamp - 1]
-  if (last) kept[clamp - 1] = { bold: last.bold, text: `${last.text}…` }
+  if (!last) return kept
+  let text = last.text
+  while (text && !fits(`${text}…`, last.bold)) text = text.slice(0, -1).trimEnd()
+  kept[clamp - 1] = { bold: last.bold, text: `${text}…` }
   return kept
 }
 
@@ -85,6 +118,10 @@ const labelRows = (fo: Element): Array<MermaidLabelRow> => {
   const raw: Array<MermaidLabelRow> = []
   // A row starts bold and stays bold only while all its text is in <b>/<strong>.
   const breakRow = () => raw.push({ bold: true, text: '' })
+  // A block edge only ends a row that has text: stacked blocks leave no gap.
+  const endRow = () => {
+    if (raw.at(-1)?.text.trim()) breakRow()
+  }
   const append = (part: string, bold: boolean) => {
     const row = raw.at(-1)
     if (!row) return
@@ -102,10 +139,10 @@ const labelRows = (fo: Element): Array<MermaidLabelRow> => {
     if (!(node instanceof Element)) return
     const tag = node.localName
     if (tag === 'br') return void breakRow()
-    const block = BLOCK_TAGS.has(tag)
-    if (block) breakRow()
+    const block = BLOCK_TAGS.has(tag) || BLOCK_DISPLAY.test(node.getAttribute('style') ?? '')
+    if (block) endRow()
     for (const child of node.childNodes) walk(child, bold || tag === 'b' || tag === 'strong')
-    if (block) breakRow()
+    if (block) endRow()
   }
   breakRow()
   walk(fo, false)
@@ -140,10 +177,12 @@ const redrawAsText = (fo: Element, width: (text: string, bold: boolean) => numbe
   const boxWidth = numberAttr(fo, 'width')
   const x = String(numberAttr(fo, 'x') + boxWidth / 2)
   const y = String(numberAttr(fo, 'y') + numberAttr(fo, 'height') / 2)
-  const fits = (line: string, bold: boolean) => width(line, bold) <= boxWidth
+  const fits: MermaidLabelFits = (line, bold) => width(line, bold) <= boxWidth
+  const clamp = lineClamp(fo)
   const rows = clampRows(
-    fo,
-    labelRows(fo).flatMap((row) => wrapRow(row, boxWidth, fits)),
+    labelRows(fo).flatMap((row) => wrapRow(row, boxWidth, fits, clamp > 0)),
+    clamp,
+    fits,
   )
 
   const text = doc.createElementNS(SVG_NS, 'text')
@@ -153,8 +192,9 @@ const redrawAsText = (fo: Element, width: (text: string, bold: boolean) => numbe
   text.setAttribute('dominant-baseline', 'central')
   // An HTML label's own colour (venn's `style … color:`). Without one the text
   // inherits the diagram's text fill.
+  // Not one that loads a URL (`var(--x, url(…))`): a fill would fetch it.
   const color = [...fo.querySelectorAll<HTMLElement>('[style]')].find((el) => el.style.color)?.style.color
-  if (color) text.setAttribute('fill', color)
+  if (color && !/url\(/i.test(color)) text.setAttribute('fill', color)
   // A blank row has no tspan: the next line's dy steps over it.
   let previous = -1
   rows.forEach(({ bold, text: row }, index) => {
@@ -188,7 +228,9 @@ export const redrawHtmlLabels = (svg: string, measure: MermaidTextMeasure = meas
   if (!root) return svg
 
   const font = rootFont(root)
-  const width = (text: string, bold: boolean) => measure(text, `${bold ? 'bold ' : ''}${font.size} ${font.family}`)
+  // The size a label inherits: venn's group sets one; the rest use the root's.
+  const widthIn = (size: string) => (text: string, bold: boolean) =>
+    measure(text, `${bold ? 'bold ' : ''}${size} ${font.family}`)
 
   let hiddenMath = 0
   for (const fo of root.querySelectorAll('foreignObject')) {
@@ -196,7 +238,7 @@ export const redrawHtmlLabels = (svg: string, measure: MermaidTextMeasure = meas
     // KaTeX as flat text is wrong math (x² reads "x2"), so it is left for the
     // sanitizer to drop and counted for the notice instead.
     if (fo.querySelector('math, .katex')) hiddenMath++
-    else redrawAsText(fo, width)
+    else redrawAsText(fo, widthIn(nearerFontSize(fo, root) ?? font.size))
   }
   if (hiddenMath > 0) root.setAttribute(HIDDEN_MATH_ATTR, String(hiddenMath))
 
@@ -211,3 +253,5 @@ export const redrawHtmlLabels = (svg: string, measure: MermaidTextMeasure = meas
 
 /** How many `$$…$$` math labels `redrawHtmlLabels` had to leave out of this SVG. */
 export const countHiddenMathLabels = (svg: string): number => Number(HIDDEN_MATH_PATTERN.exec(svg)?.[1] ?? 0)
+
+export type { MermaidLabelRow, MermaidTextMeasure } from '@/types/utils/mermaid-svg-labels'
