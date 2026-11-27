@@ -1,15 +1,35 @@
 import { PDFDocument } from 'pdf-lib'
 
 import type { CombinePdfPageRef, CombinePdfResult, PdfPageThumbnail } from '@/types'
+import { decryptPdf } from '@/wasm/pdf-decrypt'
 
 const EMPTY_RESULT: CombinePdfResult = { pdf: new Uint8Array(0), pageCount: 0, skipped: [] }
+
+/**
+ * Load a source PDF for copying. pdf-lib can't decrypt, and copying pages out
+ * of a still-encrypted document writes blank pages, so an encrypted file is
+ * decrypted first. Rejects when the file needs a password: the caller skips it.
+ *
+ * Any failed load goes to the decrypt step, not only pdf-lib's
+ * `EncryptedPDFError`: pdf-lib ships ES5 classes, so `instanceof` can't tell
+ * that error from another. The decrypt step rejects a file that isn't a PDF,
+ * and the second load is as strict as the first, so nothing still encrypted
+ * gets through.
+ */
+async function loadSource(bytes: Uint8Array): Promise<PDFDocument> {
+  try {
+    return await PDFDocument.load(bytes)
+  } catch {
+    return PDFDocument.load(await decryptPdf(bytes))
+  }
+}
 
 /**
  * Combine arbitrary pages from arbitrary PDFs into one PDF in the given order.
  * Each input ref names a source file + a 0-based page index. The same file may
  * appear multiple times with different page indices; this loads each file once
- * (cached by File reference) and copies pages in order. Files that fail to load
- * land in `skipped` (deduplicated).
+ * (cached by File reference) and copies pages in order. Files that fail to load,
+ * or that need a password to open, land in `skipped` (deduplicated).
  *
  * Known limitations:
  * - Many-page perf: rendering 100+ page thumbnails will be slow and memory-heavy.
@@ -36,7 +56,7 @@ export async function combinePdfPages(items: Array<CombinePdfPageRef>): Promise<
       }
       try {
         const bytes = new Uint8Array(await file.arrayBuffer())
-        src = await PDFDocument.load(bytes, { ignoreEncryption: true })
+        src = await loadSource(bytes)
         loaded.set(file, src)
       } catch {
         skippedSet.add(file.name)
