@@ -1,0 +1,73 @@
+{
+ "baseline": {
+  "files": [
+   {
+    "brotli": 128338,
+    "path": "dist/assets/background-removal.worker-CLE7s7q6.js",
+    "raw": 546120
+   },
+   {
+    "brotli": 16608,
+    "path": "node_modules/.pnpm/onnxruntime-web@1.31.0-dev.20260914-8d85527a0/node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded.asyncify.mjs",
+    "raw": 53057
+   },
+   {
+    "brotli": 4010127,
+    "path": "node_modules/.pnpm/onnxruntime-web@1.31.0-dev.20260914-8d85527a0/node_modules/onnxruntime-web/dist/ort-wasm-simd-threaded.asyncify.wasm",
+    "raw": 26861777
+   }
+  ],
+  "total": 4155073
+ },
+ "candidateOz": {
+  "files": [
+   {
+    "brotli": 2296845,
+    "path": "docs/research/tract-bg-removal-trial/harness/pkg/oz.wasm",
+    "raw": 13552438
+   },
+   {
+    "brotli": 2780,
+    "path": "docs/research/tract-bg-removal-trial/harness/pkg/tract_trial.js",
+    "raw": 12499
+   },
+   {
+    "brotli": 1573,
+    "path": "docs/research/tract-bg-removal-trial/harness/web/tract.worker.ts",
+    "raw": 4273
+   }
+  ],
+  "total": 2301198
+ },
+ "candidateO3": {
+  "files": [
+   {
+    "brotli": 2286459,
+    "path": "docs/research/tract-bg-removal-trial/harness/pkg/o3.wasm",
+    "raw": 14013695
+   },
+   {
+    "brotli": 2780,
+    "path": "docs/research/tract-bg-removal-trial/harness/pkg/tract_trial.js",
+    "raw": 12499
+   },
+   {
+    "brotli": 1573,
+    "path": "docs/research/tract-bg-removal-trial/harness/web/tract.worker.ts",
+    "raw": 4273
+   }
+  ],
+  "total": 2290812
+ },
+ "models": [
+  {
+   "path": "model.onnx",
+   "raw": 25888640
+  },
+  {
+   "path": "model_quantized.onnx",
+   "raw": 6632188
+  }
+ ],
+ "ratioOz": 0.5538285368271508
+}

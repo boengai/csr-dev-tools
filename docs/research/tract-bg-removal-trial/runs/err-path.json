@@ -1,0 +1,11 @@
+{
+ "garbage model": "Err: Reading proto model",
+ "empty model": "Err: Translating proto model to model",
+ "truncated model": "Err: Reading proto model",
+ "q8 model (published file)": "Err: Failed analyse for node #642 \"1012_bias_add\" Add",
+ "segment: wrong-length rgba": "Err: bad rgba: len 10 for 512x512",
+ "segment: zero size": "Err: bad tensor: len 0 for 0x0",
+ "run: wrong-length tensor": "Err: bad tensor: len 5 for 512x512",
+ "prepare: zero width": "Err: empty input 512x0",
+ "run: 1x1 tensor": "Err: Failed analyse for node #457 \"Concat_248\" InferenceConcat"
+}

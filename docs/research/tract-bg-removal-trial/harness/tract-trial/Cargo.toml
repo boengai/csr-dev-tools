@@ -1,0 +1,30 @@
+[package]
+name = "tract-trial"
+version = "0.0.0"
+edition = "2024"
+publish = false
+
+# Standalone: not a member of wasm/ (or any root) workspace.
+[workspace]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+# 0.22.6 (the agreed pin) cannot load MODNet: no Resize `pytorch_half_pixel`
+# before 0.23.5. 0.23.10 is the judged build; 0.23.11 was a day old at the trial.
+tract-onnx = "=0.23.10"
+
+[target.'cfg(target_arch = "wasm32")'.dependencies]
+wasm-bindgen = "=0.2.130"
+# tract-onnx-opl pulls rand (random ops); wasm needs the JS backend for it.
+getrandom = { version = "0.4", features = ["wasm_js"] }
+console_error_panic_hook = "0.1"
+
+# Inference speed is judged, so the release build is opt-level 3, not "z".
+[profile.release]
+lto = "fat"
+opt-level = 3
+strip = "debuginfo"
+codegen-units = 1
+panic = "abort"
