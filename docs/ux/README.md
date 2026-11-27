@@ -5,6 +5,9 @@ shell in `src/components/common/`, and **the shell is the spec**. The pages
 here are rough drawings and journeys that explain it. If a page and its shell
 disagree, the shell wins; fix the page. ADR-0027 records why.
 
+During the Dioxus migration the reference is the React site on `main`, and
+[parity.md](parity.md) says how a ported Tool is shown to match it.
+
 | Layout type | Shell | Page |
 |---|---|---|
 | Transformer | `TransformerShell` | [transformer.md](transformer.md) |

@@ -31,7 +31,7 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 | Branch | Holds | Takes |
 |--------|-------|-------|
-| `main` | The production React site | Bug fixes only, until the Dioxus cutover. A check fails any pull request that changes the set of tool keys. |
+| `main` | The production React site | Bug fixes only, until the Dioxus cutover, plus the UX parity harness and the spec selector changes that must pass against React first (`docs/ux/parity.md`). A check fails any pull request that changes the set of tool keys. |
 | `develop` | The Dioxus migration ([issue 5](https://github.com/boengai/csr-dev-tools/issues/5)) | Migration work. It merges into `main` once, at cutover. Go/no-go said go (ADR-0031). The React app stays buildable here until the map decides when to retire it. |
 | `spike/dioxus` | The disposable spike, cut from `develop` | Never merges. Go/no-go kept none of its code; it stays as a reference (ADR-0031). |
 

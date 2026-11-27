@@ -13,7 +13,7 @@ What a Dioxus build must meet to count as "no measured regression" against the R
   - The Dioxus build drops the same images, for example with a build flag. Do not shorten a string inside a `.wasm` file, because that corrupts it.
   - Either way, check the result: the `requests` list in each build's bytes results has no request under `fonts.gstatic.com/s/e/notoemoji/`.
   - Each build is also measured as shipped, in the same session, tracked only.
-  - Whether the Dioxus site keeps the emoji is a UX parity question for [How is UX parity proven?](https://github.com/boengai/csr-dev-tools/issues/24).
+  - The Dioxus site keeps the emoji as `main` has them. Removing them is for budget runs only ([How is UX parity proven?](https://github.com/boengai/csr-dev-tools/issues/24), [parity.md](../ux/parity.md)).
 
 ## Pages
 
