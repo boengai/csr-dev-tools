@@ -22,14 +22,10 @@ const routeTool = ROUTE_TOOLS.map((key) => parityTools().find((tool) => tool.key
 
 // The home page arrives with the app shell, so its indicator is the robot in each widget until the
 // widget's Tool fills it; on a Tool route, the flying saucer shows until the Tool does.
-// `drawnBeforeApp`: whether the indicator's image is drawn, not just laid out, before the app shows.
-// Measured on React under slow 4G: the robot (341 KB) is drawn about 2.7 s before the dashboard fills;
-// the saucer (622 KB) shares the line with the Tool's code and is never drawn before the Tool shows,
-// so React leaves an empty box there. Each page is held to what React does (docs/ux/parity.md).
-const PAGES: Array<{ app: string; drawnBeforeApp: boolean; indicator: string; name: string; path: string }> = [
+// The indicator must be drawn (its image decoded), not just laid out, before the app shows.
+const PAGES: Array<{ app: string; indicator: string; name: string; path: string }> = [
   {
     app: '[data-testid="dashboard-widget"] article',
-    drawnBeforeApp: true,
     indicator: WIDGET_LOADING,
     name: 'home page',
     path: '/',
@@ -38,7 +34,6 @@ const PAGES: Array<{ app: string; drawnBeforeApp: boolean; indicator: string; na
     ? [
         {
           app: '[data-slot="tool-surface"]',
-          drawnBeforeApp: false,
           indicator: TOOL_LOADING,
           name: 'Tool route',
           path: routeTool.routePath,
@@ -50,6 +45,15 @@ const PAGES: Array<{ app: string; drawnBeforeApp: boolean; indicator: string; na
 type LoadingRecord = { appAt: null | number; cls: number; indicatorAt: null | number; indicatorDrawnAt: null | number }
 
 test.use(deviceOptions('Pixel 7'))
+
+// A 1x1 GIF. The emoji come from Google's CDN, which a merge gate must not depend on: a slow or failed
+// response would fail a healthy build. The stub answers only the Noto emoji URLs both builds must use
+// (docs/ux/parity.md → The reference), so an indicator pointing anywhere else is still never drawn.
+const EMOJI_STUB = Buffer.from('R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7', 'base64')
+const stubEmoji = (page: Page) =>
+  page.route('https://fonts.gstatic.com/s/e/notoemoji/**', (route) =>
+    route.fulfill({ body: EMOJI_STUB, contentType: 'image/gif' }),
+  )
 
 test.beforeEach(({ browserName }) => {
   test.skip(browserName !== 'chromium', 'the slow-4G throttle is applied through CDP')
@@ -115,9 +119,10 @@ if (!routeTool) {
   test.skip(`loading a Tool route (none of ${ROUTE_TOOLS.join(', ')} is in this run)`, () => {})
 }
 
-for (const { app, drawnBeforeApp, indicator, name, path } of PAGES) {
+for (const { app, indicator, name, path } of PAGES) {
   test.describe(`loading the ${name}`, () => {
     test('shows the loading indicator first, then fills the root without a layout shift', async ({ page }) => {
+      await stubEmoji(page)
       await throttle(page)
       await record(page, app, indicator)
       await page.goto(path, { waitUntil: 'commit' })
@@ -132,13 +137,8 @@ for (const { app, drawnBeforeApp, indicator, name, path } of PAGES) {
       expect(indicatorAt, 'the loading indicator showed').not.toBeNull()
       expect(appAt, 'the app showed').not.toBeNull()
       expect(indicatorAt!, 'the loading indicator showed before the app').toBeLessThan(appAt!)
-      if (drawnBeforeApp) {
-        expect(indicatorDrawnAt, 'the loading indicator image was drawn').not.toBeNull()
-        expect(indicatorDrawnAt!, 'the loading indicator image was drawn before the app').toBeLessThan(appAt!)
-      } else {
-        const drawn = indicatorDrawnAt !== null && indicatorDrawnAt < appAt! ? 'drawn' : 'not drawn (as on React)'
-        test.info().annotations.push({ description: `indicator image ${drawn} before the app`, type: 'loading' })
-      }
+      expect(indicatorDrawnAt, 'the loading indicator image was drawn').not.toBeNull()
+      expect(indicatorDrawnAt!, 'the loading indicator image was drawn before the app').toBeLessThan(appAt!)
       expect(cls, 'cumulative layout shift').toBeLessThanOrEqual(CLS_LIMIT)
     })
 
@@ -154,6 +154,7 @@ for (const { app, drawnBeforeApp, indicator, name, path } of PAGES) {
       })
       page.on('pageerror', (error) => errors.push(error.message))
 
+      await stubEmoji(page)
       await throttle(page)
       await page.goto(path, { waitUntil: 'commit' })
       const appShown = page.locator(app).first()
