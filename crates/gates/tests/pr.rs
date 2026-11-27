@@ -2,7 +2,8 @@
 //!
 //! - `GATES_PR_TITLE` and `GATES_PR_BODY`: the PR's title and body;
 //! - `GATES_PR_HEAD_REF`: the PR's source branch;
-//! - `GATES_PR_MERGES_MAIN`: `true` when the PR's head contains `main`'s tip;
+//! - `GATES_PR_BRINGS_MAIN`: `true` when the PR brings `main` commits the base
+//!   lacks;
 //! - `GATES_NUMSTAT`: a file holding `git diff --numstat --no-renames` from
 //!   the merge base;
 //! - `GATES_BASE_MANIFEST`: a file holding the root `Cargo.toml` at the merge
@@ -30,8 +31,8 @@ fn root() -> &'static Path {
 /// The PR's kind, from its title, and a sync PR's source checked too.
 fn kind() -> Result<Kind, String> {
     let kind = parse_title(&var("GATES_PR_TITLE")?).map_err(|finding| finding.to_string())?;
-    let merges_main = var("GATES_PR_MERGES_MAIN")? == "true";
-    match check_sync_source(&kind, &var("GATES_PR_HEAD_REF")?, merges_main) {
+    let brings_main = var("GATES_PR_BRINGS_MAIN")? == "true";
+    match check_sync_source(&kind, &var("GATES_PR_HEAD_REF")?, brings_main) {
         Some(finding) => Err(finding.to_string()),
         None => Ok(kind),
     }

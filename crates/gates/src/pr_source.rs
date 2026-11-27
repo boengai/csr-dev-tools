@@ -32,15 +32,16 @@ fn members(manifest: &Table) -> Option<&Vec<Value>> {
 
 /// A `sync` PR skips the path and body checks, so its title alone is not
 /// enough. It comes from `main` itself, or, when the sync has conflicts to
-/// resolve, from a branch whose head contains `main`'s current tip
-/// (`merges_main`, from `git merge-base --is-ancestor`).
-pub fn check_sync_source(kind: &Kind, head_ref: &str, merges_main: bool) -> Option<Finding> {
-    (*kind == Kind::Sync && head_ref != "main" && !merges_main).then(|| {
+/// resolve, from a branch that brings `main` commits the base lacks
+/// (`brings_main`). "Contains main's tip" would not do: once a sync lands,
+/// every branch cut from `develop` contains it.
+pub fn check_sync_source(kind: &Kind, head_ref: &str, brings_main: bool) -> Option<Finding> {
+    (*kind == Kind::Sync && head_ref != "main" && !brings_main).then(|| {
         Finding::new(
             "pr-kind",
             head_ref,
             0,
-            "a `chore: sync main into develop` PR comes from `main`, or from a branch that merges main's tip",
+            "a `chore: sync main into develop` PR comes from `main`, or from a branch that brings main commits develop lacks",
         )
     })
 }

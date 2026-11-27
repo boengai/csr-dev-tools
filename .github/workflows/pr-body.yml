@@ -34,9 +34,14 @@ jobs:
           BASE_REF: ${{ github.event.pull_request.base.ref }}
         run: |
           echo "MERGE_BASE=$(git merge-base "origin/$BASE_REF" HEAD^2)" >>"$GITHUB_ENV"
-          # A sync PR from a branch must contain main's tip (pr_source.rs).
-          if git merge-base --is-ancestor origin/main HEAD^2; then merges=true; else merges=false; fi
-          echo "GATES_PR_MERGES_MAIN=$merges" >>"$GITHUB_ENV"
+          # A sync PR from a branch must bring main commits the base lacks
+          # (pr_source.rs): where it meets main is not already in the base.
+          if git merge-base --is-ancestor "$(git merge-base origin/main HEAD^2)" "origin/$BASE_REF"; then
+            brings=false
+          else
+            brings=true
+          fi
+          echo "GATES_PR_BRINGS_MAIN=$brings" >>"$GITHUB_ENV"
 
       - name: Setup Rust (rust-toolchain.toml)
         run: rustup toolchain install
