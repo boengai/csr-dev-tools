@@ -100,6 +100,21 @@ describe('combinePdfPages', () => {
     expect(await pageTexts(again.pdf)).toEqual([PAGE_ONE_TEXT])
   })
 
+  it('fails the merge, rather than skipping the file, when the decrypt step cannot load', async () => {
+    const encrypted = await fixture('aes-128.pdf')
+    const plain = await fixture('plain.pdf')
+    const items = [
+      { file: encrypted, pageIndex: 0 },
+      { file: plain, pageIndex: 0 },
+    ]
+    vi.mocked(decryptPdf).mockRejectedValueOnce(new Error('offline'))
+    await expect(combinePdfPages(items)).rejects.toThrow('offline')
+    // The failure is not remembered: the next merge decrypts the file.
+    const retried = await combinePdfPages(items)
+    expect(retried.skipped).toEqual([])
+    expect(await pageTexts(retried.pdf)).toEqual([PAGE_ONE_TEXT, PAGE_ONE_TEXT])
+  })
+
   it('decrypts a file once when a second merge starts before the first ends', async () => {
     const file = await fixture('rc4-128.pdf')
     vi.mocked(decryptPdf).mockClear()

@@ -9,12 +9,13 @@ const EMPTY_RESULT: CombinePdfResult = { pdf: new Uint8Array(0), pageCount: 0, s
  * Decryptions of the encrypted files seen so far, finished or still running.
  * The merge reruns on every re-order, possibly before the last run ends, and
  * decrypting a large file takes seconds, so each file is decrypted once. A
- * failed decryption is dropped, so the next merge tries again. An entry goes
+ * null result (the file can't be decrypted) is kept; a rejection (the decrypt
+ * step didn't load) is dropped, so the next merge tries again. An entry goes
  * when its File does.
  */
-const decryptedBytes = new WeakMap<File, Promise<Uint8Array>>()
+const decryptedBytes = new WeakMap<File, Promise<Uint8Array | null>>()
 
-function decryptOnce(file: File, bytes: Uint8Array): Promise<Uint8Array> {
+function decryptOnce(file: File, bytes: Uint8Array): Promise<Uint8Array | null> {
   const known = decryptedBytes.get(file)
   if (known) return known
   const decrypting = decryptPdf(bytes)
@@ -28,7 +29,9 @@ function decryptOnce(file: File, bytes: Uint8Array): Promise<Uint8Array> {
 /**
  * Load a source PDF for copying. pdf-lib can't decrypt, and copying pages out
  * of a still-encrypted document writes blank pages, so an encrypted file is
- * decrypted first. Rejects when the file needs a password: the caller skips it.
+ * decrypted first. Resolves to null when the file can't be used (it needs a
+ * password, or isn't a PDF): the caller skips it. Rejects when the decrypt
+ * step can't load, so the merge fails rather than quietly dropping a file.
  *
  * Any failed load goes to the decrypt step, not only pdf-lib's
  * `EncryptedPDFError`: pdf-lib ships ES5 classes, so `instanceof` can't tell
@@ -36,15 +39,21 @@ function decryptOnce(file: File, bytes: Uint8Array): Promise<Uint8Array> {
  * and the second load is as strict as the first, so a document that still
  * declares `/Encrypt` never reaches `copyPages`.
  */
-async function loadSource(file: File): Promise<PDFDocument> {
-  const known = decryptedBytes.get(file)
-  if (known) return PDFDocument.load(await known)
-
+async function loadSource(file: File): Promise<PDFDocument | null> {
   const bytes = new Uint8Array(await file.arrayBuffer())
+  if (!decryptedBytes.has(file)) {
+    try {
+      return await PDFDocument.load(bytes)
+    } catch {
+      // Not loadable as is: try the decrypt step below.
+    }
+  }
+  const decrypted = await decryptOnce(file, bytes)
+  if (!decrypted) return null
   try {
-    return await PDFDocument.load(bytes)
+    return await PDFDocument.load(decrypted)
   } catch {
-    return PDFDocument.load(await decryptOnce(file, bytes))
+    return null
   }
 }
 
@@ -84,14 +93,15 @@ export async function combinePdfPages(items: Array<CombinePdfPageRef>): Promise<
         skippedSet.add(file.name)
         continue
       }
-      try {
-        src = await loadSource(file)
-        loaded.set(file, src)
-      } catch {
+      // A rejection here means the decrypt step didn't load: fail the merge.
+      const source = await loadSource(file)
+      if (!source) {
         failed.add(file)
         skippedSet.add(file.name)
         continue
       }
+      src = source
+      loaded.set(file, src)
     }
     if (pageIndex < 0 || pageIndex >= src.getPageCount()) continue
     const [copied] = await merged.copyPages(src, [pageIndex])

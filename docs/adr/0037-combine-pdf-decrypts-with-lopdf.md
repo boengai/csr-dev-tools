@@ -29,6 +29,9 @@ whole merge. The thumbnails looked right throughout, because pdf.js decrypts.
 3. **A file that can't be decrypted lands in `skipped`**, and
    `SortablePdfShell` now names the pipeline's skipped files in its status
    slot. It used to name only the files the upload rejected.
+   A decrypt step that fails to load (offline, a failed fetch) is not a
+   property of the file: the merge fails with an error instead, so no
+   download is offered with a file quietly missing.
 4. **The crate returns bytes** (`Vec<u8>`, thrown `JsError`). It is the
    second crate to leave the string convention of [[ADR 0018]], after
    `pdf` in [[ADR 0022]]. The rule that comes out of the two: a crate
