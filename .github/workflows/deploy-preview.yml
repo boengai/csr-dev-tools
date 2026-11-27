@@ -3,7 +3,7 @@ name: Deploy to Cloudflare Pages Preview
 # No pull_request trigger, so a fork can never reach the Cloudflare secrets.
 on:
   push:
-    branches: [develop, spike/dioxus]
+    branches: [develop, spike/dioxus, fix/issue-35-wasm-preload]
 
 permissions:
   contents: read

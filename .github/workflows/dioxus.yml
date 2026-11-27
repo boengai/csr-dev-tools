@@ -4,7 +4,7 @@ name: Dioxus spike
 # journeys for the three ported tools against that build, unchanged.
 on:
   push:
-    branches: [spike/dioxus]
+    branches: [spike/dioxus, fix/issue-35-wasm-preload]
   workflow_dispatch:
 
 permissions:
