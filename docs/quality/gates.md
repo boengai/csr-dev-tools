@@ -288,7 +288,9 @@ The title starts with the kind. The path check fails a PR that changes a file ou
 | `sync` | `chore: sync main into develop …` | anything, as a merge commit from `main` |
 
 - **No hard cap on lines.** A CI warning, not a failure, shows above 1,000 changed lines, not counting generated files and lockfiles.
-- **The workspace skeleton PR,** which adds the gates themselves along with the first crates, is the one PR the path check and the mixing rule cannot judge. It is titled `gates: …` and reviewed by hand.
+- **Hand-reviewed `gates` PRs.** The path check and the mixing rule cannot judge two kinds of PR, so the maintainer reviews them by hand. Both are titled `gates: …`, and the path check is expected to fail on their code files.
+  - **The workspace skeleton PR,** which added the gates themselves along with the first crates ([#63](https://github.com/boengai/csr-dev-tools/pull/63)).
+  - **A PR that brings in a deferred gate with the code it judges** (ADR-0036 → "Amended when the gates were built"). The Dioxus build, byte and CSP gates come with the first `crates/app`, and the TypeScript and npm licence gates come with the first `crates/bridges/js` or `scripts/dioxus`. It holds only the smallest code the gate needs, and its body shows the gate's must-fail fixture failing.
 
 ## The PR body
 

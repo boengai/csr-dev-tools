@@ -144,9 +144,10 @@ owns that priority. It was decided in conversation on 2026-11-27.
   A shell with no user is untested design.
 - **There is no hard cap on lines.** The path rule is the bound, and a
   large diff only raises a warning.
-- **The workspace skeleton PR,** which adds the gates themselves, is the
+- **The workspace skeleton PR,** which adds the gates themselves, is
   one PR the path check and the mixing rule cannot judge. It is reviewed
-  by hand.
+  by hand. So is each PR that brings in a deferred gate together with
+  the code it judges (amended below).
 
 ### 5. Lints
 
@@ -393,6 +394,28 @@ Two findings changed the build:
 - **`allow-unwrap-in-tests` covers only `#[test]` functions,** not the
   helpers of an integration test. Helpers return a `Result`, and the
   test unwraps it.
+
+Some gates judge code that does not exist yet, so the first slice
+(#63) could not build them. A gate with nothing to judge would pass over
+nothing, so each one is a `dioxus.yml` step that fails once its code
+appears:
+
+| Deferred gate | Fails once this exists |
+|---|---|
+| The Dioxus build, the byte ceilings and their row check, and the CSP run with its Playwright fixture | `crates/app` |
+| oxlint, oxfmt and the npm licence check | `crates/bridges/js` or `scripts/dioxus` |
+
+**A deferred gate lands in the PR that brings in its code.** Neither half
+can land alone: the code fails the deferred step, and the gate has
+nothing to run against. That PR mixes gate files with code, so, like the
+skeleton PR, it is titled `gates: …`, the path check fails on its code
+files, and the maintainer reviews it by hand. Its body names the
+deferred gate it builds and shows the gate's must-fail fixture failing.
+It holds only the smallest code the gate needs, such as an `app` crate
+that renders an empty shell. Everything after it lands under the normal
+kinds. The `const` layout assertion waits in the same way, for `ui`'s
+entry macro, but it is a compile-time check inside `ui` rather than a
+CI step, so its `ui(…)` PR stays an ordinary `foundation` PR.
 
 ## Revisit when
 
