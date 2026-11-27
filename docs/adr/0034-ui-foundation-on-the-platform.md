@@ -377,8 +377,7 @@ are already CSS and carry over unchanged.
   live "N of M" text already announces progress.
 - **Not ported, because nothing uses them:** DataCellTable, RefreshIcon,
   TrashIcon, FieldForm's `switch` kind and Dialog's `trigger` prop.
-- **Decided by
-  [issue 21](https://github.com/boengai/csr-dev-tools/issues/21):**
+- **Decided by [ADR-0033](0033-engine-split-and-interop-boundary.md):**
   - CodeInput (CodeMirror and Monaco);
   - dnd-kit in SortableCard and in SortablePdfShell's grid, which becomes
     the sortable grid primitive (section 1);
