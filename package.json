@@ -18,7 +18,7 @@
     "test:e2e:headed": "playwright test --headed",
     "wasm:build": "cd wasm && ./scripts/build.sh",
     "wasm:build:dev": "cd wasm && ./scripts/build.sh --dev",
-    "wasm:test": "cd wasm && cargo test"
+    "wasm:test": "cargo test -p bcrypt -p certificate -p color -p csv@0.1.0 -p diff -p formatter -p hash -p hmac -p json-tools -p markdown -p number-base -p parsers -p pdf -p qrcode -p shared -p uuid"
   },
   "dependencies": {
     "@codemirror/lang-json": "6.0.2",

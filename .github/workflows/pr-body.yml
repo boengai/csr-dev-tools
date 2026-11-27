@@ -1,0 +1,48 @@
+# The `pr-body` check (ADR-0036 §9, docs/quality/gates.md → "The PR body"):
+# the title's kind, the template's headings, the case-mapping table, the
+# automated review and the maintainer's ticked hand check. It exists on
+# `develop` only, and editing a body reruns this check, never `dioxus`.
+name: PR body
+
+on:
+  pull_request:
+    branches: [develop]
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-body-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pr-body:
+    name: pr-body
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Rust (rust-toolchain.toml)
+        run: rustup toolchain install
+
+      - name: Cache Rust
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: pr-body-${{ runner.os }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
+          restore-keys: |
+            pr-body-${{ runner.os }}-
+
+      # The title and body reach the check through the environment, never
+      # through `${{ }}` inside the script.
+      - name: Check the title and body
+        env:
+          GATES_PR_TITLE: ${{ github.event.pull_request.title }}
+          GATES_PR_BODY: ${{ github.event.pull_request.body }}
+        run: cargo test -p gates --test pr -- --ignored --exact pr_body

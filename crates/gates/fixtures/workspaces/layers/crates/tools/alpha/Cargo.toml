@@ -1,0 +1,12 @@
+[package]
+name = "tool-alpha"
+version = "0.0.0"
+edition = "2024"
+
+# a Tool depends on another Tool and on web-sys, and takes dioxus-motion as a dev-dependency.
+[dependencies]
+tool-gamma = { path = "../beta" }
+web-sys = "0.3"
+
+[dev-dependencies]
+dioxus-motion = "0.3"

@@ -1,0 +1,9 @@
+[package]
+name = "worker-pdf"
+version = "0.0.0"
+edition = "2024"
+
+# workers are clean.
+[dependencies]
+logic-pdf = { path = "../../logic/pdf" }
+wasm-bindgen = "0.2"

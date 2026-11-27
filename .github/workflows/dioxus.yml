@@ -1,0 +1,157 @@
+# The `dioxus` check (ADR-0036 §2, docs/quality/gates.md → "Required checks").
+# It exists on `develop` only, and has no path filters: a required check that
+# is skipped leaves the PR stuck. Every cargo gate runs over the gated packages
+# by name (-p), never over the whole workspace, so React's wasm/ crates are
+# left as they are on `main`.
+name: Dioxus
+
+on:
+  pull_request:
+    branches: [develop]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: dioxus-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  dioxus:
+    name: dioxus
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      # ADR-0035 §1: a badly resolved conflict from `main` must not bring the
+      # nested workspace back, or cargo quietly runs two workspaces.
+      - name: No nested workspace under wasm/
+        run: |
+          for file in wasm/Cargo.toml wasm/Cargo.lock; do
+            if [[ -e "$file" ]]; then
+              echo "::error file=$file::$file is back; the workspace lives at the root (ADR-0035 §1)"
+              exit 1
+            fi
+          done
+
+      - name: Merge base
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: echo "MERGE_BASE=$(git merge-base "origin/$BASE_REF" HEAD^2)" >>"$GITHUB_ENV"
+
+      - name: Setup Rust (rust-toolchain.toml)
+        run: rustup toolchain install
+
+      - name: Cache Rust
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: dioxus-${{ runner.os }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
+          restore-keys: |
+            dioxus-${{ runner.os }}-
+
+      # Pinned to a commit SHA, so each tool is installed against a checksum
+      # (ADR-0031, condition 3).
+      - name: Install the gate tools
+        uses: taiki-e/install-action@073e1fd0bc889c9aee68dbaaa927cde1b5653a83 # v2.90.11
+        with:
+          tool: cargo-deny@0.22.1,cargo-shear@1.14.1,cargo-mutants@27.1.0
+
+      # The action has no manifest for jscpd or dx, so they come from
+      # crates.io through its pinned cargo-binstall (ADR-0036, amended).
+      - name: Install jscpd and dx
+        uses: taiki-e/install-action@073e1fd0bc889c9aee68dbaaa927cde1b5653a83 # v2.90.11
+        with:
+          tool: jscpd@5.4.3,dioxus-cli@0.7.10
+          fallback: cargo-binstall
+
+      - name: Gated packages
+        run: |
+          packages=$(crates/gates/scripts/gated-packages.sh)
+          echo "Gated packages: $packages"
+          echo "GATED=$(echo "$packages" | sed 's/^/-p /' | tr '\n' ' ')" >>"$GITHUB_ENV"
+
+      # 1. The path check, the gate-file mixing check and the size warning.
+      - name: Path check by PR kind
+        env:
+          GATES_PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          git diff --numstat --no-renames "$MERGE_BASE" HEAD^2 >"$RUNNER_TEMP/numstat"
+          GATES_NUMSTAT="$RUNNER_TEMP/numstat" cargo test -p gates --test pr -- --ignored --exact pr_paths --nocapture
+
+      # 2. Formatting: dx fmt where there is rsx!, then cargo fmt, then no diff.
+      # dx fmt goes file by file: run over a whole crate it would also rewrite
+      # the gates crate's must-fail fixtures.
+      - name: Formatting
+        run: |
+          root="$(pwd)/"
+          for package in $(crates/gates/scripts/gated-packages.sh); do
+            dir=$(cargo metadata --no-deps --offline --format-version 1 |
+              jq -r --arg name "$package" '.packages[] | select(.name == $name) | .manifest_path' | xargs dirname)
+            dir="${dir#"$root"}"
+            for file in $(grep -rls --include='*.rs' 'rsx!' "$dir" | grep -v '^crates/gates/fixtures/' || true); do
+              if ! output=$(dx fmt --file "$file" 2>&1) || grep -q 'ERROR' <<<"$output"; then
+                echo "$output"
+                echo "::error file=$file::dx fmt failed on $file"
+                exit 1
+              fi
+            done
+          done
+          cargo fmt $GATED
+          git diff --exit-code
+
+      # 3. Clippy, for the host and wasm32, with every warning denied.
+      - name: Clippy (host)
+        run: cargo clippy $GATED --all-targets -- -D warnings
+      - name: Clippy (wasm32)
+        run: cargo clippy $GATED --all-targets --target wasm32-unknown-unknown -- -D warnings
+
+      # 4. Tests, the gates crate's included: its tests run each custom
+      # check's must-fail fixture, and the real tree through every check.
+      - name: Tests
+        run: cargo test $GATED
+
+      # 5. The must-fail Clippy fixture: every denied lint and banned method fires.
+      - name: Clippy fixture fails
+        run: crates/gates/scripts/clippy-fixture.sh
+
+      # 6. Dependencies and copied code.
+      - name: cargo-deny
+        run: crates/gates/scripts/deny.sh
+      - name: cargo-shear
+        run: cargo shear --deny-warnings $GATED
+      - name: jscpd
+        run: jscpd --config .jscpd.json
+
+      # 7. Mutation testing on the changed lines.
+      - name: cargo-mutants --in-diff
+        run: crates/gates/scripts/mutants.sh "$MERGE_BASE" HEAD^2
+
+      # 8 and 9 need code that is not on `develop` yet. Each step fails once
+      # that code lands without its gate, rather than passing over nothing.
+      - name: TypeScript gates (bridges and scripts/dioxus)
+        run: |
+          for dir in crates/bridges/js scripts/dioxus; do
+            if [[ -e "$dir" ]]; then
+              echo "::error::$dir exists: build its oxlint, oxfmt and npm licence gates (#57)"
+              exit 1
+            fi
+          done
+          echo "No crates/bridges/js or scripts/dioxus yet."
+      - name: Dioxus build, byte ceilings and the CSP run
+        run: |
+          if [[ -e crates/app ]]; then
+            echo "::error::crates/app exists: build the Dioxus build, byte and CSP gates (#57)"
+            exit 1
+          fi
+          echo "No crates/app yet."

@@ -1,0 +1,83 @@
+# One workspace for React's wasm-pack crates and the Dioxus crates (ADR-0035).
+# This file is a gate file (ADR-0036): change it only in a `gates` PR.
+
+[workspace]
+resolver = "3"
+# Listed by layer (ADR-0035 §1). The app, bridges, persist, platform, registry
+# and ui crates join this list in the PR that adds each one.
+members = [
+  "crates/gates",
+  "crates/gates/fixtures/clippy",
+  "crates/logic/*",
+  "crates/tools/*",
+  "crates/workers/*",
+  "wasm/crates/*",
+]
+# Must-fail fixtures are workspaces of their own, except the Clippy fixture,
+# which is a member so that it inherits the workspace lints.
+exclude = ["crates/gates/fixtures/workspaces"]
+
+[workspace.package]
+edition = "2024"
+license = "MIT"
+
+[workspace.dependencies]
+# The Dioxus family is pinned exactly (ADR-0031); everything else is caret,
+# with Cargo.lock as the pin.
+cargo_metadata = "0.23"
+dioxus = { version = "=0.7.10" }
+dioxus-rsx = { version = "=0.7.10" }
+proc-macro2 = { version = "1", features = ["span-locations"] }
+syn = { version = "2", features = ["full", "visit"] }
+toml = "1"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
+unreachable_pub = "deny"
+
+[workspace.lints.clippy]
+all = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+# Pedantic exemptions. Add one only in a `gates` PR, with its reason.
+must_use_candidate = "allow"     # noise: flags almost every pure function
+missing_errors_doc = "allow"     # forces docs that restate the signature
+missing_panics_doc = "allow"     # the same; panics are denied anyway
+similar_names = "allow"          # noise in parsers and colour maths
+# Panics: `wasm-release` aborts on a panic, and one panic kills the page.
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+todo = "deny"
+unimplemented = "deny"
+unwrap_in_result = "deny"
+panic_in_result_fn = "deny"
+string_slice = "deny"            # slicing a `str` panics inside an emoji
+# Leftovers and swallowed results
+dbg_macro = "deny"
+print_stdout = "deny"
+print_stderr = "deny"
+let_underscore_must_use = "deny"
+# Exemptions are `#[expect]` with a reason
+allow_attributes = "deny"
+allow_attributes_without_reason = "deny"
+# One file per module, no `mod.rs`
+mod_module_files = "deny"
+
+[workspace.lints.cargo]
+unused_dependencies = "deny"
+
+# wasm-pack (React) builds with this profile; keep it as on `main`.
+[profile.release]
+lto = "fat"
+opt-level = "z"
+strip = "debuginfo"
+codegen-units = 1
+
+# dx (Dioxus) builds with this one, written out in full (ADR-0035 §1).
+[profile.wasm-release]
+inherits = "release"
+lto = "fat"
+codegen-units = 16
+debug = true
+panic = "abort"
+opt-level = "z"

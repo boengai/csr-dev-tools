@@ -1,0 +1,10 @@
+[package]
+name = "app"
+version = "0.0.0"
+edition = "2024"
+
+# app depends on a worker and on a worker-only logic crate.
+[dependencies]
+worker-pdf = { path = "../workers/pdf" }
+logic-pdf = { path = "../logic/pdf" }
+dioxus = { version = "=0.7.10", features = ["web"] }

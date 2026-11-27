@@ -1,0 +1,10 @@
+{
+  "path": ["crates"],
+  "format": ["rust"],
+  "ignore": ["**/tests/**", "crates/gates/fixtures/**", "crates/registry/src/generated.rs", "**/target/**"],
+  "minTokens": 70,
+  "mode": "mild",
+  "exitCode": 1,
+  "failOnEmpty": true,
+  "reporters": ["console"]
+}

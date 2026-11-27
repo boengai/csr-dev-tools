@@ -40,7 +40,7 @@ docs/superpowers
 
 # WASM build output
 wasm/pkg/
-wasm/target/
+/target/
 
 # codegraph local index (not committed; rebuilt per-machine)
 .codegraph/

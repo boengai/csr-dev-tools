@@ -1,0 +1,55 @@
+# One line per lint or banned path that must appear in Clippy's output on
+# src/lib.rs. Lines starting with `#` are comments.
+unsafe_code
+unreachable_pub
+clippy::too_many_arguments
+clippy::doc_markdown
+clippy::unwrap_used
+clippy::expect_used
+clippy::panic
+clippy::todo
+clippy::unimplemented
+clippy::unwrap_in_result
+clippy::panic_in_result_fn
+clippy::string_slice
+clippy::dbg_macro
+clippy::print_stdout
+clippy::print_stderr
+clippy::let_underscore_must_use
+clippy::allow_attributes
+clippy::allow_attributes_without_reason
+clippy::mod_module_files
+unused dependency `proc-macro2`
+disallowed method `dioxus_document::eval`
+disallowed method `dioxus_document::Document::eval`
+disallowed method `dioxus_web::WebEventExt::as_web_event`
+disallowed method `dioxus_web::WebEventExt::try_as_web_event`
+disallowed method `dioxus_web::WebFileExt::get_web_file`
+disallowed method `dioxus_html::PlatformEventData::downcast_mut`
+disallowed method `dioxus_html::PlatformEventData::downcast`
+disallowed method `dioxus_html::AnimationData::downcast`
+disallowed method `dioxus_html::CancelData::downcast`
+disallowed method `dioxus_html::ClipboardData::downcast`
+disallowed method `dioxus_html::CompositionData::downcast`
+disallowed method `dioxus_html::DragData::downcast`
+disallowed method `dioxus_html::FocusData::downcast`
+disallowed method `dioxus_html::FormData::downcast`
+disallowed method `dioxus_html::ImageData::downcast`
+disallowed method `dioxus_html::KeyboardData::downcast`
+disallowed method `dioxus_html::MediaData::downcast`
+disallowed method `dioxus_html::MountedData::downcast`
+disallowed method `dioxus_html::MouseData::downcast`
+disallowed method `dioxus_html::PointerData::downcast`
+disallowed method `dioxus_html::ResizeData::downcast`
+disallowed method `dioxus_html::ScrollData::downcast`
+disallowed method `dioxus_html::SelectionData::downcast`
+disallowed method `dioxus_html::ToggleData::downcast`
+disallowed method `dioxus_html::TouchData::downcast`
+disallowed method `dioxus_html::TouchPoint::downcast`
+disallowed method `dioxus_html::TransitionData::downcast`
+disallowed method `dioxus_html::VisibleData::downcast`
+disallowed method `dioxus_html::WheelData::downcast`
+disallowed method `std::time::Instant::now`
+disallowed method `std::time::SystemTime::now`
+disallowed method `std::thread::spawn`
+disallowed method `std::thread::sleep`

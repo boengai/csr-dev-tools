@@ -1,0 +1,8 @@
+[package]
+name = "tool-gamma"
+version = "0.0.0"
+edition = "2024"
+
+# the package name does not match the directory.
+[dependencies]
+ui = { path = "../../ui" }

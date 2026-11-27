@@ -1,0 +1,15 @@
+# Must-fail fixture for the inheritance check: `logic-bad` breaks each rule
+# once, and `logic-good` breaks none.
+[workspace]
+resolver = "3"
+members = ["crates/logic/*"]
+
+[workspace.package]
+edition = "2024"
+license = "MIT"
+
+[workspace.dependencies]
+serde = "1"
+
+[workspace.lints.rust]
+unsafe_code = "forbid"
