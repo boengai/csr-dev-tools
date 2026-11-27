@@ -1674,6 +1674,37 @@ The hand-written list in the registry crate of every `localStorage` and
 today. A shell's `storage_key` takes a value from it, so an unlisted key
 does not compile (ADR-0035, ADR-0032).
 
+## Gate
+
+A mechanical check that a pull request into `develop` must pass before it
+can merge, to keep out slop: code that passes the compiler but nobody chose
+deliberately (ADR-0036).
+_Avoid_: guard (except for the layout guard), lint (when the whole check is
+meant)
+
+## Gate file
+
+A file that decides what a [[Gate]] accepts, such as lint levels, a byte
+ceiling, an allowlist, a baseline or a workflow (ADR-0036).
+
+## PR kind
+
+What a pull request into `develop` is, told by its title prefix: `port`,
+`split`, `shell`, `foundation`, `gates`, `docs` or `sync`. Each kind has
+its own set of files it may change (ADR-0036).
+
+## Port PR
+
+The pull request that ports exactly one Tool to the Dioxus build: its
+[[Tool crate]], the logic it adds, and that Tool's own rows, but nothing
+another ported Tool already uses (ADR-0036).
+_Avoid_: migration PR
+
+## Definition of done
+
+The written list of what must hold on `develop` before a Tool counts as
+ported, kept in `docs/quality/gates.md` (ADR-0036).
+
 ## Toast channel
 
 The ephemeral notification channel for events that happen *to* a user

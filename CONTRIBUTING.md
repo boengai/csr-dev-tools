@@ -35,8 +35,8 @@ Open [http://localhost:5173](http://localhost:5173) in your browser.
 | `develop` | The Dioxus migration ([issue 5](https://github.com/boengai/csr-dev-tools/issues/5)) | Migration work. It merges into `main` once, at cutover. Go/no-go said go (ADR-0031). The React app stays buildable here until the map decides when to retire it. |
 | `spike/dioxus` | The disposable spike, cut from `develop` | Never merges. Go/no-go kept none of its code; it stays as a reference (ADR-0031). |
 
-- Both `main` and `develop` change through pull requests, and the `ci` check must pass. `main` also requires `tool-freeze`.
-- Squash-merge your own work.
+- Both `main` and `develop` change through pull requests, and the `ci` check must pass. `main` also requires `tool-freeze`. Once the anti-slop gates are built, `develop` also requires `dioxus` and `pr-body` (`docs/quality/gates.md`, ADR-0036).
+- Squash-merge your own work into `main`. Only the maintainer merges into `develop`, and agents never do (ADR-0036).
 - **A fix reaches `develop` after it lands on `main`**: open a `main` → `develop` pull request and use a **merge commit**, not a squash or a cherry-pick. If the tool is already ported, port the fix in the same pull request. For that, or to resolve conflicts, branch from `develop`, merge `main` into it, and open the pull request from there.
 - At cutover, remove `tool-freeze` from the `main` ruleset and delete `tool-freeze.yml` and its script.
 

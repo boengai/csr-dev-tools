@@ -109,7 +109,7 @@ This is the UX part of a port PR. It covers only what automation can't judge.
 - **Golden path and one error case,** driven by hand on the preview.
 - **Feel:** motion, focus rings, hover and pressed states, and the debounce.
 
-What else a port PR must contain, the PR template and the merge gates are decided in [What are the anti-slop gates?](https://github.com/boengai/csr-dev-tools/issues/25). The template copies this checklist.
+What else a port PR must contain, the PR templates and the merge gates are decided in [What are the anti-slop gates?](https://github.com/boengai/csr-dev-tools/issues/25) and listed in [gates.md](../quality/gates.md) (ADR-0036). The `port` and `shell` templates in `docs/quality/pr/` copy this checklist.
 
 ## Improvements
 

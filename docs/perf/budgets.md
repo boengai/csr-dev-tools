@@ -91,9 +91,9 @@ Timings on a CI runner are noisy and cannot be compared with the baseline. `ligh
   - the page grew by more than 2% over the base branch, or
   - the page is over its ceiling in a committed per-page ceiling file.
 
-  The 2% rule catches a sudden jump, and the ceiling file stops slow creep. To raise a ceiling, edit the file in the same pull request so review sees the change.
+  The 2% rule catches a sudden jump, and the ceiling file stops slow creep. The ceiling file is a gate file ([ADR-0036](../adr/0036-mechanical-gates-keep-slop-out-of-develop.md)): to raise a ceiling, open a `gates` pull request of its own, so review sees the change. A `port` or `shell` pull request only adds rows for its own Tool.
 
-  Every page gets its ceiling from the pull request that first ports it to `develop`. That includes the three spike pages, because no spike code is kept (ADR-0031). Both rules apply from the next pull request on. Pages not yet ported are not checked.
+  Every page gets its ceiling from the pull request that first ports it to `develop`. The wasm modules, Engine bridge files and worker files get rows under the same rules (`docs/quality/gates.md` → "Byte ceilings"). That includes the three spike pages, because no spike code is kept (ADR-0031). Both rules apply from the next pull request on. Pages not yet ported are not checked.
 - **When.** It is built with the first Dioxus code on `develop` after go, not before. The harness cannot run it today. It needs three things:
   - a bytes-only entry point, because `measure.ts` runs Lighthouse and the usable step every round;
   - a page list covering every tool, because `PERF_PAGES` has seven;
