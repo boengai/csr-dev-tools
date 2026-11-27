@@ -438,6 +438,47 @@ rules are in `docs/ux/parity.md`.
   already has. A Dioxus build may not add one.
 - **`ux-improvement`:** any intended change away from `main`, filed as its
   own issue and never part of a port PR.
+- **Foundation difference:** one of the five changes from `main` listed in
+  ADR-0034 that come with the [[UI primitive]]s. It is allowed in port PRs
+  and is not a `ux-improvement`. The list is closed.
+
+## UI primitive
+
+An interactive common component in the Dioxus build whose keyboard, focus
+and announcement behaviour we own (ADR-0034). There are ten: dialog,
+select, dropdown menu, tabs, toast, checkbox, switch, radio group, slider,
+and the command palette's combobox. Each is written from scratch and built
+on the browser's own element where one has the right role and keys.
+
+- **Behaviour list:** a primitive's written keys, focus moves and
+  announcements, made before it is built. The bar is Radix as it behaves on
+  `main`, never below the WAI-ARIA pattern. Deliberate differences are
+  written in it.
+- A primitive is done when its keyboard and focus journey (`parity.md`)
+  passes.
+
+_Avoid_: "primitive" for a `dioxus-primitives` or Radix part, which the
+Dioxus build does not use.
+
+## Modal frame
+
+The one piece under Dialog, the Sidebar and the CommandPalette in the Dioxus
+build (ADR-0034). It mounts a `<dialog role="dialog">`, calls
+`showModal()`, locks scroll and remembers focus. On close it plays the exit
+through a [[Delayed unmount]], then calls `close()`, unmounts the children,
+returns focus and fires `onAfterClose`. A closed modal frame is not in the
+DOM.
+
+- **Toast host:** the slot inside the topmost open modal frame where the
+  toast list draws. Outside a modal, the toast list draws on the page.
+  Without the host, a toast would be inert under the modal.
+
+## Delayed unmount
+
+The only motion work Rust does in the Dioxus build (ADR-0034). It sets an
+"exiting" attribute, waits for `transitionend` or a timeout, then removes
+the node. Everything else that moves is CSS: `transition-*`, `@keyframes`,
+and `starting:` for entries. Rust never writes a style on every frame.
 
 ## Tool dialog frame
 
