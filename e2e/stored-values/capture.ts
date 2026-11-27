@@ -269,6 +269,8 @@ await pool(
       await driver.touch(page)
       await flush(page)
       const storage = await readStorage(page)
+      for (const k of offList(storage))
+        problems.push(`${driver.tool}: touching it wrote ${k}, which the key list does not let it write`)
       for (const key of driver.keys) {
         const raw = storage[key]
         if (raw === undefined) problems.push(`${driver.tool}: touching it did not write ${key}`)
@@ -378,7 +380,11 @@ await pool(
         if (!driver.touch) throw new Error(`${driver.tool}: no touch`)
         await driver.touch(page)
         await flush(page)
-        reactText = (await readStorage(page))[seed.key] ?? 'null'
+        const touched = await readStorage(page)
+        for (const k of offList(touched).filter((k) => !(k in seed.stored))) {
+          problems.push(`${seed.id}: touching it wrote ${k}, which the key list does not let it write`)
+        }
+        reactText = touched[seed.key] ?? 'null'
         if (shownOnOpen !== null && JSON.parse(reactText) !== shownOnOpen) {
           problems.push(`${seed.id}: opens showing ${JSON.stringify(shownOnOpen)}, but holds ${reactText}`)
         }

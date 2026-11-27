@@ -49,10 +49,10 @@ const keysInSource = (): Map<string, string> => {
     if (file.includes(`${join('src', 'test')}`)) continue
     const text = readFileSync(file, 'utf8')
     for (const [, key] of text.matchAll(/['"`](csr-dev-tools-[a-z0-9-]*[a-z0-9])['"`]/g)) add(key as string, file)
-    // A literal key handed to the shared persistence helpers, prefixed or not. A template
+    // A literal key handed to localStorage or the shared persistence helpers, prefixed or not. A template
     // literal (`csr-dev-tools-${…}`) is a pattern, read from its parts below.
     const shared =
-      /(?:\b(?:readJsonStorage|useInputLocalStorage|writeJsonStorage)(?:<[^>]*>)?\(|\bstorageKey(?:=\{?|:)\s*)\s*['"`]([^'"`]+)['"`]/g
+      /(?:\b(?:readJsonStorage|useInputLocalStorage|writeJsonStorage)(?:<[^>]*>)?\(|\blocalStorage\.(?:getItem|removeItem|setItem)\(|\bstorageKey(?:=\{?|:)\s*)\s*['"`]([^'"`]+)['"`]/g
     for (const [, key] of text.matchAll(shared)) if (!(key as string).includes('${')) add(key as string, file)
     // A Codec derives its keys from `modeStorageKey`, `sourceKeyPrefix` and its modes.
     const modeKey = /modeStorageKey="([a-z0-9-]+)"/.exec(text)?.[1]
