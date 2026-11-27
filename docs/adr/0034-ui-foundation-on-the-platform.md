@@ -61,6 +61,27 @@ Tool in the Dioxus build is made from. It was decided in conversation on
   shown after the dialog. A `popover` inside the dialog works normally.
   This was checked in Playwright's Chromium and WebKit; Firefox did not
   launch and was not checked.
+- **Inline styles and the CSP.** ADR-0033 hands this ticket two things:
+  the Dioxus `style:` rule, and the CSS playgrounds' `'unsafe-inline'`.
+  - **How Dioxus sets styles** (`dioxus-interpreter-js` 0.7.10,
+    `set_attribute.ts`): a `style: "…"` string goes through
+    `setAttribute('style')`; a style property such as `width: "…"` goes
+    through `style.setProperty`.
+  - **A second probe,** with `style-src 'self'` and no `'unsafe-inline'`,
+    in Chromium and WebKit:
+    - blocked: `setAttribute('style')`, a `<style>` element, and a `style`
+      attribute or `<style>` inside markup written with `innerHTML`;
+    - allowed: `style.setProperty`, `cssText` and a constructed
+      stylesheet.
+  - **What needs `'unsafe-inline'` on `main`:**
+    - CssAnimationBuilder's `<style>` element;
+    - the markup pane, where mermaid's SVG carries its own `<style>`
+      and SVG Viewer shows user SVG, written with `innerHTML` after
+      DOMPurify;
+    - possibly the Typst SVG preview, which was not checked.
+
+    The other CSS playgrounds set style properties, so they don't need
+    it.
 
 ## Decision
 
@@ -343,6 +364,20 @@ are already CSS and carry over unchanged.
   - DOMPurify in TransformerOutputPane;
   - jszip in the ZIP builders.
 
+### 11. Inline styles and the CSP
+
+- **`style-src` keeps `'unsafe-inline'`** in the Dioxus build, as on
+  `main`.
+- **Our own code never needs it.** Styles are set only through style
+  properties (`width: "…"` in `rsx!`, which calls `style.setProperty`).
+  They are never set through a `style: "…"` string.
+- **CssAnimationBuilder's generated keyframes move to a constructed
+  stylesheet** (`CSSStyleSheet` with `replaceSync`, added through
+  `adoptedStyleSheets`), not a `<style>` element.
+- **Only the panes that show user content still need `'unsafe-inline'`:**
+  the markup pane, and the Typst preview if its SVG carries a `<style>`.
+  Dropping it later is one decision about those panes.
+
 ## Considered options
 
 - **Fork `dioxus-primitives` and patch it.** We would own the code
@@ -375,6 +410,9 @@ are already CSS and carry over unchanged.
 - **`tw_merge` or `tailwind_fuse`.** Both read `text-body-*` as a colour
   unless given a custom collision table, and an override method in a
   public API would reopen the no-class rule.
+- **Drop `'unsafe-inline'` from `style-src` now.** Mermaid diagrams and
+  SVG Viewer content would lose their styles, unless those panes moved
+  into a sandboxed iframe. That would break parity and the DOM contract.
 - **Strict parity for the foundation differences.** That would mean
   rebuilding Radix's Escape order and leaving the menu state visual only,
   then filing both for after cutover. Items 4 and 5 can't sensibly be
@@ -403,6 +441,8 @@ are already CSS and carry over unchanged.
   - no `class`, `style` or `extends = GlobalAttributes` on a common
     component;
   - no style written every frame;
+  - no `style: "…"` string attribute, and no `<style>` element, in our
+    own code (section 11);
   - no `dioxus-primitives` or `dioxus-motion` dependency.
 - **Where the primitives, the easing tokens and the delayed-unmount helper
   live belongs to
@@ -415,7 +455,8 @@ are already CSS and carry over unchanged.
   - the browser's `:modal` size limits against the full-screen dialog and
     the sheet;
   - that moving the toast list into the toast host loses no
-    announcement.
+    announcement;
+  - whether the Typst SVG preview's markup carries a `<style>`.
 
 ## Revisit when
 
