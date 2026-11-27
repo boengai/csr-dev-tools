@@ -1,7 +1,18 @@
 import { expect, type Page, test } from '@playwright/test'
 
 import { toolSurface } from './helpers/selectors'
-import { EDIT, readGolden, readKeyList, readStorage, seedStorage, textOf, typeAtEnd } from './stored-values/contract.ts'
+import {
+  EDIT,
+  readGolden,
+  readKeyList,
+  readStorage,
+  readStoredJson,
+  recordedWrites,
+  recordWrites,
+  seedStorage,
+  textOf,
+  typeAtEnd,
+} from './stored-values/contract.ts'
 import { DRIVERS, expectStored } from './stored-values/drivers.ts'
 
 /**
@@ -23,8 +34,13 @@ const currentShape = (key: string) => {
 }
 
 /** A key the site writes must be on the key list. */
+const writtenKeys = async (page: Page): Promise<Array<string>> => [
+  ...new Set([...Object.keys(await readStorage(page)), ...(await recordedWrites(page))]),
+]
+
+/** A key the site writes must be on the key list, even one it deletes again (see `recordWrites`). */
 const expectOnlyListedKeys = async (page: Page): Promise<void> => {
-  const written = Object.keys(await readStorage(page))
+  const written = await writtenKeys(page)
   expect(written.filter((key) => !listed.has(key))).toEqual([])
 }
 
@@ -33,6 +49,7 @@ test.describe('Saved inputs', () => {
     test(`${driver.tool}: restores what React saved, and saves an edit in the same shape`, async ({ page }) => {
       const entries = driver.keys.map(currentShape)
       const restored = Object.fromEntries(entries.map((e) => [e.key, e.expected]))
+      await recordWrites(page)
       await seedStorage(page, Object.assign({}, ...entries.map((e) => e.stored)))
 
       await page.goto(driver.route)
@@ -85,6 +102,15 @@ test.describe('Saved inputs', () => {
     await expect(source).toBeVisible()
     expect(lines(exported).length).toBeGreaterThan(1)
     await expect.poll(async () => lines(await textOf(source))).toEqual(lines(exported))
+    // It is saved as the renderer's draft at once, before any edit.
+    await expect
+      .poll(async () => {
+        const draft = (await readStoredJson(renderer, 'csr-dev-tools-mermaid-renderer')) as
+          | { source?: string }
+          | undefined
+        return lines(draft?.source ?? '')
+      })
+      .toEqual(lines(exported))
     await expect
       .poll(() => renderer.evaluate(() => localStorage.getItem('csr-dev-tools-handoff-mermaid-renderer')))
       .toBeNull()
@@ -98,16 +124,44 @@ test.describe('Saved inputs', () => {
       'csr-dev-tools-mermaid-renderer': JSON.stringify({ source: 'flowchart LR\n  C --> D' }),
     })
 
+    await recordWrites(page)
     await page.goto('/tools/mermaid-renderer')
     const source = page.getByRole('textbox', { exact: true, name: 'Mermaid Syntax' })
     await expect(source).toContainText('erDiagram')
     await expect
       .poll(() => page.evaluate(() => localStorage.getItem('csr-dev-tools-handoff-mermaid-renderer')))
       .toBeNull()
+    // The handed-over diagram is saved as the draft at once, so a reload keeps it.
+    await expectStored(page, { 'csr-dev-tools-mermaid-renderer': { source: handoff } })
+    await page.reload()
+    await expect(source).toContainText('erDiagram')
 
     await typeAtEnd(page, source, EDIT)
     await expectStored(page, { 'csr-dev-tools-mermaid-renderer': { source: handoff + EDIT } })
     await expectOnlyListedKeys(page)
+  })
+
+  test('jsonpath-evaluator: when the migrated write fails, the old draft is put back', async ({ page }) => {
+    const driver = DRIVERS.find((d) => d.tool === 'jsonpath-evaluator')
+    const legacy = golden.entries.find((e) => e.id === 'jsonpath-evaluator/legacy-bag')
+    if (!driver || !legacy) throw new Error('needs the jsonpath-evaluator driver and its legacy-bag golden entry')
+    const legacyKey = 'csr-dev-tools-jsonpath-evaluator'
+    await seedStorage(page, legacy.stored)
+    // Storage refuses the new key, as a full quota would.
+    await page.addInitScript(() => {
+      const setItem = Storage.prototype.setItem
+      Storage.prototype.setItem = function (key: string, value: string) {
+        if (this === localStorage && key === 'csr-dev-tools-jsonpath-evaluator-v2') {
+          throw new DOMException('The quota has been exceeded.', 'QuotaExceededError')
+        }
+        setItem.call(this, key, value)
+      }
+    })
+
+    await page.goto(driver.route)
+    await driver.ready(page)
+    await expect.poll(() => page.evaluate((k) => localStorage.getItem(k), legacyKey)).toBe(legacy.stored[legacyKey])
+    expect(await page.evaluate(() => localStorage.getItem('csr-dev-tools-jsonpath-evaluator-v2'))).toBeNull()
   })
 
   test("base64-codec: a saved mode it does not know opens the first mode, with that mode's saved source", async ({
@@ -166,6 +220,7 @@ test.describe('Saved inputs', () => {
 
   for (const { keys: allowed = [], tool } of neverSaved) {
     test(`${tool}: saves no input`, async ({ page }) => {
+      await recordWrites(page)
       await page.goto(`/tools/${tool}`)
       const surface = toolSurface(page)
       await expect(surface).toBeVisible()
@@ -180,7 +235,8 @@ test.describe('Saved inputs', () => {
       // Leaving the page flushes any pending save.
       await page.goto('/')
 
-      const written = Object.keys(await readStorage(page))
+      // Includes any write the Tool deleted again before leaving.
+      const written = await writtenKeys(page)
       expect(written.filter((key) => !allowed.includes(key))).toEqual([])
     })
   }

@@ -109,6 +109,30 @@ export const seedStorage = async (context: BrowserContext | Page, stored: Storag
   }, stored)
 }
 
+const WRITES_KEY = 'stored-value-contract-writes'
+
+/**
+ * Records the key of every `localStorage` write for the rest of the test,
+ * including writes a Tool deletes again before the test reads storage. The
+ * log lives in `sessionStorage`, so it survives navigation within the tab.
+ */
+export const recordWrites = async (page: Page): Promise<void> => {
+  await page.addInitScript((logKey: string) => {
+    const setItem = Storage.prototype.setItem
+    Storage.prototype.setItem = function (key: string, value: string) {
+      if (this === localStorage) {
+        const log = JSON.parse(sessionStorage.getItem(logKey) ?? '[]') as Array<string>
+        setItem.call(sessionStorage, logKey, JSON.stringify([...log, key]))
+      }
+      setItem.call(this, key, value)
+    }
+  }, WRITES_KEY)
+}
+
+/** The keys `recordWrites` has seen written, in order. */
+export const recordedWrites = (page: Page): Promise<Array<string>> =>
+  page.evaluate((logKey) => JSON.parse(sessionStorage.getItem(logKey) ?? '[]') as Array<string>, WRITES_KEY)
+
 /** Every `localStorage` entry, as raw text. */
 export const readStorage = (page: Page): Promise<Record<string, string>> =>
   page.evaluate(() => Object.fromEntries(Object.entries(localStorage)))
