@@ -55,7 +55,9 @@ owns that priority. It was decided in conversation on 2026-11-27.
     `#[allow]`s and 46 unsafe items, and none of them fired.
   - A member without `[lints] workspace = true` gets none of the workspace
     lints. Cargo warns about a missing `[lints]` table, but `cargo metadata`
-    does not say whether a member inherits.
+    does not say whether a member inherits. The warning is raised for every
+    member, even one a command does not select, so `build.warnings =
+    "deny"` fails while any `wasm/` crate lacks the table.
   - Stable rustfmt cannot group imports (`group_imports` and
     `imports_granularity` are nightly only), and it does not format inside
     `rsx!`. `dx fmt --check` rewrites the files while it fails, and a
@@ -70,6 +72,8 @@ owns that priority. It was decided in conversation on 2026-11-27.
     own `unused_dependencies` lint misses.
   - cargo-mutants 27.1.0 runs on stable, and `--in-diff` mutates only the
     lines a diff touches.
+  - `Instant::now`, `SystemTime::now`, `thread::spawn` and `thread::sleep`
+    trap when called in a `wasm32-unknown-unknown` module.
   - The existing `wasm/crates` hold 29 non-test `unwrap` and `expect`
     calls, and 1,862 pedantic warnings, 1,336 of them
     `unreadable_literal`. A text search would count 28 more in `parsers`,
@@ -80,13 +84,17 @@ owns that priority. It was decided in conversation on 2026-11-27.
 ### 1. Scope
 
 - **Everything under `crates/`** is held to the gates from its first
-  line.
+  line. Its members, and the thin wrappers of split crates, are the gated
+  packages. Each cargo-based gate (Clippy, rustfmt, cargo-shear, the
+  manifest checks) runs over them by name, never over the whole
+  workspace.
 - **The TypeScript under `crates/bridges/js` and `scripts/dioxus`** gets
   the repository's oxlint and oxfmt checks.
 - **`wasm/crates/*`** is not held to them while it stays as it is on
   `main`, so merges from `main` stay clean. When a crate is split
   (ADR-0035 §5), the logic that moves into `logic-<name>` and the thin
-  wrapper left behind must pass every gate in that PR.
+  wrapper left behind must pass every gate in that PR. The wrapper is a
+  gated package from then on.
 
 ### 2. Where the gates run
 
@@ -142,11 +150,14 @@ owns that priority. It was decided in conversation on 2026-11-27.
 
 ### 5. Lints
 
-- **Lint levels live in the root `[workspace.lints]`,** and every member
-  sets `lints.workspace = true`. Cargo's metadata does not show
+- **Lint levels live in the root `[workspace.lints]`,** and every gated
+  member sets `lints.workspace = true`. Cargo's metadata does not show
   inheritance, so the `gates` crate reads each member's manifest.
-- **CI denies every warning** with `build.warnings = "deny"`. That also
-  fails a member that has no `[lints]` table.
+- **CI denies every warning** in the gated packages, with Clippy's
+  `-D warnings`. `build.warnings = "deny"` is not used: the untouched
+  `wasm/` crates have no `[lints]` table, and cargo's warning about that
+  would fail every run. The `gates` crate's inheritance check covers a
+  gated member without the table.
 - **Clippy:** `all` and `pedantic` are denied, with a short list of named
   pedantic exemptions. `nursery` and `cargo` stay off. Restriction lints
   are picked one by one, aimed at the slop the map names:
@@ -255,13 +266,14 @@ A gate that silently matches nothing looks the same as one that passes.
 ### 11. Other gates
 
 - **Formatting:** stable rustfmt only. CI runs `dx fmt` in each crate that
-  has `rsx!`, then `cargo fmt --all`, then `git diff --exit-code`. An
+  has `rsx!`, then `cargo fmt` over the gated packages, then
+  `git diff --exit-code`. An
   `error` line from `dx fmt` fails the job too.
 - **Dependencies:** adding a crate, or running `cargo update`, is a
   `gates` PR. cargo-deny checks `app`'s tree for duplicate versions, and
   every tree for sources, licences and advisories. It does not check the
-  layers: ADR-0035's allowlist is the only layer gate. cargo-shear and cargo's `unused_dependencies`
-  lint find unused dependencies.
+  layers: ADR-0035's allowlist is the only layer gate. cargo-shear and
+  cargo's `unused_dependencies` lint find unused dependencies.
 - **Copied code:** jscpd runs over `crates/` and starts at zero clones,
   with no baseline. A clone is fixed by moving the code down into
   `ui/kits` or a logic crate.
@@ -290,6 +302,9 @@ A gate that silently matches nothing looks the same as one that passes.
 - **Holding `wasm/crates` to the gates now.** Every fix would diverge from
   `main` and conflict on sync. The code is held to the gates when it moves
   instead.
+- **`build.warnings = "deny"`.** It fails on the `wasm/` crates' missing
+  `[lints]` table even when they are not selected, so it would force
+  edits to crates that must stay as on `main`.
 - **`#[allow]` with a reason.** An `#[allow]` that no longer applies stays
   silent. An `#[expect]` fails once its lint stops firing.
 - **Nightly rustfmt for import grouping.** It would add a second pinned
@@ -344,8 +359,9 @@ A gate that silently matches nothing looks the same as one that passes.
   jscpd 5 is also a crates.io crate, so a pinned `cargo binstall` is the
   fallback.
 - jscpd's false-positive rate on real Tool glue is unknown.
-- Whether `build.warnings = "deny"` also turns warnings from dependencies
-  into errors was not checked.
+- That a `main` → `develop` sync PR runs `dioxus.yml`. GitHub's docs say
+  a `pull_request` run uses the PR's merge ref, which holds `develop`'s
+  workflows, but no sync PR has been tried.
 
 ## Revisit when
 

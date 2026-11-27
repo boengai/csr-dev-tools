@@ -6,9 +6,9 @@ Nothing here is built yet. The issue "Build the anti-slop gates" builds it, with
 
 ## Scope
 
-- **`crates/**`:** every gate below, from the first line.
+- **`crates/**`:** every gate below, from the first line. Its members, and the thin wrappers of split crates, are the *gated packages*. Every cargo-based gate runs over them by name (`-p`), never with `--workspace` or `--all`, so the untouched `wasm/` crates are left alone.
 - **`crates/bridges/js/**` and `scripts/dioxus/**`:** oxlint and oxfmt, as for `src/`.
-- **`wasm/crates/*`:** no gate while the crate is as it is on `main`. Its split PR holds the moved logic and the thin wrapper to every gate.
+- **`wasm/crates/*`:** no gate while the crate is as it is on `main`. Its split PR holds the moved logic and the thin wrapper to every gate, and the wrapper is a gated package from then on.
 
 ## Required checks
 
@@ -18,7 +18,7 @@ Pull requests into `develop` need three checks: `ci` (React, shared with `main`)
 
 1. The path check: the PR's kind against the files it changes ("PR kinds").
 2. Formatting.
-3. Clippy over the workspace with `--all-targets`, for both `wasm32-unknown-unknown` and the host, with `build.warnings = "deny"`.
+3. Clippy over the gated packages with `--all-targets`, for both `wasm32-unknown-unknown` and the host, with `-- -D warnings`. `build.warnings = "deny"` is not used: cargo warns about every `wasm/` crate's missing `[lints]` table, selected or not, and that setting would fail every run.
 4. `cargo test` over the explicit package list, the `gates` crate included.
 5. The must-fail fixtures.
 6. cargo-deny, cargo-shear and jscpd.
@@ -101,7 +101,7 @@ mod_module_files = "deny"
 unused_dependencies = "deny"
 ```
 
-Every member's manifest has `[lints] workspace = true`, and the `gates` crate checks it. A member cannot override a workspace level in its manifest. Cargo rejects that.
+Every gated member's manifest has `[lints] workspace = true`, and the `gates` crate checks it. A member cannot override a workspace level in its manifest. Cargo rejects that.
 
 ### Not denied, on purpose
 
@@ -150,7 +150,7 @@ The paths of `as_web_event`, `try_as_web_event`, `get_web_file` and the event-da
 - **`rsx!` is formatted by `dx fmt`,** because rustfmt skips it.
 - **CI runs, in order:**
   1. `dx fmt` in each crate that has `rsx!`;
-  2. `cargo fmt --all`;
+  2. `cargo fmt` over the gated packages (`-p …`);
   3. `git diff --exit-code`.
 
   An `error` line in `dx fmt`'s output fails the job too. `dx fmt --check` is not used: it rewrites the files while it fails, and it ignores per-file errors.
@@ -162,9 +162,9 @@ The paths of `as_web_event`, `try_as_web_event`, `get_web_file` and the event-da
 ### Manifests
 
 - ADR-0035's layer allowlist, over normal, dev, build, target-specific, optional and renamed dependencies, and every crate's own `[features]` for anything that turns on `dioxus/web`.
-- `dioxus-primitives` and `dioxus-motion` are denied by name for every member (ADR-0034). cargo-deny does not repeat the ban.
+- `dioxus-primitives` and `dioxus-motion` are denied by name for every gated member (ADR-0034). cargo-deny does not repeat the ban.
 - ADR-0035's four-set check: the `crates/tools/*` directories, `app`'s Tool dependencies, the Ported Tool list, and the registry keys of those Tools.
-- Every member sets `lints.workspace = true` and takes each third-party dependency with `workspace = true`.
+- Every gated member sets `lints.workspace = true` and `license.workspace = true`, and takes each third-party dependency with `workspace = true`.
 - Every `layoutOptOutAdr` in the registry names an ADR file that exists.
 
 ### Source rules
@@ -209,14 +209,15 @@ ADR-0034's "no style written from a timer or an animation-frame loop" has no mec
   - its brotli byte cost, from a scratch build.
 - **Versions.**
   - The Dioxus family is pinned exactly (`=0.7.10`); everything else uses caret versions, with `Cargo.lock` as the pin.
-  - Members use `workspace = true`.
+  - Gated members use `workspace = true`.
   - `cargo update` is a PR of its own.
 - **cargo-deny** (`deny.toml`):
   - **Duplicates:** `bans.multiple-versions = "deny"` over `app`'s tree, run with `--manifest-path crates/app/Cargo.toml`, because there they cost bytes. In each worker's tree they only warn.
+  - **Which trees:** `app`'s and each worker's, never the untouched `wasm/` crates.
   - **Sources:** crates.io only. `unknown-git` and `unknown-registry` are denied.
-  - **Licences:** allowed are MIT, Apache-2.0, Apache-2.0 WITH LLVM-exception, BSD-2-Clause, BSD-3-Clause, ISC, Zlib, 0BSD, CC0-1.0 and Unicode-3.0. Anything else, MPL-2.0 included, needs a per-crate exception with a reason. Every member sets `license.workspace = true`.
+  - **Licences:** allowed are MIT, Apache-2.0, Apache-2.0 WITH LLVM-exception, BSD-2-Clause, BSD-3-Clause, ISC, Zlib, 0BSD, CC0-1.0 and Unicode-3.0. Anything else, MPL-2.0 included, needs a per-crate exception with a reason.
   - **Advisories:** a vulnerability or an unsound crate fails. An unmaintained crate warns. An ignore entry is a `gates` PR with a reason.
-- **Unused dependencies:** cargo's `unused_dependencies` lint, plus `cargo shear --deny-warnings`, which also catches what the lint misses.
+- **Unused dependencies:** cargo's `unused_dependencies` lint, plus `cargo shear --deny-warnings` over the gated packages, which also catches what the lint misses.
 - **npm:** `crates/bridges/js` is held to the same licence list, checked over `pnpm licenses list --json --prod`.
 
 ## Copied code
