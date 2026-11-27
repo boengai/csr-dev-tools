@@ -102,9 +102,16 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
   // the [[Tool status slot]]. Prevents downloading bytes that don't match the
   // displayed source. See CONTEXT.md → "Sortable PDF shell" invariant 3.
   const hasError = error !== null
+  // Two sources: files the upload rejected, and files the pipeline could not
+  // put in the output (a PDF that needs a password, an image that won't
+  // decode). Without the second, such a file just goes missing from the
+  // download. A stale result's list is dropped along with its bytes. A file the
+  // upload rejected never reaches the pipeline, so the two lists never share a
+  // file; names are not deduplicated, since two files can share one.
+  const allSkipped = [...skipped, ...(hasError ? [] : result.skipped)]
   const skippedNotice =
-    skipped.length > 0
-      ? [`Skipped ${skipped.length} unsupported file${skipped.length === 1 ? '' : 's'}: ${skipped.join(', ')}`]
+    allSkipped.length > 0
+      ? [`Skipped ${allSkipped.length} unsupported file${allSkipped.length === 1 ? '' : 's'}: ${allSkipped.join(', ')}`]
       : undefined
 
   // Both download and preview are gated on non-empty bytes. renderControls is
