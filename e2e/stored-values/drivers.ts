@@ -770,7 +770,8 @@ export const DRIVERS: Array<Driver> = [
     // Types a password and text in both modes: it opens in Decrypt (the golden value), then switches.
     edit: async (page) => {
       const source = page.getByTestId('code-input-dialog-source').getByRole('textbox')
-      await textbox(page, 'Password').fill(AES_TYPED[0])
+      // By label: a password input has no textbox role in ARIA.
+      await page.getByLabel('Password', { exact: true }).fill(AES_TYPED[0])
       await typeAtEnd(page, source, AES_TYPED[1])
       await page.getByRole('button', { exact: true, name: 'Encrypt mode' }).click()
       await expect(page.getByRole('button', { exact: true, name: 'Encrypt mode' })).toHaveAttribute(

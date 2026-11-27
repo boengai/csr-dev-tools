@@ -7,6 +7,7 @@ import {
   readKeyList,
   readStorage,
   readStoredJson,
+  recordedWriteLog,
   recordedWrites,
   recordWrites,
   seedStorage,
@@ -25,7 +26,8 @@ import { DRIVERS, expectStored } from './stored-values/drivers.ts'
 
 const golden = readGolden()
 const { keys, neverSaved } = readKeyList()
-const listed = new Set(keys.map(({ key }) => key))
+/** Keys the site may write. A legacy key it only reads and deletes (`written: false`) is not one. */
+const listed = new Set(keys.filter(({ written }) => written !== false).map(({ key }) => key))
 
 const currentShape = (key: string) => {
   const entry = golden.entries.find((e) => e.key === key && e.shape === 'current')
@@ -87,6 +89,7 @@ test.describe('Saved inputs', () => {
     await page.getByTestId('export-mermaid-btn').click()
     await expect(page.getByTestId('mermaid-panel-output')).toContainText('erDiagram')
     const exported = await textOf(page.getByTestId('mermaid-panel-output'))
+    const handoffKey = 'csr-dev-tools-handoff-mermaid-renderer'
 
     const [renderer] = await Promise.all([
       context.waitForEvent('page'),
@@ -112,9 +115,12 @@ test.describe('Saved inputs', () => {
         return lines(draft?.source ?? '')
       })
       .toEqual(lines(exported))
-    await expect
-      .poll(() => renderer.evaluate(() => localStorage.getItem('csr-dev-tools-handoff-mermaid-renderer')))
-      .toBeNull()
+    await expect.poll(() => renderer.evaluate((k) => localStorage.getItem(k), handoffKey)).toBeNull()
+    // DB Diagram itself wrote the handoff, as the exported text: not the renderer's draft directly.
+    const handoffWrites = (await recordedWriteLog(page)).filter(({ key }) => key === handoffKey)
+    expect(handoffWrites.map(({ value }) => lines(value))).toEqual([lines(exported)])
+    const draftWrites = (await recordedWriteLog(page)).filter(({ key }) => key === 'csr-dev-tools-mermaid-renderer')
+    expect(draftWrites).toEqual([])
     await expectOnlyListedKeys(page)
     await expectOnlyListedKeys(renderer)
   })

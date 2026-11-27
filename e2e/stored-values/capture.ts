@@ -156,7 +156,9 @@ const wellFormed = (value: unknown): boolean =>
         ? Object.entries(value).every(([name, field]) => wellFormed(name) && wellFormed(field))
         : true
 
-const offList = (storage: StorageSnapshot): Array<string> => Object.keys(storage).filter((k) => !keyOf.has(k))
+/** Keys written that the site may not write: off the list, or a legacy key it only reads (`written: false`). */
+const offList = (storage: StorageSnapshot): Array<string> =>
+  Object.keys(storage).filter((k) => !keyOf.has(k) || keyOf.get(k)?.written === false)
 
 /** What React restores for `key`, as JSON text, with the tool already open on `page` where needed. */
 const restore = async (page: Page, key: StoredKey, raw: string | null, defaults: Record<string, unknown>) => {
@@ -289,7 +291,8 @@ await pool(
       await flush(page)
       return snapshot(page)
     })
-    for (const k of offList(written)) problems.push(`${driver.tool}: wrote ${k}, which is not on the key list`)
+    for (const k of offList(written))
+      problems.push(`${driver.tool}: wrote ${k}, which the key list does not let it write`)
     for (const k of driver.keys) {
       if (written[k] === undefined) problems.push(`${driver.tool}: writing it did not write ${k}`)
     }
