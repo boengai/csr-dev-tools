@@ -123,7 +123,7 @@ decided in conversation on 2026-11-27.
 
 | Crate | Path | Package | May depend on |
 |---|---|---|---|
-| App | `crates/app` | `app` | every crate under `crates/` except workers, directly; never `wasm/crates` |
+| App | `crates/app` | `app` | every crate under `crates/`, directly, except workers and the logic crates only a worker uses; never `wasm/crates` |
 | Tool | `crates/tools/<key>` | `tool-<key>` | `ui`, `platform`, `bridges`, `registry`, `logic-*`; never another Tool, never `app` |
 | UI | `crates/ui` | `ui` | `platform`, `bridges`, `registry`, `persist` |
 | Platform layer | `crates/platform` | `platform` | `web-sys`, `js-sys`, `wasm-bindgen` |
@@ -133,8 +133,10 @@ decided in conversation on 2026-11-27.
 | Logic | `crates/logic/<name>` | `logic-<name>` | pure third-party crates only |
 | Worker | `crates/workers/<name>` | `worker-<name>` | `logic-*`, `wasm-bindgen`; never a dependency of `app` |
 
-- **`app` depends directly on every crate under `crates/` except the
-  workers,** even the ones only a Tool uses. `dx serve` ignores edits to crates the app reaches only
+- **`app` depends directly on every crate under `crates/`,** even the ones
+  only a Tool uses, except the workers and the logic crates only a worker
+  uses (`logic-pdf`, `logic-bcrypt`). The allowlist test holds that
+  exception list. `dx serve` ignores edits to crates the app reaches only
   through another crate.
 - **"No browser crates" means direct dependencies.** A transitive
   `getrandom` → `js-sys` on wasm32 is allowed. Randomness that a logic
@@ -358,7 +360,7 @@ decided in conversation on 2026-11-27.
 | What | Where |
 |---|---|
 | dx configuration | `crates/app/Dioxus.toml`. No `tailwind.css` at the app crate root: dx would run its own Tailwind 4.1.5 and ignore its errors. |
-| Stylesheet | The Tailwind input lives in `crates/ui/style/`, because `asset!()` cannot reach outside its crate, and the generated CSS is exported as a `pub static` `Asset`. Which theme file the input imports until cutover is #22's (its draft names `src/index.css`). The scan is `@source "../../**/*.rs"`. Generated files that hold class names never sit under a gitignored path, because Tailwind skips them. |
+| Stylesheet | The Tailwind input lives in `crates/ui/style/`, because `asset!()` cannot reach outside its crate, and the generated CSS is exported as a `pub static` `Asset`. Which theme file the input imports until cutover is #22's. The scan is `@source "../../**/*.rs"`. Generated files that hold class names never sit under a gitignored path, because Tailwind skips them. |
 | Build, stamping and registry generator | TypeScript in `scripts/dioxus/` |
 | Engine bridges | `crates/bridges/js/` (section 8) |
 | End-to-end specs | The shared `e2e/` (`docs/ux/parity.md`). There is no `dioxus/e2e`. |
