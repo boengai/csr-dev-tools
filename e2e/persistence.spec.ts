@@ -204,19 +204,23 @@ test.describe('Saved inputs', () => {
     const legacy = golden.entries.find((e) => e.id === 'jsonpath-evaluator/legacy-bag')
     if (!driver || !legacy) throw new Error('needs the jsonpath-evaluator driver and its legacy-bag golden entry')
     const legacyKey = 'csr-dev-tools-jsonpath-evaluator'
+    const migratedKey = 'csr-dev-tools-jsonpath-evaluator-v2'
     await seedStorage(page, legacy.stored)
     // Storage refuses the new key, as a full quota would, and counts each refusal.
     const refusalsKey = 'jsonpath-v2-refusals'
-    await page.addInitScript((countKey: string) => {
-      const setItem = Storage.prototype.setItem
-      Storage.prototype.setItem = function (key: string, value: string) {
-        if (this === localStorage && key === 'csr-dev-tools-jsonpath-evaluator-v2') {
-          setItem.call(sessionStorage, countKey, String(Number(sessionStorage.getItem(countKey) ?? 0) + 1))
-          throw new DOMException('The quota has been exceeded.', 'QuotaExceededError')
+    await page.addInitScript(
+      ({ countKey, refusedKey }: { countKey: string; refusedKey: string }) => {
+        const setItem = Storage.prototype.setItem
+        Storage.prototype.setItem = function (key: string, value: string) {
+          if (this === localStorage && key === refusedKey) {
+            setItem.call(sessionStorage, countKey, String(Number(sessionStorage.getItem(countKey) ?? 0) + 1))
+            throw new DOMException('The quota has been exceeded.', 'QuotaExceededError')
+          }
+          setItem.call(this, key, value)
         }
-        setItem.call(this, key, value)
-      }
-    }, refusalsKey)
+      },
+      { countKey: refusalsKey, refusedKey: migratedKey },
+    )
 
     await page.goto(driver.route)
     await driver.ready(page)
@@ -225,7 +229,7 @@ test.describe('Saved inputs', () => {
       .poll(() => page.evaluate((k) => Number(sessionStorage.getItem(k) ?? 0), refusalsKey))
       .toBeGreaterThan(0)
     await expect.poll(() => page.evaluate((k) => localStorage.getItem(k), legacyKey)).toBe(legacy.stored[legacyKey])
-    expect(await page.evaluate(() => localStorage.getItem('csr-dev-tools-jsonpath-evaluator-v2'))).toBeNull()
+    expect(await page.evaluate((k) => localStorage.getItem(k), migratedKey)).toBeNull()
   })
 
   test(`${nameOf('base64-codec')}: a saved mode it does not know opens the first mode, with that mode's saved source`, async ({

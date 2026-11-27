@@ -94,6 +94,8 @@ export const CAPTURE_ENVIRONMENT = {
 export const EDIT = ' edited'
 
 const WRITES_KEY = 'stored-value-contract-writes'
+/** Set in `sessionStorage` once the seed is written, so a reload doesn't write it again. */
+const SEEDED_KEY = 'stored-value-contract-seeded'
 /** Set in `sessionStorage` while the seed is written, so `recordWrites` leaves those writes out. */
 const SEEDING_KEY = 'stored-value-contract-seeding'
 
@@ -104,9 +106,9 @@ const SEEDING_KEY = 'stored-value-contract-seeding'
  */
 export const seedStorage = async (context: BrowserContext | Page, stored: StorageSnapshot): Promise<void> => {
   await context.addInitScript(
-    ({ seed, seedingKey }: { seed: StorageSnapshot; seedingKey: string }) => {
-      if (sessionStorage.getItem('stored-value-contract-seeded') !== null) return
-      sessionStorage.setItem('stored-value-contract-seeded', '1')
+    ({ seed, seededKey, seedingKey }: { seed: StorageSnapshot; seededKey: string; seedingKey: string }) => {
+      if (sessionStorage.getItem(seededKey) !== null) return
+      sessionStorage.setItem(seededKey, '1')
       sessionStorage.setItem(seedingKey, '1')
       try {
         for (const [key, raw] of Object.entries(seed)) {
@@ -117,7 +119,7 @@ export const seedStorage = async (context: BrowserContext | Page, stored: Storag
         sessionStorage.removeItem(seedingKey)
       }
     },
-    { seed: stored, seedingKey: SEEDING_KEY },
+    { seed: stored, seededKey: SEEDED_KEY, seedingKey: SEEDING_KEY },
   )
 }
 
