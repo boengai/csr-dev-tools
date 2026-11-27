@@ -1,8 +1,8 @@
 # Trial: can hayro-write merge PDFs in place of pdf-lib?
 
 This is the trial for GitHub issue [#43](https://github.com/boengai/csr-dev-tools/issues/43), the second of the three trials in ADR-0033.
-- **Date and repo state:** 2026-11-27, on `develop` at `df964fef`. The branch is never merged.
-- **Same code on `main`:** `src/utils/combine-pdf.ts` and pdf-lib 1.17.1 are identical on `main` and `develop`.
+- **Date and repo state:** 2026-11-27. The runs and the app build used `main` at `db2915ef`, and this branch is cut from `develop` at `df964fef`. The branch is never merged.
+- **Same code on both:** `src/utils/combine-pdf.ts`, `src/utils/image-to-pdf.ts`, `src/components/common/pdf/` and the pdf-lib 1.17.1 lock entries are identical on `main` and `develop`.
 - **Agreed before any run:** the corpus and the pass bar were written into #43 first, and the user approved them.
 
 ## Answer
