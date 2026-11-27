@@ -158,9 +158,7 @@ describe('SortablePdfShell', () => {
   })
 
   it('names the files the pipeline skipped, alongside the ones the upload rejected', () => {
-    mockHook.mockImplementation(() =>
-      baseReturn({ result: { ...NONEMPTY_RESULT, skipped: ['locked.png', 'note.txt'] } }),
-    )
+    mockHook.mockImplementation(() => baseReturn({ result: { ...NONEMPTY_RESULT, skipped: ['locked.png'] } }))
     renderShell()
 
     const txt = new File(['b'], 'note.txt', { type: 'text/plain' })
@@ -168,8 +166,19 @@ describe('SortablePdfShell', () => {
     Object.defineProperty(input, 'files', { value: [txt], configurable: true })
     fireEvent.change(input)
 
-    // note.txt is named once although both the upload and the pipeline skipped it.
     expect(screen.getByText('Skipped 2 unsupported files: note.txt, locked.png')).toBeInTheDocument()
+  })
+
+  it('counts two rejected uploads that share a name as two files', () => {
+    renderShell()
+
+    const first = new File(['a'], 'note.txt', { type: 'text/plain' })
+    const second = new File(['b'], 'note.txt', { type: 'text/plain' })
+    const input = screen.getByLabelText(/Select files/i) as HTMLInputElement
+    Object.defineProperty(input, 'files', { value: [first, second], configurable: true })
+    fireEvent.change(input)
+
+    expect(screen.getByText('Skipped 2 unsupported files: note.txt, note.txt')).toBeInTheDocument()
   })
 
   it('names the skipped files, with no download, when the pipeline kept nothing', () => {

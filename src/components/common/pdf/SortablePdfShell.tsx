@@ -105,8 +105,10 @@ export const SortablePdfShell = <TItem extends { id: string }, TExtras extends o
   // Two sources: files the upload rejected, and files the pipeline could not
   // put in the output (a PDF that needs a password, an image that won't
   // decode). Without the second, such a file just goes missing from the
-  // download. A stale result's list is dropped along with its bytes.
-  const allSkipped = Array.from(new Set([...skipped, ...(hasError ? [] : result.skipped)]))
+  // download. A stale result's list is dropped along with its bytes. A file the
+  // upload rejected never reaches the pipeline, so the two lists never share a
+  // file; names are not deduplicated, since two files can share one.
+  const allSkipped = [...skipped, ...(hasError ? [] : result.skipped)]
   const skippedNotice =
     allSkipped.length > 0
       ? [`Skipped ${allSkipped.length} unsupported file${allSkipped.length === 1 ? '' : 's'}: ${allSkipped.join(', ')}`]
