@@ -352,12 +352,10 @@ A gate that silently matches nothing looks the same as one that passes.
 ## Not verified
 
 - The `const` layout assertion inside the `ui` entry macro was not built.
-  Neither was its error text through `lazy_loader!`. Both wait for `ui`.
+  Neither was its error text through `lazy_loader!`. Both wait for `ui`
+  ([Build the deferred anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/70)).
 - cargo-mutants' run time on a real logic crate was not measured.
 - jscpd's false-positive rate on real Tool glue is unknown.
-- That a `main` → `develop` sync PR runs `dioxus.yml`. GitHub's docs say
-  a `pull_request` run uses the PR's merge ref, which holds `develop`'s
-  workflows, but no sync PR has been tried.
 
 ## Amended when the gates were built
 
@@ -394,6 +392,16 @@ Two findings changed the build:
 - **`allow-unwrap-in-tests` covers only `#[test]` functions,** not the
   helpers of an integration test. Helpers return a `Result`, and the
   test unwraps it.
+
+**A `main` → `develop` sync runs both checks.** The first sync after
+the gates landed,
+[#67](https://github.com/boengai/csr-dev-tools/pull/67) on 2026-11-28,
+ran `dioxus` and `pr-body` from `develop`'s workflows, and both passed.
+It came from a branch rather than from `main`, because it had conflicts
+to resolve. `pr-body` accepts such a branch only when it merges `main`
+into `develop` ([#66](https://github.com/boengai/csr-dev-tools/pull/66)):
+the branch must bring `main` commits `develop` lacks, and hold `develop`
+commits `main` lacks.
 
 Some gates judge code that does not exist yet, so the first slice
 (#63) could not build them. A gate with nothing to judge would pass over
