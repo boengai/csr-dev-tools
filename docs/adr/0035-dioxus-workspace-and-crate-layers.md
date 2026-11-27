@@ -167,7 +167,8 @@ decided in conversation on 2026-11-27.
     `as_web_event`, `try_as_web_event`, `get_web_file` and the event-data
     `downcast` methods.
 
-  Lint levels are [#25](https://github.com/boengai/csr-dev-tools/issues/25)'s.
+  Lint levels are [#25](https://github.com/boengai/csr-dev-tools/issues/25)'s
+  (ADR-0036).
 - **The Tool set agrees everywhere.** CI checks that four sets are equal:
   the `crates/tools/*` directories, `app`'s Tool dependencies, `app`'s
   ported-Tool list (section 7), and the registry keys of those Tools.
@@ -336,7 +337,8 @@ decided in conversation on 2026-11-27.
 - **Every Tool renders inside a frame.** A Tool entry returns a sealed
   `ToolView`, which only a shell or `ToolFrame` can build. That makes
   "custom Tools still use the frame" a compile error to break, which
-  covers the 27 custom Tools. #25 sets the guard's exact wording.
+  covers the 27 custom Tools. #25 sets the guard's exact wording
+  (ADR-0036 §7).
 - **Family code lives in `ui/kits`,** so the rule that no Tool imports
   another never pushes copies into Tools.
 - **`ui` stays one crate** until an edit to it is measured as too slow on
@@ -381,7 +383,8 @@ decided in conversation on 2026-11-27.
   - `tv()` becomes enums whose methods return whole class literals
     (#22).
   - Named exports become explicit `pub` items, with no glob re-exports.
-  - Alphabetical imports are left to rustfmt, whose settings are #25's.
+  - Alphabetical imports are left to rustfmt, whose settings are #25's
+    (ADR-0036).
 - **Dropped:**
   - "All types in `@/types`." A types hub crate would rebuild everything
     on any change, so each type lives in the lowest crate that owns it.
@@ -452,8 +455,9 @@ src/                  React, until cutover
   - one line in `app`'s `Cargo.toml`;
   - one line in the ported-Tool list.
 
-  If the Tool reuses an existing `wasm/` crate, the PR also moves that
-  crate's logic into `crates/logic/<name>` first.
+  If the Tool reuses an existing `wasm/` crate, that crate's logic moves
+  into `crates/logic/<name>` first. ADR-0036 makes the move a `split` PR
+  of its own, merged before the port.
 - **The dev loop is slower** than with one crate, by 2 to 3 times with
   stub Tools. It is re-measured once real Tools exist. Hot-patching is
   unverified in any layout.

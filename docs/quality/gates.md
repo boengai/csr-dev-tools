@@ -1,0 +1,334 @@
+# Anti-slop gates
+
+The mechanical checks that keep slop out of `develop`, decided in [What are the anti-slop gates?](https://github.com/boengai/csr-dev-tools/issues/25). Slop is code that passes the compiler but nobody chose deliberately. [ADR-0036](../adr/0036-mechanical-gates-keep-slop-out-of-develop.md) records why the gates have this shape. This page holds the lists, which are cheap to change. A change to them is a `gates` PR.
+
+Nothing here is built yet. The issue "Build the anti-slop gates" builds it, with the workspace skeleton, before the first `port` or `shell` PR merges.
+
+## Scope
+
+- **`crates/**`:** every gate below, from the first line.
+- **`crates/bridges/js/**` and `scripts/dioxus/**`:** oxlint and oxfmt, as for `src/`.
+- **`wasm/crates/*`:** no gate while the crate is as it is on `main`. Its split PR holds the moved logic and the thin wrapper to every gate.
+
+## Required checks
+
+Pull requests into `develop` need three checks: `ci` (React, shared with `main`), `dioxus` and `pr-body`. Neither new workflow has path filters.
+
+### `dioxus` (`.github/workflows/dioxus.yml`, on `develop` only)
+
+1. The path check: the PR's kind against the files it changes ("PR kinds").
+2. Formatting.
+3. Clippy over the workspace with `--all-targets`, for both `wasm32-unknown-unknown` and the host, with `build.warnings = "deny"`.
+4. `cargo test` over the explicit package list, the `gates` crate included.
+5. The must-fail fixtures.
+6. cargo-deny, cargo-shear and jscpd.
+7. cargo-mutants `--in-diff`.
+8. oxlint and oxfmt over `crates/bridges/js` and `scripts/dioxus`, and the npm licence check.
+9. The Dioxus build, the byte check, and the Playwright run under the post-migration CSP.
+
+### `pr-body` (`.github/workflows/pr-body.yml`, on `develop` only)
+
+It runs on `opened`, `edited`, `synchronize` and `reopened`, so editing the body never reruns `dioxus`. See "The PR body".
+
+### Pinned tools
+
+Each tool comes from `taiki-e/install-action`, pinned to a commit SHA, so it is installed against a checksum (ADR-0031, condition 3).
+
+| Tool | Version |
+|---|---|
+| cargo-deny | 0.22.1 |
+| cargo-shear | 1.14.1 |
+| cargo-mutants | 27.1.0 |
+| jscpd | 5.4.3 |
+| dx | 0.7.10 (ADR-0031) |
+
+## Gate files
+
+A gate file decides what CI accepts:
+
+- the root `Cargo.toml` (`[workspace.lints]`, `[workspace.dependencies]`, members, profiles), `clippy.toml`, `rustfmt.toml`, `deny.toml`, `.jscpd.json`;
+- `crates/gates/**`, with its fixtures;
+- the byte-ceiling file that `docs/perf/budgets.md` describes, the a11y baseline ([#41](https://github.com/boengai/csr-dev-tools/issues/41)), the post-migration CSP;
+- `.github/workflows/**`, and the PR templates in `docs/quality/pr/`.
+
+A `port` or `shell` PR may add rows for its own Tool to the ceiling file. Any other change to a gate file is a `gates` PR, and a `gates` PR changes nothing else (see "PR kinds").
+
+## Exemptions
+
+- The only form is `#[expect(<lint>, reason = "<a sentence saying why>")]`, on the smallest item it covers.
+- `#[allow]` is denied (`clippy::allow_attributes`).
+- A crate-level `#![expect]` in a Tool crate fails the source rules.
+- An `#[expect]` whose lint stops firing fails the build, so stale exemptions do not pile up.
+
+## Lints
+
+### `[workspace.lints]`
+
+```toml
+[workspace.lints.rust]
+unsafe_code = "forbid"
+unreachable_pub = "deny"
+
+[workspace.lints.clippy]
+all = { level = "deny", priority = -1 }
+pedantic = { level = "deny", priority = -1 }
+# Pedantic exemptions. Add one only in a `gates` PR, with its reason.
+must_use_candidate = "allow"     # noise: flags almost every pure function
+missing_errors_doc = "allow"     # forces docs that restate the signature
+missing_panics_doc = "allow"     # the same; panics are denied anyway
+similar_names = "allow"          # noise in parsers and colour maths
+# Panics: `wasm-release` aborts on a panic, and one panic kills the page.
+unwrap_used = "deny"
+expect_used = "deny"
+panic = "deny"
+todo = "deny"
+unimplemented = "deny"
+unwrap_in_result = "deny"
+panic_in_result_fn = "deny"
+string_slice = "deny"            # slicing a `str` panics inside an emoji
+# Leftovers and swallowed results
+dbg_macro = "deny"
+print_stdout = "deny"
+print_stderr = "deny"
+let_underscore_must_use = "deny"
+# Exemptions are `#[expect]` with a reason
+allow_attributes = "deny"
+allow_attributes_without_reason = "deny"
+# One file per module, no `mod.rs`
+mod_module_files = "deny"
+
+[workspace.lints.cargo]
+unused_dependencies = "deny"
+```
+
+Every member's manifest has `[lints] workspace = true`, and the `gates` crate checks it. A member cannot override a workspace level in its manifest. Cargo rejects that.
+
+### Not denied, on purpose
+
+- `indexing_slicing` and `arithmetic_side_effects`: too noisy in parsers, and the logic tests and mutation testing cover them.
+- `missing_docs`: forcing comments produces comments that restate the code.
+- `unreachable!`: allowed.
+- `nursery` and `cargo`: off.
+- `wildcard_imports` keeps its default exemption for `prelude::*` and for `use super::*` in tests.
+
+### `clippy.toml`
+
+```toml
+too-many-lines-threshold = 80
+allow-unwrap-in-tests = true
+allow-expect-in-tests = true
+allow-panic-in-tests = true
+# `dbg!` stays denied in tests too (the default).
+
+disallowed-methods = [
+  { path = "dioxus_document::eval", reason = "no JavaScript outside an Engine bridge (ADR-0033)" },
+  { path = "dioxus_document::Document::eval", reason = "the trait method misses the entry above" },
+  # as_web_event, try_as_web_event, get_web_file and the event-data
+  # downcast methods: raw browser types stay in `platform` (ADR-0035).
+  { path = "std::time::Instant::now", reason = "panics on wasm32-unknown-unknown; use platform's timers" },
+  { path = "std::time::SystemTime::now", reason = "panics on wasm32-unknown-unknown; use platform's local time" },
+  { path = "std::thread::spawn", reason = "panics on wasm32-unknown-unknown; use a worker (ADR-0033)" },
+  { path = "std::thread::sleep", reason = "panics on wasm32-unknown-unknown; use platform's timers" },
+]
+```
+
+The paths of `as_web_event`, `try_as_web_event`, `get_web_file` and the event-data `downcast` methods are filled in when the file is built. Each entry is then proven by a fixture.
+
+`platform` converts events with an `#[expect(clippy::disallowed_methods, reason = "…")]` at each call site. It has no `clippy.toml` of its own, because a nested one replaces the root one.
+
+## Formatting
+
+- **Stable rustfmt only.** `rustfmt.toml`:
+
+  ```toml
+  style_edition = "2024"
+  use_field_init_shorthand = true
+  newline_style = "Unix"
+  ```
+
+  `max_width` keeps its default. Imports are sorted within each block, which is the stable default, and are not grouped.
+- **`rsx!` is formatted by `dx fmt`,** because rustfmt skips it.
+- **CI runs, in order:**
+  1. `dx fmt` in each crate that has `rsx!`;
+  2. `cargo fmt --all`;
+  3. `git diff --exit-code`.
+
+  An `error` line in `dx fmt`'s output fails the job too. `dx fmt --check` is not used: it rewrites the files while it fails, and it ignores per-file errors.
+
+## The `gates` crate
+
+`crates/gates`, package `gates`, `publish = false`, is a test-only crate outside the nine layers. Nothing depends on it. It reads code with `syn` and `dioxus-rsx =0.7.10`, and manifests with `cargo_metadata` and `toml`.
+
+### Manifests
+
+- ADR-0035's layer allowlist, over normal, dev, build, target-specific, optional and renamed dependencies, and every crate's own `[features]` for anything that turns on `dioxus/web`.
+- `dioxus-primitives` and `dioxus-motion` are denied by name for every member (ADR-0034). cargo-deny does not repeat the ban.
+- ADR-0035's four-set check: the `crates/tools/*` directories, `app`'s Tool dependencies, the Ported Tool list, and the registry keys of those Tools.
+- Every member sets `lints.workspace = true` and takes each third-party dependency with `workspace = true`.
+- Every `layoutOptOutAdr` in the registry names an ADR file that exists.
+
+### Source rules
+
+| Rule | From |
+|---|---|
+| No `class` or `style` prop, and no `extends = GlobalAttributes`, on a component or primitive in `ui` | ADR-0034 |
+| No `style: "…"` string attribute, and no `style {}` element, in our own `rsx!` | ADR-0034 |
+| No `#[component(lazy)]` | ADR-0035 |
+| Exactly one Tool entry per Tool crate | ADR-0035 |
+| No path from a Tool crate to `ui`'s app-only items (the dialog primitive, the modal frame): a Tool builds no dialog of its own | the React layout guard |
+| A custom Tool uses no off-theme red or yellow text class (`text-(red\|yellow)-NNN`) | the React layout guard |
+| A `#[component]` body is at most 80 lines | stands in for `too_many_lines`, which skips components |
+| A source file is at most 300 lines, not counting its `#[cfg(test)]` module | ADR-0031's 360-line component |
+| No commented-out code: a run of `//` lines that parses as Rust items or statements. Doc-comment examples are exempt | the map |
+| `TODO`, `FIXME`, `XXX` and `HACK` name an issue, as in `TODO(#123)` | the map |
+| No crate-level `#![expect]` in a Tool crate | "Exemptions" |
+| No jscpd ignore comments | "Copied code" |
+| `#[mutants::skip]` has a reason comment on the line above | "Tests" |
+
+ADR-0034's "no style written from a timer or an animation-frame loop" has no mechanical check. The automated reviewer looks for it.
+
+### The layout guard
+
+> A Tool entry returns the view of the shell its registry layout names. Only a `custom` Tool returns `ToolFrame`'s view, and its registry entry names the ADR that says why.
+
+- `ToolView<L>` carries a layout marker. Each shell returns its own marker, and `ToolFrame` returns `Custom`.
+- The `ui` entry macro emits a `const` assertion against the registry's layout for the key. The build then fails with, for example:
+
+  > `hash-generator` is a `transformer` Tool in tool-routes.ts, so its entry must return `TransformerShell`'s view
+
+### Must-fail fixtures
+
+- Each custom check (the path check, the allowlist, each source rule, the ceiling check) has a committed fixture that must fail. CI runs each one and expects the failure.
+- The denied Clippy lints and the disallowed methods share one fixture crate, with one violation each. CI checks that every lint's name appears in Clippy's output.
+
+## Dependencies
+
+- **Adding a crate is a `gates` PR.** It adds the allowlist row and the `[workspace.dependencies]` entry, and its body gives:
+  - what the crate is for;
+  - its licence and last release;
+  - its brotli byte cost, from a scratch build.
+- **Versions.**
+  - The Dioxus family is pinned exactly (`=0.7.10`); everything else uses caret versions, with `Cargo.lock` as the pin.
+  - Members use `workspace = true`.
+  - `cargo update` is a PR of its own.
+- **cargo-deny** (`deny.toml`):
+  - **Duplicates:** `bans.multiple-versions = "deny"` over `app`'s tree, run with `--manifest-path crates/app/Cargo.toml`, because there they cost bytes. In each worker's tree they only warn.
+  - **Sources:** crates.io only. `unknown-git` and `unknown-registry` are denied.
+  - **Licences:** allowed are MIT, Apache-2.0, Apache-2.0 WITH LLVM-exception, BSD-2-Clause, BSD-3-Clause, ISC, Zlib, 0BSD, CC0-1.0 and Unicode-3.0. Anything else, MPL-2.0 included, needs a per-crate exception with a reason. Every member sets `license.workspace = true`.
+  - **Advisories:** a vulnerability or an unsound crate fails. An unmaintained crate warns. An ignore entry is a `gates` PR with a reason.
+- **Unused dependencies:** cargo's `unused_dependencies` lint, plus `cargo shear --deny-warnings`, which also catches what the lint misses.
+- **npm:** `crates/bridges/js` is held to the same licence list, checked over `pnpm licenses list --json --prod`.
+
+## Copied code
+
+- **Settings:** jscpd 5.4.3 over `crates/**/*.rs`, not counting tests or `crates/registry/src/generated.rs`. It runs with `-f rust`, `min-tokens 70`, mild mode, `--exit-code`, and without `--ignore-identifiers`.
+- **No baseline.** The count starts at zero clones and stays there.
+- **The fix is to move the code down,** into `ui/kits` or a logic crate. A clone between Tools usually means a shell's API is missing something.
+- **jscpd's ignore comments are banned** by the source rules.
+
+## Tests
+
+### A port PR includes
+
+- **Logic tests:** every case in the Tool's React spec (`src/utils/*.spec.ts`) has a native Rust test in its logic crate, with the same input and the same expected output. The PR body maps each case to its test.
+- **Its journeys on Dioxus:** the Tool is removed from the Dioxus spec filter, so its React journeys run there unchanged. The contract suite and axe pick it up from the registry.
+- **Saved inputs:** if the Tool saves input, its #38 golden values and its rows in `crates/registry/src/storage.rs`.
+- **No new Playwright spec.** Specs come from `main` (`docs/ux/parity.md`).
+
+### Mutation testing
+
+- **The gate:** cargo-mutants 27.1.0 `--in-diff` against the merge base, on each changed logic crate and on `persist`. No mutant may survive on a changed line.
+- **Not covered:** `ui` and the Tool crates, which need a browser.
+- **`#[mutants::skip]`** needs a reason comment on the line above it.
+- **A `split` PR** moves files with `git mv`, and the diff given to `--in-diff` is rename-aware (`git diff -M`). Only lines that really changed are judged. A whole-crate run is made once, as a report in the PR body. Its gaps become one follow-up issue per crate.
+- **There is no coverage percentage.**
+
+## CSP
+
+- **The post-migration CSP** is a gate file (ADR-0033 §6 and "Handed on"). The Dioxus Playwright project serves `dist-dioxus` with it.
+- **A shared fixture**, for the Dioxus project only, fails any test that sees a `securitypolicyviolation` event.
+- **It covers every journey,** not only those of Tools with an Engine bridge.
+
+## Byte ceilings
+
+These extend the byte check in `docs/perf/budgets.md` → "CI on `develop`". The same ceiling file and the same rules apply: 2% over the base branch, and the committed ceiling. Its rows are:
+
+- each page (already in `budgets.md`);
+- the main wasm module, and each Tool module, keyed by the loader's module name (`hash_generator`), not the file hash;
+- each Engine bridge's JS file;
+- each worker's wasm and JS files, measured from the build output, because the perf harness skips requests made inside workers.
+
+The PR that first ships a file sets its row.
+
+## PR kinds
+
+The title starts with the kind. The path check fails a PR that changes a file outside its kind's set. `Cargo.lock` may change in any kind except `docs`.
+
+| Kind | Title | May change |
+|---|---|---|
+| `port` | `port(<key>): …` | `crates/tools/<key>/**`; the logic crates that Tool uses (`crates/logic/<name>/**`); one line each in `crates/app/Cargo.toml` and the Ported Tool list; that Tool's new rows in the ceiling file, `storage.rs` and the #38 goldens; its line in the Dioxus spec filter |
+| `split` | `split(<crate>): …` | `crates/logic/<name>/**` and `wasm/crates/<name>/**` |
+| `shell` | `shell(<layout>): …` | `crates/ui/**`, plus one Tool's `port` set |
+| `foundation` | `ui(…)`, `platform(…)`, `bridge(…)`, `persist(…)`, `registry(…)`, `worker(…)`, `app(…)` | that crate, `crates/app/Cargo.toml`; for a bridge, `crates/bridges/js/**`; for the registry generator, `scripts/dioxus/**`. Never a Tool crate |
+| `gates` | `gates: …` | gate files, `docs/quality/**`, and an ADR that records the change |
+| `docs` | `docs: …` | `docs/**` except `docs/quality/**`, plus `CONTEXT.md`, `CONTRIBUTING.md`, `CLAUDE.md` and `.claude/**` |
+| `sync` | `chore: sync main into develop …` | anything, as a merge commit from `main` |
+
+- **No hard cap on lines.** A CI warning, not a failure, shows above 1,000 changed lines, not counting generated files and lockfiles.
+- **The first workspace skeleton PR,** which adds the gates themselves, is a `gates` PR, and its path check is the one it adds.
+
+## The PR body
+
+There is one template per kind in `docs/quality/pr/`, except `sync`, which needs only its title. Agents open PRs with `gh pr create --base develop --body-file docs/quality/pr/<kind>.md`, after filling the template in.
+
+`pr-body` checks:
+
+- **the title's kind prefix;**
+- **the kind's required headings** (each template's `##` headings);
+- **for `port` and `shell`:** a filled case-mapping table and a non-empty `## Automated review`;
+- **that every box under `## Hand check` is ticked.** The maintainer ticks them as the last step before merging, and agents never tick them. This is a reminder, not a guarantee.
+
+## Review
+
+### The automated reviewer
+
+- **When:** the agent that wrote the PR runs the `code-review` skill (Standards and Spec) against `develop` before opening it, and fixes what it can.
+- **Recorded:** each finding and its outcome (fixed, or why not) goes under `## Automated review`.
+- **What it looks for**, beyond the gates:
+  - comments that restate the code;
+  - names that say nothing;
+  - options, parameters and branches added "in case";
+  - `#[expect]` reasons that say nothing;
+  - style written from a timer or an animation-frame loop (ADR-0034);
+  - error paths that reach a toast or a panic instead of the status slot;
+  - a case-mapping table that does not match the React spec;
+  - code that does not do what the issue or ADR asked.
+
+No AI reviewer runs in CI. That is revisited after the first ten ports.
+
+### The maintainer
+
+- **Only the maintainer merges into `develop`.** Agents never merge, not even `sync` PRs.
+- **Before merging, the maintainer checks:**
+  - the hand check in `docs/ux/parity.md` → "The reviewer's hand check": side by side with `main` in GPU Chrome, at desktop and phone width; the golden path and one error case; and how it feels;
+  - every new `#[expect]` reason;
+  - every gate-file change and every new dependency;
+  - the `## Automated review` section;
+  - one read of the diff, asking of each new item: "would I have chosen this?"
+
+## Definition of done for a ported Tool
+
+A Tool is ported when all of these hold on `develop`:
+
+1. **The crate.** `crates/tools/<key>` exists, with one Tool entry. The entry returns the view of the shell its registry layout names. A `custom` Tool returns `ToolFrame`'s view, and its registry entry names an ADR that exists.
+2. **The logic.** It lives in logic crates. Every React spec case has a Rust test with the same input and expected output, and no mutant survives on a line the port changed.
+3. **The gates.** `dioxus` and `pr-body` pass. The only exemptions are `#[expect]`s whose reasons the maintainer accepted.
+4. **The browser checks.**
+   - Its React journeys run unchanged on Dioxus, with no retries.
+   - The contract suite and axe add no failure beyond the a11y baseline.
+   - The CSP fixture sees no violation.
+5. **Saved inputs.** If the Tool saves input, its #38 golden values pass and its keys are in `storage.rs`.
+6. **Bytes.** Its page and module rows are in the ceiling file.
+7. **The page.** Its head-stamped page is built at `dist-dioxus/tools/<key>/index.html`.
+8. **Review.** The automated review is recorded in the PR. The maintainer did the hand check and ticked its boxes.
+9. **The merge.** It landed as one squash-merged `port(<key>)` PR (or as a `shell` PR's proof Tool), merged by the maintainer.
