@@ -320,8 +320,10 @@ The facades decided now:
      trial passed, so background removal is a Rust worker (kind 1).
 - **The same work runs in workers as today:** regex, bcrypt, the PDF
   compile and model inference. Pixel work, including the Rust resample
-  and the background-removal compositing, runs on the main thread. A tool
-  gets a new worker only if its port misses the TBT budget.
+  and the background-removal colour composite, runs on the main thread.
+  Background removal's mask resizes and alpha composite stay in its
+  worker, as they are on `main`. A tool gets a new worker only if its port
+  misses the TBT budget.
 - **Regex parity, kept exactly:**
   - a 2000 ms timeout, armed after spawn;
   - the latest call wins;
@@ -381,8 +383,9 @@ Each bridge's tool journey must run with zero `securitypolicyviolation`
 events under the post-migration CSP:
 
 - no `'unsafe-eval'`;
-- no jsdelivr and no `script-src blob:`, once background-remover's port
-  ships. They were allowed only for the ONNX Runtime exception.
+- no jsdelivr and no `script-src blob:`. The ONNX Runtime exception,
+  which needed both, ends when background-remover's port ships. Monaco's
+  jsdelivr entries go when it is self-hosted (see Consequences).
 
 The background-remover journey decides whether `'unsafe-eval'` can go
 (see [the tract amendment](#amendment-2026-11-28-the-tract-trial)).
@@ -571,7 +574,7 @@ on in #44, so it replaces transformers.js and ONNX Runtime
   - **What runs in the worker:** both of the mask's resizes (canvas
     `drawImage`) and the full-size alpha composite. That matches what
     transformers.js does in its worker on `main`. The colour composite
-    stays on the main thread (Decision 4).
+    stays on the main thread. Decision 4 says the same.
   - **The plan cache:** tract cannot keep H and W symbolic through
     MODNet's `Resize`, so it optimises a plan for each new input size.
     That costs about 100 ms, and the judged latency figures include it.
