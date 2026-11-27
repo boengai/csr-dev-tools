@@ -31,14 +31,16 @@ fn members(manifest: &Table) -> Option<&Vec<Value>> {
 }
 
 /// A `sync` PR skips the path and body checks, so its title alone is not
-/// enough: it must come from `main`.
-pub fn check_sync_source(kind: &Kind, head_ref: &str) -> Option<Finding> {
-    (*kind == Kind::Sync && head_ref != "main").then(|| {
+/// enough. It comes from `main` itself, or, when the sync has conflicts to
+/// resolve, from a branch whose head contains `main`'s current tip
+/// (`merges_main`, from `git merge-base --is-ancestor`).
+pub fn check_sync_source(kind: &Kind, head_ref: &str, merges_main: bool) -> Option<Finding> {
+    (*kind == Kind::Sync && head_ref != "main" && !merges_main).then(|| {
         Finding::new(
             "pr-kind",
             head_ref,
             0,
-            "a `chore: sync main into develop` PR comes from `main`, not from a topic branch",
+            "a `chore: sync main into develop` PR comes from `main`, or from a branch that merges main's tip",
         )
     })
 }
