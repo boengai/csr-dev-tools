@@ -104,8 +104,40 @@ test.describe('Saved inputs', () => {
     await expectOnlyListedKeys(page)
   })
 
+  test("base64-codec: a saved mode it does not know opens the first mode, with that mode's saved source", async ({
+    page,
+  }) => {
+    const driver = DRIVERS.find((d) => d.tool === 'base64-codec')
+    const mode = golden.entries.find((e) => e.id === 'base64-codec/unknown-mode')
+    const source = golden.entries.find((e) => e.id === 'base64-codec/unknown-mode-with-source')
+    if (!driver || !mode || !source)
+      throw new Error('needs the base64-codec driver and its unknown-mode golden entries')
+    await seedStorage(page, source.stored)
+
+    // Issue 15: this used to open the first mode with its saved source hidden.
+    await page.goto(driver.route)
+    await driver.ready(page)
+    await driver.shows(page, { [mode.key]: mode.expected, [source.key]: source.expected })
+  })
+
   test('db-diagram: an unreadable store is backed up before the first save over it', async ({ page }) => {
     await seedStorage(page, { 'csr-dev-tools-db-diagrams': '{bad' })
+    // Records the order of writes, so the backup is seen to land before the store is replaced.
+    await page.addInitScript(() => {
+      const setItem = Storage.prototype.setItem
+      const order: Array<string> = []
+      Object.defineProperty(window, 'storedValueWrites', { value: order })
+      Storage.prototype.setItem = function (key: string, value: string) {
+        if (this === localStorage) order.push(key)
+        setItem.call(this, key, value)
+      }
+    })
+    const diagramWrites = () =>
+      page.evaluate(() =>
+        (window as unknown as { storedValueWrites: Array<string> }).storedValueWrites.filter((k) =>
+          k.startsWith('csr-dev-tools-db-diagrams'),
+        ),
+      )
 
     await page.goto('/tools/db-diagram')
     await page.getByTestId('add-table-btn').click()
@@ -115,6 +147,8 @@ test.describe('Saved inputs', () => {
         timeout: 10_000,
       })
       .toBe('{bad')
+    await expect.poll(diagramWrites).toContain('csr-dev-tools-db-diagrams')
+    expect((await diagramWrites())[0]).toBe('csr-dev-tools-db-diagrams-corrupt-backup')
     const store = await page.evaluate(
       () => JSON.parse(localStorage.getItem('csr-dev-tools-db-diagrams') ?? 'null') as unknown,
     )

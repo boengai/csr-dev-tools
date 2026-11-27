@@ -19,6 +19,8 @@ export type Driver = {
   keys: Array<string>
   /** Codec only: the Tool's modes, in its own order. The first is the default. */
   modes?: Array<string>
+  /** Codec only: the source the editor shows now. */
+  readSource?: (page: Page) => Promise<string>
   /** Codec only: the mode the Tool opened in. */
   readMode?: (page: Page) => Promise<string>
   /** Waits until the Tool has read storage and shows its input. */
@@ -70,7 +72,53 @@ export const expectStored = async (page: Page, values: Restored): Promise<void> 
   }
 }
 
+/** Checks that one saved field shows in its control. */
+type ControlCheck = { field: string; shows: (page: Page, value: unknown) => Promise<void> }
+
+/**
+ * A select shows the label of its saved value. A native `<select>` shows its
+ * selected option; another combobox (a Radix trigger) shows its own text.
+ */
+const selectShows = (field: string, name: string, labels: Record<string, string>): ControlCheck => ({
+  field,
+  shows: async (page, value) => {
+    const label = labels[String(value)]
+    if (label === undefined) throw new Error(`${name}: no label for ${String(value)}`)
+    const select = page.getByRole('combobox', { exact: true, name })
+    await expect(select).toBeVisible()
+    await expect
+      .poll(() =>
+        select.evaluate((el) =>
+          el instanceof HTMLSelectElement ? (el.selectedOptions[0]?.text ?? '') : (el as HTMLElement).innerText,
+        ),
+      )
+      .toBe(label)
+  },
+})
+
+const textShows = (field: string, name: string): ControlCheck => ({
+  field,
+  shows: (page, value) => expectText(textbox(page, name), String(value)),
+})
+
+const pressedShows = (field: string, name: string): ControlCheck => ({
+  field,
+  shows: (page, value) =>
+    expect(page.getByRole('button', { exact: true, name })).toHaveAttribute('aria-pressed', String(Boolean(value))),
+})
+
+const checkedShows = (field: string, name: string): ControlCheck => ({
+  field,
+  shows: (page, value) =>
+    expect(page.getByRole('checkbox', { exact: true, name })).toBeChecked({ checked: Boolean(value) }),
+})
+
+const INDENT = { 2: '2 spaces', 4: '4 spaces', tab: 'Tab' }
+const FORMAT_MODE = { beautify: 'Beautify', minify: 'Minify' }
+
 type TextToolOptions = {
+  /** Journey: the Tool's other saved fields, each checked in its control. */
+  controls?: Array<ControlCheck>
   /** The bag field the text control holds; absent when the whole value is the string. */
   field?: string
   key: string
@@ -88,6 +136,7 @@ type TextToolOptions = {
 
 /** A Tool whose main input is one text control: the Transformer, Comparator and Input Tools. */
 const textTool = ({
+  controls = [],
   field: name,
   key,
   label,
@@ -110,7 +159,10 @@ const textTool = ({
     keys: [key, ...otherKeys],
     ready: (page) => expect(control(page)).toBeVisible(),
     route: route ?? `/tools/${tool}`,
-    shows: (page, restored) => expectText(control(page), held(restored)),
+    shows: async (page, restored) => {
+      await expectText(control(page), held(restored))
+      for (const check of controls) await check.shows(page, field(restored[key], check.field))
+    },
     tool,
     touch: async (page) => {
       await touchText(page, control(page))
@@ -162,6 +214,10 @@ const codecTool = (tool: string, modeKey: string, prefix: string | null, modes: 
     },
     keys: [modeStorageKey, ...modes.map((m) => sourceKey(m.key))],
     modes: modes.map((m) => m.key),
+    readSource: async (page) => {
+      await expect(source(page)).toBeVisible()
+      return (await textOf(source(page))).replace(/\n$/, '')
+    },
     readMode: async (page) => {
       for (const m of modes) {
         if ((await button(page, m).getAttribute('aria-pressed')) === 'true') return m.key
@@ -291,6 +347,7 @@ export const DRIVERS: Array<Driver> = [
   textTool({
     field: 'source',
     key: `${P}css-formatter`,
+    controls: [selectShows('mode', 'Mode', FORMAT_MODE)],
     label: 'CSS Input',
     sample: 'a{color:red}',
     tool: 'css-formatter',
@@ -303,6 +360,7 @@ export const DRIVERS: Array<Driver> = [
   textTool({
     field: 'source',
     key: `${P}html-formatter`,
+    controls: [selectShows('mode', 'Mode', FORMAT_MODE), selectShows('indent', 'Indent', INDENT)],
     label: 'HTML Input',
     sample: '<p>hi</p>',
     tool: 'html-formatter',
@@ -311,6 +369,7 @@ export const DRIVERS: Array<Driver> = [
   textTool({
     field: 'source',
     key: `${P}javascript-minifier`,
+    controls: [selectShows('mode', 'Mode', FORMAT_MODE)],
     label: 'JavaScript Input',
     sample: 'const a = 1',
     tool: 'javascript-minifier',
@@ -319,6 +378,16 @@ export const DRIVERS: Array<Driver> = [
   textTool({
     field: 'source',
     key: `${P}sql-formatter`,
+    controls: [
+      selectShows('dialect', 'Dialect', {
+        bigquery: 'BigQuery',
+        mysql: 'MySQL',
+        postgresql: 'PostgreSQL',
+        sql: 'Standard SQL',
+        sqlite: 'SQLite',
+      }),
+      selectShows('indent', 'Indent', INDENT),
+    ],
     label: 'SQL Input',
     sample: 'select 1',
     tool: 'sql-formatter',
@@ -330,6 +399,7 @@ export const DRIVERS: Array<Driver> = [
   textTool({
     field: 'source',
     key: `${P}yaml-formatter`,
+    controls: [selectShows('indent', 'Indent', INDENT), checkedShows('sortKeys', 'Sort Keys')],
     label: 'YAML Input',
     sample: 'b: 1\na: 2',
     tool: 'yaml-formatter',
@@ -341,6 +411,7 @@ export const DRIVERS: Array<Driver> = [
   textTool({
     field: 'source',
     key: `${P}json-to-typescript`,
+    controls: [textShows('rootName', 'Root Name'), pressedShows('optionalProps', 'Make properties optional')],
     label: 'JSON Input',
     sample: '{"a":1}',
     tool: 'json-to-typescript',
@@ -352,6 +423,7 @@ export const DRIVERS: Array<Driver> = [
   textTool({
     field: 'source',
     key: `${P}json-schema-validator`,
+    controls: [textShows('schema', 'JSON Schema')],
     label: 'JSON Data',
     sample: '{"a":1}',
     tool: 'json-schema-validator',
@@ -360,6 +432,7 @@ export const DRIVERS: Array<Driver> = [
   textTool({
     field: 'source',
     key: `${P}jsonpath-evaluator-v2`,
+    controls: [textShows('expression', 'JSONPath Expression')],
     label: 'JSON Input',
     sample: '{"a":1}',
     tool: 'jsonpath-evaluator',
@@ -368,6 +441,16 @@ export const DRIVERS: Array<Driver> = [
   textTool({
     field: 'source',
     key: `${P}text-sort-dedupe`,
+    controls: [
+      selectShows('sortMode', 'Sort', {
+        az: 'A → Z',
+        'length-asc': 'Length ↑',
+        'length-desc': 'Length ↓',
+        numeric: 'Numeric',
+        za: 'Z → A',
+      }),
+      pressedShows('removeDuplicates', 'Dedupe'),
+    ],
     label: 'Input (one item per line)',
     sample: 'b\na\na',
     tool: 'text-sort-dedupe',
@@ -382,6 +465,7 @@ export const DRIVERS: Array<Driver> = [
   textTool({
     field: 'original',
     key: `${P}json-diff`,
+    controls: [textShows('modified', 'Modified')],
     label: 'Original',
     sample: '{"a":1}',
     tool: 'json-diff-checker',
@@ -390,6 +474,7 @@ export const DRIVERS: Array<Driver> = [
   textTool({
     field: 'original',
     key: `${P}text-diff`,
+    controls: [textShows('modified', 'Modified')],
     label: 'Original',
     sample: 'a',
     tool: 'text-diff-checker',
@@ -406,8 +491,18 @@ export const DRIVERS: Array<Driver> = [
     keys: [`${P}color-palette-generator`],
     ready: (page) => expect(textbox(page, 'Hex Color')).toBeVisible(),
     route: '/tools/color-palette-generator',
-    shows: (page, restored) =>
-      expectText(textbox(page, 'Hex Color'), String(field(restored[`${P}color-palette-generator`], 'hex'))),
+    shows: async (page, restored) => {
+      const value = restored[`${P}color-palette-generator`]
+      await expectText(textbox(page, 'Hex Color'), String(field(value, 'hex')))
+      const harmony = selectShows('harmony', 'Harmony type', {
+        analogous: 'Analogous',
+        complementary: 'Complementary',
+        monochromatic: 'Monochromatic',
+        'split-complementary': 'Split-Complementary',
+        triadic: 'Triadic',
+      })
+      await harmony.shows(page, field(value, 'harmony'))
+    },
     tool: 'color-palette-generator',
     touch: async (page) => {
       await pick(page, 'Harmony type', 'Triadic')
@@ -451,10 +546,16 @@ export const DRIVERS: Array<Driver> = [
     keys: [`${P}lorem-ipsum-generator`],
     ready: (page) => expect(page.getByRole('checkbox', { name: /^Start with/ })).toBeVisible(),
     route: '/tools/lorem-ipsum-generator',
-    shows: (page, restored) =>
-      expect(page.getByRole('checkbox', { name: /^Start with/ })).toBeChecked({
-        checked: Boolean(field(restored[`${P}lorem-ipsum-generator`], 'startWithLorem')),
-      }),
+    shows: async (page, restored) => {
+      const value = restored[`${P}lorem-ipsum-generator`]
+      await expect(page.getByRole('checkbox', { name: /^Start with/ })).toBeChecked({
+        checked: Boolean(field(value, 'startWithLorem')),
+      })
+      await selectShows('unit', 'Unit', { paragraphs: 'Paragraphs', sentences: 'Sentences', words: 'Words' }).shows(
+        page,
+        field(value, 'unit'),
+      )
+    },
     tool: 'lorem-ipsum-generator',
     touch: async (page) => {
       await page.getByRole('checkbox', { name: /^Start with/ }).click()
@@ -519,6 +620,7 @@ export const DRIVERS: Array<Driver> = [
   textTool({
     field: 'text',
     key: `${P}placeholder-image-generator`,
+    controls: [textShows('width', 'Width')],
     label: 'Custom Text',
     sample: 'Hello',
     tool: 'placeholder-image-generator',

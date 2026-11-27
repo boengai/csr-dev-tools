@@ -329,6 +329,8 @@ await pool(
       }
       await open(page, driver)
       const storageAfterOpen = await snapshot(page)
+      // What a Codec shows as it opens, before touching it switches modes and reads storage again.
+      const shownOnOpen = key.reader === 'codec-source' && driver.readSource ? await driver.readSource(page) : null
       const opening = isDeepStrictEqual(storageAfterOpen, sortKeys(seed.stored)) ? {} : { storageAfterOpen }
       let reactText: string
       if (needsApp(key)) {
@@ -339,6 +341,9 @@ await pool(
         await driver.touch(page)
         await flush(page)
         reactText = (await readStorage(page))[seed.key] ?? 'null'
+        if (shownOnOpen !== null && JSON.parse(reactText) !== shownOnOpen) {
+          problems.push(`${seed.id}: opens showing ${JSON.stringify(shownOnOpen)}, but holds ${reactText}`)
+        }
       }
       let writing = {}
       if (key.reader === 'diagram') {
