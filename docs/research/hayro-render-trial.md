@@ -22,7 +22,7 @@ What the trial did:
 - The bytes check, which decided the result.
 - The "no timeout, OOM or trap" check, which needs no pdf.js baseline. It ran in Node, not a browser, over all 19 corpus files at scale 0.6 (see [No timeout, OOM or trap](#no-timeout-oom-or-trap)).
 
-**Not run:** visual parity, render time and main-thread blocking. They need GPU Chrome, a Firefox noise floor and alternating sessions, and none of them could change a fail. Skipping them was the user's call, recorded in #42.
+**Not run:** visual parity, render time and main-thread blocking. They need GPU Chrome, a Firefox noise floor and alternating sessions, and none of them could change a fail. The user chose to skip them once the bytes result was in (recorded in #42).
 
 ## Bytes
 
@@ -78,7 +78,42 @@ Three things stand out:
 
 A page fails if it takes over 10 s, the file fails if its linear memory ends over 1 GiB, and any `WebAssembly.RuntimeError` counts as a trap. The raw output is [`runs/no-trap-0.6.json`](hayro-render-trial/runs/no-trap-0.6.json).
 
-NO_TRAP_TABLE
+| File | Opens | Pages rendered | Slowest page | Whole file | Linear memory | Trap |
+|---|---|---:|---:|---:|---:|---|
+| `arxiv-attention.pdf` | ok | 15/15 | 9,151 ms | 16,064 ms | 39 MiB | none |
+| `cjk-kokugakuin-embedded.pdf` | ok | 37/37 | 1,240 ms | 7,015 ms | 31 MiB | none |
+| `cjk-nonembedded-predefined-cmaps.pdf` | ok | 1/1 | 23 ms | 24 ms | 10 MiB | none |
+| `edge-std14-rotate-crop.pdf` | ok | 3/3 | 50 ms | 96 ms | 5 MiB | none |
+| `enc-aes-128-empty.pdf` | ok | 15/15 | 6,969 ms | 15,252 ms | 39 MiB | none |
+| `enc-aes-256-empty.pdf` | ok | 15/15 | 3,323 ms | 8,343 ms | 39 MiB | none |
+| `enc-rc4-128-empty.pdf` | ok | 15/15 | 4,292 ms | 8,478 ms | 39 MiB | none |
+| `fail-locked-aes-256.pdf` | `Err`: decryption: PasswordProtected | 0/0 |  | 63 ms |  | none |
+| `fail-not-a-pdf.pdf` | `Err`: invalid PDF | 0/0 |  | 1 ms |  | none |
+| `fail-truncated.pdf` | `Err`: invalid PDF | 0/0 |  | 52 ms |  | none |
+| `ia-origin-scan.pdf` | ok | 568/568 | 985 ms | 91,320 ms | 60 MiB | none |
+| `irs-f1040.pdf` | ok | 2/2 | 257 ms | 441 ms | 8 MiB | none |
+| `irs-fw9.pdf` | ok | 6/6 | 279 ms | 1,092 ms | 8 MiB | none |
+| `iso32000.pdf` | ok | 756/756 | 311 ms | 40,859 ms | 57 MiB | none |
+| `naca-scan.pdf` | ok | 40/40 | 310 ms | 8,113 ms | 90 MiB | none |
+| `tool-combine-pdf.pdf` | ok | 4/4 | 96 ms | 229 ms | 36 MiB | none |
+| `tool-image-to-pdf-grid.pdf` | ok | 1/1 | 44 ms | 45 ms | 8 MiB | none |
+| `tool-image-to-pdf.pdf` | ok | 3/3 | 45 ms | 98 ms | 8 MiB | none |
+| `tool-markdown-to-pdf.pdf` | ok | 1/1 | 12 ms | 12 ms | 4 MiB | none |
+
+**Result: pass.**
+- No file trapped, and no page went over 10 s.
+- The largest linear memory was 90 MiB, on the NACA scan.
+- The 756-page file and the 568-page JBIG2/JPX scan completed.
+- Empty-password decryption works at R3 (the real ISO 32000 file and the RC4 variant), R4 (AES-128) and R6 (AES-256), whatever hayro's README says.
+- The locked, truncated and non-PDF inputs return `Err` rather than trapping.
+
+Limits of this result:
+- **The margin on page time is thin.** The machine was shared with other sessions (load average about 18), so all times here are inflated, and they are not a render-time result.
+  - Pages 13–15 of the arXiv paper are the attention-visualisation figures, which are vector-heavy. A separate re-run, with the JIT warm, timed them at 1.2–6.5 s each at 0.6.
+  - The same paper took 3.3–9.2 s on its slowest page across the four encrypted and plain copies.
+  - On a quiet machine these would be lower, but they were not measured against pdf.js.
+- **"Rendered" means only that a pixmap of the right size came back.** Whether the pixels are right is the visual-parity axis, which was not run.
+- **hayro rejects the truncated file entirely** (`invalid PDF`). How pdf.js handles it, for example by showing the first pages, was not checked.
 
 ## The facade
 
