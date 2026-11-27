@@ -25,6 +25,7 @@ describe('mermaid-renderer', () => {
         flowchart: { useMaxWidth: true },
         htmlLabels: false,
         logLevel: 'error',
+        secure: ['htmlLabels'],
         securityLevel: 'strict',
         startOnLoad: false,
         suppressErrorRendering: true,

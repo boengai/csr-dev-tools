@@ -14,6 +14,9 @@ export function initializeMermaid(): void {
     // taints the PNG export's canvas. SVG <text> labels survive both.
     htmlLabels: false,
     logLevel: 'error',
+    // Mermaid adds these keys to its secure list, so frontmatter cannot set them
+    // and a diagram cannot turn HTML labels back on.
+    secure: ['htmlLabels'],
     securityLevel: 'strict',
     startOnLoad: false,
     suppressErrorRendering: true,

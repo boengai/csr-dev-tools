@@ -47,20 +47,41 @@ test.describe('Mermaid Renderer', () => {
       kind: 'state',
       labels: ['Active', 'finish', 'Done'],
     },
+    { code: 'mindmap\n  Root\n    Leaf', kind: 'mindmap', labels: ['Root', 'Leaf'] },
+  ]
+
+  // Frontmatter config is merged over the site config, so a diagram must not be
+  // able to turn HTML labels back on. The root key is the one that did; the
+  // deprecated nested key is already outranked by the root, and stays guarded.
+  const FRONTMATTERS = [
+    { frontmatter: '', titleSuffix: '' },
+    { frontmatter: '---\nconfig:\n  htmlLabels: true\n---\n', titleSuffix: ' with frontmatter htmlLabels: true' },
+    {
+      frontmatter: '---\nconfig:\n  flowchart:\n    htmlLabels: true\n---\n',
+      titleSuffix: ' with frontmatter flowchart.htmlLabels: true',
+    },
   ]
 
   for (const { code, kind, labels } of LABELLED_DIAGRAMS) {
-    test(`${kind} diagram draws its labels as SVG text`, async ({ page }) => {
-      await codeInput.fill(page, SOURCE, code)
-      const svg = diagram(page)
-      await expect(svg).toBeVisible({ timeout: 10000 })
+    for (const { frontmatter, titleSuffix } of FRONTMATTERS) {
+      test(`${kind} diagram${titleSuffix} draws its labels as SVG text`, async ({ page }) => {
+        await codeInput.fill(page, SOURCE, frontmatter + code)
+        const svg = diagram(page)
+        await expect(svg).toBeVisible({ timeout: 10000 })
 
-      for (const label of labels) {
-        await expect(svg.locator('text', { hasText: label }).first()).toBeVisible()
-      }
-      await expect(svg.locator('foreignObject')).toHaveCount(0)
-    })
+        for (const label of labels) {
+          await expect(svg.locator('text', { hasText: label }).first()).toBeVisible()
+        }
+        await expect(svg.locator('foreignObject')).toHaveCount(0)
+      })
+    }
   }
+
+  test('frontmatter theme still applies', async ({ page }) => {
+    await codeInput.fill(page, SOURCE, '---\nconfig:\n  theme: forest\n---\nflowchart TD\n    A[Start] --> B[Finish]')
+    // Forest's node fill; the site's dark theme does not use it.
+    await expect(diagram(page).locator('style')).toContainText('#cde498', { timeout: 10000 })
+  })
 
   test('pick an example → it renders', async ({ page }) => {
     await page.getByRole('button', { name: 'Use Flowchart example' }).click()
