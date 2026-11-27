@@ -1,5 +1,6 @@
 import { expect, type Page, test } from '@playwright/test'
 
+import { TOOL_ROUTES } from '../src/constants/tool-routes'
 import { toolSurface } from './helpers/selectors'
 import {
   EDIT,
@@ -23,6 +24,17 @@ import { DRIVERS, expectStored } from './stored-values/drivers.ts'
  * the page only through the DOM contract of docs/ux/parity.md (on develop), so they run
  * unchanged against the Dioxus build: that is the rollback proof.
  */
+
+/**
+ * A journey's title starts with the Tool's name, so a parity run filtered to
+ * the ported Tools (`journeys.grep`, e2e/parity/config.ts) picks it up.
+ */
+const nameOf = (key: string): string => {
+  const app: Record<string, string> = { dashboard: 'Dashboard layout', settings: 'Settings' }
+  const name = TOOL_ROUTES.find((tool) => tool.key === key)?.name ?? app[key]
+  if (!name) throw new Error(`no Tool or app feature named ${key}`)
+  return name
+}
 
 const golden = readGolden()
 const { keys, neverSaved } = readKeyList()
@@ -48,7 +60,7 @@ const expectOnlyListedKeys = async (page: Page): Promise<void> => {
 
 test.describe('Saved inputs', () => {
   for (const driver of DRIVERS) {
-    test(`${driver.tool}: restores what React saved, and saves an edit in the same shape`, async ({ page }) => {
+    test(`${nameOf(driver.tool)}: restores what React saved, and saves an edit in the same shape`, async ({ page }) => {
       const entries = driver.keys.map(currentShape)
       const restored = Object.fromEntries(entries.map((e) => [e.key, e.expected]))
       await recordWrites(page)
@@ -64,7 +76,7 @@ test.describe('Saved inputs', () => {
     })
   }
 
-  test('json-formatter: a field the Tool does not name is kept and saved back', async ({ page }) => {
+  test(`${nameOf('json-formatter')}: a field the Tool does not name is kept and saved back`, async ({ page }) => {
     const driver = DRIVERS.find((d) => d.tool === 'json-formatter')
     const entry = golden.entries.find((e) => e.id === 'json-formatter/extra-field')
     if (!driver || !entry) throw new Error('needs the json-formatter driver and its extra-field golden entry')
@@ -81,7 +93,10 @@ test.describe('Saved inputs', () => {
     await driver.checkEdited(page, restored)
   })
 
-  test('db-diagram: Open in Mermaid Renderer hands the diagram over through storage', async ({ context, page }) => {
+  test(`${nameOf('db-diagram')}: Open in ${nameOf('mermaid-renderer')} hands the diagram over through storage`, async ({
+    context,
+    page,
+  }) => {
     await recordWrites(context)
     await page.goto('/tools/db-diagram')
     await page.getByTestId('add-table-btn').click()
@@ -125,7 +140,9 @@ test.describe('Saved inputs', () => {
     await expectOnlyListedKeys(renderer)
   })
 
-  test('mermaid-renderer: a DB Diagram handoff wins over the saved draft and is read once', async ({ page }) => {
+  test(`${nameOf('mermaid-renderer')}: a ${nameOf('db-diagram')} handoff wins over the saved draft and is read once`, async ({
+    page,
+  }) => {
     const handoff = 'erDiagram\n  users {\n    INT id\n  }'
     await seedStorage(page, {
       'csr-dev-tools-handoff-mermaid-renderer': handoff,
@@ -149,7 +166,9 @@ test.describe('Saved inputs', () => {
     await expectOnlyListedKeys(page)
   })
 
-  test('jsonpath-evaluator: when the migrated write fails, the old draft is put back', async ({ page }) => {
+  test(`${nameOf('jsonpath-evaluator')}: when the migrated write fails, the old draft is put back`, async ({
+    page,
+  }) => {
     const driver = DRIVERS.find((d) => d.tool === 'jsonpath-evaluator')
     const legacy = golden.entries.find((e) => e.id === 'jsonpath-evaluator/legacy-bag')
     if (!driver || !legacy) throw new Error('needs the jsonpath-evaluator driver and its legacy-bag golden entry')
@@ -172,7 +191,7 @@ test.describe('Saved inputs', () => {
     expect(await page.evaluate(() => localStorage.getItem('csr-dev-tools-jsonpath-evaluator-v2'))).toBeNull()
   })
 
-  test("base64-codec: a saved mode it does not know opens the first mode, with that mode's saved source", async ({
+  test(`${nameOf('base64-codec')}: a saved mode it does not know opens the first mode, with that mode's saved source`, async ({
     page,
   }) => {
     const driver = DRIVERS.find((d) => d.tool === 'base64-codec')
@@ -188,7 +207,7 @@ test.describe('Saved inputs', () => {
     await driver.shows(page, { [mode.key]: mode.expected, [source.key]: source.expected })
   })
 
-  test('db-diagram: an unreadable store is backed up before the first save over it', async ({ page }) => {
+  test(`${nameOf('db-diagram')}: an unreadable store is backed up before the first save over it`, async ({ page }) => {
     await recordWrites(page)
     const unreadable = '{bad'
     await seedStorage(page, { 'csr-dev-tools-db-diagrams': unreadable })
@@ -228,7 +247,7 @@ test.describe('Saved inputs', () => {
   })
 
   for (const { keys: allowed = [], tool } of neverSaved) {
-    test(`${tool}: saves no input`, async ({ page }) => {
+    test(`${nameOf(tool)}: saves no input`, async ({ page }) => {
       await recordWrites(page)
       await page.goto(`/tools/${tool}`)
       const surface = toolSurface(page)

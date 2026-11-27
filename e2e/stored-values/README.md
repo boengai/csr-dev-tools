@@ -74,7 +74,9 @@ Values are compared as JSON values, not as text, so neither build is bound to th
 
 Three more journeys check the Mermaid handoff, DB Diagram's corrupt backup, and that each `neverSaved` Tool writes nothing when typed into.
 
-The journeys follow the rules of `docs/ux/parity.md` on `develop`. They read the page only through roles, accessible names, labels, `data-slot` values and test ids, and use no library or class selector. So they run unchanged against the Dioxus build, which is the rollback proof. In the parity runs they get no retries.
+They also run in the parity run's `journeys` project (`pnpm test:parity`, no retries). Each title starts with the Tool's name, so a Dioxus run's `journeys.grep` (`e2e/parity/config.ts`) picks up the ported Tools' journeys with the rest of their specs.
+
+The journeys follow the rules of `docs/ux/parity.md`. They read the page only through roles, accessible names, labels, `data-slot` values and test ids, and use no library or class selector. So they run unchanged against the Dioxus build, which is the rollback proof. In the parity runs they get no retries.
 
 ## Capturing
 
