@@ -12,7 +12,7 @@ The answer to [Safari downloads preloaded WebAssembly twice](https://github.com/
 
 **To decide:** the issue says the fix must not "loosen the CSP". The hash allows exactly one more script, with fixed bytes, and no `'unsafe-inline'`. This file treats that as not loosening, but it is an addition to the policy, and the only variant without it fails. It needs a yes from the maintainer before the issue closes.
 
-**Still owed:** a check in real Safari on macOS and iOS with the network panel. Everything here was measured in Playwright's WebKit build (Playwright 1.64), not Safari. Safari 27.2 on the measuring Mac refused WebDriver, because "Allow remote automation" is off, and that setting was left alone.
+**Still owed:** a check in Safari on iOS. Safari on macOS is confirmed below. The budgets and the Playwright test ran in Playwright's WebKit build (Playwright 1.64).
 
 ## What WebKit does with a preload tag
 
@@ -73,6 +73,23 @@ This is `dioxus/js/wasm-early-fetch.js` as measured, at `f68cef16`. What matters
 - **The `auto` rule is unchanged:** the main module always, the route module only when it is at most 128 KiB.
 
 If the real port can pass the promise to the loader's init directly, it should, and drop the `fetch` wrapper. The requirement is one request, started before the loader's JavaScript arrives.
+
+## Real Safari on macOS
+
+Safari 27.2 on macOS, driven through `safaridriver` on 2026-11-27, against the same two local builds. Requests were counted at the server, which held each `.wasm` response for 400 ms. Every load used a fresh origin, so nothing came from an earlier load's cache.
+
+| Build | Page | Main module | Route module |
+|---|---|--:|--:|
+| Preload tags | Hash Generator | 2 | 1 |
+| Preload tags | Escaped JSON Stringifier | 2 | 1 |
+| Preload tags | Image Converter | 2 | 1 (not preloaded) |
+| Inline script | all three | 1 | 1 |
+
+- **Safari downloads the preloaded main module twice**, as Playwright's WebKit does. Resource Timing shows a `link` and a `fetch` entry of 531,282 bytes each.
+- **The preloaded route module reached the server once.** Its second entry is a `fetch` of 300 bytes: the preload had finished by the time the loader asked, so the HTTP cache answered. Playwright's WebKit, with both requests in flight together, downloaded it twice. So in Safari the route module's second download depends on timing, and the main module's does not.
+- **With the inline script every module is requested once,** and all three pages render, so Safari accepts the script under its CSP hash.
+
+This was an automated run, not the network panel, and one load per page.
 
 ## The test
 
