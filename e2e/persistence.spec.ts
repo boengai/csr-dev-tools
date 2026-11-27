@@ -2,7 +2,6 @@ import { expect, type Page, test } from '@playwright/test'
 
 import { TOOL_ROUTES } from '../src/constants/tool-routes'
 import { toolSurface } from './helpers/selectors'
-import { APP_WIDE } from './parity/tags'
 import { parityToolFilter } from './parity/tools'
 import {
   EDIT,
@@ -31,12 +30,11 @@ import { NEVER_SAVED_SAMPLES } from './stored-values/samples.ts'
  */
 
 /**
- * A journey's title starts with the Tool's name, so a parity run filtered to
- * the ported Tools (`journeys.grep`, e2e/parity/config.ts) picks it up.
+ * A journey's title starts with the Tool's registry name. A parity run picks the
+ * ported Tools' journeys by `requirePorted` (PARITY_TOOLS), not by title.
  */
 const nameOf = (key: string): string => {
-  // App-wide: every build has them, so a parity run filtered by Tool name still runs them (APP_WIDE).
-  const app: Record<string, string> = { dashboard: `Dashboard layout ${APP_WIDE}`, settings: `Settings ${APP_WIDE}` }
+  const app: Record<string, string> = { dashboard: 'Dashboard layout', settings: 'Settings' }
   const name = TOOL_ROUTES.find((tool) => tool.key === key)?.name ?? app[key]
   if (!name) throw new Error(`no Tool or app feature named ${key}`)
   return name

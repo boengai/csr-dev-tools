@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url'
 import { defineConfig, devices, type PlaywrightTestConfig } from '@playwright/test'
 
 import type { ToolRegistryKey } from '../../src/types/constants/tool-registry'
-import { APP_WIDE, CONTRACT, DIOXUS_ONLY } from './tags'
+import { CONTRACT, DIOXUS_ONLY } from './tags'
 
 export type ParityBuild = 'dioxus' | 'react'
 
@@ -38,6 +38,7 @@ const both = (a: RegExp, b: RegExp): RegExp =>
  * | Project          | Device                | Runs                                        |
  * |------------------|-----------------------|---------------------------------------------|
  * | `journeys`       | Desktop Chrome        | the journeys                                |
+ * | `persistence`    | Desktop Chrome        | the stored-value contract's journeys        |
  * | `harness`        | Desktop Chrome        | layout contract, axe, loading check         |
  * | `phone-contract` | Pixel 7               | layout contract                             |
  * | `phone-journeys` | Pixel 7               | the journeys' mobile tests                  |
@@ -56,15 +57,13 @@ export const defineParityConfig = ({ baseURL, build, journeys = {}, tools, webSe
   if (tools && !process.env.PARITY_TOOLS) process.env.PARITY_TOOLS = tools.join(',')
 
   const grepInvert = build === 'react' ? new RegExp(DIOXUS_ONLY) : undefined
-  // A run filtered to its ported Tools still runs the app-wide journeys, which every build has.
+  // The stored-value contract's journeys run in their own project: they pick the ported Tools
+  // from PARITY_TOOLS (`requirePorted`), not from `journeys.grep`, which names Tools as their specs do.
   const PERSISTENCE = 'persistence.spec.ts'
   const journeyFiles = {
-    testIgnore: ['parity/**', 'perf/**'],
-    ...(journeys.testMatch ? { testMatch: [...new Set([...journeys.testMatch, PERSISTENCE])] } : {}),
+    testIgnore: ['parity/**', 'perf/**', PERSISTENCE],
+    ...(journeys.testMatch ? { testMatch: journeys.testMatch } : {}),
   }
-  const journeyGrep = journeys.grep
-    ? new RegExp(`(?:${journeys.grep.source})|${APP_WIDE}`, journeys.grep.flags.replace('g', ''))
-    : undefined
   // The journeys' mobile tests. The DB diagram's "375px viewport" test is left out: its
   // `beforeEach` needs the desktop canvas, which a phone never shows, so it runs in `journeys`.
   const mobile = /mobile viewport/
@@ -76,9 +75,15 @@ export const defineParityConfig = ({ baseURL, build, journeys = {}, tools, webSe
     projects: [
       {
         ...journeyFiles,
-        grep: journeyGrep,
+        grep: journeys.grep,
         grepInvert,
         name: 'journeys',
+        use: { ...devices['Desktop Chrome'], permissions: CLIPBOARD },
+      },
+      {
+        grepInvert,
+        name: 'persistence',
+        testMatch: PERSISTENCE,
         use: { ...devices['Desktop Chrome'], permissions: CLIPBOARD },
       },
       {

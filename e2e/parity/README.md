@@ -20,6 +20,7 @@ CI runs `pnpm test:parity` in the `ci` job, after the React site's own e2e run (
 | Project | Device | Runs |
 |---|---|---|
 | `journeys` | Desktop Chrome | the journeys: `e2e/*.spec.ts` and `e2e/platform/` |
+| `persistence` | Desktop Chrome | the stored-value contract's journeys (`persistence.spec.ts`), filtered by `tools` rather than by `journeys.grep` |
 | `harness` | Desktop Chrome | `layout-contract.spec.ts`, `a11y.spec.ts`, `loading.spec.ts` |
 | `phone-contract` | Pixel 7 (touch, `isMobile`) | `layout-contract.spec.ts` |
 | `phone-journeys` | Pixel 7 | the journeys' mobile tests (titles with "mobile viewport"; the DB Diagram's 375px test starts from its desktop canvas, so it runs in `journeys`) |
@@ -60,7 +61,7 @@ test('the copy button has a name', { tag: DIOXUS_ONLY }, async ({ page }) => { .
 
 ## Pointing it at another build
 
-`defineParityConfig` (`config.ts`) builds the whole run for one build. The Dioxus config calls it with its own server and its ported Tools, as the spike's `dioxus/playwright.config.ts` did. A filtered run still runs the stored-value contract's app-wide journeys: `persistence.spec.ts` is always matched, and titles tagged `@app-wide` (the dashboard layout, settings) always pass the grep.
+`defineParityConfig` (`config.ts`) builds the whole run for one build. The Dioxus config calls it with its own server and its ported Tools, as the spike's `dioxus/playwright.config.ts` did. The stored-value contract's journeys (`persistence.spec.ts`) run in their own `persistence` project. `journeys.grep` does not filter them: each one skips unless its Tools are in `tools`, and the dashboard layout and settings journeys always run.
 
 ```ts
 import { defineParityConfig } from '../e2e/parity/config'

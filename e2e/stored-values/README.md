@@ -75,7 +75,7 @@ Values are compared as JSON values, not as text, so neither build is bound to th
 
 Further journeys check the Mermaid handoff, DB Diagram's corrupt backup, the JSONPath put-back, and that each `neverSaved` Tool writes nothing. A never-saved Tool is given valid input from [`samples.ts`](samples.ts), so a write made only once the input is processed is caught too.
 
-They also run in the parity run's `journeys` project (`pnpm test:parity`, no retries). Each title starts with the Tool's name, so a Dioxus run's `journeys.grep` (`e2e/parity/config.ts`) picks up the ported Tools' journeys with the rest of their specs. A journey also skips unless every Tool it opens is in `PARITY_TOOLS`. The dashboard layout and settings journeys carry `@app-wide` (`e2e/parity/tags.ts`): every build has them, so a filtered run always includes them.
+They also run in the parity run's own `persistence` project (`pnpm test:parity`, no retries). That project does not use `journeys.grep`, because the other specs name Tools their own way. Instead each journey skips unless every Tool it opens is in `PARITY_TOOLS`, the build's ported Tools (`e2e/parity/config.ts`). The dashboard layout and settings journeys always run, since every build has them. Titles start with the Tool's registry name.
 
 The key-list check allows a key only in a normal visit. A legacy key the site only reads (`written: false`) never counts as written. Neither does a key whose `written` is a note naming one case: JSONPath's legacy key, which only its rollback journey writes.
 
