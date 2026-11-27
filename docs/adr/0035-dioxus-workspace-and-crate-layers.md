@@ -32,7 +32,8 @@ decided in conversation on 2026-11-27.
     the layout guard becomes a compile-time rule, owned by #20 and #25.
 - **What was measured.** Scratch workspaces were built with dx 0.7.10
   `--release --wasm-split` and fat LTO on 2026-11-27. They used stub Tools,
-  not ported ones, and were not kept.
+  not ported ones, and were not kept. The write-up is
+  [`docs/research/dioxus-crate-structure.md` at `79e1e3e4`](https://github.com/boengai/csr-dev-tools/blob/79e1e3e4/docs/research/dioxus-crate-structure.md).
   - **Crate boundaries do not affect splitting.** The splitter runs on the
     linked module. A component from another crate lands in its own module
     like a same-crate one: main was 416,399 bytes against 414,443.
