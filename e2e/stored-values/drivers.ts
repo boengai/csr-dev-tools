@@ -634,7 +634,11 @@ export const DRIVERS: Array<Driver> = [
   ]),
   {
     // Only the mode is saved; the text and the password never are.
-    checkEdited: (page) => expectStored(page, { [`${P}aes-encrypt-decrypt-mode`]: 'encrypt' }),
+    checkEdited: async (page) => {
+      await expectStored(page, { [`${P}aes-encrypt-decrypt-mode`]: 'encrypt' })
+      // Leaving flushes any pending save, so the key-list check that follows sees it.
+      await page.goto('/')
+    },
     edit: async (page) => {
       await textbox(page, 'Password').fill('secret')
       await page.getByRole('button', { exact: true, name: 'Encrypt mode' }).click()

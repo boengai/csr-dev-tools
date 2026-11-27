@@ -368,9 +368,11 @@ if (problems.length > 0) {
   process.exit(1)
 }
 
-const commit = execFileSync('git', ['rev-parse', '--short', 'HEAD'], { encoding: 'utf8' }).trim()
+// The main commit the React source comes from: a branch commit would not survive a squash merge.
+const git = (...args: Array<string>) => execFileSync('git', args, { encoding: 'utf8' }).trim()
+const commit = git('rev-parse', '--short', git('merge-base', 'HEAD', 'origin/main'))
 const golden: Golden = {
-  capturedFrom: `React, ${commit}`,
+  capturedFrom: `React main, ${commit}`,
   defaults: sortKeys(defaults),
   entries: entries.sort((a, b) => a.id.localeCompare(b.id)),
   environment: CAPTURE_ENVIRONMENT,

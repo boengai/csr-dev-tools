@@ -77,16 +77,16 @@ export const SEEDS: Array<Seed> = [
   one('json-formatter/array', `${P}json-formatter`, '[]'),
   one('json-formatter/source-number', `${P}json-formatter`, '{"source":7}'),
   one('json-formatter/extra-field', `${P}json-formatter`, '{"source":"x","extra":1}'),
-  // Plain strings, not String.raw: the formatter turns an escaped pair inside String.raw into the character.
+  // Plain strings, never String.raw: the formatter turns an escaped pair inside String.raw into the character.
   one('json-formatter/surrogate-pair-escaped', `${P}json-formatter`, '{"source":"a\\ud83d\\ude00"}'),
   one('json-formatter/emoji', `${P}json-formatter`, '{"source":"a😀"}'),
-  one('json-formatter/lone-high-surrogate', `${P}json-formatter`, String.raw`{"source":"a\ud83d"}`, {
+  one('json-formatter/lone-high-surrogate', `${P}json-formatter`, '{"source":"a\\ud83d"}', {
     deliberate: { expected: { source: 'a�' }, why: SURROGATE },
   }),
-  one('json-formatter/lone-low-surrogate', `${P}json-formatter`, String.raw`{"source":"\ude00b"}`, {
+  one('json-formatter/lone-low-surrogate', `${P}json-formatter`, '{"source":"\\ude00b"}', {
     deliberate: { expected: { source: '�b' }, why: SURROGATE },
   }),
-  one('json-formatter/escaped-backslash', `${P}json-formatter`, String.raw`{"source":"\\ud83d"}`),
+  one('json-formatter/escaped-backslash', `${P}json-formatter`, '{"source":"\\\\ud83d"}'),
   one('css-formatter/source-only', `${P}css-formatter`, '{"source":"a{}"}'),
   one('css-formatter/tab', `${P}css-formatter`, '{"source":"a{}","mode":"minify","indent":"tab"}'),
   one('css-formatter/unknown-mode-text-indent', `${P}css-formatter`, '{"source":"a{}","mode":"zzz","indent":"9"}', {
