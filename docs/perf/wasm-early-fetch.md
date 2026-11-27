@@ -12,7 +12,7 @@ The answer to [Safari downloads preloaded WebAssembly twice](https://github.com/
 
 **To decide:** the issue says the fix must not "loosen the CSP". The hash allows exactly one more script, with fixed bytes, and no `'unsafe-inline'`. This file treats that as not loosening, but it is an addition to the policy, and the only variant without it fails. It needs a yes from the maintainer before the issue closes.
 
-**Still owed:** a check in Safari on iOS. Safari on macOS is confirmed below. The budgets and the Playwright test ran in Playwright's WebKit build (Playwright 1.64).
+**Still owed:** a check on a real iPhone. Safari on macOS and in the iOS Simulator are confirmed below. The budgets and the Playwright test ran in Playwright's WebKit build (Playwright 1.64).
 
 ## What WebKit does with a preload tag
 
@@ -90,6 +90,21 @@ Safari 27.2 on macOS, driven through `safaridriver` on 2026-11-27, against the s
 - **With the inline script every module is requested once,** and all three pages render, so Safari accepts the script under its CSP hash.
 
 This was an automated run, not the network panel, and one load per page.
+
+## Safari in the iOS Simulator
+
+Xcode 27.2, 2026-11-27, the same two builds and the same server-side count. Each page was opened with `simctl openurl` on a fresh origin. The Simulator runs iOS's WebKit on the Mac, not on a phone. Requests for the main module, then the route module:
+
+| Build | Page | iOS 18.4 (iPhone 16), one load | iOS 27.0 (iPhone 18 Pro), four loads |
+|---|---|--:|--:|
+| Preload tags | Hash Generator | 2, 2 | 2, 1 in three loads; 1, 1 in one |
+| Preload tags | Escaped JSON Stringifier | 2, 2 | 2, 1 in all four |
+| Preload tags | Image Converter | 2, 1 (not preloaded) | 1, 1 in all four |
+| Inline script | all three | 1, 1 | 1, 1 in all four |
+
+- **iOS 18.4 downloads every preloaded module twice,** as Playwright's WebKit does.
+- **iOS 27.0 downloads the preloaded main module twice on most loads, not all.** When the preload had finished before the loader asked, the cache answered instead. The preload tags are therefore unreliable there, not always doubled.
+- **With the inline script every module is requested once on both versions,** on every load, and the pages render.
 
 ## The test
 
