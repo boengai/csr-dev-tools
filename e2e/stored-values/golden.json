@@ -1,0 +1,2667 @@
+{
+  "capturedFrom": "React, bb2f106b",
+  "defaults": {
+    "csr-dev-tools-aes-encrypt-decrypt-mode": "encrypt",
+    "csr-dev-tools-base64-decode-source": "",
+    "csr-dev-tools-base64-encode-source": "",
+    "csr-dev-tools-base64-mode": "encode",
+    "csr-dev-tools-color-palette-generator": {
+      "harmony": "analogous",
+      "hex": "#3b82f6"
+    },
+    "csr-dev-tools-cron-expression-parser": {
+      "source": ""
+    },
+    "csr-dev-tools-crontab-generator": {
+      "dayOfMonth": {
+        "mode": "every"
+      },
+      "dayOfWeek": {
+        "mode": "every"
+      },
+      "hour": {
+        "mode": "every"
+      },
+      "minute": {
+        "mode": "every"
+      },
+      "month": {
+        "mode": "every"
+      }
+    },
+    "csr-dev-tools-css-formatter": {
+      "source": "",
+      "mode": "beautify",
+      "indent": 2
+    },
+    "csr-dev-tools-csv-to-json-source": "",
+    "csr-dev-tools-db-diagrams": {
+      "diagrams": {},
+      "index": []
+    },
+    "csr-dev-tools-env-file-converter-mode": "env-to-json",
+    "csr-dev-tools-env-to-json-source": "",
+    "csr-dev-tools-env-to-yaml-source": "",
+    "csr-dev-tools-escaped-json-mode": "stringify",
+    "csr-dev-tools-escaped-json-parse-source": "",
+    "csr-dev-tools-escaped-json-stringify-source": "",
+    "csr-dev-tools-graphql-schema-viewer-input": "",
+    "csr-dev-tools-html-entity-decode-source": "",
+    "csr-dev-tools-html-entity-encode-source": "",
+    "csr-dev-tools-html-entity-mode": "encode",
+    "csr-dev-tools-html-formatter": {
+      "source": "",
+      "mode": "beautify",
+      "indent": 2
+    },
+    "csr-dev-tools-html-to-markdown-mode": "html-to-markdown",
+    "csr-dev-tools-html-to-markdown-source": "",
+    "csr-dev-tools-html-to-pdf": "",
+    "csr-dev-tools-javascript-minifier": {
+      "source": "",
+      "mode": "minify",
+      "indent": 2
+    },
+    "csr-dev-tools-json-diff": {
+      "original": "",
+      "modified": ""
+    },
+    "csr-dev-tools-json-formatter": {
+      "source": ""
+    },
+    "csr-dev-tools-json-schema-validator": {
+      "schema": "",
+      "source": ""
+    },
+    "csr-dev-tools-json-to-csv-mode": "json-to-csv",
+    "csr-dev-tools-json-to-csv-source": "",
+    "csr-dev-tools-json-to-env-source": "",
+    "csr-dev-tools-json-to-toml-mode": "toml-to-json",
+    "csr-dev-tools-json-to-toml-source": "",
+    "csr-dev-tools-json-to-typescript": {
+      "optionalProps": false,
+      "rootName": "Root",
+      "source": "",
+      "useInterface": true
+    },
+    "csr-dev-tools-json-to-xml-mode": "xml-to-json",
+    "csr-dev-tools-json-to-xml-source": "",
+    "csr-dev-tools-json-to-yaml-mode": "json-to-yaml",
+    "csr-dev-tools-json-to-yaml-source": "",
+    "csr-dev-tools-jsonpath-evaluator-v2": {
+      "expression": "$.store.book[*].author",
+      "source": ""
+    },
+    "csr-dev-tools-lorem-ipsum-generator": {
+      "count": 3,
+      "startWithLorem": true,
+      "unit": "paragraphs"
+    },
+    "csr-dev-tools-markdown-table-generator": {
+      "alignments": [
+        "left",
+        "left",
+        "left"
+      ],
+      "cols": 3,
+      "data": [
+        [
+          "Header 1",
+          "Header 2",
+          "Header 3"
+        ],
+        [
+          "",
+          "",
+          ""
+        ],
+        [
+          "",
+          "",
+          ""
+        ]
+      ],
+      "rows": 3
+    },
+    "csr-dev-tools-markdown-to-html-source": "",
+    "csr-dev-tools-markdown-to-pdf": "",
+    "csr-dev-tools-mermaid-renderer": {
+      "source": ""
+    },
+    "csr-dev-tools-password-generator": {
+      "digits": true,
+      "length": 16,
+      "lowercase": true,
+      "symbols": true,
+      "uppercase": true,
+      "count": 1
+    },
+    "csr-dev-tools-placeholder-image-generator": {
+      "bgColor": "#cccccc",
+      "bgHexInput": "#cccccc",
+      "height": "600",
+      "text": "",
+      "textColor": "#666666",
+      "textHexInput": "#666666",
+      "width": "800"
+    },
+    "csr-dev-tools-protobuf-codec-input": {
+      "decodeFormat": "base64",
+      "decodeSource": "",
+      "encodeFormat": "base64",
+      "encodeSource": "",
+      "schema": ""
+    },
+    "csr-dev-tools-protobuf-to-json-input": "",
+    "csr-dev-tools-rsa-key-generator": {
+      "keySize": 2048
+    },
+    "csr-dev-tools-sql-formatter": {
+      "source": "",
+      "dialect": "sql",
+      "indent": 2
+    },
+    "csr-dev-tools-string-escape-escape-source": "",
+    "csr-dev-tools-string-escape-unescape-mode": "escape",
+    "csr-dev-tools-string-escape-unescape-source": "",
+    "csr-dev-tools-text-case-converter": {
+      "source": ""
+    },
+    "csr-dev-tools-text-diff": {
+      "original": "",
+      "modified": ""
+    },
+    "csr-dev-tools-text-sort-dedupe": {
+      "removeDuplicates": false,
+      "removeEmpty": false,
+      "sortMode": "az",
+      "source": "",
+      "trimLines": false
+    },
+    "csr-dev-tools-timezone-converter": {
+      "source": "",
+      "sourceTz": "Asia/Bangkok",
+      "targetTzIds": [
+        "UTC",
+        "America/New_York",
+        "Europe/London"
+      ]
+    },
+    "csr-dev-tools-timezone-favorites": [],
+    "csr-dev-tools-toml-to-json-source": "",
+    "csr-dev-tools-url-encoder-decode-source": "",
+    "csr-dev-tools-url-encoder-encode-source": "",
+    "csr-dev-tools-url-encoder-mode": "encode",
+    "csr-dev-tools-user-agent-parser": {
+      "source": ""
+    },
+    "csr-dev-tools-uuid-generator": {
+      "count": 1
+    },
+    "csr-dev-tools-word-counter": {
+      "source": ""
+    },
+    "csr-dev-tools-xml-to-json-source": "",
+    "csr-dev-tools-yaml-formatter": {
+      "source": "",
+      "indent": 2,
+      "sortKeys": false
+    },
+    "csr-dev-tools-yaml-to-env-source": "",
+    "csr-dev-tools-yaml-to-json-source": "",
+    "feature_layout": {
+      "state": {
+        "value": {
+          "0": "json-formatter",
+          "1": "uuid-generator",
+          "2": "base64-codec",
+          "3": "jwt-decoder",
+          "4": "unix-timestamp",
+          "5": "regex-tester"
+        }
+      },
+      "version": 2
+    },
+    "settings": {
+      "state": {
+        "value": {
+          "showBackgroundAnimation": false
+        }
+      },
+      "version": 0
+    }
+  },
+  "entries": [
+    {
+      "id": "base64-codec/mode-number",
+      "key": "csr-dev-tools-base64-mode",
+      "reader": "codec-mode",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-base64-mode": "42"
+      },
+      "expected": "encode"
+    },
+    {
+      "id": "base64-codec/source-number",
+      "key": "csr-dev-tools-base64-encode-source",
+      "reader": "codec-source",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-base64-encode-source": "42"
+      },
+      "expected": ""
+    },
+    {
+      "id": "base64-codec/unknown-mode",
+      "key": "csr-dev-tools-base64-mode",
+      "reader": "codec-mode",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-base64-mode": "\"zzz\""
+      },
+      "expected": "encode"
+    },
+    {
+      "id": "crontab-generator/empty-object",
+      "key": "csr-dev-tools-crontab-generator",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-crontab-generator": "{}"
+      },
+      "expected": {
+        "dayOfMonth": {
+          "mode": "every"
+        },
+        "dayOfWeek": {
+          "mode": "every"
+        },
+        "hour": {
+          "mode": "every"
+        },
+        "minute": {
+          "mode": "every"
+        },
+        "month": {
+          "mode": "every"
+        }
+      }
+    },
+    {
+      "id": "csr-dev-tools-aes-encrypt-decrypt-mode/current",
+      "key": "csr-dev-tools-aes-encrypt-decrypt-mode",
+      "reader": "codec-mode",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-aes-encrypt-decrypt-mode": "\"decrypt\""
+      },
+      "expected": "decrypt"
+    },
+    {
+      "id": "csr-dev-tools-base64-decode-source/current",
+      "key": "csr-dev-tools-base64-decode-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-base64-decode-source": "\"aGk=\""
+      },
+      "expected": "aGk="
+    },
+    {
+      "id": "csr-dev-tools-base64-encode-source/current",
+      "key": "csr-dev-tools-base64-encode-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-base64-encode-source": "\"hi\""
+      },
+      "expected": "hi"
+    },
+    {
+      "id": "csr-dev-tools-base64-mode/current",
+      "key": "csr-dev-tools-base64-mode",
+      "reader": "codec-mode",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-base64-mode": "\"decode\""
+      },
+      "expected": "decode"
+    },
+    {
+      "id": "csr-dev-tools-color-palette-generator/current",
+      "key": "csr-dev-tools-color-palette-generator",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-color-palette-generator": "{\"harmony\":\"complementary\",\"hex\":\"#10b981\"}"
+      },
+      "expected": {
+        "harmony": "complementary",
+        "hex": "#10b981"
+      }
+    },
+    {
+      "id": "csr-dev-tools-cron-expression-parser/current",
+      "key": "csr-dev-tools-cron-expression-parser",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-cron-expression-parser": "{\"source\":\"*/5 * * * *\"}"
+      },
+      "expected": {
+        "source": "*/5 * * * *"
+      }
+    },
+    {
+      "id": "csr-dev-tools-crontab-generator/current",
+      "key": "csr-dev-tools-crontab-generator",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-crontab-generator": "{\"dayOfMonth\":{\"mode\":\"every\"},\"dayOfWeek\":{\"mode\":\"every\"},\"hour\":{\"mode\":\"interval\",\"interval\":1},\"minute\":{\"mode\":\"interval\",\"interval\":5},\"month\":{\"mode\":\"every\"}}"
+      },
+      "expected": {
+        "dayOfMonth": {
+          "mode": "every"
+        },
+        "dayOfWeek": {
+          "mode": "every"
+        },
+        "hour": {
+          "mode": "interval",
+          "interval": 1
+        },
+        "minute": {
+          "mode": "interval",
+          "interval": 5
+        },
+        "month": {
+          "mode": "every"
+        }
+      }
+    },
+    {
+      "id": "csr-dev-tools-css-formatter/current",
+      "key": "csr-dev-tools-css-formatter",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-css-formatter": "{\"source\":\"a{color:red}\",\"mode\":\"minify\",\"indent\":\"tab\"}"
+      },
+      "expected": {
+        "source": "a{color:red}",
+        "mode": "minify",
+        "indent": "tab"
+      }
+    },
+    {
+      "id": "csr-dev-tools-csv-to-json-source/current",
+      "key": "csr-dev-tools-csv-to-json-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-csv-to-json-source": "\"a\\n1\""
+      },
+      "expected": "a\n1"
+    },
+    {
+      "id": "csr-dev-tools-db-diagrams/current",
+      "key": "csr-dev-tools-db-diagrams",
+      "reader": "diagram",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"1795770000000-te45g5\":{\"tables\":[{\"id\":\"t_mwyr3c00_1\",\"name\":\"new_table\",\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"c_mwyr3c00_1\",\"name\":\"id\",\"type\":\"INT\"}],\"position\":{\"x\":40,\"y\":40}}],\"relationships\":[]}},\"index\":[{\"id\":\"1795770000000-te45g5\",\"name\":\"Untitled Diagram\",\"tableCount\":1,\"createdAt\":\"2026-11-27T09:00:00.000Z\",\"updatedAt\":\"2026-11-27T09:00:00.000Z\"}]}"
+      },
+      "expected": {
+        "diagrams": {
+          "1795770000000-te45g5": {
+            "relationships": [],
+            "tables": [
+              {
+                "id": "t_mwyr3c00_1",
+                "name": "new_table",
+                "columns": [
+                  {
+                    "constraints": {
+                      "isForeignKey": false,
+                      "isNullable": false,
+                      "isPrimaryKey": true,
+                      "isUnique": true
+                    },
+                    "id": "c_mwyr3c00_1",
+                    "name": "id",
+                    "type": "INT"
+                  }
+                ],
+                "position": {
+                  "x": 40,
+                  "y": 40
+                }
+              }
+            ]
+          }
+        },
+        "index": [
+          {
+            "id": "1795770000000-te45g5",
+            "name": "Untitled Diagram",
+            "tableCount": 1,
+            "createdAt": "2026-11-27T09:00:00.000Z",
+            "updatedAt": "2026-11-27T09:00:00.000Z"
+          }
+        ]
+      }
+    },
+    {
+      "id": "csr-dev-tools-env-file-converter-mode/current",
+      "key": "csr-dev-tools-env-file-converter-mode",
+      "reader": "codec-mode",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-env-file-converter-mode": "\"env-to-yaml\""
+      },
+      "expected": "env-to-yaml"
+    },
+    {
+      "id": "csr-dev-tools-env-to-json-source/current",
+      "key": "csr-dev-tools-env-to-json-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-env-to-json-source": "\"A=1\""
+      },
+      "expected": "A=1"
+    },
+    {
+      "id": "csr-dev-tools-env-to-yaml-source/current",
+      "key": "csr-dev-tools-env-to-yaml-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-env-to-yaml-source": "\"B=2\""
+      },
+      "expected": "B=2"
+    },
+    {
+      "id": "csr-dev-tools-escaped-json-mode/current",
+      "key": "csr-dev-tools-escaped-json-mode",
+      "reader": "codec-mode",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-escaped-json-mode": "\"parse\""
+      },
+      "expected": "parse"
+    },
+    {
+      "id": "csr-dev-tools-escaped-json-parse-source/current",
+      "key": "csr-dev-tools-escaped-json-parse-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-escaped-json-parse-source": "\"\\\"{\\\\\\\"a\\\\\\\":1}\\\"\""
+      },
+      "expected": "\"{\\\"a\\\":1}\""
+    },
+    {
+      "id": "csr-dev-tools-escaped-json-stringify-source/current",
+      "key": "csr-dev-tools-escaped-json-stringify-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-escaped-json-stringify-source": "\"{\\\"a\\\":1}\""
+      },
+      "expected": "{\"a\":1}"
+    },
+    {
+      "id": "csr-dev-tools-graphql-schema-viewer-input/current",
+      "key": "csr-dev-tools-graphql-schema-viewer-input",
+      "reader": "input",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-graphql-schema-viewer-input": "\"type Query { a: Int }\""
+      },
+      "expected": "type Query { a: Int }"
+    },
+    {
+      "id": "csr-dev-tools-html-entity-decode-source/current",
+      "key": "csr-dev-tools-html-entity-decode-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-html-entity-decode-source": "\"&lt;a&gt;\""
+      },
+      "expected": "&lt;a&gt;"
+    },
+    {
+      "id": "csr-dev-tools-html-entity-encode-source/current",
+      "key": "csr-dev-tools-html-entity-encode-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-html-entity-encode-source": "\"<a>\""
+      },
+      "expected": "<a>"
+    },
+    {
+      "id": "csr-dev-tools-html-entity-mode/current",
+      "key": "csr-dev-tools-html-entity-mode",
+      "reader": "codec-mode",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-html-entity-mode": "\"decode\""
+      },
+      "expected": "decode"
+    },
+    {
+      "id": "csr-dev-tools-html-formatter/current",
+      "key": "csr-dev-tools-html-formatter",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-html-formatter": "{\"source\":\"<p>hi</p>\",\"mode\":\"beautify\",\"indent\":4}"
+      },
+      "expected": {
+        "source": "<p>hi</p>",
+        "mode": "beautify",
+        "indent": 4
+      }
+    },
+    {
+      "id": "csr-dev-tools-html-to-markdown-mode/current",
+      "key": "csr-dev-tools-html-to-markdown-mode",
+      "reader": "codec-mode",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-html-to-markdown-mode": "\"markdown-to-html\""
+      },
+      "expected": "markdown-to-html"
+    },
+    {
+      "id": "csr-dev-tools-html-to-markdown-source/current",
+      "key": "csr-dev-tools-html-to-markdown-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-html-to-markdown-source": "\"<b>a</b>\""
+      },
+      "expected": "<b>a</b>"
+    },
+    {
+      "id": "csr-dev-tools-html-to-pdf/current",
+      "key": "csr-dev-tools-html-to-pdf",
+      "reader": "input",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-html-to-pdf": "\"<h1>Hi</h1>\""
+      },
+      "expected": "<h1>Hi</h1>"
+    },
+    {
+      "id": "csr-dev-tools-javascript-minifier/current",
+      "key": "csr-dev-tools-javascript-minifier",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-javascript-minifier": "{\"source\":\"const a = 1\",\"mode\":\"beautify\",\"indent\":2}"
+      },
+      "expected": {
+        "source": "const a = 1",
+        "mode": "beautify",
+        "indent": 2
+      }
+    },
+    {
+      "id": "csr-dev-tools-json-diff/current",
+      "key": "csr-dev-tools-json-diff",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-json-diff": "{\"original\":\"{\\\"a\\\":1}\",\"modified\":\"{\\\"a\\\":2}\"}"
+      },
+      "expected": {
+        "original": "{\"a\":1}",
+        "modified": "{\"a\":2}"
+      }
+    },
+    {
+      "id": "csr-dev-tools-json-formatter/current",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-json-formatter": "{\"source\":\"{\\\"a\\\":1}\"}"
+      },
+      "expected": {
+        "source": "{\"a\":1}"
+      }
+    },
+    {
+      "id": "csr-dev-tools-json-schema-validator/current",
+      "key": "csr-dev-tools-json-schema-validator",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-json-schema-validator": "{\"schema\":\"{\\\"type\\\":\\\"object\\\"}\",\"source\":\"{\\\"a\\\":1}\"}"
+      },
+      "expected": {
+        "schema": "{\"type\":\"object\"}",
+        "source": "{\"a\":1}"
+      }
+    },
+    {
+      "id": "csr-dev-tools-json-to-csv-mode/current",
+      "key": "csr-dev-tools-json-to-csv-mode",
+      "reader": "codec-mode",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-json-to-csv-mode": "\"csv-to-json\""
+      },
+      "expected": "csv-to-json"
+    },
+    {
+      "id": "csr-dev-tools-json-to-csv-source/current",
+      "key": "csr-dev-tools-json-to-csv-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-json-to-csv-source": "\"[{\\\"a\\\":1}]\""
+      },
+      "expected": "[{\"a\":1}]"
+    },
+    {
+      "id": "csr-dev-tools-json-to-env-source/current",
+      "key": "csr-dev-tools-json-to-env-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-json-to-env-source": "\"{\\\"C\\\":\\\"3\\\"}\""
+      },
+      "expected": "{\"C\":\"3\"}"
+    },
+    {
+      "id": "csr-dev-tools-json-to-toml-mode/current",
+      "key": "csr-dev-tools-json-to-toml-mode",
+      "reader": "codec-mode",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-json-to-toml-mode": "\"json-to-toml\""
+      },
+      "expected": "json-to-toml"
+    },
+    {
+      "id": "csr-dev-tools-json-to-toml-source/current",
+      "key": "csr-dev-tools-json-to-toml-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-json-to-toml-source": "\"{\\\"a\\\":1}\""
+      },
+      "expected": "{\"a\":1}"
+    },
+    {
+      "id": "csr-dev-tools-json-to-typescript/current",
+      "key": "csr-dev-tools-json-to-typescript",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-json-to-typescript": "{\"optionalProps\":true,\"rootName\":\"Doc\",\"source\":\"{\\\"a\\\":1}\",\"useInterface\":true}"
+      },
+      "expected": {
+        "optionalProps": true,
+        "rootName": "Doc",
+        "source": "{\"a\":1}",
+        "useInterface": true
+      }
+    },
+    {
+      "id": "csr-dev-tools-json-to-xml-mode/current",
+      "key": "csr-dev-tools-json-to-xml-mode",
+      "reader": "codec-mode",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-json-to-xml-mode": "\"json-to-xml\""
+      },
+      "expected": "json-to-xml"
+    },
+    {
+      "id": "csr-dev-tools-json-to-xml-source/current",
+      "key": "csr-dev-tools-json-to-xml-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-json-to-xml-source": "\"{\\\"a\\\":1}\""
+      },
+      "expected": "{\"a\":1}"
+    },
+    {
+      "id": "csr-dev-tools-json-to-yaml-mode/current",
+      "key": "csr-dev-tools-json-to-yaml-mode",
+      "reader": "codec-mode",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-json-to-yaml-mode": "\"yaml-to-json\""
+      },
+      "expected": "yaml-to-json"
+    },
+    {
+      "id": "csr-dev-tools-json-to-yaml-source/current",
+      "key": "csr-dev-tools-json-to-yaml-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-json-to-yaml-source": "\"{\\\"a\\\":1}\""
+      },
+      "expected": "{\"a\":1}"
+    },
+    {
+      "id": "csr-dev-tools-jsonpath-evaluator-v2/current",
+      "key": "csr-dev-tools-jsonpath-evaluator-v2",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-jsonpath-evaluator-v2": "{\"expression\":\"$.a\",\"source\":\"{\\\"a\\\":1}\"}"
+      },
+      "expected": {
+        "expression": "$.a",
+        "source": "{\"a\":1}"
+      }
+    },
+    {
+      "id": "csr-dev-tools-lorem-ipsum-generator/current",
+      "key": "csr-dev-tools-lorem-ipsum-generator",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-lorem-ipsum-generator": "{\"count\":3,\"startWithLorem\":false,\"unit\":\"words\"}"
+      },
+      "expected": {
+        "count": 3,
+        "startWithLorem": false,
+        "unit": "words"
+      }
+    },
+    {
+      "id": "csr-dev-tools-markdown-table-generator/current",
+      "key": "csr-dev-tools-markdown-table-generator",
+      "reader": "markdown-table",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-markdown-table-generator": "{\"alignments\":[\"left\",\"left\",\"left\"],\"cols\":3,\"data\":[[\"Header 1Name\",\"Header 2\",\"Header 3\"],[\"Ada\",\"\",\"\"],[\"\",\"\",\"\"]],\"rows\":3}"
+      },
+      "expected": {
+        "alignments": [
+          "left",
+          "left",
+          "left"
+        ],
+        "cols": 3,
+        "data": [
+          [
+            "Header 1Name",
+            "Header 2",
+            "Header 3"
+          ],
+          [
+            "Ada",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            ""
+          ]
+        ],
+        "rows": 3
+      }
+    },
+    {
+      "id": "csr-dev-tools-markdown-to-html-source/current",
+      "key": "csr-dev-tools-markdown-to-html-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-markdown-to-html-source": "\"**a**\""
+      },
+      "expected": "**a**"
+    },
+    {
+      "id": "csr-dev-tools-markdown-to-pdf/current",
+      "key": "csr-dev-tools-markdown-to-pdf",
+      "reader": "input",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-markdown-to-pdf": "\"# Hi\""
+      },
+      "expected": "# Hi"
+    },
+    {
+      "id": "csr-dev-tools-mermaid-renderer/current",
+      "key": "csr-dev-tools-mermaid-renderer",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-mermaid-renderer": "{\"source\":\"flowchart TD\\n  A --> B\"}"
+      },
+      "expected": {
+        "source": "flowchart TD\n  A --> B"
+      }
+    },
+    {
+      "id": "csr-dev-tools-password-generator/current",
+      "key": "csr-dev-tools-password-generator",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-password-generator": "{\"digits\":false,\"length\":24,\"lowercase\":true,\"symbols\":true,\"uppercase\":true,\"count\":1}"
+      },
+      "expected": {
+        "digits": false,
+        "length": 24,
+        "lowercase": true,
+        "symbols": true,
+        "uppercase": true,
+        "count": 1
+      }
+    },
+    {
+      "id": "csr-dev-tools-placeholder-image-generator/current",
+      "key": "csr-dev-tools-placeholder-image-generator",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-placeholder-image-generator": "{\"bgColor\":\"#cccccc\",\"bgHexInput\":\"#cccccc\",\"height\":\"600\",\"text\":\"Hello\",\"textColor\":\"#666666\",\"textHexInput\":\"#666666\",\"width\":\"640\"}"
+      },
+      "expected": {
+        "bgColor": "#cccccc",
+        "bgHexInput": "#cccccc",
+        "height": "600",
+        "text": "Hello",
+        "textColor": "#666666",
+        "textHexInput": "#666666",
+        "width": "640"
+      }
+    },
+    {
+      "id": "csr-dev-tools-protobuf-codec-input/current",
+      "key": "csr-dev-tools-protobuf-codec-input",
+      "reader": "value",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-protobuf-codec-input": "{\"decodeFormat\":\"base64\",\"decodeSource\":\"\",\"encodeFormat\":\"base64\",\"encodeSource\":\"{\\\"a\\\":1}\",\"schema\":\"syntax = \\\"proto3\\\";\\nmessage A { int32 a = 1; }\"}"
+      },
+      "expected": {
+        "decodeFormat": "base64",
+        "decodeSource": "",
+        "encodeFormat": "base64",
+        "encodeSource": "{\"a\":1}",
+        "schema": "syntax = \"proto3\";\nmessage A { int32 a = 1; }"
+      }
+    },
+    {
+      "id": "csr-dev-tools-protobuf-to-json-input/current",
+      "key": "csr-dev-tools-protobuf-to-json-input",
+      "reader": "input",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-protobuf-to-json-input": "\"syntax = \\\"proto3\\\";\\nmessage A { string a = 1; }\""
+      },
+      "expected": "syntax = \"proto3\";\nmessage A { string a = 1; }"
+    },
+    {
+      "id": "csr-dev-tools-rsa-key-generator/current",
+      "key": "csr-dev-tools-rsa-key-generator",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-rsa-key-generator": "{\"keySize\":4096}"
+      },
+      "expected": {
+        "keySize": 4096
+      }
+    },
+    {
+      "id": "csr-dev-tools-sql-formatter/current",
+      "key": "csr-dev-tools-sql-formatter",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-sql-formatter": "{\"source\":\"select 1\",\"dialect\":\"postgresql\",\"indent\":4}"
+      },
+      "expected": {
+        "source": "select 1",
+        "dialect": "postgresql",
+        "indent": 4
+      }
+    },
+    {
+      "id": "csr-dev-tools-string-escape-escape-source/current",
+      "key": "csr-dev-tools-string-escape-escape-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-string-escape-escape-source": "\"a\\\"b\""
+      },
+      "expected": "a\"b"
+    },
+    {
+      "id": "csr-dev-tools-string-escape-unescape-mode/current",
+      "key": "csr-dev-tools-string-escape-unescape-mode",
+      "reader": "codec-mode",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-string-escape-unescape-mode": "\"unescape\""
+      },
+      "expected": "unescape"
+    },
+    {
+      "id": "csr-dev-tools-string-escape-unescape-source/current",
+      "key": "csr-dev-tools-string-escape-unescape-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-string-escape-unescape-source": "\"a\\\\\\\"b\""
+      },
+      "expected": "a\\\"b"
+    },
+    {
+      "id": "csr-dev-tools-text-case-converter/current",
+      "key": "csr-dev-tools-text-case-converter",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-text-case-converter": "{\"source\":\"hello world\"}"
+      },
+      "expected": {
+        "source": "hello world"
+      }
+    },
+    {
+      "id": "csr-dev-tools-text-diff/current",
+      "key": "csr-dev-tools-text-diff",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-text-diff": "{\"original\":\"a\",\"modified\":\"b\"}"
+      },
+      "expected": {
+        "original": "a",
+        "modified": "b"
+      }
+    },
+    {
+      "id": "csr-dev-tools-text-sort-dedupe/current",
+      "key": "csr-dev-tools-text-sort-dedupe",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-text-sort-dedupe": "{\"removeDuplicates\":true,\"removeEmpty\":false,\"sortMode\":\"za\",\"source\":\"b\\na\\na\",\"trimLines\":false}"
+      },
+      "expected": {
+        "removeDuplicates": true,
+        "removeEmpty": false,
+        "sortMode": "za",
+        "source": "b\na\na",
+        "trimLines": false
+      }
+    },
+    {
+      "id": "csr-dev-tools-timezone-converter/current",
+      "key": "csr-dev-tools-timezone-converter",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-timezone-converter": "{\"source\":\"2026-11-10 14:30\",\"sourceTz\":\"Asia/Bangkok\",\"targetTzIds\":[\"UTC\",\"America/New_York\",\"Europe/London\"]}"
+      },
+      "expected": {
+        "source": "2026-11-10 14:30",
+        "sourceTz": "Asia/Bangkok",
+        "targetTzIds": [
+          "UTC",
+          "America/New_York",
+          "Europe/London"
+        ]
+      }
+    },
+    {
+      "id": "csr-dev-tools-timezone-favorites/current",
+      "key": "csr-dev-tools-timezone-favorites",
+      "reader": "value",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-timezone-favorites": "[\"UTC\"]"
+      },
+      "expected": [
+        "UTC"
+      ]
+    },
+    {
+      "id": "csr-dev-tools-toml-to-json-source/current",
+      "key": "csr-dev-tools-toml-to-json-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-toml-to-json-source": "\"a = 1\""
+      },
+      "expected": "a = 1"
+    },
+    {
+      "id": "csr-dev-tools-url-encoder-decode-source/current",
+      "key": "csr-dev-tools-url-encoder-decode-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-url-encoder-decode-source": "\"a%20b\""
+      },
+      "expected": "a%20b"
+    },
+    {
+      "id": "csr-dev-tools-url-encoder-encode-source/current",
+      "key": "csr-dev-tools-url-encoder-encode-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-url-encoder-encode-source": "\"a b\""
+      },
+      "expected": "a b"
+    },
+    {
+      "id": "csr-dev-tools-url-encoder-mode/current",
+      "key": "csr-dev-tools-url-encoder-mode",
+      "reader": "codec-mode",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-url-encoder-mode": "\"decode\""
+      },
+      "expected": "decode"
+    },
+    {
+      "id": "csr-dev-tools-user-agent-parser/current",
+      "key": "csr-dev-tools-user-agent-parser",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-user-agent-parser": "{\"source\":\"Mozilla/5.0 (X11; Linux x86_64)\"}"
+      },
+      "expected": {
+        "source": "Mozilla/5.0 (X11; Linux x86_64)"
+      }
+    },
+    {
+      "id": "csr-dev-tools-uuid-generator/current",
+      "key": "csr-dev-tools-uuid-generator",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-uuid-generator": "{\"count\":3}"
+      },
+      "expected": {
+        "count": 3
+      }
+    },
+    {
+      "id": "csr-dev-tools-word-counter/current",
+      "key": "csr-dev-tools-word-counter",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-word-counter": "{\"source\":\"hello world\"}"
+      },
+      "expected": {
+        "source": "hello world"
+      }
+    },
+    {
+      "id": "csr-dev-tools-xml-to-json-source/current",
+      "key": "csr-dev-tools-xml-to-json-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-xml-to-json-source": "\"<a>1</a>\""
+      },
+      "expected": "<a>1</a>"
+    },
+    {
+      "id": "csr-dev-tools-yaml-formatter/current",
+      "key": "csr-dev-tools-yaml-formatter",
+      "reader": "fields",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-yaml-formatter": "{\"source\":\"b: 1\\na: 2\",\"indent\":4,\"sortKeys\":true}"
+      },
+      "expected": {
+        "source": "b: 1\na: 2",
+        "indent": 4,
+        "sortKeys": true
+      }
+    },
+    {
+      "id": "csr-dev-tools-yaml-to-env-source/current",
+      "key": "csr-dev-tools-yaml-to-env-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-yaml-to-env-source": "\"D: 4\""
+      },
+      "expected": "D: 4"
+    },
+    {
+      "id": "csr-dev-tools-yaml-to-json-source/current",
+      "key": "csr-dev-tools-yaml-to-json-source",
+      "reader": "codec-source",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "csr-dev-tools-yaml-to-json-source": "\"a: 1\""
+      },
+      "expected": "a: 1"
+    },
+    {
+      "id": "css-formatter/source-only",
+      "key": "csr-dev-tools-css-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-css-formatter": "{\"source\":\"a{}\"}"
+      },
+      "expected": {
+        "source": "a{}",
+        "mode": "beautify",
+        "indent": 2
+      }
+    },
+    {
+      "id": "css-formatter/tab",
+      "key": "csr-dev-tools-css-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-css-formatter": "{\"source\":\"a{}\",\"mode\":\"minify\",\"indent\":\"tab\"}"
+      },
+      "expected": {
+        "source": "a{}",
+        "mode": "minify",
+        "indent": "tab"
+      }
+    },
+    {
+      "id": "css-formatter/unknown-mode-text-indent",
+      "key": "csr-dev-tools-css-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-css-formatter": "{\"source\":\"a{}\",\"mode\":\"zzz\",\"indent\":\"9\"}"
+      },
+      "expected": {
+        "indent": 2,
+        "mode": "beautify",
+        "source": "a{}"
+      },
+      "deliberate": "ADR-0032 Decision 4: strict by type. A value the type does not hold takes its default.",
+      "react": "{\"source\":\"a{}\",\"mode\":\"zzz\",\"indent\":\"9\"}"
+    },
+    {
+      "id": "db-diagram/dangling-relationships",
+      "key": "csr-dev-tools-db-diagrams",
+      "reader": "diagram",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[{\"id\":\"r1\",\"relationType\":\"1:N\",\"sourceColumnId\":\"gone_id\",\"sourceTableId\":\"gone\",\"targetColumnId\":\"posts_id\",\"targetTableId\":\"posts\"},{\"id\":\"r2\",\"relationType\":\"1:N\",\"sourceColumnId\":\"users_gone\",\"sourceTableId\":\"users\",\"targetColumnId\":\"posts_user_id\",\"targetTableId\":\"posts\"}],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"posts_id\",\"name\":\"id\",\"type\":\"INT\"},{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":false,\"isUnique\":false},\"id\":\"posts_user_id\",\"name\":\"user_id\",\"type\":\"INT\"}],\"id\":\"posts\",\"name\":\"posts\",\"position\":{\"x\":40,\"y\":40}},{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"users_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"users\",\"name\":\"users\",\"position\":{\"x\":340,\"y\":40}}]}},\"index\":[{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"Blog\",\"tableCount\":1,\"updatedAt\":\"2026-11-02T00:00:00.000Z\"}]}"
+      },
+      "expected": {
+        "diagrams": {
+          "d1": {
+            "relationships": [
+              {
+                "id": "r2",
+                "relationType": "1:N",
+                "sourceColumnId": "users_gone",
+                "sourceTableId": "users",
+                "targetColumnId": "posts_user_id",
+                "targetTableId": "posts"
+              }
+            ],
+            "tables": [
+              {
+                "columns": [
+                  {
+                    "constraints": {
+                      "isForeignKey": false,
+                      "isNullable": false,
+                      "isPrimaryKey": true,
+                      "isUnique": true
+                    },
+                    "id": "posts_id",
+                    "name": "id",
+                    "type": "INT"
+                  },
+                  {
+                    "constraints": {
+                      "isForeignKey": false,
+                      "isNullable": false,
+                      "isPrimaryKey": false,
+                      "isUnique": false
+                    },
+                    "id": "posts_user_id",
+                    "name": "user_id",
+                    "type": "INT"
+                  }
+                ],
+                "id": "posts",
+                "name": "posts",
+                "position": {
+                  "x": 40,
+                  "y": 40
+                }
+              },
+              {
+                "columns": [
+                  {
+                    "constraints": {
+                      "isForeignKey": false,
+                      "isNullable": false,
+                      "isPrimaryKey": true,
+                      "isUnique": true
+                    },
+                    "id": "users_id",
+                    "name": "id",
+                    "type": "INT"
+                  }
+                ],
+                "id": "users",
+                "name": "users",
+                "position": {
+                  "x": 340,
+                  "y": 40
+                }
+              }
+            ]
+          }
+        },
+        "index": [
+          {
+            "createdAt": "2026-11-01T00:00:00.000Z",
+            "id": "d1",
+            "name": "Blog",
+            "tableCount": 1,
+            "updatedAt": "2026-11-02T00:00:00.000Z"
+          }
+        ]
+      },
+      "storageAfterWrite": {
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[{\"id\":\"r1\",\"relationType\":\"1:N\",\"sourceColumnId\":\"gone_id\",\"sourceTableId\":\"gone\",\"targetColumnId\":\"posts_id\",\"targetTableId\":\"posts\"},{\"id\":\"r2\",\"relationType\":\"1:N\",\"sourceColumnId\":\"users_gone\",\"sourceTableId\":\"users\",\"targetColumnId\":\"posts_user_id\",\"targetTableId\":\"posts\"}],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"posts_id\",\"name\":\"id\",\"type\":\"INT\"},{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":false,\"isUnique\":false},\"id\":\"posts_user_id\",\"name\":\"user_id\",\"type\":\"INT\"}],\"id\":\"posts\",\"name\":\"posts\",\"position\":{\"x\":40,\"y\":40}},{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"users_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"users\",\"name\":\"users\",\"position\":{\"x\":340,\"y\":40}}]}},\"index\":[{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"Blog\",\"tableCount\":1,\"updatedAt\":\"2026-11-02T00:00:00.000Z\"}]}"
+      }
+    },
+    {
+      "id": "db-diagram/diagram-empty-object",
+      "key": "csr-dev-tools-db-diagrams",
+      "reader": "diagram",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{}},\"index\":[{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"Empty\",\"tableCount\":1,\"updatedAt\":\"2026-11-02T00:00:00.000Z\"}]}"
+      },
+      "expected": {
+        "diagrams": {
+          "d1": {
+            "relationships": [],
+            "tables": []
+          }
+        },
+        "index": [
+          {
+            "createdAt": "2026-11-01T00:00:00.000Z",
+            "id": "d1",
+            "name": "Empty",
+            "tableCount": 1,
+            "updatedAt": "2026-11-02T00:00:00.000Z"
+          }
+        ]
+      },
+      "storageAfterWrite": {
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{}},\"index\":[{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"Empty\",\"tableCount\":1,\"updatedAt\":\"2026-11-02T00:00:00.000Z\"}]}"
+      }
+    },
+    {
+      "id": "db-diagram/lost-index-entry",
+      "key": "csr-dev-tools-db-diagrams",
+      "reader": "diagram",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"users_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"users\",\"name\":\"users\",\"position\":{\"x\":40,\"y\":40}}]}},\"index\":[]}"
+      },
+      "expected": {
+        "diagrams": {
+          "d1": {
+            "relationships": [],
+            "tables": [
+              {
+                "columns": [
+                  {
+                    "constraints": {
+                      "isForeignKey": false,
+                      "isNullable": false,
+                      "isPrimaryKey": true,
+                      "isUnique": true
+                    },
+                    "id": "users_id",
+                    "name": "id",
+                    "type": "INT"
+                  }
+                ],
+                "id": "users",
+                "name": "users",
+                "position": {
+                  "x": 40,
+                  "y": 40
+                }
+              }
+            ]
+          }
+        },
+        "index": [
+          {
+            "createdAt": "1970-01-01T00:00:00.000Z",
+            "id": "d1",
+            "name": "Untitled Diagram",
+            "tableCount": 0,
+            "updatedAt": "1970-01-01T00:00:00.000Z"
+          }
+        ]
+      },
+      "storageAfterWrite": {
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"users_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"users\",\"name\":\"users\",\"position\":{\"x\":40,\"y\":40}}]}},\"index\":[{\"createdAt\":\"1970-01-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"Untitled Diagram\",\"tableCount\":0,\"updatedAt\":\"1970-01-01T00:00:00.000Z\"}]}"
+      }
+    },
+    {
+      "id": "db-diagram/no-diagrams-object",
+      "key": "csr-dev-tools-db-diagrams",
+      "reader": "diagram",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-db-diagrams": "{\"index\":[]}"
+      },
+      "expected": {
+        "diagrams": {},
+        "index": []
+      },
+      "storageAfterWrite": {
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{},\"index\":[]}",
+        "csr-dev-tools-db-diagrams-corrupt-backup": "{\"index\":[]}"
+      }
+    },
+    {
+      "id": "db-diagram/no-updated-at",
+      "key": "csr-dev-tools-db-diagrams",
+      "reader": "diagram",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"users_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"users\",\"name\":\"users\",\"position\":{\"x\":40,\"y\":40}}]},\"d2\":{\"relationships\":[],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"posts_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"posts\",\"name\":\"posts\",\"position\":{\"x\":40,\"y\":40}}]}},\"index\":[{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"One\",\"tableCount\":1},{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d2\",\"name\":\"Two\",\"tableCount\":1}]}"
+      },
+      "expected": {
+        "diagrams": {
+          "d1": {
+            "relationships": [],
+            "tables": [
+              {
+                "columns": [
+                  {
+                    "constraints": {
+                      "isForeignKey": false,
+                      "isNullable": false,
+                      "isPrimaryKey": true,
+                      "isUnique": true
+                    },
+                    "id": "users_id",
+                    "name": "id",
+                    "type": "INT"
+                  }
+                ],
+                "id": "users",
+                "name": "users",
+                "position": {
+                  "x": 40,
+                  "y": 40
+                }
+              }
+            ]
+          },
+          "d2": {
+            "relationships": [],
+            "tables": [
+              {
+                "columns": [
+                  {
+                    "constraints": {
+                      "isForeignKey": false,
+                      "isNullable": false,
+                      "isPrimaryKey": true,
+                      "isUnique": true
+                    },
+                    "id": "posts_id",
+                    "name": "id",
+                    "type": "INT"
+                  }
+                ],
+                "id": "posts",
+                "name": "posts",
+                "position": {
+                  "x": 40,
+                  "y": 40
+                }
+              }
+            ]
+          }
+        },
+        "index": [
+          {
+            "createdAt": "2026-11-01T00:00:00.000Z",
+            "id": "d1",
+            "name": "One",
+            "tableCount": 1,
+            "updatedAt": "1970-01-01T00:00:00.000Z"
+          },
+          {
+            "createdAt": "2026-11-01T00:00:00.000Z",
+            "id": "d2",
+            "name": "Two",
+            "tableCount": 1,
+            "updatedAt": "1970-01-01T00:00:00.000Z"
+          }
+        ]
+      },
+      "storageAfterWrite": {
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{\"d1\":{\"relationships\":[],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"users_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"users\",\"name\":\"users\",\"position\":{\"x\":40,\"y\":40}}]},\"d2\":{\"relationships\":[],\"tables\":[{\"columns\":[{\"constraints\":{\"isForeignKey\":false,\"isNullable\":false,\"isPrimaryKey\":true,\"isUnique\":true},\"id\":\"posts_id\",\"name\":\"id\",\"type\":\"INT\"}],\"id\":\"posts\",\"name\":\"posts\",\"position\":{\"x\":40,\"y\":40}}]}},\"index\":[{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d1\",\"name\":\"One\",\"tableCount\":1,\"updatedAt\":\"1970-01-01T00:00:00.000Z\"},{\"createdAt\":\"2026-11-01T00:00:00.000Z\",\"id\":\"d2\",\"name\":\"Two\",\"tableCount\":1,\"updatedAt\":\"1970-01-01T00:00:00.000Z\"}]}"
+      }
+    },
+    {
+      "id": "db-diagram/unparseable",
+      "key": "csr-dev-tools-db-diagrams",
+      "reader": "diagram",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-db-diagrams": "{bad"
+      },
+      "expected": {
+        "diagrams": {},
+        "index": []
+      },
+      "storageAfterWrite": {
+        "csr-dev-tools-db-diagrams": "{\"diagrams\":{},\"index\":[]}",
+        "csr-dev-tools-db-diagrams-corrupt-backup": "{bad"
+      }
+    },
+    {
+      "id": "feature_layout/current",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"json-formatter\",\"1\":null,\"2\":\"base64-codec\",\"3\":\"jwt-decoder\",\"4\":\"unix-timestamp\",\"5\":\"regex-tester\"}},\"version\":2}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "json-formatter",
+            "1": null,
+            "2": "base64-codec",
+            "3": "jwt-decoder",
+            "4": "unix-timestamp",
+            "5": "regex-tester"
+          }
+        },
+        "version": 2
+      }
+    },
+    {
+      "id": "feature_layout/no-value",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "{\"state\":{},\"version\":2}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "json-formatter",
+            "1": "uuid-generator",
+            "2": "base64-codec",
+            "3": "jwt-decoder",
+            "4": "unix-timestamp",
+            "5": "regex-tester"
+          }
+        },
+        "version": 2
+      }
+    },
+    {
+      "id": "feature_layout/no-version",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"uuid-generator\",\"1\":null}}}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "uuid-generator",
+            "1": null,
+            "2": "base64-codec",
+            "3": "jwt-decoder",
+            "4": "unix-timestamp",
+            "5": "regex-tester"
+          }
+        },
+        "version": 2
+      }
+    },
+    {
+      "id": "feature_layout/null",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "null"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "json-formatter",
+            "1": "uuid-generator",
+            "2": "base64-codec",
+            "3": "jwt-decoder",
+            "4": "unix-timestamp",
+            "5": "regex-tester"
+          }
+        },
+        "version": 2
+      }
+    },
+    {
+      "id": "feature_layout/slot-not-a-string",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":7,\"1\":\"uuid-generator\"}},\"version\":2}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "json-formatter",
+            "1": "uuid-generator",
+            "2": "base64-codec",
+            "3": "jwt-decoder",
+            "4": "unix-timestamp",
+            "5": "regex-tester"
+          }
+        },
+        "version": 2
+      }
+    },
+    {
+      "id": "feature_layout/unknown-tool",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"zzz\",\"1\":\"uuid-generator\"}},\"version\":2}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "json-formatter",
+            "1": "uuid-generator",
+            "2": "base64-codec",
+            "3": "jwt-decoder",
+            "4": "unix-timestamp",
+            "5": "regex-tester"
+          }
+        },
+        "version": 2
+      },
+      "deliberate": "ADR-0032 Decision 4: a layout slot naming a tool the build does not know takes that slot's default.",
+      "react": "{\"state\":{\"value\":{\"0\":\"zzz\",\"1\":\"uuid-generator\",\"2\":\"base64-codec\",\"3\":\"jwt-decoder\",\"4\":\"unix-timestamp\",\"5\":\"regex-tester\"}},\"version\":2}"
+    },
+    {
+      "id": "feature_layout/unparseable",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "{bad"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "json-formatter",
+            "1": "uuid-generator",
+            "2": "base64-codec",
+            "3": "jwt-decoder",
+            "4": "unix-timestamp",
+            "5": "regex-tester"
+          }
+        },
+        "version": 2
+      }
+    },
+    {
+      "id": "feature_layout/value-null",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "{\"state\":{\"value\":null},\"version\":2}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "json-formatter",
+            "1": "uuid-generator",
+            "2": "base64-codec",
+            "3": "jwt-decoder",
+            "4": "unix-timestamp",
+            "5": "regex-tester"
+          }
+        },
+        "version": 2
+      }
+    },
+    {
+      "id": "feature_layout/version-0",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"base64-encoder\",\"1\":\"json-formatter\",\"2\":null,\"3\":\"zzz\"}},\"version\":0}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "base64-codec",
+            "1": "json-formatter",
+            "2": null,
+            "3": null,
+            "4": "unix-timestamp",
+            "5": "regex-tester"
+          }
+        },
+        "version": 2
+      },
+      "storageAfterOpen": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"base64-codec\",\"1\":\"json-formatter\",\"2\":null,\"3\":null,\"4\":\"unix-timestamp\",\"5\":\"regex-tester\"}},\"version\":2}"
+      }
+    },
+    {
+      "id": "feature_layout/version-1",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"BASE64_ENCODER\",\"1\":\"UNIX_TIMESTAMP\",\"2\":\"COLOR_CONVERTER\",\"3\":\"PX_TO_REM\",\"4\":\"IMAGE_RESIZER\",\"5\":\"IMAGE_CONVERTOR\"}},\"version\":1}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "base64-codec",
+            "1": "unix-timestamp",
+            "2": "color-converter",
+            "3": "px-to-rem",
+            "4": "image-resizer",
+            "5": "image-converter"
+          }
+        },
+        "version": 2
+      },
+      "storageAfterOpen": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"base64-codec\",\"1\":\"unix-timestamp\",\"2\":\"color-converter\",\"3\":\"px-to-rem\",\"4\":\"image-resizer\",\"5\":\"image-converter\"}},\"version\":2}"
+      }
+    },
+    {
+      "id": "feature_layout/version-1-renamed-keys",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"toml-to-json-converter\",\"1\":\"xml-to-json-converter\"}},\"version\":1}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "json-to-toml-converter",
+            "1": "json-to-xml-converter",
+            "2": "base64-codec",
+            "3": "jwt-decoder",
+            "4": "unix-timestamp",
+            "5": "regex-tester"
+          }
+        },
+        "version": 2
+      },
+      "storageAfterOpen": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"json-to-toml-converter\",\"1\":\"json-to-xml-converter\",\"2\":\"base64-codec\",\"3\":\"jwt-decoder\",\"4\":\"unix-timestamp\",\"5\":\"regex-tester\"}},\"version\":2}"
+      }
+    },
+    {
+      "id": "feature_layout/version-3",
+      "key": "feature_layout",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"uuid-generator\"}},\"version\":3}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "0": "uuid-generator",
+            "1": "uuid-generator",
+            "2": "base64-codec",
+            "3": "jwt-decoder",
+            "4": "unix-timestamp",
+            "5": "regex-tester"
+          }
+        },
+        "version": 2
+      },
+      "storageAfterOpen": {
+        "feature_layout": "{\"state\":{\"value\":{\"0\":\"uuid-generator\",\"1\":\"uuid-generator\",\"2\":\"base64-codec\",\"3\":\"jwt-decoder\",\"4\":\"unix-timestamp\",\"5\":\"regex-tester\"}},\"version\":2}"
+      }
+    },
+    {
+      "id": "graphql-schema-viewer/number",
+      "key": "csr-dev-tools-graphql-schema-viewer-input",
+      "reader": "input",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-graphql-schema-viewer-input": "42"
+      },
+      "expected": ""
+    },
+    {
+      "id": "html-to-pdf/object",
+      "key": "csr-dev-tools-html-to-pdf",
+      "reader": "input",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-html-to-pdf": "{\"a\":1}"
+      },
+      "expected": ""
+    },
+    {
+      "id": "json-formatter/array",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-formatter": "[]"
+      },
+      "expected": {
+        "source": ""
+      }
+    },
+    {
+      "id": "json-formatter/empty-object",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-formatter": "{}"
+      },
+      "expected": {
+        "source": ""
+      }
+    },
+    {
+      "id": "json-formatter/escaped-backslash",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-formatter": "{\"source\":\"\\\\ud83d\"}"
+      },
+      "expected": {
+        "source": "\\ud83d"
+      }
+    },
+    {
+      "id": "json-formatter/extra-field",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-formatter": "{\"source\":\"x\",\"extra\":1}"
+      },
+      "expected": {
+        "source": "x",
+        "extra": 1
+      }
+    },
+    {
+      "id": "json-formatter/lone-high-surrogate",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-formatter": "{\"source\":\"a\\ud83d\"}"
+      },
+      "expected": {
+        "source": "a�"
+      },
+      "deliberate": "ADR-0032 Decision 4: an unpaired UTF-16 surrogate escape becomes U+FFFD.",
+      "react": "{\"source\":\"a\\ud83d\"}"
+    },
+    {
+      "id": "json-formatter/lone-low-surrogate",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-formatter": "{\"source\":\"\\ude00b\"}"
+      },
+      "expected": {
+        "source": "�b"
+      },
+      "deliberate": "ADR-0032 Decision 4: an unpaired UTF-16 surrogate escape becomes U+FFFD.",
+      "react": "{\"source\":\"\\ude00b\"}"
+    },
+    {
+      "id": "json-formatter/null",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-formatter": "null"
+      },
+      "expected": {
+        "source": ""
+      }
+    },
+    {
+      "id": "json-formatter/number",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-formatter": "42"
+      },
+      "expected": {
+        "source": ""
+      }
+    },
+    {
+      "id": "json-formatter/source-number",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-formatter": "{\"source\":7}"
+      },
+      "expected": {
+        "source": ""
+      }
+    },
+    {
+      "id": "json-formatter/string",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-formatter": "\"str\""
+      },
+      "expected": {
+        "source": ""
+      }
+    },
+    {
+      "id": "json-formatter/surrogate-pair",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-formatter": "{\"source\":\"a😀\"}"
+      },
+      "expected": {
+        "source": "a😀"
+      }
+    },
+    {
+      "id": "json-formatter/unparseable",
+      "key": "csr-dev-tools-json-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-formatter": "{bad"
+      },
+      "expected": {
+        "source": ""
+      }
+    },
+    {
+      "id": "json-schema-validator/before-the-shell",
+      "key": "csr-dev-tools-json-schema-validator",
+      "reader": "fields",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-schema-validator": "{\"jsonData\":\"{\\\"a\\\":1}\",\"jsonSchema\":\"{\\\"type\\\":\\\"object\\\"}\"}"
+      },
+      "expected": {
+        "schema": "{\"type\":\"object\"}",
+        "source": "{\"a\":1}"
+      },
+      "storageAfterOpen": {
+        "csr-dev-tools-json-schema-validator": "{\"schema\":\"{\\\"type\\\":\\\"object\\\"}\",\"source\":\"{\\\"a\\\":1}\"}"
+      }
+    },
+    {
+      "id": "json-schema-validator/half-migrated",
+      "key": "csr-dev-tools-json-schema-validator",
+      "reader": "fields",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-json-schema-validator": "{\"jsonData\":\"{\\\"a\\\":1}\",\"schema\":\"{\\\"type\\\":\\\"object\\\"}\",\"source\":\"\"}"
+      },
+      "expected": {
+        "schema": "{\"type\":\"object\"}",
+        "source": "{\"a\":1}"
+      },
+      "storageAfterOpen": {
+        "csr-dev-tools-json-schema-validator": "{\"schema\":\"{\\\"type\\\":\\\"object\\\"}\",\"source\":\"{\\\"a\\\":1}\"}"
+      }
+    },
+    {
+      "id": "jsonpath-evaluator/legacy-and-v2",
+      "key": "csr-dev-tools-jsonpath-evaluator-v2",
+      "reader": "fields",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-jsonpath-evaluator": "{\"expression\":\"$.a\",\"jsonInput\":\"{\\\"a\\\":1}\"}",
+        "csr-dev-tools-jsonpath-evaluator-v2": "{\"expression\":\"$.b\",\"source\":\"{\\\"b\\\":2}\"}"
+      },
+      "expected": {
+        "expression": "$.b",
+        "source": "{\"b\":2}"
+      }
+    },
+    {
+      "id": "jsonpath-evaluator/legacy-bag",
+      "key": "csr-dev-tools-jsonpath-evaluator-v2",
+      "reader": "fields",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-jsonpath-evaluator": "{\"expression\":\"$.a\",\"jsonInput\":\"{\\\"a\\\":1}\"}"
+      },
+      "expected": {
+        "expression": "$.a",
+        "source": "{\"a\":1}"
+      },
+      "storageAfterOpen": {
+        "csr-dev-tools-jsonpath-evaluator-v2": "{\"expression\":\"$.a\",\"source\":\"{\\\"a\\\":1}\"}"
+      }
+    },
+    {
+      "id": "jsonpath-evaluator/legacy-default",
+      "key": "csr-dev-tools-jsonpath-evaluator-v2",
+      "reader": "fields",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-jsonpath-evaluator": "{\"expression\":\"$.store.book[*].author\",\"jsonInput\":\"\"}"
+      },
+      "expected": {
+        "expression": "$.store.book[*].author",
+        "source": ""
+      }
+    },
+    {
+      "id": "jsonpath-evaluator/legacy-junk",
+      "key": "csr-dev-tools-jsonpath-evaluator-v2",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-jsonpath-evaluator": "{bad"
+      },
+      "expected": {
+        "expression": "$.store.book[*].author",
+        "source": ""
+      }
+    },
+    {
+      "id": "markdown-table-generator/empty-object",
+      "key": "csr-dev-tools-markdown-table-generator",
+      "reader": "markdown-table",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-markdown-table-generator": "{}"
+      },
+      "expected": {
+        "alignments": [
+          "left",
+          "left",
+          "left"
+        ],
+        "cols": 3,
+        "data": [
+          [
+            "Header 1",
+            "Header 2",
+            "Header 3"
+          ],
+          [
+            "",
+            "",
+            ""
+          ],
+          [
+            "",
+            "",
+            ""
+          ]
+        ],
+        "rows": 3
+      }
+    },
+    {
+      "id": "markdown-table-generator/grid-mismatch",
+      "key": "csr-dev-tools-markdown-table-generator",
+      "reader": "markdown-table",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-markdown-table-generator": "{\"cols\":3,\"data\":[[\"x\"]],\"rows\":3}"
+      },
+      "expected": {
+        "cols": 3,
+        "data": [
+          [
+            "x"
+          ]
+        ],
+        "rows": 3,
+        "alignments": [
+          "left",
+          "left",
+          "left"
+        ]
+      }
+    },
+    {
+      "id": "mermaid-renderer/handoff-over-draft",
+      "key": "csr-dev-tools-mermaid-renderer",
+      "reader": "fields",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-handoff-mermaid-renderer": "erDiagram\n  users {\n    INT id\n  }",
+        "csr-dev-tools-mermaid-renderer": "{\"source\":\"flowchart LR\\n  C --> D\"}"
+      },
+      "expected": {
+        "source": "erDiagram\n  users {\n    INT id\n  }"
+      },
+      "storageAfterOpen": {
+        "csr-dev-tools-mermaid-renderer": "{\"source\":\"erDiagram\\n  users {\\n    INT id\\n  }\"}"
+      }
+    },
+    {
+      "id": "mermaid-renderer/legacy-draft",
+      "key": "csr-dev-tools-mermaid-renderer",
+      "reader": "fields",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-mermaid-renderer-code": "\"flowchart TD\\n  A --> B\""
+      },
+      "expected": {
+        "source": "flowchart TD\n  A --> B"
+      },
+      "storageAfterOpen": {
+        "csr-dev-tools-mermaid-renderer": "{\"source\":\"flowchart TD\\n  A --> B\"}"
+      }
+    },
+    {
+      "id": "mermaid-renderer/legacy-draft-and-new-key",
+      "key": "csr-dev-tools-mermaid-renderer",
+      "reader": "fields",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-mermaid-renderer": "{\"source\":\"flowchart LR\\n  C --> D\"}",
+        "csr-dev-tools-mermaid-renderer-code": "\"flowchart TD\\n  A --> B\""
+      },
+      "expected": {
+        "source": "flowchart LR\n  C --> D"
+      }
+    },
+    {
+      "id": "mermaid-renderer/legacy-draft-not-a-string",
+      "key": "csr-dev-tools-mermaid-renderer",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-mermaid-renderer-code": "42"
+      },
+      "expected": {
+        "source": ""
+      },
+      "storageAfterOpen": {}
+    },
+    {
+      "id": "password-generator/empty-object",
+      "key": "csr-dev-tools-password-generator",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-password-generator": "{}"
+      },
+      "expected": {
+        "digits": true,
+        "length": 16,
+        "lowercase": true,
+        "symbols": true,
+        "uppercase": true,
+        "count": 1
+      }
+    },
+    {
+      "id": "placeholder-image-generator/empty-object",
+      "key": "csr-dev-tools-placeholder-image-generator",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-placeholder-image-generator": "{}"
+      },
+      "expected": {
+        "bgColor": "#cccccc",
+        "bgHexInput": "#cccccc",
+        "height": "600",
+        "text": "",
+        "textColor": "#666666",
+        "textHexInput": "#666666",
+        "width": "800"
+      }
+    },
+    {
+      "id": "placeholder-image-generator/width-not-numeric",
+      "key": "csr-dev-tools-placeholder-image-generator",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-placeholder-image-generator": "{\"width\":\"abc\"}"
+      },
+      "expected": {
+        "width": "abc",
+        "bgColor": "#cccccc",
+        "bgHexInput": "#cccccc",
+        "height": "600",
+        "text": "",
+        "textColor": "#666666",
+        "textHexInput": "#666666"
+      }
+    },
+    {
+      "id": "protobuf-codec/null",
+      "key": "csr-dev-tools-protobuf-codec-input",
+      "reader": "value",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-protobuf-codec-input": "null"
+      },
+      "expected": {
+        "decodeFormat": "base64",
+        "decodeSource": "",
+        "encodeFormat": "base64",
+        "encodeSource": "",
+        "schema": ""
+      }
+    },
+    {
+      "id": "protobuf-codec/unparseable",
+      "key": "csr-dev-tools-protobuf-codec-input",
+      "reader": "value",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-protobuf-codec-input": "{bad"
+      },
+      "expected": {
+        "decodeFormat": "base64",
+        "decodeSource": "",
+        "encodeFormat": "base64",
+        "encodeSource": "",
+        "schema": ""
+      }
+    },
+    {
+      "id": "settings/current",
+      "key": "settings",
+      "reader": "zustand",
+      "shape": "current",
+      "provenance": "written-by-react",
+      "stored": {
+        "settings": "{\"state\":{\"value\":{\"showBackgroundAnimation\":true}},\"version\":0}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "showBackgroundAnimation": true
+          }
+        },
+        "version": 0
+      }
+    },
+    {
+      "id": "settings/empty-value",
+      "key": "settings",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "settings": "{\"state\":{\"value\":{}},\"version\":0}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "showBackgroundAnimation": false
+          }
+        },
+        "version": 0
+      }
+    },
+    {
+      "id": "settings/not-a-boolean",
+      "key": "settings",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "settings": "{\"state\":{\"value\":{\"showBackgroundAnimation\":\"yes\"}},\"version\":0}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "showBackgroundAnimation": false
+          }
+        },
+        "version": 0
+      }
+    },
+    {
+      "id": "settings/null",
+      "key": "settings",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "settings": "null"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "showBackgroundAnimation": false
+          }
+        },
+        "version": 0
+      }
+    },
+    {
+      "id": "settings/unparseable",
+      "key": "settings",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "settings": "{bad"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "showBackgroundAnimation": false
+          }
+        },
+        "version": 0
+      }
+    },
+    {
+      "id": "settings/value-null",
+      "key": "settings",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "settings": "{\"state\":{\"value\":null},\"version\":0}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "showBackgroundAnimation": false
+          }
+        },
+        "version": 0
+      }
+    },
+    {
+      "id": "settings/version-1",
+      "key": "settings",
+      "reader": "zustand",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "settings": "{\"state\":{\"value\":{\"showBackgroundAnimation\":true}},\"version\":1}"
+      },
+      "expected": {
+        "state": {
+          "value": {
+            "showBackgroundAnimation": false
+          }
+        },
+        "version": 0
+      }
+    },
+    {
+      "id": "sql-formatter/unknown-dialect",
+      "key": "csr-dev-tools-sql-formatter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-sql-formatter": "{\"source\":\"select 1\",\"dialect\":\"zzz\",\"indent\":4}"
+      },
+      "expected": {
+        "dialect": "sql",
+        "indent": 4,
+        "source": "select 1"
+      },
+      "deliberate": "ADR-0032 Decision 4: strict by type. A value the type does not hold takes its default.",
+      "react": "{\"source\":\"select 1\",\"dialect\":\"zzz\",\"indent\":4}"
+    },
+    {
+      "id": "text-diff/empty-object",
+      "key": "csr-dev-tools-text-diff",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-text-diff": "{}"
+      },
+      "expected": {
+        "original": "",
+        "modified": ""
+      }
+    },
+    {
+      "id": "text-diff/modified-null",
+      "key": "csr-dev-tools-text-diff",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-text-diff": "{\"original\":\"a\",\"modified\":null}"
+      },
+      "expected": {
+        "original": "a",
+        "modified": ""
+      }
+    },
+    {
+      "id": "text-sort-dedupe/unknown-sort",
+      "key": "csr-dev-tools-text-sort-dedupe",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-text-sort-dedupe": "{\"source\":\"b\",\"sortMode\":\"zzz\"}"
+      },
+      "expected": {
+        "removeDuplicates": false,
+        "removeEmpty": false,
+        "sortMode": "az",
+        "source": "b",
+        "trimLines": false
+      },
+      "deliberate": "ADR-0032 Decision 4: strict by type. A value the type does not hold takes its default.",
+      "react": "{\"source\":\"b\",\"sortMode\":\"zzz\",\"removeDuplicates\":false,\"removeEmpty\":false,\"trimLines\":false}"
+    },
+    {
+      "id": "timezone-converter/before-the-shell",
+      "key": "csr-dev-tools-timezone-converter",
+      "reader": "fields",
+      "shape": "older",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-timezone-converter": "{\"dateInput\":\"2026-11-10\",\"sourceTz\":\"Asia/Tokyo\",\"targetTzIds\":[\"UTC\",\"Europe/London\"],\"timeInput\":\"14:30\"}"
+      },
+      "expected": {
+        "dateInput": "2026-11-10",
+        "sourceTz": "Asia/Tokyo",
+        "targetTzIds": [
+          "UTC",
+          "Europe/London"
+        ],
+        "timeInput": "14:30",
+        "source": ""
+      }
+    },
+    {
+      "id": "timezone-converter/source-only",
+      "key": "csr-dev-tools-timezone-converter",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-timezone-converter": "{\"source\":\"2026-11-10 14:30\"}"
+      },
+      "expected": {
+        "source": "2026-11-10 14:30",
+        "sourceTz": "Asia/Bangkok",
+        "targetTzIds": [
+          "UTC",
+          "America/New_York",
+          "Europe/London"
+        ]
+      }
+    },
+    {
+      "id": "timezone-favorites/mixed",
+      "key": "csr-dev-tools-timezone-favorites",
+      "reader": "value",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-timezone-favorites": "[\"UTC\",7,\"Asia/Tokyo\"]"
+      },
+      "expected": [
+        "UTC",
+        "Asia/Tokyo"
+      ]
+    },
+    {
+      "id": "timezone-favorites/object",
+      "key": "csr-dev-tools-timezone-favorites",
+      "reader": "value",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-timezone-favorites": "{}"
+      },
+      "expected": []
+    },
+    {
+      "id": "uuid-generator/count-text",
+      "key": "csr-dev-tools-uuid-generator",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-uuid-generator": "{\"count\":\"abc\"}"
+      },
+      "expected": {
+        "count": 1
+      },
+      "deliberate": "ADR-0032 Decision 4: strict by type. A value the type does not hold takes its default.",
+      "react": "{\"count\":\"abc\"}"
+    },
+    {
+      "id": "uuid-generator/empty-object",
+      "key": "csr-dev-tools-uuid-generator",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-uuid-generator": "{}"
+      },
+      "expected": {
+        "count": 1
+      }
+    },
+    {
+      "id": "uuid-generator/null",
+      "key": "csr-dev-tools-uuid-generator",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-uuid-generator": "null"
+      },
+      "expected": {
+        "count": 1
+      }
+    },
+    {
+      "id": "uuid-generator/unparseable",
+      "key": "csr-dev-tools-uuid-generator",
+      "reader": "fields",
+      "shape": "damaged",
+      "provenance": "seeded",
+      "stored": {
+        "csr-dev-tools-uuid-generator": "{bad"
+      },
+      "expected": {
+        "count": 1
+      }
+    }
+  ],
+  "environment": {
+    "now": "2026-11-27T09:00:00.000Z",
+    "random": "mulberry32(38)",
+    "timezoneId": "Asia/Bangkok"
+  }
+}

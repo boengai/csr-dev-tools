@@ -1,0 +1,102 @@
+/**
+ * Keeps the stored-value contract (ADR-0032 Decision 8,
+ * `e2e/stored-values/README.md`) in step with the React source. A change on
+ * `main` that adds, renames or drops a `localStorage` key fails here until
+ * `keys.json` and `golden.json` follow it in the same change.
+ */
+import { readdirSync, readFileSync } from 'node:fs'
+import { join, relative } from 'node:path'
+
+import { describe, expect, it } from 'vitest'
+
+type ContractKey = { key: string; legacy?: boolean; owner: string; reader: string }
+type ContractEntry = { deliberate?: string; expected: unknown; id: string; key: string; react?: string; shape: string }
+
+const ROOT = join(__dirname, '..', '..')
+const CONTRACT_DIR = join(ROOT, 'e2e', 'stored-values')
+const readJson = <T>(name: string): T => JSON.parse(readFileSync(join(CONTRACT_DIR, name), 'utf8')) as T
+
+const keyList = readJson<{ keys: Array<ContractKey>; neverSaved: Array<{ keys?: Array<string>; tool: string }> }>(
+  'keys.json',
+)
+const golden = readJson<{ defaults: Record<string, unknown>; entries: Array<ContractEntry> }>('golden.json')
+const listed = new Set(keyList.keys.map(({ key }) => key))
+
+const P = 'csr-dev-tools-'
+/** Keys a Tool reads back. The rest are migration sources, the handoff and the diagram backup. */
+const RESTORED = keyList.keys.filter(({ reader }) => !['handoff', 'migration-source', 'none'].includes(reader))
+
+const sourceFiles = (dir: string): Array<string> =>
+  readdirSync(dir, { recursive: true, withFileTypes: true })
+    .filter((f) => f.isFile() && /\.tsx?$/.test(f.name) && !/\.spec\.tsx?$/.test(f.name))
+    .map((f) => join(f.parentPath, f.name))
+
+/** Every key the React source can write, read from its literals. */
+const keysInSource = (): Map<string, string> => {
+  const found = new Map<string, string>()
+  const add = (key: string, file: string) => found.set(key, relative(ROOT, file))
+  for (const file of sourceFiles(join(ROOT, 'src'))) {
+    if (file.includes(`${join('src', 'test')}`)) continue
+    const text = readFileSync(file, 'utf8')
+    for (const [, key] of text.matchAll(/['"`](csr-dev-tools-[a-z0-9-]*[a-z0-9])['"`]/g)) add(key as string, file)
+    // A Codec derives its keys from `modeStorageKey`, `sourceKeyPrefix` and its modes.
+    const modeKey = /modeStorageKey="([a-z0-9-]+)"/.exec(text)?.[1]
+    if (modeKey) {
+      add(`${P}${modeKey}-mode`, file)
+      if (!text.includes('persistSource={false}')) {
+        const prefix = /sourceKeyPrefix="([a-z0-9-]+)"/.exec(text)?.[1]
+        for (const [, mode] of text.matchAll(/^\s+key: '([a-z0-9-]+)',$/gm)) {
+          add(prefix ? `${P}${prefix}-${mode}-source` : `${P}${mode}-source`, file)
+        }
+      }
+    }
+    // The two Zustand stores.
+    for (const [, name] of text.matchAll(/^\s+name: '([a-z_]+)',$/gm)) {
+      if (file.includes(join('hooks', 'persist'))) add(name as string, file)
+    }
+  }
+  const channels = readFileSync(join(ROOT, 'src', 'types', 'utils', 'tool-handoff.ts'), 'utf8')
+  for (const [, channel] of channels.matchAll(/'([a-z0-9-]+)'/g)) add(`${P}handoff-${channel}`, 'HandoffChannel')
+  return found
+}
+
+describe('stored-value contract', () => {
+  it('lists each key once', () => {
+    expect(keyList.keys.length).toBe(listed.size)
+  })
+
+  it('lists exactly the keys the React source can write', () => {
+    const inSource = keysInSource()
+    expect(
+      [...inSource.keys()].filter((key) => !listed.has(key)).map((key) => `${key} (${inSource.get(key)})`),
+    ).toEqual([])
+    expect([...listed].filter((key) => !inSource.has(key))).toEqual([])
+  })
+
+  it('lists no key for a Tool that never saves, beyond the ones it names', () => {
+    for (const { keys: allowed = [], tool } of keyList.neverSaved) {
+      expect(keyList.keys.filter((k) => k.owner === tool && !allowed.includes(k.key)).map((k) => k.key)).toEqual([])
+    }
+  })
+
+  it('has golden values only for listed keys', () => {
+    expect(golden.entries.filter((e) => !listed.has(e.key)).map((e) => e.id)).toEqual([])
+  })
+
+  it.each(RESTORED.map(({ key }) => key))('has a current shape and a default for %s', (key) => {
+    expect(golden.entries.some((e) => e.key === key && e.shape === 'current')).toBe(true)
+    expect(Object.hasOwn(golden.defaults, key)).toBe(true)
+  })
+
+  it('records what React restores beside every deliberate difference', () => {
+    for (const entry of golden.entries.filter((e) => e.deliberate !== undefined)) {
+      expect(typeof entry.react, entry.id).toBe('string')
+      expect(JSON.parse(entry.react ?? 'null'), entry.id).not.toEqual(entry.expected)
+    }
+  })
+
+  it('expects no lone surrogate, which a Rust String cannot hold', () => {
+    const lone = /[\ud800-\udbff](?![\udc00-\udfff])|(?<![\ud800-\udbff])[\udc00-\udfff]/
+    expect(golden.entries.filter((e) => lone.test(JSON.stringify(e.expected) ?? '')).map((e) => e.id)).toEqual([])
+  })
+})
