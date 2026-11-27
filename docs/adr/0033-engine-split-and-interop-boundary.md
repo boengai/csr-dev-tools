@@ -4,6 +4,8 @@
 - **Date:** 2026-11-27
 - **Amended:** 2026-11-27. Trial 1 (hayro) failed, and the pdf.js facade
   takes a document handle. See [the amendment](#amendment-2026-11-27-the-hayro-trial).
+  Trial 2 (hayro-write) failed too, so pdf-lib stays for the merge. See
+  [its amendment](#amendment-2026-11-27-the-hayro-write-trial).
 
 ## Context
 
@@ -92,6 +94,7 @@ notes themselves are not kept in the repo.
 | Monaco | It keeps the playground's diagnostics, emit, completion and hover. No Rust option keeps IntelliSense, so the `tsrs` trial is cancelled. |
 | `mermaid` | `mmdr` covers 23 of 32 diagram types and has no wasm build. It gets no trial until that changes. |
 | DOMPurify | It sanitises with the same parser that renders the result. On a security boundary, Rust-first gives way, so the `ammonia` trial is cancelled. |
+| `pdf-lib`, page merge | The hayro-write trial (#43) failed: hayro-write drops every annotation, and lopdf is 1.77× pdf-lib in brotli bytes (see [the amendment](#amendment-2026-11-27-the-hayro-write-trial)). The image-to-PDF half is still replaced by `krilla`. |
 | `pdfjs-dist` | The hayro trial (#42) failed on bytes: hayro 0.9.0 is 3.26× the size of pdf.js in brotli bytes (see [the amendment](#amendment-2026-11-27-the-hayro-trial)). |
 | `jsonpath-plus` | Parity means today's syntax: `^`, `~`, `@string()` and the shorthands. RFC 9535 crates drop them, and saved expressions would change meaning. The trial is cancelled. |
 
@@ -121,7 +124,10 @@ and a pass bar written before it starts. They run in this order:
 
 1. `hayro` rendering in place of `pdfjs-dist`. **Failed on 2026-11-27,**
    so pdf.js stays (see [the amendment](#amendment-2026-11-27-the-hayro-trial)).
-2. `hayro-write` merge in place of `pdf-lib`'s `copyPages`.
+2. `hayro-write` merge in place of `pdf-lib`'s `copyPages`, with `lopdf`
+   run as a second candidate. **Both failed on 2026-11-27,** so pdf-lib
+   stays for the merge (see
+   [the amendment](#amendment-2026-11-27-the-hayro-write-trial)).
 3. `tract-onnx` with MODNet in place of transformers.js.
 
 If a trial fails, the JS engine stays behind the boundary. A trial must
@@ -215,8 +221,8 @@ The facades decided now:
     and the port closes them too.
   - This replaces the stateless `page_count(bytes)` and
     `render_page(bytes, index, scale)` (amended 2026-11-27).
-- **pdf-lib,** specified now whatever the hayro-write trial decides:
-  `merge([{bytes, pages}]) -> bytes`.
+- **pdf-lib,** for combine-pdf's merge: `merge([{bytes, pages}]) -> bytes`.
+  The hayro-write trial failed, so pdf-lib is what sits behind it.
 
 ### 3. Build, bundle and load
 
@@ -415,10 +421,10 @@ this check belongs to [#25](https://github.com/boengai/csr-dev-tools/issues/25).
 
   Neither page is budgeted, so each byte ceiling is set by its first port
   PR.
-- **Waiting on a trial:** the combine-pdf merge and background-remover.
-  Each has a facade now, so its port is not blocked. The combine-pdf and
-  image-to-pdf previews no longer wait: the hayro trial failed, so they
-  port with the pdf.js bridge.
+- **Waiting on a trial:** background-remover. Its port is not blocked.
+  combine-pdf no longer waits on anything: both PDF trials failed, so it
+  ports with the pdf.js bridge for its previews and the pdf-lib bridge for
+  its merge. The image-to-pdf previews port with the pdf.js bridge.
 - **Handed to their owners, with no decision here:**
   - **The map's Cutover item:** removing CSP sources and fixing the stale
     [`public/_headers`](../../public/_headers) comments.
@@ -490,6 +496,49 @@ file and lose the font and glyph caches. That is why the pdf.js facade in
 Decision 2 now takes a handle, whichever engine is behind it. A later hayro
 release can still replace the implementation without touching Tool code.
 
+## Amendment, 2026-11-27: the hayro-write trial
+
+[Issue 43](https://github.com/boengai/csr-dev-tools/issues/43) ran trial 2
+against a corpus and a pass bar written into the ticket before any run. Each
+check meant "no worse than pdf-lib on `main`", and being better counted as
+a pass. Both candidates failed, so pdf-lib stays behind its engine bridge
+([write-up](https://github.com/boengai/csr-dev-tools/blob/research/hayro-write-merge-trial/docs/research/hayro-write-merge-trial.md)).
+
+- **hayro-write 0.9.0 fails on annotations and output size.** It
+  rebuilds each page from its MediaBox, CropBox, Rotate, `/Group`, content stream and Resources,
+  and never writes `/Annots`.
+  - So every link, form widget and markup annotation is lost. pdf-lib
+    keeps them all.
+  - 0.3.0, the version already in the `pdf` crate's tree through Typst,
+    does the same.
+  - It also grows small files: `edge-std14-rotate-crop` came out 2.11×
+    pdf-lib's size, against a ceiling of 1.5× for any one merge.
+  - Its bytes pass: 131,335 brotli, against 160,340 for pdf-lib and its
+    dependencies as shipped.
+- **lopdf 0.47.0 fails on bytes.** It is 283,447 bytes brotli, 1.77×
+  pdf-lib.
+  - Its encoding and decryption dependencies stay linked even with default
+    features off.
+  - It keeps every annotation. Its output was 0.82× pdf-lib's size over
+    merges M1–M5, or 0.97× without the encrypted inputs, for which
+    pdf-lib's output is blank.
+  - It loads a file locked with a user password without an error, and
+    drops that file's pages without reporting it.
+- **Both decrypt files with an empty user password.** Today pdf-lib's
+  `ignoreEncryption` writes blank pages for them. That is a bug on
+  `main`, filed as [#61](https://github.com/boengai/csr-dev-tools/issues/61).
+  As with #45 and #46, it is fixed on `main` first, and the pdf-lib
+  bridge copies the fix.
+- **What pdf-lib's merge keeps today:** every page annotation, but none of
+  the catalog: `/AcroForm`, `/Outlines`, `/Names` and `/Dests` are all
+  dropped. So no GoTo link in a merged file works, and form fields lose
+  their `/AcroForm`. The port keeps this behaviour, since it is the
+  parity baseline.
+- **Not run:** the rendered page-fidelity check. Both candidates had
+  already failed, and it could not change the verdict. Both candidates
+  matched pdf-lib's page geometry on every page of M1–M5. In M6, the only
+  difference is the blank page pdf-lib writes for the locked file.
+
 ## Revisit when
 
 - A trial passes or fails.
@@ -498,6 +547,10 @@ release can still replace the implementation without touching Tool code.
   for pdfjs-dist 6.4.299). That reopens trial 1 on that release. The
   timeout, OOM and trap check is re-run, and the three unrun checks would
   then have to pass.
+- A hayro-write release copies `/Annots` and fits the output-size bar, or
+  lopdf makes encoding and decryption optional, comes within 160,340
+  bytes brotli, and returns an error for a file it cannot decrypt. That
+  reopens trial 2, and the render check would then have to run.
 - `mmdr` gains a wasm build and full diagram coverage.
 - A Rust code editor or a TypeScript language service reaches the
   browser.
