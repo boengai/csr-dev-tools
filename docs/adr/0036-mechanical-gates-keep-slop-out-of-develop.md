@@ -350,18 +350,49 @@ A gate that silently matches nothing looks the same as one that passes.
 
 ## Not verified
 
-- `dioxus-rsx =0.7.10` as a library for the source rules was not built.
-- The exact paths of the event-data `downcast` methods were not listed.
 - The `const` layout assertion inside the `ui` entry macro was not built.
-  Neither was its error text through `lazy_loader!`.
+  Neither was its error text through `lazy_loader!`. Both wait for `ui`.
 - cargo-mutants' run time on a real logic crate was not measured.
-- Whether `taiki-e/install-action` has a prebuilt jscpd was not checked.
-  jscpd 5 is also a crates.io crate, so a pinned `cargo binstall` is the
-  fallback.
 - jscpd's false-positive rate on real Tool glue is unknown.
 - That a `main` → `develop` sync PR runs `dioxus.yml`. GitHub's docs say
   a `pull_request` run uses the PR's merge ref, which holds `develop`'s
   workflows, but no sync PR has been tried.
+
+## Amended when the gates were built
+
+[Build the anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/57)
+checked three of the items above on 2026-11-27, with rustc 1.100.0:
+
+- **`dioxus-rsx =0.7.10` works as a library.** Its `CallBody` parses an
+  `rsx!` body taken from `syn`, and it tells a literal `style: "…"`
+  attribute and a `style {}` element apart from an expression. The
+  source rules use it as decided.
+- **The event-data `downcast` paths are filled into `clippy.toml`:** one
+  `dioxus_html::<Type>Data::downcast` for each of the 21 event-data types,
+  plus `PlatformEventData::downcast`, `PlatformEventData::downcast_mut` and
+  `TouchPoint::downcast`. The browser escapes are
+  `dioxus_web::WebEventExt::as_web_event`,
+  `dioxus_web::WebEventExt::try_as_web_event` and
+  `dioxus_web::WebFileExt::get_web_file`. Each entry fires through
+  `dioxus`'s re-exports, proven by the Clippy fixture
+  (`crates/gates/fixtures/clippy`).
+- **`taiki-e/install-action` has no manifest for jscpd or dx** (v2.90.11).
+  Both come through the action's pinned `cargo-binstall` fallback, at
+  `jscpd@5.4.3` and `dioxus-cli@0.7.10`. That pins their version but not
+  a checksum, so ADR-0031's condition 3 holds only partly for these two.
+  cargo-deny, cargo-shear and cargo-mutants have prebuilt, checksummed
+  manifests.
+
+Two findings changed the build:
+
+- **Cargo rejects a member glob that matches nothing.** `crates/logic/*`,
+  `crates/tools/*` and `crates/workers/*` each match a `README.md` until
+  the first crate lands, and cargo skips it because it is not a
+  directory. The READMEs are gate files: deleting one breaks the
+  workspace.
+- **`allow-unwrap-in-tests` covers only `#[test]` functions,** not the
+  helpers of an integration test. Helpers return a `Result`, and the
+  test unwraps it.
 
 ## Revisit when
 

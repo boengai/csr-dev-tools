@@ -41,13 +41,13 @@ jobs:
           path: |
             ~/.cargo/registry
             ~/.cargo/git
-            wasm/target
-          key: rust-${{ runner.os }}-${{ hashFiles('wasm/Cargo.lock') }}
+            target
+          key: rust-${{ runner.os }}-${{ hashFiles('Cargo.lock') }}
           restore-keys: |
             rust-${{ runner.os }}-
 
       - name: Install wasm-pack
-        run: cargo install wasm-pack --locked
+        run: cargo install wasm-pack@0.15.1 --locked
 
       - name: Install wasm-opt (binaryen)
         run: |

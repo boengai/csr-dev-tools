@@ -1,0 +1,8 @@
+[package]
+name = "logic-pdf"
+version = "0.0.0"
+edition = "2024"
+
+# logic takes a browser crate, renamed, optional and target-specific.
+[target."cfg(target_arch = \"wasm32\")".dependencies]
+bindgen = { package = "wasm-bindgen", version = "0.2", optional = true }

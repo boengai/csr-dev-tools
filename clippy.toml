@@ -1,0 +1,47 @@
+# Clippy settings for every gated package (ADR-0036 §5, docs/quality/gates.md
+# → "clippy.toml"). A gate file: change it only in a `gates` PR. There is no
+# nested clippy.toml anywhere, because a nested one replaces this one.
+
+too-many-lines-threshold = 80
+allow-unwrap-in-tests = true
+allow-expect-in-tests = true
+allow-panic-in-tests = true
+# `dbg!` stays denied in tests too (the default).
+
+disallowed-methods = [
+  { path = "dioxus_document::eval", reason = "no JavaScript outside an Engine bridge (ADR-0033)" },
+  { path = "dioxus_document::Document::eval", reason = "the trait method misses the entry above" },
+  # Raw browser types stay in `platform` (ADR-0035 §8).
+  { path = "dioxus_web::WebEventExt::as_web_event", reason = "raw browser types stay in platform; take its opaque types (ADR-0035)" },
+  { path = "dioxus_web::WebEventExt::try_as_web_event", reason = "raw browser types stay in platform; take its opaque types (ADR-0035)" },
+  { path = "dioxus_web::WebFileExt::get_web_file", reason = "raw browser types stay in platform; take its FileRef (ADR-0035)" },
+  { path = "dioxus_html::PlatformEventData::downcast_mut", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::PlatformEventData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::AnimationData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::CancelData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::ClipboardData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::CompositionData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::DragData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::FocusData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::FormData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::ImageData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::KeyboardData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::MediaData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::MountedData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::MouseData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::PointerData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::ResizeData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::ScrollData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::SelectionData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::ToggleData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::TouchData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::TouchPoint::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::TransitionData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::VisibleData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  { path = "dioxus_html::WheelData::downcast", reason = "raw browser types stay in platform (ADR-0035)" },
+  # `std` calls that trap on wasm32-unknown-unknown.
+  { path = "std::time::Instant::now", reason = "panics on wasm32-unknown-unknown; use platform's timers" },
+  { path = "std::time::SystemTime::now", reason = "panics on wasm32-unknown-unknown; use platform's local time" },
+  { path = "std::thread::spawn", reason = "panics on wasm32-unknown-unknown; use a worker (ADR-0033)" },
+  { path = "std::thread::sleep", reason = "panics on wasm32-unknown-unknown; use platform's timers" },
+]

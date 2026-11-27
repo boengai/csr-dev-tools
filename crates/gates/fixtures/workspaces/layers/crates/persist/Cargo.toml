@@ -1,0 +1,11 @@
+[package]
+name = "persist"
+version = "0.0.0"
+edition = "2024"
+
+# persist takes dioxus as a dev-dependency: serde and serde_json only.
+[dependencies]
+serde = "1"
+
+[dev-dependencies]
+dioxus = "=0.7.10"

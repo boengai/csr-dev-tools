@@ -1,0 +1,55 @@
+# cargo-deny (ADR-0036 §11, docs/quality/gates.md → "Dependencies"). A gate
+# file: change it only in a `gates` PR. It runs over app's tree and each
+# worker's tree (crates/gates/scripts/deny.sh), never over the untouched
+# wasm/ crates, and it does not check the layers: ADR-0035's allowlist in the
+# gates crate is the only layer gate, and it also holds the
+# dioxus-primitives and dioxus-motion ban.
+
+[graph]
+all-features = false
+no-default-features = false
+
+[advisories]
+# A vulnerability or an unsound crate fails. An unmaintained crate warns:
+# deny.sh passes `-W unmaintained`. An ignore entry needs a reason.
+unmaintained = "all"
+unsound = "all"
+yanked = "deny"
+ignore = []
+
+[licenses]
+allow = [
+  "MIT",
+  "Apache-2.0",
+  "Apache-2.0 WITH LLVM-exception",
+  "BSD-2-Clause",
+  "BSD-3-Clause",
+  "ISC",
+  "Zlib",
+  "0BSD",
+  "CC0-1.0",
+  "Unicode-3.0",
+]
+confidence-threshold = 0.93
+# Anything else, MPL-2.0 included, is a per-crate exception with a reason:
+# { crate = "name", allow = ["MPL-2.0"] },  # why
+exceptions = []
+
+[licenses.private]
+# Our own unpublished crates are MIT through the workspace (the gates crate
+# checks `license.workspace = true`).
+ignore = true
+
+[bans]
+# Over app's tree a duplicate costs bytes, so it fails. deny.sh passes
+# `-W duplicate` for the workers' trees, where it only warns.
+multiple-versions = "deny"
+wildcards = "deny"
+allow-wildcard-paths = true
+highlight = "all"
+
+[sources]
+unknown-registry = "deny"
+unknown-git = "deny"
+allow-registry = ["https://github.com/rust-lang/crates.io-index"]
+allow-git = []

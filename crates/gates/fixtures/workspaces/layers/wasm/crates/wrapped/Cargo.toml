@@ -1,0 +1,9 @@
+# A split wrapper (it depends on a logic crate) takes a banned crate.
+[package]
+name = "wrapped"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+logic-table = { path = "../../../crates/logic/table" }
+dioxus-motion = "0.3"

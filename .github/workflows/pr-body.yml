@@ -1,0 +1,70 @@
+# The `pr-body` check (ADR-0036 §9, docs/quality/gates.md → "The PR body"):
+# the title's kind, the template's headings, the case-mapping table, the
+# automated review and the maintainer's ticked hand check. It also holds the
+# path check by PR kind, because the kind comes from the title: editing the
+# title or body reruns both checks, never the costly `dioxus` gates. It exists
+# on `develop` only.
+name: PR body
+
+on:
+  pull_request:
+    branches: [develop]
+    types: [opened, edited, synchronize, reopened]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pr-body-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  pr-body:
+    name: pr-body
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Merge base
+        env:
+          BASE_REF: ${{ github.event.pull_request.base.ref }}
+        run: echo "MERGE_BASE=$(git merge-base "origin/$BASE_REF" HEAD^2)" >>"$GITHUB_ENV"
+
+      - name: Setup Rust (rust-toolchain.toml)
+        run: rustup toolchain install
+
+      - name: Cache Rust
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.cargo/registry
+            ~/.cargo/git
+            target
+          key: pr-body-${{ runner.os }}-${{ hashFiles('Cargo.lock', 'rust-toolchain.toml') }}
+          restore-keys: |
+            pr-body-${{ runner.os }}-
+
+      # The title and body reach the check through the environment, never
+      # through `${{ }}` inside the script.
+      # 1. The path check, the gate-file mixing check and the size warning.
+      - name: Path check by PR kind
+        env:
+          GATES_PR_TITLE: ${{ github.event.pull_request.title }}
+          GATES_PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: |
+          git diff --numstat --no-renames "$MERGE_BASE" HEAD^2 >"$RUNNER_TEMP/numstat"
+          git show "$MERGE_BASE:Cargo.toml" >"$RUNNER_TEMP/base-Cargo.toml" 2>/dev/null || : >"$RUNNER_TEMP/base-Cargo.toml"
+          GATES_NUMSTAT="$RUNNER_TEMP/numstat" GATES_BASE_MANIFEST="$RUNNER_TEMP/base-Cargo.toml" \
+            cargo test -p gates --test pr -- --ignored --exact pr_paths --nocapture
+
+      - name: Check the title and body
+        if: ${{ !cancelled() }}
+        env:
+          GATES_PR_TITLE: ${{ github.event.pull_request.title }}
+          GATES_PR_BODY: ${{ github.event.pull_request.body }}
+          GATES_PR_HEAD_REF: ${{ github.event.pull_request.head.ref }}
+        run: cargo test -p gates --test pr -- --ignored --exact pr_body

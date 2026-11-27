@@ -1,0 +1,8 @@
+# logic is clean: it takes crates.io csv, which shares a wasm/ crate's name.
+[package]
+name = "logic-table"
+version = "0.0.0"
+edition = "2024"
+
+[dependencies]
+csv = "1"
