@@ -478,7 +478,8 @@ opens in a dialog at all; in the Dioxus build its dialog is a modal frame.
 
 How the Dioxus build plays an exit (ADR-0034): Rust sets an "exiting"
 attribute, waits for `transitionend` or a timeout, then removes the node.
-It is the only motion work Rust does; everything else that moves is CSS.
+It is the only motion work Rust does; everything else that animates is CSS.
+A style that follows the pointer while dragging is input, not motion.
 
 ## Tool dialog frame
 

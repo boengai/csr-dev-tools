@@ -81,7 +81,7 @@ Tool in the Dioxus build is made from. It was decided in conversation on
     - possibly the Typst SVG preview, which was not checked.
 
     The other CSS playgrounds set style properties, so they don't need
-    it.
+    it. The grep covered `src/` only, not the engine libraries.
 
 ## Decision
 
@@ -250,9 +250,14 @@ The rules that follow from it:
     exits play in every browser.
   - CopyButton unmounts nothing: both icons are stacked and cross-fade by
     a data attribute.
-- **Rust never writes a style on every frame.** Position variables, such
+- **Rust never drives an animation over time.** It never writes a style
+  from a timer or a `requestAnimationFrame` loop. Position variables, such
   as the tab indicator's offset and width, are written only when the
   selection changes or the element resizes.
+- **A style that follows the pointer is input, not motion,** and is
+  allowed. That covers the drag, pan and crop of the sortable grid, the
+  image cropper and db-diagram's canvas, which ADR-0033 makes hand-built
+  components.
 - **Springs become `linear()` curves.** Only two springs visibly bounce
   today: the tab indicator (8.7%) and the select's opening (3.7%). Their
   curves are generated from today's stiffness and damping and stored as
@@ -368,15 +373,24 @@ are already CSS and carry over unchanged.
 
 - **`style-src` keeps `'unsafe-inline'`** in the Dioxus build, as on
   `main`.
-- **Our own code never needs it.** Styles are set only through style
-  properties (`width: "…"` in `rsx!`, which calls `style.setProperty`).
-  They are never set through a `style: "…"` string.
+- **Our own Rust code never needs it.** Styles are set only through the
+  CSSOM, never through a `style: "…"` string:
+  - standard properties use style properties in `rsx!` (`width: "…"`,
+    which calls `style.setProperty`);
+  - custom properties such as `--trigger-width` use `web-sys`
+    `set_property`, unless `rsx!` turns out to accept them as style
+    properties.
 - **CssAnimationBuilder's generated keyframes move to a constructed
   stylesheet** (`CSSStyleSheet` with `replaceSync`, added through
   `adoptedStyleSheets`), not a `<style>` element.
-- **Only the panes that show user content still need `'unsafe-inline'`:**
-  the markup pane, and the Typst preview if its SVG carries a `<style>`.
-  Dropping it later is one decision about those panes.
+- **What still needs `'unsafe-inline'`:**
+  - the panes that show user content: the markup pane, and the Typst
+    preview if its SVG carries a `<style>`;
+  - possibly the engine bridges ADR-0033 keeps. Monaco injects `<style>`
+    elements; CodeMirror and mermaid's own injection were not checked.
+
+  Dropping `'unsafe-inline'` later is a decision about those, not about
+  our own code.
 
 ## Considered options
 
@@ -440,7 +454,8 @@ are already CSS and carry over unchanged.
   [issue 25](https://github.com/boengai/csr-dev-tools/issues/25):**
   - no `class`, `style` or `extends = GlobalAttributes` on a common
     component;
-  - no style written every frame;
+  - no style written from a timer or an animation-frame loop (pointer
+    handlers are exempt);
   - no `style: "…"` string attribute, and no `<style>` element, in our
     own code (section 11);
   - no `dioxus-primitives` or `dioxus-motion` dependency.
@@ -456,7 +471,10 @@ are already CSS and carry over unchanged.
     the sheet;
   - that moving the toast list into the toast host loses no
     announcement;
-  - whether the Typst SVG preview's markup carries a `<style>`.
+  - whether the Typst SVG preview's markup carries a `<style>`;
+  - that the modal frame can cancel the dialog's `cancel` event to run its
+    exit on Escape, and copes with a native `close` that arrives before
+    the timeout.
 
 ## Revisit when
 
