@@ -187,7 +187,13 @@ leans on nothing hard.
   has exactly one issue.
 - **Seven wave issues** group them: one for each of the six layouts
   (`custom` included) and one for the app. Each is a
-  sub-issue of the map.
+  sub-issue of the map: transformer [#226](https://github.com/boengai/csr-dev-tools/issues/226),
+  codec [#227](https://github.com/boengai/csr-dev-tools/issues/227),
+  generator [#228](https://github.com/boengai/csr-dev-tools/issues/228),
+  file-processor [#229](https://github.com/boengai/csr-dev-tools/issues/229),
+  comparator [#230](https://github.com/boengai/csr-dev-tools/issues/230),
+  custom [#231](https://github.com/boengai/csr-dev-tools/issues/231) and
+  app [#232](https://github.com/boengai/csr-dev-tools/issues/232).
   - **Blocked-by links are hard dependencies only.** A wave issue's
     checklist holds the soft order, so blocking does not serialise what
     could run in parallel.
