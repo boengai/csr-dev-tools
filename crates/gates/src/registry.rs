@@ -164,72 +164,22 @@ pub fn parse_ported_list(text: &str) -> Result<BTreeSet<String>, String> {
     Ok(set)
 }
 
-/// Reads the Tool keys in the Dioxus spec filter's `export const PORTED … = [ … ]`
-/// (`e2e/parity/dioxus-filter.ts`). The array may hold only string literals,
-/// commas and comments, and must be the whole value; anything else is an
-/// error, not a guess.
-pub fn parse_spec_filter(text: &str) -> Result<BTreeSet<String>, String> {
-    let declaration = text
-        .find("export const PORTED")
-        .ok_or("has no `export const PORTED`")?;
-    let rest = text.get(declaration..).unwrap_or_default();
-    let (_, after_equals) = rest.split_once('=').ok_or("PORTED has no value")?;
-    let mut chars = after_equals
-        .trim_start()
-        .strip_prefix('[')
-        .ok_or("PORTED is not an array literal")?
-        .chars()
-        .peekable();
-    let mut keys = BTreeSet::new();
-    while let Some(c) = chars.next() {
-        match c {
-            ']' => {
-                // The literal must be the whole value: a `.filter(…)` after it would
-                // change the list at run time, where this reader cannot see.
-                let rest: String = chars.take_while(|&c| c != '\n').collect();
-                return match trailing_code(&rest) {
-                    "" => Ok(keys),
-                    other => Err(format!(
-                        "PORTED continues after its array (`{other}`): it must be a plain array literal"
-                    )),
-                };
-            }
-            ',' => {}
-            c if c.is_whitespace() => {}
-            '/' if chars.peek() == Some(&'/') => {
-                chars.by_ref().find(|&c| c == '\n');
-            }
-            '/' if chars.peek() == Some(&'*') => {
-                chars.next();
-                let mut previous = ' ';
-                chars.by_ref().find(|&c| {
-                    let end = previous == '*' && c == '/';
-                    previous = c;
-                    end
-                });
-            }
-            '\'' | '"' => {
-                let key: String = chars.by_ref().take_while(|&next| next != c).collect();
-                keys.insert(key);
-            }
-            other => {
-                return Err(format!(
-                    "PORTED holds `{other}…`: list Tool keys as string literals"
-                ));
-            }
-        }
-    }
-    Err("PORTED's array has no closing `]`".to_owned())
-}
-
-/// What follows an array on its line, without a trailing `;` and comment.
-fn trailing_code(rest: &str) -> &str {
-    let code = rest
-        .find("//")
-        .or_else(|| rest.find("/*"))
-        .map_or(rest, |comment| rest.get(..comment).unwrap_or(rest));
-    let code = code.trim();
-    code.strip_suffix(';').unwrap_or(code).trim()
+/// Reads the Dioxus spec filter's `PORTED` as `scripts/spec-filter.mjs` prints it:
+/// a JSON array of Tool keys, evaluated by Node rather than parsed from the
+/// TypeScript.
+pub fn parse_spec_filter(json: &str) -> Result<BTreeSet<String>, String> {
+    let value: serde_json::Value =
+        serde_json::from_str(json).map_err(|error| format!("is not JSON: {error}"))?;
+    value
+        .as_array()
+        .ok_or("PORTED is not an array")?
+        .iter()
+        .map(|key| {
+            key.as_str()
+                .map(str::to_owned)
+                .ok_or_else(|| format!("PORTED holds {key}, which is not a Tool key"))
+        })
+        .collect()
 }
 
 /// The Dioxus spec filter lists exactly the ported Tools, so none skips parity.

@@ -134,17 +134,15 @@ fn a_ported_list_the_reader_cannot_read_fails() {
 }
 
 #[test]
-fn the_spec_filter_is_read_from_its_ported_array() {
-    let text = "import type { ToolRegistryKey } from 'x'\n\nexport const PORTED: Array<ToolRegistryKey> = [\n  'hash-generator',\n  \"uuid-generator\",\n]\n\nexport const JOURNEYS = { testMatch: ['a.spec.ts'] }\n";
+fn the_spec_filter_is_read_as_node_prints_it() {
     assert_eq!(
-        parse_spec_filter(text).unwrap(),
+        parse_spec_filter(r#"["hash-generator", "uuid-generator"]"#).unwrap(),
         set(&["hash-generator", "uuid-generator"])
     );
-    assert_eq!(
-        parse_spec_filter("export const PORTED: Array<ToolRegistryKey> = []").unwrap(),
-        set(&[])
-    );
-    assert!(parse_spec_filter("export const JOURNEYS = {}").is_err());
+    assert_eq!(parse_spec_filter("[]\n").unwrap(), set(&[]));
+    for json in ["", "{}", r#"["a", 1]"#] {
+        assert!(parse_spec_filter(json).is_err(), "read {json:?}");
+    }
 }
 
 #[test]
@@ -159,32 +157,4 @@ fn the_spec_filter_must_list_the_ported_tools() {
         check_spec_filter(&set(&["a"]), &set(&["a"])).is_empty(),
         "same sets"
     );
-}
-
-#[test]
-fn the_spec_filter_reader_skips_comments_and_fails_on_anything_else() {
-    let text = "export const PORTED: Array<ToolRegistryKey> = [\n  'hash-generator', // the first port\n  /* next */ 'uuid-generator',\n]\n";
-    assert_eq!(
-        parse_spec_filter(text).unwrap(),
-        set(&["hash-generator", "uuid-generator"])
-    );
-    // Not a string literal: the reader cannot tell what it means, so it fails.
-    assert!(parse_spec_filter("export const PORTED = [KEYS.hash]").is_err());
-}
-
-#[test]
-fn the_spec_filter_array_must_be_the_whole_value() {
-    let with_semicolon = "export const PORTED: Array<ToolRegistryKey> = ['a'];\n";
-    assert_eq!(parse_spec_filter(with_semicolon).unwrap(), set(&["a"]));
-    let with_comment = "export const PORTED = ['a'] // the first port\n";
-    assert_eq!(parse_spec_filter(with_comment).unwrap(), set(&["a"]));
-    let with_both = "export const PORTED = ['a']; /* ported */\n";
-    assert_eq!(parse_spec_filter(with_both).unwrap(), set(&["a"]));
-    // Run-time changes to the array would go unseen, so they fail.
-    for text in [
-        "export const PORTED = ['a', 'b'].filter((key) => key !== 'b')\n",
-        "export const PORTED = ['a'].concat(EXTRA)\n",
-    ] {
-        assert!(parse_spec_filter(text).is_err(), "read {text:?}");
-    }
 }

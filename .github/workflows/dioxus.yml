@@ -184,6 +184,14 @@ jobs:
           node-version: '24'
           cache: 'pnpm'
 
+      # The spec filter's PORTED, as Node evaluates it, equals the ported-Tool list.
+      - name: Dioxus spec filter
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: |
+          node crates/gates/scripts/spec-filter.mjs >"$RUNNER_TEMP/spec-filter.json"
+          GATES_SPEC_FILTER="$RUNNER_TEMP/spec-filter.json" \
+            cargo test -p gates --test spec_filter -- --ignored --exact spec_filter
+
       - name: Byte check
         if: ${{ !cancelled() && steps.build-base.outcome == 'success' }}
         run: |

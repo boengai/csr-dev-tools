@@ -56,7 +56,9 @@ const sitePath = (value, base) => {
  * which one depends on the screen, so the largest counts.
  */
 const firstLoads = (html, route, files) => {
-  const base = `${SITE}${route === '/' ? '/' : `${route}/`}`
+  // A Tool page is served at its slashless route ("/tools/x", as the static host's pretty
+  // URLs do), so a relative URL resolves against "/tools/", as the browser resolves it.
+  const base = `${SITE}${route}`
   return [...html.replace(HTML_COMMENT, '').matchAll(LOADING_TAG)].flatMap(([tag, name]) => {
     const isLink = name.toLowerCase() === 'link'
     const parsed = attributes(tag)
