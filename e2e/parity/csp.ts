@@ -15,22 +15,47 @@ const { expect, test: base } = playwright as typeof import('@playwright/test')
 /** Each violation a page reported: its directive and what it blocked. */
 type Violations = Array<string>
 
+type BrowserContext = import('@playwright/test').BrowserContext
+
+/** Reports every `securitypolicyviolation` on the context's pages into `seen`. */
+const watch = async (context: BrowserContext, seen: Violations): Promise<void> => {
+  await context.exposeBinding('__reportCspViolation', (_source, violation: string) => {
+    seen.push(violation)
+  })
+  await context.addInitScript(() => {
+    document.addEventListener('securitypolicyviolation', (event) => {
+      const report = (window as unknown as { __reportCspViolation: (v: string) => void }).__reportCspViolation
+      report(`${event.effectiveDirective} blocked ${event.blockedURI || 'inline'} on ${event.documentURI}`)
+    })
+  })
+}
+
 export const test = base.extend<{ cspViolations: Violations }>({
-  // Auto: it runs for every test, on every page of the test's own context.
-  // A worker's violations fire on the worker, not the page, so this misses them.
+  // Auto: it runs for every test, on every page of the test's own context and of any
+  // context the test opens itself (`browser.newContext`, `browser.newPage`), as the
+  // screenshot tests do. A worker's violations fire on the worker, not the page, so
+  // this misses them.
   cspViolations: [
-    async ({ context }, use) => {
+    async ({ browser, context }, use) => {
       const seen: Violations = []
-      await context.exposeBinding('__reportCspViolation', (_source, violation: string) => {
-        seen.push(violation)
-      })
-      await context.addInitScript(() => {
-        document.addEventListener('securitypolicyviolation', (event) => {
-          const report = (window as unknown as { __reportCspViolation: (v: string) => void }).__reportCspViolation
-          report(`${event.effectiveDirective} blocked ${event.blockedURI || 'inline'} on ${event.documentURI}`)
-        })
-      })
+      await watch(context, seen)
+      const { newContext, newPage } = browser
+      browser.newContext = async (options) => {
+        const opened = await newContext.call(browser, options)
+        await watch(opened, seen)
+        return opened
+      }
+      browser.newPage = async (options) => {
+        const opened = await newContext.call(browser, options)
+        await watch(opened, seen)
+        // As with Playwright's own `newPage`, closing the page closes its context.
+        const page = await opened.newPage()
+        page.once('close', () => void opened.close())
+        return page
+      }
+      // `use` resolves once the test ends, passed or failed.
       await use(seen)
+      Object.assign(browser, { newContext, newPage })
       expect(seen, 'securitypolicyviolation events under the post-migration CSP').toEqual([])
     },
     { auto: true },

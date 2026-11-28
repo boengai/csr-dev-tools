@@ -160,3 +160,14 @@ fn the_spec_filter_must_list_the_ported_tools() {
         "same sets"
     );
 }
+
+#[test]
+fn the_spec_filter_reader_skips_comments_and_fails_on_anything_else() {
+    let text = "export const PORTED: Array<ToolRegistryKey> = [\n  'hash-generator', // the first port\n  /* next */ 'uuid-generator',\n]\n";
+    assert_eq!(
+        parse_spec_filter(text).unwrap(),
+        set(&["hash-generator", "uuid-generator"])
+    );
+    // Not a string literal: the reader cannot tell what it means, so it fails.
+    assert!(parse_spec_filter("export const PORTED = [KEYS.hash]").is_err());
+}

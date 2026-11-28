@@ -36,30 +36,50 @@ const attribute = (tag, name) => {
   return match && (match[1] ?? match[2] ?? match[3])
 }
 
-/** The same-origin files a page's HTML loads at first, as paths in the build. */
-const firstLoads = (html, route) => {
+/** A same-origin URL as a path in the build, or undefined for another origin. */
+const sitePath = (value, base) => {
+  // Relative, root-relative and dx's "/./assets/…" resolve against the page;
+  // another origin, protocol-relative "//cdn…" included, is not the site's own bytes.
+  const url = new URL(value, base)
+  return url.origin === SITE ? decodeURIComponent(url.pathname).slice(1) : undefined
+}
+
+/**
+ * The same-origin files a page's HTML loads at first, as paths in the build.
+ * An image or source with a `srcset` loads one of its candidates (or its `src`);
+ * which one depends on the screen, so the largest counts.
+ */
+const firstLoads = (html, route, files) => {
   const base = `${SITE}${route === '/' ? '/' : `${route}/`}`
   return [...html.matchAll(LOADING_TAG)].flatMap(([tag, name]) => {
     const isLink = name.toLowerCase() === 'link'
     if (isLink && !(attribute(tag, 'rel') ?? '').split(/\s+/).some((rel) => LOADING_REL.test(rel))) return []
-    const value = attribute(tag, isLink ? 'href' : 'src')
-    if (!value) return []
-    // Relative, root-relative and dx's "/./assets/…" resolve against the page;
-    // another origin, protocol-relative "//cdn…" included, is not the site's own bytes.
-    const url = new URL(value, base)
-    return url.origin === SITE ? [decodeURIComponent(url.pathname).slice(1)] : []
+    const candidates = [
+      attribute(tag, isLink ? 'href' : 'src'),
+      // Each candidate is "<url> [<width>w|<density>x]"; the URL holds no spaces.
+      ...(isLink
+        ? []
+        : (attribute(tag, 'srcset') ?? '').split(',').map((candidate) => candidate.trim().split(/\s+/)[0])),
+    ]
+      .filter(Boolean)
+      .map((value) => sitePath(value, base))
+      .filter((path) => path !== undefined)
+    if (candidates.length === 0) return []
+    return [candidates.reduce((largest, path) => ((files[path] ?? 0) > (files[largest] ?? 0) ? path : largest))]
   })
 }
 
-const files = {}
+// Every file's size first, so a page can pick its largest srcset candidate.
+const paths = walk(dist)
+  .sort()
+  .map((path) => ({ bytes: readFileSync(path), name: relative(dist, path).split(sep).join('/') }))
+const files = Object.fromEntries(paths.map(({ bytes, name }) => [name, brotli(bytes)]))
 const pages = {}
-for (const path of walk(dist).sort()) {
-  const name = relative(dist, path).split(sep).join('/')
-  const bytes = readFileSync(path)
-  files[name] = brotli(bytes)
-  if (!name.endsWith('index.html')) continue
+for (const { bytes, name } of paths) {
+  // A page is a file named exactly index.html, not one whose name ends in it.
+  if (name !== 'index.html' && !name.endsWith('/index.html')) continue
   const route = `/${name.slice(0, -'index.html'.length)}`.replace(/(.)\/$/, '$1')
-  pages[route] = [name, ...new Set(firstLoads(bytes.toString('utf8'), route))]
+  pages[route] = [name, ...new Set(firstLoads(bytes.toString('utf8'), route, files))]
 }
 
 process.stdout.write(`${JSON.stringify({ files, pages }, null, 2)}\n`)

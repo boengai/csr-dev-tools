@@ -165,25 +165,50 @@ pub fn parse_ported_list(text: &str) -> Result<BTreeSet<String>, String> {
 }
 
 /// Reads the Tool keys in the Dioxus spec filter's `export const PORTED … = [ … ]`
-/// (`e2e/parity/dioxus-filter.ts`): every quoted string inside the brackets.
+/// (`e2e/parity/dioxus-filter.ts`). The array may hold only string literals,
+/// commas and comments; anything else is an error, not a guess.
 pub fn parse_spec_filter(text: &str) -> Result<BTreeSet<String>, String> {
     let declaration = text
         .find("export const PORTED")
         .ok_or("has no `export const PORTED`")?;
     let rest = text.get(declaration..).unwrap_or_default();
     let (_, after_equals) = rest.split_once('=').ok_or("PORTED has no value")?;
-    let list = after_equals
+    let mut chars = after_equals
         .trim_start()
         .strip_prefix('[')
-        .and_then(|list| list.split_once(']'))
-        .map(|(list, _)| list)
-        .ok_or("PORTED is not an array literal")?;
-    Ok(list
-        .split(',')
-        .map(|item| item.trim().trim_matches(|c| c == '\'' || c == '"'))
-        .filter(|key| !key.is_empty())
-        .map(str::to_owned)
-        .collect())
+        .ok_or("PORTED is not an array literal")?
+        .chars()
+        .peekable();
+    let mut keys = BTreeSet::new();
+    while let Some(c) = chars.next() {
+        match c {
+            ']' => return Ok(keys),
+            ',' => {}
+            c if c.is_whitespace() => {}
+            '/' if chars.peek() == Some(&'/') => {
+                chars.by_ref().find(|&c| c == '\n');
+            }
+            '/' if chars.peek() == Some(&'*') => {
+                chars.next();
+                let mut previous = ' ';
+                chars.by_ref().find(|&c| {
+                    let end = previous == '*' && c == '/';
+                    previous = c;
+                    end
+                });
+            }
+            '\'' | '"' => {
+                let key: String = chars.by_ref().take_while(|&next| next != c).collect();
+                keys.insert(key);
+            }
+            other => {
+                return Err(format!(
+                    "PORTED holds `{other}…`: list Tool keys as string literals"
+                ));
+            }
+        }
+    }
+    Err("PORTED's array has no closing `]`".to_owned())
 }
 
 /// The Dioxus spec filter lists exactly the ported Tools, so none skips parity.
