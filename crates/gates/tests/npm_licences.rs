@@ -45,6 +45,11 @@ fn the_fixture_fails_on_each_package_outside_the_list() {
         ],
         "{found:#?}"
     );
+    assert!(
+        found[3].message.contains("not a licence expression"),
+        "{found:#?}"
+    );
+    assert!(found[0].message.contains("do not satisfy"), "{found:#?}");
 }
 
 #[test]

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import type { ToolRoute } from '../../src/types/constants/tool-registry'
+import type { ToolRoute } from '../../src/types/constants/tool-registry.ts'
 import { renderRegistry } from './registry.ts'
 
 const route = (overrides: Partial<ToolRoute> & Pick<ToolRoute, 'key'>): ToolRoute => ({

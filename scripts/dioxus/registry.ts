@@ -1,7 +1,7 @@
 // Renders `crates/registry/src/generated.rs` from the resolved Tool routes
 // (ADR-0035 §6). Pure, so the spec can feed it routes; the writer is
 // generate-registry.ts.
-import type { ToolCategory, ToolLayout, ToolRoute } from '../../src/types/constants/tool-registry'
+import type { ToolCategory, ToolLayout, ToolRoute } from '../../src/types/constants/tool-registry.ts'
 
 // Typed as records so a new category or layout in tool-routes.ts fails the
 // typecheck until it has a Rust variant here.

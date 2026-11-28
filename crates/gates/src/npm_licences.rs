@@ -36,12 +36,23 @@ pub fn check_licences(pnpm_json: &str, allowed: &[String]) -> Result<Vec<Finding
         let packages = packages
             .as_array()
             .ok_or_else(|| format!("{expression} does not hold a list of packages"))?;
-        let allowed_here = satisfies(expression, allowed) == Some(true);
+        let verdict = match satisfies(expression, allowed) {
+            Some(true) => None,
+            Some(false) => Some(format!(
+                "is under {expression}, which deny.toml's allowed licences do not satisfy"
+            )),
+            None => Some(format!(
+                "is under {expression}, which is not a licence expression the check can read"
+            )),
+        };
         for package in packages {
             let name = package
                 .get("name")
                 .and_then(serde_json::Value::as_str)
                 .ok_or_else(|| format!("a package under {expression} has no name"))?;
+            let Some(message) = &verdict else {
+                continue;
+            };
             let versions: Vec<&str> = package
                 .get("versions")
                 .and_then(serde_json::Value::as_array)
@@ -51,13 +62,8 @@ pub fn check_licences(pnpm_json: &str, allowed: &[String]) -> Result<Vec<Finding
                         .filter_map(serde_json::Value::as_str)
                         .collect()
                 });
-            if allowed_here {
-                continue;
-            }
-            let message =
-                format!("is under {expression}, which deny.toml's allowed licences do not satisfy");
             let at = format!("{name}@{}", versions.join(", "));
-            findings.push(Finding::new("npm-licence", at, 0, message));
+            findings.push(Finding::new("npm-licence", at, 0, message.clone()));
         }
     }
     findings.sort_by(|a, b| a.at.cmp(&b.at));
@@ -74,7 +80,7 @@ fn satisfies(expression: &str, allowed: &[String]) -> Option<bool> {
         pos: 0,
         allowed,
     };
-    let result = parser.any()?;
+    let result = parser.or_expr()?;
     (parser.pos == tokens.len()).then_some(result)
 }
 
@@ -85,7 +91,7 @@ struct Parser<'a> {
 }
 
 impl Parser<'_> {
-    fn next_is(&mut self, token: &str) -> bool {
+    fn eat(&mut self, token: &str) -> bool {
         let found = self.tokens.get(self.pos) == Some(&token);
         if found {
             self.pos += 1;
@@ -94,31 +100,31 @@ impl Parser<'_> {
     }
 
     /// `a OR b OR …`
-    fn any(&mut self) -> Option<bool> {
-        let mut result = self.all()?;
-        while self.next_is("OR") {
-            result |= self.all()?;
+    fn or_expr(&mut self) -> Option<bool> {
+        let mut result = self.and_expr()?;
+        while self.eat("OR") {
+            result |= self.and_expr()?;
         }
         Some(result)
     }
 
     /// `a AND b AND …`
-    fn all(&mut self) -> Option<bool> {
-        let mut result = self.one()?;
-        while self.next_is("AND") {
-            result &= self.one()?;
+    fn and_expr(&mut self) -> Option<bool> {
+        let mut result = self.term()?;
+        while self.eat("AND") {
+            result &= self.term()?;
         }
         Some(result)
     }
 
     /// `( … )`, or a licence with an optional `WITH` exception.
-    fn one(&mut self) -> Option<bool> {
-        if self.next_is("(") {
-            let result = self.any()?;
-            return self.next_is(")").then_some(result);
+    fn term(&mut self) -> Option<bool> {
+        if self.eat("(") {
+            let result = self.or_expr()?;
+            return self.eat(")").then_some(result);
         }
         let mut licence = self.atom()?.to_owned();
-        if self.next_is("WITH") {
+        if self.eat("WITH") {
             licence = format!("{licence} WITH {}", self.atom()?);
         }
         Some(self.allowed.contains(&licence))

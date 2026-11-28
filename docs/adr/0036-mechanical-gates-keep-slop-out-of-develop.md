@@ -515,8 +515,10 @@ What building it found:
 - **Only `tool-routes.ts` is generated so far.** `CATEGORY_ORDER`,
   `RENAMED_KEYS`, `SITE_ORIGIN` and the home page's head tags live in
   files Node cannot import without editing `src/` (`tool-registry.ts`
-  loads React, the others are not exported). They join the registry in the
-  `registry(…)` PR that first needs them.
+  loads React, the others are not exported). The `registry(…)` PR that first needs them
+  cannot edit `src/`, so the move that makes them importable lands on
+  `main` first and reaches `develop` through a `sync`, or the generator
+  reads them as text, as the `gates` crate reads `tool-routes.ts`.
 - **The category and layout enums come from typed records in the
   generator,** so a new category or layout in `tool-routes.ts` fails the
   typecheck until it has a Rust variant.

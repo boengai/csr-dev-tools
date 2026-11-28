@@ -32,6 +32,8 @@ pub struct Seo {
 
 impl ToolKey {
     /// The key as `tool-routes.ts` spells it, which is also its route segment.
+    /// `KEYS` and `TOOLS` are generated in `ToolKey` order, so the discriminant
+    /// is the row; a match would trip `too_many_lines` at 84 arms.
     pub fn as_str(self) -> &'static str {
         generated::KEYS[self as usize]
     }
