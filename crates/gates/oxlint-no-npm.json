@@ -13,7 +13,8 @@
               "**",
               "!node:*",
               "!./**",
-              "!../**"
+              "!../**",
+              "**/node_modules/**"
             ],
             "message": "this directory has no package.json, so it takes no npm package: Node built-ins and repository files only (docs/quality/gates.md → Dependencies)"
           }

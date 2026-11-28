@@ -38,6 +38,7 @@ fn the_fixture_fails_on_each_package_outside_the_list() {
     assert_eq!(
         at,
         vec![
+            "bad-alternative@8.0.0",
             "bad-both@5.0.0",
             "bad-gpl@1.0.0, 1.1.0",
             "bad-unknown@6.0.0",
@@ -46,10 +47,10 @@ fn the_fixture_fails_on_each_package_outside_the_list() {
         "{found:#?}"
     );
     assert!(
-        found[3].message.contains("not a licence expression"),
+        found[0].message.contains("not a licence expression"),
         "{found:#?}"
     );
-    assert!(found[0].message.contains("do not satisfy"), "{found:#?}");
+    assert!(found[1].message.contains("do not satisfy"), "{found:#?}");
 }
 
 #[test]

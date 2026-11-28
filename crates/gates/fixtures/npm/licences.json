@@ -6,5 +6,6 @@
   "GPL-3.0-only": [{ "name": "bad-gpl", "versions": ["1.0.0", "1.1.0"], "license": "GPL-3.0-only" }],
   "(MIT AND MPL-2.0)": [{ "name": "bad-both", "versions": ["5.0.0"], "license": "(MIT AND MPL-2.0)" }],
   "Unknown": [{ "name": "bad-unknown", "versions": ["6.0.0"], "license": "Unknown" }],
-  "(MIT OR": [{ "name": "bad-unparsed", "versions": ["7.0.0"], "license": "(MIT OR" }]
+  "(MIT OR": [{ "name": "bad-unparsed", "versions": ["7.0.0"], "license": "(MIT OR" }],
+  "MIT OR ???": [{ "name": "bad-alternative", "versions": ["8.0.0"], "license": "MIT OR ???" }]
 }

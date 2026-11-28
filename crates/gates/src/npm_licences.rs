@@ -130,9 +130,17 @@ impl Parser<'_> {
         Some(self.allowed.contains(&licence))
     }
 
+    /// An SPDX licence or exception id (letters, digits, `.`, `-`, a trailing
+    /// `+`). Anything else makes the whole expression unreadable, so `MIT OR
+    /// ???` cannot pass on its `MIT`.
     fn atom(&mut self) -> Option<&str> {
         let token = *self.tokens.get(self.pos)?;
-        if matches!(token, "(" | ")" | "OR" | "AND" | "WITH") {
+        let id = token.strip_suffix('+').unwrap_or(token);
+        let is_id = !id.is_empty()
+            && id
+                .chars()
+                .all(|c| c.is_ascii_alphanumeric() || matches!(c, '.' | '-'));
+        if !is_id || matches!(token, "OR" | "AND" | "WITH") {
             return None;
         }
         self.pos += 1;
