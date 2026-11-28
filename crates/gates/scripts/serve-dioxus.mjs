@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 // Serves a Dioxus build under the post-migration CSP, for the Dioxus
-// Playwright project (docs/quality/gates.md → "CSP"). A path with no file
-// gets the nearest index.html, as the static host does for client routes.
+// Playwright project (docs/quality/gates.md → "CSP"). It routes as the repo's
+// model of the static host does (e2e/perf/pages-server.ts): a directory URL
+// redirects to its trailing slash, and a path with no file gets the root
+// index.html, the app shell.
 // Usage: node crates/gates/scripts/serve-dioxus.mjs <dist-dioxus> <port> <csp-file>
 import { existsSync, readFileSync, realpathSync, statSync } from 'node:fs'
 import { createServer } from 'node:http'
@@ -58,13 +60,10 @@ const resolve = (url) => {
     return inside(directoryIndex) ? { redirect: `${rawPathname}/${search}` } : undefined
   }
   if (existsSync(path) && statSync(path).isFile()) return inside(path) ? { file: path } : undefined
-  // A client route: the nearest index.html above it.
-  for (let dir = path; dir.startsWith(root); dir = join(dir, '..')) {
-    const index = join(dir, 'index.html')
-    if (existsSync(index)) return inside(index) ? { file: index } : undefined
-    if (dir === root) break
-  }
-  return undefined
+  if (existsSync(directoryIndex)) return inside(directoryIndex) ? { file: directoryIndex } : undefined
+  // A client route, at any depth: the app shell, never a Tool page above it.
+  const shell = join(root, 'index.html')
+  return existsSync(shell) && inside(shell) ? { file: shell } : undefined
 }
 
 createServer((request, response) => {
