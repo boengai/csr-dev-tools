@@ -227,3 +227,11 @@ fn a_page_that_preloads_the_main_module_counts_it_once() {
     let (rows, _) = rows(&Build::from_json(json).unwrap());
     assert_eq!(rows.get("page:/"), Some(&101));
 }
+
+#[test]
+fn a_page_that_preloads_a_stale_main_module_fails() {
+    let json = r#"{"files": {"index.html": 1, "assets/app_bg-dxh0123.wasm": 100},
+        "pages": {"/": ["index.html", "assets/app_bg-dxhdead.wasm"]}}"#;
+    let (_, findings) = rows(&Build::from_json(json).unwrap());
+    assert_eq!(ats(&findings), vec!["page:/"]);
+}

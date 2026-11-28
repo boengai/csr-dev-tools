@@ -158,7 +158,12 @@ pub fn rows(build: &Build) -> (Rows, Vec<Finding>) {
         let mut total = main;
         for path in loads
             .iter()
-            .filter(|path| !matches!(classify_wasm(path), Some(Wasm::Main)))
+            // The main module is already counted; a main-shaped name the build does not
+            // hold (a stale hash) still falls through to the missing-file finding.
+            .filter(|path| {
+                !(build.files.contains_key(*path)
+                    && matches!(classify_wasm(path), Some(Wasm::Main)))
+            })
         {
             match build.files.get(path) {
                 Some(bytes) => total += bytes,
