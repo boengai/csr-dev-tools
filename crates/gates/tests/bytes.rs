@@ -196,6 +196,13 @@ fn byte_check() {
     let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
     let head = Build::from_json(&read("GATES_BYTES_HEAD").unwrap()).unwrap();
     let base = read("GATES_BYTES_BASE").map(|text| rows(&Build::from_json(&text).unwrap()).0);
+    // Without its main module the base has no page rows either, and the 2% rule
+    // would skip every one of them: fail rather than pass over nothing.
+    assert!(
+        base.as_ref()
+            .is_none_or(|base| base.contains_key("wasm:main")),
+        "the base branch's build has no main module, so the 2% rule cannot run"
+    );
     let ceilings =
         parse_rows(&std::fs::read_to_string(root.join(gates::paths::CEILING_FILE)).unwrap())
             .unwrap();

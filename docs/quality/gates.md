@@ -51,7 +51,7 @@ A gate file decides what CI accepts:
 - the root `Cargo.toml` (`[workspace.lints]`, `[workspace.dependencies]`, members, profiles), `rust-toolchain.toml`, `clippy.toml`, `rustfmt.toml`, `deny.toml`, `.jscpd.json`;
 - the `README.md` in `crates/logic`, `crates/tools` and `crates/workers`: cargo rejects a member glob that matches nothing, so each one keeps its glob matching until the first crate lands;
 - `crates/gates/**`, with its fixtures;
-- the byte-ceiling file that `docs/perf/budgets.md` describes (`docs/perf/byte-ceilings.json`), the a11y baseline (`e2e/parity/a11y-baseline.json`, [#41](https://github.com/boengai/csr-dev-tools/issues/41)), the post-migration CSP (`docs/quality/post-migration-csp.txt`), the CSP fixture (`e2e/parity/csp.ts`) with its must-fail check (`e2e/parity/csp.spec.ts`), and the tsconfig that hands it to every Dioxus spec (`e2e/tsconfig.dioxus.json`);
+- the byte-ceiling file that `docs/perf/budgets.md` describes (`docs/perf/byte-ceilings.json`), the a11y baseline (`e2e/parity/a11y-baseline.json`, [#41](https://github.com/boengai/csr-dev-tools/issues/41)), the post-migration CSP (`docs/quality/post-migration-csp.txt`), the CSP fixture (`e2e/parity/csp.ts`) with its must-fail check (`e2e/parity/csp.spec.ts`), the tsconfig that hands it to every Dioxus spec (`e2e/tsconfig.dioxus.json`), and the Dioxus Playwright config that holds both (`playwright.dioxus.config.ts`; a `port` PR changes only the spec filter, in its own file);
 - `.github/workflows/**`, and the PR templates in `docs/quality/pr/`.
 
 A `port` or `shell` PR may add rows for its own Tool to the ceiling file. Any other change to a gate file, raising a ceiling included, is a `gates` PR. A `gates` PR changes only gate files, `docs/quality/**` and the ADR that records it (see "PR kinds").
@@ -242,7 +242,7 @@ A Tool entry is an invocation of `wasm_split::lazy_loader!` or of `ui`'s entry m
 ### A port PR includes
 
 - **Logic tests:** every case in the Tool's React spec (`src/utils/*.spec.ts`) has a native Rust test in its logic crate, with the same input and the same expected output. The PR body maps each case to its test.
-- **Its journeys on Dioxus:** the Tool is removed from the Dioxus spec filter (the `testMatch` and `grep` list in the Dioxus Playwright config that keeps unported Tools out of the Dioxus run, `docs/ux/parity.md`), so its React journeys run there unchanged. The contract suite and axe pick it up from the registry.
+- **Its journeys on Dioxus:** the Tool is added to the Dioxus spec filter (`e2e/parity/dioxus-filter.ts`: the ported Tools, and the `testMatch` and `grep` that keep unported Tools' journeys out of the Dioxus run, `docs/ux/parity.md`), so its React journeys run there unchanged. The contract suite and axe pick it up from the registry.
 - **Saved inputs:** if the Tool saves input, its #38 golden values and its rows in `crates/registry/src/storage.rs`.
 - **No new Playwright spec.** Specs come from `main` (`docs/ux/parity.md`).
 

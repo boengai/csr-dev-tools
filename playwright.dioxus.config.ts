@@ -1,18 +1,15 @@
 import { defineConfig, devices } from '@playwright/test'
 
 import { defineParityConfig } from './e2e/parity/config'
+import { JOURNEYS, PORTED } from './e2e/parity/dioxus-filter'
 import { DIOXUS_ONLY } from './e2e/parity/tags'
-import type { ToolRegistryKey } from './src/types/constants/tool-registry'
 
 // The Dioxus run, under the post-migration CSP (docs/quality/gates.md → "CSP").
 //   crates/gates/scripts/build-dioxus.sh . dist-dioxus && pnpm exec playwright test -c playwright.dioxus.config.ts
 // Every spec it runs gets the CSP fixture: e2e/tsconfig.dioxus.json maps
 // `@playwright/test` to e2e/parity/csp.ts.
 
-// The Dioxus spec filter (docs/ux/parity.md): a `port` PR adds its Tool's key
-// to PORTED, and its spec files and test titles to JOURNEYS.
-const PORTED: Array<ToolRegistryKey> = []
-const JOURNEYS: { grep?: RegExp; testMatch: Array<string> } = { testMatch: [] }
+// A gate file: a `port` PR changes only the spec filter, in e2e/parity/dioxus-filter.ts.
 
 const PORT = 4174
 // The server listens on loopback only, and `localhost` may resolve to ::1.
