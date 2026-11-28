@@ -176,6 +176,10 @@ fn the_spec_filter_reader_skips_comments_and_fails_on_anything_else() {
 fn the_spec_filter_array_must_be_the_whole_value() {
     let with_semicolon = "export const PORTED: Array<ToolRegistryKey> = ['a'];\n";
     assert_eq!(parse_spec_filter(with_semicolon).unwrap(), set(&["a"]));
+    let with_comment = "export const PORTED = ['a'] // the first port\n";
+    assert_eq!(parse_spec_filter(with_comment).unwrap(), set(&["a"]));
+    let with_both = "export const PORTED = ['a']; /* ported */\n";
+    assert_eq!(parse_spec_filter(with_both).unwrap(), set(&["a"]));
     // Run-time changes to the array would go unseen, so they fail.
     for text in [
         "export const PORTED = ['a', 'b'].filter((key) => key !== 'b')\n",

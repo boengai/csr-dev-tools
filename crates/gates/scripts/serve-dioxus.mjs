@@ -3,7 +3,7 @@
 // Playwright project (docs/quality/gates.md → "CSP"). A path with no file
 // gets the nearest index.html, as the static host does for client routes.
 // Usage: node crates/gates/scripts/serve-dioxus.mjs <dist-dioxus> <port> <csp-file>
-import { existsSync, readFileSync, statSync } from 'node:fs'
+import { existsSync, readFileSync, realpathSync, statSync } from 'node:fs'
 import { createServer } from 'node:http'
 import { extname, join, normalize, sep } from 'node:path'
 
@@ -23,13 +23,19 @@ const TYPES = {
   '.css': 'text/css',
   '.html': 'text/html; charset=utf-8',
   '.js': 'text/javascript',
+  '.mjs': 'text/javascript',
   '.json': 'application/json',
   '.svg': 'image/svg+xml',
   '.wasm': 'application/wasm',
   '.webp': 'image/webp',
 }
 
-const root = normalize(dist)
+const root = realpathSync(normalize(dist))
+/** Inside the build, after following any symlink. */
+const inside = (path) => {
+  const real = realpathSync(path)
+  return real === root || real.startsWith(root + sep)
+}
 /** The file a request URL serves, or undefined; a URL that does not decode serves nothing. */
 const resolve = (url) => {
   let pathname
@@ -40,11 +46,11 @@ const resolve = (url) => {
   }
   const path = normalize(join(root, pathname))
   if (path !== root && !path.startsWith(root + sep)) return undefined
-  if (existsSync(path) && statSync(path).isFile()) return path
+  if (existsSync(path) && statSync(path).isFile()) return inside(path) ? path : undefined
   // A client route: the nearest index.html above it.
   for (let dir = path; dir.startsWith(root); dir = join(dir, '..')) {
     const index = join(dir, 'index.html')
-    if (existsSync(index)) return index
+    if (existsSync(index)) return inside(index) ? index : undefined
     if (dir === root) break
   }
   return undefined

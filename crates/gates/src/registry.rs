@@ -187,8 +187,8 @@ pub fn parse_spec_filter(text: &str) -> Result<BTreeSet<String>, String> {
                 // The literal must be the whole value: a `.filter(…)` after it would
                 // change the list at run time, where this reader cannot see.
                 let rest: String = chars.take_while(|&c| c != '\n').collect();
-                return match rest.trim() {
-                    "" | ";" => Ok(keys),
+                return match trailing_code(&rest) {
+                    "" => Ok(keys),
                     other => Err(format!(
                         "PORTED continues after its array (`{other}`): it must be a plain array literal"
                     )),
@@ -220,6 +220,16 @@ pub fn parse_spec_filter(text: &str) -> Result<BTreeSet<String>, String> {
         }
     }
     Err("PORTED's array has no closing `]`".to_owned())
+}
+
+/// What follows an array on its line, without a trailing `;` and comment.
+fn trailing_code(rest: &str) -> &str {
+    let code = rest
+        .find("//")
+        .or_else(|| rest.find("/*"))
+        .map_or(rest, |comment| rest.get(..comment).unwrap_or(rest));
+    let code = code.trim();
+    code.strip_suffix(';').unwrap_or(code).trim()
 }
 
 /// The Dioxus spec filter lists exactly the ported Tools, so none skips parity.

@@ -33,10 +33,13 @@ const HTML_COMMENT = /<!--[\s\S]*?-->/g
 const LOADING_REL = /^(?:stylesheet|modulepreload|preload|icon)$/i
 const SITE = 'http://site.invalid'
 
-/** An attribute's value, double-quoted, single-quoted or bare. */
-const attribute = (tag, name) => {
-  const match = tag.match(new RegExp(`\\s${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s"'>]+))`, 'i'))
-  return match && (match[1] ?? match[2] ?? match[3])
+// One attribute: its name, then a double-quoted, single-quoted or bare value, if any.
+const ATTRIBUTE = /([^\s=>"'/]+)(?:\s*=\s*(?:"([^"]*)"|'([^']*)'|([^\s"'>]+)))?/g
+
+/** A tag's attributes by lower-case name, read in order, so text inside a quoted value is never a name. */
+const attributes = (tag) => {
+  const body = tag.replace(/^<\w+/, '').replace(/\/?>$/, '')
+  return new Map([...body.matchAll(ATTRIBUTE)].map((m) => [m[1].toLowerCase(), m[2] ?? m[3] ?? m[4] ?? '']))
 }
 
 /** A same-origin URL as a path in the build, or undefined for another origin. */
@@ -56,13 +59,13 @@ const firstLoads = (html, route, files) => {
   const base = `${SITE}${route === '/' ? '/' : `${route}/`}`
   return [...html.replace(HTML_COMMENT, '').matchAll(LOADING_TAG)].flatMap(([tag, name]) => {
     const isLink = name.toLowerCase() === 'link'
-    if (isLink && !(attribute(tag, 'rel') ?? '').split(/\s+/).some((rel) => LOADING_REL.test(rel))) return []
+    const parsed = attributes(tag)
+    const attribute = (key) => parsed.get(key)
+    if (isLink && !(attribute('rel') ?? '').split(/\s+/).some((rel) => LOADING_REL.test(rel))) return []
     const candidates = [
-      attribute(tag, isLink ? 'href' : 'src'),
+      attribute(isLink ? 'href' : 'src'),
       // Each candidate is "<url> [<width>w|<density>x]"; the URL holds no spaces.
-      ...(isLink
-        ? []
-        : (attribute(tag, 'srcset') ?? '').split(',').map((candidate) => candidate.trim().split(/\s+/)[0])),
+      ...(isLink ? [] : (attribute('srcset') ?? '').split(',').map((candidate) => candidate.trim().split(/\s+/)[0])),
     ]
       .filter(Boolean)
       .map((value) => sitePath(value, base))
