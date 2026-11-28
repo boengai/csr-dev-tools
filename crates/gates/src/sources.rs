@@ -3,6 +3,7 @@
 //! [`crate::syntax`] and `rsx!` rules in [`crate::rsx`].
 
 use crate::comments::{CommentKind, comments};
+use crate::paths::REGISTRY_GENERATED;
 use crate::workspace::Layer;
 use crate::{Finding, RuleHit};
 use crate::{rsx, syntax};
@@ -53,7 +54,8 @@ pub fn check_file(context: &FileContext, file: &SourceFile) -> Vec<Finding> {
     };
     let test_lines = syntax::test_module_lines(&parsed);
     let lines = file.text.lines().count().saturating_sub(test_lines);
-    if lines > MAX_FILE_LINES {
+    // The generated registry holds one row per Tool, and no one edits it by hand.
+    if lines > MAX_FILE_LINES && file.path != REGISTRY_GENERATED {
         report(
             "file-size",
             0,

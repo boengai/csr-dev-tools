@@ -106,3 +106,21 @@ fn near_misses_pass_every_rule() {
         assert_eq!(found, vec![], "{context:?}");
     }
 }
+
+#[test]
+fn only_the_generated_registry_may_run_past_the_file_size() {
+    let registry = FileContext {
+        layer: Layer::Registry,
+        crate_root: false,
+        custom_tool: false,
+    };
+    let long = read("file_too_long.rs").unwrap();
+    let at = |path: &str| SourceFile {
+        path: path.to_owned(),
+        text: long.text.clone(),
+    };
+    let generated = check_file(&registry, &at(gates::paths::REGISTRY_GENERATED));
+    assert_eq!(generated, vec![]);
+    let hand_written = check_file(&registry, &at("crates/registry/src/storage.rs"));
+    assert_eq!(rules(&hand_written), vec!["file-size"]);
+}

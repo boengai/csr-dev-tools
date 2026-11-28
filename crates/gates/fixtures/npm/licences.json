@@ -1,0 +1,10 @@
+{
+  "MIT": [{ "name": "fine-mit", "versions": ["1.0.0"], "license": "MIT" }],
+  "(MIT OR GPL-3.0-or-later)": [{ "name": "fine-either", "versions": ["2.0.0"], "license": "(MIT OR GPL-3.0-or-later)" }],
+  "(MIT AND Zlib)": [{ "name": "fine-both", "versions": ["3.0.0"], "license": "(MIT AND Zlib)" }],
+  "Apache-2.0 WITH LLVM-exception": [{ "name": "fine-with", "versions": ["4.0.0"], "license": "Apache-2.0 WITH LLVM-exception" }],
+  "GPL-3.0-only": [{ "name": "bad-gpl", "versions": ["1.0.0", "1.1.0"], "license": "GPL-3.0-only" }],
+  "(MIT AND MPL-2.0)": [{ "name": "bad-both", "versions": ["5.0.0"], "license": "(MIT AND MPL-2.0)" }],
+  "Unknown": [{ "name": "bad-unknown", "versions": ["6.0.0"], "license": "Unknown" }],
+  "(MIT OR": [{ "name": "bad-unparsed", "versions": ["7.0.0"], "license": "(MIT OR" }]
+}

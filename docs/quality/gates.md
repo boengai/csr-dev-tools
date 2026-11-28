@@ -2,12 +2,12 @@
 
 The mechanical checks that keep slop out of `develop`, decided in [What are the anti-slop gates?](https://github.com/boengai/csr-dev-tools/issues/25). Slop is code that passes the compiler but nobody chose deliberately. [ADR-0036](../adr/0036-mechanical-gates-keep-slop-out-of-develop.md) records why the gates have this shape. This page holds the lists, which are cheap to change. A change to them is a `gates` PR.
 
-[Build the anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/57) builds this page, with the workspace skeleton, before the first `port` or `shell` PR merges. Built so far: the root workspace, the lint files, the `gates` crate with its must-fail fixtures, `deny.toml`, `.jscpd.json`, both workflows, and, with the first `crates/app` ([Build the deferred anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/70)), the Dioxus build, the byte check with its row check, the CSP run and the ported-Tool list reader. Still to build, with the code it judges: the TypeScript gates and the npm licence check (with `crates/bridges/js` or `scripts/dioxus`). Until then, their step in `dioxus.yml` fails once that code exists, rather than passing over nothing. The `const` layout assertion waits for `ui`'s entry macro.
+[Build the anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/57) builds this page, with the workspace skeleton, before the first `port` or `shell` PR merges. Built so far: the root workspace, the lint files, the `gates` crate with its must-fail fixtures, `deny.toml`, `.jscpd.json`, both workflows, and, with the first `crates/app` ([Build the deferred anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/70)), the Dioxus build, the byte check with its row check, the CSP run and the ported-Tool list reader, and, with the registry generator in `scripts/dioxus` ([#82](https://github.com/boengai/csr-dev-tools/issues/82)), the TypeScript gates, the npm licence check and the registry drift check. The npm licence check judges no package yet, because no gated directory has a `package.json` (see "Dependencies"). The `const` layout assertion waits for `ui`'s entry macro.
 
 ## Scope
 
 - **`crates/**`:** every gate below, from the first line. Its members, and the thin wrappers of split crates, are the *gated packages*. Every cargo-based gate runs over them by name (`-p`), never with `--workspace` or `--all`, so the untouched `wasm/` crates are left alone.
-- **`crates/bridges/js/**` and `scripts/dioxus/**`:** oxlint and oxfmt, as for `src/`.
+- **`crates/bridges/js/**` and `scripts/dioxus/**`:** oxlint and oxfmt, as for `src/`, with warnings denied, and the npm licence rule ("Dependencies").
 - **`wasm/crates/*`:** no gate while the crate is as it is on `main`. Its split PR holds the moved logic and the thin wrapper to every gate, and the wrapper is a gated package from then on.
 
 ## Required checks
@@ -22,7 +22,7 @@ Pull requests into `develop` need three checks: `ci` (React, shared with `main`)
 4. The must-fail fixtures.
 5. cargo-deny, cargo-shear and jscpd.
 6. cargo-mutants `--in-diff`.
-7. oxlint and oxfmt over `crates/bridges/js` and `scripts/dioxus`, and the npm licence check.
+7. oxlint and oxfmt over `crates/bridges/js` and `scripts/dioxus`, and the npm licence rule (`crates/gates/scripts/ts-gates.sh`), then its must-fail fixture (`ts-gates-fixture.sh`, over `crates/gates/fixtures/ts`). Then the registry drift check: `scripts/dioxus/generate-registry.ts` rewrites `crates/registry/src/generated.rs`, and any diff fails. A `sync` PR that brings a `tool-routes.ts` change from `main` regenerates the file in the same PR.
 8. The Dioxus build (`crates/gates/scripts/build-dioxus.sh`, dx with `--wasm-split`, into `dist-dioxus`), and the merge base's when it has an app; the byte check with the check that every ported Tool emits its own module; and the Playwright run under the post-migration CSP (`playwright.dioxus.config.ts`).
 
 ### `pr-body` (`.github/workflows/pr-body.yml`, on `develop` only)
@@ -186,7 +186,7 @@ Each entry is proven by the Clippy fixture (`crates/gates/fixtures/clippy`), thr
 | No path from a Tool crate to `ui`'s app-only items (the dialog primitive, the modal frame): a Tool builds no dialog of its own | the React layout guard |
 | A custom Tool uses no off-theme red or yellow text class (`text-(red\|yellow)-NNN`) | the React layout guard |
 | A `#[component]` body is at most 80 lines | stands in for `too_many_lines`, which skips components |
-| A source file is at most 300 lines, not counting its `#[cfg(test)]` module | ADR-0031's 360-line component |
+| A source file is at most 300 lines, not counting its `#[cfg(test)]` module. `crates/registry/src/generated.rs` is exempt: it holds a row per Tool and is never edited by hand | ADR-0031's 360-line component |
 | No commented-out code: a run of `//` lines that parses as Rust items or statements. Doc-comment examples are exempt | the map |
 | `TODO`, `FIXME`, `XXX` and `HACK` name an issue, as in `TODO(#123)` | the map |
 | No crate-level `#![expect]` in a Tool crate | "Exemptions" |
@@ -228,7 +228,10 @@ A Tool entry is an invocation of `wasm_split::lazy_loader!` or of `ui`'s entry m
   - **Licences:** allowed are MIT, Apache-2.0, Apache-2.0 WITH LLVM-exception, BSD-2-Clause, BSD-3-Clause, ISC, Zlib, 0BSD, CC0-1.0 and Unicode-3.0. Anything else, MPL-2.0 included, needs a per-crate exception with a reason.
   - **Advisories:** a vulnerability or an unsound crate fails. An unmaintained crate warns. An ignore entry is a `gates` PR with a reason.
 - **Unused dependencies:** cargo's `unused_dependencies` lint, plus `cargo shear --deny-warnings` over the gated packages, which also catches what the lint misses.
-- **npm:** `crates/bridges/js` is held to the same licence list, checked over `pnpm licenses list --json --prod`.
+- **npm:** `crates/bridges/js` and `scripts/dioxus` are held to the same licence list, read from `deny.toml`'s `[licenses] allow`.
+  - **A directory with no `package.json` takes no npm package.** oxlint checks it with `crates/gates/oxlint-no-npm.json`, which allows only `node:` built-ins and repository files. Its `*.spec.ts` files are exempt, since a test's dev packages never ship. `scripts/dioxus` is such a directory.
+  - **A directory with a `package.json` has packages of its own.** The judge, `npm_licences.rs`, reads `pnpm licenses list --json --prod` for it, and `tests/npm_licences.rs` proves it on a must-fail fixture (`crates/gates/fixtures/npm/licences.json`). `OR`, `AND`, `WITH` and parentheses are evaluated, and `Unknown` or an expression that does not parse fails. Feeding it a directory's packages lands with the first `package.json` (likely `crates/bridges/js`): until then `ts-gates.sh` fails on any `package.json` in either directory, rather than passing over it.
+  - The root `package.json` is React's and is not judged: its tree holds LGPL, EPL and `Unknown` packages today.
 
 ## Copied code
 
