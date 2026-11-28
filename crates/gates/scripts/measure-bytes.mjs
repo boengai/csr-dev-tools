@@ -24,12 +24,14 @@ const brotli = (bytes) =>
     params: { [constants.BROTLI_PARAM_QUALITY]: constants.BROTLI_MAX_QUALITY },
   }).length
 
-// The page loads these at first: a script, an image or media source, and a
-// stylesheet, preload or icon link. A link to another page (`<a href>`) is not a load.
+// The page loads these at first: a script, an image or media source, a video's poster,
+// and a stylesheet, preload or icon link. A link to another page (`<a href>`) is not a load.
 // A quoted attribute may hold `>`, so the tag runs to the first `>` outside quotes.
-const LOADING_TAG = /<(script|img|source|link)\b(?:[^>"']|"[^"]*"|'[^']*')*>/gi
+const LOADING_TAG = /<(script|img|source|link|video)\b(?:[^>"']|"[^"]*"|'[^']*')*>/gi
 // A commented-out tag loads nothing.
 const HTML_COMMENT = /<!--[\s\S]*?-->/g
+// The attribute that names what a tag loads; a video's own `src` streams on play, its poster at once.
+const LOADED_BY = { link: 'href', video: 'poster' }
 const LOADING_REL = /^(?:stylesheet|modulepreload|preload|icon)$/i
 const SITE = 'http://site.invalid'
 
@@ -60,12 +62,13 @@ const firstLoads = (html, route, files) => {
   // URLs do), so a relative URL resolves against "/tools/", as the browser resolves it.
   const base = `${SITE}${route}`
   return [...html.replace(HTML_COMMENT, '').matchAll(LOADING_TAG)].flatMap(([tag, name]) => {
-    const isLink = name.toLowerCase() === 'link'
+    const kind = name.toLowerCase()
+    const isLink = kind === 'link'
     const parsed = attributes(tag)
     const attribute = (key) => parsed.get(key)
     if (isLink && !(attribute('rel') ?? '').split(/\s+/).some((rel) => LOADING_REL.test(rel))) return []
     const candidates = [
-      attribute(isLink ? 'href' : 'src'),
+      attribute(LOADED_BY[kind] ?? 'src'),
       // Each candidate is "<url> [<width>w|<density>x]"; the URL holds no spaces.
       ...(isLink ? [] : (attribute('srcset') ?? '').split(',').map((candidate) => candidate.trim().split(/\s+/)[0])),
     ]
