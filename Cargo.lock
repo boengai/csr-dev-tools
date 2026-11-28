@@ -50,6 +50,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2cb931c189b85683d69a5cfad41d4d418671e1ac413dd209f3f2fc31e3cfd902"
 
 [[package]]
+name = "app"
+version = "0.0.0"
+dependencies = [
+ "dioxus",
+]
+
+[[package]]
 name = "approx"
 version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1819,6 +1826,7 @@ dependencies = [
  "cargo_metadata",
  "dioxus-rsx",
  "proc-macro2",
+ "serde_json",
  "syn 2.0.117",
  "toml 1.2.3+spec-1.1.0",
 ]

@@ -1,0 +1,201 @@
+//! The byte check (docs/quality/gates.md → "Byte ceilings"): a build's rows,
+//! the module each ported Tool emits, the two limits, and which rows a PR
+//! may add to the ceiling file.
+
+use std::collections::BTreeSet;
+use std::path::Path;
+
+use gates::bytes::{
+    Build, Rows, check_ceiling_rows, check_ceilings, check_tool_modules, parse_rows, rows,
+};
+use gates::pr_kind::Kind;
+
+const NONE: [&str; 0] = [];
+
+fn fixture(name: &str) -> std::io::Result<String> {
+    let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+        .join("fixtures/bytes")
+        .join(name);
+    std::fs::read_to_string(path)
+}
+
+fn row_set(pairs: &[(&str, u64)]) -> Rows {
+    pairs
+        .iter()
+        .map(|(key, bytes)| ((*key).to_owned(), *bytes))
+        .collect()
+}
+
+fn keys(items: &[&str]) -> BTreeSet<String> {
+    items.iter().map(|item| (*item).to_owned()).collect()
+}
+
+fn ats(findings: &[gates::Finding]) -> Vec<String> {
+    findings.iter().map(|finding| finding.at.clone()).collect()
+}
+
+#[test]
+fn a_build_is_read_into_rows() {
+    let build = Build::from_json(&fixture("build.json").unwrap()).unwrap();
+    let (rows, findings) = rows(&build);
+    assert_eq!(
+        rows,
+        row_set(&[
+            ("page:/", 129_200),
+            ("page:/tools/hash-generator", 129_300),
+            ("wasm:chunk:split", 231),
+            ("wasm:hash_generator", 40_000),
+            ("wasm:main", 120_000),
+        ])
+    );
+    // A wasm or JS file with no row kind, loaded by no page, fails.
+    assert_eq!(
+        ats(&findings),
+        vec![
+            "assets/stray-bridge-dxh0123456789abcdef.js",
+            "assets/stray-dxh0123456789abcdef.wasm"
+        ]
+    );
+}
+
+#[test]
+fn a_build_without_one_main_module_fails_to_read() {
+    let json = r#"{"files": {"index.html": 1}, "pages": {"/": ["index.html"]}}"#;
+    assert!(Build::from_json(json).is_ok_and(|build| !rows(&build).1.is_empty()));
+    assert!(Build::from_json("{}").is_err());
+}
+
+#[test]
+fn every_ported_tool_emits_its_own_module() {
+    let build = Build::from_json(&fixture("build.json").unwrap()).unwrap();
+    let (rows, _) = rows(&build);
+    let findings = check_tool_modules(&keys(&["hash-generator", "uuid-generator"]), &rows);
+    assert_eq!(ats(&findings), vec!["uuid-generator"]);
+}
+
+#[test]
+fn the_ceiling_fixture_fails_on_each_limit() {
+    let build = Build::from_json(&fixture("build.json").unwrap()).unwrap();
+    let (head, _) = rows(&build);
+    let ceilings = parse_rows(&fixture("ceilings.json").unwrap()).unwrap();
+    let base = row_set(&[("page:/", 126_000), ("wasm:main", 110_000)]);
+    let findings = check_ceilings(&head, Some(&base), &ceilings);
+    let mut found = ats(&findings);
+    found.sort();
+    assert_eq!(
+        found,
+        vec![
+            // 129,200 is over 126,000 + 2%.
+            "page:/",
+            // over its ceiling of 129,000
+            "page:/tools/hash-generator",
+            // a ceiling row whose file is gone
+            "wasm:gone",
+            // a measured row with no ceiling
+            "wasm:hash_generator",
+            // 120,000 is over 110,000 + 2%
+            "wasm:main",
+        ]
+    );
+}
+
+#[test]
+fn within_both_limits_passes() {
+    let head = row_set(&[("wasm:main", 102_000)]);
+    let base = row_set(&[("wasm:main", 100_000)]);
+    let ceilings = row_set(&[("wasm:main", 102_000)]);
+    assert_eq!(ats(&check_ceilings(&head, Some(&base), &ceilings)), NONE);
+    assert_eq!(ats(&check_ceilings(&head, None, &ceilings)), NONE);
+}
+
+#[test]
+fn a_port_pr_adds_only_its_own_tools_rows() {
+    let base = row_set(&[("page:/", 100), ("wasm:main", 100)]);
+    let port = Kind::Port {
+        key: "hash-generator".to_owned(),
+    };
+    let own = row_set(&[
+        ("page:/", 100),
+        ("wasm:main", 100),
+        ("page:/tools/hash-generator", 100),
+        ("wasm:hash_generator", 100),
+    ]);
+    assert_eq!(ats(&check_ceiling_rows(&port, &[], &base, &own)), NONE);
+
+    let other = row_set(&[
+        ("page:/", 101),
+        ("wasm:uuid_generator", 100),
+        ("wasm:hash_generator", 100),
+    ]);
+    let mut found = ats(&check_ceiling_rows(&port, &[], &base, &other));
+    found.sort();
+    // raised, removed, and another Tool's row
+    assert_eq!(found, vec!["page:/", "wasm:main", "wasm:uuid_generator"]);
+}
+
+#[test]
+fn a_shell_pr_adds_the_rows_of_the_tool_it_ports() {
+    let shell = Kind::Shell {
+        layout: "transformer".to_owned(),
+    };
+    let changed = ["crates/tools/hash-generator/src/lib.rs"];
+    let head = row_set(&[("wasm:hash_generator", 1)]);
+    assert_eq!(
+        ats(&check_ceiling_rows(&shell, &changed, &Rows::new(), &head)),
+        NONE
+    );
+    let head = row_set(&[("wasm:uuid_generator", 1)]);
+    assert_eq!(
+        ats(&check_ceiling_rows(&shell, &changed, &Rows::new(), &head)),
+        vec!["wasm:uuid_generator"]
+    );
+}
+
+#[test]
+fn a_gates_pr_may_change_any_row() {
+    let base = row_set(&[("wasm:main", 100)]);
+    let head = row_set(&[("wasm:main", 200), ("page:/", 1)]);
+    assert_eq!(
+        ats(&check_ceiling_rows(&Kind::Gates, &[], &base, &head)),
+        NONE
+    );
+}
+
+/// CI's byte check, over the Dioxus build it measured:
+///
+/// - `GATES_BYTES_HEAD`: `measure-bytes.mjs` over the PR's build;
+/// - `GATES_BYTES_BASE`: the same over the merge base's build, or empty when
+///   the merge base has no `crates/app`.
+///
+/// `#[ignore]`d so a plain `cargo test` skips it; a missing variable fails.
+#[test]
+#[ignore = "CI runs it over the build it measured"]
+#[expect(
+    clippy::print_stdout,
+    reason = "the measured rows go in the job log, for setting a ceiling"
+)]
+fn byte_check() {
+    let read = |name: &str| -> Option<String> {
+        let path = std::env::var(name)
+            .map_err(|_| format!("{name} is not set; CI sets it"))
+            .unwrap();
+        (!path.is_empty()).then(|| std::fs::read_to_string(path).unwrap())
+    };
+    let root = Path::new(env!("CARGO_MANIFEST_DIR")).join("../..");
+    let head = Build::from_json(&read("GATES_BYTES_HEAD").unwrap()).unwrap();
+    let base = read("GATES_BYTES_BASE").map(|text| rows(&Build::from_json(&text).unwrap()).0);
+    let ceilings =
+        parse_rows(&std::fs::read_to_string(root.join(gates::paths::CEILING_FILE)).unwrap())
+            .unwrap();
+    let (head, mut findings) = rows(&head);
+    findings.extend(check_tool_modules(
+        &gates::tree::ported_list(&root).unwrap(),
+        &head,
+    ));
+    findings.extend(check_ceilings(&head, base.as_ref(), &ceilings));
+    let report: Vec<String> = findings.iter().map(ToString::to_string).collect();
+    assert!(report.is_empty(), "{}", report.join("\n"));
+    for (key, bytes) in &head {
+        println!("{key}: {bytes} B");
+    }
+}

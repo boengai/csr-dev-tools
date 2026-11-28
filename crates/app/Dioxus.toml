@@ -1,0 +1,5 @@
+[application]
+name = "app"
+
+[web.app]
+title = "CSR Dev Tools"

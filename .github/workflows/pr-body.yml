@@ -62,7 +62,9 @@ jobs:
         run: |
           git diff --numstat --no-renames "$MERGE_BASE" HEAD^2 >"$RUNNER_TEMP/numstat"
           git show "$MERGE_BASE:Cargo.toml" >"$RUNNER_TEMP/base-Cargo.toml" 2>/dev/null || : >"$RUNNER_TEMP/base-Cargo.toml"
+          git show "$MERGE_BASE:docs/perf/byte-ceilings.json" >"$RUNNER_TEMP/base-ceilings.json" 2>/dev/null || : >"$RUNNER_TEMP/base-ceilings.json"
           GATES_NUMSTAT="$RUNNER_TEMP/numstat" GATES_BASE_MANIFEST="$RUNNER_TEMP/base-Cargo.toml" \
+            GATES_BASE_CEILINGS="$RUNNER_TEMP/base-ceilings.json" \
             cargo test -p gates --test pr -- --ignored --exact pr_paths --nocapture
 
       - name: Check the title and body

@@ -138,3 +138,28 @@ pub fn check_routes_read(routes: &[Route]) -> Vec<Finding> {
         })
         .collect()
 }
+
+/// Reads `app`'s ported-Tool list: the string keys of the one
+/// `ported_tools![…]` invocation in `crates/app/src/ported_tools.rs`.
+pub fn parse_ported_list(text: &str) -> Result<BTreeSet<String>, String> {
+    let file = syn::parse_file(text).map_err(|error| format!("does not parse: {error}"))?;
+    let mut lists = file.items.iter().filter_map(|item| match item {
+        syn::Item::Macro(item) if item.mac.path.is_ident("ported_tools") => Some(&item.mac),
+        _ => None,
+    });
+    let (Some(list), None) = (lists.next(), lists.next()) else {
+        return Err("must hold exactly one `ported_tools![…]`".to_owned());
+    };
+    let keys = list
+        .parse_body_with(
+            syn::punctuated::Punctuated::<syn::LitStr, syn::Token![,]>::parse_terminated,
+        )
+        .map_err(|error| format!("`ported_tools!` takes Tool keys as strings: {error}"))?;
+    let mut set = BTreeSet::new();
+    for key in keys {
+        if !set.insert(key.value()) {
+            return Err(format!("{} is listed twice", key.value()));
+        }
+    }
+    Ok(set)
+}

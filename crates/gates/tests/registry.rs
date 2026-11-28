@@ -4,7 +4,9 @@
 use std::collections::BTreeSet;
 use std::path::Path;
 
-use gates::registry::{ToolSets, check_opt_out_adrs, check_tool_sets, parse_tool_routes};
+use gates::registry::{
+    ToolSets, check_opt_out_adrs, check_tool_sets, parse_ported_list, parse_tool_routes,
+};
 
 fn fixture_routes() -> std::io::Result<Vec<gates::registry::Route>> {
     let path = Path::new(env!("CARGO_MANIFEST_DIR")).join("fixtures/registry/tool-routes.ts");
@@ -105,4 +107,27 @@ fn an_entry_without_a_key_or_layout_fails() {
         .map(|f| f.message.clone())
         .collect();
     assert_eq!(found.len(), 2, "{found:#?}");
+}
+
+#[test]
+fn the_ported_list_is_read_from_its_macro() {
+    let text = "ported_tools![\n    \"hash-generator\",\n    \"uuid-generator\",\n];\n";
+    assert_eq!(
+        parse_ported_list(text).unwrap(),
+        set(&["hash-generator", "uuid-generator"])
+    );
+    assert_eq!(parse_ported_list("ported_tools![];").unwrap(), set(&[]));
+}
+
+#[test]
+fn a_ported_list_the_reader_cannot_read_fails() {
+    for text in [
+        "",
+        "fn main() {}",
+        "ported_tools![hash_generator];",
+        "ported_tools![\"a\"];\nported_tools![\"b\"];",
+        "ported_tools![\"a\", \"a\"];",
+    ] {
+        assert!(parse_ported_list(text).is_err(), "read {text:?}");
+    }
 }

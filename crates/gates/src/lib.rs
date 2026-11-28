@@ -3,6 +3,7 @@
 //! Each check is a function from manifests, source text or PR data to a list
 //! of [`Finding`]s. An empty list passes.
 
+pub mod bytes;
 pub mod comments;
 pub mod layers;
 pub mod manifests;

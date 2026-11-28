@@ -1,0 +1,27 @@
+# The post-migration CSP (ADR-0033 Decision 6, docs/quality/gates.md → "CSP").
+# A gate file: the Dioxus Playwright project serves dist-dioxus with it, and
+# the CSP fixture fails any test that sees a violation. Lines starting with
+# `#` are comments; the rest join, with spaces, into one header value.
+#
+# It is public/_headers' CSP without what ADR-0033's "Handed on" list removes
+# once every Tool is ported:
+# - 'unsafe-eval' (ajv goes, and the background-remover journey passes without it);
+# - script-src blob: and every https://cdn.jsdelivr.net (ONNX Runtime goes,
+#   Monaco is self-hosted);
+# - worker-src blob: (Monaco was its only user);
+# - connect-src blob: (no user was found).
+# connect-src data: stays until the port decides how it reads data URIs, and
+# the Hugging Face hosts stay until self-hosting the tract model is decided.
+# style-src keeps 'unsafe-inline' (ADR-0034). The early-fetch script's
+# 'sha256-…' hash is added by the build that stamps it (docs/perf/wasm-early-fetch.md).
+default-src 'self';
+script-src 'self' 'wasm-unsafe-eval' https://static.cloudflareinsights.com;
+style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+font-src 'self' data: https://fonts.gstatic.com;
+img-src 'self' data: blob: https:;
+connect-src 'self' data: https://huggingface.co https://*.huggingface.co https://*.hf.co https://cloudflareinsights.com;
+worker-src 'self';
+object-src 'none';
+base-uri 'self';
+form-action 'self';
+frame-ancestors 'none'

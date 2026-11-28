@@ -417,6 +417,44 @@ kinds. The `const` layout assertion waits in the same way, for `ui`'s
 entry macro, but it is a compile-time check inside `ui` rather than a
 CI step, so its `ui(…)` PR stays an ordinary `foundation` PR.
 
+## Amended when the app gates were built
+
+[Build the deferred anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/70)
+built the first row of the deferred table above on 2026-11-28, with the
+first `crates/app`: an app that renders an empty shell, and an empty
+ported-Tool list. That row now runs in `dioxus`: the Dioxus build, the
+byte check with its row check, the CSP run with its fixture, and the
+ported-Tool list reader. The second row, the TypeScript and npm licence
+gates, still waits for `crates/bridges/js` or `scripts/dioxus`. The
+`const` layout assertion still waits for `ui`'s entry macro, so the first
+item of "Not verified" stands.
+
+What building it found:
+
+- **The specs import `test` from `@playwright/test`,** and a port never
+  edits them, so no import can bring a fixture to them. The Dioxus
+  Playwright config has its own tsconfig, which maps `@playwright/test` to
+  the fixture (`e2e/parity/csp.ts`). The fixture imports the real module
+  by its path. With its must-fail check unmarked, a run showed the fixture
+  failing that check on its inline script.
+- **The fixture listens on pages only.** A `securitypolicyviolation`
+  inside a worker fires on the worker, and the fixture does not see it.
+- **Page bytes are measured from the build, not by the perf harness.** A
+  page's row is its HTML, the files the HTML loads and the main module
+  (`docs/perf/budgets.md` → "CI on `develop`").
+- **wasm-split names a loader's module `module_<n>_<name><32 hex>`**, as
+  the spike's builds show, and an empty app built with `--wasm-split`
+  emits a shared `chunk_0_split` module. The module check keys rows by
+  `<name>`. The first port checks that a hand-written `lazy_loader!` gets
+  its module name this way.
+- **dx keeps old files in its output,** so the build empties it first.
+- **The ported-Tool list is a `ported_tools![…]` invocation of string
+  keys.** Its macro emits nothing yet. The routes and the Tool entry match
+  come with the first `shell` PR, which brings in `ui` and the registry.
+- **The first ceilings are a local macOS build's sizes, rounded up to the
+  next KiB.** The CI log prints the measured rows. If the Linux build does
+  not match them, a `gates` PR corrects the ceilings.
+
 ## Revisit when
 
 - A gate fires falsely on most port PRs. Its rule is wrong, not the

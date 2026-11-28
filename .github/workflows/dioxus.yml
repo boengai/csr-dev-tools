@@ -141,8 +141,8 @@ jobs:
         if: ${{ !cancelled() }}
         run: crates/gates/scripts/mutants.sh "$MERGE_BASE" HEAD^2
 
-      # 8 and 9 need code that is not on `develop` yet. Each step fails once
-      # that code lands without its gate, rather than passing over nothing.
+      # 8 needs code that is not on `develop` yet. It fails once that code
+      # lands without its gate, rather than passing over nothing.
       - name: TypeScript gates (bridges and scripts/dioxus)
         if: ${{ !cancelled() }}
         run: |
@@ -153,11 +153,52 @@ jobs:
             fi
           done
           echo "No crates/bridges/js or scripts/dioxus yet."
-      - name: Dioxus build, byte ceilings and the CSP run
+
+      # 9. The Dioxus build, the byte check and the CSP run (gates.md →
+      # "Byte ceilings" and "CSP"). The merge base is built too, for the 2%
+      # rule, when it has an app; it shares the target directory.
+      - name: Dioxus build
+        id: build
         if: ${{ !cancelled() }}
+        run: crates/gates/scripts/build-dioxus.sh . dist-dioxus
+      - name: Dioxus build of the merge base
+        id: build-base
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: |
-          if [[ -e crates/app ]]; then
-            echo "::error::crates/app exists: build the Dioxus build, byte and CSP gates (#57)"
-            exit 1
+          if git cat-file -e "$MERGE_BASE:crates/app/Cargo.toml" 2>/dev/null; then
+            git worktree add --detach "$RUNNER_TEMP/base" "$MERGE_BASE"
+            CARGO_TARGET_DIR="$PWD/target" crates/gates/scripts/build-dioxus.sh "$RUNNER_TEMP/base" "$RUNNER_TEMP/dist-base"
+          else
+            echo "The merge base has no crates/app: no 2% rule this time."
           fi
-          echo "No crates/app yet."
+
+      - name: Setup pnpm
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        uses: pnpm/action-setup@v4
+      - name: Setup Node.js
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+
+      - name: Byte check
+        if: ${{ !cancelled() && steps.build-base.outcome == 'success' }}
+        run: |
+          node crates/gates/scripts/measure-bytes.mjs dist-dioxus >"$RUNNER_TEMP/bytes-head.json"
+          base=""
+          if [[ -d "$RUNNER_TEMP/dist-base" ]]; then
+            node crates/gates/scripts/measure-bytes.mjs "$RUNNER_TEMP/dist-base" >"$RUNNER_TEMP/bytes-base.json"
+            base="$RUNNER_TEMP/bytes-base.json"
+          fi
+          GATES_BYTES_HEAD="$RUNNER_TEMP/bytes-head.json" GATES_BYTES_BASE="$base" \
+            cargo test -p gates --test bytes -- --ignored --exact byte_check --nocapture
+
+      # Every test the Dioxus project runs gets the CSP fixture
+      # (e2e/parity/csp.ts); its must-fail check runs here too.
+      - name: CSP run
+        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
+        run: |
+          pnpm install --frozen-lockfile
+          pnpm exec playwright install --with-deps chromium
+          pnpm exec playwright test -c playwright.dioxus.config.ts

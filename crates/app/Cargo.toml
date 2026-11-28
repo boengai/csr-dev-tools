@@ -1,0 +1,13 @@
+[package]
+name = "app"
+version = "0.0.0"
+edition.workspace = true
+license.workspace = true
+publish = false
+description = "The Dioxus app: the shell, the router and the ported-Tool list (ADR-0035)."
+
+[dependencies]
+dioxus = { workspace = true, features = ["web"] }
+
+[lints]
+workspace = true

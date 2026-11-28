@@ -2,7 +2,7 @@
 
 The mechanical checks that keep slop out of `develop`, decided in [What are the anti-slop gates?](https://github.com/boengai/csr-dev-tools/issues/25). Slop is code that passes the compiler but nobody chose deliberately. [ADR-0036](../adr/0036-mechanical-gates-keep-slop-out-of-develop.md) records why the gates have this shape. This page holds the lists, which are cheap to change. A change to them is a `gates` PR.
 
-[Build the anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/57) builds this page, with the workspace skeleton, before the first `port` or `shell` PR merges. Built so far: the root workspace, the lint files, the `gates` crate with its must-fail fixtures, `deny.toml`, `.jscpd.json`, and both workflows. Still to build, each with the code it judges: the TypeScript gates and the npm licence check (with `crates/bridges/js` or `scripts/dioxus`), and the Dioxus build, the byte ceilings and the CSP run (with `crates/app`). Until then, their step in `dioxus.yml` fails once that code exists, rather than passing over nothing.
+[Build the anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/57) builds this page, with the workspace skeleton, before the first `port` or `shell` PR merges. Built so far: the root workspace, the lint files, the `gates` crate with its must-fail fixtures, `deny.toml`, `.jscpd.json`, both workflows, and, with the first `crates/app` ([Build the deferred anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/70)), the Dioxus build, the byte check with its row check, the CSP run and the ported-Tool list reader. Still to build, with the code it judges: the TypeScript gates and the npm licence check (with `crates/bridges/js` or `scripts/dioxus`). Until then, their step in `dioxus.yml` fails once that code exists, rather than passing over nothing. The `const` layout assertion waits for `ui`'s entry macro.
 
 ## Scope
 
@@ -23,7 +23,7 @@ Pull requests into `develop` need three checks: `ci` (React, shared with `main`)
 5. cargo-deny, cargo-shear and jscpd.
 6. cargo-mutants `--in-diff`.
 7. oxlint and oxfmt over `crates/bridges/js` and `scripts/dioxus`, and the npm licence check.
-8. The Dioxus build, the byte check, and the Playwright run under the post-migration CSP.
+8. The Dioxus build (`crates/gates/scripts/build-dioxus.sh`, dx with `--wasm-split`, into `dist-dioxus`), and the merge base's when it has an app; the byte check with the check that every ported Tool emits its own module; and the Playwright run under the post-migration CSP (`playwright.dioxus.config.ts`).
 
 ### `pr-body` (`.github/workflows/pr-body.yml`, on `develop` only)
 
@@ -51,7 +51,7 @@ A gate file decides what CI accepts:
 - the root `Cargo.toml` (`[workspace.lints]`, `[workspace.dependencies]`, members, profiles), `rust-toolchain.toml`, `clippy.toml`, `rustfmt.toml`, `deny.toml`, `.jscpd.json`;
 - the `README.md` in `crates/logic`, `crates/tools` and `crates/workers`: cargo rejects a member glob that matches nothing, so each one keeps its glob matching until the first crate lands;
 - `crates/gates/**`, with its fixtures;
-- the byte-ceiling file that `docs/perf/budgets.md` describes (`docs/perf/byte-ceilings.json`), the a11y baseline (`e2e/parity/a11y-baseline.json`, [#41](https://github.com/boengai/csr-dev-tools/issues/41)), the post-migration CSP (`docs/quality/post-migration-csp.txt`);
+- the byte-ceiling file that `docs/perf/budgets.md` describes (`docs/perf/byte-ceilings.json`), the a11y baseline (`e2e/parity/a11y-baseline.json`, [#41](https://github.com/boengai/csr-dev-tools/issues/41)), the post-migration CSP (`docs/quality/post-migration-csp.txt`), the CSP fixture (`e2e/parity/csp.ts`) and the tsconfig that hands it to every Dioxus spec (`e2e/tsconfig.dioxus.json`);
 - `.github/workflows/**`, and the PR templates in `docs/quality/pr/`.
 
 A `port` or `shell` PR may add rows for its own Tool to the ceiling file. Any other change to a gate file, raising a ceiling included, is a `gates` PR. A `gates` PR changes only gate files, `docs/quality/**` and the ADR that records it (see "PR kinds").
@@ -256,8 +256,9 @@ A Tool entry is an invocation of `wasm_split::lazy_loader!` or of `ui`'s entry m
 
 ## CSP
 
-- **The post-migration CSP** is a gate file (ADR-0033 Decision 6 and "Handed on"). The Dioxus Playwright project serves `dist-dioxus` with it.
-- **A shared fixture**, for the Dioxus project only, fails any test that sees a `securitypolicyviolation` event.
+- **The post-migration CSP** is a gate file (ADR-0033 Decision 6 and "Handed on"). The Dioxus Playwright project serves `dist-dioxus` with it, through `crates/gates/scripts/serve-dioxus.mjs`.
+- **A shared fixture**, for the Dioxus project only, fails any test that sees a `securitypolicyviolation` event (`e2e/parity/csp.ts`). The specs import `test` from `@playwright/test` and are never edited, so the Dioxus config maps that import to the fixture through its own tsconfig (`e2e/tsconfig.dioxus.json`). It listens on every page of the test's context; a violation inside a worker fires on the worker, and it does not see that.
+- **Its must-fail check** is `e2e/parity/csp.spec.ts`: a test that runs an inline script and is marked `test.fail()`, so the run fails if the fixture stops failing it.
 - **It covers every journey,** not only those of Tools with an Engine bridge.
 
 ## Byte ceilings
@@ -271,7 +272,10 @@ These extend the byte check in `docs/perf/budgets.md` → "CI on `develop`". The
 
 The PR that first ships a file sets its row.
 
-Not built yet: the path check sees only file names, so it cannot tell a `port` PR's own new rows from an edit to another Tool's ceiling. That row check is built with the ceiling file and its byte check.
+- **Measuring.** `crates/gates/scripts/measure-bytes.mjs` reads the build: each file's brotli size (quality 11), and the same-origin files each page's HTML loads. The `gates` crate (`bytes.rs`) makes the rows from it.
+- **Row keys.** `page:<route>` (the HTML, the files it loads, and the main module), `wasm:main`, `wasm:<module>` for each loader's module, and `wasm:chunk:<name>` for code wasm-split shares between modules. A wasm or JS file that fits none of these and that no page loads fails the check: its kind of row, a bridge or worker file, is added in a `gates` PR with the first such file.
+- **The checks.** A measured row with no ceiling fails, and so does a ceiling with no file. Every ported Tool must have its own `wasm:<module>` row, or its code landed in main. They run in `dioxus` (`tests/bytes.rs`, `byte_check`), and the fixtures in `crates/gates/fixtures/bytes/` must fail them.
+- **The row check.** It runs in `pr-body`, next to the path check, which sees only that the ceiling file changed. A `port` or `shell` PR may only add rows for its own Tool (`page:/tools/<key>`, `wasm:<module>`). Changing or removing a row is a `gates` PR.
 
 ## PR kinds
 

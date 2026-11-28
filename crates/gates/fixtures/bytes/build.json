@@ -1,0 +1,16 @@
+{
+  "files": {
+    "index.html": 200,
+    "tools/hash-generator/index.html": 300,
+    "assets/app-dxh53cffd51531b35a.js": 9000,
+    "assets/app_bg-dxh49844e7de4b2fcf.wasm": 120000,
+    "assets/chunk_0_split-dxh7b3667caf483de45.wasm": 231,
+    "assets/module_1_hash_generator89e9299ec003f75ef938a31dbd1df260-dxhbd897640dd252bd.wasm": 40000,
+    "assets/stray-dxh0123456789abcdef.wasm": 10,
+    "assets/stray-bridge-dxh0123456789abcdef.js": 20
+  },
+  "pages": {
+    "/": ["index.html", "assets/app-dxh53cffd51531b35a.js"],
+    "/tools/hash-generator": ["tools/hash-generator/index.html", "assets/app-dxh53cffd51531b35a.js"]
+  }
+}
