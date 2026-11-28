@@ -268,3 +268,14 @@ fn a_jump_is_its_own_rule_so_the_maintainer_can_accept_it() {
         ]
     );
 }
+
+#[test]
+fn only_wasm_split_chunks_count_as_chunks() {
+    // wasm-split names every chunk `split`; any other `chunk_` file is a stray.
+    let json = r#"{"files": {"index.html": 1, "assets/app_bg-dxh0123.wasm": 100,
+        "assets/chunk_0_split-dxh0a.wasm": 5, "assets/chunk_1_worker-dxh0b.wasm": 7},
+        "pages": {"/": ["index.html"]}}"#;
+    let (rows, findings) = rows(&Build::from_json(json).unwrap());
+    assert_eq!(rows.get("wasm:chunks"), Some(&5));
+    assert_eq!(ats(&findings), vec!["assets/chunk_1_worker-dxh0b.wasm"]);
+}

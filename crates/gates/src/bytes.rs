@@ -106,7 +106,8 @@ fn classify_wasm(path: &str) -> Option<Wasm> {
     if let Some(function) = numbered("module_") {
         return Some(Wasm::Module(function.to_owned()));
     }
-    numbered("chunk_").map(|_| Wasm::Chunk)
+    // wasm-split names every chunk `split`; another name is not one of its chunks.
+    (numbered("chunk_") == Some("split")).then_some(Wasm::Chunk)
 }
 
 /// The build's rows. A page's row is its HTML, the files it loads and the
