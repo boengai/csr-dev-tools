@@ -37,18 +37,72 @@ impl DecryptError {
 /// document default, which scrambles a stream meant for another filter (a
 /// clear `/Identity` one, say). Such a file is reported, not written out.
 pub fn decrypt(bytes: &[u8]) -> Result<Vec<u8>, DecryptError> {
-    let mut doc = Document::load_mem(bytes).map_err(|_| DecryptError::Unreadable)?;
+    let doc = Document::load_mem(bytes).map_err(|_| DecryptError::Unreadable)?;
     if doc.is_encrypted() {
         return Err(DecryptError::PasswordRequired);
     }
     if has_stream_decrypted_with_wrong_filter(&doc) {
         return Err(DecryptError::UnsupportedCryptFilter);
     }
+    write_decrypted(doc)
+}
+
+/// Writes a document lopdf decrypted as it loaded. Each stream's `/Crypt`
+/// stage goes too: lopdf has applied it, and the output has no `/Encrypt`
+/// to define the filter it names.
+fn write_decrypted(mut doc: Document) -> Result<Vec<u8>, DecryptError> {
+    if doc.encryption_state.is_some() {
+        for object in doc.objects.values_mut() {
+            if let Object::Stream(stream) = object {
+                remove_crypt_stage(&mut stream.dict);
+            }
+        }
+    }
     doc.trailer.remove(b"Encrypt");
     let mut out = Vec::new();
     doc.save_to(&mut out)
         .map_err(|_| DecryptError::Unreadable)?;
     Ok(out)
+}
+
+fn is_crypt(filter: &Object) -> bool {
+    filter.as_name().is_ok_and(|name| name == b"Crypt")
+}
+
+/// Removes `/Crypt` from a stream's filters, with the parameters it had.
+fn remove_crypt_stage(dict: &mut Dictionary) {
+    let mut filters = match dict.get(b"Filter") {
+        Ok(Object::Array(filters)) => filters.clone(),
+        Ok(filter) if is_crypt(filter) => vec![filter.clone()],
+        _ => return,
+    };
+    let Some(index) = filters.iter().position(is_crypt) else {
+        return;
+    };
+    filters.remove(index);
+    match dict.get(b"DecodeParms") {
+        Ok(Object::Array(params)) => {
+            let mut params = params.clone();
+            if index < params.len() {
+                params.remove(index);
+            }
+            if params.iter().all(|p| matches!(p, Object::Null)) {
+                dict.remove(b"DecodeParms");
+            } else {
+                dict.set("DecodeParms", Object::Array(params));
+            }
+        }
+        // lopdf read a dictionary as the crypt filter's.
+        Ok(Object::Dictionary(_)) => {
+            dict.remove(b"DecodeParms");
+        }
+        _ => {}
+    }
+    if filters.is_empty() {
+        dict.remove(b"Filter");
+    } else {
+        dict.set("Filter", Object::Array(filters));
+    }
 }
 
 const IDENTITY: &[u8] = b"Identity";
@@ -59,12 +113,11 @@ fn has_stream_decrypted_with_wrong_filter(doc: &Document) -> bool {
     let Some(state) = doc.encryption_state.as_ref() else {
         return false;
     };
-    let default = default_stream_filter(state);
     doc.objects
         .values()
         .filter_map(|object| object.as_stream().ok())
         .filter(|stream| lopdf_decrypts(stream, state))
-        .any(|stream| decrypted_with_wrong_filter(stream, default))
+        .any(|stream| decrypted_with_wrong_filter(stream, state))
 }
 
 /// lopdf leaves a cross-reference stream as it is, and a metadata stream
@@ -74,23 +127,32 @@ fn lopdf_decrypts(stream: &Stream, state: &EncryptionState) -> bool {
         && (state.encrypt_metadata() || !stream.dict.has_type(b"Metadata"))
 }
 
-/// The name of the filter lopdf decrypts a stream with when it does not read
-/// the stream's own: the document default. `None` when no stream can name it
-/// (RC4 below V4, or a default missing from `/CF`, which lopdf runs as RC4).
-fn default_stream_filter(state: &EncryptionState) -> Option<&[u8]> {
-    if state.version() < 4 {
-        return None;
-    }
-    let name = state.default_stream_filter();
+/// What a named crypt filter does to the bytes, as lopdf runs it: its method
+/// (`/CFM`, Identity when absent). Filters with one method give the same
+/// bytes, since all use the file key. `None` for a name missing from `/CF`.
+fn filter_method<'a>(state: &'a EncryptionState, name: &[u8]) -> Option<&'a [u8]> {
     if name.is_empty() || name == IDENTITY {
         return Some(IDENTITY);
     }
-    state.crypt_filters().contains_key(name).then_some(name)
+    state
+        .crypt_filters()
+        .get(name)
+        .map(|filter| filter.method())
 }
 
-/// Whether lopdf decrypts this stream with `default` although its `/Crypt`
-/// filter names another (or one this can't resolve, as a reference).
-fn decrypted_with_wrong_filter(stream: &Stream, default: Option<&[u8]>) -> bool {
+/// The method lopdf applies to a stream whose own filter it does not read:
+/// the document default's. `None` when no stream can name it (RC4 below V4,
+/// or a default missing from `/CF`, which lopdf runs as RC4).
+fn default_stream_method(state: &EncryptionState) -> Option<&[u8]> {
+    if state.version() < 4 {
+        return None;
+    }
+    filter_method(state, state.default_stream_filter())
+}
+
+/// Whether lopdf decrypts this stream with the default although its `/Crypt`
+/// filter asks for another (or for one this can't resolve, as a reference).
+fn decrypted_with_wrong_filter(stream: &Stream, state: &EncryptionState) -> bool {
     let Ok(filters) = stream.filters() else {
         return false;
     };
@@ -104,20 +166,17 @@ fn decrypted_with_wrong_filter(stream: &Stream, default: Option<&[u8]>) -> bool 
         Err(_) => Some(IDENTITY),
         Ok(Object::Array(params)) => match params.get(index) {
             None | Some(Object::Null) => Some(IDENTITY),
-            Some(Object::Dictionary(params)) => Some(filter_name(params)),
+            Some(Object::Dictionary(params)) => match params.get(b"Name") {
+                Err(_) => Some(IDENTITY),
+                Ok(Object::Name(name)) => filter_method(state, name),
+                // An indirect name is not followed.
+                Ok(_) => None,
+            },
             Some(_) => None,
         },
         Ok(_) => None,
     };
-    own.is_none() || own != default
-}
-
-/// The crypt filter a `/Crypt` parameter dictionary names; Identity when none.
-fn filter_name(params: &Dictionary) -> &[u8] {
-    params
-        .get(b"Name")
-        .and_then(Object::as_name)
-        .unwrap_or(IDENTITY)
+    own.is_none() || own != default_stream_method(state)
 }
 
 /// Rewrite a PDF without its encryption. Throws when the file is unreadable,
@@ -130,6 +189,9 @@ pub fn decrypt_pdf(bytes: &[u8]) -> Result<Vec<u8>, JsError> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use lopdf::encryption::crypt_filters::{CryptFilter, IdentityCryptFilter, Rc4CryptFilter};
+    use lopdf::{EncryptionVersion, Permissions};
+    use std::sync::Arc;
 
     const PLAIN: &[u8] = include_bytes!("../../../../src/test/fixtures/pdf/plain.pdf");
     const RC4_128: &[u8] = include_bytes!("../../../../src/test/fixtures/pdf/rc4-128.pdf");
@@ -194,53 +256,107 @@ mod tests {
         Object::Dictionary(dict)
     }
 
-    const STD_CF: Option<&[u8]> = Some(b"StdCF");
+    /// `[<< /Name 9 0 R >>]`: the filter's name is an indirect object.
+    fn indirect_name() -> Object {
+        let mut dict = Dictionary::new();
+        dict.set("Name", Object::Reference((9, 0)));
+        Object::Array(vec![Object::Dictionary(dict)])
+    }
+
+    fn in_array(params: Object) -> Object {
+        Object::Array(vec![params])
+    }
+
+    /// A V4 state with these `/CF` filters and this `/StmF` default.
+    fn v4(filters: Vec<(&str, Arc<dyn CryptFilter>)>, stream_filter: &str) -> EncryptionState {
+        let doc = Document::load_mem(AES_128).unwrap();
+        EncryptionState::try_from(EncryptionVersion::V4 {
+            document: &doc,
+            encrypt_metadata: true,
+            crypt_filters: filters
+                .into_iter()
+                .map(|(name, filter)| (name.as_bytes().to_vec(), filter))
+                .collect(),
+            stream_filter: stream_filter.as_bytes().to_vec(),
+            string_filter: b"StdCF".to_vec(),
+            owner_password: "owner",
+            user_password: "",
+            permissions: Permissions::default(),
+        })
+        .unwrap()
+    }
+
+    fn rc4() -> Arc<dyn CryptFilter> {
+        Arc::new(Rc4CryptFilter)
+    }
+
+    fn clear() -> Arc<dyn CryptFilter> {
+        Arc::new(IdentityCryptFilter)
+    }
 
     #[test]
     fn flags_a_stream_lopdf_would_decrypt_with_another_filter() {
-        // Its own filter is Identity, but lopdf applies the default.
-        for params in [
-            Object::Array(vec![named("Identity")]),
-            Object::Array(vec![Object::Null]),
-        ] {
-            assert!(decrypted_with_wrong_filter(&crypt_stream(params), STD_CF));
-        }
+        let std_cf = v4(vec![("StdCF", rc4())], "StdCF");
+        // Its own filter is Identity, but lopdf applies the RC4 default.
         let mut bare = crypt_stream(Object::Null);
         bare.dict.remove(b"DecodeParms");
-        assert!(decrypted_with_wrong_filter(&bare, STD_CF));
-        // Named in an array, but not the default.
-        assert!(decrypted_with_wrong_filter(
-            &crypt_stream(Object::Array(vec![named("StdCF")])),
-            Some(IDENTITY)
+        for stream in [
+            crypt_stream(in_array(named("Identity"))),
+            crypt_stream(in_array(Object::Null)),
+            bare,
+        ] {
+            assert!(decrypted_with_wrong_filter(&stream, &std_cf));
+        }
+        // A name missing from /CF, and references, are not resolved.
+        for params in [
+            in_array(named("Other")),
+            Object::Reference((9, 0)),
+            indirect_name(),
+        ] {
+            assert!(decrypted_with_wrong_filter(&crypt_stream(params), &std_cf));
+        }
+        // Named in an array, but lopdf applies the Identity default.
+        let identity_default = v4(vec![("StdCF", rc4())], "Identity");
+        for params in [in_array(named("StdCF")), indirect_name()] {
+            assert!(decrypted_with_wrong_filter(
+                &crypt_stream(params),
+                &identity_default
+            ));
+        }
+    }
+
+    #[test]
+    fn passes_a_stream_lopdf_decrypts_as_its_own_filter_would() {
+        let std_cf = v4(vec![("StdCF", rc4()), ("AlsoRc4", rc4())], "StdCF");
+        // The form lopdf reads.
+        assert!(!decrypted_with_wrong_filter(
+            &crypt_stream(named("Identity")),
+            &std_cf
         ));
-        // Below V4 the default is RC4, which no stream names.
-        assert!(decrypted_with_wrong_filter(
-            &crypt_stream(Object::Array(vec![named("Identity")])),
-            None
+        // Another form, naming the default, or a filter that runs the same way.
+        for params in [in_array(named("StdCF")), in_array(named("AlsoRc4"))] {
+            assert!(!decrypted_with_wrong_filter(&crypt_stream(params), &std_cf));
+        }
+        let identity_default = v4(vec![("StdCF", rc4())], "Identity");
+        assert!(!decrypted_with_wrong_filter(
+            &crypt_stream(in_array(Object::Null)),
+            &identity_default
         ));
-        // A reference is not followed.
-        assert!(decrypted_with_wrong_filter(
-            &crypt_stream(Object::Reference((9, 0))),
-            STD_CF
+        // A default with no /CFM changes nothing, as Identity doesn't.
+        let clear_default = v4(vec![("StdCF", rc4()), ("ClearCF", clear())], "ClearCF");
+        assert!(!decrypted_with_wrong_filter(
+            &crypt_stream(in_array(named("Identity"))),
+            &clear_default
         ));
     }
 
     #[test]
-    fn passes_a_stream_lopdf_decrypts_with_its_own_filter() {
-        // The form lopdf reads.
-        assert!(!decrypted_with_wrong_filter(
-            &crypt_stream(named("Identity")),
-            STD_CF
-        ));
-        // Another form, naming the default lopdf applies anyway.
-        assert!(!decrypted_with_wrong_filter(
-            &crypt_stream(Object::Array(vec![named("StdCF")])),
-            STD_CF
-        ));
-        assert!(!decrypted_with_wrong_filter(
-            &crypt_stream(Object::Array(vec![Object::Null])),
-            Some(IDENTITY)
-        ));
+    fn flags_a_crypt_filter_below_v4() {
+        // RC4-128 is V2: no crypt filters, so RC4 is applied whatever a stream names.
+        let mut doc = Document::load_mem(RC4_128).unwrap();
+        assert!(!has_stream_decrypted_with_wrong_filter(&doc));
+        doc.add_object(crypt_stream(in_array(named("Identity"))));
+        assert!(has_stream_decrypted_with_wrong_filter(&doc));
     }
 
     #[test]
@@ -253,6 +369,40 @@ mod tests {
         xref.dict.set("Type", Object::Name(b"XRef".to_vec()));
         doc.add_object(xref);
         assert!(!has_stream_decrypted_with_wrong_filter(&doc));
+    }
+
+    #[test]
+    fn drops_the_crypt_stage_lopdf_has_applied() {
+        // AES-128 decrypts streams with StdCF; one stream names it in an array.
+        let mut doc = Document::load_mem(AES_128).unwrap();
+        let mut dict = Dictionary::new();
+        dict.set(
+            "Filter",
+            Object::Array(vec![
+                Object::Name(b"Crypt".to_vec()),
+                Object::Name(b"FlateDecode".to_vec()),
+            ]),
+        );
+        dict.set(
+            "DecodeParms",
+            Object::Array(vec![named("StdCF"), Object::Null]),
+        );
+        let id = doc.add_object(Stream::new(dict, b"x".to_vec()));
+        let mut only = Dictionary::new();
+        only.set("Filter", Object::Name(b"Crypt".to_vec()));
+        only.set("DecodeParms", named("StdCF"));
+        let only_id = doc.add_object(Stream::new(only, b"y".to_vec()));
+
+        let out = Document::load_mem(&write_decrypted(doc).unwrap()).unwrap();
+        let dict = &out.get_object(id).unwrap().as_stream().unwrap().dict;
+        assert_eq!(
+            dict.get(b"Filter").unwrap(),
+            &Object::Array(vec![Object::Name(b"FlateDecode".to_vec())])
+        );
+        assert!(dict.get(b"DecodeParms").is_err());
+        let only = &out.get_object(only_id).unwrap().as_stream().unwrap().dict;
+        assert!(only.get(b"Filter").is_err());
+        assert!(only.get(b"DecodeParms").is_err());
     }
 
     /// RC4 by default (V4), with page 1's content left clear and exempted by
