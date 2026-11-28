@@ -166,7 +166,8 @@ pub fn parse_ported_list(text: &str) -> Result<BTreeSet<String>, String> {
 
 /// Reads the Tool keys in the Dioxus spec filter's `export const PORTED … = [ … ]`
 /// (`e2e/parity/dioxus-filter.ts`). The array may hold only string literals,
-/// commas and comments; anything else is an error, not a guess.
+/// commas and comments, and must be the whole value; anything else is an
+/// error, not a guess.
 pub fn parse_spec_filter(text: &str) -> Result<BTreeSet<String>, String> {
     let declaration = text
         .find("export const PORTED")
@@ -182,7 +183,17 @@ pub fn parse_spec_filter(text: &str) -> Result<BTreeSet<String>, String> {
     let mut keys = BTreeSet::new();
     while let Some(c) = chars.next() {
         match c {
-            ']' => return Ok(keys),
+            ']' => {
+                // The literal must be the whole value: a `.filter(…)` after it would
+                // change the list at run time, where this reader cannot see.
+                let rest: String = chars.take_while(|&c| c != '\n').collect();
+                return match rest.trim() {
+                    "" | ";" => Ok(keys),
+                    other => Err(format!(
+                        "PORTED continues after its array (`{other}`): it must be a plain array literal"
+                    )),
+                };
+            }
             ',' => {}
             c if c.is_whitespace() => {}
             '/' if chars.peek() == Some(&'/') => {

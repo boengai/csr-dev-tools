@@ -171,3 +171,16 @@ fn the_spec_filter_reader_skips_comments_and_fails_on_anything_else() {
     // Not a string literal: the reader cannot tell what it means, so it fails.
     assert!(parse_spec_filter("export const PORTED = [KEYS.hash]").is_err());
 }
+
+#[test]
+fn the_spec_filter_array_must_be_the_whole_value() {
+    let with_semicolon = "export const PORTED: Array<ToolRegistryKey> = ['a'];\n";
+    assert_eq!(parse_spec_filter(with_semicolon).unwrap(), set(&["a"]));
+    // Run-time changes to the array would go unseen, so they fail.
+    for text in [
+        "export const PORTED = ['a', 'b'].filter((key) => key !== 'b')\n",
+        "export const PORTED = ['a'].concat(EXTRA)\n",
+    ] {
+        assert!(parse_spec_filter(text).is_err(), "read {text:?}");
+    }
+}

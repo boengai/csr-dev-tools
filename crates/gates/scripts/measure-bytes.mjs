@@ -26,7 +26,10 @@ const brotli = (bytes) =>
 
 // The page loads these at first: a script, an image or media source, and a
 // stylesheet, preload or icon link. A link to another page (`<a href>`) is not a load.
-const LOADING_TAG = /<(script|img|source|link)\b[^>]*>/gi
+// A quoted attribute may hold `>`, so the tag runs to the first `>` outside quotes.
+const LOADING_TAG = /<(script|img|source|link)\b(?:[^>"']|"[^"]*"|'[^']*')*>/gi
+// A commented-out tag loads nothing.
+const HTML_COMMENT = /<!--[\s\S]*?-->/g
 const LOADING_REL = /^(?:stylesheet|modulepreload|preload|icon)$/i
 const SITE = 'http://site.invalid'
 
@@ -51,7 +54,7 @@ const sitePath = (value, base) => {
  */
 const firstLoads = (html, route, files) => {
   const base = `${SITE}${route === '/' ? '/' : `${route}/`}`
-  return [...html.matchAll(LOADING_TAG)].flatMap(([tag, name]) => {
+  return [...html.replace(HTML_COMMENT, '').matchAll(LOADING_TAG)].flatMap(([tag, name]) => {
     const isLink = name.toLowerCase() === 'link'
     if (isLink && !(attribute(tag, 'rel') ?? '').split(/\s+/).some((rel) => LOADING_REL.test(rel))) return []
     const candidates = [
