@@ -1706,6 +1706,25 @@ _Avoid_: migration PR
 The written list of what must hold on `develop` before a Tool counts as
 ported, kept in `docs/quality/gates.md` (ADR-0036).
 
+## Wave
+
+The ordered set of build issues that ports one layout's Tools (or, for the
+`app` wave, the home page and app-wide pieces), tracked by one issue under
+the migration map. A layout with a shell opens its wave with the shell PR
+and that shell's [[Proof Tool]]; the `custom` and `app` waves have no
+shell. Its checklist holds the soft order; blocked-by links hold only hard
+dependencies. Each [[Port PR]] in it is done by the
+[[Definition of done]] (ADR-0038).
+_Avoid_: batch, phase
+
+## Proof Tool
+
+The one Tool a `shell` PR ports alongside its shell, to show the shell
+works on a real Tool, such as `url-parser` for the [[Transformer shell]].
+The shell builds only the kinds its Proof Tool needs, and the shell's
+issue is also that Tool's issue (ADR-0036, ADR-0038).
+_Avoid_: pilot tool, sample tool
+
 ## Toast channel
 
 The ephemeral notification channel for events that happen *to* a user
