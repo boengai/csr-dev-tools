@@ -9,7 +9,6 @@ import {
   readKeyList,
   readStorage,
   readStoredJson,
-  type RecordedWrite,
   recordedWriteLog,
   recordedWrites,
   recordWrites,
@@ -55,20 +54,6 @@ const requirePorted = (...tools: Array<string>): void => {
   test.skip(missing.length > 0, `not in this build: ${missing.join(', ')}`)
 }
 
-/**
- * Writes the log holds beyond the seed. Init scripts run in no set order, so
- * the seed's own writes may or may not be logged; each is discounted once.
- */
-const writesBeyond = async (page: Page, seed: StorageSnapshot): Promise<Array<RecordedWrite>> => {
-  const pending = Object.entries(seed).filter(([, raw]) => raw !== null)
-  return (await recordedWriteLog(page)).filter(({ key, value }) => {
-    const at = pending.findIndex(([k, raw]) => k === key && raw === value)
-    if (at < 0) return true
-    pending.splice(at, 1)
-    return false
-  })
-}
-
 const golden = readGolden()
 const { keys, neverSaved } = readKeyList()
 /**
@@ -110,7 +95,7 @@ test.describe('Saved inputs', () => {
       await driver.ready(page)
       await driver.shows(page, restored)
       // Reading never writes or deletes (ADR-0032 Decision 4): opening changed nothing, not even the same value back.
-      expect(await writesBeyond(page, seed)).toEqual([])
+      expect(await recordedWriteLog(page)).toEqual([])
 
       await driver.edit(page, restored)
       await driver.checkEdited(page, restored)
@@ -219,22 +204,32 @@ test.describe('Saved inputs', () => {
     const legacy = golden.entries.find((e) => e.id === 'jsonpath-evaluator/legacy-bag')
     if (!driver || !legacy) throw new Error('needs the jsonpath-evaluator driver and its legacy-bag golden entry')
     const legacyKey = 'csr-dev-tools-jsonpath-evaluator'
+    const migratedKey = 'csr-dev-tools-jsonpath-evaluator-v2'
     await seedStorage(page, legacy.stored)
-    // Storage refuses the new key, as a full quota would.
-    await page.addInitScript(() => {
-      const setItem = Storage.prototype.setItem
-      Storage.prototype.setItem = function (key: string, value: string) {
-        if (this === localStorage && key === 'csr-dev-tools-jsonpath-evaluator-v2') {
-          throw new DOMException('The quota has been exceeded.', 'QuotaExceededError')
+    // Storage refuses the new key, as a full quota would, and counts each refusal.
+    const refusalsKey = 'jsonpath-v2-refusals'
+    await page.addInitScript(
+      ({ countKey, refusedKey }: { countKey: string; refusedKey: string }) => {
+        const setItem = Storage.prototype.setItem
+        Storage.prototype.setItem = function (key: string, value: string) {
+          if (this === localStorage && key === refusedKey) {
+            setItem.call(sessionStorage, countKey, String(Number(sessionStorage.getItem(countKey) ?? 0) + 1))
+            throw new DOMException('The quota has been exceeded.', 'QuotaExceededError')
+          }
+          setItem.call(this, key, value)
         }
-        setItem.call(this, key, value)
-      }
-    })
+      },
+      { countKey: refusalsKey, refusedKey: migratedKey },
+    )
 
     await page.goto(driver.route)
     await driver.ready(page)
+    // The migration ran and its write failed: a build that skips it leaves the old draft too.
+    await expect
+      .poll(() => page.evaluate((k) => Number(sessionStorage.getItem(k) ?? 0), refusalsKey))
+      .toBeGreaterThan(0)
     await expect.poll(() => page.evaluate((k) => localStorage.getItem(k), legacyKey)).toBe(legacy.stored[legacyKey])
-    expect(await page.evaluate(() => localStorage.getItem('csr-dev-tools-jsonpath-evaluator-v2'))).toBeNull()
+    expect(await page.evaluate((k) => localStorage.getItem(k), migratedKey)).toBeNull()
   })
 
   test(`${nameOf('base64-codec')}: a saved mode it does not know opens the first mode, with that mode's saved source`, async ({

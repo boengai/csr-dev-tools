@@ -6,7 +6,7 @@ import { loadWasm } from './init'
  * Rewrite a PDF without its encryption. Only the empty user password is tried,
  * which opens the common "owner password only" files. Resolves to null when
  * this file can't be decrypted (it needs a real password, isn't a readable
- * PDF, or uses a crypt filter lopdf would leave encrypted). Rejects only when
+ * PDF, or has a stream lopdf would decrypt with the wrong filter). Rejects only when
  * the decrypt step itself can't load, which says nothing about the file.
  */
 export async function decryptPdf(bytes: Uint8Array): Promise<Uint8Array | null> {

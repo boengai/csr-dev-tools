@@ -93,23 +93,35 @@ export const CAPTURE_ENVIRONMENT = {
 /** Text the journeys append in an edit. */
 export const EDIT = ' edited'
 
+const WRITES_KEY = 'stored-value-contract-writes'
+/** Set in `sessionStorage` once the seed is written, so a reload doesn't write it again. */
+const SEEDED_KEY = 'stored-value-contract-seeded'
+/** Set in `sessionStorage` while the seed is written, so `recordWrites` leaves those writes out. */
+const SEEDING_KEY = 'stored-value-contract-seeding'
+
 /**
  * Seeds `localStorage` once per test, before the app's scripts run.
  * `addInitScript` runs again on every navigation, so a flag in
  * `sessionStorage` keeps a reload from writing the seed over an edit.
  */
 export const seedStorage = async (context: BrowserContext | Page, stored: StorageSnapshot): Promise<void> => {
-  await context.addInitScript((seed: StorageSnapshot) => {
-    if (sessionStorage.getItem('stored-value-contract-seeded') !== null) return
-    sessionStorage.setItem('stored-value-contract-seeded', '1')
-    for (const [key, raw] of Object.entries(seed)) {
-      if (raw === null) localStorage.removeItem(key)
-      else localStorage.setItem(key, raw)
-    }
-  }, stored)
+  await context.addInitScript(
+    ({ seed, seededKey, seedingKey }: { seed: StorageSnapshot; seededKey: string; seedingKey: string }) => {
+      if (sessionStorage.getItem(seededKey) !== null) return
+      sessionStorage.setItem(seededKey, '1')
+      sessionStorage.setItem(seedingKey, '1')
+      try {
+        for (const [key, raw] of Object.entries(seed)) {
+          if (raw === null) localStorage.removeItem(key)
+          else localStorage.setItem(key, raw)
+        }
+      } finally {
+        sessionStorage.removeItem(seedingKey)
+      }
+    },
+    { seed: stored, seededKey: SEEDED_KEY, seedingKey: SEEDING_KEY },
+  )
 }
-
-const WRITES_KEY = 'stored-value-contract-writes'
 
 /** One `localStorage` write, as `recordWrites` saw it. */
 /** `value` is `null` for a removal (`removeItem`, or `clear` for each key it held). */
@@ -120,28 +132,33 @@ export type RecordedWrite = { key: string; value: string | null }
  * rest of the test. That includes writes a Tool deletes or overwrites before the test
  * reads storage. The log lives in `sessionStorage`, so it survives
  * navigation within the tab. On a context, it also covers the tabs a page
- * opens.
+ * opens. The seed's own writes (`seedStorage`) are left out, whichever init
+ * script runs first: Playwright sets no order between them.
  */
 export const recordWrites = async (target: BrowserContext | Page): Promise<void> => {
-  await target.addInitScript((logKey: string) => {
-    const { clear, removeItem, setItem } = Storage.prototype
-    const log = (entries: Array<{ key: string; value: string | null }>) => {
-      const before = JSON.parse(sessionStorage.getItem(logKey) ?? '[]') as Array<unknown>
-      setItem.call(sessionStorage, logKey, JSON.stringify([...before, ...entries]))
-    }
-    Storage.prototype.setItem = function (key: string, value: string) {
-      if (this === localStorage) log([{ key, value: String(value) }])
-      setItem.call(this, key, value)
-    }
-    Storage.prototype.removeItem = function (key: string) {
-      if (this === localStorage && localStorage.getItem(key) !== null) log([{ key, value: null }])
-      removeItem.call(this, key)
-    }
-    Storage.prototype.clear = function () {
-      if (this === localStorage) log(Object.keys(localStorage).map((key) => ({ key, value: null })))
-      clear.call(this)
-    }
-  }, WRITES_KEY)
+  await target.addInitScript(
+    ({ logKey, seedingKey }: { logKey: string; seedingKey: string }) => {
+      const { clear, removeItem, setItem } = Storage.prototype
+      const log = (entries: Array<{ key: string; value: string | null }>) => {
+        if (sessionStorage.getItem(seedingKey) !== null) return
+        const before = JSON.parse(sessionStorage.getItem(logKey) ?? '[]') as Array<unknown>
+        setItem.call(sessionStorage, logKey, JSON.stringify([...before, ...entries]))
+      }
+      Storage.prototype.setItem = function (key: string, value: string) {
+        if (this === localStorage) log([{ key, value: String(value) }])
+        setItem.call(this, key, value)
+      }
+      Storage.prototype.removeItem = function (key: string) {
+        if (this === localStorage && localStorage.getItem(key) !== null) log([{ key, value: null }])
+        removeItem.call(this, key)
+      }
+      Storage.prototype.clear = function () {
+        if (this === localStorage) log(Object.keys(localStorage).map((key) => ({ key, value: null })))
+        clear.call(this)
+      }
+    },
+    { logKey: WRITES_KEY, seedingKey: SEEDING_KEY },
+  )
 }
 
 /** Every write `recordWrites` has seen, in order. */

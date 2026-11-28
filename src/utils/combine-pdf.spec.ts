@@ -74,6 +74,18 @@ describe('combinePdfPages', () => {
     expect(decryptPdf).toHaveBeenCalledTimes(1)
   })
 
+  it('skips an encrypted PDF whose clear page the decrypt step would scramble', async () => {
+    // Page 1 is left clear by /Identity in a /DecodeParms array, which lopdf ignores.
+    const exempt = await fixture('rc4-identity-array.pdf')
+    const plain = await fixture('plain.pdf')
+    const result = await combinePdfPages([
+      { file: exempt, pageIndex: 0 },
+      { file: plain, pageIndex: 0 },
+    ])
+    expect(result.skipped).toEqual(['rc4-identity-array.pdf'])
+    expect(await pageTexts(result.pdf)).toEqual([PAGE_ONE_TEXT])
+  })
+
   it('returns no PDF when every file is skipped, rather than a blank page', async () => {
     const locked = await fixture('locked.pdf')
     const result = await combinePdfPages([{ file: locked, pageIndex: 0 }])
@@ -98,6 +110,18 @@ describe('combinePdfPages', () => {
     const again = await combinePdfPages([{ file, pageIndex: 0 }])
     expect(decryptPdf).toHaveBeenCalledTimes(1)
     expect(await pageTexts(again.pdf)).toEqual([PAGE_ONE_TEXT])
+  })
+
+  it('does not read an encrypted file again once its decrypted bytes are kept', async () => {
+    const file = await fixture('aes-128.pdf')
+    await combinePdfPages([{ file, pageIndex: 0 }])
+    const read = vi.spyOn(file, 'arrayBuffer')
+    const again = await combinePdfPages([
+      { file, pageIndex: 1 },
+      { file, pageIndex: 0 },
+    ])
+    expect(read).not.toHaveBeenCalled()
+    expect(await pageTexts(again.pdf)).toEqual(['Encrypted fixture page two', PAGE_ONE_TEXT])
   })
 
   it('names each skipped file once, even when two share a name', async () => {

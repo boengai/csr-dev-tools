@@ -62,10 +62,23 @@ whole merge. The thumbnails looked right throughout, because pdf.js decrypts.
 - **A broken but unencrypted PDF** also goes through lopdf now. If lopdf
   can read it, it is merged where it used to be skipped.
 - **Unusual crypt filters:** lopdf reads a stream's own `/Crypt` filter
-  only from a `/DecodeParms` dictionary. Given an array or a reference it
-  falls back to the document default and can leave the stream encrypted, so
-  the crate reports such a file and the merge skips it by name. None was
-  seen in RC4-128, AES-128, AES-256 or ISO 32000.
+  only from a direct `/DecodeParms` dictionary. Given an array, a
+  reference or no parameters at all (which means Identity), it decrypts the
+  stream with the document default instead. Unless the default runs the
+  same method (`/CFM`; none means Identity) as the stream's own filter, the
+  stream comes out scrambled or still encrypted, so the crate reports such a
+  file and the merge skips it by name (issue 69: a clear stream marked
+  Identity in an array was scrambled). A stream lopdf skips (a metadata
+  stream under `/EncryptMetadata false`) counts as Identity, so one whose
+  own filter encrypts it is reported. An indirect filter name is not
+  followed, so it is reported too. lopdf can't decode `/Crypt` itself, so
+  an object stream the cross-reference table still uses can't be unpacked
+  if it has `/Crypt`, and the file is reported rather than written without
+  the objects inside. A null entry counts as an absent one. None was seen in RC4-128, AES-128,
+  AES-256 or ISO 32000.
+- **The `/Crypt` stage is dropped on write.** lopdf has applied it, and the
+  output has no `/Encrypt` to define the filter it names, so a strict reader
+  would fail on it.
 - **Non-empty passwords are not asked for.** The upload already rejects
   such a file, because pdf.js cannot draw its thumbnails.
 - **Attachment-only encryption is skipped.** A file that encrypts only its
