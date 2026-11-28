@@ -143,18 +143,41 @@ jobs:
         if: ${{ !cancelled() }}
         run: crates/gates/scripts/mutants.sh "$MERGE_BASE" HEAD^2
 
-      # 8 needs code that is not on `develop` yet. It fails once that code
-      # lands without its gate, rather than passing over nothing.
-      - name: TypeScript gates (bridges and scripts/dioxus)
+      # Node runs the TypeScript gates, the registry generator and the later
+      # Dioxus steps. It comes after the gated packages are known, so a failed
+      # install cannot leave GATED empty and widen the cargo gates to wasm/.
+      - name: Setup pnpm
+        if: ${{ !cancelled() }}
+        uses: pnpm/action-setup@v4
+      - name: Setup Node.js
+        if: ${{ !cancelled() }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+      - name: Install npm packages
+        if: ${{ !cancelled() }}
+        run: pnpm install --frozen-lockfile
+
+      # 8. oxlint and oxfmt over crates/bridges/js and scripts/dioxus, and the
+      # npm licence rule; then their must-fail fixture.
+      - name: TypeScript gates
+        if: ${{ !cancelled() }}
+        run: crates/gates/scripts/ts-gates.sh
+      - name: TypeScript gates fixture fails
+        if: ${{ !cancelled() }}
+        run: crates/gates/scripts/ts-gates-fixture.sh
+
+      # The registry is generated from tool-routes.ts (ADR-0035 §6), and the
+      # checked-in file must be what the generator writes now.
+      - name: Registry is generated from tool-routes.ts
         if: ${{ !cancelled() }}
         run: |
-          for dir in crates/bridges/js scripts/dioxus; do
-            if [[ -e "$dir" ]]; then
-              echo "::error::$dir exists: build its oxlint, oxfmt and npm licence gates (#57)"
-              exit 1
-            fi
-          done
-          echo "No crates/bridges/js or scripts/dioxus yet."
+          node scripts/dioxus/generate-registry.ts
+          if ! git diff --exit-code crates/registry/src/generated.rs; then
+            echo "::error file=crates/registry/src/generated.rs::generated.rs is stale: run node scripts/dioxus/generate-registry.ts and commit it"
+            exit 1
+          fi
 
       # 9. The Dioxus build, the byte check and the CSP run (gates.md →
       # "Byte ceilings" and "CSP"). The checkout is the merge commit, so the
@@ -175,16 +198,6 @@ jobs:
           else
             echo "The base branch has no crates/app: no 2% rule this time."
           fi
-
-      - name: Setup pnpm
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
-        uses: pnpm/action-setup@v4
-      - name: Setup Node.js
-        if: ${{ !cancelled() && steps.build.outcome == 'success' }}
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'pnpm'
 
       # The spec filter's PORTED, as Node evaluates it, equals the ported-Tool list.
       - name: Dioxus spec filter
@@ -231,6 +244,5 @@ jobs:
       - name: CSP run
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: |
-          pnpm install --frozen-lockfile
           pnpm exec playwright install --with-deps chromium webkit
           pnpm exec playwright test -c playwright.dioxus.config.ts

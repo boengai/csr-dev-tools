@@ -480,6 +480,49 @@ What building it found:
   after the PR's head was committed. Agents never add it, as they never
   tick the hand check.
 
+## Amended when the registry generator was built
+
+[Generate the registry from tool-routes.ts](https://github.com/boengai/csr-dev-tools/issues/82)
+built the second row of the deferred table on 2026-11-28. It came with the
+first code under `scripts/dioxus`: the generator that writes
+`crates/registry/src/generated.rs` (ADR-0035 §6), and a `registry` crate
+with an empty storage-key table. `dioxus` now runs oxlint and oxfmt over
+`crates/bridges/js` and `scripts/dioxus`, the npm licence rule, their
+must-fail fixture, and a check that regenerating the registry leaves no
+diff.
+
+What building it found:
+
+- **`scripts/dioxus` has no npm package to judge.** The generator imports
+  `tool-routes.ts` and Node's built-ins, and Node 24 runs the TypeScript
+  itself. So the licence rule has two halves. A directory with no
+  `package.json` may import no npm package, which a gate-owned oxlint
+  config checks (`crates/gates/oxlint-no-npm.json`). A directory with one
+  has its packages judged against `deny.toml`'s allow list by
+  `npm_licences.rs`, which is proven on a fixture now. Feeding a directory's
+  packages to it lands with the first `package.json`, and until then the
+  gate fails on one rather than passing over it.
+- **The root `package.json` is not judged.** It is React's, and its
+  production tree holds LGPL-3.0, EPL-2.0, Unlicense and `Unknown`
+  packages today.
+- **A spec file may import its test runner.** `*.spec.ts` files are
+  exempt from the import ban, because the licence check covers production
+  packages only (`--prod`).
+- **The generated file is exempt from the 300-line source rule.** It holds
+  one row per Tool. Clippy's `too_many_lines` is met by data in constants
+  rather than functions, so a key's row is found by its `ToolKey`
+  discriminant, not by an 84-arm `match`.
+- **Only `tool-routes.ts` is generated so far.** `CATEGORY_ORDER`,
+  `RENAMED_KEYS`, `SITE_ORIGIN` and the home page's head tags live in
+  files Node cannot import without editing `src/` (`tool-registry.ts`
+  loads React, the others are not exported). The `registry(…)` PR that first needs them
+  cannot edit `src/`, so the move that makes them importable lands on
+  `main` first and reaches `develop` through a `sync`, or the generator
+  reads them as text, as the `gates` crate reads `tool-routes.ts`.
+- **The category and layout enums come from typed records in the
+  generator,** so a new category or layout in `tool-routes.ts` fails the
+  typecheck until it has a Rust variant.
+
 ## Revisit when
 
 - A gate fires falsely on most port PRs. Its rule is wrong, not the

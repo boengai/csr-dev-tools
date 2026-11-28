@@ -8,6 +8,7 @@ pub mod ceiling_rows;
 pub mod comments;
 pub mod layers;
 pub mod manifests;
+pub mod npm_licences;
 pub mod paths;
 pub mod pr_body;
 pub mod pr_kind;

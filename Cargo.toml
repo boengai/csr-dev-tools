@@ -3,13 +3,14 @@
 
 [workspace]
 resolver = "3"
-# Listed by layer (ADR-0035 §1). The bridges, persist, platform, registry and
+# Listed by layer (ADR-0035 §1). The bridges, persist, platform and
 # ui crates join this list in the PR that adds each one.
 members = [
   "crates/app",
   "crates/gates",
   "crates/gates/fixtures/clippy",
   "crates/logic/*",
+  "crates/registry",
   "crates/tools/*",
   "crates/workers/*",
   "wasm/crates/*",
