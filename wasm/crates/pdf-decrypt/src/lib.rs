@@ -1,7 +1,7 @@
 use std::collections::BTreeSet;
 
 use lopdf::encryption::EncryptionState;
-use lopdf::xref::XrefEntry;
+use lopdf::xref::{XrefEntry, XrefRecovery};
 use lopdf::{Dictionary, Document, Object, Stream};
 use wasm_bindgen::prelude::*;
 
@@ -112,6 +112,7 @@ const IDENTITY: &[u8] = b"Identity";
 
 /// Whether lopdf decrypted any stream with a crypt filter other than its own.
 /// A file that was not encrypted was not decrypted, so nothing changed.
+/// Object streams are never written (lopdf saves their objects one by one).
 fn has_stream_decrypted_with_wrong_filter(doc: &Document) -> bool {
     let Some(state) = doc.encryption_state.as_ref() else {
         return false;
@@ -119,13 +120,17 @@ fn has_stream_decrypted_with_wrong_filter(doc: &Document) -> bool {
     doc.objects
         .values()
         .filter_map(|object| object.as_stream().ok())
+        .filter(|stream| !stream.dict.has_type(b"ObjStm"))
         .any(|stream| decrypted_with_wrong_filter(stream, state))
 }
 
 /// Whether an object stream the file still uses has a `/Crypt` filter. lopdf
 /// can't decode that filter, so it couldn't unpack the stream, and the objects
-/// in it are lost. One an incremental save superseded holds nothing current.
+/// in it are lost. One an incremental save superseded holds nothing current,
+/// but a table lopdf rebuilt can miss compressed entries, so then every
+/// object stream counts.
 fn has_object_stream_lopdf_cannot_unpack(doc: &Document) -> bool {
+    let rebuilt = doc.xref_recovery == Some(XrefRecovery::Reconstructed);
     let in_use: BTreeSet<u32> = doc
         .reference_table
         .entries
@@ -137,8 +142,9 @@ fn has_object_stream_lopdf_cannot_unpack(doc: &Document) -> bool {
         .collect();
     doc.objects
         .iter()
-        .filter(|((id, _), _)| in_use.contains(id))
+        .filter(|((id, _), _)| rebuilt || in_use.contains(id))
         .filter_map(|(_, object)| object.as_stream().ok())
+        .filter(|stream| stream.dict.has_type(b"ObjStm"))
         .any(|stream| {
             stream
                 .filters()
@@ -485,6 +491,10 @@ mod tests {
         let (container, _) = doc.add_object(Stream::new(dict, b"x".to_vec()));
         // Superseded by an incremental save: no current entry points into it.
         assert!(!has_object_stream_lopdf_cannot_unpack(&doc));
+        // Unless lopdf rebuilt the table, which can miss compressed entries.
+        doc.xref_recovery = Some(XrefRecovery::Reconstructed);
+        assert!(has_object_stream_lopdf_cannot_unpack(&doc));
+        doc.xref_recovery = None;
         doc.reference_table.entries.insert(
             99,
             XrefEntry::Compressed {
@@ -524,6 +534,17 @@ mod tests {
         assert!(!has_stream_decrypted_with_wrong_filter(&doc));
         doc.add_object(crypt_stream(in_array(named("Identity"))));
         assert!(has_stream_decrypted_with_wrong_filter(&doc));
+    }
+
+    #[test]
+    fn ignores_object_streams_which_are_never_written() {
+        // lopdf drops every object stream on save; one in use with /Crypt is
+        // reported by has_object_stream_lopdf_cannot_unpack instead.
+        let mut doc = Document::load_mem(AES_128).unwrap();
+        let mut objstm = crypt_stream(in_array(named("Identity")));
+        objstm.dict.set("Type", Object::Name(b"ObjStm".to_vec()));
+        doc.add_object(objstm);
+        assert!(!has_stream_decrypted_with_wrong_filter(&doc));
     }
 
     #[test]
