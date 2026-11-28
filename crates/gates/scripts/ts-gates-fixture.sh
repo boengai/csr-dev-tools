@@ -15,7 +15,7 @@ if [[ $status -eq 0 ]]; then
   exit 1
 fi
 missing=0
-for expected in "'left-pad' import is restricted" "node_modules/right-pad/index.js' import is restricted" "import() takes a string literal here" "crates/gates/fixtures/ts/unformatted.ts"; do
+for expected in "'left-pad' import is restricted" "node_modules/right-pad/index.js' import is restricted" "no-dynamic-require" "crates/gates/fixtures/ts/unformatted.ts"; do
   if ! grep -qF -- "$expected" <<<"$output"; then
     echo "::error::the TypeScript gates did not report: $expected" >&2
     missing=1

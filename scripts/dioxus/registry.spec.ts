@@ -83,6 +83,12 @@ describe('renderRegistry', () => {
     }
   })
 
+  it('refuses a key whose variant is the Rust keyword Self', () => {
+    expect(() => renderRegistry([route({ key: 'self' as ToolRoute['key'] })])).toThrow(
+      'ToolKey::Self is a Rust keyword',
+    )
+  })
+
   it('refuses two keys that make the same variant', () => {
     expect(() =>
       renderRegistry([route({ key: 'base64-codec' }), route({ key: 'base64-codec' as ToolRoute['key'] })]),

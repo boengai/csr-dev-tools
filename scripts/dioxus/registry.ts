@@ -57,10 +57,13 @@ const variantOf = (key: string): string => {
   if (!KEY_SHAPE.test(key)) {
     throw new Error(`Tool key ${JSON.stringify(key)} is not lower-case words joined by hyphens`)
   }
-  return key
+  const variant = key
     .split('-')
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join('')
+  // The only capitalised Rust keyword a key can make.
+  if (variant === 'Self') throw new Error('ToolKey::Self is a Rust keyword: rename the Tool key')
+  return variant
 }
 
 const renderEnum = (doc: string, name: string, variants: Array<string>): string =>

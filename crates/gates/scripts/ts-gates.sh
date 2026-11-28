@@ -2,10 +2,10 @@
 # The TypeScript gates (docs/quality/gates.md → "Required checks", step 7):
 # oxlint and oxfmt over each directory that exists, and the npm licence rule.
 # A directory with no package.json takes no npm package, which oxlint checks
-# with crates/gates/oxlint-no-npm.json, and an import() it cannot read fails.
-# One with a package.json has its own
-# packages, and their licences are not fed to the licence check yet, so it
-# fails until the PR that adds it does that.
+# with crates/gates/oxlint-no-npm.json. That config also rejects an import()
+# whose specifier is not a literal, since the ban cannot read one. A directory
+# with a package.json has its own packages, and their licences are not fed to
+# the licence check yet, so it fails until the PR that adds it does that.
 # Usage: crates/gates/scripts/ts-gates.sh [dir…]  (default: crates/bridges/js scripts/dioxus)
 set -uo pipefail
 
@@ -20,15 +20,6 @@ for dir in "$@"; do
     echo "::error file=$dir/package.json::$dir has npm packages: feed \`pnpm licenses list --json --prod\` for it to the licence check (tests/npm_licences.rs)"
     status=1
     config=.oxlintrc.json
-  else
-    # oxlint judges only a literal import() specifier, so any other one fails.
-    if dynamic=$(grep -rnE --include='*.ts' --include='*.mts' --include='*.js' --include='*.mjs' --exclude='*.spec.ts' \
-      "import\\([[:space:]]*[^'\"[:space:])]" "$dir"); then
-      while IFS= read -r hit; do
-        echo "::error file=${hit%%:*}::import() takes a string literal here, so the npm ban can read it: $hit"
-      done <<<"$dynamic"
-      status=1
-    fi
   fi
   pnpm exec oxlint -c "$config" --deny-warnings "$dir" || status=1
   pnpm exec oxfmt --check "$dir" || status=1
