@@ -44,6 +44,29 @@ const attributes = (tag) => {
   return new Map([...body.matchAll(ATTRIBUTE)].map((m) => [m[1].toLowerCase(), m[2] ?? m[3] ?? m[4] ?? '']))
 }
 
+/**
+ * The URLs in a `srcset`, parsed as the HTML spec does: a URL runs to the next whitespace,
+ * so a data URL's commas stay inside it, and a comma ends a candidate only after its URL.
+ */
+const srcsetUrls = (srcset) => {
+  const urls = []
+  let rest = srcset
+  for (;;) {
+    rest = rest.replace(/^[\s,]+/, '')
+    if (!rest) return urls
+    let url = rest.match(/^\S+/)[0]
+    rest = rest.slice(url.length)
+    if (url.endsWith(',')) {
+      url = url.replace(/,+$/, '')
+    } else {
+      // Skip the descriptors ("2x", "400w") up to the comma that ends this candidate.
+      const end = rest.indexOf(',')
+      rest = end < 0 ? '' : rest.slice(end + 1)
+    }
+    urls.push(url)
+  }
+}
+
 /** A same-origin URL as a path in the build, or undefined for another origin. */
 const sitePath = (value, base) => {
   // Relative, root-relative and dx's "/./assets/…" resolve against the page;
@@ -67,11 +90,7 @@ const firstLoads = (html, route, files) => {
     const parsed = attributes(tag)
     const attribute = (key) => parsed.get(key)
     if (isLink && !(attribute('rel') ?? '').split(/\s+/).some((rel) => LOADING_REL.test(rel))) return []
-    const candidates = [
-      attribute(LOADED_BY[kind] ?? 'src'),
-      // Each candidate is "<url> [<width>w|<density>x]"; the URL holds no spaces.
-      ...(isLink ? [] : (attribute('srcset') ?? '').split(',').map((candidate) => candidate.trim().split(/\s+/)[0])),
-    ]
+    const candidates = [attribute(LOADED_BY[kind] ?? 'src'), ...(isLink ? [] : srcsetUrls(attribute('srcset') ?? ''))]
       .filter(Boolean)
       .map((value) => sitePath(value, base))
       .filter((path) => path !== undefined)

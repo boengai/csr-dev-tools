@@ -39,10 +39,12 @@ const inside = (path) => {
 /** What a request URL gets: a file, a redirect, or nothing; a URL that does not decode gets nothing. */
 const resolve = (url) => {
   let pathname
+  let rawPathname
   let search
   try {
     const parsed = new URL(url, 'http://localhost')
-    pathname = decodeURIComponent(parsed.pathname)
+    rawPathname = parsed.pathname
+    pathname = decodeURIComponent(rawPathname)
     search = parsed.search
   } catch {
     return undefined
@@ -53,7 +55,7 @@ const resolve = (url) => {
   // served at its trailing-slash URL, so its page's relative URLs resolve as in production.
   const directoryIndex = join(path, 'index.html')
   if (!pathname.endsWith('/') && existsSync(directoryIndex) && !statSync(path).isFile()) {
-    return inside(directoryIndex) ? { redirect: `${pathname}/${search}` } : undefined
+    return inside(directoryIndex) ? { redirect: `${rawPathname}/${search}` } : undefined
   }
   if (existsSync(path) && statSync(path).isFile()) return inside(path) ? { file: path } : undefined
   // A client route: the nearest index.html above it.
