@@ -30,8 +30,15 @@ const TYPES = {
 }
 
 const root = normalize(dist)
+/** The file a request URL serves, or undefined; a URL that does not decode serves nothing. */
 const resolve = (url) => {
-  const path = normalize(join(root, decodeURIComponent(new URL(url, 'http://x').pathname)))
+  let pathname
+  try {
+    pathname = decodeURIComponent(new URL(url, 'http://localhost').pathname)
+  } catch {
+    return undefined
+  }
+  const path = normalize(join(root, pathname))
   if (path !== root && !path.startsWith(root + sep)) return undefined
   if (existsSync(path) && statSync(path).isFile()) return path
   // A client route: the nearest index.html above it.
@@ -54,4 +61,7 @@ createServer((request, response) => {
     'Content-Type': TYPES[extname(path)] ?? 'application/octet-stream',
   })
   response.end(readFileSync(path))
-}).listen(Number(port), () => process.stdout.write(`serving ${dist} on ${port} under the post-migration CSP\n`))
+  // Loopback only: the test run is the one client.
+}).listen(Number(port), '127.0.0.1', () =>
+  process.stdout.write(`serving ${dist} on ${port} under the post-migration CSP\n`),
+)

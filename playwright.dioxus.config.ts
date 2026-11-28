@@ -15,7 +15,8 @@ const PORTED: Array<ToolRegistryKey> = []
 const JOURNEYS: { grep?: RegExp; testMatch: Array<string> } = { testMatch: [] }
 
 const PORT = 4174
-const url = `http://localhost:${PORT}`
+// The server listens on loopback only, and `localhost` may resolve to ::1.
+const url = `http://127.0.0.1:${PORT}`
 const webServer = {
   command: `node crates/gates/scripts/serve-dioxus.mjs dist-dioxus ${PORT} docs/quality/post-migration-csp.txt`,
   reuseExistingServer: false,

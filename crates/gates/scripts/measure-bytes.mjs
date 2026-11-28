@@ -33,7 +33,10 @@ for (const path of walk(dist).sort()) {
   if (!name.endsWith('index.html')) continue
   const route = `/${name.slice(0, -'index.html'.length)}`.replace(/(.)\/$/, '$1')
   // `src` and `href` on the same origin; dx writes them as "/./assets/…".
-  const loads = [...bytes.toString('utf8').matchAll(/\b(?:src|href)="\/(?:\.\/)?([^"?#:]+)"/g)].map((m) => m[1])
+  // A query or fragment (`?v=2`) still names the same file.
+  const loads = [...bytes.toString('utf8').matchAll(/\b(?:src|href)="\/(?:\.\/)?([^"?#:]+)(?:[?#][^"]*)?"/g)].map(
+    (m) => m[1],
+  )
   pages[route] = [name, ...new Set(loads)]
 }
 

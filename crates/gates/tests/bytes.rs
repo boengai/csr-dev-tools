@@ -6,7 +6,7 @@ use std::collections::BTreeSet;
 use std::path::Path;
 
 use gates::bytes::{
-    Build, Rows, check_ceiling_rows, check_ceilings, check_tool_modules, parse_rows, rows,
+    Build, Rows, check_ceiling_rows, check_ceilings, check_tool_rows, parse_rows, rows,
 };
 use gates::pr_kind::Kind;
 
@@ -49,11 +49,12 @@ fn a_build_is_read_into_rows() {
             ("wasm:main", 120_000),
         ])
     );
-    // A wasm or JS file with no row kind, loaded by no page, fails.
+    // A wasm, JS or CSS file with no row kind, loaded by no page, fails.
     assert_eq!(
         ats(&findings),
         vec![
             "assets/stray-bridge-dxh0123456789abcdef.js",
+            "assets/stray-dxh0123456789abcdef.css",
             "assets/stray-dxh0123456789abcdef.wasm"
         ]
     );
@@ -67,11 +68,18 @@ fn a_build_without_one_main_module_fails_to_read() {
 }
 
 #[test]
-fn every_ported_tool_emits_its_own_module() {
+fn every_ported_tool_emits_its_own_module_and_page() {
     let build = Build::from_json(&fixture("build.json").unwrap()).unwrap();
     let (rows, _) = rows(&build);
-    let findings = check_tool_modules(&keys(&["hash-generator", "uuid-generator"]), &rows);
-    assert_eq!(ats(&findings), vec!["uuid-generator"]);
+    let findings = check_tool_rows(&keys(&["hash-generator", "uuid-generator"]), &rows);
+    // Neither its module nor its stamped page.
+    assert_eq!(ats(&findings), vec!["uuid-generator", "uuid-generator"]);
+
+    // A module without its stamped page fails too.
+    let module_only = row_set(&[("wasm:UuidGeneratorEntry", 1)]);
+    let findings = check_tool_rows(&keys(&["uuid-generator"]), &module_only);
+    assert_eq!(findings.len(), 1);
+    assert!(findings[0].message.contains("/tools/uuid-generator"));
 }
 
 #[test]
@@ -192,7 +200,7 @@ fn byte_check() {
         parse_rows(&std::fs::read_to_string(root.join(gates::paths::CEILING_FILE)).unwrap())
             .unwrap();
     let (head, mut findings) = rows(&head);
-    findings.extend(check_tool_modules(
+    findings.extend(check_tool_rows(
         &gates::tree::ported_list(&root).unwrap(),
         &head,
     ));

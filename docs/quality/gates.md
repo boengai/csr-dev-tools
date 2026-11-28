@@ -258,7 +258,7 @@ A Tool entry is an invocation of `wasm_split::lazy_loader!` or of `ui`'s entry m
 
 - **The post-migration CSP** is a gate file (ADR-0033 Decision 6 and "Handed on"). The Dioxus Playwright project serves `dist-dioxus` with it, through `crates/gates/scripts/serve-dioxus.mjs`.
 - **A shared fixture**, for the Dioxus project only, fails any test that sees a `securitypolicyviolation` event (`e2e/parity/csp.ts`). The specs import `test` from `@playwright/test` and are never edited, so the Dioxus config maps that import to the fixture through its own tsconfig (`e2e/tsconfig.dioxus.json`). It listens on every page of the test's context; a violation inside a worker fires on the worker, and it does not see that.
-- **Its must-fail check** is `e2e/parity/csp.spec.ts`: a test that runs an inline script and is marked `test.fail()`, so the run fails if the fixture stops failing it. The other test checks that the server sends the CSP, so the must-fail test cannot pass on a page served without one.
+- **Its must-fail check** is `e2e/parity/csp.spec.ts`: a test that runs an inline script and is marked `test.fail()`. Its body asserts nothing, so only the fixture can fail it. If the CSP ever let the script run, or the fixture stopped reporting, the test would pass and the run would fail. The other test checks that the app shell renders with the CSP header sent.
 - **It covers every journey,** not only those of Tools with an Engine bridge.
 
 ## Byte ceilings
@@ -273,8 +273,8 @@ These extend the byte check in `docs/perf/budgets.md` → "CI on `develop`". The
 The PR that first ships a file sets its row.
 
 - **Measuring.** `crates/gates/scripts/measure-bytes.mjs` reads the build: each file's brotli size (quality 11), and the same-origin files each page's HTML loads. The `gates` crate (`bytes.rs`) makes the rows from it.
-- **Row keys.** `page:<route>` (the HTML, the files it loads, and the main module), `wasm:main`, `wasm:<Tool entry>` for each loader's module, and `wasm:chunks`, the sum of the chunks wasm-split shares between modules (each is named `chunk_<n>_split`, and `<n>` can move between builds). A wasm or JS file that fits none of these and that no page loads fails the check: its kind of row, a bridge or worker file, is added in a `gates` PR with the first such file.
-- **The checks.** A measured row with no ceiling fails, and so does a ceiling with no file. Every ported Tool must have its own `wasm:<Tool entry>` row, or its code landed in main. They run in `dioxus` (`tests/bytes.rs`, `byte_check`), and the fixtures in `crates/gates/fixtures/bytes/` must fail them.
+- **Row keys.** `page:<route>` (the HTML, the files it loads, and the main module), `wasm:main`, `wasm:<Tool entry>` for each loader's module, and `wasm:chunks`, the sum of the chunks wasm-split shares between modules (each is named `chunk_<n>_split`, and `<n>` can move between builds). A wasm, JS or CSS file that fits none of these and that no page loads fails the check: its kind of row, a bridge or worker file, is added in a `gates` PR with the first such file.
+- **The checks.** A measured row with no ceiling fails, and so does a ceiling with no file. Every ported Tool must have its own `wasm:<Tool entry>` row, or its code landed in main, and its `page:/tools/<key>` row, or the build holds no stamped page for it. They run in `dioxus` (`tests/bytes.rs`, `byte_check`), and the fixtures in `crates/gates/fixtures/bytes/` must fail them.
 - **The row check.** It runs in `pr-body`, next to the path check, which sees only that the ceiling file changed. A `port` or `shell` PR may only add rows for its own Tool (`page:/tools/<key>`, `wasm:<Tool entry>`). Changing or removing a row is a `gates` PR.
 
 ## PR kinds

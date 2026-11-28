@@ -111,8 +111,8 @@ fn classify_wasm(path: &str) -> Option<Wasm> {
 }
 
 /// The build's rows. A page's row is its HTML, the files it loads and the
-/// main module. A wasm or JS file that is neither a known module nor loaded by
-/// a page is a finding: its kind of row (a bridge or worker file) is built in
+/// main module. A wasm, JS or CSS file that is neither a known module nor
+/// loaded by a page is a finding: its kind of row (a bridge or worker file) is built in
 /// a `gates` PR with the first such file.
 pub fn rows(build: &Build) -> (Rows, Vec<Finding>) {
     let mut rows = Rows::new();
@@ -129,7 +129,7 @@ pub fn rows(build: &Build) -> (Rows, Vec<Finding>) {
             None => {
                 let code = std::path::Path::new(path)
                     .extension()
-                    .is_some_and(|ext| ext.eq_ignore_ascii_case("wasm") || ext == "js");
+                    .is_some_and(|ext| ["wasm", "js", "css"].iter().any(|kind| ext == *kind));
                 if code && !loaded.contains(path) {
                     findings.push(Finding::new(
                         "bytes",
@@ -197,21 +197,27 @@ fn tool_rows(key: &str) -> [String; 2] {
     ]
 }
 
-/// Every ported Tool emits its own wasm module (ADR-0035 §7): a Tool whose
-/// code landed in main has no row of its own.
-pub fn check_tool_modules(ported: &BTreeSet<String>, rows: &Rows) -> Vec<Finding> {
-    ported
-        .iter()
-        .filter_map(|key| {
-            let entry = entry_name(key);
-            (!rows.contains_key(&format!("wasm:{entry}"))).then(|| {
-                let message = format!(
-                    "emits no wasm module for `{entry}`: its code is in main, so its loader is missing or not split"
-                );
-                Finding::new("tool-module", key, 0, message)
-            })
-        })
-        .collect()
+/// Every ported Tool emits its own wasm module (ADR-0035 §7), and the build
+/// holds its stamped page (`gates.md` → "Definition of done", 7). A Tool whose
+/// code landed in main has no module row; one the stamper missed has no page row.
+pub fn check_tool_rows(ported: &BTreeSet<String>, rows: &Rows) -> Vec<Finding> {
+    let mut findings = Vec::new();
+    for key in ported {
+        let [page, module] = tool_rows(key);
+        if !rows.contains_key(&module) {
+            let message = format!(
+                "emits no wasm module for `{}`: its code is in main, so its loader is missing or not split",
+                entry_name(key)
+            );
+            findings.push(Finding::new("tool-module", key, 0, message));
+        }
+        if !rows.contains_key(&page) {
+            let route = page.trim_start_matches("page:");
+            let message = format!("the build has no stamped page at {route}/index.html");
+            findings.push(Finding::new("tool-page", key, 0, message));
+        }
+    }
+    findings
 }
 
 /// The two limits: no row more than 2% over the base branch, none over its
