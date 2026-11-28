@@ -9,8 +9,8 @@ pub enum DecryptError {
     Unreadable,
     /// The file is encrypted and the empty password does not open it.
     PasswordRequired,
-    /// A stream names its own crypt filter in a form lopdf does not read, so
-    /// it would come out still encrypted.
+    /// lopdf would decrypt a stream with the document default instead of its
+    /// own crypt filter, so it would come out scrambled or still encrypted.
     UnsupportedCryptFilter,
 }
 
@@ -121,7 +121,7 @@ fn filter_name(params: &Dictionary) -> &[u8] {
 }
 
 /// Rewrite a PDF without its encryption. Throws when the file is unreadable,
-/// needs a password, or uses a crypt filter lopdf would leave encrypted.
+/// needs a password, or has a stream lopdf would decrypt with the wrong filter.
 #[wasm_bindgen]
 pub fn decrypt_pdf(bytes: &[u8]) -> Result<Vec<u8>, JsError> {
     decrypt(bytes).map_err(|e| JsError::new(e.message()))
