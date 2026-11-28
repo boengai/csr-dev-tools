@@ -41,7 +41,7 @@ pub fn decrypt(bytes: &[u8]) -> Result<Vec<u8>, DecryptError> {
     if doc.is_encrypted() {
         return Err(DecryptError::PasswordRequired);
     }
-    if has_stream_decrypted_with_wrong_filter(&doc) {
+    if has_object_stream_lopdf_cannot_unpack(&doc) || has_stream_decrypted_with_wrong_filter(&doc) {
         return Err(DecryptError::UnsupportedCryptFilter);
     }
     write_decrypted(doc)
@@ -116,8 +116,21 @@ fn has_stream_decrypted_with_wrong_filter(doc: &Document) -> bool {
     doc.objects
         .values()
         .filter_map(|object| object.as_stream().ok())
-        .filter(|stream| lopdf_decrypts(stream, state))
         .any(|stream| decrypted_with_wrong_filter(stream, state))
+}
+
+/// Whether an object stream has a `/Crypt` filter. lopdf can't decode that
+/// filter, so it couldn't unpack the stream, and the objects in it are lost.
+fn has_object_stream_lopdf_cannot_unpack(doc: &Document) -> bool {
+    doc.objects
+        .values()
+        .filter_map(|object| object.as_stream().ok())
+        .filter(|stream| stream.dict.has_type(b"ObjStm"))
+        .any(|stream| {
+            stream
+                .filters()
+                .is_ok_and(|filters| filters.contains(&&b"Crypt"[..]))
+        })
 }
 
 /// lopdf leaves a cross-reference stream as it is, and a metadata stream
@@ -127,11 +140,12 @@ fn lopdf_decrypts(stream: &Stream, state: &EncryptionState) -> bool {
         && (state.encrypt_metadata() || !stream.dict.has_type(b"Metadata"))
 }
 
-/// What a named crypt filter does to the bytes, as lopdf runs it: its method
-/// (`/CFM`, Identity when absent). Filters with one method give the same
-/// bytes, since all use the file key. `None` for a name missing from `/CF`.
+/// What a crypt filter a stream names does to the bytes: its method (`/CFM`,
+/// Identity when absent). Filters with one method give the same bytes, since
+/// all use the file key. `None` for a name missing from `/CF`, the empty
+/// name included: only an empty default means Identity.
 fn filter_method<'a>(state: &'a EncryptionState, name: &[u8]) -> Option<&'a [u8]> {
-    if name.is_empty() || name == IDENTITY {
+    if name == IDENTITY {
         return Some(IDENTITY);
     }
     state
@@ -141,17 +155,32 @@ fn filter_method<'a>(state: &'a EncryptionState, name: &[u8]) -> Option<&'a [u8]
 }
 
 /// The method lopdf applies to a stream whose own filter it does not read:
-/// the document default's. `None` when no stream can name it (RC4 below V4,
-/// or a default missing from `/CF`, which lopdf runs as RC4).
+/// the document default's, Identity when it is empty. `None` when no stream
+/// can name it (RC4 below V4, or a default missing from `/CF`, which lopdf
+/// runs as RC4).
 fn default_stream_method(state: &EncryptionState) -> Option<&[u8]> {
     if state.version() < 4 {
         return None;
     }
-    filter_method(state, state.default_stream_filter())
+    let name = state.default_stream_filter();
+    if name.is_empty() {
+        return Some(IDENTITY);
+    }
+    filter_method(state, name)
 }
 
-/// Whether lopdf decrypts this stream with the default although its `/Crypt`
-/// filter asks for another (or for one this can't resolve, as a reference).
+/// The method a `/Crypt` parameter dictionary asks for: Identity when it
+/// names none. `None` for an indirect name, which is not followed.
+fn named_method<'a>(state: &'a EncryptionState, params: &Dictionary) -> Option<&'a [u8]> {
+    match params.get(b"Name") {
+        Err(_) => Some(IDENTITY),
+        Ok(Object::Name(name)) => filter_method(state, name),
+        Ok(_) => None,
+    }
+}
+
+/// Whether lopdf left this stream decrypted with another method than its
+/// `/Crypt` filter asks for (or one this can't resolve, as a reference).
 fn decrypted_with_wrong_filter(stream: &Stream, state: &EncryptionState) -> bool {
     let Ok(filters) = stream.filters() else {
         return false;
@@ -159,24 +188,27 @@ fn decrypted_with_wrong_filter(stream: &Stream, state: &EncryptionState) -> bool
     let Some(index) = filters.iter().position(|name| *name == b"Crypt") else {
         return false;
     };
+    let decrypts = lopdf_decrypts(stream, state);
     let own = match stream.dict.get(b"DecodeParms") {
-        // The form lopdf reads.
-        Ok(Object::Dictionary(_)) => return false,
+        // The form lopdf reads, on a stream it decrypts.
+        Ok(Object::Dictionary(_)) if decrypts => return false,
+        Ok(Object::Dictionary(params)) => named_method(state, params),
         // No parameters for the crypt filter means Identity.
         Err(_) => Some(IDENTITY),
         Ok(Object::Array(params)) => match params.get(index) {
             None | Some(Object::Null) => Some(IDENTITY),
-            Some(Object::Dictionary(params)) => match params.get(b"Name") {
-                Err(_) => Some(IDENTITY),
-                Ok(Object::Name(name)) => filter_method(state, name),
-                // An indirect name is not followed.
-                Ok(_) => None,
-            },
+            Some(Object::Dictionary(params)) => named_method(state, params),
             Some(_) => None,
         },
         Ok(_) => None,
     };
-    own.is_none() || own != default_stream_method(state)
+    // A stream lopdf skips keeps its bytes, as Identity would.
+    let applied = if decrypts {
+        default_stream_method(state)
+    } else {
+        Some(IDENTITY)
+    };
+    own.is_none() || own != applied
 }
 
 /// Rewrite a PDF without its encryption. Throws when the file is unreadable,
@@ -269,10 +301,18 @@ mod tests {
 
     /// A V4 state with these `/CF` filters and this `/StmF` default.
     fn v4(filters: Vec<(&str, Arc<dyn CryptFilter>)>, stream_filter: &str) -> EncryptionState {
+        v4_metadata(filters, stream_filter, true)
+    }
+
+    fn v4_metadata(
+        filters: Vec<(&str, Arc<dyn CryptFilter>)>,
+        stream_filter: &str,
+        encrypt_metadata: bool,
+    ) -> EncryptionState {
         let doc = Document::load_mem(AES_128).unwrap();
         EncryptionState::try_from(EncryptionVersion::V4 {
             document: &doc,
-            encrypt_metadata: true,
+            encrypt_metadata,
             crypt_filters: filters
                 .into_iter()
                 .map(|(name, filter)| (name.as_bytes().to_vec(), filter))
@@ -348,6 +388,72 @@ mod tests {
             &crypt_stream(in_array(named("Identity"))),
             &clear_default
         ));
+    }
+
+    #[test]
+    fn resolves_an_explicit_empty_name_through_cf() {
+        // `/Name /` is a name like any other; only an empty default means Identity.
+        let empty_rc4 = v4(vec![("", rc4())], "Identity");
+        assert!(decrypted_with_wrong_filter(
+            &crypt_stream(in_array(named(""))),
+            &empty_rc4
+        ));
+        let undeclared = v4(vec![("StdCF", rc4())], "Identity");
+        assert!(decrypted_with_wrong_filter(
+            &crypt_stream(in_array(named(""))),
+            &undeclared
+        ));
+        let empty_default = v4(vec![("StdCF", rc4())], "");
+        assert!(!decrypted_with_wrong_filter(
+            &crypt_stream(in_array(Object::Null)),
+            &empty_default
+        ));
+    }
+
+    #[test]
+    fn flags_metadata_lopdf_leaves_encrypted() {
+        // Under /EncryptMetadata false lopdf skips metadata, so it applies Identity.
+        let clear_metadata = v4_metadata(vec![("StdCF", rc4())], "StdCF", false);
+        let metadata = |params| {
+            let mut stream = crypt_stream(params);
+            stream.dict.set("Type", Object::Name(b"Metadata".to_vec()));
+            stream
+        };
+        assert!(decrypted_with_wrong_filter(
+            &metadata(in_array(named("StdCF"))),
+            &clear_metadata
+        ));
+        assert!(!decrypted_with_wrong_filter(
+            &metadata(in_array(Object::Null)),
+            &clear_metadata
+        ));
+    }
+
+    #[test]
+    fn reports_an_object_stream_lopdf_cannot_unpack() {
+        // lopdf can't decode a /Crypt filter, so the objects inside would be lost.
+        let mut doc = Document::load_mem(PLAIN).unwrap();
+        let mut dict = Dictionary::new();
+        dict.set("Type", Object::Name(b"ObjStm".to_vec()));
+        dict.set(
+            "Filter",
+            Object::Array(vec![
+                Object::Name(b"Crypt".to_vec()),
+                Object::Name(b"FlateDecode".to_vec()),
+            ]),
+        );
+        dict.set("DecodeParms", named("Identity"));
+        doc.add_object(Stream::new(dict, b"x".to_vec()));
+        assert!(has_object_stream_lopdf_cannot_unpack(&doc));
+        // Object streams lopdf unpacked, as AES-256 has, are fine.
+        let objstm = Document::load_mem(AES_256).unwrap();
+        assert!(
+            objstm
+                .objects
+                .values()
+                .any(|o| o.as_stream().is_ok_and(|s| s.dict.has_type(b"ObjStm")))
+        );
+        assert!(!has_object_stream_lopdf_cannot_unpack(&objstm));
     }
 
     #[test]
