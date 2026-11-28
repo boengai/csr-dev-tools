@@ -232,16 +232,21 @@ pub fn check_tool_rows(ported: &BTreeSet<String>, rows: &Rows) -> Vec<Finding> {
 /// ceiling. Every measured row has a ceiling, and every ceiling a row.
 pub fn check_ceilings(head: &Rows, base: Option<&Rows>, ceilings: &Rows) -> Vec<Finding> {
     let mut findings = Vec::new();
-    let mut report = |key: &str, message: String| {
-        findings.push(Finding::new("bytes", key, 0, message));
+    let mut report = |rule: &'static str, key: &str, message: String| {
+        findings.push(Finding::new(rule, key, 0, message));
     };
     for (key, &bytes) in head {
         match ceilings.get(key) {
             Some(&ceiling) if bytes > ceiling => {
-                report(key, format!("{bytes} B is over its ceiling of {ceiling} B"));
+                report(
+                    "bytes",
+                    key,
+                    format!("{bytes} B is over its ceiling of {ceiling} B"),
+                );
             }
             Some(_) => {}
             None => report(
+                "bytes",
                 key,
                 format!(
                     "{bytes} B has no row in {CEILING_FILE}: the PR that first ships it sets it"
@@ -251,7 +256,9 @@ pub fn check_ceilings(head: &Rows, base: Option<&Rows>, ceilings: &Rows) -> Vec<
         if let Some(&before) = base.and_then(|base| base.get(key))
             && u128::from(bytes) * 100 > u128::from(before) * 102
         {
+            // Its own rule: a jump the maintainer accepted (`bytes-jump-accepted`) warns.
             report(
+                "bytes-jump",
                 key,
                 format!("{bytes} B is more than 2% over the base branch's {before} B"),
             );
@@ -259,6 +266,7 @@ pub fn check_ceilings(head: &Rows, base: Option<&Rows>, ceilings: &Rows) -> Vec<
     }
     for key in ceilings.keys().filter(|key| !head.contains_key(*key)) {
         report(
+            "bytes",
             key,
             format!("is in {CEILING_FILE}, but the build has no such file"),
         );

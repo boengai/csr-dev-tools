@@ -176,15 +176,18 @@ fn a_gates_pr_may_change_any_row() {
 /// CI's byte check, over the Dioxus build it measured:
 ///
 /// - `GATES_BYTES_HEAD`: `measure-bytes.mjs` over the PR's build;
-/// - `GATES_BYTES_BASE`: the same over the merge base's build, or empty when
-///   the merge base has no `crates/app`.
+/// - `GATES_BYTES_BASE`: the same over the base branch's build, or empty when
+///   the base branch has no `crates/app`;
+/// - `GATES_BYTES_JUMP_ACCEPTED`: `1` when the maintainer put the
+///   `bytes-jump-accepted` label on the PR, empty otherwise. A jump of more than
+///   2% then warns instead of failing; a ceiling still fails.
 ///
 /// `#[ignore]`d so a plain `cargo test` skips it; a missing variable fails.
 #[test]
 #[ignore = "CI runs it over the build it measured"]
 #[expect(
     clippy::print_stdout,
-    reason = "the measured rows go in the job log, for setting a ceiling"
+    reason = "the measured rows and accepted jumps go in the job log"
 )]
 fn byte_check() {
     let read = |name: &str| -> Option<String> {
@@ -216,6 +219,16 @@ fn byte_check() {
     for (key, bytes) in &head {
         println!("{key}: {bytes} B");
     }
+    let jump_accepted = std::env::var("GATES_BYTES_JUMP_ACCEPTED")
+        .map_err(|_| "GATES_BYTES_JUMP_ACCEPTED is not set; CI sets it")
+        .unwrap()
+        == "1";
+    let (jumps, findings): (Vec<_>, Vec<_>) = findings
+        .into_iter()
+        .partition(|finding| jump_accepted && finding.rule == "bytes-jump");
+    for jump in &jumps {
+        println!("::warning::accepted by the bytes-jump-accepted label: {jump}");
+    }
     let report: Vec<String> = findings.iter().map(ToString::to_string).collect();
     assert!(report.is_empty(), "{}", report.join("\n"));
 }
@@ -234,4 +247,24 @@ fn a_page_that_preloads_a_stale_main_module_fails() {
         "pages": {"/": ["index.html", "assets/app_bg-dxhdead.wasm"]}}"#;
     let (_, findings) = rows(&Build::from_json(json).unwrap());
     assert_eq!(ats(&findings), vec!["page:/"]);
+}
+
+#[test]
+fn a_jump_is_its_own_rule_so_the_maintainer_can_accept_it() {
+    let head = row_set(&[("wasm:main", 200), ("page:/", 300)]);
+    let base = row_set(&[("wasm:main", 100), ("page:/", 100)]);
+    let ceilings = row_set(&[("wasm:main", 250), ("page:/", 250)]);
+    let rules: Vec<(&str, String)> = check_ceilings(&head, Some(&base), &ceilings)
+        .iter()
+        .map(|finding| (finding.rule, finding.at.clone()))
+        .collect();
+    // Both rows jumped; only page:/ is also over its ceiling, which no label lifts.
+    assert_eq!(
+        rules,
+        vec![
+            ("bytes", "page:/".to_owned()),
+            ("bytes-jump", "page:/".to_owned()),
+            ("bytes-jump", "wasm:main".to_owned()),
+        ]
+    );
 }

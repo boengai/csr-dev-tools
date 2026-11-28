@@ -468,10 +468,15 @@ What building it found:
 - **The first ceilings are a local macOS build's sizes, rounded up to the
   next KiB.** `dioxus` is a required check, so if the Linux build in CI
   does not fit them, this PR corrects them from the rows the CI log prints.
-- **The 2% rule now covers `wasm:main` and `page:/`, measured from an
-  empty shell.** The PR that first adds the router or `ui` to main will
-  grow both by far more than 2%, and no PR kind lifts that limit. The
-  maintainer decides what lets that PR through.
+- **A planned jump of more than 2% takes a label.** The 2% rule covers
+  `wasm:main` and `page:/` from an empty shell, so the PR that first adds
+  the router or `ui` to main grows both far past it. No PR kind can lift
+  that rule, and raising a ceiling cannot pre-approve the jump, because
+  ceilings keep headroom that the 2% rule bounds per PR. The maintainer
+  adds the `bytes-jump-accepted` label instead, and the jump then warns
+  rather than fails. The ceilings still hold. The byte check reads labels
+  live, so adding the label and re-running `dioxus` is enough. Agents never
+  add it, as they never tick the hand check.
 
 ## Revisit when
 
