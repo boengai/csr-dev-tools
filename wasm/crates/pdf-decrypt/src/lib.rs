@@ -1,4 +1,7 @@
+use std::collections::BTreeSet;
+
 use lopdf::encryption::EncryptionState;
+use lopdf::xref::XrefEntry;
 use lopdf::{Dictionary, Document, Object, Stream};
 use wasm_bindgen::prelude::*;
 
@@ -119,13 +122,23 @@ fn has_stream_decrypted_with_wrong_filter(doc: &Document) -> bool {
         .any(|stream| decrypted_with_wrong_filter(stream, state))
 }
 
-/// Whether an object stream has a `/Crypt` filter. lopdf can't decode that
-/// filter, so it couldn't unpack the stream, and the objects in it are lost.
+/// Whether an object stream the file still uses has a `/Crypt` filter. lopdf
+/// can't decode that filter, so it couldn't unpack the stream, and the objects
+/// in it are lost. One an incremental save superseded holds nothing current.
 fn has_object_stream_lopdf_cannot_unpack(doc: &Document) -> bool {
-    doc.objects
+    let in_use: BTreeSet<u32> = doc
+        .reference_table
+        .entries
         .values()
-        .filter_map(|object| object.as_stream().ok())
-        .filter(|stream| stream.dict.has_type(b"ObjStm"))
+        .filter_map(|entry| match entry {
+            XrefEntry::Compressed { container, .. } => Some(*container),
+            _ => None,
+        })
+        .collect();
+    doc.objects
+        .iter()
+        .filter(|((id, _), _)| in_use.contains(id))
+        .filter_map(|(_, object)| object.as_stream().ok())
         .any(|stream| {
             stream
                 .filters()
@@ -170,10 +183,11 @@ fn default_stream_method(state: &EncryptionState) -> Option<&[u8]> {
 }
 
 /// The method a `/Crypt` parameter dictionary asks for: Identity when it
-/// names none. `None` for an indirect name, which is not followed.
+/// names none (a null entry is an absent one). `None` for an indirect name,
+/// which is not followed.
 fn named_method<'a>(state: &'a EncryptionState, params: &Dictionary) -> Option<&'a [u8]> {
     match params.get(b"Name") {
-        Err(_) => Some(IDENTITY),
+        Err(_) | Ok(Object::Null) => Some(IDENTITY),
         Ok(Object::Name(name)) => filter_method(state, name),
         Ok(_) => None,
     }
@@ -190,11 +204,14 @@ fn decrypted_with_wrong_filter(stream: &Stream, state: &EncryptionState) -> bool
     };
     let decrypts = lopdf_decrypts(stream, state);
     let own = match stream.dict.get(b"DecodeParms") {
-        // The form lopdf reads, on a stream it decrypts.
-        Ok(Object::Dictionary(_)) if decrypts => return false,
+        // The form lopdf reads, on a stream it decrypts, unless the name is
+        // indirect: lopdf reads that as Identity.
+        Ok(Object::Dictionary(params)) if decrypts => {
+            return named_method(state, params).is_none();
+        }
         Ok(Object::Dictionary(params)) => named_method(state, params),
-        // No parameters for the crypt filter means Identity.
-        Err(_) => Some(IDENTITY),
+        // No parameters for the crypt filter (or null ones) means Identity.
+        Err(_) | Ok(Object::Null) => Some(IDENTITY),
         Ok(Object::Array(params)) => match params.get(index) {
             None | Some(Object::Null) => Some(IDENTITY),
             Some(Object::Dictionary(params)) => named_method(state, params),
@@ -423,9 +440,31 @@ mod tests {
             &metadata(in_array(named("StdCF"))),
             &clear_metadata
         ));
-        assert!(!decrypted_with_wrong_filter(
-            &metadata(in_array(Object::Null)),
-            &clear_metadata
+        // A null entry is an absent one: no parameters, or no name, means Identity.
+        let mut null_name = Dictionary::new();
+        null_name.set("Name", Object::Null);
+        for params in [
+            in_array(Object::Null),
+            Object::Null,
+            Object::Dictionary(null_name.clone()),
+            in_array(Object::Dictionary(null_name)),
+        ] {
+            assert!(!decrypted_with_wrong_filter(
+                &metadata(params),
+                &clear_metadata
+            ));
+        }
+    }
+
+    #[test]
+    fn flags_an_indirect_name_in_the_form_lopdf_reads() {
+        // lopdf reads a referenced /Name as Identity, so a StdCF stream stays encrypted.
+        let std_cf = v4(vec![("StdCF", rc4())], "StdCF");
+        let mut dict = Dictionary::new();
+        dict.set("Name", Object::Reference((9, 0)));
+        assert!(decrypted_with_wrong_filter(
+            &crypt_stream(Object::Dictionary(dict)),
+            &std_cf
         ));
     }
 
@@ -443,15 +482,37 @@ mod tests {
             ]),
         );
         dict.set("DecodeParms", named("Identity"));
-        doc.add_object(Stream::new(dict, b"x".to_vec()));
+        let (container, _) = doc.add_object(Stream::new(dict, b"x".to_vec()));
+        // Superseded by an incremental save: no current entry points into it.
+        assert!(!has_object_stream_lopdf_cannot_unpack(&doc));
+        doc.reference_table.entries.insert(
+            99,
+            XrefEntry::Compressed {
+                container,
+                index: 0,
+            },
+        );
         assert!(has_object_stream_lopdf_cannot_unpack(&doc));
         // Object streams lopdf unpacked, as AES-256 has, are fine.
         let objstm = Document::load_mem(AES_256).unwrap();
+        // Its containers stay loaded, and the xref still points into them.
+        let used = objstm
+            .reference_table
+            .entries
+            .values()
+            .find_map(|e| match e {
+                XrefEntry::Compressed { container, .. } => Some(*container),
+                _ => None,
+            });
+        let container = used.expect("AES-256 fixture should use an object stream");
         assert!(
             objstm
-                .objects
-                .values()
-                .any(|o| o.as_stream().is_ok_and(|s| s.dict.has_type(b"ObjStm")))
+                .get_object((container, 0))
+                .unwrap()
+                .as_stream()
+                .unwrap()
+                .dict
+                .has_type(b"ObjStm")
         );
         assert!(!has_object_stream_lopdf_cannot_unpack(&objstm));
     }

@@ -50,12 +50,16 @@ async function loadSource(file: File): Promise<PDFDocument | null> {
       // The file can't be read any more, e.g. it changed on disk after upload.
       return null
     }
-    try {
-      return await PDFDocument.load(bytes)
-    } catch {
-      // Not loadable as is: try the decrypt step below.
+    // Another merge may have started decrypting it during the read.
+    decrypting = decryptedBytes.get(file)
+    if (!decrypting) {
+      try {
+        return await PDFDocument.load(bytes)
+      } catch {
+        // Not loadable as is: try the decrypt step below.
+      }
+      decrypting = decryptOnce(file, bytes)
     }
-    decrypting = decryptOnce(file, bytes)
   }
   const decrypted = await decrypting
   if (!decrypted) return null

@@ -72,8 +72,9 @@ whole merge. The thumbnails looked right throughout, because pdf.js decrypts.
   stream under `/EncryptMetadata false`) counts as Identity, so one whose
   own filter encrypts it is reported. An indirect filter name is not
   followed, so it is reported too. lopdf can't decode `/Crypt` itself, so
-  an object stream that uses it can't be unpacked, and the file is reported
-  rather than written without the objects inside. None was seen in RC4-128, AES-128,
+  an object stream the cross-reference table still uses can't be unpacked
+  if it has `/Crypt`, and the file is reported rather than written without
+  the objects inside. A null entry counts as an absent one. None was seen in RC4-128, AES-128,
   AES-256 or ISO 32000.
 - **The `/Crypt` stage is dropped on write.** lopdf has applied it, and the
   output has no `/Encrypt` to define the filter it names, so a strict reader
