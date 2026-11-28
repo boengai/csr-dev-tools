@@ -77,16 +77,6 @@ jobs:
           tool: jscpd@5.4.3,dioxus-cli@0.7.10
           fallback: cargo-binstall
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v4
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '24'
-          cache: 'pnpm'
-      - name: Install npm packages
-        run: pnpm install --frozen-lockfile
-
       - name: Gated packages
         run: |
           packages=$(crates/gates/scripts/gated-packages.sh)
@@ -152,6 +142,22 @@ jobs:
       - name: cargo-mutants --in-diff
         if: ${{ !cancelled() }}
         run: crates/gates/scripts/mutants.sh "$MERGE_BASE" HEAD^2
+
+      # Node runs the TypeScript gates, the registry generator and the later
+      # Dioxus steps. It comes after the gated packages are known, so a failed
+      # install cannot leave GATED empty and widen the cargo gates to wasm/.
+      - name: Setup pnpm
+        if: ${{ !cancelled() }}
+        uses: pnpm/action-setup@v4
+      - name: Setup Node.js
+        if: ${{ !cancelled() }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: 'pnpm'
+      - name: Install npm packages
+        if: ${{ !cancelled() }}
+        run: pnpm install --frozen-lockfile
 
       # 8. oxlint and oxfmt over crates/bridges/js and scripts/dioxus, and the
       # npm licence rule; then their must-fail fixture.
