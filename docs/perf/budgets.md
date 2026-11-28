@@ -87,17 +87,14 @@ Discard a session and measure again if any of these happens:
 
 Timings on a CI runner are noisy and cannot be compared with the baseline. `lighthouserc.cjs` uses simulated throttling, which cannot see WebAssembly in FCP. So the only new check is on bytes, which do not vary between runs.
 
-- **Byte check.** For every page, home and all 84 tool pages, it measures the site's own compressed first-load bytes (the "Own total" of the first-load table) and fails a pull request if either:
+- **Byte check.** For every page, home and all 84 tool pages, it measures the site's own compressed first-load bytes, read from the build (see "How it is measured" below), and fails a pull request if either:
   - the page grew by more than 2% over the base branch, or
   - the page is over its ceiling in a committed per-page ceiling file.
 
-  The 2% rule catches a sudden jump, and the ceiling file stops slow creep. The ceiling file is a gate file ([ADR-0036](../adr/0036-mechanical-gates-keep-slop-out-of-develop.md)): to raise a ceiling, open a `gates` pull request of its own, so review sees the change. A `port` or `shell` pull request only adds rows for its own Tool.
+  The 2% rule catches a sudden jump, and the ceiling file stops slow creep. A planned jump, such as the PR that first adds the router or `ui` to main, gets the `bytes-jump-accepted` label from the maintainer, added after its last commit: the 2% rule then warns instead of failing, and the ceilings still hold. The ceiling file is a gate file ([ADR-0036](../adr/0036-mechanical-gates-keep-slop-out-of-develop.md)): to raise a ceiling, open a `gates` pull request of its own, so review sees the change. A `port` or `shell` pull request only adds rows for its own Tool.
 
   Every page gets its ceiling from the pull request that first ports it to `develop`. The wasm modules, Engine bridge files and worker files get rows under the same rules (`docs/quality/gates.md` → "Byte ceilings"). That includes the three spike pages, because no spike code is kept (ADR-0031). Both rules apply from the next pull request on. Pages not yet ported are not checked.
-- **When.** It is built with the first Dioxus code on `develop` after go, not before. The harness cannot run it today. It needs three things:
-  - a bytes-only entry point, because `measure.ts` runs Lighthouse and the usable step every round;
-  - a page list covering every tool, because `PERF_PAGES` has seven;
-  - a comparison against the base branch and the ceiling file, because `report.ts` only prints tables.
+- **How it is measured.** It was built with the first `crates/app` ([#70](https://github.com/boengai/csr-dev-tools/issues/70)), without the harness: `measure.ts` runs Lighthouse every round, and its page list has seven pages. Instead it reads the build (`docs/quality/gates.md` → "Byte ceilings"). A page's bytes are the brotli sizes of its HTML, the same-origin files the HTML loads, and the main wasm module. That is not the harness's "Own total": it misses what a page fetches only after it starts. When a page first fetches more than that, such as a Tool module through the early-fetch script, its row should count it, so the measuring is extended in a `gates` PR.
 - **Lighthouse CI** stays a pull request check that is not required.
 - **Timing budgets** are checked by hand with the harness, at the milestones above.
 

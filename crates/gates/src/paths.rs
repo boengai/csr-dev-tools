@@ -14,14 +14,22 @@ pub const CEILING_FILE: &str = "docs/perf/byte-ceilings.json";
 pub const GOLDENS: &str = "e2e/stored-values/golden.json";
 /// The a11y baseline (#41).
 pub const A11Y_BASELINE: &str = "e2e/parity/a11y-baseline.json";
-/// The Dioxus Playwright config, which holds the Dioxus spec filter.
-pub const DIOXUS_SPEC_FILTER: &str = "playwright.dioxus.config.ts";
+/// The Dioxus spec filter, the one part of the Dioxus run a `port` PR changes.
+pub const DIOXUS_SPEC_FILTER: &str = "e2e/parity/dioxus-filter.ts";
+/// The Dioxus Playwright config: the CSP project and the fixture's alias.
+pub const DIOXUS_CONFIG: &str = "playwright.dioxus.config.ts";
 /// The post-migration CSP (ADR-0033 Decision 6).
 pub const POST_MIGRATION_CSP: &str = "docs/quality/post-migration-csp.txt";
+/// The CSP fixture (docs/quality/gates.md → "CSP").
+pub const CSP_FIXTURE: &str = "e2e/parity/csp.ts";
+/// The fixture's must-fail check.
+pub const CSP_CHECK: &str = "e2e/parity/csp.spec.ts";
+/// The tsconfig that hands the fixture to every Dioxus spec.
+pub const CSP_TSCONFIG: &str = "e2e/tsconfig.dioxus.json";
 /// The registry's source until cutover.
 pub const TOOL_ROUTES: &str = "src/constants/tool-routes.ts";
 
-const GATE_FILES: [&str; 12] = [
+const GATE_FILES: [&str; 16] = [
     "Cargo.toml",
     "clippy.toml",
     "rustfmt.toml",
@@ -31,6 +39,10 @@ const GATE_FILES: [&str; 12] = [
     CEILING_FILE,
     A11Y_BASELINE,
     POST_MIGRATION_CSP,
+    CSP_FIXTURE,
+    CSP_CHECK,
+    CSP_TSCONFIG,
+    DIOXUS_CONFIG,
     "crates/logic/README.md",
     "crates/tools/README.md",
     "crates/workers/README.md",

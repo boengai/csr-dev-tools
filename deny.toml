@@ -15,7 +15,12 @@ no-default-features = false
 unmaintained = "all"
 unsound = "all"
 yanked = "deny"
-ignore = []
+ignore = [
+  # memmap2 0.9.10 comes with subsecond, Dioxus 0.7.10's hot-reload crate,
+  # which never builds it for wasm32. The fix (>=0.9.11) is a `cargo update`,
+  # which is a PR of its own; remove this entry with it.
+  { id = "RUSTSEC-2026-0186", reason = "memmap2 under subsecond is never built for wasm32; the next cargo update fixes it" },
+]
 
 [licenses]
 allow = [
@@ -47,6 +52,22 @@ multiple-versions = "deny"
 wildcards = "deny"
 allow-wildcard-paths = true
 highlight = "all"
+# Each pair comes from Dioxus =0.7.10's own tree (ADR-0031 pins it), so no
+# change of ours removes it. Each entry skips the older version only, so a
+# third version still fails. Revisit them when the Dioxus pin moves.
+skip = [
+  # The asset macros: manganis-core 0.7.10 takes 0.8.0-alpha, which takes 0.7.2.
+  { crate = "const-serialize@0.7.2", reason = "inside Dioxus 0.7.10 (manganis)" },
+  { crate = "const-serialize-macro@0.7.2", reason = "inside Dioxus 0.7.10 (manganis)" },
+  # sledgehammer_utils, under dioxus-interpreter-js.
+  { crate = "rustc-hash@1.1.0", reason = "inside Dioxus 0.7.10 (dioxus-interpreter-js)" },
+  # Proc macros and build-time crates: they cost no wasm bytes.
+  { crate = "syn@2.0.117", reason = "build time only: async-trait, under dioxus-html, takes syn 3" },
+  { crate = "thiserror@1.0.69", reason = "jni, under dioxus-asset-resolver; never built for wasm32" },
+  { crate = "thiserror-impl@1.0.69", reason = "jni, under dioxus-asset-resolver; never built for wasm32" },
+  { crate = "winnow@0.7.15", reason = "build time only: manganis-core's macros" },
+  { crate = "windows-sys@0.45.0", reason = "jni, under dioxus-asset-resolver; never built for wasm32" },
+]
 
 [sources]
 unknown-registry = "deny"

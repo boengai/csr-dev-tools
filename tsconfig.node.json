@@ -23,5 +23,5 @@
     "noUncheckedIndexedAccess": true,
     "types": ["node"]
   },
-  "include": ["playwright.config.ts", "playwright.parity.config.ts", "vite.config.ts", "vite-plugins/**/*.ts", "vitest.config.ts"]
+  "include": ["playwright.config.ts", "playwright.parity.config.ts", "playwright.dioxus.config.ts", "vite.config.ts", "vite-plugins/**/*.ts", "vitest.config.ts"]
 }

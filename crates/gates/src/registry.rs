@@ -138,3 +138,60 @@ pub fn check_routes_read(routes: &[Route]) -> Vec<Finding> {
         })
         .collect()
 }
+
+/// Reads `app`'s ported-Tool list: the string keys of the one
+/// `ported_tools![…]` invocation in `crates/app/src/ported_tools.rs`.
+pub fn parse_ported_list(text: &str) -> Result<BTreeSet<String>, String> {
+    let file = syn::parse_file(text).map_err(|error| format!("does not parse: {error}"))?;
+    let mut lists = file.items.iter().filter_map(|item| match item {
+        syn::Item::Macro(item) if item.mac.path.is_ident("ported_tools") => Some(&item.mac),
+        _ => None,
+    });
+    let (Some(list), None) = (lists.next(), lists.next()) else {
+        return Err("must hold exactly one `ported_tools![…]`".to_owned());
+    };
+    let keys = list
+        .parse_body_with(
+            syn::punctuated::Punctuated::<syn::LitStr, syn::Token![,]>::parse_terminated,
+        )
+        .map_err(|error| format!("`ported_tools!` takes Tool keys as strings: {error}"))?;
+    let mut set = BTreeSet::new();
+    for key in keys {
+        if !set.insert(key.value()) {
+            return Err(format!("{} is listed twice", key.value()));
+        }
+    }
+    Ok(set)
+}
+
+/// Reads the Dioxus spec filter's `PORTED` as `scripts/spec-filter.mjs` prints it:
+/// a JSON array of Tool keys, evaluated by Node rather than parsed from the
+/// TypeScript.
+pub fn parse_spec_filter(json: &str) -> Result<BTreeSet<String>, String> {
+    let value: serde_json::Value =
+        serde_json::from_str(json).map_err(|error| format!("is not JSON: {error}"))?;
+    value
+        .as_array()
+        .ok_or("PORTED is not an array")?
+        .iter()
+        .map(|key| {
+            key.as_str()
+                .map(str::to_owned)
+                .ok_or_else(|| format!("PORTED holds {key}, which is not a Tool key"))
+        })
+        .collect()
+}
+
+/// The Dioxus spec filter lists exactly the ported Tools, so none skips parity.
+pub fn check_spec_filter(ported: &BTreeSet<String>, filter: &BTreeSet<String>) -> Vec<Finding> {
+    let missing = ported.difference(filter).map(|key| {
+        let message = format!("{key} is ported but not in the Dioxus spec filter's PORTED, so its parity checks never run");
+        Finding::new("spec-filter", key, 0, message)
+    });
+    let extra = filter.difference(ported).map(|key| {
+        let message =
+            format!("{key} is in the Dioxus spec filter's PORTED but not in the ported-Tool list");
+        Finding::new("spec-filter", key, 0, message)
+    });
+    missing.chain(extra).collect()
+}

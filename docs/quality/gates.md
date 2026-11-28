@@ -2,7 +2,7 @@
 
 The mechanical checks that keep slop out of `develop`, decided in [What are the anti-slop gates?](https://github.com/boengai/csr-dev-tools/issues/25). Slop is code that passes the compiler but nobody chose deliberately. [ADR-0036](../adr/0036-mechanical-gates-keep-slop-out-of-develop.md) records why the gates have this shape. This page holds the lists, which are cheap to change. A change to them is a `gates` PR.
 
-[Build the anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/57) builds this page, with the workspace skeleton, before the first `port` or `shell` PR merges. Built so far: the root workspace, the lint files, the `gates` crate with its must-fail fixtures, `deny.toml`, `.jscpd.json`, and both workflows. Still to build, each with the code it judges ([Build the deferred anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/70)): the TypeScript gates and the npm licence check (with `crates/bridges/js` or `scripts/dioxus`), and the Dioxus build, the byte ceilings and the CSP run (with `crates/app`). Until then, their step in `dioxus.yml` fails once that code exists, rather than passing over nothing.
+[Build the anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/57) builds this page, with the workspace skeleton, before the first `port` or `shell` PR merges. Built so far: the root workspace, the lint files, the `gates` crate with its must-fail fixtures, `deny.toml`, `.jscpd.json`, both workflows, and, with the first `crates/app` ([Build the deferred anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/70)), the Dioxus build, the byte check with its row check, the CSP run and the ported-Tool list reader. Still to build, with the code it judges: the TypeScript gates and the npm licence check (with `crates/bridges/js` or `scripts/dioxus`). Until then, their step in `dioxus.yml` fails once that code exists, rather than passing over nothing. The `const` layout assertion waits for `ui`'s entry macro.
 
 ## Scope
 
@@ -23,7 +23,7 @@ Pull requests into `develop` need three checks: `ci` (React, shared with `main`)
 5. cargo-deny, cargo-shear and jscpd.
 6. cargo-mutants `--in-diff`.
 7. oxlint and oxfmt over `crates/bridges/js` and `scripts/dioxus`, and the npm licence check.
-8. The Dioxus build, the byte check, and the Playwright run under the post-migration CSP.
+8. The Dioxus build (`crates/gates/scripts/build-dioxus.sh`, dx with `--wasm-split`, into `dist-dioxus`), and the merge base's when it has an app; the byte check with the check that every ported Tool emits its own module; and the Playwright run under the post-migration CSP (`playwright.dioxus.config.ts`).
 
 ### `pr-body` (`.github/workflows/pr-body.yml`, on `develop` only)
 
@@ -51,7 +51,7 @@ A gate file decides what CI accepts:
 - the root `Cargo.toml` (`[workspace.lints]`, `[workspace.dependencies]`, members, profiles), `rust-toolchain.toml`, `clippy.toml`, `rustfmt.toml`, `deny.toml`, `.jscpd.json`;
 - the `README.md` in `crates/logic`, `crates/tools` and `crates/workers`: cargo rejects a member glob that matches nothing, so each one keeps its glob matching until the first crate lands;
 - `crates/gates/**`, with its fixtures;
-- the byte-ceiling file that `docs/perf/budgets.md` describes (`docs/perf/byte-ceilings.json`), the a11y baseline (`e2e/parity/a11y-baseline.json`, [#41](https://github.com/boengai/csr-dev-tools/issues/41)), the post-migration CSP (`docs/quality/post-migration-csp.txt`);
+- the byte-ceiling file that `docs/perf/budgets.md` describes (`docs/perf/byte-ceilings.json`), the a11y baseline (`e2e/parity/a11y-baseline.json`, [#41](https://github.com/boengai/csr-dev-tools/issues/41)), the post-migration CSP (`docs/quality/post-migration-csp.txt`), the CSP fixture (`e2e/parity/csp.ts`) with its must-fail check (`e2e/parity/csp.spec.ts`), the tsconfig that hands it to every Dioxus spec (`e2e/tsconfig.dioxus.json`), and the Dioxus Playwright config that holds both (`playwright.dioxus.config.ts`; a `port` PR changes only the spec filter, in its own file);
 - `.github/workflows/**`, and the PR templates in `docs/quality/pr/`.
 
 A `port` or `shell` PR may add rows for its own Tool to the ceiling file. Any other change to a gate file, raising a ceiling included, is a `gates` PR. A `gates` PR changes only gate files, `docs/quality/**` and the ADR that records it (see "PR kinds").
@@ -171,7 +171,7 @@ Each entry is proven by the Clippy fixture (`crates/gates/fixtures/clippy`), thr
 
 - ADR-0035's layer allowlist, over normal, dev, build, target-specific, optional and renamed dependencies, and every crate's own `[features]` for anything that turns on `dioxus/web` (only `app` may). Internal edges follow ADR-0035's table, with logic → logic allowed, as `hash` shares `shared`'s digests today. Third-party crates: `persist` takes only `serde` and `serde_json`, `registry` nothing, `bridges` `wasm-bindgen` and `js-sys`, workers `wasm-bindgen`; `platform` takes `web-sys`, `js-sys`, `wasm-bindgen` and the Dioxus family, because it turns Dioxus events into its opaque types (ADR-0035 §8); `app`, `ui` and Tools take no browser crate directly; logic takes neither browser crates nor Dioxus. Package names follow the layer (`tool-<key>`, `logic-<name>`, `worker-<name>`).
 - `dioxus-primitives` and `dioxus-motion` are denied by name for every gated member (ADR-0034). cargo-deny does not repeat the ban.
-- ADR-0035's four-set check: the `crates/tools/*` directories, `app`'s Tool dependencies, the Ported Tool list, and the registry keys of those Tools.
+- ADR-0035's four-set check: the `crates/tools/*` directories, `app`'s Tool dependencies, the Ported Tool list, and the registry keys of those Tools. The Dioxus spec filter's `PORTED` (`e2e/parity/dioxus-filter.ts`) must equal the Ported Tool list too, so no ported Tool skips its parity checks. Node evaluates the filter (`crates/gates/scripts/spec-filter.mjs`) and `dioxus` compares its value (`tests/spec_filter.rs`), so no parser has to guess what a TypeScript expression means.
 - Every gated member sets `lints.workspace = true` and `license.workspace = true`, and takes each third-party dependency with `workspace = true`.
 - Every `layoutOptOutAdr` in the registry names an ADR file that exists.
 
@@ -242,7 +242,7 @@ A Tool entry is an invocation of `wasm_split::lazy_loader!` or of `ui`'s entry m
 ### A port PR includes
 
 - **Logic tests:** every case in the Tool's React spec (`src/utils/*.spec.ts`) has a native Rust test in its logic crate, with the same input and the same expected output. The PR body maps each case to its test.
-- **Its journeys on Dioxus:** the Tool is removed from the Dioxus spec filter (the `testMatch` and `grep` list in the Dioxus Playwright config that keeps unported Tools out of the Dioxus run, `docs/ux/parity.md`), so its React journeys run there unchanged. The contract suite and axe pick it up from the registry.
+- **Its journeys on Dioxus:** the Tool is added to the Dioxus spec filter (`e2e/parity/dioxus-filter.ts`: the ported Tools, and the `testMatch` and `grep` that keep unported Tools' journeys out of the Dioxus run, `docs/ux/parity.md`), so its React journeys run there unchanged. The contract suite and axe pick it up from the registry.
 - **Saved inputs:** if the Tool saves input, its #38 golden values and its rows in `crates/registry/src/storage.rs`.
 - **No new Playwright spec.** Specs come from `main` (`docs/ux/parity.md`).
 
@@ -256,22 +256,27 @@ A Tool entry is an invocation of `wasm_split::lazy_loader!` or of `ui`'s entry m
 
 ## CSP
 
-- **The post-migration CSP** is a gate file (ADR-0033 Decision 6 and "Handed on"). The Dioxus Playwright project serves `dist-dioxus` with it.
-- **A shared fixture**, for the Dioxus project only, fails any test that sees a `securitypolicyviolation` event.
+- **The post-migration CSP** is a gate file (ADR-0033 Decision 6 and "Handed on"). The Dioxus Playwright project serves `dist-dioxus` with it, through `crates/gates/scripts/serve-dioxus.mjs`.
+- **A shared fixture**, for the Dioxus project only, fails any test that sees a `securitypolicyviolation` event (`e2e/parity/csp.ts`). The specs import `test` from `@playwright/test` and are never edited, so the Dioxus config maps that import to the fixture through its own tsconfig (`e2e/tsconfig.dioxus.json`). It listens on every page of the test's context, and of any context the test opens itself (`browser.newContext`, `browser.newPage`), as the screenshot tests do. A violation inside a worker fires on the worker, and it does not see that.
+- **Its must-fail check** is `e2e/parity/csp.spec.ts`: a test that runs an inline script and is marked `test.fail()`. Its body asserts nothing, so only the fixture can fail it. If the CSP ever let the script run, or the fixture stopped reporting, the test would pass and the run would fail. The other test checks that the app shell renders with the CSP header sent.
 - **It covers every journey,** not only those of Tools with an Engine bridge.
+- **The early-fetch script's hash** (`docs/perf/wasm-early-fetch.md`) is added to `script-src` by the build that stamps the Tool pages (`scripts/dioxus`, not built yet). That PR also hands the hash to `serve-dioxus.mjs`, so the CSP run serves what the static host will.
 
 ## Byte ceilings
 
 These extend the byte check in `docs/perf/budgets.md` → "CI on `develop`". The same ceiling file and the same two limits apply: 2% over the base branch, and the committed ceiling. The ceiling file is a gate file, so raising a ceiling is a `gates` PR. Its rows are:
 
 - each page (already in `budgets.md`);
-- the main wasm module, and each Tool module, keyed by the loader's module name (`hash_generator`), not the file hash;
+- the main wasm module, and each Tool module, keyed by its Tool entry (`HashGeneratorEntry`), not the file hash: dx names a module's file by the function it loads, not by the loader's module name (ADR-0036, "Amended when the app gates were built");
 - each Engine bridge's JS file;
 - each worker's wasm and JS files, measured from the build output, because the perf harness skips requests made inside workers.
 
 The PR that first ships a file sets its row.
 
-Not built yet: the path check sees only file names, so it cannot tell a `port` PR's own new rows from an edit to another Tool's ceiling. That row check is built with the ceiling file and its byte check.
+- **Measuring.** `crates/gates/scripts/measure-bytes.mjs` reads the build: each file's brotli size (quality 11), and the same-origin files each page's HTML loads at first, outside HTML comments (its scripts, images, media sources, video posters, and stylesheet, preload or icon links, resolved against the page). An image or source with a `srcset` counts its largest candidate, since which one loads depends on the screen. The main module counts once in a page, even when the HTML preloads it. The scanner models the HTML our own build writes (dx's `index.html`, and later the stamper's pages), not every way HTML can load a file: markup it does not model, such as `<picture>` source selection, `imagesrcset` preloads, `<template>` contents or `<video preload>`, is modelled by the `gates` PR that first emits it. A wasm, JS or CSS file such markup loads still fails the check as a stray. An image or media file it loads is not counted until then, and the maintainer's read of that PR's diff is what catches it. The `gates` crate (`bytes.rs`) makes the rows from it.
+- **Row keys.** `page:<route>` (the HTML, the files it loads, and the main module), `wasm:main`, `wasm:<Tool entry>` for each loader's module, and `wasm:chunks`, the sum of the chunks wasm-split shares between modules (each is named `chunk_<n>_split`, and `<n>` can move between builds). A wasm, JS (`.mjs` too) or CSS file that fits none of these and that no page loads fails the check: its kind of row, a bridge or worker file, is added in a `gates` PR with the first such file.
+- **The checks.** A measured row with no ceiling fails, and so does a ceiling with no file. A row more than 2% over the base branch fails too (`bytes-jump`), unless the maintainer has put the `bytes-jump-accepted` label on the PR, for a planned jump such as the router's. Then it warns, and the ceiling still holds. The label covers the commits the maintainer saw: it counts only when it was last added after the PR's head was committed, so after a new commit the maintainer removes and re-adds it. Agents never add the label. Removing it does not re-run `dioxus`: adding the `unlabeled` trigger would make the job skip on every other label change, and a skipped run counts as passing. So the maintainer re-runs `dioxus` after removing it. Every ported Tool must have its own `wasm:<Tool entry>` row, or its code landed in main, and its `page:/tools/<key>` row, or the build holds no stamped page for it. They run in `dioxus` (`tests/bytes.rs`, `byte_check`), and the fixtures in `crates/gates/fixtures/bytes/` must fail them.
+- **The row check.** It runs in `pr-body`, next to the path check, which sees only that the ceiling file changed. A `port` or `shell` PR may only add rows for its own Tool (`page:/tools/<key>`, `wasm:<Tool entry>`). Changing or removing a row is a `gates` PR.
 
 ## PR kinds
 

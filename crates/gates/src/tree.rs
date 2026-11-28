@@ -8,7 +8,8 @@ use std::path::Path;
 use crate::paths::{PORTED_LIST, TOOL_ROUTES};
 use crate::pr_kind::PathContext;
 use crate::registry::{
-    Route, ToolSets, check_opt_out_adrs, check_routes_read, check_tool_sets, parse_tool_routes,
+    Route, ToolSets, check_opt_out_adrs, check_routes_read, check_tool_sets, parse_ported_list,
+    parse_tool_routes,
 };
 use crate::sources::{FileContext, SourceFile, check_file, check_tool_entries};
 use crate::workspace::{Layer, Member, Workspace};
@@ -22,7 +23,7 @@ pub fn check_tree(root: &Path) -> Result<Vec<Finding>, String> {
     findings.extend(manifests::check_inheritance(&workspace));
     findings.extend(check_routes_read(&routes));
     findings.extend(check_opt_out_adrs(&routes, &adr_files(root)?));
-    let sets = tool_sets(&workspace, &routes, &mut findings);
+    let sets = tool_sets(root, &workspace, &routes, &mut findings);
     findings.extend(check_tool_sets(&sets));
     for member in workspace.gated() {
         let files = read_sources(root, member)?;
@@ -108,7 +109,12 @@ fn adr_files(root: &Path) -> Result<Vec<String>, String> {
         .collect())
 }
 
-fn tool_sets(workspace: &Workspace, routes: &[Route], findings: &mut Vec<Finding>) -> ToolSets {
+fn tool_sets(
+    root: &Path,
+    workspace: &Workspace,
+    routes: &[Route],
+    findings: &mut Vec<Finding>,
+) -> ToolSets {
     let directories: BTreeSet<String> = workspace
         .members
         .iter()
@@ -137,18 +143,23 @@ fn tool_sets(workspace: &Workspace, routes: &[Route], findings: &mut Vec<Finding
         .filter_map(|dep| dep.name.strip_prefix("tool-"))
         .map(str::to_owned)
         .collect();
-    findings.push(Finding::new(
-        "tool-sets",
-        PORTED_LIST,
-        0,
-        "app exists, so read its ported-Tool list here: the reader is built with the list (#57)",
-    ));
+    let ported_list = ported_list(root).unwrap_or_else(|error| {
+        findings.push(Finding::new("tool-sets", PORTED_LIST, 0, error));
+        BTreeSet::new()
+    });
     ToolSets {
         directories,
         app_dependencies,
-        ported_list: BTreeSet::new(),
+        ported_list,
         registry_keys,
     }
+}
+
+/// `app`'s ported-Tool list, read from the tree.
+pub fn ported_list(root: &Path) -> Result<BTreeSet<String>, String> {
+    let text = fs::read_to_string(root.join(PORTED_LIST))
+        .map_err(|error| format!("cannot read the ported-Tool list: {error}"))?;
+    parse_ported_list(&text)
 }
 
 /// Every `.rs` file under the member, with whether it is the crate root.

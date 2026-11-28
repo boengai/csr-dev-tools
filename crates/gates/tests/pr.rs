@@ -6,7 +6,9 @@
 //! - `GATES_NUMSTAT`: a file holding `git diff --numstat --no-renames` from
 //!   the merge base;
 //! - `GATES_BASE_MANIFEST`: a file holding the root `Cargo.toml` at the merge
-//!   base.
+//!   base;
+//! - `GATES_BASE_CEILINGS`: a file holding the ceiling file at the base
+//!   branch's tip, empty when it has none.
 //!
 //! They are `#[ignore]`d so a plain `cargo test` skips them; CI runs them with
 //! `--ignored`, and a missing variable fails rather than passes.
@@ -15,6 +17,9 @@ use std::env;
 use std::fs;
 use std::path::Path;
 
+use gates::bytes::{Rows, parse_rows};
+use gates::ceiling_rows::check_ceiling_rows;
+use gates::paths::CEILING_FILE;
 use gates::pr_body::{check_body, template_name};
 use gates::pr_kind::{ChangedFile, Kind, check_paths, parse_title, size_warning};
 use gates::pr_source::{added_member, check_sync_source, merges_main};
@@ -82,7 +87,19 @@ fn pr_paths() {
         let head = fs::read_to_string(root().join("Cargo.toml")).unwrap();
         context.added_member = added_member(&base, &head);
     }
-    let findings = check_paths(&kind, &files, &context);
+    let mut findings = check_paths(&kind, &files, &context);
+    if files.iter().any(|file| file.path == CEILING_FILE) {
+        // The path check sees only that the file changed; the row check sees which rows.
+        let base = fs::read_to_string(var("GATES_BASE_CEILINGS").unwrap()).unwrap();
+        let base = if base.trim().is_empty() {
+            Rows::new()
+        } else {
+            parse_rows(&base).unwrap()
+        };
+        let head = parse_rows(&fs::read_to_string(root().join(CEILING_FILE)).unwrap()).unwrap();
+        let changed: Vec<&str> = files.iter().map(|file| file.path.as_str()).collect();
+        findings.extend(check_ceiling_rows(&kind, &changed, &base, &head));
+    }
     assert!(findings.is_empty(), "{}", report(&findings));
 }
 

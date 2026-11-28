@@ -425,6 +425,61 @@ kinds. The `const` layout assertion waits in the same way, for `ui`'s
 entry macro, but it is a compile-time check inside `ui` rather than a
 CI step, so its `ui(…)` PR stays an ordinary `foundation` PR.
 
+## Amended when the app gates were built
+
+[Build the deferred anti-slop gates](https://github.com/boengai/csr-dev-tools/issues/70)
+built the first row of the deferred table above on 2026-11-28, with the
+first `crates/app`: an app that renders an empty shell, and an empty
+ported-Tool list. That row now runs in `dioxus`: the Dioxus build, the
+byte check with its row check, the CSP run with its fixture, and the
+ported-Tool list reader. The second row, the TypeScript and npm licence
+gates, still waits for `crates/bridges/js` or `scripts/dioxus`. The
+`const` layout assertion still waits for `ui`'s entry macro, so the first
+item of "Not verified" stands.
+
+What building it found:
+
+- **The specs import `test` from `@playwright/test`,** and a port never
+  edits them, so no import can bring a fixture to them. The Dioxus
+  Playwright config has its own tsconfig, which maps `@playwright/test` to
+  the fixture (`e2e/parity/csp.ts`). The fixture imports the real module
+  by its path. With its must-fail check unmarked, a run showed the fixture
+  failing that check on its inline script.
+- **The fixture listens on pages only.** A `securitypolicyviolation`
+  inside a worker fires on the worker, and the fixture does not see it.
+- **Page bytes are measured from the build, not by the perf harness.** A
+  page's row is its HTML, the files the HTML loads and the main module
+  (`docs/perf/budgets.md` → "CI on `develop`").
+- **A module's file names the function it loads, not the loader's module
+  name.** In dx 0.7.10 and `wasm-split-macro` 0.7.10, a `lazy_loader!`
+  module is written as `module_<n>_<function>`, so a Tool's module is
+  `module_<n>_HashGeneratorEntry`. Its row is keyed by that entry
+  (`wasm:HashGeneratorEntry`, ADR-0035 §7's name), not by
+  `hash_generator`. The spike's names carried a 32-hex suffix only because
+  it split routes. This was read from the source; the first port sees it
+  in a build.
+- **Every shared chunk is named `chunk_<n>_split`,** and `<n>` can move
+  between builds, so all chunks share one row, `wasm:chunks`. An empty app
+  built with `--wasm-split` already emits one.
+- **dx keeps old files in its output,** so the build empties it first.
+- **The ported-Tool list is a `ported_tools![…]` invocation of string
+  keys.** Its macro emits nothing yet. The routes and the Tool entry match
+  come with the first `shell` PR, which brings in `ui` and the registry.
+- **The first ceilings are a local macOS build's sizes, rounded up to the
+  next KiB.** `dioxus` is a required check, so if the Linux build in CI
+  does not fit them, this PR corrects them from the rows the CI log prints.
+- **A planned jump of more than 2% takes a label.** The 2% rule covers
+  `wasm:main` and `page:/` from an empty shell, so the PR that first adds
+  the router or `ui` to main grows both far past it. No PR kind can lift
+  that rule, and raising a ceiling cannot pre-approve the jump, because
+  ceilings keep headroom that the 2% rule bounds per PR. The maintainer
+  adds the `bytes-jump-accepted` label instead, and the jump then warns
+  rather than fails. The ceilings still hold. The byte check reads labels
+  live, so adding the label and re-running `dioxus` is enough. It covers
+  only the commits the maintainer saw: it counts when it was last added
+  after the PR's head was committed. Agents never add it, as they never
+  tick the hand check.
+
 ## Revisit when
 
 - A gate fires falsely on most port PRs. Its rule is wrong, not the
