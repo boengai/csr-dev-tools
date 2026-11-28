@@ -46,24 +46,41 @@ build backlog exists.
 
 ### 1. A walking skeleton per layout
 
-Each layout follows the same order: its shell, proven by one Tool in the
-same `shell` PR, then the rest of its Tools. The next layout's shell starts
-only after the previous layout's shell PR has merged. Its other Tools may
-still be in progress. No shell lands without a Tool behind it.
+Each layout follows the same order: its shell, proven by its Proof Tool in
+the same `shell` PR, then the rest of its Tools. The next layout's shell
+starts only after the previous layout's first Tool has merged, which is
+when its shell PR merges, since that PR carries the Proof Tool. The
+previous layout's other Tools may still be in progress. No shell lands
+without a Tool behind it.
 
-The layouts go in this order: transformer, codec, generator,
-file-processor, comparator. Transformer goes first because it is the
-largest layout and the simplest shape, so its shell gets used most.
-File-processor comes late because it leans on the image platform code.
+The layouts go in this order, each with its opening:
+
+| Layout | Before the shell | Proof Tool |
+|---|---|---|
+| transformer | section 2 | `url-parser` |
+| codec | `bridge(codemirror)`, the code field, `split(json-tools)` and `json-formatter` | `url-encoder-decoder` |
+| generator | `ui(slider)` | `password-generator` (random mode) |
+| file-processor | `platform(image)`, `logic(resample)`, `logic(zip)` and `ui(tabs)` | `image-to-base64` |
+| comparator | `split(diff)` | `text-diff-checker`, then `json-diff-checker` |
+
+Transformer goes first because it is the largest layout and the simplest
+shape, so its shell gets used most. File-processor comes late because it
+leans on the image platform code. `custom` and the app are waves without a
+shell (section 5).
 
 ### 2. The opening
 
-1. **Foundation**, each its own PR:
-   - `gates`: the spec filter keyed by Tool (section 6).
-   - `registry(generator)`: the registry generated from `tool-routes.ts`.
-     It is the first code under `scripts/dioxus`, so #70's oxlint, oxfmt
-     and npm-licence gate lands with it, which makes it a hand-reviewed
-     `gates:` PR.
+1. **Six PRs before the first shell**, each its own PR:
+   - `gates: …` keying the spec filter by Tool (section 6). It changes the
+     `spec_filter` gate and `e2e/parity/dioxus-filter.ts`, which is not a
+     gate file, so the path check flags the filter and the maintainer
+     reviews the PR by hand.
+   - `gates: …` generating the registry from `tool-routes.ts` into a new
+     `crates/registry`. It is the first code under `scripts/dioxus`, so
+     #70's oxlint, oxfmt and npm-licence gate lands with it, and it is a
+     hand-reviewed `gates` PR (gates.md → PR kinds). #74 expected that
+     gate with the first bridge; `gates.md` puts it with whichever of
+     `crates/bridges/js` and `scripts/dioxus` comes first.
    - `app(router)`: routes, the Tool entry match and head edits on
      navigation.
    - `app(stamp)`: the head-stamped Tool pages and the early-fetch hash,
@@ -83,7 +100,7 @@ File-processor comes late because it leans on the image platform code.
 
 ### 3. Shells start narrow
 
-A `shell` PR builds only the source and output kinds its proof Tool needs.
+A `shell` PR builds only the source and output kinds its Proof Tool needs.
 Each later kind is its own `ui(…)` PR, merged right before the first Tool
 that needs it. Examples: the transformer shell's textarea source, text,
 image and markup outputs, the code field, generator live mode, and
@@ -92,25 +109,27 @@ real Tool, and every PR stays small.
 
 ### 4. Engines, primitives and splits arrive just in time
 
-Nothing lands ahead of the first Tool waiting for it.
+Nothing lands ahead of the first Tool waiting for it. Each bridge, worker,
+primitive and split is its own PR (ADR-0036 §4), merged just before the
+first Tool that needs it.
 
 - **Bridges, in order:**
   1. CodeMirror, after the 12 plain-text transformers.
-  2. DOMPurify, with the markup transformers.
-  3. jsonpath-plus.
-  4. mermaid.
-  5. pdf.js, with `combine-pdf` and `image-to-pdf`.
-  6. pdf-lib, with `combine-pdf` only. `image-to-pdf` builds its PDF with
-     `krilla`.
-  7. Monaco, last.
+  2. DOMPurify, before the markup transformers.
+  3. jsonpath-plus and then mermaid, late in the transformer wave.
+  4. pdf.js, before `combine-pdf` and `image-to-pdf`.
+  5. pdf-lib, before `combine-pdf` only. `image-to-pdf` builds its PDF
+     with `krilla`.
+  6. Monaco, last.
 - **Workers.** The worker bridge comes before the first worker. The regex,
-  bcrypt and Typst workers come with their Tools. The tract worker comes
-  with `background-remover`, the last Tool of the file-processor wave.
+  bcrypt and Typst workers each come just before their Tools. The tract
+  worker comes before `background-remover`, the last Tool of the
+  file-processor wave.
 - **Primitives** come one PR each, before their first Tool. Switch is
-  built only when a Tool or the app needs it. None of the 84 does today,
-  so in practice ten of ADR-0034's eleven are built.
-- **The image foundations** come before the file-processor shell:
-  `platform(image)`, `logic(resample)` and `logic(zip)`.
+  built only when a Tool or the app needs it, and none of the 84 does
+  today.
+- **The image foundations** come before the file-processor shell (section
+  1).
 
 ### 5. Custom Tools and the app
 
@@ -124,8 +143,8 @@ Nothing lands ahead of the first Tool waiting for it.
 
 - **At most 3 port PRs are open at once.**
 - **Shared list files hold one entry per line, sorted:** the ceiling file,
-  the spec filter (keyed by Tool, one line each, by a `gates` PR before the
-  first shell), the Ported Tool list and the Storage key table.
+  the spec filter (once keyed by Tool, section 2), the Ported Tool list and
+  the Storage key table.
 - **The maintainer merges one PR at a time.** The other open PRs rebase
   before their own merge.
 - **Never run together:**
@@ -148,13 +167,14 @@ These Tools wait on a decision ticket, which blocks their build issue:
   post-migration CSP.
 - **`background-remover`:** whether the MODNet model is self-hosted.
 
-Two more decision tickets come from the map rather than from a Tool:
+A fifth decision ticket comes from the map rather than from a Tool: **how
+a worker package is shipped** under the loading model. It blocks the
+worker bridge.
 
-- **How a worker package is shipped** under the loading model. It blocks
-  the worker bridge.
-- **The missing journeys:** one `main` issue writes journeys for
-  `html-to-pdf`, `image-to-pdf` and `markdown-to-pdf` against React. It
-  blocks those three ports.
+**The missing journeys** are a build issue, not a decision. One `main`
+issue writes journeys for `html-to-pdf`, `image-to-pdf` and
+`markdown-to-pdf` against React (`docs/ux/parity.md`: checks pass on React
+first). It blocks those three ports.
 
 The CSS playgrounds and `og-preview` are ordinary custom ports. ADR-0034
 §11 already settles how the playgrounds write styles, and `og-preview`
@@ -163,9 +183,10 @@ leans on nothing hard.
 ### 8. Slicing into issues
 
 - **One build issue per PR.** A Tool's issue is its port PR. The five
-  shell issues are also their proof Tools' issues, so each of the 84 Tools
+  shell issues are also their Proof Tools' issues, so each of the 84 Tools
   has exactly one issue.
-- **Seven wave issues** group them, one per layout plus `app`. Each is a
+- **Seven wave issues** group them: one for each of the six layouts
+  (`custom` included) and one for the app. Each is a
   sub-issue of the map.
   - **Blocked-by links are hard dependencies only.** A wave issue's
     checklist holds the soft order, so blocking does not serialise what
@@ -186,7 +207,7 @@ at compile time if the generated registry enum makes that cheap.
 ## Considered options
 
 - **All five shells first, then Tools.** That designs four shell APIs
-  before any Tool has tested them, though ADR-0035 says each shell's props
+  before any Tool has tested them, though the map says each shell's props
   "sharpen with the first port of each layout".
 - **Custom Tools last.** It holds back Tools that need nothing a later
   shell brings, and it bunches the hardest work at the end.
@@ -206,7 +227,8 @@ at compile time if the generated registry enum makes that cheap.
   - 45 foundation, bridge, worker, `gates` and `main` issues;
   - 5 decision tickets;
   - 7 wave issues.
-- **The first PR is small** but needs six foundation PRs before it,
+- **The first PR is small** but needs six PRs before it (two of them
+  hand-reviewed `gates` PRs),
   because nothing under `crates/` exists yet.
 - **CodeMirror is on the critical path.** About half of all Tools wait on
   the bridge and the code field.
@@ -216,6 +238,17 @@ at compile time if the generated registry enum makes that cheap.
   one-line sorted entries keep each conflict to a rebase.
 - **Each decision ticket may reslice its build issue.** db-diagram in
   particular may become several PRs.
+
+## Not verified
+
+- The dependency facts in Context come from an import scan of `develop`
+  on 2026-11-28, not from ported Tools. A port may find a `ui`,
+  `platform` or `persist` need the scan missed; it is filed as a blocker
+  then (ADR-0036 §4).
+- That a 3-PR cap keeps rebases trivial is a guess until the first ten
+  ports.
+- Whether the exhaustiveness check can be a compile-time check depends on
+  the generated registry, which does not exist yet.
 
 ## Revisit when
 
