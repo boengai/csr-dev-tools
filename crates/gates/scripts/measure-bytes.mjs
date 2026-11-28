@@ -27,15 +27,22 @@ const brotli = (bytes) =>
 // The page loads these at first: a script, an image or media source, and a
 // stylesheet, preload or icon link. A link to another page (`<a href>`) is not a load.
 const LOADING_TAG = /<(script|img|source|link)\b[^>]*>/gi
-const LOADING_LINK = /\brel="(?:[^"]*\s)?(?:stylesheet|modulepreload|preload|icon)(?:\s[^"]*)?"/i
+const LOADING_REL = /^(?:stylesheet|modulepreload|preload|icon)$/i
 const SITE = 'http://site.invalid'
+
+/** An attribute's value, double-quoted, single-quoted or bare. */
+const attribute = (tag, name) => {
+  const match = tag.match(new RegExp(`\\s${name}\\s*=\\s*(?:"([^"]*)"|'([^']*)'|([^\\s"'>]+))`, 'i'))
+  return match && (match[1] ?? match[2] ?? match[3])
+}
 
 /** The same-origin files a page's HTML loads at first, as paths in the build. */
 const firstLoads = (html, route) => {
   const base = `${SITE}${route === '/' ? '/' : `${route}/`}`
   return [...html.matchAll(LOADING_TAG)].flatMap(([tag, name]) => {
-    if (name.toLowerCase() === 'link' && !LOADING_LINK.test(tag)) return []
-    const value = tag.match(/\b(?:src|href)="([^"]+)"/i)?.[1]
+    const isLink = name.toLowerCase() === 'link'
+    if (isLink && !(attribute(tag, 'rel') ?? '').split(/\s+/).some((rel) => LOADING_REL.test(rel))) return []
+    const value = attribute(tag, isLink ? 'href' : 'src')
     if (!value) return []
     // Relative, root-relative and dx's "/./assets/…" resolve against the page;
     // another origin, protocol-relative "//cdn…" included, is not the site's own bytes.

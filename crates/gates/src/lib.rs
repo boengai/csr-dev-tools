@@ -4,6 +4,7 @@
 //! of [`Finding`]s. An empty list passes.
 
 pub mod bytes;
+pub mod ceiling_rows;
 pub mod comments;
 pub mod layers;
 pub mod manifests;

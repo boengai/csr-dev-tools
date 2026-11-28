@@ -17,7 +17,8 @@ use std::env;
 use std::fs;
 use std::path::Path;
 
-use gates::bytes::{Rows, check_ceiling_rows, parse_rows};
+use gates::bytes::{Rows, parse_rows};
+use gates::ceiling_rows::check_ceiling_rows;
 use gates::paths::CEILING_FILE;
 use gates::pr_body::{check_body, template_name};
 use gates::pr_kind::{ChangedFile, Kind, check_paths, parse_title, size_warning};

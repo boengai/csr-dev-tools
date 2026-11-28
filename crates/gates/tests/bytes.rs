@@ -5,9 +5,8 @@
 use std::collections::BTreeSet;
 use std::path::Path;
 
-use gates::bytes::{
-    Build, Rows, check_ceiling_rows, check_ceilings, check_tool_rows, parse_rows, rows,
-};
+use gates::bytes::{Build, Rows, check_ceilings, check_tool_rows, parse_rows, rows};
+use gates::ceiling_rows::check_ceiling_rows;
 use gates::pr_kind::Kind;
 
 const NONE: [&str; 0] = [];
@@ -49,13 +48,14 @@ fn a_build_is_read_into_rows() {
             ("wasm:main", 120_000),
         ])
     );
-    // A wasm, JS or CSS file with no row kind, loaded by no page, fails.
+    // A wasm, JS (.mjs too) or CSS file with no row kind, loaded by no page, fails.
     assert_eq!(
         ats(&findings),
         vec![
             "assets/stray-bridge-dxh0123456789abcdef.js",
             "assets/stray-dxh0123456789abcdef.css",
-            "assets/stray-dxh0123456789abcdef.wasm"
+            "assets/stray-dxh0123456789abcdef.wasm",
+            "assets/worker-dxh0123456789abcdef.mjs"
         ]
     );
 }
@@ -218,4 +218,12 @@ fn byte_check() {
     }
     let report: Vec<String> = findings.iter().map(ToString::to_string).collect();
     assert!(report.is_empty(), "{}", report.join("\n"));
+}
+
+#[test]
+fn a_page_that_preloads_the_main_module_counts_it_once() {
+    let json = r#"{"files": {"index.html": 1, "assets/app_bg-dxh0123.wasm": 100},
+        "pages": {"/": ["index.html", "assets/app_bg-dxh0123.wasm"]}}"#;
+    let (rows, _) = rows(&Build::from_json(json).unwrap());
+    assert_eq!(rows.get("page:/"), Some(&101));
 }

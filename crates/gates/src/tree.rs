@@ -5,11 +5,11 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fs;
 use std::path::Path;
 
-use crate::paths::{PORTED_LIST, TOOL_ROUTES};
+use crate::paths::{DIOXUS_SPEC_FILTER, PORTED_LIST, TOOL_ROUTES};
 use crate::pr_kind::PathContext;
 use crate::registry::{
-    Route, ToolSets, check_opt_out_adrs, check_routes_read, check_tool_sets, parse_ported_list,
-    parse_tool_routes,
+    Route, ToolSets, check_opt_out_adrs, check_routes_read, check_spec_filter, check_tool_sets,
+    parse_ported_list, parse_spec_filter, parse_tool_routes,
 };
 use crate::sources::{FileContext, SourceFile, check_file, check_tool_entries};
 use crate::workspace::{Layer, Member, Workspace};
@@ -25,6 +25,13 @@ pub fn check_tree(root: &Path) -> Result<Vec<Finding>, String> {
     findings.extend(check_opt_out_adrs(&routes, &adr_files(root)?));
     let sets = tool_sets(root, &workspace, &routes, &mut findings);
     findings.extend(check_tool_sets(&sets));
+    match fs::read_to_string(root.join(DIOXUS_SPEC_FILTER))
+        .map_err(|error| error.to_string())
+        .and_then(|text| parse_spec_filter(&text))
+    {
+        Ok(filter) => findings.extend(check_spec_filter(&sets.ported_list, &filter)),
+        Err(error) => findings.push(Finding::new("spec-filter", DIOXUS_SPEC_FILTER, 0, error)),
+    }
     for member in workspace.gated() {
         let files = read_sources(root, member)?;
         let custom_tool = match &member.layer {

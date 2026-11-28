@@ -163,3 +163,39 @@ pub fn parse_ported_list(text: &str) -> Result<BTreeSet<String>, String> {
     }
     Ok(set)
 }
+
+/// Reads the Tool keys in the Dioxus spec filter's `export const PORTED … = [ … ]`
+/// (`e2e/parity/dioxus-filter.ts`): every quoted string inside the brackets.
+pub fn parse_spec_filter(text: &str) -> Result<BTreeSet<String>, String> {
+    let declaration = text
+        .find("export const PORTED")
+        .ok_or("has no `export const PORTED`")?;
+    let rest = text.get(declaration..).unwrap_or_default();
+    let (_, after_equals) = rest.split_once('=').ok_or("PORTED has no value")?;
+    let list = after_equals
+        .trim_start()
+        .strip_prefix('[')
+        .and_then(|list| list.split_once(']'))
+        .map(|(list, _)| list)
+        .ok_or("PORTED is not an array literal")?;
+    Ok(list
+        .split(',')
+        .map(|item| item.trim().trim_matches(|c| c == '\'' || c == '"'))
+        .filter(|key| !key.is_empty())
+        .map(str::to_owned)
+        .collect())
+}
+
+/// The Dioxus spec filter lists exactly the ported Tools, so none skips parity.
+pub fn check_spec_filter(ported: &BTreeSet<String>, filter: &BTreeSet<String>) -> Vec<Finding> {
+    let missing = ported.difference(filter).map(|key| {
+        let message = format!("{key} is ported but not in the Dioxus spec filter's PORTED, so its parity checks never run");
+        Finding::new("spec-filter", key, 0, message)
+    });
+    let extra = filter.difference(ported).map(|key| {
+        let message =
+            format!("{key} is in the Dioxus spec filter's PORTED but not in the ported-Tool list");
+        Finding::new("spec-filter", key, 0, message)
+    });
+    missing.chain(extra).collect()
+}

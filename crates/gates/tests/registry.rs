@@ -5,7 +5,8 @@ use std::collections::BTreeSet;
 use std::path::Path;
 
 use gates::registry::{
-    ToolSets, check_opt_out_adrs, check_tool_sets, parse_ported_list, parse_tool_routes,
+    ToolSets, check_opt_out_adrs, check_spec_filter, check_tool_sets, parse_ported_list,
+    parse_spec_filter, parse_tool_routes,
 };
 
 fn fixture_routes() -> std::io::Result<Vec<gates::registry::Route>> {
@@ -130,4 +131,32 @@ fn a_ported_list_the_reader_cannot_read_fails() {
     ] {
         assert!(parse_ported_list(text).is_err(), "read {text:?}");
     }
+}
+
+#[test]
+fn the_spec_filter_is_read_from_its_ported_array() {
+    let text = "import type { ToolRegistryKey } from 'x'\n\nexport const PORTED: Array<ToolRegistryKey> = [\n  'hash-generator',\n  \"uuid-generator\",\n]\n\nexport const JOURNEYS = { testMatch: ['a.spec.ts'] }\n";
+    assert_eq!(
+        parse_spec_filter(text).unwrap(),
+        set(&["hash-generator", "uuid-generator"])
+    );
+    assert_eq!(
+        parse_spec_filter("export const PORTED: Array<ToolRegistryKey> = []").unwrap(),
+        set(&[])
+    );
+    assert!(parse_spec_filter("export const JOURNEYS = {}").is_err());
+}
+
+#[test]
+fn the_spec_filter_must_list_the_ported_tools() {
+    let found: Vec<String> =
+        check_spec_filter(&set(&["hash-generator"]), &set(&["uuid-generator"]))
+            .iter()
+            .map(|f| f.at.clone())
+            .collect();
+    assert_eq!(found, vec!["hash-generator", "uuid-generator"]);
+    assert!(
+        check_spec_filter(&set(&["a"]), &set(&["a"])).is_empty(),
+        "same sets"
+    );
 }
