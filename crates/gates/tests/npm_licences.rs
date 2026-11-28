@@ -60,4 +60,9 @@ fn output_that_is_not_pnpm_s_shape_is_an_error() {
         assert!(check_licences(json, &allowed).is_err(), "read {json:?}");
     }
     assert_eq!(check_licences("{}", &allowed).unwrap(), vec![]);
+    // pnpm 10 prints this, not JSON, when there is nothing to list.
+    assert_eq!(
+        check_licences("No licenses in packages found\n", &allowed).unwrap(),
+        vec![]
+    );
 }

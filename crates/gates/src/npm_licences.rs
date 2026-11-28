@@ -26,6 +26,10 @@ pub fn allowed_licences(deny_toml: &str) -> Result<Vec<String>, String> {
 /// One finding per package whose licence expression the allowed list does
 /// not satisfy, sorted by package. pnpm groups packages by expression.
 pub fn check_licences(pnpm_json: &str, allowed: &[String]) -> Result<Vec<Finding>, String> {
+    // pnpm 10 prints this line instead of `{}`, even with `--json`.
+    if pnpm_json.trim() == "No licenses in packages found" {
+        return Ok(Vec::new());
+    }
     let value: serde_json::Value =
         serde_json::from_str(pnpm_json).map_err(|error| format!("is not JSON: {error}"))?;
     let groups = value
