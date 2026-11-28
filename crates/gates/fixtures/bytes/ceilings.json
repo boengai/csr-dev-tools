@@ -2,6 +2,6 @@
   "page:/": 130000,
   "page:/tools/hash-generator": 129000,
   "wasm:main": 125000,
-  "wasm:chunk:split": 231,
+  "wasm:chunks": 331,
   "wasm:gone": 1
 }

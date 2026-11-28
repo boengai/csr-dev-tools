@@ -266,16 +266,16 @@ A Tool entry is an invocation of `wasm_split::lazy_loader!` or of `ui`'s entry m
 These extend the byte check in `docs/perf/budgets.md` → "CI on `develop`". The same ceiling file and the same two limits apply: 2% over the base branch, and the committed ceiling. The ceiling file is a gate file, so raising a ceiling is a `gates` PR. Its rows are:
 
 - each page (already in `budgets.md`);
-- the main wasm module, and each Tool module, keyed by the loader's module name (`hash_generator`), not the file hash;
+- the main wasm module, and each Tool module, keyed by its Tool entry (`HashGeneratorEntry`), not the file hash: dx names a module's file by the function it loads, not by the loader's module name (ADR-0036, "Amended when the app gates were built");
 - each Engine bridge's JS file;
 - each worker's wasm and JS files, measured from the build output, because the perf harness skips requests made inside workers.
 
 The PR that first ships a file sets its row.
 
 - **Measuring.** `crates/gates/scripts/measure-bytes.mjs` reads the build: each file's brotli size (quality 11), and the same-origin files each page's HTML loads. The `gates` crate (`bytes.rs`) makes the rows from it.
-- **Row keys.** `page:<route>` (the HTML, the files it loads, and the main module), `wasm:main`, `wasm:<module>` for each loader's module, and `wasm:chunk:<name>` for code wasm-split shares between modules. A wasm or JS file that fits none of these and that no page loads fails the check: its kind of row, a bridge or worker file, is added in a `gates` PR with the first such file.
-- **The checks.** A measured row with no ceiling fails, and so does a ceiling with no file. Every ported Tool must have its own `wasm:<module>` row, or its code landed in main. They run in `dioxus` (`tests/bytes.rs`, `byte_check`), and the fixtures in `crates/gates/fixtures/bytes/` must fail them.
-- **The row check.** It runs in `pr-body`, next to the path check, which sees only that the ceiling file changed. A `port` or `shell` PR may only add rows for its own Tool (`page:/tools/<key>`, `wasm:<module>`). Changing or removing a row is a `gates` PR.
+- **Row keys.** `page:<route>` (the HTML, the files it loads, and the main module), `wasm:main`, `wasm:<Tool entry>` for each loader's module, and `wasm:chunks`, the sum of the chunks wasm-split shares between modules (each is named `chunk_<n>_split`, and `<n>` can move between builds). A wasm or JS file that fits none of these and that no page loads fails the check: its kind of row, a bridge or worker file, is added in a `gates` PR with the first such file.
+- **The checks.** A measured row with no ceiling fails, and so does a ceiling with no file. Every ported Tool must have its own `wasm:<Tool entry>` row, or its code landed in main. They run in `dioxus` (`tests/bytes.rs`, `byte_check`), and the fixtures in `crates/gates/fixtures/bytes/` must fail them.
+- **The row check.** It runs in `pr-body`, next to the path check, which sees only that the ceiling file changed. A `port` or `shell` PR may only add rows for its own Tool (`page:/tools/<key>`, `wasm:<Tool entry>`). Changing or removing a row is a `gates` PR.
 
 ## PR kinds
 

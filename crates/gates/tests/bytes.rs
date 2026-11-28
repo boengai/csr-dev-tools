@@ -43,8 +43,9 @@ fn a_build_is_read_into_rows() {
         row_set(&[
             ("page:/", 129_200),
             ("page:/tools/hash-generator", 129_300),
-            ("wasm:chunk:split", 231),
-            ("wasm:hash_generator", 40_000),
+            ("wasm:HashGeneratorEntry", 40_000),
+            // wasm-split names every shared chunk "split", so they share one row.
+            ("wasm:chunks", 331),
             ("wasm:main", 120_000),
         ])
     );
@@ -89,10 +90,10 @@ fn the_ceiling_fixture_fails_on_each_limit() {
             "page:/",
             // over its ceiling of 129,000
             "page:/tools/hash-generator",
+            // a measured row with no ceiling
+            "wasm:HashGeneratorEntry",
             // a ceiling row whose file is gone
             "wasm:gone",
-            // a measured row with no ceiling
-            "wasm:hash_generator",
             // 120,000 is over 110,000 + 2%
             "wasm:main",
         ]
@@ -118,19 +119,22 @@ fn a_port_pr_adds_only_its_own_tools_rows() {
         ("page:/", 100),
         ("wasm:main", 100),
         ("page:/tools/hash-generator", 100),
-        ("wasm:hash_generator", 100),
+        ("wasm:HashGeneratorEntry", 100),
     ]);
     assert_eq!(ats(&check_ceiling_rows(&port, &[], &base, &own)), NONE);
 
     let other = row_set(&[
         ("page:/", 101),
-        ("wasm:uuid_generator", 100),
-        ("wasm:hash_generator", 100),
+        ("wasm:UuidGeneratorEntry", 100),
+        ("wasm:HashGeneratorEntry", 100),
     ]);
     let mut found = ats(&check_ceiling_rows(&port, &[], &base, &other));
     found.sort();
     // raised, removed, and another Tool's row
-    assert_eq!(found, vec!["page:/", "wasm:main", "wasm:uuid_generator"]);
+    assert_eq!(
+        found,
+        vec!["page:/", "wasm:UuidGeneratorEntry", "wasm:main"]
+    );
 }
 
 #[test]
@@ -139,15 +143,15 @@ fn a_shell_pr_adds_the_rows_of_the_tool_it_ports() {
         layout: "transformer".to_owned(),
     };
     let changed = ["crates/tools/hash-generator/src/lib.rs"];
-    let head = row_set(&[("wasm:hash_generator", 1)]);
+    let head = row_set(&[("wasm:HashGeneratorEntry", 1)]);
     assert_eq!(
         ats(&check_ceiling_rows(&shell, &changed, &Rows::new(), &head)),
         NONE
     );
-    let head = row_set(&[("wasm:uuid_generator", 1)]);
+    let head = row_set(&[("wasm:UuidGeneratorEntry", 1)]);
     assert_eq!(
         ats(&check_ceiling_rows(&shell, &changed, &Rows::new(), &head)),
-        vec!["wasm:uuid_generator"]
+        vec!["wasm:UuidGeneratorEntry"]
     );
 }
 

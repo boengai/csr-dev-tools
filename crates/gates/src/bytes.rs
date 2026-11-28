@@ -14,8 +14,8 @@ use crate::Finding;
 use crate::paths::{CEILING_FILE, tool_key};
 use crate::pr_kind::Kind;
 
-/// Bytes by row key: `page:<route>`, `wasm:main`, `wasm:<loader module>` or
-/// `wasm:chunk:<name>`.
+/// Bytes by row key: `page:<route>`, `wasm:main`, `wasm:<Tool entry>` for
+/// each loader's module, or `wasm:chunks` for the chunks they share.
 pub type Rows = BTreeMap<String, u64>;
 
 /// What `measure-bytes.mjs` read from a build.
@@ -83,14 +83,16 @@ pub fn parse_rows(text: &str) -> Result<Rows, String> {
 /// What a wasm file in the build is, from the name dx gives it.
 enum Wasm {
     Main,
-    /// A `lazy_loader!` module, by its module name (`hash_generator`).
+    /// A `lazy_loader!` module, by the function it loads: a Tool's entry
+    /// (`HashGeneratorEntry`). Its file names no module.
     Module(String),
     /// Code that wasm-split shares between modules.
-    Chunk(String),
+    Chunk,
 }
 
-/// dx names files `<stem>-dxh<hex>.<ext>`; wasm-split names a loader's module
-/// `module_<n>_<name><32 hex>` and a shared chunk `chunk_<n>_<name>`.
+/// dx 0.7.10 names files `<stem>-dxh<hex>.<ext>`. wasm-split names a loader's
+/// module `module_<n>_<function>`, and every shared chunk `chunk_<n>_split`,
+/// where `<n>` is an index that can move between builds.
 fn classify_wasm(path: &str) -> Option<Wasm> {
     let file = path.rsplit('/').next()?;
     let (stem, _) = file.strip_suffix(".wasm")?.rsplit_once("-dxh")?;
@@ -102,15 +104,10 @@ fn classify_wasm(path: &str) -> Option<Wasm> {
         let (index, name) = rest.split_once('_')?;
         index.bytes().all(|b| b.is_ascii_digit()).then_some(name)
     };
-    if let Some(name) = numbered("module_") {
-        let split = name.len().checked_sub(32)?;
-        let (module, hash) = (name.get(..split)?, name.get(split..)?);
-        return hash
-            .bytes()
-            .all(|b| b.is_ascii_hexdigit())
-            .then(|| Wasm::Module(module.to_owned()));
+    if let Some(function) = numbered("module_") {
+        return Some(Wasm::Module(function.to_owned()));
     }
-    numbered("chunk_").map(|name| Wasm::Chunk(name.to_owned()))
+    numbered("chunk_").map(|_| Wasm::Chunk)
 }
 
 /// The build's rows. A page's row is its HTML, the files it loads and the
@@ -124,8 +121,11 @@ pub fn rows(build: &Build) -> (Rows, Vec<Finding>) {
     for (path, &bytes) in &build.files {
         let key = match classify_wasm(path) {
             Some(Wasm::Main) => "wasm:main".to_owned(),
-            Some(Wasm::Module(name)) => format!("wasm:{name}"),
-            Some(Wasm::Chunk(name)) => format!("wasm:chunk:{name}"),
+            Some(Wasm::Module(function)) => format!("wasm:{function}"),
+            Some(Wasm::Chunk) => {
+                *rows.entry("wasm:chunks".to_owned()).or_default() += bytes;
+                continue;
+            }
             None => {
                 let code = std::path::Path::new(path)
                     .extension()
@@ -172,9 +172,29 @@ pub fn rows(build: &Build) -> (Rows, Vec<Finding>) {
     (rows, findings)
 }
 
-/// The module name a Tool's loader takes: its key in snake case.
-fn module_name(key: &str) -> String {
-    key.replace('-', "_")
+/// A Tool's entry (ADR-0035 §7): its key in Pascal case, plus `Entry`.
+fn entry_name(key: &str) -> String {
+    let mut name: String = key
+        .split('-')
+        .flat_map(|part| {
+            let mut chars = part.chars();
+            chars
+                .next()
+                .map(|first| first.to_ascii_uppercase())
+                .into_iter()
+                .chain(chars)
+        })
+        .collect();
+    name.push_str("Entry");
+    name
+}
+
+/// The rows a Tool's own PR adds: its page and its module.
+fn tool_rows(key: &str) -> [String; 2] {
+    [
+        format!("page:/tools/{key}"),
+        format!("wasm:{}", entry_name(key)),
+    ]
 }
 
 /// Every ported Tool emits its own wasm module (ADR-0035 §7): a Tool whose
@@ -183,10 +203,10 @@ pub fn check_tool_modules(ported: &BTreeSet<String>, rows: &Rows) -> Vec<Finding
     ported
         .iter()
         .filter_map(|key| {
-            let module = module_name(key);
-            (!rows.contains_key(&format!("wasm:{module}"))).then(|| {
+            let entry = entry_name(key);
+            (!rows.contains_key(&format!("wasm:{entry}"))).then(|| {
                 let message = format!(
-                    "emits no wasm module `{module}`: its code is in main, so its loader is missing or not split"
+                    "emits no wasm module for `{entry}`: its code is in main, so its loader is missing or not split"
                 );
                 Finding::new("tool-module", key, 0, message)
             })
@@ -232,26 +252,17 @@ pub fn check_ceilings(head: &Rows, base: Option<&Rows>, ceilings: &Rows) -> Vec<
     findings
 }
 
-/// The Tool a row belongs to, by its module name, if any.
-fn row_tool(key: &str) -> Option<String> {
-    if let Some(tool) = key.strip_prefix("page:/tools/") {
-        return Some(module_name(tool));
-    }
-    let module = key.strip_prefix("wasm:")?;
-    (module != "main" && !module.starts_with("chunk:")).then(|| module.to_owned())
-}
-
 /// A `port` or `shell` PR only adds rows for its own Tool; only a `gates` PR
 /// (or a sync) changes or removes one. `changed` are the PR's changed paths,
 /// which name a `shell` PR's Tool.
 pub fn check_ceiling_rows(kind: &Kind, changed: &[&str], base: &Rows, head: &Rows) -> Vec<Finding> {
     let own: BTreeSet<String> = match kind {
         Kind::Gates | Kind::Sync => return Vec::new(),
-        Kind::Port { key } => BTreeSet::from([module_name(key)]),
+        Kind::Port { key } => tool_rows(key).into(),
         Kind::Shell { .. } => changed
             .iter()
             .filter_map(|path| tool_key(path))
-            .map(module_name)
+            .flat_map(tool_rows)
             .collect(),
         _ => BTreeSet::new(),
     };
@@ -267,7 +278,7 @@ pub fn check_ceiling_rows(kind: &Kind, changed: &[&str], base: &Rows, head: &Row
         }
     }
     for key in head.keys().filter(|key| !base.contains_key(*key)) {
-        if !row_tool(key).is_some_and(|tool| own.contains(&tool)) {
+        if !own.contains(key) {
             findings.push(Finding::new(
                 "ceiling-rows",
                 key,

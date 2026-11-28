@@ -442,18 +442,28 @@ What building it found:
 - **Page bytes are measured from the build, not by the perf harness.** A
   page's row is its HTML, the files the HTML loads and the main module
   (`docs/perf/budgets.md` → "CI on `develop`").
-- **wasm-split names a loader's module `module_<n>_<name><32 hex>`**, as
-  the spike's builds show, and an empty app built with `--wasm-split`
-  emits a shared `chunk_0_split` module. The module check keys rows by
-  `<name>`. The first port checks that a hand-written `lazy_loader!` gets
-  its module name this way.
+- **A module's file names the function it loads, not the loader's module
+  name.** In dx 0.7.10 and `wasm-split-macro` 0.7.10, a `lazy_loader!`
+  module is written as `module_<n>_<function>`, so a Tool's module is
+  `module_<n>_HashGeneratorEntry`. Its row is keyed by that entry
+  (`wasm:HashGeneratorEntry`, ADR-0035 §7's name), not by
+  `hash_generator`. The spike's names carried a 32-hex suffix only because
+  it split routes. This was read from the source; the first port sees it
+  in a build.
+- **Every shared chunk is named `chunk_<n>_split`,** and `<n>` can move
+  between builds, so all chunks share one row, `wasm:chunks`. An empty app
+  built with `--wasm-split` already emits one.
 - **dx keeps old files in its output,** so the build empties it first.
 - **The ported-Tool list is a `ported_tools![…]` invocation of string
   keys.** Its macro emits nothing yet. The routes and the Tool entry match
   come with the first `shell` PR, which brings in `ui` and the registry.
 - **The first ceilings are a local macOS build's sizes, rounded up to the
-  next KiB.** The CI log prints the measured rows. If the Linux build does
-  not match them, a `gates` PR corrects the ceilings.
+  next KiB.** `dioxus` is a required check, so if the Linux build in CI
+  does not fit them, this PR corrects them from the rows the CI log prints.
+- **The 2% rule now covers `wasm:main` and `page:/`, measured from an
+  empty shell.** The PR that first adds the router or `ui` to main will
+  grow both by far more than 2%, and no PR kind lifts that limit. The
+  maintainer decides what lets that PR through.
 
 ## Revisit when
 
