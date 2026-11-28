@@ -17,6 +17,16 @@ type Violations = Array<string>
 
 type BrowserContext = import('@playwright/test').BrowserContext
 
+/**
+ * Waits for the reports each open page has already sent: one round trip per page, which
+ * the protocol delivers after the binding calls the page made before it. A closed page
+ * has nothing left to send.
+ */
+const flush = (contexts: Array<BrowserContext>): Promise<unknown> =>
+  Promise.all(
+    contexts.flatMap((context) => context.pages()).map((page) => page.evaluate(() => undefined).catch(() => undefined)),
+  )
+
 /** Reports every `securitypolicyviolation` on the context's pages into `seen`. */
 const watch = async (context: BrowserContext, seen: Violations): Promise<void> => {
   await context.exposeBinding('__reportCspViolation', (_source, violation: string) => {
@@ -38,15 +48,18 @@ export const test = base.extend<{ cspViolations: Violations }>({
   cspViolations: [
     async ({ browser, context }, use) => {
       const seen: Violations = []
+      const watched = [context]
       await watch(context, seen)
       const { newContext, newPage } = browser
       browser.newContext = async (options) => {
         const opened = await newContext.call(browser, options)
+        watched.push(opened)
         await watch(opened, seen)
         return opened
       }
       browser.newPage = async (options) => {
         const opened = await newContext.call(browser, options)
+        watched.push(opened)
         await watch(opened, seen)
         // As with Playwright's own `newPage`, closing the page closes its context.
         const page = await opened.newPage()
@@ -56,6 +69,7 @@ export const test = base.extend<{ cspViolations: Violations }>({
       // `use` resolves once the test ends, passed or failed.
       await use(seen)
       Object.assign(browser, { newContext, newPage })
+      await flush(watched)
       expect(seen, 'securitypolicyviolation events under the post-migration CSP').toEqual([])
     },
     { auto: true },
