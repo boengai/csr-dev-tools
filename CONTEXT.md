@@ -1706,6 +1706,22 @@ _Avoid_: migration PR
 The written list of what must hold on `develop` before a Tool counts as
 ported, kept in `docs/quality/gates.md` (ADR-0036).
 
+## Wave
+
+The ordered set of build issues that ports one layout's Tools (or, for the
+`app` wave, the home page and app-wide pieces), tracked by one issue under
+the migration map. A wave opens with its shell PR and that shell's
+[[Proof Tool]]. Its checklist holds the soft order; blocked-by links hold
+only hard dependencies (ADR-0038).
+_Avoid_: batch, phase
+
+## Proof Tool
+
+The one Tool a `shell` PR ports alongside its shell, to show the shell
+works on a real Tool. The shell builds only the kinds its Proof Tool needs
+(ADR-0036, ADR-0038).
+_Avoid_: pilot tool, sample tool
+
 ## Toast channel
 
 The ephemeral notification channel for events that happen *to* a user
