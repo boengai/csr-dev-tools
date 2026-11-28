@@ -197,6 +197,8 @@ jobs:
       # The maintainer accepts a planned jump of more than 2% with the
       # bytes-jump-accepted label (gates.md → "Byte ceilings"); agents never add
       # it. Labels are read live, so adding it and re-running this job is enough.
+      # It covers the commits the maintainer saw: it counts only when it was last
+      # added after the PR's head was committed, so a later commit needs it re-added.
       - name: Byte check
         if: ${{ !cancelled() && steps.build-base.outcome == 'success' }}
         env:
@@ -205,7 +207,16 @@ jobs:
         run: |
           labels=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/labels" --jq '.[].name')
           accepted=""
-          if grep -qx 'bytes-jump-accepted' <<<"$labels"; then accepted=1; fi
+          if grep -qx 'bytes-jump-accepted' <<<"$labels"; then
+            labeled_at=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/events" \
+              --jq '.[] | select(.event == "labeled" and .label.name == "bytes-jump-accepted") | .created_at' | tail -n 1)
+            committed_at=$(git log -1 --format=%cI HEAD^2)
+            if [[ -n "$labeled_at" && $(date -d "$labeled_at" +%s) -gt $(date -d "$committed_at" +%s) ]]; then
+              accepted=1
+            else
+              echo "::warning::bytes-jump-accepted predates the head commit; re-add it to accept this commit's bytes"
+            fi
+          fi
           node crates/gates/scripts/measure-bytes.mjs dist-dioxus >"$RUNNER_TEMP/bytes-head.json"
           base=""
           if [[ -d "$RUNNER_TEMP/dist-base" ]]; then

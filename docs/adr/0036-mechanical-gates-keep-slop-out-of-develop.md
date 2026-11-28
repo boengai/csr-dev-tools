@@ -475,8 +475,10 @@ What building it found:
   ceilings keep headroom that the 2% rule bounds per PR. The maintainer
   adds the `bytes-jump-accepted` label instead, and the jump then warns
   rather than fails. The ceilings still hold. The byte check reads labels
-  live, so adding the label and re-running `dioxus` is enough. Agents never
-  add it, as they never tick the hand check.
+  live, so adding the label and re-running `dioxus` is enough. It covers
+  only the commits the maintainer saw: it counts when it was last added
+  after the PR's head was committed. Agents never add it, as they never
+  tick the hand check.
 
 ## Revisit when
 
