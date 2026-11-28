@@ -203,7 +203,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ github.event.pull_request.number }}
         run: |
-          labels=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/labels" --jq '.[].name')
+          labels=$(gh api --paginate "repos/$GITHUB_REPOSITORY/issues/$PR/labels" --jq '.[].name')
           accepted=""
           if grep -qx 'bytes-jump-accepted' <<<"$labels"; then accepted=1; fi
           node crates/gates/scripts/measure-bytes.mjs dist-dioxus >"$RUNNER_TEMP/bytes-head.json"

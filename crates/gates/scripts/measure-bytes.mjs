@@ -58,9 +58,9 @@ const sitePath = (value, base) => {
  * which one depends on the screen, so the largest counts.
  */
 const firstLoads = (html, route, files) => {
-  // A Tool page is served at its slashless route ("/tools/x", as the static host's pretty
-  // URLs do), so a relative URL resolves against "/tools/", as the browser resolves it.
-  const base = `${SITE}${route}`
+  // The static host redirects "/tools/x" to "/tools/x/" (e2e/perf/pages-server.ts models it,
+  // and serve-dioxus.mjs does the same), so a relative URL resolves against the page's directory.
+  const base = `${SITE}${route === '/' ? '/' : `${route}/`}`
   return [...html.replace(HTML_COMMENT, '').matchAll(LOADING_TAG)].flatMap(([tag, name]) => {
     const kind = name.toLowerCase()
     const isLink = kind === 'link'
@@ -76,7 +76,14 @@ const firstLoads = (html, route, files) => {
       .map((value) => sitePath(value, base))
       .filter((path) => path !== undefined)
     if (candidates.length === 0) return []
-    return [candidates.reduce((largest, path) => ((files[path] ?? 0) > (files[largest] ?? 0) ? path : largest))]
+    // A candidate the build does not hold is returned too, so the byte check reports it.
+    const missing = candidates.filter((path) => files[path] === undefined)
+    const held = candidates.filter((path) => files[path] !== undefined)
+    const largest = held.reduce(
+      (best, path) => (best === undefined || files[path] > files[best] ? path : best),
+      undefined,
+    )
+    return [...missing, ...(largest === undefined ? [] : [largest])]
   })
 }
 
