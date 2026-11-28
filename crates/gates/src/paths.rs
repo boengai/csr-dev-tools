@@ -18,13 +18,16 @@ pub const A11Y_BASELINE: &str = "e2e/parity/a11y-baseline.json";
 pub const DIOXUS_SPEC_FILTER: &str = "playwright.dioxus.config.ts";
 /// The post-migration CSP (ADR-0033 Decision 6).
 pub const POST_MIGRATION_CSP: &str = "docs/quality/post-migration-csp.txt";
-/// The CSP fixture, and the tsconfig that hands it to every Dioxus spec.
+/// The CSP fixture (docs/quality/gates.md → "CSP").
 pub const CSP_FIXTURE: &str = "e2e/parity/csp.ts";
+/// The fixture's must-fail check.
+pub const CSP_CHECK: &str = "e2e/parity/csp.spec.ts";
+/// The tsconfig that hands the fixture to every Dioxus spec.
 pub const CSP_TSCONFIG: &str = "e2e/tsconfig.dioxus.json";
 /// The registry's source until cutover.
 pub const TOOL_ROUTES: &str = "src/constants/tool-routes.ts";
 
-const GATE_FILES: [&str; 14] = [
+const GATE_FILES: [&str; 15] = [
     "Cargo.toml",
     "clippy.toml",
     "rustfmt.toml",
@@ -35,6 +38,7 @@ const GATE_FILES: [&str; 14] = [
     A11Y_BASELINE,
     POST_MIGRATION_CSP,
     CSP_FIXTURE,
+    CSP_CHECK,
     CSP_TSCONFIG,
     "crates/logic/README.md",
     "crates/tools/README.md",

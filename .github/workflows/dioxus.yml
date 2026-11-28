@@ -155,21 +155,23 @@ jobs:
           echo "No crates/bridges/js or scripts/dioxus yet."
 
       # 9. The Dioxus build, the byte check and the CSP run (gates.md →
-      # "Byte ceilings" and "CSP"). The merge base is built too, for the 2%
-      # rule, when it has an app; it shares the target directory.
+      # "Byte ceilings" and "CSP"). The checkout is the merge commit, so the
+      # 2% rule compares it with the base branch's tip (HEAD^1), not the merge
+      # base: growth already on the base branch is not this PR's. The base is
+      # built when it has an app, sharing the target directory.
       - name: Dioxus build
         id: build
         if: ${{ !cancelled() }}
         run: crates/gates/scripts/build-dioxus.sh . dist-dioxus
-      - name: Dioxus build of the merge base
+      - name: Dioxus build of the base branch
         id: build-base
         if: ${{ !cancelled() && steps.build.outcome == 'success' }}
         run: |
-          if git cat-file -e "$MERGE_BASE:crates/app/Cargo.toml" 2>/dev/null; then
-            git worktree add --detach "$RUNNER_TEMP/base" "$MERGE_BASE"
+          if git cat-file -e "HEAD^1:crates/app/Cargo.toml" 2>/dev/null; then
+            git worktree add --detach "$RUNNER_TEMP/base" HEAD^1
             CARGO_TARGET_DIR="$PWD/target" crates/gates/scripts/build-dioxus.sh "$RUNNER_TEMP/base" "$RUNNER_TEMP/dist-base"
           else
-            echo "The merge base has no crates/app: no 2% rule this time."
+            echo "The base branch has no crates/app: no 2% rule this time."
           fi
 
       - name: Setup pnpm

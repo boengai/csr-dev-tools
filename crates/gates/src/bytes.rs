@@ -27,25 +27,33 @@ pub struct Build {
     pub pages: BTreeMap<String, Vec<String>>,
 }
 
+fn parse_json(text: &str) -> Result<Value, String> {
+    serde_json::from_str(text).map_err(|error| format!("is not JSON: {error}"))
+}
+
+/// A JSON object whose every value is a byte count.
+fn byte_counts(object: &serde_json::Map<String, Value>) -> Result<Rows, String> {
+    object
+        .iter()
+        .map(|(key, bytes)| {
+            let bytes = bytes
+                .as_u64()
+                .ok_or_else(|| format!("{key}: {bytes} is not a byte count"))?;
+            Ok((key.clone(), bytes))
+        })
+        .collect()
+}
+
 impl Build {
     pub fn from_json(text: &str) -> Result<Self, String> {
-        let value: Value =
-            serde_json::from_str(text).map_err(|error| format!("is not JSON: {error}"))?;
+        let value = parse_json(text)?;
         let object = |name: &str| {
             value
                 .get(name)
                 .and_then(Value::as_object)
                 .ok_or_else(|| format!("has no `{name}` object"))
         };
-        let files = object("files")?
-            .iter()
-            .map(|(path, bytes)| {
-                let bytes = bytes
-                    .as_u64()
-                    .ok_or_else(|| format!("{path}'s size is not a byte count"))?;
-                Ok((path.clone(), bytes))
-            })
-            .collect::<Result<_, String>>()?;
+        let files = byte_counts(object("files")?)?;
         let pages = object("pages")?
             .iter()
             .map(|(route, loads)| {
@@ -65,19 +73,11 @@ impl Build {
 
 /// The ceiling file: a JSON object of row keys and byte counts.
 pub fn parse_rows(text: &str) -> Result<Rows, String> {
-    let value: Value =
-        serde_json::from_str(text).map_err(|error| format!("is not JSON: {error}"))?;
-    value
-        .as_object()
-        .ok_or("is not a JSON object")?
-        .iter()
-        .map(|(key, bytes)| {
-            let bytes = bytes
-                .as_u64()
-                .ok_or_else(|| format!("{key}'s ceiling is not a byte count"))?;
-            Ok((key.clone(), bytes))
-        })
-        .collect()
+    byte_counts(
+        parse_json(text)?
+            .as_object()
+            .ok_or("is not a JSON object")?,
+    )
 }
 
 /// What a wasm file in the build is, from the name dx gives it.
@@ -182,13 +182,14 @@ fn module_name(key: &str) -> String {
 pub fn check_tool_modules(ported: &BTreeSet<String>, rows: &Rows) -> Vec<Finding> {
     ported
         .iter()
-        .filter(|key| !rows.contains_key(&format!("wasm:{}", module_name(key))))
-        .map(|key| {
-            let message = format!(
-                "emits no wasm module `{}`: its code is in main, so its loader is missing or not split",
-                module_name(key)
-            );
-            Finding::new("tool-module", key, 0, message)
+        .filter_map(|key| {
+            let module = module_name(key);
+            (!rows.contains_key(&format!("wasm:{module}"))).then(|| {
+                let message = format!(
+                    "emits no wasm module `{module}`: its code is in main, so its loader is missing or not split"
+                );
+                Finding::new("tool-module", key, 0, message)
+            })
         })
         .collect()
 }

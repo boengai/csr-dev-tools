@@ -7,8 +7,8 @@
 //!   the merge base;
 //! - `GATES_BASE_MANIFEST`: a file holding the root `Cargo.toml` at the merge
 //!   base;
-//! - `GATES_BASE_CEILINGS`: a file holding the ceiling file at the merge base,
-//!   empty when it has none.
+//! - `GATES_BASE_CEILINGS`: a file holding the ceiling file at the base
+//!   branch's tip, empty when it has none.
 //!
 //! They are `#[ignore]`d so a plain `cargo test` skips them; CI runs them with
 //! `--ignored`, and a missing variable fails rather than passes.

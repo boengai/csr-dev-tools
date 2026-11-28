@@ -7,7 +7,9 @@ import { DIOXUS_ONLY } from './tags'
 // run leaves these out by their tag.
 
 test(`the app shell loads under the post-migration CSP ${DIOXUS_ONLY}`, async ({ page }) => {
-  await page.goto('/')
+  // Without the header, the must-fail test below would fail on its own assertion, not on the fixture.
+  const response = await page.goto('/')
+  expect(response?.headers()['content-security-policy']).toContain("script-src 'self' 'wasm-unsafe-eval'")
   await expect(page.locator('#app-shell')).toBeAttached()
 })
 

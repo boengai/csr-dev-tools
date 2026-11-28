@@ -87,7 +87,7 @@ Discard a session and measure again if any of these happens:
 
 Timings on a CI runner are noisy and cannot be compared with the baseline. `lighthouserc.cjs` uses simulated throttling, which cannot see WebAssembly in FCP. So the only new check is on bytes, which do not vary between runs.
 
-- **Byte check.** For every page, home and all 84 tool pages, it measures the site's own compressed first-load bytes (the "Own total" of the first-load table) and fails a pull request if either:
+- **Byte check.** For every page, home and all 84 tool pages, it measures the site's own compressed first-load bytes, read from the build (see "How it is measured" below), and fails a pull request if either:
   - the page grew by more than 2% over the base branch, or
   - the page is over its ceiling in a committed per-page ceiling file.
 

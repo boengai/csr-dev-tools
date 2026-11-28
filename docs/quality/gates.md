@@ -51,7 +51,7 @@ A gate file decides what CI accepts:
 - the root `Cargo.toml` (`[workspace.lints]`, `[workspace.dependencies]`, members, profiles), `rust-toolchain.toml`, `clippy.toml`, `rustfmt.toml`, `deny.toml`, `.jscpd.json`;
 - the `README.md` in `crates/logic`, `crates/tools` and `crates/workers`: cargo rejects a member glob that matches nothing, so each one keeps its glob matching until the first crate lands;
 - `crates/gates/**`, with its fixtures;
-- the byte-ceiling file that `docs/perf/budgets.md` describes (`docs/perf/byte-ceilings.json`), the a11y baseline (`e2e/parity/a11y-baseline.json`, [#41](https://github.com/boengai/csr-dev-tools/issues/41)), the post-migration CSP (`docs/quality/post-migration-csp.txt`), the CSP fixture (`e2e/parity/csp.ts`) and the tsconfig that hands it to every Dioxus spec (`e2e/tsconfig.dioxus.json`);
+- the byte-ceiling file that `docs/perf/budgets.md` describes (`docs/perf/byte-ceilings.json`), the a11y baseline (`e2e/parity/a11y-baseline.json`, [#41](https://github.com/boengai/csr-dev-tools/issues/41)), the post-migration CSP (`docs/quality/post-migration-csp.txt`), the CSP fixture (`e2e/parity/csp.ts`) with its must-fail check (`e2e/parity/csp.spec.ts`), and the tsconfig that hands it to every Dioxus spec (`e2e/tsconfig.dioxus.json`);
 - `.github/workflows/**`, and the PR templates in `docs/quality/pr/`.
 
 A `port` or `shell` PR may add rows for its own Tool to the ceiling file. Any other change to a gate file, raising a ceiling included, is a `gates` PR. A `gates` PR changes only gate files, `docs/quality/**` and the ADR that records it (see "PR kinds").
@@ -258,7 +258,7 @@ A Tool entry is an invocation of `wasm_split::lazy_loader!` or of `ui`'s entry m
 
 - **The post-migration CSP** is a gate file (ADR-0033 Decision 6 and "Handed on"). The Dioxus Playwright project serves `dist-dioxus` with it, through `crates/gates/scripts/serve-dioxus.mjs`.
 - **A shared fixture**, for the Dioxus project only, fails any test that sees a `securitypolicyviolation` event (`e2e/parity/csp.ts`). The specs import `test` from `@playwright/test` and are never edited, so the Dioxus config maps that import to the fixture through its own tsconfig (`e2e/tsconfig.dioxus.json`). It listens on every page of the test's context; a violation inside a worker fires on the worker, and it does not see that.
-- **Its must-fail check** is `e2e/parity/csp.spec.ts`: a test that runs an inline script and is marked `test.fail()`, so the run fails if the fixture stops failing it.
+- **Its must-fail check** is `e2e/parity/csp.spec.ts`: a test that runs an inline script and is marked `test.fail()`, so the run fails if the fixture stops failing it. The other test checks that the server sends the CSP, so the must-fail test cannot pass on a page served without one.
 - **It covers every journey,** not only those of Tools with an Engine bridge.
 
 ## Byte ceilings

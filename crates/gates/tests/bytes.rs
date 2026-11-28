@@ -193,9 +193,10 @@ fn byte_check() {
         &head,
     ));
     findings.extend(check_ceilings(&head, base.as_ref(), &ceilings));
-    let report: Vec<String> = findings.iter().map(ToString::to_string).collect();
-    assert!(report.is_empty(), "{}", report.join("\n"));
+    // Printed first, so a failing run still shows the rows to set a ceiling from.
     for (key, bytes) in &head {
         println!("{key}: {bytes} B");
     }
+    let report: Vec<String> = findings.iter().map(ToString::to_string).collect();
+    assert!(report.is_empty(), "{}", report.join("\n"));
 }
